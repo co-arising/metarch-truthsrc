@@ -1,0 +1,117 @@
+{
+  "schemaVersion": "truthsrc/v0",
+  "workshop": "loan",
+  "sessions": [
+    {
+      "session": "eventStorming",
+      "scopes": [
+        {
+          "scope": "board1",
+          "notes": [
+            {
+              "type": "event",
+              "name": "LoanRequested",
+              "stage": "eventStorming",
+              "description": "A customer submits a loan application for review.",
+              "info": {
+                "timeline": "Application",
+                "sequence": 0,
+                "step": 0,
+                "pivotal": true
+              },
+              "links": [
+                "question:what-happens-if-the-credit-check-fails"
+              ],
+              "author": "facilitator",
+              "createdAt": "2026-10-11"
+            },
+            {
+              "type": "event",
+              "name": "LoanApproved",
+              "stage": "eventStorming",
+              "description": "An underwriter approves the loan request.",
+              "info": {
+                "timeline": "Approval",
+                "sequence": 1,
+                "step": 0,
+                "pivotal": true
+              },
+              "links": [],
+              "author": "facilitator",
+              "createdAt": "2026-10-11"
+            },
+            {
+              "type": "event",
+              "name": "LoanDisbursed",
+              "stage": "eventStorming",
+              "description": "Funds are transferred to the borrower account.",
+              "info": {
+                "timeline": "Disbursement",
+                "sequence": 2,
+                "step": 0
+              },
+              "links": [
+                "question:can-a-disbursement-be-partial"
+              ],
+              "author": "facilitator",
+              "createdAt": "2026-10-11"
+            },
+            {
+              "type": "event",
+              "name": "PaymentReceived",
+              "stage": "eventStorming",
+              "description": "A scheduled repayment payment arrives.",
+              "info": {
+                "timeline": "Repayment",
+                "sequence": 3,
+                "step": 0
+              },
+              "links": [],
+              "author": "facilitator",
+              "createdAt": "2026-10-11"
+            },
+            {
+              "type": "event",
+              "name": "LoanRepaid",
+              "stage": "eventStorming",
+              "description": "The loan is fully repaid and closed.",
+              "info": {
+                "timeline": "Repayment",
+                "sequence": 4,
+                "step": 0,
+                "pivotal": true
+              },
+              "links": [],
+              "author": "facilitator",
+              "createdAt": "2026-10-11"
+            },
+            {
+              "type": "question",
+              "name": "What happens if the credit check fails?",
+              "stage": "eventStorming",
+              "description": "Hotspot raised during the Application timeline walkthrough.",
+              "info": {},
+              "links": [
+                "event:LoanRequested"
+              ],
+              "author": "domain-expert",
+              "createdAt": "2026-10-11"
+            },
+            {
+              "type": "question",
+              "name": "Can a disbursement be partial?",
+              "stage": "eventStorming",
+              "description": "Hotspot: business rule unresolved at capture time.",
+              "info": {},
+              "links": [
+                "event:LoanDisbursed"
+              ],
+              "author": "domain-expert",
+              "createdAt": "2026-10-11"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

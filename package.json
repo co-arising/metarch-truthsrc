@@ -1,0 +1,19 @@
+{
+  "name": "truthsrc",
+  "version": "0.1.0",
+  "description": "Git-native Event Storming: a deterministic, diffable truth-source format for domain workshops — editable by humans and agents alike.",
+  "type": "module",
+  "bin": { "truthsrc": "bin/truthsrc.js" },
+  "scripts": {
+    "test": "node --test",
+    "example:compile": "node bin/truthsrc.js compile --tree example/tree --out example/canonical.json",
+    "example:roundtrip": "node bin/truthsrc.js roundtrip --tree example/tree"
+  },
+  "engines": { "node": ">=18" },
+  "keywords": [
+    "event-storming", "eventstorming", "ddd", "domain-driven-design",
+    "event-modeling", "truth-source", "workshop", "agent-readable",
+    "diffable", "canonical"
+  ],
+  "license": "MIT"
+}
