@@ -142,9 +142,14 @@ from the tree with one deterministic sort.
 - [x] v0.1 — note atoms, eventStorming rules (ES1–ES5), compile/decompose/validate/roundtrip
 - [ ] v0.2 — stages 02–07 schemas (command → aggregate → context → refining → story), each with its lint rules
 - [ ] v0.3 — aggregate/slice atoms (commands, invariants, folds) with the same byte-identity guarantee
-- [ ] v0.4 — JSON Schema publication (schemastore.org) + editor autocomplete
-- [ ] v0.5 — board importers (Miro, FigJam, EventModeling canvas) and exporters (Mermaid, PlantUML)
-- [ ] v1.0 — codegen adapters: canonical → CQRS/ES scaffolding (the reference implementation compiles to runnable Scala today)
+- [ ] v0.4 — **full codegen, open-source**: the `scala-cqrs-es` reference generator (runnable CQRS/ES application from compiled products — 718 files / 2,291 tests green in production) + the [generator contract](CODEGEN.md) for **custom generators**
+- [ ] v0.5 — JSON Schema publication (schemastore.org) + editor autocomplete; board importers (Miro, FigJam, EventModeling canvas) and exporters (Mermaid, PlantUML)
+- [ ] v1.0 — community generator registry; capture API (`truthsrc capture`) as the programmatic write surface
+
+**Codegen is fully open-source by ruling (2026-10-12)** — the production
+generator lands here as the reference implementation of a public generator
+contract, and custom generators (yours, your agent's) plug in as equals.
+See [CODEGEN.md](CODEGEN.md).
 
 The reference implementation this format was extracted from runs a 1,600-note
 workshop tree through a five-product byte-identity roundtrip in production —
