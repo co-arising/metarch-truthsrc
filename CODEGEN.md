@@ -41,6 +41,71 @@ A generator is a deterministic function over the **compiled products**:
 and are invoked exactly like the built-in one. The reference generator is not
 privileged — it is simply the first implementation of the contract.
 
+## Generator manifest (v0.4 contract, normative)
+
+`generator.json` sits at the generator root; the core discovers generators by
+scanning `generators/*/generator.json` (plus `--generator <path>` for external
+ones). **Core knows nothing about any specific generator** — separation is
+enforced by the manifest, not convention:
+
+| field | type | rules |
+|---|---|---|
+| `name` | string | required, slug-cased, unique across discovered generators |
+| `inputSchema` | string | required, `truthsrc/vX.Y` — canonical version the generator consumes |
+| `products` | string[] | required, subset of `template·readmodels·stories·useCases` — which product faces it reads |
+| `artifactKinds` | string[] | required — the vocabulary of file kinds it emits (feeds the concerns protocol, see below) |
+| `output` | object | required, free-form (`language`, `layout`, …) — descriptive, for humans and registries |
+| `options` | object | optional — generator-specific flags, declared so `--plan` can echo them |
+
+Validation is fail-fast: missing required field, unknown `products` entry, or
+duplicate `name` → error before any file is written.
+
+## Concerns: the change-impact → regeneration-scope protocol
+
+A concern answers one question: *this piece of the truth source changed — which
+generated faces must be regenerated?* It is **core-owned protocol, not a
+generator detail**, in three layers:
+
+1. **Vocabulary** — `artifactKinds` are declared by the generator manifest (§
+   above). A new generator adding a new artifact face (say `openapi-docs`)
+   extends the vocabulary by declaring it; nothing in core changes.
+2. **Engine** — scope expansion (`concern = schemaCategories × flavors` →
+   in-scope set) plus dependency closure (ledger rows carry `deps[]`;
+   transitive closure to fixpoint, so cross-flavor dependencies like
+   converter→protocol are never left behind). One implementation, in core.
+   Semantics ported from the production-verified `concerns_lib` /
+   `ConcernScopeLoader` pair.
+3. **Presets** — a per-project registry (`concerns.json`) naming the concerns a
+   project exposes (e.g. `event-journal-suite`, `api-layer`). Project config,
+   never core state.
+
+The **emission ledger** (written by `generate` during apply; one row per
+emitted file: `path, kind, schemaCategory, families[], deps[]`) is what the
+closure engine runs over — it doubles as the drift detector: a file on disk
+with no ledger row is hand-written, and regenerating with `--concern` will not
+touch it. Invocation:
+
+```text
+truthsrc generate --in products/ --out repo/ --generator scala-cqrs-es \
+                  --concern aggregate-scaffold --families Loan
+```
+
+## Layout (v0.4)
+
+```text
+lib/                  # tree kernel (compile/decompose/validate/roundtrip — unchanged)
+src/core/             # generation core, style-agnostic: canonical loader, manifest,
+                      # plan (topological), diff-apply (MERGE-protected blocks), anchors,
+                      # concerns engine, golden-master harness
+generators/
+  scala-cqrs-es/      # reference generator: generator.json + templates/ (data-first) + builders/
+  _template/          # scaffold for custom generators (`truthsrc init-generator`)
+golden/               # golden master: input canonical samples × expected output trees
+```
+
+Extension path = **drop in a folder with a manifest**; `truthsrc generate
+--generator <name>` discovers and dispatches it.
+
 ## Reference generator: `scala-cqrs-es`
 
 Extracted from the production implementation that generates a runnable
