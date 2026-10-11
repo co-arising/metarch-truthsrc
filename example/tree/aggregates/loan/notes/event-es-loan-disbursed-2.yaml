@@ -2,24 +2,25 @@
 
 kind: note
 type: event
-name: "LoanApproved"
+name: LoanDisbursed
 origin:
   stage: eventStorming
   board: board1
-  seq: 1
+  seq: 2
 payload:
   {
     "type": "event",
-    "name": "LoanApproved",
+    "name": "LoanDisbursed",
     "stage": "eventStorming",
-    "description": "An underwriter approves the loan request.",
+    "description": "Funds are transferred to the borrower.",
     "info": {
-      "timeline": "Approval",
-      "sequence": 1,
-      "step": 0,
-      "pivotal": true
+      "timeline": "Disbursement",
+      "sequence": 2,
+      "step": 2
     },
-    "links": [],
+    "links": [
+      "event:LoanApproved@strong"
+    ],
     "author": "facilitator",
     "createdAt": "2026-10-11"
   }

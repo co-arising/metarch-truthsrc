@@ -2,20 +2,20 @@
 
 kind: note
 type: event
-name: "LoanRepaid"
+name: LoanRequested
 origin:
   stage: eventStorming
   board: board1
-  seq: 4
+  seq: 0
 payload:
   {
     "type": "event",
-    "name": "LoanRepaid",
+    "name": "LoanRequested",
     "stage": "eventStorming",
-    "description": "The loan is fully repaid and closed.",
+    "description": "A customer submits a loan application for review.",
     "info": {
-      "timeline": "Repayment",
-      "sequence": 4,
+      "timeline": "Application",
+      "sequence": 0,
       "step": 0,
       "pivotal": true
     },

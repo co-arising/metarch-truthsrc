@@ -1,0 +1,37 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: read-model
+name: LoanOverviewDecisionView
+seq: 0
+payload:
+  {
+    "name": "LoanOverviewDecisionView",
+    "description": "Officer-facing loan status view.",
+    "sourceAggregate": "Loan",
+    "consumesEvents": [
+      "LoanRequested",
+      "LoanApproved",
+      "LoanDisbursed",
+      "PaymentReceived"
+    ],
+    "fields": [
+      {
+        "name": "loanId",
+        "uiLabel": "Loan",
+        "dataType": "String (UUID)",
+        "source": "aggregateIdentity"
+      },
+      {
+        "name": "status",
+        "uiLabel": "Status",
+        "dataType": "String",
+        "source": "eventField:LoanDisbursed.status"
+      },
+      {
+        "name": "amount",
+        "uiLabel": "Amount",
+        "dataType": "Money",
+        "source": "eventField:LoanRequested.amount"
+      }
+    ]
+  }

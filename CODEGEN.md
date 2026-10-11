@@ -59,11 +59,12 @@ Extraction surface (audited 2026-10-12):
 
 Staged landing (each stage gated by the roundtrip discipline):
 
-1. **v0.2** — tree schema gains stage 02–03 vocabulary (commands with parameters, aggregates) → template product becomes expressible in-tree.
-2. **v0.3** — aggregate/slice atoms (state fields, invariants, folds, guards) with byte-identity, per the production-verified union rules.
+1. ~~v0.2~~ — **shipped**: command/role/policy notes, the structured policy atom, aggregates with `order` lists.
+2. ~~v0.3~~ — **shipped**: slices (parameters, guards, event bindings, fold assignments), the single event pool with `extraEvents`, value objects, read models, stories, use cases. The template product is now fully expressible in-tree.
 3. **v0.4** — `scala-cqrs-es` generator lands under `generators/scala-cqrs-es/` with its golden master; `truthsrc generate` dispatches.
 4. **v0.5+** — community generators (TypeScript/ES first); generator registry.
 
-Until v0.2 the contract above is stable and published, but the reference
-generator cannot run on v0.1 trees — the schema richness is the gate, and it is
-being ported from a production-verified design, not invented.
+The reference generator consumes `canonical.aggregates` (payload + commands +
+events from the single pool) and derives decisions/folds with the formulas in
+SCHEMA.md §The slice atom — the schema-richness gate is now open; v0.4 is the
+port of the generator itself.

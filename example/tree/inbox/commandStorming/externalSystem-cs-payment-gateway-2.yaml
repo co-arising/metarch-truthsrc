@@ -1,0 +1,21 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: note
+type: externalSystem
+name: PaymentGateway
+origin:
+  stage: commandStorming
+  board: board1
+  seq: 2
+payload:
+  {
+    "type": "externalSystem",
+    "name": "PaymentGateway",
+    "stage": "commandStorming",
+    "description": "Processes incoming repayments.",
+    "links": [
+      "event:PaymentReceived"
+    ],
+    "author": "facilitator",
+    "createdAt": "2026-10-11"
+  }

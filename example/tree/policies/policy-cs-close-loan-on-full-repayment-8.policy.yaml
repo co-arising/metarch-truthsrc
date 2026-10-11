@@ -1,0 +1,42 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: policy
+type: policy
+name: CloseLoanOnFullRepayment
+origin:
+  stage: commandStorming
+  board: board1
+  seq: 8
+triggers:
+  - event: PaymentReceived
+    aggregate: Loan
+invokes:
+  - command: RecordPayment
+    aggregate: Loan
+payload:
+  {
+    "type": "policy",
+    "name": "CloseLoanOnFullRepayment",
+    "stage": "commandStorming",
+    "description": "When a payment arrives, record it; the aggregate closes the loan when the balance hits zero.",
+    "info": {
+      "triggers": [
+        {
+          "event": "PaymentReceived",
+          "aggregate": "Loan"
+        }
+      ],
+      "invokes": [
+        {
+          "command": "RecordPayment",
+          "aggregate": "Loan"
+        }
+      ]
+    },
+    "links": [
+      "event:PaymentReceived",
+      "command:RecordPayment"
+    ],
+    "author": "facilitator",
+    "createdAt": "2026-10-11"
+  }

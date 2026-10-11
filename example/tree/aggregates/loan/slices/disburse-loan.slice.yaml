@@ -1,0 +1,69 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: slice
+aggregate: Loan
+command: DisburseLoan
+payload:
+  {
+    "name": "DisburseLoan",
+    "description": "Transfer funds to the borrower (policy-triggered after approval).",
+    "parameters": [
+      {
+        "name": "loanId",
+        "dataType": "String (UUID)",
+        "description": "Loan identifier",
+        "origin": "PROPAGATED"
+      }
+    ],
+    "guards": [
+      {
+        "kind": "statusTransition",
+        "from": "APPROVED",
+        "toStatus": "DISBURSED",
+        "errCode": "LOAN_NOT_APPROVED",
+        "desc": "only APPROVED loans can be disbursed"
+      }
+    ],
+    "produces": [
+      "LoanDisbursed"
+    ]
+  }
+events:
+  {
+    "LoanDisbursed": {
+      "name": "LoanDisbursed",
+      "description": "Funds are transferred to the borrower.",
+      "payloads": [
+        {
+          "name": "loanId",
+          "dataType": "String (UUID)",
+          "description": "Loan identifier",
+          "origin": "PROPAGATED",
+          "lineageHint": "DisburseLoan.loanId"
+        },
+        {
+          "name": "disbursedAt",
+          "dataType": "Instant",
+          "description": "Disbursement time",
+          "origin": "SYSTEM_INJECTED"
+        }
+      ],
+      "bindings": [
+        {
+          "slot": "loanId",
+          "expr": "state.loanId"
+        },
+        {
+          "slot": "disbursedAt",
+          "expr": "literal:SYSTEM_NOW"
+        }
+      ],
+      "foldAssignments": [
+        {
+          "slot": "status",
+          "expr": "literal:DISBURSED"
+        }
+      ],
+      "humanDescription": "Funds released."
+    }
+  }

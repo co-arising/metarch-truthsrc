@@ -15,7 +15,7 @@
  ┌──────────── canonical.json ─────────────┘
    pure machine projection · deterministic bytes · safe to delete
         │
-        ▼   validate: ES1–ES5 stage rules, structure, tuple uniqueness
+        ▼   validate: stage rules (ES/CS/AG/RF/SM) + structural closure rules
    CI gate → merge → diff the PR like code
 ```
 
@@ -49,7 +49,7 @@ roundtrip guarantee**, guarded by stage-vocabulary lint rules.
 npx truthsrc init my-workshop        # scaffold tree/ + one example atom
 cd my-workshop
 # …capture or edit atoms under tree/inbox/eventStorming/ …
-npx truthsrc validate                # ES1–ES5 + structural rules
+npx truthsrc validate                # ES/CS/AG/RF/SM + structural rules
 npx truthsrc roundtrip               # compile∘decompose∘compile identity gate
 npx truthsrc compile --out canonical.json
 git add tree/ && git commit -m "workshop: capture LoanApproved decision"
@@ -140,8 +140,9 @@ from the tree with one deterministic sort.
 ## Roadmap
 
 - [x] v0.1 — note atoms, eventStorming rules (ES1–ES5), compile/decompose/validate/roundtrip
-- [ ] v0.2 — stages 02–07 schemas (command → aggregate → context → refining → story), each with its lint rules
-- [ ] v0.3 — aggregate/slice atoms (commands, invariants, folds) with the same byte-identity guarantee
+- [x] v0.2 — commandStorming vocabulary: command/role/policy notes, the structured policy atom, the aggregate atom with `order` lists
+- [x] v0.3 — the full solution contract: slices (parameters, guards, event bindings, fold assignments), single event pool with `extraEvents`, value objects, read models, stories, use cases — plus CS1–CS8 / RF1–RF5 / policy-closure rules; production-verified against the reference generator's vocabulary
+- [ ] v0.4 — **full codegen, open-source**: the `scala-cqrs-es` reference generator (runnable CQRS/ES application from compiled products — 718 files / 2,291 tests green in production) + the [generator contract](CODEGEN.md) for **custom generators**
 - [ ] v0.4 — **full codegen, open-source**: the `scala-cqrs-es` reference generator (runnable CQRS/ES application from compiled products — 718 files / 2,291 tests green in production) + the [generator contract](CODEGEN.md) for **custom generators**
 - [ ] v0.5 — JSON Schema publication (schemastore.org) + editor autocomplete; board importers (Miro, FigJam, EventModeling canvas) and exporters (Mermaid, PlantUML)
 - [ ] v1.0 — community generator registry; capture API (`truthsrc capture`) as the programmatic write surface

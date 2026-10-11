@@ -12,7 +12,7 @@ If your diff touches `canonical.json` by hand, the change is void.
 ## Commands (all local, zero deps, ~1s)
 
 ```bash
-node bin/truthsrc.js validate --tree tree    # structure V1–V3 + stage rules ES1–ES5
+node bin/truthsrc.js validate --tree tree    # structure V* + stage rules ES/CS/AG/RF/SM
 node bin/truthsrc.js roundtrip --tree tree   # compile∘decompose∘compile byte identity
 node bin/truthsrc.js compile --tree tree --out canonical.json
 node bin/truthsrc.js decompose --canonical canonical.json --tree tree
@@ -26,15 +26,26 @@ roundtrip gate is what makes thousands of autonomous agent edits reconcilable.
 
 1. **Filenames are derived, never invented:**
    `type-<stage-code>-<slug(name)>-<seq>.yaml`
-   stage codes: `es cs ad sd cm rf sm`. slug = lowercase, non-alphanumeric → `-`.
+   stage codes: `es cs ad sd cm rf sm`. slug is camel-case aware
+   (`RequestLoan` → `request-loan`) — use `lib/shared.mjs slug()`, never
+   hand-slugify. Aggregate atoms live at `aggregates/<slug>/aggregate.yaml`,
+   slices at `aggregates/<slug>/slices/<command-slug>.slice.yaml`, catalog
+   atoms at `value-objects|read-models|stories/<slug>.{vo,rm,story}.yaml`,
+   policy atoms at `policies/policy-<code>-<slug>-<seq>.policy.yaml`.
 2. **`origin.seq` is frozen board order.** Append new notes with the next seq;
-   never renumber existing atoms (downstream tools key on it).
+   never renumber existing atoms (downstream tools key on it). Aggregate /
+   catalog `seq` is product order — unique per family.
 3. **Payload is verbatim.** Fix capture typos in `payload` only when a human
    asked; never "normalize", re-key, or enrich it on your own initiative.
    Additive keys must pass the three-layer test (SCHEMA.md §The three-layer key test).
 4. **No tool artifacts in the tree.** No timestamps of compilation, no hashes,
    no `__seq` stamps — if a key exists only because a tool needed it, it does
    not belong in the tree.
+5. **One definition per event.** A full event definition (`payloads`,
+   `bindings`, `foldAssignments`) lives in exactly one slice — the first
+   command in `order.commands` that produces it; events no command produces go
+   to the aggregate's `extraEvents`. Decisions and folds are never stored —
+   they are derived (formulas in SCHEMA.md §The slice atom).
 
 ## Assertion discipline (for agents doing analysis)
 
@@ -49,9 +60,9 @@ roundtrip gate is what makes thousands of autonomous agent edits reconcilable.
 ## Batch-edit recipe (proven at 1,600-atom scale)
 
 ```js
-// 1. parse atoms with lib/shared.mjs parseAtom (never regex the whole file)
+// 1. parse atoms with lib/shared.mjs parseDoc (never regex the whole file)
 // 2. transform in memory
-// 3. emit with emitAtom (never hand-format the payload block)
+// 3. emit with emitDoc (never hand-format the payload block)
 // 4. run validate + roundtrip
 ```
 

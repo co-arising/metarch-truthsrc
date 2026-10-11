@@ -1,0 +1,42 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: policy
+type: policy
+name: AutoDisburseOnApproval
+origin:
+  stage: commandStorming
+  board: board1
+  seq: 7
+triggers:
+  - event: LoanApproved
+    aggregate: Loan
+invokes:
+  - command: DisburseLoan
+    aggregate: Loan
+payload:
+  {
+    "type": "policy",
+    "name": "AutoDisburseOnApproval",
+    "stage": "commandStorming",
+    "description": "When a loan is approved, disburse the funds automatically.",
+    "info": {
+      "triggers": [
+        {
+          "event": "LoanApproved",
+          "aggregate": "Loan"
+        }
+      ],
+      "invokes": [
+        {
+          "command": "DisburseLoan",
+          "aggregate": "Loan"
+        }
+      ]
+    },
+    "links": [
+      "event:LoanApproved",
+      "command:DisburseLoan"
+    ],
+    "author": "facilitator",
+    "createdAt": "2026-10-11"
+  }

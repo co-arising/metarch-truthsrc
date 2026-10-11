@@ -1,0 +1,86 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: slice
+aggregate: Loan
+command: ApproveLoan
+payload:
+  {
+    "name": "ApproveLoan",
+    "description": "Loan officer approves the application.",
+    "parameters": [
+      {
+        "name": "loanId",
+        "dataType": "String (UUID)",
+        "description": "Loan identifier",
+        "origin": "PROPAGATED"
+      },
+      {
+        "name": "approvedBy",
+        "dataType": "String",
+        "description": "Approving officer",
+        "origin": "SYSTEM_INJECTED"
+      }
+    ],
+    "guards": [
+      {
+        "kind": "statusTransition",
+        "from": "REQUESTED",
+        "toStatus": "APPROVED",
+        "errCode": "LOAN_NOT_REQUESTED",
+        "desc": "only REQUESTED loans can be approved"
+      }
+    ],
+    "produces": [
+      "LoanApproved"
+    ]
+  }
+events:
+  {
+    "LoanApproved": {
+      "name": "LoanApproved",
+      "description": "A loan officer approves the application.",
+      "payloads": [
+        {
+          "name": "loanId",
+          "dataType": "String (UUID)",
+          "description": "Loan identifier",
+          "origin": "PROPAGATED",
+          "lineageHint": "ApproveLoan.loanId"
+        },
+        {
+          "name": "approvedBy",
+          "dataType": "String",
+          "description": "Approving officer",
+          "origin": "PROPAGATED",
+          "lineageHint": "ApproveLoan.approvedBy"
+        },
+        {
+          "name": "approvedAt",
+          "dataType": "Instant",
+          "description": "Approval time",
+          "origin": "SYSTEM_INJECTED"
+        }
+      ],
+      "bindings": [
+        {
+          "slot": "loanId",
+          "expr": "state.loanId"
+        },
+        {
+          "slot": "approvedBy",
+          "expr": "param.approvedBy"
+        },
+        {
+          "slot": "approvedAt",
+          "expr": "literal:SYSTEM_NOW"
+        }
+      ],
+      "foldAssignments": [
+        {
+          "slot": "status",
+          "expr": "literal:APPROVED"
+        }
+      ],
+      "humanDescription": "Application approved."
+    }
+  }

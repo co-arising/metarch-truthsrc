@@ -1,0 +1,117 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: slice
+aggregate: Loan
+command: RequestLoan
+payload:
+  {
+    "name": "RequestLoan",
+    "description": "Customer submits a loan application.",
+    "parameters": [
+      {
+        "name": "applicantId",
+        "dataType": "String (UUID)",
+        "description": "Applicant identifier",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "amount",
+        "dataType": "Money",
+        "description": "Principal amount",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "termMonths",
+        "dataType": "Integer",
+        "description": "Repayment term in months",
+        "origin": "BUSINESS_INPUT"
+      }
+    ],
+    "guards": [
+      {
+        "kind": "invariantRef",
+        "ref": "IR-LOAN-AGG-001",
+        "errCode": "LOAN_AMOUNT_POSITIVE",
+        "cond": "param.amount.amount > 0",
+        "desc": "amount must be positive"
+      }
+    ],
+    "produces": [
+      "LoanRequested"
+    ]
+  }
+events:
+  {
+    "LoanRequested": {
+      "name": "LoanRequested",
+      "description": "A customer submits a loan application for review.",
+      "payloads": [
+        {
+          "name": "loanId",
+          "dataType": "String (UUID)",
+          "description": "Loan identifier",
+          "origin": "SYSTEM_GENERATED"
+        },
+        {
+          "name": "applicantId",
+          "dataType": "String (UUID)",
+          "description": "Applicant identifier",
+          "origin": "PROPAGATED",
+          "lineageHint": "RequestLoan.applicantId"
+        },
+        {
+          "name": "amount",
+          "dataType": "Money",
+          "description": "Principal amount",
+          "origin": "PROPAGATED",
+          "lineageHint": "RequestLoan.amount"
+        },
+        {
+          "name": "termMonths",
+          "dataType": "Integer",
+          "description": "Repayment term in months",
+          "origin": "PROPAGATED",
+          "lineageHint": "RequestLoan.termMonths"
+        },
+        {
+          "name": "requestedAt",
+          "dataType": "Instant",
+          "description": "Application time",
+          "origin": "SYSTEM_INJECTED"
+        }
+      ],
+      "bindings": [
+        {
+          "slot": "loanId",
+          "expr": "state.loanId"
+        },
+        {
+          "slot": "applicantId",
+          "expr": "param.applicantId"
+        },
+        {
+          "slot": "amount",
+          "expr": "param.amount"
+        },
+        {
+          "slot": "termMonths",
+          "expr": "param.termMonths"
+        },
+        {
+          "slot": "requestedAt",
+          "expr": "literal:SYSTEM_NOW"
+        }
+      ],
+      "foldAssignments": [
+        {
+          "slot": "status",
+          "expr": "literal:REQUESTED"
+        },
+        {
+          "slot": "amount",
+          "expr": "param.amount"
+        }
+      ],
+      "humanDescription": "Application received and tracked."
+    }
+  }

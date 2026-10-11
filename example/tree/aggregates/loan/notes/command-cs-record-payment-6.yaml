@@ -1,0 +1,21 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: note
+type: command
+name: RecordPayment
+origin:
+  stage: commandStorming
+  board: board1
+  seq: 6
+payload:
+  {
+    "type": "command",
+    "name": "RecordPayment",
+    "stage": "commandStorming",
+    "description": "Register an incoming repayment.",
+    "links": [
+      "event:PaymentReceived"
+    ],
+    "author": "facilitator",
+    "createdAt": "2026-10-11"
+  }

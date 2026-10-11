@@ -1,0 +1,21 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: note
+type: command
+name: RequestLoan
+origin:
+  stage: commandStorming
+  board: board1
+  seq: 3
+payload:
+  {
+    "type": "command",
+    "name": "RequestLoan",
+    "stage": "commandStorming",
+    "description": "Customer submits a loan application.",
+    "links": [
+      "event:LoanRequested"
+    ],
+    "author": "facilitator",
+    "createdAt": "2026-10-11"
+  }

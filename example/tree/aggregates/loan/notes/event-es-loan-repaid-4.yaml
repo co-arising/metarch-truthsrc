@@ -2,21 +2,21 @@
 
 kind: note
 type: event
-name: "PaymentReceived"
+name: LoanRepaid
 origin:
   stage: eventStorming
   board: board1
-  seq: 3
+  seq: 4
 payload:
   {
     "type": "event",
-    "name": "PaymentReceived",
+    "name": "LoanRepaid",
     "stage": "eventStorming",
-    "description": "A scheduled repayment payment arrives.",
+    "description": "The loan balance reaches zero; the loan is closed.",
     "info": {
       "timeline": "Repayment",
-      "sequence": 3,
-      "step": 0
+      "sequence": 4,
+      "step": 4
     },
     "links": [],
     "author": "facilitator",

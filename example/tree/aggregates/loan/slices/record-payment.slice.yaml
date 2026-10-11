@@ -1,0 +1,81 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: slice
+aggregate: Loan
+command: RecordPayment
+payload:
+  {
+    "name": "RecordPayment",
+    "description": "Register an incoming repayment (payment-gateway triggered).",
+    "parameters": [
+      {
+        "name": "loanId",
+        "dataType": "String (UUID)",
+        "description": "Loan identifier",
+        "origin": "PROPAGATED"
+      },
+      {
+        "name": "amount",
+        "dataType": "Money",
+        "description": "Paid amount",
+        "origin": "BUSINESS_INPUT"
+      }
+    ],
+    "guards": [
+      {
+        "kind": "statusTransition",
+        "from": "DISBURSED",
+        "toStatus": "REPAID",
+        "errCode": "LOAN_NOT_DISBURSED",
+        "desc": "payments only apply to DISBURSED loans"
+      }
+    ],
+    "produces": [
+      "PaymentReceived"
+    ]
+  }
+events:
+  {
+    "PaymentReceived": {
+      "name": "PaymentReceived",
+      "description": "A repayment payment arrives.",
+      "payloads": [
+        {
+          "name": "loanId",
+          "dataType": "String (UUID)",
+          "description": "Loan identifier",
+          "origin": "PROPAGATED",
+          "lineageHint": "RecordPayment.loanId"
+        },
+        {
+          "name": "amount",
+          "dataType": "Money",
+          "description": "Paid amount",
+          "origin": "PROPAGATED",
+          "lineageHint": "RecordPayment.amount"
+        },
+        {
+          "name": "receivedAt",
+          "dataType": "Instant",
+          "description": "Payment time",
+          "origin": "SYSTEM_INJECTED"
+        }
+      ],
+      "bindings": [
+        {
+          "slot": "loanId",
+          "expr": "state.loanId"
+        },
+        {
+          "slot": "amount",
+          "expr": "param.amount"
+        },
+        {
+          "slot": "receivedAt",
+          "expr": "literal:SYSTEM_NOW"
+        }
+      ],
+      "foldAssignments": [],
+      "humanDescription": "Repayment registered."
+    }
+  }

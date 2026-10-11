@@ -1,0 +1,126 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: aggregate
+name: Loan
+seq: 0
+order:
+  commands: ["RequestLoan","ApproveLoan","DisburseLoan","RecordPayment"]
+  events: ["LoanRequested","LoanApproved","LoanDisbursed","PaymentReceived","LoanRepaid"]
+payload:
+  {
+    "name": "Loan",
+    "entity": "LoanEntity",
+    "description": "A loan lifecycle: request → approve → disburse → repay.",
+    "identifier": {
+      "name": "loanId",
+      "dataType": "String (UUID)",
+      "description": "Loan identifier (system-generated UUID)",
+      "origin": "SYSTEM_GENERATED"
+    },
+    "statusEnum": [
+      "REQUESTED",
+      "APPROVED",
+      "DISBURSED",
+      "REPAID"
+    ],
+    "stateFields": [
+      {
+        "name": "status",
+        "dataType": "String",
+        "description": "REQUESTED / APPROVED / DISBURSED / REPAID",
+        "origin": "SYSTEM_INJECTED",
+        "writtenBy": [
+          "LoanRequested",
+          "LoanApproved",
+          "LoanDisbursed",
+          "LoanRepaid"
+        ],
+        "role": "State"
+      },
+      {
+        "name": "amount",
+        "dataType": "Money",
+        "description": "Principal amount",
+        "origin": "BUSINESS_INPUT",
+        "writtenBy": [
+          "LoanRequested.amount"
+        ],
+        "role": "State"
+      }
+    ],
+    "aggregateRuleRefs": [
+      {
+        "ruleId": "IR-LOAN-AGG-001",
+        "errCode": "LOAN_AMOUNT_POSITIVE",
+        "desc": "amount must be positive"
+      }
+    ],
+    "statusTransitions": {
+      "LoanRequested": "REQUESTED",
+      "LoanApproved": "APPROVED",
+      "LoanDisbursed": "DISBURSED",
+      "LoanRepaid": "REPAID"
+    },
+    "stateGates": {
+      "RequestLoan": {
+        "fromStates": [],
+        "toState": "REQUESTED",
+        "initial": true
+      },
+      "ApproveLoan": {
+        "fromStates": [
+          "REQUESTED"
+        ],
+        "toState": "APPROVED"
+      },
+      "DisburseLoan": {
+        "fromStates": [
+          "APPROVED"
+        ],
+        "toState": "DISBURSED"
+      },
+      "RecordPayment": {
+        "fromStates": [
+          "DISBURSED"
+        ],
+        "toState": "REPAID"
+      }
+    }
+  }
+extraEvents:
+  [
+    {
+      "name": "LoanRepaid",
+      "description": "The balance reached zero; the loan closes.",
+      "payloads": [
+        {
+          "name": "loanId",
+          "dataType": "String (UUID)",
+          "description": "Loan identifier",
+          "origin": "PROPAGATED"
+        },
+        {
+          "name": "repaidAt",
+          "dataType": "Instant",
+          "description": "Closing time",
+          "origin": "SYSTEM_INJECTED"
+        }
+      ],
+      "bindings": [
+        {
+          "slot": "loanId",
+          "expr": "state.loanId"
+        },
+        {
+          "slot": "repaidAt",
+          "expr": "literal:SYSTEM_NOW"
+        }
+      ],
+      "foldAssignments": [
+        {
+          "slot": "status",
+          "expr": "literal:REPAID"
+        }
+      ]
+    }
+  ]

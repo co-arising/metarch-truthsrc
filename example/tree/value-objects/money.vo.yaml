@@ -1,0 +1,24 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: value-object
+name: Money
+seq: 0
+payload:
+  {
+    "name": "Money",
+    "description": "An amount of money in a currency.",
+    "fields": [
+      {
+        "name": "amount",
+        "dataType": "Decimal",
+        "description": "Numeric amount",
+        "uiLabel": "Amount"
+      },
+      {
+        "name": "currency",
+        "dataType": "String",
+        "description": "ISO 4217 code",
+        "uiLabel": "Currency"
+      }
+    ]
+  }

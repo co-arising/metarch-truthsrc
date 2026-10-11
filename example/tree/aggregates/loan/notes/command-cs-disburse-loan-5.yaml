@@ -1,0 +1,21 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: note
+type: command
+name: DisburseLoan
+origin:
+  stage: commandStorming
+  board: board1
+  seq: 5
+payload:
+  {
+    "type": "command",
+    "name": "DisburseLoan",
+    "stage": "commandStorming",
+    "description": "Transfer funds to the borrower.",
+    "links": [
+      "event:LoanDisbursed"
+    ],
+    "author": "facilitator",
+    "createdAt": "2026-10-11"
+  }

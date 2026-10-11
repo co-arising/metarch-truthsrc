@@ -2,25 +2,24 @@
 
 kind: note
 type: event
-name: "LoanDisbursed"
+name: LoanApproved
 origin:
   stage: eventStorming
   board: board1
-  seq: 2
+  seq: 1
 payload:
   {
     "type": "event",
-    "name": "LoanDisbursed",
+    "name": "LoanApproved",
     "stage": "eventStorming",
-    "description": "Funds are transferred to the borrower account.",
+    "description": "A loan officer approves the application.",
     "info": {
-      "timeline": "Disbursement",
-      "sequence": 2,
-      "step": 0
+      "timeline": "Approval",
+      "sequence": 1,
+      "step": 1,
+      "pivotal": true
     },
-    "links": [
-      "question:can-a-disbursement-be-partial"
-    ],
+    "links": [],
     "author": "facilitator",
     "createdAt": "2026-10-11"
   }

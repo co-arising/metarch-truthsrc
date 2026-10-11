@@ -1,0 +1,22 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: story
+name: RequestLoan
+seq: 0
+payload:
+  {
+    "name": "RequestLoan",
+    "role": "Applicant",
+    "aggregate": "Loan",
+    "goal": "Submit a loan application and see it tracked to decision.",
+    "soThat": "Borrowers get credit decisions with a clear audit trail.",
+    "slices": {
+      "command": "RequestLoan",
+      "events": [
+        "LoanRequested"
+      ],
+      "readModels": [
+        "LoanOverviewDecisionView"
+      ]
+    }
+  }

@@ -1,0 +1,32 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: use-cases
+payload:
+  {
+    "useCases": [
+      {
+        "useCase": "RequestLoan",
+        "sources": "golden example — full vertical slice",
+        "preconditions": [
+          {
+            "aggregate": "Loan",
+            "state": "applicant identified",
+            "invariantRef": "IR-LOAN-AGG-001",
+            "errCode": "LOAN_AMOUNT_POSITIVE"
+          }
+        ],
+        "steps": [
+          {
+            "id": "submit",
+            "story": "RequestLoan",
+            "command": "RequestLoan",
+            "aggregate": "Loan",
+            "emissions": [
+              "LoanRequested"
+            ]
+          }
+        ],
+        "extensions": []
+      }
+    ]
+  }
