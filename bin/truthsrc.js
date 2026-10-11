@@ -6,6 +6,7 @@ import { compileTree } from '../lib/compile.mjs';
 import { decomposeCanonical } from '../lib/decompose.mjs';
 import { validateTree } from '../lib/validate.mjs';
 import { roundtrip } from '../lib/roundtrip.mjs';
+import { apply } from '../src/core/generate.mjs';
 
 const arg = (name, dflt) => {
   const i = process.argv.indexOf(name);
@@ -22,6 +23,9 @@ const USAGE = `truthsrc v0.3 — git-native Event Storming truth source
   truthsrc validate  [--tree <dir>]                        V* structure + ES/CS/AG/RF/SM stage rules
   truthsrc roundtrip [--tree <dir>]                        compile∘decompose∘compile identity gate
   truthsrc init      <dir>                                 scaffold a minimal workshop tree
+  truthsrc generate  --in <canonical> --generator <dir> --out <dir> [--option k=v]
+                                                           run a generator (ledger + anchors emitted)
+  truthsrc init-generator <dir>                            scaffold a custom generator
 `;
 
 const die = (msg) => { console.error(msg); process.exit(2); };
@@ -62,6 +66,36 @@ switch (cmd) {
     copyFileSync(new URL('../example/tree/inbox/eventStorming/event-es-loanrequested-0.yaml', import.meta.url),
       join(root, 'inbox', 'eventStorming', 'event-es-loanrequested-0.yaml'));
     console.log(`✅ scaffolded ${root} — edit atoms, then: truthsrc validate && truthsrc roundtrip`);
+    break;
+  }
+  case 'generate': {
+    // generate --in <canonical.json> --generator <dir> --out <target> [--option k=v ...]
+    const gen = arg('--generator');
+    const c = arg('--in');
+    const o = arg('--out');
+    if (!gen || !c || !o) die('usage: truthsrc generate --in <canonical.json> --generator <dir> --out <dir>');
+    const options = {};
+    for (let i = 2; i < process.argv.length; i++) {
+      if (process.argv[i] === '--option') {
+        const [k, v] = String(process.argv[i + 1] ?? '').split('=');
+        if (k) options[k] = v ?? true;
+      }
+    }
+    const r = await apply({ canonicalFile: c, generatorDir: gen, outDir: o, options });
+    console.log(`✅ generate [${r.name}] — ${r.total} planned · ${r.written} written · ${r.identical} identical`);
+    console.log(`   ledger → ${r.ledger}\n   anchors → ${r.anchors}`);
+    break;
+  }
+  case 'init-generator': {
+    const dir = process.argv[3];
+    if (!dir) die('usage: truthsrc init-generator <dir>');
+    const root = resolve(dir);
+    mkdirSync(root, { recursive: true });
+    for (const f of ['generator.json', 'generate.mjs'])
+      copyFileSync(new URL(`../generators/_template/${f}`, import.meta.url), join(root, f));
+    writeFileSync(join(root, 'generator.json'),
+      readFileSync(join(root, 'generator.json'), 'utf8').replace('"name": "_template"', `"name": "${root.split('/').pop()}"`));
+    console.log(`✅ generator scaffolded at ${root} — edit generate.mjs, then: truthsrc generate --generator ${root} --in <canonical> --out <dir>`);
     break;
   }
   default:
