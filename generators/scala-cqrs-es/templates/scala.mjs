@@ -69,3 +69,35 @@ object ${name}Aggregate {
 }
 `;
 }
+
+export function renderEntity(m) {
+  const { base, name, idType } = m;
+  const state = `  case class ${name}State(${m.fields.map((f) => `${f.name}: ${f.type}${f.defaultValue ? ` = ${f.defaultValue}` : ''}`).join(', ')})`;
+  const empty = `  def empty(${m.identifier}: ${idType}): ${name}State = ${name}State(${m.identifier}, ${m.fields.filter((f) => f.defaultValue).map((f) => f.defaultValue).join(', ')})`;
+  const eventCases = m.events
+    .map((e) => `  case class ${e.name}(${e.params.map((p) => `${p.name}: ${p.type}`).join(', ')}) extends ${name}Event`)
+    .join('\n');
+  const imports = [
+    ...m.voImports.map((i) => `import ${i}`),
+    'import net.imadz.framework.common.CborSerializable',
+    `import net.imadz.framework.common.CommonTypes.Id`,
+    ...m.collectionImports.map((i) => `import ${i}`),
+    ...m.defaults.map((i) => `import ${i}`),
+  ].join('\n');
+  return `package ${base}domain.entities
+
+${imports}
+
+object ${name}Entity {
+${state}
+
+${empty}
+
+  sealed trait ${name}Event extends CborSerializable
+
+${eventCases}
+
+  type ${name}EventHandler = (${name}State, ${name}Event) => ${name}State
+}
+`;
+}

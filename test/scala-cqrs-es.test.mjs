@@ -10,7 +10,7 @@ const GOLD = join(import.meta.dirname, '..', 'golden', 'scala-cqrs-es');
 
 const { manifest, entries } = await plan({ canonicalFile: join(GOLD, 'credit-balance.canonical.json'), generatorDir: GEN });
 equal(manifest.name, 'scala-cqrs-es');
-equal(entries.length, 2);
+equal(entries.length, 3);
 for (const e of entries) {
   const want = readFileSync(join(GOLD, 'expected', e.path), 'utf8');
   equal(e.content, want, `byte identity: ${e.path}`);

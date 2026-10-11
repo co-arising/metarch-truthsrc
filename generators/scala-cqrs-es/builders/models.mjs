@@ -35,3 +35,23 @@ export function rootModel(a) {
     tagPrefix: kebab(a.name),
   };
 }
+
+export function entityModel(a) {
+  const base = `${a.pkg ?? 'net.imadz'}.${a.ctxPackage ?? ''}.`;
+  const name = a.name;
+  const voImports = [];                                  // first-appearance VO type imports (state fields + payloads)
+  const see = (t) => { if (t && !voImports.includes(t)) voImports.push(t); };
+  const fields = (a.stateFields ?? []).map((f) => {
+    see(f.typeImport);
+    return { name: f.name, type: scalaType(f.dataType), defaultValue: f.defaultValue };
+  });
+  const events = (a.events ?? []).map((e) => {
+    for (const p of e.payloads ?? []) if (p.typeImport) see(p.typeImport);
+    return { name: e.name, params: (e.payloads ?? []).map((p) => ({ name: p.name, type: scalaType(p.dataType) })) };
+  });
+  const idType = scalaType(a.identifierType ?? 'string (uuid)');
+  const collectionImports = fields.some((f) => f.type.startsWith('Map[')) ? ['scala.collection.immutable.Map'] : [];
+  const defaults = fields.some((f) => f.defaultValue) ? [...collectionImports] : [];
+  const identifier = (a.stateFields ?? []).find((f) => f.name === a.identifier)?.name ?? a.identifier;
+  return { base, name, voImports, fields, events, idType, collectionImports, defaults, identifier };
+}

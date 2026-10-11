@@ -11,23 +11,309 @@
       "identifier": "userId",
       "aggregateReply": {
         "name": "CreditBalanceConfirmation",
-        "fields": [{ "name": "error", "type": "Option[iMadzError]" }, { "name": "balances", "type": "List[Money]" }]
+        "fields": [
+          {
+            "name": "error",
+            "type": "Option[iMadzError]"
+          },
+          {
+            "name": "balances",
+            "type": "List[Money]"
+          }
+        ]
       },
-      "persistence": { "typeKey": "CreditBalance", "tagCount": 5 },
+      "persistence": {
+        "typeKey": "CreditBalance",
+        "tagCount": 5
+      },
       "commands": [
-        { "name": "AddInitial", "parameters": [{ "name": "initial", "dataType": "Money", "typeImport": "net.imadz..domain.values.Money" }], "reply": "aggregate" },
-        { "name": "Deposit", "parameters": [{ "name": "change", "dataType": "Money", "typeImport": "net.imadz.banking.domain.values.Money" }], "reply": "aggregate" },
-        { "name": "Withdraw", "parameters": [{ "name": "change", "dataType": "Money", "typeImport": "net.imadz.banking.domain.values.Money" }], "reply": "aggregate" },
-        { "name": "GetBalance", "parameters": [], "reply": "aggregate" },
-        { "name": "ReserveFunds", "parameters": [{ "name": "transferId", "dataType": "string (uuid)" }, { "name": "amount", "dataType": "Money", "typeImport": "net.imadz.banking.domain.values.Money" }], "reply": { "name": "FundsReservationConfirmation", "fields": [{ "name": "transferId", "type": "Id" }, { "name": "error", "type": "Option[iMadzError]" }] } },
-        { "name": "DeductFunds", "parameters": [{ "name": "transferId", "dataType": "string (uuid)" }], "reply": { "name": "FundsDeductionConfirmation", "fields": [{ "name": "transferId", "type": "Id" }, { "name": "error", "type": "Option[iMadzError]" }] } },
-        { "name": "ReleaseReservedFunds", "parameters": [{ "name": "transferId", "dataType": "string (uuid)" }], "reply": { "name": "FundsReleaseConfirmation", "fields": [{ "name": "transferId", "type": "Id" }, { "name": "error", "type": "Option[iMadzError]" }] } },
-        { "name": "RecordIncomingCredits", "parameters": [{ "name": "transferId", "dataType": "string (uuid)" }, { "name": "amount", "dataType": "Money", "typeImport": "net.imadz.banking.domain.values.Money" }], "reply": { "name": "RecordIncomingCreditsConfirmation", "fields": [{ "name": "transferId", "type": "Id" }, { "name": "error", "type": "Option[iMadzError]" }] } },
-        { "name": "CommitIncomingCredits", "parameters": [{ "name": "transferId", "dataType": "string (uuid)" }], "reply": { "name": "CommitIncomingCreditsConfirmation", "fields": [{ "name": "transferId", "type": "Id" }, { "name": "error", "type": "Option[iMadzError]" }] } },
-        { "name": "CancelIncomingCredit", "parameters": [{ "name": "transferId", "dataType": "string (uuid)" }], "reply": { "name": "CancelIncomingCreditConfirmation", "fields": [{ "name": "transferId", "type": "Id" }, { "name": "error", "type": "Option[iMadzError]" }] } }
+        {
+          "name": "AddInitial",
+          "parameters": [
+            {
+              "name": "initial",
+              "dataType": "Money",
+              "typeImport": "net.imadz..domain.values.Money"
+            }
+          ],
+          "reply": "aggregate"
+        },
+        {
+          "name": "Deposit",
+          "parameters": [
+            {
+              "name": "change",
+              "dataType": "Money",
+              "typeImport": "net.imadz.banking.domain.values.Money"
+            }
+          ],
+          "reply": "aggregate"
+        },
+        {
+          "name": "Withdraw",
+          "parameters": [
+            {
+              "name": "change",
+              "dataType": "Money",
+              "typeImport": "net.imadz.banking.domain.values.Money"
+            }
+          ],
+          "reply": "aggregate"
+        },
+        {
+          "name": "GetBalance",
+          "parameters": [],
+          "reply": "aggregate"
+        },
+        {
+          "name": "ReserveFunds",
+          "parameters": [
+            {
+              "name": "transferId",
+              "dataType": "string (uuid)"
+            },
+            {
+              "name": "amount",
+              "dataType": "Money",
+              "typeImport": "net.imadz.banking.domain.values.Money"
+            }
+          ],
+          "reply": {
+            "name": "FundsReservationConfirmation",
+            "fields": [
+              {
+                "name": "transferId",
+                "type": "Id"
+              },
+              {
+                "name": "error",
+                "type": "Option[iMadzError]"
+              }
+            ]
+          }
+        },
+        {
+          "name": "DeductFunds",
+          "parameters": [
+            {
+              "name": "transferId",
+              "dataType": "string (uuid)"
+            }
+          ],
+          "reply": {
+            "name": "FundsDeductionConfirmation",
+            "fields": [
+              {
+                "name": "transferId",
+                "type": "Id"
+              },
+              {
+                "name": "error",
+                "type": "Option[iMadzError]"
+              }
+            ]
+          }
+        },
+        {
+          "name": "ReleaseReservedFunds",
+          "parameters": [
+            {
+              "name": "transferId",
+              "dataType": "string (uuid)"
+            }
+          ],
+          "reply": {
+            "name": "FundsReleaseConfirmation",
+            "fields": [
+              {
+                "name": "transferId",
+                "type": "Id"
+              },
+              {
+                "name": "error",
+                "type": "Option[iMadzError]"
+              }
+            ]
+          }
+        },
+        {
+          "name": "RecordIncomingCredits",
+          "parameters": [
+            {
+              "name": "transferId",
+              "dataType": "string (uuid)"
+            },
+            {
+              "name": "amount",
+              "dataType": "Money",
+              "typeImport": "net.imadz.banking.domain.values.Money"
+            }
+          ],
+          "reply": {
+            "name": "RecordIncomingCreditsConfirmation",
+            "fields": [
+              {
+                "name": "transferId",
+                "type": "Id"
+              },
+              {
+                "name": "error",
+                "type": "Option[iMadzError]"
+              }
+            ]
+          }
+        },
+        {
+          "name": "CommitIncomingCredits",
+          "parameters": [
+            {
+              "name": "transferId",
+              "dataType": "string (uuid)"
+            }
+          ],
+          "reply": {
+            "name": "CommitIncomingCreditsConfirmation",
+            "fields": [
+              {
+                "name": "transferId",
+                "type": "Id"
+              },
+              {
+                "name": "error",
+                "type": "Option[iMadzError]"
+              }
+            ]
+          }
+        },
+        {
+          "name": "CancelIncomingCredit",
+          "parameters": [
+            {
+              "name": "transferId",
+              "dataType": "string (uuid)"
+            }
+          ],
+          "reply": {
+            "name": "CancelIncomingCreditConfirmation",
+            "fields": [
+              {
+                "name": "transferId",
+                "type": "Id"
+              },
+              {
+                "name": "error",
+                "type": "Option[iMadzError]"
+              }
+            ]
+          }
+        }
       ],
       "events": [
-        { "name": "Credited", "payloads": [] }
+        {
+          "name": "BalanceChanged",
+          "payloads": [
+            {
+              "name": "update",
+              "dataType": "Money"
+            },
+            {
+              "name": "timestamp",
+              "dataType": "Long"
+            }
+          ]
+        },
+        {
+          "name": "FundsReserved",
+          "payloads": [
+            {
+              "name": "transferId",
+              "dataType": "string (uuid)"
+            },
+            {
+              "name": "amount",
+              "dataType": "Money"
+            }
+          ]
+        },
+        {
+          "name": "FundsDeducted",
+          "payloads": [
+            {
+              "name": "transferId",
+              "dataType": "string (uuid)"
+            },
+            {
+              "name": "amount",
+              "dataType": "Money"
+            }
+          ]
+        },
+        {
+          "name": "ReservationReleased",
+          "payloads": [
+            {
+              "name": "transferId",
+              "dataType": "string (uuid)"
+            },
+            {
+              "name": "amount",
+              "dataType": "Money"
+            }
+          ]
+        },
+        {
+          "name": "IncomingCreditsRecorded",
+          "payloads": [
+            {
+              "name": "transferId",
+              "dataType": "string (uuid)"
+            },
+            {
+              "name": "amount",
+              "dataType": "Money"
+            }
+          ]
+        },
+        {
+          "name": "IncomingCreditsCommited",
+          "payloads": [
+            {
+              "name": "transferId",
+              "dataType": "string (uuid)"
+            }
+          ]
+        },
+        {
+          "name": "IncomingCreditsCanceled",
+          "payloads": [
+            {
+              "name": "transferId",
+              "dataType": "string (uuid)"
+            }
+          ]
+        }
+      ],
+      "stateFields": [
+        {
+          "name": "userId",
+          "dataType": "string (uuid)"
+        },
+        {
+          "name": "accountBalance",
+          "dataType": "Map[String, Money]",
+          "typeImport": "net.imadz..domain.values.Money",
+          "defaultValue": "Map.empty"
+        },
+        {
+          "name": "reservedAmount",
+          "dataType": "Map[Id, Money]",
+          "defaultValue": "Map.empty"
+        },
+        {
+          "name": "incomingCredits",
+          "dataType": "Map[Id, Money]",
+          "defaultValue": "Map.empty"
+        }
       ]
     }
   ],
