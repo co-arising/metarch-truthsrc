@@ -73,13 +73,20 @@ switch (cmd) {
     const gen = arg('--generator');
     const c = arg('--in');
     const o = arg('--out');
-    if (!gen || !c || !o) die('usage: truthsrc generate --in <canonical.json> --generator <dir> --out <dir>');
+    if (!gen || !c || (!o && !process.argv.includes('--plan'))) die('usage: truthsrc generate --in <canonical.json> --generator <dir> --out <dir> [--plan]');
     const options = {};
     for (let i = 2; i < process.argv.length; i++) {
       if (process.argv[i] === '--option') {
         const [k, v] = String(process.argv[i + 1] ?? '').split('=');
         if (k) options[k] = v ?? true;
       }
+    }
+    if (process.argv.includes('--plan')) {
+      const { plan } = await import('../src/core/generate.mjs');
+      const { manifest, entries } = await plan({ canonicalFile: c, generatorDir: gen, options });
+      for (const e of entries) console.log(`  ${e.kind.padEnd(16)} ${e.path}`);
+      console.log(`✅ plan [${manifest.name}] — ${entries.length} files (nothing written)`);
+      break;
     }
     const r = await apply({ canonicalFile: c, generatorDir: gen, outDir: o, options });
     console.log(`✅ generate [${r.name}] — ${r.total} planned · ${r.written} written · ${r.identical} identical`);
