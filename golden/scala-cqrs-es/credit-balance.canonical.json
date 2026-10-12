@@ -1,12 +1,14 @@
 {
   "schemaVersion": "truthsrc/v1",
   "workshop": "credit-balance",
+  "knowledgeRelease": "1.0.0",
+  "framework": { "base": "net.imadz.common" },
   "sessions": [],
   "aggregates": [
     {
       "name": "CreditBalance",
       "pkg": "net.imadz",
-      "ctxPackage": "",
+      "ctxPackage": "banking",
       "entity": "CreditBalanceEntity",
       "identifier": "userId",
       "aggregateReply": {
@@ -33,7 +35,7 @@
             {
               "name": "initial",
               "dataType": "Money",
-              "typeImport": "net.imadz..domain.values.Money"
+              "typeImport": "net.imadz.banking.domain.values.Money"
             }
           ],
           "reply": "aggregate"
@@ -63,7 +65,8 @@
         {
           "name": "GetBalance",
           "parameters": [],
-          "reply": "aggregate"
+          "reply": "aggregate",
+          "readOnly": true
         },
         {
           "name": "ReserveFunds",
@@ -206,6 +209,92 @@
               }
             ]
           }
+        }
+      ],
+      "behaviors": [
+        {
+          "name": "DirectBehaviors",
+          "flows": [
+            {
+              "command": "AddInitial",
+              "rule": "AddInitialOnlyOnceRule",
+              "successReply": "CreditBalanceConfirmation"
+            },
+            {
+              "command": "Deposit",
+              "rule": "DepositRule",
+              "successReply": "CreditBalanceConfirmation"
+            },
+            {
+              "command": "Withdraw",
+              "rule": "WithdrawRule",
+              "successReply": "CreditBalanceConfirmation"
+            }
+          ]
+        },
+        {
+          "name": "ReserveBehaviors",
+          "flows": [
+            {
+              "command": "ReserveFunds",
+              "rule": "ReserveFundsRule",
+              "successReply": "FundsReservationConfirmation"
+            },
+            {
+              "command": "DeductFunds",
+              "rule": "DeductFundsRule",
+              "successReply": "FundsDeductionConfirmation"
+            },
+            {
+              "command": "ReleaseReservedFunds",
+              "rule": "ReleaseReservedFundsRule",
+              "successReply": "FundsReleaseConfirmation"
+            }
+          ]
+        },
+        {
+          "name": "IncomingCreditBehaviors",
+          "flows": [
+            {
+              "command": "RecordIncomingCredits",
+              "rule": "RecordIncomingCreditsRule",
+              "successReply": "RecordIncomingCreditsConfirmation"
+            },
+            {
+              "command": "CommitIncomingCredits",
+              "rule": "CommitIncomingCreditsRule",
+              "successReply": "CommitIncomingCreditsConfirmation"
+            },
+            {
+              "command": "CancelIncomingCredit",
+              "rule": "CancelIncomingCreditRule",
+              "successReply": "CancelIncomingCreditConfirmation"
+            }
+          ]
+        }
+      ],
+      "factoryMethods": [
+        {
+          "name": "createCreditBalanceWithoutBalance",
+          "params": [
+            {
+              "name": "userId",
+              "dataType": "string (uuid)"
+            }
+          ]
+        },
+        {
+          "name": "createCreditBalanceWithDefaultBalance",
+          "params": [
+            {
+              "name": "userId",
+              "dataType": "string (uuid)"
+            },
+            {
+              "name": "initial",
+              "dataType": "Money"
+            }
+          ]
         }
       ],
       "events": [
@@ -355,17 +444,19 @@
         {
           "name": "accountBalance",
           "dataType": "Map[String, Money]",
-          "typeImport": "net.imadz..domain.values.Money",
+          "typeImport": "net.imadz.banking.domain.values.Money",
           "defaultValue": "Map.empty"
         },
         {
           "name": "reservedAmount",
           "dataType": "Map[Id, Money]",
+          "typeImport": "net.imadz.banking.domain.values.Money",
           "defaultValue": "Map.empty"
         },
         {
           "name": "incomingCredits",
           "dataType": "Map[Id, Money]",
+          "typeImport": "net.imadz.banking.domain.values.Money",
           "defaultValue": "Map.empty"
         }
       ],
@@ -386,7 +477,7 @@
             {
               "name": "updateMoney",
               "type": "Money",
-              "typeImport": "net.imadz..domain.values.Money"
+              "typeImport": "net.imadz.banking.domain.values.Money"
             }
           ],
           "returnType": "Map[String, Money]"
