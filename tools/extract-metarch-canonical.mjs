@@ -57,6 +57,7 @@ if (!agg) {
 }
 const voNames = new Set((ft.valueObjects ?? []).map((v) => v.name));
 const aggNote = (exp.notes ?? []).find((n) => n.type === 'aggregate' && n.name === aggName);
+const cmdNoteId = (name) => (exp.notes ?? []).find((n) => n.type === 'command' && n.name === name)?.noteId;
 const voFqn = (vo) => `${pkg}.${ctx}.domain.values.${vo}`;
 
 // --- dataType normalization (fieldTree raw → canonical) -------------------------------------
@@ -131,15 +132,23 @@ const idStateField = { name: idName, dataType: idType };
 if (agg.identifier.noteId) idStateField.noteId = agg.identifier.noteId;
 const stateFields = [idStateField, ...(agg.stateFields ?? []).map(stateField)];
 
-// write commands sorted alphabetically; then a synthesized Get<Name>State query command
+// write commands sorted alphabetically; then a synthesized Get<Name>State query command.
+// each write command carries its concept-note noteId (the per-case @knowledge anchor the
+// rules face emits in Behaviors); the synthesized query command is a technical synthetic
+// with no note (live Behaviors golden shows GetXState carries no @knowledge anchor).
 const writeCommands = (agg.commands ?? [])
   .slice()
   .sort((a, b) => a.name.localeCompare(b.name))
-  .map((c) => ({
-    name: c.name,
-    parameters: (c.parameters ?? []).map(commandParam),
-    reply: { name: `${c.name}Reply`, fields: [{ name: 'error', type: 'Option[iMadzError]' }] },
-  }));
+  .map((c) => {
+    const o = {
+      name: c.name,
+      parameters: (c.parameters ?? []).map(commandParam),
+      reply: { name: `${c.name}Reply`, fields: [{ name: 'error', type: 'Option[iMadzError]' }] },
+    };
+    const nid = cmdNoteId(c.name);
+    if (nid) o.noteId = nid;
+    return o;
+  });
 const queryCommand = {
   name: `Get${aggName}State`,
   readOnly: true,

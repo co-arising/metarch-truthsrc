@@ -242,8 +242,9 @@ skeleton breadth, not policy wiring.
 reproduces the production `rules_domain_gen` pass, which *overwrites* the aggregate's
 behaviors glue (and adds the domain rules) after `CodegenMain` has written the skeleton —
 mirroring the real two-pass pipeline (skeleton, then rules win on the overlapping paths).
-inc6 ports its first file, `CommandHelpers` (byte-identical to the live `di-poc` output,
-verified fresh by re-running `rules_domain_gen --agg=ModelCatalog` into a temp copy).
+inc6 ported `CommandHelpers` and inc7 added `Behaviors` (both byte-identical to the live
+`di-poc` output, verified fresh by re-running `CODEGEN_MULTI=1 rules_domain_gen
+--agg=ModelCatalog` into a temp copy).
 
 The load-bearing difference from the skeleton generators: this face is **not** a structural
 projection. A command's `toParam` field **order** is a union discovered over
@@ -269,5 +270,25 @@ imported (both `Get<Name>State` and its `Reply`) but gets no helper object.
 inc6 ports loops 1+2 only; the policy-binding, event-same-name and command→event lineage
 augmentation loops are not yet needed (the ModelCatalog corpus does not exercise them —
 verified: loops 1+2 reproduce all 9 helpers byte-for-byte) and land with the aggregates that
-require them. Behaviors (`runReplyingPolicy` wiring + port injection), `RuleParams`, `Rules`
-(the `exprToScala` engine) and `Policies` follow in later increments.
+require them. `RuleParams`, `Rules` (the `exprToScala` engine) and `Policies` follow in
+later increments.
+
+**Behaviors (inc7)** — the command-flow wiring, one match case per command in declared
+order. Each write command renders
+`runReplyingPolicy(<rule>, <Cmd>Helper)(state, cmd)[.withPost(...)].replyWith(cmd.replyTo)`.
+Three decisions are semantic, all driven by augment-attached slots:
+
+- **Port injection is per-command**: the generator deep-walks the command's `behaviorModel`
+  (`emitWhen` conds for `expr`-keyed strings, emission bindings for `expr:`-prefixed values)
+  looking for `<member>.` references into the ext-port registry (`canonical.ports`, from
+  `functions.yaml`'s `callExpr` PORT_RX + explicit `portTrait`). A referencing command gets
+  the class form `new <Agg>Rules.<Cmd>Rule(<members>)` with an `apply(<member>: <Trait>)`
+  apply overload (require-guarded closure capture); the rest wire the bare Rule object.
+  ModelCatalog: exactly one — `ApplyKnowledgePatchRule(adjudicator)`.
+- **`.withPost(<Agg>Rules.checkEventPostconditions)`** renders only when the aggregate has
+  `EVENT_POSTCONDITION` rules over its own events (`emitsEventPostconditionCheck`).
+- **`@knowledge <noteId>@<hash16>` per write case** — the command's concept noteId (now
+  extracted per command into the canonical) + the elementHashes sidecar entry (the same
+  `elementHashes` option contract as the skeleton generator). The `Get<X>State` query case
+  is the mechanical `Effect.reply(cmd.replyTo)(<X>Reply(state))` body (S1 ruling) and
+  carries no anchor.
