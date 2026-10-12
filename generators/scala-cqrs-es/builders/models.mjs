@@ -80,3 +80,19 @@ export function eventHandlerModel(a) {
     .map((e) => ({ name: e.name, folds: e.foldAssignments }));
   return { base, name, javaImports, valueImports, events, helpers: a.stateHelpers ?? [] };
 }
+
+export function repositoryModel(a) {
+  const base = `${a.pkg ?? 'net.imadz'}.${a.ctxPackage ?? ''}.`;
+  const name = a.name;
+  return {
+    base, name,
+    implName: `${name}RepositoryImpl`,
+    entityRefMethod: `  def entityRef(id: String): EntityRef[${name}AggregateCommandFamily]
+  // Logic: sharding 实体引用（聚合隐式契约——对齐 gen_api_layer entityRef，2026-08-28 终局原则）`,
+    finders: (a.repository?.finders ?? []).map((f) => ({
+      name: f.name,
+      param: `${f.param.name}: ${scalaType(f.param.dataType)}`,
+      logic: f.logic ?? '通过 Sharding 获取聚合根引用',
+    })),
+  };
+}

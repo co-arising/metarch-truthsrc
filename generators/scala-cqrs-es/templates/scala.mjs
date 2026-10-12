@@ -143,3 +143,37 @@ ${helpers}
 }
 `;
 }
+
+export function renderRepository(m) {
+  const { base, name } = m;
+  return `package ${base}application.aggregates.repository
+
+import akka.cluster.sharding.typed.scaladsl.EntityRef
+import akka.cluster.sharding.typed.scaladsl.EntityRef
+import com.google.inject.ImplementedBy
+import com.google.inject.ImplementedBy
+import javax.inject.Inject
+import javax.inject._
+import net.imadz..application.aggregates.${name}Aggregate
+import net.imadz..application.aggregates.${name}Aggregate._
+import net.imadz..application.aggregates.${name}AggregateProtocol.${name}AggregateCommandFamily
+import net.imadz..application.aggregates.${name}Command
+import net.imadz..infrastructure.repositories.aggregate.${m.implName}
+import net.imadz.framework.common.CommonTypes.Id
+
+/**
+ * ${name}Repository: Application Layer Repository Interface for ${name}Aggregate
+ * The abstraction for interacting with the Aggregate via sharding and persistence.
+ */
+@ImplementedBy(classOf[${m.implName}])
+trait ${name}Repository {
+
+${m.entityRefMethod}
+
+${m.finders.map((f) => `  def ${f.name}(${f.param}): EntityRef[${name}Command]
+  // Logic: ${f.logic}`).join('\n\n')}
+
+}
+
+`;
+}

@@ -391,7 +391,19 @@
           ],
           "returnType": "Map[String, Money]"
         }
-      ]
+      ],
+      "repository": {
+        "finders": [
+          {
+            "name": "findCreditBalanceByUserId",
+            "param": {
+              "name": "userId",
+              "dataType": "string (uuid)"
+            },
+            "logic": "通过 Sharding 获取聚合根引用"
+          }
+        ]
+      }
     }
   ],
   "valueObjects": [],
