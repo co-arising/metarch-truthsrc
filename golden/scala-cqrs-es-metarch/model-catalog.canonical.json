@@ -69,6 +69,83 @@
                 "type": "Option[iMadzError]"
               }
             ]
+          },
+          "preconditionRules": [
+            {
+              "expression": {
+                "notNull": {
+                  "var": "ApplyKnowledgePatch.concepts"
+                }
+              },
+              "humanDescription": "ApplyKnowledgePatch.concepts 必须非空"
+            },
+            {
+              "expression": {
+                "notNull": {
+                  "var": "ApplyKnowledgePatch.triggeredBy"
+                }
+              },
+              "humanDescription": "ApplyKnowledgePatch.triggeredBy 不能为空"
+            },
+            {
+              "expression": {
+                "refExists": {
+                  "var": "ApplyKnowledgePatch.sessionId",
+                  "target": "Session"
+                }
+              },
+              "humanDescription": "ApplyKnowledgePatch.sessionId 引用必须存在（→Session）"
+            }
+          ],
+          "behaviorModel": {
+            "emissions": [
+              {
+                "event": "KnowledgePatched",
+                "bindings": {
+                  "timestamp": "system:now",
+                  "triggeredBy": "param.triggeredBy",
+                  "catalogId": "param.catalogId",
+                  "tenantId": "state.tenantId",
+                  "patchSet": "expr:CatalogPatchSet(p.sessionId.toString, p.concepts, Instant.now())",
+                  "patchId": "param.patchId",
+                  "patchHash": "param.patchHash"
+                }
+              }
+            ],
+            "emitWhen": [
+              {
+                "cond": {
+                  "or": [
+                    {
+                      "notEqual": [
+                        {
+                          "var": "ApplyKnowledgePatch.parentPatchId"
+                        },
+                        {
+                          "var": "ModelCatalog.headPatchId"
+                        }
+                      ]
+                    },
+                    {
+                      "expr": "adjudicator.hasConflicts(p.concepts, state.conceptIndex)"
+                    }
+                  ]
+                },
+                "events": [
+                  {
+                    "event": "CatalogConflictDetected",
+                    "bindings": {
+                      "timestamp": "system:now",
+                      "patchId": "state.patchId",
+                      "triggeredBy": "param.triggeredBy",
+                      "catalogId": "param.catalogId",
+                      "tenantId": "state.tenantId",
+                      "conflictSet": "expr:CatalogConflictSet(Instant.now(), adjudicator.conflicts(p.concepts, state.conceptIndex))"
+                    }
+                  }
+                ]
+              }
+            ]
           }
         },
         {
@@ -105,6 +182,32 @@
               {
                 "name": "error",
                 "type": "Option[iMadzError]"
+              }
+            ]
+          },
+          "preconditionRules": [
+            {
+              "expression": {
+                "notNull": {
+                  "var": "AssembleMetadata.triggeredBy"
+                }
+              },
+              "humanDescription": "AssembleMetadata.triggeredBy 不能为空"
+            }
+          ],
+          "behaviorModel": {
+            "emissions": [
+              {
+                "event": "MetadataAssembled",
+                "bindings": {
+                  "timestamp": "system:now",
+                  "projectId": "param.projectId",
+                  "version": "param.version",
+                  "triggeredBy": "param.triggeredBy",
+                  "catalogId": "state.catalogId",
+                  "manifest": "param.manifest",
+                  "tenantId": "param.tenantId"
+                }
               }
             ]
           }
@@ -145,6 +248,50 @@
                 "type": "Option[iMadzError]"
               }
             ]
+          },
+          "preconditionRules": [
+            {
+              "expression": {
+                "pattern": {
+                  "var": "CreateCatalogVersion.version",
+                  "regex": "^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+                }
+              },
+              "humanDescription": "`version` 必须匹配正则 `^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$`"
+            },
+            {
+              "expression": {
+                "notNull": {
+                  "var": "CreateCatalogVersion.triggeredBy"
+                }
+              },
+              "humanDescription": "CreateCatalogVersion.triggeredBy 不能为空"
+            },
+            {
+              "expression": {
+                "refExists": {
+                  "var": "CreateCatalogVersion.projectId",
+                  "target": "Project"
+                }
+              },
+              "humanDescription": "CreateCatalogVersion.projectId 引用必须存在（→Project）"
+            }
+          ],
+          "behaviorModel": {
+            "emissions": [
+              {
+                "event": "CatalogVersionCreated",
+                "bindings": {
+                  "timestamp": "system:now",
+                  "projectId": "param.projectId",
+                  "version": "param.version",
+                  "triggeredBy": "param.triggeredBy",
+                  "catalogId": "state.catalogId",
+                  "baseVersion": "param.baseVersion",
+                  "tenantId": "param.tenantId"
+                }
+              }
+            ]
           }
         },
         {
@@ -166,6 +313,43 @@
               {
                 "name": "error",
                 "type": "Option[iMadzError]"
+              }
+            ]
+          },
+          "preconditionRules": [
+            {
+              "expression": {
+                "notIn": [
+                  {
+                    "var": "aggregate.status"
+                  },
+                  [
+                    "CONFLICT_DETECTED"
+                  ]
+                ]
+              },
+              "humanDescription": "执行 DetectCatalogConflicts 前，聚合状态不能为 CONFLICT_DETECTED"
+            },
+            {
+              "expression": {
+                "notNull": {
+                  "var": "DetectCatalogConflicts.triggeredBy"
+                }
+              },
+              "humanDescription": "DetectCatalogConflicts.triggeredBy 不能为空"
+            }
+          ],
+          "behaviorModel": {
+            "emissions": [
+              {
+                "event": "CatalogConflictDetected",
+                "bindings": {
+                  "timestamp": "system:now",
+                  "triggeredBy": "param.triggeredBy",
+                  "catalogId": "param.catalogId",
+                  "tenantId": "state.tenantId",
+                  "conflictSet": "expr:CatalogConflictSet(Instant.now(), Nil)"
+                }
               }
             ]
           }
@@ -196,6 +380,30 @@
                 "type": "Option[iMadzError]"
               }
             ]
+          },
+          "preconditionRules": [
+            {
+              "expression": {
+                "notNull": {
+                  "var": "ExportMetadata.triggeredBy"
+                }
+              },
+              "humanDescription": "ExportMetadata.triggeredBy 不能为空"
+            }
+          ],
+          "behaviorModel": {
+            "emissions": [
+              {
+                "event": "MetadataExported",
+                "bindings": {
+                  "timestamp": "system:now",
+                  "triggeredBy": "param.triggeredBy",
+                  "catalogId": "param.catalogId",
+                  "manifest": "param.manifest",
+                  "tenantId": "state.tenantId"
+                }
+              }
+            ]
           }
         },
         {
@@ -224,6 +432,44 @@
                 "type": "Option[iMadzError]"
               }
             ]
+          },
+          "preconditionRules": [
+            {
+              "expression": {
+                "in": [
+                  {
+                    "var": "aggregate.status"
+                  },
+                  [
+                    "RESOLVED",
+                    "DRAFT"
+                  ]
+                ]
+              },
+              "humanDescription": "执行 ReleaseCatalogVersion 前，聚合状态必须为 RESOLVED / DRAFT"
+            },
+            {
+              "expression": {
+                "notNull": {
+                  "var": "ReleaseCatalogVersion.triggeredBy"
+                }
+              },
+              "humanDescription": "ReleaseCatalogVersion.triggeredBy 不能为空"
+            }
+          ],
+          "behaviorModel": {
+            "emissions": [
+              {
+                "event": "CatalogVersionReleased",
+                "bindings": {
+                  "timestamp": "system:now",
+                  "version": "param.version",
+                  "triggeredBy": "param.triggeredBy",
+                  "catalogId": "param.catalogId",
+                  "tenantId": "state.tenantId"
+                }
+              }
+            ]
           }
         },
         {
@@ -250,6 +496,30 @@
               {
                 "name": "error",
                 "type": "Option[iMadzError]"
+              }
+            ]
+          },
+          "preconditionRules": [
+            {
+              "expression": {
+                "notNull": {
+                  "var": "ReleaseMetadataVersion.triggeredBy"
+                }
+              },
+              "humanDescription": "ReleaseMetadataVersion.triggeredBy 不能为空"
+            }
+          ],
+          "behaviorModel": {
+            "emissions": [
+              {
+                "event": "MetadataVersionReleased",
+                "bindings": {
+                  "timestamp": "system:now",
+                  "version": "param.version",
+                  "triggeredBy": "param.triggeredBy",
+                  "catalogId": "param.catalogId",
+                  "tenantId": "state.tenantId"
+                }
               }
             ]
           }
@@ -288,6 +558,38 @@
               {
                 "name": "error",
                 "type": "Option[iMadzError]"
+              }
+            ]
+          },
+          "preconditionRules": [
+            {
+              "expression": {
+                "notNull": {
+                  "var": "ModelCatalog.conflicts"
+                }
+              },
+              "humanDescription": "ModelCatalog.conflicts 必须非空"
+            },
+            {
+              "expression": {
+                "notNull": {
+                  "var": "ResolveCatalogConflict.triggeredBy"
+                }
+              },
+              "humanDescription": "ResolveCatalogConflict.triggeredBy 不能为空"
+            }
+          ],
+          "behaviorModel": {
+            "emissions": [
+              {
+                "event": "CatalogConflictResolved",
+                "bindings": {
+                  "timestamp": "system:now",
+                  "resolvedConflicts": "literal:Nil",
+                  "triggeredBy": "param.triggeredBy",
+                  "catalogId": "param.catalogId",
+                  "tenantId": "state.tenantId"
+                }
               }
             ]
           }
