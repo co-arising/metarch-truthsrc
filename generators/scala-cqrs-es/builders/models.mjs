@@ -150,10 +150,26 @@ export function eventHandlerModel(a, env) {
   const values = [...valueImports].map((t) => (t.includes('.') ? t : `${baseOf(a)}domain.values.${t}`));
   const usesMap = (a.stateHelpers ?? []).some((h) => (h.returnType ?? '').startsWith('Map['));
   const imports = [...javaImports, ...entityQualified, ...values, ...(usesMap ? ['scala.collection.immutable.Map'] : [])].sort();
+  // ALL events get a handler case (not only those with folds). Empty folds → identity (`state`);
+  // fold exprs are rendered via foldRhs (literal:→quoted string, expr:→strip prefix, event./fn:→
+  // verbatim) — mirrors AssemblyEngine.foldAssignmentsToRefCode.
   const events = (a.events ?? [])
-    .filter((e) => (e.foldAssignments ?? []).length)
-    .map((e) => ({ name: e.name, folds: e.foldAssignments }));
+    .map((e) => ({ name: e.name, folds: (e.foldAssignments ?? []).map((f) => ({ slot: f.slot, expr: foldRhs(f.expr) })) }));
   return { header: headerOf(env), base: baseOf(a), name, imports, events, helpers: a.stateHelpers ?? [] };
+}
+
+// Fold RHS rendering (AssemblyEngine.foldAssignmentsToRefCode): type-aware literal quoting,
+// expr: prefix stripping, event./fn:/other passthrough.
+function foldRhs(value) {
+  const v = String(value).trim();
+  if (v.startsWith('literal:')) {
+    const raw = v.slice(8);
+    if (/^-?\d+[Ld]?$/.test(raw) || raw === 'true' || raw === 'false' || raw === 'Nil' || raw === 'null' || raw.startsWith('"')) return raw;
+    return `"${raw}"`;
+  }
+  if (v.startsWith('event.')) return v;
+  if (v.startsWith('expr:')) return v.slice(5);
+  return v;
 }
 
 export function repositoryModel(a, env) {

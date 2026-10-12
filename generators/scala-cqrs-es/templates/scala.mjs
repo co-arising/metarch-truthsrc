@@ -106,7 +106,9 @@ ${eventCases}
 export function renderEventHandler(m) {
   const { name } = m;
   const cases = m.events
-    .map((e) => `    case event: ${e.name} =>\n      state.copy(${e.folds.map((f) => `${f.slot} = ${f.expr}`).join(', ')})`)
+    .map((e) => e.folds.length
+      ? `    case event: ${e.name} =>\n      state.copy(${e.folds.map((f) => `${f.slot} = ${f.expr}`).join(', ')})`
+      : `    case event: ${e.name} =>\n      state`)
     .join('\n\n');
   const helpers = m.helpers
     .map((h) => `  private def ${h.name}(${h.params.map((p) => `${p.name}: ${p.type}`).join(', ')}): ${h.returnType} = {

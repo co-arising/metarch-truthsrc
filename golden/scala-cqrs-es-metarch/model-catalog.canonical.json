@@ -1,0 +1,878 @@
+{
+  "schemaVersion": "truthsrc/v1",
+  "workshop": "metarch",
+  "knowledgeRelease": "1.0.0",
+  "framework": {
+    "base": "net.imadz.common"
+  },
+  "sessions": [],
+  "aggregates": [
+    {
+      "name": "ModelCatalog",
+      "pkg": "net.imadz",
+      "ctxPackage": "metarch",
+      "entity": "ModelCatalogEntity",
+      "identifier": "catalogId",
+      "identifierType": "string (uuid)",
+      "noteId": "19ff11ca-c36d-430c-8219-7e7f685d20c3",
+      "commandFamily": "ModelCatalogCommandFamily",
+      "persistence": {
+        "typeKey": "ModelCatalog",
+        "tagCount": 1,
+        "tagPrefix": "ModelCatalogTag"
+      },
+      "commands": [
+        {
+          "name": "ApplyKnowledgePatch",
+          "parameters": [
+            {
+              "name": "catalogId",
+              "dataType": "string (uuid)",
+              "noteId": "d763afa2-8a50-4d0a-aaa3-2ab71a69a17d"
+            },
+            {
+              "name": "sessionId",
+              "dataType": "string (uuid)",
+              "noteId": "aef1771d-c8f8-447b-8c8b-0aa060d60dd4"
+            },
+            {
+              "name": "patchId",
+              "dataType": "string (uuid)",
+              "noteId": "5199b893-ff25-4395-a847-25cb85bdec11"
+            },
+            {
+              "name": "patchHash",
+              "dataType": "String",
+              "noteId": "96d19100-3beb-4ffc-a76a-369e0c0d95fc"
+            },
+            {
+              "name": "parentPatchId",
+              "dataType": "string (uuid)",
+              "noteId": "65c7df6b-db19-4b5d-8694-f4b11334830a"
+            },
+            {
+              "name": "concepts",
+              "dataType": "List[ConceptDelta]",
+              "noteId": "ecb340af-2880-4968-af7f-bfa647db6f40",
+              "typeImport": "net.imadz.metarch.domain.values.ConceptDelta"
+            },
+            {
+              "name": "triggeredBy",
+              "dataType": "String"
+            }
+          ],
+          "reply": {
+            "name": "ApplyKnowledgePatchReply",
+            "fields": [
+              {
+                "name": "error",
+                "type": "Option[iMadzError]"
+              }
+            ]
+          }
+        },
+        {
+          "name": "AssembleMetadata",
+          "parameters": [
+            {
+              "name": "tenantId",
+              "dataType": "string (uuid)",
+              "noteId": "d3d9f444-fbcf-4520-9590-9734811d3f17"
+            },
+            {
+              "name": "projectId",
+              "dataType": "string (uuid)",
+              "noteId": "31797ae8-be46-4713-b724-ca7faf0daf6a"
+            },
+            {
+              "name": "version",
+              "dataType": "String",
+              "noteId": "4c2e2656-d7d1-4407-8c0f-edfb4539e2a2"
+            },
+            {
+              "name": "manifest",
+              "dataType": "String",
+              "noteId": "292ff788-cb2f-48b6-8171-dba2bddb86a1"
+            },
+            {
+              "name": "triggeredBy",
+              "dataType": "String"
+            }
+          ],
+          "reply": {
+            "name": "AssembleMetadataReply",
+            "fields": [
+              {
+                "name": "error",
+                "type": "Option[iMadzError]"
+              }
+            ]
+          }
+        },
+        {
+          "name": "CreateCatalogVersion",
+          "parameters": [
+            {
+              "name": "tenantId",
+              "dataType": "string (uuid)",
+              "noteId": "8fd6319e-3634-48f1-8358-8586470da636"
+            },
+            {
+              "name": "projectId",
+              "dataType": "string (uuid)",
+              "noteId": "ec0497be-920f-478e-95ff-6f7aeaf54a7c"
+            },
+            {
+              "name": "version",
+              "dataType": "String",
+              "noteId": "c7341120-b633-4a8f-a49b-65d64961c76e"
+            },
+            {
+              "name": "baseVersion",
+              "dataType": "String",
+              "noteId": "6d713df0-ba9e-4169-94ed-3e2b5603fb28"
+            },
+            {
+              "name": "triggeredBy",
+              "dataType": "String"
+            }
+          ],
+          "reply": {
+            "name": "CreateCatalogVersionReply",
+            "fields": [
+              {
+                "name": "error",
+                "type": "Option[iMadzError]"
+              }
+            ]
+          }
+        },
+        {
+          "name": "DetectCatalogConflicts",
+          "parameters": [
+            {
+              "name": "catalogId",
+              "dataType": "string (uuid)",
+              "noteId": "a343334d-61c9-4bb5-9fdb-7d49341c2790"
+            },
+            {
+              "name": "triggeredBy",
+              "dataType": "String"
+            }
+          ],
+          "reply": {
+            "name": "DetectCatalogConflictsReply",
+            "fields": [
+              {
+                "name": "error",
+                "type": "Option[iMadzError]"
+              }
+            ]
+          }
+        },
+        {
+          "name": "ExportMetadata",
+          "parameters": [
+            {
+              "name": "catalogId",
+              "dataType": "string (uuid)",
+              "noteId": "1369d2c2-ac8d-416a-8e55-032864375e80"
+            },
+            {
+              "name": "manifest",
+              "dataType": "String",
+              "noteId": "b413668e-b057-42de-8462-c2f95edd9fa1"
+            },
+            {
+              "name": "triggeredBy",
+              "dataType": "String"
+            }
+          ],
+          "reply": {
+            "name": "ExportMetadataReply",
+            "fields": [
+              {
+                "name": "error",
+                "type": "Option[iMadzError]"
+              }
+            ]
+          }
+        },
+        {
+          "name": "ReleaseCatalogVersion",
+          "parameters": [
+            {
+              "name": "catalogId",
+              "dataType": "string (uuid)",
+              "noteId": "296debc8-4786-4a45-9bad-266d2a136a5e"
+            },
+            {
+              "name": "version",
+              "dataType": "String",
+              "noteId": "18aea170-7527-44a4-b326-ca1a168a7a91"
+            },
+            {
+              "name": "triggeredBy",
+              "dataType": "String"
+            }
+          ],
+          "reply": {
+            "name": "ReleaseCatalogVersionReply",
+            "fields": [
+              {
+                "name": "error",
+                "type": "Option[iMadzError]"
+              }
+            ]
+          }
+        },
+        {
+          "name": "ReleaseMetadataVersion",
+          "parameters": [
+            {
+              "name": "catalogId",
+              "dataType": "string (uuid)",
+              "noteId": "f4ca601b-33cf-456f-b2d0-81f629f2000e"
+            },
+            {
+              "name": "version",
+              "dataType": "String",
+              "noteId": "9946dd09-df40-4581-a6cd-cefc26f3615b"
+            },
+            {
+              "name": "triggeredBy",
+              "dataType": "String"
+            }
+          ],
+          "reply": {
+            "name": "ReleaseMetadataVersionReply",
+            "fields": [
+              {
+                "name": "error",
+                "type": "Option[iMadzError]"
+              }
+            ]
+          }
+        },
+        {
+          "name": "ResolveCatalogConflict",
+          "parameters": [
+            {
+              "name": "catalogId",
+              "dataType": "string (uuid)",
+              "noteId": "2cacc37f-0c3a-4edf-9082-ab721863ca44"
+            },
+            {
+              "name": "conflictId",
+              "dataType": "string (uuid)",
+              "noteId": "f5a25c47-35a7-422f-93ad-a84b0b6512cc"
+            },
+            {
+              "name": "resolutionAction",
+              "dataType": "String",
+              "noteId": "33fdaeb5-239e-47ca-a830-e279ec48483a"
+            },
+            {
+              "name": "resolutionNote",
+              "dataType": "String",
+              "noteId": "6eea3ae9-fd6a-481d-bc68-6d6d33d412a2"
+            },
+            {
+              "name": "triggeredBy",
+              "dataType": "String"
+            }
+          ],
+          "reply": {
+            "name": "ResolveCatalogConflictReply",
+            "fields": [
+              {
+                "name": "error",
+                "type": "Option[iMadzError]"
+              }
+            ]
+          }
+        },
+        {
+          "name": "GetModelCatalogState",
+          "readOnly": true,
+          "parameters": [
+            {
+              "name": "catalogId",
+              "dataType": "string (uuid)"
+            }
+          ],
+          "reply": {
+            "name": "GetModelCatalogStateReply",
+            "fields": [
+              {
+                "name": "state",
+                "type": "ModelCatalogState"
+              }
+            ]
+          }
+        }
+      ],
+      "behaviors": [],
+      "factoryMethods": [
+        {
+          "name": "createModelCatalogWithInitialValue",
+          "params": [
+            {
+              "name": "catalogId",
+              "dataType": "string (uuid)"
+            },
+            {
+              "name": "sessionId",
+              "dataType": "string (uuid)"
+            },
+            {
+              "name": "patchId",
+              "dataType": "string (uuid)"
+            },
+            {
+              "name": "patchHash",
+              "dataType": "String"
+            },
+            {
+              "name": "parentPatchId",
+              "dataType": "string (uuid)"
+            },
+            {
+              "name": "concepts",
+              "dataType": "List[ConceptDelta]"
+            },
+            {
+              "name": "triggeredBy",
+              "dataType": "String"
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "CatalogConflictDetected",
+          "payloads": [
+            {
+              "name": "catalogId",
+              "dataType": "string (uuid)",
+              "description": "唯一标识",
+              "noteId": "99858f10-2b76-4339-a24c-64782d265f2b"
+            },
+            {
+              "name": "conflictSet",
+              "dataType": "CatalogConflictSet",
+              "description": "包含 conflicts, detectedAt",
+              "noteId": "6c890c2d-b726-416a-8a99-82a6550a94b6",
+              "typeImport": "net.imadz.metarch.domain.values.CatalogConflictSet"
+            },
+            {
+              "name": "triggeredBy",
+              "dataType": "String",
+              "description": "操作人",
+              "noteId": "6e6f79c5-659b-4ecb-835a-87541517f4a5"
+            },
+            {
+              "name": "timestamp",
+              "dataType": "Instant",
+              "description": "事件发生时间",
+              "noteId": "12db1a56-4476-49cc-812a-df3fdec4494a"
+            },
+            {
+              "name": "tenantId",
+              "dataType": "string (uuid)",
+              "noteId": "70468255-8486-44a7-b29b-70ef7c65ca89"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "status",
+              "expr": "literal:CONFLICT_DETECTED"
+            }
+          ]
+        },
+        {
+          "name": "CatalogConflictResolved",
+          "payloads": [
+            {
+              "name": "catalogId",
+              "dataType": "string (uuid)",
+              "description": "唯一标识",
+              "noteId": "be28bde6-ed42-44cd-8bb3-894aa29e7924"
+            },
+            {
+              "name": "resolvedConflicts",
+              "dataType": "List[CatalogConflict]",
+              "description": "每个冲突带有修复动作和说明",
+              "noteId": "2326316b-6e20-48c9-9105-6c1d3416ac75",
+              "typeImport": "net.imadz.metarch.domain.values.CatalogConflict"
+            },
+            {
+              "name": "triggeredBy",
+              "dataType": "String",
+              "description": "操作人",
+              "noteId": "6743750f-5c02-494a-87bf-80082fb1e9bd"
+            },
+            {
+              "name": "timestamp",
+              "dataType": "Instant",
+              "description": "事件发生时间",
+              "noteId": "bb019b5c-3bef-400e-a68b-77821cf0564a"
+            },
+            {
+              "name": "tenantId",
+              "dataType": "string (uuid)",
+              "noteId": "17314b60-eb71-48c6-a257-f81f4b930db8"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "status",
+              "expr": "literal:RESOLVED"
+            }
+          ]
+        },
+        {
+          "name": "CatalogVersionCreated",
+          "payloads": [
+            {
+              "name": "catalogId",
+              "dataType": "string (uuid)",
+              "description": "system-generated catalog identifier",
+              "noteId": "c8f92f78-019f-4bab-b94e-3e2e1c3242f5"
+            },
+            {
+              "name": "tenantId",
+              "dataType": "string (uuid)",
+              "description": "【已补】多租户隔离",
+              "noteId": "cd8b9bcb-a17c-4a42-af7a-fe7a5f00e16e"
+            },
+            {
+              "name": "projectId",
+              "dataType": "string (uuid)",
+              "description": "本次评审针对的专项",
+              "noteId": "d1ae18eb-d9cf-466e-bc03-96ee3fc18002"
+            },
+            {
+              "name": "version",
+              "dataType": "String",
+              "description": "语义化版本",
+              "noteId": "31919e5c-2d36-4167-a816-5ddeb16ad9a1"
+            },
+            {
+              "name": "baseVersion",
+              "dataType": "String",
+              "description": "基于哪个版本打补丁",
+              "noteId": "09a9561f-d0cb-4bf7-a327-4bc668cd89f6"
+            },
+            {
+              "name": "triggeredBy",
+              "dataType": "String",
+              "description": "操作人",
+              "noteId": "a7306da9-b243-4bf0-8937-90a58513b8a7"
+            },
+            {
+              "name": "timestamp",
+              "dataType": "Instant",
+              "description": "事件发生时间",
+              "noteId": "157cbcfb-802d-4d9c-80b0-a24fd6dec947"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "projectId",
+              "expr": "event.projectId"
+            },
+            {
+              "slot": "version",
+              "expr": "event.version"
+            },
+            {
+              "slot": "baseVersion",
+              "expr": "event.baseVersion"
+            },
+            {
+              "slot": "status",
+              "expr": "literal:DRAFT"
+            }
+          ]
+        },
+        {
+          "name": "CatalogVersionReleased",
+          "payloads": [
+            {
+              "name": "catalogId",
+              "dataType": "string (uuid)",
+              "description": "唯一标识",
+              "noteId": "c32faa47-52e7-4d42-95a2-89434c027b5d"
+            },
+            {
+              "name": "version",
+              "dataType": "String",
+              "description": "语义化版本",
+              "noteId": "ef5cd137-c0d5-4f14-b0a5-ad385ba1845c"
+            },
+            {
+              "name": "triggeredBy",
+              "dataType": "String",
+              "description": "操作人",
+              "noteId": "b1704648-42f7-4f75-afa3-6d1c1a80ee42"
+            },
+            {
+              "name": "timestamp",
+              "dataType": "Instant",
+              "description": "事件发生时间",
+              "noteId": "e0c6da52-ff4d-4aa1-aa64-77061a221feb"
+            },
+            {
+              "name": "tenantId",
+              "dataType": "string (uuid)",
+              "noteId": "df3645dd-5d8d-4a54-b8fe-2884f82c990c"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "status",
+              "expr": "literal:RELEASED"
+            },
+            {
+              "slot": "version",
+              "expr": "event.version"
+            }
+          ]
+        },
+        {
+          "name": "KnowledgePatched",
+          "payloads": [
+            {
+              "name": "catalogId",
+              "dataType": "string (uuid)",
+              "description": "唯一标识",
+              "noteId": "6e144eb9-267e-4b76-9b42-dc9b58c03484"
+            },
+            {
+              "name": "patchSet",
+              "dataType": "CatalogPatchSet",
+              "description": "包含 sessionId, concepts, appliedAt",
+              "noteId": "a6de9bce-7b0f-4e98-adeb-7ee095c2b513",
+              "typeImport": "net.imadz.metarch.domain.values.CatalogPatchSet"
+            },
+            {
+              "name": "patchId",
+              "dataType": "string (uuid)",
+              "description": "被应用的补丁 id（HEAD 前移）",
+              "noteId": "e98fd225-538f-4a87-aa98-5991e789f3b1"
+            },
+            {
+              "name": "patchHash",
+              "dataType": "String",
+              "description": "被应用补丁的指纹（headPatchHash 前移）",
+              "noteId": "dbbed203-9962-410c-9e88-b48cd8f53882"
+            },
+            {
+              "name": "triggeredBy",
+              "dataType": "String",
+              "description": "操作人",
+              "noteId": "68878070-9e8a-4332-94e8-79ac85b85134"
+            },
+            {
+              "name": "timestamp",
+              "dataType": "Instant",
+              "description": "事件发生时间",
+              "noteId": "8de198be-eab2-43b0-9b83-6a3d96613517"
+            },
+            {
+              "name": "tenantId",
+              "dataType": "string (uuid)",
+              "noteId": "ac36fadd-e129-408c-9332-dc79294f9d9e"
+            },
+            {
+              "name": "concepts",
+              "dataType": "List[ConceptDelta]",
+              "description": "本次补丁的概念增量（typed List<ConceptDelta>）",
+              "noteId": "312375bd-b89c-409a-97d8-00d1cf2c54b8",
+              "typeImport": "net.imadz.metarch.domain.values.ConceptDelta"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "headPatchId",
+              "expr": "event.patchId"
+            },
+            {
+              "slot": "headPatchHash",
+              "expr": "event.patchHash"
+            },
+            {
+              "slot": "conceptIndex",
+              "expr": "fn:ApplyConceptDeltas"
+            }
+          ]
+        },
+        {
+          "name": "MetadataAssembled",
+          "payloads": [
+            {
+              "name": "catalogId",
+              "dataType": "string (uuid)",
+              "description": "system-generated catalog identifier",
+              "noteId": "0c94572a-8af9-4a1b-a7eb-704799d63800"
+            },
+            {
+              "name": "tenantId",
+              "dataType": "string (uuid)",
+              "description": "【已补】多租户隔离",
+              "noteId": "62cddbe7-0ac5-4149-92dc-c190fbc74458"
+            },
+            {
+              "name": "projectId",
+              "dataType": "string (uuid)",
+              "description": "本次评审针对的专项",
+              "noteId": "2cb8a8c4-4842-49e4-9f86-88796ebb7f2c"
+            },
+            {
+              "name": "version",
+              "dataType": "String",
+              "description": "语义化版本",
+              "noteId": "cea1249e-c1d5-4cd1-9004-2fdafe73268c"
+            },
+            {
+              "name": "manifest",
+              "dataType": "String",
+              "description": "等同于 knowledgePackages",
+              "noteId": "d354ac10-6e29-4028-a1c2-034f7651d2ab"
+            },
+            {
+              "name": "triggeredBy",
+              "dataType": "String",
+              "description": "操作人",
+              "noteId": "69d528aa-2ab2-4415-a693-90f312399415"
+            },
+            {
+              "name": "timestamp",
+              "dataType": "Instant",
+              "description": "事件发生时间",
+              "noteId": "9593e4d6-b7ac-44a1-aa60-97152896d5eb"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "projectId",
+              "expr": "event.projectId"
+            },
+            {
+              "slot": "version",
+              "expr": "event.version"
+            },
+            {
+              "slot": "stateHash",
+              "expr": "fn:ComputeCatalogStateHash"
+            }
+          ]
+        },
+        {
+          "name": "MetadataExported",
+          "payloads": [
+            {
+              "name": "catalogId",
+              "dataType": "string (uuid)",
+              "description": "唯一标识",
+              "noteId": "464f7577-d2ec-4798-8138-25a17cc5ca8f"
+            },
+            {
+              "name": "manifest",
+              "dataType": "String",
+              "description": "metadata manifest content",
+              "noteId": "7c9a98e4-a4ba-4ecf-a3c0-422735ff8b7c"
+            },
+            {
+              "name": "triggeredBy",
+              "dataType": "String",
+              "description": "操作人",
+              "noteId": "fe85e918-5bd0-48ff-b33a-516b2586b66c"
+            },
+            {
+              "name": "timestamp",
+              "dataType": "Instant",
+              "description": "事件发生时间",
+              "noteId": "05a889ba-201c-4549-9e21-3bb8472566cf"
+            },
+            {
+              "name": "tenantId",
+              "dataType": "string (uuid)",
+              "noteId": "b314ab13-356a-480e-910d-153f4c259087"
+            }
+          ],
+          "foldAssignments": []
+        },
+        {
+          "name": "MetadataVersionReleased",
+          "payloads": [
+            {
+              "name": "catalogId",
+              "dataType": "string (uuid)",
+              "description": "唯一标识",
+              "noteId": "ad5545c5-455a-4cdf-93d8-675a177aa81d"
+            },
+            {
+              "name": "version",
+              "dataType": "String",
+              "description": "语义化版本",
+              "noteId": "29f42e11-27da-4e0e-9087-d46f14f1e452"
+            },
+            {
+              "name": "triggeredBy",
+              "dataType": "String",
+              "description": "操作人",
+              "noteId": "3d0f8905-5fa7-4292-bd48-2f4aa0a94ee4"
+            },
+            {
+              "name": "timestamp",
+              "dataType": "Instant",
+              "description": "事件发生时间",
+              "noteId": "df63a8d0-a983-4e2f-8b59-4fc8551f640f"
+            },
+            {
+              "name": "tenantId",
+              "dataType": "string (uuid)",
+              "noteId": "857dacc9-32d9-4975-a44e-98a757e42e7a"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "status",
+              "expr": "literal:RELEASED"
+            },
+            {
+              "slot": "version",
+              "expr": "event.version"
+            }
+          ]
+        }
+      ],
+      "stateFields": [
+        {
+          "name": "catalogId",
+          "dataType": "string (uuid)",
+          "noteId": "e110fe19-ab19-4a5b-a2ae-c9989577db5d"
+        },
+        {
+          "name": "tenantId",
+          "dataType": "string (uuid)",
+          "description": "所属租户",
+          "noteId": "72dbece8-f05d-4987-a19d-40de66df4c63"
+        },
+        {
+          "name": "status",
+          "dataType": "String",
+          "description": "DRAFT / CONFLICT_DETECTED / RESOLVED / RELEASED",
+          "noteId": "e2dd6d8b-8d5c-4354-96cd-206d3200a43f"
+        },
+        {
+          "name": "projectId",
+          "dataType": "string (uuid)",
+          "description": "知识库归属",
+          "noteId": "b733a35f-4f16-4a7d-bcef-58c29d3e6c64"
+        },
+        {
+          "name": "version",
+          "dataType": "String",
+          "description": "语义化版本",
+          "noteId": "63486008-3eaf-40c0-b1ab-d208abe2222d"
+        },
+        {
+          "name": "baseVersion",
+          "dataType": "String",
+          "description": "基于哪个版本打补丁",
+          "noteId": "76948d2d-1250-4957-b7af-a4d11115271b"
+        },
+        {
+          "name": "patchSessionIds",
+          "dataType": "List[Id]",
+          "description": "本版本包含的 Session 补丁列表",
+          "noteId": "dd7d2d28-1e8e-47dc-b5df-600a5c9bffe8"
+        },
+        {
+          "name": "knowledgePackages",
+          "dataType": "String",
+          "description": "完整内容（Concept/Subdomain/Context等）",
+          "noteId": "7a1aefa3-68ad-42fb-ac07-a08abd8ad5b2"
+        },
+        {
+          "name": "stateHash",
+          "dataType": "String",
+          "description": "目录快照指纹（tree SHA 类比）——MetadataAssembled 时由 manifest 折叠算出（fn:ComputeCatalogStateHash·函数表唯一真源）",
+          "noteId": "63ab6a2f-1d9e-4f44-91e4-44a3b2c9b2fd"
+        },
+        {
+          "name": "headPatchId",
+          "dataType": "string (uuid)",
+          "description": "HEAD：当前已合并补丁位置（git HEAD/ref 类比）——FF 祖先判定用",
+          "noteId": "e81dec16-315f-4420-a623-d17fa5118715"
+        },
+        {
+          "name": "headPatchHash",
+          "dataType": "String",
+          "description": "HEAD 补丁的指纹（ref 指向的 commit hash·父链取用）",
+          "noteId": "521a6a9b-919e-49c2-83dc-7449bb84ba58"
+        },
+        {
+          "name": "conflicts",
+          "dataType": "List[CatalogConflict]",
+          "description": "冲突检测与修复历史",
+          "noteId": "3dcf06f2-cf88-4afd-8301-53ec06af493e",
+          "typeImport": "net.imadz.metarch.domain.values.CatalogConflict"
+        },
+        {
+          "name": "assembledAt",
+          "dataType": "Instant",
+          "description": "time when metadata was assembled",
+          "noteId": "06409b3f-ef12-4b1e-8686-610cb8af525c"
+        },
+        {
+          "name": "assembledBy",
+          "dataType": "String",
+          "description": "user or system that assembled metadata",
+          "noteId": "4b43c474-0750-42c1-bb4d-117adc4ae192"
+        },
+        {
+          "name": "exportedAt",
+          "dataType": "Instant",
+          "description": "time when metadata was exported",
+          "noteId": "1e99fa37-9c79-44ca-bf23-f1cccd35b963"
+        },
+        {
+          "name": "exportedBy",
+          "dataType": "String",
+          "description": "user or system that exported metadata",
+          "noteId": "21665ef6-7331-4399-92eb-acd99f9a7dc2"
+        },
+        {
+          "name": "releasedAt",
+          "dataType": "Instant",
+          "description": "time when the catalog version was released",
+          "noteId": "c35771e2-11cd-408b-83cb-41abafabe2f5"
+        },
+        {
+          "name": "releasedBy",
+          "dataType": "String",
+          "description": "user or system that released the catalog version",
+          "noteId": "bfbc869c-d676-47d8-9e17-6a7dbb3c4502"
+        },
+        {
+          "name": "conceptIndex",
+          "dataType": "List[ConceptIndexEntry]",
+          "description": "名字索引：(conceptName, contextId) → conceptId ＋ contentHash（冲突检测/FF 判定用）",
+          "noteId": "5b8a6c5a-fe5b-4b03-81e6-2b02fa88c5ce",
+          "typeImport": "net.imadz.metarch.domain.values.ConceptIndexEntry"
+        }
+      ],
+      "stateHelpers": [],
+      "repository": {
+        "finders": []
+      }
+    }
+  ],
+  "valueObjects": [],
+  "readModels": [],
+  "stories": []
+}
