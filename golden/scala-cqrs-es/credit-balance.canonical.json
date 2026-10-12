@@ -220,6 +220,12 @@
               "name": "timestamp",
               "dataType": "Long"
             }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "accountBalance",
+              "expr": "updateAccountBalance(state, event.update.currency, event.update)"
+            }
           ]
         },
         {
@@ -232,6 +238,16 @@
             {
               "name": "amount",
               "dataType": "Money"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "accountBalance",
+              "expr": "updateAccountBalance(state, event.amount.currency, event.amount.copy(amount = -event.amount.amount))"
+            },
+            {
+              "slot": "reservedAmount",
+              "expr": "state.reservedAmount + (event.transferId -> event.amount)"
             }
           ]
         },
@@ -246,6 +262,12 @@
               "name": "amount",
               "dataType": "Money"
             }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "reservedAmount",
+              "expr": "state.reservedAmount - event.transferId"
+            }
           ]
         },
         {
@@ -258,6 +280,16 @@
             {
               "name": "amount",
               "dataType": "Money"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "accountBalance",
+              "expr": "updateAccountBalance(state, event.amount.currency, event.amount)"
+            },
+            {
+              "slot": "reservedAmount",
+              "expr": "state.reservedAmount - event.transferId"
             }
           ]
         },
@@ -272,6 +304,12 @@
               "name": "amount",
               "dataType": "Money"
             }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "incomingCredits",
+              "expr": "state.incomingCredits.updated(event.transferId, event.amount)"
+            }
           ]
         },
         {
@@ -281,6 +319,16 @@
               "name": "transferId",
               "dataType": "string (uuid)"
             }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "accountBalance",
+              "expr": "updateAccountBalance(state, state.incomingCredits(event.transferId).currency, state.incomingCredits(event.transferId))"
+            },
+            {
+              "slot": "incomingCredits",
+              "expr": "state.incomingCredits - event.transferId"
+            }
           ]
         },
         {
@@ -289,6 +337,12 @@
             {
               "name": "transferId",
               "dataType": "string (uuid)"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "incomingCredits",
+              "expr": "state.incomingCredits - event.transferId"
             }
           ]
         }
@@ -313,6 +367,29 @@
           "name": "incomingCredits",
           "dataType": "Map[Id, Money]",
           "defaultValue": "Map.empty"
+        }
+      ],
+      "stateHelpers": [
+        {
+          "name": "updateAccountBalance",
+          "description": "state.accountBalance + (currency.getCurrencyCode -> Money(currentBalance.amount + updateMoney.amount, currency))",
+          "params": [
+            {
+              "name": "state",
+              "type": "CreditBalanceState"
+            },
+            {
+              "name": "currency",
+              "type": "Currency",
+              "typeImport": "java.util.Currency"
+            },
+            {
+              "name": "updateMoney",
+              "type": "Money",
+              "typeImport": "net.imadz..domain.values.Money"
+            }
+          ],
+          "returnType": "Map[String, Money]"
         }
       ]
     }

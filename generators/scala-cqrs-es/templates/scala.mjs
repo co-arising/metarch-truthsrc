@@ -101,3 +101,45 @@ ${eventCases}
 }
 `;
 }
+
+export function renderEventHandler(m) {
+  const { base, name } = m;
+  const cases = m.events
+    .map((e) => `    case event: ${e.name} =>\n      state.copy(${e.folds.map((f) => `${f.slot} = ${f.expr}`).join(', ')})`)
+    .join('\n\n');
+  const helpers = m.helpers
+    .map((h) => `  private def ${h.name}(${h.params.map((p) => `${p.name}: ${p.type}`).join(', ')}): ${h.returnType} = {
+    /*
+    >>> AI_PROMPT_START
+    Context: Domain Entity Helper Method
+    Task: Implement logic for ${h.name}
+    Description: ${h.description}
+    Input Params: ${h.params.map((p) => `${p.name}: ${p.type}`).join(', ')}
+    Return: ${h.returnType}
+    <<< AI_PROMPT_END
+    */
+    ???
+  }`)
+    .join('\n\n');
+  const imports = [
+    ...m.javaImports.map((i) => `import ${i}`),
+    `import ${base}domain.entities.${name}Entity.${name}EventHandler`,
+    `import ${base}domain.entities.${name}Entity.${name}EventHandler`,
+    `import ${base}domain.entities.${name}Entity.${name}State`,
+    ...m.valueImports,
+    'import scala.collection.immutable.Map',
+  ].join('\n');
+  return `package ${base}domain.entities.behaviors
+
+${imports}
+
+object ${name}EventHandler {
+  def apply: ${name}EventHandler = (state, event) => event match {
+${cases}
+    case _ => state // 默认兜底，或者抛异常
+  }
+
+${helpers}
+}
+`;
+}

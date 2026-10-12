@@ -55,3 +55,28 @@ export function entityModel(a) {
   const identifier = (a.stateFields ?? []).find((f) => f.name === a.identifier)?.name ?? a.identifier;
   return { base, name, voImports, fields, events, idType, collectionImports, defaults, identifier };
 }
+
+// Ruling A (2026-10-12): fold exprs beyond the state./param./literal: vocabulary are
+// emitted verbatim as Scala expressions (fail-open — the generator never decides
+// business semantics); cross-field helper calls get an AI_PROMPT stub synthesized
+// from the aggregate's declared stateHelpers.
+export function eventHandlerModel(a) {
+  const base = `${a.pkg ?? 'net.imadz'}.${a.ctxPackage ?? ''}.`;
+  const name = a.name;
+  const javaImports = [], valueNames = new Set([`${name}Event`]);
+  for (const h of a.stateHelpers ?? [])
+    for (const p of h.params ?? []) {
+      if (!p.typeImport) continue;
+      if (p.typeImport.startsWith('java.')) { if (!javaImports.includes(p.typeImport)) javaImports.push(p.typeImport); }
+      else valueNames.add(p.typeImport.replaceAll('"', ''));
+    }
+  for (const e of a.events ?? []) if (e.name) valueNames.add(e.name);
+  // value imports: dotted refs pass through verbatim; simple names resolve into the aggregate values package; sorted
+  const valueImports = [...valueNames]
+    .map((n) => `import ${n.includes('.') ? n : `${base}domain.values.${n}`}`)
+    .sort();
+  const events = (a.events ?? [])
+    .filter((e) => (e.foldAssignments ?? []).length)
+    .map((e) => ({ name: e.name, folds: e.foldAssignments }));
+  return { base, name, javaImports, valueImports, events, helpers: a.stateHelpers ?? [] };
+}
