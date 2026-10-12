@@ -1,0 +1,124 @@
+{
+  "schemaVersion": "truthsrc/v1",
+  "workshop": "metarch",
+  "knowledgeRelease": "1.0.0",
+  "framework": { "base": "net.imadz.common" },
+  "sessions": [],
+  "aggregates": [
+    {
+      "name": "Subdomain",
+      "pkg": "net.imadz",
+      "ctxPackage": "metarch",
+      "entity": "SubdomainEntity",
+      "identifier": "subdomainId",
+      "identifierType": "string (uuid)",
+      "noteId": "3a44ff29-aef6-4dc9-8d59-b6bf723baf9b",
+      "commandFamily": "SubdomainCommandFamily",
+      "persistence": {
+        "typeKey": "Subdomain",
+        "tagCount": 1,
+        "tagPrefix": "SubdomainTag"
+      },
+      "commands": [
+        {
+          "name": "ClassifySubdomain",
+          "parameters": [
+            { "name": "tenantId", "dataType": "string (uuid)", "noteId": "1d4ff2f9-aa52-4480-822a-3c1c31ab4b53" },
+            { "name": "subdomainId", "dataType": "string (uuid)", "noteId": "3921055b-0c50-43f3-b488-f55092bbcc9d" },
+            { "name": "name", "dataType": "String", "noteId": "e74a78cd-f18e-4504-810e-57c25963f5b1" },
+            { "name": "description", "dataType": "String", "noteId": "899e9f3f-9d9f-41e8-a9e7-4e2f952c0128" },
+            { "name": "kind", "dataType": "String", "noteId": "9bed13df-c55e-474d-8524-9ff1c674e6c9" },
+            { "name": "buyOrBuild", "dataType": "String", "noteId": "1c9caed8-d5f6-46b6-a658-38365daeea73" },
+            { "name": "aggregateIds", "dataType": "List[Id]", "noteId": "a375405f-65ef-430c-8b3d-d8af80733774" },
+            { "name": "triggeredBy", "dataType": "String" }
+          ],
+          "reply": { "name": "ClassifySubdomainReply", "fields": [ { "name": "error", "type": "Option[iMadzError]" } ] }
+        },
+        {
+          "name": "UpdateSubdomainKind",
+          "parameters": [
+            { "name": "subdomainId", "dataType": "string (uuid)", "noteId": "b48fc2d9-3902-43a7-9343-e52fc8ac6f48" },
+            { "name": "kind", "dataType": "String", "noteId": "b51acf82-7391-4d66-ade3-da73dba90efa" },
+            { "name": "triggeredBy", "dataType": "String" }
+          ],
+          "reply": { "name": "UpdateSubdomainKindReply", "fields": [ { "name": "error", "type": "Option[iMadzError]" } ] }
+        },
+        {
+          "name": "GetSubdomainState",
+          "readOnly": true,
+          "parameters": [
+            { "name": "subdomainId", "dataType": "string (uuid)" }
+          ],
+          "reply": { "name": "GetSubdomainStateReply", "fields": [ { "name": "state", "type": "SubdomainState" } ] }
+        }
+      ],
+      "behaviors": [],
+      "factoryMethods": [
+        { "name": "createSubdomainWithInitialValue", "params": [
+          { "name": "tenantId", "dataType": "string (uuid)" },
+          { "name": "subdomainId", "dataType": "string (uuid)" },
+          { "name": "name", "dataType": "String" },
+          { "name": "description", "dataType": "String" },
+          { "name": "kind", "dataType": "String" },
+          { "name": "buyOrBuild", "dataType": "String" },
+          { "name": "aggregateIds", "dataType": "List[Id]" },
+          { "name": "triggeredBy", "dataType": "String" }
+        ] }
+      ],
+      "events": [
+        {
+          "name": "SubdomainClassified",
+          "payloads": [
+            { "name": "tenantId", "dataType": "string (uuid)", "description": "【已补】多租户隔离", "noteId": "4938e7df-9a2f-4d41-a300-0d07d6c52711" },
+            { "name": "subdomainId", "dataType": "string (uuid)", "description": "唯一标识", "noteId": "2cf13221-daa4-4fff-ad5c-2b9e4f2663f1" },
+            { "name": "name", "dataType": "String", "description": "公司的正式注册名称", "noteId": "e454ffa9-a664-4696-8e6e-4375b8405b3a" },
+            { "name": "description", "dataType": "String", "description": "为什么做这件事", "noteId": "2428311e-4ea3-4ac4-885a-0fee23e0d99f" },
+            { "name": "kind", "dataType": "String", "description": "core/supporting/generic", "noteId": "92566487-5eab-4106-bba3-a23b20146e71" },
+            { "name": "buyOrBuild", "dataType": "String", "description": "buy/build/undecided", "noteId": "30aa2b95-fa51-43c0-acd8-b87039fa3aaa" },
+            { "name": "aggregateIds", "dataType": "List[Id]", "description": "IDs of aggregates covered by this subdomain", "noteId": "4cf613b7-05e9-472b-a026-e6b6f1db3654" },
+            { "name": "triggeredBy", "dataType": "String", "description": "操作人", "noteId": "4aed6754-bcf7-4cf3-a6d9-f8a2e1d68e12" },
+            { "name": "timestamp", "dataType": "Instant", "description": "事件发生时间", "noteId": "ba1508be-639b-48fe-ba9b-394bd0a95001" }
+          ],
+          "foldAssignments": [
+            { "slot": "name", "expr": "event.name" },
+            { "slot": "aggregateIds", "expr": "event.aggregateIds" },
+            { "slot": "kind", "expr": "event.kind" },
+            { "slot": "classifiedAt", "expr": "event.timestamp" },
+            { "slot": "classifiedBy", "expr": "event.triggeredBy" },
+            { "slot": "description", "expr": "event.description" },
+            { "slot": "buyOrBuild", "expr": "event.buyOrBuild" }
+          ]
+        },
+        {
+          "name": "SubdomainKindUpdated",
+          "payloads": [
+            { "name": "subdomainId", "dataType": "string (uuid)", "description": "唯一标识", "noteId": "07ac5b59-310c-4a28-b806-fd6de1044e8b" },
+            { "name": "kind", "dataType": "String", "description": "core/supporting/generic", "noteId": "1e482534-72f7-46b3-9746-f9ad88bbdf67" },
+            { "name": "triggeredBy", "dataType": "String", "description": "操作人", "noteId": "05a14fb3-54b2-4d11-9e3d-38e57e6f927d" },
+            { "name": "timestamp", "dataType": "Instant", "description": "事件发生时间", "noteId": "162359d9-f31f-473e-805b-51188e236e65" },
+            { "name": "tenantId", "dataType": "string (uuid)", "noteId": "5290b744-679f-4258-8e05-6c18a85d4fba" }
+          ],
+          "foldAssignments": [
+            { "slot": "kind", "expr": "event.kind" }
+          ]
+        }
+      ],
+      "stateFields": [
+        { "name": "subdomainId", "dataType": "string (uuid)", "noteId": "e88172e2-3b4b-47c5-83b5-ee043a9cc44f" },
+        { "name": "tenantId", "dataType": "string (uuid)", "description": "所属租户", "noteId": "75ef8908-21b3-4de1-b8cb-90457b25ff73" },
+        { "name": "name", "dataType": "String", "description": "公司的正式注册名称", "noteId": "c16d7a50-1751-4fb0-b7a6-29a555fc3ad6" },
+        { "name": "description", "dataType": "String", "description": "为什么做这件事", "noteId": "11115017-2b16-42d8-8fb8-2943e391c817" },
+        { "name": "kind", "dataType": "String", "description": "core/supporting/generic", "noteId": "9ea07e07-6079-4c21-8969-571db8308225" },
+        { "name": "buyOrBuild", "dataType": "String", "description": "buy/build/undecided", "noteId": "1d9786dc-0c17-41a7-aa1a-88e06589860a" },
+        { "name": "aggregateIds", "dataType": "List[Id]", "description": "IDs of aggregates in this subdomain", "defaultValue": "List.empty", "noteId": "e06a4f70-4a4c-4367-b9ca-3a3bfbed1665" },
+        { "name": "classifiedAt", "dataType": "Instant", "description": "time when the subdomain was classified", "noteId": "34cf0b19-b6f8-436e-b4ac-e089658f2d97" },
+        { "name": "classifiedBy", "dataType": "String", "description": "user who classified the subdomain", "noteId": "66e2f6b4-17b9-47b3-b84d-d5ea4effd9de" }
+      ],
+      "stateHelpers": [],
+      "repository": { "finders": [] }
+    }
+  ],
+  "valueObjects": [],
+  "readModels": [],
+  "stories": []
+}

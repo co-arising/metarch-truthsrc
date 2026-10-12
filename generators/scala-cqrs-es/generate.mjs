@@ -30,21 +30,28 @@ const MODULE_OF = {
   'behaviors': 'modules/kernel',
   'command-helpers': 'modules/kernel',
 };
-const emit = (a, file, kind, content) => ({
-  path: `${MODULE_OF[kind] ?? 'modules/kernel'}/src/main/scala/${(a.pkg ?? 'net.imadz').replaceAll('.', '/')}/${file}`,
-  content, kind, schemaCategory: 'aggregate', families: [a.name], deps: [],
-});
+const emit = (a, file, kind, content) => {
+  const pkgPath = `${a.pkg ?? 'net.imadz'}${a.ctxPackage ? `.${a.ctxPackage}` : ''}`.replaceAll('.', '/');
+  return {
+    path: `${MODULE_OF[kind] ?? 'modules/kernel'}/src/main/scala/${pkgPath}/${file}`,
+    content, kind, schemaCategory: 'aggregate', families: [a.name], deps: [],
+  };
+};
 
 // env: cross-cutting generation facts, mirroring internal semantics —
 //   frameworkBase   = canonical.framework.base (knowledge-side: where the framework lives)
 //   knowledgeRelease= canonical.knowledgeRelease (knowledge-side; line omitted when absent)
 //   generatorVersion= options.generatorVersion (generator-side: host repo id at generate time;
 //                     date fallback mirrors internal GeneratorVersion — never compared)
+//   anchor(noteId)  = `@<hash16>` looked up from options.elementHashes (knowledge-side sidecar,
+//                     keyed by noteId, exactly like the internal elementHashes map); miss → ''.
 export function generate({ canonical, options = {} }) {
+  const hashes = options.elementHashes ?? {};
   const env = {
     frameworkBase: canonical.framework?.base ?? 'net.imadz.framework.common',
     knowledgeRelease: canonical.knowledgeRelease,
     generatorVersion: options.generatorVersion ?? new Date().toISOString().slice(0, 10),
+    anchor: (noteId) => (hashes[noteId] ? `@${hashes[noteId]}` : ''),
   };
   const entries = [];
   for (const a of canonical.aggregates ?? []) {

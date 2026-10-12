@@ -171,3 +171,33 @@ mechanism itself lives in the core (`entry.knowledgeId → anchors[id]`); a
 canonical that carries knowledge ids drives non-empty anchors with no generator
 change. A generator that *has* knowledge ids but drops them is lossy and marked
 as such per the Output contract above.
+
+### Real truth-source baseline (inc4) — metarch, `@knowledge` anchors
+
+The byte-identity baseline is the **metarch truth source** (`golden/scala-cqrs-es-metarch/`,
+aggregate `Subdomain`), generated from the live `CodegenMain` IngestedSystem run
+(multi-module), not the banking Examples demo. The CreditBalance fixture is kept as
+the regression for the *no-anchor* path. Two extra inputs mirror the internal
+generator's two independent sources:
+
+- **structure + noteId** come from the canonical (every anchored field carries a
+  `noteId`);
+- **the `@<hash16>` suffix** comes from `elementHashes` — a `{ noteId: hash16 }`
+  sidecar (`golden/scala-cqrs-es-metarch/elementHashes.json`, a slice of the graph
+  export's `elementHashes`), passed as the `elementHashes` option. The generator
+  only looks it up (`env.anchor(noteId)`); the hash is computed upstream by the
+  knowledge export, exactly as the internal `CQRSApplicationGenerator` reads a
+  precomputed `elementHashes` map. A missing entry yields a bare `@knowledge <uuid>`.
+
+Anchor doc comments render as `@param <name>[ <desc>]  @knowledge <uuid>@<hash16>`
+on command/event/state/factory members, and a bare `@knowledge <uuid>@<hash16>`
+before the entity object and the repository trait.
+
+The metarch baseline also exercises convention slots that are data, not hardcode:
+`commandFamily` (trait name; the command-handler alias is derived by replacing the
+first `Command` with `CommandHandler`), per-command reply names, a verbatim
+`persistence.tagPrefix`, `empty()` neutral-value derivation per field type, and the
+`triggeredBy` ordinary parameter. Imports follow the internal rule exactly — the
+sorted **multiset** of fqns over the set of distinct fully-qualified TypeRefs
+(distinctness includes type parameters), filtered by a pure package comparison
+(`shouldImport`); module layout never affects the import set.
