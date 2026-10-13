@@ -97,3 +97,28 @@ ${apply}
 }
 `;
 }
+
+// renderRuleParams — the <Agg>RuleParams.scala file (rules_domain_gen lines 2702-2712): projection
+// VO case classes in a single object, preceded by the Id/Instant/values import block (each import
+// line abuts the next and the doc comment — no blank lines in this header region).
+export function renderRuleParams(m) {
+  const { agg, pkg, ctx } = m;
+  const base = `${pkg}.${ctx}`;
+  const imports = `${m.needId ? 'import net.imadz.common.CommonTypes.Id\n' : ''}${m.needInstant ? 'import java.time.Instant\n' : ''}${m.needVO ? `import ${base}.domain.values._\n` : ''}`;
+  const blocks = m.classes.flatMap((c) => [
+    ...c.anchors,
+    `  /** ${c.name} 规则投影：${c.ruleIds.join(' / ') || '（无命令级规则）'} */`,
+    `  final case class ${c.name}Params(${c.fields.join(', ')})`,
+  ]);
+  return `${m.header}package ${base}.domain.invariant.params
+
+${imports}/**
+ * 命令 → 领域规则参数的投影 VO（方案 A，2026-08-22，rules_domain_gen.mjs 生成）。
+ * 业务不变性（InvariantRule）是 domain 层资产——规则只依赖领域实体状态、事件与这些投影 VO，
+ * 不依赖 application 层命令类型。字段 = 该命令被**规则或策略**引用的输入 + 操作人（triggeredBy）。
+ */
+object ${m.agg}RuleParams {
+${blocks.join('\n')}
+}
+`;
+}

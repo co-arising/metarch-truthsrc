@@ -9,9 +9,12 @@
 // (mechanical proof: live Protocol order ≠ CommandHelpers toParam order). Per Fork A the fixtures
 // carry the RAW inputs and the generator ports the discovery, so this tool attaches, per write
 // command:
-//   • preconditionRules: [{expression, humanDescription}] — the single-command COMMAND_PRECONDITION
-//     rules attributed to it (attribution mirrors rules_domain_gen: cases-driven, multi-command and
-//     AGGREGATE_INVARIANT rules demote to aggregate level and are NOT attached here);
+//   • preconditionRules: [{id, noteId, expression, humanDescription}] — the single-command
+//     COMMAND_PRECONDITION rules attributed to it (attribution mirrors rules_domain_gen:
+//     cases-driven, multi-command and AGGREGATE_INVARIANT rules demote to aggregate level and are
+//     NOT attached here). `id` feeds the RuleParams doc-comment rule-id list; `noteId` (=
+//     definedIn.targetId, usually the command's own concept noteId) feeds the per-class
+//     `@knowledge` anchor lines;
 //   • behaviorModel: { emissions:[{event,forEach?,bindings}], emitWhen?:[...] } — the raw ④-layer
 //     decision (binding insertion order preserved; the generator does the var-ref / binding scan).
 //
@@ -25,13 +28,19 @@
 //     The exact survivor filter (event-construction conflict guard) is a Rules-face (inc9) concern;
 //     this bit is the conservative "event postconditions exist for this aggregate's events".
 //
+// It also attaches canonical-level (consumed by the RuleParams face, V4-3 inc8):
+//   • voNames: [String] — the domain/values case-class name registry (rules_domain_gen's voByName:
+//     scan of the target repo's domain/values/*.scala `final case class X(` signatures), driving
+//     the `import <pkg>.domain.values._` line in <Agg>RuleParams.scala. Membership-tested only.
+//
 // Usage:
 //   node tools/augment-rules-canonical.mjs --aggregate ModelCatalog \
 //     --canonical  golden/scala-cqrs-es-metarch/model-catalog.canonical.json \
 //     --rules      /path/to/generated_rules.json \
 //     --cases      /path/to/executable_cases.json \
 //     --behavior   /path/to/metarch-behaviormodel.json \  # { aggregates:[{name,decisions:[...]}] }
-//     --functions  /path/to/functions.yaml                # ext-port registry source
+//     --functions  /path/to/functions.yaml \              # ext-port registry source
+//     --values     /path/to/ingested-app/app/net/imadz/metarch/domain/values  # VO registry source
 
 import fs from 'node:fs';
 
@@ -46,9 +55,10 @@ const rulesPath = arg('rules');
 const casesPath = arg('cases');
 const behaviorPath = arg('behavior');
 const functionsPath = arg('functions');
+const valuesPath = arg('values');
 
-if (!aggName || !canonicalPath || !rulesPath || !casesPath || !behaviorPath || !functionsPath) {
-  console.error('missing required args: --aggregate --canonical --rules --cases --behavior --functions');
+if (!aggName || !canonicalPath || !rulesPath || !casesPath || !behaviorPath || !functionsPath || !valuesPath) {
+  console.error('missing required args: --aggregate --canonical --rules --cases --behavior --functions --values');
   process.exit(2);
 }
 
@@ -77,7 +87,12 @@ for (const rule of invRules) {
   if (type === 'AGGREGATE_INVARIANT' || caseCmds.size > 1) continue; // aggregate-level — not per-command
   const owner = inAgg[0];
   if (!cmdRules.has(owner)) cmdRules.set(owner, []);
-  cmdRules.get(owner).push({ expression: expr, humanDescription: rule.humanDescription ?? '' });
+  cmdRules.get(owner).push({
+    id: rule.id,
+    noteId: rule.definedIn?.targetId ?? null, // rules_domain_gen ruleTargetId — anchor line source
+    expression: expr,
+    humanDescription: rule.humanDescription ?? '',
+  });
 }
 
 // --- behaviorModel decisions for this aggregate ----------------------------------------------
@@ -160,5 +175,16 @@ const emitsEvtPost = invRules.some((r) => {
 });
 agg.emitsEventPostconditionCheck = emitsEvtPost;
 
+// --- voNames registry (rules_domain_gen voByName): case-class names in the target repo's
+// domain/values/*.scala — light signature scan mirroring the source's parseCaseClassSignature
+// first-token capture (membership only; defaults/extends are not consumed here).
+const voNames = new Set();
+for (const f of fs.readdirSync(valuesPath)) {
+  if (!f.endsWith('.scala')) continue;
+  const src = fs.readFileSync(`${valuesPath}/${f}`, 'utf8');
+  for (const m of src.matchAll(/^\s*(?:final\s+)?case\s+class\s+([A-Za-z]\w*)\s*\(/gm)) voNames.add(m[1]);
+}
+canonical.voNames = [...voNames].sort();
+
 fs.writeFileSync(canonicalPath, JSON.stringify(canonical, null, 2) + '\n');
-console.log(`augmented ${canonicalPath}: ${attached} commands with preconditionRules, ${bmByCmd.size} with behaviorModel, ${referenced.length} port(s) [${referenced.map((p) => p.member).join(',')}], emitsEventPostconditionCheck=${emitsEvtPost}`);
+console.log(`augmented ${canonicalPath}: ${attached} commands with preconditionRules, ${bmByCmd.size} with behaviorModel, ${referenced.length} port(s) [${referenced.map((p) => p.member).join(',')}], emitsEventPostconditionCheck=${emitsEvtPost}, voNames=${canonical.voNames.length}`);

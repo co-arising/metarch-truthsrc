@@ -73,6 +73,8 @@
           "noteId": "693bff63-3dfb-4903-b70d-03df85582708",
           "preconditionRules": [
             {
+              "id": "IR-CAT-CMD-002_concepts",
+              "noteId": "693bff63-3dfb-4903-b70d-03df85582708",
               "expression": {
                 "notNull": {
                   "var": "ApplyKnowledgePatch.concepts"
@@ -81,6 +83,8 @@
               "humanDescription": "ApplyKnowledgePatch.concepts 必须非空"
             },
             {
+              "id": "ir_cmd_ApplyKnowledgePatch_triggered_by",
+              "noteId": "693bff63-3dfb-4903-b70d-03df85582708",
               "expression": {
                 "notNull": {
                   "var": "ApplyKnowledgePatch.triggeredBy"
@@ -89,6 +93,8 @@
               "humanDescription": "ApplyKnowledgePatch.triggeredBy 不能为空"
             },
             {
+              "id": "ir_gen_ref_IR_CAT_CMD_002_sessionId",
+              "noteId": "693bff63-3dfb-4903-b70d-03df85582708",
               "expression": {
                 "refExists": {
                   "var": "ApplyKnowledgePatch.sessionId",
@@ -189,6 +195,8 @@
           "noteId": "45126419-72dd-46fb-8920-139f9a80888a",
           "preconditionRules": [
             {
+              "id": "ir_cmd_AssembleMetadata_triggered_by",
+              "noteId": "45126419-72dd-46fb-8920-139f9a80888a",
               "expression": {
                 "notNull": {
                   "var": "AssembleMetadata.triggeredBy"
@@ -254,6 +262,8 @@
           "noteId": "935a445d-fd08-4c0f-87c5-7dce9a0ac528",
           "preconditionRules": [
             {
+              "id": "IR-CAT-CMD-007",
+              "noteId": "935a445d-fd08-4c0f-87c5-7dce9a0ac528",
               "expression": {
                 "pattern": {
                   "var": "CreateCatalogVersion.version",
@@ -263,6 +273,8 @@
               "humanDescription": "`version` 必须匹配正则 `^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$`"
             },
             {
+              "id": "ir_cmd_CreateCatalogVersion_triggered_by",
+              "noteId": "935a445d-fd08-4c0f-87c5-7dce9a0ac528",
               "expression": {
                 "notNull": {
                   "var": "CreateCatalogVersion.triggeredBy"
@@ -271,6 +283,8 @@
               "humanDescription": "CreateCatalogVersion.triggeredBy 不能为空"
             },
             {
+              "id": "ir_gen_ref_IR_CAT_CMD_001_projectId",
+              "noteId": "935a445d-fd08-4c0f-87c5-7dce9a0ac528",
               "expression": {
                 "refExists": {
                   "var": "CreateCatalogVersion.projectId",
@@ -322,6 +336,8 @@
           "noteId": "061f7abd-f40a-4415-aac3-865647716e03",
           "preconditionRules": [
             {
+              "id": "IR-CAT-CMD-003",
+              "noteId": "061f7abd-f40a-4415-aac3-865647716e03",
               "expression": {
                 "notIn": [
                   {
@@ -335,6 +351,8 @@
               "humanDescription": "执行 DetectCatalogConflicts 前，聚合状态不能为 CONFLICT_DETECTED"
             },
             {
+              "id": "ir_cmd_DetectCatalogConflicts_triggered_by",
+              "noteId": "061f7abd-f40a-4415-aac3-865647716e03",
               "expression": {
                 "notNull": {
                   "var": "DetectCatalogConflicts.triggeredBy"
@@ -388,6 +406,8 @@
           "noteId": "9c4ec5d3-a676-4970-8142-3ac18088d457",
           "preconditionRules": [
             {
+              "id": "ir_cmd_ExportMetadata_triggered_by",
+              "noteId": "9c4ec5d3-a676-4970-8142-3ac18088d457",
               "expression": {
                 "notNull": {
                   "var": "ExportMetadata.triggeredBy"
@@ -441,6 +461,8 @@
           "noteId": "cb5c658c-759a-420c-9855-e138deb382db",
           "preconditionRules": [
             {
+              "id": "IR-CAT-CMD-005",
+              "noteId": "cb5c658c-759a-420c-9855-e138deb382db",
               "expression": {
                 "in": [
                   {
@@ -455,6 +477,8 @@
               "humanDescription": "执行 ReleaseCatalogVersion 前，聚合状态必须为 RESOLVED / DRAFT"
             },
             {
+              "id": "ir_cmd_ReleaseCatalogVersion_triggered_by",
+              "noteId": "cb5c658c-759a-420c-9855-e138deb382db",
               "expression": {
                 "notNull": {
                   "var": "ReleaseCatalogVersion.triggeredBy"
@@ -508,6 +532,8 @@
           "noteId": "825b5a8e-79da-41cc-95b4-b6b43b378f1c",
           "preconditionRules": [
             {
+              "id": "ir_cmd_ReleaseMetadataVersion_triggered_by",
+              "noteId": "825b5a8e-79da-41cc-95b4-b6b43b378f1c",
               "expression": {
                 "notNull": {
                   "var": "ReleaseMetadataVersion.triggeredBy"
@@ -571,6 +597,8 @@
           "noteId": "8d707ca0-8f91-48d8-8774-db4d694866d8",
           "preconditionRules": [
             {
+              "id": "IR-CAT-CMD-004_ModelCatalog_conflicts",
+              "noteId": "8d707ca0-8f91-48d8-8774-db4d694866d8",
               "expression": {
                 "notNull": {
                   "var": "ModelCatalog.conflicts"
@@ -579,6 +607,8 @@
               "humanDescription": "ModelCatalog.conflicts 必须非空"
             },
             {
+              "id": "ir_cmd_ResolveCatalogConflict_triggered_by",
+              "noteId": "8d707ca0-8f91-48d8-8774-db4d694866d8",
               "expression": {
                 "notNull": {
                   "var": "ResolveCatalogConflict.triggeredBy"
@@ -1192,5 +1222,38 @@
   ],
   "valueObjects": [],
   "readModels": [],
-  "stories": []
+  "stories": [],
+  "voNames": [
+    "AggregateRelationSpec",
+    "CatalogConflict",
+    "CatalogConflictSet",
+    "CatalogPatchSet",
+    "ChecklistItem",
+    "CodeAnchorDelta",
+    "ConceptDelta",
+    "ConceptIndexEntry",
+    "DoRAssessmentResult",
+    "DoRVerdict",
+    "EdgeTarget",
+    "EventBinding",
+    "FieldCommandSpec",
+    "FieldEdge",
+    "FieldEventSpec",
+    "FieldParamSpec",
+    "FieldSpec",
+    "FieldStateSpec",
+    "Finding",
+    "FsmStateDef",
+    "FsmTransition",
+    "GuardSpec",
+    "ParticipantRole",
+    "PatchReadModelFieldSpec",
+    "ReadModelFieldSpec",
+    "RelationDelta",
+    "RuleRef",
+    "StateGateSpec",
+    "StatusTransitionSpec",
+    "UcStep",
+    "VOMemberSpec"
+  ]
 }

@@ -1,7 +1,8 @@
-// scala-cqrs-es-rules-metarch.test.mjs — V4-3 inc6+inc7 gate: golden byte identity against the LIVE
-// rules_domain_gen output (di-poc, verified fresh: re-running CODEGEN_MULTI=1 rules_domain_gen
-// --agg=ModelCatalog into a temp copy reproduced both committed files byte-for-byte, 2026-10-13),
-// for the ModelCatalog CommandHelpers glue and the Behaviors command-flow wiring.
+// scala-cqrs-es-rules-metarch.test.mjs — V4-3 inc6+inc7+inc8 gate: golden byte identity against the
+// LIVE rules_domain_gen output (di-poc, verified fresh: re-running CODEGEN_MULTI=1 rules_domain_gen
+// --agg=ModelCatalog into a temp copy reproduced all three committed files byte-for-byte,
+// 2026-10-13), for the ModelCatalog CommandHelpers glue, the Behaviors command-flow wiring and the
+// RuleParams projection VOs.
 //
 // This is the SECOND generator (the rules face). Where scala-cqrs-es emits the CodegenMain skeleton,
 // scala-cqrs-es-rules reproduces the rules_domain_gen pass that overwrites the behaviors glue. The
@@ -18,6 +19,11 @@
 //     off the aggregate's event-postcondition bit. Each write case anchors its command concept
 //     noteId + elementHashes hash (`@knowledge <uuid>@<hash16>`); the Get<X>State query is the
 //     mechanical Effect.reply(state) body with NO anchor.
+//   • RuleParams: one case class per write command in the SAME union-discovered order as toParam,
+//     types from the declared command parameters (`string (uuid)` → Id); the per-class anchor is
+//     the rule targetId (all of a command's precondition rules share its concept noteId → one
+//     deduped line) and the doc comment lists the rule IDs; List-typed fields get ` = List.empty`;
+//     the Id/values import bits are regex-decided over the rendered field lines (voNames registry).
 import { equal, ok } from 'node:assert';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -36,7 +42,7 @@ const { entries } = await plan({
     elementHashes: JSON.parse(readFileSync(HASHES, 'utf8')),
   },
 });
-equal(entries.length, 2);
+equal(entries.length, 3);
 for (const e of entries) {
   const want = readFileSync(join(GOLD, e.path), 'utf8');
   equal(e.content, want, `byte identity: ${e.path}`);
@@ -77,4 +83,23 @@ ok(bh.includes('def apply(adjudicator: ConceptDeltaAdjudicator): ModelCatalogAgg
 ok(bh.includes('require(adjudicator != null, "adjudicator 未绑定")'), 'port member require-guard');
 ok(bh.includes('import net.imadz.metarch.domain.service.ConceptDeltaAdjudicator\n'), 'port trait import');
 
-console.log('✅ scala-cqrs-es-rules-metarch — golden byte identity (ModelCatalog CommandHelpers + Behaviors, rules face)');
+// RuleParams: the case class carries the SAME union-discovered field order as toParam (string
+// (uuid) → Id), the List-typed field gets ` = List.empty`, and the query command gets no class.
+const rp = entries.find((e) => e.kind === 'rule-params').content;
+ok(rp.includes('final case class ApplyKnowledgePatchParams(sessionId: Id, concepts: List[ConceptDelta] = List.empty, triggeredBy: String, catalogId: Id, patchId: Id, patchHash: String, parentPatchId: Id)'),
+  'ApplyKnowledgePatchParams: paramDefs order + Id mapping + List.empty default');
+ok(rp.includes('final case class AssembleMetadataParams(triggeredBy: String, projectId: Id, version: String, manifest: String, tenantId: Id)'),
+  'AssembleMetadataParams: union-discovery order, not declared order');
+ok(!rp.includes('GetModelCatalogStateParams'), 'query command has no Params class');
+// The per-class anchor is the rule targetId (deduped — all 3 ApplyKnowledgePatch rules share the
+// command noteId → exactly one anchor line) and the doc comment lists the rule IDs in order.
+equal((rp.match(/@knowledge 693bff63-3dfb-4903-b70d-03df85582708/g) || []).length, 1,
+  'rule targetIds dedupe to one anchor per class');
+ok(rp.includes('/** ApplyKnowledgePatch 规则投影：IR-CAT-CMD-002_concepts / ir_cmd_ApplyKnowledgePatch_triggered_by / ir_gen_ref_IR_CAT_CMD_002_sessionId */'),
+  'doc comment lists attributed rule IDs (attached order)');
+// Import bits: Id (uuid params) + values._ (List[ConceptDelta] ∈ voNames) present; Instant absent.
+ok(rp.includes('import net.imadz.common.CommonTypes.Id\nimport net.imadz.metarch.domain.values._\n/**'),
+  'Id + values imports abut the doc comment (no blank lines)');
+ok(!rp.includes('import java.time.Instant'), 'no Instant import (no Instant-typed field)');
+
+console.log('✅ scala-cqrs-es-rules-metarch — golden byte identity (ModelCatalog RuleParams + CommandHelpers + Behaviors, rules face)');

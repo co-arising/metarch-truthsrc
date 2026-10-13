@@ -242,9 +242,9 @@ skeleton breadth, not policy wiring.
 reproduces the production `rules_domain_gen` pass, which *overwrites* the aggregate's
 behaviors glue (and adds the domain rules) after `CodegenMain` has written the skeleton —
 mirroring the real two-pass pipeline (skeleton, then rules win on the overlapping paths).
-inc6 ported `CommandHelpers` and inc7 added `Behaviors` (both byte-identical to the live
-`di-poc` output, verified fresh by re-running `CODEGEN_MULTI=1 rules_domain_gen
---agg=ModelCatalog` into a temp copy).
+inc6 ported `CommandHelpers`, inc7 added `Behaviors` and inc8 added `RuleParams` (all
+byte-identical to the live `di-poc` output, verified fresh by re-running `CODEGEN_MULTI=1
+rules_domain_gen --agg=ModelCatalog` into a temp copy).
 
 The load-bearing difference from the skeleton generators: this face is **not** a structural
 projection. A command's `toParam` field **order** is a union discovered over
@@ -259,19 +259,20 @@ rule-referenced field first, then the binding order. The declared order never ap
 
 Per the Fork-A ruling (EP_Truthsrc_Codegen_V04), the fixtures carry the **raw** inputs and
 the generator ports the discovery. `tools/augment-rules-canonical.mjs` attaches, per write
-command, `preconditionRules` (`{expression, humanDescription}`, cases-driven attribution:
-multi-command and `AGGREGATE_INVARIANT` rules demote to aggregate level and are not attached)
-and the raw `behaviorModel` decision (`emissions`/`emitWhen`, binding order preserved) from the
-backend-codegen `generated_rules.json` / `executable_cases.json` / refining `behaviorModel`.
-The discovery itself — `collectVarRefs`, `inputFieldOf`, `normalizeEmitWhen`, `condParamRefs`
-and the loop ordering — is ported verbatim into `builders/rules.mjs`. The query command is
-imported (both `Get<Name>State` and its `Reply`) but gets no helper object.
+command, `preconditionRules` (`{id, noteId, expression, humanDescription}`, cases-driven
+attribution: multi-command and `AGGREGATE_INVARIANT` rules demote to aggregate level and are
+not attached) and the raw `behaviorModel` decision (`emissions`/`emitWhen`, binding order
+preserved) from the backend-codegen `generated_rules.json` / `executable_cases.json` /
+refining `behaviorModel`. The discovery itself — `collectVarRefs`, `inputFieldOf`,
+`normalizeEmitWhen`, `condParamRefs` and the loop ordering — is ported verbatim into
+`builders/rules.mjs`. The query command is imported (both `Get<Name>State` and its `Reply`)
+but gets no helper object.
 
 inc6 ports loops 1+2 only; the policy-binding, event-same-name and command→event lineage
 augmentation loops are not yet needed (the ModelCatalog corpus does not exercise them —
 verified: loops 1+2 reproduce all 9 helpers byte-for-byte) and land with the aggregates that
-require them. `RuleParams`, `Rules` (the `exprToScala` engine) and `Policies` follow in
-later increments.
+require them. `Rules` (the `exprToScala` engine), `RulesSpec` and `Policies` follow in later
+increments.
 
 **Behaviors (inc7)** — the command-flow wiring, one match case per command in declared
 order. Each write command renders
@@ -292,3 +293,24 @@ Three decisions are semantic, all driven by augment-attached slots:
   `elementHashes` option contract as the skeleton generator). The `Get<X>State` query case
   is the mechanical `Effect.reply(cmd.replyTo)(<X>Reply(state))` body (S1 ruling) and
   carries no anchor.
+
+**RuleParams (inc8)** — `domain/invariant/params/<Agg>RuleParams.scala`, one
+`final case class <Cmd>Params(...)` per write command inside a single object. The field
+set+order is the **same union discovery** as `toParam` (the projection VOs and the helpers
+cannot disagree), the types come from the declared command parameters (`string (uuid)` →
+`Id`), and `List[...]`-typed fields get ` = List.empty` (the E101 extension-slot default:
+unbound slots emit their default instead of skipping the emission). Two per-class lines are
+rule-driven:
+
+- an `@knowledge` anchor line per **deduped rule targetId** — every precondition rule of a
+  command carries the command's own concept noteId as `definedIn.targetId`, so a command
+  with three attributed rules renders exactly one anchor (the dedup is by value);
+- a doc comment listing the attributed **rule IDs** (` / `-joined, attached order) or
+  `（无命令级规则）`.
+
+The file's three import lines are decided by regex over the *rendered* field lines, exactly
+as the source does: `CommonTypes.Id` when any field is `: Id`, `java.time.Instant` when any
+is `: Instant`, and `<base>.domain.values._` when a type token right after `: ` (optionally
+under `List[`) names a VO in the `voNames` registry — the case-class names of the target
+repo's `domain/values/*.scala`, attached by the augment tool. ModelCatalog needs Id + values
+(`List[ConceptDelta]`), not Instant.

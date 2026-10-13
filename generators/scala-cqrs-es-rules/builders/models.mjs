@@ -6,6 +6,10 @@ import { computeParamDefs, normalizeEmitWhen, scalaRef } from './rules.mjs';
 // marks the synthesized Get<Name>State query readOnly; everything else is a write command.
 const isQuery = (c) => c.readOnly === true;
 
+// dataType (canonical) → Scala signature, mirroring the skeleton's scalaSig (DataTypeMapper):
+// 'string (uuid)'|'uuid' → Id (the CommonTypes alias); else verbatim (List[Finding] etc. pass through).
+const scalaSig = (dt) => (dt === 'string (uuid)' || dt === 'uuid' ? 'Id' : dt);
+
 // noteAnchor — patch_core.noteAnchor: `// @knowledge <noteId>` plus the `@<hash>` suffix when the
 // elementHashes sidecar carries the entry; '' when noteId is null (un-anchored lines render bare).
 function noteAnchor(noteId, elementHashes, indent = '') {
@@ -119,5 +123,53 @@ export function behaviorsModel(a, env) {
     portTraits: ports.map((p) => `${p.fqPkg}.${p.trait}`),
     portParams: ports.map((p) => ({ member: p.member, trait: p.trait })),
     cases,
+  };
+}
+
+// ruleParamsModel — the command → rule-param projection VOs (rules_domain_gen lines 1426-1464):
+// one `final case class <Cmd>Params(...)` per WRITE command, field set+order = paramDefs (the same
+// union-discovery as CommandHelpers' toParam), types from the declared command parameters. Each
+// class is preceded by (a) `@knowledge` anchor lines — the DEDUPED rule targetIds of the command's
+// attached preconditionRules (all of a command's rules share its concept noteId, so one line — but
+// the dedup is by value, not by count) and (b) a doc comment listing the rule IDs (` / `-joined,
+// attached order) or `（无命令级规则）`. List-typed fields get ` = List.empty` (E101 extension-slot
+// default). The three import bits are decided by regex over the RENDERED field lines, exactly as
+// the source does (paramsNeedId/paramsNeedInstant/paramsNeedVO vs the voNames registry).
+export function ruleParamsModel(a, env) {
+  const voNames = new Set(a.voNames ?? env.voNames ?? []);
+  const classes = [];
+  const lines = []; // rendered `name: Type` fragments — the import bits regex over these
+  for (const c of a.commands ?? []) {
+    if (isQuery(c)) continue;
+    const rules = c.preconditionRules ?? [];
+    const fields = computeParamDefs(c.name, c.parameters ?? [], rules, c.behaviorModel);
+    // cmdTypes: declared params minus ActorRef-typed (source filter; canonical never carries them,
+    // but the fallback for a missing entry is 'String' either way)
+    const cmdTypes = Object.fromEntries(
+      (c.parameters ?? []).filter((p) => !String(scalaSig(p.dataType)).startsWith('ActorRef[')).map((p) => [p.name, scalaSig(p.dataType)]),
+    );
+    const fieldReprs = fields.map((f) => {
+      const t = cmdTypes[f] || 'String';
+      return `${scalaRef(f)}: ${t}${/^List\[/.test(t) ? ' = List.empty' : ''}`;
+    });
+    lines.push(...fieldReprs);
+    classes.push({
+      name: c.name,
+      anchors: [...new Set(rules.map((r) => r.noteId).filter(Boolean))].map((rid) => noteAnchor(rid, env.elementHashes, '  ').trimEnd()),
+      ruleIds: rules.map((r) => r.id),
+      fields: fieldReprs,
+    });
+  }
+  const joined = lines.join(', ');
+  return {
+    header: env.header,
+    pkg: a.pkg ?? 'net.imadz',
+    ctx: a.ctxPackage,
+    agg: a.name,
+    classes,
+    needId: /: Id\b/.test(joined),
+    needInstant: /: Instant\b/.test(joined),
+    // paramsNeedVO: type token right after `: ` (optionally under List[) is a domain/values VO
+    needVO: [...joined.matchAll(/: (List\[)?([A-Za-z]\w*)/g)].some((m) => voNames.has(m[2])),
   };
 }
