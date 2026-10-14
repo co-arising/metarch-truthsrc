@@ -158,11 +158,13 @@ const queryCommand = {
 const commands = [...writeCommands, queryCommand];
 
 // events sorted alphabetically; payloads/folds in fieldTree order
+const evtNoteId = (name) => (exp.notes ?? []).find((n) => n.type === 'event' && n.name === name)?.noteId;
 const events = (agg.events ?? [])
   .slice()
   .sort((a, b) => a.name.localeCompare(b.name))
   .map((e) => ({
     name: e.name,
+    noteId: evtNoteId(e.name) ?? null, // event concept noteId — the EVENT_POSTCONDITION anchor + sidecar face (inc9)
     payloads: (e.payloads ?? []).map(payloadField),
     foldAssignments: (e.foldAssignments ?? []).map((f) => ({ slot: f.slot, expr: f.expr })),
   }));

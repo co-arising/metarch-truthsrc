@@ -109,3 +109,131 @@ export function computeParamDefs(cmdName, params, rules, bm) {
   }
   return fields;
 }
+
+// ── inc9 additions (rules_domain_gen / emit_when ports) ──────────────────────────────────────
+
+// emitWhenEventNames — the conditional-leg event set in declaration order (emit_when.mjs).
+export function emitWhenEventNames(branches) {
+  return (branches || []).flatMap((b) => b.events.map((e) => e.event));
+}
+
+// condGuaranteedParams — params whose emitWhen conds carry notNull/notEmpty/in(/notIn) constraints
+// (emit_when.mjs): the conditional leg only fires when the param is present, so the EVT
+// conflict-detection counts it as guaranteed-non-null.
+export function condGuaranteedParams(branches, cmdName) {
+  const out = new Set();
+  for (const br of branches || []) walkGuarantee(br.cond, cmdName, out);
+  return out;
+}
+function walkGuarantee(expr, cmdName, out) {
+  if (!expr || typeof expr !== 'object') return;
+  if (Array.isArray(expr)) { expr.forEach((x) => walkGuarantee(x, cmdName, out)); return; }
+  for (const [k, v] of Object.entries(expr)) {
+    if (k === 'notNull' || k === 'notEmpty') {
+      if (v && typeof v === 'object' && typeof v.var === 'string') addHosted(v.var, cmdName, out);
+      continue;
+    }
+    if (k === 'in' || k === 'notIn') {
+      if (Array.isArray(v) && v[0] && typeof v[0].var === 'string') addHosted(v[0].var, cmdName, out);
+      continue;
+    }
+    walkGuarantee(v, cmdName, out);
+  }
+}
+function addHosted(v, cmdName, out) {
+  const s = String(v).split('.');
+  if (s.length === 2 && s[0] === cmdName) out.add(s[1]);
+}
+
+// nonNullGuaranteed — rules-level guaranteed-non-null var set (rules_domain_gen lines 3311-3329):
+// notNull/notEmpty/in/notIn constrained vars of the given rules (positive-case patching fills them
+// with satisfying values, so event fields sourced from them are decidable non-null).
+export function nonNullGuaranteed(rules) {
+  const out = new Set();
+  const walk = (expr) => {
+    if (!expr || typeof expr !== 'object') return;
+    if (Array.isArray(expr)) { expr.forEach(walk); return; }
+    for (const [k, v] of Object.entries(expr)) {
+      if (k === 'notNull' || k === 'notEmpty') {
+        if (v && typeof v === 'object' && typeof v.var === 'string') out.add(v.var);
+        continue;
+      }
+      if (k === 'in' || k === 'notIn') {
+        if (Array.isArray(v) && v[0] && typeof v[0].var === 'string') out.add(v[0].var);
+        continue;
+      }
+      walk(v);
+    }
+  };
+  (rules || []).forEach((r) => walk(r.expression));
+  return out;
+}
+
+// exprGuaranteesNonEmpty — event-construction arg expressions that are non-null by construction
+// (rules_domain_gen lines 3300-3309): Instant.now() / non-empty literals; p.<f>/state.<f> refs are
+// judged by the caller via the guarantee sets.
+export function exprGuaranteesNonEmpty(expr) {
+  if (!expr) return false;
+  if (/^p\./.test(expr) || /^state\./.test(expr)) return true;
+  if (/Instant\.now\(\)/.test(expr)) return true;
+  if (/^"[^"]+"$/.test(expr) || /^-?\d+(\.\d+)?[Ld]?$/.test(expr) || /^Id\.of\(/.test(expr) || /^BigDecimal\(/.test(expr) || /^true$/.test(expr) || /^false$/.test(expr)) return true;
+  return false;
+}
+
+// p4NormalizeCond — ③-layer cond-string null handling → Option combinators (rules_domain_gen
+// lines 260-272). Only three exact shapes are rewritten; everything else passes through verbatim.
+export function p4NormalizeCond(cond) {
+  if (!cond || !cond.includes('null')) return cond;
+  let out = cond;
+  out = out.replace(/([A-Za-z][\w.`]*)\s*!=\s*null\s*&&\s*\1\.nonEmpty\b/g, 'Option($1).exists(_.nonEmpty)');
+  out = out.replace(/([A-Za-z][\w.`]*)\s*!=\s*null/g, 'Option($1).isDefined');
+  out = out.replace(/([A-Za-z][\w.`]*)\s*==\s*null/g, 'Option($1).isEmpty');
+  return out;
+}
+
+// idempotencyExprOf — the ④-layer decision.idempotentOn payload/state equality short-circuit
+// (rules_domain_gen lines 274-296). FATALs on真源 drift (field missing from params or state).
+export function idempotencyExprOf(agg, cmdName, paramsName, stateTypes, evParams, bmDecision) {
+  const d = bmDecision(agg, cmdName);
+  const fields = d && Array.isArray(d.idempotentOn) ? d.idempotentOn : null;
+  if (!fields || !fields.length) return null;
+  const conds = [];
+  for (const f of fields) {
+    if (!evParams.has(f)) throw new Error(`idempotentOn 字段 ${agg}.${cmdName}.${f} 不在命令参数（真源漂移·FATAL）`);
+    if (stateTypes[f] === undefined) throw new Error(`idempotentOn 字段 ${agg}.${cmdName}.${f} 不在聚合状态（真源漂移·FATAL）`);
+    const st = stateTypes[f];
+    const pt = evParams.get(f).type;
+    const pIsId = pt === 'Id' || String(pt).startsWith('Id');
+    const sIsId = st === 'Id' || String(st).startsWith('Id');
+    const pRef = `p.${scalaRef(f)}${(!sIsId && pIsId) ? '.toString' : ''}`;
+    const sRef = `state.${scalaRef(f)}${(sIsId && !pIsId) ? '.toString' : ''}`;
+    if (/^List\[/.test(st)) conds.push(`Option(p.${scalaRef(f)}).getOrElse(Nil) == Option(state.${scalaRef(f)}).getOrElse(Nil)`);
+    else conds.push(`${pRef} == ${sRef}`);
+  }
+  return `if (Option(state.status).exists(_.nonEmpty) && ${conds.join(' && ')}) return Right(Nil)`;
+}
+
+// 裁决⑤（2026-08-24）创建族白名单 + 时间戳门字段 — generator-side authority tables (rules_domain_gen
+// lines 1471-1510, mirrored verbatim from the ingested-app hand-patch configs). Aggregates absent
+// from INITIAL get an empty whitelist; the TS-field table backs aggregates without a status field.
+export const RULING5_INITIAL = {
+  Concept: ['EstablishConcept'], Context: ['DiscoverContext'], ContextRelation: ['DefineContextRelation'],
+  DoR: ['RequestDoR'], KnowledgePatch: ['SubmitKnowledgePatch'], ModelCatalog: ['CreateCatalogVersion'],
+  Note: ['CaptureNote'], OrganizationMember: ['InviteTenantMember'], Project: ['InitiateProject'],
+  Question: ['RaiseQuestion'], Relation: ['RelateConcept'], Session: ['OpenSession'],
+  Stage: ['ActivateStage'], Subdomain: ['ClassifySubdomain'], Tenant: ['OnboardTenant'],
+  User: ['RegisterUser'], Workshop: ['ScheduleWorkshop'], Workgroup: ['CreateWorkgroup'],
+  FieldModelDefinition: ['DeclareFieldModel', 'DeclareStateField', 'AddWrittenBy', 'ReplaceWrittenBy', 'CutWrittenBy',
+    'DeclareCommand', 'AddCommandParameter', 'DeclareEvent', 'AddEventPayload', 'PatchAggregateStatus',
+    'DeclareRelation', 'DeclareStateGate', 'RenameDescription',
+    'RemoveStateField', 'RemoveCommand', 'RemoveEvent', 'RemoveRelation', 'RemoveStateGate', 'RemoveFieldModel'],
+  CemEdge: ['DeclareEdge', 'PatchEdge', 'RetireEdge'],
+  ReadModelDefinition: ['DeclareReadModel', 'PatchReadModelField', 'RemoveReadModel'],
+  RoleCommandBinding: ['BindCommand', 'UnbindCommand'],
+  ValueObjectDefinition: ['DeclareValueObject', 'RemoveValueObject'],
+  TruthSourceProvenance: ['RecordTruthProvenance'],
+  UseCaseDefinition: ['DeclareUseCaseDefinition', 'RemoveUseCaseDefinition'],
+  FsmDefinition: ['ProposeFsmDefinition'],
+};
+export const RULING5_TS_FIELD = { Context: 'discoveredAt', Relation: 'createdAt', ContextRelation: 'createdAt', Subdomain: 'classifiedAt',
+  FieldModelDefinition: 'declaredAt', ReadModelDefinition: 'declaredAt', ValueObjectDefinition: 'declaredAt', TruthSourceProvenance: 'recordedAt', UseCaseDefinition: 'declaredAt' };

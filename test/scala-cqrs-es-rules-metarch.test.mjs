@@ -1,8 +1,9 @@
-// scala-cqrs-es-rules-metarch.test.mjs — V4-3 inc6+inc7+inc8 gate: golden byte identity against the
+// scala-cqrs-es-rules-metarch.test.mjs — V4-3 inc6…inc9 gate: golden byte identity against the
 // LIVE rules_domain_gen output (di-poc, verified fresh: re-running CODEGEN_MULTI=1 rules_domain_gen
-// --agg=ModelCatalog into a temp copy reproduced all three committed files byte-for-byte,
-// 2026-10-13), for the ModelCatalog CommandHelpers glue, the Behaviors command-flow wiring and the
-// RuleParams projection VOs.
+// --agg=ModelCatalog into a temp copy reproduced all FIVE committed files byte-for-byte,
+// 2026-10-14), for the ModelCatalog CommandHelpers glue, the Behaviors command-flow wiring, the
+// RuleParams projection VOs, the Rules invariant object (exprToScala engine) and the RulesSpec
+// pure-domain suite.
 //
 // This is the SECOND generator (the rules face). Where scala-cqrs-es emits the CodegenMain skeleton,
 // scala-cqrs-es-rules reproduces the rules_domain_gen pass that overwrites the behaviors glue. The
@@ -42,7 +43,7 @@ const { entries } = await plan({
     elementHashes: JSON.parse(readFileSync(HASHES, 'utf8')),
   },
 });
-equal(entries.length, 3);
+equal(entries.length, 5);
 for (const e of entries) {
   const want = readFileSync(join(GOLD, e.path), 'utf8');
   equal(e.content, want, `byte identity: ${e.path}`);
@@ -102,4 +103,54 @@ ok(rp.includes('import net.imadz.common.CommonTypes.Id\nimport net.imadz.metarch
   'Id + values imports abut the doc comment (no blank lines)');
 ok(!rp.includes('import java.time.Instant'), 'no Instant import (no Instant-typed field)');
 
-console.log('✅ scala-cqrs-es-rules-metarch — golden byte identity (ModelCatalog RuleParams + CommandHelpers + Behaviors, rules face)');
+// ── inc9: Rules + RulesSpec ──────────────────────────────────────────────────────────────────
+// Rules: the exprToScala-driven invariant object. Load-bearing facts exercised:
+//   • checkAggregate = RULING5 gate (ModelCatalog whitelist = CreateCatalogVersion) + the
+//     aggregate-level checks in attached order, each anchored at its own rule targetId.
+//   • Command checks are ④-layer guards-ORDERED (not localeCompare sorted): triggered_by before
+//     IR-CAT-CMD-002_concepts before the ir_gen_ref sentinel — the raw decision's guards order.
+//   • The ApplyKnowledgePatchRule emission merges the fixed leg with the emitWhen conditional leg
+//     (`::: (if (...) List(...) else Nil)`) and the cond translates through exprToScala.
+//   • The import face is the UNION of the Rule-constructor ports (adjudicator) and the EventHandler
+//     fold-face fn: ports (ComputeCatalogStateHash → ContentFingerprintPort) — one port trait with
+//     NO Rule taking it proves the fold-face add.
+//   • checkEventPostconditions dispatches the surviving firstBad<Event> chain (event-construction
+//     conflict guard filters unguaranteed checks).
+const rl = entries.find((e) => e.kind === 'rules').content;
+ok(rl.includes('private val InitialCommands: Set[String] = Set("CreateCatalogVersion")'),
+  'RULING5 creation-family whitelist (裁决⑤)');
+ok(rl.includes('    else if (!((!(Option(state.conflicts).exists(_.nonEmpty)) || (Option(state.status).exists(x => Set("CONFLICT_DETECTED", "RESOLVED").contains(x)))))) Some(err("CAT_CONFLICT_STATE"'),
+  'aggregate check: exprToScala translates implies/notEqual to Option combinators (IR-CAT-AGG-002)');
+const akpChecks = rl.slice(rl.indexOf('object ApplyKnowledgePatchRule') >= 0 ? rl.indexOf('class ApplyKnowledgePatchRule') : 0, rl.indexOf('object AssembleMetadataRule'));
+const chkOrder = ['ir_cmd_ApplyKnowledgePatch_triggered_by', 'IR-CAT-CMD-002_concepts', 'ir_gen_ref_IR_CAT_CMD_002_sessionId']
+  .map((id) => akpChecks.indexOf(`// ${id}`));
+ok(chkOrder.every((i) => i >= 0) && chkOrder.every((i, n) => n === 0 || i > chkOrder[n - 1]),
+  'command checks in ④-layer guards order (not localeCompare)');
+ok(akpChecks.includes('      else Right(List(KnowledgePatched(p.catalogId, CatalogPatchSet(p.sessionId.toString, p.concepts, Instant.now()), p.patchId, p.patchHash, p.triggeredBy, Instant.now(), state.tenantId, p.concepts)) ::: (if (((Option(p.parentPatchId).isEmpty || Option(state.headPatchId).isEmpty || p.parentPatchId != state.headPatchId) || (adjudicator.hasConflicts(p.concepts, state.conceptIndex)))) List(CatalogConflictDetected(p.catalogId, CatalogConflictSet(Instant.now(), adjudicator.conflicts(p.concepts, state.conceptIndex)), p.triggeredBy, Instant.now(), state.tenantId)) else Nil))'),
+  '④-layer fixed leg ::: emitWhen conditional leg (expr: bindings + cond translation)');
+ok(rl.includes('import net.imadz.metarch.domain.service.ContentFingerprintPort\n') && !rl.includes('ContentFingerprintPort('),
+  'fold-face port import (ContentFingerprintPort) with no Rule constructor taking it');
+equal((rl.match(/private def firstBad\w+\(e: \w+\): Option\[iMadzError\]/g) || []).length, 8,
+  'checkEventPostconditions: 8 surviving firstBad<Event> helpers (conflict-guard filtered)');
+ok(rl.includes('// @knowledge c577f2ab-ec59-41b1-a41f-f7f6a3bad709@4dd79a10902388f9'),
+  'event-postcondition anchor carries the EVENT noteId + hash (extract projects event noteIds)');
+
+// RulesSpec: executable_cases-driven pure-domain suite.
+const sp = entries.find((e) => e.kind === 'rules-spec').content;
+ok(sp.includes('class ModelCatalogRulesSpec extends AnyWordSpecLike with Matchers {'), 'spec class');
+equal((sp.match(/" in \{/g) || []).length, 78, '78 executable cases rendered (zero SKIPs — every ModelCatalog case targets an implemented rule)');
+ok(sp.includes('"CreateCatalogVersion negative ir_agg_ModelCatalog_status_enum"'), 'aggregate-rule case rendered');
+ok(sp.includes('ModelCatalogState(Id.of("00000000-0000-0000-0000-000000000001"), net.imadz.common.Id.of("02129bb8-6106-3d1a-852c-592e2dc6b383"), "DRAFT"'),
+  'state fixture: case given.state + Id FQN literalFor + statusFallback');
+ok(sp.includes('List(CatalogConflict("", "", Nil, "", null, "", "", ""))'),
+  'VO object literal via valueObjectSigs signature (IR-CAT-AGG-002 negative conflicts)');
+ok(sp.includes('      val r = new ModelCatalogRules.ApplyKnowledgePatchRule(adjudicatorImpl)'),
+  'class-form rule constructed with the port Impl val');
+ok(sp.includes('    new net.imadz.metarch.domain.service.ConceptDeltaAdjudicator {'),
+  'port Impl val: object-shape anonymous-class delegation (functions.yaml ports declaration)');
+ok(sp.includes('      def hasConflicts(deltas: List[net.imadz.metarch.domain.values.ConceptDelta], conceptIndex: List[net.imadz.metarch.domain.values.ConceptIndexEntry]): Boolean ='),
+  'delegation sigs FQ-qualified (PORT_VALUE_TYPES)');
+ok(sp.includes('ModelCatalogRules.checkEventPostconditions(r.toOption.get) shouldBe None'),
+  'positive cases assert the event-postcondition chain');
+
+console.log('✅ scala-cqrs-es-rules-metarch — golden byte identity (ModelCatalog RuleParams + Rules + RulesSpec + CommandHelpers + Behaviors, rules face inc6-inc9)');

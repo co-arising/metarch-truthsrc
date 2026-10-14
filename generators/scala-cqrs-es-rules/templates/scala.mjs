@@ -122,3 +122,72 @@ ${blocks.join('\n')}
 }
 `;
 }
+
+// renderRules — the <Agg>Rules.scala file (rules_domain_gen lines 2713-2729): the domain invariant
+// rules object. Imports: java.time.Instant always, CommonTypes{InvariantRule, iMadzError}, the
+// entity wildcard, a sorted selected-event import list, values._ (when any used event payload or
+// state field type is a domain VO), the params wildcard, then the port traits (sorted FQNs).
+export function renderRules(m) {
+  const { agg, pkg, ctx } = m;
+  const base = `${pkg}.${ctx}`;
+  const portImports = m.portTraits.length ? m.portTraits.map((t) => `import ${t}`).join('\n') + '\n' : '';
+  return `${m.header}package ${base}.domain.invariant
+
+import java.time.Instant
+import net.imadz.common.CommonTypes.{InvariantRule, iMadzError}
+import ${base}.domain.entities.${agg}Entity
+import ${base}.domain.entities.${agg}Entity.{${agg}Event, ${agg}State${m.evImportList ? ', ' + m.evImportList : ''}}
+${m.valuesImport}import ${base}.domain.invariant.params.${agg}RuleParams._
+${portImports}
+/**
+ * ${agg} 聚合规则实现（方案 A，2026-08-22：规则 = 纯 domain，不依赖 application/akka）。
+ * rules_domain_gen.mjs 生成：聚合级校验（checkAggregate）先于命令级；
+ * 查询类规则（refExists/unique/跨聚合引用）按 executable_cases 哨兵口径判定。
+ */
+object ${agg}Rules {
+${m.body}
+}
+`;
+}
+
+// renderRulesSpec — the test/…/<Agg>RulesSpec.scala file (rules_domain_gen lines 2730-2761):
+// the pure-domain ScalaTest suite. Header = the three-way rule-note anchor union (sorted); the
+// port Impl vals (债④ closure form) precede the state() helper; every executable case renders a
+// `"<cmd> <type> <ruleId>" in { … }` block (case-completeness-patched state/params expressions).
+export function renderRulesSpec(m) {
+  const { agg, pkg, ctx } = m;
+  const base = `${pkg}.${ctx}`;
+  const portBlock = m.portVals.length ? `  // 债④（2026-10-04·闭包形）：port 注入纯单测——直接构造传参（无全局绑定时序·测试可换 stub）。
+  // 实现 FQN＝functions.yaml scalaImpl（ext 手写区真源声明）。
+${m.portVals.map((mem) => m.portImplVal(mem)).join('\n')}
+
+` : '';
+  return `${m.header}${m.anchors.length ? m.anchors.join('\n') + '\n' : ''}package ${base}.domain.invariant
+
+import java.time.Instant
+import net.imadz.common.CommonTypes.Id
+import net.imadz.common.Id
+import ${base}.domain.entities.${agg}Entity.{${agg}State}
+${m.valuesImport}import ${base}.domain.invariant.params.${agg}RuleParams._
+import org.scalatest.wordspec.AnyWordSpecLike
+import org.scalatest.matchers.should.Matchers
+
+/**
+ * ${agg} 规则领域层纯测试（方案 A，2026-08-22，rules_domain_gen.mjs 生成）。
+ * 直测 ${agg}Rules.XxxRule(state, params) → Either，**无 akka**。
+ * 用例对齐 executable_cases.json（given.state / when.params / then.errorCode）；
+ * 命令级用例的 given.state 已补丁到聚合级规则全部通过。
+ */
+class ${agg}RulesSpec extends AnyWordSpecLike with Matchers {
+${portBlock}  private def state(
+${m.stateDefaults.join(',\n')}
+  ): ${agg}State = ${agg}State(
+${m.stateCtorArgs.join(',\n')}
+  )
+
+  "${agg} rules" should {
+${m.tests.join('\n')}
+  }
+}
+`;
+}

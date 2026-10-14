@@ -242,7 +242,8 @@ skeleton breadth, not policy wiring.
 reproduces the production `rules_domain_gen` pass, which *overwrites* the aggregate's
 behaviors glue (and adds the domain rules) after `CodegenMain` has written the skeleton —
 mirroring the real two-pass pipeline (skeleton, then rules win on the overlapping paths).
-inc6 ported `CommandHelpers`, inc7 added `Behaviors` and inc8 added `RuleParams` (all
+inc6 ported `CommandHelpers`, inc7 added `Behaviors`, inc8 added `RuleParams` and inc9
+added `Rules` + `RulesSpec` (all
 byte-identical to the live `di-poc` output, verified fresh by re-running `CODEGEN_MULTI=1
 rules_domain_gen --agg=ModelCatalog` into a temp copy).
 
@@ -314,3 +315,51 @@ is `: Instant`, and `<base>.domain.values._` when a type token right after `: ` 
 under `List[`) names a VO in the `voNames` registry — the case-class names of the target
 repo's `domain/values/*.scala`, attached by the augment tool. ModelCatalog needs Id + values
 (`List[ConceptDelta]`), not Instant.
+
+**Rules (inc9)** — `domain/invariant/<Agg>Rules.scala`, the invariant object. The expression
+engine (`exprToScala`, ported verbatim from `patch_core.mjs` into `builders/expr.mjs`)
+translates every rule's machineSpec JSON into a Scala boolean via Option-combinator forms
+(`notNull` → `Option(x).isDefined`/`notNull(x)`, `in` → `Set(...).contains`, `implies` →
+`(!a || b)`, …); an untranslatable rule degrades to a sentinel condition mined from the
+rule's negative executable cases (`sentinelFallback`) or is skipped — never guessed.
+
+- **checkAggregate** opens with the RULING5 initialization gate (the creation-family
+  whitelist is generator-side authority, ported verbatim) and chains the aggregate-level
+  rules (`aggregateRules`, attributed cases-driven by the augment tool), each anchored at
+  its own rule targetId.
+- **Command checks are ④-layer guards-ordered**: the raw behaviorModel decision (now
+  attached WHOLE, guards included — inc6/7/8 carried only emissions/emitWhen) drives the
+  check chain in its declared guard order; each `invariantRef` guard resolves its rule,
+  translates the machineSpec, and takes the rule library's humanDescription over the guard
+  desc. Commands without ④-layer guards fall back to the heuristic path (rules sorted by
+  `id.localeCompare`).
+- **Emissions**: the fixed leg renders `Right(List(<events>))` with ④-layer bindings
+  (`param.`/`state.`/`system:now`/`literal:`/`expr:`/`item` four-source annotations);
+  `emitWhen` conditional legs append `::: (if (<cond>) List(...) else Nil)`. An
+  untranslatable emitWhen cond is a FATAL, never a guess.
+- **The Rules import face is a UNION**: the Rule-constructor ports (`rulesPortTraits`,
+  expression-driven) plus the EventHandler **fold-face** ports — a `fn:<id>` fold
+  assignment whose `callExpr` is Access-gate form port-ifies its trait
+  (`foldPorts` slot; ModelCatalog: `ComputeCatalogStateHash` → `ContentFingerprintPort`
+  imported with NO Rule taking it). This is why live `ModelCatalogRules` imports two port
+  traits while only `adjudicator` is constructor-injected.
+- **checkEventPostconditions**: per-event `firstBad<Event>` helpers over the attached
+  `eventPostconditions` (var-ref host ∈ the aggregate's events), filtered by the
+  event-construction conflict guard (a check field the producers don't guarantee non-null
+  is skipped). Event noteIds come from the extract tool's new per-event projection (they
+  were previously absent from the sidecar — the `@<hash>` anchors on evt rules need them).
+
+**RulesSpec (inc9)** — `test/…/<Agg>RulesSpec.scala`, the pure-domain ScalaTest suite, one
+`"<cmd> <type> <ruleId>" in { … }` block per executable case (raw rows attached as
+`executableCases`, grouped by the case's own `aggregate` field). The Spec header anchors
+are the sorted union of the three registration points (command-rule / event-rule /
+aggregate-rule noteIds). Per case: the `patchForCases` completeness patcher (also ported
+verbatim; the Node `scalaEval` evaluator mirrors the generated code's runtime semantics)
+repairs `given.state`/`when.params` so the target rule is the ONLY failing one; literals
+render through the `literalFor` family (`builders/literals.mjs`) — `Id` values go full FQN
+`net.imadz.common.Id.of(...)` with deterministic v3-UUID sentinels, VO object values
+(`CatalogConflict("","",Nil,...)`) render from the `valueObjectSigs` signatures, `status`
+falls back to the aggregate-status `in` rule's first enum value. The port Impl vals (债④
+closure form) are generated from the ports' full declaration face (scalaImpl + methods +
+bridge from `functions.yaml`'s `ports:` section): a bridge-object impl renders as a direct
+val, an object-shape impl as an anonymous-class delegation with FQ-qualified signatures.
