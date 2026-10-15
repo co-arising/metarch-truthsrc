@@ -25,6 +25,10 @@ const USAGE = `truthsrc v0.3 — git-native Event Storming truth source
   truthsrc init      <dir>                                 scaffold a minimal workshop tree
   truthsrc generate  --in <canonical> --generator <dir> --out <dir> [--option k=v]
                                                            run a generator (ledger + anchors emitted)
+                     [--concern <name>] [--families A,B] [--concerns <file>]
+                                                           incremental regeneration: only the faces the
+                                                           concern scope selects are rewritten (engine: core;
+                                                           presets: project-level registry, default ./concerns.json)
   truthsrc init-generator <dir>                            scaffold a custom generator
 `;
 
@@ -70,10 +74,11 @@ switch (cmd) {
   }
   case 'generate': {
     // generate --in <canonical.json> --generator <dir> --out <target> [--option k=v ...]
+    //          [--concern <name>] [--families A,B] [--concerns <file>]
     const gen = arg('--generator');
     const c = arg('--in');
     const o = arg('--out');
-    if (!gen || !c || (!o && !process.argv.includes('--plan'))) die('usage: truthsrc generate --in <canonical.json> --generator <dir> --out <dir> [--plan]');
+    if (!gen || !c || (!o && !process.argv.includes('--plan'))) die('usage: truthsrc generate --in <canonical.json> --generator <dir> --out <dir> [--plan] [--concern <name>] [--families A,B] [--concerns <file>]');
     const options = {};
     for (let i = 2; i < process.argv.length; i++) {
       if (process.argv[i] === '--option') {
@@ -81,15 +86,32 @@ switch (cmd) {
         if (k) options[k] = v ?? true;
       }
     }
+    const CONCERN = process.argv.includes('--concern') ? process.argv[process.argv.indexOf('--concern') + 1] : null;
+    const FAMILIES = process.argv.includes('--families') ? process.argv[process.argv.indexOf('--families') + 1] : null;
+    if (process.argv.includes('--concern') && !CONCERN) die('--concern requires a name (see the project concerns registry)');
+    if (process.argv.includes('--families') && !CONCERN) die('--families requires --concern');
+    const concern = CONCERN ? { name: CONCERN, families: FAMILIES, registryFile: arg('--concerns', resolve('concerns.json')) } : null;
+    if (concern && !existsSync(concern.registryFile)) die(`concerns registry not found: ${concern.registryFile} (--concerns <file>; default ./concerns.json)`);
     if (process.argv.includes('--plan')) {
-      const { plan } = await import('../src/core/generate.mjs');
+      const { plan, mergedRows, scopeOf } = await import('../src/core/generate.mjs');
       const { manifest, entries } = await plan({ canonicalFile: c, generatorDir: gen, options });
+      if (concern) {
+        const rows = mergedRows(o ?? resolve('.'), entries);
+        const s = scopeOf(rows, concern);
+        console.log(`  🎛 concern=${CONCERN}（families: ${FAMILIES ?? 'all'}｜in-scope ${s.set.size} = predicate ${s.base.size} + closure ${s.set.size - s.base.size}）`);
+      }
       for (const e of entries) console.log(`  ${e.kind.padEnd(16)} ${e.path}`);
       console.log(`✅ plan [${manifest.name}] — ${entries.length} files (nothing written)`);
       break;
     }
-    const r = await apply({ canonicalFile: c, generatorDir: gen, outDir: o, options });
-    console.log(`✅ generate [${r.name}] — ${r.total} planned · ${r.written} written · ${r.identical} identical`);
+    let r;
+    try {
+      r = await apply({ canonicalFile: c, generatorDir: gen, outDir: o, options, concern });
+    } catch (e) {
+      die(`[FAIL] ${e.message}`);
+    }
+    console.log(`✅ generate [${r.name}] — ${r.total} planned · ${r.written} written · ${r.identical} identical`
+      + (concern ? ` · ${r.kept} kept (out-of-scope) · in-scope ${r.inScope} (closure +${r.closureAdded})` + (r.globalFlowed ? ` · ${r.globalFlowed} global flowed` : '') : ''));
     console.log(`   ledger → ${r.ledger}\n   anchors → ${r.anchors}`);
     break;
   }

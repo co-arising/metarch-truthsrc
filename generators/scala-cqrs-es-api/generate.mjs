@@ -115,17 +115,17 @@ export function generate({ canonical, options = {} }) {
     {
       path: `${MODULE}/src/main/scala/${pkgPath}/infrastructure/auth/ViewKeys.scala`,
       content: renderViewKeys(vm, fp),
-      kind: 'view-keys', schemaCategory: 'projection', families: [], deps: [],
+      kind: 'view-keys', schemaCategory: 'projection', schemaNode: 'ViewKeys', families: [], deps: [],
     },
     {
       path: `${MODULE}/src/main/scala/${pkgPath}/infrastructure/auth/CommandRoleMap.scala`,
       content: renderCommandRoleMap({ commandRoles, viewRoles, viewConstOf: vm.viewConstOf }, fp),
-      kind: 'command-role-map', schemaCategory: 'aggregate', families: [], deps: ['view-keys'],
+      kind: 'command-role-map', schemaCategory: 'aggregate', schemaNode: 'CommandRoleMap', families: [], deps: ['ViewKeys'],
     },
     {
       path: `${MODULE}/src/main/scala/${pkgPath}/infrastructure/api/CommandDsl.scala`,
       content: renderCommandDsl(fp),
-      kind: 'command-dsl', schemaCategory: 'aggregate', families: [], deps: [],
+      kind: 'command-dsl', schemaCategory: 'aggregate', schemaNode: 'CommandDsl', families: [], deps: [],
     },
   );
 
@@ -147,7 +147,10 @@ export function generate({ canonical, options = {} }) {
     entries.push({
       path: `app/controllers/${rendered.fileName}`,
       content: rendered.source,
-      kind: 'controller', schemaCategory: 'aggregate', families: [a.name], deps: [],
+      // deps = live gen_api_layer row parity (`${agg}Protocol`, `${agg}Repository`) — resolved by
+      // the concerns closure against the merged ledger (the skeleton generator's rows).
+      kind: 'controller', schemaCategory: 'aggregate', schemaNode: rendered.fileName.replace(/\.scala$/, ''), families: [a.name],
+      deps: [`${a.name}Protocol`, `${a.name}Repository`],
       skippedNote: rendered.skippedNote,
     });
   }
@@ -159,12 +162,12 @@ export function generate({ canonical, options = {} }) {
     {
       path: 'app/controllers/ViewApiController.scala',
       content: viewOut.controller,
-      kind: 'controller', schemaCategory: 'projection', families: viewFamilies, deps: [],
+      kind: 'controller', schemaCategory: 'projection', schemaNode: 'ViewApiController', families: viewFamilies, deps: [],
     },
     {
       path: 'app/controllers/ViewWrites.scala',
       content: viewOut.viewWritesSrc,
-      kind: 'controller', schemaCategory: 'projection', families: viewFamilies, deps: [],
+      kind: 'controller', schemaCategory: 'projection', schemaNode: 'ViewWrites', families: viewFamilies, deps: [],
     },
   );
 

@@ -1,0 +1,108 @@
+{
+  "version": 1,
+  "_comment": "Reference concerns registry — project-level preset config (engine: src/core/concerns.mjs; presets never enter core). Flavor artifactKinds map THIS project's generator vocabulary (the union of the reference generators' manifest.artifactKinds); the concern names and the schema-category axes mirror the production registry (backend-codegen truth/metarch/governance/concerns.json, E5-WP1 2026-09-12). The production event-journal-suite flavor (proto/converter/event-adapter/snapshot-adapter) has no protocol-buffer face in truthsrc — its event-payload chain here is protocol + entity + event-handler. materialized-read-model is absent: this project has no projection face yet.",
+  "flavors": {
+    "event-journal-suite": {
+      "description": "event payload chain: protocol case classes + entity state + event-handler fold",
+      "artifactKinds": [
+        "protocol",
+        "entity",
+        "event-handler"
+      ]
+    },
+    "aggregate-scaffold": {
+      "description": "aggregate skeleton face: protocol/root/factory/behaviors/helpers/entity/repository",
+      "artifactKinds": [
+        "protocol",
+        "aggregate-root",
+        "factory",
+        "behaviors",
+        "command-helpers",
+        "entity",
+        "repository"
+      ]
+    },
+    "rules-invariants": {
+      "description": "rules face: RuleParams/Rules/Spec + the behaviors glue overwrite + policies",
+      "artifactKinds": [
+        "rule-params",
+        "rules",
+        "rules-spec",
+        "command-helpers-rules",
+        "behaviors-rules",
+        "policies",
+        "policies-spec"
+      ]
+    },
+    "api-layer": {
+      "description": "API face: controllers + ViewKeys/CommandRoleMap/CommandDsl (the read side rides the controller kind)",
+      "artifactKinds": [
+        "view-keys",
+        "command-role-map",
+        "command-dsl",
+        "controller"
+      ]
+    },
+    "all-kinds": {
+      "description": "every artifact face (the full concern)",
+      "artifactKinds": [
+        "*"
+      ]
+    }
+  },
+  "concerns": {
+    "full": {
+      "description": "everything (the default behavior without --concern)",
+      "schemaCategories": [
+        "*"
+      ],
+      "flavors": [
+        "all-kinds"
+      ]
+    },
+    "event-journal-suite": {
+      "description": "field/event-payload change → the event serialization chain (+ dependency closure)",
+      "schemaCategories": [
+        "aggregate",
+        "entity",
+        "valueObject",
+        "field"
+      ],
+      "flavors": [
+        "event-journal-suite"
+      ]
+    },
+    "aggregate-scaffold": {
+      "description": "aggregate structure change → skeleton + rules + api faces together (glue-regression guard)",
+      "schemaCategories": [
+        "aggregate",
+        "entity",
+        "valueObject"
+      ],
+      "flavors": [
+        "aggregate-scaffold",
+        "rules-invariants",
+        "api-layer"
+      ]
+    },
+    "rules-invariants": {
+      "description": "invariant/rule change → the rules face",
+      "schemaCategories": [
+        "aggregate"
+      ],
+      "flavors": [
+        "rules-invariants"
+      ]
+    },
+    "api-layer": {
+      "description": "API face change → controllers and support artifacts",
+      "schemaCategories": [
+        "aggregate"
+      ],
+      "flavors": [
+        "api-layer"
+      ]
+    }
+  },
+  "familySets": {}
+}

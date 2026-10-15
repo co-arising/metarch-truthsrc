@@ -38,34 +38,38 @@ export function generate({ canonical, options = {} }) {
   };
 
   const entries = [];
+  // deps are generated-artifact class names (file stems — live ledger parity), resolved by the
+  // concerns closure through the schemaNode/file-stem double key; the skeleton generator writes
+  // the same Behaviors/CommandHelpers paths, and the merged ledger's final-writer-wins upsert
+  // lets these rows (and their deps) describe the on-disk truth after this face runs.
   for (const a of canonical.aggregates ?? []) {
     const pkgPath = `${a.pkg ?? 'net.imadz'}${a.ctxPackage ? `.${a.ctxPackage}` : ''}`.replaceAll('.', '/');
     const ruleParamsContent = renderRuleParams(ruleParamsModel(a, env));
     entries.push({
       path: `${MODULE}/src/main/scala/${pkgPath}/domain/invariant/params/${a.name}RuleParams.scala`,
       content: ruleParamsContent,
-      kind: 'rule-params', schemaCategory: 'aggregate', families: [a.name], deps: [],
+      kind: 'rule-params', schemaCategory: 'aggregate', schemaNode: `${a.name}RuleParams`, families: [a.name], deps: [],
     });
     const face = rulesFaceModel(a, env);
     entries.push({
       path: `${MODULE}/src/main/scala/${pkgPath}/domain/invariant/${a.name}Rules.scala`,
       content: renderRules(face.rules),
-      kind: 'rules', schemaCategory: 'aggregate', families: [a.name], deps: ['rule-params'],
+      kind: 'rules', schemaCategory: 'aggregate', schemaNode: `${a.name}Rules`, families: [a.name], deps: [`${a.name}RuleParams`],
     });
     entries.push({
       path: `${MODULE}/src/test/scala/${pkgPath}/domain/invariant/${a.name}RulesSpec.scala`,
       content: renderRulesSpec(face.spec),
-      kind: 'rules-spec', schemaCategory: 'aggregate', families: [a.name], deps: ['rules'],
+      kind: 'rules-spec', schemaCategory: 'aggregate', schemaNode: `${a.name}RulesSpec`, families: [a.name], deps: [`${a.name}Rules`],
     });
     entries.push({
       path: `${MODULE}/src/main/scala/${pkgPath}/application/aggregates/behaviors/${a.name}CommandHelpers.scala`,
       content: renderHelpers(commandHelpersModel(a, env)),
-      kind: 'command-helpers-rules', schemaCategory: 'aggregate', families: [a.name], deps: ['rule-params'],
+      kind: 'command-helpers-rules', schemaCategory: 'aggregate', schemaNode: `${a.name}CommandHelpers`, families: [a.name], deps: [`${a.name}RuleParams`],
     });
     entries.push({
       path: `${MODULE}/src/main/scala/${pkgPath}/application/aggregates/behaviors/${a.name}Behaviors.scala`,
       content: renderBehaviors(behaviorsModel(a, env)),
-      kind: 'behaviors-rules', schemaCategory: 'aggregate', families: [a.name], deps: ['rules', 'command-helpers-rules'],
+      kind: 'behaviors-rules', schemaCategory: 'aggregate', schemaNode: `${a.name}Behaviors`, families: [a.name], deps: [`${a.name}Rules`, `${a.name}CommandHelpers`],
     });
     // Policies (inc10): the S2-44 reaction face — the Params-field types come from the rendered
     // RuleParams signature (the source reads the file it wrote earlier in the same run). No
@@ -75,12 +79,12 @@ export function generate({ canonical, options = {} }) {
       entries.push({
         path: `${MODULE}/src/main/scala/${pkgPath}/domain/policy/${a.name}Policies.scala`,
         content: renderPolicies(pol),
-        kind: 'policies', schemaCategory: 'aggregate', families: [a.name], deps: ['rule-params'],
+        kind: 'policies', schemaCategory: 'aggregate', schemaNode: `${a.name}Policies`, families: [a.name], deps: [`${a.name}RuleParams`],
       });
       entries.push({
         path: `${MODULE}/src/test/scala/${pkgPath}/domain/policy/${a.name}PoliciesSpec.scala`,
         content: renderPoliciesSpec(pol),
-        kind: 'policies-spec', schemaCategory: 'aggregate', families: [a.name], deps: ['policies'],
+        kind: 'policies-spec', schemaCategory: 'aggregate', schemaNode: `${a.name}PoliciesSpec`, families: [a.name], deps: [`${a.name}Policies`],
       });
     }
   }

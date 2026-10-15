@@ -80,15 +80,66 @@ generator detail**, in three layers:
    never core state.
 
 The **emission ledger** (written by `generate` during apply; one row per
-emitted file: `path, kind, schemaCategory, families[], deps[]`) is what the
-closure engine runs over — it doubles as the drift detector: a file on disk
+emitted file: `path, kind, schemaNode?, schemaCategory, families[], deps[]`)
+is what the closure engine runs over — it doubles as the drift detector: a file on disk
 with no ledger row is hand-written, and regenerating with `--concern` will not
-touch it. Invocation:
+touch it. Rows merge with the outDir's prior ledger by path, final-writer-wins
+(when one face overwrites another's file, its row replaces the old one). Invocation:
 
 ```text
 truthsrc generate --in products/ --out repo/ --generator scala-cqrs-es \
                   --concern aggregate-scaffold --families Loan
 ```
+
+### The engine, as landed (V4-4 inc14)
+
+`src/core/concerns.mjs` is a verbatim port of the production `concerns_lib`
+(E5-WP1, 2026-09-12): `loadConcernRegistry` (fail-fast on bad JSON, unregistered
+flavors, unknown schema categories), `resolveConcernFilter` (concern ×
+`--families`; familySets expand and dedupe), `inScopeOf`/`expandScope` (the
+kind × category × families predicate over ledger rows) and `compileClosure`
+(deps closure to fixpoint, double-keyed by `schemaNode` and file stem —
+external types that resolve to no row drop out, exactly like production).
+
+`deps` are generated-artifact identifiers (class names = file stems) declared
+by the generators; they carry the real compile edges (protocol↔entity,
+controller→`<Agg>Protocol`/`<Agg>Repository`), so the closure mirrors
+production's converter→protocol behavior: whatever an in-scope artifact
+compiles against comes along, cross-flavor.
+
+With `--concern`, `apply` regenerates in place under the computed scope:
+
+| plan entry | write policy |
+|---|---|
+| inside the closure | written (overwrite allowed — this is the regeneration) |
+| family artifact outside the scope, file exists | kept — the on-disk version is authoritative (zero-diff refill parity) |
+| family artifact outside the scope, file absent | written (a new family's first fill) |
+| global artifact (`families: []`) | always written and disclosed (family filtering does not apply to cross-family shared artifacts) |
+
+Without `--concern` the apply contract is unchanged (refuse to overwrite a
+differing file — MERGE-protected blocks land in the diff-apply batch; the
+concern scope is the in-place regeneration path). After writing, a scope-leak
+gate re-checks that every family artifact whose content changed sits inside
+the closure (an engine/write-policy disagreement refuses to certify), and the
+ledger records the audit chain (`ledger.concern`: name, families, scope-file
+hash, in-scope / closure / kept / global counts).
+
+Two operational contracts mirror the production pipeline:
+
+- **Replay the chain.** Concern scope is path-scoped, and the skeleton and
+  rules faces share the Behaviors/CommandHelpers paths. A skeleton `--concern`
+  run transiently writes skeleton glue over the rules-owned paths; re-run the
+  rules generator (its own concern, or `full`) to re-assert its face — the
+  exact analogue of production's in-run pipeline order (skeleton pass, then
+  the rules pass overwrites the glue).
+- **Presets are project config.** The registry lives next to the consuming
+  project (default `./concerns.json`; `--concerns <file>` points elsewhere);
+  the reference registry for the metarch corpus is
+  `golden/scala-cqrs-es-metarch/concerns.json`. Its flavors map the reference
+  generators' exact `artifactKinds` — the production registry has a vocabulary
+  drift (flavor `behavior`/`policy` vs its own ledger's
+  `behavior-skeleton`/`policy-exec`) that truthsrc avoids by mapping what its
+  generators actually emit.
 
 ## Layout (v0.4)
 

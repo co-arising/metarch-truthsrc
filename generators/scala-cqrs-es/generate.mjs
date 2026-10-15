@@ -30,11 +30,21 @@ const MODULE_OF = {
   'behaviors': 'modules/kernel',
   'command-helpers': 'modules/kernel',
 };
-const emit = (a, file, kind, content) => {
+// meta.schemaNode/deps feed the concerns ledger (live GenerationLedger row parity): schemaNode
+// is the domain node the row materializes (aggregate name, or the file's own class), deps are
+// the generated-artifact identifiers this file compiles against (class names = file stems;
+// external library types are not listed — they resolve to no ledger row and drop out of the
+// closure harmlessly, exactly like the live ledger). schemaCategory follows live: the two
+// state-carrier kinds are 'entity', the rest 'aggregate'.
+const emit = (a, file, kind, content, meta = {}) => {
   const pkgPath = `${a.pkg ?? 'net.imadz'}${a.ctxPackage ? `.${a.ctxPackage}` : ''}`.replaceAll('.', '/');
   return {
     path: `${MODULE_OF[kind] ?? 'modules/kernel'}/src/main/scala/${pkgPath}/${file}`,
-    content, kind, schemaCategory: 'aggregate', families: [a.name], deps: [],
+    content, kind,
+    schemaCategory: kind === 'entity' || kind === 'event-handler' ? 'entity' : 'aggregate',
+    schemaNode: meta.schemaNode,
+    families: [a.name],
+    deps: meta.deps ?? [],
   };
 };
 
@@ -55,14 +65,22 @@ export function generate({ canonical, options = {} }) {
   };
   const entries = [];
   for (const a of canonical.aggregates ?? []) {
-    entries.push(emit(a, `application/aggregates/${a.name}Protocol.scala`, 'protocol', renderProtocol(protocolModel(a, env))));
-    entries.push(emit(a, `application/aggregates/${a.name}Aggregate.scala`, 'aggregate-root', renderRoot(rootModel(a, env))));
-    entries.push(emit(a, `domain/entities/${a.name}Entity.scala`, 'entity', renderEntity(entityModel(a, env))));
-    entries.push(emit(a, `domain/entities/behaviors/${a.name}EventHandler.scala`, 'event-handler', renderEventHandler(eventHandlerModel(a, env))));
-    entries.push(emit(a, `application/aggregates/repository/${a.name}Repository.scala`, 'repository', renderRepository(repositoryModel(a, env))));
-    entries.push(emit(a, `application/aggregates/factories/${a.name}AggregateFactory.scala`, 'factory', renderFactory(factoryModel(a, env))));
-    entries.push(emit(a, `application/aggregates/behaviors/${a.name}Behaviors.scala`, 'behaviors', renderBehaviors(behaviorsModel(a, env))));
-    entries.push(emit(a, `application/aggregates/behaviors/${a.name}CommandHelpers.scala`, 'command-helpers', renderHelpers(helpersModel(a, env))));
+    entries.push(emit(a, `application/aggregates/${a.name}Protocol.scala`, 'protocol', renderProtocol(protocolModel(a, env)),
+      { schemaNode: a.name, deps: [a.name, `${a.name}Entity`] }));
+    entries.push(emit(a, `application/aggregates/${a.name}Aggregate.scala`, 'aggregate-root', renderRoot(rootModel(a, env)),
+      { schemaNode: a.name, deps: [a.name, `${a.name}Behaviors`, `${a.name}Entity`] }));
+    entries.push(emit(a, `domain/entities/${a.name}Entity.scala`, 'entity', renderEntity(entityModel(a, env)),
+      { schemaNode: `${a.name}Entity` }));
+    entries.push(emit(a, `domain/entities/behaviors/${a.name}EventHandler.scala`, 'event-handler', renderEventHandler(eventHandlerModel(a, env)),
+      { schemaNode: `${a.name}EventHandler`, deps: [`${a.name}Entity`] }));
+    entries.push(emit(a, `application/aggregates/repository/${a.name}Repository.scala`, 'repository', renderRepository(repositoryModel(a, env)),
+      { schemaNode: a.name, deps: [a.name, `${a.name}Aggregate`, `${a.name}RepositoryImpl`] }));
+    entries.push(emit(a, `application/aggregates/factories/${a.name}AggregateFactory.scala`, 'factory', renderFactory(factoryModel(a, env)),
+      { schemaNode: a.name, deps: [a.name] }));
+    entries.push(emit(a, `application/aggregates/behaviors/${a.name}Behaviors.scala`, 'behaviors', renderBehaviors(behaviorsModel(a, env)),
+      { schemaNode: a.name, deps: [a.name, `${a.name}Entity`, `${a.name}Protocol`] }));
+    entries.push(emit(a, `application/aggregates/behaviors/${a.name}CommandHelpers.scala`, 'command-helpers', renderHelpers(helpersModel(a, env)),
+      { schemaNode: a.name, deps: [a.name, `${a.name}Entity`] }));
   }
   return entries;
 }
