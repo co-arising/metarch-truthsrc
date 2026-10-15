@@ -14,11 +14,20 @@
 // <Agg>Protocol.scala via the scala-cqrs-es generator (byte-identical to live CodegenMain per its
 // own golden gate) and parseProtocol reads that text — the same self-consistency the live
 // two-pass pipeline has (gen_api_layer parses the Protocol file the skeleton pass wrote).
-// ViewApi/ViewWrites (the read side) follow in a later increment.
+//
+// inc13 scope: + the READ side — ViewApiController.scala (form-B single-line endpoints over the
+// gated decision views; the engine axis: info.storage.kind=mongo views take the findByTenantPaged
+// list form, the rest the tenantList/globalList helpers; composite-key items → 400) and
+// ViewWrites.scala (per-view OWrites with the null-safe jsExprOf forms). The per-view anchor
+// source is the ①-layer metarch readModel note ids (canonical.viewNoteIds, first-wins — live's
+// noteIdOfKey face); elementHashes for the read side come from the api-face sidecar (the live
+// resolver's source: the kn export's elementHashes, which — unlike the skeleton face's sidecar —
+// carries readModel note hashes too). conf/routes emission stays deferred to the diff-apply batch.
 import { ROLE_CONSTANTS, constNameOf, deriveCommandRoles, deriveViewReadRoles, aggregateByView, gateViews, viewKeyModel, newViewKeyOf, kebabViewStrict } from './builders/rolemap.mjs';
-import { parseProtocol, buildAggregateController } from './builders/controller.mjs';
+import { parseProtocol, buildAggregateController, buildViewModels } from './builders/controller.mjs';
 import { renderViewKeys, renderCommandRoleMap, renderCommandDsl } from './templates/scala.mjs';
 import { renderControllerFile } from './templates/controller.mjs';
+import { renderViewController } from './templates/views.mjs';
 import { protocolModel } from '../scala-cqrs-es/builders/models.mjs';
 import { renderProtocol } from '../scala-cqrs-es/templates/scala.mjs';
 
@@ -80,6 +89,19 @@ export function generate({ canonical, options = {} }) {
     return (name) => m.get(name) ?? null;
   })();
 
+  // Read side (inc13): the S7 #1b per-view anchor source (①-layer metarch readModel note ids,
+  // first-wins — canonical.viewNoteIds) and the storage engine axis (info.storage.kind=mongo —
+  // canonical.mongoViewNames). buildViewModels is the verbatim live builder; rmViews are the
+  // S2-56-gated (enriched) ③-layer views, exactly what live passes it.
+  const viewNoteIds = canonical.viewNoteIds ?? {};
+  const viewNoteIdOf = (n) => viewNoteIds[n] ?? null;
+  const mongoViewNames = new Set(canonical.mongoViewNames ?? []);
+  const readVm = buildViewModels({ readModels: rmViews }, renameMap, viewNoteIdOf, mongoViewNames);
+  readVm.constOf = (viewName) => constNameOf(kebabNew(viewName));
+  // EP_Artifacts_Attribution_Closure P2: ViewApi/ViewWrites families = 过门视图 sourceAggregates
+  // 并集（多族承载·诚实归属）——与 ViewKeys/CommandRoleMap/CommandDsl 的 families=[] 全局件相对。
+  const viewFamilies = [...new Set(rmViews.flatMap((v) => v.sourceAggregates ?? []))].sort();
+
   const entries = [];
   // 包根：全局件随 workshop 上下文命名空间（首个聚合的 pkg/ctxPackage；空语料回退 workshop 名）
   const a0 = (canonical.aggregates ?? [])[0];
@@ -129,6 +151,22 @@ export function generate({ canonical, options = {} }) {
       skippedNote: rendered.skippedNote,
     });
   }
+
+  // ViewApi 段（读侧·live 聚合环后同序）：ViewModel → 形态 B 控制器＋ViewWrites per-view OWrites。
+  // conf/routes 的 GET 行（routeLines）不发射——E301 标记块合并属 diff-apply 批（与写侧路由同批）。
+  const viewOut = renderViewController(readVm, fp, noteAnchor);
+  entries.push(
+    {
+      path: 'app/controllers/ViewApiController.scala',
+      content: viewOut.controller,
+      kind: 'controller', schemaCategory: 'projection', families: viewFamilies, deps: [],
+    },
+    {
+      path: 'app/controllers/ViewWrites.scala',
+      content: viewOut.viewWritesSrc,
+      kind: 'controller', schemaCategory: 'projection', families: viewFamilies, deps: [],
+    },
+  );
 
   return entries;
 }

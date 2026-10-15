@@ -19,6 +19,13 @@
 //   • paramOrigins: {"<Agg>.<Cmd>.<param>": origin} — the ④-layer template origin registry
 //     (fields.template.json), only entries with a truthy origin. Drives the B2 origin lane
 //     (SYSTEM_GENERATED r1 minting / SYSTEM_QUERIED enricher assembly) in the controller face.
+//   • viewNoteIds: {viewName: noteId} — the ①-layer metarch readModel note ids (live's
+//     noteIdOfKey.get(`readModel:<name>`), first-wins in session→scope→note order). S7 #1b
+//     anchor source for the read side (ViewApi endpoints + ViewWrites OWrites); views without
+//     a metarch readModel note (PauseProjectDecisionView) resolve to null → bare, matching live.
+//   • mongoViewNames: [viewName] — readModel notes declaring info.storage.kind === 'mongo'
+//     (视图存储重设计 2026-10-08). Drives the list-endpoint engine axis (findByTenantPaged vs
+//     findAll helper) in the ViewApi face.
 //
 // Usage:
 //   node tools/augment-api-canonical.mjs \
@@ -102,5 +109,25 @@ if (template) {
 }
 canonical.paramOrigins = paramOrigins;
 
+// --- viewNoteIds + mongoViewNames: the read side's ①-layer metarch inputs -------------------
+// Same traversal shape as the live gen_api_layer index (sessions → scopes → notes, in order);
+// Object.values over the file-shaped sessions/scopes preserves array order, so first-wins
+// resolves identically to live's noteIdOfKey.
+const viewNoteIds = {};
+const mongoViewNames = [];
+for (const sess of Object.values(metarch.sessions ?? {})) {
+  for (const sc of Object.values(sess?.scopes ?? {})) {
+    for (const n of sc?.notes ?? []) {
+      if (!n || typeof n !== 'object') continue;
+      if (n.type === 'readModel') {
+        if (n.noteId && !(n.name in viewNoteIds)) viewNoteIds[n.name] = n.noteId;
+        if (n.info?.storage?.kind === 'mongo' && !mongoViewNames.includes(n.name)) mongoViewNames.push(n.name);
+      }
+    }
+  }
+}
+canonical.viewNoteIds = viewNoteIds;
+canonical.mongoViewNames = mongoViewNames;
+
 fs.writeFileSync(canonicalPath, JSON.stringify(canonical, null, 2) + '\n');
-console.log(`[augment-api] roleLinkNotes=${roleLinkNotes.length} readModels=${canonical.readModels.length} viewFieldNotes=${viewFieldNotes.length} viewKeyRenames=${canonical.viewKeyRenames.length} paramOrigins=${Object.keys(paramOrigins).length} → ${canonicalPath}`);
+console.log(`[augment-api] roleLinkNotes=${roleLinkNotes.length} readModels=${canonical.readModels.length} viewFieldNotes=${viewFieldNotes.length} viewKeyRenames=${canonical.viewKeyRenames.length} paramOrigins=${Object.keys(paramOrigins).length} viewNoteIds=${Object.keys(viewNoteIds).length} mongoViewNames=${mongoViewNames.length} → ${canonicalPath}`);

@@ -424,16 +424,18 @@ The ③-layer field-note gate (`gateViews`, S2-56) is ported verbatim: only view
 `type:'field'` notes (`info.parent` = view name) survive into the api face, and those
 notes' `dataType`s enrich the view fields (UUID 口径回补). Zero-annotation-intersection
 is FATAL (the gate refuses to silently pass everything); draft views without field notes
-are dropped with a warning. The per-aggregate **controllers** and the ViewApi/ViewWrites
-face follow in a later increment — they consume the skeleton pass's `Protocol.scala`
-output the way the live two-pass pipeline does.
+are dropped with a warning. The per-aggregate **controllers** (below) and the read side
+(below) consume the skeleton pass's `Protocol.scala` output the way the live two-pass
+pipeline does.
 
 Fork-A fixture slots (attached by `tools/augment-api-canonical.mjs`): `roleLinkNotes`
 (compact co-link participants — mechanical filter), `readModels` (the ③-layer read-model
-face as-is), `viewFieldNotes` (the gate's annotated-view registry), `viewKeyRenames`
-and `paramOrigins` (the ④-layer template origin registry, keyed `<Agg>.<Cmd>.<param>` —
-the B2 origin lane's r1/enricher input). All derivation lives in the generator
-(`builders/rolemap.mjs`, `builders/controller.mjs`).
+face as-is), `viewFieldNotes` (the gate's annotated-view registry), `viewKeyRenames`,
+`paramOrigins` (the ④-layer template origin registry, keyed `<Agg>.<Cmd>.<param>` —
+the B2 origin lane's r1/enricher input), `viewNoteIds` (the ①-layer metarch readModel
+note ids, first-wins — the read side's anchor source) and `mongoViewNames` (the
+`storage.kind=mongo` declarations — the read side's engine axis). All derivation lives
+in the generator (`builders/rolemap.mjs`, `builders/controller.mjs`).
 
 ### The controller face (V4-4 inc12) — per-aggregate B2 DSL endpoints
 
@@ -477,4 +479,50 @@ Not yet ported (follow with the read side): ViewApi/ViewWrites (`buildViewModels
 already in the builder layer), the establish-409 / Flow-delegate endpoint kinds
 (templates are ported; they need Concept/User/DoR aggregates in a fixture), the
 ServesUseCase anchor enforcement (story-face slot), mongo/vector/graph storage faces.
+
+### The read side (V4-4 inc13) — ViewApiController + ViewWrites
+
+The same generator also emits the read face (`templates/views.mjs`, verbatim port of the
+production `tpl_views.mjs`): `app/controllers/ViewApiController.scala` (form B — one
+single-line `def` per list/item endpoint over the 34 gated decision views, plus the
+generic `tenantList`/`globalList`/`tenantItem`/`globalItem`/`compositeItem` helpers and
+the `pageGuard`) and `app/controllers/ViewWrites.scala` (34 per-view `OWrites` in one
+implicit domain). Load-bearing decisions:
+
+- **Engine axis** (视图存储重设计 2026-10-08): `info.storage.kind=mongo` views (15 of 34,
+  the canonical's `mongoViewNames` slot) render the list endpoint as an inline
+  `findByTenantPaged`/`countByTenant` for-comprehension (SQL-level tenant push-down +
+  real paging); the remaining tenant views use the `tenantList` findAll helper, User-族
+  views (`deactivatedUsers`, `userProfiles`) the `globalList` helper.
+- **Composite-key items** (F2 刻意契约): views without exactly one `isKey` field (notes,
+  parkedKnowledge, sessions, tenantInvitations) route their item endpoint to
+  `compositeItem` → semantic 400 PARAM_INVALID, never a random hang.
+- **Per-view anchors** (S7 #1b): each list/item def pair and each OWrites carries
+  `@knowledge <readModel-noteId>@<hash16>` — the note ids come from the canonical's
+  `viewNoteIds` slot (the ①-layer metarch `readModel:<name>` face, first-wins in
+  session→scope→note order = live's `noteIdOfKey` traversal). `PauseProjectDecisionView`
+  has no metarch readModel note → anchor-bare, exactly matching live. The hash sidecar
+  for the whole api face is the api-face `elementHashes.json` (the live hash resolver's
+  source — the kn export's elementHashes, 3050 keys; the skeleton face's 108-key sidecar
+  carries commands only, and readModel note hashes live only in the kn export).
+- **Null-safe serialization** (`jsExprOf`, 空安全继承 060a217/60b796a): `Instant` →
+  `jsInstant(d.x)` (the JsNull wall lives only in the helper, J-11), nullable uuid →
+  `Json.toJson(Option(d.x).map(_.toString))`, `List[VO]` → `Json.toJson` (companion
+  OFormat discovery), Scala keywords backtick-escaped (`d.\`type\``).
+- **conf/routes**: the GET lines are computed (`routeLines`) but not emitted — same
+  diff-apply deferral as the write side.
+- **Ledger**: both entries are `kind: 'controller'`, `schemaCategory: 'projection'`,
+  `families` = the gated views' `sourceAggregates` union sorted (multi-family honest
+  attribution — vs the global support artifacts' `families: []`). Live's per-row
+  `noteIds` field has no truthsrc ledger counterpart yet (deferred with conf/routes).
+
+Byte identity: both files reproduce the live ingested-app output on the first render
+(35453/38783 bytes); `buildViewModels` (already ported in inc12) plugs straight in with
+the two new slots.
+
+Still not ported from the api family: the establish-409 / Flow-delegate endpoint kinds
+(templates are ported; they need Concept/User/DoR aggregates in a fixture), the
+ServesUseCase anchor enforcement (story-face slot), the M3 vector-search controller
+(`tpl_vector_search.mjs`), and the storage-infrastructure faces (repository specs /
+projection DDL — `gen_repository_specs`/`gen_projection_ddl`, a different family).
 

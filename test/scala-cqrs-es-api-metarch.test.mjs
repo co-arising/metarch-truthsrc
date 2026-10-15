@@ -1,8 +1,8 @@
-// scala-cqrs-es-api-metarch.test.mjs — V4-4 inc11+inc12 gate: golden byte identity against the
-// LIVE gen_api_layer output (verified fresh 2026-10-15/16: the live renderers run over
+// scala-cqrs-es-api-metarch.test.mjs — V4-4 inc11+inc12+inc13 gate: golden byte identity against
+// the LIVE gen_api_layer output (verified fresh 2026-10-15/16: the live renderers run over
 // out/truthsrc/metarch.json + story.readmodels.json + viewkey_rename_map.json reproduce the
-// support files byte-for-byte, and the controller renders byte-identical to the ingested-app
-// on-disk ModelCatalogApiController.scala on the first pass):
+// support files byte-for-byte, and the controller + read side render byte-identical to the
+// ingested-app on-disk files on the first pass):
 //   • ViewKeys.scala        — infrastructure/auth, view-key constant registry (S2-17 kebab +
 //                             viewkey_rename_map resolution, key-ordered by localeCompare)
 //   • CommandRoleMap.scala  — infrastructure/auth, the PB1 role derivation: roles(c) = ∪ role:
@@ -17,10 +17,21 @@
 //                             per-endpoint @knowledge anchors with hash16, Req VOs at file tail;
 //                             ApplyKnowledgePatch skipped (VO-List, not whitelisted) and
 //                             GetModelCatalogState skipped (query Reply — no error slot).
+//   • ViewApiController.scala + ViewWrites.scala — app/controllers, the READ side (inc13):
+//                             form-B single-line endpoints over 34 gated decision views (engine
+//                             axis: 15 mongo views → findByTenantPaged list form, the rest →
+//                             tenantList/globalList helpers; 4 composite-key items → 400),
+//                             per-view @knowledge anchors on both endpoints and OWrites
+//                             (PauseProjectDecisionView has no metarch readModel note → bare,
+//                             matching live), null-safe jsExprOf forms (jsInstant / uuid
+//                             Option.map / backtick `type`).
 // The command IR comes from parsing THIS suite's own skeleton Protocol rendering (scala-cqrs-es
 // protocolModel + renderProtocol — byte-identity proven by its own golden gate), mirroring the
 // live two-pass pipeline. The fixture's api-face RAW slots (roleLinkNotes / readModels /
-// viewFieldNotes / viewKeyRenames / paramOrigins) are attached by tools/augment-api-canonical.mjs.
+// viewFieldNotes / viewKeyRenames / paramOrigins / viewNoteIds / mongoViewNames) are attached by
+// tools/augment-api-canonical.mjs. The elementHashes sidecar is the api-face one (the live hash
+// resolver's source: the kn export v1.0.0's elementHashes — 3050 keys, covering both command and
+// readModel note ids; the skeleton face's 108-key sidecar only covers commands).
 import { equal, ok } from 'node:assert';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -28,7 +39,7 @@ import { plan } from '../src/core/generate.mjs';
 
 const GEN = join(import.meta.dirname, '..', 'generators', 'scala-cqrs-es-api');
 const CANON = join(import.meta.dirname, '..', 'golden', 'scala-cqrs-es-metarch', 'model-catalog.canonical.json');
-const HASHES = join(import.meta.dirname, '..', 'golden', 'scala-cqrs-es-metarch', 'model-catalog.elementHashes.json');
+const HASHES = join(import.meta.dirname, '..', 'golden', 'scala-cqrs-es-api-metarch', 'elementHashes.json');
 const GOLD = join(import.meta.dirname, '..', 'golden', 'scala-cqrs-es-api-metarch', 'expected');
 
 const { entries } = await plan({
@@ -36,7 +47,7 @@ const { entries } = await plan({
   generatorDir: GEN,
   options: { elementHashes: JSON.parse(readFileSync(HASHES, 'utf8')) },
 });
-equal(entries.length, 4);
+equal(entries.length, 6);
 for (const e of entries) {
   const want = readFileSync(join(GOLD, e.path), 'utf8');
   equal(e.content, want, `byte identity: ${e.path}`);
@@ -123,4 +134,37 @@ ok(ctrl.skippedNote.includes('ApplyKnowledgePatch(concepts: List[ConceptDelta])'
 ok(ctrl.skippedNote.includes('GetModelCatalogState（查询型 Reply'), 'query-command skip recorded');
 ok(!ctrl.content.includes('ApplyKnowledgePatch'), 'skipped command absent from the file');
 
-console.log('scala-cqrs-es-api (inc11+inc12): ViewKeys + CommandRoleMap + CommandDsl + ModelCatalogApiController byte-identical');
+// ── inc13: the read side (ViewApi + ViewWrites) ───────────────────────────────────────────
+const viewApi = entries.find((e) => e.path.endsWith('ViewApiController.scala'));
+const viewWrites = entries.find((e) => e.path.endsWith('ViewWrites.scala'));
+equal(viewApi.families.length, 25, 'ViewApi families = gated views\u0027 sourceAggregates union (multi-family, honest attribution)');
+equal(JSON.stringify(viewApi.families), JSON.stringify(viewWrites.families), 'ViewWrites carries the same families');
+// 34 gated views → 34 repo injections and 68 single-line endpoints (list + item per view).
+equal((viewApi.content.match(/DecisionViewRepository,$/gm) || []).length, 34, '34 repo params (all trailing-comma — api: Endpoint follows the last)');
+equal((viewApi.content.match(/^  def \w+\(page: Int, pageSize: Int\)/gm) || []).length, 34, '34 list endpoints');
+equal((viewApi.content.match(/^  def \w+Item\(entityId: String\)/gm) || []).length, 34, '34 item endpoints');
+// Engine axis: 15 mongo views take the paged form (视图存储重设计 2026-10-08), the rest the helpers.
+equal((viewApi.content.match(/findByTenantPaged\(ts\.tenantId/g) || []).length, 15, '15 mongo paged list endpoints');
+equal((viewApi.content.match(/= tenantList\[/g) || []).length, 17, '17 tenant helper lists (call sites)');
+equal((viewApi.content.match(/= globalList\[/g) || []).length, 2, '2 global lists (User 族: deactivatedUsers, userProfiles)');
+// Composite-key items (F2: by-id → 400 PARAM_INVALID): notes / parkedKnowledge / sessions / tenantInvitations.
+equal((viewApi.content.match(/compositeItem\(ViewKeys\./g) || []).length, 4, '4 composite-key items');
+// Anchors: per-view on both endpoints and OWrites — 33 of 34 views carry a metarch readModel
+// noteId (PauseProjectDecisionView has none → bare, matching live).
+equal((viewApi.content.match(/^  \/\/ @knowledge [0-9a-f-]{36}@[0-9a-f]{16}$/gm) || []).length, 66, '66 view anchors on endpoints (33×2)');
+equal((viewWrites.content.match(/^  \/\/ @knowledge [0-9a-f-]{36}@[0-9a-f]{16}$/gm) || []).length, 33, '33 view anchors on OWrites');
+ok(viewApi.content.includes('def projectPauses(page: Int, pageSize: Int): play.api.mvc.Action[play.api.mvc.AnyContent] = tenantList'),
+  'PauseProject list endpoint present');
+const pauseBlock = viewApi.content.slice(viewApi.content.indexOf('def projectPauses(page: Int'));
+ok(!pauseBlock.startsWith('\n  // @knowledge'), 'PauseProject carries NO anchor (no metarch readModel note)');
+equal((viewWrites.content.match(/implicit val \w+Writes: play\.api\.libs\.json\.OWrites/g) || []).length, 34, 'ViewWrites: 34 per-view OWrites');
+// Null-safe jsExprOf forms in ViewWrites (空安全继承 060a217/60b796a).
+ok(viewWrites.content.includes('"edgeId" -> Json.toJson(Option(d.edgeId).map(_.toString))'), 'uuid nullable → Option.map form');
+ok(viewWrites.content.includes('"assembledAt" -> jsInstant(d.assembledAt)'), 'Instant → jsInstant helper');
+ok(viewWrites.content.includes('"type" -> Json.toJson(d.`type`)'), 'Scala keyword → backtick escape');
+// Fixture slots behind the read side (Fork A raw inputs).
+equal(Object.keys(canon.viewNoteIds ?? {}).length, 43, 'viewNoteIds slot: 43 metarch readModel note ids');
+ok(!('PauseProjectDecisionView' in (canon.viewNoteIds ?? {})), 'PauseProject has no readModel note (anchor-bare source fact)');
+equal((canon.mongoViewNames ?? []).length, 15, 'mongoViewNames slot: 15 storage.kind=mongo views');
+
+console.log('scala-cqrs-es-api (inc11+inc12+inc13): ViewKeys + CommandRoleMap + CommandDsl + ModelCatalogApiController + ViewApiController + ViewWrites byte-identical');
