@@ -10,6 +10,7 @@ import { pathToFileURL } from 'node:url';
 import { loadManifest } from './manifest.mjs';
 import { loadCanonical } from './canonical.mjs';
 import { loadConcernRegistry, resolveConcernFilter, expandScope, compileClosure } from './concerns.mjs';
+import { hasManualBlocks, mergeManualBlocks, mergeRoutesBlock } from './merge.mjs';
 
 const LEDGER = 'truthsrc.ledger.json';
 const ANCHORS = 'anchors.json';
@@ -44,14 +45,19 @@ const rowOf = (e) => ({
   ...(e.schemaNode ? { schemaNode: e.schemaNode } : {}),
   families: e.families ?? [],
   deps: e.deps ?? [],
+  ...(e.noteIds ? { noteIds: e.noteIds } : {}),
 });
 
 // (exported for --plan concern previews — read-only)
+const readPriorRows = (outDir) =>
+  existsSync(join(outDir, LEDGER)) ? (JSON.parse(readFileSync(join(outDir, LEDGER), 'utf8')).entries ?? []) : [];
+
 export function mergedRows(outDir, entries) {
-  const p = join(outDir, LEDGER);
-  const prior = existsSync(p) ? (JSON.parse(readFileSync(p, 'utf8')).entries ?? []) : [];
-  const rows = new Map(prior.map((r) => [r.path, r]));
-  for (const e of entries) rows.set(e.path, rowOf(e));
+  const rows = new Map(readPriorRows(outDir).map((r) => [r.path, r]));
+  for (const e of entries) {
+    if (e.noLedger) continue; // shared-territory entries (conf/routes) carry no ledger row — live C6
+    rows.set(e.path, rowOf(e));
+  }
   return [...rows.values()];
 }
 
@@ -67,12 +73,13 @@ export function scopeOf(ledgerRows, concern) {
 
 export function apply({ canonicalFile, generatorDir, outDir, options = {}, concern }) {
   return plan({ canonicalFile, generatorDir, options }).then(({ manifest, entries }) => {
+    const priorByPath = new Map(readPriorRows(outDir).map((r) => [r.path, r]));
     const ledgerRows = mergedRows(outDir, entries);
     const rowByPath = new Map(ledgerRows.map((r) => [r.path, r]));
     const scope = concern ? scopeOf(ledgerRows, concern) : null;
 
     const anchors = {};
-    let written = 0, identical = 0, kept = 0, globalFlowed = 0;
+    let written = 0, identical = 0, kept = 0, globalFlowed = 0, merged = 0, routesNoTarget = 0;
     const changedPaths = [];
     for (const e of entries) {
       const target = resolve(join(outDir, e.path));
@@ -86,10 +93,40 @@ export function apply({ canonicalFile, generatorDir, outDir, options = {}, conce
         kept++;
         continue;
       }
+      if (e.merge === 'markers') {
+        // Shared-territory merge (conf/routes · live C6): swap the marker region, byte-preserving
+        // everything outside it. A target-less outDir gets no routes file — live gen_api_layer's
+        // existsSync guard (it never creates conf/routes; that first fill belongs to the
+        // skeleton's MarkerBlockWriter new-file path, not this face).
+        if (!existsSync(target)) { routesNoTarget++; continue; }
+        const { text, changed } = mergeRoutesBlock(e.content, readFileSync(target, 'utf8'), { release: e.release ?? null, label: e.path });
+        if (changed) { mkdirSync(dirname(target), { recursive: true }); writeFileSync(target, text); written++; changedPaths.push(e.path); }
+        else identical++;
+        continue;
+      }
       if (existsSync(target)) {
         const prev = readFileSync(target, 'utf8');
+        // Ownership reads the PRIOR ledger row (before this run's upsert): the incoming entry's
+        // own row always matches its kind, so the merged map cannot decide cross-face questions.
+        const ownerKind = priorByPath.get(e.path)?.kind ?? e.kind;
         if (prev === e.content) { identical++; }
-        else if (!scope) throw new Error(`refusing to overwrite existing file: ${e.path} (MERGE-protected blocks land in v0.4 port batches — in-place regeneration runs under a declared --concern scope)`);
+        else if (hasManualBlocks(prev) && ownerKind === e.kind) {
+          // MANUAL-block merge (live manifest C2): the generated content is the base, the hand
+          // blocks are implanted back by def-anchor — in-place regeneration no longer requires a
+          // --concern scope when the only drift is inside declared MANUAL territory. Same-face
+          // only: the ledger row decides ownership, so a face transition (skeleton glue vs a
+          // rules-owned implementation) never masquerades as a merge. Orphan blocks (hand code in
+          // a method the generator no longer emits) refuse the merge.
+          const text = mergeManualBlocks(e.content, prev, e.path);
+          if (text === prev) { identical++; }
+          else { writeFileSync(target, text); written++; merged++; changedPaths.push(e.path); if (isGlobal) globalFlowed++; }
+        }
+        else if (!scope) {
+          throw new Error(`refusing to overwrite existing file: ${e.path} `
+            + (ownerKind !== e.kind
+              ? `(the ledger owns this path as kind "${ownerKind}", incoming "${e.kind}" — cross-face regeneration needs the owning face or a --concern scope)`
+              : '(no MANUAL blocks to merge and no --concern scope declared — the file drifted outside generated territory)'));
+        }
         else { writeFileSync(target, e.content); written++; changedPaths.push(e.path); if (isGlobal) globalFlowed++; }
       } else {
         mkdirSync(dirname(target), { recursive: true });
@@ -129,7 +166,7 @@ export function apply({ canonicalFile, generatorDir, outDir, options = {}, conce
     writeFileSync(join(outDir, ANCHORS), JSON.stringify({ generator: manifest.name, anchors }, null, 2) + '\n');
     return {
       name: manifest.name, written, identical, total: entries.length,
-      kept, globalFlowed,
+      kept, globalFlowed, merged, routesNoTarget,
       inScope: scope ? scope.set.size : null,
       closureAdded: scope ? scope.set.size - scope.base.size : null,
       ledger: join(outDir, LEDGER), anchors: join(outDir, ANCHORS),

@@ -1,7 +1,7 @@
 # truthsrc 全语料恒等报告（V4-5·切流拍板输入·非拍板本身）
 
 - 日期：2026-10-15；live 参照：`/Users/zhongdj/Workspaces/ingested-app`（新鲜度门：backend-codegen `tools/kn_repo_freshness.mjs` exit 0·锚 8948/元素 2861 全 match）；canonical：`golden/scala-cqrs-es-metarch/full-corpus.canonical.json`（27 聚合）
-- 范围：三面 19 kind（skeleton 8－共享 2＋rules 7＋api 6；共享 Behaviors/CommandHelpers 按 live 管线序归 rules 面所有）。storage/persistence/Bootstrap/ExecutableSpec/投影/AggregateStateApi/Auth/conf/routes 等**未移植面不在对表范围**（EP 不搬清单＋顺延批）。
+- 范围：三面 19 kind＋conf/routes E301 块区（skeleton 8－共享 2＋rules 7＋api 6；共享 Behaviors/CommandHelpers 按 live 管线序归 rules 面所有；routes 按标记区对表——块外领地属手写/它生成器面不在对表范围，块内 live 独有行应恰＝未移植面输出：aggregate-state ×27＋vector ×1）。storage/persistence/Bootstrap/ExecutableSpec/投影/AggregateStateApi/Auth 等其余**未移植面不在对表范围**（EP 不搬清单＋顺延批）。
 
 ## 头条数字
 
@@ -9,9 +9,9 @@
 |---|---|
 | identical | 277 |
 | owned-by-other | 108 |
-| diff | 8 |
+| diff | 9 |
 
-**恒等按面**：skeleton 102 · rules 143 · api 32 ｜ **diff 按 kind**：aggregate-root 2 · protocol 1 · entity 3 · rules 1 · rules-spec 1
+**恒等按面**：skeleton 102 · rules 143 · api 32 ｜ **diff 按 kind**：aggregate-root 2 · protocol 1 · entity 3 · rules 1 · rules-spec 1 · routes 1
 
 ## live 归属普查（按文件首行 stamp·多趟管线真相）
 
@@ -24,7 +24,7 @@
 | rules_domain_gen:2026-09-05 (S2-44) | 10 |
 | CodegenMain:66b5b602 | 1 |
 
-## 逐件明细（393 rows）
+## 逐件明细（394 rows）
 
 | face | kind | aggregate | live path | 状态 | diff@line |
 |---|---|---|---|---|---|
@@ -418,6 +418,7 @@
 | api | controller | WorkTicket | app/controllers/WorkTicketApiController.scala | identical | — |
 | api | controller | Workgroup | app/controllers/WorkgroupApiController.scala | identical | — |
 | api | controller | Workshop | app/controllers/WorkshopApiController.scala | identical | — |
+| api | routes | — | conf/routes | diff | 0 |
 | api | command-dsl | — | app/net/imadz/metarch/infrastructure/api/CommandDsl.scala | identical | — |
 | api | command-role-map | — | app/net/imadz/metarch/infrastructure/auth/CommandRoleMap.scala | identical | — |
 | api | view-keys | — | app/net/imadz/metarch/infrastructure/auth/ViewKeys.scala | identical | — |
@@ -529,5 +530,14 @@
       passwordSalt: String = "",
       passwordHash: String = "",
       authMethod: String = "",
+```
+
+### conf/routes（routes·首差 @line 0 byte 0）
+
+```scala
+--- live（want）
+28 live-only lines (unported faces: aggregate-state ×27 + vector ×1)
++++ truthsrc（got）
+0 truthsrc-only lines
 ```
 

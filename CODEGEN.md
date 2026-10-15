@@ -656,3 +656,48 @@ form, and moved `IR-USER-EVT-004_userId` between library rows, reordering the ev
 postcondition chain — and UserRulesSpec, the same state-face skew as UserEntity propagating
 into the spec's UserState fixture args (9 fields vs the stale tree's 7). Regenerating the
 live User face on the current chain converges all of them.
+
+### The diff-apply merge + routes territory (V4-7)
+
+The apply-side write policies (`src/core/merge.mjs`, ported from the production patch pipeline)
+and the conf/routes territory close the last deferred api-face piece.
+
+**The MANUAL-block merge.** In-place regeneration no longer requires a `--concern` scope when the
+only drift sits inside declared MANUAL territory: the generated content is the BASE and the
+target's `// ==== BEGIN MANUAL ==== … // ==== END MANUAL ====` blocks are implanted back,
+anchored by the nearest preceding `def name(` (same-name anchors consume their blocks in
+appearance order — the CommandHelpers repeated-object case; anchor-less blocks pair by group
+order). Orphan blocks (hand code in a method the generator no longer emits) and unpaired markers
+REFUSE the merge — live's manifest_merge passes a marker-less target through wholesale, truthsrc
+refuses, because silent hand-content drop is the exact failure class the machinery exists to
+prevent. Merge runs SAME-FACE only: ownership is read from the PRIOR ledger row's kind (before
+this run's upsert — the merged map cannot answer cross-face questions), so a skeleton-glue
+re-apply over a rules-owned implementation is a refusal, not a merge; under a `--concern` scope
+the in-scope COVER path still performs the documented transient glue clobber + replay.
+
+**The conf/routes E301 territory.** The api generator emits the MARKER BLOCK entry
+(`# >>> gen_api_layer (E301) >>>` … `# <<< gen_api_layer <<<`, verbatim live marker text; line
+order = per-aggregate DSL lines then view lines, canonical aggregate order ≡ live's sorted
+aggDirs). The apply swaps the target's marker region byte-preserving everything outside it
+(apply_manifest MERGE_MARKERS discipline, including the CRLF-normalized zero-write and the
+target-dominant line-ending alignment); a marker-less target gets the append path with the
+fingerprint head prepended when absent; half-marker states fail fast (MarkerBlockWriter
+H052/H053 — a silent append would double the start marker whose next swap swallows manual
+territory). A target-less outDir gets NO routes file — the live `fs.existsSync` guard (the api
+face never creates conf/routes; that first fill belongs to the skeleton's MarkerBlockWriter
+new-file path, not ported). Deliberately NOT ported: `--allow-manual-orphan` (orphans refuse,
+full stop) and `.gen-backup` copies (truthsrc is git-native; the VCS is the rollback). The block
+carries NO ledger row (live C6 shared territory, scope-leak exempt). The vector-search and
+aggregate-state lines of the live block belong to unported faces and are honestly absent.
+
+**The ledger noteIds slot.** Ledger rows gain the knowledge identity of each file (live ledger
+row parity, api face): per-aggregate controllers → the sorted command ids they serve (omitted
+when empty); ViewApi/ViewWrites/ViewKeys → the gated views' ①-layer metarch readModel ids (33 on
+the corpus — PauseProjectDecisionView has none); CommandRoleMap → the ids of the commands it
+declares roles for (130 corpus-wide); CommandDsl → none (a pure envelope carries no knowledge
+payload).
+
+Report (2026-10-15): 394 rows = 277 identical / 9 diff / 108 owned-by-other — the ninth diff is
+the routes block row, whose 28 live-only lines are EXACTLY the unported faces' output (27
+aggregate-state + 1 vector-search; `liveOnlyOutsideUnportedFaces: 0`), and the other eight are
+the V4-5/V4-6 live-tree staleness residuals, unchanged.

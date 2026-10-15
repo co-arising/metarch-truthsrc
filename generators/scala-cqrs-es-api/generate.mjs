@@ -23,6 +23,18 @@
 // noteIdOfKey face); elementHashes for the read side come from the api-face sidecar (the live
 // resolver's source: the kn export's elementHashes, which — unlike the skeleton face's sidecar —
 // carries readModel note hashes too). conf/routes emission stays deferred to the diff-apply batch.
+//
+// V4-7 scope: + the conf/routes E301 territory and the ledger noteIds slot. The routes ENTRY
+// carries the MARKER BLOCK only (`# >>> gen_api_layer (E301) >>>` … `# <<< gen_api_layer <<<`);
+// merging it into the shared routes file is apply-side (core merge.mjs — segment replace / append
+// / absent-target skip: the live index.mjs:252-271 semantics with MarkerBlockWriter's half-marker
+// fail-fast). Line order mirrors live exactly: per-aggregate DSL route lines (canonical aggregate
+// order ≡ live's sorted aggDirs — verified on the full corpus), then the view lines. The vector
+// search and aggregate-state lines of the live block belong to faces truthsrc has not ported and
+// are honestly absent. conf/routes carries NO ledger row (live C6: shared territory, scope-leak
+// exempt). Ledger rows gain noteIds — the knowledge identity of each file (live ledger parity:
+// controllers → the commands they serve; ViewApi/ViewWrites/ViewKeys → their view ids;
+// CommandRoleMap → its command ids; CommandDsl → none).
 import { ROLE_CONSTANTS, constNameOf, deriveCommandRoles, deriveViewReadRoles, aggregateByView, gateViews, viewKeyModel, newViewKeyOf, kebabViewStrict } from './builders/rolemap.mjs';
 import { parseProtocol, buildAggregateController, buildViewModels } from './builders/controller.mjs';
 import { renderViewKeys, renderCommandRoleMap, renderCommandDsl } from './templates/scala.mjs';
@@ -101,8 +113,14 @@ export function generate({ canonical, options = {} }) {
   // EP_Artifacts_Attribution_Closure P2: ViewApi/ViewWrites families = 过门视图 sourceAggregates
   // 并集（多族承载·诚实归属）——与 ViewKeys/CommandRoleMap/CommandDsl 的 families=[] 全局件相对。
   const viewFamilies = [...new Set(rmViews.flatMap((v) => v.sourceAggregates ?? []))].sort();
+  // V4-7 ledger noteIds (live index.mjs:147 parity): the gated views' ①-layer readModel note ids
+  // — the knowledge identity of the View face (ViewApi / ViewWrites / ViewKeys all carry it).
+  const viewNoteIdList = [...new Set(rmViews.map((v) => viewNoteIdOf(v.name)).filter(Boolean))].sort();
 
   const entries = [];
+  // V4-7: conf/routes E301 route-line collection (live index.mjs:131/179/197 order — per-agg DSL
+  // lines first, view lines after; the corpus-wide file is assembled once from the per-model lines).
+  const routesLines = [];
   // 包根：全局件随 workshop 上下文命名空间（首个聚合的 pkg/ctxPackage；空语料回退 workshop 名）
   const a0 = (canonical.aggregates ?? [])[0];
   const pkgPath = `${a0?.pkg ?? 'net.imadz'}${a0?.ctxPackage ? `.${a0.ctxPackage}` : ''}`.replaceAll('.', '/');
@@ -111,16 +129,20 @@ export function generate({ canonical, options = {} }) {
   const ctrlCtx = { fp, parkConceptHasTenant, noteAnchor };
 
   // Global artifacts once (concern semantics: families=[] — 全局件不参与族过滤).
+  // noteIds = live ledger parity (index.mjs:242-244): the carried knowledge — ViewKeys → its view
+  // ids; CommandRoleMap → the ids of the commands it declares roles for; CommandDsl → none.
   entries.push(
     {
       path: `${MODULE}/src/main/scala/${pkgPath}/infrastructure/auth/ViewKeys.scala`,
       content: renderViewKeys(vm, fp),
       kind: 'view-keys', schemaCategory: 'projection', schemaNode: 'ViewKeys', families: [], deps: [],
+      noteIds: viewNoteIdList,
     },
     {
       path: `${MODULE}/src/main/scala/${pkgPath}/infrastructure/auth/CommandRoleMap.scala`,
       content: renderCommandRoleMap({ commandRoles, viewRoles, viewConstOf: vm.viewConstOf }, fp),
       kind: 'command-role-map', schemaCategory: 'aggregate', schemaNode: 'CommandRoleMap', families: [], deps: ['ViewKeys'],
+      noteIds: [...new Set([...commandRoles.keys()].map((c) => commandNoteIdOf(c)).filter(Boolean))].sort(),
     },
     {
       path: `${MODULE}/src/main/scala/${pkgPath}/infrastructure/api/CommandDsl.scala`,
@@ -144,32 +166,51 @@ export function generate({ canonical, options = {} }) {
       a.name, proto,
     );
     const rendered = renderControllerFile(model, ctrlCtx);
+    routesLines.push(...model.routeLines);
     entries.push({
       path: `app/controllers/${rendered.fileName}`,
       content: rendered.source,
       // deps = live gen_api_layer row parity (`${agg}Protocol`, `${agg}Repository`) — resolved by
       // the concerns closure against the merged ledger (the skeleton generator's rows).
+      // noteIds = the commands this controller serves (live index.mjs:171 row parity — omitted
+      // when empty, same spread shape).
       kind: 'controller', schemaCategory: 'aggregate', schemaNode: rendered.fileName.replace(/\.scala$/, ''), families: [a.name],
       deps: [`${a.name}Protocol`, `${a.name}Repository`],
+      ...(model.actions.some((x) => x.cmdNoteId) ? { noteIds: [...new Set(model.actions.map((x) => x.cmdNoteId).filter(Boolean))].sort() } : {}),
       skippedNote: rendered.skippedNote,
     });
   }
 
   // ViewApi 段（读侧·live 聚合环后同序）：ViewModel → 形态 B 控制器＋ViewWrites per-view OWrites。
-  // conf/routes 的 GET 行（routeLines）不发射——E301 标记块合并属 diff-apply 批（与写侧路由同批）。
   const viewOut = renderViewController(readVm, fp, noteAnchor);
+  routesLines.push(...viewOut.routeLines);
   entries.push(
     {
       path: 'app/controllers/ViewApiController.scala',
       content: viewOut.controller,
       kind: 'controller', schemaCategory: 'projection', schemaNode: 'ViewApiController', families: viewFamilies, deps: [],
+      noteIds: viewNoteIdList,
     },
     {
       path: 'app/controllers/ViewWrites.scala',
       content: viewOut.viewWritesSrc,
       kind: 'controller', schemaCategory: 'projection', schemaNode: 'ViewWrites', families: viewFamilies, deps: [],
+      noteIds: viewNoteIdList,
     },
   );
+
+  // V4-7: conf/routes E301 territory — the MARKER BLOCK entry (live index.mjs:252-271 block
+  // assembly, verbatim marker text). Merging into the shared file is apply-side (core merge.mjs);
+  // a target-less outDir gets no routes file (live `fs.existsSync` guard parity — gen_api_layer
+  // never creates conf/routes; the skeleton's MarkerBlockWriter new-file path owns that case and
+  // is not ported). Not in the ledger (live C6: 标记块共享领地·scope-leak 豁免).
+  entries.push({
+    path: 'conf/routes',
+    content: `# >>> gen_api_layer (E301) >>>\n${routesLines.join('\n')}\n# <<< gen_api_layer <<<`,
+    kind: 'routes', schemaCategory: 'projection', schemaNode: 'routes', families: [], deps: [],
+    merge: 'markers', noLedger: true,
+    release: kr ?? null,
+  });
 
   return entries;
 }

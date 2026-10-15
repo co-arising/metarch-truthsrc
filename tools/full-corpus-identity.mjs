@@ -7,10 +7,12 @@
 //
 // Faces compared: skeleton (CodegenMain) 6 non-shared kinds, rules (rules_domain_gen) 7 kinds
 // (owning the shared Behaviors/CommandHelpers paths — the live pipeline order lets the rules
-// face win them), api (gen_api_layer) 6 kinds. Everything else on the live tree (persistence
-// adapters, RepositoryImpl, Bootstrap, ExecutableSpec, projections, AggregateStateApi/Auth/…,
-// conf/routes) belongs to faces truthsrc has not ported — out of scope by declaration, listed
-// in the report header, not diffed.
+// face win them), api (gen_api_layer) 6 kinds + the conf/routes E301 BLOCK (V4-7 — compared at
+// marker-region granularity: the live file is shared territory whose outer lines belong to
+// hand/other-generator faces). Everything else on the live tree (persistence adapters,
+// RepositoryImpl, Bootstrap, ExecutableSpec, projections, AggregateStateApi/Auth/…) belongs to
+// faces truthsrc has not ported — out of scope by declaration, listed in the report header, not
+// diffed.
 //
 // Output: golden/scala-cqrs-es-metarch/full-corpus.identity.json (machine) + .md (human).
 //
@@ -46,6 +48,7 @@ function mapPath(p) {
   if (p.startsWith('modules/kernel/src/main/scala/')) return 'app/' + p.slice('modules/kernel/src/main/scala/'.length);
   if (p.startsWith('modules/kernel/src/test/scala/')) return 'test/' + p.slice('modules/kernel/src/test/scala/'.length);
   if (p.startsWith('app/controllers/')) return p;
+  if (p === 'conf/routes') return 'conf/routes';
   return null;
 }
 
@@ -96,6 +99,40 @@ for (const [face, g] of Object.entries(GENS)) {
       const row = { face, kind: e.kind, aggregate: e.families?.[0] ?? null, path: e.path, livePath, status: 'unmapped' };
       if (livePath) {
         const own = liveOwner(livePath);
+        if (e.kind === 'routes') {
+          // conf/routes: shared territory — compare the E301 marker REGION only (outer lines are
+          // hand/other-generator faces, out of scope by declaration). Live-only lines should be
+          // exactly the unported faces' output (27 aggregate-state + 1 vector-search); anything
+          // else is a real diff on the ported write/view lines.
+          const liveText = liveRead(livePath);
+          if (liveText === null) row.status = 'live-missing';
+          else {
+            const MARK_END = '# <<< gen_api_layer <<<';
+            const b = liveText.indexOf('# >>> gen_api_layer (E301) >>>');
+            const e2 = liveText.indexOf(MARK_END);
+            if (b < 0 || e2 < 0) { row.status = 'diff'; row.excerpt = { byte: 0, line: 0, want: '(E301 marker block missing from live)', got: '(present)' }; }
+            else {
+              const liveLines = liveText.slice(b, e2 + MARK_END.length).split('\n');
+              const mineLines = e.content.split('\n');
+              const mineSet = new Set(mineLines);
+              const liveSet = new Set(liveLines);
+              const missing = liveLines.filter((l) => !mineSet.has(l));
+              const extra = mineLines.filter((l) => !liveSet.has(l));
+              const missingPorted = missing.filter((l) => !l.includes('/api/state/') && !l.includes('semantic-search'));
+              row.routes = { liveLines: liveLines.length, emittedLines: mineLines.length, liveOnly: missing.length, emittedOnly: extra.length, liveOnlyOutsideUnportedFaces: missingPorted.length };
+              row.status = missing.length === 0 && extra.length === 0 ? 'identical' : 'diff';
+              if (row.status === 'diff') {
+                row.excerpt = {
+                  byte: 0, line: 0,
+                  want: missingPorted.length ? missingPorted[0] : `${missing.length} live-only lines (unported faces: aggregate-state ×27 + vector ×1)`,
+                  got: extra.length ? extra[0] : `${extra.length} truthsrc-only lines`,
+                };
+              }
+            }
+          }
+          rows.push(row);
+          continue;
+        }
         if (own === null) row.status = 'live-missing';
         else if (own.owner !== FAMILY[face]) {
           // live path written by a different face than the truthsrc generator being compared —
@@ -171,7 +208,7 @@ fs.writeFileSync(outJson, JSON.stringify(report, null, 2) + '\n');
 const line = [];
 line.push(`# truthsrc 全语料恒等报告（V4-5·切流拍板输入·非拍板本身）`, '');
 line.push(`- 日期：${report.generatedAt}；live 参照：\`${LIVE}\`（新鲜度门：backend-codegen \`tools/kn_repo_freshness.mjs\` exit 0·锚 8948/元素 2861 全 match）；canonical：\`${report.canonical}\`（27 聚合）`);
-line.push(`- 范围：三面 19 kind（skeleton 8－共享 2＋rules 7＋api 6；共享 Behaviors/CommandHelpers 按 live 管线序归 rules 面所有）。storage/persistence/Bootstrap/ExecutableSpec/投影/AggregateStateApi/Auth/conf/routes 等**未移植面不在对表范围**（EP 不搬清单＋顺延批）。`, '');
+line.push(`- 范围：三面 19 kind＋conf/routes E301 块区（skeleton 8－共享 2＋rules 7＋api 6；共享 Behaviors/CommandHelpers 按 live 管线序归 rules 面所有；routes 按标记区对表——块外领地属手写/它生成器面不在对表范围，块内 live 独有行应恰＝未移植面输出：aggregate-state ×27＋vector ×1）。storage/persistence/Bootstrap/ExecutableSpec/投影/AggregateStateApi/Auth 等其余**未移植面不在对表范围**（EP 不搬清单＋顺延批）。`, '');
 line.push(`## 头条数字`, '');
 line.push(`| 判定 | 件数 |`);
 line.push(`|---|---|`);

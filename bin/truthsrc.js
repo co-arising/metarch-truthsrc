@@ -111,6 +111,8 @@ switch (cmd) {
       die(`[FAIL] ${e.message}`);
     }
     console.log(`✅ generate [${r.name}] — ${r.total} planned · ${r.written} written · ${r.identical} identical`
+      + (r.merged ? ` · ${r.merged} merged (MANUAL blocks preserved)` : '')
+      + (r.routesNoTarget ? ` · ${r.routesNoTarget} routes block awaiting a target conf/routes` : '')
       + (concern ? ` · ${r.kept} kept (out-of-scope) · in-scope ${r.inScope} (closure +${r.closureAdded})` + (r.globalFlowed ? ` · ${r.globalFlowed} global flowed` : '') : ''));
     console.log(`   ledger → ${r.ledger}\n   anchors → ${r.anchors}`);
     break;

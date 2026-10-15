@@ -4,10 +4,10 @@
   "canonical": "golden/scala-cqrs-es-metarch/full-corpus.canonical.json",
   "aggregates": 27,
   "counts": {
-    "rows": 393,
+    "rows": 394,
     "byStatus": {
       "identical": 277,
-      "diff": 8,
+      "diff": 9,
       "owned-by-other": 108
     },
     "identicalByFace": {
@@ -20,7 +20,8 @@
       "protocol": 1,
       "entity": 3,
       "rules": 1,
-      "rules-spec": 1
+      "rules-spec": 1,
+      "routes": 1
     },
     "reverseRows": 0,
     "genErrors": {}
@@ -3583,6 +3584,27 @@
       "livePath": "app/controllers/WorkshopApiController.scala",
       "status": "identical",
       "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "routes",
+      "aggregate": null,
+      "path": "conf/routes",
+      "livePath": "conf/routes",
+      "status": "diff",
+      "routes": {
+        "liveLines": 229,
+        "emittedLines": 201,
+        "liveOnly": 28,
+        "emittedOnly": 0,
+        "liveOnlyOutsideUnportedFaces": 0
+      },
+      "excerpt": {
+        "byte": 0,
+        "line": 0,
+        "want": "28 live-only lines (unported faces: aggregate-state ×27 + vector ×1)",
+        "got": "0 truthsrc-only lines"
+      }
     },
     {
       "face": "api",
