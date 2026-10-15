@@ -11,7 +11,7 @@
 //   ③ empty() neutral-value derivation + case-class defaults derived from type (types.mjs).
 //   ④ triggeredBy — an ordinary command/event parameter (no anchor on commands, anchored on events).
 // Imports are the sorted multiset over distinct fully-qualified TypeRefs (types.mjs).
-import { kebab } from './naming.mjs';
+import { kebab, scalaIdentifier } from './naming.mjs';
 import { scalaSig, typeDeps, fieldDefault, neutralValue, renderImports } from './types.mjs';
 
 const baseOf = (a) => `${a.pkg ?? 'net.imadz'}.${a.ctxPackage ?? ''}.`;
@@ -29,7 +29,7 @@ export function headerOf(env) {
 
 // anchor row for a field/param: { name, description, anchor } where anchor = `<uuid>@<hash>` | `<uuid>` | null
 const anchorRow = (env, f) => ({
-  name: f.name,
+  name: scalaIdentifier(f.name),
   description: f.description ?? '',
   anchor: f.noteId ? `${f.noteId}${env.anchor(f.noteId)}` : null,
 });
@@ -52,11 +52,14 @@ const voImportOf = (f) => f.typeImport ?? null;
 
 export function protocolModel(a, env) {
   const name = a.name, fam = commandFamilyOf(a), fb = env.frameworkBase;
+  // optionality (AssemblyEngine paramMeta optional → Option[T]; the `= None` default rides the
+  // Protocol case class but NOT the Factory signature — CemEdge factory is the canon case)
+  const sigOf = (p) => (p.optional ? `Option[${scalaSig(p.dataType)}]` : scalaSig(p.dataType));
   const commands = (a.commands ?? []).map((c) => ({
     name: c.name,
     extendsFamily: fam,
     docRows: (c.parameters ?? []).map((p) => anchorRow(env, p)),
-    params: [...(c.parameters ?? []).map((p) => ({ name: p.name, type: scalaSig(p.dataType) })),
+    params: [...(c.parameters ?? []).map((p) => ({ name: scalaIdentifier(p.name), type: sigOf(p), defaultValue: p.optional ? 'None' : undefined })),
       { name: 'replyTo', type: `ActorRef[${replyNameOf(a, c)}]` }],
   }));
   const replies = replyNames(a).map((rn) => {
@@ -65,7 +68,7 @@ export function protocolModel(a, env) {
   });
   // import deps: command param types + reply field types (+ event/state refs, self-qualified)
   const rows = [];
-  for (const c of a.commands ?? []) for (const p of c.parameters ?? []) rows.push(...typeDeps(scalaSig(p.dataType), fb, voImportOf(p)));
+  for (const c of a.commands ?? []) for (const p of c.parameters ?? []) rows.push(...typeDeps(sigOf(p), fb, voImportOf(p)));
   for (const r of replies) for (const f of r.fields) rows.push(...typeDeps(f.type, fb, null));
   const selfQualified = [
     ...replyNames(a).map((rn) => `${protoFqn(a)}.${rn}`),
@@ -82,7 +85,7 @@ export function protocolModel(a, env) {
   return {
     header: headerOf(env), base: baseOf(a), name, family: fam,
     handlerAlias: handlerAliasOf(a),
-    imports: renderImports(importRows), commands, replies,
+    imports: renderImports(importRows, { distinctFqn: true }), commands, replies,
   };
 }
 
@@ -98,7 +101,7 @@ export function rootModel(a, env) {
   ];
   return {
     header: headerOf(env), base: baseOf(a), name, family: fam,
-    imports: renderImports(importRows),
+    imports: renderImports(importRows, { distinctFqn: true }),
     commandHandlerFqn: `${protoFqn(a)}.${handlerAliasOf(a)}`,
     typeKey: a.persistence?.typeKey ?? a.name,
     tagCount: a.persistence?.tagCount ?? 5,
@@ -111,14 +114,19 @@ export function entityModel(a, env) {
   const idName = a.identifier;
   const fields = (a.stateFields ?? []).map((f) => {
     const sig = scalaSig(f.dataType);
-    return { name: f.name, type: sig, defaultValue: fieldDefault(sig), neutral: neutralValue(sig, fb), isId: f.name === idName, doc: anchorRow(env, f) };
+    // numeric `version` state field → optimistic-lock counter initial 0 (EP_Catalog_Concept_Write_Model
+    // §3.5; create-events must emit (0,1), not (1,2) — ModelCatalog.version is a semantic string, excluded)
+    const neutral = f.name === 'version' && ['Int', 'Integer', 'Long'].includes(sig)
+      ? (sig === 'Long' ? '0L' : '0')
+      : neutralValue(sig, fb);
+    return { name: scalaIdentifier(f.name), type: sig, defaultValue: fieldDefault(sig), neutral, isId: f.name === idName, doc: anchorRow(env, f) };
   });
   const events = (a.events ?? []).map((e) => ({
     name: e.name,
     docRows: (e.payloads ?? []).map((p) => anchorRow(env, p)),
     params: (e.payloads ?? []).map((p) => {
-      const sig = scalaSig(p.dataType);
-      return { name: p.name, type: sig, defaultValue: sig.startsWith('Option[') ? 'None' : undefined };
+      const sig = p.optional ? `Option[${scalaSig(p.dataType)}]` : scalaSig(p.dataType);
+      return { name: scalaIdentifier(p.name), type: sig, defaultValue: sig.startsWith('Option[') ? 'None' : undefined };
     }),
   }));
   const idType = scalaSig(a.identifierType ?? 'string (uuid)');
@@ -220,26 +228,28 @@ export function factoryModel(a, env) {
   const initName = (a.factoryMethods ?? []).find((m) => (m.params ?? []).length > 0)?.name ?? `create${aggBase}WithInitialValue`;
 
   const idParam = { name: identifier, type: 'Id', import: `${fb}.CommonTypes.Id`, noteId: idStateField?.noteId };
+  // factory wraps optional params as Option[T] but carries NO `= None` default (positional
+  // pass-through into the command — live CemEdgeAggregateFactory canon)
   const business = (initCmd.parameters ?? [])
     .filter((p) => p.name !== 'replyTo')
-    .map((p) => ({ name: p.name, type: scalaSig(p.dataType), import: p.typeImport ?? null, noteId: p.noteId }));
+    .map((p) => ({ name: p.name, type: p.optional ? `Option[${scalaSig(p.dataType)}]` : scalaSig(p.dataType), import: p.typeImport ?? null, noteId: p.noteId }));
   const hasIdParam = business.some((p) => p.name === identifier);
   const methodParams = hasIdParam ? business : [idParam, ...business];
-  const askArgs = [...(hasIdParam ? methodParams : business).map((p) => p.name), '_'].join(', ');
+  const askArgs = [...(hasIdParam ? methodParams : business).map((p) => scalaIdentifier(p.name)), '_'].join(', ');
   const reply = replyNameOf(a, initCmd);
 
-  const docRow = (p) => ({ name: p.name, description: '', anchor: p.noteId ? `${p.noteId}${env.anchor(p.noteId)}` : null });
+  const docRow = (p) => ({ name: scalaIdentifier(p.name), description: '', anchor: p.noteId ? `${p.noteId}${env.anchor(p.noteId)}` : null });
   const refMethod = {
     name: `create${aggBase}WithoutBalance`,
     docRows: [docRow(idParam)],
-    params: [{ name: idParam.name, type: idParam.type }],
+    params: [{ name: scalaIdentifier(idParam.name), type: idParam.type }],
     ret: `EntityRef[${fam}]`,
     body: `    clusterSharding.entityRefFor(${name}Aggregate.entityTypeKey, ${identifier}.toString)`,
   };
   const initMethod = {
     name: initName,
     docRows: methodParams.map(docRow),
-    params: methodParams.map((p) => ({ name: p.name, type: p.type })),
+    params: methodParams.map((p) => ({ name: scalaIdentifier(p.name), type: p.type })),
     ret: `Future[Either[iMadzError, EntityRef[${fam}]]]`,
     body: [
       `    val entityRef: EntityRef[${fam}] = clusterSharding`,

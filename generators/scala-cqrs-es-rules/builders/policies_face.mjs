@@ -18,6 +18,7 @@
 //     VO signature, with Id-wrapped fields forced to a parseable UUID (Id.of would otherwise throw
 //     on the neutral "").
 //   • The source's `scalaType` helper (line 2899) is dead code in the section — not ported.
+import { scalaSig } from './datatype.mjs';
 import { scalaRef } from './rules.mjs';
 import { exprToScala } from './expr.mjs';
 import { makeLiterals } from './literals.mjs';
@@ -76,7 +77,6 @@ function normalize(dt) {
   if (m) return `Map[${normInner(m[1])}, ${normInner(m[2])}]`;
   return isUuid(s) ? 'string (uuid)' : s === 'JSON' ? 'String' : s;
 }
-const scalaSig = (dt) => (dt === 'string (uuid)' || dt === 'uuid' ? 'Id' : dt);
 const deriveEvtSig = (evtPayloads) => new Map((evtPayloads ?? []).map(([name, rawDt]) => [name, scalaSig(normalize(rawDt))]));
 
 // 事件载荷 → Params 字段表达式（方案 A 签名·identity 字段直取·fanOut 用 item / item.<字段>）

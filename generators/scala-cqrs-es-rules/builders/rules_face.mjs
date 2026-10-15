@@ -6,6 +6,7 @@
 // the policy-bindings / event-same-name / lineage param-supply loops, the cem command→event
 // fallback legs (④-layer emissions are authoritative here), and the statusEnum metaJson fallback
 // of statusFallback (the aggregate-status `in` rule covers it).
+import { scalaSig, sigOf } from './datatype.mjs';
 import { PLACEHOLDER, gtNowFields, exprToScala, patchForCases } from './expr.mjs';
 import {
   computeParamDefs, normalizeEmitWhen, emitWhenEventNames, condGuaranteedParams, nonNullGuaranteed,
@@ -13,7 +14,6 @@ import {
 } from './rules.mjs';
 import { makeLiterals } from './literals.mjs';
 
-const scalaSig = (dt) => (dt === 'string (uuid)' || dt === 'uuid' ? 'Id' : dt);
 
 function noteAnchor(noteId, elementHashes, indent = '') {
   if (!noteId) return '';
@@ -39,14 +39,14 @@ export function rulesFaceModel(a, env) {
   const stateTypes = Object.fromEntries(stateParams.map((p) => [p.name, p.type]));
   const eventSigs = (a.events ?? []).map((e) => ({
     name: e.name,
-    params: (e.payloads ?? []).map((p) => ({ name: p.name, type: scalaSig(p.dataType ?? 'String') })),
+    params: (e.payloads ?? []).map((p) => ({ name: p.name, type: sigOf(p) })),
   }));
   const eventByName = new Map(eventSigs.map((e) => [e.name, e]));
   const commands = (a.commands ?? []).map((c) => ({
     name: c.name,
     noteId: c.noteId ?? null,
     readOnly: c.readOnly === true,
-    params: (c.parameters ?? []).map((p) => ({ name: p.name, type: scalaSig(p.dataType ?? 'String') })),
+    params: (c.parameters ?? []).map((p) => ({ name: p.name, type: sigOf(p) })),
     behaviorModel: c.behaviorModel ?? null,
     preconditionRules: c.preconditionRules ?? [],
   }));

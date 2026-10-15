@@ -1,0 +1,3864 @@
+{
+  "generatedAt": "2026-10-15",
+  "live": "/Users/zhongdj/Workspaces/ingested-app",
+  "canonical": "golden/scala-cqrs-es-metarch/full-corpus.canonical.json",
+  "aggregates": 27,
+  "counts": {
+    "rows": 393,
+    "byStatus": {
+      "identical": 236,
+      "diff": 49,
+      "owned-by-other": 108
+    },
+    "identicalByFace": {
+      "skeleton": 102,
+      "rules": 102,
+      "api": 32
+    },
+    "diffByKind": {
+      "aggregate-root": 2,
+      "protocol": 1,
+      "entity": 3,
+      "command-helpers-rules": 10,
+      "rules": 7,
+      "rule-params": 10,
+      "rules-spec": 16
+    },
+    "reverseRows": 0,
+    "genErrors": {}
+  },
+  "rows": [
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "CemEdge",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/CemEdgeAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/CemEdgeAggregate.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "CemEdge",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/CemEdgeProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/CemEdgeProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "Concept",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/ConceptAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/ConceptAggregate.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "Concept",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/ConceptProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/ConceptProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "Context",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/ContextAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/ContextAggregate.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "Context",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/ContextProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/ContextProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "ContextRelation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/ContextRelationAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/ContextRelationAggregate.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "ContextRelation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/ContextRelationProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/ContextRelationProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "DoR",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/DoRAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/DoRAggregate.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "DoR",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/DoRProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/DoRProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "FieldModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/FieldModelDefinitionAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/FieldModelDefinitionAggregate.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "FieldModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/FieldModelDefinitionProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/FieldModelDefinitionProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "FsmDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/FsmDefinitionAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/FsmDefinitionAggregate.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "FsmDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/FsmDefinitionProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/FsmDefinitionProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "KnowledgePatch",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/KnowledgePatchAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/KnowledgePatchAggregate.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "KnowledgePatch",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/KnowledgePatchProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/KnowledgePatchProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "ModelCatalog",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/ModelCatalogAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/ModelCatalogAggregate.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 741,
+        "line": 21,
+        "want": "  def commandHandler(adjudicator: net.imadz.metarch.domain.service.ConceptDeltaAdjudicator, fingerprint: net.imadz.metarch.domain.service.ContentFingerprintPort): net.imadz.metarch.application.aggregates.ModelCatalogProtocol.ModelCatalogCommandHandlerFamily = ModelCatalogBehaviors.apply(adjudicator)",
+        "got": "  def commandHandler: net.imadz.metarch.application.aggregates.ModelCatalogProtocol.ModelCatalogCommandHandlerFamily = ModelCatalogBehaviors.apply\n\n"
+      },
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "ModelCatalog",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/ModelCatalogProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/ModelCatalogProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "Note",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/NoteAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/NoteAggregate.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "Note",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/NoteProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/NoteProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "OrganizationMember",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/OrganizationMemberAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/OrganizationMemberAggregate.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "OrganizationMember",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/OrganizationMemberProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/OrganizationMemberProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "Project",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/ProjectAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/ProjectAggregate.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "Project",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/ProjectProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/ProjectProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "Question",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/QuestionAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/QuestionAggregate.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "Question",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/QuestionProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/QuestionProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "ReadModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/ReadModelDefinitionAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/ReadModelDefinitionAggregate.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "ReadModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/ReadModelDefinitionProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/ReadModelDefinitionProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "Relation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/RelationAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/RelationAggregate.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "Relation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/RelationProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/RelationProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "RoleCommandBinding",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/RoleCommandBindingAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/RoleCommandBindingAggregate.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 891,
+        "line": 21,
+        "want": "  def commandHandler: net.imadz.metarch.application.aggregates.RoleCommandBindingProtocol.RoleCommandHandlerBindingCommandHandlerFamily = RoleCommandBindingBehaviors.apply\n\n",
+        "got": "  def commandHandler: net.imadz.metarch.application.aggregates.RoleCommandBindingProtocol.RoleCommandHandlerBindingCommandFamily = RoleCommandBindingBehaviors.apply\n\n"
+      },
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "RoleCommandBinding",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/RoleCommandBindingProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/RoleCommandBindingProtocol.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 2960,
+        "line": 47,
+        "want": "  type RoleCommandHandlerBindingCommandHandlerFamily = (RoleCommandBindingState, RoleCommandBindingCommandFamily) => akka.persistence.typed.scaladsl.Effect[RoleCommandBindingEvent, RoleCommandBindingState]\n\n",
+        "got": "  type RoleCommandHandlerBindingCommandFamily = (RoleCommandBindingState, RoleCommandBindingCommandFamily) => akka.persistence.typed.scaladsl.Effect[RoleCommandBindingEvent, RoleCommandBindingState]\n\n"
+      },
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "Session",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/SessionAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/SessionAggregate.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "Session",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/SessionProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/SessionProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "Stage",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/StageAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/StageAggregate.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "Stage",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/StageProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/StageProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "Subdomain",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/SubdomainAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/SubdomainAggregate.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "Subdomain",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/SubdomainProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/SubdomainProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "Tenant",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/TenantAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/TenantAggregate.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "Tenant",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/TenantProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/TenantProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "TruthSourceProvenance",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/TruthSourceProvenanceAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/TruthSourceProvenanceAggregate.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "TruthSourceProvenance",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/TruthSourceProvenanceProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/TruthSourceProvenanceProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "UseCaseDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/UseCaseDefinitionAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/UseCaseDefinitionAggregate.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "UseCaseDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/UseCaseDefinitionProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/UseCaseDefinitionProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "User",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/UserAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/UserAggregate.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "User",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/UserProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/UserProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "ValueObjectDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/ValueObjectDefinitionAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/ValueObjectDefinitionAggregate.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "ValueObjectDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/ValueObjectDefinitionProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/ValueObjectDefinitionProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "WorkTicket",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/WorkTicketAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/WorkTicketAggregate.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "WorkTicket",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/WorkTicketProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/WorkTicketProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "Workgroup",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/WorkgroupAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/WorkgroupAggregate.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "Workgroup",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/WorkgroupProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/WorkgroupProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "aggregate-root",
+      "aggregate": "Workshop",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/WorkshopAggregate.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/WorkshopAggregate.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "protocol",
+      "aggregate": "Workshop",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/WorkshopProtocol.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/WorkshopProtocol.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "CemEdge",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/CemEdgeBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/CemEdgeBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "CemEdge",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/CemEdgeCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/CemEdgeCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "Concept",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ConceptBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ConceptBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "Concept",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ConceptCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ConceptCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "Context",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ContextBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ContextBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "Context",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ContextCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ContextCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "ContextRelation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ContextRelationBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ContextRelationBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "ContextRelation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ContextRelationCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ContextRelationCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "DoR",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/DoRBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/DoRBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "DoR",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/DoRCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/DoRCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "FieldModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/FieldModelDefinitionBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/FieldModelDefinitionBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "FieldModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/FieldModelDefinitionCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/FieldModelDefinitionCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "FsmDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/FsmDefinitionBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/FsmDefinitionBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "FsmDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/FsmDefinitionCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/FsmDefinitionCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "KnowledgePatch",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/KnowledgePatchBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/KnowledgePatchBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "KnowledgePatch",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/KnowledgePatchCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/KnowledgePatchCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "ModelCatalog",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ModelCatalogBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ModelCatalogBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "ModelCatalog",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ModelCatalogCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ModelCatalogCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "Note",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/NoteBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/NoteBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "Note",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/NoteCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/NoteCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "OrganizationMember",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/OrganizationMemberBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/OrganizationMemberBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "OrganizationMember",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/OrganizationMemberCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/OrganizationMemberCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "Project",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ProjectBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ProjectBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "Project",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ProjectCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ProjectCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "Question",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/QuestionBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/QuestionBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "Question",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/QuestionCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/QuestionCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "ReadModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ReadModelDefinitionBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ReadModelDefinitionBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "ReadModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ReadModelDefinitionCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ReadModelDefinitionCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "Relation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/RelationBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/RelationBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "Relation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/RelationCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/RelationCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "RoleCommandBinding",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/RoleCommandBindingBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/RoleCommandBindingBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "RoleCommandBinding",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/RoleCommandBindingCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/RoleCommandBindingCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "Session",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/SessionBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/SessionBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "Session",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/SessionCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/SessionCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "Stage",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/StageBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/StageBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "Stage",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/StageCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/StageCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "Subdomain",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/SubdomainBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/SubdomainBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "Subdomain",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/SubdomainCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/SubdomainCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "Tenant",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/TenantBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/TenantBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "Tenant",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/TenantCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/TenantCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "TruthSourceProvenance",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/TruthSourceProvenanceBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/TruthSourceProvenanceBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "TruthSourceProvenance",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/TruthSourceProvenanceCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/TruthSourceProvenanceCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "UseCaseDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/UseCaseDefinitionBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/UseCaseDefinitionBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "UseCaseDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/UseCaseDefinitionCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/UseCaseDefinitionCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "User",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/UserBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/UserBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "User",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/UserCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/UserCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "ValueObjectDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ValueObjectDefinitionBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ValueObjectDefinitionBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "ValueObjectDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ValueObjectDefinitionCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ValueObjectDefinitionCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "WorkTicket",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/WorkTicketBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/WorkTicketBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "WorkTicket",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/WorkTicketCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/WorkTicketCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "Workgroup",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/WorkgroupBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/WorkgroupBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "Workgroup",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/WorkgroupCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/WorkgroupCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "behaviors",
+      "aggregate": "Workshop",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/WorkshopBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/WorkshopBehaviors.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "command-helpers",
+      "aggregate": "Workshop",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/WorkshopCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/WorkshopCommandHelpers.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "CemEdge",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/CemEdgeAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/CemEdgeAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "Concept",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/ConceptAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/ConceptAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "Context",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/ContextAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/ContextAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "ContextRelation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/ContextRelationAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/ContextRelationAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "DoR",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/DoRAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/DoRAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "FieldModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/FieldModelDefinitionAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/FieldModelDefinitionAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "FsmDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/FsmDefinitionAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/FsmDefinitionAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "KnowledgePatch",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/KnowledgePatchAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/KnowledgePatchAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "ModelCatalog",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/ModelCatalogAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/ModelCatalogAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "Note",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/NoteAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/NoteAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "OrganizationMember",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/OrganizationMemberAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/OrganizationMemberAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "Project",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/ProjectAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/ProjectAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "Question",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/QuestionAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/QuestionAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "ReadModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/ReadModelDefinitionAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/ReadModelDefinitionAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "Relation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/RelationAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/RelationAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "RoleCommandBinding",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/RoleCommandBindingAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/RoleCommandBindingAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "Session",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/SessionAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/SessionAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "Stage",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/StageAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/StageAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "Subdomain",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/SubdomainAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/SubdomainAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "Tenant",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/TenantAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/TenantAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "TruthSourceProvenance",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/TruthSourceProvenanceAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/TruthSourceProvenanceAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "UseCaseDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/UseCaseDefinitionAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/UseCaseDefinitionAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "User",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/UserAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/UserAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "ValueObjectDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/ValueObjectDefinitionAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/ValueObjectDefinitionAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "WorkTicket",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/WorkTicketAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/WorkTicketAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "Workgroup",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/WorkgroupAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/WorkgroupAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "factory",
+      "aggregate": "Workshop",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/factories/WorkshopAggregateFactory.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/factories/WorkshopAggregateFactory.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "CemEdge",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/CemEdgeRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/CemEdgeRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "CodegenMain:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "Concept",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/ConceptRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/ConceptRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "ContextRelation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/ContextRelationRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/ContextRelationRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "Context",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/ContextRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/ContextRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "DoR",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/DoRRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/DoRRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "CodegenMain:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "FieldModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/FieldModelDefinitionRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/FieldModelDefinitionRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "CodegenMain:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "FsmDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/FsmDefinitionRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/FsmDefinitionRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "CodegenMain:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "KnowledgePatch",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/KnowledgePatchRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/KnowledgePatchRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "CodegenMain:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "ModelCatalog",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/ModelCatalogRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/ModelCatalogRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "Note",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/NoteRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/NoteRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "OrganizationMember",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/OrganizationMemberRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/OrganizationMemberRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "Project",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/ProjectRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/ProjectRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "Question",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/QuestionRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/QuestionRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "ReadModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/ReadModelDefinitionRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/ReadModelDefinitionRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "CodegenMain:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "Relation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/RelationRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/RelationRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "RoleCommandBinding",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/RoleCommandBindingRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/RoleCommandBindingRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "CodegenMain:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "Session",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/SessionRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/SessionRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "Stage",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/StageRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/StageRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "Subdomain",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/SubdomainRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/SubdomainRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "Tenant",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/TenantRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/TenantRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "TruthSourceProvenance",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/TruthSourceProvenanceRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/TruthSourceProvenanceRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "CodegenMain:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "UseCaseDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/UseCaseDefinitionRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/UseCaseDefinitionRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "CodegenMain:66b5b602"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "User",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/UserRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/UserRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "ValueObjectDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/ValueObjectDefinitionRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/ValueObjectDefinitionRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "CodegenMain:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "WorkTicket",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/WorkTicketRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/WorkTicketRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "CodegenMain:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "Workgroup",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/WorkgroupRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/WorkgroupRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository",
+      "aggregate": "Workshop",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/repository/WorkshopRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/repository/WorkshopRepository.scala",
+      "status": "owned-by-other",
+      "liveOwner": "CodegenMain:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "CemEdge",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/CemEdgeEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/CemEdgeEntity.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "Concept",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/ConceptEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/ConceptEntity.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 13878,
+        "line": 158,
+        "want": "   * @param conceptId 必填  @knowledge 6a62c1bc-d92d-4c97-af73-59957970204d@420a35b9177b30ce\n   * @param lastVersion last known version number  @knowledge a171b0c0-3447-4406-9fab-c01cb3109539@602e04a934f603c1\n   * @param newVersion lastVersion + 1  @knowledge f6072170-29a2-4b69-b634-6b558861df13@4e069",
+        "got": "   * @param sourceConceptId 必填  @knowledge 7a2eb5b7-2cea-45bc-a610-34cf9c6f2d8f@4db69c9f8c11a4a9\n   * @param targetConceptId 必填  @knowledge bea24fea-7651-44ad-8493-27cdcf2ccd78@1e3d661d2096fff2\n   * @param lastVersion last known version number  @knowledge 7f4859b4-500d-45ec-aff3-71d680977435@4bb37c5"
+      },
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "Context",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/ContextEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/ContextEntity.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "ContextRelation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/ContextRelationEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/ContextRelationEntity.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "DoR",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/DoREntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/DoREntity.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "FieldModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/FieldModelDefinitionEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/FieldModelDefinitionEntity.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "FsmDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/FsmDefinitionEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/FsmDefinitionEntity.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "KnowledgePatch",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/KnowledgePatchEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/KnowledgePatchEntity.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 4774,
+        "line": 64,
+        "want": "   * @param patchId 补丁编号  @knowledge f0649169-f979-495d-a2fe-eaa1f5d22830@db0a233cc823d8a6\n   * @param reason 退回原因  @knowledge 1fc865a8-975f-4c56-8c8e-46e7bb781e17@afae507e4a6e5f32\n   * @param triggeredBy  @knowledge fb724154-ffc8-4c67-8da3-f84bd108996e@c8f9ab14ec44e7c0",
+        "got": "   * @param patchId 补丁编号  @knowledge 94a47b3e-b545-4d9c-b4e4-c2a9703f06f7@7ef2e79ed337a613\n   * @param catalogId 目标目录  @knowledge c81640b9-74f0-41a3-8212-ba1ccb2959eb@2cbaab4394d11818\n   * @param triggeredBy 操作人  @knowledge 59904b3e-7512-47c1-82e5-61b3acd47197@49c0e55ee7a37671"
+      },
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "ModelCatalog",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/ModelCatalogEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/ModelCatalogEntity.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "Note",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/NoteEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/NoteEntity.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "OrganizationMember",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/OrganizationMemberEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/OrganizationMemberEntity.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "Project",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/ProjectEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/ProjectEntity.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "Question",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/QuestionEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/QuestionEntity.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "ReadModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/ReadModelDefinitionEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/ReadModelDefinitionEntity.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "Relation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/RelationEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/RelationEntity.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "RoleCommandBinding",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/RoleCommandBindingEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/RoleCommandBindingEntity.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "Session",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/SessionEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/SessionEntity.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "Stage",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/StageEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/StageEntity.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "Subdomain",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/SubdomainEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/SubdomainEntity.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "Tenant",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/TenantEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/TenantEntity.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "TruthSourceProvenance",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/TruthSourceProvenanceEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/TruthSourceProvenanceEntity.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "UseCaseDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/UseCaseDefinitionEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/UseCaseDefinitionEntity.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "User",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/UserEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/UserEntity.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 610,
+        "line": 18,
+        "want": "   * @param authMethod password / sso  @knowledge 313c97e5-6c43-4b23-b7c0-6036d6736c50@f2fe5a4deaef39f5\n   * @param displayName 界面显示名称  @knowledge 4e2b84ba-daec-47a2-ade9-070502c7d4e5@99b3533ee1fca52d\n   * @param registeredAt time when the user registered  @knowledge 2245a005-6114-47f0-90ab-796a3ef5",
+        "got": "   * @param passwordSalt 【新增】为哈希增加随机盐  @knowledge 95f2fa3c-616d-41b1-a9d6-d0059f8ddc4d@ea08ff355e29010f\n   * @param passwordHash 不可逆加密存储  @knowledge b9396444-68e8-435f-a44c-b874a9df87b6@5475f6b4e5d4c022\n   * @param authMethod password / sso  @knowledge 313c97e5-6c43-4b23-b7c0-6036d6736c50@f2fe5a4dea"
+      },
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "ValueObjectDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/ValueObjectDefinitionEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/ValueObjectDefinitionEntity.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "WorkTicket",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/WorkTicketEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/WorkTicketEntity.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "Workgroup",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/WorkgroupEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/WorkgroupEntity.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "entity",
+      "aggregate": "Workshop",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/WorkshopEntity.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/WorkshopEntity.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:a0fca3da"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "CemEdge",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/CemEdgeEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/CemEdgeEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "Concept",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/ConceptEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/ConceptEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "Context",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/ContextEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/ContextEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "ContextRelation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/ContextRelationEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/ContextRelationEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "DoR",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/DoREventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/DoREventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "FieldModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/FieldModelDefinitionEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/FieldModelDefinitionEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "FsmDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/FsmDefinitionEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/FsmDefinitionEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "KnowledgePatch",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/KnowledgePatchEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/KnowledgePatchEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "ModelCatalog",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/ModelCatalogEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/ModelCatalogEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "Note",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/NoteEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/NoteEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "OrganizationMember",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/OrganizationMemberEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/OrganizationMemberEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "Project",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/ProjectEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/ProjectEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "Question",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/QuestionEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/QuestionEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "ReadModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/ReadModelDefinitionEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/ReadModelDefinitionEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "Relation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/RelationEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/RelationEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "RoleCommandBinding",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/RoleCommandBindingEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/RoleCommandBindingEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "Session",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/SessionEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/SessionEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "Stage",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/StageEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/StageEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "Subdomain",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/SubdomainEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/SubdomainEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "Tenant",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/TenantEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/TenantEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "TruthSourceProvenance",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/TruthSourceProvenanceEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/TruthSourceProvenanceEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "UseCaseDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/UseCaseDefinitionEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/UseCaseDefinitionEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "User",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/UserEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/UserEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "ValueObjectDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/ValueObjectDefinitionEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/ValueObjectDefinitionEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "WorkTicket",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/WorkTicketEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/WorkTicketEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "Workgroup",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/WorkgroupEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/WorkgroupEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-handler",
+      "aggregate": "Workshop",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/WorkshopEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/WorkshopEventHandler.scala",
+      "status": "owned-by-other",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "CemEdge",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/CemEdgeBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/CemEdgeBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "CemEdge",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/CemEdgeCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/CemEdgeCommandHelpers.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "Concept",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ConceptBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ConceptBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "Concept",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ConceptCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ConceptCommandHelpers.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "Context",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ContextBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ContextBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "Context",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ContextCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ContextCommandHelpers.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "ContextRelation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ContextRelationBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ContextRelationBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "ContextRelation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ContextRelationCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ContextRelationCommandHelpers.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "DoR",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/DoRBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/DoRBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "DoR",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/DoRCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/DoRCommandHelpers.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 3214,
+        "line": 58,
+        "want": "      EvaluateDoRParams(command.triggeredBy, command.verdicts, command.dorId)\n\n    override def createFailureReply(param: EvaluateDoRParams)(error: iMadzError): EvaluateDoRReply =",
+        "got": "      EvaluateDoRParams(command.triggeredBy, command.verdicts)\n\n    override def createFailureReply(param: EvaluateDoRParams)(error: iMadzError): EvaluateDoRReply ="
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "FieldModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/FieldModelDefinitionBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/FieldModelDefinitionBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "FieldModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/FieldModelDefinitionCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/FieldModelDefinitionCommandHelpers.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 9138,
+        "line": 124,
+        "want": "      DeclareFieldModelParams(command.triggeredBy, command.identifierOrigin, command.description, command.definitionId, command.tenantId, command.tenantScoped, command.identifierDescription, command.aggregateName, command.identifierName, command.entityName, command.identifierType, command.aggregateR",
+        "got": "      DeclareFieldModelParams(command.triggeredBy, command.identifierOrigin, command.description, command.definitionId, command.tenantId, command.tenantScoped, command.identifierDescription, command.aggregateName, command.identifierName, command.entityName, command.identifierType)\n\n    override def "
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "FsmDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/FsmDefinitionBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/FsmDefinitionBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "FsmDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/FsmDefinitionCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/FsmDefinitionCommandHelpers.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 1690,
+        "line": 26,
+        "want": "      EstablishFsmDefinitionParams(command.triggeredBy, command.fsmId, command.confirmedBy)\n\n    override def createFailureReply(param: EstablishFsmDefinitionParams)(error: iMadzError): EstablishFsmDefinitionReply =",
+        "got": "      EstablishFsmDefinitionParams(command.triggeredBy)\n\n    override def createFailureReply(param: EstablishFsmDefinitionParams)(error: iMadzError): EstablishFsmDefinitionReply ="
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "KnowledgePatch",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/KnowledgePatchBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/KnowledgePatchBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "KnowledgePatch",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/KnowledgePatchCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/KnowledgePatchCommandHelpers.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 4526,
+        "line": 67,
+        "want": "      MergeKnowledgePatchParams(command.triggeredBy, command.patchId, command.catalogId)\n\n    override def createFailureReply(param: MergeKnowledgePatchParams)(error: iMadzError): MergeKnowledgePatchReply =",
+        "got": "      MergeKnowledgePatchParams(command.triggeredBy)\n\n    override def createFailureReply(param: MergeKnowledgePatchParams)(error: iMadzError): MergeKnowledgePatchReply ="
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "ModelCatalog",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ModelCatalogBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ModelCatalogBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "ModelCatalog",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ModelCatalogCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ModelCatalogCommandHelpers.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "Note",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/NoteBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/NoteBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "Note",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/NoteCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/NoteCommandHelpers.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "OrganizationMember",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/OrganizationMemberBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/OrganizationMemberBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "OrganizationMember",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/OrganizationMemberCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/OrganizationMemberCommandHelpers.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 2146,
+        "line": 30,
+        "want": "      AcceptTenantInvitationParams(command.triggeredBy, command.tenantId, command.userId)\n\n    override def createFailureReply(param: AcceptTenantInvitationParams)(error: iMadzError): AcceptTenantInvitationReply =",
+        "got": "      AcceptTenantInvitationParams(command.triggeredBy)\n\n    override def createFailureReply(param: AcceptTenantInvitationParams)(error: iMadzError): AcceptTenantInvitationReply ="
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "Project",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ProjectBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ProjectBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "Project",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ProjectCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ProjectCommandHelpers.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 4195,
+        "line": 67,
+        "want": "      InitiateProjectParams(command.tenantId, command.workgroupId, command.name, command.triggeredBy, command.description, command.projectId, command.projectOwnerUserId, command.workshopName, command.catalogId)\n\n    override def createFailureReply(param: InitiateProjectParams)(error: iMadzError): In",
+        "got": "      InitiateProjectParams(command.tenantId, command.workgroupId, command.name, command.triggeredBy, command.description, command.projectId, command.projectOwnerUserId, command.workshopName)\n\n    override def createFailureReply(param: InitiateProjectParams)(error: iMadzError): InitiateProjectReply "
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "Question",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/QuestionBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/QuestionBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "Question",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/QuestionCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/QuestionCommandHelpers.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "ReadModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ReadModelDefinitionBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ReadModelDefinitionBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "ReadModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ReadModelDefinitionCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ReadModelDefinitionCommandHelpers.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "Relation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/RelationBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/RelationBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "Relation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/RelationCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/RelationCommandHelpers.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "RoleCommandBinding",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/RoleCommandBindingBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/RoleCommandBindingBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "RoleCommandBinding",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/RoleCommandBindingCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/RoleCommandBindingCommandHelpers.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "Session",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/SessionBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/SessionBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "Session",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/SessionCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/SessionCommandHelpers.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 4027,
+        "line": 67,
+        "want": "      InviteObserverParams(command.triggeredBy, command.sessionId, command.userId, command.displayName, command.email, command.phoneNumber)\n\n    override def createFailureReply(param: InviteObserverParams)(error: iMadzError): InviteObserverReply =",
+        "got": "      InviteObserverParams(command.triggeredBy, command.sessionId, command.userId)\n\n    override def createFailureReply(param: InviteObserverParams)(error: iMadzError): InviteObserverReply ="
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "Stage",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/StageBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/StageBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "Stage",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/StageCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/StageCommandHelpers.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "Subdomain",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/SubdomainBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/SubdomainBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "Subdomain",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/SubdomainCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/SubdomainCommandHelpers.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "Tenant",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/TenantBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/TenantBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "Tenant",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/TenantCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/TenantCommandHelpers.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "TruthSourceProvenance",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/TruthSourceProvenanceBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/TruthSourceProvenanceBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "TruthSourceProvenance",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/TruthSourceProvenanceCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/TruthSourceProvenanceCommandHelpers.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "UseCaseDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/UseCaseDefinitionBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/UseCaseDefinitionBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "UseCaseDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/UseCaseDefinitionCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/UseCaseDefinitionCommandHelpers.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "User",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/UserBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/UserBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "User",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/UserCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/UserCommandHelpers.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 2872,
+        "line": 50,
+        "want": "      RegisterUserParams(command.email, command.password, command.triggeredBy, command.displayName, command.authMethod, command.phoneNumber, command.userId)\n\n    override def createFailureReply(param: RegisterUserParams)(error: iMadzError): RegisterUserReply =",
+        "got": "      RegisterUserParams(command.email, command.password, command.triggeredBy, command.displayName, command.authMethod, command.phoneNumber)\n\n    override def createFailureReply(param: RegisterUserParams)(error: iMadzError): RegisterUserReply ="
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "ValueObjectDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ValueObjectDefinitionBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ValueObjectDefinitionBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "ValueObjectDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ValueObjectDefinitionCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ValueObjectDefinitionCommandHelpers.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "WorkTicket",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/WorkTicketBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/WorkTicketBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "WorkTicket",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/WorkTicketCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/WorkTicketCommandHelpers.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 1606,
+        "line": 26,
+        "want": "      ConcludeWorkTicketParams(command.triggeredBy, command.ticketId, command.approvedBy)\n\n    override def createFailureReply(param: ConcludeWorkTicketParams)(error: iMadzError): ConcludeWorkTicketReply =",
+        "got": "      ConcludeWorkTicketParams(command.triggeredBy)\n\n    override def createFailureReply(param: ConcludeWorkTicketParams)(error: iMadzError): ConcludeWorkTicketReply ="
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "Workgroup",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/WorkgroupBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/WorkgroupBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "Workgroup",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/WorkgroupCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/WorkgroupCommandHelpers.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 5097,
+        "line": 78,
+        "want": "      InviteWorkgroupMemberParams(command.userId, command.triggeredBy, command.workgroupId, command.displayName, command.email, command.phoneNumber)\n\n    override def createFailureReply(param: InviteWorkgroupMemberParams)(error: iMadzError): InviteWorkgroupMemberReply =",
+        "got": "      InviteWorkgroupMemberParams(command.userId, command.triggeredBy, command.workgroupId)\n\n    override def createFailureReply(param: InviteWorkgroupMemberParams)(error: iMadzError): InviteWorkgroupMemberReply ="
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "behaviors-rules",
+      "aggregate": "Workshop",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/WorkshopBehaviors.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/WorkshopBehaviors.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "command-helpers-rules",
+      "aggregate": "Workshop",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/WorkshopCommandHelpers.scala",
+      "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/WorkshopCommandHelpers.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "CemEdge",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/CemEdgeRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/CemEdgeRules.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "Concept",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/ConceptRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/ConceptRules.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "ContextRelation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/ContextRelationRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/ContextRelationRules.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "Context",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/ContextRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/ContextRules.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "DoR",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/DoRRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/DoRRules.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 4706,
+        "line": 79,
+        "want": "      // ④层 forEach（param.verdicts）：批量发射\n      else Right(Nil ::: p.verdicts.map { item => DoRVerdictSubmitted(state.dorId, item, Instant.now(), \"\", p.triggeredBy, Instant.now(), state.tenantId) })\n      }",
+        "got": "      else Right(List(DoRVerdictSubmitted(state.dorId, item, Instant.now(), \"\", p.triggeredBy, Instant.now(), state.tenantId)))\n      }\n  }"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "FieldModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/FieldModelDefinitionRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/FieldModelDefinitionRules.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 6270,
+        "line": 94,
+        "want": "      Right(List(FieldModelDeclared(p.definitionId, p.aggregateName, p.entityName, p.description.getOrElse(\"\"), p.identifierName, p.identifierType.getOrElse(\"\"), p.identifierOrigin, p.identifierDescription, p.tenantScoped.getOrElse(false), p.triggeredBy, p.tenantId, Instant.now(), p.triggeredBy, Ins",
+        "got": "      Right(List(FieldModelDeclared(p.definitionId, p.aggregateName, p.entityName, p.description.getOrElse(\"\"), p.identifierName, p.identifierType.getOrElse(\"\"), p.identifierOrigin, p.identifierDescription, p.tenantScoped.getOrElse(false), p.triggeredBy, p.tenantId, Instant.now(), p.triggeredBy, Ins"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "FsmDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/FsmDefinitionRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/FsmDefinitionRules.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "KnowledgePatch",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/KnowledgePatchRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/KnowledgePatchRules.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "ModelCatalog",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/ModelCatalogRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/ModelCatalogRules.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "Note",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/NoteRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/NoteRules.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 4543,
+        "line": 64,
+        "want": "      // 幂等（④层 idempotentOn）：载荷与 state 全等 ⇒ 无事件（外部系统重复同步同键同实体）\n      else if (Option(state.status).exists(_.nonEmpty) && p.content == state.content && p.name == state.name && p.`type` == state.`type` && p.timeline == state.timeline && p.pivotal == state.pivotal && p.info == state.info && Option(p.li",
+        "got": "      // ④层 emitWhen（条件发射·S2-89 WP0）：{\"notEmpty\":{\"var\":\"CaptureNote.conflictingNoteIds\"}}\n      else Right(List(NoteCaptured(state.noteId, p.tenantId, p.sessionId, p.externalId.toString, p.boardId.toString, p.content, p.`type`, p.timeline, p.pivotal, p.name, p.links, p.info, p.stage, p.author, p.de"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "OrganizationMember",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/OrganizationMemberRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/OrganizationMemberRules.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 5611,
+        "line": 75,
+        "want": "      else Right(List(TenantMemberInvited(p.tenantId, p.userId, p.department, p.jobTitle, p.invitedBy, p.expiresAt, Instant.now(), p.triggeredBy, p.displayName, p.email, p.phoneNumber)))\n      }\n  }",
+        "got": "      else Right(List(TenantMemberInvited(p.tenantId, p.userId, p.department, p.jobTitle, p.invitedBy, p.expiresAt, Instant.now(), p.triggeredBy, state.displayName, state.email, state.phoneNumber)))\n      }\n  }"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "Project",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/ProjectRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/ProjectRules.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "Question",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/QuestionRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/QuestionRules.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "ReadModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/ReadModelDefinitionRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/ReadModelDefinitionRules.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "Relation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/RelationRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/RelationRules.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "RoleCommandBinding",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/RoleCommandBindingRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/RoleCommandBindingRules.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "Session",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/SessionRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/SessionRules.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 7356,
+        "line": 103,
+        "want": "      else Right(List(ObserverInvited(p.sessionId, state.stageId, p.userId, p.triggeredBy, Instant.now(), state.tenantId, p.displayName, p.email, p.phoneNumber)))\n      }\n  }",
+        "got": "      else Right(List(ObserverInvited(p.sessionId, state.stageId, p.userId, p.triggeredBy, Instant.now(), state.tenantId, None, None, None)))\n      }\n  }"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "Stage",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/StageRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/StageRules.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "Subdomain",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/SubdomainRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/SubdomainRules.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "Tenant",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/TenantRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/TenantRules.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "TruthSourceProvenance",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/TruthSourceProvenanceRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/TruthSourceProvenanceRules.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "UseCaseDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/UseCaseDefinitionRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/UseCaseDefinitionRules.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "User",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/UserRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/UserRules.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 1769,
+        "line": 35,
+        "want": "    // ir_agg_User_status_enum\n    else if (!(Option(state.status).exists(x => Set(\"active\", \"deactivated\").contains(x)))) Some(err(\"USER_STATUS_INVALID\", \"User.status 必须为 active / deactivated\"))\n    else None",
+        "got": "    // IR-USER-AGG-003\n    else if (!(((Option(state.passwordHash).exists(_.nonEmpty)) == (Option(state.passwordSalt).exists(_.nonEmpty))))) Some(err(\"USER_PASSWORD_INCONSISTENT\", \"`passwordHash` 与 `passwordSalt` 同时存在或同时为空\"))\n    // @knowledge 9f016187-0e39-4fa6-bf77-f50f77d2010b@23d227f9fd5a4634"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "ValueObjectDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/ValueObjectDefinitionRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/ValueObjectDefinitionRules.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "WorkTicket",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/WorkTicketRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/WorkTicketRules.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "Workgroup",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/WorkgroupRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/WorkgroupRules.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 7864,
+        "line": 114,
+        "want": "      else Right(List(WorkgroupMemberInvited(p.workgroupId, p.userId, p.triggeredBy, Instant.now(), state.tenantId, p.displayName, p.email, p.phoneNumber)))\n      }\n  }",
+        "got": "      else Right(List(WorkgroupMemberInvited(p.workgroupId, p.userId, p.triggeredBy, Instant.now(), state.tenantId, None, None, None)))\n      }\n  }"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules",
+      "aggregate": "Workshop",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/WorkshopRules.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/WorkshopRules.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "CemEdge",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/CemEdgeRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/CemEdgeRuleParams.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "Concept",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/ConceptRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/ConceptRuleParams.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "ContextRelation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/ContextRelationRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/ContextRelationRuleParams.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "Context",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/ContextRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/ContextRuleParams.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "DoR",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/DoRRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/DoRRuleParams.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 987,
+        "line": 20,
+        "want": "  final case class EvaluateDoRParams(triggeredBy: String, verdicts: List[DoRVerdict] = List.empty, dorId: Id)\n  // @knowledge 7373ea54-0a7c-4de2-afd4-c171d6f0d71f@3152e2d43bcc81cc\n  /** FixDoRVerdict 规则投影：ir_cmd_FixDoRVerdict_triggered_by */",
+        "got": "  final case class EvaluateDoRParams(triggeredBy: String, verdicts: List[DoRVerdict] = List.empty)\n  // @knowledge 7373ea54-0a7c-4de2-afd4-c171d6f0d71f@3152e2d43bcc81cc\n  /** FixDoRVerdict 规则投影：ir_cmd_FixDoRVerdict_triggered_by */"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "FieldModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/FieldModelDefinitionRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/FieldModelDefinitionRuleParams.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 1812,
+        "line": 26,
+        "want": "  final case class DeclareFieldModelParams(triggeredBy: String, identifierOrigin: String, description: Option[String], definitionId: Id, tenantId: Id, tenantScoped: Option[Boolean], identifierDescription: String, aggregateName: String, identifierName: String, entityName: String, identifierType: Opti",
+        "got": "  final case class DeclareFieldModelParams(triggeredBy: String, identifierOrigin: String, description: Option[String], definitionId: Id, tenantId: Id, tenantScoped: Option[Boolean], identifierDescription: String, aggregateName: String, identifierName: String, entityName: String, identifierType: Opti"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "FsmDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/FsmDefinitionRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/FsmDefinitionRuleParams.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 124,
+        "line": 5,
+        "want": "import net.imadz.common.CommonTypes.Id\nimport net.imadz.metarch.domain.values._\n/**",
+        "got": "/**\n * 命令 → 领域规则参数的投影 VO（方案 A，2026-08-22，rules_domain_gen.mjs 生成）。\n * 业务不变性（InvariantRule）是 domain 层资产——规则只依赖领域实体状态、事件与这些投影 VO，"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "KnowledgePatch",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/KnowledgePatchRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/KnowledgePatchRuleParams.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 1289,
+        "line": 23,
+        "want": "  final case class MergeKnowledgePatchParams(triggeredBy: String, patchId: Id, catalogId: Id)\n  // @knowledge 5c0dc4e3-c15a-4029-852a-ad63820f7ebb@ea2a45273782d523\n  /** RejectKnowledgePatch 规则投影：IR-KP-CMD-011 / ir_cmd_RejectKnowledgePatch_triggered_by */",
+        "got": "  final case class MergeKnowledgePatchParams(triggeredBy: String)\n  // @knowledge 5c0dc4e3-c15a-4029-852a-ad63820f7ebb@ea2a45273782d523\n  /** RejectKnowledgePatch 规则投影：IR-KP-CMD-011 / ir_cmd_RejectKnowledgePatch_triggered_by */"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "ModelCatalog",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/ModelCatalogRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/ModelCatalogRuleParams.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "Note",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/NoteRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/NoteRuleParams.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "OrganizationMember",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/OrganizationMemberRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/OrganizationMemberRuleParams.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 661,
+        "line": 15,
+        "want": "  final case class AcceptTenantInvitationParams(triggeredBy: String, tenantId: Id, userId: Id)\n  // @knowledge f8145929-cb3a-4837-8fda-140de01f09dd@a61a044ee0265b01\n  /** InviteTenantMember 规则投影：ir_cmd_InviteTenantMember_triggered_by / ir_gen_ref_IR_INV_CMD_001_tenantId / ir_gen_ref_IR_INV_CMD_001_u",
+        "got": "  final case class AcceptTenantInvitationParams(triggeredBy: String)\n  // @knowledge f8145929-cb3a-4837-8fda-140de01f09dd@a61a044ee0265b01\n  /** InviteTenantMember 规则投影：ir_cmd_InviteTenantMember_triggered_by / ir_gen_ref_IR_INV_CMD_001_tenantId / ir_gen_ref_IR_INV_CMD_001_userId / ir_gen_ref_IR_INV_"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "Project",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/ProjectRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/ProjectRuleParams.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 1570,
+        "line": 23,
+        "want": "  final case class InitiateProjectParams(tenantId: Id, workgroupId: Id, name: String, triggeredBy: String, description: String, projectId: Id, projectOwnerUserId: Id, workshopName: Option[String], catalogId: Id)\n  // @knowledge f80acc40-b875-4091-81a3-e665bc664ca6@3425883218f34eee\n  /** PauseProject",
+        "got": "  final case class InitiateProjectParams(tenantId: Id, workgroupId: Id, name: String, triggeredBy: String, description: String, projectId: Id, projectOwnerUserId: Id, workshopName: Option[String])\n  // @knowledge f80acc40-b875-4091-81a3-e665bc664ca6@3425883218f34eee\n  /** PauseProject 规则投影：IR-PRJ-CM"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "Question",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/QuestionRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/QuestionRuleParams.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "ReadModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/ReadModelDefinitionRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/ReadModelDefinitionRuleParams.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "Relation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/RelationRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/RelationRuleParams.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "RoleCommandBinding",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/RoleCommandBindingRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/RoleCommandBindingRuleParams.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "Session",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/SessionRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/SessionRuleParams.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 1376,
+        "line": 23,
+        "want": "  final case class InviteObserverParams(triggeredBy: String, sessionId: Id, userId: Id, displayName: Option[String], email: Option[String], phoneNumber: Option[String])\n  // @knowledge 6ccdd6ec-32c3-4188-be76-34c92a69a52a@7615c22fe03d0a9d\n  /** InviteParticipant 规则投影：IR-SES-CMD-007 / ir_cmd_InvitePa",
+        "got": "  final case class InviteObserverParams(triggeredBy: String, sessionId: Id, userId: Id)\n  // @knowledge 6ccdd6ec-32c3-4188-be76-34c92a69a52a@7615c22fe03d0a9d\n  /** InviteParticipant 规则投影：IR-SES-CMD-007 / ir_cmd_InviteParticipant_triggered_by / ir_gen_ref_IR_SES_CMD_003_userId */"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "Stage",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/StageRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/StageRuleParams.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "Subdomain",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/SubdomainRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/SubdomainRuleParams.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "Tenant",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/TenantRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/TenantRuleParams.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "TruthSourceProvenance",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/TruthSourceProvenanceRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/TruthSourceProvenanceRuleParams.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "UseCaseDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/UseCaseDefinitionRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/UseCaseDefinitionRuleParams.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "User",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/UserRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/UserRuleParams.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 1189,
+        "line": 20,
+        "want": "  final case class RegisterUserParams(email: String, password: String, triggeredBy: String, displayName: String, authMethod: String, phoneNumber: Option[String], userId: Id)\n  // @knowledge 016f5865-7084-4c8e-9ce3-9f4a0eda71fc@684d46c3d6bfbdd0\n  /** UpdateUserProfile 规则投影：IR-USER-CMD-005 / ir_cmd_Up",
+        "got": "  final case class RegisterUserParams(email: String, password: String, triggeredBy: String, displayName: String, authMethod: String, phoneNumber: Option[String])\n  // @knowledge 016f5865-7084-4c8e-9ce3-9f4a0eda71fc@684d46c3d6bfbdd0\n  /** UpdateUserProfile 规则投影：IR-USER-CMD-005 / ir_cmd_UpdateUserProf"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "ValueObjectDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/ValueObjectDefinitionRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/ValueObjectDefinitionRuleParams.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "WorkTicket",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/WorkTicketRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/WorkTicketRuleParams.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 124,
+        "line": 5,
+        "want": "import net.imadz.common.CommonTypes.Id\nimport net.imadz.metarch.domain.values._\n/**",
+        "got": "/**\n * 命令 → 领域规则参数的投影 VO（方案 A，2026-08-22，rules_domain_gen.mjs 生成）。\n * 业务不变性（InvariantRule）是 domain 层资产——规则只依赖领域实体状态、事件与这些投影 VO，"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "Workgroup",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/WorkgroupRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/WorkgroupRuleParams.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 1781,
+        "line": 26,
+        "want": "  final case class InviteWorkgroupMemberParams(userId: Id, triggeredBy: String, workgroupId: Id, displayName: Option[String], email: Option[String], phoneNumber: Option[String])\n  // @knowledge 616fcfa3-4c78-4704-aad7-bc27d4cc834d@163ed5a1c1d95b5e\n  /** RemoveWorkgroupMember 规则投影：ir_cmd_RemoveWorkgr",
+        "got": "  final case class InviteWorkgroupMemberParams(userId: Id, triggeredBy: String, workgroupId: Id)\n  // @knowledge 616fcfa3-4c78-4704-aad7-bc27d4cc834d@163ed5a1c1d95b5e\n  /** RemoveWorkgroupMember 规则投影：ir_cmd_RemoveWorkgroupMember_triggered_by / ir_gen_ref_IR_WG_CMD_005_userId */"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rule-params",
+      "aggregate": "Workshop",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/WorkshopRuleParams.scala",
+      "livePath": "app/net/imadz/metarch/domain/invariant/params/WorkshopRuleParams.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "policies",
+      "aggregate": "Concept",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/policy/ConceptPolicies.scala",
+      "livePath": "app/net/imadz/metarch/domain/policy/ConceptPolicies.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-09-05 (S2-44)"
+    },
+    {
+      "face": "rules",
+      "kind": "policies",
+      "aggregate": "KnowledgePatch",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/policy/KnowledgePatchPolicies.scala",
+      "livePath": "app/net/imadz/metarch/domain/policy/KnowledgePatchPolicies.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-09-05 (S2-44)"
+    },
+    {
+      "face": "rules",
+      "kind": "policies",
+      "aggregate": "ModelCatalog",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/policy/ModelCatalogPolicies.scala",
+      "livePath": "app/net/imadz/metarch/domain/policy/ModelCatalogPolicies.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-09-05 (S2-44)"
+    },
+    {
+      "face": "rules",
+      "kind": "policies",
+      "aggregate": "Session",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/policy/SessionPolicies.scala",
+      "livePath": "app/net/imadz/metarch/domain/policy/SessionPolicies.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-09-05 (S2-44)"
+    },
+    {
+      "face": "rules",
+      "kind": "policies",
+      "aggregate": "Tenant",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/policy/TenantPolicies.scala",
+      "livePath": "app/net/imadz/metarch/domain/policy/TenantPolicies.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-09-05 (S2-44)"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "CemEdge",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/CemEdgeRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/CemEdgeRulesSpec.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 277,
+        "line": 6,
+        "want": "// @knowledge abdbc772-b260-45c2-88eb-fa2c57e5d403@14ae9a76b36e0e8d\npackage net.imadz.metarch.domain.invariant\n",
+        "got": "package net.imadz.metarch.domain.invariant\n\nimport java.time.Instant"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "Concept",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/ConceptRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/ConceptRulesSpec.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "ContextRelation",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/ContextRelationRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/ContextRelationRulesSpec.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "Context",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/ContextRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/ContextRulesSpec.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "DoR",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/DoRRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/DoRRulesSpec.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 50068,
+        "line": 433,
+        "want": "      val r = DoRRules.EvaluateDoRRule(DoRState(Id.of(\"00000000-0000-0000-0000-000000000001\"), net.imadz.common.Id.of(\"02129bb8-6106-3d1a-852c-592e2dc6b383\"), \"REQUESTED\", Id.of(\"00000000-0000-0000-0000-000000000001\"), Nil, \"{}\", \"{}\", Nil, null, \"\", Nil, Id.of(\"00000000-0000-0000-0000-000000000001\"",
+        "got": "      val r = DoRRules.EvaluateDoRRule(DoRState(Id.of(\"00000000-0000-0000-0000-000000000001\"), net.imadz.common.Id.of(\"02129bb8-6106-3d1a-852c-592e2dc6b383\"), \"REQUESTED\", Id.of(\"00000000-0000-0000-0000-000000000001\"), Nil, \"{}\", \"{}\", Nil, null, \"\", Nil, Id.of(\"00000000-0000-0000-0000-000000000001\""
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "FieldModelDefinition",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/FieldModelDefinitionRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/FieldModelDefinitionRulesSpec.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 769,
+        "line": 13,
+        "want": "// @knowledge c13d6293-80c2-4a5f-9a34-2c4afaaacfbe@d6ecfaf7991d4cc4\n// @knowledge c14c4126-9200-4236-9734-3209c0cdf672@a37a7987fa1f9e86\n// @knowledge c1c35788-2854-4ce5-a005-3d128432b754@9f56fa0e0c782568",
+        "got": "// @knowledge c14c4126-9200-4236-9734-3209c0cdf672@a37a7987fa1f9e86\n// @knowledge c1c35788-2854-4ce5-a005-3d128432b754@9f56fa0e0c782568\n// @knowledge c528fb32-649d-4155-8189-cc215b8466ff@25332fb867d709a5"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "FsmDefinition",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/FsmDefinitionRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/FsmDefinitionRulesSpec.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 2496,
+        "line": 51,
+        "want": "      val r = FsmDefinitionRules.UpdateFsmElementsRule(FsmDefinitionState(Id.of(\"00000000-0000-0000-0000-000000000001\"), \"ESTABLISHED\", \"DoR\", List(FsmStateDef(\"REQUESTED\", \"INITIAL\", \"\", \"barry\", \"2026-09-01T00:00:00Z\"), FsmStateDef(\"IN_PROGRESS\", \"NORMAL\", \"\", \"barry\", \"2026-09-01T00:00:00Z\")), Li",
+        "got": "      val r = FsmDefinitionRules.UpdateFsmElementsRule(FsmDefinitionState(Id.of(\"00000000-0000-0000-0000-000000000001\"), \"ESTABLISHED\", \"DoR\", List(FsmStateDef(\"REQUESTED\", \"INITIAL\", \"\", \"barry\", \"2026-09-01T00:00:00Z\"), FsmStateDef(\"IN_PROGRESS\", \"NORMAL\", \"\", \"barry\", \"2026-09-01T00:00:00Z\")), Li"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "KnowledgePatch",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/KnowledgePatchRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/KnowledgePatchRulesSpec.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 8908,
+        "line": 99,
+        "want": "      val r = KnowledgePatchRules.MergeKnowledgePatchRule(KnowledgePatchState(Id.of(\"00000000-0000-0000-0000-000000000001\"), net.imadz.common.Id.of(\"02129bb8-6106-3d1a-852c-592e2dc6b383\"), \"MERGE_REQUESTED\", Nil, Id.of(\"00000000-0000-0000-0000-000000000001\"), Id.of(\"00000000-0000-0000-0000-000000000",
+        "got": "      val r = KnowledgePatchRules.MergeKnowledgePatchRule(KnowledgePatchState(Id.of(\"00000000-0000-0000-0000-000000000001\"), net.imadz.common.Id.of(\"02129bb8-6106-3d1a-852c-592e2dc6b383\"), \"MERGE_REQUESTED\", Nil, Id.of(\"00000000-0000-0000-0000-000000000001\"), Id.of(\"00000000-0000-0000-0000-000000000"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "ModelCatalog",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/ModelCatalogRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/ModelCatalogRulesSpec.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "Note",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/NoteRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/NoteRulesSpec.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "OrganizationMember",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/OrganizationMemberRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/OrganizationMemberRulesSpec.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 3084,
+        "line": 62,
+        "want": "      val r = OrganizationMemberRules.InviteTenantMemberRule(OrganizationMemberState(Id.of(\"00000000-0000-0000-0000-000000000001\"), net.imadz.common.Id.of(\"02129bb8-6106-3d1a-852c-592e2dc6b383\"), \"PENDING\", Id.of(\"00000000-0000-0000-0000-000000000001\"), \"\", \"\", \"\", \"\", \"\", null, null), InviteTenantM",
+        "got": "      val r = OrganizationMemberRules.InviteTenantMemberRule(OrganizationMemberState(Id.of(\"00000000-0000-0000-0000-000000000001\"), net.imadz.common.Id.of(\"02129bb8-6106-3d1a-852c-592e2dc6b383\"), \"PENDING\", Id.of(\"00000000-0000-0000-0000-000000000001\"), \"\", \"\", \"\", \"\", \"\", null, null), InviteTenantM"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "Project",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/ProjectRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/ProjectRulesSpec.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 3452,
+        "line": 70,
+        "want": "      val r = ProjectRules.InitiateProjectRule(ProjectState(Id.of(\"00000000-0000-0000-0000-000000000001\"), net.imadz.common.Id.of(\"02129bb8-6106-3d1a-852c-592e2dc6b383\"), \"initiated\", Id.of(\"00000000-0000-0000-0000-000000000001\"), Id.of(\"00000000-0000-0000-0000-000000000001\"), \"\", \"\", null, \"\", null",
+        "got": "      val r = ProjectRules.InitiateProjectRule(ProjectState(Id.of(\"00000000-0000-0000-0000-000000000001\"), net.imadz.common.Id.of(\"02129bb8-6106-3d1a-852c-592e2dc6b383\"), \"initiated\", Id.of(\"00000000-0000-0000-0000-000000000001\"), Id.of(\"00000000-0000-0000-0000-000000000001\"), \"\", \"\", null, \"\", null"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "Question",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/QuestionRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/QuestionRulesSpec.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "ReadModelDefinition",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/ReadModelDefinitionRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/ReadModelDefinitionRulesSpec.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 223,
+        "line": 5,
+        "want": "// @knowledge d3d722c4-31e1-4865-ad1e-670c5621071a@b062b1229777effa\n// @knowledge e3dfe4f2-8414-4305-a498-e895dfea0445@59554681f4180b07\npackage net.imadz.metarch.domain.invariant",
+        "got": "// @knowledge e3dfe4f2-8414-4305-a498-e895dfea0445@59554681f4180b07\npackage net.imadz.metarch.domain.invariant\n"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "Relation",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/RelationRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/RelationRulesSpec.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "RoleCommandBinding",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/RoleCommandBindingRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/RoleCommandBindingRulesSpec.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 209,
+        "line": 5,
+        "want": "// @knowledge f80255bd-352e-4d86-b30f-6b2e0c9cb1c6@d8611e665e8215bc\npackage net.imadz.metarch.domain.invariant\n",
+        "got": "package net.imadz.metarch.domain.invariant\n\nimport java.time.Instant"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "Session",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/SessionRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/SessionRulesSpec.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 19571,
+        "line": 197,
+        "want": "      val r = SessionRules.InviteParticipantRule(SessionState(Id.of(\"00000000-0000-0000-0000-000000000001\"), net.imadz.common.Id.of(\"02129bb8-6106-3d1a-852c-592e2dc6b383\"), \"prepared\", Id.of(\"00000000-0000-0000-0000-000000000001\"), Nil, Nil, null, null, null, Nil), InviteParticipantParams(Id.of(\"000",
+        "got": "      val r = SessionRules.InviteParticipantRule(SessionState(Id.of(\"00000000-0000-0000-0000-000000000001\"), net.imadz.common.Id.of(\"02129bb8-6106-3d1a-852c-592e2dc6b383\"), \"prepared\", Id.of(\"00000000-0000-0000-0000-000000000001\"), Nil, Nil, null, null, null, Nil), InviteParticipantParams(Id.of(\"000"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "Stage",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/StageRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/StageRulesSpec.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "Subdomain",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/SubdomainRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/SubdomainRulesSpec.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "Tenant",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/TenantRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/TenantRulesSpec.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "TruthSourceProvenance",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/TruthSourceProvenanceRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/TruthSourceProvenanceRulesSpec.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 87,
+        "line": 3,
+        "want": "// @knowledge 1d8059ed-d48f-4eb8-81e2-c12e775e2aa0@cbf8b2f060f6c914\n// @knowledge d02fe08c-5bd4-47df-9eed-3ce8dbfae0df@f39ee4284088e02d\npackage net.imadz.metarch.domain.invariant",
+        "got": "// @knowledge d02fe08c-5bd4-47df-9eed-3ce8dbfae0df@f39ee4284088e02d\npackage net.imadz.metarch.domain.invariant\n"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "UseCaseDefinition",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/UseCaseDefinitionRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/UseCaseDefinitionRulesSpec.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 209,
+        "line": 5,
+        "want": "// @knowledge f2a7c2cc-814f-441f-9fbf-a45441c7e26a@c623e0e0ccce9dbd\npackage net.imadz.metarch.domain.invariant\n",
+        "got": "package net.imadz.metarch.domain.invariant\n\nimport java.time.Instant"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "User",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/UserRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/UserRulesSpec.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 1488,
+        "line": 33,
+        "want": "      authMethod: String = \"\",\n      displayName: String = \"\",\n      registeredAt: Instant = null,",
+        "got": "      passwordSalt: String = \"\",\n      passwordHash: String = \"\",\n      authMethod: String = \"\","
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "ValueObjectDefinition",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/ValueObjectDefinitionRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/ValueObjectDefinitionRulesSpec.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 209,
+        "line": 5,
+        "want": "// @knowledge d161757e-a82e-4352-aa36-898a8038a27c@a572a443a31eabc4\npackage net.imadz.metarch.domain.invariant\n",
+        "got": "package net.imadz.metarch.domain.invariant\n\nimport java.time.Instant"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "WorkTicket",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/WorkTicketRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/WorkTicketRulesSpec.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 2420,
+        "line": 55,
+        "want": "      val r = WorkTicketRules.UpdateWorkTicketItemsRule(WorkTicketState(Id.of(\"00000000-0000-0000-0000-000000000001\"), \"APPROVED\", \"aggregate\", net.imadz.common.Id.of(\"6252d057-1760-33d2-85e2-e41a2b1e7743\"), \"06\", \"FSM\", \"示例工单\", List(ChecklistItem(\"条目1\", \"CONFIRMED\", \"\", \"ai-inference\", \"barry\", \"20",
+        "got": "      val r = WorkTicketRules.UpdateWorkTicketItemsRule(WorkTicketState(Id.of(\"00000000-0000-0000-0000-000000000001\"), \"APPROVED\", \"aggregate\", net.imadz.common.Id.of(\"6252d057-1760-33d2-85e2-e41a2b1e7743\"), \"06\", \"FSM\", \"示例工单\", List(ChecklistItem(\"条目1\", \"CONFIRMED\", \"\", \"ai-inference\", \"barry\", \"20"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "Workgroup",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/WorkgroupRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/WorkgroupRulesSpec.scala",
+      "status": "diff",
+      "excerpt": {
+        "byte": 25809,
+        "line": 218,
+        "want": "      val r = WorkgroupRules.InviteWorkgroupMemberRule(WorkgroupState(Id.of(\"00000000-0000-0000-0000-000000000001\"), net.imadz.common.Id.of(\"02129bb8-6106-3d1a-852c-592e2dc6b383\"), \"active\", \"\", net.imadz.common.Id.of(\"1e4e0961-7a69-31fa-bccc-8cb7e5c58039\"), List(net.imadz.common.Id.of(\"1e4e0961-7a6",
+        "got": "      val r = WorkgroupRules.InviteWorkgroupMemberRule(WorkgroupState(Id.of(\"00000000-0000-0000-0000-000000000001\"), net.imadz.common.Id.of(\"02129bb8-6106-3d1a-852c-592e2dc6b383\"), \"active\", \"\", net.imadz.common.Id.of(\"1e4e0961-7a69-31fa-bccc-8cb7e5c58039\"), List(net.imadz.common.Id.of(\"1e4e0961-7a6"
+      },
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "rules-spec",
+      "aggregate": "Workshop",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/WorkshopRulesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/invariant/WorkshopRulesSpec.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "policies-spec",
+      "aggregate": "Concept",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/policy/ConceptPoliciesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/policy/ConceptPoliciesSpec.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-09-05 (S2-44)"
+    },
+    {
+      "face": "rules",
+      "kind": "policies-spec",
+      "aggregate": "KnowledgePatch",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/policy/KnowledgePatchPoliciesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/policy/KnowledgePatchPoliciesSpec.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-09-05 (S2-44)"
+    },
+    {
+      "face": "rules",
+      "kind": "policies-spec",
+      "aggregate": "ModelCatalog",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/policy/ModelCatalogPoliciesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/policy/ModelCatalogPoliciesSpec.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-09-05 (S2-44)"
+    },
+    {
+      "face": "rules",
+      "kind": "policies-spec",
+      "aggregate": "Session",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/policy/SessionPoliciesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/policy/SessionPoliciesSpec.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-09-05 (S2-44)"
+    },
+    {
+      "face": "rules",
+      "kind": "policies-spec",
+      "aggregate": "Tenant",
+      "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/policy/TenantPoliciesSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/policy/TenantPoliciesSpec.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-09-05 (S2-44)"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "CemEdge",
+      "path": "app/controllers/CemEdgeApiController.scala",
+      "livePath": "app/controllers/CemEdgeApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "Concept",
+      "path": "app/controllers/ConceptApiController.scala",
+      "livePath": "app/controllers/ConceptApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "Context",
+      "path": "app/controllers/ContextApiController.scala",
+      "livePath": "app/controllers/ContextApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "ContextRelation",
+      "path": "app/controllers/ContextRelationApiController.scala",
+      "livePath": "app/controllers/ContextRelationApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "DoR",
+      "path": "app/controllers/DoRApiController.scala",
+      "livePath": "app/controllers/DoRApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/controllers/FieldModelDefinitionApiController.scala",
+      "livePath": "app/controllers/FieldModelDefinitionApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "FsmDefinition",
+      "path": "app/controllers/FsmDefinitionApiController.scala",
+      "livePath": "app/controllers/FsmDefinitionApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "KnowledgePatch",
+      "path": "app/controllers/KnowledgePatchApiController.scala",
+      "livePath": "app/controllers/KnowledgePatchApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "ModelCatalog",
+      "path": "app/controllers/ModelCatalogApiController.scala",
+      "livePath": "app/controllers/ModelCatalogApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "Note",
+      "path": "app/controllers/NoteApiController.scala",
+      "livePath": "app/controllers/NoteApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "OrganizationMember",
+      "path": "app/controllers/OrganizationMemberApiController.scala",
+      "livePath": "app/controllers/OrganizationMemberApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "Project",
+      "path": "app/controllers/ProjectApiController.scala",
+      "livePath": "app/controllers/ProjectApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "Question",
+      "path": "app/controllers/QuestionApiController.scala",
+      "livePath": "app/controllers/QuestionApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "ReadModelDefinition",
+      "path": "app/controllers/ReadModelDefinitionApiController.scala",
+      "livePath": "app/controllers/ReadModelDefinitionApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "Relation",
+      "path": "app/controllers/RelationApiController.scala",
+      "livePath": "app/controllers/RelationApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "RoleCommandBinding",
+      "path": "app/controllers/RoleCommandBindingApiController.scala",
+      "livePath": "app/controllers/RoleCommandBindingApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "Session",
+      "path": "app/controllers/SessionApiController.scala",
+      "livePath": "app/controllers/SessionApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "Stage",
+      "path": "app/controllers/StageApiController.scala",
+      "livePath": "app/controllers/StageApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "Subdomain",
+      "path": "app/controllers/SubdomainApiController.scala",
+      "livePath": "app/controllers/SubdomainApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "Tenant",
+      "path": "app/controllers/TenantApiController.scala",
+      "livePath": "app/controllers/TenantApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "TruthSourceProvenance",
+      "path": "app/controllers/TruthSourceProvenanceApiController.scala",
+      "livePath": "app/controllers/TruthSourceProvenanceApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "UseCaseDefinition",
+      "path": "app/controllers/UseCaseDefinitionApiController.scala",
+      "livePath": "app/controllers/UseCaseDefinitionApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "User",
+      "path": "app/controllers/UserApiController.scala",
+      "livePath": "app/controllers/UserApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "ValueObjectDefinition",
+      "path": "app/controllers/ValueObjectDefinitionApiController.scala",
+      "livePath": "app/controllers/ValueObjectDefinitionApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "CemEdge",
+      "path": "app/controllers/ViewApiController.scala",
+      "livePath": "app/controllers/ViewApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "CemEdge",
+      "path": "app/controllers/ViewWrites.scala",
+      "livePath": "app/controllers/ViewWrites.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "WorkTicket",
+      "path": "app/controllers/WorkTicketApiController.scala",
+      "livePath": "app/controllers/WorkTicketApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "Workgroup",
+      "path": "app/controllers/WorkgroupApiController.scala",
+      "livePath": "app/controllers/WorkgroupApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
+      "aggregate": "Workshop",
+      "path": "app/controllers/WorkshopApiController.scala",
+      "livePath": "app/controllers/WorkshopApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "command-dsl",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/infrastructure/api/CommandDsl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/api/CommandDsl.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "command-role-map",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/infrastructure/auth/CommandRoleMap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/auth/CommandRoleMap.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "view-keys",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/infrastructure/auth/ViewKeys.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/auth/ViewKeys.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    }
+  ],
+  "reverseRows": []
+}

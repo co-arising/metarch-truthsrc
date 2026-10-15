@@ -107,6 +107,7 @@ function stateField(f) {
 function payloadField(p) {
   const sig = normalize(p.dataType);
   const o = { name: p.name, dataType: sig };
+  if (p.optional) o.optional = true;
   if (p.description) o.description = p.description;
   if (p.noteId) o.noteId = p.noteId;
   const imp = voImportFor(sig);
@@ -117,6 +118,7 @@ function payloadField(p) {
 function commandParam(p) {
   const sig = normalize(p.dataType);
   const o = { name: p.name, dataType: sig };
+  if (p.optional) o.optional = true;
   if (p.noteId) o.noteId = p.noteId;
   const imp = voImportFor(sig);
   if (imp) o.typeImport = imp;

@@ -1,5 +1,6 @@
 // models.mjs — rules-face builders (V4-3). Canonical (+ augment-rules-canonical slots) → pure model.
 // All ordering/semantic decisions live here; templates/scala.mjs only renders text.
+import { scalaSig, sigOf } from './datatype.mjs';
 import { computeParamDefs, normalizeEmitWhen, scalaRef } from './rules.mjs';
 
 // A command is a query fragment (no helper, no behaviors wiring) when it is readOnly. The canonical
@@ -8,7 +9,6 @@ const isQuery = (c) => c.readOnly === true;
 
 // dataType (canonical) → Scala signature, mirroring the skeleton's scalaSig (DataTypeMapper):
 // 'string (uuid)'|'uuid' → Id (the CommonTypes alias); else verbatim (List[Finding] etc. pass through).
-const scalaSig = (dt) => (dt === 'string (uuid)' || dt === 'uuid' ? 'Id' : dt);
 
 // noteAnchor — patch_core.noteAnchor: `// @knowledge <noteId>` plus the `@<hash>` suffix when the
 // elementHashes sidecar carries the entry; '' when noteId is null (un-anchored lines render bare).
@@ -162,7 +162,7 @@ export function ruleParamsModel(a, env) {
     // cmdTypes: declared params minus ActorRef-typed (source filter; canonical never carries them,
     // but the fallback for a missing entry is 'String' either way)
     const cmdTypes = Object.fromEntries(
-      (c.parameters ?? []).filter((p) => !String(scalaSig(p.dataType)).startsWith('ActorRef[')).map((p) => [p.name, scalaSig(p.dataType)]),
+      (c.parameters ?? []).filter((p) => !String(scalaSig(p.dataType)).startsWith('ActorRef[')).map((p) => [p.name, sigOf(p)]),
     );
     const fieldReprs = fields.map((f) => {
       const t = cmdTypes[f] || 'String';

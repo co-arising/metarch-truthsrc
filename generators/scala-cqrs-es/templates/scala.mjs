@@ -20,7 +20,7 @@ function conceptDoc(anchor, indent) {
 export function renderProtocol(m) {
   const { name, family } = m;
   const commands = m.commands
-    .map((c) => `${paramDoc(c.docRows, '  ')}  case class ${c.name}(${c.params.map((p) => `${p.name}: ${p.type}`).join(', ')}) extends ${c.extendsFamily}`)
+    .map((c) => `${paramDoc(c.docRows, '  ')}  case class ${c.name}(${c.params.map((p) => `${p.name}: ${p.type}${p.defaultValue ? ` = ${p.defaultValue}` : ''}`).join(', ')}) extends ${c.extendsFamily}`)
     .join('\n');
   const replies = m.replies
     .map((r) => `  case class ${r.name}(${r.fields.map((f) => `${f.name}: ${f.type}`).join(', ')}) extends CborSerializable`)

@@ -50,10 +50,26 @@ function parseType(t) {
   return { base, params };
 }
 
-// dataType (truthsrc) → Scala type signature. 'string (uuid)'|'uuid' → Id; else verbatim.
+// dataType → Scala type signature — full port of the live authority DataTypeMapper.map
+// (AssemblyEngine.scala:1035-1058, lowercase-matched; raw form preserved for the VO fallback
+// since the mapping is case-insensitive but the CustomType carries the trimmed raw name).
 export function scalaSig(dataType) {
-  if (dataType === 'string (uuid)' || dataType === 'uuid') return 'Id';
-  return dataType;
+  const raw = String(dataType ?? '').trim();
+  const s = raw.toLowerCase();
+  if (s === 'string (uuid)' || s === 'uuid') return 'Id';
+  if (s === 'string') return 'String';
+  if (s === 'int' || s === 'integer') return 'Int';
+  if (s === 'long') return 'Long';
+  if (s === 'double') return 'Double';
+  if (s === 'boolean' || s === 'bool') return 'Boolean';
+  if (s === 'decimal' || s === 'bigdecimal') return 'BigDecimal';
+  if (s === 'instant' || s === 'datetime') return 'Instant';
+  if (s === 'string (enum)') return 'String';       // 枚举值以字符串承载
+  if (s === 'string (json)' || s === 'json') return 'String';
+  if ((s.startsWith('list[') || s.startsWith('list<')) && (s.endsWith(']') || s.endsWith('>')))
+    return `List[${scalaSig(raw.slice(5, raw.length - 1))}]`;  // 递归切片用原始名（保大小写）
+  if (s === 'array<string>') return 'List[String]';
+  return raw !== '' ? raw : 'String';                // live `case _ => StringType` for empty; VO fallback verbatim
 }
 
 // Collect dependency rows [{ fqn, key }] for a Scala type string. `key` = the full sub-type
@@ -116,7 +132,10 @@ export function neutralValue(sig, fb) {
 // Sort + render an import multiset: input rows [{fqn,key}] across a file; dedup by (fqn+key),
 // then one `import <fqn>` per surviving row, sorted by fqn (stable). selfPkg filter + extraFqns
 // (self-qualified refs, framework singletons) handled by callers.
-export function renderImports(rows) {
+// `distinctFqn` = the Protocol/Root faces' collapse (AggregateProtocolTemplate.scala:21 /
+// AggregateRootTemplate.scala:20 `sortBy(_.fqn).map(_.fqn).distinct` — same-fqn different-type-arg
+// TypeRefs emit ONE line); the Entity/Factory/Repository faces keep the multiset (no distinct).
+export function renderImports(rows, { distinctFqn = false } = {}) {
   const seen = new Set();
   const fqns = [];
   for (const r of rows) {
@@ -125,5 +144,6 @@ export function renderImports(rows) {
     seen.add(id);
     fqns.push(r.fqn);
   }
-  return fqns.sort().map((f) => `import ${f}`).join('\n');
+  const list = distinctFqn ? [...new Set(fqns)] : fqns;
+  return list.sort().map((f) => `import ${f}`).join('\n');
 }
