@@ -16,13 +16,17 @@
 //     info.parent (the S2-56 gate's annotated-view registry + dataType 富化 source).
 //   • viewKeyRenames: [{old, new}] — the viewkey rename map entries (project-level config;
 //     generator resolves old kebab keys through it, unmapped keys pass through idempotently).
+//   • paramOrigins: {"<Agg>.<Cmd>.<param>": origin} — the ④-layer template origin registry
+//     (fields.template.json), only entries with a truthy origin. Drives the B2 origin lane
+//     (SYSTEM_GENERATED r1 minting / SYSTEM_QUERIED enricher assembly) in the controller face.
 //
 // Usage:
 //   node tools/augment-api-canonical.mjs \
 //     --canonical  golden/scala-cqrs-es-metarch/model-catalog.canonical.json \
 //     --metarch    /path/to/metarch.json \
 //     --readmodels /path/to/story.readmodels.json \
-//     --rename-map /path/to/viewkey_rename_map.json
+//     --rename-map /path/to/viewkey_rename_map.json \
+//     [--template  /path/to/metarch.fields.template.json]
 
 import fs from 'node:fs';
 
@@ -45,6 +49,8 @@ const canonical = JSON.parse(fs.readFileSync(canonicalPath, 'utf8'));
 const metarch = JSON.parse(fs.readFileSync(metarchPath, 'utf8'));
 const readmodels = JSON.parse(fs.readFileSync(readmodelsPath, 'utf8'));
 const renameMap = JSON.parse(fs.readFileSync(renameMapPath, 'utf8'));
+const templatePath = arg('template');
+const template = templatePath ? JSON.parse(fs.readFileSync(templatePath, 'utf8')) : null;
 
 // --- roleLinkNotes: mechanical participant filter (compact co-link raw material) ------------
 // Mirrors rolemap_export.collectNotes' traversal (type string + links array), keeping only
@@ -82,5 +88,19 @@ canonical.readModels = readmodels.readModels ?? [];
 canonical.viewFieldNotes = viewFieldNotes;
 canonical.viewKeyRenames = (renameMap.entries ?? []).map((e) => ({ old: e.old, new: e.new }));
 
+// paramOrigins: ④-layer template origin registry (B2 origin lane input) — keyed
+// "<Agg>.<Cmd>.<param>", only truthy origins travel.
+const paramOrigins = {};
+if (template) {
+  for (const a of template.aggregates ?? []) {
+    for (const c of a.commands ?? []) {
+      for (const p of c.parameters ?? []) {
+        if (p.origin) paramOrigins[`${a.name}.${c.name}.${p.name}`] = p.origin;
+      }
+    }
+  }
+}
+canonical.paramOrigins = paramOrigins;
+
 fs.writeFileSync(canonicalPath, JSON.stringify(canonical, null, 2) + '\n');
-console.log(`[augment-api] roleLinkNotes=${roleLinkNotes.length} readModels=${canonical.readModels.length} viewFieldNotes=${viewFieldNotes.length} viewKeyRenames=${canonical.viewKeyRenames.length} → ${canonicalPath}`);
+console.log(`[augment-api] roleLinkNotes=${roleLinkNotes.length} readModels=${canonical.readModels.length} viewFieldNotes=${viewFieldNotes.length} viewKeyRenames=${canonical.viewKeyRenames.length} paramOrigins=${Object.keys(paramOrigins).length} → ${canonicalPath}`);

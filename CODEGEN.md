@@ -430,6 +430,51 @@ output the way the live two-pass pipeline does.
 
 Fork-A fixture slots (attached by `tools/augment-api-canonical.mjs`): `roleLinkNotes`
 (compact co-link participants — mechanical filter), `readModels` (the ③-layer read-model
-face as-is), `viewFieldNotes` (the gate's annotated-view registry) and `viewKeyRenames`.
-All derivation lives in the generator (`builders/rolemap.mjs`).
+face as-is), `viewFieldNotes` (the gate's annotated-view registry), `viewKeyRenames`
+and `paramOrigins` (the ④-layer template origin registry, keyed `<Agg>.<Cmd>.<param>` —
+the B2 origin lane's r1/enricher input). All derivation lives in the generator
+(`builders/rolemap.mjs`, `builders/controller.mjs`).
+
+### The controller face (V4-4 inc12) — per-aggregate B2 DSL endpoints
+
+The same generator also emits `app/controllers/<Agg>ApiController.scala` (Play
+convention: `controllers` package at repo root). The command IR is **not** carried by
+the fixture — the generator renders `<Agg>Protocol.scala` through the scala-cqrs-es
+skeleton generator's own `protocolModel`/`renderProtocol` (byte-identity proven by that
+generator's golden gate) and parses that text with the verbatim `parseProtocol`. That
+mirrors the live two-pass pipeline (gen_api_layer parses the Protocol file the skeleton
+pass wrote) while keeping truthsrc free of target-repo reads.
+
+Load-bearing decisions, all ported verbatim (`builders/controller.mjs` + `templates/
+controller.mjs`/`tpl_dsl.mjs`):
+
+- **Lane-A addressing table** (the GEN-ID bug 治本 table, builder_spec-anchored):
+  `r2` body-key (`entityRef(<key>Cid.toString)`, receipt = business key),
+  `httpKey` synthetic Req-only field (AssembleMetadata's `catalogId` — the protocol
+  command has no such param; the event key rides the entityRef seed), `r2c` composite
+  deterministic `nameUUIDFromBytes` keys, `r1` minted keys, factory `generatedId`.
+  Unregistered aggregates fall through to the historical behavior — the table IS the
+  fix, registering is the mechanism.
+- **VO-List skip**: `List[<VO>]` params (not `List[String|Id]`) skip the endpoint
+  unless whitelisted — `ApplyKnowledgePatch(concepts: List[ConceptDelta])` is the
+  ModelCatalog instance (recorded in the entry's `skippedNote`, absent from the file).
+  Query commands (`Reply` without an `error` slot) skip too.
+- **Tier gates**: `BOOTSTRAP_TIERS` (register=anonymous, onboard/accept=global, rest
+  tenant) with out-of-vocabulary fail-fast; `reqTypeOf` boundary mapping (Id/Instant →
+  String, `Option[Id]` → `Option[String] = None`).
+- **Guards**: IdGuard pairs from the Id-ref set (session-injected `tenantId` excluded,
+  httpKey appended), InstantGuard outer / IdGuard inner wrapping.
+- **Req VOs** at file tail (`Json.reads` companions, no anchor — the reqVos model has
+  no noteId, matching live); per-endpoint `@knowledge <noteId>@<hash16>` anchors on the
+  7 `def` lines (the controller serves commands — anchors hang off the served object).
+- **OkReceipt decision-view literals**: `decisionSupport` reverse lookup through the
+  rename map (`JsString("catalog-version-releases")`), `JsNull` when unmapped.
+- **conf/routes**: the per-endpoint route lines are computed on the model but NOT yet
+  emitted — they merge into the hand-authored `conf/routes` E301 marker block, which
+  needs the diff-apply/MERGE face (deferred with the v0.4 apply batch).
+
+Not yet ported (follow with the read side): ViewApi/ViewWrites (`buildViewModels` is
+already in the builder layer), the establish-409 / Flow-delegate endpoint kinds
+(templates are ported; they need Concept/User/DoR aggregates in a fixture), the
+ServesUseCase anchor enforcement (story-face slot), mongo/vector/graph storage faces.
 
