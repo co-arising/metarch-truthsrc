@@ -744,3 +744,36 @@ Report (2026-10-15, post-increment): 394 rows = **284 identical / 2 diff / 108 o
 (107 identical rows modulo the stamp line, disclosed per row). The two remaining diffs are the
 documented steady state: ModelCatalogAggregate root `commandHandler(adjudicator, fingerprint)`
 port injection (the queued port-face increment) and the conf/routes block's unported-face lines.
+
+### The aggregate-root port-injection increment (V4-9)
+
+Candidate ① from V4-8: the last code diff — `ModelCatalogAggregate.commandHandler` carries
+`(adjudicator: ConceptDeltaAdjudicator, fingerprint: ContentFingerprintPort)` and forwards only
+`adjudicator` to `ModelCatalogBehaviors.apply`. Mechanism (rules_domain_gen 债④批尾, lines
+3365-3457): functions.yaml `callExpr`s in the Access-gate form (`PKG.XxxAccess.<member>.<method>({args})`,
+PORT_RX) register ports per member/trait/fqPkg; the per-aggregate registry splits two faces —
+`all` = rules-expr refs ∪ fold `fn:` refs (the signature face), `cmd` = rules-expr refs only
+(the Behaviors.apply argument face) — and the batch rewrites the zero-arg skeleton line to the
+parametric closure form with fully-qualified parameter types (the line is the only change; zero
+import intrusion). The other 26 roots keep the zero-arg form.
+
+truthsrc already carried both raw faces in the canonical (`ports` = cmd face with members,
+`foldPorts` = fold-face traits, member `null` because its only consumer read the import face).
+Three surgical moves:
+
+- `augment-rules-canonical.mjs` recovers the fold-port member from the Access-gate registry
+  (`fingerprint` for ContentFingerprintPort) — rules_domain_gen's portByTraitFq entries always
+  carry it.
+- `rootModel` builds the union (foldPorts ∪ ports, deduped by trait FQ, code-unit sorted — the
+  source sorts the trait-FQ set) for the signature and re-sorts the cmd face the same way for
+  the apply arguments.
+- `renderRoot` emits the parametric line when ports exist, the zero-arg line otherwise.
+
+Regeneration note: the corpus inputs pin **kn-system-metadata-v55** (27 fieldTree aggregates —
+alphabetically "latest" is v9 with 26, a trap; the pinned version is asserted by the
+build-full-corpus self-check deep-equality against `model-catalog.canonical.json`).
+
+Report (2026-10-15, post-increment): 394 rows = **285 identical / 1 diff / 108 owned-by-other**
+(108 rows modulo the stamp line). The one remaining diff is the documented steady state: the
+conf/routes block's 28 live-only lines are exactly the unported faces' output (aggregate-state
+×27 + vector ×1). Code diffs: zero.

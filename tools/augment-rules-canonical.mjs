@@ -415,7 +415,11 @@ else delete agg.ports;
         break;
       }
     }
-    return { member: null, trait, fqPkg, implFq, implKind, ...(decl ? { methods: decl.methods, bridgeFq: decl.bridgeFq } : {}) };
+    // member recovery: rules_domain_gen's portByTraitFq entries always carry the Access-gate
+    // member (PORT_RX m[3]); the root-face commandHandler signature needs it
+    // (`fingerprint: net.imadz.metarch.domain.service.ContentFingerprintPort` — V4-9).
+    const pbMem = [...portByMember.values()].find((p) => `${p.fqPkg}.${p.trait}` === fq) ?? null;
+    return { member: pbMem ? pbMem.member : null, trait, fqPkg, implFq, implKind, ...(decl ? { methods: decl.methods, bridgeFq: decl.bridgeFq } : {}) };
   });
   if (foldPorts.length) agg.foldPorts = foldPorts;
   else delete agg.foldPorts;

@@ -50,6 +50,11 @@ ${replies}
 
 export function renderRoot(m) {
   const { name, family } = m;
+  // rules_domain_gen 债④批尾：有 port 聚合的 commandHandler 带参闭包形（签名全限定·零 import 侵入）；
+  // 无 port 聚合保持零参形（apply 纯转发）。
+  const wiring = m.commandHandlerPorts
+    ? `def commandHandler(${m.commandHandlerPorts.sig}): ${m.commandHandlerFqn} = ${name}Behaviors.apply(${m.commandHandlerPorts.args})`
+    : `def commandHandler: ${m.commandHandlerFqn} = ${name}Behaviors.apply`;
   return `${m.header}package ${m.base}application.aggregates
 
 ${m.imports}
@@ -63,7 +68,7 @@ object ${name}Aggregate {
 
 
   // Wiring (Separated Behavior) - Type alias now in Protocol
-  def commandHandler: ${m.commandHandlerFqn} = ${name}Behaviors.apply
+  ${wiring}
 
 
 

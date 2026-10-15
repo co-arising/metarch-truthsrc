@@ -111,10 +111,26 @@ export function rootModel(a, env) {
     { fqn: `${entityFqn(a)}.${name}Event` },
     { fqn: `${entityFqn(a)}.${name}State` },
   ];
+  // rules_domain_gen 债④批尾（kernel Aggregate 行重写·3365-3457）：有 port 聚合的零参接线升带参
+  // 闭包形——签名收并集（rules 面 ports ∪ fold 面 foldPorts·按 trait FQ 码位序），转发只传 cmd 面
+  // （rules expr 引用者）；参数类型全限定（CodegenMain 骨架零 import 侵入原则——本行是唯一改动点）。
+  const portUnion = new Map();
+  for (const p of a.foldPorts ?? []) portUnion.set(`${p.fqPkg}.${p.trait}`, p);
+  for (const p of a.ports ?? []) portUnion.set(`${p.fqPkg}.${p.trait}`, p);
+  const byTraitFq = (x, y) => {
+    const fx = `${x.fqPkg}.${x.trait}`, fy = `${y.fqPkg}.${y.trait}`;
+    return fx < fy ? -1 : fx > fy ? 1 : 0;
+  };
+  const portAll = [...portUnion.values()].sort(byTraitFq).filter((p) => p.member);
+  const cmdMembers = [...(a.ports ?? [])].sort(byTraitFq).map((p) => p.member).join(', ');
+  const commandHandlerPorts = portAll.length
+    ? { sig: portAll.map((p) => `${p.member}: ${p.fqPkg}.${p.trait}`).join(', '), args: cmdMembers }
+    : null;
   return {
     header: headerOf(env), base: baseOf(a), name, family: fam,
     imports: renderImports(importRows, { distinctFqn: true }),
     commandHandlerFqn: `${protoFqn(a)}.${handlerAliasOf(a)}`,
+    commandHandlerPorts,
     typeKey: a.persistence?.typeKey ?? a.name,
     tagCount: a.persistence?.tagCount ?? 5,
     tagPrefix: a.persistence?.tagPrefix ?? `${kebab(name)}-`,
