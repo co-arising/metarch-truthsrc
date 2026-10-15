@@ -25,12 +25,19 @@
 //                             (PauseProjectDecisionView has no metarch readModel note → bare,
 //                             matching live), null-safe jsExprOf forms (jsInstant / uuid
 //                             Option.map / backtick `type`).
+//   • VectorSearchApiController.scala — app/controllers, the M3 VECTOR face (V4-13): the
+//                             storage.kind=vector view endpoint (verbatim tpl_vector_search port;
+//                             query chain OllamaEmbeddingClient.embed → Repository.search, k clamp
+//                             1..50 default 8, sourceType whitelist note|concept from refCodes
+//                             literals, 503 EMBEDDING_UNAVAILABLE degraded semantics), per-view
+//                             anchor with hash16, global artifact (families=[]), plus its E301
+//                             route line (block order DSL → views → vector, live parity).
 //   • conf/routes — the E301 MARKER BLOCK entry (V4-7): the merged-into-shared-file block
-//                             (7 write-side DSL lines + 68 view lines on this fixture); the
-//                             merge itself is apply-side (test/diff-apply.test.mjs). Full-corpus
-//                             live parity: the block is a strict byte-identical subset of the
-//                             live E301 region (199/227 lines; the 28 missing = the unported
-//                             aggregate-state + vector faces).
+//                             (7 write-side DSL lines + 68 view lines + 1 vector line on this
+//                             fixture); the merge itself is apply-side (test/diff-apply.test.mjs).
+//                             Full-corpus live parity: the block is a strict byte-identical subset
+//                             of the live E301 region (200/227 lines; the 27 missing = the
+//                             unported aggregate-state face).
 // The command IR comes from parsing THIS suite's own skeleton Protocol rendering (scala-cqrs-es
 // protocolModel + renderProtocol — byte-identity proven by its own golden gate), mirroring the
 // live two-pass pipeline. The fixture's api-face RAW slots (roleLinkNotes / readModels /
@@ -53,7 +60,7 @@ const { entries } = await plan({
   generatorDir: GEN,
   options: { elementHashes: JSON.parse(readFileSync(HASHES, 'utf8')) },
 });
-equal(entries.length, 7);
+equal(entries.length, 8);
 for (const e of entries) {
   const want = readFileSync(join(GOLD, e.path), 'utf8');
   equal(e.content, want, `byte identity: ${e.path}`);
@@ -204,4 +211,25 @@ equal(entries.find((e) => e.kind === 'view-keys').noteIds.length, 33, 'ViewKeys 
 equal(entries.find((e) => e.kind === 'command-role-map').noteIds.length, 8, 'CommandRoleMap noteIds (fixture scope: 8 resolvable commands)');
 equal('noteIds' in entries.find((e) => e.kind === 'command-dsl'), false, 'CommandDsl carries no noteIds (live parity)');
 
-console.log('scala-cqrs-es-api (inc11+inc12+inc13): ViewKeys + CommandRoleMap + CommandDsl + ModelCatalogApiController + ViewApiController + ViewWrites byte-identical');
+// ── V4-13: the M3 vector face (VectorSearchApiController + its E301 route line) ───────────
+const vec = entries.find((e) => e.path.endsWith('VectorSearchApiController.scala'));
+ok(vec, 'vector controller entry present');
+equal(vec.families.length, 0, 'vector face is a global artifact (families=[] — no sourceAggregates truth)');
+equal(vec.kind, 'controller');
+equal((vec.content.match(/^  \/\/ @knowledge [0-9a-f-]{36}@[0-9a-f]{16}$/gm) || []).length, 1, 'per-view endpoint anchor with hash16 (api sidecar: 4cfd5d46)');
+ok(vec.content.includes('val k = math.max(1, math.min(50, req.k.getOrElse(8)))'), 'k clamp 1..50 default 8');
+ok(vec.content.includes('Set("note", "concept")'), 'sourceType whitelist = refCodes literals (mechanical extraction)');
+ok(vec.content.includes('Left(ApiError(503, "EMBEDDING_UNAVAILABLE"'), 'degraded semantics: 503, no silent fallback');
+ok(vec.content.includes('knowledgeSemanticViewRepository.search(ts.tenantId, queryEmbedding, k, stFilter)'), 'tid hard gate rides ts.tenantId');
+equal(vec.noteIds.length, 1, 'vector ledger noteIds = the view note id');
+ok(JSON.stringify(vec.noteIds) === JSON.stringify(['4cfd5d46-97ea-447e-a292-c6dc6e7fe960']), 'noteId = KnowledgeSemanticView note');
+// routes: the vector line lands after the view lines (live E301 block order: DSL → views → vector).
+const vecLineIdx = routeLines.indexOf('POST     /api/kb/semantic-search        controllers.VectorSearchApiController.knowledgeSemanticViewSearch');
+ok(vecLineIdx > 0, 'vector route line present');
+ok(routeLines[vecLineIdx - 1].includes('/api/views/'), 'vector line follows the view lines (live block order)');
+equal((routes.content.match(/^POST     \/api\/kb\/semantic-search /gm) || []).length, 1, 'exactly one vector route line');
+// Fixture slot behind the vector face (the collectVectorViews mirror).
+equal(canon.vectorViews.length, 1, 'vectorViews slot: 1 storage.kind=vector view');
+equal(canon.vectorViews[0].storage.dims, 1024, 'dims from the ①-layer storage note');
+
+console.log('scala-cqrs-es-api (inc11+inc12+inc13+V4-13): ViewKeys + CommandRoleMap + CommandDsl + ModelCatalogApiController + ViewApiController + ViewWrites + VectorSearchApiController byte-identical');

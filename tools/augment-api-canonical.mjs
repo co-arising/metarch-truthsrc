@@ -26,6 +26,13 @@
 //   • mongoViewNames: [viewName] — readModel notes declaring info.storage.kind === 'mongo'
 //     (视图存储重设计 2026-10-08). Drives the list-endpoint engine axis (findByTenantPaged vs
 //     findAll helper) in the ViewApi face.
+//   • vectorViews: [{name, noteId, storage, refCodes, fields, sourceTypes}] — the M3 vector
+//     read-model scan (V4-13), the truthsrc analogue of live's shared collectVectorViews
+//     (vector_truth_source.mjs): readModel notes declaring info.storage.kind === 'vector',
+//     scanned DIRECTLY from the ①-layer metarch notes (不经 readmodels.json ③层门 — the
+//     27-decision-view face and the vector corpus stay unmixed). fields = child notes with
+//     info.kind === 'readModelField' && info.parent; sourceTypes = the literals assigned to
+//     sourceType in the note's projectionRefCodes (mechanical extraction, not hardcoded).
 //
 // Usage:
 //   node tools/augment-api-canonical.mjs \
@@ -129,5 +136,44 @@ for (const sess of Object.values(metarch.sessions ?? {})) {
 canonical.viewNoteIds = viewNoteIds;
 canonical.mongoViewNames = mongoViewNames;
 
+// --- vectorViews: the M3 vector read-model scan (V4-13) -------------------------------------
+// Mirrors live vector_truth_source.collectVectorViews over the same file-shaped traversal
+// (sessions → scopes → notes, document order). refCodes ride along RAW (the DDL face needs
+// them later); sourceTypes extraction stays mechanical (regex over refCodes literals), same
+// as live — the generator template consumes the scan output verbatim.
+const vectorViews = [];
+{
+  const fieldsByParent = new Map();
+  for (const sess of Object.values(metarch.sessions ?? {})) {
+    for (const sc of Object.values(sess?.scopes ?? {})) {
+      for (const n of sc?.notes ?? []) {
+        const i = n?.info ?? {};
+        if (i.kind === 'readModelField' && i.parent) {
+          if (!fieldsByParent.has(i.parent)) fieldsByParent.set(i.parent, []);
+          fieldsByParent.get(i.parent).push({ name: n.name, dataType: String(i.dataType || 'String'), isKey: !!i.isKey });
+        }
+      }
+    }
+  }
+  for (const sess of Object.values(metarch.sessions ?? {})) {
+    for (const sc of Object.values(sess?.scopes ?? {})) {
+      for (const n of sc?.notes ?? []) {
+        const i = n?.info ?? {};
+        if (n?.type !== 'readModel' || !i.storage || i.storage.kind !== 'vector') continue;
+        vectorViews.push({
+          name: n.name,
+          ...(n.noteId ? { noteId: n.noteId } : {}),
+          storage: i.storage,
+          refCodes: i.projectionRefCodes ?? {},
+          fields: fieldsByParent.get(n.name) ?? [],
+          sourceTypes: [...new Set([...Object.values(i.projectionRefCodes ?? {})]
+            .flatMap((expr) => [...String(expr).matchAll(/sourceType\s*=\s*"([^"]+)"/g)].map((m) => m[1])))],
+        });
+      }
+    }
+  }
+}
+canonical.vectorViews = vectorViews;
+
 fs.writeFileSync(canonicalPath, JSON.stringify(canonical, null, 2) + '\n');
-console.log(`[augment-api] roleLinkNotes=${roleLinkNotes.length} readModels=${canonical.readModels.length} viewFieldNotes=${viewFieldNotes.length} viewKeyRenames=${canonical.viewKeyRenames.length} paramOrigins=${Object.keys(paramOrigins).length} viewNoteIds=${Object.keys(viewNoteIds).length} mongoViewNames=${mongoViewNames.length} → ${canonicalPath}`);
+console.log(`[augment-api] roleLinkNotes=${roleLinkNotes.length} readModels=${canonical.readModels.length} viewFieldNotes=${viewFieldNotes.length} viewKeyRenames=${canonical.viewKeyRenames.length} paramOrigins=${Object.keys(paramOrigins).length} viewNoteIds=${Object.keys(viewNoteIds).length} mongoViewNames=${mongoViewNames.length} vectorViews=${vectorViews.length} → ${canonicalPath}`);

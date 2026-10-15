@@ -29242,5 +29242,73 @@
     "SubmitKnowledgePatchDecisionView",
     "ParkConceptDecisionView",
     "UseCaseDefinitionDecisionView"
+  ],
+  "vectorViews": [
+    {
+      "name": "KnowledgeSemanticView",
+      "noteId": "4cfd5d46-97ea-447e-a292-c6dc6e7fe960",
+      "storage": {
+        "kind": "vector",
+        "table": "kb_tenant_vector",
+        "dims": 1024,
+        "index": "hnsw",
+        "distance": "cosine",
+        "embeddingColumn": "embedding",
+        "embedding": {
+          "model": "bge-m3",
+          "endpoint": "http://localhost:11434/api/embed",
+          "timeout": 10000
+        }
+      },
+      "refCodes": {
+        "NoteCaptured": "view.copy(tenantId = event.tenantId, sourceType = \"note\", sourceId = event.noteId, name = strOr(event.externalId), kind = strOr(event.`type`), embedText = strOr(event.content), meta = strOr(event.timeline))",
+        "NoteContentUpdated": "updateOnly(noteId): row.copy(sourceType = \"note\", sourceId = event.noteId, embedText = strOr(event.content))",
+        "NoteRemoved": "view.delete(sourceType = \"note\", sourceId = event.noteId)",
+        "ConceptRemoved": "view.delete(sourceType = \"concept\", sourceId = event.conceptId)",
+        "ConceptsMerged": "view.delete(sourceType = \"concept\", sourceId = event.sourceConceptId)",
+        "ConceptEstablished": "view.copy(tenantId = event.tenantId, sourceType = \"concept\", sourceId = event.conceptId, name = strOr(event.name), kind = strOr(event.kind), embedText = strOr(event.description), meta = strOr(event.machineSpec))"
+      },
+      "fields": [
+        {
+          "name": "embedText",
+          "dataType": "String",
+          "isKey": false
+        },
+        {
+          "name": "name",
+          "dataType": "String",
+          "isKey": false
+        },
+        {
+          "name": "meta",
+          "dataType": "String",
+          "isKey": false
+        },
+        {
+          "name": "tenantId",
+          "dataType": "String",
+          "isKey": true
+        },
+        {
+          "name": "sourceType",
+          "dataType": "String",
+          "isKey": true
+        },
+        {
+          "name": "sourceId",
+          "dataType": "String",
+          "isKey": true
+        },
+        {
+          "name": "kind",
+          "dataType": "String",
+          "isKey": false
+        }
+      ],
+      "sourceTypes": [
+        "note",
+        "concept"
+      ]
+    }
   ]
 }

@@ -826,3 +826,30 @@ owned-by-other records — the pipeline-order supersession the live ledger's fin
 also encodes). All 27 rewritten EventHandlers byte-identical, including the CemEdge
 terminal-state wrap. npm test 22/22 (rules gate now 8 entries; concerns e2e replay re-asserts
 three shared glue paths). Code diffs: zero.
+
+### The M3 vector face (V4-13)
+
+Candidate ① from the V4-12 projection/storage census: the smallest identity loop —
+VectorSearchApiController.scala (71 lines live) + its E301 route line. The live emitter is
+`gen_api_controllers/tpl_vector_search.mjs` (still an ACTIVE template, unlike the retired
+repository emission), fed by `vector_truth_source.mjs`'s `collectVectorViews`: readModel notes
+declaring `info.storage.kind === 'vector'`, scanned DIRECTLY from the ①-layer notes (not
+through the readmodels ③-layer gate — the 27-decision-view face and the vector corpus stay
+unmixed). One view today: KnowledgeSemanticView (bge-m3 · 1024d · hnsw cosine).
+
+truthsrc mirrors the same split: `augment-api-canonical` gains the `vectorViews` slot (the
+collectVectorViews port over the file-shaped Object.values traversal — name/noteId/storage/
+refCodes/fields/sourceTypes, sourceTypes mechanically extracted from the refCodes
+`sourceType = "X"` literals), and the generator gains `templates/vector_search.mjs` — the
+template ported VERBATIM (query chain `OllamaEmbeddingClient.embed → Repository.search`,
+k clamp 1..50 default 8, sourceType whitelist note|concept, 503 EMBEDDING_UNAVAILABLE degraded
+semantics, per-view `@knowledge` anchor with hash16 through the api-face sidecar). The route
+line lands AFTER the view lines (live E301 block order: DSL → views → vector; the state lines
+remain the only absent face). Global artifact: families=[], ledger noteIds = the view note id
+(4cfd5d46… → 39318a67908589c3, byte-identical anchor on the first pass).
+
+Report (2026-10-15, post-increment): 422 rows = **313 identical / 1 diff / 108 owned-by-other**
+(rules 172 · skeleton 108 · api 33 — the new row identical on first generation). The routes
+block's live-only remainder drops 28 → 27: everything left is the unported aggregate-state face
+(S1 拍板面·candidate ③). npm test 22/22 (api gate 8 entries; concerns e2e api runs 6→7;
+diff-apply counts +1 across the board).

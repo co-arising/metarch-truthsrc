@@ -29,17 +29,25 @@
 // merging it into the shared routes file is apply-side (core merge.mjs — segment replace / append
 // / absent-target skip: the live index.mjs:252-271 semantics with MarkerBlockWriter's half-marker
 // fail-fast). Line order mirrors live exactly: per-aggregate DSL route lines (canonical aggregate
-// order ≡ live's sorted aggDirs — verified on the full corpus), then the view lines. The vector
-// search and aggregate-state lines of the live block belong to faces truthsrc has not ported and
-// are honestly absent. conf/routes carries NO ledger row (live C6: shared territory, scope-leak
-// exempt). Ledger rows gain noteIds — the knowledge identity of each file (live ledger parity:
-// controllers → the commands they serve; ViewApi/ViewWrites/ViewKeys → their view ids;
-// CommandRoleMap → its command ids; CommandDsl → none).
+// order ≡ live's sorted aggDirs — verified on the full corpus), then the view lines, then the
+// vector search line (V4-13). The aggregate-state lines of the live block belong to a face
+// truthsrc has not ported and are honestly absent. conf/routes carries NO ledger row (live C6:
+// shared territory, scope-leak exempt). Ledger rows gain noteIds — the knowledge identity of each
+// file (live ledger parity: controllers → the commands they serve; ViewApi/ViewWrites/ViewKeys →
+// their view ids; CommandRoleMap → its command ids; CommandDsl → none).
+//
+// V4-13 scope: + the M3 VECTOR face — VectorSearchApiController.scala (storage.kind=vector views,
+// verbatim tpl_vector_search port; query chain = OllamaEmbeddingClient.embed → Repository.search,
+// k clamp 1..50, sourceType whitelist from refCodes literals, 503 EMBEDDING_UNAVAILABLE) + its
+// E301 route line. Input = canonical.vectorViews (augment-api scan, the collectVectorViews
+// mirror); the per-view anchor resolves through the api-face elementHashes sidecar (4cfd5d46 →
+// 39318a67908589c3, verified identical to live).
 import { ROLE_CONSTANTS, constNameOf, deriveCommandRoles, deriveViewReadRoles, aggregateByView, gateViews, viewKeyModel, newViewKeyOf, kebabViewStrict } from './builders/rolemap.mjs';
 import { parseProtocol, buildAggregateController, buildViewModels } from './builders/controller.mjs';
 import { renderViewKeys, renderCommandRoleMap, renderCommandDsl } from './templates/scala.mjs';
 import { renderControllerFile } from './templates/controller.mjs';
 import { renderViewController } from './templates/views.mjs';
+import { renderVectorSearchController } from './templates/vector_search.mjs';
 import { protocolModel } from '../scala-cqrs-es/builders/models.mjs';
 import { renderProtocol } from '../scala-cqrs-es/templates/scala.mjs';
 
@@ -198,6 +206,25 @@ export function generate({ canonical, options = {} }) {
       noteIds: viewNoteIdList,
     },
   );
+
+  // V4-13: M3 vector segment (live index.mjs:200-213) — storage.kind=vector views scanned
+  // directly from the ①-layer notes (canonical.vectorViews · the augment-side mirror of live's
+  // collectVectorViews), rendered verbatim by the tpl_vector_search port. Global artifact
+  // (families=[] — vector views carry no sourceAggregates truth); the ledger row rides the
+  // view note ids (S7 #1b: same ids gen_projection_ddl resolves for the same views). The route
+  // line lands after the view lines — live E301 block order (DSL → views → vector → state).
+  const vecViews = canonical.vectorViews ?? [];
+  if (vecViews.length) {
+    const vs = renderVectorSearchController(vecViews, fp, noteAnchor);
+    routesLines.push(...vs.routeLines);
+    const vecNoteIds = [...new Set(vecViews.map((v) => v.noteId).filter(Boolean))].sort();
+    entries.push({
+      path: 'app/controllers/VectorSearchApiController.scala',
+      content: vs.controller,
+      kind: 'controller', schemaCategory: 'projection', schemaNode: 'VectorSearchApiController', families: [], deps: [],
+      ...(vecNoteIds.length ? { noteIds: vecNoteIds } : {}),
+    });
+  }
 
   // V4-7: conf/routes E301 territory — the MARKER BLOCK entry (live index.mjs:252-271 block
   // assembly, verbatim marker text). Merging into the shared file is apply-side (core merge.mjs);

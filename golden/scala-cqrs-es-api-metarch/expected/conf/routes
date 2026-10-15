@@ -74,4 +74,5 @@ GET      /api/views/workgroups            controllers.ViewApiController.workgrou
 GET      /api/views/workgroups/:entityId  controllers.ViewApiController.workgroupsItem(entityId: String)
 GET      /api/views/workshops            controllers.ViewApiController.workshops(page: Int ?= 1, pageSize: Int ?= 20)
 GET      /api/views/workshops/:entityId  controllers.ViewApiController.workshopsItem(entityId: String)
+POST     /api/kb/semantic-search        controllers.VectorSearchApiController.knowledgeSemanticViewSearch
 # <<< gen_api_layer <<<

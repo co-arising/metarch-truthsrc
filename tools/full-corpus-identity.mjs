@@ -121,7 +121,7 @@ for (const [face, g] of Object.entries(GENS)) {
         if (e.kind === 'routes') {
           // conf/routes: shared territory — compare the E301 marker REGION only (outer lines are
           // hand/other-generator faces, out of scope by declaration). Live-only lines should be
-          // exactly the unported faces' output (27 aggregate-state + 1 vector-search); anything
+          // exactly the unported faces' output (27 aggregate-state — the vector face joined V4-13); anything
           // else is a real diff on the ported write/view lines.
           const liveText = liveRead(livePath);
           if (liveText === null) row.status = 'live-missing';
@@ -143,7 +143,7 @@ for (const [face, g] of Object.entries(GENS)) {
               if (row.status === 'diff') {
                 row.excerpt = {
                   byte: 0, line: 0,
-                  want: missingPorted.length ? missingPorted[0] : `${missing.length} live-only lines (unported faces: aggregate-state ×27 + vector ×1)`,
+                  want: missingPorted.length ? missingPorted[0] : `${missing.length} live-only lines (unported faces: aggregate-state ×27 — vector joined V4-13)`,
                   got: extra.length ? extra[0] : `${extra.length} truthsrc-only lines`,
                 };
               }
@@ -230,7 +230,7 @@ fs.writeFileSync(outJson, JSON.stringify(report, null, 2) + '\n');
 const line = [];
 line.push(`# truthsrc 全语料恒等报告（V4-5·切流拍板输入·非拍板本身）`, '');
 line.push(`- 日期：${report.generatedAt}；live 参照：\`${LIVE}\`（新鲜度门：backend-codegen \`tools/kn_repo_freshness.mjs\` exit 0·锚 8948/元素 2861 全 match）；canonical：\`${report.canonical}\`（27 聚合）`);
-line.push(`- 范围：三面 20 kind＋conf/routes E301 块区（skeleton 8－共享 3＋rules 8＋api 6；共享 Behaviors/CommandHelpers/EventHandler 按 live 管线序归 rules 面所有——骨架面的同路径行留痕 owned-by-other，即台账 final-writer-wins 的行级呈现；routes 按标记区对表——块外领地属手写/它生成器面不在对表范围，块内 live 独有行应恰＝未移植面输出：aggregate-state ×27＋vector ×1）。storage/persistence/Bootstrap/ExecutableSpec/投影/AggregateStateApi/Auth 等其余**未移植面不在对表范围**（EP 不搬清单＋顺延批）。`, '');
+line.push(`- 范围：三面 20 kind＋conf/routes E301 块区（skeleton 8－共享 3＋rules 8＋api 7；共享 Behaviors/CommandHelpers/EventHandler 按 live 管线序归 rules 面所有——骨架面的同路径行留痕 owned-by-other，即台账 final-writer-wins 的行级呈现；routes 按标记区对表——块外领地属手写/它生成器面不在对表范围，块内 live 独有行应恰＝未移植面输出：aggregate-state ×27·vector 面已随 V4-13 移植）。storage/persistence/Bootstrap/ExecutableSpec/投影/AggregateStateApi/Auth 等其余**未移植面不在对表范围**（EP 不搬清单＋顺延批）。`, '');
 line.push(`## 头条数字`, '');
 line.push(`| 判定 | 件数 |`);
 line.push(`|---|---|`);

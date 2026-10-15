@@ -4,16 +4,16 @@
   "canonical": "golden/scala-cqrs-es-metarch/full-corpus.canonical.json",
   "aggregates": 27,
   "counts": {
-    "rows": 421,
+    "rows": 422,
     "byStatus": {
-      "identical": 312,
+      "identical": 313,
       "owned-by-other": 108,
       "diff": 1
     },
     "identicalByFace": {
       "skeleton": 108,
       "rules": 172,
-      "api": 32
+      "api": 33
     },
     "diffByKind": {
       "routes": 1
@@ -3842,6 +3842,15 @@
     {
       "face": "api",
       "kind": "controller",
+      "aggregate": null,
+      "path": "app/controllers/VectorSearchApiController.scala",
+      "livePath": "app/controllers/VectorSearchApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
       "aggregate": "CemEdge",
       "path": "app/controllers/ViewApiController.scala",
       "livePath": "app/controllers/ViewApiController.scala",
@@ -3893,15 +3902,15 @@
       "status": "diff",
       "routes": {
         "liveLines": 229,
-        "emittedLines": 201,
-        "liveOnly": 28,
+        "emittedLines": 202,
+        "liveOnly": 27,
         "emittedOnly": 0,
         "liveOnlyOutsideUnportedFaces": 0
       },
       "excerpt": {
         "byte": 0,
         "line": 0,
-        "want": "28 live-only lines (unported faces: aggregate-state ×27 + vector ×1)",
+        "want": "27 live-only lines (unported faces: aggregate-state ×27 — vector joined V4-13)",
         "got": "0 truthsrc-only lines"
       }
     },
