@@ -242,10 +242,11 @@ skeleton breadth, not policy wiring.
 reproduces the production `rules_domain_gen` pass, which *overwrites* the aggregate's
 behaviors glue (and adds the domain rules) after `CodegenMain` has written the skeleton —
 mirroring the real two-pass pipeline (skeleton, then rules win on the overlapping paths).
-inc6 ported `CommandHelpers`, inc7 added `Behaviors`, inc8 added `RuleParams` and inc9
-added `Rules` + `RulesSpec` (all
+inc6 ported `CommandHelpers`, inc7 added `Behaviors`, inc8 added `RuleParams`, inc9
+added `Rules` + `RulesSpec` and inc10 added `Policies` + `PoliciesSpec` (all
 byte-identical to the live `di-poc` output, verified fresh by re-running `CODEGEN_MULTI=1
-rules_domain_gen --agg=ModelCatalog` into a temp copy).
+rules_domain_gen --agg=ModelCatalog` into a temp copy with the app/ →
+modules/kernel/src/main/scala signature mirror).
 
 The load-bearing difference from the skeleton generators: this face is **not** a structural
 projection. A command's `toParam` field **order** is a union discovered over
@@ -269,11 +270,11 @@ refining `behaviorModel`. The discovery itself — `collectVarRefs`, `inputField
 `builders/rules.mjs`. The query command is imported (both `Get<Name>State` and its `Reply`)
 but gets no helper object.
 
-inc6 ports loops 1+2 only; the policy-binding, event-same-name and command→event lineage
-augmentation loops are not yet needed (the ModelCatalog corpus does not exercise them —
-verified: loops 1+2 reproduce all 9 helpers byte-for-byte) and land with the aggregates that
-require them. `Rules` (the `exprToScala` engine), `RulesSpec` and `Policies` follow in later
-increments.
+inc6 ported loops 1+2 of the union discovery only; the event-same-name and command→event
+lineage augmentation loops are not yet needed (the ModelCatalog corpus does not exercise
+them — verified: loops 1+2 reproduce all 9 helpers byte-for-byte) and land with the
+aggregates that require them. The policy-binding loop (paramDefs ∪ policy-note
+`info.bindings` keys) landed with inc10's Policies face.
 
 **Behaviors (inc7)** — the command-flow wiring, one match case per command in declared
 order. Each write command renders
@@ -363,3 +364,34 @@ falls back to the aggregate-status `in` rule's first enum value. The port Impl v
 closure form) are generated from the ports' full declaration face (scalaImpl + methods +
 bridge from `functions.yaml`'s `ports:` section): a bridge-object impl renders as a direct
 val, an object-shape impl as an anonymous-class delegation with FQ-qualified signatures.
+
+**Policies (inc10)** — `domain/policy/<Agg>Policies.scala` + its Spec, the S2-44 reaction
+face: `on(event): List[<Cmd>Params]` pure objects (对偶 domain/invariant — Rules eat
+`(State, Params)` and produce Events; Policies eat Events and produce Params). The raw
+inputs are policy **notes** (attached by the augment tool as `policies`, attributed by
+target aggregate = `info.targetAggregate ||` command host, `generate=false` notes never
+travel): `info.bindings` (command param ← `event.<field>` / `item` / `item.<field>` /
+`literal:` — declaration-is-authority), `info.fanOutOn` (collection fan-out) and
+`info.fanOutWhere` (filter predicate). Load-bearing decisions:
+
+- **Params-side types come from the rendered RuleParams signature** (the source re-reads
+  the file it wrote earlier in the same run — `paramDefs` order ≠ declared order, S2-46);
+  the generator parses its own just-rendered rule-params content.
+- **Event-side types are DERIVED**, not read: the raw ②-layer payload `dataType`s travel
+  with the fixture (`evtPayloads`) and the generator maps them through the same
+  normalize+scalaSig the skeleton generator renders the Entity from — derived signature ≡
+  generated signature. This keeps truthsrc free of target-repo reads while preserving the
+  Id-vs-String wrapping (`Id.of(e.x)` / `e.x.toString`) and the `List[X] → X` element-VO
+  resolution that drive `fanOutWhere`.
+- **Unbound fields** fall back to the E101 extension-slot default when the signature
+  declares one; still unresolved → the whole policy skips (宁缺勿造, never guessed).
+- **fanOut** renders `e.<field>[.filter(item => <cond>)].map(item => <Cmd>Params(...))`;
+  the predicate goes through the same `exprToScala` lexicon as `emitWhen` conds. The Spec's
+  sentinel for a filtered fan-out is the **differentiated pair** (`filterSentinel`:
+  `eq`/`notEmpty` over `item.<field>` under and/or) rendered via `literalFor` over the
+  element VO signature, with `Id.of`-wrapped fields forced to a parseable UUID — the
+  ModelCatalog corpus has no filtered fan-out, so this machinery is exercised only when an
+  aggregate carrying one lands in the fixtures.
+- Spec event literals judge the **raw** dataType strings (`String (UUID)` →
+  `Id.of(...)`, `List<ConceptDelta>` → VO default construction with a values import,
+  VO payloads → `null` sentinel).

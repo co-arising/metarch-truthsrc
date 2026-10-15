@@ -23,11 +23,26 @@ function noteAnchor(noteId, elementHashes, indent = '') {
 // paramDefs (union-discovered) order, with fixed failure/success replies. Query commands contribute
 // to the import block (both <Cmd> and <Cmd>Reply) but get no helper object (rules_domain_gen lines
 // 1922-1960).
+
+// policyBoundOf — the command → policy-bound-fields supply map (rules_domain_gen's policyBoundParams
+// prescan, consumed by computeParamDefs's policy-binding loop): for each policy targeting THIS
+// aggregate, its `info.bindings` keys must be in the target command's Params VO (声明即权威).
+function policyBoundOf(a) {
+  const m = new Map();
+  for (const p of a.policies ?? []) {
+    const set = m.get(p.cmdName) || new Set();
+    for (const k of Object.keys(p.bindings ?? {})) set.add(k);
+    m.set(p.cmdName, set);
+  }
+  return m;
+}
+
 export function commandHelpersModel(a, env) {
   const commands = a.commands ?? [];
+  const policyBound = policyBoundOf(a);
   const helpers = commands.filter((c) => !isQuery(c)).map((c) => {
     const params = c.parameters ?? [];
-    const fields = computeParamDefs(c.name, params, c.preconditionRules, c.behaviorModel);
+    const fields = computeParamDefs(c.name, params, c.preconditionRules, c.behaviorModel, policyBound.get(c.name));
     return {
       name: c.name,
       replyType: `${c.name}Reply`,
@@ -137,12 +152,13 @@ export function behaviorsModel(a, env) {
 // the source does (paramsNeedId/paramsNeedInstant/paramsNeedVO vs the voNames registry).
 export function ruleParamsModel(a, env) {
   const voNames = new Set(a.voNames ?? env.voNames ?? []);
+  const policyBound = policyBoundOf(a);
   const classes = [];
   const lines = []; // rendered `name: Type` fragments — the import bits regex over these
   for (const c of a.commands ?? []) {
     if (isQuery(c)) continue;
     const rules = c.preconditionRules ?? [];
-    const fields = computeParamDefs(c.name, c.parameters ?? [], rules, c.behaviorModel);
+    const fields = computeParamDefs(c.name, c.parameters ?? [], rules, c.behaviorModel, policyBound.get(c.name));
     // cmdTypes: declared params minus ActorRef-typed (source filter; canonical never carries them,
     // but the fallback for a missing entry is 'String' either way)
     const cmdTypes = Object.fromEntries(

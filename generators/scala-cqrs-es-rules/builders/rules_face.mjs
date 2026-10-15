@@ -111,11 +111,17 @@ ${delegations}
     }
   }
 
-  // —— Params VO 字段（loops 1+2+④层 via computeParamDefs；policy/事件同名/血缘三补给腿本语料未触发） ——
+  // —— Params VO 字段（loops 1+2+④层＋policy 绑定腿 via computeParamDefs；事件同名/血缘两腿本语料未触发） ——
+  const policyBound = new Map();
+  for (const p of a.policies ?? []) {
+    const set = policyBound.get(p.cmdName) || new Set();
+    for (const k of Object.keys(p.bindings ?? {})) set.add(k);
+    policyBound.set(p.cmdName, set);
+  }
   const paramDefs = new Map();
   for (const cmd of commands) {
     if (queryFragments.has(cmd.name)) continue;
-    paramDefs.set(cmd.name, computeParamDefs(cmd.name, cmd.params, cmdRules.get(cmd.name) || [], cmd.behaviorModel));
+    paramDefs.set(cmd.name, computeParamDefs(cmd.name, cmd.params, cmdRules.get(cmd.name) || [], cmd.behaviorModel, policyBound.get(cmd.name)));
   }
 
   // —— cmd→event 边（rules_domain_gen cmdEvents ④层权威腿＋正例 then.event 兜底） ——

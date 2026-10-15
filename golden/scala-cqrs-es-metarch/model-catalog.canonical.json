@@ -6338,6 +6338,126 @@
           "bridgeFq": null
         }
       ],
+      "policies": [
+        {
+          "noteId": "be1d82dd-984b-4571-8c92-78e86ed8ef4a",
+          "name": "立项后创建目录版本",
+          "description": "项目启动后自动创建目录版本 v1.0.0（catalogId 与 Project 一对一）",
+          "idempotencyKey": null,
+          "cmdName": "CreateCatalogVersion",
+          "evtName": "ProjectInitiated",
+          "bindings": {
+            "tenantId": "event.tenantId",
+            "projectId": "event.projectId",
+            "triggeredBy": "event.triggeredBy",
+            "version": "literal:1.0.0",
+            "baseVersion": "literal:0.0.0"
+          },
+          "fanOutOn": null,
+          "fanOutWhere": null,
+          "evtHostAgg": "Project",
+          "evtPayloads": [
+            [
+              "projectId",
+              "String (UUID)"
+            ],
+            [
+              "tenantId",
+              "String (UUID)"
+            ],
+            [
+              "workgroupId",
+              "String (UUID)"
+            ],
+            [
+              "name",
+              "String"
+            ],
+            [
+              "description",
+              "String"
+            ],
+            [
+              "projectOwnerUserId",
+              "String (UUID)"
+            ],
+            [
+              "workshopName",
+              "String"
+            ],
+            [
+              "triggeredBy",
+              "String"
+            ],
+            [
+              "timestamp",
+              "Instant"
+            ],
+            [
+              "catalogId",
+              "String (UUID)"
+            ]
+          ]
+        },
+        {
+          "noteId": "b976bb8c-bb2b-4f4f-991c-5d615f67cc07",
+          "name": "补丁合并后应用到目录",
+          "description": "KnowledgePatchMerged 发生后触发 ApplyKnowledgePatch——补丁合并进链（MERGED）后自动应用到目录（headPatchId 前移 + FF/祖先冲突判定），补上「MERGE 完就停」的缺环",
+          "idempotencyKey": "command-level",
+          "cmdName": "ApplyKnowledgePatch",
+          "evtName": "KnowledgePatchMergeCommitted",
+          "bindings": {
+            "catalogId": "event.catalogId",
+            "sessionId": "event.patchId",
+            "triggeredBy": "event.triggeredBy",
+            "patchId": "event.patchId",
+            "patchHash": "event.patchHash",
+            "parentPatchId": "event.parentPatchId",
+            "concepts": "event.concepts"
+          },
+          "fanOutOn": null,
+          "fanOutWhere": null,
+          "evtHostAgg": "KnowledgePatch",
+          "evtPayloads": [
+            [
+              "patchId",
+              "String (UUID)"
+            ],
+            [
+              "catalogId",
+              "String (UUID)"
+            ],
+            [
+              "triggeredBy",
+              "String"
+            ],
+            [
+              "timestamp",
+              "Instant"
+            ],
+            [
+              "tenantId",
+              "String (UUID)"
+            ],
+            [
+              "patchHash",
+              "String"
+            ],
+            [
+              "parentPatchId",
+              "String (UUID)"
+            ],
+            [
+              "changedFields",
+              "List<String>"
+            ],
+            [
+              "concepts",
+              "List<ConceptDelta>"
+            ]
+          ]
+        }
+      ],
       "emitsEventPostconditionCheck": true
     }
   ],

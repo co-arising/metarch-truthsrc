@@ -150,6 +150,58 @@ ${m.body}
 `;
 }
 
+// renderPolicies — the <Agg>Policies.scala file (rules_domain_gen lines 3189-3203, S2-44):
+// the domain reaction-policy object. Imports: net.imadz.common.Id, sorted event imports (host
+// Entity case classes) and the params wildcard. `objects` entries are pre-rendered blocks that
+// each open with a newline (the source pushes them raw and joins with '\n').
+export function renderPolicies(m) {
+  const { agg, pkg, ctx } = m;
+  const base = `${pkg}.${ctx}`;
+  const evtImportDecl = m.evtImports.slice().sort().map((i) => `import ${i}`).join('\n');
+  const paramsImportDecl = m.paramsImports.slice().sort().map((i) => `import ${i}`).join('\n');
+  return `${m.header}package ${base}.domain.policy
+
+import net.imadz.common.Id
+${evtImportDecl}
+${paramsImportDecl}
+
+/**
+ * ${agg} 聚合反应策略（S2-44·2026-09-05，rules_domain_gen.mjs 生成）。
+ * Policy = event → command 的领域语义（独立于 usecase·usecase 仅为引用方）；
+ * 纯 domain：零 akka / 零 application 依赖——Runner（application/projection）接线另批落地。
+ * 与 domain/invariant 对偶：Rules 吃 (State, Params) 产 Events；Policy 吃 Event 产 Params。
+ */
+object ${agg}Policies {
+${m.objects.join('\n')}
+}
+`;
+}
+
+// renderPoliciesSpec — the test/…/<Agg>PoliciesSpec.scala file (rules_domain_gen lines 3205-3219):
+// the pure-domain policy suite. Same import face plus the values imports for any VO the spec
+// sentinels default-construct (voImports, sorted, with the source's conditional trailing newline).
+export function renderPoliciesSpec(m) {
+  const { agg, pkg, ctx } = m;
+  const base = `${pkg}.${ctx}`;
+  const evtImportDecl = m.evtImports.slice().sort().map((i) => `import ${i}`).join('\n');
+  const paramsImportDecl = m.paramsImports.slice().sort().map((i) => `import ${i}`).join('\n');
+  return `${m.header}package ${base}.domain.policy
+
+import net.imadz.common.Id
+${evtImportDecl}
+${paramsImportDecl}
+${m.voImports.slice().sort().map((v) => `import ${base}.domain.values.${v}`).join('\n')}${m.voImports.length ? '\n' : ''}import org.scalatest.wordspec.AnyWordSpecLike
+import org.scalatest.matchers.should.Matchers
+
+/**
+ * ${agg} Policies 领域层纯测试（S2-44·无 akka）。
+ */
+class ${agg}PoliciesSpec extends AnyWordSpecLike with Matchers {
+${m.tests.join('\n')}
+}
+`;
+}
+
 // renderRulesSpec — the test/…/<Agg>RulesSpec.scala file (rules_domain_gen lines 2730-2761):
 // the pure-domain ScalaTest suite. Header = the three-way rule-note anchor union (sorted); the
 // port Impl vals (债④ closure form) precede the state() helper; every executable case renders a

@@ -65,14 +65,13 @@ export function condParamRefs(branches, cmdName) {
 }
 
 // computeParamDefs — the toParam field list for one write command (rules_domain_gen lines 1042-1094,
-// loops 1+2). `cmdName` = the command (var/cond host); `params` = command parameters in declared
-// order; `rules` = attached preconditionRules [{expression, humanDescription}]; `bm` = attached
-// behaviorModel.
-// NOTE (inc6 scope): the policy-binding, event-same-name and lineage augmentation loops (lines
-// 1096-1133+) are not ported yet — the metarch ModelCatalog corpus does not exercise them (verified:
-// loops 1+2 reproduce all 9 CommandHelpers byte-for-byte). They land with the aggregates that need
-// them.
-export function computeParamDefs(cmdName, params, rules, bm) {
+// loops 1+2 + the policy-binding loop). `cmdName` = the command (var/cond host); `params` = command
+// parameters in declared order; `rules` = attached preconditionRules [{expression,
+// humanDescription}]; `bm` = attached behaviorModel; `policyBound` = the command's policy-note
+// `info.bindings` keys (the inc10 augment slot — the policy side of the paramDefs supply, source
+// lines 1096-1108). The event-same-name and lineage loops are still not ported — the metarch
+// ModelCatalog corpus does not exercise them; they land with the aggregates that need them.
+export function computeParamDefs(cmdName, params, rules, bm, policyBound) {
   const paramNames = params.map((p) => p.name);
   const has = (f) => paramNames.includes(f);
   const referenced = new Set();
@@ -107,6 +106,10 @@ export function computeParamDefs(cmdName, params, rules, bm) {
       for (const br of ew) for (const em of br.events) scanEmission(em);
     }
   }
+  // —— 策略 bindings 参数补给（#32 缺口①·策略侧对偶）：声明即权威——policy 便签 info.bindings
+  //    引用的命令参数必须进 Params VO（否则策略 Runner 逐条投命令时拿不到分片键——
+  //    `EstablishConcept.conceptId` 即此例）。
+  for (const f of policyBound ?? []) add(f);
   return fields;
 }
 

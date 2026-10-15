@@ -51,6 +51,18 @@
 //   • executableCases: the raw case rows (grouped by the case's own `aggregate` field, mirroring
 //     rules_domain_gen's byAgg) driving RulesSpec generation.
 //
+// inc10 extensions (the Policies face, V4-3 inc10) — RAW per Fork A, attributed here (target-agg
+// resolution is discovery, mirroring rules_domain_gen's cmdHostAgg):
+//   • policies: [{noteId, name, description, idempotencyKey, cmdName, evtName, bindings,
+//     fanOutOn, fanOutWhere, evtHostAgg, evtPayloads}] — the policy notes whose target resolves to
+//     THIS aggregate (info.targetAggregate || command host), generate=false excluded (rules_domain_gen
+//     skips them). `bindings`/`fanOutOn`/`fanOutWhere` travel raw (声明即权威); `evtPayloads` is the
+//     ②-layer event payload list in declaration order with RAW dataType strings (the Spec's evLit
+//     regexes judge the raw form, e.g. `String (UUID)` → /UUID/ → Id.of sentinel) — the generator
+//     derives the actual Entity event signature (elemVoName / Id-vs-String wrapping) by its own
+//     normalize+scalaSig mapping, which is the same mapping its skeleton generator renders the
+//     Entity from (self-consistent: derived sig ≡ generated sig).
+//
 // Usage:
 //   node tools/augment-rules-canonical.mjs --aggregate ModelCatalog \
 //     --canonical  golden/scala-cqrs-es-metarch/model-catalog.canonical.json \
@@ -58,7 +70,8 @@
 //     --cases      /path/to/executable_cases.json \
 //     --behavior   /path/to/metarch-behaviormodel.json \  # { aggregates:[{name,decisions:[...]}] }
 //     --functions  /path/to/functions.yaml \              # ext-port registry source
-//     --values     /path/to/ingested-app/app/net/imadz/metarch/domain/values  # VO registry source
+//     --values     /path/to/ingested-app/app/net/imadz/metarch/domain/values \  # VO registry source
+//     --metarch    /path/to/metarch.json                  # policy notes + ②-layer event payloads
 
 import fs from 'node:fs';
 
@@ -74,9 +87,10 @@ const casesPath = arg('cases');
 const behaviorPath = arg('behavior');
 const functionsPath = arg('functions');
 const valuesPath = arg('values');
+const metarchPath = arg('metarch');
 
-if (!aggName || !canonicalPath || !rulesPath || !casesPath || !behaviorPath || !functionsPath || !valuesPath) {
-  console.error('missing required args: --aggregate --canonical --rules --cases --behavior --functions --values');
+if (!aggName || !canonicalPath || !rulesPath || !casesPath || !behaviorPath || !functionsPath || !valuesPath || !metarchPath) {
+  console.error('missing required args: --aggregate --canonical --rules --cases --behavior --functions --values --metarch');
   process.exit(2);
 }
 
@@ -326,6 +340,63 @@ else delete agg.ports;
   else delete agg.foldPorts;
 }
 
+// --- policies (rules_domain_gen Policy 发射段 S2-44, inc10) -------------------------------------
+// Policy notes attributed to THIS aggregate: target = info.targetAggregate || command host
+// (②-layer fieldModel command scan — the --no-kn-export fallback shape; fieldTree is derived from
+// the same ②-layer so the two agree). generate=false notes are excluded (source skips them).
+// evtPayloads: RAW ②-layer payload rows in declaration order — see header note for the raw-vs-
+// canonical split (evLit judges the raw form; the generator derives the Entity sig itself).
+const policies = [];
+{
+  const metarch = JSON.parse(fs.readFileSync(metarchPath, 'utf8'));
+  const fieldAggs = [];
+  for (const s of metarch.sessions ?? []) {
+    for (const scp of s.scopes ?? []) {
+      if (scp.fieldModel?.aggregates) fieldAggs.push(...scp.fieldModel.aggregates);
+    }
+  }
+  const cmdHost = new Map(); // command name → aggregate name
+  const evtHost = new Map(); // event name → aggregate name
+  const evtPayloads = new Map(); // event name → [[name, rawDataType], ...]
+  for (const fa of fieldAggs) {
+    for (const c of fa.commands ?? []) if (!cmdHost.has(c.name)) cmdHost.set(c.name, fa.name);
+    for (const e of fa.events ?? []) {
+      if (!evtHost.has(e.name)) evtHost.set(e.name, fa.name);
+      if (!evtPayloads.has(e.name)) evtPayloads.set(e.name, (e.payloads ?? []).map((p) => [p.name, p.dataType]));
+    }
+  }
+  for (const s of metarch.sessions ?? []) {
+    for (const scp of s.scopes ?? []) {
+      for (const n of scp.notes ?? []) {
+        if (n.type !== 'policy' || (n.info && n.info.generate === false)) continue;
+        const info = n.info ?? {};
+        const cmdRef = (n.links ?? []).find((l) => l.startsWith('command:'));
+        const evtRef = (n.links ?? []).find((l) => l.startsWith('event:'));
+        if (!cmdRef || !evtRef || !info.bindings) continue; // 宁缺勿造 — never generated
+        const cmdName = cmdRef.slice(8);
+        const evtName = evtRef.slice(6);
+        const targetAgg = info.targetAggregate || cmdHost.get(cmdName);
+        if (targetAgg !== aggName) continue;
+        policies.push({
+          noteId: n.noteId ?? null,
+          name: n.name,
+          description: n.description ?? '',
+          idempotencyKey: info.idempotencyKey ?? null, // null → generator default 'command-level'
+          cmdName,
+          evtName,
+          bindings: info.bindings,
+          fanOutOn: info.fanOutOn ?? null,
+          fanOutWhere: info.fanOutWhere ?? null,
+          evtHostAgg: evtHost.get(evtName) ?? null, // null → generator skip (事件签名未解析)
+          evtPayloads: evtPayloads.get(evtName) ?? null,
+        });
+      }
+    }
+  }
+}
+if (policies.length) agg.policies = policies;
+else delete agg.policies;
+
 // --- withPost bit (conservative): any attached EVENT_POSTCONDITION rule exists at all ----------
 // The exact survivor filter (event-construction conflict guard) is the inc9 generator's job; this
 // bit only answers "would checkEventPostconditions exist" for the Behaviors `.withPost(...)` face.
@@ -369,4 +440,4 @@ canonical.voNames = [...voNames].sort();
 canonical.valueObjectSigs = valueObjectSigs.sort((a, b) => a.name.localeCompare(b.name));
 
 fs.writeFileSync(canonicalPath, JSON.stringify(canonical, null, 2) + '\n');
-console.log(`augmented ${canonicalPath}: ${attached} commands with preconditionRules, ${bmByCmd.size} with behaviorModel(raw decision), ${referenced.length} port(s) [${referenced.map((p) => p.member).join(',')}], aggregateRules=${aggLevelRules.length}, eventPostconditions=${evtRules.length}, executableCases=${casesForAgg.length}, voNames=${canonical.voNames.length}`);
+console.log(`augmented ${canonicalPath}: ${attached} commands with preconditionRules, ${bmByCmd.size} with behaviorModel(raw decision), ${referenced.length} port(s) [${referenced.map((p) => p.member).join(',')}], aggregateRules=${aggLevelRules.length}, eventPostconditions=${evtRules.length}, executableCases=${casesForAgg.length}, policies=${policies.length}, voNames=${canonical.voNames.length}`);
