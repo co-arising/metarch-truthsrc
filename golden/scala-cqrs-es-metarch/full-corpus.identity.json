@@ -6,23 +6,21 @@
   "counts": {
     "rows": 393,
     "byStatus": {
-      "identical": 236,
-      "diff": 49,
+      "identical": 277,
+      "diff": 8,
       "owned-by-other": 108
     },
     "identicalByFace": {
       "skeleton": 102,
-      "rules": 102,
+      "rules": 143,
       "api": 32
     },
     "diffByKind": {
       "aggregate-root": 2,
       "protocol": 1,
       "entity": 3,
-      "command-helpers-rules": 10,
-      "rules": 7,
-      "rule-params": 10,
-      "rules-spec": 16
+      "rules": 1,
+      "rules-spec": 1
     },
     "reverseRows": 0,
     "genErrors": {}
@@ -2095,13 +2093,7 @@
       "aggregate": "DoR",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/DoRCommandHelpers.scala",
       "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/DoRCommandHelpers.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 3214,
-        "line": 58,
-        "want": "      EvaluateDoRParams(command.triggeredBy, command.verdicts, command.dorId)\n\n    override def createFailureReply(param: EvaluateDoRParams)(error: iMadzError): EvaluateDoRReply =",
-        "got": "      EvaluateDoRParams(command.triggeredBy, command.verdicts)\n\n    override def createFailureReply(param: EvaluateDoRParams)(error: iMadzError): EvaluateDoRReply ="
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -2119,13 +2111,7 @@
       "aggregate": "FieldModelDefinition",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/FieldModelDefinitionCommandHelpers.scala",
       "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/FieldModelDefinitionCommandHelpers.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 9138,
-        "line": 124,
-        "want": "      DeclareFieldModelParams(command.triggeredBy, command.identifierOrigin, command.description, command.definitionId, command.tenantId, command.tenantScoped, command.identifierDescription, command.aggregateName, command.identifierName, command.entityName, command.identifierType, command.aggregateR",
-        "got": "      DeclareFieldModelParams(command.triggeredBy, command.identifierOrigin, command.description, command.definitionId, command.tenantId, command.tenantScoped, command.identifierDescription, command.aggregateName, command.identifierName, command.entityName, command.identifierType)\n\n    override def "
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -2143,13 +2129,7 @@
       "aggregate": "FsmDefinition",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/FsmDefinitionCommandHelpers.scala",
       "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/FsmDefinitionCommandHelpers.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 1690,
-        "line": 26,
-        "want": "      EstablishFsmDefinitionParams(command.triggeredBy, command.fsmId, command.confirmedBy)\n\n    override def createFailureReply(param: EstablishFsmDefinitionParams)(error: iMadzError): EstablishFsmDefinitionReply =",
-        "got": "      EstablishFsmDefinitionParams(command.triggeredBy)\n\n    override def createFailureReply(param: EstablishFsmDefinitionParams)(error: iMadzError): EstablishFsmDefinitionReply ="
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -2167,13 +2147,7 @@
       "aggregate": "KnowledgePatch",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/KnowledgePatchCommandHelpers.scala",
       "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/KnowledgePatchCommandHelpers.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 4526,
-        "line": 67,
-        "want": "      MergeKnowledgePatchParams(command.triggeredBy, command.patchId, command.catalogId)\n\n    override def createFailureReply(param: MergeKnowledgePatchParams)(error: iMadzError): MergeKnowledgePatchReply =",
-        "got": "      MergeKnowledgePatchParams(command.triggeredBy)\n\n    override def createFailureReply(param: MergeKnowledgePatchParams)(error: iMadzError): MergeKnowledgePatchReply ="
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -2227,13 +2201,7 @@
       "aggregate": "OrganizationMember",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/OrganizationMemberCommandHelpers.scala",
       "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/OrganizationMemberCommandHelpers.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 2146,
-        "line": 30,
-        "want": "      AcceptTenantInvitationParams(command.triggeredBy, command.tenantId, command.userId)\n\n    override def createFailureReply(param: AcceptTenantInvitationParams)(error: iMadzError): AcceptTenantInvitationReply =",
-        "got": "      AcceptTenantInvitationParams(command.triggeredBy)\n\n    override def createFailureReply(param: AcceptTenantInvitationParams)(error: iMadzError): AcceptTenantInvitationReply ="
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -2251,13 +2219,7 @@
       "aggregate": "Project",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ProjectCommandHelpers.scala",
       "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/ProjectCommandHelpers.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 4195,
-        "line": 67,
-        "want": "      InitiateProjectParams(command.tenantId, command.workgroupId, command.name, command.triggeredBy, command.description, command.projectId, command.projectOwnerUserId, command.workshopName, command.catalogId)\n\n    override def createFailureReply(param: InitiateProjectParams)(error: iMadzError): In",
-        "got": "      InitiateProjectParams(command.tenantId, command.workgroupId, command.name, command.triggeredBy, command.description, command.projectId, command.projectOwnerUserId, command.workshopName)\n\n    override def createFailureReply(param: InitiateProjectParams)(error: iMadzError): InitiateProjectReply "
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -2347,13 +2309,7 @@
       "aggregate": "Session",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/SessionCommandHelpers.scala",
       "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/SessionCommandHelpers.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 4027,
-        "line": 67,
-        "want": "      InviteObserverParams(command.triggeredBy, command.sessionId, command.userId, command.displayName, command.email, command.phoneNumber)\n\n    override def createFailureReply(param: InviteObserverParams)(error: iMadzError): InviteObserverReply =",
-        "got": "      InviteObserverParams(command.triggeredBy, command.sessionId, command.userId)\n\n    override def createFailureReply(param: InviteObserverParams)(error: iMadzError): InviteObserverReply ="
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -2461,13 +2417,7 @@
       "aggregate": "User",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/UserCommandHelpers.scala",
       "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/UserCommandHelpers.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 2872,
-        "line": 50,
-        "want": "      RegisterUserParams(command.email, command.password, command.triggeredBy, command.displayName, command.authMethod, command.phoneNumber, command.userId)\n\n    override def createFailureReply(param: RegisterUserParams)(error: iMadzError): RegisterUserReply =",
-        "got": "      RegisterUserParams(command.email, command.password, command.triggeredBy, command.displayName, command.authMethod, command.phoneNumber)\n\n    override def createFailureReply(param: RegisterUserParams)(error: iMadzError): RegisterUserReply ="
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -2503,13 +2453,7 @@
       "aggregate": "WorkTicket",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/WorkTicketCommandHelpers.scala",
       "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/WorkTicketCommandHelpers.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 1606,
-        "line": 26,
-        "want": "      ConcludeWorkTicketParams(command.triggeredBy, command.ticketId, command.approvedBy)\n\n    override def createFailureReply(param: ConcludeWorkTicketParams)(error: iMadzError): ConcludeWorkTicketReply =",
-        "got": "      ConcludeWorkTicketParams(command.triggeredBy)\n\n    override def createFailureReply(param: ConcludeWorkTicketParams)(error: iMadzError): ConcludeWorkTicketReply ="
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -2527,13 +2471,7 @@
       "aggregate": "Workgroup",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/WorkgroupCommandHelpers.scala",
       "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/WorkgroupCommandHelpers.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 5097,
-        "line": 78,
-        "want": "      InviteWorkgroupMemberParams(command.userId, command.triggeredBy, command.workgroupId, command.displayName, command.email, command.phoneNumber)\n\n    override def createFailureReply(param: InviteWorkgroupMemberParams)(error: iMadzError): InviteWorkgroupMemberReply =",
-        "got": "      InviteWorkgroupMemberParams(command.userId, command.triggeredBy, command.workgroupId)\n\n    override def createFailureReply(param: InviteWorkgroupMemberParams)(error: iMadzError): InviteWorkgroupMemberReply ="
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -2596,13 +2534,7 @@
       "aggregate": "DoR",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/DoRRules.scala",
       "livePath": "app/net/imadz/metarch/domain/invariant/DoRRules.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 4706,
-        "line": 79,
-        "want": "      // ④层 forEach（param.verdicts）：批量发射\n      else Right(Nil ::: p.verdicts.map { item => DoRVerdictSubmitted(state.dorId, item, Instant.now(), \"\", p.triggeredBy, Instant.now(), state.tenantId) })\n      }",
-        "got": "      else Right(List(DoRVerdictSubmitted(state.dorId, item, Instant.now(), \"\", p.triggeredBy, Instant.now(), state.tenantId)))\n      }\n  }"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -2611,13 +2543,7 @@
       "aggregate": "FieldModelDefinition",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/FieldModelDefinitionRules.scala",
       "livePath": "app/net/imadz/metarch/domain/invariant/FieldModelDefinitionRules.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 6270,
-        "line": 94,
-        "want": "      Right(List(FieldModelDeclared(p.definitionId, p.aggregateName, p.entityName, p.description.getOrElse(\"\"), p.identifierName, p.identifierType.getOrElse(\"\"), p.identifierOrigin, p.identifierDescription, p.tenantScoped.getOrElse(false), p.triggeredBy, p.tenantId, Instant.now(), p.triggeredBy, Ins",
-        "got": "      Right(List(FieldModelDeclared(p.definitionId, p.aggregateName, p.entityName, p.description.getOrElse(\"\"), p.identifierName, p.identifierType.getOrElse(\"\"), p.identifierOrigin, p.identifierDescription, p.tenantScoped.getOrElse(false), p.triggeredBy, p.tenantId, Instant.now(), p.triggeredBy, Ins"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -2653,13 +2579,7 @@
       "aggregate": "Note",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/NoteRules.scala",
       "livePath": "app/net/imadz/metarch/domain/invariant/NoteRules.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 4543,
-        "line": 64,
-        "want": "      // 幂等（④层 idempotentOn）：载荷与 state 全等 ⇒ 无事件（外部系统重复同步同键同实体）\n      else if (Option(state.status).exists(_.nonEmpty) && p.content == state.content && p.name == state.name && p.`type` == state.`type` && p.timeline == state.timeline && p.pivotal == state.pivotal && p.info == state.info && Option(p.li",
-        "got": "      // ④层 emitWhen（条件发射·S2-89 WP0）：{\"notEmpty\":{\"var\":\"CaptureNote.conflictingNoteIds\"}}\n      else Right(List(NoteCaptured(state.noteId, p.tenantId, p.sessionId, p.externalId.toString, p.boardId.toString, p.content, p.`type`, p.timeline, p.pivotal, p.name, p.links, p.info, p.stage, p.author, p.de"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -2668,13 +2588,7 @@
       "aggregate": "OrganizationMember",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/OrganizationMemberRules.scala",
       "livePath": "app/net/imadz/metarch/domain/invariant/OrganizationMemberRules.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 5611,
-        "line": 75,
-        "want": "      else Right(List(TenantMemberInvited(p.tenantId, p.userId, p.department, p.jobTitle, p.invitedBy, p.expiresAt, Instant.now(), p.triggeredBy, p.displayName, p.email, p.phoneNumber)))\n      }\n  }",
-        "got": "      else Right(List(TenantMemberInvited(p.tenantId, p.userId, p.department, p.jobTitle, p.invitedBy, p.expiresAt, Instant.now(), p.triggeredBy, state.displayName, state.email, state.phoneNumber)))\n      }\n  }"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -2728,13 +2642,7 @@
       "aggregate": "Session",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/SessionRules.scala",
       "livePath": "app/net/imadz/metarch/domain/invariant/SessionRules.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 7356,
-        "line": 103,
-        "want": "      else Right(List(ObserverInvited(p.sessionId, state.stageId, p.userId, p.triggeredBy, Instant.now(), state.tenantId, p.displayName, p.email, p.phoneNumber)))\n      }\n  }",
-        "got": "      else Right(List(ObserverInvited(p.sessionId, state.stageId, p.userId, p.triggeredBy, Instant.now(), state.tenantId, None, None, None)))\n      }\n  }"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -2821,13 +2729,7 @@
       "aggregate": "Workgroup",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/WorkgroupRules.scala",
       "livePath": "app/net/imadz/metarch/domain/invariant/WorkgroupRules.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 7864,
-        "line": 114,
-        "want": "      else Right(List(WorkgroupMemberInvited(p.workgroupId, p.userId, p.triggeredBy, Instant.now(), state.tenantId, p.displayName, p.email, p.phoneNumber)))\n      }\n  }",
-        "got": "      else Right(List(WorkgroupMemberInvited(p.workgroupId, p.userId, p.triggeredBy, Instant.now(), state.tenantId, None, None, None)))\n      }\n  }"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -2881,13 +2783,7 @@
       "aggregate": "DoR",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/DoRRuleParams.scala",
       "livePath": "app/net/imadz/metarch/domain/invariant/params/DoRRuleParams.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 987,
-        "line": 20,
-        "want": "  final case class EvaluateDoRParams(triggeredBy: String, verdicts: List[DoRVerdict] = List.empty, dorId: Id)\n  // @knowledge 7373ea54-0a7c-4de2-afd4-c171d6f0d71f@3152e2d43bcc81cc\n  /** FixDoRVerdict 规则投影：ir_cmd_FixDoRVerdict_triggered_by */",
-        "got": "  final case class EvaluateDoRParams(triggeredBy: String, verdicts: List[DoRVerdict] = List.empty)\n  // @knowledge 7373ea54-0a7c-4de2-afd4-c171d6f0d71f@3152e2d43bcc81cc\n  /** FixDoRVerdict 规则投影：ir_cmd_FixDoRVerdict_triggered_by */"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -2896,13 +2792,7 @@
       "aggregate": "FieldModelDefinition",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/FieldModelDefinitionRuleParams.scala",
       "livePath": "app/net/imadz/metarch/domain/invariant/params/FieldModelDefinitionRuleParams.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 1812,
-        "line": 26,
-        "want": "  final case class DeclareFieldModelParams(triggeredBy: String, identifierOrigin: String, description: Option[String], definitionId: Id, tenantId: Id, tenantScoped: Option[Boolean], identifierDescription: String, aggregateName: String, identifierName: String, entityName: String, identifierType: Opti",
-        "got": "  final case class DeclareFieldModelParams(triggeredBy: String, identifierOrigin: String, description: Option[String], definitionId: Id, tenantId: Id, tenantScoped: Option[Boolean], identifierDescription: String, aggregateName: String, identifierName: String, entityName: String, identifierType: Opti"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -2911,13 +2801,7 @@
       "aggregate": "FsmDefinition",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/FsmDefinitionRuleParams.scala",
       "livePath": "app/net/imadz/metarch/domain/invariant/params/FsmDefinitionRuleParams.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 124,
-        "line": 5,
-        "want": "import net.imadz.common.CommonTypes.Id\nimport net.imadz.metarch.domain.values._\n/**",
-        "got": "/**\n * 命令 → 领域规则参数的投影 VO（方案 A，2026-08-22，rules_domain_gen.mjs 生成）。\n * 业务不变性（InvariantRule）是 domain 层资产——规则只依赖领域实体状态、事件与这些投影 VO，"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -2926,13 +2810,7 @@
       "aggregate": "KnowledgePatch",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/KnowledgePatchRuleParams.scala",
       "livePath": "app/net/imadz/metarch/domain/invariant/params/KnowledgePatchRuleParams.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 1289,
-        "line": 23,
-        "want": "  final case class MergeKnowledgePatchParams(triggeredBy: String, patchId: Id, catalogId: Id)\n  // @knowledge 5c0dc4e3-c15a-4029-852a-ad63820f7ebb@ea2a45273782d523\n  /** RejectKnowledgePatch 规则投影：IR-KP-CMD-011 / ir_cmd_RejectKnowledgePatch_triggered_by */",
-        "got": "  final case class MergeKnowledgePatchParams(triggeredBy: String)\n  // @knowledge 5c0dc4e3-c15a-4029-852a-ad63820f7ebb@ea2a45273782d523\n  /** RejectKnowledgePatch 规则投影：IR-KP-CMD-011 / ir_cmd_RejectKnowledgePatch_triggered_by */"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -2959,13 +2837,7 @@
       "aggregate": "OrganizationMember",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/OrganizationMemberRuleParams.scala",
       "livePath": "app/net/imadz/metarch/domain/invariant/params/OrganizationMemberRuleParams.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 661,
-        "line": 15,
-        "want": "  final case class AcceptTenantInvitationParams(triggeredBy: String, tenantId: Id, userId: Id)\n  // @knowledge f8145929-cb3a-4837-8fda-140de01f09dd@a61a044ee0265b01\n  /** InviteTenantMember 规则投影：ir_cmd_InviteTenantMember_triggered_by / ir_gen_ref_IR_INV_CMD_001_tenantId / ir_gen_ref_IR_INV_CMD_001_u",
-        "got": "  final case class AcceptTenantInvitationParams(triggeredBy: String)\n  // @knowledge f8145929-cb3a-4837-8fda-140de01f09dd@a61a044ee0265b01\n  /** InviteTenantMember 规则投影：ir_cmd_InviteTenantMember_triggered_by / ir_gen_ref_IR_INV_CMD_001_tenantId / ir_gen_ref_IR_INV_CMD_001_userId / ir_gen_ref_IR_INV_"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -2974,13 +2846,7 @@
       "aggregate": "Project",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/ProjectRuleParams.scala",
       "livePath": "app/net/imadz/metarch/domain/invariant/params/ProjectRuleParams.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 1570,
-        "line": 23,
-        "want": "  final case class InitiateProjectParams(tenantId: Id, workgroupId: Id, name: String, triggeredBy: String, description: String, projectId: Id, projectOwnerUserId: Id, workshopName: Option[String], catalogId: Id)\n  // @knowledge f80acc40-b875-4091-81a3-e665bc664ca6@3425883218f34eee\n  /** PauseProject",
-        "got": "  final case class InitiateProjectParams(tenantId: Id, workgroupId: Id, name: String, triggeredBy: String, description: String, projectId: Id, projectOwnerUserId: Id, workshopName: Option[String])\n  // @knowledge f80acc40-b875-4091-81a3-e665bc664ca6@3425883218f34eee\n  /** PauseProject 规则投影：IR-PRJ-CM"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -3025,13 +2891,7 @@
       "aggregate": "Session",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/SessionRuleParams.scala",
       "livePath": "app/net/imadz/metarch/domain/invariant/params/SessionRuleParams.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 1376,
-        "line": 23,
-        "want": "  final case class InviteObserverParams(triggeredBy: String, sessionId: Id, userId: Id, displayName: Option[String], email: Option[String], phoneNumber: Option[String])\n  // @knowledge 6ccdd6ec-32c3-4188-be76-34c92a69a52a@7615c22fe03d0a9d\n  /** InviteParticipant 规则投影：IR-SES-CMD-007 / ir_cmd_InvitePa",
-        "got": "  final case class InviteObserverParams(triggeredBy: String, sessionId: Id, userId: Id)\n  // @knowledge 6ccdd6ec-32c3-4188-be76-34c92a69a52a@7615c22fe03d0a9d\n  /** InviteParticipant 规则投影：IR-SES-CMD-007 / ir_cmd_InviteParticipant_triggered_by / ir_gen_ref_IR_SES_CMD_003_userId */"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -3085,13 +2945,7 @@
       "aggregate": "User",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/UserRuleParams.scala",
       "livePath": "app/net/imadz/metarch/domain/invariant/params/UserRuleParams.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 1189,
-        "line": 20,
-        "want": "  final case class RegisterUserParams(email: String, password: String, triggeredBy: String, displayName: String, authMethod: String, phoneNumber: Option[String], userId: Id)\n  // @knowledge 016f5865-7084-4c8e-9ce3-9f4a0eda71fc@684d46c3d6bfbdd0\n  /** UpdateUserProfile 规则投影：IR-USER-CMD-005 / ir_cmd_Up",
-        "got": "  final case class RegisterUserParams(email: String, password: String, triggeredBy: String, displayName: String, authMethod: String, phoneNumber: Option[String])\n  // @knowledge 016f5865-7084-4c8e-9ce3-9f4a0eda71fc@684d46c3d6bfbdd0\n  /** UpdateUserProfile 规则投影：IR-USER-CMD-005 / ir_cmd_UpdateUserProf"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -3109,13 +2963,7 @@
       "aggregate": "WorkTicket",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/WorkTicketRuleParams.scala",
       "livePath": "app/net/imadz/metarch/domain/invariant/params/WorkTicketRuleParams.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 124,
-        "line": 5,
-        "want": "import net.imadz.common.CommonTypes.Id\nimport net.imadz.metarch.domain.values._\n/**",
-        "got": "/**\n * 命令 → 领域规则参数的投影 VO（方案 A，2026-08-22，rules_domain_gen.mjs 生成）。\n * 业务不变性（InvariantRule）是 domain 层资产——规则只依赖领域实体状态、事件与这些投影 VO，"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -3124,13 +2972,7 @@
       "aggregate": "Workgroup",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/invariant/params/WorkgroupRuleParams.scala",
       "livePath": "app/net/imadz/metarch/domain/invariant/params/WorkgroupRuleParams.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 1781,
-        "line": 26,
-        "want": "  final case class InviteWorkgroupMemberParams(userId: Id, triggeredBy: String, workgroupId: Id, displayName: Option[String], email: Option[String], phoneNumber: Option[String])\n  // @knowledge 616fcfa3-4c78-4704-aad7-bc27d4cc834d@163ed5a1c1d95b5e\n  /** RemoveWorkgroupMember 规则投影：ir_cmd_RemoveWorkgr",
-        "got": "  final case class InviteWorkgroupMemberParams(userId: Id, triggeredBy: String, workgroupId: Id)\n  // @knowledge 616fcfa3-4c78-4704-aad7-bc27d4cc834d@163ed5a1c1d95b5e\n  /** RemoveWorkgroupMember 规则投影：ir_cmd_RemoveWorkgroupMember_triggered_by / ir_gen_ref_IR_WG_CMD_005_userId */"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -3193,13 +3035,7 @@
       "aggregate": "CemEdge",
       "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/CemEdgeRulesSpec.scala",
       "livePath": "test/net/imadz/metarch/domain/invariant/CemEdgeRulesSpec.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 277,
-        "line": 6,
-        "want": "// @knowledge abdbc772-b260-45c2-88eb-fa2c57e5d403@14ae9a76b36e0e8d\npackage net.imadz.metarch.domain.invariant\n",
-        "got": "package net.imadz.metarch.domain.invariant\n\nimport java.time.Instant"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -3235,13 +3071,7 @@
       "aggregate": "DoR",
       "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/DoRRulesSpec.scala",
       "livePath": "test/net/imadz/metarch/domain/invariant/DoRRulesSpec.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 50068,
-        "line": 433,
-        "want": "      val r = DoRRules.EvaluateDoRRule(DoRState(Id.of(\"00000000-0000-0000-0000-000000000001\"), net.imadz.common.Id.of(\"02129bb8-6106-3d1a-852c-592e2dc6b383\"), \"REQUESTED\", Id.of(\"00000000-0000-0000-0000-000000000001\"), Nil, \"{}\", \"{}\", Nil, null, \"\", Nil, Id.of(\"00000000-0000-0000-0000-000000000001\"",
-        "got": "      val r = DoRRules.EvaluateDoRRule(DoRState(Id.of(\"00000000-0000-0000-0000-000000000001\"), net.imadz.common.Id.of(\"02129bb8-6106-3d1a-852c-592e2dc6b383\"), \"REQUESTED\", Id.of(\"00000000-0000-0000-0000-000000000001\"), Nil, \"{}\", \"{}\", Nil, null, \"\", Nil, Id.of(\"00000000-0000-0000-0000-000000000001\""
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -3250,13 +3080,7 @@
       "aggregate": "FieldModelDefinition",
       "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/FieldModelDefinitionRulesSpec.scala",
       "livePath": "test/net/imadz/metarch/domain/invariant/FieldModelDefinitionRulesSpec.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 769,
-        "line": 13,
-        "want": "// @knowledge c13d6293-80c2-4a5f-9a34-2c4afaaacfbe@d6ecfaf7991d4cc4\n// @knowledge c14c4126-9200-4236-9734-3209c0cdf672@a37a7987fa1f9e86\n// @knowledge c1c35788-2854-4ce5-a005-3d128432b754@9f56fa0e0c782568",
-        "got": "// @knowledge c14c4126-9200-4236-9734-3209c0cdf672@a37a7987fa1f9e86\n// @knowledge c1c35788-2854-4ce5-a005-3d128432b754@9f56fa0e0c782568\n// @knowledge c528fb32-649d-4155-8189-cc215b8466ff@25332fb867d709a5"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -3265,13 +3089,7 @@
       "aggregate": "FsmDefinition",
       "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/FsmDefinitionRulesSpec.scala",
       "livePath": "test/net/imadz/metarch/domain/invariant/FsmDefinitionRulesSpec.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 2496,
-        "line": 51,
-        "want": "      val r = FsmDefinitionRules.UpdateFsmElementsRule(FsmDefinitionState(Id.of(\"00000000-0000-0000-0000-000000000001\"), \"ESTABLISHED\", \"DoR\", List(FsmStateDef(\"REQUESTED\", \"INITIAL\", \"\", \"barry\", \"2026-09-01T00:00:00Z\"), FsmStateDef(\"IN_PROGRESS\", \"NORMAL\", \"\", \"barry\", \"2026-09-01T00:00:00Z\")), Li",
-        "got": "      val r = FsmDefinitionRules.UpdateFsmElementsRule(FsmDefinitionState(Id.of(\"00000000-0000-0000-0000-000000000001\"), \"ESTABLISHED\", \"DoR\", List(FsmStateDef(\"REQUESTED\", \"INITIAL\", \"\", \"barry\", \"2026-09-01T00:00:00Z\"), FsmStateDef(\"IN_PROGRESS\", \"NORMAL\", \"\", \"barry\", \"2026-09-01T00:00:00Z\")), Li"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -3280,13 +3098,7 @@
       "aggregate": "KnowledgePatch",
       "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/KnowledgePatchRulesSpec.scala",
       "livePath": "test/net/imadz/metarch/domain/invariant/KnowledgePatchRulesSpec.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 8908,
-        "line": 99,
-        "want": "      val r = KnowledgePatchRules.MergeKnowledgePatchRule(KnowledgePatchState(Id.of(\"00000000-0000-0000-0000-000000000001\"), net.imadz.common.Id.of(\"02129bb8-6106-3d1a-852c-592e2dc6b383\"), \"MERGE_REQUESTED\", Nil, Id.of(\"00000000-0000-0000-0000-000000000001\"), Id.of(\"00000000-0000-0000-0000-000000000",
-        "got": "      val r = KnowledgePatchRules.MergeKnowledgePatchRule(KnowledgePatchState(Id.of(\"00000000-0000-0000-0000-000000000001\"), net.imadz.common.Id.of(\"02129bb8-6106-3d1a-852c-592e2dc6b383\"), \"MERGE_REQUESTED\", Nil, Id.of(\"00000000-0000-0000-0000-000000000001\"), Id.of(\"00000000-0000-0000-0000-000000000"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -3313,13 +3125,7 @@
       "aggregate": "OrganizationMember",
       "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/OrganizationMemberRulesSpec.scala",
       "livePath": "test/net/imadz/metarch/domain/invariant/OrganizationMemberRulesSpec.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 3084,
-        "line": 62,
-        "want": "      val r = OrganizationMemberRules.InviteTenantMemberRule(OrganizationMemberState(Id.of(\"00000000-0000-0000-0000-000000000001\"), net.imadz.common.Id.of(\"02129bb8-6106-3d1a-852c-592e2dc6b383\"), \"PENDING\", Id.of(\"00000000-0000-0000-0000-000000000001\"), \"\", \"\", \"\", \"\", \"\", null, null), InviteTenantM",
-        "got": "      val r = OrganizationMemberRules.InviteTenantMemberRule(OrganizationMemberState(Id.of(\"00000000-0000-0000-0000-000000000001\"), net.imadz.common.Id.of(\"02129bb8-6106-3d1a-852c-592e2dc6b383\"), \"PENDING\", Id.of(\"00000000-0000-0000-0000-000000000001\"), \"\", \"\", \"\", \"\", \"\", null, null), InviteTenantM"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -3328,13 +3134,7 @@
       "aggregate": "Project",
       "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/ProjectRulesSpec.scala",
       "livePath": "test/net/imadz/metarch/domain/invariant/ProjectRulesSpec.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 3452,
-        "line": 70,
-        "want": "      val r = ProjectRules.InitiateProjectRule(ProjectState(Id.of(\"00000000-0000-0000-0000-000000000001\"), net.imadz.common.Id.of(\"02129bb8-6106-3d1a-852c-592e2dc6b383\"), \"initiated\", Id.of(\"00000000-0000-0000-0000-000000000001\"), Id.of(\"00000000-0000-0000-0000-000000000001\"), \"\", \"\", null, \"\", null",
-        "got": "      val r = ProjectRules.InitiateProjectRule(ProjectState(Id.of(\"00000000-0000-0000-0000-000000000001\"), net.imadz.common.Id.of(\"02129bb8-6106-3d1a-852c-592e2dc6b383\"), \"initiated\", Id.of(\"00000000-0000-0000-0000-000000000001\"), Id.of(\"00000000-0000-0000-0000-000000000001\"), \"\", \"\", null, \"\", null"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -3352,13 +3152,7 @@
       "aggregate": "ReadModelDefinition",
       "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/ReadModelDefinitionRulesSpec.scala",
       "livePath": "test/net/imadz/metarch/domain/invariant/ReadModelDefinitionRulesSpec.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 223,
-        "line": 5,
-        "want": "// @knowledge d3d722c4-31e1-4865-ad1e-670c5621071a@b062b1229777effa\n// @knowledge e3dfe4f2-8414-4305-a498-e895dfea0445@59554681f4180b07\npackage net.imadz.metarch.domain.invariant",
-        "got": "// @knowledge e3dfe4f2-8414-4305-a498-e895dfea0445@59554681f4180b07\npackage net.imadz.metarch.domain.invariant\n"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -3376,13 +3170,7 @@
       "aggregate": "RoleCommandBinding",
       "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/RoleCommandBindingRulesSpec.scala",
       "livePath": "test/net/imadz/metarch/domain/invariant/RoleCommandBindingRulesSpec.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 209,
-        "line": 5,
-        "want": "// @knowledge f80255bd-352e-4d86-b30f-6b2e0c9cb1c6@d8611e665e8215bc\npackage net.imadz.metarch.domain.invariant\n",
-        "got": "package net.imadz.metarch.domain.invariant\n\nimport java.time.Instant"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -3391,13 +3179,7 @@
       "aggregate": "Session",
       "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/SessionRulesSpec.scala",
       "livePath": "test/net/imadz/metarch/domain/invariant/SessionRulesSpec.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 19571,
-        "line": 197,
-        "want": "      val r = SessionRules.InviteParticipantRule(SessionState(Id.of(\"00000000-0000-0000-0000-000000000001\"), net.imadz.common.Id.of(\"02129bb8-6106-3d1a-852c-592e2dc6b383\"), \"prepared\", Id.of(\"00000000-0000-0000-0000-000000000001\"), Nil, Nil, null, null, null, Nil), InviteParticipantParams(Id.of(\"000",
-        "got": "      val r = SessionRules.InviteParticipantRule(SessionState(Id.of(\"00000000-0000-0000-0000-000000000001\"), net.imadz.common.Id.of(\"02129bb8-6106-3d1a-852c-592e2dc6b383\"), \"prepared\", Id.of(\"00000000-0000-0000-0000-000000000001\"), Nil, Nil, null, null, null, Nil), InviteParticipantParams(Id.of(\"000"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -3433,13 +3215,7 @@
       "aggregate": "TruthSourceProvenance",
       "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/TruthSourceProvenanceRulesSpec.scala",
       "livePath": "test/net/imadz/metarch/domain/invariant/TruthSourceProvenanceRulesSpec.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 87,
-        "line": 3,
-        "want": "// @knowledge 1d8059ed-d48f-4eb8-81e2-c12e775e2aa0@cbf8b2f060f6c914\n// @knowledge d02fe08c-5bd4-47df-9eed-3ce8dbfae0df@f39ee4284088e02d\npackage net.imadz.metarch.domain.invariant",
-        "got": "// @knowledge d02fe08c-5bd4-47df-9eed-3ce8dbfae0df@f39ee4284088e02d\npackage net.imadz.metarch.domain.invariant\n"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -3448,13 +3224,7 @@
       "aggregate": "UseCaseDefinition",
       "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/UseCaseDefinitionRulesSpec.scala",
       "livePath": "test/net/imadz/metarch/domain/invariant/UseCaseDefinitionRulesSpec.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 209,
-        "line": 5,
-        "want": "// @knowledge f2a7c2cc-814f-441f-9fbf-a45441c7e26a@c623e0e0ccce9dbd\npackage net.imadz.metarch.domain.invariant\n",
-        "got": "package net.imadz.metarch.domain.invariant\n\nimport java.time.Instant"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -3478,13 +3248,7 @@
       "aggregate": "ValueObjectDefinition",
       "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/ValueObjectDefinitionRulesSpec.scala",
       "livePath": "test/net/imadz/metarch/domain/invariant/ValueObjectDefinitionRulesSpec.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 209,
-        "line": 5,
-        "want": "// @knowledge d161757e-a82e-4352-aa36-898a8038a27c@a572a443a31eabc4\npackage net.imadz.metarch.domain.invariant\n",
-        "got": "package net.imadz.metarch.domain.invariant\n\nimport java.time.Instant"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -3493,13 +3257,7 @@
       "aggregate": "WorkTicket",
       "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/WorkTicketRulesSpec.scala",
       "livePath": "test/net/imadz/metarch/domain/invariant/WorkTicketRulesSpec.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 2420,
-        "line": 55,
-        "want": "      val r = WorkTicketRules.UpdateWorkTicketItemsRule(WorkTicketState(Id.of(\"00000000-0000-0000-0000-000000000001\"), \"APPROVED\", \"aggregate\", net.imadz.common.Id.of(\"6252d057-1760-33d2-85e2-e41a2b1e7743\"), \"06\", \"FSM\", \"示例工单\", List(ChecklistItem(\"条目1\", \"CONFIRMED\", \"\", \"ai-inference\", \"barry\", \"20",
-        "got": "      val r = WorkTicketRules.UpdateWorkTicketItemsRule(WorkTicketState(Id.of(\"00000000-0000-0000-0000-000000000001\"), \"APPROVED\", \"aggregate\", net.imadz.common.Id.of(\"6252d057-1760-33d2-85e2-e41a2b1e7743\"), \"06\", \"FSM\", \"示例工单\", List(ChecklistItem(\"条目1\", \"CONFIRMED\", \"\", \"ai-inference\", \"barry\", \"20"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {
@@ -3508,13 +3266,7 @@
       "aggregate": "Workgroup",
       "path": "modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/WorkgroupRulesSpec.scala",
       "livePath": "test/net/imadz/metarch/domain/invariant/WorkgroupRulesSpec.scala",
-      "status": "diff",
-      "excerpt": {
-        "byte": 25809,
-        "line": 218,
-        "want": "      val r = WorkgroupRules.InviteWorkgroupMemberRule(WorkgroupState(Id.of(\"00000000-0000-0000-0000-000000000001\"), net.imadz.common.Id.of(\"02129bb8-6106-3d1a-852c-592e2dc6b383\"), \"active\", \"\", net.imadz.common.Id.of(\"1e4e0961-7a69-31fa-bccc-8cb7e5c58039\"), List(net.imadz.common.Id.of(\"1e4e0961-7a6",
-        "got": "      val r = WorkgroupRules.InviteWorkgroupMemberRule(WorkgroupState(Id.of(\"00000000-0000-0000-0000-000000000001\"), net.imadz.common.Id.of(\"02129bb8-6106-3d1a-852c-592e2dc6b383\"), \"active\", \"\", net.imadz.common.Id.of(\"1e4e0961-7a69-31fa-bccc-8cb7e5c58039\"), List(net.imadz.common.Id.of(\"1e4e0961-7a6"
-      },
+      "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },
     {

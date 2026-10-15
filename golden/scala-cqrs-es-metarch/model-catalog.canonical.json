@@ -898,7 +898,8 @@
               "name": "catalogId",
               "dataType": "string (uuid)",
               "description": "唯一标识",
-              "noteId": "99858f10-2b76-4339-a24c-64782d265f2b"
+              "noteId": "99858f10-2b76-4339-a24c-64782d265f2b",
+              "lineageHint": "ApplyKnowledgePatch.catalogId"
             },
             {
               "name": "conflictSet",
@@ -911,7 +912,8 @@
               "name": "triggeredBy",
               "dataType": "String",
               "description": "操作人",
-              "noteId": "6e6f79c5-659b-4ecb-835a-87541517f4a5"
+              "noteId": "6e6f79c5-659b-4ecb-835a-87541517f4a5",
+              "lineageHint": "ApplyKnowledgePatch.triggeredBy"
             },
             {
               "name": "timestamp",
@@ -940,7 +942,8 @@
               "name": "catalogId",
               "dataType": "string (uuid)",
               "description": "唯一标识",
-              "noteId": "be28bde6-ed42-44cd-8bb3-894aa29e7924"
+              "noteId": "be28bde6-ed42-44cd-8bb3-894aa29e7924",
+              "lineageHint": "ResolveCatalogConflict.catalogId"
             },
             {
               "name": "resolvedConflicts",
@@ -953,7 +956,8 @@
               "name": "triggeredBy",
               "dataType": "String",
               "description": "操作人",
-              "noteId": "6743750f-5c02-494a-87bf-80082fb1e9bd"
+              "noteId": "6743750f-5c02-494a-87bf-80082fb1e9bd",
+              "lineageHint": "ResolveCatalogConflict.triggeredBy"
             },
             {
               "name": "timestamp",
@@ -988,31 +992,36 @@
               "name": "tenantId",
               "dataType": "string (uuid)",
               "description": "【已补】多租户隔离",
-              "noteId": "cd8b9bcb-a17c-4a42-af7a-fe7a5f00e16e"
+              "noteId": "cd8b9bcb-a17c-4a42-af7a-fe7a5f00e16e",
+              "lineageHint": "CreateCatalogVersion.tenantId"
             },
             {
               "name": "projectId",
               "dataType": "string (uuid)",
               "description": "本次评审针对的专项",
-              "noteId": "d1ae18eb-d9cf-466e-bc03-96ee3fc18002"
+              "noteId": "d1ae18eb-d9cf-466e-bc03-96ee3fc18002",
+              "lineageHint": "CreateCatalogVersion.projectId"
             },
             {
               "name": "version",
               "dataType": "String",
               "description": "语义化版本",
-              "noteId": "31919e5c-2d36-4167-a816-5ddeb16ad9a1"
+              "noteId": "31919e5c-2d36-4167-a816-5ddeb16ad9a1",
+              "lineageHint": "CreateCatalogVersion.version"
             },
             {
               "name": "baseVersion",
               "dataType": "String",
               "description": "基于哪个版本打补丁",
-              "noteId": "09a9561f-d0cb-4bf7-a327-4bc668cd89f6"
+              "noteId": "09a9561f-d0cb-4bf7-a327-4bc668cd89f6",
+              "lineageHint": "CreateCatalogVersion.baseVersion"
             },
             {
               "name": "triggeredBy",
               "dataType": "String",
               "description": "操作人",
-              "noteId": "a7306da9-b243-4bf0-8937-90a58513b8a7"
+              "noteId": "a7306da9-b243-4bf0-8937-90a58513b8a7",
+              "lineageHint": "CreateCatalogVersion.triggeredBy"
             },
             {
               "name": "timestamp",
@@ -1048,19 +1057,22 @@
               "name": "catalogId",
               "dataType": "string (uuid)",
               "description": "唯一标识",
-              "noteId": "c32faa47-52e7-4d42-95a2-89434c027b5d"
+              "noteId": "c32faa47-52e7-4d42-95a2-89434c027b5d",
+              "lineageHint": "ReleaseCatalogVersion.catalogId"
             },
             {
               "name": "version",
               "dataType": "String",
               "description": "语义化版本",
-              "noteId": "ef5cd137-c0d5-4f14-b0a5-ad385ba1845c"
+              "noteId": "ef5cd137-c0d5-4f14-b0a5-ad385ba1845c",
+              "lineageHint": "ReleaseCatalogVersion.version"
             },
             {
               "name": "triggeredBy",
               "dataType": "String",
               "description": "操作人",
-              "noteId": "b1704648-42f7-4f75-afa3-6d1c1a80ee42"
+              "noteId": "b1704648-42f7-4f75-afa3-6d1c1a80ee42",
+              "lineageHint": "ReleaseCatalogVersion.triggeredBy"
             },
             {
               "name": "timestamp",
@@ -1093,7 +1105,8 @@
               "name": "catalogId",
               "dataType": "string (uuid)",
               "description": "唯一标识",
-              "noteId": "6e144eb9-267e-4b76-9b42-dc9b58c03484"
+              "noteId": "6e144eb9-267e-4b76-9b42-dc9b58c03484",
+              "lineageHint": "ApplyKnowledgePatch.catalogId"
             },
             {
               "name": "patchSet",
@@ -1106,19 +1119,22 @@
               "name": "patchId",
               "dataType": "string (uuid)",
               "description": "被应用的补丁 id（HEAD 前移）",
-              "noteId": "e98fd225-538f-4a87-aa98-5991e789f3b1"
+              "noteId": "e98fd225-538f-4a87-aa98-5991e789f3b1",
+              "lineageHint": "ApplyKnowledgePatch.patchId"
             },
             {
               "name": "patchHash",
               "dataType": "String",
               "description": "被应用补丁的指纹（headPatchHash 前移）",
-              "noteId": "dbbed203-9962-410c-9e88-b48cd8f53882"
+              "noteId": "dbbed203-9962-410c-9e88-b48cd8f53882",
+              "lineageHint": "ApplyKnowledgePatch.patchHash"
             },
             {
               "name": "triggeredBy",
               "dataType": "String",
               "description": "操作人",
-              "noteId": "68878070-9e8a-4332-94e8-79ac85b85134"
+              "noteId": "68878070-9e8a-4332-94e8-79ac85b85134",
+              "lineageHint": "ApplyKnowledgePatch.triggeredBy"
             },
             {
               "name": "timestamp",
@@ -1168,31 +1184,36 @@
               "name": "tenantId",
               "dataType": "string (uuid)",
               "description": "【已补】多租户隔离",
-              "noteId": "62cddbe7-0ac5-4149-92dc-c190fbc74458"
+              "noteId": "62cddbe7-0ac5-4149-92dc-c190fbc74458",
+              "lineageHint": "AssembleMetadata.tenantId"
             },
             {
               "name": "projectId",
               "dataType": "string (uuid)",
               "description": "本次评审针对的专项",
-              "noteId": "2cb8a8c4-4842-49e4-9f86-88796ebb7f2c"
+              "noteId": "2cb8a8c4-4842-49e4-9f86-88796ebb7f2c",
+              "lineageHint": "AssembleMetadata.projectId"
             },
             {
               "name": "version",
               "dataType": "String",
               "description": "语义化版本",
-              "noteId": "cea1249e-c1d5-4cd1-9004-2fdafe73268c"
+              "noteId": "cea1249e-c1d5-4cd1-9004-2fdafe73268c",
+              "lineageHint": "AssembleMetadata.version"
             },
             {
               "name": "manifest",
               "dataType": "String",
               "description": "等同于 knowledgePackages",
-              "noteId": "d354ac10-6e29-4028-a1c2-034f7651d2ab"
+              "noteId": "d354ac10-6e29-4028-a1c2-034f7651d2ab",
+              "lineageHint": "AssembleMetadata.manifest"
             },
             {
               "name": "triggeredBy",
               "dataType": "String",
               "description": "操作人",
-              "noteId": "69d528aa-2ab2-4415-a693-90f312399415"
+              "noteId": "69d528aa-2ab2-4415-a693-90f312399415",
+              "lineageHint": "AssembleMetadata.triggeredBy"
             },
             {
               "name": "timestamp",
@@ -1224,19 +1245,22 @@
               "name": "catalogId",
               "dataType": "string (uuid)",
               "description": "唯一标识",
-              "noteId": "464f7577-d2ec-4798-8138-25a17cc5ca8f"
+              "noteId": "464f7577-d2ec-4798-8138-25a17cc5ca8f",
+              "lineageHint": "ExportMetadata.catalogId"
             },
             {
               "name": "manifest",
               "dataType": "String",
               "description": "metadata manifest content",
-              "noteId": "7c9a98e4-a4ba-4ecf-a3c0-422735ff8b7c"
+              "noteId": "7c9a98e4-a4ba-4ecf-a3c0-422735ff8b7c",
+              "lineageHint": "ExportMetadata.manifest"
             },
             {
               "name": "triggeredBy",
               "dataType": "String",
               "description": "操作人",
-              "noteId": "fe85e918-5bd0-48ff-b33a-516b2586b66c"
+              "noteId": "fe85e918-5bd0-48ff-b33a-516b2586b66c",
+              "lineageHint": "ExportMetadata.triggeredBy"
             },
             {
               "name": "timestamp",
@@ -1260,19 +1284,22 @@
               "name": "catalogId",
               "dataType": "string (uuid)",
               "description": "唯一标识",
-              "noteId": "ad5545c5-455a-4cdf-93d8-675a177aa81d"
+              "noteId": "ad5545c5-455a-4cdf-93d8-675a177aa81d",
+              "lineageHint": "ReleaseMetadataVersion.catalogId"
             },
             {
               "name": "version",
               "dataType": "String",
               "description": "语义化版本",
-              "noteId": "29f42e11-27da-4e0e-9087-d46f14f1e452"
+              "noteId": "29f42e11-27da-4e0e-9087-d46f14f1e452",
+              "lineageHint": "ReleaseMetadataVersion.version"
             },
             {
               "name": "triggeredBy",
               "dataType": "String",
               "description": "操作人",
-              "noteId": "3d0f8905-5fa7-4292-bd48-2f4aa0a94ee4"
+              "noteId": "3d0f8905-5fa7-4292-bd48-2f4aa0a94ee4",
+              "lineageHint": "ReleaseMetadataVersion.triggeredBy"
             },
             {
               "name": "timestamp",
@@ -1477,6 +1504,158 @@
           "humanDescription": "ModelCatalog.tenantId 不能为空"
         }
       ],
+      "ruleAnchor": {
+        "cmd": {
+          "ApplyKnowledgePatch": [
+            "693bff63-3dfb-4903-b70d-03df85582708",
+            "693bff63-3dfb-4903-b70d-03df85582708",
+            "693bff63-3dfb-4903-b70d-03df85582708"
+          ],
+          "AssembleMetadata": [
+            "45126419-72dd-46fb-8920-139f9a80888a"
+          ],
+          "CreateCatalogVersion": [
+            "935a445d-fd08-4c0f-87c5-7dce9a0ac528",
+            "935a445d-fd08-4c0f-87c5-7dce9a0ac528",
+            "935a445d-fd08-4c0f-87c5-7dce9a0ac528"
+          ],
+          "DetectCatalogConflicts": [
+            "061f7abd-f40a-4415-aac3-865647716e03",
+            "061f7abd-f40a-4415-aac3-865647716e03"
+          ],
+          "ExportMetadata": [
+            "9c4ec5d3-a676-4970-8142-3ac18088d457"
+          ],
+          "ReleaseCatalogVersion": [
+            "cb5c658c-759a-420c-9855-e138deb382db",
+            "cb5c658c-759a-420c-9855-e138deb382db"
+          ],
+          "ReleaseMetadataVersion": [
+            "825b5a8e-79da-41cc-95b4-b6b43b378f1c"
+          ],
+          "ResolveCatalogConflict": [
+            "8d707ca0-8f91-48d8-8774-db4d694866d8",
+            "8d707ca0-8f91-48d8-8774-db4d694866d8"
+          ]
+        },
+        "evt": {
+          "CatalogConflictDetected": [
+            "7fc97e4c-42c0-4e08-93a1-2e43690d4bb0",
+            "7fc97e4c-42c0-4e08-93a1-2e43690d4bb0",
+            "7fc97e4c-42c0-4e08-93a1-2e43690d4bb0",
+            "7fc97e4c-42c0-4e08-93a1-2e43690d4bb0"
+          ],
+          "CatalogConflictResolved": [
+            "d51110c3-2e27-482d-8e37-79b171e28a85",
+            "d51110c3-2e27-482d-8e37-79b171e28a85",
+            "d51110c3-2e27-482d-8e37-79b171e28a85",
+            "d51110c3-2e27-482d-8e37-79b171e28a85",
+            "d51110c3-2e27-482d-8e37-79b171e28a85"
+          ],
+          "CatalogVersionCreated": [
+            "c577f2ab-ec59-41b1-a41f-f7f6a3bad709",
+            "c577f2ab-ec59-41b1-a41f-f7f6a3bad709",
+            "c577f2ab-ec59-41b1-a41f-f7f6a3bad709",
+            "c577f2ab-ec59-41b1-a41f-f7f6a3bad709",
+            "c577f2ab-ec59-41b1-a41f-f7f6a3bad709",
+            "c577f2ab-ec59-41b1-a41f-f7f6a3bad709"
+          ],
+          "CatalogVersionReleased": [
+            "25db8959-c0f5-40ef-9b70-c6509959efb5",
+            "25db8959-c0f5-40ef-9b70-c6509959efb5",
+            "25db8959-c0f5-40ef-9b70-c6509959efb5",
+            "25db8959-c0f5-40ef-9b70-c6509959efb5"
+          ],
+          "KnowledgePatched": [
+            "658b16a8-92ae-48eb-be10-b85826fdb7c3",
+            "658b16a8-92ae-48eb-be10-b85826fdb7c3",
+            "658b16a8-92ae-48eb-be10-b85826fdb7c3",
+            "658b16a8-92ae-48eb-be10-b85826fdb7c3",
+            "658b16a8-92ae-48eb-be10-b85826fdb7c3",
+            "658b16a8-92ae-48eb-be10-b85826fdb7c3",
+            "658b16a8-92ae-48eb-be10-b85826fdb7c3"
+          ],
+          "MetadataAssembled": [
+            "4a5ff47a-45c4-4ff0-8305-83b2645b989a",
+            "4a5ff47a-45c4-4ff0-8305-83b2645b989a",
+            "4a5ff47a-45c4-4ff0-8305-83b2645b989a",
+            "4a5ff47a-45c4-4ff0-8305-83b2645b989a"
+          ],
+          "MetadataExported": [
+            "a2af36df-d47f-40eb-abd1-f11f5a39d1e6",
+            "a2af36df-d47f-40eb-abd1-f11f5a39d1e6",
+            "a2af36df-d47f-40eb-abd1-f11f5a39d1e6"
+          ],
+          "MetadataVersionReleased": [
+            "9c3f3c18-0255-4761-866d-bf637d6280fc",
+            "9c3f3c18-0255-4761-866d-bf637d6280fc",
+            "9c3f3c18-0255-4761-866d-bf637d6280fc"
+          ]
+        },
+        "agg": [
+          "19ff11ca-c36d-430c-8219-7e7f685d20c3",
+          "19ff11ca-c36d-430c-8219-7e7f685d20c3",
+          "19ff11ca-c36d-430c-8219-7e7f685d20c3",
+          "19ff11ca-c36d-430c-8219-7e7f685d20c3"
+        ],
+        "ids": {
+          "IR-CAT-AGG-002": "19ff11ca-c36d-430c-8219-7e7f685d20c3",
+          "IR-CAT-AGG-003": "19ff11ca-c36d-430c-8219-7e7f685d20c3",
+          "IR-CAT-CMD-002_concepts": "693bff63-3dfb-4903-b70d-03df85582708",
+          "IR-CAT-CMD-003": "061f7abd-f40a-4415-aac3-865647716e03",
+          "IR-CAT-CMD-004_ModelCatalog_conflicts": "8d707ca0-8f91-48d8-8774-db4d694866d8",
+          "IR-CAT-CMD-005": "cb5c658c-759a-420c-9855-e138deb382db",
+          "IR-CAT-CMD-007": "935a445d-fd08-4c0f-87c5-7dce9a0ac528",
+          "IR-CAT-EVT-001_catalogId": "c577f2ab-ec59-41b1-a41f-f7f6a3bad709",
+          "IR-CAT-EVT-001_version": "c577f2ab-ec59-41b1-a41f-f7f6a3bad709",
+          "IR-CAT-EVT-002_patchSet_appliedAt": "658b16a8-92ae-48eb-be10-b85826fdb7c3",
+          "IR-CAT-EVT-002_patchSet_concepts": "658b16a8-92ae-48eb-be10-b85826fdb7c3",
+          "IR-CAT-EVT-002_patchSet_sessionId": "658b16a8-92ae-48eb-be10-b85826fdb7c3",
+          "IR-CAT-EVT-003_conflictSet_conflicts": "7fc97e4c-42c0-4e08-93a1-2e43690d4bb0",
+          "IR-CAT-EVT-004_resolvedConflicts": "d51110c3-2e27-482d-8e37-79b171e28a85",
+          "IR-CAT-EVT-005_version": "25db8959-c0f5-40ef-9b70-c6509959efb5",
+          "IR-CAT-EVT-006": "d51110c3-2e27-482d-8e37-79b171e28a85",
+          "ir_agg_ModelCatalog_status_enum": "19ff11ca-c36d-430c-8219-7e7f685d20c3",
+          "ir_agg_ModelCatalog_tenant_id": "19ff11ca-c36d-430c-8219-7e7f685d20c3",
+          "ir_cmd_ApplyKnowledgePatch_triggered_by": "693bff63-3dfb-4903-b70d-03df85582708",
+          "ir_cmd_AssembleMetadata_triggered_by": "45126419-72dd-46fb-8920-139f9a80888a",
+          "ir_cmd_CreateCatalogVersion_triggered_by": "935a445d-fd08-4c0f-87c5-7dce9a0ac528",
+          "ir_cmd_DetectCatalogConflicts_triggered_by": "061f7abd-f40a-4415-aac3-865647716e03",
+          "ir_cmd_ExportMetadata_triggered_by": "9c4ec5d3-a676-4970-8142-3ac18088d457",
+          "ir_cmd_ReleaseCatalogVersion_triggered_by": "cb5c658c-759a-420c-9855-e138deb382db",
+          "ir_cmd_ReleaseMetadataVersion_triggered_by": "825b5a8e-79da-41cc-95b4-b6b43b378f1c",
+          "ir_cmd_ResolveCatalogConflict_triggered_by": "8d707ca0-8f91-48d8-8774-db4d694866d8",
+          "ir_evt_CatalogConflictDetected_catalogId_not_null": "7fc97e4c-42c0-4e08-93a1-2e43690d4bb0",
+          "ir_evt_CatalogConflictDetected_tenantId_not_null": "7fc97e4c-42c0-4e08-93a1-2e43690d4bb0",
+          "ir_evt_CatalogConflictDetected_timestamp": "7fc97e4c-42c0-4e08-93a1-2e43690d4bb0",
+          "ir_evt_CatalogConflictResolved_catalogId_not_null": "d51110c3-2e27-482d-8e37-79b171e28a85",
+          "ir_evt_CatalogConflictResolved_tenantId_not_null": "d51110c3-2e27-482d-8e37-79b171e28a85",
+          "ir_evt_CatalogConflictResolved_timestamp": "d51110c3-2e27-482d-8e37-79b171e28a85",
+          "ir_evt_CatalogVersionCreated_catalogId_not_null": "c577f2ab-ec59-41b1-a41f-f7f6a3bad709",
+          "ir_evt_CatalogVersionCreated_projectId_not_null": "c577f2ab-ec59-41b1-a41f-f7f6a3bad709",
+          "ir_evt_CatalogVersionCreated_tenantId_not_null": "c577f2ab-ec59-41b1-a41f-f7f6a3bad709",
+          "ir_evt_CatalogVersionCreated_timestamp": "c577f2ab-ec59-41b1-a41f-f7f6a3bad709",
+          "ir_evt_CatalogVersionReleased_catalogId_not_null": "25db8959-c0f5-40ef-9b70-c6509959efb5",
+          "ir_evt_CatalogVersionReleased_tenantId_not_null": "25db8959-c0f5-40ef-9b70-c6509959efb5",
+          "ir_evt_CatalogVersionReleased_timestamp": "25db8959-c0f5-40ef-9b70-c6509959efb5",
+          "ir_evt_KnowledgePatched_catalogId_not_null": "658b16a8-92ae-48eb-be10-b85826fdb7c3",
+          "ir_evt_KnowledgePatched_patchId_not_null": "658b16a8-92ae-48eb-be10-b85826fdb7c3",
+          "ir_evt_KnowledgePatched_tenantId_not_null": "658b16a8-92ae-48eb-be10-b85826fdb7c3",
+          "ir_evt_KnowledgePatched_timestamp": "658b16a8-92ae-48eb-be10-b85826fdb7c3",
+          "ir_evt_MetadataAssembled_catalogId_not_null": "4a5ff47a-45c4-4ff0-8305-83b2645b989a",
+          "ir_evt_MetadataAssembled_projectId_not_null": "4a5ff47a-45c4-4ff0-8305-83b2645b989a",
+          "ir_evt_MetadataAssembled_tenantId_not_null": "4a5ff47a-45c4-4ff0-8305-83b2645b989a",
+          "ir_evt_MetadataAssembled_timestamp": "4a5ff47a-45c4-4ff0-8305-83b2645b989a",
+          "ir_evt_MetadataExported_catalogId_not_null": "a2af36df-d47f-40eb-abd1-f11f5a39d1e6",
+          "ir_evt_MetadataExported_tenantId_not_null": "a2af36df-d47f-40eb-abd1-f11f5a39d1e6",
+          "ir_evt_MetadataExported_timestamp": "a2af36df-d47f-40eb-abd1-f11f5a39d1e6",
+          "ir_evt_MetadataVersionReleased_catalogId_not_null": "9c3f3c18-0255-4761-866d-bf637d6280fc",
+          "ir_evt_MetadataVersionReleased_tenantId_not_null": "9c3f3c18-0255-4761-866d-bf637d6280fc",
+          "ir_evt_MetadataVersionReleased_timestamp": "9c3f3c18-0255-4761-866d-bf637d6280fc",
+          "ir_gen_ref_IR_CAT_CMD_001_projectId": "935a445d-fd08-4c0f-87c5-7dce9a0ac528",
+          "ir_gen_ref_IR_CAT_CMD_002_sessionId": "693bff63-3dfb-4903-b70d-03df85582708"
+        }
+      },
       "eventPostconditions": [
         {
           "id": "IR-CAT-EVT-001_catalogId",

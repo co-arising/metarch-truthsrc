@@ -64,13 +64,13 @@ export function condParamRefs(branches, cmdName) {
   return out;
 }
 
-// computeParamDefs — the toParam field list for one write command (rules_domain_gen lines 1042-1094,
+// computeParamDefs — the toParam field list for one write command (rules_domain_gen lines 1042-1108,
 // loops 1+2 + the policy-binding loop). `cmdName` = the command (var/cond host); `params` = command
 // parameters in declared order; `rules` = attached preconditionRules [{expression,
 // humanDescription}]; `bm` = attached behaviorModel; `policyBound` = the command's policy-note
 // `info.bindings` keys (the inc10 augment slot — the policy side of the paramDefs supply, source
-// lines 1096-1108). The event-same-name and lineage loops are still not ported — the metarch
-// ModelCatalog corpus does not exercise them; they land with the aggregates that need them.
+// lines 1096-1108). The event-same-name and lineage loops (source lines 1116-1152) are separate
+// whole-map passes — apply them via supplyEventSameName / supplyLineage after this map is built.
 export function computeParamDefs(cmdName, params, rules, bm, policyBound) {
   const paramNames = params.map((p) => p.name);
   const has = (f) => paramNames.includes(f);
@@ -111,6 +111,64 @@ export function computeParamDefs(cmdName, params, rules, bm, policyBound) {
   //    `EstablishConcept.conceptId` 即此例）。
   for (const f of policyBound ?? []) add(f);
   return fields;
+}
+
+// cmdEventsOf — rules_domain_gen cmdEvents (lines 3249-3297), corpus-exercised legs: ④层
+// emissions∪emitWhen authoritative (declared order, constant leg first), positive-case then.event
+// fallback, FATAL otherwise. The CEM legs (L1 → 平行语义边救援 → L2) are not ported — the canonical
+// carries no command→event-map face (Fork A); every corpus command resolves on the two ported legs.
+export function cmdEventsOf(cmdName, { bmOf, aggCases, agg }) {
+  const bm = bmOf(cmdName);
+  const bmEw = bm ? normalizeEmitWhen(bm) : [];
+  if (bm && ((Array.isArray(bm.emissions) && bm.emissions.length) || bmEw.length)) {
+    return [...(Array.isArray(bm.emissions) ? bm.emissions.map((e) => e.event) : []), ...emitWhenEventNames(bmEw)];
+  }
+  const te = (aggCases ?? []).find((c) => c.command === cmdName && c.type === 'positive' && c.then?.event)?.then.event;
+  if (te) return [te];
+  throw new Error(`[FATAL] ${agg}.${cmdName}：缺 PRODUCES 绑定（无 ④层 emissions∪emitWhen 也无正例 then.event）`);
+}
+
+// supplyEventSameName — rules_domain_gen lines 1116-1129 verbatim（立项A·2026-09-28）：命令参数与
+// **本命令产出事件**的载荷同名且类型一致时必须进 Params VO——否则 eventArgs 启发式落
+// 「状态字段同名 → state.<f>」（factory 首 declare 时 state 恒空 ⇒ 载荷恒空）。ActorRef 参数不进
+// 类型表（source filter）；查询碎片不进（无 Params VO——source 的 `queryFragments.has` continue，
+// 等价面＝paramDefs 缺席即跳过）。`commands` = 类型判定视图（{name, params:[{name, type-sig}]}）。
+export function supplyEventSameName(paramDefs, commands, eventsOf, eventByName) {
+  for (const cmd of commands) {
+    if (!paramDefs.has(cmd.name)) continue;
+    const fields = paramDefs.get(cmd.name) || [];
+    const cmdTypeOf = new Map(cmd.params.filter((p) => !String(p.type).startsWith('ActorRef[')).map((p) => [p.name, p.type]));
+    for (const n of eventsOf(cmd.name)) {
+      const ev = eventByName.get(n);
+      if (!ev) continue;
+      for (const ep of ev.params) {
+        const pt = cmdTypeOf.get(ep.name);
+        if (pt && pt === String(ep.type).trim() && !fields.includes(ep.name)) fields.push(ep.name);
+      }
+    }
+    paramDefs.set(cmd.name, fields);
+  }
+}
+
+// supplyLineage — rules_domain_gen lines 1131-1152 verbatim（2026-08-22）：事件载荷 lineageHint
+// （`Cmd.field`，augment 阶段从 ④层 bindings 推导）把该命令参数拉进 Params VO——非标识符字段事件
+// 构造用 p.<f>（启发式此前丢弃 → ""/state 默认）；标识符字段保持 state 构造。无查询碎片守卫——
+// 碎片命令的提示算进 `paramDefs.get(cmd) || []` 的新数组且从不 set 回（源语义·字节级保真）。
+export function supplyLineage(paramDefs, events, cmdByName, identifier) {
+  for (const ev of events ?? []) {
+    for (const p of ev.payloads ?? []) {
+      const m = String(p.lineageHint ?? '').match(/^([A-Za-z]+)\.([A-Za-z]+)$/);
+      if (!m) continue;
+      const cmd = m[1], field = m[2];
+      const cmdSig = cmdByName.get(cmd);
+      if (!cmdSig) continue;
+      const param = cmdSig.params.find((x) => x.name === field);
+      if (!param || String(param.type).startsWith('ActorRef[')) continue;
+      if (field === identifier) continue; // 标识符等价形态（state.<id> 构造）
+      const fields = paramDefs.get(cmd) ?? [];
+      if (!fields.includes(field)) fields.push(field);
+    }
+  }
 }
 
 // ── inc9 additions (rules_domain_gen / emit_when ports) ──────────────────────────────────────
@@ -197,7 +255,7 @@ export function p4NormalizeCond(cond) {
 // idempotencyExprOf — the ④-layer decision.idempotentOn payload/state equality short-circuit
 // (rules_domain_gen lines 274-296). FATALs on真源 drift (field missing from params or state).
 export function idempotencyExprOf(agg, cmdName, paramsName, stateTypes, evParams, bmDecision) {
-  const d = bmDecision(agg, cmdName);
+  const d = bmDecision(cmdName); // truthsrc bmDecision is the one-arg closure (live's takes (agg, cmd))
   const fields = d && Array.isArray(d.idempotentOn) ? d.idempotentOn : null;
   if (!fields || !fields.length) return null;
   const conds = [];

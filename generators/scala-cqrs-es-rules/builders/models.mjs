@@ -1,7 +1,7 @@
 // models.mjs — rules-face builders (V4-3). Canonical (+ augment-rules-canonical slots) → pure model.
 // All ordering/semantic decisions live here; templates/scala.mjs only renders text.
-import { scalaSig, sigOf } from './datatype.mjs';
-import { computeParamDefs, normalizeEmitWhen, scalaRef } from './rules.mjs';
+import { sigOf } from './datatype.mjs';
+import { computeParamDefs, normalizeEmitWhen, scalaRef, cmdEventsOf, supplyEventSameName, supplyLineage } from './rules.mjs';
 
 // A command is a query fragment (no helper, no behaviors wiring) when it is readOnly. The canonical
 // marks the synthesized Get<Name>State query readOnly; everything else is a write command.
@@ -37,12 +37,39 @@ function policyBoundOf(a) {
   return m;
 }
 
+// paramDefsWithSupply — the command → paramDefs map with all five supply loops applied
+// (rules_domain_gen lines 1042-1152): computeParamDefs (rule refs + triggeredBy + ④层 + policy)
+// then the event-same-name (1116-1129) and lineage (1131-1152) whole-map passes, shared by the
+// helpers and params faces. `guard` = the caller's query-fragment predicate; `eventsOf` resolves
+// each command's produced events (④层 emissions∪emitWhen, then.event fallback — cmdEventsOf).
+function paramDefsWithSupply(a, guard) {
+  const policyBound = policyBoundOf(a);
+  const all = a.commands ?? [];
+  const sigCmds = all.filter((c) => !guard(c)).map((c) => ({
+    name: c.name,
+    params: (c.parameters ?? []).map((p) => ({ name: p.name, type: sigOf(p) })),
+  }));
+  const eventByName = new Map((a.events ?? []).map((e) => [e.name, {
+    name: e.name,
+    params: (e.payloads ?? []).map((p) => ({ name: p.name, type: sigOf(p) })),
+  }]));
+  const bmOf = (n) => all.find((c) => c.name === n)?.behaviorModel ?? null;
+  const eventsOf = (n) => cmdEventsOf(n, { bmOf, aggCases: a.executableCases ?? [], agg: a.name });
+  const paramDefs = new Map();
+  for (const c of all) {
+    if (guard(c)) continue;
+    paramDefs.set(c.name, computeParamDefs(c.name, c.parameters ?? [], c.preconditionRules ?? [], c.behaviorModel, policyBound.get(c.name)));
+  }
+  supplyEventSameName(paramDefs, sigCmds, eventsOf, eventByName);
+  supplyLineage(paramDefs, a.events ?? [], new Map(sigCmds.map((c) => [c.name, c])), a.identifier);
+  return paramDefs;
+}
+
 export function commandHelpersModel(a, env) {
   const commands = a.commands ?? [];
-  const policyBound = policyBoundOf(a);
+  const paramDefs = paramDefsWithSupply(a, isQuery);
   const helpers = commands.filter((c) => !isQuery(c)).map((c) => {
-    const params = c.parameters ?? [];
-    const fields = computeParamDefs(c.name, params, c.preconditionRules, c.behaviorModel, policyBound.get(c.name));
+    const fields = paramDefs.get(c.name) ?? [];
     return {
       name: c.name,
       replyType: `${c.name}Reply`,
@@ -152,17 +179,18 @@ export function behaviorsModel(a, env) {
 // the source does (paramsNeedId/paramsNeedInstant/paramsNeedVO vs the voNames registry).
 export function ruleParamsModel(a, env) {
   const voNames = new Set(a.voNames ?? env.voNames ?? []);
-  const policyBound = policyBoundOf(a);
+  const paramDefs = paramDefsWithSupply(a, isQuery);
   const classes = [];
   const lines = []; // rendered `name: Type` fragments — the import bits regex over these
   for (const c of a.commands ?? []) {
     if (isQuery(c)) continue;
     const rules = c.preconditionRules ?? [];
-    const fields = computeParamDefs(c.name, c.parameters ?? [], rules, c.behaviorModel, policyBound.get(c.name));
+    const fields = paramDefs.get(c.name) ?? [];
     // cmdTypes: declared params minus ActorRef-typed (source filter; canonical never carries them,
-    // but the fallback for a missing entry is 'String' either way)
+    // but the fallback for a missing entry is 'String' either way); sigOf = the protocol-parse
+    // signature face (Option-wrapped for optional — rules_domain_gen cmdTypes reads p.type)
     const cmdTypes = Object.fromEntries(
-      (c.parameters ?? []).filter((p) => !String(scalaSig(p.dataType)).startsWith('ActorRef[')).map((p) => [p.name, sigOf(p)]),
+      (c.parameters ?? []).filter((p) => !String(sigOf(p)).startsWith('ActorRef[')).map((p) => [p.name, sigOf(p)]),
     );
     const fieldReprs = fields.map((f) => {
       const t = cmdTypes[f] || 'String';

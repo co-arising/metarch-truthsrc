@@ -2,15 +2,17 @@
 // rules_domain_gen per-aggregate pipeline (lines 972-1920 + assembly 2670-2761). Inputs come from
 // the canonical's rules-face slots (Fork A raw): per-command preconditionRules + the raw ④-layer
 // behaviorModel decisions, aggregateRules / eventPostconditions / executableCases attached by
-// tools/augment-rules-canonical.mjs. NOT ported (unexercised by the corpus, mirrors inc6's note):
-// the policy-bindings / event-same-name / lineage param-supply loops, the cem command→event
-// fallback legs (④-layer emissions are authoritative here), and the statusEnum metaJson fallback
+// tools/augment-rules-canonical.mjs. V4-6: the event-same-name (1116-1129) and lineage (1131-1152)
+// param-supply loops are ported (payload lineageHint is derived onto the canonical at augment
+// time, source lines 444-462). NOT ported (unexercised by the corpus): the cem command→event
+// fallback legs (④-layer emissions are authoritative here) and the statusEnum metaJson fallback
 // of statusFallback (the aggregate-status `in` rule covers it).
 import { scalaSig, sigOf } from './datatype.mjs';
 import { PLACEHOLDER, gtNowFields, exprToScala, patchForCases } from './expr.mjs';
 import {
   computeParamDefs, normalizeEmitWhen, emitWhenEventNames, condGuaranteedParams, nonNullGuaranteed,
   exprGuaranteesNonEmpty, p4NormalizeCond, idempotencyExprOf, RULING5_INITIAL, RULING5_TS_FIELD, scalaRef, inputFieldOf,
+  cmdEventsOf, supplyEventSameName, supplyLineage,
 } from './rules.mjs';
 import { makeLiterals } from './literals.mjs';
 
@@ -39,7 +41,7 @@ export function rulesFaceModel(a, env) {
   const stateTypes = Object.fromEntries(stateParams.map((p) => [p.name, p.type]));
   const eventSigs = (a.events ?? []).map((e) => ({
     name: e.name,
-    params: (e.payloads ?? []).map((p) => ({ name: p.name, type: sigOf(p) })),
+    params: (e.payloads ?? []).map((p) => ({ name: p.name, type: sigOf(p), lineageHint: p.lineageHint })),
   }));
   const eventByName = new Map(eventSigs.map((e) => [e.name, e]));
   const commands = (a.commands ?? []).map((c) => ({
@@ -58,8 +60,12 @@ export function rulesFaceModel(a, env) {
   for (const c of commands) if (c.preconditionRules.length) cmdRules.set(c.name, c.preconditionRules);
   const evtRules = (a.eventPostconditions ?? []).slice();
 
-  // ruleTargetId — rule id → note anchor noteId (raw `noteId` slot = definedIn.targetId)
+  // ruleTargetId — rule id → note anchor noteId (raw `noteId` slot = definedIn.targetId). The
+  // attributed rules seed it; the library-wide slice (augment ruleAnchor.ids) completes it — the
+  // source registers ruleTargetId for EVERY library rule with target+id (line 99), so a rule
+  // rendered through a ④层 guard ref without cases (IR-USER-CMD-002) still anchors inline.
   const ruleTargetId = new Map();
+  for (const [rid, nid] of Object.entries(a.ruleAnchor?.ids ?? {})) ruleTargetId.set(rid, nid);
   for (const r of [...aggRules, ...evtRules, ...[...cmdRules.values()].flat()]) {
     if (r.noteId) ruleTargetId.set(r.id, r.noteId);
   }
@@ -111,7 +117,8 @@ ${delegations}
     }
   }
 
-  // —— Params VO 字段（loops 1+2+④层＋policy 绑定腿 via computeParamDefs；事件同名/血缘两腿本语料未触发） ——
+  // —— Params VO 字段（loops 1+2+④层＋policy 绑定腿 via computeParamDefs；再接事件同名（1116-1129）
+  //    ＋血缘（1131-1152）两补给环——血缘提示由 augment 从 ④层 bindings 推导落 canonical 载荷） ——
   const policyBound = new Map();
   for (const p of a.policies ?? []) {
     const set = policyBound.get(p.cmdName) || new Set();
@@ -123,17 +130,12 @@ ${delegations}
     if (queryFragments.has(cmd.name)) continue;
     paramDefs.set(cmd.name, computeParamDefs(cmd.name, cmd.params, cmdRules.get(cmd.name) || [], cmd.behaviorModel, policyBound.get(cmd.name)));
   }
+  supplyEventSameName(paramDefs, commands, (n) => cmdEvents(n), eventByName);
+  supplyLineage(paramDefs, eventSigs, cmdByName, a.identifier);
 
-  // —— cmd→event 边（rules_domain_gen cmdEvents ④层权威腿＋正例 then.event 兜底） ——
+  // —— cmd→event 边（rules_domain_gen cmdEvents：④层权威腿＋正例 then.event 兜底；CEM 三腿未移植） ——
   function cmdEvents(cmdName) {
-    const bm = bmDecision(cmdName);
-    const bmEw = bm ? normalizeEmitWhen(bm) : [];
-    if (bm && ((Array.isArray(bm.emissions) && bm.emissions.length) || bmEw.length)) {
-      return [...(Array.isArray(bm.emissions) ? bm.emissions.map((e) => e.event) : []), ...emitWhenEventNames(bmEw)];
-    }
-    const te = aggCases.find((c) => c.command === cmdName && c.type === 'positive' && c.then?.event)?.then.event;
-    if (te) return [te];
-    throw new Error(`[FATAL] ${agg}.${cmdName}：缺 PRODUCES 绑定（无 ④层 emissions∪emitWhen 也无正例 then.event）`);
+    return cmdEventsOf(cmdName, { bmOf: bmDecision, aggCases, agg });
   }
 
   // —— 事件构造参数映射（rules_domain_gen eventArgs，lines 1155-1263 逐字） ——
@@ -218,7 +220,7 @@ ${delegations}
       }
       return { expr: defaultLiteral(t), type: t, name: ep.name };
     });
-    return { args, ok: true, why: '' };
+    return { args, ok: true, why: '', forEach: (bmEmission && bmEmission.forEach) || null };
   }
 
   // —— 哨兵降级（不可翻译规则 → 负例哨兵判定；rules_domain_gen lines 1268-1286） ——
@@ -721,11 +723,14 @@ ${delegations}
   }
 
   // —— Spec 头注锚：三挂号点并集排序（rules_domain_gen paramsNoteIds lines 1433-1438） ——
+  // 号源＝库级号桶（augment 落 canonical 的 ruleAnchor 切片·按 definedIn.target 裸名分桶），
+  // 非 cases 归属规则面——登记与渲染不对称（CemEdge 两条不渲染的聚合规则仍进 spec 头）。
   const aggEventNames = new Set(eventSigs.map((e) => e.name));
+  const ra = a.ruleAnchor ?? { cmd: {}, evt: {}, agg: [] };
   const paramsNoteIds = [...new Set([
-    ...[...cmdRules.keys()].flatMap((c) => (cmdRules.get(c) || []).map((r) => r.noteId).filter(Boolean)),
-    ...evtRules.filter((r) => aggEventNames.has(r.target)).map((r) => r.noteId).filter(Boolean),
-    ...aggRules.map((r) => r.noteId).filter(Boolean),
+    ...[...cmdRules.keys()].flatMap((c) => ra.cmd[c] ?? []),
+    ...Object.keys(ra.evt).filter((e) => aggEventNames.has(e)).flatMap((e) => ra.evt[e] ?? []),
+    ...(ra.agg ?? []),
   ])].sort();
 
   return {

@@ -7,11 +7,11 @@
 
 | 判定 | 件数 |
 |---|---|
-| identical | 236 |
+| identical | 277 |
 | owned-by-other | 108 |
-| diff | 49 |
+| diff | 8 |
 
-**恒等按面**：skeleton 102 · rules 102 · api 32 ｜ **diff 按 kind**：aggregate-root 2 · protocol 1 · entity 3 · command-helpers-rules 10 · rules 7 · rule-params 10 · rules-spec 16
+**恒等按面**：skeleton 102 · rules 143 · api 32 ｜ **diff 按 kind**：aggregate-root 2 · protocol 1 · entity 3 · rules 1 · rules-spec 1
 
 ## live 归属普查（按文件首行 stamp·多趟管线真相）
 
@@ -253,21 +253,21 @@
 | rules | behaviors-rules | ContextRelation | app/net/imadz/metarch/application/aggregates/behaviors/ContextRelationBehaviors.scala | identical | — |
 | rules | command-helpers-rules | ContextRelation | app/net/imadz/metarch/application/aggregates/behaviors/ContextRelationCommandHelpers.scala | identical | — |
 | rules | behaviors-rules | DoR | app/net/imadz/metarch/application/aggregates/behaviors/DoRBehaviors.scala | identical | — |
-| rules | command-helpers-rules | DoR | app/net/imadz/metarch/application/aggregates/behaviors/DoRCommandHelpers.scala | diff | 58 |
+| rules | command-helpers-rules | DoR | app/net/imadz/metarch/application/aggregates/behaviors/DoRCommandHelpers.scala | identical | — |
 | rules | behaviors-rules | FieldModelDefinition | app/net/imadz/metarch/application/aggregates/behaviors/FieldModelDefinitionBehaviors.scala | identical | — |
-| rules | command-helpers-rules | FieldModelDefinition | app/net/imadz/metarch/application/aggregates/behaviors/FieldModelDefinitionCommandHelpers.scala | diff | 124 |
+| rules | command-helpers-rules | FieldModelDefinition | app/net/imadz/metarch/application/aggregates/behaviors/FieldModelDefinitionCommandHelpers.scala | identical | — |
 | rules | behaviors-rules | FsmDefinition | app/net/imadz/metarch/application/aggregates/behaviors/FsmDefinitionBehaviors.scala | identical | — |
-| rules | command-helpers-rules | FsmDefinition | app/net/imadz/metarch/application/aggregates/behaviors/FsmDefinitionCommandHelpers.scala | diff | 26 |
+| rules | command-helpers-rules | FsmDefinition | app/net/imadz/metarch/application/aggregates/behaviors/FsmDefinitionCommandHelpers.scala | identical | — |
 | rules | behaviors-rules | KnowledgePatch | app/net/imadz/metarch/application/aggregates/behaviors/KnowledgePatchBehaviors.scala | identical | — |
-| rules | command-helpers-rules | KnowledgePatch | app/net/imadz/metarch/application/aggregates/behaviors/KnowledgePatchCommandHelpers.scala | diff | 67 |
+| rules | command-helpers-rules | KnowledgePatch | app/net/imadz/metarch/application/aggregates/behaviors/KnowledgePatchCommandHelpers.scala | identical | — |
 | rules | behaviors-rules | ModelCatalog | app/net/imadz/metarch/application/aggregates/behaviors/ModelCatalogBehaviors.scala | identical | — |
 | rules | command-helpers-rules | ModelCatalog | app/net/imadz/metarch/application/aggregates/behaviors/ModelCatalogCommandHelpers.scala | identical | — |
 | rules | behaviors-rules | Note | app/net/imadz/metarch/application/aggregates/behaviors/NoteBehaviors.scala | identical | — |
 | rules | command-helpers-rules | Note | app/net/imadz/metarch/application/aggregates/behaviors/NoteCommandHelpers.scala | identical | — |
 | rules | behaviors-rules | OrganizationMember | app/net/imadz/metarch/application/aggregates/behaviors/OrganizationMemberBehaviors.scala | identical | — |
-| rules | command-helpers-rules | OrganizationMember | app/net/imadz/metarch/application/aggregates/behaviors/OrganizationMemberCommandHelpers.scala | diff | 30 |
+| rules | command-helpers-rules | OrganizationMember | app/net/imadz/metarch/application/aggregates/behaviors/OrganizationMemberCommandHelpers.scala | identical | — |
 | rules | behaviors-rules | Project | app/net/imadz/metarch/application/aggregates/behaviors/ProjectBehaviors.scala | identical | — |
-| rules | command-helpers-rules | Project | app/net/imadz/metarch/application/aggregates/behaviors/ProjectCommandHelpers.scala | diff | 67 |
+| rules | command-helpers-rules | Project | app/net/imadz/metarch/application/aggregates/behaviors/ProjectCommandHelpers.scala | identical | — |
 | rules | behaviors-rules | Question | app/net/imadz/metarch/application/aggregates/behaviors/QuestionBehaviors.scala | identical | — |
 | rules | command-helpers-rules | Question | app/net/imadz/metarch/application/aggregates/behaviors/QuestionCommandHelpers.scala | identical | — |
 | rules | behaviors-rules | ReadModelDefinition | app/net/imadz/metarch/application/aggregates/behaviors/ReadModelDefinitionBehaviors.scala | identical | — |
@@ -277,7 +277,7 @@
 | rules | behaviors-rules | RoleCommandBinding | app/net/imadz/metarch/application/aggregates/behaviors/RoleCommandBindingBehaviors.scala | identical | — |
 | rules | command-helpers-rules | RoleCommandBinding | app/net/imadz/metarch/application/aggregates/behaviors/RoleCommandBindingCommandHelpers.scala | identical | — |
 | rules | behaviors-rules | Session | app/net/imadz/metarch/application/aggregates/behaviors/SessionBehaviors.scala | identical | — |
-| rules | command-helpers-rules | Session | app/net/imadz/metarch/application/aggregates/behaviors/SessionCommandHelpers.scala | diff | 67 |
+| rules | command-helpers-rules | Session | app/net/imadz/metarch/application/aggregates/behaviors/SessionCommandHelpers.scala | identical | — |
 | rules | behaviors-rules | Stage | app/net/imadz/metarch/application/aggregates/behaviors/StageBehaviors.scala | identical | — |
 | rules | command-helpers-rules | Stage | app/net/imadz/metarch/application/aggregates/behaviors/StageCommandHelpers.scala | identical | — |
 | rules | behaviors-rules | Subdomain | app/net/imadz/metarch/application/aggregates/behaviors/SubdomainBehaviors.scala | identical | — |
@@ -289,32 +289,32 @@
 | rules | behaviors-rules | UseCaseDefinition | app/net/imadz/metarch/application/aggregates/behaviors/UseCaseDefinitionBehaviors.scala | identical | — |
 | rules | command-helpers-rules | UseCaseDefinition | app/net/imadz/metarch/application/aggregates/behaviors/UseCaseDefinitionCommandHelpers.scala | identical | — |
 | rules | behaviors-rules | User | app/net/imadz/metarch/application/aggregates/behaviors/UserBehaviors.scala | identical | — |
-| rules | command-helpers-rules | User | app/net/imadz/metarch/application/aggregates/behaviors/UserCommandHelpers.scala | diff | 50 |
+| rules | command-helpers-rules | User | app/net/imadz/metarch/application/aggregates/behaviors/UserCommandHelpers.scala | identical | — |
 | rules | behaviors-rules | ValueObjectDefinition | app/net/imadz/metarch/application/aggregates/behaviors/ValueObjectDefinitionBehaviors.scala | identical | — |
 | rules | command-helpers-rules | ValueObjectDefinition | app/net/imadz/metarch/application/aggregates/behaviors/ValueObjectDefinitionCommandHelpers.scala | identical | — |
 | rules | behaviors-rules | WorkTicket | app/net/imadz/metarch/application/aggregates/behaviors/WorkTicketBehaviors.scala | identical | — |
-| rules | command-helpers-rules | WorkTicket | app/net/imadz/metarch/application/aggregates/behaviors/WorkTicketCommandHelpers.scala | diff | 26 |
+| rules | command-helpers-rules | WorkTicket | app/net/imadz/metarch/application/aggregates/behaviors/WorkTicketCommandHelpers.scala | identical | — |
 | rules | behaviors-rules | Workgroup | app/net/imadz/metarch/application/aggregates/behaviors/WorkgroupBehaviors.scala | identical | — |
-| rules | command-helpers-rules | Workgroup | app/net/imadz/metarch/application/aggregates/behaviors/WorkgroupCommandHelpers.scala | diff | 78 |
+| rules | command-helpers-rules | Workgroup | app/net/imadz/metarch/application/aggregates/behaviors/WorkgroupCommandHelpers.scala | identical | — |
 | rules | behaviors-rules | Workshop | app/net/imadz/metarch/application/aggregates/behaviors/WorkshopBehaviors.scala | identical | — |
 | rules | command-helpers-rules | Workshop | app/net/imadz/metarch/application/aggregates/behaviors/WorkshopCommandHelpers.scala | identical | — |
 | rules | rules | CemEdge | app/net/imadz/metarch/domain/invariant/CemEdgeRules.scala | identical | — |
 | rules | rules | Concept | app/net/imadz/metarch/domain/invariant/ConceptRules.scala | identical | — |
 | rules | rules | ContextRelation | app/net/imadz/metarch/domain/invariant/ContextRelationRules.scala | identical | — |
 | rules | rules | Context | app/net/imadz/metarch/domain/invariant/ContextRules.scala | identical | — |
-| rules | rules | DoR | app/net/imadz/metarch/domain/invariant/DoRRules.scala | diff | 79 |
-| rules | rules | FieldModelDefinition | app/net/imadz/metarch/domain/invariant/FieldModelDefinitionRules.scala | diff | 94 |
+| rules | rules | DoR | app/net/imadz/metarch/domain/invariant/DoRRules.scala | identical | — |
+| rules | rules | FieldModelDefinition | app/net/imadz/metarch/domain/invariant/FieldModelDefinitionRules.scala | identical | — |
 | rules | rules | FsmDefinition | app/net/imadz/metarch/domain/invariant/FsmDefinitionRules.scala | identical | — |
 | rules | rules | KnowledgePatch | app/net/imadz/metarch/domain/invariant/KnowledgePatchRules.scala | identical | — |
 | rules | rules | ModelCatalog | app/net/imadz/metarch/domain/invariant/ModelCatalogRules.scala | identical | — |
-| rules | rules | Note | app/net/imadz/metarch/domain/invariant/NoteRules.scala | diff | 64 |
-| rules | rules | OrganizationMember | app/net/imadz/metarch/domain/invariant/OrganizationMemberRules.scala | diff | 75 |
+| rules | rules | Note | app/net/imadz/metarch/domain/invariant/NoteRules.scala | identical | — |
+| rules | rules | OrganizationMember | app/net/imadz/metarch/domain/invariant/OrganizationMemberRules.scala | identical | — |
 | rules | rules | Project | app/net/imadz/metarch/domain/invariant/ProjectRules.scala | identical | — |
 | rules | rules | Question | app/net/imadz/metarch/domain/invariant/QuestionRules.scala | identical | — |
 | rules | rules | ReadModelDefinition | app/net/imadz/metarch/domain/invariant/ReadModelDefinitionRules.scala | identical | — |
 | rules | rules | Relation | app/net/imadz/metarch/domain/invariant/RelationRules.scala | identical | — |
 | rules | rules | RoleCommandBinding | app/net/imadz/metarch/domain/invariant/RoleCommandBindingRules.scala | identical | — |
-| rules | rules | Session | app/net/imadz/metarch/domain/invariant/SessionRules.scala | diff | 103 |
+| rules | rules | Session | app/net/imadz/metarch/domain/invariant/SessionRules.scala | identical | — |
 | rules | rules | Stage | app/net/imadz/metarch/domain/invariant/StageRules.scala | identical | — |
 | rules | rules | Subdomain | app/net/imadz/metarch/domain/invariant/SubdomainRules.scala | identical | — |
 | rules | rules | Tenant | app/net/imadz/metarch/domain/invariant/TenantRules.scala | identical | — |
@@ -323,66 +323,66 @@
 | rules | rules | User | app/net/imadz/metarch/domain/invariant/UserRules.scala | diff | 35 |
 | rules | rules | ValueObjectDefinition | app/net/imadz/metarch/domain/invariant/ValueObjectDefinitionRules.scala | identical | — |
 | rules | rules | WorkTicket | app/net/imadz/metarch/domain/invariant/WorkTicketRules.scala | identical | — |
-| rules | rules | Workgroup | app/net/imadz/metarch/domain/invariant/WorkgroupRules.scala | diff | 114 |
+| rules | rules | Workgroup | app/net/imadz/metarch/domain/invariant/WorkgroupRules.scala | identical | — |
 | rules | rules | Workshop | app/net/imadz/metarch/domain/invariant/WorkshopRules.scala | identical | — |
 | rules | rule-params | CemEdge | app/net/imadz/metarch/domain/invariant/params/CemEdgeRuleParams.scala | identical | — |
 | rules | rule-params | Concept | app/net/imadz/metarch/domain/invariant/params/ConceptRuleParams.scala | identical | — |
 | rules | rule-params | ContextRelation | app/net/imadz/metarch/domain/invariant/params/ContextRelationRuleParams.scala | identical | — |
 | rules | rule-params | Context | app/net/imadz/metarch/domain/invariant/params/ContextRuleParams.scala | identical | — |
-| rules | rule-params | DoR | app/net/imadz/metarch/domain/invariant/params/DoRRuleParams.scala | diff | 20 |
-| rules | rule-params | FieldModelDefinition | app/net/imadz/metarch/domain/invariant/params/FieldModelDefinitionRuleParams.scala | diff | 26 |
-| rules | rule-params | FsmDefinition | app/net/imadz/metarch/domain/invariant/params/FsmDefinitionRuleParams.scala | diff | 5 |
-| rules | rule-params | KnowledgePatch | app/net/imadz/metarch/domain/invariant/params/KnowledgePatchRuleParams.scala | diff | 23 |
+| rules | rule-params | DoR | app/net/imadz/metarch/domain/invariant/params/DoRRuleParams.scala | identical | — |
+| rules | rule-params | FieldModelDefinition | app/net/imadz/metarch/domain/invariant/params/FieldModelDefinitionRuleParams.scala | identical | — |
+| rules | rule-params | FsmDefinition | app/net/imadz/metarch/domain/invariant/params/FsmDefinitionRuleParams.scala | identical | — |
+| rules | rule-params | KnowledgePatch | app/net/imadz/metarch/domain/invariant/params/KnowledgePatchRuleParams.scala | identical | — |
 | rules | rule-params | ModelCatalog | app/net/imadz/metarch/domain/invariant/params/ModelCatalogRuleParams.scala | identical | — |
 | rules | rule-params | Note | app/net/imadz/metarch/domain/invariant/params/NoteRuleParams.scala | identical | — |
-| rules | rule-params | OrganizationMember | app/net/imadz/metarch/domain/invariant/params/OrganizationMemberRuleParams.scala | diff | 15 |
-| rules | rule-params | Project | app/net/imadz/metarch/domain/invariant/params/ProjectRuleParams.scala | diff | 23 |
+| rules | rule-params | OrganizationMember | app/net/imadz/metarch/domain/invariant/params/OrganizationMemberRuleParams.scala | identical | — |
+| rules | rule-params | Project | app/net/imadz/metarch/domain/invariant/params/ProjectRuleParams.scala | identical | — |
 | rules | rule-params | Question | app/net/imadz/metarch/domain/invariant/params/QuestionRuleParams.scala | identical | — |
 | rules | rule-params | ReadModelDefinition | app/net/imadz/metarch/domain/invariant/params/ReadModelDefinitionRuleParams.scala | identical | — |
 | rules | rule-params | Relation | app/net/imadz/metarch/domain/invariant/params/RelationRuleParams.scala | identical | — |
 | rules | rule-params | RoleCommandBinding | app/net/imadz/metarch/domain/invariant/params/RoleCommandBindingRuleParams.scala | identical | — |
-| rules | rule-params | Session | app/net/imadz/metarch/domain/invariant/params/SessionRuleParams.scala | diff | 23 |
+| rules | rule-params | Session | app/net/imadz/metarch/domain/invariant/params/SessionRuleParams.scala | identical | — |
 | rules | rule-params | Stage | app/net/imadz/metarch/domain/invariant/params/StageRuleParams.scala | identical | — |
 | rules | rule-params | Subdomain | app/net/imadz/metarch/domain/invariant/params/SubdomainRuleParams.scala | identical | — |
 | rules | rule-params | Tenant | app/net/imadz/metarch/domain/invariant/params/TenantRuleParams.scala | identical | — |
 | rules | rule-params | TruthSourceProvenance | app/net/imadz/metarch/domain/invariant/params/TruthSourceProvenanceRuleParams.scala | identical | — |
 | rules | rule-params | UseCaseDefinition | app/net/imadz/metarch/domain/invariant/params/UseCaseDefinitionRuleParams.scala | identical | — |
-| rules | rule-params | User | app/net/imadz/metarch/domain/invariant/params/UserRuleParams.scala | diff | 20 |
+| rules | rule-params | User | app/net/imadz/metarch/domain/invariant/params/UserRuleParams.scala | identical | — |
 | rules | rule-params | ValueObjectDefinition | app/net/imadz/metarch/domain/invariant/params/ValueObjectDefinitionRuleParams.scala | identical | — |
-| rules | rule-params | WorkTicket | app/net/imadz/metarch/domain/invariant/params/WorkTicketRuleParams.scala | diff | 5 |
-| rules | rule-params | Workgroup | app/net/imadz/metarch/domain/invariant/params/WorkgroupRuleParams.scala | diff | 26 |
+| rules | rule-params | WorkTicket | app/net/imadz/metarch/domain/invariant/params/WorkTicketRuleParams.scala | identical | — |
+| rules | rule-params | Workgroup | app/net/imadz/metarch/domain/invariant/params/WorkgroupRuleParams.scala | identical | — |
 | rules | rule-params | Workshop | app/net/imadz/metarch/domain/invariant/params/WorkshopRuleParams.scala | identical | — |
 | rules | policies | Concept | app/net/imadz/metarch/domain/policy/ConceptPolicies.scala | identical | — |
 | rules | policies | KnowledgePatch | app/net/imadz/metarch/domain/policy/KnowledgePatchPolicies.scala | identical | — |
 | rules | policies | ModelCatalog | app/net/imadz/metarch/domain/policy/ModelCatalogPolicies.scala | identical | — |
 | rules | policies | Session | app/net/imadz/metarch/domain/policy/SessionPolicies.scala | identical | — |
 | rules | policies | Tenant | app/net/imadz/metarch/domain/policy/TenantPolicies.scala | identical | — |
-| rules | rules-spec | CemEdge | test/net/imadz/metarch/domain/invariant/CemEdgeRulesSpec.scala | diff | 6 |
+| rules | rules-spec | CemEdge | test/net/imadz/metarch/domain/invariant/CemEdgeRulesSpec.scala | identical | — |
 | rules | rules-spec | Concept | test/net/imadz/metarch/domain/invariant/ConceptRulesSpec.scala | identical | — |
 | rules | rules-spec | ContextRelation | test/net/imadz/metarch/domain/invariant/ContextRelationRulesSpec.scala | identical | — |
 | rules | rules-spec | Context | test/net/imadz/metarch/domain/invariant/ContextRulesSpec.scala | identical | — |
-| rules | rules-spec | DoR | test/net/imadz/metarch/domain/invariant/DoRRulesSpec.scala | diff | 433 |
-| rules | rules-spec | FieldModelDefinition | test/net/imadz/metarch/domain/invariant/FieldModelDefinitionRulesSpec.scala | diff | 13 |
-| rules | rules-spec | FsmDefinition | test/net/imadz/metarch/domain/invariant/FsmDefinitionRulesSpec.scala | diff | 51 |
-| rules | rules-spec | KnowledgePatch | test/net/imadz/metarch/domain/invariant/KnowledgePatchRulesSpec.scala | diff | 99 |
+| rules | rules-spec | DoR | test/net/imadz/metarch/domain/invariant/DoRRulesSpec.scala | identical | — |
+| rules | rules-spec | FieldModelDefinition | test/net/imadz/metarch/domain/invariant/FieldModelDefinitionRulesSpec.scala | identical | — |
+| rules | rules-spec | FsmDefinition | test/net/imadz/metarch/domain/invariant/FsmDefinitionRulesSpec.scala | identical | — |
+| rules | rules-spec | KnowledgePatch | test/net/imadz/metarch/domain/invariant/KnowledgePatchRulesSpec.scala | identical | — |
 | rules | rules-spec | ModelCatalog | test/net/imadz/metarch/domain/invariant/ModelCatalogRulesSpec.scala | identical | — |
 | rules | rules-spec | Note | test/net/imadz/metarch/domain/invariant/NoteRulesSpec.scala | identical | — |
-| rules | rules-spec | OrganizationMember | test/net/imadz/metarch/domain/invariant/OrganizationMemberRulesSpec.scala | diff | 62 |
-| rules | rules-spec | Project | test/net/imadz/metarch/domain/invariant/ProjectRulesSpec.scala | diff | 70 |
+| rules | rules-spec | OrganizationMember | test/net/imadz/metarch/domain/invariant/OrganizationMemberRulesSpec.scala | identical | — |
+| rules | rules-spec | Project | test/net/imadz/metarch/domain/invariant/ProjectRulesSpec.scala | identical | — |
 | rules | rules-spec | Question | test/net/imadz/metarch/domain/invariant/QuestionRulesSpec.scala | identical | — |
-| rules | rules-spec | ReadModelDefinition | test/net/imadz/metarch/domain/invariant/ReadModelDefinitionRulesSpec.scala | diff | 5 |
+| rules | rules-spec | ReadModelDefinition | test/net/imadz/metarch/domain/invariant/ReadModelDefinitionRulesSpec.scala | identical | — |
 | rules | rules-spec | Relation | test/net/imadz/metarch/domain/invariant/RelationRulesSpec.scala | identical | — |
-| rules | rules-spec | RoleCommandBinding | test/net/imadz/metarch/domain/invariant/RoleCommandBindingRulesSpec.scala | diff | 5 |
-| rules | rules-spec | Session | test/net/imadz/metarch/domain/invariant/SessionRulesSpec.scala | diff | 197 |
+| rules | rules-spec | RoleCommandBinding | test/net/imadz/metarch/domain/invariant/RoleCommandBindingRulesSpec.scala | identical | — |
+| rules | rules-spec | Session | test/net/imadz/metarch/domain/invariant/SessionRulesSpec.scala | identical | — |
 | rules | rules-spec | Stage | test/net/imadz/metarch/domain/invariant/StageRulesSpec.scala | identical | — |
 | rules | rules-spec | Subdomain | test/net/imadz/metarch/domain/invariant/SubdomainRulesSpec.scala | identical | — |
 | rules | rules-spec | Tenant | test/net/imadz/metarch/domain/invariant/TenantRulesSpec.scala | identical | — |
-| rules | rules-spec | TruthSourceProvenance | test/net/imadz/metarch/domain/invariant/TruthSourceProvenanceRulesSpec.scala | diff | 3 |
-| rules | rules-spec | UseCaseDefinition | test/net/imadz/metarch/domain/invariant/UseCaseDefinitionRulesSpec.scala | diff | 5 |
+| rules | rules-spec | TruthSourceProvenance | test/net/imadz/metarch/domain/invariant/TruthSourceProvenanceRulesSpec.scala | identical | — |
+| rules | rules-spec | UseCaseDefinition | test/net/imadz/metarch/domain/invariant/UseCaseDefinitionRulesSpec.scala | identical | — |
 | rules | rules-spec | User | test/net/imadz/metarch/domain/invariant/UserRulesSpec.scala | diff | 33 |
-| rules | rules-spec | ValueObjectDefinition | test/net/imadz/metarch/domain/invariant/ValueObjectDefinitionRulesSpec.scala | diff | 5 |
-| rules | rules-spec | WorkTicket | test/net/imadz/metarch/domain/invariant/WorkTicketRulesSpec.scala | diff | 55 |
-| rules | rules-spec | Workgroup | test/net/imadz/metarch/domain/invariant/WorkgroupRulesSpec.scala | diff | 218 |
+| rules | rules-spec | ValueObjectDefinition | test/net/imadz/metarch/domain/invariant/ValueObjectDefinitionRulesSpec.scala | identical | — |
+| rules | rules-spec | WorkTicket | test/net/imadz/metarch/domain/invariant/WorkTicketRulesSpec.scala | identical | — |
+| rules | rules-spec | Workgroup | test/net/imadz/metarch/domain/invariant/WorkgroupRulesSpec.scala | identical | — |
 | rules | rules-spec | Workshop | test/net/imadz/metarch/domain/invariant/WorkshopRulesSpec.scala | identical | — |
 | rules | policies-spec | Concept | test/net/imadz/metarch/domain/policy/ConceptPoliciesSpec.scala | identical | — |
 | rules | policies-spec | KnowledgePatch | test/net/imadz/metarch/domain/policy/KnowledgePatchPoliciesSpec.scala | identical | — |
@@ -505,193 +505,6 @@
    * @param authMethod password / sso  @knowledge 313c97e5-6c43-4b23-b7c0-6036d6736c50@f2fe5a4dea
 ```
 
-### app/net/imadz/metarch/application/aggregates/behaviors/DoRCommandHelpers.scala（command-helpers-rules·首差 @line 58 byte 3214）
-
-```scala
---- live（want）
-      EvaluateDoRParams(command.triggeredBy, command.verdicts, command.dorId)
-
-    override def createFailureReply(param: EvaluateDoRParams)(error: iMadzError): EvaluateDoRReply =
-+++ truthsrc（got）
-      EvaluateDoRParams(command.triggeredBy, command.verdicts)
-
-    override def createFailureReply(param: EvaluateDoRParams)(error: iMadzError): EvaluateDoRReply =
-```
-
-### app/net/imadz/metarch/application/aggregates/behaviors/FieldModelDefinitionCommandHelpers.scala（command-helpers-rules·首差 @line 124 byte 9138）
-
-```scala
---- live（want）
-      DeclareFieldModelParams(command.triggeredBy, command.identifierOrigin, command.description, command.definitionId, command.tenantId, command.tenantScoped, command.identifierDescription, command.aggregateName, command.identifierName, command.entityName, command.identifierType, command.aggregateR
-+++ truthsrc（got）
-      DeclareFieldModelParams(command.triggeredBy, command.identifierOrigin, command.description, command.definitionId, command.tenantId, command.tenantScoped, command.identifierDescription, command.aggregateName, command.identifierName, command.entityName, command.identifierType)
-
-    override def 
-```
-
-### app/net/imadz/metarch/application/aggregates/behaviors/FsmDefinitionCommandHelpers.scala（command-helpers-rules·首差 @line 26 byte 1690）
-
-```scala
---- live（want）
-      EstablishFsmDefinitionParams(command.triggeredBy, command.fsmId, command.confirmedBy)
-
-    override def createFailureReply(param: EstablishFsmDefinitionParams)(error: iMadzError): EstablishFsmDefinitionReply =
-+++ truthsrc（got）
-      EstablishFsmDefinitionParams(command.triggeredBy)
-
-    override def createFailureReply(param: EstablishFsmDefinitionParams)(error: iMadzError): EstablishFsmDefinitionReply =
-```
-
-### app/net/imadz/metarch/application/aggregates/behaviors/KnowledgePatchCommandHelpers.scala（command-helpers-rules·首差 @line 67 byte 4526）
-
-```scala
---- live（want）
-      MergeKnowledgePatchParams(command.triggeredBy, command.patchId, command.catalogId)
-
-    override def createFailureReply(param: MergeKnowledgePatchParams)(error: iMadzError): MergeKnowledgePatchReply =
-+++ truthsrc（got）
-      MergeKnowledgePatchParams(command.triggeredBy)
-
-    override def createFailureReply(param: MergeKnowledgePatchParams)(error: iMadzError): MergeKnowledgePatchReply =
-```
-
-### app/net/imadz/metarch/application/aggregates/behaviors/OrganizationMemberCommandHelpers.scala（command-helpers-rules·首差 @line 30 byte 2146）
-
-```scala
---- live（want）
-      AcceptTenantInvitationParams(command.triggeredBy, command.tenantId, command.userId)
-
-    override def createFailureReply(param: AcceptTenantInvitationParams)(error: iMadzError): AcceptTenantInvitationReply =
-+++ truthsrc（got）
-      AcceptTenantInvitationParams(command.triggeredBy)
-
-    override def createFailureReply(param: AcceptTenantInvitationParams)(error: iMadzError): AcceptTenantInvitationReply =
-```
-
-### app/net/imadz/metarch/application/aggregates/behaviors/ProjectCommandHelpers.scala（command-helpers-rules·首差 @line 67 byte 4195）
-
-```scala
---- live（want）
-      InitiateProjectParams(command.tenantId, command.workgroupId, command.name, command.triggeredBy, command.description, command.projectId, command.projectOwnerUserId, command.workshopName, command.catalogId)
-
-    override def createFailureReply(param: InitiateProjectParams)(error: iMadzError): In
-+++ truthsrc（got）
-      InitiateProjectParams(command.tenantId, command.workgroupId, command.name, command.triggeredBy, command.description, command.projectId, command.projectOwnerUserId, command.workshopName)
-
-    override def createFailureReply(param: InitiateProjectParams)(error: iMadzError): InitiateProjectReply 
-```
-
-### app/net/imadz/metarch/application/aggregates/behaviors/SessionCommandHelpers.scala（command-helpers-rules·首差 @line 67 byte 4027）
-
-```scala
---- live（want）
-      InviteObserverParams(command.triggeredBy, command.sessionId, command.userId, command.displayName, command.email, command.phoneNumber)
-
-    override def createFailureReply(param: InviteObserverParams)(error: iMadzError): InviteObserverReply =
-+++ truthsrc（got）
-      InviteObserverParams(command.triggeredBy, command.sessionId, command.userId)
-
-    override def createFailureReply(param: InviteObserverParams)(error: iMadzError): InviteObserverReply =
-```
-
-### app/net/imadz/metarch/application/aggregates/behaviors/UserCommandHelpers.scala（command-helpers-rules·首差 @line 50 byte 2872）
-
-```scala
---- live（want）
-      RegisterUserParams(command.email, command.password, command.triggeredBy, command.displayName, command.authMethod, command.phoneNumber, command.userId)
-
-    override def createFailureReply(param: RegisterUserParams)(error: iMadzError): RegisterUserReply =
-+++ truthsrc（got）
-      RegisterUserParams(command.email, command.password, command.triggeredBy, command.displayName, command.authMethod, command.phoneNumber)
-
-    override def createFailureReply(param: RegisterUserParams)(error: iMadzError): RegisterUserReply =
-```
-
-### app/net/imadz/metarch/application/aggregates/behaviors/WorkTicketCommandHelpers.scala（command-helpers-rules·首差 @line 26 byte 1606）
-
-```scala
---- live（want）
-      ConcludeWorkTicketParams(command.triggeredBy, command.ticketId, command.approvedBy)
-
-    override def createFailureReply(param: ConcludeWorkTicketParams)(error: iMadzError): ConcludeWorkTicketReply =
-+++ truthsrc（got）
-      ConcludeWorkTicketParams(command.triggeredBy)
-
-    override def createFailureReply(param: ConcludeWorkTicketParams)(error: iMadzError): ConcludeWorkTicketReply =
-```
-
-### app/net/imadz/metarch/application/aggregates/behaviors/WorkgroupCommandHelpers.scala（command-helpers-rules·首差 @line 78 byte 5097）
-
-```scala
---- live（want）
-      InviteWorkgroupMemberParams(command.userId, command.triggeredBy, command.workgroupId, command.displayName, command.email, command.phoneNumber)
-
-    override def createFailureReply(param: InviteWorkgroupMemberParams)(error: iMadzError): InviteWorkgroupMemberReply =
-+++ truthsrc（got）
-      InviteWorkgroupMemberParams(command.userId, command.triggeredBy, command.workgroupId)
-
-    override def createFailureReply(param: InviteWorkgroupMemberParams)(error: iMadzError): InviteWorkgroupMemberReply =
-```
-
-### app/net/imadz/metarch/domain/invariant/DoRRules.scala（rules·首差 @line 79 byte 4706）
-
-```scala
---- live（want）
-      // ④层 forEach（param.verdicts）：批量发射
-      else Right(Nil ::: p.verdicts.map { item => DoRVerdictSubmitted(state.dorId, item, Instant.now(), "", p.triggeredBy, Instant.now(), state.tenantId) })
-      }
-+++ truthsrc（got）
-      else Right(List(DoRVerdictSubmitted(state.dorId, item, Instant.now(), "", p.triggeredBy, Instant.now(), state.tenantId)))
-      }
-  }
-```
-
-### app/net/imadz/metarch/domain/invariant/FieldModelDefinitionRules.scala（rules·首差 @line 94 byte 6270）
-
-```scala
---- live（want）
-      Right(List(FieldModelDeclared(p.definitionId, p.aggregateName, p.entityName, p.description.getOrElse(""), p.identifierName, p.identifierType.getOrElse(""), p.identifierOrigin, p.identifierDescription, p.tenantScoped.getOrElse(false), p.triggeredBy, p.tenantId, Instant.now(), p.triggeredBy, Ins
-+++ truthsrc（got）
-      Right(List(FieldModelDeclared(p.definitionId, p.aggregateName, p.entityName, p.description.getOrElse(""), p.identifierName, p.identifierType.getOrElse(""), p.identifierOrigin, p.identifierDescription, p.tenantScoped.getOrElse(false), p.triggeredBy, p.tenantId, Instant.now(), p.triggeredBy, Ins
-```
-
-### app/net/imadz/metarch/domain/invariant/NoteRules.scala（rules·首差 @line 64 byte 4543）
-
-```scala
---- live（want）
-      // 幂等（④层 idempotentOn）：载荷与 state 全等 ⇒ 无事件（外部系统重复同步同键同实体）
-      else if (Option(state.status).exists(_.nonEmpty) && p.content == state.content && p.name == state.name && p.`type` == state.`type` && p.timeline == state.timeline && p.pivotal == state.pivotal && p.info == state.info && Option(p.li
-+++ truthsrc（got）
-      // ④层 emitWhen（条件发射·S2-89 WP0）：{"notEmpty":{"var":"CaptureNote.conflictingNoteIds"}}
-      else Right(List(NoteCaptured(state.noteId, p.tenantId, p.sessionId, p.externalId.toString, p.boardId.toString, p.content, p.`type`, p.timeline, p.pivotal, p.name, p.links, p.info, p.stage, p.author, p.de
-```
-
-### app/net/imadz/metarch/domain/invariant/OrganizationMemberRules.scala（rules·首差 @line 75 byte 5611）
-
-```scala
---- live（want）
-      else Right(List(TenantMemberInvited(p.tenantId, p.userId, p.department, p.jobTitle, p.invitedBy, p.expiresAt, Instant.now(), p.triggeredBy, p.displayName, p.email, p.phoneNumber)))
-      }
-  }
-+++ truthsrc（got）
-      else Right(List(TenantMemberInvited(p.tenantId, p.userId, p.department, p.jobTitle, p.invitedBy, p.expiresAt, Instant.now(), p.triggeredBy, state.displayName, state.email, state.phoneNumber)))
-      }
-  }
-```
-
-### app/net/imadz/metarch/domain/invariant/SessionRules.scala（rules·首差 @line 103 byte 7356）
-
-```scala
---- live（want）
-      else Right(List(ObserverInvited(p.sessionId, state.stageId, p.userId, p.triggeredBy, Instant.now(), state.tenantId, p.displayName, p.email, p.phoneNumber)))
-      }
-  }
-+++ truthsrc（got）
-      else Right(List(ObserverInvited(p.sessionId, state.stageId, p.userId, p.triggeredBy, Instant.now(), state.tenantId, None, None, None)))
-      }
-  }
-```
-
 ### app/net/imadz/metarch/domain/invariant/UserRules.scala（rules·首差 @line 35 byte 1769）
 
 ```scala
@@ -705,277 +518,6 @@
     // @knowledge 9f016187-0e39-4fa6-bf77-f50f77d2010b@23d227f9fd5a4634
 ```
 
-### app/net/imadz/metarch/domain/invariant/WorkgroupRules.scala（rules·首差 @line 114 byte 7864）
-
-```scala
---- live（want）
-      else Right(List(WorkgroupMemberInvited(p.workgroupId, p.userId, p.triggeredBy, Instant.now(), state.tenantId, p.displayName, p.email, p.phoneNumber)))
-      }
-  }
-+++ truthsrc（got）
-      else Right(List(WorkgroupMemberInvited(p.workgroupId, p.userId, p.triggeredBy, Instant.now(), state.tenantId, None, None, None)))
-      }
-  }
-```
-
-### app/net/imadz/metarch/domain/invariant/params/DoRRuleParams.scala（rule-params·首差 @line 20 byte 987）
-
-```scala
---- live（want）
-  final case class EvaluateDoRParams(triggeredBy: String, verdicts: List[DoRVerdict] = List.empty, dorId: Id)
-  // @knowledge 7373ea54-0a7c-4de2-afd4-c171d6f0d71f@3152e2d43bcc81cc
-  /** FixDoRVerdict 规则投影：ir_cmd_FixDoRVerdict_triggered_by */
-+++ truthsrc（got）
-  final case class EvaluateDoRParams(triggeredBy: String, verdicts: List[DoRVerdict] = List.empty)
-  // @knowledge 7373ea54-0a7c-4de2-afd4-c171d6f0d71f@3152e2d43bcc81cc
-  /** FixDoRVerdict 规则投影：ir_cmd_FixDoRVerdict_triggered_by */
-```
-
-### app/net/imadz/metarch/domain/invariant/params/FieldModelDefinitionRuleParams.scala（rule-params·首差 @line 26 byte 1812）
-
-```scala
---- live（want）
-  final case class DeclareFieldModelParams(triggeredBy: String, identifierOrigin: String, description: Option[String], definitionId: Id, tenantId: Id, tenantScoped: Option[Boolean], identifierDescription: String, aggregateName: String, identifierName: String, entityName: String, identifierType: Opti
-+++ truthsrc（got）
-  final case class DeclareFieldModelParams(triggeredBy: String, identifierOrigin: String, description: Option[String], definitionId: Id, tenantId: Id, tenantScoped: Option[Boolean], identifierDescription: String, aggregateName: String, identifierName: String, entityName: String, identifierType: Opti
-```
-
-### app/net/imadz/metarch/domain/invariant/params/FsmDefinitionRuleParams.scala（rule-params·首差 @line 5 byte 124）
-
-```scala
---- live（want）
-import net.imadz.common.CommonTypes.Id
-import net.imadz.metarch.domain.values._
-/**
-+++ truthsrc（got）
-/**
- * 命令 → 领域规则参数的投影 VO（方案 A，2026-08-22，rules_domain_gen.mjs 生成）。
- * 业务不变性（InvariantRule）是 domain 层资产——规则只依赖领域实体状态、事件与这些投影 VO，
-```
-
-### app/net/imadz/metarch/domain/invariant/params/KnowledgePatchRuleParams.scala（rule-params·首差 @line 23 byte 1289）
-
-```scala
---- live（want）
-  final case class MergeKnowledgePatchParams(triggeredBy: String, patchId: Id, catalogId: Id)
-  // @knowledge 5c0dc4e3-c15a-4029-852a-ad63820f7ebb@ea2a45273782d523
-  /** RejectKnowledgePatch 规则投影：IR-KP-CMD-011 / ir_cmd_RejectKnowledgePatch_triggered_by */
-+++ truthsrc（got）
-  final case class MergeKnowledgePatchParams(triggeredBy: String)
-  // @knowledge 5c0dc4e3-c15a-4029-852a-ad63820f7ebb@ea2a45273782d523
-  /** RejectKnowledgePatch 规则投影：IR-KP-CMD-011 / ir_cmd_RejectKnowledgePatch_triggered_by */
-```
-
-### app/net/imadz/metarch/domain/invariant/params/OrganizationMemberRuleParams.scala（rule-params·首差 @line 15 byte 661）
-
-```scala
---- live（want）
-  final case class AcceptTenantInvitationParams(triggeredBy: String, tenantId: Id, userId: Id)
-  // @knowledge f8145929-cb3a-4837-8fda-140de01f09dd@a61a044ee0265b01
-  /** InviteTenantMember 规则投影：ir_cmd_InviteTenantMember_triggered_by / ir_gen_ref_IR_INV_CMD_001_tenantId / ir_gen_ref_IR_INV_CMD_001_u
-+++ truthsrc（got）
-  final case class AcceptTenantInvitationParams(triggeredBy: String)
-  // @knowledge f8145929-cb3a-4837-8fda-140de01f09dd@a61a044ee0265b01
-  /** InviteTenantMember 规则投影：ir_cmd_InviteTenantMember_triggered_by / ir_gen_ref_IR_INV_CMD_001_tenantId / ir_gen_ref_IR_INV_CMD_001_userId / ir_gen_ref_IR_INV_
-```
-
-### app/net/imadz/metarch/domain/invariant/params/ProjectRuleParams.scala（rule-params·首差 @line 23 byte 1570）
-
-```scala
---- live（want）
-  final case class InitiateProjectParams(tenantId: Id, workgroupId: Id, name: String, triggeredBy: String, description: String, projectId: Id, projectOwnerUserId: Id, workshopName: Option[String], catalogId: Id)
-  // @knowledge f80acc40-b875-4091-81a3-e665bc664ca6@3425883218f34eee
-  /** PauseProject
-+++ truthsrc（got）
-  final case class InitiateProjectParams(tenantId: Id, workgroupId: Id, name: String, triggeredBy: String, description: String, projectId: Id, projectOwnerUserId: Id, workshopName: Option[String])
-  // @knowledge f80acc40-b875-4091-81a3-e665bc664ca6@3425883218f34eee
-  /** PauseProject 规则投影：IR-PRJ-CM
-```
-
-### app/net/imadz/metarch/domain/invariant/params/SessionRuleParams.scala（rule-params·首差 @line 23 byte 1376）
-
-```scala
---- live（want）
-  final case class InviteObserverParams(triggeredBy: String, sessionId: Id, userId: Id, displayName: Option[String], email: Option[String], phoneNumber: Option[String])
-  // @knowledge 6ccdd6ec-32c3-4188-be76-34c92a69a52a@7615c22fe03d0a9d
-  /** InviteParticipant 规则投影：IR-SES-CMD-007 / ir_cmd_InvitePa
-+++ truthsrc（got）
-  final case class InviteObserverParams(triggeredBy: String, sessionId: Id, userId: Id)
-  // @knowledge 6ccdd6ec-32c3-4188-be76-34c92a69a52a@7615c22fe03d0a9d
-  /** InviteParticipant 规则投影：IR-SES-CMD-007 / ir_cmd_InviteParticipant_triggered_by / ir_gen_ref_IR_SES_CMD_003_userId */
-```
-
-### app/net/imadz/metarch/domain/invariant/params/UserRuleParams.scala（rule-params·首差 @line 20 byte 1189）
-
-```scala
---- live（want）
-  final case class RegisterUserParams(email: String, password: String, triggeredBy: String, displayName: String, authMethod: String, phoneNumber: Option[String], userId: Id)
-  // @knowledge 016f5865-7084-4c8e-9ce3-9f4a0eda71fc@684d46c3d6bfbdd0
-  /** UpdateUserProfile 规则投影：IR-USER-CMD-005 / ir_cmd_Up
-+++ truthsrc（got）
-  final case class RegisterUserParams(email: String, password: String, triggeredBy: String, displayName: String, authMethod: String, phoneNumber: Option[String])
-  // @knowledge 016f5865-7084-4c8e-9ce3-9f4a0eda71fc@684d46c3d6bfbdd0
-  /** UpdateUserProfile 规则投影：IR-USER-CMD-005 / ir_cmd_UpdateUserProf
-```
-
-### app/net/imadz/metarch/domain/invariant/params/WorkTicketRuleParams.scala（rule-params·首差 @line 5 byte 124）
-
-```scala
---- live（want）
-import net.imadz.common.CommonTypes.Id
-import net.imadz.metarch.domain.values._
-/**
-+++ truthsrc（got）
-/**
- * 命令 → 领域规则参数的投影 VO（方案 A，2026-08-22，rules_domain_gen.mjs 生成）。
- * 业务不变性（InvariantRule）是 domain 层资产——规则只依赖领域实体状态、事件与这些投影 VO，
-```
-
-### app/net/imadz/metarch/domain/invariant/params/WorkgroupRuleParams.scala（rule-params·首差 @line 26 byte 1781）
-
-```scala
---- live（want）
-  final case class InviteWorkgroupMemberParams(userId: Id, triggeredBy: String, workgroupId: Id, displayName: Option[String], email: Option[String], phoneNumber: Option[String])
-  // @knowledge 616fcfa3-4c78-4704-aad7-bc27d4cc834d@163ed5a1c1d95b5e
-  /** RemoveWorkgroupMember 规则投影：ir_cmd_RemoveWorkgr
-+++ truthsrc（got）
-  final case class InviteWorkgroupMemberParams(userId: Id, triggeredBy: String, workgroupId: Id)
-  // @knowledge 616fcfa3-4c78-4704-aad7-bc27d4cc834d@163ed5a1c1d95b5e
-  /** RemoveWorkgroupMember 规则投影：ir_cmd_RemoveWorkgroupMember_triggered_by / ir_gen_ref_IR_WG_CMD_005_userId */
-```
-
-### test/net/imadz/metarch/domain/invariant/CemEdgeRulesSpec.scala（rules-spec·首差 @line 6 byte 277）
-
-```scala
---- live（want）
-// @knowledge abdbc772-b260-45c2-88eb-fa2c57e5d403@14ae9a76b36e0e8d
-package net.imadz.metarch.domain.invariant
-
-+++ truthsrc（got）
-package net.imadz.metarch.domain.invariant
-
-import java.time.Instant
-```
-
-### test/net/imadz/metarch/domain/invariant/DoRRulesSpec.scala（rules-spec·首差 @line 433 byte 50068）
-
-```scala
---- live（want）
-      val r = DoRRules.EvaluateDoRRule(DoRState(Id.of("00000000-0000-0000-0000-000000000001"), net.imadz.common.Id.of("02129bb8-6106-3d1a-852c-592e2dc6b383"), "REQUESTED", Id.of("00000000-0000-0000-0000-000000000001"), Nil, "{}", "{}", Nil, null, "", Nil, Id.of("00000000-0000-0000-0000-000000000001"
-+++ truthsrc（got）
-      val r = DoRRules.EvaluateDoRRule(DoRState(Id.of("00000000-0000-0000-0000-000000000001"), net.imadz.common.Id.of("02129bb8-6106-3d1a-852c-592e2dc6b383"), "REQUESTED", Id.of("00000000-0000-0000-0000-000000000001"), Nil, "{}", "{}", Nil, null, "", Nil, Id.of("00000000-0000-0000-0000-000000000001"
-```
-
-### test/net/imadz/metarch/domain/invariant/FieldModelDefinitionRulesSpec.scala（rules-spec·首差 @line 13 byte 769）
-
-```scala
---- live（want）
-// @knowledge c13d6293-80c2-4a5f-9a34-2c4afaaacfbe@d6ecfaf7991d4cc4
-// @knowledge c14c4126-9200-4236-9734-3209c0cdf672@a37a7987fa1f9e86
-// @knowledge c1c35788-2854-4ce5-a005-3d128432b754@9f56fa0e0c782568
-+++ truthsrc（got）
-// @knowledge c14c4126-9200-4236-9734-3209c0cdf672@a37a7987fa1f9e86
-// @knowledge c1c35788-2854-4ce5-a005-3d128432b754@9f56fa0e0c782568
-// @knowledge c528fb32-649d-4155-8189-cc215b8466ff@25332fb867d709a5
-```
-
-### test/net/imadz/metarch/domain/invariant/FsmDefinitionRulesSpec.scala（rules-spec·首差 @line 51 byte 2496）
-
-```scala
---- live（want）
-      val r = FsmDefinitionRules.UpdateFsmElementsRule(FsmDefinitionState(Id.of("00000000-0000-0000-0000-000000000001"), "ESTABLISHED", "DoR", List(FsmStateDef("REQUESTED", "INITIAL", "", "barry", "2026-09-01T00:00:00Z"), FsmStateDef("IN_PROGRESS", "NORMAL", "", "barry", "2026-09-01T00:00:00Z")), Li
-+++ truthsrc（got）
-      val r = FsmDefinitionRules.UpdateFsmElementsRule(FsmDefinitionState(Id.of("00000000-0000-0000-0000-000000000001"), "ESTABLISHED", "DoR", List(FsmStateDef("REQUESTED", "INITIAL", "", "barry", "2026-09-01T00:00:00Z"), FsmStateDef("IN_PROGRESS", "NORMAL", "", "barry", "2026-09-01T00:00:00Z")), Li
-```
-
-### test/net/imadz/metarch/domain/invariant/KnowledgePatchRulesSpec.scala（rules-spec·首差 @line 99 byte 8908）
-
-```scala
---- live（want）
-      val r = KnowledgePatchRules.MergeKnowledgePatchRule(KnowledgePatchState(Id.of("00000000-0000-0000-0000-000000000001"), net.imadz.common.Id.of("02129bb8-6106-3d1a-852c-592e2dc6b383"), "MERGE_REQUESTED", Nil, Id.of("00000000-0000-0000-0000-000000000001"), Id.of("00000000-0000-0000-0000-000000000
-+++ truthsrc（got）
-      val r = KnowledgePatchRules.MergeKnowledgePatchRule(KnowledgePatchState(Id.of("00000000-0000-0000-0000-000000000001"), net.imadz.common.Id.of("02129bb8-6106-3d1a-852c-592e2dc6b383"), "MERGE_REQUESTED", Nil, Id.of("00000000-0000-0000-0000-000000000001"), Id.of("00000000-0000-0000-0000-000000000
-```
-
-### test/net/imadz/metarch/domain/invariant/OrganizationMemberRulesSpec.scala（rules-spec·首差 @line 62 byte 3084）
-
-```scala
---- live（want）
-      val r = OrganizationMemberRules.InviteTenantMemberRule(OrganizationMemberState(Id.of("00000000-0000-0000-0000-000000000001"), net.imadz.common.Id.of("02129bb8-6106-3d1a-852c-592e2dc6b383"), "PENDING", Id.of("00000000-0000-0000-0000-000000000001"), "", "", "", "", "", null, null), InviteTenantM
-+++ truthsrc（got）
-      val r = OrganizationMemberRules.InviteTenantMemberRule(OrganizationMemberState(Id.of("00000000-0000-0000-0000-000000000001"), net.imadz.common.Id.of("02129bb8-6106-3d1a-852c-592e2dc6b383"), "PENDING", Id.of("00000000-0000-0000-0000-000000000001"), "", "", "", "", "", null, null), InviteTenantM
-```
-
-### test/net/imadz/metarch/domain/invariant/ProjectRulesSpec.scala（rules-spec·首差 @line 70 byte 3452）
-
-```scala
---- live（want）
-      val r = ProjectRules.InitiateProjectRule(ProjectState(Id.of("00000000-0000-0000-0000-000000000001"), net.imadz.common.Id.of("02129bb8-6106-3d1a-852c-592e2dc6b383"), "initiated", Id.of("00000000-0000-0000-0000-000000000001"), Id.of("00000000-0000-0000-0000-000000000001"), "", "", null, "", null
-+++ truthsrc（got）
-      val r = ProjectRules.InitiateProjectRule(ProjectState(Id.of("00000000-0000-0000-0000-000000000001"), net.imadz.common.Id.of("02129bb8-6106-3d1a-852c-592e2dc6b383"), "initiated", Id.of("00000000-0000-0000-0000-000000000001"), Id.of("00000000-0000-0000-0000-000000000001"), "", "", null, "", null
-```
-
-### test/net/imadz/metarch/domain/invariant/ReadModelDefinitionRulesSpec.scala（rules-spec·首差 @line 5 byte 223）
-
-```scala
---- live（want）
-// @knowledge d3d722c4-31e1-4865-ad1e-670c5621071a@b062b1229777effa
-// @knowledge e3dfe4f2-8414-4305-a498-e895dfea0445@59554681f4180b07
-package net.imadz.metarch.domain.invariant
-+++ truthsrc（got）
-// @knowledge e3dfe4f2-8414-4305-a498-e895dfea0445@59554681f4180b07
-package net.imadz.metarch.domain.invariant
-
-```
-
-### test/net/imadz/metarch/domain/invariant/RoleCommandBindingRulesSpec.scala（rules-spec·首差 @line 5 byte 209）
-
-```scala
---- live（want）
-// @knowledge f80255bd-352e-4d86-b30f-6b2e0c9cb1c6@d8611e665e8215bc
-package net.imadz.metarch.domain.invariant
-
-+++ truthsrc（got）
-package net.imadz.metarch.domain.invariant
-
-import java.time.Instant
-```
-
-### test/net/imadz/metarch/domain/invariant/SessionRulesSpec.scala（rules-spec·首差 @line 197 byte 19571）
-
-```scala
---- live（want）
-      val r = SessionRules.InviteParticipantRule(SessionState(Id.of("00000000-0000-0000-0000-000000000001"), net.imadz.common.Id.of("02129bb8-6106-3d1a-852c-592e2dc6b383"), "prepared", Id.of("00000000-0000-0000-0000-000000000001"), Nil, Nil, null, null, null, Nil), InviteParticipantParams(Id.of("000
-+++ truthsrc（got）
-      val r = SessionRules.InviteParticipantRule(SessionState(Id.of("00000000-0000-0000-0000-000000000001"), net.imadz.common.Id.of("02129bb8-6106-3d1a-852c-592e2dc6b383"), "prepared", Id.of("00000000-0000-0000-0000-000000000001"), Nil, Nil, null, null, null, Nil), InviteParticipantParams(Id.of("000
-```
-
-### test/net/imadz/metarch/domain/invariant/TruthSourceProvenanceRulesSpec.scala（rules-spec·首差 @line 3 byte 87）
-
-```scala
---- live（want）
-// @knowledge 1d8059ed-d48f-4eb8-81e2-c12e775e2aa0@cbf8b2f060f6c914
-// @knowledge d02fe08c-5bd4-47df-9eed-3ce8dbfae0df@f39ee4284088e02d
-package net.imadz.metarch.domain.invariant
-+++ truthsrc（got）
-// @knowledge d02fe08c-5bd4-47df-9eed-3ce8dbfae0df@f39ee4284088e02d
-package net.imadz.metarch.domain.invariant
-
-```
-
-### test/net/imadz/metarch/domain/invariant/UseCaseDefinitionRulesSpec.scala（rules-spec·首差 @line 5 byte 209）
-
-```scala
---- live（want）
-// @knowledge f2a7c2cc-814f-441f-9fbf-a45441c7e26a@c623e0e0ccce9dbd
-package net.imadz.metarch.domain.invariant
-
-+++ truthsrc（got）
-package net.imadz.metarch.domain.invariant
-
-import java.time.Instant
-```
-
 ### test/net/imadz/metarch/domain/invariant/UserRulesSpec.scala（rules-spec·首差 @line 33 byte 1488）
 
 ```scala
@@ -987,36 +529,5 @@ import java.time.Instant
       passwordSalt: String = "",
       passwordHash: String = "",
       authMethod: String = "",
-```
-
-### test/net/imadz/metarch/domain/invariant/ValueObjectDefinitionRulesSpec.scala（rules-spec·首差 @line 5 byte 209）
-
-```scala
---- live（want）
-// @knowledge d161757e-a82e-4352-aa36-898a8038a27c@a572a443a31eabc4
-package net.imadz.metarch.domain.invariant
-
-+++ truthsrc（got）
-package net.imadz.metarch.domain.invariant
-
-import java.time.Instant
-```
-
-### test/net/imadz/metarch/domain/invariant/WorkTicketRulesSpec.scala（rules-spec·首差 @line 55 byte 2420）
-
-```scala
---- live（want）
-      val r = WorkTicketRules.UpdateWorkTicketItemsRule(WorkTicketState(Id.of("00000000-0000-0000-0000-000000000001"), "APPROVED", "aggregate", net.imadz.common.Id.of("6252d057-1760-33d2-85e2-e41a2b1e7743"), "06", "FSM", "示例工单", List(ChecklistItem("条目1", "CONFIRMED", "", "ai-inference", "barry", "20
-+++ truthsrc（got）
-      val r = WorkTicketRules.UpdateWorkTicketItemsRule(WorkTicketState(Id.of("00000000-0000-0000-0000-000000000001"), "APPROVED", "aggregate", net.imadz.common.Id.of("6252d057-1760-33d2-85e2-e41a2b1e7743"), "06", "FSM", "示例工单", List(ChecklistItem("条目1", "CONFIRMED", "", "ai-inference", "barry", "20
-```
-
-### test/net/imadz/metarch/domain/invariant/WorkgroupRulesSpec.scala（rules-spec·首差 @line 218 byte 25809）
-
-```scala
---- live（want）
-      val r = WorkgroupRules.InviteWorkgroupMemberRule(WorkgroupState(Id.of("00000000-0000-0000-0000-000000000001"), net.imadz.common.Id.of("02129bb8-6106-3d1a-852c-592e2dc6b383"), "active", "", net.imadz.common.Id.of("1e4e0961-7a69-31fa-bccc-8cb7e5c58039"), List(net.imadz.common.Id.of("1e4e0961-7a6
-+++ truthsrc（got）
-      val r = WorkgroupRules.InviteWorkgroupMemberRule(WorkgroupState(Id.of("00000000-0000-0000-0000-000000000001"), net.imadz.common.Id.of("02129bb8-6106-3d1a-852c-592e2dc6b383"), "active", "", net.imadz.common.Id.of("1e4e0961-7a69-31fa-bccc-8cb7e5c58039"), List(net.imadz.common.Id.of("1e4e0961-7a6
 ```
 

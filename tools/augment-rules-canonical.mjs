@@ -63,6 +63,18 @@
 //     normalize+scalaSig mapping, which is the same mapping its skeleton generator renders the
 //     Entity from (self-consistent: derived sig ≡ generated sig).
 //
+// V4-6 extensions (the rules-face supply-leg closure) — derived slots, mirroring the source's
+// load-time derivations:
+//   • payloads[].lineageHint — ④-layer emissions bindings (param.*/expr:p.* forms, constant AND
+//     emitWhen legs, first-wins per payload; rules_domain_gen kn-export switch lines 444-462).
+//     Consumed by the generator's lineage supply loop (source lines 1131-1152).
+//   • ruleAnchor: {cmd, evt, agg, ids} — the library-wide noteIds registration slice
+//     (rules_domain_gen lines 89-106): buckets keyed by definedIn.target (bare names,
+//     cross-aggregate-faithful) + the ruleId→targetId map. Asymmetric with cases-driven
+//     attribution: rules that never render a check (untranslatable / case-less but ④层-guard
+//     referenced) still anchor — the RulesSpec header (paramsNoteIds) and inline guard anchors
+//     consume this slice.
+//
 // Usage:
 //   node tools/augment-rules-canonical.mjs --aggregate ModelCatalog \
 //     --canonical  golden/scala-cqrs-es-metarch/model-catalog.canonical.json \
@@ -167,6 +179,69 @@ for (const cmd of agg.commands ?? []) {
   if (rules && rules.length) { cmd.preconditionRules = rules; attached++; }
   const d = bmByCmd.get(cmd.name);
   if (d) cmd.behaviorModel = d; // RAW ④-layer decision — guards/idempotentOn included (inc9)
+}
+
+// --- payload lineageHint derivation (rules_domain_gen kn-export switch, lines 444-462 verbatim) --
+// ④ payload→param 血缘 ← ④层 emissions bindings（param.*/expr:p.* 词法），恒定腿＋emitWhen 条件腿
+// 同源同补；每载荷先到先得（tgt.lineageHint 守卫）。事件同名/血缘两条 Params 补给环的血缘腿消费
+// `Cmd.field` 形提示（supplyLineage）。
+for (const ev of agg.events ?? []) {
+  const payloads = ev.payloads ?? [];
+  for (const d of bmByCmd.values()) { // decisions declaration order (Map insertion order)
+    const allEmissions = [...(d.emissions ?? []), ...((d.emitWhen ?? []).flatMap((b) => b.events ?? []))];
+    for (const em of allEmissions) {
+      if (em.event !== ev.name) continue;
+      for (const [pf, src] of Object.entries(em.bindings ?? {})) {
+        const tgt = payloads.find((p) => p.name === pf);
+        if (!tgt || tgt.lineageHint) continue;
+        const m = String(src).match(/^(?:param\.|expr:p\.)([A-Za-z]\w*)/);
+        if (m) tgt.lineageHint = `${d.command}.${m[1]}`;
+      }
+    }
+  }
+}
+
+// --- rule-anchor buckets (rules_domain_gen lines 89-106 verbatim) --------------------------------
+// The RulesSpec header noteIds registration scans the WHOLE invariant library bucketed by
+// definedIn.target — bare names, cross-aggregate-faithful (registration is asymmetric with the
+// cases-driven attribution above: untranslated / case-less rules never render a check line yet DO
+// contribute their targetId to the spec header — CemEdge's two AGGREGATE_INVARIANT rules are the
+// pinned case). Sliced to THIS aggregate's command/event/aggregate names; the generator re-filters
+// the evt bucket by its own event-name face (rules_domain_gen line 1436).
+{
+  const buckets = { cmd: new Map(), evt: new Map(), agg: new Map() };
+  for (const c of invRules) {
+    const t = c.metadata?.invariantType;
+    const target = c.definedIn?.target;
+    const id = c.definedIn?.targetId ?? null;
+    if (!target || !id) continue;
+    const k = t === 'COMMAND_PRECONDITION' ? buckets.cmd
+      : t === 'EVENT_POSTCONDITION' ? buckets.evt
+      : t === 'AGGREGATE_INVARIANT' ? buckets.agg : null;
+    if (!k) continue;
+    if (!k.has(target)) k.set(target, []);
+    k.get(target).push(id);
+  }
+  const evtNames = new Set((agg.events ?? []).map((e) => e.name));
+  const cmdSlice = {};
+  for (const name of cmdNames) if (buckets.cmd.has(name)) cmdSlice[name] = buckets.cmd.get(name);
+  const evtSlice = {};
+  for (const name of evtNames) if (buckets.evt.has(name)) evtSlice[name] = buckets.evt.get(name);
+  const aggSlice = buckets.agg.get(aggName) ?? [];
+  // ruleTargetIds: ruleId → targetId over the same slice face — the live ruleTargetId registration
+  // is library-wide (line 99) while rendering attribution is cases-driven; a rule rendered via a
+  // ④层 guard ref but WITHOUT cases (IR-USER-CMD-002) still carries its inline anchor live.
+  const idSlice = {};
+  for (const c of invRules) {
+    const target = c.definedIn?.target;
+    const id = c.definedIn?.targetId ?? null;
+    if (!target || !id) continue;
+    if (!(cmdNames.has(target) || evtNames.has(target) || target === aggName)) continue;
+    idSlice[c.id] = id;
+  }
+  if (Object.keys(cmdSlice).length || Object.keys(evtSlice).length || aggSlice.length || Object.keys(idSlice).length) {
+    agg.ruleAnchor = { cmd: cmdSlice, evt: evtSlice, agg: aggSlice, ids: idSlice };
+  } else delete agg.ruleAnchor;
 }
 
 // --- event postcondition rules (EVENT_POSTCONDITION over this aggregate's events) --------------
