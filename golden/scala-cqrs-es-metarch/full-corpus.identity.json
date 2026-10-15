@@ -4,22 +4,21 @@
   "canonical": "golden/scala-cqrs-es-metarch/full-corpus.canonical.json",
   "aggregates": 27,
   "counts": {
-    "rows": 422,
+    "rows": 794,
     "byStatus": {
-      "identical": 313,
-      "owned-by-other": 108,
-      "diff": 1
+      "identical": 686,
+      "owned-by-other": 108
     },
     "identicalByFace": {
       "skeleton": 108,
       "rules": 172,
-      "api": 33
+      "api": 35,
+      "projection": 369,
+      "ddl": 2
     },
-    "diffByKind": {
-      "routes": 1
-    },
+    "diffByKind": {},
     "stampOnlyDiff": 108,
-    "reverseRows": 0,
+    "reverseRows": 14,
     "genErrors": {}
   },
   "rows": [
@@ -3626,6 +3625,15 @@
     {
       "face": "api",
       "kind": "controller",
+      "aggregate": null,
+      "path": "app/controllers/AggregateStateApiController.scala",
+      "livePath": "app/controllers/AggregateStateApiController.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "api",
+      "kind": "controller",
       "aggregate": "CemEdge",
       "path": "app/controllers/CemEdgeApiController.scala",
       "livePath": "app/controllers/CemEdgeApiController.scala",
@@ -3899,19 +3907,13 @@
       "aggregate": null,
       "path": "conf/routes",
       "livePath": "conf/routes",
-      "status": "diff",
+      "status": "identical",
       "routes": {
         "liveLines": 229,
-        "emittedLines": 202,
-        "liveOnly": 27,
+        "emittedLines": 229,
+        "liveOnly": 0,
         "emittedOnly": 0,
         "liveOnlyOutsideUnportedFaces": 0
-      },
-      "excerpt": {
-        "byte": 0,
-        "line": 0,
-        "want": "27 live-only lines (unported faces: aggregate-state ×27 — vector joined V4-13)",
-        "got": "0 truthsrc-only lines"
       }
     },
     {
@@ -3940,7 +3942,3417 @@
       "livePath": "app/net/imadz/metarch/infrastructure/auth/ViewKeys.scala",
       "status": "identical",
       "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/AcceptTenantInvitationDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/AcceptTenantInvitationDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/AssembleMetadataDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/AssembleMetadataDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "Note",
+      "path": "app/net/imadz/metarch/application/projection/CaptureNoteDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/CaptureNoteDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/CatalogGraphView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/CatalogGraphView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "CemEdge",
+      "path": "app/net/imadz/metarch/application/projection/CemEdgeDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/CemEdgeDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "Subdomain",
+      "path": "app/net/imadz/metarch/application/projection/ClassifySubdomainDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/ClassifySubdomainDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/ConceptEdgeGraphView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/ConceptEdgeGraphView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/ConceptGraphView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/ConceptGraphView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/ContextGraphView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/ContextGraphView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/ContextRelationGraphView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/ContextRelationGraphView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/CreateCatalogVersionDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/CreateCatalogVersionDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "Workgroup",
+      "path": "app/net/imadz/metarch/application/projection/CreateWorkgroupDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/CreateWorkgroupDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "User",
+      "path": "app/net/imadz/metarch/application/projection/DeactivateUserDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/DeactivateUserDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "ContextRelation",
+      "path": "app/net/imadz/metarch/application/projection/DefineContextRelationDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/DefineContextRelationDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "Context",
+      "path": "app/net/imadz/metarch/application/projection/DiscoverContextDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/DiscoverContextDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/ExportMetadataDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/ExportMetadataDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/FieldModelDefinitionDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/FieldModelDefinitionDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "Project",
+      "path": "app/net/imadz/metarch/application/projection/InitiateProjectDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/InitiateProjectDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/InviteTenantMemberDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/InviteTenantMemberDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "Workgroup",
+      "path": "app/net/imadz/metarch/application/projection/InviteWorkgroupMemberDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/InviteWorkgroupMemberDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/KnowledgeSemanticView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/KnowledgeSemanticView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/NoteGraphView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/NoteGraphView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "Tenant",
+      "path": "app/net/imadz/metarch/application/projection/OnboardTenantDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/OnboardTenantDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "Stage",
+      "path": "app/net/imadz/metarch/application/projection/OpenSessionDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/OpenSessionDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "Concept",
+      "path": "app/net/imadz/metarch/application/projection/ParkConceptDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/ParkConceptDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/QuestionGraphView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/QuestionGraphView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "ReadModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/ReadModelDefinitionDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/ReadModelDefinitionDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/ReleaseCatalogVersionDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/ReleaseCatalogVersionDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/ReleaseMetadataVersionDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/ReleaseMetadataVersionDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/RemoveTenantMemberDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/RemoveTenantMemberDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/ResendInvitationDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/ResendInvitationDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/ResolveCatalogConflictDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/ResolveCatalogConflictDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/RevokeInvitationDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/RevokeInvitationDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "RoleCommandBinding",
+      "path": "app/net/imadz/metarch/application/projection/RoleCommandBindingDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/RoleCommandBindingDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "Workshop",
+      "path": "app/net/imadz/metarch/application/projection/ScheduleWorkshopDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/ScheduleWorkshopDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/SubdomainGraphView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/SubdomainGraphView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "DoR",
+      "path": "app/net/imadz/metarch/application/projection/SubmitDoRVerdictDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/SubmitDoRVerdictDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "KnowledgePatch",
+      "path": "app/net/imadz/metarch/application/projection/SubmitKnowledgePatchDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/SubmitKnowledgePatchDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "TruthSourceProvenance",
+      "path": "app/net/imadz/metarch/application/projection/TruthSourceProvenanceDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/TruthSourceProvenanceDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "User",
+      "path": "app/net/imadz/metarch/application/projection/UpdateUserProfileDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/UpdateUserProfileDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "UseCaseDefinition",
+      "path": "app/net/imadz/metarch/application/projection/UseCaseDefinitionDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/UseCaseDefinitionDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/UserLookupByEmailOrPhoneView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/UserLookupByEmailOrPhoneView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-def",
+      "aggregate": "ValueObjectDefinition",
+      "path": "app/net/imadz/metarch/application/projection/ValueObjectDefinitionDecisionView.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/ValueObjectDefinitionDecisionView.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/AcceptTenantInvitationDecisionViewOnTenantMemberInvitationAcceptedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/AcceptTenantInvitationDecisionViewOnTenantMemberInvitationAcceptedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/AcceptTenantInvitationDecisionViewOnTenantMemberInvitationExpiredHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/AcceptTenantInvitationDecisionViewOnTenantMemberInvitationExpiredHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/AcceptTenantInvitationDecisionViewOnTenantMemberInvitationResentHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/AcceptTenantInvitationDecisionViewOnTenantMemberInvitationResentHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/AcceptTenantInvitationDecisionViewOnTenantMemberInvitationRevokedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/AcceptTenantInvitationDecisionViewOnTenantMemberInvitationRevokedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/AcceptTenantInvitationDecisionViewOnTenantMemberInvitedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/AcceptTenantInvitationDecisionViewOnTenantMemberInvitedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/AcceptTenantInvitationDecisionViewOnTenantMemberJoinedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/AcceptTenantInvitationDecisionViewOnTenantMemberJoinedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/AcceptTenantInvitationDecisionViewOnTenantMemberRemovedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/AcceptTenantInvitationDecisionViewOnTenantMemberRemovedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/AssembleMetadataDecisionViewOnCatalogConflictDetectedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/AssembleMetadataDecisionViewOnCatalogConflictDetectedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/AssembleMetadataDecisionViewOnCatalogConflictResolvedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/AssembleMetadataDecisionViewOnCatalogConflictResolvedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/AssembleMetadataDecisionViewOnCatalogVersionCreatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/AssembleMetadataDecisionViewOnCatalogVersionCreatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/AssembleMetadataDecisionViewOnCatalogVersionReleasedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/AssembleMetadataDecisionViewOnCatalogVersionReleasedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/AssembleMetadataDecisionViewOnKnowledgePatchedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/AssembleMetadataDecisionViewOnKnowledgePatchedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/AssembleMetadataDecisionViewOnMetadataAssembledHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/AssembleMetadataDecisionViewOnMetadataAssembledHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/AssembleMetadataDecisionViewOnMetadataExportedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/AssembleMetadataDecisionViewOnMetadataExportedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/AssembleMetadataDecisionViewOnMetadataVersionReleasedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/AssembleMetadataDecisionViewOnMetadataVersionReleasedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Note",
+      "path": "app/net/imadz/metarch/application/projection/handlers/CaptureNoteDecisionViewOnCollisionDetectedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CaptureNoteDecisionViewOnCollisionDetectedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Note",
+      "path": "app/net/imadz/metarch/application/projection/handlers/CaptureNoteDecisionViewOnCollisionResolvedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CaptureNoteDecisionViewOnCollisionResolvedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Note",
+      "path": "app/net/imadz/metarch/application/projection/handlers/CaptureNoteDecisionViewOnNoteCapturedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CaptureNoteDecisionViewOnNoteCapturedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Note",
+      "path": "app/net/imadz/metarch/application/projection/handlers/CaptureNoteDecisionViewOnNoteContentUpdatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CaptureNoteDecisionViewOnNoteContentUpdatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Note",
+      "path": "app/net/imadz/metarch/application/projection/handlers/CaptureNoteDecisionViewOnNoteInfoUpdatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CaptureNoteDecisionViewOnNoteInfoUpdatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Note",
+      "path": "app/net/imadz/metarch/application/projection/handlers/CaptureNoteDecisionViewOnNoteRemovedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CaptureNoteDecisionViewOnNoteRemovedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/CatalogGraphViewOnCatalogConflictDetectedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CatalogGraphViewOnCatalogConflictDetectedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/CatalogGraphViewOnCatalogConflictResolvedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CatalogGraphViewOnCatalogConflictResolvedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/CatalogGraphViewOnCatalogVersionCreatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CatalogGraphViewOnCatalogVersionCreatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/CatalogGraphViewOnCatalogVersionReleasedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CatalogGraphViewOnCatalogVersionReleasedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/CatalogGraphViewOnKnowledgePatchedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CatalogGraphViewOnKnowledgePatchedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/CatalogGraphViewOnMetadataAssembledHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CatalogGraphViewOnMetadataAssembledHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/CatalogGraphViewOnMetadataExportedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CatalogGraphViewOnMetadataExportedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/CatalogGraphViewOnMetadataVersionReleasedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CatalogGraphViewOnMetadataVersionReleasedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "CemEdge",
+      "path": "app/net/imadz/metarch/application/projection/handlers/CemEdgeDecisionViewOnEdgeDeclaredHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CemEdgeDecisionViewOnEdgeDeclaredHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "CemEdge",
+      "path": "app/net/imadz/metarch/application/projection/handlers/CemEdgeDecisionViewOnEdgePatchedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CemEdgeDecisionViewOnEdgePatchedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "CemEdge",
+      "path": "app/net/imadz/metarch/application/projection/handlers/CemEdgeDecisionViewOnEdgeRetiredHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CemEdgeDecisionViewOnEdgeRetiredHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Subdomain",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ClassifySubdomainDecisionViewOnSubdomainClassifiedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ClassifySubdomainDecisionViewOnSubdomainClassifiedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Subdomain",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ClassifySubdomainDecisionViewOnSubdomainKindUpdatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ClassifySubdomainDecisionViewOnSubdomainKindUpdatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/ConceptEdgeGraphViewOnRelationCreatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ConceptEdgeGraphViewOnRelationCreatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/ConceptEdgeGraphViewOnRelationRemovedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ConceptEdgeGraphViewOnRelationRemovedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/ConceptGraphViewOnConceptConflictWarningCreatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ConceptGraphViewOnConceptConflictWarningCreatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/ConceptGraphViewOnConceptConflictWarningResolvedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ConceptGraphViewOnConceptConflictWarningResolvedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/ConceptGraphViewOnConceptDeprecatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ConceptGraphViewOnConceptDeprecatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/ConceptGraphViewOnConceptEstablishedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ConceptGraphViewOnConceptEstablishedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/ConceptGraphViewOnConceptLandingsRecordedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ConceptGraphViewOnConceptLandingsRecordedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/ConceptGraphViewOnConceptParkedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ConceptGraphViewOnConceptParkedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/ConceptGraphViewOnConceptRemovedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ConceptGraphViewOnConceptRemovedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/ConceptGraphViewOnConceptUnparkedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ConceptGraphViewOnConceptUnparkedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/ConceptGraphViewOnConceptsMergedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ConceptGraphViewOnConceptsMergedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/ContextGraphViewOnContextDiscoveredHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ContextGraphViewOnContextDiscoveredHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/ContextRelationGraphViewOnContextRelationDefinedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ContextRelationGraphViewOnContextRelationDefinedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/ContextRelationGraphViewOnContextRelationUpdatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ContextRelationGraphViewOnContextRelationUpdatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/CreateCatalogVersionDecisionViewOnCatalogConflictDetectedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CreateCatalogVersionDecisionViewOnCatalogConflictDetectedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/CreateCatalogVersionDecisionViewOnCatalogConflictResolvedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CreateCatalogVersionDecisionViewOnCatalogConflictResolvedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/CreateCatalogVersionDecisionViewOnCatalogVersionCreatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CreateCatalogVersionDecisionViewOnCatalogVersionCreatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/CreateCatalogVersionDecisionViewOnCatalogVersionReleasedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CreateCatalogVersionDecisionViewOnCatalogVersionReleasedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/CreateCatalogVersionDecisionViewOnKnowledgePatchedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CreateCatalogVersionDecisionViewOnKnowledgePatchedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/CreateCatalogVersionDecisionViewOnMetadataAssembledHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CreateCatalogVersionDecisionViewOnMetadataAssembledHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/CreateCatalogVersionDecisionViewOnMetadataExportedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CreateCatalogVersionDecisionViewOnMetadataExportedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/CreateCatalogVersionDecisionViewOnMetadataVersionReleasedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CreateCatalogVersionDecisionViewOnMetadataVersionReleasedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Workgroup",
+      "path": "app/net/imadz/metarch/application/projection/handlers/CreateWorkgroupDecisionViewOnWorkgroupArchivedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CreateWorkgroupDecisionViewOnWorkgroupArchivedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Workgroup",
+      "path": "app/net/imadz/metarch/application/projection/handlers/CreateWorkgroupDecisionViewOnWorkgroupFormedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CreateWorkgroupDecisionViewOnWorkgroupFormedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Workgroup",
+      "path": "app/net/imadz/metarch/application/projection/handlers/CreateWorkgroupDecisionViewOnWorkgroupMemberInvitedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CreateWorkgroupDecisionViewOnWorkgroupMemberInvitedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Workgroup",
+      "path": "app/net/imadz/metarch/application/projection/handlers/CreateWorkgroupDecisionViewOnWorkgroupMemberJoinedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CreateWorkgroupDecisionViewOnWorkgroupMemberJoinedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Workgroup",
+      "path": "app/net/imadz/metarch/application/projection/handlers/CreateWorkgroupDecisionViewOnWorkgroupMemberRemovedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CreateWorkgroupDecisionViewOnWorkgroupMemberRemovedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Workgroup",
+      "path": "app/net/imadz/metarch/application/projection/handlers/CreateWorkgroupDecisionViewOnWorkgroupNameUpdatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CreateWorkgroupDecisionViewOnWorkgroupNameUpdatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Workgroup",
+      "path": "app/net/imadz/metarch/application/projection/handlers/CreateWorkgroupDecisionViewOnWorkgroupOwnerAssignedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/CreateWorkgroupDecisionViewOnWorkgroupOwnerAssignedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "User",
+      "path": "app/net/imadz/metarch/application/projection/handlers/DeactivateUserDecisionViewOnUserDeactivatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/DeactivateUserDecisionViewOnUserDeactivatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "User",
+      "path": "app/net/imadz/metarch/application/projection/handlers/DeactivateUserDecisionViewOnUserProfileUpdatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/DeactivateUserDecisionViewOnUserProfileUpdatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "User",
+      "path": "app/net/imadz/metarch/application/projection/handlers/DeactivateUserDecisionViewOnUserReactivatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/DeactivateUserDecisionViewOnUserReactivatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "User",
+      "path": "app/net/imadz/metarch/application/projection/handlers/DeactivateUserDecisionViewOnUserRegisteredHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/DeactivateUserDecisionViewOnUserRegisteredHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ContextRelation",
+      "path": "app/net/imadz/metarch/application/projection/handlers/DefineContextRelationDecisionViewOnContextRelationDefinedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/DefineContextRelationDecisionViewOnContextRelationDefinedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ContextRelation",
+      "path": "app/net/imadz/metarch/application/projection/handlers/DefineContextRelationDecisionViewOnContextRelationUpdatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/DefineContextRelationDecisionViewOnContextRelationUpdatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Context",
+      "path": "app/net/imadz/metarch/application/projection/handlers/DiscoverContextDecisionViewOnContextDiscoveredHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/DiscoverContextDecisionViewOnContextDiscoveredHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Context",
+      "path": "app/net/imadz/metarch/application/projection/handlers/DiscoverContextDecisionViewOnContextScopeUpdatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/DiscoverContextDecisionViewOnContextScopeUpdatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ExportMetadataDecisionViewOnCatalogConflictDetectedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ExportMetadataDecisionViewOnCatalogConflictDetectedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ExportMetadataDecisionViewOnCatalogConflictResolvedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ExportMetadataDecisionViewOnCatalogConflictResolvedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ExportMetadataDecisionViewOnCatalogVersionCreatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ExportMetadataDecisionViewOnCatalogVersionCreatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ExportMetadataDecisionViewOnCatalogVersionReleasedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ExportMetadataDecisionViewOnCatalogVersionReleasedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ExportMetadataDecisionViewOnKnowledgePatchedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ExportMetadataDecisionViewOnKnowledgePatchedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ExportMetadataDecisionViewOnMetadataAssembledHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ExportMetadataDecisionViewOnMetadataAssembledHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ExportMetadataDecisionViewOnMetadataExportedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ExportMetadataDecisionViewOnMetadataExportedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ExportMetadataDecisionViewOnMetadataVersionReleasedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ExportMetadataDecisionViewOnMetadataVersionReleasedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnAggregateRelationRemovedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnAggregateRelationRemovedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnAggregateStatusPatchedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnAggregateStatusPatchedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnCommandDeclaredHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnCommandDeclaredHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnCommandParameterAddedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnCommandParameterAddedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnCommandRemovedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnCommandRemovedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnDescriptionRenamedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnDescriptionRenamedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnEventDeclaredHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnEventDeclaredHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnEventPayloadAddedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnEventPayloadAddedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnEventRemovedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnEventRemovedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnFieldModelDeclaredHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnFieldModelDeclaredHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnFieldModelRemovedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnFieldModelRemovedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnRelationDeclaredHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnRelationDeclaredHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnStateFieldDeclaredHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnStateFieldDeclaredHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnStateFieldRemovedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnStateFieldRemovedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnStateGateDeclaredHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnStateGateDeclaredHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnStateGateRemovedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnStateGateRemovedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnWrittenByAddedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnWrittenByAddedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnWrittenByCutHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnWrittenByCutHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnWrittenByReplacedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/FieldModelDefinitionDecisionViewOnWrittenByReplacedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Project",
+      "path": "app/net/imadz/metarch/application/projection/handlers/InitiateProjectDecisionViewOnProjectCancelledHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/InitiateProjectDecisionViewOnProjectCancelledHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Project",
+      "path": "app/net/imadz/metarch/application/projection/handlers/InitiateProjectDecisionViewOnProjectCompletedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/InitiateProjectDecisionViewOnProjectCompletedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Project",
+      "path": "app/net/imadz/metarch/application/projection/handlers/InitiateProjectDecisionViewOnProjectDescriptionUpdatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/InitiateProjectDecisionViewOnProjectDescriptionUpdatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Project",
+      "path": "app/net/imadz/metarch/application/projection/handlers/InitiateProjectDecisionViewOnProjectInitiatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/InitiateProjectDecisionViewOnProjectInitiatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Project",
+      "path": "app/net/imadz/metarch/application/projection/handlers/InitiateProjectDecisionViewOnProjectOwnerAssignedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/InitiateProjectDecisionViewOnProjectOwnerAssignedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Project",
+      "path": "app/net/imadz/metarch/application/projection/handlers/InitiateProjectDecisionViewOnProjectPausedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/InitiateProjectDecisionViewOnProjectPausedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Project",
+      "path": "app/net/imadz/metarch/application/projection/handlers/InitiateProjectDecisionViewOnProjectResumedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/InitiateProjectDecisionViewOnProjectResumedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/InviteTenantMemberDecisionViewOnTenantMemberInvitationAcceptedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/InviteTenantMemberDecisionViewOnTenantMemberInvitationAcceptedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/InviteTenantMemberDecisionViewOnTenantMemberInvitationExpiredHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/InviteTenantMemberDecisionViewOnTenantMemberInvitationExpiredHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/InviteTenantMemberDecisionViewOnTenantMemberInvitationResentHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/InviteTenantMemberDecisionViewOnTenantMemberInvitationResentHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/InviteTenantMemberDecisionViewOnTenantMemberInvitationRevokedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/InviteTenantMemberDecisionViewOnTenantMemberInvitationRevokedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/InviteTenantMemberDecisionViewOnTenantMemberInvitedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/InviteTenantMemberDecisionViewOnTenantMemberInvitedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/InviteTenantMemberDecisionViewOnTenantMemberJoinedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/InviteTenantMemberDecisionViewOnTenantMemberJoinedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/InviteTenantMemberDecisionViewOnTenantMemberRemovedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/InviteTenantMemberDecisionViewOnTenantMemberRemovedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Workgroup",
+      "path": "app/net/imadz/metarch/application/projection/handlers/InviteWorkgroupMemberDecisionViewOnWorkgroupArchivedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/InviteWorkgroupMemberDecisionViewOnWorkgroupArchivedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Workgroup",
+      "path": "app/net/imadz/metarch/application/projection/handlers/InviteWorkgroupMemberDecisionViewOnWorkgroupFormedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/InviteWorkgroupMemberDecisionViewOnWorkgroupFormedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Workgroup",
+      "path": "app/net/imadz/metarch/application/projection/handlers/InviteWorkgroupMemberDecisionViewOnWorkgroupMemberInvitedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/InviteWorkgroupMemberDecisionViewOnWorkgroupMemberInvitedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Workgroup",
+      "path": "app/net/imadz/metarch/application/projection/handlers/InviteWorkgroupMemberDecisionViewOnWorkgroupMemberJoinedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/InviteWorkgroupMemberDecisionViewOnWorkgroupMemberJoinedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Workgroup",
+      "path": "app/net/imadz/metarch/application/projection/handlers/InviteWorkgroupMemberDecisionViewOnWorkgroupMemberRemovedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/InviteWorkgroupMemberDecisionViewOnWorkgroupMemberRemovedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Workgroup",
+      "path": "app/net/imadz/metarch/application/projection/handlers/InviteWorkgroupMemberDecisionViewOnWorkgroupNameUpdatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/InviteWorkgroupMemberDecisionViewOnWorkgroupNameUpdatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Workgroup",
+      "path": "app/net/imadz/metarch/application/projection/handlers/InviteWorkgroupMemberDecisionViewOnWorkgroupOwnerAssignedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/InviteWorkgroupMemberDecisionViewOnWorkgroupOwnerAssignedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/KnowledgeSemanticViewOnConceptEstablishedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/KnowledgeSemanticViewOnConceptEstablishedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/KnowledgeSemanticViewOnConceptRemovedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/KnowledgeSemanticViewOnConceptRemovedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/KnowledgeSemanticViewOnConceptsMergedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/KnowledgeSemanticViewOnConceptsMergedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/KnowledgeSemanticViewOnNoteCapturedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/KnowledgeSemanticViewOnNoteCapturedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/KnowledgeSemanticViewOnNoteContentUpdatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/KnowledgeSemanticViewOnNoteContentUpdatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/KnowledgeSemanticViewOnNoteRemovedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/KnowledgeSemanticViewOnNoteRemovedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/NoteGraphViewOnCollisionDetectedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/NoteGraphViewOnCollisionDetectedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/NoteGraphViewOnCollisionResolvedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/NoteGraphViewOnCollisionResolvedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/NoteGraphViewOnNoteCapturedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/NoteGraphViewOnNoteCapturedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/NoteGraphViewOnNoteContentUpdatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/NoteGraphViewOnNoteContentUpdatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/NoteGraphViewOnNoteRemovedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/NoteGraphViewOnNoteRemovedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Tenant",
+      "path": "app/net/imadz/metarch/application/projection/handlers/OnboardTenantDecisionViewOnTenantArchivedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/OnboardTenantDecisionViewOnTenantArchivedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Tenant",
+      "path": "app/net/imadz/metarch/application/projection/handlers/OnboardTenantDecisionViewOnTenantMemberRosterUpdatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/OnboardTenantDecisionViewOnTenantMemberRosterUpdatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Tenant",
+      "path": "app/net/imadz/metarch/application/projection/handlers/OnboardTenantDecisionViewOnTenantOnboardedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/OnboardTenantDecisionViewOnTenantOnboardedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Tenant",
+      "path": "app/net/imadz/metarch/application/projection/handlers/OnboardTenantDecisionViewOnTenantOwnerChangedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/OnboardTenantDecisionViewOnTenantOwnerChangedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Tenant",
+      "path": "app/net/imadz/metarch/application/projection/handlers/OnboardTenantDecisionViewOnTenantResumedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/OnboardTenantDecisionViewOnTenantResumedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Tenant",
+      "path": "app/net/imadz/metarch/application/projection/handlers/OnboardTenantDecisionViewOnTenantSuspendedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/OnboardTenantDecisionViewOnTenantSuspendedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Stage",
+      "path": "app/net/imadz/metarch/application/projection/handlers/OpenSessionDecisionViewOnObserverInvitedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/OpenSessionDecisionViewOnObserverInvitedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Stage",
+      "path": "app/net/imadz/metarch/application/projection/handlers/OpenSessionDecisionViewOnParticipantInvitedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/OpenSessionDecisionViewOnParticipantInvitedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Stage",
+      "path": "app/net/imadz/metarch/application/projection/handlers/OpenSessionDecisionViewOnSessionClosedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/OpenSessionDecisionViewOnSessionClosedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Stage",
+      "path": "app/net/imadz/metarch/application/projection/handlers/OpenSessionDecisionViewOnSessionCompletedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/OpenSessionDecisionViewOnSessionCompletedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Stage",
+      "path": "app/net/imadz/metarch/application/projection/handlers/OpenSessionDecisionViewOnSessionOpenedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/OpenSessionDecisionViewOnSessionOpenedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Stage",
+      "path": "app/net/imadz/metarch/application/projection/handlers/OpenSessionDecisionViewOnSessionPreparedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/OpenSessionDecisionViewOnSessionPreparedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Stage",
+      "path": "app/net/imadz/metarch/application/projection/handlers/OpenSessionDecisionViewOnSessionRoleAssignedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/OpenSessionDecisionViewOnSessionRoleAssignedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Concept",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ParkConceptDecisionViewOnConceptConflictWarningCreatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ParkConceptDecisionViewOnConceptConflictWarningCreatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Concept",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ParkConceptDecisionViewOnConceptConflictWarningResolvedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ParkConceptDecisionViewOnConceptConflictWarningResolvedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Concept",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ParkConceptDecisionViewOnConceptDeprecatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ParkConceptDecisionViewOnConceptDeprecatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Concept",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ParkConceptDecisionViewOnConceptEstablishedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ParkConceptDecisionViewOnConceptEstablishedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Concept",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ParkConceptDecisionViewOnConceptParkedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ParkConceptDecisionViewOnConceptParkedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Concept",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ParkConceptDecisionViewOnConceptRemovedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ParkConceptDecisionViewOnConceptRemovedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Concept",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ParkConceptDecisionViewOnConceptUnparkedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ParkConceptDecisionViewOnConceptUnparkedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Concept",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ParkConceptDecisionViewOnConceptUpdatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ParkConceptDecisionViewOnConceptUpdatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Concept",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ParkConceptDecisionViewOnConceptsMergedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ParkConceptDecisionViewOnConceptsMergedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/QuestionGraphViewOnQuestionAnsweredHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/QuestionGraphViewOnQuestionAnsweredHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/QuestionGraphViewOnQuestionDismissedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/QuestionGraphViewOnQuestionDismissedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/QuestionGraphViewOnQuestionRaisedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/QuestionGraphViewOnQuestionRaisedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/QuestionGraphViewOnQuestionReopenedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/QuestionGraphViewOnQuestionReopenedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ReadModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ReadModelDefinitionDecisionViewOnReadModelDeclaredHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ReadModelDefinitionDecisionViewOnReadModelDeclaredHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ReadModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ReadModelDefinitionDecisionViewOnReadModelFieldPatchedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ReadModelDefinitionDecisionViewOnReadModelFieldPatchedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ReadModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ReadModelDefinitionDecisionViewOnReadModelRemovedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ReadModelDefinitionDecisionViewOnReadModelRemovedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ReleaseCatalogVersionDecisionViewOnCatalogConflictDetectedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ReleaseCatalogVersionDecisionViewOnCatalogConflictDetectedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ReleaseCatalogVersionDecisionViewOnCatalogConflictResolvedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ReleaseCatalogVersionDecisionViewOnCatalogConflictResolvedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ReleaseCatalogVersionDecisionViewOnCatalogVersionCreatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ReleaseCatalogVersionDecisionViewOnCatalogVersionCreatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ReleaseCatalogVersionDecisionViewOnCatalogVersionReleasedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ReleaseCatalogVersionDecisionViewOnCatalogVersionReleasedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ReleaseCatalogVersionDecisionViewOnKnowledgePatchedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ReleaseCatalogVersionDecisionViewOnKnowledgePatchedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ReleaseCatalogVersionDecisionViewOnMetadataAssembledHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ReleaseCatalogVersionDecisionViewOnMetadataAssembledHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ReleaseCatalogVersionDecisionViewOnMetadataExportedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ReleaseCatalogVersionDecisionViewOnMetadataExportedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ReleaseCatalogVersionDecisionViewOnMetadataVersionReleasedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ReleaseCatalogVersionDecisionViewOnMetadataVersionReleasedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ReleaseMetadataVersionDecisionViewOnCatalogConflictDetectedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ReleaseMetadataVersionDecisionViewOnCatalogConflictDetectedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ReleaseMetadataVersionDecisionViewOnCatalogConflictResolvedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ReleaseMetadataVersionDecisionViewOnCatalogConflictResolvedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ReleaseMetadataVersionDecisionViewOnCatalogVersionCreatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ReleaseMetadataVersionDecisionViewOnCatalogVersionCreatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ReleaseMetadataVersionDecisionViewOnCatalogVersionReleasedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ReleaseMetadataVersionDecisionViewOnCatalogVersionReleasedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ReleaseMetadataVersionDecisionViewOnKnowledgePatchedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ReleaseMetadataVersionDecisionViewOnKnowledgePatchedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ReleaseMetadataVersionDecisionViewOnMetadataAssembledHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ReleaseMetadataVersionDecisionViewOnMetadataAssembledHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ReleaseMetadataVersionDecisionViewOnMetadataExportedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ReleaseMetadataVersionDecisionViewOnMetadataExportedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ReleaseMetadataVersionDecisionViewOnMetadataVersionReleasedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ReleaseMetadataVersionDecisionViewOnMetadataVersionReleasedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/RemoveTenantMemberDecisionViewOnTenantMemberInvitationAcceptedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/RemoveTenantMemberDecisionViewOnTenantMemberInvitationAcceptedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/RemoveTenantMemberDecisionViewOnTenantMemberInvitationExpiredHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/RemoveTenantMemberDecisionViewOnTenantMemberInvitationExpiredHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/RemoveTenantMemberDecisionViewOnTenantMemberInvitationResentHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/RemoveTenantMemberDecisionViewOnTenantMemberInvitationResentHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/RemoveTenantMemberDecisionViewOnTenantMemberInvitationRevokedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/RemoveTenantMemberDecisionViewOnTenantMemberInvitationRevokedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/RemoveTenantMemberDecisionViewOnTenantMemberInvitedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/RemoveTenantMemberDecisionViewOnTenantMemberInvitedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/RemoveTenantMemberDecisionViewOnTenantMemberJoinedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/RemoveTenantMemberDecisionViewOnTenantMemberJoinedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/RemoveTenantMemberDecisionViewOnTenantMemberRemovedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/RemoveTenantMemberDecisionViewOnTenantMemberRemovedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ResendInvitationDecisionViewOnTenantMemberInvitationAcceptedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ResendInvitationDecisionViewOnTenantMemberInvitationAcceptedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ResendInvitationDecisionViewOnTenantMemberInvitationExpiredHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ResendInvitationDecisionViewOnTenantMemberInvitationExpiredHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ResendInvitationDecisionViewOnTenantMemberInvitationResentHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ResendInvitationDecisionViewOnTenantMemberInvitationResentHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ResendInvitationDecisionViewOnTenantMemberInvitationRevokedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ResendInvitationDecisionViewOnTenantMemberInvitationRevokedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ResendInvitationDecisionViewOnTenantMemberInvitedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ResendInvitationDecisionViewOnTenantMemberInvitedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ResendInvitationDecisionViewOnTenantMemberJoinedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ResendInvitationDecisionViewOnTenantMemberJoinedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ResendInvitationDecisionViewOnTenantMemberRemovedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ResendInvitationDecisionViewOnTenantMemberRemovedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ResolveCatalogConflictDecisionViewOnCatalogConflictDetectedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ResolveCatalogConflictDecisionViewOnCatalogConflictDetectedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ResolveCatalogConflictDecisionViewOnCatalogConflictResolvedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ResolveCatalogConflictDecisionViewOnCatalogConflictResolvedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ResolveCatalogConflictDecisionViewOnCatalogVersionCreatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ResolveCatalogConflictDecisionViewOnCatalogVersionCreatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ResolveCatalogConflictDecisionViewOnCatalogVersionReleasedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ResolveCatalogConflictDecisionViewOnCatalogVersionReleasedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ResolveCatalogConflictDecisionViewOnKnowledgePatchedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ResolveCatalogConflictDecisionViewOnKnowledgePatchedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ResolveCatalogConflictDecisionViewOnMetadataAssembledHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ResolveCatalogConflictDecisionViewOnMetadataAssembledHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ResolveCatalogConflictDecisionViewOnMetadataExportedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ResolveCatalogConflictDecisionViewOnMetadataExportedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ResolveCatalogConflictDecisionViewOnMetadataVersionReleasedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ResolveCatalogConflictDecisionViewOnMetadataVersionReleasedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/RevokeInvitationDecisionViewOnTenantMemberInvitationAcceptedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/RevokeInvitationDecisionViewOnTenantMemberInvitationAcceptedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/RevokeInvitationDecisionViewOnTenantMemberInvitationExpiredHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/RevokeInvitationDecisionViewOnTenantMemberInvitationExpiredHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/RevokeInvitationDecisionViewOnTenantMemberInvitationResentHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/RevokeInvitationDecisionViewOnTenantMemberInvitationResentHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/RevokeInvitationDecisionViewOnTenantMemberInvitationRevokedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/RevokeInvitationDecisionViewOnTenantMemberInvitationRevokedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/RevokeInvitationDecisionViewOnTenantMemberInvitedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/RevokeInvitationDecisionViewOnTenantMemberInvitedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/RevokeInvitationDecisionViewOnTenantMemberJoinedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/RevokeInvitationDecisionViewOnTenantMemberJoinedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/handlers/RevokeInvitationDecisionViewOnTenantMemberRemovedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/RevokeInvitationDecisionViewOnTenantMemberRemovedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "RoleCommandBinding",
+      "path": "app/net/imadz/metarch/application/projection/handlers/RoleCommandBindingDecisionViewOnCommandBoundHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/RoleCommandBindingDecisionViewOnCommandBoundHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "RoleCommandBinding",
+      "path": "app/net/imadz/metarch/application/projection/handlers/RoleCommandBindingDecisionViewOnCommandUnboundHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/RoleCommandBindingDecisionViewOnCommandUnboundHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Workshop",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ScheduleWorkshopDecisionViewOnWorkshopCompletedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ScheduleWorkshopDecisionViewOnWorkshopCompletedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Workshop",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ScheduleWorkshopDecisionViewOnWorkshopRoleAssignedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ScheduleWorkshopDecisionViewOnWorkshopRoleAssignedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Workshop",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ScheduleWorkshopDecisionViewOnWorkshopScheduledHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ScheduleWorkshopDecisionViewOnWorkshopScheduledHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "Workshop",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ScheduleWorkshopDecisionViewOnWorkshopStartedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ScheduleWorkshopDecisionViewOnWorkshopStartedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/SubdomainGraphViewOnSubdomainClassifiedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/SubdomainGraphViewOnSubdomainClassifiedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/SubdomainGraphViewOnSubdomainKindUpdatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/SubdomainGraphViewOnSubdomainKindUpdatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "DoR",
+      "path": "app/net/imadz/metarch/application/projection/handlers/SubmitDoRVerdictDecisionViewOnDoRBlockedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/SubmitDoRVerdictDecisionViewOnDoRBlockedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "DoR",
+      "path": "app/net/imadz/metarch/application/projection/handlers/SubmitDoRVerdictDecisionViewOnDoRFindingsSubmittedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/SubmitDoRVerdictDecisionViewOnDoRFindingsSubmittedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "DoR",
+      "path": "app/net/imadz/metarch/application/projection/handlers/SubmitDoRVerdictDecisionViewOnDoRPassedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/SubmitDoRVerdictDecisionViewOnDoRPassedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "DoR",
+      "path": "app/net/imadz/metarch/application/projection/handlers/SubmitDoRVerdictDecisionViewOnDoRReopenedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/SubmitDoRVerdictDecisionViewOnDoRReopenedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "DoR",
+      "path": "app/net/imadz/metarch/application/projection/handlers/SubmitDoRVerdictDecisionViewOnDoRRequestedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/SubmitDoRVerdictDecisionViewOnDoRRequestedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "DoR",
+      "path": "app/net/imadz/metarch/application/projection/handlers/SubmitDoRVerdictDecisionViewOnDoRVerdictFixedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/SubmitDoRVerdictDecisionViewOnDoRVerdictFixedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "DoR",
+      "path": "app/net/imadz/metarch/application/projection/handlers/SubmitDoRVerdictDecisionViewOnDoRVerdictSubmittedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/SubmitDoRVerdictDecisionViewOnDoRVerdictSubmittedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "KnowledgePatch",
+      "path": "app/net/imadz/metarch/application/projection/handlers/SubmitKnowledgePatchDecisionViewOnKnowledgeMergeConflictDetectedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/SubmitKnowledgePatchDecisionViewOnKnowledgeMergeConflictDetectedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "KnowledgePatch",
+      "path": "app/net/imadz/metarch/application/projection/handlers/SubmitKnowledgePatchDecisionViewOnKnowledgePatchMergeCommittedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/SubmitKnowledgePatchDecisionViewOnKnowledgePatchMergeCommittedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "KnowledgePatch",
+      "path": "app/net/imadz/metarch/application/projection/handlers/SubmitKnowledgePatchDecisionViewOnKnowledgePatchMergeDeclinedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/SubmitKnowledgePatchDecisionViewOnKnowledgePatchMergeDeclinedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "KnowledgePatch",
+      "path": "app/net/imadz/metarch/application/projection/handlers/SubmitKnowledgePatchDecisionViewOnKnowledgePatchMergeRequestedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/SubmitKnowledgePatchDecisionViewOnKnowledgePatchMergeRequestedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "KnowledgePatch",
+      "path": "app/net/imadz/metarch/application/projection/handlers/SubmitKnowledgePatchDecisionViewOnKnowledgePatchMergedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/SubmitKnowledgePatchDecisionViewOnKnowledgePatchMergedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "KnowledgePatch",
+      "path": "app/net/imadz/metarch/application/projection/handlers/SubmitKnowledgePatchDecisionViewOnKnowledgePatchReadyToMergedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/SubmitKnowledgePatchDecisionViewOnKnowledgePatchReadyToMergedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "KnowledgePatch",
+      "path": "app/net/imadz/metarch/application/projection/handlers/SubmitKnowledgePatchDecisionViewOnKnowledgePatchRejectedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/SubmitKnowledgePatchDecisionViewOnKnowledgePatchRejectedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "KnowledgePatch",
+      "path": "app/net/imadz/metarch/application/projection/handlers/SubmitKnowledgePatchDecisionViewOnKnowledgePatchSubmittedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/SubmitKnowledgePatchDecisionViewOnKnowledgePatchSubmittedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "TruthSourceProvenance",
+      "path": "app/net/imadz/metarch/application/projection/handlers/TruthSourceProvenanceDecisionViewOnTruthProvenanceRecordedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/TruthSourceProvenanceDecisionViewOnTruthProvenanceRecordedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "User",
+      "path": "app/net/imadz/metarch/application/projection/handlers/UpdateUserProfileDecisionViewOnUserDeactivatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/UpdateUserProfileDecisionViewOnUserDeactivatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "User",
+      "path": "app/net/imadz/metarch/application/projection/handlers/UpdateUserProfileDecisionViewOnUserProfileUpdatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/UpdateUserProfileDecisionViewOnUserProfileUpdatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "User",
+      "path": "app/net/imadz/metarch/application/projection/handlers/UpdateUserProfileDecisionViewOnUserReactivatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/UpdateUserProfileDecisionViewOnUserReactivatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "User",
+      "path": "app/net/imadz/metarch/application/projection/handlers/UpdateUserProfileDecisionViewOnUserRegisteredHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/UpdateUserProfileDecisionViewOnUserRegisteredHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "UseCaseDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/UseCaseDefinitionDecisionViewOnUseCaseDeclaredHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/UseCaseDefinitionDecisionViewOnUseCaseDeclaredHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "UseCaseDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/UseCaseDefinitionDecisionViewOnUseCaseRemovedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/UseCaseDefinitionDecisionViewOnUseCaseRemovedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/UserLookupByEmailOrPhoneViewOnUserDeactivatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/UserLookupByEmailOrPhoneViewOnUserDeactivatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/UserLookupByEmailOrPhoneViewOnUserProfileUpdatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/UserLookupByEmailOrPhoneViewOnUserProfileUpdatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/UserLookupByEmailOrPhoneViewOnUserReactivatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/UserLookupByEmailOrPhoneViewOnUserReactivatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/handlers/UserLookupByEmailOrPhoneViewOnUserRegisteredHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/UserLookupByEmailOrPhoneViewOnUserRegisteredHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ValueObjectDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ValueObjectDefinitionDecisionViewOnValueObjectDeclaredHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ValueObjectDefinitionDecisionViewOnValueObjectDeclaredHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-handler",
+      "aggregate": "ValueObjectDefinition",
+      "path": "app/net/imadz/metarch/application/projection/handlers/ValueObjectDefinitionDecisionViewOnValueObjectRemovedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ValueObjectDefinitionDecisionViewOnValueObjectRemovedHandler.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/repository/AcceptTenantInvitationDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/AcceptTenantInvitationDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/repository/AssembleMetadataDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/AssembleMetadataDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "Note",
+      "path": "app/net/imadz/metarch/application/projection/repository/CaptureNoteDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/CaptureNoteDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/repository/CatalogGraphViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/CatalogGraphViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "CemEdge",
+      "path": "app/net/imadz/metarch/application/projection/repository/CemEdgeDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/CemEdgeDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "Subdomain",
+      "path": "app/net/imadz/metarch/application/projection/repository/ClassifySubdomainDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/ClassifySubdomainDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/repository/ConceptEdgeGraphViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/ConceptEdgeGraphViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/repository/ConceptGraphViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/ConceptGraphViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/repository/ContextGraphViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/ContextGraphViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/repository/ContextRelationGraphViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/ContextRelationGraphViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/repository/CreateCatalogVersionDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/CreateCatalogVersionDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "Workgroup",
+      "path": "app/net/imadz/metarch/application/projection/repository/CreateWorkgroupDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/CreateWorkgroupDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "User",
+      "path": "app/net/imadz/metarch/application/projection/repository/DeactivateUserDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/DeactivateUserDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "ContextRelation",
+      "path": "app/net/imadz/metarch/application/projection/repository/DefineContextRelationDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/DefineContextRelationDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "Context",
+      "path": "app/net/imadz/metarch/application/projection/repository/DiscoverContextDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/DiscoverContextDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/repository/ExportMetadataDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/ExportMetadataDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/repository/FieldModelDefinitionDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/FieldModelDefinitionDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "Project",
+      "path": "app/net/imadz/metarch/application/projection/repository/InitiateProjectDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/InitiateProjectDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/repository/InviteTenantMemberDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/InviteTenantMemberDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "Workgroup",
+      "path": "app/net/imadz/metarch/application/projection/repository/InviteWorkgroupMemberDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/InviteWorkgroupMemberDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/repository/KnowledgeSemanticViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/KnowledgeSemanticViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/repository/NoteGraphViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/NoteGraphViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "Tenant",
+      "path": "app/net/imadz/metarch/application/projection/repository/OnboardTenantDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/OnboardTenantDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "Stage",
+      "path": "app/net/imadz/metarch/application/projection/repository/OpenSessionDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/OpenSessionDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "Concept",
+      "path": "app/net/imadz/metarch/application/projection/repository/ParkConceptDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/ParkConceptDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/repository/QuestionGraphViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/QuestionGraphViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "ReadModelDefinition",
+      "path": "app/net/imadz/metarch/application/projection/repository/ReadModelDefinitionDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/ReadModelDefinitionDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/repository/ReleaseCatalogVersionDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/ReleaseCatalogVersionDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/repository/ReleaseMetadataVersionDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/ReleaseMetadataVersionDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/repository/RemoveTenantMemberDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/RemoveTenantMemberDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/repository/ResendInvitationDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/ResendInvitationDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/application/projection/repository/ResolveCatalogConflictDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/ResolveCatalogConflictDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/application/projection/repository/RevokeInvitationDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/RevokeInvitationDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "RoleCommandBinding",
+      "path": "app/net/imadz/metarch/application/projection/repository/RoleCommandBindingDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/RoleCommandBindingDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "Workshop",
+      "path": "app/net/imadz/metarch/application/projection/repository/ScheduleWorkshopDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/ScheduleWorkshopDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/repository/SubdomainGraphViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/SubdomainGraphViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "DoR",
+      "path": "app/net/imadz/metarch/application/projection/repository/SubmitDoRVerdictDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/SubmitDoRVerdictDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "KnowledgePatch",
+      "path": "app/net/imadz/metarch/application/projection/repository/SubmitKnowledgePatchDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/SubmitKnowledgePatchDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "TruthSourceProvenance",
+      "path": "app/net/imadz/metarch/application/projection/repository/TruthSourceProvenanceDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/TruthSourceProvenanceDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "User",
+      "path": "app/net/imadz/metarch/application/projection/repository/UpdateUserProfileDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/UpdateUserProfileDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "UseCaseDefinition",
+      "path": "app/net/imadz/metarch/application/projection/repository/UseCaseDefinitionDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/UseCaseDefinitionDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/repository/UserLookupByEmailOrPhoneViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/UserLookupByEmailOrPhoneViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository",
+      "aggregate": "ValueObjectDefinition",
+      "path": "app/net/imadz/metarch/application/projection/repository/ValueObjectDefinitionDecisionViewRepository.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/repository/ValueObjectDefinitionDecisionViewRepository.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/AcceptTenantInvitationDecisionViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/AcceptTenantInvitationDecisionViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/AssembleMetadataDecisionViewMongoRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/AssembleMetadataDecisionViewMongoRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "Note",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/CaptureNoteDecisionViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/CaptureNoteDecisionViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/CatalogGraphViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/CatalogGraphViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "CemEdge",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/CemEdgeDecisionViewMongoRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/CemEdgeDecisionViewMongoRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "Subdomain",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/ClassifySubdomainDecisionViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/ClassifySubdomainDecisionViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/ConceptEdgeGraphViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/ConceptEdgeGraphViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/ConceptGraphViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/ConceptGraphViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/ContextGraphViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/ContextGraphViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/ContextRelationGraphViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/ContextRelationGraphViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/CreateCatalogVersionDecisionViewMongoRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/CreateCatalogVersionDecisionViewMongoRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "Workgroup",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/CreateWorkgroupDecisionViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/CreateWorkgroupDecisionViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "User",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/DeactivateUserDecisionViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/DeactivateUserDecisionViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "ContextRelation",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/DefineContextRelationDecisionViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/DefineContextRelationDecisionViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "Context",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/DiscoverContextDecisionViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/DiscoverContextDecisionViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/ExportMetadataDecisionViewMongoRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/ExportMetadataDecisionViewMongoRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/FieldModelDefinitionDecisionViewMongoRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/FieldModelDefinitionDecisionViewMongoRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "Project",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/InitiateProjectDecisionViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/InitiateProjectDecisionViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/InviteTenantMemberDecisionViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/InviteTenantMemberDecisionViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "Workgroup",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/InviteWorkgroupMemberDecisionViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/InviteWorkgroupMemberDecisionViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/KnowledgeSemanticViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/KnowledgeSemanticViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/NoteGraphViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/NoteGraphViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "Tenant",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/OnboardTenantDecisionViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/OnboardTenantDecisionViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "Stage",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/OpenSessionDecisionViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/OpenSessionDecisionViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "Concept",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/ParkConceptDecisionViewMongoRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/ParkConceptDecisionViewMongoRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/QuestionGraphViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/QuestionGraphViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "ReadModelDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/ReadModelDefinitionDecisionViewMongoRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/ReadModelDefinitionDecisionViewMongoRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/ReleaseCatalogVersionDecisionViewMongoRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/ReleaseCatalogVersionDecisionViewMongoRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/ReleaseMetadataVersionDecisionViewMongoRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/ReleaseMetadataVersionDecisionViewMongoRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/RemoveTenantMemberDecisionViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/RemoveTenantMemberDecisionViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/ResendInvitationDecisionViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/ResendInvitationDecisionViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/ResolveCatalogConflictDecisionViewMongoRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/ResolveCatalogConflictDecisionViewMongoRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/RevokeInvitationDecisionViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/RevokeInvitationDecisionViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "RoleCommandBinding",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/RoleCommandBindingDecisionViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/RoleCommandBindingDecisionViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "Workshop",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/ScheduleWorkshopDecisionViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/ScheduleWorkshopDecisionViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/SubdomainGraphViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/SubdomainGraphViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "DoR",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/SubmitDoRVerdictDecisionViewMongoRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/SubmitDoRVerdictDecisionViewMongoRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "KnowledgePatch",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/SubmitKnowledgePatchDecisionViewMongoRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/SubmitKnowledgePatchDecisionViewMongoRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "TruthSourceProvenance",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/TruthSourceProvenanceDecisionViewMongoRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/TruthSourceProvenanceDecisionViewMongoRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "User",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/UpdateUserProfileDecisionViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/UpdateUserProfileDecisionViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "UseCaseDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/UseCaseDefinitionDecisionViewMongoRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/UseCaseDefinitionDecisionViewMongoRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/UserLookupByEmailOrPhoneViewRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/UserLookupByEmailOrPhoneViewRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "projection-repository-impl",
+      "aggregate": "ValueObjectDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/projection/ValueObjectDefinitionDecisionViewMongoRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/ValueObjectDefinitionDecisionViewMongoRepositoryImpl.scala",
+      "status": "identical",
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "ddl",
+      "kind": "projection-ddl",
+      "aggregate": "Context",
+      "path": "conf/sql/2.sql",
+      "livePath": "conf/sql/2.sql",
+      "status": "identical",
+      "liveOwner": "(none)"
+    },
+    {
+      "face": "ddl",
+      "kind": "vector-ddl",
+      "aggregate": null,
+      "path": "conf/sql/5-pgvector.sql",
+      "livePath": "conf/sql/5-pgvector.sql",
+      "status": "identical",
+      "liveOwner": "(none)"
     }
   ],
-  "reverseRows": []
+  "reverseRows": [
+    {
+      "kind": "handwritten",
+      "aggregate": null,
+      "livePath": "app/net/imadz/metarch/application/projection/KnInstanceProjection.scala"
+    },
+    {
+      "kind": "handwritten",
+      "aggregate": null,
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/KnInstanceProjectionHandler.scala"
+    },
+    {
+      "kind": "handwritten",
+      "aggregate": null,
+      "livePath": "app/net/imadz/metarch/application/projection/repository/KnInstanceStore.scala"
+    },
+    {
+      "kind": "handwritten",
+      "aggregate": null,
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/ParkConceptDecisionViewCompositeHandler.scala"
+    },
+    {
+      "kind": "relic",
+      "aggregate": null,
+      "livePath": "app/net/imadz/metarch/application/projection/PauseProjectDecisionView.scala"
+    },
+    {
+      "kind": "relic",
+      "aggregate": null,
+      "livePath": "app/net/imadz/metarch/application/projection/repository/PauseProjectDecisionViewRepository.scala"
+    },
+    {
+      "kind": "relic",
+      "aggregate": null,
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/PauseProjectDecisionViewRepositoryImpl.scala"
+    },
+    {
+      "kind": "relic",
+      "aggregate": null,
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/PauseProjectDecisionViewOnProjectCancelledHandler.scala"
+    },
+    {
+      "kind": "relic",
+      "aggregate": null,
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/PauseProjectDecisionViewOnProjectCompletedHandler.scala"
+    },
+    {
+      "kind": "relic",
+      "aggregate": null,
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/PauseProjectDecisionViewOnProjectDescriptionUpdatedHandler.scala"
+    },
+    {
+      "kind": "relic",
+      "aggregate": null,
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/PauseProjectDecisionViewOnProjectInitiatedHandler.scala"
+    },
+    {
+      "kind": "relic",
+      "aggregate": null,
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/PauseProjectDecisionViewOnProjectOwnerAssignedHandler.scala"
+    },
+    {
+      "kind": "relic",
+      "aggregate": null,
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/PauseProjectDecisionViewOnProjectPausedHandler.scala"
+    },
+    {
+      "kind": "relic",
+      "aggregate": null,
+      "livePath": "app/net/imadz/metarch/application/projection/handlers/PauseProjectDecisionViewOnProjectResumedHandler.scala"
+    }
+  ]
 }

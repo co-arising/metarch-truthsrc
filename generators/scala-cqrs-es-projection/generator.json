@@ -1,0 +1,24 @@
+{
+  "name": "scala-cqrs-es-projection",
+  "inputSchema": "truthsrc/v0.3",
+  "products": [
+    "template",
+    "readmodels"
+  ],
+  "artifactKinds": [
+    "projection-def",
+    "projection-handler",
+    "projection-repository",
+    "projection-repository-impl"
+  ],
+  "output": {
+    "language": "scala",
+    "layout": "di-poc-modules"
+  },
+  "options": {
+    "elementHashes": "object — knowledge-side sidecar { noteId: hash16 } driving the Table companion / method-parameter `@knowledge <uuid>@<hash>` anchors (missing entry → bare anchor).",
+    "manualBlocks": "object — { '<Handler>.scala': '<manual text>' } the live MANUAL blocks (golden/scala-cqrs-es-projection-metarch/manual-blocks.json). A derived rewriter form that equals the live block is emitted as derived; any divergence (handwritten MERGE-preserved content, post-fill refCode drift) rides the sidecar verbatim.",
+    "protoFields": "object — { '<Event>PO': { '<camelField>': '<protoType>' } } the PO field whitelist/type table behind the rewriter's guards (golden/scala-cqrs-es-projection-metarch/proto-fields.json)."
+  },
+  "description": "Projection/storage face (V4-14): the engine's biggest unmeasured surface — <View> Akka Projection definitions ×43 (composite / single-handler / multi-aggregate shapes; composite-dispatcher wiring order = the ①-layer readModel note's `event:` LINK order, not the refCodes key order), <View>On<Event>Handler skeletons ×247 with the gen_projection_handlers MANUAL port (table/vector/graph channels; derived-form-equals-live → derived, else the manual-blocks sidecar = the MERGE-preserved handwritten reality), repository traits ×44 (upsert/findByIdentity/findBy<Id>*/findAll per the AssemblyEngine key/idNames rules + mongo paged/count + graph four-verb + vector fixed set; Table companion DTO with field anchors), repository impls ×44 (scalikejdbc table fork / MongoViewStore document fork / GraphMutationExecutor graph fork / PgVectorStore+OllamaEmbeddingClient vector fork). KnInstanceProjection + ParkConceptDecisionViewCompositeHandler are handwritten-forever and honestly absent. Byte-identical to live; consumes the canonical augmented by tools/augment-api-canonical.mjs."
+}

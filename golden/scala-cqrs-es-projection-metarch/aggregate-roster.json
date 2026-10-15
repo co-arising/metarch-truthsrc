@@ -1,0 +1,1517 @@
+[
+  {
+    "name": "CemEdge",
+    "identifier": "edgeId",
+    "noteId": "abdbc772-b260-45c2-88eb-fa2c57e5d403",
+    "stateFields": [
+      {
+        "name": "edgeId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "tenantId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "commandName",
+        "dataType": "String"
+      },
+      {
+        "name": "eventName",
+        "dataType": "String"
+      },
+      {
+        "name": "aggregateName",
+        "dataType": "String"
+      },
+      {
+        "name": "sources",
+        "dataType": "String"
+      },
+      {
+        "name": "confidence",
+        "dataType": "String (Enum)"
+      },
+      {
+        "name": "status",
+        "dataType": "String"
+      },
+      {
+        "name": "declaredAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "declaredBy",
+        "dataType": "String"
+      },
+      {
+        "name": "retiredAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "retiredReason",
+        "dataType": "String"
+      }
+    ]
+  },
+  {
+    "name": "Concept",
+    "identifier": "conceptId",
+    "noteId": "4a9889a2-9aa4-4536-8dc6-e17d8611aef4",
+    "stateFields": [
+      {
+        "name": "conceptId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "tenantId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "status",
+        "dataType": "String"
+      },
+      {
+        "name": "version",
+        "dataType": "Integer"
+      },
+      {
+        "name": "contextId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "name",
+        "dataType": "String"
+      },
+      {
+        "name": "kind",
+        "dataType": "String (Enum)"
+      },
+      {
+        "name": "description",
+        "dataType": "String"
+      },
+      {
+        "name": "sourceStage",
+        "dataType": "String"
+      },
+      {
+        "name": "sourceNoteIds",
+        "dataType": "List[Id]"
+      },
+      {
+        "name": "hasConflictWarning",
+        "dataType": "Boolean"
+      },
+      {
+        "name": "establishedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "establishedBy",
+        "dataType": "String"
+      },
+      {
+        "name": "parkedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "parkedBy",
+        "dataType": "String"
+      },
+      {
+        "name": "removedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "removedBy",
+        "dataType": "String"
+      },
+      {
+        "name": "createdAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "createdBy",
+        "dataType": "String"
+      },
+      {
+        "name": "modifiedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "modifiedBy",
+        "dataType": "String"
+      },
+      {
+        "name": "machineSpec",
+        "dataType": "String"
+      },
+      {
+        "name": "metadata",
+        "dataType": "String"
+      },
+      {
+        "name": "sourceSessionId",
+        "dataType": "String"
+      },
+      {
+        "name": "contentHash",
+        "dataType": "String"
+      },
+      {
+        "name": "anchors",
+        "dataType": "List[CodeAnchorDelta]"
+      }
+    ]
+  },
+  {
+    "name": "Context",
+    "identifier": "contextId",
+    "noteId": "57b21d82-b10f-492b-a89a-29505ff1746c",
+    "stateFields": [
+      {
+        "name": "contextId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "tenantId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "name",
+        "dataType": "String"
+      },
+      {
+        "name": "description",
+        "dataType": "String"
+      },
+      {
+        "name": "subdomainIds",
+        "dataType": "List[Id]"
+      },
+      {
+        "name": "discoveredAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "discoveredBy",
+        "dataType": "String"
+      }
+    ]
+  },
+  {
+    "name": "ContextRelation",
+    "identifier": "relationId",
+    "noteId": "c495694f-674d-404b-a985-1aaabafcc5de",
+    "stateFields": [
+      {
+        "name": "relationId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "tenantId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "upstreamContextId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "downstreamContextId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "kind",
+        "dataType": "String"
+      },
+      {
+        "name": "integration",
+        "dataType": "String"
+      },
+      {
+        "name": "description",
+        "dataType": "String"
+      },
+      {
+        "name": "createdAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "createdBy",
+        "dataType": "String"
+      }
+    ]
+  },
+  {
+    "name": "DoR",
+    "identifier": "dorId",
+    "noteId": "9456ecc6-4243-467a-b779-906852da7edc",
+    "stateFields": [
+      {
+        "name": "dorId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "tenantId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "status",
+        "dataType": "String"
+      },
+      {
+        "name": "projectId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "targetSessionIds",
+        "dataType": "List[Id]"
+      },
+      {
+        "name": "scopeSnapshot",
+        "dataType": "String"
+      },
+      {
+        "name": "knowledgeSnapshot",
+        "dataType": "String"
+      },
+      {
+        "name": "verdicts",
+        "dataType": "List[DoRVerdict]"
+      },
+      {
+        "name": "evaluatedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "evaluatedBy",
+        "dataType": "String"
+      },
+      {
+        "name": "findings",
+        "dataType": "List[Finding]"
+      },
+      {
+        "name": "workshopId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "patchId",
+        "dataType": "string (uuid)"
+      }
+    ]
+  },
+  {
+    "name": "FieldModelDefinition",
+    "identifier": "definitionId",
+    "noteId": "c13d6293-80c2-4a5f-9a34-2c4afaaacfbe",
+    "stateFields": [
+      {
+        "name": "definitionId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "tenantId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "aggregateName",
+        "dataType": "String"
+      },
+      {
+        "name": "entityName",
+        "dataType": "String"
+      },
+      {
+        "name": "description",
+        "dataType": "String"
+      },
+      {
+        "name": "identifierName",
+        "dataType": "String"
+      },
+      {
+        "name": "identifierType",
+        "dataType": "String"
+      },
+      {
+        "name": "identifierOrigin",
+        "dataType": "String"
+      },
+      {
+        "name": "identifierDescription",
+        "dataType": "String"
+      },
+      {
+        "name": "tenantScoped",
+        "dataType": "Boolean"
+      },
+      {
+        "name": "statusEnumValues",
+        "dataType": "List[String]"
+      },
+      {
+        "name": "statusTransitions",
+        "dataType": "List[StatusTransitionSpec]"
+      },
+      {
+        "name": "stateFields",
+        "dataType": "List[FieldStateSpec]"
+      },
+      {
+        "name": "commands",
+        "dataType": "List[FieldCommandSpec]"
+      },
+      {
+        "name": "events",
+        "dataType": "List[FieldEventSpec]"
+      },
+      {
+        "name": "relations",
+        "dataType": "List[AggregateRelationSpec]"
+      },
+      {
+        "name": "stateGates",
+        "dataType": "List[StateGateSpec]"
+      },
+      {
+        "name": "declaredAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "declaredBy",
+        "dataType": "String"
+      },
+      {
+        "name": "terminalStates",
+        "dataType": "List[String]"
+      },
+      {
+        "name": "removedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "aggregateRuleRefs",
+        "dataType": "List[RuleRef]"
+      }
+    ]
+  },
+  {
+    "name": "FsmDefinition",
+    "identifier": "fsmId",
+    "noteId": "3e1605b2-98e1-404d-b401-7e6060ab398c",
+    "stateFields": [
+      {
+        "name": "fsmId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "status",
+        "dataType": "String"
+      },
+      {
+        "name": "aggregateName",
+        "dataType": "String"
+      },
+      {
+        "name": "states",
+        "dataType": "List[FsmStateDef]"
+      },
+      {
+        "name": "transitions",
+        "dataType": "List[FsmTransition]"
+      },
+      {
+        "name": "createdAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "createdBy",
+        "dataType": "String"
+      }
+    ]
+  },
+  {
+    "name": "KnowledgePatch",
+    "identifier": "patchId",
+    "noteId": "21d57ca3-9d00-44d2-bf31-c59aa67c8822",
+    "stateFields": [
+      {
+        "name": "patchId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "tenantId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "status",
+        "dataType": "String"
+      },
+      {
+        "name": "sessionIds",
+        "dataType": "List[Id]"
+      },
+      {
+        "name": "catalogId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "contextId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "createdBy",
+        "dataType": "String"
+      },
+      {
+        "name": "parentPatchId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "patchHash",
+        "dataType": "String"
+      },
+      {
+        "name": "concepts",
+        "dataType": "List[ConceptDelta]"
+      },
+      {
+        "name": "relations",
+        "dataType": "List[RelationDelta]"
+      },
+      {
+        "name": "createdAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "mergedAt",
+        "dataType": "Instant"
+      }
+    ]
+  },
+  {
+    "name": "ModelCatalog",
+    "identifier": "catalogId",
+    "noteId": "19ff11ca-c36d-430c-8219-7e7f685d20c3",
+    "stateFields": [
+      {
+        "name": "catalogId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "tenantId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "status",
+        "dataType": "String"
+      },
+      {
+        "name": "projectId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "version",
+        "dataType": "String"
+      },
+      {
+        "name": "baseVersion",
+        "dataType": "String"
+      },
+      {
+        "name": "patchSessionIds",
+        "dataType": "List[Id]"
+      },
+      {
+        "name": "knowledgePackages",
+        "dataType": "String"
+      },
+      {
+        "name": "stateHash",
+        "dataType": "String"
+      },
+      {
+        "name": "headPatchId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "headPatchHash",
+        "dataType": "String"
+      },
+      {
+        "name": "conflicts",
+        "dataType": "List[CatalogConflict]"
+      },
+      {
+        "name": "assembledAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "assembledBy",
+        "dataType": "String"
+      },
+      {
+        "name": "exportedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "exportedBy",
+        "dataType": "String"
+      },
+      {
+        "name": "releasedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "releasedBy",
+        "dataType": "String"
+      },
+      {
+        "name": "conceptIndex",
+        "dataType": "List[ConceptIndexEntry]"
+      }
+    ]
+  },
+  {
+    "name": "Note",
+    "identifier": "noteId",
+    "noteId": "ae72ee4b-02c2-472b-853e-bcc417adb2d5",
+    "stateFields": [
+      {
+        "name": "noteId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "tenantId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "status",
+        "dataType": "String"
+      },
+      {
+        "name": "externalId",
+        "dataType": "String"
+      },
+      {
+        "name": "boardId",
+        "dataType": "String"
+      },
+      {
+        "name": "sessionId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "content",
+        "dataType": "String"
+      },
+      {
+        "name": "type",
+        "dataType": "String"
+      },
+      {
+        "name": "timeline",
+        "dataType": "String"
+      },
+      {
+        "name": "pivotal",
+        "dataType": "Boolean"
+      },
+      {
+        "name": "name",
+        "dataType": "String"
+      },
+      {
+        "name": "links",
+        "dataType": "List[String]"
+      },
+      {
+        "name": "createdAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "createdBy",
+        "dataType": "String"
+      },
+      {
+        "name": "collisionName",
+        "dataType": "String"
+      },
+      {
+        "name": "removedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "knowledgeId",
+        "dataType": "String"
+      },
+      {
+        "name": "info",
+        "dataType": "String"
+      }
+    ]
+  },
+  {
+    "name": "OrganizationMember",
+    "identifier": "orgMemberId",
+    "noteId": "8d51c927-11de-41ba-9723-d9997c66c084",
+    "stateFields": [
+      {
+        "name": "orgMemberId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "tenantId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "status",
+        "dataType": "String"
+      },
+      {
+        "name": "userId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "department",
+        "dataType": "String"
+      },
+      {
+        "name": "jobTitle",
+        "dataType": "String"
+      },
+      {
+        "name": "displayName",
+        "dataType": "String"
+      },
+      {
+        "name": "email",
+        "dataType": "String"
+      },
+      {
+        "name": "phoneNumber",
+        "dataType": "String"
+      },
+      {
+        "name": "joinedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "removedAt",
+        "dataType": "Instant"
+      }
+    ]
+  },
+  {
+    "name": "Project",
+    "identifier": "projectId",
+    "noteId": "382640eb-73ab-4963-8d8d-cce7b3f4f553",
+    "stateFields": [
+      {
+        "name": "projectId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "tenantId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "status",
+        "dataType": "String"
+      },
+      {
+        "name": "workgroupId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "ownerUserId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "name",
+        "dataType": "String"
+      },
+      {
+        "name": "description",
+        "dataType": "String"
+      },
+      {
+        "name": "createdAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "createdBy",
+        "dataType": "String"
+      },
+      {
+        "name": "startedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "completedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "pausedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "cancelledAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "catalogId",
+        "dataType": "string (uuid)"
+      }
+    ]
+  },
+  {
+    "name": "Question",
+    "identifier": "questionId",
+    "noteId": "8c423409-eb4a-4269-9ae1-d1865eb2a114",
+    "stateFields": [
+      {
+        "name": "questionId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "tenantId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "status",
+        "dataType": "String"
+      },
+      {
+        "name": "externalId",
+        "dataType": "String"
+      },
+      {
+        "name": "boardId",
+        "dataType": "String"
+      },
+      {
+        "name": "sessionId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "content",
+        "dataType": "String"
+      },
+      {
+        "name": "linkedNoteIds",
+        "dataType": "List[Id]"
+      },
+      {
+        "name": "raisedBy",
+        "dataType": "String"
+      },
+      {
+        "name": "raisedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "answeredBy",
+        "dataType": "String"
+      },
+      {
+        "name": "answeredAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "answer",
+        "dataType": "String"
+      },
+      {
+        "name": "dismissedBy",
+        "dataType": "String"
+      },
+      {
+        "name": "dismissedAt",
+        "dataType": "Instant"
+      }
+    ]
+  },
+  {
+    "name": "ReadModelDefinition",
+    "identifier": "definitionId",
+    "noteId": "d3d722c4-31e1-4865-ad1e-670c5621071a",
+    "stateFields": [
+      {
+        "name": "definitionId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "tenantId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "viewName",
+        "dataType": "String"
+      },
+      {
+        "name": "parentAggregate",
+        "dataType": "String"
+      },
+      {
+        "name": "viewId",
+        "dataType": "String"
+      },
+      {
+        "name": "sourceAggregates",
+        "dataType": "List[String]"
+      },
+      {
+        "name": "consumesEvents",
+        "dataType": "List[String]"
+      },
+      {
+        "name": "linkedStories",
+        "dataType": "List[String]"
+      },
+      {
+        "name": "description",
+        "dataType": "String"
+      },
+      {
+        "name": "fields",
+        "dataType": "List[ReadModelFieldSpec]"
+      },
+      {
+        "name": "decisionCommands",
+        "dataType": "List[String]"
+      },
+      {
+        "name": "declaredAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "declaredBy",
+        "dataType": "String"
+      },
+      {
+        "name": "removedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "removedBy",
+        "dataType": "String"
+      }
+    ]
+  },
+  {
+    "name": "Relation",
+    "identifier": "edgeId",
+    "noteId": "055c7670-2188-47f4-b216-0f980be625fe",
+    "stateFields": [
+      {
+        "name": "edgeId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "tenantId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "sourceId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "targetId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "relationType",
+        "dataType": "String (Enum)"
+      },
+      {
+        "name": "condition",
+        "dataType": "String"
+      },
+      {
+        "name": "mapping",
+        "dataType": "String"
+      },
+      {
+        "name": "order",
+        "dataType": "Integer"
+      },
+      {
+        "name": "metadata",
+        "dataType": "String"
+      },
+      {
+        "name": "createdAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "createdBy",
+        "dataType": "String"
+      }
+    ]
+  },
+  {
+    "name": "RoleCommandBinding",
+    "identifier": "bindingId",
+    "noteId": "f80255bd-352e-4d86-b30f-6b2e0c9cb1c6",
+    "stateFields": [
+      {
+        "name": "bindingId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "tenantId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "roleName",
+        "dataType": "String"
+      },
+      {
+        "name": "commandName",
+        "dataType": "String"
+      },
+      {
+        "name": "ruling",
+        "dataType": "String"
+      },
+      {
+        "name": "systemCommand",
+        "dataType": "Boolean"
+      },
+      {
+        "name": "status",
+        "dataType": "String"
+      },
+      {
+        "name": "boundAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "boundBy",
+        "dataType": "String"
+      },
+      {
+        "name": "unboundAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "unboundReason",
+        "dataType": "String"
+      }
+    ]
+  },
+  {
+    "name": "Session",
+    "identifier": "sessionId",
+    "noteId": "7ef4372f-5549-4c52-bda4-849743853c44",
+    "stateFields": [
+      {
+        "name": "sessionId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "tenantId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "status",
+        "dataType": "String"
+      },
+      {
+        "name": "stageId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "participantUserIds",
+        "dataType": "List[Id]"
+      },
+      {
+        "name": "observerUserIds",
+        "dataType": "List[Id]"
+      },
+      {
+        "name": "openedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "preparedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "closedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "participantRoles",
+        "dataType": "List[ParticipantRole]"
+      }
+    ]
+  },
+  {
+    "name": "Stage",
+    "identifier": "stageId",
+    "noteId": "1ee6eaf7-b0ef-4446-ae7b-cbd682ada27e",
+    "stateFields": [
+      {
+        "name": "stageId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "tenantId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "status",
+        "dataType": "String"
+      },
+      {
+        "name": "workshopId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "order",
+        "dataType": "Int"
+      },
+      {
+        "name": "name",
+        "dataType": "String"
+      },
+      {
+        "name": "activatedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "approvedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "rejectedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "rejectionReason",
+        "dataType": "String"
+      },
+      {
+        "name": "sessionId",
+        "dataType": "string (uuid)"
+      }
+    ]
+  },
+  {
+    "name": "Subdomain",
+    "identifier": "subdomainId",
+    "noteId": "3a44ff29-aef6-4dc9-8d59-b6bf723baf9b",
+    "stateFields": [
+      {
+        "name": "subdomainId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "tenantId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "name",
+        "dataType": "String"
+      },
+      {
+        "name": "description",
+        "dataType": "String"
+      },
+      {
+        "name": "kind",
+        "dataType": "String"
+      },
+      {
+        "name": "buyOrBuild",
+        "dataType": "String"
+      },
+      {
+        "name": "aggregateIds",
+        "dataType": "List[Id]"
+      },
+      {
+        "name": "classifiedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "classifiedBy",
+        "dataType": "String"
+      }
+    ]
+  },
+  {
+    "name": "Tenant",
+    "identifier": "tenantId",
+    "noteId": "99cfbf24-fa6e-4c04-b80d-4420fbd7300e",
+    "stateFields": [
+      {
+        "name": "tenantId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "status",
+        "dataType": "String"
+      },
+      {
+        "name": "name",
+        "dataType": "String"
+      },
+      {
+        "name": "ownerUserId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "orgMemberIds",
+        "dataType": "List[Id]"
+      },
+      {
+        "name": "createdAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "createdBy",
+        "dataType": "String"
+      },
+      {
+        "name": "suspendedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "archivedAt",
+        "dataType": "Instant"
+      }
+    ]
+  },
+  {
+    "name": "TruthSourceProvenance",
+    "identifier": "provenanceId",
+    "noteId": "1d8059ed-d48f-4eb8-81e2-c12e775e2aa0",
+    "stateFields": [
+      {
+        "name": "provenanceId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "tenantId",
+        "dataType": "String"
+      },
+      {
+        "name": "sourceKey",
+        "dataType": "String"
+      },
+      {
+        "name": "payloadJson",
+        "dataType": "String"
+      },
+      {
+        "name": "recordedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "recordedBy",
+        "dataType": "String"
+      }
+    ]
+  },
+  {
+    "name": "UseCaseDefinition",
+    "identifier": "definitionId",
+    "noteId": "f2a7c2cc-814f-441f-9fbf-a45441c7e26a",
+    "stateFields": [
+      {
+        "name": "definitionId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "tenantId",
+        "dataType": "String"
+      },
+      {
+        "name": "useCaseName",
+        "dataType": "String"
+      },
+      {
+        "name": "realizes",
+        "dataType": "List[String]"
+      },
+      {
+        "name": "actors",
+        "dataType": "List[String]"
+      },
+      {
+        "name": "trigger",
+        "dataType": "String"
+      },
+      {
+        "name": "preconditions",
+        "dataType": "List[String]"
+      },
+      {
+        "name": "postconditions",
+        "dataType": "List[String]"
+      },
+      {
+        "name": "orchestrationType",
+        "dataType": "String"
+      },
+      {
+        "name": "mainFlowJson",
+        "dataType": "String"
+      },
+      {
+        "name": "extensionsJson",
+        "dataType": "String"
+      },
+      {
+        "name": "generatedIds",
+        "dataType": "List[String]"
+      },
+      {
+        "name": "optionalInputs",
+        "dataType": "List[String]"
+      },
+      {
+        "name": "declaredAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "declaredBy",
+        "dataType": "String"
+      },
+      {
+        "name": "removedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "removedBy",
+        "dataType": "String"
+      }
+    ]
+  },
+  {
+    "name": "User",
+    "identifier": "userId",
+    "noteId": "9f016187-0e39-4fa6-bf77-f50f77d2010b",
+    "stateFields": [
+      {
+        "name": "userId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "status",
+        "dataType": "String"
+      },
+      {
+        "name": "email",
+        "dataType": "String"
+      },
+      {
+        "name": "passwordSalt",
+        "dataType": "String",
+        "nature": "credential"
+      },
+      {
+        "name": "passwordHash",
+        "dataType": "String",
+        "nature": "credential"
+      },
+      {
+        "name": "authMethod",
+        "dataType": "String"
+      },
+      {
+        "name": "displayName",
+        "dataType": "String"
+      },
+      {
+        "name": "registeredAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "phoneNumber",
+        "dataType": "String"
+      }
+    ]
+  },
+  {
+    "name": "ValueObjectDefinition",
+    "identifier": "definitionId",
+    "noteId": "d161757e-a82e-4352-aa36-898a8038a27c",
+    "stateFields": [
+      {
+        "name": "definitionId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "tenantId",
+        "dataType": "String"
+      },
+      {
+        "name": "voName",
+        "dataType": "String"
+      },
+      {
+        "name": "members",
+        "dataType": "List[VOMemberSpec]"
+      },
+      {
+        "name": "declaredAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "declaredBy",
+        "dataType": "String"
+      },
+      {
+        "name": "removedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "removedBy",
+        "dataType": "String"
+      }
+    ]
+  },
+  {
+    "name": "WorkTicket",
+    "identifier": "ticketId",
+    "noteId": "01953945-8731-4e4f-82d8-39088edd0427",
+    "stateFields": [
+      {
+        "name": "ticketId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "status",
+        "dataType": "String"
+      },
+      {
+        "name": "subjectType",
+        "dataType": "String"
+      },
+      {
+        "name": "subjectId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "stage",
+        "dataType": "String"
+      },
+      {
+        "name": "ticketType",
+        "dataType": "String"
+      },
+      {
+        "name": "title",
+        "dataType": "String"
+      },
+      {
+        "name": "checklist",
+        "dataType": "List[ChecklistItem]"
+      },
+      {
+        "name": "createdAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "createdBy",
+        "dataType": "String"
+      }
+    ]
+  },
+  {
+    "name": "Workgroup",
+    "identifier": "workgroupId",
+    "noteId": "85e79df2-2983-4509-9b02-c68a42c5ef00",
+    "stateFields": [
+      {
+        "name": "workgroupId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "tenantId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "status",
+        "dataType": "String"
+      },
+      {
+        "name": "name",
+        "dataType": "String"
+      },
+      {
+        "name": "ownerUserId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "memberUserIds",
+        "dataType": "List[Id]"
+      },
+      {
+        "name": "invitedUserIds",
+        "dataType": "List[Id]"
+      },
+      {
+        "name": "createdAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "createdBy",
+        "dataType": "String"
+      },
+      {
+        "name": "archivedAt",
+        "dataType": "Instant"
+      }
+    ]
+  },
+  {
+    "name": "Workshop",
+    "identifier": "workshopId",
+    "noteId": "dc50a1a1-e4ad-4e7e-a43f-20240b135218",
+    "stateFields": [
+      {
+        "name": "workshopId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "tenantId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "status",
+        "dataType": "String"
+      },
+      {
+        "name": "projectId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "scheduledAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "startedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "completedAt",
+        "dataType": "Instant"
+      },
+      {
+        "name": "patchId",
+        "dataType": "string (uuid)"
+      },
+      {
+        "name": "memberRoles",
+        "dataType": "List[ParticipantRole]"
+      }
+    ]
+  }
+]

@@ -33,6 +33,23 @@
 //     27-decision-view face and the vector corpus stay unmixed). fields = child notes with
 //     info.kind === 'readModelField' && info.parent; sourceTypes = the literals assigned to
 //     sourceType in the note's projectionRefCodes (mechanical extraction, not hardcoded).
+//   • projectionViews: [{name, noteId, events, aggregates, refCodes, updateOnlyEvents,
+//     storage?, fields}] — the projection face's ①-layer inputs (V4-14): EVERY ①-layer
+//     readModel note (43 = 44 live defs − the handwritten KnInstanceProjection, which has no
+//     note). events = the note's `event:` links in LINK ORDER (the composite-dispatcher wiring
+//     order — NOT the projectionRefCodes key order: CollisionResolved rides the links but has
+//     no refCode and its handler stays handwritten); aggregates = the `aggregate:` links
+//     (first-appearance unique — index 0 is the primary/source aggregate); storage rides raw
+//     when info.storage is declared (mongo/graph/vector dispatch). fields = child
+//     readModelField notes in declaration order with {name, dataType, isKey, noteId,
+//     description} — the engine's rmFields (AssemblyEngine readStores source; UNGATED — the
+//     ③-layer gate is a readmodels.json concern, not the ①-layer face).
+//   • graphViews: [{name, noteId, storage, fields, refCodes}] — the S2-65 graph-card scan
+//     (the truthsrc analogue of live's graph_truth_source.mjs): readModel notes declaring
+//     info.storage.kind === 'graph'. fields = child readModelField names (the nodeProps set).
+//   • eventAgg: {eventName: aggregateBase} — event → owning aggregate base, derived from the
+//     canonical's own aggregates[].events roster (drives the projection defs' per-event entity
+//     FQN / proto package / multi-aggregate grouping).
 //
 // Usage:
 //   node tools/augment-api-canonical.mjs \
@@ -99,6 +116,11 @@ for (const sess of Object.values(metarch.sessions ?? {})) {
 
 canonical.roleLinkNotes = roleLinkNotes;
 canonical.readModels = readmodels.readModels ?? [];
+// gatedReadModels: the ③-layer gate + dataType enrichment RESULT (V4-14) — the table-channel
+// handler rewriter's input face (gen_projection_handlers consumes gated views; declaration
+// order preserved). Same gate port the api face uses (S2-56 field-note gate).
+const { gateViews } = await import('../generators/scala-cqrs-es-api/builders/rolemap.mjs');
+canonical.gatedReadModels = gateViews(canonical.readModels, viewFieldNotes, { tool: 'augment-api-canonical' });
 canonical.viewFieldNotes = viewFieldNotes;
 canonical.viewKeyRenames = (renameMap.entries ?? []).map((e) => ({ old: e.old, new: e.new }));
 
@@ -140,7 +162,8 @@ canonical.mongoViewNames = mongoViewNames;
 // Mirrors live vector_truth_source.collectVectorViews over the same file-shaped traversal
 // (sessions → scopes → notes, document order). refCodes ride along RAW (the DDL face needs
 // them later); sourceTypes extraction stays mechanical (regex over refCodes literals), same
-// as live — the generator template consumes the scan output verbatim.
+// as live — the generator template consumes the scan output verbatim. V4-14: fields gain
+// noteId + description (the vector repo Table companion's @param anchors).
 const vectorViews = [];
 {
   const fieldsByParent = new Map();
@@ -150,7 +173,13 @@ const vectorViews = [];
         const i = n?.info ?? {};
         if (i.kind === 'readModelField' && i.parent) {
           if (!fieldsByParent.has(i.parent)) fieldsByParent.set(i.parent, []);
-          fieldsByParent.get(i.parent).push({ name: n.name, dataType: String(i.dataType || 'String'), isKey: !!i.isKey });
+          fieldsByParent.get(i.parent).push({
+            name: n.name,
+            dataType: String(i.dataType || 'String'),
+            isKey: !!i.isKey,
+            ...(n.noteId ? { noteId: n.noteId } : {}),
+            ...(n.description ? { description: n.description } : {}),
+          });
         }
       }
     }
@@ -175,5 +204,103 @@ const vectorViews = [];
 }
 canonical.vectorViews = vectorViews;
 
+// --- projection face inputs (V4-14): projectionViews + graphViews + eventAgg -----------------
+// Traversal mirrors the live engine's note order (sessions → scopes → notes, document order).
+const childFieldsByParent = new Map(); // parent view name → child readModelField notes (in order)
+const allReadModelNotes = [];
+for (const sess of Object.values(metarch.sessions ?? {})) {
+  for (const sc of Object.values(sess?.scopes ?? {})) {
+    for (const n of sc?.notes ?? []) {
+      if (!n || typeof n !== 'object') continue;
+      const i = n?.info ?? {};
+      if (i.kind === 'readModelField' && typeof i.parent === 'string') {
+        if (!childFieldsByParent.has(i.parent)) childFieldsByParent.set(i.parent, []);
+        childFieldsByParent.get(i.parent).push({
+          name: n.name,
+          dataType: String(i.dataType || 'String'),
+          isKey: !!i.isKey,
+          ...(n.noteId ? { noteId: n.noteId } : {}),
+          ...(n.description ? { description: n.description } : {}),
+        });
+      }
+      if (n.type === 'readModel') allReadModelNotes.push(n);
+    }
+  }
+}
+const projectionViews = allReadModelNotes.map((n) => {
+  const events = (n.links ?? []).filter((l) => typeof l === 'string' && l.startsWith('event:')).map((l) => l.slice('event:'.length));
+  const aggregates = [...new Set((n.links ?? []).filter((l) => typeof l === 'string' && l.startsWith('aggregate:')).map((l) => l.slice('aggregate:'.length)))];
+  return {
+    name: n.name,
+    ...(n.noteId ? { noteId: n.noteId } : {}),
+    events,
+    aggregates,
+    refCodes: n.info?.projectionRefCodes ?? {},
+    updateOnlyEvents: n.info?.updateOnlyEvents ?? [],
+    ...(n.info?.storage ? { storage: n.info.storage } : {}),
+    fields: childFieldsByParent.get(n.name) ?? [],
+  };
+});
+canonical.projectionViews = projectionViews;
+
+const graphViews = projectionViews
+  .filter((v) => v.storage?.kind === 'graph')
+  .map((v) => ({ name: v.name, ...(v.noteId ? { noteId: v.noteId } : {}), storage: v.storage, fields: v.fields.map((f) => f.name), refCodes: v.refCodes }));
+canonical.graphViews = graphViews;
+
+// eventAgg: event → owning aggregate base. Three sources, later wins: the ①-layer event
+// notes' `aggregate:` links, the --event-agg sidecar (workshop-subset fixtures: their roster
+// is partial while the projection face is global), and the canonical's own aggregates[].events
+// (complete for the corpus canonical — 136/136).
+const eventAgg = {};
+{
+  const seen = new Set();
+  for (const sess of Object.values(metarch.sessions ?? {})) {
+    for (const sc of Object.values(sess?.scopes ?? {})) {
+      for (const n of sc?.notes ?? []) {
+        if (n?.type !== 'event' || !n.name || seen.has(n.name)) continue;
+        seen.add(n.name);
+        const agg = (n.links ?? []).find((l) => typeof l === 'string' && l.startsWith('aggregate:'));
+        if (agg) eventAgg[n.name] = agg.slice('aggregate:'.length);
+      }
+    }
+  }
+}
+const eventAggPath = arg('event-agg');
+if (eventAggPath) Object.assign(eventAgg, JSON.parse(fs.readFileSync(eventAggPath, 'utf8')));
+// stateRoster: the corpus aggregate roster snapshot ({name, identifier, noteId, stateFields})
+// — workshop-subset fixtures carry a 1-aggregate roster while the S1 state face is global.
+const stateRosterPath = arg('state-roster');
+const stateRoster = stateRosterPath ? JSON.parse(fs.readFileSync(stateRosterPath, 'utf8')) : null;
+for (const a of canonical.aggregates ?? []) {
+  for (const e of a.events ?? []) {
+    if (e.name) eventAgg[e.name] = a.name;
+  }
+}
+canonical.eventAgg = eventAgg;
+
+// eventNoteIds: event → ①-layer note id (first-wins in document order). The handler rows'
+// knowledge identity = their consuming EVENT's id (S7 #1c — handler = 「该事件在此视图上的投影」).
+const eventNoteIds = {};
+{
+  const seen = new Set();
+  for (const sess of Object.values(metarch.sessions ?? {})) {
+    for (const sc of Object.values(sess?.scopes ?? {})) {
+      for (const n of sc?.notes ?? []) {
+        if (n?.type !== 'event' || !n.name || seen.has(n.name)) continue;
+        seen.add(n.name);
+        if (n.noteId) eventNoteIds[n.name] = n.noteId;
+      }
+    }
+  }
+}
+for (const a of canonical.aggregates ?? []) {
+  for (const e of a.events ?? []) {
+    if (e.name && e.noteId) eventNoteIds[e.name] = e.noteId;
+  }
+}
+canonical.eventNoteIds = eventNoteIds;
+if (stateRoster) canonical.stateRoster = stateRoster;
+
 fs.writeFileSync(canonicalPath, JSON.stringify(canonical, null, 2) + '\n');
-console.log(`[augment-api] roleLinkNotes=${roleLinkNotes.length} readModels=${canonical.readModels.length} viewFieldNotes=${viewFieldNotes.length} viewKeyRenames=${canonical.viewKeyRenames.length} paramOrigins=${Object.keys(paramOrigins).length} viewNoteIds=${Object.keys(viewNoteIds).length} mongoViewNames=${mongoViewNames.length} vectorViews=${vectorViews.length} → ${canonicalPath}`);
+console.log(`[augment-api] roleLinkNotes=${roleLinkNotes.length} readModels=${canonical.readModels.length} viewFieldNotes=${viewFieldNotes.length} viewKeyRenames=${canonical.viewKeyRenames.length} paramOrigins=${Object.keys(paramOrigins).length} viewNoteIds=${Object.keys(viewNoteIds).length} mongoViewNames=${mongoViewNames.length} vectorViews=${vectorViews.length} projectionViews=${projectionViews.length} graphViews=${graphViews.length} eventAgg=${Object.keys(eventAgg).length} → ${canonicalPath}`);

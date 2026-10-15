@@ -32,7 +32,7 @@ function pkgOf(baseName, fb) {
 }
 
 // Parse a Scala type string into { base, params[] }. e.g. "Map[String, Money]" → {base:'Map',params:['String','Money']}
-function parseType(t) {
+export function parseType(t) {
   const s = t.trim();
   const lb = s.indexOf('[');
   if (lb === -1) return { base: s, params: [] };

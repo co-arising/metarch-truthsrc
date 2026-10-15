@@ -37,18 +37,26 @@ const elementHashes = JSON.parse(fs.readFileSync(HASHES, 'utf8'));
 const canonical = JSON.parse(fs.readFileSync(CANON, 'utf8'));
 const aggNames = canonical.aggregates.map((a) => a.name);
 
+const PROJ_GOLD = join(ROOT, 'golden', 'scala-cqrs-es-projection-metarch');
+const sidecar = (f) => JSON.parse(fs.readFileSync(join(PROJ_GOLD, f), 'utf8'));
 const GENS = {
   skeleton: { dir: join(ROOT, 'generators', 'scala-cqrs-es'), options: { generatorVersion: 'a0fca3da', elementHashes } },
   rules: { dir: join(ROOT, 'generators', 'scala-cqrs-es-rules'), options: { generatedBy: 'rules_domain_gen:2026-08-23', elementHashes } },
   api: { dir: join(ROOT, 'generators', 'scala-cqrs-es-api'), options: { elementHashes } },
+  projection: {
+    dir: join(ROOT, 'generators', 'scala-cqrs-es-projection'),
+    options: { elementHashes, manualBlocks: sidecar('manual-blocks.json'), protoFields: sidecar('proto-fields.json'), staleGenerations: sidecar('stale-generations.json') },
+  },
+  ddl: { dir: join(ROOT, 'generators', 'scala-cqrs-es-ddl'), options: {} },
 };
 
 // truthsrc outDir path (di-poc module layout) → live single-module path. null = unmapped.
 function mapPath(p) {
   if (p.startsWith('modules/kernel/src/main/scala/')) return 'app/' + p.slice('modules/kernel/src/main/scala/'.length);
   if (p.startsWith('modules/kernel/src/test/scala/')) return 'test/' + p.slice('modules/kernel/src/test/scala/'.length);
-  if (p.startsWith('app/controllers/')) return p;
+  if (p.startsWith('app/')) return p;
   if (p === 'conf/routes') return 'conf/routes';
+  if (p.startsWith('conf/sql/')) return p;
   return null;
 }
 
@@ -87,6 +95,11 @@ function liveOwner(rel) {
   // CodegenMain-stamped files are pre-migration relics the chain never rewrites; their bytes are
   // neither the skeleton's current output nor the api face's — out of comparison scope.
   if (/^app\/net\/imadz\/metarch\/application\/aggregates\/repository\//.test(rel)) return { owner: 'frozen', stamp };
+  // path-based faces first: the projection/storage face is ALSO CodegenMain-stamped (the stamp
+  // refresh renewed it along with the skeleton face), so the stamp alone cannot separate them
+  if (/^app\/net\/imadz\/metarch\/(application\/projection|infrastructure\/repositories\/projection)\//.test(rel)) return { owner: 'projection', stamp };
+  if (rel === 'app/controllers/AggregateStateApiController.scala') return { owner: 'api', stamp };
+  if (rel === 'conf/sql/2.sql' || rel === 'conf/sql/5-pgvector.sql') return { owner: 'ddl', stamp };
   if (stamp.startsWith('CodegenMain:')) return { owner: 'skeleton', stamp };
   if (stamp.startsWith('rules_domain_gen:')) return { owner: 'rules', stamp };
   if (stamp.startsWith('gen_api_layer:')) return { owner: 'api', stamp };
@@ -104,7 +117,7 @@ function contentEqualsModuloStamp(emitted, live) {
   const restA = emitted.replace(STAMP_RX, ''), restB = live.replace(STAMP_RX, '');
   return { equal: restA === restB, stampOnly: restA === restB && emitted !== live };
 }
-const FAMILY = { skeleton: 'skeleton', rules: 'rules', api: 'api' };
+const FAMILY = { skeleton: 'skeleton', rules: 'rules', api: 'api', projection: 'projection', ddl: 'ddl' };
 
 // --- run the three generators ---------------------------------------------------------------
 const rows = [];
@@ -137,13 +150,13 @@ for (const [face, g] of Object.entries(GENS)) {
               const liveSet = new Set(liveLines);
               const missing = liveLines.filter((l) => !mineSet.has(l));
               const extra = mineLines.filter((l) => !liveSet.has(l));
-              const missingPorted = missing.filter((l) => !l.includes('/api/state/') && !l.includes('semantic-search'));
+              const missingPorted = missing.filter((l) => !l.includes('/api/state/') && !l.includes('semantic-search')); // (both faces joined V4-13/V4-14 — any hit is a real diff)
               row.routes = { liveLines: liveLines.length, emittedLines: mineLines.length, liveOnly: missing.length, emittedOnly: extra.length, liveOnlyOutsideUnportedFaces: missingPorted.length };
               row.status = missing.length === 0 && extra.length === 0 ? 'identical' : 'diff';
               if (row.status === 'diff') {
                 row.excerpt = {
                   byte: 0, line: 0,
-                  want: missingPorted.length ? missingPorted[0] : `${missing.length} live-only lines (unported faces: aggregate-state ×27 — vector joined V4-13)`,
+                  want: missingPorted.length ? missingPorted[0] : `${missing.length} live-only lines (unported faces: none known — aggregate-state joined V4-14, vector V4-13)`,
                   got: extra.length ? extra[0] : `${extra.length} truthsrc-only lines`,
                 };
               }
@@ -194,7 +207,21 @@ const perAggKinds = [
   ['controller', `app/controllers/<A>ApiController.scala`],
 ];
 const globals = ['ViewKeys', 'CommandRoleMap', 'CommandDsl'].map((n) => [n === 'CommandDsl' ? 'command-dsl' : n, `${pkgBase}/infrastructure/${n === 'CommandDsl' ? 'api' : 'auth'}/${n}.scala`])
-  .concat([['ViewApiController', 'app/controllers/ViewApiController.scala'], ['ViewWrites', 'app/controllers/ViewWrites.scala']]);
+  .concat([['ViewApiController', 'app/controllers/ViewApiController.scala'], ['ViewWrites', 'app/controllers/ViewWrites.scala']])
+  // handwritten-forever + stale-relic faces (V4-14 disclosure): the KnInstance trio, the
+  // handwritten Park composite, and the PauseProject family (its ①-layer note is gone — the
+  // live files are incremental-gate relics the current chain never rewrites)
+  .concat([
+    ['handwritten', `${pkgBase}/application/projection/KnInstanceProjection.scala`],
+    ['handwritten', `${pkgBase}/application/projection/handlers/KnInstanceProjectionHandler.scala`],
+    ['handwritten', `${pkgBase}/application/projection/repository/KnInstanceStore.scala`],
+    ['handwritten', `${pkgBase}/application/projection/handlers/ParkConceptDecisionViewCompositeHandler.scala`],
+    ['relic', `${pkgBase}/application/projection/PauseProjectDecisionView.scala`],
+    ['relic', `${pkgBase}/application/projection/repository/PauseProjectDecisionViewRepository.scala`],
+    ['relic', `${pkgBase}/infrastructure/repositories/projection/PauseProjectDecisionViewRepositoryImpl.scala`],
+    ...['Cancelled', 'Completed', 'DescriptionUpdated', 'Initiated', 'OwnerAssigned', 'Paused', 'Resumed']
+      .map((s) => ['relic', `${pkgBase}/application/projection/handlers/PauseProjectDecisionViewOnProject${s}Handler.scala`]),
+  ]);
 const reverseRows = [];
 for (const [kind, tpl] of perAggKinds) {
   for (const a of aggNames) {
@@ -230,7 +257,7 @@ fs.writeFileSync(outJson, JSON.stringify(report, null, 2) + '\n');
 const line = [];
 line.push(`# truthsrc 全语料恒等报告（V4-5·切流拍板输入·非拍板本身）`, '');
 line.push(`- 日期：${report.generatedAt}；live 参照：\`${LIVE}\`（新鲜度门：backend-codegen \`tools/kn_repo_freshness.mjs\` exit 0·锚 8948/元素 2861 全 match）；canonical：\`${report.canonical}\`（27 聚合）`);
-line.push(`- 范围：三面 20 kind＋conf/routes E301 块区（skeleton 8－共享 3＋rules 8＋api 7；共享 Behaviors/CommandHelpers/EventHandler 按 live 管线序归 rules 面所有——骨架面的同路径行留痕 owned-by-other，即台账 final-writer-wins 的行级呈现；routes 按标记区对表——块外领地属手写/它生成器面不在对表范围，块内 live 独有行应恰＝未移植面输出：aggregate-state ×27·vector 面已随 V4-13 移植）。storage/persistence/Bootstrap/ExecutableSpec/投影/AggregateStateApi/Auth 等其余**未移植面不在对表范围**（EP 不搬清单＋顺延批）。`, '');
+line.push(`- 范围：五面 26 kind＋conf/routes E301 块区＋conf/sql 双方言（skeleton 8－共享 3＋rules 8＋api 8·V4-14 aggregate-state 控制器入列＋projection 4 kind：def 43/handler 240/repo 43/impl 43·ddl 2 kind：2.sql＋5-pgvector；共享 Behaviors/CommandHelpers/EventHandler 按 live 管线序归 rules 面所有——骨架面的同路径行留痕 owned-by-other，即台账 final-writer-wins 的行级呈现；routes 按标记区对表——V4-14 起 27 条 state 线闭环·块内应零 live 独有行）。storage/persistence/Bootstrap/ExecutableSpec/Auth 等其余**未移植面不在对表范围**（EP 不搬清单＋顺延批）；手写件（KnInstance 三件套·Park 组合）与 PauseProject 遗物 ×10 见反向覆盖 disclosures。`, '');
 line.push(`## 头条数字`, '');
 line.push(`| 判定 | 件数 |`);
 line.push(`|---|---|`);

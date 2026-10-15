@@ -75,12 +75,12 @@ equal(r2.written, 8); // V4-10: the event-handler rewrite joined (8 rules paths,
 equal(r2.kept, 0);
 equal(r2.inScope, 13, 'rules full run: scope = merged rows (8 skeleton + 5 new rules paths)');
 const r3 = await apply({ canonicalFile: CANON, generatorDir: GEN_API, outDir: out, options: {}, concern: { name: 'full', families: null, registryFile: REG } });
-equal(r3.written, 7); // V4-13: the M3 vector controller joined (7 api paths)
-equal(r3.inScope, 20, 'api full run: scope = merged rows (13 + 7 api paths)');
+equal(r3.written, 8); // V4-13 vector + V4-14 aggregate-state controllers joined (8 api paths)
+equal(r3.inScope, 21, 'api full run: scope = merged rows (13 + 8 api paths)');
 // merged ledger: the rules face owns the shared Behaviors/CommandHelpers paths (final-writer-wins)
 {
   const ledger = JSON.parse(readFileSync(join(out, 'truthsrc.ledger.json'), 'utf8'));
-  equal(ledger.entries.length, 20, 'merged ledger = skeleton 8 + rules 8 + api 7 − 3 shared-path upserts (Behaviors/CommandHelpers/EventHandler)');
+  equal(ledger.entries.length, 21, 'merged ledger = skeleton 8 + rules 8 + api 8 − 3 shared-path upserts (Behaviors/CommandHelpers/EventHandler)');
   equal(ledger.entries.find((r) => r.path.endsWith('ModelCatalogBehaviors.scala')).kind, 'behaviors-rules');
   ok(ledger.concern && ledger.concern.name === 'full' && ledger.concern.scopeFileHash, 'concern audit chain in ledger');
 }
@@ -89,7 +89,7 @@ const snap = {};
 for (const f of JSON.parse(readFileSync(join(out, 'truthsrc.ledger.json'), 'utf8')).entries) {
   snap[f.path] = readFileSync(join(out, f.path), 'utf8');
 }
-equal(Object.keys(snap).length, 20);
+equal(Object.keys(snap).length, 21); // V4-14: the aggregate-state controller joins the snapshot
 
 // mutate: ADD a state field (state-shape change — additive, so no rule text dangles) in a temp
 // canonical. Consumers verified against the builders: entityModel renders stateFields (Entity
@@ -149,7 +149,7 @@ equal(r5.written, 4, 'rules re-asserts the three shared glue paths (Behaviors/Co
 equal(r5.identical, 4, 'the rest of the rules face is unchanged');
 const r6 = await apply({ canonicalFile: CANON2, generatorDir: GEN_API, outDir: out, options: {}, concern: { name: 'full', families: null, registryFile: REG } });
 equal(r6.written, 0, 'api face untouched by a state-field rename');
-equal(r6.identical, 7); // V4-13: seven api paths (the vector controller is state-shape-insensitive)
+equal(r6.identical, 8); // V4-13+V4-14: eight api paths (the vector/state controllers are state-shape-insensitive)
 // after the replay the tree equals the pre-mutation snapshot except exactly two files:
 // the Entity (skeleton face, in scope) and the RulesSpec suite (rules face, regenerated with
 // the new state shape by its own replay) — the transient glue clobber is fully undone.

@@ -48,6 +48,7 @@ import { renderViewKeys, renderCommandRoleMap, renderCommandDsl } from './templa
 import { renderControllerFile } from './templates/controller.mjs';
 import { renderViewController } from './templates/views.mjs';
 import { renderVectorSearchController } from './templates/vector_search.mjs';
+import { renderStateApiController, stateRouteLines } from './templates/state_api.mjs';
 import { protocolModel } from '../scala-cqrs-es/builders/models.mjs';
 import { renderProtocol } from '../scala-cqrs-es/templates/scala.mjs';
 
@@ -225,6 +226,21 @@ export function generate({ canonical, options = {} }) {
       ...(vecNoteIds.length ? { noteIds: vecNoteIds } : {}),
     });
   }
+
+  // V4-14: the S1 aggregate-state face — AggregateStateApiController (engine trio port) +
+  // its 27 route lines closing the E301 block's last unported region (the routes diff the
+  // corpus measured since V4-7).
+  // S1 state face roster: canonical.stateRoster (workshop-subset fixtures ride the corpus
+  // roster sidecar — the face is global) falling back to the canonical's own aggregates.
+  const stateRoster = canonical.stateRoster ?? canonical.aggregates ?? [];
+  const stateNoteIds = stateRoster.map((a) => a.noteId).filter(Boolean).sort();
+  entries.push({
+    path: 'app/controllers/AggregateStateApiController.scala',
+    content: renderStateApiController(stateRoster),
+    kind: 'controller', schemaCategory: 'projection', schemaNode: 'AggregateStateApiController', families: [], deps: [],
+    ...(stateNoteIds.length ? { noteIds: stateNoteIds } : {}),
+  });
+  routesLines.push(...stateRouteLines(stateRoster));
 
   // V4-7: conf/routes E301 territory — the MARKER BLOCK entry (live index.mjs:252-271 block
   // assembly, verbatim marker text). Merging into the shared file is apply-side (core merge.mjs);

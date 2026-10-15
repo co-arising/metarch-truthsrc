@@ -1,0 +1,2122 @@
+{
+  "EdgeDeclaredPO": {
+    "edgeId": "string",
+    "commandName": "string",
+    "eventName": "string",
+    "aggregateName": "string",
+    "sources": "string",
+    "confidence": "string",
+    "declaredBy": "string",
+    "tenantId": "string",
+    "declaredAt": "int64",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "EdgePatchedPO": {
+    "edgeId": "string",
+    "aggregateName": "string",
+    "sources": "string",
+    "confidence": "string",
+    "changedFields": "string",
+    "triggeredBy": "string",
+    "tenantId": "string",
+    "timestamp": "int64"
+  },
+  "EdgeRetiredPO": {
+    "edgeId": "string",
+    "reason": "string",
+    "triggeredBy": "string",
+    "tenantId": "string",
+    "retiredAt": "int64",
+    "timestamp": "int64"
+  },
+  "CemEdgeEventPO": {
+    "edgeDeclared": "EdgeDeclaredPO",
+    "edgePatched": "EdgePatchedPO",
+    "edgeRetired": "EdgeRetiredPO"
+  },
+  "CemEdgeStatePO": {
+    "edgeId": "string",
+    "tenantId": "string",
+    "commandName": "string",
+    "eventName": "string",
+    "aggregateName": "string",
+    "sources": "string",
+    "confidence": "string",
+    "status": "string",
+    "declaredAt": "int64",
+    "declaredBy": "string",
+    "retiredAt": "int64",
+    "retiredReason": "string"
+  },
+  "ConceptConflictWarningCreatedPO": {
+    "conceptId": "string",
+    "conflictDetails": "string",
+    "lastVersion": "int32",
+    "newVersion": "int32",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "ConceptConflictWarningResolvedPO": {
+    "conceptId": "string",
+    "resolution": "string",
+    "lastVersion": "int32",
+    "newVersion": "int32",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "ConceptDeprecatedPO": {
+    "conceptId": "string",
+    "reason": "string",
+    "lastVersion": "int32",
+    "newVersion": "int32",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "ConceptEstablishedPO": {
+    "conceptId": "string",
+    "conceptIds": "string",
+    "tenantId": "string",
+    "contextId": "string",
+    "name": "string",
+    "noteId": "string",
+    "kind": "string",
+    "description": "string",
+    "sourceStage": "string",
+    "sourceNoteIds": "string",
+    "machineSpec": "string",
+    "metadata": "string",
+    "lastVersion": "int32",
+    "newVersion": "int32",
+    "createdAt": "int64",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "sourceSessionId": "string"
+  },
+  "ConceptLandingsRecordedPO": {
+    "conceptId": "string",
+    "anchors": "net.imadz.metarch.infrastructure.proto.CodeAnchorDeltaPO",
+    "lastVersion": "int32",
+    "newVersion": "int32",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string",
+    "guards": "net.imadz.metarch.infrastructure.proto.GuardSpecPO",
+    "aggregateRuleRefs": "net.imadz.metarch.infrastructure.proto.RuleRefPO",
+    "preconditionRefs": "net.imadz.metarch.infrastructure.proto.RuleRefPO",
+    "postconditionRefs": "net.imadz.metarch.infrastructure.proto.RuleRefPO",
+    "fields": "net.imadz.metarch.infrastructure.proto.FieldSpecPO",
+    "emits": "net.imadz.metarch.infrastructure.proto.EdgeTargetPO",
+    "folds": "net.imadz.metarch.infrastructure.proto.FieldEdgePO",
+    "emissions": "net.imadz.metarch.infrastructure.proto.FieldEdgePO",
+    "steps": "net.imadz.metarch.infrastructure.proto.UcStepPO",
+    "extensions": "net.imadz.metarch.infrastructure.proto.UcStepPO",
+    "ucWrites": "net.imadz.metarch.infrastructure.proto.EdgeTargetPO",
+    "ucPublishes": "net.imadz.metarch.infrastructure.proto.EdgeTargetPO"
+  },
+  "ConceptParkedPO": {
+    "conceptId": "string",
+    "reason": "string",
+    "lastVersion": "int32",
+    "newVersion": "int32",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "ConceptRemovedPO": {
+    "conceptId": "string",
+    "reason": "string",
+    "lastVersion": "int32",
+    "newVersion": "int32",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "ConceptUnparkedPO": {
+    "conceptId": "string",
+    "lastVersion": "int32",
+    "newVersion": "int32",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "ConceptUpdatedPO": {
+    "conceptId": "string",
+    "changedFields": "string",
+    "lastVersion": "int32",
+    "newVersion": "int32",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "ConceptsMergedPO": {
+    "sourceConceptId": "string",
+    "targetConceptId": "string",
+    "lastVersion": "int32",
+    "newVersion": "int32",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "ConceptEventPO": {
+    "conceptConflictWarningCreated": "ConceptConflictWarningCreatedPO",
+    "conceptConflictWarningResolved": "ConceptConflictWarningResolvedPO",
+    "conceptDeprecated": "ConceptDeprecatedPO",
+    "conceptEstablished": "ConceptEstablishedPO",
+    "conceptLandingsRecorded": "ConceptLandingsRecordedPO",
+    "conceptParked": "ConceptParkedPO",
+    "conceptRemoved": "ConceptRemovedPO",
+    "conceptUnparked": "ConceptUnparkedPO",
+    "conceptUpdated": "ConceptUpdatedPO",
+    "conceptsMerged": "ConceptsMergedPO"
+  },
+  "ConceptStatePO": {
+    "conceptId": "string",
+    "tenantId": "string",
+    "status": "string",
+    "version": "int32",
+    "contextId": "string",
+    "name": "string",
+    "kind": "string",
+    "description": "string",
+    "sourceStage": "string",
+    "sourceNoteIds": "string",
+    "hasConflictWarning": "bool",
+    "establishedAt": "int64",
+    "establishedBy": "string",
+    "parkedAt": "int64",
+    "parkedBy": "string",
+    "removedAt": "int64",
+    "removedBy": "string",
+    "createdAt": "int64",
+    "createdBy": "string",
+    "modifiedAt": "int64",
+    "modifiedBy": "string",
+    "machineSpec": "string",
+    "metadata": "string",
+    "sourceSessionId": "string",
+    "contentHash": "string",
+    "anchors": "net.imadz.metarch.infrastructure.proto.CodeAnchorDeltaPO"
+  },
+  "ContextDiscoveredPO": {
+    "tenantId": "string",
+    "contextId": "string",
+    "name": "string",
+    "description": "string",
+    "subdomainIds": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "ContextScopeUpdatedPO": {
+    "contextId": "string",
+    "subdomainIds": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "ContextEventPO": {
+    "contextDiscovered": "ContextDiscoveredPO",
+    "contextScopeUpdated": "ContextScopeUpdatedPO"
+  },
+  "ContextStatePO": {
+    "contextId": "string",
+    "tenantId": "string",
+    "name": "string",
+    "description": "string",
+    "subdomainIds": "string",
+    "discoveredAt": "int64",
+    "discoveredBy": "string"
+  },
+  "ContextRelationDefinedPO": {
+    "tenantId": "string",
+    "relationId": "string",
+    "upstreamContextId": "string",
+    "downstreamContextId": "string",
+    "kind": "string",
+    "integration": "string",
+    "description": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "ContextRelationUpdatedPO": {
+    "relationId": "string",
+    "kind": "string",
+    "integration": "string",
+    "description": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "ContextRelationEventPO": {
+    "contextRelationDefined": "ContextRelationDefinedPO",
+    "contextRelationUpdated": "ContextRelationUpdatedPO"
+  },
+  "ContextRelationStatePO": {
+    "relationId": "string",
+    "tenantId": "string",
+    "upstreamContextId": "string",
+    "downstreamContextId": "string",
+    "kind": "string",
+    "integration": "string",
+    "description": "string",
+    "createdAt": "int64",
+    "createdBy": "string"
+  },
+  "DoRVerdictPO": {
+    "criterion": "string",
+    "evaluatorType": "string",
+    "evaluatorId": "string",
+    "evaluatorRole": "string",
+    "aiModelVersion": "string",
+    "harnessBrand": "string",
+    "harnessVersion": "string",
+    "effort": "string",
+    "result": "string",
+    "reason": "string",
+    "evidenceLinks": "string",
+    "recordedAt": "int64",
+    "recordedBy": "string",
+    "evaluatedScope": "string",
+    "summary": "string",
+    "sessionId": "string",
+    "proposal": "string"
+  },
+  "DoRAssessmentResultPO": {
+    "verdicts": "net.imadz.metarch.infrastructure.proto.DoRVerdictPO",
+    "evaluatedScope": "string",
+    "summary": "string"
+  },
+  "FindingPO": {
+    "criterion": "string",
+    "description": "string",
+    "severity": "string",
+    "sessionId": "string",
+    "proposal": "string"
+  },
+  "DoRBlockedPO": {
+    "dorId": "string",
+    "reason": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "DoRFindingsSubmittedPO": {
+    "dorId": "string",
+    "findings": "net.imadz.metarch.infrastructure.proto.FindingPO",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "DoRPassedPO": {
+    "dorId": "string",
+    "assessmentResult": "net.imadz.metarch.infrastructure.proto.DoRAssessmentResultPO",
+    "approvedBy": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string",
+    "patchId": "string"
+  },
+  "DoRReopenedPO": {
+    "dorId": "string",
+    "reason": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "DoRRequestedPO": {
+    "dorId": "string",
+    "tenantId": "string",
+    "projectId": "string",
+    "targetSessionIds": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "workshopId": "string",
+    "patchId": "string",
+    "knowledgeSnapshot": "string",
+    "scopeSnapshot": "string"
+  },
+  "DoRVerdictFixedPO": {
+    "dorId": "string",
+    "verdictId": "string",
+    "resolution": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "DoRVerdictSubmittedPO": {
+    "dorId": "string",
+    "verdict": "net.imadz.metarch.infrastructure.proto.DoRVerdictPO",
+    "recordedAt": "int64",
+    "recordedBy": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "DoREventPO": {
+    "doRBlocked": "DoRBlockedPO",
+    "doRFindingsSubmitted": "DoRFindingsSubmittedPO",
+    "doRPassed": "DoRPassedPO",
+    "doRReopened": "DoRReopenedPO",
+    "doRRequested": "DoRRequestedPO",
+    "doRVerdictFixed": "DoRVerdictFixedPO",
+    "doRVerdictSubmitted": "DoRVerdictSubmittedPO"
+  },
+  "DoRStatePO": {
+    "dorId": "string",
+    "tenantId": "string",
+    "status": "string",
+    "projectId": "string",
+    "targetSessionIds": "string",
+    "scopeSnapshot": "string",
+    "knowledgeSnapshot": "string",
+    "verdicts": "net.imadz.metarch.infrastructure.proto.DoRVerdictPO",
+    "evaluatedAt": "int64",
+    "evaluatedBy": "string",
+    "findings": "net.imadz.metarch.infrastructure.proto.FindingPO",
+    "workshopId": "string",
+    "patchId": "string"
+  },
+  "AggregateRelationRemovedPO": {
+    "definitionId": "string",
+    "toAggregate": "string",
+    "foreignKey": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "AggregateStatusPatchedPO": {
+    "definitionId": "string",
+    "statusEnumValues": "string",
+    "statusTransitions": "net.imadz.metarch.infrastructure.proto.StatusTransitionSpecPO",
+    "changedFields": "string",
+    "terminalStates": "string",
+    "triggeredBy": "string",
+    "tenantId": "string",
+    "timestamp": "int64"
+  },
+  "CommandDeclaredPO": {
+    "definitionId": "string",
+    "commandSpec": "net.imadz.metarch.infrastructure.proto.FieldCommandSpecPO",
+    "triggeredBy": "string",
+    "tenantId": "string",
+    "timestamp": "int64"
+  },
+  "CommandParameterAddedPO": {
+    "definitionId": "string",
+    "commandName": "string",
+    "paramSpec": "net.imadz.metarch.infrastructure.proto.FieldParamSpecPO",
+    "triggeredBy": "string",
+    "tenantId": "string",
+    "timestamp": "int64"
+  },
+  "CommandRemovedPO": {
+    "definitionId": "string",
+    "commandName": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "DescriptionRenamedPO": {
+    "definitionId": "string",
+    "description": "string",
+    "triggeredBy": "string",
+    "tenantId": "string",
+    "timestamp": "int64"
+  },
+  "EventDeclaredPO": {
+    "definitionId": "string",
+    "eventSpec": "net.imadz.metarch.infrastructure.proto.FieldEventSpecPO",
+    "triggeredBy": "string",
+    "tenantId": "string",
+    "timestamp": "int64"
+  },
+  "EventPayloadAddedPO": {
+    "definitionId": "string",
+    "eventName": "string",
+    "payloadSpec": "net.imadz.metarch.infrastructure.proto.FieldParamSpecPO",
+    "triggeredBy": "string",
+    "tenantId": "string",
+    "timestamp": "int64"
+  },
+  "EventRemovedPO": {
+    "definitionId": "string",
+    "eventName": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "FieldModelDeclaredPO": {
+    "definitionId": "string",
+    "aggregateName": "string",
+    "entityName": "string",
+    "description": "string",
+    "identifierName": "string",
+    "identifierType": "string",
+    "identifierOrigin": "string",
+    "identifierDescription": "string",
+    "tenantScoped": "bool",
+    "declaredBy": "string",
+    "tenantId": "string",
+    "declaredAt": "int64",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "aggregateRuleRefs": "net.imadz.metarch.infrastructure.proto.RuleRefPO"
+  },
+  "FieldModelRemovedPO": {
+    "definitionId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "RelationDeclaredPO": {
+    "definitionId": "string",
+    "relationSpec": "net.imadz.metarch.infrastructure.proto.AggregateRelationSpecPO",
+    "triggeredBy": "string",
+    "tenantId": "string",
+    "timestamp": "int64"
+  },
+  "StateFieldDeclaredPO": {
+    "definitionId": "string",
+    "fieldSpec": "net.imadz.metarch.infrastructure.proto.FieldStateSpecPO",
+    "triggeredBy": "string",
+    "tenantId": "string",
+    "timestamp": "int64"
+  },
+  "StateFieldRemovedPO": {
+    "definitionId": "string",
+    "fieldName": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "StateGateDeclaredPO": {
+    "definitionId": "string",
+    "gateSpec": "net.imadz.metarch.infrastructure.proto.StateGateSpecPO",
+    "triggeredBy": "string",
+    "tenantId": "string",
+    "timestamp": "int64"
+  },
+  "StateGateRemovedPO": {
+    "definitionId": "string",
+    "commandName": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "WrittenByAddedPO": {
+    "definitionId": "string",
+    "fieldName": "string",
+    "writtenBy": "string",
+    "triggeredBy": "string",
+    "tenantId": "string",
+    "timestamp": "int64"
+  },
+  "WrittenByCutPO": {
+    "definitionId": "string",
+    "fieldName": "string",
+    "writtenBy": "string",
+    "triggeredBy": "string",
+    "tenantId": "string",
+    "timestamp": "int64"
+  },
+  "WrittenByReplacedPO": {
+    "definitionId": "string",
+    "fieldName": "string",
+    "writtenBy": "string",
+    "triggeredBy": "string",
+    "tenantId": "string",
+    "timestamp": "int64"
+  },
+  "FieldModelDefinitionEventPO": {
+    "aggregateRelationRemoved": "AggregateRelationRemovedPO",
+    "aggregateStatusPatched": "AggregateStatusPatchedPO",
+    "commandDeclared": "CommandDeclaredPO",
+    "commandParameterAdded": "CommandParameterAddedPO",
+    "commandRemoved": "CommandRemovedPO",
+    "descriptionRenamed": "DescriptionRenamedPO",
+    "eventDeclared": "EventDeclaredPO",
+    "eventPayloadAdded": "EventPayloadAddedPO",
+    "eventRemoved": "EventRemovedPO",
+    "fieldModelDeclared": "FieldModelDeclaredPO",
+    "fieldModelRemoved": "FieldModelRemovedPO",
+    "relationDeclared": "RelationDeclaredPO",
+    "stateFieldDeclared": "StateFieldDeclaredPO",
+    "stateFieldRemoved": "StateFieldRemovedPO",
+    "stateGateDeclared": "StateGateDeclaredPO",
+    "stateGateRemoved": "StateGateRemovedPO",
+    "writtenByAdded": "WrittenByAddedPO",
+    "writtenByCut": "WrittenByCutPO",
+    "writtenByReplaced": "WrittenByReplacedPO"
+  },
+  "FieldModelDefinitionStatePO": {
+    "definitionId": "string",
+    "tenantId": "string",
+    "aggregateName": "string",
+    "entityName": "string",
+    "description": "string",
+    "identifierName": "string",
+    "identifierType": "string",
+    "identifierOrigin": "string",
+    "identifierDescription": "string",
+    "tenantScoped": "bool",
+    "statusEnumValues": "string",
+    "statusTransitions": "net.imadz.metarch.infrastructure.proto.StatusTransitionSpecPO",
+    "stateFields": "net.imadz.metarch.infrastructure.proto.FieldStateSpecPO",
+    "commands": "net.imadz.metarch.infrastructure.proto.FieldCommandSpecPO",
+    "events": "net.imadz.metarch.infrastructure.proto.FieldEventSpecPO",
+    "relations": "net.imadz.metarch.infrastructure.proto.AggregateRelationSpecPO",
+    "stateGates": "net.imadz.metarch.infrastructure.proto.StateGateSpecPO",
+    "declaredAt": "int64",
+    "declaredBy": "string",
+    "terminalStates": "string",
+    "removedAt": "int64",
+    "aggregateRuleRefs": "net.imadz.metarch.infrastructure.proto.RuleRefPO"
+  },
+  "FsmStateDefPO": {
+    "name": "string",
+    "kind": "string",
+    "notes": "string",
+    "confirmedBy": "string",
+    "confirmedAt": "string"
+  },
+  "FsmTransitionPO": {
+    "source": "string",
+    "target": "string",
+    "event": "string",
+    "guard": "string",
+    "notes": "string",
+    "confirmedBy": "string",
+    "confirmedAt": "string"
+  },
+  "FsmDefinitionEstablishedPO": {
+    "fsmId": "string",
+    "confirmedBy": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "FsmDefinitionProposedPO": {
+    "fsmId": "string",
+    "aggregateName": "string",
+    "states": "net.imadz.metarch.infrastructure.proto.FsmStateDefPO",
+    "transitions": "net.imadz.metarch.infrastructure.proto.FsmTransitionPO",
+    "createdAt": "int64",
+    "createdBy": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "FsmElementsUpdatedPO": {
+    "fsmId": "string",
+    "states": "net.imadz.metarch.infrastructure.proto.FsmStateDefPO",
+    "transitions": "net.imadz.metarch.infrastructure.proto.FsmTransitionPO",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "FsmDefinitionEventPO": {
+    "fsmDefinitionEstablished": "FsmDefinitionEstablishedPO",
+    "fsmDefinitionProposed": "FsmDefinitionProposedPO",
+    "fsmElementsUpdated": "FsmElementsUpdatedPO"
+  },
+  "FsmDefinitionStatePO": {
+    "fsmId": "string",
+    "status": "string",
+    "aggregateName": "string",
+    "states": "net.imadz.metarch.infrastructure.proto.FsmStateDefPO",
+    "transitions": "net.imadz.metarch.infrastructure.proto.FsmTransitionPO",
+    "createdAt": "int64",
+    "createdBy": "string"
+  },
+  "KnowledgeMergeConflictDetectedPO": {
+    "patchId": "string",
+    "catalogId": "string",
+    "conflictSet": "net.imadz.metarch.infrastructure.proto.CatalogConflictSetPO",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "KnowledgePatchMergeCommittedPO": {
+    "patchId": "string",
+    "catalogId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string",
+    "patchHash": "string",
+    "parentPatchId": "string",
+    "changedFields": "string",
+    "concepts": "net.imadz.metarch.infrastructure.proto.ConceptDeltaPO"
+  },
+  "KnowledgePatchMergeDeclinedPO": {
+    "patchId": "string",
+    "reason": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "KnowledgePatchMergeRequestedPO": {
+    "patchId": "string",
+    "catalogId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "KnowledgePatchMergedPO": {
+    "patchId": "string",
+    "catalogId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string",
+    "patchHash": "string",
+    "parentPatchId": "string",
+    "changedFields": "string"
+  },
+  "KnowledgePatchReadyToMergedPO": {
+    "patchId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "sessionIds": "string",
+    "tenantId": "string"
+  },
+  "KnowledgePatchRejectedPO": {
+    "patchId": "string",
+    "reason": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "KnowledgePatchSubmittedPO": {
+    "patchId": "string",
+    "sessionId": "string",
+    "catalogId": "string",
+    "contextId": "string",
+    "parentPatchId": "string",
+    "parentPatchHash": "string",
+    "concepts": "net.imadz.metarch.infrastructure.proto.ConceptDeltaPO",
+    "relations": "net.imadz.metarch.infrastructure.proto.RelationDeltaPO",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string",
+    "patchHash": "string"
+  },
+  "KnowledgePatchEventPO": {
+    "knowledgeMergeConflictDetected": "KnowledgeMergeConflictDetectedPO",
+    "knowledgePatchMergeCommitted": "KnowledgePatchMergeCommittedPO",
+    "knowledgePatchMergeDeclined": "KnowledgePatchMergeDeclinedPO",
+    "knowledgePatchMergeRequested": "KnowledgePatchMergeRequestedPO",
+    "knowledgePatchMerged": "KnowledgePatchMergedPO",
+    "knowledgePatchReadyToMerged": "KnowledgePatchReadyToMergedPO",
+    "knowledgePatchRejected": "KnowledgePatchRejectedPO",
+    "knowledgePatchSubmitted": "KnowledgePatchSubmittedPO"
+  },
+  "KnowledgePatchStatePO": {
+    "patchId": "string",
+    "tenantId": "string",
+    "status": "string",
+    "sessionIds": "string",
+    "catalogId": "string",
+    "contextId": "string",
+    "createdBy": "string",
+    "parentPatchId": "string",
+    "patchHash": "string",
+    "concepts": "net.imadz.metarch.infrastructure.proto.ConceptDeltaPO",
+    "relations": "net.imadz.metarch.infrastructure.proto.RelationDeltaPO",
+    "createdAt": "int64",
+    "mergedAt": "int64"
+  },
+  "CatalogConflictDetectedPO": {
+    "catalogId": "string",
+    "conflictSet": "net.imadz.metarch.infrastructure.proto.CatalogConflictSetPO",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "CatalogConflictResolvedPO": {
+    "catalogId": "string",
+    "resolvedConflicts": "net.imadz.metarch.infrastructure.proto.CatalogConflictPO",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "CatalogVersionCreatedPO": {
+    "catalogId": "string",
+    "tenantId": "string",
+    "projectId": "string",
+    "version": "string",
+    "baseVersion": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "CatalogVersionReleasedPO": {
+    "catalogId": "string",
+    "version": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "KnowledgePatchedPO": {
+    "catalogId": "string",
+    "patchSet": "net.imadz.metarch.infrastructure.proto.CatalogPatchSetPO",
+    "patchId": "string",
+    "patchHash": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string",
+    "concepts": "net.imadz.metarch.infrastructure.proto.ConceptDeltaPO"
+  },
+  "MetadataAssembledPO": {
+    "catalogId": "string",
+    "tenantId": "string",
+    "projectId": "string",
+    "version": "string",
+    "manifest": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "MetadataExportedPO": {
+    "catalogId": "string",
+    "manifest": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "MetadataVersionReleasedPO": {
+    "catalogId": "string",
+    "version": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "ModelCatalogEventPO": {
+    "catalogConflictDetected": "CatalogConflictDetectedPO",
+    "catalogConflictResolved": "CatalogConflictResolvedPO",
+    "catalogVersionCreated": "CatalogVersionCreatedPO",
+    "catalogVersionReleased": "CatalogVersionReleasedPO",
+    "knowledgePatched": "KnowledgePatchedPO",
+    "metadataAssembled": "MetadataAssembledPO",
+    "metadataExported": "MetadataExportedPO",
+    "metadataVersionReleased": "MetadataVersionReleasedPO"
+  },
+  "ModelCatalogStatePO": {
+    "catalogId": "string",
+    "tenantId": "string",
+    "status": "string",
+    "projectId": "string",
+    "version": "string",
+    "baseVersion": "string",
+    "patchSessionIds": "string",
+    "knowledgePackages": "string",
+    "stateHash": "string",
+    "headPatchId": "string",
+    "headPatchHash": "string",
+    "conflicts": "net.imadz.metarch.infrastructure.proto.CatalogConflictPO",
+    "assembledAt": "int64",
+    "assembledBy": "string",
+    "exportedAt": "int64",
+    "exportedBy": "string",
+    "releasedAt": "int64",
+    "releasedBy": "string",
+    "conceptIndex": "net.imadz.metarch.infrastructure.proto.ConceptIndexEntryPO"
+  },
+  "CollisionDetectedPO": {
+    "noteId": "string",
+    "name": "string",
+    "conflictingNoteIds": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "CollisionResolvedPO": {
+    "noteId": "string",
+    "resolution": "string",
+    "newName": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string",
+    "targetKnowledgeId": "string"
+  },
+  "NoteCapturedPO": {
+    "noteId": "string",
+    "tenantId": "string",
+    "sessionId": "string",
+    "externalId": "string",
+    "boardId": "string",
+    "content": "string",
+    "type": "string",
+    "timeline": "string",
+    "pivotal": "bool",
+    "name": "string",
+    "links": "string",
+    "info": "string",
+    "stage": "string",
+    "author": "string",
+    "description": "string",
+    "sourceCreatedAt": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "knowledgeId": "string"
+  },
+  "NoteContentUpdatedPO": {
+    "noteId": "string",
+    "content": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string",
+    "description": "string"
+  },
+  "NoteInfoUpdatedPO": {
+    "noteId": "string",
+    "info": "string",
+    "links": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "NoteRemovedPO": {
+    "noteId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "NoteEventPO": {
+    "collisionDetected": "CollisionDetectedPO",
+    "collisionResolved": "CollisionResolvedPO",
+    "noteCaptured": "NoteCapturedPO",
+    "noteContentUpdated": "NoteContentUpdatedPO",
+    "noteInfoUpdated": "NoteInfoUpdatedPO",
+    "noteRemoved": "NoteRemovedPO"
+  },
+  "NoteStatePO": {
+    "noteId": "string",
+    "tenantId": "string",
+    "status": "string",
+    "externalId": "string",
+    "boardId": "string",
+    "sessionId": "string",
+    "content": "string",
+    "type": "string",
+    "timeline": "string",
+    "pivotal": "bool",
+    "name": "string",
+    "links": "string",
+    "createdAt": "int64",
+    "createdBy": "string",
+    "collisionName": "string",
+    "removedAt": "int64",
+    "knowledgeId": "string",
+    "info": "string"
+  },
+  "TenantMemberInvitationAcceptedPO": {
+    "tenantId": "string",
+    "userId": "string",
+    "timestamp": "int64",
+    "triggeredBy": "string"
+  },
+  "TenantMemberInvitationExpiredPO": {
+    "tenantId": "string",
+    "userId": "string",
+    "timestamp": "int64",
+    "triggeredBy": "string"
+  },
+  "TenantMemberInvitationResentPO": {
+    "tenantId": "string",
+    "userId": "string",
+    "newExpiresAt": "int64",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "TenantMemberInvitationRevokedPO": {
+    "tenantId": "string",
+    "userId": "string",
+    "timestamp": "int64",
+    "triggeredBy": "string"
+  },
+  "TenantMemberInvitedPO": {
+    "tenantId": "string",
+    "userId": "string",
+    "department": "string",
+    "jobTitle": "string",
+    "invitedBy": "string",
+    "expiresAt": "int64",
+    "timestamp": "int64",
+    "triggeredBy": "string",
+    "displayName": "string",
+    "email": "string",
+    "phoneNumber": "string"
+  },
+  "TenantMemberJoinedPO": {
+    "tenantId": "string",
+    "userId": "string",
+    "timestamp": "int64",
+    "triggeredBy": "string",
+    "orgMemberId": "string"
+  },
+  "TenantMemberRemovedPO": {
+    "tenantId": "string",
+    "userId": "string",
+    "reason": "string",
+    "timestamp": "int64",
+    "triggeredBy": "string",
+    "orgMemberId": "string"
+  },
+  "OrganizationMemberEventPO": {
+    "tenantMemberInvitationAccepted": "TenantMemberInvitationAcceptedPO",
+    "tenantMemberInvitationExpired": "TenantMemberInvitationExpiredPO",
+    "tenantMemberInvitationResent": "TenantMemberInvitationResentPO",
+    "tenantMemberInvitationRevoked": "TenantMemberInvitationRevokedPO",
+    "tenantMemberInvited": "TenantMemberInvitedPO",
+    "tenantMemberJoined": "TenantMemberJoinedPO",
+    "tenantMemberRemoved": "TenantMemberRemovedPO"
+  },
+  "OrganizationMemberStatePO": {
+    "orgMemberId": "string",
+    "tenantId": "string",
+    "status": "string",
+    "userId": "string",
+    "department": "string",
+    "jobTitle": "string",
+    "displayName": "string",
+    "email": "string",
+    "phoneNumber": "string",
+    "joinedAt": "int64",
+    "removedAt": "int64"
+  },
+  "ProjectCancelledPO": {
+    "projectId": "string",
+    "reason": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "ProjectCompletedPO": {
+    "projectId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "ProjectDescriptionUpdatedPO": {
+    "projectId": "string",
+    "description": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "ProjectInitiatedPO": {
+    "projectId": "string",
+    "tenantId": "string",
+    "workgroupId": "string",
+    "name": "string",
+    "description": "string",
+    "projectOwnerUserId": "string",
+    "workshopName": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "catalogId": "string"
+  },
+  "ProjectOwnerAssignedPO": {
+    "projectId": "string",
+    "ownerUserId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "ProjectPausedPO": {
+    "projectId": "string",
+    "reason": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "ProjectResumedPO": {
+    "projectId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "ProjectEventPO": {
+    "projectCancelled": "ProjectCancelledPO",
+    "projectCompleted": "ProjectCompletedPO",
+    "projectDescriptionUpdated": "ProjectDescriptionUpdatedPO",
+    "projectInitiated": "ProjectInitiatedPO",
+    "projectOwnerAssigned": "ProjectOwnerAssignedPO",
+    "projectPaused": "ProjectPausedPO",
+    "projectResumed": "ProjectResumedPO"
+  },
+  "ProjectStatePO": {
+    "projectId": "string",
+    "tenantId": "string",
+    "status": "string",
+    "workgroupId": "string",
+    "ownerUserId": "string",
+    "name": "string",
+    "description": "string",
+    "createdAt": "int64",
+    "createdBy": "string",
+    "startedAt": "int64",
+    "completedAt": "int64",
+    "pausedAt": "int64",
+    "cancelledAt": "int64",
+    "catalogId": "string"
+  },
+  "QuestionAnsweredPO": {
+    "questionId": "string",
+    "answer": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "QuestionDismissedPO": {
+    "questionId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "QuestionRaisedPO": {
+    "questionId": "string",
+    "tenantId": "string",
+    "sessionId": "string",
+    "externalId": "string",
+    "boardId": "string",
+    "content": "string",
+    "linkedNoteIds": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "QuestionReopenedPO": {
+    "questionId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "QuestionEventPO": {
+    "questionAnswered": "QuestionAnsweredPO",
+    "questionDismissed": "QuestionDismissedPO",
+    "questionRaised": "QuestionRaisedPO",
+    "questionReopened": "QuestionReopenedPO"
+  },
+  "QuestionStatePO": {
+    "questionId": "string",
+    "tenantId": "string",
+    "status": "string",
+    "externalId": "string",
+    "boardId": "string",
+    "sessionId": "string",
+    "content": "string",
+    "linkedNoteIds": "string",
+    "raisedBy": "string",
+    "raisedAt": "int64",
+    "answeredBy": "string",
+    "answeredAt": "int64",
+    "answer": "string",
+    "dismissedBy": "string",
+    "dismissedAt": "int64"
+  },
+  "PatchReadModelFieldSpecPO": {
+    "fieldName": "string",
+    "dataType": "string",
+    "uiLabel": "string",
+    "source": "string",
+    "isKey": "bool",
+    "origin": "string",
+    "writtenBy": "string"
+  },
+  "ReadModelFieldSpecPO": {
+    "fieldName": "string",
+    "dataType": "string",
+    "uiLabel": "string",
+    "source": "string",
+    "isKey": "bool",
+    "origin": "string",
+    "writtenBy": "string",
+    "noteId": "string"
+  },
+  "ReadModelDeclaredPO": {
+    "definitionId": "string",
+    "viewName": "string",
+    "parentAggregate": "string",
+    "viewId": "string",
+    "sourceAggregates": "string",
+    "consumesEvents": "string",
+    "linkedStories": "string",
+    "description": "string",
+    "fields": "net.imadz.metarch.infrastructure.proto.ReadModelFieldSpecPO",
+    "decisionCommands": "string",
+    "declaredBy": "string",
+    "tenantId": "string",
+    "declaredAt": "int64",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "ReadModelFieldPatchedPO": {
+    "definitionId": "string",
+    "changedFields": "string",
+    "fieldSpec": "net.imadz.metarch.infrastructure.proto.PatchReadModelFieldSpecPO",
+    "triggeredBy": "string",
+    "tenantId": "string",
+    "timestamp": "int64"
+  },
+  "ReadModelRemovedPO": {
+    "definitionId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "ReadModelDefinitionEventPO": {
+    "readModelDeclared": "ReadModelDeclaredPO",
+    "readModelFieldPatched": "ReadModelFieldPatchedPO",
+    "readModelRemoved": "ReadModelRemovedPO"
+  },
+  "ReadModelDefinitionStatePO": {
+    "definitionId": "string",
+    "tenantId": "string",
+    "viewName": "string",
+    "parentAggregate": "string",
+    "viewId": "string",
+    "sourceAggregates": "string",
+    "consumesEvents": "string",
+    "linkedStories": "string",
+    "description": "string",
+    "fields": "net.imadz.metarch.infrastructure.proto.ReadModelFieldSpecPO",
+    "decisionCommands": "string",
+    "declaredAt": "int64",
+    "declaredBy": "string",
+    "removedAt": "int64",
+    "removedBy": "string"
+  },
+  "RelationCreatedPO": {
+    "edgeId": "string",
+    "sourceId": "string",
+    "targetId": "string",
+    "relationType": "string",
+    "condition": "string",
+    "mapping": "string",
+    "order": "int32",
+    "metadata": "string",
+    "createdAt": "int64",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "RelationRemovedPO": {
+    "edgeId": "string",
+    "reason": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "RelationUpdatedPO": {
+    "edgeId": "string",
+    "changedFields": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "RelationEventPO": {
+    "relationCreated": "RelationCreatedPO",
+    "relationRemoved": "RelationRemovedPO",
+    "relationUpdated": "RelationUpdatedPO"
+  },
+  "RelationStatePO": {
+    "edgeId": "string",
+    "tenantId": "string",
+    "sourceId": "string",
+    "targetId": "string",
+    "relationType": "string",
+    "condition": "string",
+    "mapping": "string",
+    "order": "int32",
+    "metadata": "string",
+    "createdAt": "int64",
+    "createdBy": "string"
+  },
+  "CommandBoundPO": {
+    "bindingId": "string",
+    "roleName": "string",
+    "commandName": "string",
+    "ruling": "string",
+    "systemCommand": "bool",
+    "boundBy": "string",
+    "tenantId": "string",
+    "boundAt": "int64",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "CommandUnboundPO": {
+    "bindingId": "string",
+    "reason": "string",
+    "triggeredBy": "string",
+    "tenantId": "string",
+    "unboundAt": "int64",
+    "timestamp": "int64"
+  },
+  "RoleCommandBindingEventPO": {
+    "commandBound": "CommandBoundPO",
+    "commandUnbound": "CommandUnboundPO"
+  },
+  "RoleCommandBindingStatePO": {
+    "bindingId": "string",
+    "tenantId": "string",
+    "roleName": "string",
+    "commandName": "string",
+    "ruling": "string",
+    "systemCommand": "bool",
+    "status": "string",
+    "boundAt": "int64",
+    "boundBy": "string",
+    "unboundAt": "int64",
+    "unboundReason": "string"
+  },
+  "SagaParticipantPO": {
+    "typeName": "string",
+    "payload": "bytes"
+  },
+  "SagaTransactionStepPO": {
+    "stepId": "string",
+    "phase": "TransactionPhasePO",
+    "maxRetries": "int32",
+    "timeoutDurationMillis": "int64",
+    "retryWhenRecoveredOngoing": "bool",
+    "participant": "SagaParticipantPO",
+    "participantType": "string"
+  },
+  "StepStatePO": {
+    "step": "SagaTransactionStepPO",
+    "transactionId": "string",
+    "status": "StepStatusPO",
+    "retries": "int32",
+    "lastError": "RetryableOrNotExceptionPO",
+    "circuitBreakerOpen": "bool",
+    "replyToPath": "string"
+  },
+  "RetryableOrNotExceptionPO": {
+    "isRetryable": "bool",
+    "message": "string"
+  },
+  "ExecutionStartedPO": {
+    "transactionId": "string",
+    "transactionStep": "SagaTransactionStepPO",
+    "replyToPath": "string"
+  },
+  "OperationSucceededPO": {
+    "resultType": "string",
+    "result": "bytes"
+  },
+  "OperationFailedPO": {
+    "error": "RetryableOrNotExceptionPO"
+  },
+  "RetryScheduledPO": {
+    "retryCount": "int32"
+  },
+  "StepExecutorEventPO": {
+    "started": "ExecutionStartedPO",
+    "succeed": "OperationSucceededPO",
+    "failed": "OperationFailedPO",
+    "rescheduled": "RetryScheduledPO"
+  },
+  "StartCommandPO": {
+    "transactionId": "string",
+    "sagaStep": "SagaTransactionStepPO",
+    "replyToPath": "string"
+  },
+  "RecoverExecutionCommandPO": {
+    "transactionId": "string",
+    "sagaStep": "SagaTransactionStepPO"
+  },
+  "OperationSucceedCommandPO": {
+    "successMessageType": "string",
+    "success": "bytes"
+  },
+  "OperationFailedCommandPO": {
+    "error": "RetryableOrNotExceptionPO"
+  },
+  "OperationResponseCommandPO": {
+    "succeed": "OperationSucceedCommandPO",
+    "error": "OperationFailedCommandPO"
+  },
+  "RetryOperationCommandPO": {},
+  "StartTransactionPO": {
+    "transactionId": "string",
+    "steps": "SagaTransactionStepPO"
+  },
+  "PhaseCompletedPO": {
+    "phase": "TransactionPhasePO",
+    "results": "PhaseResultPO"
+  },
+  "PhaseFailurePO": {
+    "phase": "TransactionPhasePO",
+    "errorMessage": "string",
+    "isRetryable": "bool"
+  },
+  "PhaseResultPO": {
+    "error": "string",
+    "success": "bytes"
+  },
+  "TransactionStartedPO": {
+    "transactionId": "string",
+    "steps": "SagaTransactionStepPO"
+  },
+  "PhaseSucceededPO": {
+    "phase": "TransactionPhasePO"
+  },
+  "PhaseFailedPO": {
+    "phase": "TransactionPhasePO"
+  },
+  "TransactionCompletedPO": {
+    "transactionId": "string"
+  },
+  "TransactionFailedPO": {
+    "transactionId": "string",
+    "reason": "string"
+  },
+  "SagaTransactionCoordinatorEventPO": {
+    "started": "TransactionStartedPO",
+    "phaseSucceeded": "PhaseSucceededPO",
+    "phaseFailed": "PhaseFailedPO",
+    "transactionCompleted": "TransactionCompletedPO",
+    "transactionFailed": "TransactionFailedPO"
+  },
+  "CoordinatorStatePO": {
+    "transactionId": "string",
+    "steps": "SagaTransactionStepPO",
+    "currentPhase": "TransactionPhasePO",
+    "status": "CoordinatorStatusPO"
+  },
+  "ObserverInvitedPO": {
+    "sessionId": "string",
+    "stageId": "string",
+    "userId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string",
+    "displayName": "string",
+    "email": "string",
+    "phoneNumber": "string"
+  },
+  "ParticipantInvitedPO": {
+    "sessionId": "string",
+    "stageId": "string",
+    "userId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string",
+    "displayName": "string",
+    "email": "string",
+    "phoneNumber": "string"
+  },
+  "SessionClosedPO": {
+    "sessionId": "string",
+    "stageId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "SessionCompletedPO": {
+    "sessionId": "string",
+    "stageId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "SessionOpenedPO": {
+    "tenantId": "string",
+    "sessionId": "string",
+    "stageId": "string",
+    "workshopId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "SessionPreparedPO": {
+    "sessionId": "string",
+    "stageId": "string",
+    "participantUserIds": "string",
+    "observerUserIds": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "SessionRoleAssignedPO": {
+    "sessionId": "string",
+    "stageId": "string",
+    "userId": "string",
+    "role": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "SessionEventPO": {
+    "observerInvited": "ObserverInvitedPO",
+    "participantInvited": "ParticipantInvitedPO",
+    "sessionClosed": "SessionClosedPO",
+    "sessionCompleted": "SessionCompletedPO",
+    "sessionOpened": "SessionOpenedPO",
+    "sessionPrepared": "SessionPreparedPO",
+    "sessionRoleAssigned": "SessionRoleAssignedPO"
+  },
+  "SessionStatePO": {
+    "sessionId": "string",
+    "tenantId": "string",
+    "status": "string",
+    "stageId": "string",
+    "participantUserIds": "string",
+    "observerUserIds": "string",
+    "openedAt": "int64",
+    "preparedAt": "int64",
+    "closedAt": "int64",
+    "participantRoles": "net.imadz.metarch.infrastructure.proto.ParticipantRolePO"
+  },
+  "AggregateRelationSpecPO": {
+    "toAggregate": "string",
+    "cardinality": "string",
+    "foreignKey": "string",
+    "writePath": "string",
+    "ruling": "string",
+    "semanticType": "string",
+    "causal": "string",
+    "temporal": "bool",
+    "existence": "string",
+    "targetDeletionPolicy": "string",
+    "targetTypes": "string",
+    "noteId": "string"
+  },
+  "CatalogConflictPO": {
+    "conflictId": "string",
+    "conflictType": "string",
+    "involvedSessionIds": "string",
+    "details": "string",
+    "resolvedAt": "int64",
+    "resolvedBy": "string",
+    "resolutionAction": "string",
+    "resolutionNote": "string"
+  },
+  "CatalogConflictSetPO": {
+    "detectedAt": "int64",
+    "conflicts": "net.imadz.metarch.infrastructure.proto.CatalogConflictPO"
+  },
+  "CatalogPatchSetPO": {
+    "sessionId": "string",
+    "concepts": "net.imadz.metarch.infrastructure.proto.ConceptDeltaPO",
+    "appliedAt": "int64"
+  },
+  "CodeAnchorDeltaPO": {
+    "noteId": "string",
+    "role": "string",
+    "host": "string",
+    "file": "string",
+    "symbols": "string"
+  },
+  "ConceptDeltaPO": {
+    "action": "string",
+    "conceptName": "string",
+    "contextId": "string",
+    "noteIds": "string",
+    "definition": "string",
+    "conceptId": "string",
+    "contentHash": "string",
+    "kind": "string",
+    "sourceStage": "string",
+    "sourceSessionId": "string",
+    "noteId": "string",
+    "anchors": "net.imadz.metarch.infrastructure.proto.CodeAnchorDeltaPO",
+    "guards": "net.imadz.metarch.infrastructure.proto.GuardSpecPO",
+    "aggregateRuleRefs": "net.imadz.metarch.infrastructure.proto.RuleRefPO",
+    "preconditionRefs": "net.imadz.metarch.infrastructure.proto.RuleRefPO",
+    "postconditionRefs": "net.imadz.metarch.infrastructure.proto.RuleRefPO",
+    "fields": "net.imadz.metarch.infrastructure.proto.FieldSpecPO",
+    "emits": "net.imadz.metarch.infrastructure.proto.EdgeTargetPO",
+    "folds": "net.imadz.metarch.infrastructure.proto.FieldEdgePO",
+    "emissions": "net.imadz.metarch.infrastructure.proto.FieldEdgePO",
+    "steps": "net.imadz.metarch.infrastructure.proto.UcStepPO",
+    "extensions": "net.imadz.metarch.infrastructure.proto.UcStepPO",
+    "ucWrites": "net.imadz.metarch.infrastructure.proto.EdgeTargetPO",
+    "ucPublishes": "net.imadz.metarch.infrastructure.proto.EdgeTargetPO"
+  },
+  "ConceptIndexEntryPO": {
+    "conceptName": "string",
+    "contextId": "string",
+    "conceptId": "string",
+    "contentHash": "string"
+  },
+  "EdgeTargetPO": {
+    "conceptId": "string",
+    "name": "string"
+  },
+  "EventBindingPO": {
+    "slot": "string",
+    "expr": "string"
+  },
+  "FieldCommandSpecPO": {
+    "commandName": "string",
+    "description": "string",
+    "produces": "string",
+    "preconditions": "string",
+    "parameters": "net.imadz.metarch.infrastructure.proto.FieldParamSpecPO",
+    "noteId": "string",
+    "guards": "net.imadz.metarch.infrastructure.proto.GuardSpecPO",
+    "preconditionRefs": "net.imadz.metarch.infrastructure.proto.RuleRefPO"
+  },
+  "FieldEdgePO": {
+    "fieldNoteId": "string",
+    "slot": "string",
+    "expr": "string",
+    "fieldConceptId": "string"
+  },
+  "FieldEventSpecPO": {
+    "eventName": "string",
+    "description": "string",
+    "humanDescription": "string",
+    "origin": "string",
+    "payloads": "net.imadz.metarch.infrastructure.proto.FieldParamSpecPO",
+    "noteId": "string",
+    "bindings": "net.imadz.metarch.infrastructure.proto.EventBindingPO",
+    "forEach": "string",
+    "foldAssignments": "net.imadz.metarch.infrastructure.proto.EventBindingPO",
+    "postconditionRefs": "net.imadz.metarch.infrastructure.proto.RuleRefPO"
+  },
+  "FieldParamSpecPO": {
+    "paramName": "string",
+    "dataType": "string",
+    "description": "string",
+    "uiLabel": "string",
+    "businessDef": "string",
+    "origin": "string",
+    "lineageHint": "string",
+    "derivation": "string",
+    "role": "string",
+    "optional": "bool",
+    "optionalWhen": "string",
+    "noteId": "string"
+  },
+  "FieldSpecPO": {
+    "name": "string",
+    "dataType": "string",
+    "description": "string",
+    "role": "string",
+    "noteId": "string",
+    "writtenBy": "string",
+    "fieldConceptId": "string"
+  },
+  "FieldStateSpecPO": {
+    "fieldName": "string",
+    "dataType": "string",
+    "description": "string",
+    "uiLabel": "string",
+    "businessDef": "string",
+    "derivation": "string",
+    "lineageHint": "string",
+    "parent": "string",
+    "fold": "string",
+    "source": "string",
+    "origin": "string",
+    "role": "string",
+    "writtenBy": "string",
+    "nature": "string",
+    "noteId": "string",
+    "foldAssignments": "net.imadz.metarch.infrastructure.proto.EventBindingPO"
+  },
+  "GuardSpecPO": {
+    "kind": "string",
+    "ref": "string",
+    "errCode": "string",
+    "desc": "string",
+    "cond": "string",
+    "from": "string",
+    "toStatus": "string",
+    "notStatus": "string",
+    "note": "string"
+  },
+  "ParticipantRolePO": {
+    "userId": "string",
+    "role": "string"
+  },
+  "RelationDeltaPO": {
+    "action": "string",
+    "relationName": "string",
+    "sourceConceptName": "string",
+    "targetConceptName": "string",
+    "mapping": "string"
+  },
+  "RuleRefPO": {
+    "ruleId": "string",
+    "errCode": "string",
+    "desc": "string"
+  },
+  "StateGateSpecPO": {
+    "commandName": "string",
+    "fromStates": "string",
+    "toState": "string",
+    "initial": "bool",
+    "noteId": "string"
+  },
+  "StatusTransitionSpecPO": {
+    "eventName": "string",
+    "toState": "string",
+    "noteId": "string"
+  },
+  "UcStepPO": {
+    "no": "string",
+    "atStep": "string",
+    "text": "string"
+  },
+  "StageActivatedPO": {
+    "tenantId": "string",
+    "stageId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "sessionId": "string",
+    "workshopId": "string",
+    "order": "int32",
+    "name": "string"
+  },
+  "StageApprovedPO": {
+    "tenantId": "string",
+    "stageId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "StageRejectedPO": {
+    "tenantId": "string",
+    "rejectionReason": "string",
+    "stageId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "StageSkippedPO": {
+    "tenantId": "string",
+    "stageId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "StageEventPO": {
+    "stageActivated": "StageActivatedPO",
+    "stageApproved": "StageApprovedPO",
+    "stageRejected": "StageRejectedPO",
+    "stageSkipped": "StageSkippedPO"
+  },
+  "StageStatePO": {
+    "stageId": "string",
+    "tenantId": "string",
+    "status": "string",
+    "workshopId": "string",
+    "order": "int32",
+    "name": "string",
+    "activatedAt": "int64",
+    "approvedAt": "int64",
+    "rejectedAt": "int64",
+    "rejectionReason": "string",
+    "sessionId": "string"
+  },
+  "SubdomainClassifiedPO": {
+    "tenantId": "string",
+    "subdomainId": "string",
+    "name": "string",
+    "description": "string",
+    "kind": "string",
+    "buyOrBuild": "string",
+    "aggregateIds": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "SubdomainKindUpdatedPO": {
+    "subdomainId": "string",
+    "kind": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "SubdomainEventPO": {
+    "subdomainClassified": "SubdomainClassifiedPO",
+    "subdomainKindUpdated": "SubdomainKindUpdatedPO"
+  },
+  "SubdomainStatePO": {
+    "subdomainId": "string",
+    "tenantId": "string",
+    "name": "string",
+    "description": "string",
+    "kind": "string",
+    "buyOrBuild": "string",
+    "aggregateIds": "string",
+    "classifiedAt": "int64",
+    "classifiedBy": "string"
+  },
+  "TenantArchivedPO": {
+    "tenantId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "TenantMemberRosterUpdatedPO": {
+    "tenantId": "string",
+    "userId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "orgMemberId": "string"
+  },
+  "TenantOnboardedPO": {
+    "tenantId": "string",
+    "name": "string",
+    "ownerUserId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "TenantOwnerChangedPO": {
+    "tenantId": "string",
+    "oldOwnerUserId": "string",
+    "newOwnerUserId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "TenantResumedPO": {
+    "tenantId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "TenantSuspendedPO": {
+    "tenantId": "string",
+    "reason": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "TenantEventPO": {
+    "tenantArchived": "TenantArchivedPO",
+    "tenantMemberRosterUpdated": "TenantMemberRosterUpdatedPO",
+    "tenantOnboarded": "TenantOnboardedPO",
+    "tenantOwnerChanged": "TenantOwnerChangedPO",
+    "tenantResumed": "TenantResumedPO",
+    "tenantSuspended": "TenantSuspendedPO"
+  },
+  "TenantStatePO": {
+    "tenantId": "string",
+    "status": "string",
+    "name": "string",
+    "ownerUserId": "string",
+    "orgMemberIds": "string",
+    "createdAt": "int64",
+    "createdBy": "string",
+    "suspendedAt": "int64",
+    "archivedAt": "int64"
+  },
+  "TruthProvenanceRecordedPO": {
+    "provenanceId": "string",
+    "sourceKey": "string",
+    "payloadJson": "string",
+    "recordedBy": "string",
+    "tenantId": "string",
+    "recordedAt": "int64",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "TruthSourceProvenanceEventPO": {
+    "truthProvenanceRecorded": "TruthProvenanceRecordedPO"
+  },
+  "TruthSourceProvenanceStatePO": {
+    "provenanceId": "string",
+    "tenantId": "string",
+    "sourceKey": "string",
+    "payloadJson": "string",
+    "recordedAt": "int64",
+    "recordedBy": "string"
+  },
+  "UseCaseDeclaredPO": {
+    "definitionId": "string",
+    "useCaseName": "string",
+    "realizes": "string",
+    "actors": "string",
+    "trigger": "string",
+    "preconditions": "string",
+    "postconditions": "string",
+    "orchestrationType": "string",
+    "mainFlowJson": "string",
+    "extensionsJson": "string",
+    "generatedIds": "string",
+    "optionalInputs": "string",
+    "declaredAt": "int64",
+    "declaredBy": "string",
+    "triggeredBy": "string",
+    "tenantId": "string",
+    "timestamp": "int64"
+  },
+  "UseCaseRemovedPO": {
+    "definitionId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "UseCaseDefinitionEventPO": {
+    "useCaseDeclared": "UseCaseDeclaredPO",
+    "useCaseRemoved": "UseCaseRemovedPO"
+  },
+  "UseCaseDefinitionStatePO": {
+    "definitionId": "string",
+    "tenantId": "string",
+    "useCaseName": "string",
+    "realizes": "string",
+    "actors": "string",
+    "trigger": "string",
+    "preconditions": "string",
+    "postconditions": "string",
+    "orchestrationType": "string",
+    "mainFlowJson": "string",
+    "extensionsJson": "string",
+    "generatedIds": "string",
+    "optionalInputs": "string",
+    "declaredAt": "int64",
+    "declaredBy": "string",
+    "removedAt": "int64",
+    "removedBy": "string"
+  },
+  "UserDeactivatedPO": {
+    "userId": "string",
+    "reason": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "UserProfileUpdatedPO": {
+    "userId": "string",
+    "displayName": "string",
+    "email": "string",
+    "phoneNumber": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "UserReactivatedPO": {
+    "userId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "UserRegisteredPO": {
+    "userId": "string",
+    "email": "string",
+    "displayName": "string",
+    "authMethod": "string",
+    "phoneNumber": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "UserEventPO": {
+    "userDeactivated": "UserDeactivatedPO",
+    "userProfileUpdated": "UserProfileUpdatedPO",
+    "userReactivated": "UserReactivatedPO",
+    "userRegistered": "UserRegisteredPO"
+  },
+  "UserStatePO": {
+    "userId": "string",
+    "status": "string",
+    "email": "string",
+    "authMethod": "string",
+    "displayName": "string",
+    "registeredAt": "int64",
+    "phoneNumber": "string"
+  },
+  "VOMemberSpecPO": {
+    "fieldName": "string",
+    "dataType": "string",
+    "description": "string",
+    "noteId": "string"
+  },
+  "ValueObjectDeclaredPO": {
+    "definitionId": "string",
+    "voName": "string",
+    "members": "net.imadz.metarch.infrastructure.proto.VOMemberSpecPO",
+    "declaredBy": "string",
+    "tenantId": "string",
+    "declaredAt": "int64",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "ValueObjectRemovedPO": {
+    "definitionId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "ValueObjectDefinitionEventPO": {
+    "valueObjectDeclared": "ValueObjectDeclaredPO",
+    "valueObjectRemoved": "ValueObjectRemovedPO"
+  },
+  "ValueObjectDefinitionStatePO": {
+    "definitionId": "string",
+    "tenantId": "string",
+    "voName": "string",
+    "members": "net.imadz.metarch.infrastructure.proto.VOMemberSpecPO",
+    "declaredAt": "int64",
+    "declaredBy": "string",
+    "removedAt": "int64",
+    "removedBy": "string"
+  },
+  "ChecklistItemPO": {
+    "criterion": "string",
+    "status": "string",
+    "evidence": "string",
+    "proposedBy": "string",
+    "confirmedBy": "string",
+    "confirmedAt": "string"
+  },
+  "WorkTicketApprovedPO": {
+    "ticketId": "string",
+    "approvedBy": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "WorkTicketCreatedPO": {
+    "ticketId": "string",
+    "subjectType": "string",
+    "subjectId": "string",
+    "stage": "string",
+    "ticketType": "string",
+    "title": "string",
+    "checklist": "net.imadz.metarch.infrastructure.proto.ChecklistItemPO",
+    "createdAt": "int64",
+    "createdBy": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "WorkTicketItemsUpdatedPO": {
+    "ticketId": "string",
+    "items": "net.imadz.metarch.infrastructure.proto.ChecklistItemPO",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "WorkTicketEventPO": {
+    "workTicketApproved": "WorkTicketApprovedPO",
+    "workTicketCreated": "WorkTicketCreatedPO",
+    "workTicketItemsUpdated": "WorkTicketItemsUpdatedPO"
+  },
+  "WorkTicketStatePO": {
+    "ticketId": "string",
+    "status": "string",
+    "subjectType": "string",
+    "subjectId": "string",
+    "stage": "string",
+    "ticketType": "string",
+    "title": "string",
+    "checklist": "net.imadz.metarch.infrastructure.proto.ChecklistItemPO",
+    "createdAt": "int64",
+    "createdBy": "string"
+  },
+  "WorkgroupArchivedPO": {
+    "workgroupId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "WorkgroupFormedPO": {
+    "workgroupId": "string",
+    "tenantId": "string",
+    "name": "string",
+    "ownerUserId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "WorkgroupMemberInvitedPO": {
+    "workgroupId": "string",
+    "userId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string",
+    "displayName": "string",
+    "email": "string",
+    "phoneNumber": "string"
+  },
+  "WorkgroupMemberJoinedPO": {
+    "workgroupId": "string",
+    "userId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "WorkgroupMemberRemovedPO": {
+    "workgroupId": "string",
+    "userId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "WorkgroupNameUpdatedPO": {
+    "workgroupId": "string",
+    "name": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "WorkgroupOwnerAssignedPO": {
+    "workgroupId": "string",
+    "ownerUserId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "WorkgroupEventPO": {
+    "workgroupArchived": "WorkgroupArchivedPO",
+    "workgroupFormed": "WorkgroupFormedPO",
+    "workgroupMemberInvited": "WorkgroupMemberInvitedPO",
+    "workgroupMemberJoined": "WorkgroupMemberJoinedPO",
+    "workgroupMemberRemoved": "WorkgroupMemberRemovedPO",
+    "workgroupNameUpdated": "WorkgroupNameUpdatedPO",
+    "workgroupOwnerAssigned": "WorkgroupOwnerAssignedPO"
+  },
+  "WorkgroupStatePO": {
+    "workgroupId": "string",
+    "tenantId": "string",
+    "status": "string",
+    "name": "string",
+    "ownerUserId": "string",
+    "memberUserIds": "string",
+    "invitedUserIds": "string",
+    "createdAt": "int64",
+    "createdBy": "string",
+    "archivedAt": "int64"
+  },
+  "WorkshopCompletedPO": {
+    "workshopId": "string",
+    "completedAt": "int64",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "WorkshopRoleAssignedPO": {
+    "workshopId": "string",
+    "userId": "string",
+    "role": "string",
+    "tenantId": "string",
+    "triggeredBy": "string",
+    "timestamp": "int64"
+  },
+  "WorkshopScheduledPO": {
+    "workshopId": "string",
+    "tenantId": "string",
+    "projectId": "string",
+    "scheduledAt": "int64",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "patchId": "string"
+  },
+  "WorkshopStartedPO": {
+    "workshopId": "string",
+    "startedAt": "int64",
+    "triggeredBy": "string",
+    "timestamp": "int64",
+    "tenantId": "string"
+  },
+  "WorkshopEventPO": {
+    "workshopCompleted": "WorkshopCompletedPO",
+    "workshopRoleAssigned": "WorkshopRoleAssignedPO",
+    "workshopScheduled": "WorkshopScheduledPO",
+    "workshopStarted": "WorkshopStartedPO"
+  },
+  "WorkshopStatePO": {
+    "workshopId": "string",
+    "tenantId": "string",
+    "status": "string",
+    "projectId": "string",
+    "scheduledAt": "int64",
+    "startedAt": "int64",
+    "completedAt": "int64",
+    "patchId": "string",
+    "memberRoles": "net.imadz.metarch.infrastructure.proto.ParticipantRolePO"
+  }
+}

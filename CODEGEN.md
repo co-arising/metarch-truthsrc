@@ -853,3 +853,52 @@ Report (2026-10-15, post-increment): 422 rows = **313 identical / 1 diff / 108 o
 block's live-only remainder drops 28 → 27: everything left is the unported aggregate-state face
 (S1 拍板面·candidate ③). npm test 22/22 (api gate 8 entries; concerns e2e api runs 6→7;
 diff-apply counts +1 across the board).
+
+### The projection/storage sweep: DDL, state API, and the engine's biggest face (V4-14)
+
+One batch closed every remaining candidate: ② the dual-dialect DDL, ③ the S1 aggregate-state
+controller, ④ the view/repo/impl storage face, ⑤ the projection handlers.
+
+**② DDL (`scala-cqrs-es-ddl`)** — the `gen_projection_ddl.mjs` port. `conf/sql/2.sql` = the
+③-layer GATED DecisionViews minus graph cards (no SQL dialect) minus mongo document views (old
+tables not dropped = rollback-safe), the deterministic type map (description/content/info→TEXT
+and payloadJson→MEDIUMTEXT are 毒丸判例 tombstones — MysqlDataTruncation halted projections),
+faithful sorted keys as PRIMARY KEY. `conf/sql/5-pgvector.sql` = the M3 vector dialect over the
+①-layer `vectorViews` slot (camel→snake, declaration-order composite PK, HNSW via
+distance→ops). Byte-identical on the first pass.
+
+**③ StateApi (`scala-cqrs-es-api` grows `templates/state_api.mjs`)** — the engine trio port
+(AggregateStateControllerBuilder/Model/Template): one controller, one method per aggregate,
+`api.global.read()` → IdGuard → `repository.entityRef(id).ask(Get<X>State)`; serialization is
+controller-owned (per-aggregate hand-written OWrites — no macros), credential-nature fields
+excluded, keyword fields backtick-escaped at access sites (`st.\`type\``). The 27 route lines
+close the E301 block's last live-only region: **routes 229 = 229, liveOnly 0**. Fixture
+canonicals ride the corpus `stateRoster` sidecar (the face is global; their own roster is
+1 aggregate). The live file ends WITHOUT a trailing newline — kept.
+
+**④⑤ Projection (`scala-cqrs-es-projection`, new)** — 369 outputs: defs ×43 (composite /
+single-handler / multi-aggregate shapes; **dispatcher wiring order = the readModel note's
+`event:` LINK order** — not the refCodes key order: CollisionResolved rides the links without a
+refCode; duplicate links dedupe first-wins — ParkConcept carries ConceptEstablished twice;
+zero-handler groups emit nothing — OpenSession's Stage), handlers ×240 (engine skeleton + the
+`gen_projection_handlers` MANUAL port: table/vector/graph channels derive the mechanical form
+from the referenceCodes — 28 corpus blocks derive byte-equal, the port's proof; every
+divergence — handwritten MERGE-preserved content, post-fill refCode drift like the strOr()
+removal — rides the manual-blocks sidecar), repos ×43 (Table companion with sorted DTO fields
+and Instant→Option[Instant], field anchors via elementHashes, the AssemblyEngine method set:
+sorted keys → findByIdentity, non-key `*Id` + composite-key members → findBy*), impls ×43
+(table scalikejdbc / MongoViewStore / GraphMutationExecutor / PgVectorStore+OllamaEmbeddingClient).
+
+Three sidecars under `golden/scala-cqrs-es-projection-metarch/` carry the non-derivable inputs,
+each with a one-off distiller: `manual-blocks.json` (247 live MANUAL blocks — 53 handwritten),
+`proto-fields.json` (the PO whitelist/types), `stale-generations.json` (26 impls whose BODIES
+predate the current builder — the 2026-10-15 stamp refresh renewed stamps across 718 files
+without rewriting bytes, so live carries mixed generations behind fresh stamps; those files ride
+verbatim, documented as relics). Handwritten-forever (absent): KnInstanceProjection + handler +
+store, ParkConceptDecisionViewCompositeHandler. PauseProject ×10 are live relics (the ①-layer
+note is gone; the incremental gate never rewrites them).
+
+Report (2026-10-16, post-increment): **794 rows = 686 identical / 0 diff / 108 owned-by-other**
+(skeleton 108 · rules 172 · api 35 · projection 369 · ddl 2; routes liveOnly 0; reverse
+coverage = the 14 disclosed handwritten/relic files). npm test 24/24 (new ddl + projection
+gates; api gate 9 entries; concerns/diff-apply counts +1 across the board).
