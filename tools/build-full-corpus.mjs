@@ -13,6 +13,8 @@
 // Usage:
 //   node tools/build-full-corpus.mjs \
 //     --export     <backend-codegen>/out/kn-system-metadata-v55.json \
+//     --stage02    <backend-codegen>/.ingest/metarch-stage02-payload.json  (optional —
+//                  event→event causal pairs; absent → no 因果溯源 lines) \
 //     --metarch    <backend-codegen>/out/truthsrc/metarch.json \
 //     --rules      <backend-codegen>/knowledge_base/design_docs/field_template/generated_rules.json \
 //     --cases      <backend-codegen>/knowledge_base/design_docs/field_template/story/executable_cases.json \
@@ -90,6 +92,7 @@ for (const name of aggNames) {
     '--aggregate', name, '--canonical', per,
     '--rules', arg('rules'), '--cases', arg('cases'), '--behavior', behaviorPath(scratch),
     '--functions', arg('functions'), '--values', arg('values'), '--metarch', arg('metarch'),
+    '--export', arg('export'), '--stage02', arg('stage02'),
   ], `augment-rules ${name}`);
   canonicals.push(JSON.parse(fs.readFileSync(per, 'utf8')));
 }

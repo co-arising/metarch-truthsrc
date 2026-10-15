@@ -1,4 +1,4 @@
-// scala-cqrs-es-rules-metarch.test.mjs — V4-3 inc6…inc10 gate: golden byte identity against the
+// scala-cqrs-es-rules-metarch.test.mjs — V4-3 inc6…inc10 + V4-10 gate: golden byte identity against the
 // LIVE rules_domain_gen output (di-poc, verified fresh: re-running CODEGEN_MULTI=1 rules_domain_gen
 // --agg=ModelCatalog into a temp copy — with the app/ → modules/kernel/src/main/scala signature
 // mirror the S2-102 erratum prescribes — reproduced all SEVEN committed files byte-for-byte,
@@ -44,7 +44,7 @@ const { entries } = await plan({
     elementHashes: JSON.parse(readFileSync(HASHES, 'utf8')),
   },
 });
-equal(entries.length, 7);
+equal(entries.length, 8);
 for (const e of entries) {
   const want = readFileSync(join(GOLD, e.path), 'utf8');
   equal(e.content, want, `byte identity: ${e.path}`);

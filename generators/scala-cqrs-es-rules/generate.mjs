@@ -13,8 +13,9 @@
 // machinery). The rules face (inc6-inc9) is complete for ModelCatalog.
 import { behaviorsModel, commandHelpersModel, ruleParamsModel } from './builders/models.mjs';
 import { rulesFaceModel } from './builders/rules_face.mjs';
+import { eventHandlerRulesModel } from './builders/eventhandler_face.mjs';
 import { policiesModel, parseRuleParamsSigs } from './builders/policies_face.mjs';
-import { renderBehaviors, renderHelpers, renderPolicies, renderPoliciesSpec, renderRuleParams, renderRules, renderRulesSpec } from './templates/scala.mjs';
+import { renderBehaviors, renderEventHandlerRules, renderHelpers, renderPolicies, renderPoliciesSpec, renderRuleParams, renderRules, renderRulesSpec } from './templates/scala.mjs';
 
 const MODULE = 'modules/kernel';
 
@@ -35,6 +36,7 @@ export function generate({ canonical, options = {} }) {
     elementHashes: options.elementHashes ?? {},
     voNames: canonical.voNames ?? [],
     voSigs: canonical.valueObjectSigs ?? [],
+    voCatalog: canonical.voCatalog ?? [],
     excludedStateFieldNatures: canonical.excludedStateFieldNatures ?? [],
   };
 
@@ -72,6 +74,19 @@ export function generate({ canonical, options = {} }) {
       content: renderBehaviors(behaviorsModel(a, env)),
       kind: 'behaviors-rules', schemaCategory: 'aggregate', schemaNode: `${a.name}Behaviors`, families: [a.name], deps: [`${a.name}Rules`, `${a.name}CommandHelpers`],
     });
+    // V4-10 — the event-handler state-projection rewrite (the skeleton face's identity EventHandler
+    // is overwritten here, live rules_domain_gen parity: ledger row replaces the skeleton's with
+    // kind 'event-handlers', deps inherited, event noteIds + causedBy attached). No fieldMeta →
+    // no file (source [SKIP-EH] parity).
+    const eh = eventHandlerRulesModel(a, env);
+    if (eh) {
+      entries.push({
+        path: `${MODULE}/src/main/scala/${pkgPath}/domain/entities/behaviors/${a.name}EventHandler.scala`,
+        content: renderEventHandlerRules(eh),
+        kind: 'event-handlers', schemaCategory: 'entity', schemaNode: `${a.name}EventHandler`, families: [a.name],
+        deps: [`${a.name}Entity`], noteIds: eh.noteIds, ...(eh.causedBy.length ? { causedBy: eh.causedBy } : {}),
+      });
+    }
     // Policies (inc10): the S2-44 reaction face — the Params-field types come from the rendered
     // RuleParams signature (the source reads the file it wrote earlier in the same run). No
     // surviving objects → no files (source `if (!objects.length) continue`).

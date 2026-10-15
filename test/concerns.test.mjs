@@ -71,7 +71,7 @@ const optsRules = { generatedBy: 'rules_domain_gen:2026-08-23' };
 const r1 = await apply({ canonicalFile: CANON, generatorDir: GEN_SKEL, outDir: out, options: optsSkel });
 equal(r1.written, 8);
 const r2 = await apply({ canonicalFile: CANON, generatorDir: GEN_RULES, outDir: out, options: optsRules, concern: { name: 'full', families: null, registryFile: REG } });
-equal(r2.written, 7);
+equal(r2.written, 8); // V4-10: the event-handler rewrite joined (8 rules paths, 3 shared-path upserts)
 equal(r2.kept, 0);
 equal(r2.inScope, 13, 'rules full run: scope = merged rows (8 skeleton + 5 new rules paths)');
 const r3 = await apply({ canonicalFile: CANON, generatorDir: GEN_API, outDir: out, options: {}, concern: { name: 'full', families: null, registryFile: REG } });
@@ -80,7 +80,7 @@ equal(r3.inScope, 19, 'api full run: scope = merged rows (13 + 6 api paths)');
 // merged ledger: the rules face owns the shared Behaviors/CommandHelpers paths (final-writer-wins)
 {
   const ledger = JSON.parse(readFileSync(join(out, 'truthsrc.ledger.json'), 'utf8'));
-  equal(ledger.entries.length, 19, 'merged ledger = skeleton 8 + rules 7 + api 6 − 2 shared-path upserts');
+  equal(ledger.entries.length, 19, 'merged ledger = skeleton 8 + rules 8 + api 6 − 3 shared-path upserts (Behaviors/CommandHelpers/EventHandler)');
   equal(ledger.entries.find((r) => r.path.endsWith('ModelCatalogBehaviors.scala')).kind, 'behaviors-rules');
   ok(ledger.concern && ledger.concern.name === 'full' && ledger.concern.scopeFileHash, 'concern audit chain in ledger');
 }
@@ -145,7 +145,7 @@ ok(untouched.every((p) => readFileSync(join(out, p), 'utf8') === snap[p]), 'out-
 // wrote skeleton glue over the rules-owned shared paths — the rules face restores them, and
 // its Rules.scala picks up the new state param)
 const r5 = await apply({ canonicalFile: CANON2, generatorDir: GEN_RULES, outDir: out, options: optsRules, concern: { name: 'full', families: null, registryFile: REG } });
-equal(r5.written, 3, 'rules re-asserts the two shared glue paths + Rules.scala (new state param)');
+equal(r5.written, 4, 'rules re-asserts the three shared glue paths (Behaviors/CommandHelpers/EventHandler — V4-10) + RulesSpec (state-shape-sensitive)');
 equal(r5.identical, 4, 'the rest of the rules face is unchanged');
 const r6 = await apply({ canonicalFile: CANON2, generatorDir: GEN_API, outDir: out, options: {}, concern: { name: 'full', families: null, registryFile: REG } });
 equal(r6.written, 0, 'api face untouched by a state-field rename');

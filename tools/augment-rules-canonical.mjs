@@ -84,6 +84,8 @@
 //     --functions  /path/to/functions.yaml \              # ext-port registry source
 //     --values     /path/to/ingested-app/app/net/imadz/metarch/domain/values \  # VO registry source
 //     --metarch    /path/to/metarch.json                  # policy notes + ②-layer event payloads
+//     --export     /path/to/kn-system-metadata-v<N>.json  # kn graph export (kn-export-mode EH face metadata + VO raw catalog)
+//     --stage02    /path/to/metarch-stage02-payload.json  # optional — event→event causal pairs (因果溯源)
 
 import fs from 'node:fs';
 
@@ -100,9 +102,11 @@ const behaviorPath = arg('behavior');
 const functionsPath = arg('functions');
 const valuesPath = arg('values');
 const metarchPath = arg('metarch');
+const exportPath = arg('export');      // kn graph export — the kn-export-mode EH-face metadata authority (see below)
+const stage02Path = arg('stage02');    // stage-02 payload (event→event causal pairs); optional — absent → no 因果溯源 lines
 
-if (!aggName || !canonicalPath || !rulesPath || !casesPath || !behaviorPath || !functionsPath || !valuesPath || !metarchPath) {
-  console.error('missing required args: --aggregate --canonical --rules --cases --behavior --functions --values --metarch');
+if (!aggName || !canonicalPath || !rulesPath || !casesPath || !behaviorPath || !functionsPath || !valuesPath || !metarchPath || !exportPath) {
+  console.error('missing required args: --aggregate --canonical --rules --cases --behavior --functions --values --metarch --export [--stage02]');
   process.exit(2);
 }
 
@@ -296,13 +300,14 @@ else delete agg.executableCases;
 // strip is unreliable, per the source's own note).
 const PORT_RX = /^([a-z][\w.]*?)\.([A-Z]\w*Access)\.([a-z]\w*)\.(\w+)\(\{args\}\)$/;
 const fnLines = fs.readFileSync(functionsPath, 'utf8').split('\n');
-const portByMember = new Map(); // member -> { member, trait, fqPkg, implFq, implKind }
+const portByMember = new Map(); // member -> { member, trait, fqPkg, accessObj, implFq, implKind }
+const accessByTraitFq = new Map(); // trait FQ -> Access-gate object name (EventHandler fn: callExpr rewrite — V4-10)
 for (let i = 0; i < fnLines.length; i++) {
   const cm = fnLines[i].match(/^\s*callExpr:\s*'([^']+)'/);
   if (!cm) continue;
   const m = cm[1].match(PORT_RX);
   if (!m) continue;
-  const fqPkg = m[1], member = m[3];
+  const fqPkg = m[1], accessObj = m[2], member = m[3];
   let trait = null, implFq = null, implKind = null;
   for (let j = i + 1; j < Math.min(i + 8, fnLines.length); j++) {
     const pm = fnLines[j].match(/^\s*portTrait:\s*(\S+)/);
@@ -313,7 +318,8 @@ for (let i = 0; i < fnLines.length; i++) {
     if (km && !implKind) implKind = km[1];
     if (trait && /^\s*callExpr:/.test(fnLines[j])) break; // next function block
   }
-  if (trait && !portByMember.has(member)) portByMember.set(member, { member, trait, fqPkg, implFq, implKind });
+  if (trait) accessByTraitFq.set(`${fqPkg}.${trait}`, accessObj);
+  if (trait && !portByMember.has(member)) portByMember.set(member, { member, trait, fqPkg, accessObj, implFq, implKind });
 }
 
 // ports: declaration section — per trait FQ the method signatures and bridge fq (rules_domain_gen's
@@ -367,30 +373,47 @@ else delete agg.ports;
   const bmAgg0 = bmAggs.find((a) => a.name === aggName);
   if (bmAgg0?.folds?.length) agg.folds = bmAgg0.folds;
   else delete agg.folds;
-  // fn id → {callExpr, portTrait} line scan (same dependency-free shape as the port registry scan)
+  // fn id → {callExpr, portTrait, inputs} line scan (same dependency-free shape as the port
+  // registry scan). inputs are the inline-map entries under `signature: inputs:` — V4-10 also
+  // captures them (rules_domain_gen's fnSpecs registry: the EventHandler fn: leg maps each input's
+  // `from` onto `event.<payload>` / `state.<field>` and fails closed with a TODO otherwise).
   const fnById = new Map();
-  let curId = null;
+  let curId = null, inInputs = false;
   for (let i = 0; i < fnLines.length; i++) {
     const im = fnLines[i].match(/^\s*-\s+id:\s*(\S+)/);
-    if (im) { curId = im[1]; fnById.set(curId, {}); continue; }
+    if (im) { curId = im[1]; inInputs = false; fnById.set(curId, { inputs: [] }); continue; }
     if (!curId) continue;
+    if (/^\s*inputs:\s*$/.test(fnLines[i])) { inInputs = true; continue; }
+    if (/^\S/.test(fnLines[i])) { curId = null; inInputs = false; continue; } // left the functions: list
     const cm2 = fnLines[i].match(/^\s*callExpr:\s*'([^']+)'/);
     if (cm2) fnById.get(curId).callExpr = cm2[1];
     const tm2 = fnLines[i].match(/^\s*portTrait:\s*(\S+)/);
     if (tm2 && !fnById.get(curId).portTrait) fnById.get(curId).portTrait = tm2[1];
-    if (/^\S/.test(fnLines[i])) curId = null; // left the functions: list
+    const im2 = inInputs && fnLines[i].match(/-\s*\{\s*name:\s*(\w+),.*?from:\s*'([^']*)'/);
+    if (im2) fnById.get(curId).inputs.push({ name: im2[1], from: im2[2] });
   }
   const foldTraits = new Set();
+  const foldFnIds = [];
   for (const f of agg.folds ?? []) {
-    for (const s of Object.values(f.assignments ?? {})) {
+    for (const [sf, s] of Object.entries(f.assignments ?? {})) {
       const m = String(s).match(/^fn:(\S+)/);
       if (!m) continue;
+      foldFnIds.push(m[1]);
       const spec = fnById.get(m[1]);
       if (!spec?.callExpr || !spec?.portTrait) continue;
       if (!spec.callExpr.match(PORT_RX)) continue; // static form — not port-ified (source discipline)
       foldTraits.add(spec.portTrait);
     }
   }
+  // fnSpecs slice: only the ids THIS aggregate's folds reference (rules_domain_gen resolves against
+  // the whole registry; a missing spec is the generator's fail-closed TODO, not an augment error).
+  const fnSpecs = {};
+  for (const id of foldFnIds) {
+    const spec = fnById.get(id);
+    if (spec?.callExpr) fnSpecs[id] = { callExpr: spec.callExpr, inputs: spec.inputs };
+  }
+  if (Object.keys(fnSpecs).length) agg.fnSpecs = fnSpecs;
+  else delete agg.fnSpecs;
   const foldPorts = [...foldTraits].sort().map((fq) => {
     const segs = fq.split('.');
     const trait = segs.pop();
@@ -419,10 +442,67 @@ else delete agg.ports;
     // member (PORT_RX m[3]); the root-face commandHandler signature needs it
     // (`fingerprint: net.imadz.metarch.domain.service.ContentFingerprintPort` — V4-9).
     const pbMem = [...portByMember.values()].find((p) => `${p.fqPkg}.${p.trait}` === fq) ?? null;
-    return { member: pbMem ? pbMem.member : null, trait, fqPkg, implFq, implKind, ...(decl ? { methods: decl.methods, bridgeFq: decl.bridgeFq } : {}) };
+    return { member: pbMem ? pbMem.member : null, trait, fqPkg, accessObj: accessByTraitFq.get(fq) ?? null, implFq, implKind, ...(decl ? { methods: decl.methods, bridgeFq: decl.bridgeFq } : {}) };
   });
   if (foldPorts.length) agg.foldPorts = foldPorts;
   else delete agg.foldPorts;
+}
+
+// --- event-handler face metadata (rules_domain_gen kn-export mode, lines 425-475) --------------
+// The live chain runs with the graph-export input ENABLED ([kn-export] log line): metaJson.aggregates
+// is WHOLLY REPLACED by fieldTree-derived rows — stateFields come from the EXPORT's fieldTree (the
+// Entity-emitted set, 18 rows for ModelCatalog — VO-flattened members and their list-member
+// writtenBy forms never enter), statusEnum from the fieldTree, and statusTransitions is NOT the
+// template's own table but DERIVED from the ④层 folds' `literal:<X>` status assignments (events
+// without one — KnowledgePatched/MetadataAssembled/MetadataExported — get NO key → the status leg
+// falls through to the 枚举值无法判定 待审). Aggregate absent from the fieldTree → no fieldMeta →
+// the generator emits no EH file (source [SKIP-EH] parity).
+{
+  const kn = JSON.parse(fs.readFileSync(exportPath, 'utf8'));
+  const fa = (kn.fieldTree?.aggregates ?? []).find((a) => a.name === aggName);
+  if (fa) {
+    const bmA = (kn.aggregates ?? []).find((a) => a.name === aggName) ?? { folds: [] };
+    const statusTransitions = {};
+    for (const fd of bmA.folds ?? []) {
+      const st = (fd.assignments ?? {}).status;
+      if (typeof st === 'string' && st.startsWith('literal:')) statusTransitions[fd.event] = st.slice('literal:'.length);
+    }
+    agg.fieldMeta = {
+      identifier: fa.identifier, // OBJECT (kn-export metaAgg.identifier parity — see the builder's ehIdField note)
+      statusEnum: fa.statusEnum ?? [],
+      statusTransitions,
+      stateFields: (fa.stateFields ?? []).map((f) => ({
+        name: f.name,
+        origin: f.origin ?? null,
+        ...(f.writtenBy?.length ? { writtenBy: f.writtenBy } : {}),
+        ...(f.derivation ? { derivation: f.derivation } : {}),
+      })),
+    };
+    // ④层 aggregate-level declaration carried beside the folds (source bmAggs.get(agg).terminalStates
+    // — the status leg's terminal-state one-way defense; CemEdge is the corpus carrier).
+    if (bmA.terminalStates?.length) agg.terminalStates = bmA.terminalStates;
+    else delete agg.terminalStates;
+  } else delete agg.fieldMeta;
+  // VO raw catalog for the upsert/memberPatch fold legs — knVoFind's authority: the EXPORT's
+  // fieldTree.valueObjects (raw dataType forms — 'String (UUID)' UUID-alignment checks and the
+  // List</Option< bracket tests read THIS form; the surgical-family Spec VOs live only here).
+  canonical.voCatalog = kn.fieldTree?.valueObjects ?? [];
+  // event→event causal pairs (S7 #3 #23): the stage-02 payload's `event:X@strong/@eventual`
+  // links, sliced to THIS aggregate's events (the effect side). File absent → no lines (source
+  // WARN-and-skip parity).
+  if (stage02Path && fs.existsSync(stage02Path)) {
+    const causes = [];
+    const evNames = new Set((agg.events ?? []).map((e) => e.name));
+    for (const n of JSON.parse(fs.readFileSync(stage02Path, 'utf8')).notes ?? []) {
+      if (n.type !== 'event' || !evNames.has(n.name)) continue;
+      for (const l of n.links ?? []) {
+        const m = /^event:([^@]+)(?:@(strong|eventual))?$/.exec(l);
+        if (m && m[1] !== n.name) causes.push({ effect: n.name, cause: m[1], consistency: m[2] || 'eventual' });
+      }
+    }
+    if (causes.length) agg.eventCauses = causes;
+    else delete agg.eventCauses;
+  } else delete agg.eventCauses;
 }
 
 // --- policies (rules_domain_gen Policy 发射段 S2-44, inc10) -------------------------------------
@@ -525,4 +605,4 @@ canonical.voNames = [...voNames].sort();
 canonical.valueObjectSigs = valueObjectSigs.sort((a, b) => a.name.localeCompare(b.name));
 
 fs.writeFileSync(canonicalPath, JSON.stringify(canonical, null, 2) + '\n');
-console.log(`augmented ${canonicalPath}: ${attached} commands with preconditionRules, ${bmByCmd.size} with behaviorModel(raw decision), ${referenced.length} port(s) [${referenced.map((p) => p.member).join(',')}], aggregateRules=${aggLevelRules.length}, eventPostconditions=${evtRules.length}, executableCases=${casesForAgg.length}, policies=${policies.length}, voNames=${canonical.voNames.length}`);
+console.log(`augmented ${canonicalPath}: ${attached} commands with preconditionRules, ${bmByCmd.size} with behaviorModel(raw decision), ${referenced.length} port(s) [${referenced.map((p) => p.member).join(',')}], aggregateRules=${aggLevelRules.length}, eventPostconditions=${evtRules.length}, executableCases=${casesForAgg.length}, policies=${policies.length}, voNames=${canonical.voNames.length}, fieldMeta=${agg.fieldMeta ? 'yes' : 'NO (EH face skipped)'}, fnSpecs=${Object.keys(agg.fnSpecs ?? {}).length}, eventCauses=${(agg.eventCauses ?? []).length}`);

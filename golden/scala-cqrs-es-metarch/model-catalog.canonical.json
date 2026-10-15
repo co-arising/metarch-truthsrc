@@ -6404,6 +6404,7 @@
           "member": "adjudicator",
           "trait": "ConceptDeltaAdjudicator",
           "fqPkg": "net.imadz.metarch.domain.service",
+          "accessObj": "ConceptDeltaAdjudicatorAccess",
           "implFq": "net.imadz.metarch.domain.service.ConceptDeltaResolver",
           "implKind": null,
           "methods": [
@@ -6477,11 +6478,40 @@
           }
         }
       ],
+      "fnSpecs": {
+        "ApplyConceptDeltas": {
+          "callExpr": "net.imadz.metarch.domain.service.ConceptDeltaAdjudicatorAccess.adjudicator.applyDeltas({args})",
+          "inputs": [
+            {
+              "name": "concepts",
+              "from": "KnowledgePatched.concepts（事件直载·非嵌套 VO——①层 VO.Member 不可投影）"
+            },
+            {
+              "name": "conceptIndex",
+              "from": "state:conceptIndex"
+            }
+          ]
+        },
+        "ComputeCatalogStateHash": {
+          "callExpr": "net.imadz.metarch.domain.service.ContentFingerprintAccess.fingerprint.computeCatalogStateHash({args})",
+          "inputs": [
+            {
+              "name": "manifest",
+              "from": "MetadataAssembled.manifest（事件载荷·折叠输入必须事件里有）"
+            },
+            {
+              "name": "parentStateHash",
+              "from": "state:stateHash"
+            }
+          ]
+        }
+      },
       "foldPorts": [
         {
           "member": "adjudicator",
           "trait": "ConceptDeltaAdjudicator",
           "fqPkg": "net.imadz.metarch.domain.service",
+          "accessObj": "ConceptDeltaAdjudicatorAccess",
           "implFq": "net.imadz.metarch.domain.service.ConceptDeltaResolver",
           "implKind": null,
           "methods": [
@@ -6501,6 +6531,7 @@
           "member": "fingerprint",
           "trait": "ContentFingerprintPort",
           "fqPkg": "net.imadz.metarch.domain.service",
+          "accessObj": "ContentFingerprintAccess",
           "implFq": "net.imadz.metarch.domain.service.ContentFingerprintBridge",
           "implKind": null,
           "methods": [
@@ -6515,6 +6546,175 @@
             }
           ],
           "bridgeFq": null
+        }
+      ],
+      "fieldMeta": {
+        "identifier": {
+          "name": "catalogId",
+          "dataType": "String (UUID)",
+          "description": "",
+          "origin": "SYSTEM_GENERATED",
+          "noteId": "e110fe19-ab19-4a5b-a2ae-c9989577db5d"
+        },
+        "statusEnum": [
+          "DRAFT",
+          "CONFLICT_DETECTED",
+          "RESOLVED",
+          "RELEASED"
+        ],
+        "statusTransitions": {
+          "CatalogConflictDetected": "CONFLICT_DETECTED",
+          "CatalogConflictResolved": "RESOLVED",
+          "CatalogVersionCreated": "DRAFT",
+          "CatalogVersionReleased": "RELEASED",
+          "MetadataVersionReleased": "RELEASED"
+        },
+        "stateFields": [
+          {
+            "name": "tenantId",
+            "origin": "PROPAGATED",
+            "writtenBy": [
+              "CatalogConflictDetected.tenantId",
+              "CatalogConflictResolved.tenantId",
+              "CatalogVersionCreated.tenantId",
+              "CatalogVersionReleased.tenantId",
+              "KnowledgePatched.tenantId",
+              "MetadataAssembled.tenantId",
+              "MetadataExported.tenantId",
+              "MetadataVersionReleased.tenantId"
+            ]
+          },
+          {
+            "name": "status",
+            "origin": "",
+            "writtenBy": [
+              "CatalogConflictDetected",
+              "CatalogConflictResolved",
+              "CatalogVersionCreated",
+              "CatalogVersionReleased",
+              "MetadataVersionReleased"
+            ]
+          },
+          {
+            "name": "projectId",
+            "origin": "PROPAGATED",
+            "writtenBy": [
+              "CatalogVersionCreated.projectId"
+            ]
+          },
+          {
+            "name": "version",
+            "origin": "PROPAGATED",
+            "writtenBy": [
+              "CatalogVersionCreated.version"
+            ]
+          },
+          {
+            "name": "baseVersion",
+            "origin": "PROPAGATED",
+            "writtenBy": [
+              "CatalogVersionCreated.baseVersion"
+            ]
+          },
+          {
+            "name": "patchSessionIds",
+            "origin": "DERIVED",
+            "writtenBy": [
+              "KnowledgePatchReadyToMerged.sessionIds"
+            ],
+            "derivation": "ApplyKnowledgePatch 的会话补丁去重累积（union(patchSessionIds, [sessionId])）"
+          },
+          {
+            "name": "knowledgePackages",
+            "origin": "DERIVED",
+            "writtenBy": [
+              "MetadataAssembled.manifest"
+            ],
+            "derivation": "每次 ApplyKnowledgePatch 应用后由知识增量重组装（CatalogVersionReleased 时冻结）"
+          },
+          {
+            "name": "stateHash",
+            "origin": ""
+          },
+          {
+            "name": "headPatchId",
+            "origin": "PROPAGATED",
+            "writtenBy": [
+              "KnowledgePatched.patchId"
+            ]
+          },
+          {
+            "name": "headPatchHash",
+            "origin": "PROPAGATED",
+            "writtenBy": [
+              "KnowledgePatched.patchHash"
+            ]
+          },
+          {
+            "name": "conflicts",
+            "origin": "PROPAGATED",
+            "writtenBy": [
+              "CatalogConflictDetected.conflictSet",
+              "CatalogConflictResolved.resolvedConflicts",
+              "CatalogVersionCreated"
+            ]
+          },
+          {
+            "name": "assembledAt",
+            "origin": "SYSTEM_INJECTED",
+            "writtenBy": [
+              "MetadataAssembled.timestamp"
+            ]
+          },
+          {
+            "name": "assembledBy",
+            "origin": "SYSTEM_INJECTED",
+            "writtenBy": [
+              "MetadataAssembled.triggeredBy"
+            ]
+          },
+          {
+            "name": "exportedAt",
+            "origin": "SYSTEM_INJECTED",
+            "writtenBy": [
+              "MetadataExported.timestamp"
+            ]
+          },
+          {
+            "name": "exportedBy",
+            "origin": "SYSTEM_INJECTED",
+            "writtenBy": [
+              "MetadataExported.triggeredBy"
+            ]
+          },
+          {
+            "name": "releasedAt",
+            "origin": "SYSTEM_INJECTED",
+            "writtenBy": [
+              "MetadataVersionReleased.timestamp"
+            ]
+          },
+          {
+            "name": "releasedBy",
+            "origin": "SYSTEM_INJECTED",
+            "writtenBy": [
+              "MetadataVersionReleased.triggeredBy"
+            ]
+          },
+          {
+            "name": "conceptIndex",
+            "origin": "PROPAGATED",
+            "writtenBy": [
+              "KnowledgePatched"
+            ]
+          }
+        ]
+      },
+      "eventCauses": [
+        {
+          "effect": "MetadataExported",
+          "cause": "MetadataConsumed",
+          "consistency": "eventual"
         }
       ],
       "policies": [
@@ -14152,6 +14352,2062 @@
     }
   ],
   "stories": [],
+  "voCatalog": [
+    {
+      "name": "CatalogConflict",
+      "noteId": "b6130291-e0f4-47d0-b6a1-e79b1a0e6d70",
+      "fields": [
+        {
+          "name": "conflictId",
+          "dataType": "String",
+          "description": "唯一标识；(parent=CatalogConflict)",
+          "origin": "",
+          "noteId": "b115f049-a807-4497-9e22-9e0c5e51c989",
+          "codeFqn": "net.imadz.metarch.domain.values.CatalogConflict.conflictId",
+          "codeFqnCount": 6
+        },
+        {
+          "name": "conflictType",
+          "dataType": "String",
+          "description": "NAME_CONFLICT / DEFINITION_CONFLICT / KIND_MISMATCH / CONTEXT_MISMATCH；(parent=CatalogConflict)",
+          "origin": "",
+          "noteId": "edd2ed21-90de-4abb-8359-7ed60bda5a6b",
+          "codeFqn": "net.imadz.metarch.domain.values.CatalogConflict.conflictType",
+          "codeFqnCount": 6
+        },
+        {
+          "name": "involvedSessionIds",
+          "dataType": "List<String>",
+          "description": "相关 Session 列表；(parent=CatalogConflict)",
+          "origin": "",
+          "noteId": "6703e4e7-96ce-4683-8d9d-28ab041eb19f",
+          "codeFqn": "net.imadz.metarch.domain.values.CatalogConflict.involvedSessionIds",
+          "codeFqnCount": 6
+        },
+        {
+          "name": "details",
+          "dataType": "JSON",
+          "description": "各方内容对比；(parent=CatalogConflict)",
+          "origin": "",
+          "noteId": "ef538c54-c4b1-4682-b911-5d4e096fe6ad",
+          "codeFqn": "net.imadz.metarch.domain.values.CatalogConflict.details",
+          "codeFqnCount": 6
+        },
+        {
+          "name": "resolvedAt",
+          "dataType": "Instant",
+          "description": "time when the conflict was resolved；(parent=CatalogConflict)",
+          "origin": "",
+          "noteId": "3cad12e7-7954-4f14-be29-091de7217a3c",
+          "codeFqn": "net.imadz.metarch.domain.values.CatalogConflict.resolvedAt",
+          "codeFqnCount": 6
+        },
+        {
+          "name": "resolvedBy",
+          "dataType": "String",
+          "description": "元数据工程师 ID；(parent=CatalogConflict)",
+          "origin": "",
+          "noteId": "bfeb2de2-d0ce-4df2-8ba3-865b00dae49f",
+          "codeFqn": "net.imadz.metarch.domain.values.CatalogConflict.resolvedBy",
+          "codeFqnCount": 6
+        },
+        {
+          "name": "resolutionAction",
+          "dataType": "String",
+          "description": "MERGE / RENAME / DEPRECATE / SPLIT；(parent=CatalogConflict)",
+          "origin": "",
+          "noteId": "28d3cd43-dd51-4640-bc05-452b0c86ca43",
+          "codeFqn": "net.imadz.metarch.domain.values.CatalogConflict.resolutionAction",
+          "codeFqnCount": 6
+        },
+        {
+          "name": "resolutionNote",
+          "dataType": "String",
+          "description": "note explaining the conflict resolution；(parent=CatalogConflict)",
+          "origin": "",
+          "noteId": "a4da38e5-2499-491d-b54d-6cb52bbe9da9",
+          "codeFqn": "net.imadz.metarch.domain.values.CatalogConflict.resolutionNote",
+          "codeFqnCount": 6
+        }
+      ]
+    },
+    {
+      "name": "CatalogConflictSet",
+      "noteId": "1161eb95-8bf1-4442-8139-2d61a0dce0fd",
+      "fields": [
+        {
+          "name": "detectedAt",
+          "dataType": "Instant",
+          "description": "time when conflicts were detected；(parent=CatalogConflictSet)",
+          "origin": "",
+          "noteId": "f375a663-0c58-4808-9b7b-8b11f5c42e46",
+          "codeFqn": "net.imadz.metarch.domain.values.CatalogConflictSet.detectedAt",
+          "codeFqnCount": 6
+        },
+        {
+          "name": "conflicts",
+          "dataType": "List<CatalogConflict>",
+          "description": "检测到的冲突列表",
+          "origin": "",
+          "noteId": "761a7374-d189-4c05-9d22-ce77709909a7",
+          "codeFqn": "net.imadz.metarch.domain.values.CatalogConflictSet.conflicts",
+          "codeFqnCount": 6
+        }
+      ]
+    },
+    {
+      "name": "CatalogPatchSet",
+      "noteId": "4e55ce29-90f6-46a0-9a13-27cf19340746",
+      "fields": [
+        {
+          "name": "sessionId",
+          "dataType": "String",
+          "description": "补丁来自哪个 Session；(parent=CatalogPatchSet)",
+          "origin": "",
+          "noteId": "fc15fd5c-25e6-420f-9fc0-e7914470c52f",
+          "codeFqn": "net.imadz.metarch.domain.values.CatalogPatchSet.sessionId",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "concepts",
+          "dataType": "List<ConceptDelta>",
+          "description": "本次补丁的具体内容（typed 概念增量列表）；(parent=CatalogPatchSet)",
+          "origin": "",
+          "noteId": "6266f962-d9be-4f7a-8c66-19d358008dae",
+          "codeFqn": "net.imadz.metarch.domain.values.CatalogPatchSet.concepts",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "appliedAt",
+          "dataType": "Instant",
+          "description": "time when the patch was applied；(parent=CatalogPatchSet)",
+          "origin": "",
+          "noteId": "1b8d9518-7c97-4c98-b234-8ccd1a29e0aa",
+          "codeFqn": "net.imadz.metarch.domain.values.CatalogPatchSet.appliedAt",
+          "codeFqnCount": 4
+        }
+      ]
+    },
+    {
+      "name": "ConceptDelta",
+      "noteId": "8e5bae95-a799-47c4-bd95-0441dda576c8",
+      "fields": [
+        {
+          "name": "action",
+          "dataType": "String",
+          "description": "insert / update / merge / delete（revert 反向应用基础）；(parent=ConceptDelta)",
+          "origin": "",
+          "noteId": "36994e64-0717-44cb-8326-acbc3d5c1145",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptDelta.action",
+          "codeFqnCount": 6
+        },
+        {
+          "name": "conceptName",
+          "dataType": "String",
+          "description": "概念名（与 contextId 组成唯一键）；(parent=ConceptDelta)",
+          "origin": "",
+          "noteId": "ad9233be-06ec-4969-854c-3fa4bf198c05",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptDelta.conceptName",
+          "codeFqnCount": 6
+        },
+        {
+          "name": "contextId",
+          "dataType": "String",
+          "description": "限界上下文（(projectId, contextName) 唯一）；(parent=ConceptDelta)",
+          "origin": "",
+          "noteId": "0eeb08f5-1764-4858-926f-519150d5fb81",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptDelta.contextId",
+          "codeFqnCount": 6
+        },
+        {
+          "name": "noteIds",
+          "dataType": "List<String>",
+          "description": "来源便签（Stage1-7 交付物溯源）；(parent=ConceptDelta)",
+          "origin": "",
+          "noteId": "6740d360-42ff-4a25-a8fc-83988e829f4e",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptDelta.noteIds",
+          "codeFqnCount": 6
+        },
+        {
+          "name": "definition",
+          "dataType": "String",
+          "description": "概念定义/描述；(parent=ConceptDelta)",
+          "origin": "",
+          "noteId": "cc454338-fe4d-4705-92e0-92e92e65ab74",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptDelta.definition",
+          "codeFqnCount": 6
+        },
+        {
+          "name": "conceptId",
+          "dataType": "String (UUID)",
+          "description": "上游所铸概念号——与库内同键概念的 id 比对（一致＝更新意图；不一致＝冲突）",
+          "origin": "",
+          "noteId": "07f836ad-3dd2-4a74-9352-2c27866f218b",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptDelta.conceptId",
+          "codeFqnCount": 6
+        },
+        {
+          "name": "contentHash",
+          "dataType": "String",
+          "description": "概念内容指纹（复用 kn_content_hash 口径）——与库内既有指纹比对，区分「更新」与「幂等重放」",
+          "origin": "",
+          "noteId": "479db8d0-8efd-444b-ac9a-f02cbbb8d8e0",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptDelta.contentHash",
+          "codeFqnCount": 6
+        },
+        {
+          "name": "kind",
+          "dataType": "String (Enum)",
+          "description": "概念分类（撑起 EstablishConcept 创建参数）",
+          "origin": "",
+          "noteId": "8005ba50-8a0d-44c5-a300-26563b0dc901",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptDelta.kind",
+          "codeFqnCount": 6
+        },
+        {
+          "name": "sourceStage",
+          "dataType": "String",
+          "description": "概念产生的工作坊阶段（撑起 EstablishConcept 创建参数）",
+          "origin": "",
+          "noteId": "11d5f1e2-74da-4b7e-a341-d3cccdcb4184",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptDelta.sourceStage",
+          "codeFqnCount": 6
+        },
+        {
+          "name": "sourceSessionId",
+          "dataType": "String (UUID)",
+          "description": "追溯概念产生的工作坊会话（撑起 EstablishConcept 创建参数）",
+          "origin": "",
+          "noteId": "f4409ebe-aa58-4315-bfbf-35cf1ddcd612",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptDelta.sourceSessionId",
+          "codeFqnCount": 6
+        },
+        {
+          "name": "noteId",
+          "dataType": "String (UUID)",
+          "description": "概念主便签（撑起 EstablishConcept 创建参数；与 noteIds 列表区分）",
+          "origin": "",
+          "noteId": "8330cf59-2a97-4a52-a778-263a40173b8b",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptDelta.noteId",
+          "codeFqnCount": 6
+        },
+        {
+          "name": "anchors",
+          "dataType": "List<CodeAnchorDelta>",
+          "description": "本概念增量的代码落点（锚＝知识图与代码图的桥梁知识）；(parent=ConceptDelta)",
+          "origin": "",
+          "noteId": "5c7061f7-ead6-4d7e-b164-bbf339d426b0",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptDelta.anchors",
+          "codeFqnCount": 6
+        },
+        {
+          "name": "guards",
+          "dataType": "List<GuardSpec>",
+          "description": "落点扩展槽（手缝转正·批8 P2 真源建模·2026-10-01）",
+          "origin": "",
+          "noteId": "719073f2-030c-48b6-b40a-43e92d5e62cc",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptDelta.guards",
+          "defaultValue": "Nil",
+          "codeFqnCount": 6,
+          "businessDef": "落点扩展槽（手缝转正·批8 P2·2026-10-01）",
+          "uiLabel": "guards"
+        },
+        {
+          "name": "aggregateRuleRefs",
+          "dataType": "List<RuleRef>",
+          "description": "落点扩展槽（手缝转正·批8 P2 真源建模·2026-10-01）",
+          "origin": "",
+          "noteId": "24b83cbe-36cc-408f-b3d8-477e2b0c9f22",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptDelta.aggregateRuleRefs",
+          "defaultValue": "Nil",
+          "codeFqnCount": 6,
+          "businessDef": "落点扩展槽（手缝转正·批8 P2·2026-10-01）",
+          "uiLabel": "aggregateRuleRefs"
+        },
+        {
+          "name": "preconditionRefs",
+          "dataType": "List<RuleRef>",
+          "description": "落点扩展槽（手缝转正·批8 P2 真源建模·2026-10-01）",
+          "origin": "",
+          "noteId": "65e8c670-1c4e-42f3-b98b-4b2a9c741f58",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptDelta.preconditionRefs",
+          "defaultValue": "Nil",
+          "codeFqnCount": 6,
+          "businessDef": "落点扩展槽（手缝转正·批8 P2·2026-10-01）",
+          "uiLabel": "preconditionRefs"
+        },
+        {
+          "name": "postconditionRefs",
+          "dataType": "List<RuleRef>",
+          "description": "落点扩展槽（手缝转正·批8 P2 真源建模·2026-10-01）",
+          "origin": "",
+          "noteId": "b9e704be-53bb-43b5-a50a-ea63fea9ecb9",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptDelta.postconditionRefs",
+          "defaultValue": "Nil",
+          "codeFqnCount": 6,
+          "businessDef": "落点扩展槽（手缝转正·批8 P2·2026-10-01）",
+          "uiLabel": "postconditionRefs"
+        },
+        {
+          "name": "fields",
+          "dataType": "List<FieldSpec>",
+          "description": "落点扩展槽（手缝转正·批8 P2 真源建模·2026-10-01）",
+          "origin": "",
+          "noteId": "1756ee8c-fb5c-4f7b-a18d-157edb1c21a7",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptDelta.fields",
+          "defaultValue": "Nil",
+          "codeFqnCount": 6,
+          "businessDef": "落点扩展槽（手缝转正·批8 P2·2026-10-01）",
+          "uiLabel": "fields"
+        },
+        {
+          "name": "emits",
+          "dataType": "List<EdgeTarget>",
+          "description": "落点扩展槽（手缝转正·批8 P2 真源建模·2026-10-01）",
+          "origin": "",
+          "noteId": "a9d98500-e935-46ef-8876-47fdd36545cb",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptDelta.emits",
+          "defaultValue": "Nil",
+          "codeFqnCount": 6,
+          "businessDef": "落点扩展槽（手缝转正·批8 P2·2026-10-01）",
+          "uiLabel": "emits"
+        },
+        {
+          "name": "folds",
+          "dataType": "List<FieldEdge>",
+          "description": "落点扩展槽（手缝转正·批8 P2 真源建模·2026-10-01）",
+          "origin": "",
+          "noteId": "daba97bc-0ec6-43d7-b56f-e6b095c5a8f5",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptDelta.folds",
+          "defaultValue": "Nil",
+          "codeFqnCount": 6,
+          "businessDef": "落点扩展槽（手缝转正·批8 P2·2026-10-01）",
+          "uiLabel": "folds"
+        },
+        {
+          "name": "emissions",
+          "dataType": "List<FieldEdge>",
+          "description": "落点扩展槽（手缝转正·批8 P2 真源建模·2026-10-01）",
+          "origin": "",
+          "noteId": "cb3e2f46-239d-493b-bc77-8839e12fbcd0",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptDelta.emissions",
+          "defaultValue": "Nil",
+          "codeFqnCount": 6,
+          "businessDef": "落点扩展槽（手缝转正·批8 P2·2026-10-01）",
+          "uiLabel": "emissions"
+        },
+        {
+          "name": "steps",
+          "dataType": "List<UcStep>",
+          "description": "落点扩展槽（手缝转正·批8 P2 真源建模·2026-10-01）",
+          "origin": "",
+          "noteId": "2bfd08cb-f0fa-4c79-aacb-b6ce4725265d",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptDelta.steps",
+          "defaultValue": "Nil",
+          "codeFqnCount": 6,
+          "businessDef": "落点扩展槽（手缝转正·批8 P2·2026-10-01）",
+          "uiLabel": "steps"
+        },
+        {
+          "name": "extensions",
+          "dataType": "List<UcStep>",
+          "description": "落点扩展槽（手缝转正·批8 P2 真源建模·2026-10-01）",
+          "origin": "",
+          "noteId": "5a954e1c-71c8-4b50-b372-d90b93732a06",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptDelta.extensions",
+          "defaultValue": "Nil",
+          "codeFqnCount": 6,
+          "businessDef": "落点扩展槽（手缝转正·批8 P2·2026-10-01）",
+          "uiLabel": "extensions"
+        },
+        {
+          "name": "ucWrites",
+          "dataType": "List<EdgeTarget>",
+          "description": "落点扩展槽（手缝转正·批8 P2 真源建模·2026-10-01）",
+          "origin": "",
+          "noteId": "500bcb0c-881b-4d72-b8ad-5f40c8fd65ac",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptDelta.ucWrites",
+          "defaultValue": "Nil",
+          "codeFqnCount": 6,
+          "businessDef": "落点扩展槽（手缝转正·批8 P2·2026-10-01）",
+          "uiLabel": "ucWrites"
+        },
+        {
+          "name": "ucPublishes",
+          "dataType": "List<EdgeTarget>",
+          "description": "落点扩展槽（手缝转正·批8 P2 真源建模·2026-10-01）",
+          "origin": "",
+          "noteId": "8b648441-141d-485d-9757-ee2349a5f3aa",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptDelta.ucPublishes",
+          "defaultValue": "Nil",
+          "codeFqnCount": 6,
+          "businessDef": "落点扩展槽（手缝转正·批8 P2·2026-10-01）",
+          "uiLabel": "ucPublishes"
+        }
+      ]
+    },
+    {
+      "name": "DoRAssessmentResult",
+      "noteId": "2c3c82bf-ee82-4d96-9ac3-fc36176c675b",
+      "fields": [
+        {
+          "name": "verdicts",
+          "dataType": "List<DoRVerdict>",
+          "description": "各标准项裁决明细",
+          "origin": "",
+          "noteId": "0eadf848-28e3-42cd-b5b0-faf73b02864e",
+          "codeFqn": "net.imadz.metarch.domain.values.DoRAssessmentResult.verdicts",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "evaluatedScope",
+          "dataType": "String",
+          "description": "目标场次+快照",
+          "origin": "",
+          "noteId": "dfae0a9f-af3d-45ca-a8bd-39cab5653bff",
+          "codeFqn": "net.imadz.metarch.domain.values.DoRAssessmentResult.evaluatedScope",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "summary",
+          "dataType": "String",
+          "description": "各标准通过情况汇总",
+          "origin": "",
+          "noteId": "94688344-1cf9-4eda-bbe9-6ec05eb099b6",
+          "codeFqn": "net.imadz.metarch.domain.values.DoRAssessmentResult.summary",
+          "codeFqnCount": 4
+        }
+      ]
+    },
+    {
+      "name": "DoRVerdict",
+      "noteId": "b5762573-1c63-46e1-9acd-c27417504441",
+      "fields": [
+        {
+          "name": "criterion",
+          "dataType": "String",
+          "description": "N1/N2/N3/N4；(parent=DoRVerdict)",
+          "origin": "",
+          "noteId": "3033a3a0-8898-4f93-808d-652e7fdbbdad",
+          "codeFqn": "net.imadz.metarch.domain.values.DoRVerdict.criterion",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "evaluatorType",
+          "dataType": "String",
+          "description": "HUMAN / AI_MODEL；(parent=DoRVerdict)",
+          "origin": "",
+          "noteId": "7c2716c0-d34a-4f94-964f-0aab32a71dfb",
+          "codeFqn": "net.imadz.metarch.domain.values.DoRVerdict.evaluatorType",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "evaluatorId",
+          "dataType": "String",
+          "description": "人或AI模型名；(parent=DoRVerdict)",
+          "origin": "",
+          "noteId": "4ad341f4-7786-409b-9e7d-625514511903",
+          "codeFqn": "net.imadz.metarch.domain.values.DoRVerdict.evaluatorId",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "evaluatorRole",
+          "dataType": "String",
+          "description": "人类角色；(parent=DoRVerdict)",
+          "origin": "",
+          "noteId": "2df4fe3a-f83e-4eab-a9e9-0202ab8233b9",
+          "codeFqn": "net.imadz.metarch.domain.values.DoRVerdict.evaluatorRole",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "aiModelVersion",
+          "dataType": "String",
+          "description": "若AI；(parent=DoRVerdict)",
+          "origin": "",
+          "noteId": "c529a546-0e6e-4292-8363-f69b8d0d43f2",
+          "codeFqn": "net.imadz.metarch.domain.values.DoRVerdict.aiModelVersion",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "harnessBrand",
+          "dataType": "String",
+          "description": "如 LangChain；(parent=DoRVerdict)",
+          "origin": "",
+          "noteId": "6274284f-c93f-4276-bc4e-612c15db2635",
+          "codeFqn": "net.imadz.metarch.domain.values.DoRVerdict.harnessBrand",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "harnessVersion",
+          "dataType": "String",
+          "description": "version of the harness used for evaluation；(parent=DoRVerdict)",
+          "origin": "",
+          "noteId": "9702083b-a2e9-43b0-a54c-1cc05f59b1df",
+          "codeFqn": "net.imadz.metarch.domain.values.DoRVerdict.harnessVersion",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "effort",
+          "dataType": "String",
+          "description": "quick/standard/deep；(parent=DoRVerdict)",
+          "origin": "",
+          "noteId": "7663a430-9694-47c5-9c35-ee22bf5a53a1",
+          "codeFqn": "net.imadz.metarch.domain.values.DoRVerdict.effort",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "result",
+          "dataType": "String",
+          "description": "PASS/FAIL/PARTIAL；(parent=DoRVerdict)",
+          "origin": "",
+          "noteId": "29b4b1cf-37a9-4083-8f62-2bb04bbc7f60",
+          "codeFqn": "net.imadz.metarch.domain.values.DoRVerdict.result",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "reason",
+          "dataType": "String",
+          "description": "人类或AI摘要；(parent=DoRVerdict)",
+          "origin": "",
+          "noteId": "ba67b34c-a1b3-4d8c-a9d0-5306d31b2014",
+          "codeFqn": "net.imadz.metarch.domain.values.DoRVerdict.reason",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "evidenceLinks",
+          "dataType": "List<String>",
+          "description": "外部链接；(parent=DoRVerdict)",
+          "origin": "",
+          "noteId": "522dc1eb-5e10-44b7-b87b-aed6baa057c3",
+          "codeFqn": "net.imadz.metarch.domain.values.DoRVerdict.evidenceLinks",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "recordedAt",
+          "dataType": "Instant",
+          "description": "time when the DoR verdict was recorded；(parent=DoRVerdict)",
+          "origin": "",
+          "noteId": "85b8fed3-bccc-4044-a1f1-8d636e2392d5",
+          "codeFqn": "net.imadz.metarch.domain.values.DoRVerdict.recordedAt",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "recordedBy",
+          "dataType": "String",
+          "description": "user who recorded the DoR verdict；(parent=DoRVerdict)",
+          "origin": "",
+          "noteId": "2af7b3dd-2131-41fa-b2c8-7667f984124a",
+          "codeFqn": "net.imadz.metarch.domain.values.DoRVerdict.recordedBy",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "evaluatedScope",
+          "dataType": "JSON",
+          "description": "目标场次+快照；(parent=DoRVerdict)",
+          "origin": "",
+          "noteId": "061146bb-5e62-49ca-a086-b633a239c353",
+          "codeFqn": "net.imadz.metarch.domain.values.DoRVerdict.evaluatedScope",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "summary",
+          "dataType": "String",
+          "description": "各标准通过情况；(parent=DoRVerdict)",
+          "origin": "",
+          "noteId": "c0459253-8eac-482f-b476-c87defc9d639",
+          "codeFqn": "net.imadz.metarch.domain.values.DoRVerdict.summary",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "sessionId",
+          "dataType": "String",
+          "description": "裁决针对的 session（定位到创造 notes/connectors 的场次·∈targetSessionIds）；(parent=DoRVerdict)",
+          "origin": "",
+          "noteId": "c8382834-aa11-4ae7-8af3-75d49b633027",
+          "codeFqn": "net.imadz.metarch.domain.values.DoRVerdict.sessionId",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "proposal",
+          "dataType": "String",
+          "description": "修复提案（机器检查自动生成·人可补充）；(parent=DoRVerdict)",
+          "origin": "",
+          "noteId": "170ba268-a2f0-49de-96d8-fb7ac501d6f9",
+          "codeFqn": "net.imadz.metarch.domain.values.DoRVerdict.proposal",
+          "codeFqnCount": 4
+        }
+      ]
+    },
+    {
+      "name": "Finding",
+      "noteId": "fcc3db59-9491-4e7b-9c51-5f900db32c16",
+      "fields": [
+        {
+          "name": "criterion",
+          "dataType": "String",
+          "description": "N1/N2/N3/N4",
+          "origin": "",
+          "noteId": "d5785d67-1ad4-4f50-b891-b71b5eb3dde1",
+          "codeFqn": "net.imadz.metarch.domain.values.Finding.criterion",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "description",
+          "dataType": "String",
+          "description": "问题描述（Agent 或领域专家提出）",
+          "origin": "",
+          "noteId": "983eccba-fda3-4d92-b488-546e5f239b7e",
+          "codeFqn": "net.imadz.metarch.domain.values.Finding.description",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "severity",
+          "dataType": "String",
+          "description": "BLOCKER / WARNING",
+          "origin": "",
+          "noteId": "ea63fb3c-44c0-45ec-a284-42fe218aaa47",
+          "codeFqn": "net.imadz.metarch.domain.values.Finding.severity",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "sessionId",
+          "dataType": "String",
+          "description": "发现定位的 session；(parent=Finding)",
+          "origin": "",
+          "noteId": "d395bf12-4cde-4cf2-94da-14fd5afb36da",
+          "codeFqn": "net.imadz.metarch.domain.values.Finding.sessionId",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "proposal",
+          "dataType": "String",
+          "description": "修复提案；(parent=Finding)",
+          "origin": "",
+          "noteId": "9fe1f800-1698-4874-b153-7bddfc01ebe3",
+          "codeFqn": "net.imadz.metarch.domain.values.Finding.proposal",
+          "codeFqnCount": 4
+        }
+      ]
+    },
+    {
+      "name": "RelationDelta",
+      "noteId": "3da99dba-cea9-4791-b6b9-f5f1058e51cd",
+      "fields": [
+        {
+          "name": "action",
+          "dataType": "String",
+          "description": "insert / update / merge / delete；(parent=RelationDelta)",
+          "origin": "",
+          "noteId": "6c53d7f1-92b1-400d-81f1-c949e3589654",
+          "codeFqn": "net.imadz.metarch.domain.values.RelationDelta.action",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "relationName",
+          "dataType": "String",
+          "description": "关系名；(parent=RelationDelta)",
+          "origin": "",
+          "noteId": "8820328f-8f1e-4ee0-a1c7-b2863696156a",
+          "codeFqn": "net.imadz.metarch.domain.values.RelationDelta.relationName",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "sourceConceptName",
+          "dataType": "String",
+          "description": "源概念（contextId+conceptName 唯一键）；(parent=RelationDelta)",
+          "origin": "",
+          "noteId": "f297fcfc-3a5e-4f0a-a51c-e24ed32c92bc",
+          "codeFqn": "net.imadz.metarch.domain.values.RelationDelta.sourceConceptName",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "targetConceptName",
+          "dataType": "String",
+          "description": "目标概念；(parent=RelationDelta)",
+          "origin": "",
+          "noteId": "f31e8127-e06c-49d9-a956-6f1ef368931a",
+          "codeFqn": "net.imadz.metarch.domain.values.RelationDelta.targetConceptName",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "mapping",
+          "dataType": "String",
+          "description": "关系映射/条件；(parent=RelationDelta)",
+          "origin": "",
+          "noteId": "3d893ab2-8357-4cd8-85f0-f8d607392943",
+          "codeFqn": "net.imadz.metarch.domain.values.RelationDelta.mapping",
+          "codeFqnCount": 4
+        }
+      ]
+    },
+    {
+      "name": "ChecklistItem",
+      "noteId": "1a20b7a9-1d2f-4af2-b5d8-b2791cf3f31c",
+      "fields": [
+        {
+          "name": "criterion",
+          "dataType": "String",
+          "description": "验收/检查条目（可测断言）；(parent=ChecklistItem)",
+          "origin": "",
+          "noteId": "67edc4ba-fb88-4633-87ef-a2929ec39fb9",
+          "codeFqn": "net.imadz.metarch.domain.values.ChecklistItem.criterion",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "status",
+          "dataType": "String",
+          "description": "签收状态：UNREVIEWED / AI_PROPOSED / CONFIRMED / REJECTED；(parent=ChecklistItem)",
+          "origin": "",
+          "noteId": "4adce144-412c-4c9e-89c8-89ab69a0349d",
+          "codeFqn": "net.imadz.metarch.domain.values.ChecklistItem.status",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "evidence",
+          "dataType": "String",
+          "description": "证据引用（文件/行/链接）；(parent=ChecklistItem)",
+          "origin": "",
+          "noteId": "c9533234-b154-46df-a460-bd0358d3c660",
+          "codeFqn": "net.imadz.metarch.domain.values.ChecklistItem.evidence",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "proposedBy",
+          "dataType": "String",
+          "description": "提案者（ai-inference / 人）；(parent=ChecklistItem)",
+          "origin": "",
+          "noteId": "ce3d1702-37cf-4d64-9e51-8328ea90958e",
+          "codeFqn": "net.imadz.metarch.domain.values.ChecklistItem.proposedBy",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "confirmedBy",
+          "dataType": "String",
+          "description": "签收人（CONFIRMED/REJECTED 时必填）；(parent=ChecklistItem)",
+          "origin": "",
+          "noteId": "d5b00062-bf92-4645-8eb2-304997f62714",
+          "codeFqn": "net.imadz.metarch.domain.values.ChecklistItem.confirmedBy",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "confirmedAt",
+          "dataType": "String",
+          "description": "签收时间（ISO8601 字符串）；(parent=ChecklistItem)",
+          "origin": "",
+          "noteId": "1c184b9e-908e-44f5-867c-c553258a1a39",
+          "codeFqn": "net.imadz.metarch.domain.values.ChecklistItem.confirmedAt",
+          "codeFqnCount": 4
+        }
+      ]
+    },
+    {
+      "name": "FsmStateDef",
+      "noteId": "6cde3d77-99e8-4ae2-8696-4fd52ee6b491",
+      "fields": [
+        {
+          "name": "name",
+          "dataType": "String",
+          "description": "状态名（statusEnum 对齐）；(parent=FsmState)",
+          "origin": "",
+          "noteId": "cf37ab57-cc3b-4a31-ad2c-4b173037eefa",
+          "codeFqn": "net.imadz.metarch.domain.values.FsmStateDef.name",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "kind",
+          "dataType": "String",
+          "description": "INITIAL / NORMAL / TERMINAL（INITIAL 至多一个）；(parent=FsmState)",
+          "origin": "",
+          "noteId": "93420472-b112-42a5-a3db-30a04110d0c5",
+          "codeFqn": "net.imadz.metarch.domain.values.FsmStateDef.kind",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "notes",
+          "dataType": "String",
+          "description": "语义备注；(parent=FsmState)",
+          "origin": "",
+          "noteId": "d586a43d-6ad9-41a3-b0fa-c324549dc108",
+          "codeFqn": "net.imadz.metarch.domain.values.FsmStateDef.notes",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "confirmedBy",
+          "dataType": "String",
+          "description": "签收人（空=未签）；(parent=FsmState)",
+          "origin": "",
+          "noteId": "d5387661-3e04-4051-9c01-111f06d3f916",
+          "codeFqn": "net.imadz.metarch.domain.values.FsmStateDef.confirmedBy",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "confirmedAt",
+          "dataType": "String",
+          "description": "签收时间；(parent=FsmState)",
+          "origin": "",
+          "noteId": "8847e2f5-7d82-4097-b886-85399a0ec155",
+          "codeFqn": "net.imadz.metarch.domain.values.FsmStateDef.confirmedAt",
+          "codeFqnCount": 4
+        }
+      ]
+    },
+    {
+      "name": "FsmTransition",
+      "noteId": "8eb3f55d-af6b-4dc3-ba22-8531aadc85e5",
+      "fields": [
+        {
+          "name": "source",
+          "dataType": "String",
+          "description": "源状态名（须存在于 states）；(parent=FsmTransition)",
+          "origin": "",
+          "noteId": "e9e60fb0-410a-4468-af0d-ab49662dd3f0",
+          "codeFqn": "net.imadz.metarch.domain.values.FsmTransition.source",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "target",
+          "dataType": "String",
+          "description": "目标状态名；(parent=FsmTransition)",
+          "origin": "",
+          "noteId": "4d23ccb5-aea2-4834-bd5c-35cdea3c204a",
+          "codeFqn": "net.imadz.metarch.domain.values.FsmTransition.target",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "event",
+          "dataType": "String",
+          "description": "触发事件名；(parent=FsmTransition)",
+          "origin": "",
+          "noteId": "e491b6eb-72a4-4b4b-8705-325822a9f87a",
+          "codeFqn": "net.imadz.metarch.domain.values.FsmTransition.event",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "guard",
+          "dataType": "String",
+          "description": "守卫=RuleRef（指向不变式 ID·单一真源）；(parent=FsmTransition)",
+          "origin": "",
+          "noteId": "914b3db4-7939-4af1-b702-8ecfb854bad3",
+          "codeFqn": "net.imadz.metarch.domain.values.FsmTransition.guard",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "notes",
+          "dataType": "String",
+          "description": "自由语言备注；(parent=FsmTransition)",
+          "origin": "",
+          "noteId": "6b8d11fa-17e3-48bd-a6e4-1ef89a4fac9d",
+          "codeFqn": "net.imadz.metarch.domain.values.FsmTransition.notes",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "confirmedBy",
+          "dataType": "String",
+          "description": "签收人（空=未签）；(parent=FsmTransition)",
+          "origin": "",
+          "noteId": "b460a806-e986-4e92-ba7e-2e310fd9f27d",
+          "codeFqn": "net.imadz.metarch.domain.values.FsmTransition.confirmedBy",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "confirmedAt",
+          "dataType": "String",
+          "description": "签收时间；(parent=FsmTransition)",
+          "origin": "",
+          "noteId": "39ad2341-85c8-4538-a259-b6ff07c5f0e9",
+          "codeFqn": "net.imadz.metarch.domain.values.FsmTransition.confirmedAt",
+          "codeFqnCount": 4
+        }
+      ]
+    },
+    {
+      "name": "ReadModelFieldSpec",
+      "noteId": "b85fe16d-df3e-4c46-9dc5-117ada161e44",
+      "fields": [
+        {
+          "name": "fieldName",
+          "dataType": "String",
+          "description": "视图字段名；(parent=ReadModelFieldSpec)",
+          "origin": "",
+          "noteId": "461d96ca-30f4-40d8-9c54-86225fa6dc01",
+          "codeFqn": "net.imadz.metarch.domain.values.ReadModelFieldSpec.fieldName",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "dataType",
+          "dataType": "String",
+          "description": "数据类型；(parent=ReadModelFieldSpec)",
+          "origin": "",
+          "noteId": "91743c2a-8ec3-43aa-bda8-9648e8dc5708",
+          "codeFqn": "net.imadz.metarch.domain.values.ReadModelFieldSpec.dataType",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "uiLabel",
+          "dataType": "String",
+          "description": "③层文件 fields[].uiLabel（B4a 补面）",
+          "origin": "S2-82-B4a",
+          "noteId": "357c406a-68a9-44f0-9f38-7961040792a1",
+          "codeFqn": "net.imadz.metarch.domain.values.ReadModelFieldSpec.uiLabel",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "source",
+          "dataType": "String",
+          "description": "推导来源（aggregateIdentity / eventField:事件.字段）；(parent=ReadModelFieldSpec)",
+          "origin": "",
+          "noteId": "cbae3aed-11b8-4c33-a99a-8a5927f08c42",
+          "codeFqn": "net.imadz.metarch.domain.values.ReadModelFieldSpec.source",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "isKey",
+          "dataType": "Boolean",
+          "description": "键字段标记；(parent=ReadModelFieldSpec)",
+          "origin": "",
+          "noteId": "0f36a147-9c85-4c67-a60f-52e30df19531",
+          "codeFqn": "net.imadz.metarch.domain.values.ReadModelFieldSpec.isKey",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "origin",
+          "dataType": "String",
+          "description": "IDENTIFIER / PROPAGATED / DERIVED / STATE_TRANSITION；(parent=ReadModelFieldSpec)",
+          "origin": "",
+          "noteId": "c52f176e-83e3-4aef-bd92-2f963042a2bd",
+          "codeFqn": "net.imadz.metarch.domain.values.ReadModelFieldSpec.origin",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "writtenBy",
+          "dataType": "List<String>",
+          "description": "写血缘（事件.字段）；(parent=ReadModelFieldSpec)",
+          "origin": "",
+          "noteId": "3ef95823-bbbc-4717-bc64-f777bbec3957",
+          "codeFqn": "net.imadz.metarch.domain.values.ReadModelFieldSpec.writtenBy",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "noteId",
+          "dataType": "String",
+          "description": "本行知识号（服务端权威号·S2c 契约）",
+          "origin": "S2-82-B4a",
+          "optional": true,
+          "noteId": "8bac5d69-d4b3-4cae-b2b1-364493e02fd5",
+          "codeFqn": "net.imadz.metarch.domain.values.ReadModelFieldSpec.noteId",
+          "codeFqnCount": 4
+        }
+      ]
+    },
+    {
+      "name": "FieldStateSpec",
+      "noteId": "035666de-f7c1-4e8a-a98e-1c30116495fd",
+      "fields": [
+        {
+          "name": "fieldName",
+          "dataType": "String",
+          "description": "状态字段名；(parent=FieldStateSpec)",
+          "origin": "",
+          "noteId": "e41738c1-dbf0-4bd3-9940-c89cd9a2902c",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldStateSpec.fieldName",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "dataType",
+          "dataType": "String",
+          "description": "数据类型；(parent=FieldStateSpec)",
+          "origin": "",
+          "noteId": "55cbcc75-8937-4a09-a6d0-735673fd1388",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldStateSpec.dataType",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "description",
+          "dataType": "String",
+          "description": "业务定义；(parent=FieldStateSpec)",
+          "origin": "",
+          "noteId": "f7f7da84-f21e-4d2d-9dba-9f84f33ac14a",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldStateSpec.description",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "uiLabel",
+          "dataType": "String",
+          "description": "④层模板 stateField.uiLabel（B4a 分列/补面）",
+          "origin": "S2-82-B4a",
+          "noteId": "c622ab8b-944c-4714-bd8c-69443d803b59",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldStateSpec.uiLabel",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "businessDef",
+          "dataType": "String",
+          "description": "④层模板 stateField.businessDef（B4a 分列/补面）",
+          "origin": "S2-82-B4a",
+          "noteId": "d1d95688-b60c-4bfa-aaa8-fa66e8c8204b",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldStateSpec.businessDef",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "derivation",
+          "dataType": "String",
+          "description": "④层模板 stateField.derivation（B4a 分列/补面）",
+          "origin": "S2-82-B4a",
+          "noteId": "90aa177f-117c-442e-908f-f1fb3bbb1686",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldStateSpec.derivation",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "lineageHint",
+          "dataType": "String",
+          "description": "④层模板 stateField.lineageHint（B4a 分列/补面）",
+          "origin": "S2-82-B4a",
+          "noteId": "37cea4ec-96a2-4d0b-8fdc-9603bae2b8df",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldStateSpec.lineageHint",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "parent",
+          "dataType": "String",
+          "description": "④层模板 stateField.parent（B4a 分列/补面）",
+          "origin": "S2-82-B4a",
+          "noteId": "e5c0472a-b65d-4640-8682-888281754101",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldStateSpec.parent",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "fold",
+          "dataType": "String",
+          "description": "④层模板 stateField.fold（B4a 分列/补面）",
+          "origin": "S2-82-B4a",
+          "noteId": "941b69f4-b6b9-446a-8788-a0ba09870dd3",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldStateSpec.fold",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "source",
+          "dataType": "String",
+          "description": "④层模板 stateField.source（B4a 分列/补面）",
+          "origin": "S2-82-B4a",
+          "noteId": "27a56d0a-2f0e-47db-a1b6-e18e7f319d8e",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldStateSpec.source",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "origin",
+          "dataType": "String",
+          "description": "字段来源（PROPAGATED/SYSTEM_INJECTED/DERIVED）；(parent=FieldStateSpec)",
+          "origin": "",
+          "noteId": "c6210aee-d583-4557-8c02-651392da0323",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldStateSpec.origin",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "role",
+          "dataType": "String",
+          "description": "角色标记（State/ValueObject.Member）；(parent=FieldStateSpec)",
+          "origin": "",
+          "noteId": "5dfecf0b-3382-4efd-9c46-2186d3ee389e",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldStateSpec.role",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "writtenBy",
+          "dataType": "List<String>",
+          "description": "写血缘（事件.字段）；(parent=FieldStateSpec)",
+          "origin": "",
+          "noteId": "f96d96ad-d3c1-4eb9-863c-211743dd1426",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldStateSpec.writtenBy",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "nature",
+          "dataType": "String",
+          "description": "字段性质（问题空间标记）——EP_Field_Nature_And_Concern_Anchors 首例词表 credential",
+          "origin": "",
+          "optional": true,
+          "noteId": "c206b82b-c70a-4fb9-a755-074694c22a41",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldStateSpec.nature",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "noteId",
+          "dataType": "String",
+          "description": "本行知识号（服务端权威号·S2c 契约）",
+          "origin": "S2-82-B4a",
+          "optional": true,
+          "noteId": "8c6c0cce-cf3e-457d-8b49-87c90886d3d5",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldStateSpec.noteId",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "foldAssignments",
+          "dataType": "List<EventBinding>",
+          "description": "折叠赋值集合（behaviorModel folds）",
+          "noteId": "397f4d9a-45cd-44bf-a6cd-59d9dd3f9d37",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldStateSpec.foldAssignments",
+          "codeFqnCount": 4
+        }
+      ]
+    },
+    {
+      "name": "FieldParamSpec",
+      "noteId": "5c210848-d976-4c94-9ac7-2842dca4cea1",
+      "fields": [
+        {
+          "name": "paramName",
+          "dataType": "String",
+          "description": "参数/载荷名；(parent=FieldParamSpec)",
+          "origin": "",
+          "noteId": "a85c5192-247b-4e29-a905-cae12426f503",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldParamSpec.paramName",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "dataType",
+          "dataType": "String",
+          "description": "数据类型；(parent=FieldParamSpec)",
+          "origin": "",
+          "noteId": "608cb372-e2ad-41bd-b121-71243d280840",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldParamSpec.dataType",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "description",
+          "dataType": "String",
+          "description": "业务定义；(parent=FieldParamSpec)",
+          "origin": "",
+          "noteId": "f956eb78-2e13-48f8-a1be-b8ba849cd509",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldParamSpec.description",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "uiLabel",
+          "dataType": "String",
+          "description": "④层模板 param/payload.uiLabel（B4a 分列/补面）",
+          "origin": "S2-82-B4a",
+          "noteId": "33413bcf-6beb-48c7-932f-ba74f4a535cb",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldParamSpec.uiLabel",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "businessDef",
+          "dataType": "String",
+          "description": "④层模板 param/payload.businessDef（B4a 分列/补面）",
+          "origin": "S2-82-B4a",
+          "noteId": "03cecb58-c865-401c-a7e9-cbf160f340e2",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldParamSpec.businessDef",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "origin",
+          "dataType": "String",
+          "description": "④层模板 param/payload.origin（B4a 分列/补面）",
+          "origin": "S2-82-B4a",
+          "noteId": "77b49049-72ef-44b7-a553-d515e94320ca",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldParamSpec.origin",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "lineageHint",
+          "dataType": "String",
+          "description": "④层模板 param/payload.lineageHint（B4a 分列/补面）",
+          "origin": "S2-82-B4a",
+          "noteId": "d65afedb-fc21-4642-9e42-9b18228aee06",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldParamSpec.lineageHint",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "derivation",
+          "dataType": "String",
+          "description": "④层模板 param/payload.derivation（B4a 分列/补面）",
+          "origin": "S2-82-B4a",
+          "noteId": "58ce10db-a040-4e0a-bcd1-60bd3e23c8d3",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldParamSpec.derivation",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "role",
+          "dataType": "String",
+          "description": "④层模板 param/payload.role（B4a 分列/补面）",
+          "origin": "S2-82-B4a",
+          "noteId": "8e616aff-2ff4-4d7a-a4cd-79e790fc2353",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldParamSpec.role",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "optional",
+          "dataType": "Boolean",
+          "description": "可选标记；(parent=FieldParamSpec)",
+          "origin": "",
+          "noteId": "214b75ed-a72d-4481-876e-e562091a74fe",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldParamSpec.optional",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "optionalWhen",
+          "dataType": "String",
+          "description": "可选条件；(parent=FieldParamSpec)",
+          "origin": "",
+          "noteId": "b3455d22-dcd6-497c-8407-b4f1396212ad",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldParamSpec.optionalWhen",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "noteId",
+          "dataType": "String",
+          "description": "本行知识号（服务端权威号·S2c 契约）",
+          "origin": "S2-82-B4a",
+          "optional": true,
+          "noteId": "a0dcc97a-a60e-4595-a284-02af6a650f0d",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldParamSpec.noteId",
+          "codeFqnCount": 4
+        }
+      ]
+    },
+    {
+      "name": "FieldCommandSpec",
+      "noteId": "853e36a3-fa2d-4773-93db-17616a5b2d4d",
+      "fields": [
+        {
+          "name": "commandName",
+          "dataType": "String",
+          "description": "命令名；(parent=FieldCommandSpec)",
+          "origin": "",
+          "noteId": "c049946a-f738-4b33-a123-a2bd2b76ce3d",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldCommandSpec.commandName",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "description",
+          "dataType": "String",
+          "description": "命令描述；(parent=FieldCommandSpec)",
+          "origin": "",
+          "noteId": "3bae98f7-a87a-4f01-8b3d-0dfc2515a67b",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldCommandSpec.description",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "produces",
+          "dataType": "List<String>",
+          "description": "④层模板 command.produces",
+          "origin": "S2-82-B4a",
+          "noteId": "5c0e505a-a0f1-42e9-a6b9-ae4fc7dd8dad",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldCommandSpec.produces",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "preconditions",
+          "dataType": "List<String>",
+          "description": "④层模板 command.preconditions",
+          "origin": "S2-82-B4a",
+          "noteId": "45c9dda9-2f37-49f1-af14-9c5c8e62e6e3",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldCommandSpec.preconditions",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "parameters",
+          "dataType": "List<FieldParamSpec>",
+          "description": "参数集合；(parent=FieldCommandSpec)",
+          "origin": "",
+          "noteId": "2899b709-00cb-4bcb-a63d-4521c65c08aa",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldCommandSpec.parameters",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "noteId",
+          "dataType": "String",
+          "description": "本行知识号（服务端权威号·S2c 契约）",
+          "origin": "S2-82-B4a",
+          "optional": true,
+          "noteId": "9d1ad5cc-3778-4317-a39d-adcae460685a",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldCommandSpec.noteId",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "guards",
+          "dataType": "List<GuardSpec>",
+          "description": "命令守卫集合（行为元数据进写侧·2026-09-28）",
+          "noteId": "a2ba5d9b-0f43-437a-9b32-472f3e208f54",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldCommandSpec.guards",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "preconditionRefs",
+          "dataType": "List<RuleRef>",
+          "description": "命令前置规则引用集（立项A·登记表 commandPreconditions 按 target join）",
+          "noteId": "6730f7c6-24d2-4f7a-95f4-9c0cfb377dae",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldCommandSpec.preconditionRefs",
+          "codeFqnCount": 4
+        }
+      ]
+    },
+    {
+      "name": "FieldEventSpec",
+      "noteId": "21cb7365-eec0-4e6e-ae3c-5cd24875acf8",
+      "fields": [
+        {
+          "name": "eventName",
+          "dataType": "String",
+          "description": "事件名；(parent=FieldEventSpec)",
+          "origin": "",
+          "noteId": "28dcda90-7053-485e-a3d6-297207a96f14",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldEventSpec.eventName",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "description",
+          "dataType": "String",
+          "description": "事件描述；(parent=FieldEventSpec)",
+          "origin": "",
+          "noteId": "fb6620e9-d2f2-4f2f-8347-78b321cbeac4",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldEventSpec.description",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "humanDescription",
+          "dataType": "String",
+          "description": "④层模板 event.humanDescription（B4a 分列）",
+          "origin": "S2-82-B4a",
+          "noteId": "bffde406-a86c-4cbb-9cb6-2d43ba48f056",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldEventSpec.humanDescription",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "origin",
+          "dataType": "String",
+          "description": "④层模板 event.origin",
+          "origin": "S2-82-B4a",
+          "noteId": "b044876d-1bc6-4187-a11f-ea7f57e16578",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldEventSpec.origin",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "payloads",
+          "dataType": "List<FieldParamSpec>",
+          "description": "载荷集合；(parent=FieldEventSpec)",
+          "origin": "",
+          "noteId": "cc54cd04-aceb-4480-822d-e5ea2737da1a",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldEventSpec.payloads",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "noteId",
+          "dataType": "String",
+          "description": "本行知识号（服务端权威号·S2c 契约）",
+          "origin": "S2-82-B4a",
+          "optional": true,
+          "noteId": "f21b9eeb-2a6d-48ac-bb03-343b0e20812b",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldEventSpec.noteId",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "bindings",
+          "dataType": "List<EventBinding>",
+          "description": "发射载荷绑定集合（behaviorModel emissions）",
+          "noteId": "25bc13a8-0b5f-4975-9d8d-d07479b43e13",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldEventSpec.bindings",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "forEach",
+          "dataType": "String",
+          "description": "扇出遍历表达式（fanOutOn）",
+          "optional": true,
+          "noteId": "b2566cb8-fec5-4815-95eb-8cb3716ade58",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldEventSpec.forEach",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "foldAssignments",
+          "dataType": "List<EventBinding>",
+          "description": "折叠赋值集合（behaviorModel folds·事件级承载·2026-09-28 归位批载体）",
+          "noteId": "89b476a9-74b6-4765-9794-011e582eeebc",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldEventSpec.foldAssignments",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "postconditionRefs",
+          "dataType": "List<RuleRef>",
+          "description": "事件后置规则引用集（立项A·登记表 eventPostconditions 按 target join）",
+          "noteId": "2938b87e-93a4-4937-aed9-6305f6a0c64c",
+          "codeFqn": "net.imadz.metarch.domain.values.FieldEventSpec.postconditionRefs",
+          "codeFqnCount": 4
+        }
+      ]
+    },
+    {
+      "name": "AggregateRelationSpec",
+      "noteId": "b8218245-f339-47bd-8d34-9326d36280dd",
+      "fields": [
+        {
+          "name": "toAggregate",
+          "dataType": "String",
+          "description": "目标聚合；(parent=AggregateRelationSpec)",
+          "origin": "",
+          "noteId": "bc00714d-af0f-4a12-8fb6-bbbea3115b53",
+          "codeFqn": "net.imadz.metarch.domain.values.AggregateRelationSpec.toAggregate",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "cardinality",
+          "dataType": "String",
+          "description": "基数（1:N/N:M/1:1）；(parent=AggregateRelationSpec)",
+          "origin": "",
+          "noteId": "af8856ec-2c76-4356-9378-15a2eac7b845",
+          "codeFqn": "net.imadz.metarch.domain.values.AggregateRelationSpec.cardinality",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "foreignKey",
+          "dataType": "String",
+          "description": "外键路径；(parent=AggregateRelationSpec)",
+          "origin": "",
+          "noteId": "87e34634-162c-419a-a367-7c662e8a4c93",
+          "codeFqn": "net.imadz.metarch.domain.values.AggregateRelationSpec.foreignKey",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "writePath",
+          "dataType": "String",
+          "description": "写路径（event/derived）；(parent=AggregateRelationSpec)",
+          "origin": "",
+          "noteId": "3fa4ceb1-5e90-4ba5-a88f-029cfed75f82",
+          "codeFqn": "net.imadz.metarch.domain.values.AggregateRelationSpec.writePath",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "ruling",
+          "dataType": "String",
+          "description": "裁决说明；(parent=AggregateRelationSpec)",
+          "origin": "",
+          "noteId": "e8dd0cf8-8e1c-4a94-af97-ce2e501828ad",
+          "codeFqn": "net.imadz.metarch.domain.values.AggregateRelationSpec.ruling",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "semanticType",
+          "dataType": "String",
+          "description": "语义类型（SCOPE/MEMBER_OF/COMPOSES…）；(parent=AggregateRelationSpec)",
+          "origin": "",
+          "noteId": "c73970c9-b9ea-4263-8967-75cf02ddffd5",
+          "codeFqn": "net.imadz.metarch.domain.values.AggregateRelationSpec.semanticType",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "causal",
+          "dataType": "JSON",
+          "description": "④层模板 relation.causal 对象原文（{event,command,derivedFrom}）",
+          "origin": "S2-82-B4a",
+          "noteId": "c7c55815-5b4b-45fc-a723-33c05d69bef8",
+          "codeFqn": "net.imadz.metarch.domain.values.AggregateRelationSpec.causal",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "temporal",
+          "dataType": "Boolean",
+          "description": "④层模板 relation.temporal",
+          "origin": "S2-82-B4a",
+          "noteId": "244edd26-50d3-4aca-984b-c74f4b77db91",
+          "codeFqn": "net.imadz.metarch.domain.values.AggregateRelationSpec.temporal",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "existence",
+          "dataType": "String",
+          "description": "④层模板 relation.existence（optional/mandatory）",
+          "origin": "S2-82-B4a",
+          "noteId": "aa9c0fe6-2fc1-4a0c-b3df-8b6e3e306c11",
+          "codeFqn": "net.imadz.metarch.domain.values.AggregateRelationSpec.existence",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "targetDeletionPolicy",
+          "dataType": "String",
+          "description": "④层模板 relation.targetDeletionPolicy",
+          "origin": "S2-82-B4a",
+          "noteId": "b87ef940-bb1f-4f96-a86a-6991f4f922f8",
+          "codeFqn": "net.imadz.metarch.domain.values.AggregateRelationSpec.targetDeletionPolicy",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "targetTypes",
+          "dataType": "List<String>",
+          "description": "④层模板 relation.targetTypes",
+          "origin": "S2-82-B4a",
+          "noteId": "cdb15403-3bdb-4e7b-9a54-1e5c7b45577f",
+          "codeFqn": "net.imadz.metarch.domain.values.AggregateRelationSpec.targetTypes",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "noteId",
+          "dataType": "String",
+          "description": "本行知识号（服务端权威号·S2c 契约）",
+          "origin": "S2-82-B4a",
+          "optional": true,
+          "noteId": "cc4761cd-0793-4f63-a675-3cb4f8f400b8",
+          "codeFqn": "net.imadz.metarch.domain.values.AggregateRelationSpec.noteId",
+          "codeFqnCount": 4
+        }
+      ]
+    },
+    {
+      "name": "StateGateSpec",
+      "noteId": "ad9eeb7a-ae32-41fe-836c-13c189d4d3e9",
+      "fields": [
+        {
+          "name": "commandName",
+          "dataType": "String",
+          "description": "门禁命令；(parent=StateGateSpec)",
+          "origin": "",
+          "noteId": "86d509d3-45ab-4766-9ff0-6b9255a59dfa",
+          "codeFqn": "net.imadz.metarch.domain.values.StateGateSpec.commandName",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "fromStates",
+          "dataType": "List<String>",
+          "description": "前置状态集（宽门）；(parent=StateGateSpec)",
+          "origin": "",
+          "noteId": "7c4ba216-fc90-4762-808e-d48e2885b80b",
+          "codeFqn": "net.imadz.metarch.domain.values.StateGateSpec.fromStates",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "toState",
+          "dataType": "String",
+          "description": "目标状态（null=不变）；(parent=StateGateSpec)",
+          "origin": "",
+          "noteId": "4c75aad3-2820-43f4-a16b-faeed8be3760",
+          "codeFqn": "net.imadz.metarch.domain.values.StateGateSpec.toState",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "initial",
+          "dataType": "Boolean",
+          "description": "创建命令标记；(parent=StateGateSpec)",
+          "origin": "",
+          "noteId": "c371d715-ea8c-494b-9dec-43570a6971e3",
+          "codeFqn": "net.imadz.metarch.domain.values.StateGateSpec.initial",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "noteId",
+          "dataType": "String",
+          "description": "本行知识号（服务端权威号·S2c 契约）",
+          "origin": "S2-82-B4a",
+          "optional": true,
+          "noteId": "f3f94271-afd5-4717-8b81-3d7d407f307e",
+          "codeFqn": "net.imadz.metarch.domain.values.StateGateSpec.noteId",
+          "codeFqnCount": 4
+        }
+      ]
+    },
+    {
+      "name": "StatusTransitionSpec",
+      "noteId": "0b6d2d72-d9af-4447-9ace-4ab69bd25358",
+      "fields": [
+        {
+          "name": "eventName",
+          "dataType": "String",
+          "description": "触发事件；(parent=StatusTransitionSpec)",
+          "origin": "",
+          "noteId": "9bfbbadb-2710-46ff-a10a-333d8085ee29",
+          "codeFqn": "net.imadz.metarch.domain.values.StatusTransitionSpec.eventName",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "toState",
+          "dataType": "String",
+          "description": "目标状态（空=无状态变化）；(parent=StatusTransitionSpec)",
+          "origin": "",
+          "noteId": "62923de2-0910-4357-b810-c8fb4b98da8f",
+          "codeFqn": "net.imadz.metarch.domain.values.StatusTransitionSpec.toState",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "noteId",
+          "dataType": "String",
+          "description": "本行知识号（服务端权威号·S2c 契约）",
+          "origin": "S2-82-B4a",
+          "optional": true,
+          "noteId": "410e14cb-e8ee-4652-a18e-72acaab86bb6",
+          "codeFqn": "net.imadz.metarch.domain.values.StatusTransitionSpec.noteId",
+          "codeFqnCount": 4
+        }
+      ]
+    },
+    {
+      "name": "VOMemberSpec",
+      "noteId": "25f784f4-0152-49f7-a966-a059619ac612",
+      "fields": [
+        {
+          "name": "fieldName",
+          "dataType": "String",
+          "description": "成员名；(parent=VOMemberSpec)",
+          "origin": "S2-82-B4a",
+          "noteId": "1dbab670-cf42-43b8-8cb0-156516a10a98",
+          "codeFqn": "net.imadz.metarch.domain.values.VOMemberSpec.fieldName",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "dataType",
+          "dataType": "String",
+          "description": "成员类型；(parent=VOMemberSpec)",
+          "origin": "S2-82-B4a",
+          "noteId": "54fec4c8-11d0-4ec4-b560-539016c5c076",
+          "codeFqn": "net.imadz.metarch.domain.values.VOMemberSpec.dataType",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "description",
+          "dataType": "String",
+          "description": "成员描述（模板 description 原文·含 (parent=X) 序列化后缀）；(parent=VOMemberSpec)",
+          "origin": "S2-82-B4a",
+          "noteId": "90d8e672-24c3-4163-9299-aeab3374c622",
+          "codeFqn": "net.imadz.metarch.domain.values.VOMemberSpec.description",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "noteId",
+          "dataType": "String",
+          "description": "本行知识号（服务端权威号·S2c 契约）",
+          "origin": "S2-82-B4a",
+          "optional": true,
+          "noteId": "a8c3b3d5-c50a-4318-b42b-395b4e59baf1",
+          "codeFqn": "net.imadz.metarch.domain.values.VOMemberSpec.noteId",
+          "codeFqnCount": 4
+        }
+      ]
+    },
+    {
+      "name": "ParticipantRole",
+      "noteId": "b65acc1b-108e-4323-8ba9-27ce22d14a83",
+      "fields": [
+        {
+          "name": "userId",
+          "dataType": "String (UUID)",
+          "description": "成员身份（VO 业务键·upsert 幂等键）；(parent=ParticipantRole)",
+          "origin": "",
+          "noteId": "4c7344e6-4ebe-442f-8353-da553f1eb823",
+          "codeFqn": "net.imadz.metarch.domain.values.ParticipantRole.userId",
+          "codeFqnCount": 6
+        },
+        {
+          "name": "role",
+          "dataType": "String",
+          "description": "协作面角色（六值白名单 Roles.SessionRoles：Facilitator/DomainExpert/MetadataEngineer/KnowledgeCurator/AI Agent/Observer）；(parent=ParticipantRole)",
+          "origin": "",
+          "noteId": "4095e619-dc56-4664-8ce2-8459a0adb839",
+          "codeFqn": "net.imadz.metarch.domain.values.ParticipantRole.role",
+          "codeFqnCount": 6
+        }
+      ]
+    },
+    {
+      "name": "ConceptIndexEntry",
+      "noteId": "cf41f767-2c9d-465b-b153-64e839b095ca",
+      "fields": [
+        {
+          "name": "conceptName",
+          "dataType": "String",
+          "description": "概念名——唯一键之半",
+          "origin": "",
+          "noteId": "32d10cc3-f6d7-4a2f-87bf-10a1f1f8f786",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptIndexEntry.conceptName",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "contextId",
+          "dataType": "String",
+          "description": "限界上下文——唯一键之半",
+          "origin": "",
+          "noteId": "08d71d29-f5d5-4a02-b683-2999a907e770",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptIndexEntry.contextId",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "conceptId",
+          "dataType": "String (UUID)",
+          "description": "该键对应的概念号",
+          "origin": "",
+          "noteId": "a4dc44b0-81dd-4631-b004-e50e90715ff5",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptIndexEntry.conceptId",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "contentHash",
+          "dataType": "String",
+          "description": "该概念当前内容指纹（判定「更新 vs 幂等重放」用）",
+          "origin": "",
+          "noteId": "c0ede52b-6fdc-428a-8f7b-ea6d65a4bc12",
+          "codeFqn": "net.imadz.metarch.domain.values.ConceptIndexEntry.contentHash",
+          "codeFqnCount": 4
+        }
+      ]
+    },
+    {
+      "name": "CodeAnchorDelta",
+      "noteId": "b98af06c-4026-4647-bdfa-3b7b9db536a0",
+      "fields": [
+        {
+          "name": "noteId",
+          "dataType": "String (UUID)",
+          "description": "被锚定的知识点号（服务端权威号）；(parent=CodeAnchorDelta)",
+          "origin": "",
+          "noteId": "30f3ed91-f79c-492e-9cf8-8b5b4ec90775",
+          "codeFqn": "net.imadz.metarch.domain.values.CodeAnchorDelta.noteId",
+          "codeFqnCount": 8
+        },
+        {
+          "name": "role",
+          "dataType": "String",
+          "description": "本体 | 派生——锚的种类；(parent=CodeAnchorDelta)",
+          "origin": "",
+          "noteId": "64f9e5d8-96a1-43fe-a007-5b9b38b8a88d",
+          "codeFqn": "net.imadz.metarch.domain.values.CodeAnchorDelta.role",
+          "codeFqnCount": 8
+        },
+        {
+          "name": "host",
+          "dataType": "String",
+          "description": "代码宿主（FQN/符号）；(parent=CodeAnchorDelta)",
+          "origin": "",
+          "noteId": "f65e36b4-eb2f-4f1c-a097-f2a89b98b3ae",
+          "codeFqn": "net.imadz.metarch.domain.values.CodeAnchorDelta.host",
+          "codeFqnCount": 8
+        },
+        {
+          "name": "file",
+          "dataType": "String",
+          "description": "文件路径；(parent=CodeAnchorDelta)",
+          "origin": "",
+          "noteId": "1e2aae66-31db-4d69-8935-20c1d0efdbfb",
+          "codeFqn": "net.imadz.metarch.domain.values.CodeAnchorDelta.file",
+          "codeFqnCount": 8
+        },
+        {
+          "name": "symbols",
+          "dataType": "List<String>",
+          "description": "落点符号表；(parent=CodeAnchorDelta)",
+          "origin": "",
+          "noteId": "f869c2ed-0426-40c8-9902-c42d4b82fe6b",
+          "codeFqn": "net.imadz.metarch.domain.values.CodeAnchorDelta.symbols",
+          "codeFqnCount": 8
+        }
+      ]
+    },
+    {
+      "name": "PatchReadModelFieldSpec",
+      "noteId": "9d01751d-1652-40a3-9146-2226652db283",
+      "fields": [
+        {
+          "name": "fieldName",
+          "dataType": "String",
+          "description": "必填，目标字段",
+          "origin": "",
+          "noteId": "9aed6803-3bd2-4899-8813-ac4e02d5a7c4",
+          "codeFqn": "net.imadz.metarch.domain.values.PatchReadModelFieldSpec.fieldName",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "dataType",
+          "dataType": "String",
+          "description": "可选，仅变更时提供",
+          "origin": "",
+          "optional": true,
+          "noteId": "ec351132-6f1a-4790-bfe3-0ecf1dc2bf0f",
+          "codeFqn": "net.imadz.metarch.domain.values.PatchReadModelFieldSpec.dataType",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "uiLabel",
+          "dataType": "String",
+          "description": "可选，UI 显示标签",
+          "origin": "",
+          "optional": true,
+          "noteId": "8cf553da-10d8-478d-8e9d-56d408d22aaa",
+          "codeFqn": "net.imadz.metarch.domain.values.PatchReadModelFieldSpec.uiLabel",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "source",
+          "dataType": "String",
+          "description": "可选，仅变更时提供",
+          "origin": "",
+          "optional": true,
+          "noteId": "081de64c-0208-4ff7-9d3f-9083ffbbec23",
+          "codeFqn": "net.imadz.metarch.domain.values.PatchReadModelFieldSpec.source",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "isKey",
+          "dataType": "Boolean",
+          "description": "可选，仅变更时提供",
+          "origin": "",
+          "optional": true,
+          "noteId": "9b13c3f5-d2a7-4719-b827-cc4a00a64fd6",
+          "codeFqn": "net.imadz.metarch.domain.values.PatchReadModelFieldSpec.isKey",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "origin",
+          "dataType": "String",
+          "description": "可选，仅变更时提供",
+          "origin": "",
+          "optional": true,
+          "noteId": "691d556d-8488-4111-965d-16bc21897653",
+          "codeFqn": "net.imadz.metarch.domain.values.PatchReadModelFieldSpec.origin",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "writtenBy",
+          "dataType": "List<String>",
+          "description": "可选，仅变更时提供",
+          "origin": "",
+          "noteId": "b7cdcb06-e8ce-411f-99e9-01d4c5601bb1",
+          "codeFqn": "net.imadz.metarch.domain.values.PatchReadModelFieldSpec.writtenBy",
+          "codeFqnCount": 4
+        }
+      ]
+    },
+    {
+      "name": "GuardSpec",
+      "noteId": "97c51c0d-b42a-409d-a0b5-d68ba6343dc9",
+      "fields": [
+        {
+          "name": "kind",
+          "dataType": "String",
+          "description": "守卫种类：invariantRef|initialized|statusTransition",
+          "noteId": "2422d9c2-2d20-4ccb-b20f-d4272eb361a6",
+          "codeFqn": "net.imadz.metarch.domain.values.GuardSpec.kind",
+          "codeFqnCount": 10
+        },
+        {
+          "name": "ref",
+          "dataType": "String",
+          "description": "规则引用号（invariantRef 类·generated_rules.json 的 id 或派生号）",
+          "noteId": "4bfaec02-5509-464e-aaaf-bcbf16bcf0e2",
+          "codeFqn": "net.imadz.metarch.domain.values.GuardSpec.ref",
+          "codeFqnCount": 10
+        },
+        {
+          "name": "errCode",
+          "dataType": "String",
+          "description": "违反时的错误码",
+          "noteId": "fbe358df-dca1-4466-8097-c83452dab6a7",
+          "codeFqn": "net.imadz.metarch.domain.values.GuardSpec.errCode",
+          "codeFqnCount": 10
+        },
+        {
+          "name": "desc",
+          "dataType": "String",
+          "description": "守卫描述（人类可读）",
+          "noteId": "d0d97685-6917-47ba-8581-2ab2873adfee",
+          "codeFqn": "net.imadz.metarch.domain.values.GuardSpec.desc",
+          "codeFqnCount": 10
+        },
+        {
+          "name": "cond",
+          "dataType": "String",
+          "description": "守卫条件表达式（Scala 布尔词面）",
+          "noteId": "c359dca8-aeb9-4b28-9cb0-3b0c9589cd69",
+          "codeFqn": "net.imadz.metarch.domain.values.GuardSpec.cond",
+          "codeFqnCount": 10
+        },
+        {
+          "name": "from",
+          "dataType": "String",
+          "description": "状态迁移起点（statusTransition 类）",
+          "noteId": "5fcd8f67-8b0c-4289-a8d6-bd6f0ccad4d8",
+          "codeFqn": "net.imadz.metarch.domain.values.GuardSpec.from",
+          "codeFqnCount": 10
+        },
+        {
+          "name": "toStatus",
+          "dataType": "String",
+          "description": "状态迁移终点（statusTransition 类）",
+          "noteId": "2d225cb0-e130-4ee0-a58c-1afa5f280ce7",
+          "codeFqn": "net.imadz.metarch.domain.values.GuardSpec.toStatus",
+          "codeFqnCount": 10
+        },
+        {
+          "name": "notStatus",
+          "dataType": "List<String>",
+          "description": "禁止所处状态列表（statusTransition 类）",
+          "noteId": "e9f2e4a8-b84d-442b-9ae3-6547d93eaa0d",
+          "codeFqn": "net.imadz.metarch.domain.values.GuardSpec.notStatus",
+          "codeFqnCount": 10
+        },
+        {
+          "name": "note",
+          "dataType": "String",
+          "description": "拍板/引注备注（括号内裁决原文）",
+          "optional": true,
+          "noteId": "2bb93514-caf9-4a37-aec3-d83ebe4b4454",
+          "codeFqn": "net.imadz.metarch.domain.values.GuardSpec.note",
+          "codeFqnCount": 10
+        }
+      ]
+    },
+    {
+      "name": "EventBinding",
+      "noteId": "e7cf6c8f-aa3f-481d-bba2-10e291883551",
+      "fields": [
+        {
+          "name": "slot",
+          "dataType": "String",
+          "description": "载荷槽名（事件字段）",
+          "noteId": "82351914-8487-41eb-976d-67bba175d9df",
+          "codeFqn": "net.imadz.metarch.domain.values.EventBinding.slot",
+          "codeFqnCount": 4
+        },
+        {
+          "name": "expr",
+          "dataType": "String",
+          "description": "绑定表达式（param./state./system:now）",
+          "noteId": "048c4159-588b-4acb-8ac3-10da8babf7bc",
+          "codeFqn": "net.imadz.metarch.domain.values.EventBinding.expr",
+          "codeFqnCount": 4
+        }
+      ]
+    },
+    {
+      "name": "RuleRef",
+      "fields": [
+        {
+          "name": "ruleId",
+          "dataType": "String",
+          "description": "规则引用号（invariant_input 登记表 ruleId·与 generated_rules/KnRule 互锁键）",
+          "noteId": "a2677857-1eb8-4e85-bfbe-593052685b33",
+          "codeFqn": "net.imadz.metarch.domain.values.RuleRef.ruleId",
+          "codeFqnCount": 10
+        },
+        {
+          "name": "errCode",
+          "dataType": "String",
+          "description": "违反时的错误码（登记表 errorCode）",
+          "noteId": "b607d58f-41c2-4116-9501-524ef6269265",
+          "codeFqn": "net.imadz.metarch.domain.values.RuleRef.errCode",
+          "codeFqnCount": 10
+        },
+        {
+          "name": "desc",
+          "dataType": "String",
+          "description": "规则描述（人类可读·登记表 description）",
+          "noteId": "2b684cd2-43eb-45c0-875d-705f3ae02686",
+          "codeFqn": "net.imadz.metarch.domain.values.RuleRef.desc",
+          "codeFqnCount": 10
+        }
+      ]
+    },
+    {
+      "name": "FieldSpec",
+      "fields": [
+        {
+          "name": "name",
+          "dataType": "String",
+          "description": "字段名"
+        },
+        {
+          "name": "dataType",
+          "dataType": "String",
+          "description": "数据类型（DataTypeMapper 口径）"
+        },
+        {
+          "name": "description",
+          "dataType": "String",
+          "description": "字段描述"
+        },
+        {
+          "name": "role",
+          "dataType": "String",
+          "description": "字段角色（State/Payload/Parameter/VO.Member）"
+        },
+        {
+          "name": "noteId",
+          "dataType": "String",
+          "description": "服务端便签号（回锚键·空串＝无号字段）"
+        },
+        {
+          "name": "writtenBy",
+          "dataType": "List<String>",
+          "description": "写血缘（事件.字段）·推送侧逗号串两形态",
+          "defaultValue": "List.empty"
+        },
+        {
+          "name": "fieldConceptId",
+          "dataType": "String",
+          "description": "无号字段登记式铸号键（.ingest/field-id-registry.json·EP_Tenant_Graph_Completeness 裁决6·空串＝有号字段走 noteId）",
+          "defaultValue": "\"\""
+        }
+      ]
+    },
+    {
+      "name": "FieldEdge",
+      "fields": [
+        {
+          "name": "fieldNoteId",
+          "dataType": "String",
+          "description": "目标字段知识号（kn:<noteId> 寻址·形态B Field 节点键）"
+        },
+        {
+          "name": "slot",
+          "dataType": "String",
+          "description": "影响边槽名（folds/emissions）",
+          "defaultValue": "\"\""
+        },
+        {
+          "name": "expr",
+          "dataType": "String",
+          "description": "绑定表达式（param./state./system:now）",
+          "defaultValue": "\"\""
+        },
+        {
+          "name": "fieldConceptId",
+          "dataType": "String",
+          "description": "无号字段登记式铸号键（.ingest/field-id-registry.json·EP_Tenant_Graph_Completeness 裁决6·空串＝有号字段走 fieldNoteId）",
+          "defaultValue": "\"\""
+        }
+      ]
+    },
+    {
+      "name": "EdgeTarget",
+      "fields": [
+        {
+          "name": "conceptId",
+          "dataType": "String",
+          "description": "端点概念号（EMITS 端点 Concept 节点键）"
+        },
+        {
+          "name": "name",
+          "dataType": "String",
+          "description": "端点概念名",
+          "defaultValue": "\"\""
+        }
+      ]
+    },
+    {
+      "name": "UcStep",
+      "fields": [
+        {
+          "name": "no",
+          "dataType": "String",
+          "description": "mainFlow 步骤号（extensions 为空串）"
+        },
+        {
+          "name": "atStep",
+          "dataType": "String",
+          "description": "extensions 扩展点步骤号（mainFlow 为空串）"
+        },
+        {
+          "name": "text",
+          "dataType": "String",
+          "description": "步骤文本（extensions＝condition｜response 合成）"
+        }
+      ]
+    }
+  ],
   "voNames": [
     "AggregateRelationSpec",
     "CatalogConflict",

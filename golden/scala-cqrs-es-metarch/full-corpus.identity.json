@@ -4,15 +4,15 @@
   "canonical": "golden/scala-cqrs-es-metarch/full-corpus.canonical.json",
   "aggregates": 27,
   "counts": {
-    "rows": 394,
+    "rows": 421,
     "byStatus": {
-      "identical": 285,
+      "identical": 312,
       "owned-by-other": 108,
       "diff": 1
     },
     "identicalByFace": {
       "skeleton": 108,
-      "rules": 145,
+      "rules": 172,
       "api": 32
     },
     "diffByKind": {
@@ -2558,6 +2558,249 @@
       "aggregate": "Workshop",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/WorkshopCommandHelpers.scala",
       "livePath": "app/net/imadz/metarch/application/aggregates/behaviors/WorkshopCommandHelpers.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "CemEdge",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/CemEdgeEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/CemEdgeEventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "Concept",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/ConceptEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/ConceptEventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "Context",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/ContextEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/ContextEventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "ContextRelation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/ContextRelationEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/ContextRelationEventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "DoR",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/DoREventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/DoREventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "FieldModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/FieldModelDefinitionEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/FieldModelDefinitionEventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "FsmDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/FsmDefinitionEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/FsmDefinitionEventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "KnowledgePatch",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/KnowledgePatchEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/KnowledgePatchEventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "ModelCatalog",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/ModelCatalogEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/ModelCatalogEventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "Note",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/NoteEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/NoteEventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "OrganizationMember",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/OrganizationMemberEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/OrganizationMemberEventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "Project",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/ProjectEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/ProjectEventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "Question",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/QuestionEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/QuestionEventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "ReadModelDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/ReadModelDefinitionEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/ReadModelDefinitionEventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "Relation",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/RelationEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/RelationEventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "RoleCommandBinding",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/RoleCommandBindingEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/RoleCommandBindingEventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "Session",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/SessionEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/SessionEventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "Stage",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/StageEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/StageEventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "Subdomain",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/SubdomainEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/SubdomainEventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "Tenant",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/TenantEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/TenantEventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "TruthSourceProvenance",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/TruthSourceProvenanceEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/TruthSourceProvenanceEventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "UseCaseDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/UseCaseDefinitionEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/UseCaseDefinitionEventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "User",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/UserEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/UserEventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "ValueObjectDefinition",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/ValueObjectDefinitionEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/ValueObjectDefinitionEventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "WorkTicket",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/WorkTicketEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/WorkTicketEventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "Workgroup",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/WorkgroupEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/WorkgroupEventHandler.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "rules",
+      "kind": "event-handlers",
+      "aggregate": "Workshop",
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/behaviors/WorkshopEventHandler.scala",
+      "livePath": "app/net/imadz/metarch/domain/entities/behaviors/WorkshopEventHandler.scala",
       "status": "identical",
       "liveOwner": "rules_domain_gen:2026-08-23"
     },

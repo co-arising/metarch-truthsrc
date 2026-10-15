@@ -243,3 +243,33 @@ ${m.tests.join('\n')}
 }
 `;
 }
+
+// V4-10 — the event-handler state-projection rewrite. Two apply forms mirror the source: with
+// fold-face ports a parametrized overload (bare-trait params — the import face carries the FQs;
+// require-guarded closure capture), without them the zero-arg form. `case _ => state` sits at
+// closure depth (6) in the ported form, match depth (4) in the plain form.
+export function renderEventHandlerRules(m) {
+  const ported = m.portParams.length > 0;
+  const applySig = ported
+    ? `  def apply(${m.portParams.join(', ')}): ${m.agg}EventHandler = {`
+    : `  def apply: ${m.agg}EventHandler = (state, event) => event match {`;
+  const requires = ported ? `${m.requireLines.join('\n')}\n    (state, event) => event match {\n` : '';
+  const fallback = ported ? '      case _ => state // 默认兜底\n    }\n  }' : '    case _ => state // 默认兜底\n  }';
+  return `${m.header}package net.imadz.metarch.domain.entities.behaviors
+
+${m.ehImports}
+import net.imadz.metarch.domain.entities.${m.agg}Entity.${m.agg}Event
+import net.imadz.metarch.domain.entities.${m.agg}Entity.${m.agg}EventHandler
+import net.imadz.metarch.domain.entities.${m.agg}Entity.${m.agg}State
+${m.portTraitFqs.length ? m.portTraitFqs.map((t) => `import ${t}`).join('\n') + '\n' : ''}${m.voImports ? m.voImports + '\n' : ''}
+/**
+ * ${m.agg} 状态投影（rules_domain_gen.mjs 生成，2026-08-22）：
+ * writtenBy 血缘为权威映射（metarch.fields.template.json）；审计字段按同名载荷/创建更新类事件规则；
+ * status 按事件名词干匹配枚举（STATE_TRANSITION）；待确认项标 TODO + 审校清单（story/eventhandler_review.md）。
+ */
+object ${m.agg}EventHandler {
+${ported ? '  // 债④（2026-10-04·闭包形）：port 折叠点带参重载——装配点传实现，闭包捕获不可变。\n' : ''}${applySig}
+${requires}${m.body.join('\n')}${fallback}
+}
+`;
+}

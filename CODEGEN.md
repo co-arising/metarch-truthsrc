@@ -777,3 +777,52 @@ Report (2026-10-15, post-increment): 394 rows = **285 identical / 1 diff / 108 o
 (108 rows modulo the stamp line). The one remaining diff is the documented steady state: the
 conf/routes block's 28 live-only lines are exactly the unported faces' output (aggregate-state
 ×27 + vector ×1). Code diffs: zero.
+
+### The event-handler state-projection rewrite (V4-10)
+
+Candidate ① from V4-9: the largest unported piece — rules_domain_gen's per-aggregate
+EventHandler REWRITE pass (lines 2031-2665). Where the skeleton emits an identity EventHandler,
+rules_domain_gen overwrites the file with lineage-driven state projections: the ④-layer fold
+vocabulary (fn:/keep:/patch:/append:/concat:/remove:/upsert:/memberPatch:/memberRemove:/
+memberUpsert:/memberAppend:/memberReplace:/memberCut: — every family exercised by the corpus)
+is declaration-authoritative, then writtenBy lineage (type-compat mapping: same-type direct,
+String←Id `.toString`, List[X]←X wrapped), then status transitions, then audit-field stems,
+then same-name payload fallback, then the version leg; anything unmapped degrades to a
+`// 待审:` review line per case — never silently dropped. Per-case `@knowledge` anchors (event
+noteIds), the event→event causal comment (S7 #3, stage-02 payload), and the port-face apply
+overload (the FULL port union, bare-trait typed — same union as the root face, unlike
+Behaviors.apply's cmd-only face).
+
+The decisive discovery: the live chain runs in **kn-export mode** (`[kn-export]` log line,
+rules_domain_gen 425-475) — `metaJson.aggregates` is wholly REPLACED by fieldTree-derived rows.
+Three consequences the fixtures must mirror:
+
+- `stateFields` come from the EXPORT's fieldTree (the Entity-emitted set — VO-flattened members
+  and their list-member writtenBy forms never enter; that's why live emits no `conflictId`
+  待审 despite the ①-layer template carrying them).
+- `statusTransitions` is NOT the ①-layer table — it is DERIVED from the ④层 folds'
+  `literal:<X>` status assignments; events without one (KnowledgePatched/MetadataAssembled/
+  MetadataExported) fall through to `枚举值无法判定` 待审 lines. `terminalStates` rides along
+  from the export aggregate (CemEdge is the corpus carrier — the status one-way defense wrap).
+- `ehIdField` is the fieldTree identifier OBJECT, not the name: the `fname === ehIdField`
+  guards never fire, and the leg-6 ehSysFields exemption therefore does NOT cover the aggregate
+  id — `payload 未映射: catalogId` stays in the review line. A string there silently drops it.
+
+Moves: `augment-rules-canonical.mjs` gains `--export` (fieldMeta + fnSpecs slices + voCatalog +
+terminalStates + eventCauses via `--stage02`) and `accessObj` on the port rows; the generator
+gains `builders/writtenby.mjs` (the writtenBy grammar parser, verbatim from the source's
+single-grammar lib) and `builders/eventhandler_face.mjs` (legs 0-6 + case assembly, byte-exact
+message strings), a `renderEventHandlerRules` two-form renderer (parametric closure vs zero-arg;
+`case _` at closure depth 6 vs match depth 4), and the `event-handlers` face registration;
+`rowOf` carries `causedBy` (ledger parity with the live event-handlers rows). NOT ported
+(unexercised, mechanically verified): the on-disk [SURGERY-KEEP] case-block probe (grep over
+live behaviors/ = 0 hits — a target-tree read at generation time, meaningless in plan()'s
+target-free contract until a corpus case exists) and the story/eventhandler_review.md audit
+side-artifact.
+
+Report (2026-10-15, post-increment): 421 rows = **312 identical / 1 diff / 108 owned-by-other**
+(rules 172 · skeleton 108 · api 32; the skeleton's 27 event-handler rows remain as
+owned-by-other records — the pipeline-order supersession the live ledger's final-writer-wins
+also encodes). All 27 rewritten EventHandlers byte-identical, including the CemEdge
+terminal-state wrap. npm test 22/22 (rules gate now 8 entries; concerns e2e replay re-asserts
+three shared glue paths). Code diffs: zero.
