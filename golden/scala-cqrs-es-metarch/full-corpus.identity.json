@@ -4,21 +4,21 @@
   "canonical": "golden/scala-cqrs-es-metarch/full-corpus.canonical.json",
   "aggregates": 27,
   "counts": {
-    "rows": 794,
+    "rows": 824,
     "byStatus": {
-      "identical": 686,
+      "identical": 716,
       "owned-by-other": 108
     },
     "identicalByFace": {
-      "skeleton": 108,
+      "skeleton": 138,
       "rules": 172,
       "api": 35,
       "projection": 369,
       "ddl": 2
     },
     "diffByKind": {},
-    "stampOnlyDiff": 108,
-    "reverseRows": 14,
+    "stampOnlyDiff": 138,
+    "reverseRows": 15,
     "genErrors": {}
   },
   "rows": [
@@ -2073,6 +2073,306 @@
       "livePath": "app/net/imadz/metarch/domain/entities/behaviors/WorkshopEventHandler.scala",
       "status": "owned-by-other",
       "liveOwner": "rules_domain_gen:2026-08-23"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/AggregateRelationSpec.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/AggregateRelationSpec.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/CatalogConflict.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/CatalogConflict.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/CatalogConflictSet.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/CatalogConflictSet.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/CatalogPatchSet.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/CatalogPatchSet.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/ChecklistItem.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/ChecklistItem.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/CodeAnchorDelta.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/CodeAnchorDelta.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/ConceptDelta.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/ConceptDelta.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/ConceptIndexEntry.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/ConceptIndexEntry.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/DoRAssessmentResult.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/DoRAssessmentResult.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/DoRVerdict.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/DoRVerdict.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/EdgeTarget.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/EdgeTarget.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/EventBinding.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/EventBinding.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/FieldCommandSpec.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/FieldCommandSpec.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/FieldEdge.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/FieldEdge.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/FieldEventSpec.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/FieldEventSpec.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/FieldParamSpec.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/FieldParamSpec.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/FieldSpec.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/FieldSpec.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/FieldStateSpec.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/FieldStateSpec.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/Finding.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/Finding.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/FsmStateDef.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/FsmStateDef.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/FsmTransition.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/FsmTransition.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/GuardSpec.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/GuardSpec.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/ParticipantRole.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/ParticipantRole.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/PatchReadModelFieldSpec.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/PatchReadModelFieldSpec.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/ReadModelFieldSpec.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/ReadModelFieldSpec.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/RelationDelta.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/RelationDelta.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/RuleRef.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/RuleRef.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/StateGateSpec.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/StateGateSpec.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/StatusTransitionSpec.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/StatusTransitionSpec.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "value-object",
+      "aggregate": null,
+      "path": "modules/kernel/src/main/scala/net/imadz/metarch/domain/values/VOMemberSpec.scala",
+      "livePath": "app/net/imadz/metarch/domain/values/VOMemberSpec.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
     },
     {
       "face": "rules",
@@ -7353,6 +7653,11 @@
       "kind": "relic",
       "aggregate": null,
       "livePath": "app/net/imadz/metarch/application/projection/handlers/PauseProjectDecisionViewOnProjectResumedHandler.scala"
+    },
+    {
+      "kind": "relic",
+      "aggregate": null,
+      "livePath": "app/net/imadz/metarch/domain/values/UcStep.scala"
     }
   ]
 }

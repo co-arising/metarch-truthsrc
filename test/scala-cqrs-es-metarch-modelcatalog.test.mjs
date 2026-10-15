@@ -26,10 +26,10 @@ const elementHashes = JSON.parse(readFileSync(join(GOLD, 'model-catalog.elementH
 const { entries } = await plan({
   canonicalFile: join(GOLD, 'model-catalog.canonical.json'),
   generatorDir: GEN,
-  options: { generatorVersion: GOLDEN_VERSION, elementHashes },
+  options: { generatorVersion: GOLDEN_VERSION, elementHashes, relics: { skipValueObjects: ['UcStep'] } }, // V4-16: VO face rides along (global voCatalog slot)
 });
-equal(entries.length, 8);
-for (const e of entries) {
+equal(entries.filter((e) => e.kind === 'value-object').length, 30, 'V4-16: 30 value objects ride the same canonical');
+for (const e of entries.filter((e) => e.kind !== 'value-object')) {
   const want = readFileSync(join(GOLD, 'expected', e.path), 'utf8');
   equal(e.content, want, `byte identity: ${e.path}`);
 }

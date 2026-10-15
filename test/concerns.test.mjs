@@ -64,23 +64,23 @@ throws(() => resolveConcernFilter(registry, 'full', 'Nope', new Set(['Loan'])), 
 // ── e2e: the acceptance scenario — full project build, then a field change regenerates ONLY
 // the event-journal-suite face (everything else kept byte-identical on disk).
 const out = scratch();
-const optsSkel = { generatorVersion: 'concern-e2e' };
+const optsSkel = { generatorVersion: 'concern-e2e', relics: { skipValueObjects: ['UcStep'] } }; // V4-16: the VO face rides the skeleton generator
 const optsRules = { generatedBy: 'rules_domain_gen:2026-08-23' };
 
 // full build: skeleton (no concern) → rules → api, both under `full` (overwrite allowed in scope)
 const r1 = await apply({ canonicalFile: CANON, generatorDir: GEN_SKEL, outDir: out, options: optsSkel });
-equal(r1.written, 8);
+equal(r1.written, 38); // V4-16: 8 aggregate kinds + 30 value objects (voCatalog is a global slot on every rules-augmented canonical)
 const r2 = await apply({ canonicalFile: CANON, generatorDir: GEN_RULES, outDir: out, options: optsRules, concern: { name: 'full', families: null, registryFile: REG } });
 equal(r2.written, 8); // V4-10: the event-handler rewrite joined (8 rules paths, 3 shared-path upserts)
 equal(r2.kept, 0);
-equal(r2.inScope, 13, 'rules full run: scope = merged rows (8 skeleton + 5 new rules paths)');
+equal(r2.inScope, 43, 'rules full run: scope = merged rows (8 skeleton + 5 new rules paths + 30 global VO rows)');
 const r3 = await apply({ canonicalFile: CANON, generatorDir: GEN_API, outDir: out, options: {}, concern: { name: 'full', families: null, registryFile: REG } });
 equal(r3.written, 8); // V4-13 vector + V4-14 aggregate-state controllers joined (8 api paths)
-equal(r3.inScope, 21, 'api full run: scope = merged rows (13 + 8 api paths)');
+equal(r3.inScope, 51, 'api full run: scope = merged rows (43 + 8 api paths)');
 // merged ledger: the rules face owns the shared Behaviors/CommandHelpers paths (final-writer-wins)
 {
   const ledger = JSON.parse(readFileSync(join(out, 'truthsrc.ledger.json'), 'utf8'));
-  equal(ledger.entries.length, 21, 'merged ledger = skeleton 8 + rules 8 + api 8 − 3 shared-path upserts (Behaviors/CommandHelpers/EventHandler)');
+  equal(ledger.entries.length, 51, 'merged ledger = (skeleton 8 + VO 30) + rules 8 + api 8 − 3 shared-path upserts (Behaviors/CommandHelpers/EventHandler)');
   equal(ledger.entries.find((r) => r.path.endsWith('ModelCatalogBehaviors.scala')).kind, 'behaviors-rules');
   ok(ledger.concern && ledger.concern.name === 'full' && ledger.concern.scopeFileHash, 'concern audit chain in ledger');
 }
@@ -89,7 +89,7 @@ const snap = {};
 for (const f of JSON.parse(readFileSync(join(out, 'truthsrc.ledger.json'), 'utf8')).entries) {
   snap[f.path] = readFileSync(join(out, f.path), 'utf8');
 }
-equal(Object.keys(snap).length, 21); // V4-14: the aggregate-state controller joins the snapshot
+equal(Object.keys(snap).length, 51); // V4-14: the aggregate-state controller joins the snapshot; V4-16: +30 value objects
 
 // mutate: ADD a state field (state-shape change — additive, so no rule text dangles) in a temp
 // canonical. Consumers verified against the builders: entityModel renders stateFields (Entity

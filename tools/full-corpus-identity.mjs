@@ -40,7 +40,7 @@ const aggNames = canonical.aggregates.map((a) => a.name);
 const PROJ_GOLD = join(ROOT, 'golden', 'scala-cqrs-es-projection-metarch');
 const sidecar = (f) => JSON.parse(fs.readFileSync(join(PROJ_GOLD, f), 'utf8'));
 const GENS = {
-  skeleton: { dir: join(ROOT, 'generators', 'scala-cqrs-es'), options: { generatorVersion: 'a0fca3da', elementHashes } },
+  skeleton: { dir: join(ROOT, 'generators', 'scala-cqrs-es'), options: { generatorVersion: 'a0fca3da', elementHashes, relics: { skipValueObjects: ['UcStep'] } } },
   rules: { dir: join(ROOT, 'generators', 'scala-cqrs-es-rules'), options: { generatedBy: 'rules_domain_gen:2026-08-23', elementHashes } },
   api: { dir: join(ROOT, 'generators', 'scala-cqrs-es-api'), options: { elementHashes } },
   projection: {
@@ -221,6 +221,10 @@ const globals = ['ViewKeys', 'CommandRoleMap', 'CommandDsl'].map((n) => [n === '
     ['relic', `${pkgBase}/infrastructure/repositories/projection/PauseProjectDecisionViewRepositoryImpl.scala`],
     ...['Cancelled', 'Completed', 'DescriptionUpdated', 'Initiated', 'OwnerAssigned', 'Paused', 'Resumed']
       .map((s) => ['relic', `${pkgBase}/application/projection/handlers/PauseProjectDecisionViewOnProject${s}Handler.scala`]),
+    // UcStep (V4-16): the live copy is handwritten and landed in the same batch as its
+    // truth-source declaration — the incremental gate never rewrote it, so it is not engine
+    // output; the generator skips it and the file stays live-only (PauseProject family).
+    ['relic', `${pkgBase}/domain/values/UcStep.scala`],
   ]);
 const reverseRows = [];
 for (const [kind, tpl] of perAggKinds) {

@@ -10,10 +10,12 @@ import {
   protocolModel, rootModel, entityModel, eventHandlerModel, repositoryModel,
   factoryModel, behaviorsModel, helpersModel,
 } from './builders/models.mjs';
+import { valueObjectModel } from './builders/valueObjects.mjs';
 import {
   renderProtocol, renderRoot, renderEntity, renderEventHandler, renderRepository,
   renderFactory, renderBehaviors, renderHelpers,
 } from './templates/scala.mjs';
+import { renderValueObject } from './templates/valueObject.mjs';
 
 // di-poc multi-module layout (user ruling 2026-10-12): kind → module router.
 // kernel = domain core (akka-persistence/sharding/guice deps live there); ext = repo impls +
@@ -84,6 +86,28 @@ export function generate({ canonical, options = {} }) {
       { schemaNode: a.name, deps: [a.name, `${a.name}Entity`, `${a.name}Protocol`] }));
     entries.push(emit(a, `application/aggregates/behaviors/${a.name}CommandHelpers.scala`, 'command-helpers', renderHelpers(helpersModel(a, env)),
       { schemaNode: a.name, deps: [a.name, `${a.name}Entity`] }));
+  }
+  // Shared value-object face (V4-16): canonical.voCatalog is the engine's VO metadata list
+  // (AssemblyEngine assembles it from fieldModel.valueObjects verbatim — a fresh tree emits
+  // every entry). UcStep is skipped as a disclosed relic: the live tree's handwritten copy
+  // landed in the same batch as its truth-source declaration and the incremental gate never
+  // rewrote it, so the live file is not engine output (PauseProject family; options.relics).
+  const voBase = canonical.aggregates?.[0] ?? {};
+  const voPkgPath = `${voBase.pkg ?? 'net.imadz'}${voBase.ctxPackage ? `.${voBase.ctxPackage}` : ''}`.replaceAll('.', '/');
+  const skipVos = new Set(options.relics?.skipValueObjects ?? []);
+  for (const vo of canonical.voCatalog ?? []) {
+    if (skipVos.has(vo.name)) continue;
+    const model = valueObjectModel(vo, env);
+    entries.push({
+      path: `modules/kernel/src/main/scala/${voPkgPath}/domain/values/${vo.name}.scala`,
+      content: renderValueObject(model, env),
+      kind: 'value-object',
+      schemaCategory: 'global',
+      schemaNode: vo.name,
+      families: [],
+      deps: model.referencedVos,
+      noteIds: model.noteIds,
+    });
   }
   return entries;
 }
