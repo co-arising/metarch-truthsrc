@@ -55,6 +55,8 @@ const emit = (a, file, kind, content, meta = {}) => {
 //                     date fallback mirrors internal GeneratorVersion — never compared)
 //   anchor(noteId)  = `@<hash16>` looked up from options.elementHashes (knowledge-side sidecar,
 //                     keyed by noteId, exactly like the internal elementHashes map); miss → ''.
+//   excludedStateFieldNatures = canonical slot (concern-anchored nature exclusion —
+//                     GeneratorContext.isStateFieldExcluded port; empty/absent = no exclusion).
 export function generate({ canonical, options = {} }) {
   const hashes = options.elementHashes ?? {};
   const env = {
@@ -62,6 +64,7 @@ export function generate({ canonical, options = {} }) {
     knowledgeRelease: canonical.knowledgeRelease,
     generatorVersion: options.generatorVersion ?? new Date().toISOString().slice(0, 10),
     anchor: (noteId) => (hashes[noteId] ? `@${hashes[noteId]}` : ''),
+    excludedStateFieldNatures: canonical.excludedStateFieldNatures ?? [],
   };
   const entries = [];
   for (const a of canonical.aggregates ?? []) {

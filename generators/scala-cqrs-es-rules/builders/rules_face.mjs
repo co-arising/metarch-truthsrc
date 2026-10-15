@@ -36,7 +36,15 @@ export function rulesFaceModel(a, env) {
 
   // —— signatures from the canonical (rules_domain_gen parses the target repo; here the canonical
   //    IS the signature source — dataType → scalaSig mirrors AssemblyEngine's DataTypeMapper) ——
-  const stateParams = (a.stateFields ?? []).map((f) => ({ name: f.name, type: scalaSig(f.dataType ?? 'String') }));
+  // State authority = the EMITTED state, not the raw canonical: rules_domain_gen reads its
+  // stateFields set from the skeleton pass's generated Entity signature (rules_domain_gen.mjs
+  // 974-992), so a nature-excluded field (credential → not in the emitted UserState) is
+  // unresolved for rule translation (coexist on it → untranslatable → rule skipped). Applying
+  // the same exclusion here is the truthsrc equivalent of that cross-face file coupling.
+  const excludedNatures = new Set(env.excludedStateFieldNatures ?? []);
+  const stateParams = (a.stateFields ?? [])
+    .filter((f) => !(f.nature && excludedNatures.has(f.nature)))
+    .map((f) => ({ name: f.name, type: scalaSig(f.dataType ?? 'String') }));
   const stateFields = new Set(stateParams.map((p) => p.name));
   const stateTypes = Object.fromEntries(stateParams.map((p) => [p.name, p.type]));
   const eventSigs = (a.events ?? []).map((e) => ({
@@ -516,11 +524,16 @@ ${delegations}
     const fields = [...refs].map((x) => String(x).split('.').slice(1).join('.'));
     evtByEvent.get(evHost).push({ cond: tr.cond, errCode, desc, id, degraded: tr.degraded, fields });
   }
+  // Verbatim patch_core.collectVarRefs: `var` singular / `vars` array / `target` dotted. A lossy
+  // walk drops IR-USER-EVT-003 (anyNotNull.vars) → its UserProfileUpdated key inserts late → the
+  // checkEventPostconditions dispatch order diverges from the chain (UserRules 判例).
   function collectRefsOf2(expr, out) {
     const walk = (node) => {
       if (!node || typeof node !== 'object') return;
       if (Array.isArray(node)) { node.forEach(walk); return; }
       if (typeof node.var === 'string') out.add(node.var);
+      if (Array.isArray(node.vars)) for (const x of node.vars) if (typeof x === 'string') out.add(x);
+      if (typeof node.target === 'string' && node.target.includes('.')) out.add(node.target);
       for (const v of Object.values(node)) walk(v);
     };
     walk(expr);

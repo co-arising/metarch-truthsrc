@@ -20,7 +20,19 @@ const entityName = (a) => a.entity ?? `${a.name}Entity`;
 const entityFqn = (a) => `${baseOf(a)}domain.entities.${entityName(a)}`;
 const aggFqn = (a) => `${baseOf(a)}application.aggregates.${a.name}Aggregate`;
 const commandFamilyOf = (a) => a.commandFamily ?? `${a.name}Command`;
-const handlerAliasOf = (a) => commandFamilyOf(a).replace('Command', 'CommandHandler');
+// Scala `String.replace` replaces ALL occurrences (AggregateProtocolTemplate.scala:102) — a family
+// name containing two "Command"s (RoleCommandBindingCommandFamily) must render
+// RoleCommandHandlerBindingCommandHandlerFamily; JS first-only `.replace` silently drops the Handler.
+const handlerAliasOf = (a) => commandFamilyOf(a).replaceAll('Command', 'CommandHandler');
+
+// Excluded state-field natures (EP_Field_Nature_And_Concern_Anchors Phase 3(a) port). Live:
+// GeneratorContext.isStateFieldExcluded — fields whose `nature` is in the concern-anchored
+// exclusion set (concerns.json `credential-store`: StateField/credential/aggregateColumn) are not
+// emitted into the aggregate state column. Missing/empty slot = zero behavior change (live default).
+const emittedStateFieldsOf = (a, env) => {
+  const excluded = new Set(env.excludedStateFieldNatures ?? []);
+  return (a.stateFields ?? []).filter((f) => !(f.nature && excluded.has(f.nature)));
+};
 
 export function headerOf(env) {
   const kr = env.knowledgeRelease ? `// @knowledge-release ${env.knowledgeRelease}\n` : '';
@@ -112,7 +124,8 @@ export function rootModel(a, env) {
 export function entityModel(a, env) {
   const name = a.name, fb = env.frameworkBase;
   const idName = a.identifier;
-  const fields = (a.stateFields ?? []).map((f) => {
+  const stateFields = emittedStateFieldsOf(a, env);
+  const fields = stateFields.map((f) => {
     const sig = scalaSig(f.dataType);
     // numeric `version` state field → optimistic-lock counter initial 0 (EP_Catalog_Concept_Write_Model
     // §3.5; create-events must emit (0,1), not (1,2) — ModelCatalog.version is a semantic string, excluded)
@@ -132,7 +145,7 @@ export function entityModel(a, env) {
   const idType = scalaSig(a.identifierType ?? 'string (uuid)');
   // import deps: all state field + event payload types (+ VO imports), Cbor singleton, self id
   const rows = [{ fqn: `${fb}.CborSerializable`, key: 'Cbor' }];
-  for (const f of a.stateFields ?? []) rows.push(...typeDeps(scalaSig(f.dataType), fb, voImportOf(f)));
+  for (const f of stateFields) rows.push(...typeDeps(scalaSig(f.dataType), fb, voImportOf(f)));
   for (const e of a.events ?? []) for (const p of e.payloads ?? []) rows.push(...typeDeps(scalaSig(p.dataType), fb, voImportOf(p)));
   if (idType === 'Id') rows.push(...typeDeps('Id', fb, null));
   return {

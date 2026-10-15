@@ -35,6 +35,7 @@ export function generate({ canonical, options = {} }) {
     elementHashes: options.elementHashes ?? {},
     voNames: canonical.voNames ?? [],
     voSigs: canonical.valueObjectSigs ?? [],
+    excludedStateFieldNatures: canonical.excludedStateFieldNatures ?? [],
   };
 
   const entries = [];

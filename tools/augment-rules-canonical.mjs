@@ -249,12 +249,18 @@ for (const ev of agg.events ?? []) {
 // host names one of THIS aggregate's events (evHost ∈ eventByName); translation happens in the
 // generator (inc9), the fixture only carries the raw rule.
 const aggEvents = new Set((agg.events ?? []).map((e) => e.name));
+// Var-ref walk mirrors patch_core.collectVarRefs exactly (`var` singular / `vars` array /
+// `target` dotted) — a lossy walk mis-attributes rules and shifts the evtByEvent key-insertion
+// order the dispatch renders in (IR-USER-EVT-003 anyNotNull.vars 判例: missed → UserProfileUpdated
+// key inserted late → UserRules dispatch order diverged from the live chain).
 const varRefEvents = (expr) => {
   const out = new Set();
   const walk = (node) => {
     if (!node || typeof node !== 'object') return;
     if (Array.isArray(node)) { node.forEach(walk); return; }
     if (typeof node.var === 'string') out.add(node.var.split('.')[0]);
+    if (Array.isArray(node.vars)) for (const x of node.vars) if (typeof x === 'string') out.add(x.split('.')[0]);
+    if (typeof node.target === 'string' && node.target.includes('.')) out.add(node.target.split('.')[0]);
     for (const v of Object.values(node)) walk(v);
   };
   walk(expr);

@@ -100,6 +100,7 @@ function stateField(f) {
   const o = { name: f.name, dataType: sig };
   if (f.description) o.description = f.description;
   if (f.noteId) o.noteId = f.noteId;
+  if (f.nature) o.nature = f.nature; // problem-space kind (e.g. credential) — exclusion is a generator decision
   const imp = voImportFor(sig);
   if (imp) o.typeImport = imp;
   return o;
@@ -138,9 +139,13 @@ const stateFields = [idStateField, ...(agg.stateFields ?? []).map(stateField)];
 // each write command carries its concept-note noteId (the per-case @knowledge anchor the
 // rules face emits in Behaviors); the synthesized query command is a technical synthetic
 // with no note (live Behaviors golden shows GetXState carries no @knowledge anchor).
+// Code-unit (ASCII) order — the live chain sorts with Scala `sorted` on String, which compares
+// UTF-16 code units. localeCompare diverges on names whose decision point is a lowercase letter
+// (ConceptsMerged sorted BEFORE ConceptUpdated by locale, AFTER by code unit — live order).
+const byNameCodeUnit = (a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
 const writeCommands = (agg.commands ?? [])
   .slice()
-  .sort((a, b) => a.name.localeCompare(b.name))
+  .sort(byNameCodeUnit)
   .map((c) => {
     const o = {
       name: c.name,
@@ -163,7 +168,7 @@ const commands = [...writeCommands, queryCommand];
 const evtNoteId = (name) => (exp.notes ?? []).find((n) => n.type === 'event' && n.name === name)?.noteId;
 const events = (agg.events ?? [])
   .slice()
-  .sort((a, b) => a.name.localeCompare(b.name))
+  .sort(byNameCodeUnit)
   .map((e) => ({
     name: e.name,
     noteId: evtNoteId(e.name) ?? null, // event concept noteId — the EVENT_POSTCONDITION anchor + sidecar face (inc9)

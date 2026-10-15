@@ -21,6 +21,8 @@
 //     --readmodels <backend-codegen>/out/truthsrc/story.readmodels.json \
 //     --rename-map <backend-codegen>/knowledge_base/design_docs/field_template/tools/viewkey_rename_map.json \
 //     --template   <backend-codegen>/out/truthsrc/metarch.fields.template.json \
+//     --concerns   <backend-codegen>/truth/metarch/governance/concerns.json  (optional —
+//                  excludedStateFieldNatures governance slot; absent = no exclusion) \
 //     --out golden/scala-cqrs-es-metarch/full-corpus.canonical.json
 
 import fs from 'node:fs';
@@ -100,6 +102,19 @@ function behaviorPath(dir) {
 // --- merge: canonical-level frame from the first fragment, aggregates in fieldTree order --------
 const merged = canonicals[0];
 merged.aggregates = canonicals.map((c) => c.aggregates[0]);
+// Governance slot: concern-anchored state-field nature exclusions (EP_Field_Nature_And_Concern_Anchors
+// Phase 3(a)). Same mechanical predicate as Scala ConcernScope.excludedStateFieldNatures — StateField
+// anchors whose `exclude` contains `aggregateColumn` contribute their `nature`. Optional: absent
+// --concerns = no slot = zero exclusion (the generators treat it as the live empty-set default).
+if (arg('concerns')) {
+  const reg = JSON.parse(fs.readFileSync(arg('concerns'), 'utf8'));
+  const flavors = reg.flavors ?? {};
+  const set = new Set();
+  for (const f of Object.values(flavors))
+    for (const a of f.anchors ?? [])
+      if (a.elementKind === 'StateField' && (a.exclude ?? []).includes('aggregateColumn') && a.nature) set.add(a.nature);
+  merged.excludedStateFieldNatures = [...set].sort();
+}
 // identical-by-construction canonical-level slots set per-fragment by augment-rules — keep #0's.
 const outPath = resolve(arg('out'));
 fs.mkdirSync(dirname(outPath), { recursive: true });

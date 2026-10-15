@@ -2456,62 +2456,6 @@
           ]
         },
         {
-          "name": "ConceptsMerged",
-          "noteId": "a9ba7bdc-34d0-46c3-852f-9c3f51c4b697",
-          "payloads": [
-            {
-              "name": "sourceConceptId",
-              "dataType": "string (uuid)",
-              "description": "必填",
-              "noteId": "7a2eb5b7-2cea-45bc-a610-34cf9c6f2d8f",
-              "lineageHint": "MergeConcepts.sourceConceptId"
-            },
-            {
-              "name": "targetConceptId",
-              "dataType": "string (uuid)",
-              "description": "必填",
-              "noteId": "bea24fea-7651-44ad-8493-27cdcf2ccd78",
-              "lineageHint": "MergeConcepts.targetConceptId"
-            },
-            {
-              "name": "lastVersion",
-              "dataType": "Integer",
-              "description": "last known version number",
-              "noteId": "7f4859b4-500d-45ec-aff3-71d680977435"
-            },
-            {
-              "name": "newVersion",
-              "dataType": "Integer",
-              "description": "lastVersion + 1",
-              "noteId": "807e56ac-57ad-4ef2-b879-a5787d717282"
-            },
-            {
-              "name": "triggeredBy",
-              "dataType": "String",
-              "description": "操作人",
-              "noteId": "f4fb9e6e-ad34-49da-aa0e-f6a4de1b542f",
-              "lineageHint": "MergeConcepts.triggeredBy"
-            },
-            {
-              "name": "timestamp",
-              "dataType": "Instant",
-              "description": "事件发生时间",
-              "noteId": "d3467412-5e85-4bef-bbcb-c449287fa059"
-            },
-            {
-              "name": "tenantId",
-              "dataType": "string (uuid)",
-              "noteId": "4f68b0a3-02a0-45c9-a97b-02aebc7be8f2"
-            }
-          ],
-          "foldAssignments": [
-            {
-              "slot": "version",
-              "expr": "event.newVersion"
-            }
-          ]
-        },
-        {
           "name": "ConceptUnparked",
           "noteId": "041d5dca-ef38-41d7-8bd0-ca021d397886",
           "payloads": [
@@ -2618,6 +2562,62 @@
               "name": "tenantId",
               "dataType": "string (uuid)",
               "noteId": "624b2875-2a4f-41b5-9666-6fb48c4018e0"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "version",
+              "expr": "event.newVersion"
+            }
+          ]
+        },
+        {
+          "name": "ConceptsMerged",
+          "noteId": "a9ba7bdc-34d0-46c3-852f-9c3f51c4b697",
+          "payloads": [
+            {
+              "name": "sourceConceptId",
+              "dataType": "string (uuid)",
+              "description": "必填",
+              "noteId": "7a2eb5b7-2cea-45bc-a610-34cf9c6f2d8f",
+              "lineageHint": "MergeConcepts.sourceConceptId"
+            },
+            {
+              "name": "targetConceptId",
+              "dataType": "string (uuid)",
+              "description": "必填",
+              "noteId": "bea24fea-7651-44ad-8493-27cdcf2ccd78",
+              "lineageHint": "MergeConcepts.targetConceptId"
+            },
+            {
+              "name": "lastVersion",
+              "dataType": "Integer",
+              "description": "last known version number",
+              "noteId": "7f4859b4-500d-45ec-aff3-71d680977435"
+            },
+            {
+              "name": "newVersion",
+              "dataType": "Integer",
+              "description": "lastVersion + 1",
+              "noteId": "807e56ac-57ad-4ef2-b879-a5787d717282"
+            },
+            {
+              "name": "triggeredBy",
+              "dataType": "String",
+              "description": "操作人",
+              "noteId": "f4fb9e6e-ad34-49da-aa0e-f6a4de1b542f",
+              "lineageHint": "MergeConcepts.triggeredBy"
+            },
+            {
+              "name": "timestamp",
+              "dataType": "Instant",
+              "description": "事件发生时间",
+              "noteId": "d3467412-5e85-4bef-bbcb-c449287fa059"
+            },
+            {
+              "name": "tenantId",
+              "dataType": "string (uuid)",
+              "noteId": "4f68b0a3-02a0-45c9-a97b-02aebc7be8f2"
             }
           ],
           "foldAssignments": [
@@ -2935,14 +2935,6 @@
             "1bfaf869-caee-4e41-a373-9dfa99ab7f07",
             "1bfaf869-caee-4e41-a373-9dfa99ab7f07"
           ],
-          "ConceptsMerged": [
-            "a9ba7bdc-34d0-46c3-852f-9c3f51c4b697",
-            "a9ba7bdc-34d0-46c3-852f-9c3f51c4b697",
-            "a9ba7bdc-34d0-46c3-852f-9c3f51c4b697",
-            "a9ba7bdc-34d0-46c3-852f-9c3f51c4b697",
-            "a9ba7bdc-34d0-46c3-852f-9c3f51c4b697",
-            "a9ba7bdc-34d0-46c3-852f-9c3f51c4b697"
-          ],
           "ConceptUnparked": [
             "041d5dca-ef38-41d7-8bd0-ca021d397886",
             "041d5dca-ef38-41d7-8bd0-ca021d397886",
@@ -2954,6 +2946,14 @@
             "7ecd9aaa-d5dd-4361-9d52-549d21f5e0b7",
             "7ecd9aaa-d5dd-4361-9d52-549d21f5e0b7",
             "7ecd9aaa-d5dd-4361-9d52-549d21f5e0b7"
+          ],
+          "ConceptsMerged": [
+            "a9ba7bdc-34d0-46c3-852f-9c3f51c4b697",
+            "a9ba7bdc-34d0-46c3-852f-9c3f51c4b697",
+            "a9ba7bdc-34d0-46c3-852f-9c3f51c4b697",
+            "a9ba7bdc-34d0-46c3-852f-9c3f51c4b697",
+            "a9ba7bdc-34d0-46c3-852f-9c3f51c4b697",
+            "a9ba7bdc-34d0-46c3-852f-9c3f51c4b697"
           ]
         },
         "agg": [
@@ -23879,78 +23879,6 @@
           "foldAssignments": []
         },
         {
-          "name": "KnowledgePatchMerged",
-          "noteId": "a6e44fda-7af8-4569-a861-46470a5b3032",
-          "payloads": [
-            {
-              "name": "patchId",
-              "dataType": "string (uuid)",
-              "description": "补丁编号",
-              "noteId": "94a47b3e-b545-4d9c-b4e4-c2a9703f06f7"
-            },
-            {
-              "name": "catalogId",
-              "dataType": "string (uuid)",
-              "description": "目标目录",
-              "noteId": "c81640b9-74f0-41a3-8212-ba1ccb2959eb"
-            },
-            {
-              "name": "triggeredBy",
-              "dataType": "String",
-              "description": "操作人",
-              "noteId": "59904b3e-7512-47c1-82e5-61b3acd47197",
-              "lineageHint": "ConfirmPatchMerged.triggeredBy"
-            },
-            {
-              "name": "timestamp",
-              "dataType": "Instant",
-              "description": "事件发生时间",
-              "noteId": "456c60ef-f4a4-4dbf-a1ae-72e9219c9263"
-            },
-            {
-              "name": "tenantId",
-              "dataType": "string (uuid)",
-              "noteId": "e5c4a612-aade-42ef-9437-5ea864623224"
-            },
-            {
-              "name": "patchHash",
-              "dataType": "String",
-              "description": "补丁内容指纹（增量链：熔父 hash）",
-              "noteId": "c0edf148-2246-4eb5-8105-68983d4e3c02"
-            },
-            {
-              "name": "parentPatchId",
-              "dataType": "string (uuid)",
-              "description": "父补丁（祖先指针）",
-              "noteId": "a7236d42-353d-4db3-9af4-2da38a9a5e05"
-            },
-            {
-              "name": "changedFields",
-              "dataType": "List[String]",
-              "description": "发生变化的字段名（合并事件级·派生族二批填充）",
-              "noteId": "5e976ff0-ab5d-4390-b713-9f1b0e14a650"
-            }
-          ],
-          "foldAssignments": [
-            {
-              "slot": "status",
-              "expr": "literal:MERGED"
-            },
-            {
-              "slot": "mergedAt",
-              "expr": "event.timestamp"
-            },
-            {
-              "slot": "patchId",
-              "expr": "event.patchId"
-            },
-            {
-              "slot": "catalogId",
-              "expr": "event.catalogId"
-            }
-          ]
-        },
-        {
           "name": "KnowledgePatchMergeDeclined",
           "noteId": "f9780d17-032e-4f08-853b-6152d2633718",
           "payloads": [
@@ -24030,6 +23958,78 @@
             {
               "slot": "status",
               "expr": "literal:MERGE_REQUESTED"
+            }
+          ]
+        },
+        {
+          "name": "KnowledgePatchMerged",
+          "noteId": "a6e44fda-7af8-4569-a861-46470a5b3032",
+          "payloads": [
+            {
+              "name": "patchId",
+              "dataType": "string (uuid)",
+              "description": "补丁编号",
+              "noteId": "94a47b3e-b545-4d9c-b4e4-c2a9703f06f7"
+            },
+            {
+              "name": "catalogId",
+              "dataType": "string (uuid)",
+              "description": "目标目录",
+              "noteId": "c81640b9-74f0-41a3-8212-ba1ccb2959eb"
+            },
+            {
+              "name": "triggeredBy",
+              "dataType": "String",
+              "description": "操作人",
+              "noteId": "59904b3e-7512-47c1-82e5-61b3acd47197",
+              "lineageHint": "ConfirmPatchMerged.triggeredBy"
+            },
+            {
+              "name": "timestamp",
+              "dataType": "Instant",
+              "description": "事件发生时间",
+              "noteId": "456c60ef-f4a4-4dbf-a1ae-72e9219c9263"
+            },
+            {
+              "name": "tenantId",
+              "dataType": "string (uuid)",
+              "noteId": "e5c4a612-aade-42ef-9437-5ea864623224"
+            },
+            {
+              "name": "patchHash",
+              "dataType": "String",
+              "description": "补丁内容指纹（增量链：熔父 hash）",
+              "noteId": "c0edf148-2246-4eb5-8105-68983d4e3c02"
+            },
+            {
+              "name": "parentPatchId",
+              "dataType": "string (uuid)",
+              "description": "父补丁（祖先指针）",
+              "noteId": "a7236d42-353d-4db3-9af4-2da38a9a5e05"
+            },
+            {
+              "name": "changedFields",
+              "dataType": "List[String]",
+              "description": "发生变化的字段名（合并事件级·派生族二批填充）",
+              "noteId": "5e976ff0-ab5d-4390-b713-9f1b0e14a650"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "status",
+              "expr": "literal:MERGED"
+            },
+            {
+              "slot": "mergedAt",
+              "expr": "event.timestamp"
+            },
+            {
+              "slot": "patchId",
+              "expr": "event.patchId"
+            },
+            {
+              "slot": "catalogId",
+              "expr": "event.catalogId"
             }
           ]
         },
@@ -24418,13 +24418,6 @@
             "ec721af8-3dbf-457b-b933-01517a049025",
             "ec721af8-3dbf-457b-b933-01517a049025"
           ],
-          "KnowledgePatchMerged": [
-            "a6e44fda-7af8-4569-a861-46470a5b3032",
-            "a6e44fda-7af8-4569-a861-46470a5b3032",
-            "a6e44fda-7af8-4569-a861-46470a5b3032",
-            "a6e44fda-7af8-4569-a861-46470a5b3032",
-            "a6e44fda-7af8-4569-a861-46470a5b3032"
-          ],
           "KnowledgePatchMergeDeclined": [
             "f9780d17-032e-4f08-853b-6152d2633718",
             "f9780d17-032e-4f08-853b-6152d2633718",
@@ -24435,6 +24428,13 @@
             "c4dfab8d-6eec-4107-bd16-654105891736",
             "c4dfab8d-6eec-4107-bd16-654105891736",
             "c4dfab8d-6eec-4107-bd16-654105891736"
+          ],
+          "KnowledgePatchMerged": [
+            "a6e44fda-7af8-4569-a861-46470a5b3032",
+            "a6e44fda-7af8-4569-a861-46470a5b3032",
+            "a6e44fda-7af8-4569-a861-46470a5b3032",
+            "a6e44fda-7af8-4569-a861-46470a5b3032",
+            "a6e44fda-7af8-4569-a861-46470a5b3032"
           ],
           "KnowledgePatchReadyToMerged": [
             "3dba1257-7c29-4fde-8fd1-a9c26d5d0b70",
@@ -68119,13 +68119,15 @@
           "name": "passwordSalt",
           "dataType": "String",
           "description": "【新增】为哈希增加随机盐",
-          "noteId": "95f2fa3c-616d-41b1-a9d6-d0059f8ddc4d"
+          "noteId": "95f2fa3c-616d-41b1-a9d6-d0059f8ddc4d",
+          "nature": "credential"
         },
         {
           "name": "passwordHash",
           "dataType": "String",
           "description": "不可逆加密存储",
-          "noteId": "b9396444-68e8-435f-a44c-b874a9df87b6"
+          "noteId": "b9396444-68e8-435f-a44c-b874a9df87b6",
+          "nature": "credential"
         },
         {
           "name": "authMethod",
@@ -68330,6 +68332,21 @@
           },
           "errorCode": "USER_DEACT_REASON_REQUIRED",
           "humanDescription": "UserDeactivated.reason 必须非空"
+        },
+        {
+          "id": "IR-USER-EVT-003",
+          "noteId": "9c5ce3bc-5797-4648-a4f5-a5d4c71bb15f",
+          "target": "UserProfileUpdated",
+          "expression": {
+            "anyNotNull": {
+              "vars": [
+                "UserProfileUpdated.displayName",
+                "UserProfileUpdated.email"
+              ]
+            }
+          },
+          "errorCode": "USER_PROFILE_UPDATE_EMPTY",
+          "humanDescription": "`displayName` 与 `email` 至少一个非空"
         },
         {
           "id": "IR-USER-EVT-004_userId",
@@ -87042,6 +87059,9 @@
         }
       ]
     }
+  ],
+  "excludedStateFieldNatures": [
+    "credential"
   ],
   "roleLinkNotes": [
     {
