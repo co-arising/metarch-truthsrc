@@ -395,3 +395,41 @@ travel): `info.bindings` (command param ← `event.<field>` / `item` / `item.<fi
 - Spec event literals judge the **raw** dataType strings (`String (UUID)` →
   `Id.of(...)`, `List<ConceptDelta>` → VO default construction with a values import,
   VO payloads → `null` sentinel).
+
+### The api support face (V4-4 inc11) — a third generator, global artifacts
+
+`generators/scala-cqrs-es-api` is a **third generator** over the same canonical. It
+reproduces the production `gen_api_layer` family's **global** artifacts — the pieces that
+cover the whole workshop corpus, not one aggregate (their ledger `families` are empty by
+the same concern semantics the live pipeline records):
+
+- **ViewKeys** — `infrastructure/auth/ViewKeys.scala`: one `val <Const> = "<key>"` per
+  gated DecisionView. Keys are the S2-17 kebab of the view name resolved through the
+  viewkey rename map (old→new, unmapped pass through); the val **order** is
+  `localeCompare` over the *resolved* key, so renamed views sort among their semantic
+  neighbours.
+- **CommandRoleMap** — `infrastructure/auth/CommandRoleMap.scala`: the PB1 derivation —
+  write side `roles(c) = ∪ role:` targets of notes that link `command:c` (three co-link
+  forms: command note title as cmd ref, role note title as role ref, arbitrary notes
+  linking both), read side per view = `decisionSupport` commands' roles ∪ the readModel
+  note's explicit `role:` links (S2-88 read/write split: readModel notes are excluded from
+  write-side co-links, only contribute view read-roles). Role link targets render through
+  the 14-value vocabulary (`AI Agent` → `Roles.AiAgent`); out-of-vocabulary → fail-fast.
+  Empty view roles render `Seq.empty[String] // 无角色限制（scope 兜底）` with the
+  trailing-comma handled per line (a 2026-09-06 compile-red lesson).
+- **CommandDsl** — `infrastructure/api/CommandDsl.scala`: the static envelope
+  (OkReceipt/ViewListDto/ViewItem/IdGuard/InstantGuard), verbatim text.
+
+The ③-layer field-note gate (`gateViews`, S2-56) is ported verbatim: only views carrying
+`type:'field'` notes (`info.parent` = view name) survive into the api face, and those
+notes' `dataType`s enrich the view fields (UUID 口径回补). Zero-annotation-intersection
+is FATAL (the gate refuses to silently pass everything); draft views without field notes
+are dropped with a warning. The per-aggregate **controllers** and the ViewApi/ViewWrites
+face follow in a later increment — they consume the skeleton pass's `Protocol.scala`
+output the way the live two-pass pipeline does.
+
+Fork-A fixture slots (attached by `tools/augment-api-canonical.mjs`): `roleLinkNotes`
+(compact co-link participants — mechanical filter), `readModels` (the ③-layer read-model
+face as-is), `viewFieldNotes` (the gate's annotated-view registry) and `viewKeyRenames`.
+All derivation lives in the generator (`builders/rolemap.mjs`).
+
