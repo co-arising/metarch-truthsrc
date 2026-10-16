@@ -61,13 +61,47 @@ for (const f of files) {
     : rel.startsWith('app/views/') ? 'views'
     : rel.startsWith('test/') ? 'test'
     : 'handwritten';
-  bump(`isolation:${cls}`, rel);
+  // V4-23 ruling groundwork (2026-10-16 user directive: separate scaffold/library from
+  // generator-scope infra-config from genuinely handwritten app code): a second-axis
+  // classification over the isolation bucket. Purely path-rule based; every isolation file
+  // lands in exactly one class.
+  const POLICY_DEAD = new Set([
+    'app/net/imadz/metarch/application/projection/policy/PolicyOnApplyKnowledgePatchOnMergeCommittedHandler.scala',
+    'app/net/imadz/metarch/application/projection/policy/PolicyOnConfirmPatchMergedOnPatchedHandler.scala',
+    'app/net/imadz/metarch/application/projection/policy/PolicyOnEstablishConceptOnPatchedHandler.scala',
+    'app/net/imadz/metarch/application/projection/policy/PolicyOnRecordConceptLandingsOnMergeCommittedHandler.scala',
+  ]);
+  let sub = cls;
+  if (cls === 'handwritten') {
+    if (POLICY_DEAD.has(rel)) sub = 'handwritten:relic-dead';
+    else if (rel.startsWith('app/net/imadz/common/')) sub = 'handwritten:lib-framework';
+    else if (rel.startsWith('app/net/imadz/infra/saga/')) sub = 'handwritten:lib-saga';
+    else sub = 'handwritten:app';
+  } else if (cls === 'conf') {
+    if (rel === 'conf/projection.conf' || rel === 'conf/persistence.conf' || rel === 'conf/vector.conf' || rel === 'conf/sql/1.sql') sub = 'conf:generator-scope-infra';
+    else if (rel.startsWith('conf/kb/')) sub = 'conf:kb-service';
+    else if (rel.startsWith('conf/apimeta/')) sub = 'conf:contract-snapshot';
+    else if (rel.startsWith('conf/sql/')) sub = 'conf:migration-ledger';
+    else sub = 'conf:scaffold-app';
+  } else if (cls === 'test') sub = 'test:app-handwritten';
+  else if (cls === 'views') sub = 'views:scaffold';
+  bump(`isolation:${sub}`, rel);
 }
 
 const total = { files: files.length };
+// parent isolation:* groups aggregate their :subclasses — display-only (excluded from totals;
+// files bump the leaf class only, so leaves already sum to the true isolation count)
+const synthetic = new Set();
+for (const [k, paths] of [...groups.entries()]) {
+  const m = k.match(/^(isolation:[a-z]+):/);
+  if (m) {
+    if (!groups.has(m[1])) { groups.set(m[1], []); synthetic.add(m[1]); }
+    groups.get(m[1]).push(...paths);
+  }
+}
 const summary = {};
 for (const [k, paths] of [...groups.entries()].sort()) {
-  summary[k] = { count: paths.length, paths: paths.sort() };
+  summary[k] = { count: paths.length, paths: paths.sort(), ...(synthetic.has(k) ? { displayOnly: true } : {}) };
   const m = k.match(/^stamped:(.+)$/);
   if (m) total[`mustGenerate:${m[1]}`] = (total[`mustGenerate:${m[1]}`] ?? 0) + paths.length;
 }
@@ -75,7 +109,7 @@ total.mustGenerate = Object.entries(total)
   .filter(([k]) => k.startsWith('mustGenerate:'))
   .reduce((s, [, v]) => s + v, 0);
 total.isolation = Object.entries(summary)
-  .filter(([k]) => k.startsWith('isolation:'))
+  .filter(([k]) => k.startsWith('isolation:') && !summary[k].displayOnly)
   .reduce((s, [, v]) => s + v.count, 0);
 
 const out = {

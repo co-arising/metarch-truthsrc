@@ -66,6 +66,73 @@
         "conf/sql/8.sql",
         "conf/sql/9.sql",
         "conf/vector.conf"
+      ],
+      "displayOnly": true
+    },
+    "isolation:conf:contract-snapshot": {
+      "count": 3,
+      "paths": [
+        "conf/apimeta/command-write-intents.json",
+        "conf/apimeta/stories.json",
+        "conf/apimeta/views.json"
+      ]
+    },
+    "isolation:conf:generator-scope-infra": {
+      "count": 4,
+      "paths": [
+        "conf/persistence.conf",
+        "conf/projection.conf",
+        "conf/sql/1.sql",
+        "conf/vector.conf"
+      ]
+    },
+    "isolation:conf:kb-service": {
+      "count": 18,
+      "paths": [
+        "conf/kb/field-impact-golden.json",
+        "conf/kb/reasoning-templates/agg.relates/query.cypher",
+        "conf/kb/reasoning-templates/agg.relates/template.json",
+        "conf/kb/reasoning-templates/anchor.codePoints/golden.json",
+        "conf/kb/reasoning-templates/anchor.codePoints/query.cypher",
+        "conf/kb/reasoning-templates/anchor.codePoints/template.json",
+        "conf/kb/reasoning-templates/chain.fromAggregate/query.cypher",
+        "conf/kb/reasoning-templates/chain.fromAggregate/template.json",
+        "conf/kb/reasoning-templates/field.impact/golden.json",
+        "conf/kb/reasoning-templates/field.impact/query.cypher",
+        "conf/kb/reasoning-templates/field.impact/template.json",
+        "conf/kb/reasoning-templates/impact.aggregate/query.cypher",
+        "conf/kb/reasoning-templates/impact.aggregate/template.json",
+        "conf/kb/reasoning-templates/process.family/golden.json",
+        "conf/kb/reasoning-templates/process.family/query.cypher",
+        "conf/kb/reasoning-templates/process.family/template.json",
+        "conf/kb/reasoning-templates/relAudit/query.cypher",
+        "conf/kb/reasoning-templates/relAudit/template.json"
+      ]
+    },
+    "isolation:conf:migration-ledger": {
+      "count": 10,
+      "paths": [
+        "conf/sql/10.sql",
+        "conf/sql/11.sql",
+        "conf/sql/12.sql",
+        "conf/sql/13.sql",
+        "conf/sql/3.sql",
+        "conf/sql/4.sql",
+        "conf/sql/6.sql",
+        "conf/sql/7.sql",
+        "conf/sql/8.sql",
+        "conf/sql/9.sql"
+      ]
+    },
+    "isolation:conf:scaffold-app": {
+      "count": 6,
+      "paths": [
+        "conf/application.conf",
+        "conf/cluster.conf",
+        "conf/logback-test.xml",
+        "conf/logback.xml",
+        "conf/messages",
+        "conf/serialization.conf"
       ]
     },
     "isolation:handwritten": {
@@ -157,6 +224,113 @@
         "app/net/imadz/modules/PolicyProjectionModule.scala",
         "app/net/imadz/modules/ProjectionTailWatchdogModule.scala",
         "app/protobuf/saga_v2.proto"
+      ],
+      "displayOnly": true
+    },
+    "isolation:handwritten:app": {
+      "count": 45,
+      "paths": [
+        "app/controllers/AuthController.scala",
+        "app/controllers/CodeAnchorApiController.scala",
+        "app/controllers/FeedApiController.scala",
+        "app/controllers/S77TruthController.scala",
+        "app/controllers/filter/CommandAuditFilter.scala",
+        "app/controllers/filter/LoggingFilter.scala",
+        "app/controllers/kb/FieldImpactController.scala",
+        "app/controllers/kb/KnCensusController.scala",
+        "app/controllers/kb/KnJournalController.scala",
+        "app/controllers/kb/KnReasonController.scala",
+        "app/controllers/vo/ConceptReqs.scala",
+        "app/net/imadz/metarch/application/NoteParamEnricher.scala",
+        "app/net/imadz/metarch/application/RegisterUserFlow.scala",
+        "app/net/imadz/metarch/application/RequestDoRFlow.scala",
+        "app/net/imadz/metarch/application/feed/FeedAggregator.scala",
+        "app/net/imadz/metarch/application/kb/FieldImpactStore.scala",
+        "app/net/imadz/metarch/application/kb/KnJournalService.scala",
+        "app/net/imadz/metarch/application/kb/KnJournalStore.scala",
+        "app/net/imadz/metarch/application/kb/KnReasonService.scala",
+        "app/net/imadz/metarch/application/kb/KnReasonStore.scala",
+        "app/net/imadz/metarch/application/projection/policy/DlqBury.scala",
+        "app/net/imadz/metarch/application/projection/policy/FailureVerdict.scala",
+        "app/net/imadz/metarch/application/projection/policy/PolicyMachine.scala",
+        "app/net/imadz/metarch/domain/entities/OrganizationMemberIds.scala",
+        "app/net/imadz/metarch/domain/service/ConceptDeltaResolver.scala",
+        "app/net/imadz/metarch/domain/service/ContentFingerprint.scala",
+        "app/net/imadz/metarch/infrastructure/auth/IdentityStore.scala",
+        "app/net/imadz/metarch/infrastructure/graph/FqnBuilder.scala",
+        "app/net/imadz/metarch/infrastructure/graph/GraphConnectionConfig.scala",
+        "app/net/imadz/metarch/infrastructure/graph/GraphMutationExecutor.scala",
+        "app/net/imadz/metarch/infrastructure/graph/GraphProjectionRepository.scala",
+        "app/net/imadz/metarch/infrastructure/graph/GraphSmokeMain.scala",
+        "app/net/imadz/metarch/infrastructure/persistence/mongo/MongoViewStore.scala",
+        "app/net/imadz/metarch/infrastructure/persistence/vector/OllamaEmbeddingClient.scala",
+        "app/net/imadz/metarch/infrastructure/persistence/vector/PgVectorStore.scala",
+        "app/net/imadz/metarch/truth/MetarchRebuild.scala",
+        "app/net/imadz/metarch/truth/TruthCanonicalJson.scala",
+        "app/net/imadz/metarch/truth/TruthProjectionRebuilder.scala",
+        "app/net/imadz/metarch/truth/TruthProjectionSource.scala",
+        "app/net/imadz/modules/BootstrapModule.scala",
+        "app/net/imadz/modules/KnInstanceProjectionModule.scala",
+        "app/net/imadz/modules/KnJournalModule.scala",
+        "app/net/imadz/modules/PolicyProjectionModule.scala",
+        "app/net/imadz/modules/ProjectionTailWatchdogModule.scala",
+        "app/protobuf/saga_v2.proto"
+      ]
+    },
+    "isolation:handwritten:lib-framework": {
+      "count": 19,
+      "paths": [
+        "app/net/imadz/common/CborSerializable.scala",
+        "app/net/imadz/common/CommonTypes.scala",
+        "app/net/imadz/common/application/CommandHandlerReplyingBehavior.scala",
+        "app/net/imadz/common/application/projection/ProjectionTailWatchdog.scala",
+        "app/net/imadz/common/application/projection/ScalikeJdbcSession.scala",
+        "app/net/imadz/common/application/projection/ScalikeJdbcSetup.scala",
+        "app/net/imadz/common/auth/ApiError.scala",
+        "app/net/imadz/common/auth/AuthAction.scala",
+        "app/net/imadz/common/auth/Endpoint.scala",
+        "app/net/imadz/common/auth/IdCodec.scala",
+        "app/net/imadz/common/auth/LoginRateLimiter.scala",
+        "app/net/imadz/common/auth/PasswordHashing.scala",
+        "app/net/imadz/common/auth/RoleGate.scala",
+        "app/net/imadz/common/auth/RoleResolver.scala",
+        "app/net/imadz/common/auth/TokenService.scala",
+        "app/net/imadz/common/serialization/ObjectIdOffsetSerializer.scala",
+        "app/net/imadz/common/serialization/PrimitiveConverter.scala",
+        "app/net/imadz/common/serialization/ScalaPbSerializer.scala",
+        "app/net/imadz/common/serialization/SerializationExtension.scala"
+      ]
+    },
+    "isolation:handwritten:lib-saga": {
+      "count": 18,
+      "paths": [
+        "app/net/imadz/infra/saga/ForSaga.scala",
+        "app/net/imadz/infra/saga/SagaParticipant.scala",
+        "app/net/imadz/infra/saga/SagaTransactionCoordinator.scala",
+        "app/net/imadz/infra/saga/StepExecutor.scala",
+        "app/net/imadz/infra/saga/handlers/StepExecutorCommandHandler.scala",
+        "app/net/imadz/infra/saga/handlers/StepExecutorEventHandler.scala",
+        "app/net/imadz/infra/saga/handlers/StepExecutorRecoveryHandler.scala",
+        "app/net/imadz/infra/saga/persistence/SagaCoordinatorProtoConverters.scala",
+        "app/net/imadz/infra/saga/persistence/SagaTransactionCoordinatorEventAdapter.scala",
+        "app/net/imadz/infra/saga/persistence/StepExecutorEventAdapter.scala",
+        "app/net/imadz/infra/saga/repository/SagaTransactionCoordinatorRepositoryImpl.scala",
+        "app/net/imadz/infra/saga/repository/TransactionCoordinatorRepository.scala",
+        "app/net/imadz/infra/saga/serialization/AkkaSerializationWrapper.scala",
+        "app/net/imadz/infra/saga/serialization/SagaExecutorConverter.scala",
+        "app/net/imadz/infra/saga/serialization/SagaMessageProtoConverters.scala",
+        "app/net/imadz/infra/saga/serialization/SagaParticipantSerializerStrategy.scala",
+        "app/net/imadz/infra/saga/serialization/SagaSerializer.scala",
+        "app/net/imadz/infra/saga/serialization/SagaTransactionStepSerializer.scala"
+      ]
+    },
+    "isolation:handwritten:relic-dead": {
+      "count": 4,
+      "paths": [
+        "app/net/imadz/metarch/application/projection/policy/PolicyOnApplyKnowledgePatchOnMergeCommittedHandler.scala",
+        "app/net/imadz/metarch/application/projection/policy/PolicyOnConfirmPatchMergedOnPatchedHandler.scala",
+        "app/net/imadz/metarch/application/projection/policy/PolicyOnEstablishConceptOnPatchedHandler.scala",
+        "app/net/imadz/metarch/application/projection/policy/PolicyOnRecordConceptLandingsOnMergeCommittedHandler.scala"
       ]
     },
     "isolation:test": {
@@ -187,9 +361,48 @@
         "test/net/imadz/metarch/infrastructure/repositories/projection/UserLookupByEmailOrPhoneViewRepositorySpec.scala",
         "test/net/imadz/metarch/truth/TruthCanonicalJsonSpec.scala",
         "test/net/imadz/metarch/truth/TruthProjectionRebuildSpec.scala"
+      ],
+      "displayOnly": true
+    },
+    "isolation:test:app-handwritten": {
+      "count": 25,
+      "paths": [
+        "test/controllers/AuthControllerTenantSwitchSpec.scala",
+        "test/controllers/S77TruthControllerSpec.scala",
+        "test/controllers/filter/CommandAuditFilterSpec.scala",
+        "test/net/imadz/common/auth/EndpointGuardSpec.scala",
+        "test/net/imadz/common/serialization/ScalaPbSerializerSpec.scala",
+        "test/net/imadz/metarch/application/RegisterUserFlowSpec.scala",
+        "test/net/imadz/metarch/application/feed/FeedAggregatorSpec.scala",
+        "test/net/imadz/metarch/application/kb/KnJournalSpec.scala",
+        "test/net/imadz/metarch/application/kb/KnReasonSpec.scala",
+        "test/net/imadz/metarch/application/projection/handlers/KnInstanceProjectionHandlerSpec.scala",
+        "test/net/imadz/metarch/behavior/CemEdgePatchRetiredSpec.scala",
+        "test/net/imadz/metarch/behavior/ConceptAnchorFoldSpec.scala",
+        "test/net/imadz/metarch/behavior/LaneAChainSpec.scala",
+        "test/net/imadz/metarch/behavior/TestAdjudicators.scala",
+        "test/net/imadz/metarch/controllers/ApiControllersSpec.scala",
+        "test/net/imadz/metarch/controllers/VectorSearchApiControllerSpec.scala",
+        "test/net/imadz/metarch/domain/service/ConceptDeltaResolverSpec.scala",
+        "test/net/imadz/metarch/domain/values/ConceptDeltaLegacyDecodeSpec.scala",
+        "test/net/imadz/metarch/infrastructure/api/EndpointWriteCommandSpec.scala",
+        "test/net/imadz/metarch/infrastructure/graph/GraphMutationExecutorSpec.scala",
+        "test/net/imadz/metarch/infrastructure/persistence/vector/OllamaEmbeddingClientSpec.scala",
+        "test/net/imadz/metarch/infrastructure/persistence/vector/PgVectorStoreSpec.scala",
+        "test/net/imadz/metarch/infrastructure/repositories/projection/UserLookupByEmailOrPhoneViewRepositorySpec.scala",
+        "test/net/imadz/metarch/truth/TruthCanonicalJsonSpec.scala",
+        "test/net/imadz/metarch/truth/TruthProjectionRebuildSpec.scala"
       ]
     },
     "isolation:views": {
+      "count": 2,
+      "paths": [
+        "app/views/index.scala.html",
+        "app/views/main.scala.html"
+      ],
+      "displayOnly": true
+    },
+    "isolation:views:scaffold": {
       "count": 2,
       "paths": [
         "app/views/index.scala.html",
