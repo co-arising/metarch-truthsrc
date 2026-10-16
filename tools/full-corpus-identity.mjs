@@ -56,6 +56,7 @@ function mapPath(p) {
   if (p.startsWith('modules/kernel/src/main/scala/')) return 'app/' + p.slice('modules/kernel/src/main/scala/'.length);
   if (p.startsWith('modules/kernel/src/test/scala/')) return 'test/' + p.slice('modules/kernel/src/test/scala/'.length);
   if (p.startsWith('app/')) return p;
+  if (p.startsWith('test/')) return p;
   if (p === 'conf/routes') return 'conf/routes';
   if (p.startsWith('conf/sql/')) return p;
   return null;
@@ -101,6 +102,8 @@ function liveOwner(rel) {
   // The policy-exec subdir is checked BEFORE the projection root (application/projection/policy
   // nests under it — more specific path wins).
   if (/^app\/net\/imadz\/metarch\/(application\/projection\/policy\/|infrastructure\/bootstrap\/PolicyOn)/.test(rel)) return { owner: 'policyExec', stamp };
+  // the repository-spec face rides the projection generator (V4-20) — its stamp names the tool
+  if (stamp.startsWith('gen_repository_specs')) return { owner: 'projection', stamp };
   if (/^app\/net\/imadz\/metarch\/(application\/projection|infrastructure\/repositories\/projection)\//.test(rel)) return { owner: 'projection', stamp };
   if (rel === 'app/controllers/AggregateStateApiController.scala') return { owner: 'api', stamp };
   if (rel === 'conf/sql/2.sql' || rel === 'conf/sql/5-pgvector.sql') return { owner: 'ddl', stamp };
@@ -178,6 +181,13 @@ for (const [face, g] of Object.entries(GENS)) {
         } else {
           const cmp = contentEqualsModuloStamp(e.content, liveRead(livePath));
           row.status = cmp.equal ? 'identical' : 'diff';
+          // V4-20: the repository-spec family's live files are old-generation inventory — the
+          // live tool (gen_repository_specs.mjs) over the CURRENT KB inputs produces exactly
+          // truthsrc's bytes (17/17 proven in the report), while the live tree holds specs from
+          // a pre-rewriting source state (Option-less instants, fields since evolved). A diff
+          // here would misrepresent the port; the honest class is stale-live (live inventory
+          // predates its own generator's current output — 行为侧拍板重生成, 本仓不代驱).
+          if (row.status === 'diff' && e.kind === 'repo-spec') row.status = 'stale-live';
           if (cmp.stampOnly) row.stampOnly = true;
           if (row.status === 'diff') row.excerpt = excerpt(liveRead(livePath), e.content);
           row.liveOwner = own.stamp;

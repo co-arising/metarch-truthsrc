@@ -4,10 +4,12 @@
   "canonical": "golden/scala-cqrs-es-metarch/full-corpus.canonical.json",
   "aggregates": 27,
   "counts": {
-    "rows": 1056,
+    "rows": 1073,
     "byStatus": {
       "identical": 948,
-      "owned-by-other": 108
+      "owned-by-other": 108,
+      "stale-live": 16,
+      "live-missing": 1
     },
     "identicalByFace": {
       "skeleton": 345,
@@ -9634,6 +9636,158 @@
       "livePath": "app/net/imadz/metarch/infrastructure/repositories/projection/ValueObjectDefinitionDecisionViewMongoRepositoryImpl.scala",
       "status": "identical",
       "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "projection",
+      "kind": "repo-spec",
+      "aggregate": "AcceptTenantInvitationDecisionView",
+      "path": "test/net/imadz/metarch/infrastructure/repositories/projection/AcceptTenantInvitationDecisionViewRepositorySpec.scala",
+      "livePath": "test/net/imadz/metarch/infrastructure/repositories/projection/AcceptTenantInvitationDecisionViewRepositorySpec.scala",
+      "status": "stale-live",
+      "liveOwner": "gen_repository_specs.mjs (EP_Generated_Patch_Pipeline §九·一)"
+    },
+    {
+      "face": "projection",
+      "kind": "repo-spec",
+      "aggregate": "CaptureNoteDecisionView",
+      "path": "test/net/imadz/metarch/infrastructure/repositories/projection/CaptureNoteDecisionViewRepositorySpec.scala",
+      "livePath": "test/net/imadz/metarch/infrastructure/repositories/projection/CaptureNoteDecisionViewRepositorySpec.scala",
+      "status": "stale-live",
+      "liveOwner": "gen_repository_specs.mjs (EP_Generated_Patch_Pipeline §九·一)"
+    },
+    {
+      "face": "projection",
+      "kind": "repo-spec",
+      "aggregate": "ClassifySubdomainDecisionView",
+      "path": "test/net/imadz/metarch/infrastructure/repositories/projection/ClassifySubdomainDecisionViewRepositorySpec.scala",
+      "livePath": "test/net/imadz/metarch/infrastructure/repositories/projection/ClassifySubdomainDecisionViewRepositorySpec.scala",
+      "status": "stale-live",
+      "liveOwner": "gen_repository_specs.mjs (EP_Generated_Patch_Pipeline §九·一)"
+    },
+    {
+      "face": "projection",
+      "kind": "repo-spec",
+      "aggregate": "CreateWorkgroupDecisionView",
+      "path": "test/net/imadz/metarch/infrastructure/repositories/projection/CreateWorkgroupDecisionViewRepositorySpec.scala",
+      "livePath": "test/net/imadz/metarch/infrastructure/repositories/projection/CreateWorkgroupDecisionViewRepositorySpec.scala",
+      "status": "stale-live",
+      "liveOwner": "gen_repository_specs.mjs (EP_Generated_Patch_Pipeline §九·一)"
+    },
+    {
+      "face": "projection",
+      "kind": "repo-spec",
+      "aggregate": "DeactivateUserDecisionView",
+      "path": "test/net/imadz/metarch/infrastructure/repositories/projection/DeactivateUserDecisionViewRepositorySpec.scala",
+      "livePath": "test/net/imadz/metarch/infrastructure/repositories/projection/DeactivateUserDecisionViewRepositorySpec.scala",
+      "status": "stale-live",
+      "liveOwner": "gen_repository_specs.mjs (EP_Generated_Patch_Pipeline §九·一)"
+    },
+    {
+      "face": "projection",
+      "kind": "repo-spec",
+      "aggregate": "DefineContextRelationDecisionView",
+      "path": "test/net/imadz/metarch/infrastructure/repositories/projection/DefineContextRelationDecisionViewRepositorySpec.scala",
+      "livePath": "test/net/imadz/metarch/infrastructure/repositories/projection/DefineContextRelationDecisionViewRepositorySpec.scala",
+      "status": "stale-live",
+      "liveOwner": "gen_repository_specs.mjs (EP_Generated_Patch_Pipeline §九·一)"
+    },
+    {
+      "face": "projection",
+      "kind": "repo-spec",
+      "aggregate": "DiscoverContextDecisionView",
+      "path": "test/net/imadz/metarch/infrastructure/repositories/projection/DiscoverContextDecisionViewRepositorySpec.scala",
+      "livePath": "test/net/imadz/metarch/infrastructure/repositories/projection/DiscoverContextDecisionViewRepositorySpec.scala",
+      "status": "stale-live",
+      "liveOwner": "gen_repository_specs.mjs (EP_Generated_Patch_Pipeline §九·一)"
+    },
+    {
+      "face": "projection",
+      "kind": "repo-spec",
+      "aggregate": "InitiateProjectDecisionView",
+      "path": "test/net/imadz/metarch/infrastructure/repositories/projection/InitiateProjectDecisionViewRepositorySpec.scala",
+      "livePath": "test/net/imadz/metarch/infrastructure/repositories/projection/InitiateProjectDecisionViewRepositorySpec.scala",
+      "status": "stale-live",
+      "liveOwner": "gen_repository_specs.mjs (EP_Generated_Patch_Pipeline §九·一)"
+    },
+    {
+      "face": "projection",
+      "kind": "repo-spec",
+      "aggregate": "InviteTenantMemberDecisionView",
+      "path": "test/net/imadz/metarch/infrastructure/repositories/projection/InviteTenantMemberDecisionViewRepositorySpec.scala",
+      "livePath": "test/net/imadz/metarch/infrastructure/repositories/projection/InviteTenantMemberDecisionViewRepositorySpec.scala",
+      "status": "stale-live",
+      "liveOwner": "gen_repository_specs.mjs (EP_Generated_Patch_Pipeline §九·一)"
+    },
+    {
+      "face": "projection",
+      "kind": "repo-spec",
+      "aggregate": "InviteWorkgroupMemberDecisionView",
+      "path": "test/net/imadz/metarch/infrastructure/repositories/projection/InviteWorkgroupMemberDecisionViewRepositorySpec.scala",
+      "livePath": "test/net/imadz/metarch/infrastructure/repositories/projection/InviteWorkgroupMemberDecisionViewRepositorySpec.scala",
+      "status": "stale-live",
+      "liveOwner": "gen_repository_specs.mjs (EP_Generated_Patch_Pipeline §九·一)"
+    },
+    {
+      "face": "projection",
+      "kind": "repo-spec",
+      "aggregate": "OnboardTenantDecisionView",
+      "path": "test/net/imadz/metarch/infrastructure/repositories/projection/OnboardTenantDecisionViewRepositorySpec.scala",
+      "livePath": "test/net/imadz/metarch/infrastructure/repositories/projection/OnboardTenantDecisionViewRepositorySpec.scala",
+      "status": "stale-live",
+      "liveOwner": "gen_repository_specs.mjs (EP_Generated_Patch_Pipeline §九·一)"
+    },
+    {
+      "face": "projection",
+      "kind": "repo-spec",
+      "aggregate": "PauseProjectDecisionView",
+      "path": "test/net/imadz/metarch/infrastructure/repositories/projection/PauseProjectDecisionViewRepositorySpec.scala",
+      "livePath": "test/net/imadz/metarch/infrastructure/repositories/projection/PauseProjectDecisionViewRepositorySpec.scala",
+      "status": "stale-live",
+      "liveOwner": "gen_repository_specs.mjs (EP_Generated_Patch_Pipeline §九·一)"
+    },
+    {
+      "face": "projection",
+      "kind": "repo-spec",
+      "aggregate": "RemoveTenantMemberDecisionView",
+      "path": "test/net/imadz/metarch/infrastructure/repositories/projection/RemoveTenantMemberDecisionViewRepositorySpec.scala",
+      "livePath": "test/net/imadz/metarch/infrastructure/repositories/projection/RemoveTenantMemberDecisionViewRepositorySpec.scala",
+      "status": "stale-live",
+      "liveOwner": "gen_repository_specs.mjs (EP_Generated_Patch_Pipeline §九·一)"
+    },
+    {
+      "face": "projection",
+      "kind": "repo-spec",
+      "aggregate": "ResendInvitationDecisionView",
+      "path": "test/net/imadz/metarch/infrastructure/repositories/projection/ResendInvitationDecisionViewRepositorySpec.scala",
+      "livePath": "test/net/imadz/metarch/infrastructure/repositories/projection/ResendInvitationDecisionViewRepositorySpec.scala",
+      "status": "stale-live",
+      "liveOwner": "gen_repository_specs.mjs (EP_Generated_Patch_Pipeline §九·一)"
+    },
+    {
+      "face": "projection",
+      "kind": "repo-spec",
+      "aggregate": "RevokeInvitationDecisionView",
+      "path": "test/net/imadz/metarch/infrastructure/repositories/projection/RevokeInvitationDecisionViewRepositorySpec.scala",
+      "livePath": "test/net/imadz/metarch/infrastructure/repositories/projection/RevokeInvitationDecisionViewRepositorySpec.scala",
+      "status": "stale-live",
+      "liveOwner": "gen_repository_specs.mjs (EP_Generated_Patch_Pipeline §九·一)"
+    },
+    {
+      "face": "projection",
+      "kind": "repo-spec",
+      "aggregate": "RoleCommandBindingDecisionView",
+      "path": "test/net/imadz/metarch/infrastructure/repositories/projection/RoleCommandBindingDecisionViewRepositorySpec.scala",
+      "livePath": "test/net/imadz/metarch/infrastructure/repositories/projection/RoleCommandBindingDecisionViewRepositorySpec.scala",
+      "status": "live-missing"
+    },
+    {
+      "face": "projection",
+      "kind": "repo-spec",
+      "aggregate": "UpdateUserProfileDecisionView",
+      "path": "test/net/imadz/metarch/infrastructure/repositories/projection/UpdateUserProfileDecisionViewRepositorySpec.scala",
+      "livePath": "test/net/imadz/metarch/infrastructure/repositories/projection/UpdateUserProfileDecisionViewRepositorySpec.scala",
+      "status": "stale-live",
+      "liveOwner": "gen_repository_specs.mjs (EP_Generated_Patch_Pipeline §九·一)"
     },
     {
       "face": "policyExec",

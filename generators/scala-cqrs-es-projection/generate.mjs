@@ -18,6 +18,7 @@ import { renderProjectionDef } from './templates/projection.mjs';
 import { renderHandler } from './templates/handler.mjs';
 import { renderRepository, implNameOf } from './templates/repository.mjs';
 import { renderImpl } from './templates/impl.mjs';
+import { repoSpecModels } from './builders/repoSpecs.mjs';
 
 export function generate({ canonical, options = {} }) {
   const views = (canonical.projectionViews ?? []).map((v) => deriveView(v, canonical));
@@ -72,5 +73,8 @@ export function generate({ canonical, options = {} }) {
     });
   }
 
+  // Repository behavior specs (V4-20, gen_repository_specs.mjs port): H2-backed DecisionView
+  // spec set over the gated ③-layer (mongo document views + List<VO> MANUAL-stub views skip).
+  entries.push(...repoSpecModels(canonical));
   return entries;
 }

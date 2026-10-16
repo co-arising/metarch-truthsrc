@@ -46,7 +46,7 @@ const options = {
 
 const { entries } = await plan({ canonicalFile: CANON, generatorDir: GEN, options });
 const byKind = Object.groupBy(entries, (e) => e.kind);
-equal(entries.length, 369, '43 defs + 240 handlers + 43 repos + 43 impls (fixture carries the global corpus)');
+equal(entries.length, 386, '43 defs + 240 handlers + 43 repos + 43 impls + 17 repo specs (V4-20; fixture carries the global corpus)');
 equal(byKind['projection-def'].length, 43);
 equal(byKind['projection-handler'].length, 240, '240 = 247 live − PauseProject relics ×7 (duplicate links dedupe first-wins)');
 equal(new Set(byKind['projection-handler'].map((e) => e.path)).size, 240, 'unique handler paths');

@@ -9,10 +9,10 @@
     "mustGenerate:Vega": 1,
     "mustGenerate:gen_api_layer": 3,
     "mustGenerate:gen_function_specs.mjs": 1,
-    "mustGenerate:gen_repository_specs.mjs": 18,
+    "mustGenerate:gen_repository_specs.mjs": 2,
     "mustGenerate:rules_domain_gen": 2,
     "mustGenerate:tdd_test_gen": 27,
-    "mustGenerate": 52,
+    "mustGenerate": 36,
     "isolation": 161
   },
   "groups": {
@@ -203,7 +203,7 @@
       ]
     },
     "measured": {
-      "count": 975,
+      "count": 991,
       "paths": [
         "app/controllers/AggregateStateApiController.scala",
         "app/controllers/CemEdgeApiController.scala",
@@ -1179,7 +1179,23 @@
         "test/net/imadz/metarch/domain/policy/KnowledgePatchPoliciesSpec.scala",
         "test/net/imadz/metarch/domain/policy/ModelCatalogPoliciesSpec.scala",
         "test/net/imadz/metarch/domain/policy/SessionPoliciesSpec.scala",
-        "test/net/imadz/metarch/domain/policy/TenantPoliciesSpec.scala"
+        "test/net/imadz/metarch/domain/policy/TenantPoliciesSpec.scala",
+        "test/net/imadz/metarch/infrastructure/repositories/projection/AcceptTenantInvitationDecisionViewRepositorySpec.scala",
+        "test/net/imadz/metarch/infrastructure/repositories/projection/CaptureNoteDecisionViewRepositorySpec.scala",
+        "test/net/imadz/metarch/infrastructure/repositories/projection/ClassifySubdomainDecisionViewRepositorySpec.scala",
+        "test/net/imadz/metarch/infrastructure/repositories/projection/CreateWorkgroupDecisionViewRepositorySpec.scala",
+        "test/net/imadz/metarch/infrastructure/repositories/projection/DeactivateUserDecisionViewRepositorySpec.scala",
+        "test/net/imadz/metarch/infrastructure/repositories/projection/DefineContextRelationDecisionViewRepositorySpec.scala",
+        "test/net/imadz/metarch/infrastructure/repositories/projection/DiscoverContextDecisionViewRepositorySpec.scala",
+        "test/net/imadz/metarch/infrastructure/repositories/projection/InitiateProjectDecisionViewRepositorySpec.scala",
+        "test/net/imadz/metarch/infrastructure/repositories/projection/InviteTenantMemberDecisionViewRepositorySpec.scala",
+        "test/net/imadz/metarch/infrastructure/repositories/projection/InviteWorkgroupMemberDecisionViewRepositorySpec.scala",
+        "test/net/imadz/metarch/infrastructure/repositories/projection/OnboardTenantDecisionViewRepositorySpec.scala",
+        "test/net/imadz/metarch/infrastructure/repositories/projection/PauseProjectDecisionViewRepositorySpec.scala",
+        "test/net/imadz/metarch/infrastructure/repositories/projection/RemoveTenantMemberDecisionViewRepositorySpec.scala",
+        "test/net/imadz/metarch/infrastructure/repositories/projection/ResendInvitationDecisionViewRepositorySpec.scala",
+        "test/net/imadz/metarch/infrastructure/repositories/projection/RevokeInvitationDecisionViewRepositorySpec.scala",
+        "test/net/imadz/metarch/infrastructure/repositories/projection/UpdateUserProfileDecisionViewRepositorySpec.scala"
       ]
     },
     "reverse": {
@@ -1224,26 +1240,10 @@
       ]
     },
     "stamped:gen_repository_specs.mjs": {
-      "count": 18,
+      "count": 2,
       "paths": [
-        "test/net/imadz/metarch/infrastructure/repositories/projection/AcceptTenantInvitationDecisionViewRepositorySpec.scala",
-        "test/net/imadz/metarch/infrastructure/repositories/projection/CaptureNoteDecisionViewRepositorySpec.scala",
-        "test/net/imadz/metarch/infrastructure/repositories/projection/ClassifySubdomainDecisionViewRepositorySpec.scala",
-        "test/net/imadz/metarch/infrastructure/repositories/projection/CreateWorkgroupDecisionViewRepositorySpec.scala",
-        "test/net/imadz/metarch/infrastructure/repositories/projection/DeactivateUserDecisionViewRepositorySpec.scala",
-        "test/net/imadz/metarch/infrastructure/repositories/projection/DefineContextRelationDecisionViewRepositorySpec.scala",
-        "test/net/imadz/metarch/infrastructure/repositories/projection/DiscoverContextDecisionViewRepositorySpec.scala",
-        "test/net/imadz/metarch/infrastructure/repositories/projection/InitiateProjectDecisionViewRepositorySpec.scala",
-        "test/net/imadz/metarch/infrastructure/repositories/projection/InviteTenantMemberDecisionViewRepositorySpec.scala",
-        "test/net/imadz/metarch/infrastructure/repositories/projection/InviteWorkgroupMemberDecisionViewRepositorySpec.scala",
-        "test/net/imadz/metarch/infrastructure/repositories/projection/OnboardTenantDecisionViewRepositorySpec.scala",
         "test/net/imadz/metarch/infrastructure/repositories/projection/OpenSessionDecisionViewRepositorySpec.scala",
-        "test/net/imadz/metarch/infrastructure/repositories/projection/PauseProjectDecisionViewRepositorySpec.scala",
-        "test/net/imadz/metarch/infrastructure/repositories/projection/RemoveTenantMemberDecisionViewRepositorySpec.scala",
-        "test/net/imadz/metarch/infrastructure/repositories/projection/ResendInvitationDecisionViewRepositorySpec.scala",
-        "test/net/imadz/metarch/infrastructure/repositories/projection/RevokeInvitationDecisionViewRepositorySpec.scala",
-        "test/net/imadz/metarch/infrastructure/repositories/projection/ScheduleWorkshopDecisionViewRepositorySpec.scala",
-        "test/net/imadz/metarch/infrastructure/repositories/projection/UpdateUserProfileDecisionViewRepositorySpec.scala"
+        "test/net/imadz/metarch/infrastructure/repositories/projection/ScheduleWorkshopDecisionViewRepositorySpec.scala"
       ]
     },
     "stamped:rules_domain_gen": {
