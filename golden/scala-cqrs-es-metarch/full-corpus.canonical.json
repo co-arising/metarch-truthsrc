@@ -7732,7 +7732,10 @@
               "concepts",
               "List<ConceptDelta>"
             ]
-          ]
+          ],
+          "executionSide": true,
+          "entityIdField": "conceptId",
+          "dispose": null
         },
         {
           "noteId": "2376a1df-0685-432c-8232-77fac63ab35d",
@@ -7821,7 +7824,10 @@
               "sourceSessionId",
               "String (UUID)"
             ]
-          ]
+          ],
+          "executionSide": false,
+          "entityIdField": "conceptId",
+          "dispose": null
         },
         {
           "noteId": "05d60967-64c2-459a-9440-7d4f86ed5a09",
@@ -7947,7 +7953,15 @@
               "concepts",
               "List<ConceptDelta>"
             ]
-          ]
+          ],
+          "executionSide": true,
+          "entityIdField": "conceptId",
+          "dispose": {
+            "permanentOn": [
+              "AGG_NOT_INITIALIZED"
+            ],
+            "message": "概念回锚失败：err={code}"
+          }
         }
       ],
       "emitsEventPostconditionCheck": true
@@ -27329,7 +27343,10 @@
               "patchId",
               "String (UUID)"
             ]
-          ]
+          ],
+          "executionSide": false,
+          "entityIdField": null,
+          "dispose": null
         },
         {
           "noteId": "01b6af8a-6ce1-4114-9ce3-ff0609ed41f1",
@@ -27378,7 +27395,10 @@
               "concepts",
               "List<ConceptDelta>"
             ]
-          ]
+          ],
+          "executionSide": true,
+          "entityIdField": "patchId",
+          "dispose": null
         }
       ],
       "emitsEventPostconditionCheck": true
@@ -34152,7 +34172,10 @@
               "catalogId",
               "String (UUID)"
             ]
-          ]
+          ],
+          "executionSide": true,
+          "entityIdField": "projectId",
+          "dispose": null
         },
         {
           "noteId": "b976bb8c-bb2b-4f4f-991c-5d615f67cc07",
@@ -34210,7 +34233,15 @@
               "concepts",
               "List<ConceptDelta>"
             ]
-          ]
+          ],
+          "executionSide": true,
+          "entityIdField": "catalogId",
+          "dispose": {
+            "permanentOn": [
+              "AGG_NOT_INITIALIZED"
+            ],
+            "message": "补丁合并后应用到目录失败：err={code}"
+          }
         }
       ],
       "emitsEventPostconditionCheck": true
@@ -60313,7 +60344,10 @@
               "tenantId",
               "String (UUID)"
             ]
-          ]
+          ],
+          "executionSide": false,
+          "entityIdField": null,
+          "dispose": null
         }
       ],
       "emitsEventPostconditionCheck": true
@@ -68602,7 +68636,10 @@
               "timestamp",
               "Instant"
             ]
-          ]
+          ],
+          "executionSide": false,
+          "entityIdField": "tenantId",
+          "dispose": null
         },
         {
           "noteId": "d7d980b3-4641-4ee0-b7d0-fd2234b400a7",
@@ -68641,7 +68678,10 @@
               "orgMemberId",
               "String (UUID)"
             ]
-          ]
+          ],
+          "executionSide": false,
+          "entityIdField": "tenantId",
+          "dispose": null
         }
       ],
       "emitsEventPostconditionCheck": true

@@ -47,6 +47,7 @@ const GENS = {
     dir: join(ROOT, 'generators', 'scala-cqrs-es-projection'),
     options: { elementHashes, manualBlocks: sidecar('manual-blocks.json'), protoFields: sidecar('proto-fields.json'), staleGenerations: sidecar('stale-generations.json') },
   },
+  policyExec: { dir: join(ROOT, 'generators', 'scala-cqrs-es-policy-exec'), options: {} },
   ddl: { dir: join(ROOT, 'generators', 'scala-cqrs-es-ddl'), options: {} },
 };
 
@@ -96,7 +97,10 @@ function liveOwner(rel) {
   // neither the skeleton's current output nor the api face's — out of comparison scope.
   if (/^app\/net\/imadz\/metarch\/application\/aggregates\/repository\//.test(rel)) return { owner: 'frozen', stamp };
   // path-based faces first: the projection/storage face is ALSO CodegenMain-stamped (the stamp
-  // refresh renewed it along with the skeleton face), so the stamp alone cannot separate them
+  // refresh renewed it along with the skeleton face), so the stamp alone cannot separate them.
+  // The policy-exec subdir is checked BEFORE the projection root (application/projection/policy
+  // nests under it — more specific path wins).
+  if (/^app\/net\/imadz\/metarch\/(application\/projection\/policy\/|infrastructure\/bootstrap\/PolicyOn)/.test(rel)) return { owner: 'policyExec', stamp };
   if (/^app\/net\/imadz\/metarch\/(application\/projection|infrastructure\/repositories\/projection)\//.test(rel)) return { owner: 'projection', stamp };
   if (rel === 'app/controllers/AggregateStateApiController.scala') return { owner: 'api', stamp };
   if (rel === 'conf/sql/2.sql' || rel === 'conf/sql/5-pgvector.sql') return { owner: 'ddl', stamp };
@@ -117,7 +121,7 @@ function contentEqualsModuloStamp(emitted, live) {
   const restA = emitted.replace(STAMP_RX, ''), restB = live.replace(STAMP_RX, '');
   return { equal: restA === restB, stampOnly: restA === restB && emitted !== live };
 }
-const FAMILY = { skeleton: 'skeleton', rules: 'rules', api: 'api', projection: 'projection', ddl: 'ddl' };
+const FAMILY = { skeleton: 'skeleton', rules: 'rules', api: 'api', projection: 'projection', policyExec: 'policyExec', ddl: 'ddl' };
 
 // --- run the three generators ---------------------------------------------------------------
 const rows = [];
@@ -225,6 +229,10 @@ const globals = ['ViewKeys', 'CommandRoleMap', 'CommandDsl'].map((n) => [n === '
     // truth-source declaration — the incremental gate never rewrote it, so it is not engine
     // output; the generator skips it and the file stays live-only (PauseProject family).
     ['relic', `${pkgBase}/domain/values/UcStep.scala`],
+    // PauseProject bootstrap (V4-18): the projection tombstone's own glue — old-driver stamp
+    // (c028adad), ①-layer note gone, the current chain's ApplicationBootstrap no longer wires
+    // it; the glue face emits the 43 live projections + 27 aggregates and skips this one.
+    ['relic', `${pkgBase}/infrastructure/bootstrap/PauseProjectDecisionViewBootstrap.scala`],
   ]);
 const reverseRows = [];
 for (const [kind, tpl] of perAggKinds) {

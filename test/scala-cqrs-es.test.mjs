@@ -21,9 +21,9 @@ equal(manifest.name, 'scala-cqrs-es');
 // V4-16: the value-object + proto faces ride every canonical — the demo canonical (no voCatalog,
 // one aggregate) adds exactly the aggregate's own proto file. V4-17: the persistence face adds
 // the aggregate's event/snapshot adapters + converters trio (corpus-gated in the metarch test).
-const RIDERS = ['proto', 'proto-shared', 'event-adapter', 'snapshot-adapter', 'proto-converters'];
+const RIDERS = ['proto', 'proto-shared', 'event-adapter', 'snapshot-adapter', 'proto-converters', 'repository-impl', 'bootstrap', 'application-bootstrap'];
 const skel = entries.filter((e) => !RIDERS.includes(e.kind));
-equal(entries.length, 12);
+equal(entries.length, 15);
 equal(skel.length, 8);
 const kinds = skel.map((e) => e.kind).sort();
 equal(kinds.join(','), 'aggregate-root,behaviors,command-helpers,entity,event-handler,factory,protocol,repository');

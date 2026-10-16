@@ -4,24 +4,735 @@
   "canonical": "golden/scala-cqrs-es-metarch/full-corpus.canonical.json",
   "aggregates": 27,
   "counts": {
-    "rows": 933,
+    "rows": 1056,
     "byStatus": {
-      "identical": 825,
+      "identical": 948,
       "owned-by-other": 108
     },
     "identicalByFace": {
-      "skeleton": 247,
+      "skeleton": 345,
       "rules": 172,
       "api": 35,
       "projection": 369,
+      "policyExec": 25,
       "ddl": 2
     },
     "diffByKind": {},
-    "stampOnlyDiff": 247,
-    "reverseRows": 15,
+    "stampOnlyDiff": 345,
+    "reverseRows": 16,
     "genErrors": {}
   },
   "rows": [
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "AcceptTenantInvitationDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/AcceptTenantInvitationDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/AcceptTenantInvitationDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "application-bootstrap",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/ApplicationBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/ApplicationBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "AssembleMetadataDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/AssembleMetadataDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/AssembleMetadataDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "CaptureNoteDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/CaptureNoteDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/CaptureNoteDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "CatalogGraphView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/CatalogGraphViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/CatalogGraphViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "CemEdge",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/CemEdgeBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/CemEdgeBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "CemEdgeDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/CemEdgeDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/CemEdgeDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "ClassifySubdomainDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/ClassifySubdomainDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/ClassifySubdomainDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "Concept",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/ConceptBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/ConceptBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "ConceptEdgeGraphView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/ConceptEdgeGraphViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/ConceptEdgeGraphViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "ConceptGraphView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/ConceptGraphViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/ConceptGraphViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "Context",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/ContextBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/ContextBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "ContextGraphView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/ContextGraphViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/ContextGraphViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "ContextRelation",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/ContextRelationBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/ContextRelationBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "ContextRelationGraphView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/ContextRelationGraphViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/ContextRelationGraphViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "CreateCatalogVersionDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/CreateCatalogVersionDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/CreateCatalogVersionDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "CreateWorkgroupDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/CreateWorkgroupDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/CreateWorkgroupDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "DeactivateUserDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/DeactivateUserDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/DeactivateUserDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "DefineContextRelationDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/DefineContextRelationDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/DefineContextRelationDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "DiscoverContextDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/DiscoverContextDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/DiscoverContextDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "DoR",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/DoRBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/DoRBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "ExportMetadataDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/ExportMetadataDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/ExportMetadataDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/FieldModelDefinitionBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/FieldModelDefinitionBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "FieldModelDefinitionDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/FieldModelDefinitionDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/FieldModelDefinitionDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "FsmDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/FsmDefinitionBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/FsmDefinitionBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "InitiateProjectDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/InitiateProjectDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/InitiateProjectDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "InviteTenantMemberDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/InviteTenantMemberDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/InviteTenantMemberDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "InviteWorkgroupMemberDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/InviteWorkgroupMemberDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/InviteWorkgroupMemberDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "KnowledgePatch",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/KnowledgePatchBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/KnowledgePatchBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "KnowledgeSemanticView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/KnowledgeSemanticViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/KnowledgeSemanticViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/ModelCatalogBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/ModelCatalogBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "Note",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/NoteBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/NoteBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "NoteGraphView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/NoteGraphViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/NoteGraphViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "OnboardTenantDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/OnboardTenantDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/OnboardTenantDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "OpenSessionDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/OpenSessionDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/OpenSessionDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/OrganizationMemberBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/OrganizationMemberBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "ParkConceptDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/ParkConceptDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/ParkConceptDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "Project",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/ProjectBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/ProjectBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "Question",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/QuestionBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/QuestionBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "QuestionGraphView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/QuestionGraphViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/QuestionGraphViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "ReadModelDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/ReadModelDefinitionBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/ReadModelDefinitionBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "ReadModelDefinitionDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/ReadModelDefinitionDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/ReadModelDefinitionDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "Relation",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/RelationBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/RelationBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "ReleaseCatalogVersionDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/ReleaseCatalogVersionDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/ReleaseCatalogVersionDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "ReleaseMetadataVersionDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/ReleaseMetadataVersionDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/ReleaseMetadataVersionDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "RemoveTenantMemberDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/RemoveTenantMemberDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/RemoveTenantMemberDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "ResendInvitationDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/ResendInvitationDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/ResendInvitationDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "ResolveCatalogConflictDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/ResolveCatalogConflictDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/ResolveCatalogConflictDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "RevokeInvitationDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/RevokeInvitationDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/RevokeInvitationDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "RoleCommandBinding",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/RoleCommandBindingBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/RoleCommandBindingBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "RoleCommandBindingDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/RoleCommandBindingDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/RoleCommandBindingDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "ScheduleWorkshopDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/ScheduleWorkshopDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/ScheduleWorkshopDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "Session",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/SessionBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/SessionBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "Stage",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/StageBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/StageBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "Subdomain",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/SubdomainBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/SubdomainBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "SubdomainGraphView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/SubdomainGraphViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/SubdomainGraphViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "SubmitDoRVerdictDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/SubmitDoRVerdictDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/SubmitDoRVerdictDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "SubmitKnowledgePatchDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/SubmitKnowledgePatchDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/SubmitKnowledgePatchDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "Tenant",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/TenantBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/TenantBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "TruthSourceProvenance",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/TruthSourceProvenanceBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/TruthSourceProvenanceBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "TruthSourceProvenanceDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/TruthSourceProvenanceDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/TruthSourceProvenanceDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "UpdateUserProfileDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/UpdateUserProfileDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/UpdateUserProfileDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "UseCaseDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/UseCaseDefinitionBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/UseCaseDefinitionBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "UseCaseDefinitionDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/UseCaseDefinitionDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/UseCaseDefinitionDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "User",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/UserBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/UserBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "UserLookupByEmailOrPhoneView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/UserLookupByEmailOrPhoneViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/UserLookupByEmailOrPhoneViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "ValueObjectDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/ValueObjectDefinitionBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/ValueObjectDefinitionBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "ValueObjectDefinitionDecisionView",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/ValueObjectDefinitionDecisionViewBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/ValueObjectDefinitionDecisionViewBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "WorkTicket",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/WorkTicketBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/WorkTicketBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "Workgroup",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/WorkgroupBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/WorkgroupBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "bootstrap",
+      "aggregate": "Workshop",
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/WorkshopBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/WorkshopBootstrap.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
     {
       "face": "skeleton",
       "kind": "event-adapter",
@@ -828,6 +1539,276 @@
       "aggregate": "Workshop",
       "path": "app/net/imadz/metarch/infrastructure/persistence/converters/WorkshopProtoConverters.scala",
       "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/WorkshopProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "CemEdge",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/CemEdgeRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/CemEdgeRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "Concept",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/ConceptRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/ConceptRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "ContextRelation",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/ContextRelationRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/ContextRelationRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "Context",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/ContextRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/ContextRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "DoR",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/DoRRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/DoRRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/FieldModelDefinitionRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/FieldModelDefinitionRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "FsmDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/FsmDefinitionRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/FsmDefinitionRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "KnowledgePatch",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/KnowledgePatchRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/KnowledgePatchRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/ModelCatalogRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/ModelCatalogRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "Note",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/NoteRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/NoteRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/OrganizationMemberRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/OrganizationMemberRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "Project",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/ProjectRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/ProjectRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "Question",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/QuestionRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/QuestionRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "ReadModelDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/ReadModelDefinitionRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/ReadModelDefinitionRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "Relation",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/RelationRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/RelationRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "RoleCommandBinding",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/RoleCommandBindingRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/RoleCommandBindingRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "Session",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/SessionRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/SessionRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "Stage",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/StageRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/StageRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "Subdomain",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/SubdomainRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/SubdomainRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "Tenant",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/TenantRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/TenantRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "TruthSourceProvenance",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/TruthSourceProvenanceRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/TruthSourceProvenanceRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "UseCaseDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/UseCaseDefinitionRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/UseCaseDefinitionRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "User",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/UserRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/UserRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "ValueObjectDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/ValueObjectDefinitionRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/ValueObjectDefinitionRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "WorkTicket",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/WorkTicketRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/WorkTicketRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "Workgroup",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/WorkgroupRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/WorkgroupRepositoryImpl.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "repository-impl",
+      "aggregate": "Workshop",
+      "path": "app/net/imadz/metarch/infrastructure/repositories/aggregate/WorkshopRepositoryImpl.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/repositories/aggregate/WorkshopRepositoryImpl.scala",
       "status": "identical",
       "stampOnly": true,
       "liveOwner": "CodegenMain:225ed28b"
@@ -8655,6 +9636,231 @@
       "liveOwner": "CodegenMain:225ed28b"
     },
     {
+      "face": "policyExec",
+      "kind": "policy-exec",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/policy/ApplyKnowledgePatchMechanics.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/policy/ApplyKnowledgePatchMechanics.scala",
+      "status": "identical",
+      "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+    },
+    {
+      "face": "policyExec",
+      "kind": "policy-exec",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/policy/ApplyKnowledgePatchPolicy.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/policy/ApplyKnowledgePatchPolicy.scala",
+      "status": "identical",
+      "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+    },
+    {
+      "face": "policyExec",
+      "kind": "policy-exec",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/policy/ConfirmPatchMergedMechanics.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/policy/ConfirmPatchMergedMechanics.scala",
+      "status": "identical",
+      "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+    },
+    {
+      "face": "policyExec",
+      "kind": "policy-exec",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/policy/ConfirmPatchMergedPolicy.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/policy/ConfirmPatchMergedPolicy.scala",
+      "status": "identical",
+      "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+    },
+    {
+      "face": "policyExec",
+      "kind": "policy-exec",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/policy/CreateCatalogVersionMechanics.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/policy/CreateCatalogVersionMechanics.scala",
+      "status": "identical",
+      "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+    },
+    {
+      "face": "policyExec",
+      "kind": "policy-exec",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/policy/CreateCatalogVersionPolicy.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/policy/CreateCatalogVersionPolicy.scala",
+      "status": "identical",
+      "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+    },
+    {
+      "face": "policyExec",
+      "kind": "policy-exec",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/policy/EstablishConceptMechanics.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/policy/EstablishConceptMechanics.scala",
+      "status": "identical",
+      "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+    },
+    {
+      "face": "policyExec",
+      "kind": "policy-exec",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/policy/EstablishConceptPolicy.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/policy/EstablishConceptPolicy.scala",
+      "status": "identical",
+      "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+    },
+    {
+      "face": "policyExec",
+      "kind": "policy-exec",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/policy/PolicyOnApplyKnowledgePatchOnKnowledgePatchMergeCommittedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/policy/PolicyOnApplyKnowledgePatchOnKnowledgePatchMergeCommittedHandler.scala",
+      "status": "identical",
+      "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+    },
+    {
+      "face": "policyExec",
+      "kind": "policy-exec",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/policy/PolicyOnApplyKnowledgePatchRunner.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/policy/PolicyOnApplyKnowledgePatchRunner.scala",
+      "status": "identical",
+      "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+    },
+    {
+      "face": "policyExec",
+      "kind": "policy-exec",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/policy/PolicyOnConfirmPatchMergedOnKnowledgePatchedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/policy/PolicyOnConfirmPatchMergedOnKnowledgePatchedHandler.scala",
+      "status": "identical",
+      "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+    },
+    {
+      "face": "policyExec",
+      "kind": "policy-exec",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/policy/PolicyOnConfirmPatchMergedRunner.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/policy/PolicyOnConfirmPatchMergedRunner.scala",
+      "status": "identical",
+      "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+    },
+    {
+      "face": "policyExec",
+      "kind": "policy-exec",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/policy/PolicyOnCreateCatalogVersionOnProjectInitiatedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/policy/PolicyOnCreateCatalogVersionOnProjectInitiatedHandler.scala",
+      "status": "identical",
+      "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+    },
+    {
+      "face": "policyExec",
+      "kind": "policy-exec",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/policy/PolicyOnCreateCatalogVersionRunner.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/policy/PolicyOnCreateCatalogVersionRunner.scala",
+      "status": "identical",
+      "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+    },
+    {
+      "face": "policyExec",
+      "kind": "policy-exec",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/policy/PolicyOnEstablishConceptOnKnowledgePatchedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/policy/PolicyOnEstablishConceptOnKnowledgePatchedHandler.scala",
+      "status": "identical",
+      "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+    },
+    {
+      "face": "policyExec",
+      "kind": "policy-exec",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/policy/PolicyOnEstablishConceptRunner.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/policy/PolicyOnEstablishConceptRunner.scala",
+      "status": "identical",
+      "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+    },
+    {
+      "face": "policyExec",
+      "kind": "policy-exec",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/policy/PolicyOnRecordConceptLandingsOnKnowledgePatchMergeCommittedHandler.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/policy/PolicyOnRecordConceptLandingsOnKnowledgePatchMergeCommittedHandler.scala",
+      "status": "identical",
+      "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+    },
+    {
+      "face": "policyExec",
+      "kind": "policy-exec",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/policy/PolicyOnRecordConceptLandingsRunner.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/policy/PolicyOnRecordConceptLandingsRunner.scala",
+      "status": "identical",
+      "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+    },
+    {
+      "face": "policyExec",
+      "kind": "policy-exec",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/policy/RecordConceptLandingsMechanics.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/policy/RecordConceptLandingsMechanics.scala",
+      "status": "identical",
+      "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+    },
+    {
+      "face": "policyExec",
+      "kind": "policy-exec",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/application/projection/policy/RecordConceptLandingsPolicy.scala",
+      "livePath": "app/net/imadz/metarch/application/projection/policy/RecordConceptLandingsPolicy.scala",
+      "status": "identical",
+      "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+    },
+    {
+      "face": "policyExec",
+      "kind": "policy-exec",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/PolicyOnApplyKnowledgePatchBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/PolicyOnApplyKnowledgePatchBootstrap.scala",
+      "status": "identical",
+      "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+    },
+    {
+      "face": "policyExec",
+      "kind": "policy-exec",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/PolicyOnConfirmPatchMergedBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/PolicyOnConfirmPatchMergedBootstrap.scala",
+      "status": "identical",
+      "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+    },
+    {
+      "face": "policyExec",
+      "kind": "policy-exec",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/PolicyOnCreateCatalogVersionBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/PolicyOnCreateCatalogVersionBootstrap.scala",
+      "status": "identical",
+      "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+    },
+    {
+      "face": "policyExec",
+      "kind": "policy-exec",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/PolicyOnEstablishConceptBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/PolicyOnEstablishConceptBootstrap.scala",
+      "status": "identical",
+      "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+    },
+    {
+      "face": "policyExec",
+      "kind": "policy-exec",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/infrastructure/bootstrap/PolicyOnRecordConceptLandingsBootstrap.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/PolicyOnRecordConceptLandingsBootstrap.scala",
+      "status": "identical",
+      "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+    },
+    {
       "face": "ddl",
       "kind": "projection-ddl",
       "aggregate": "Context",
@@ -8748,6 +9954,11 @@
       "kind": "relic",
       "aggregate": null,
       "livePath": "app/net/imadz/metarch/domain/values/UcStep.scala"
+    },
+    {
+      "kind": "relic",
+      "aggregate": null,
+      "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/PauseProjectDecisionViewBootstrap.scala"
     }
   ]
 }

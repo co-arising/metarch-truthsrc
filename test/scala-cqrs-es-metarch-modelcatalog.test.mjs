@@ -30,7 +30,7 @@ const { entries } = await plan({
 });
 equal(entries.filter((e) => e.kind === 'value-object').length, 30, 'V4-16: 30 value objects ride the same canonical');
 // V4-17: the persistence trio rides along too — corpus-gated against live in the metarch test.
-const RIDERS = ['value-object', 'proto', 'proto-shared', 'event-adapter', 'snapshot-adapter', 'proto-converters'];
+const RIDERS = ['value-object', 'proto', 'proto-shared', 'event-adapter', 'snapshot-adapter', 'proto-converters', 'repository-impl', 'bootstrap', 'application-bootstrap'];
 for (const e of entries.filter((e) => !RIDERS.includes(e.kind))) {
   const want = readFileSync(join(GOLD, 'expected', e.path), 'utf8');
   equal(e.content, want, `byte identity: ${e.path}`);

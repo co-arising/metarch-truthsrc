@@ -54,7 +54,8 @@
 // inc10 extensions (the Policies face, V4-3 inc10) — RAW per Fork A, attributed here (target-agg
 // resolution is discovery, mirroring rules_domain_gen's cmdHostAgg):
 //   • policies: [{noteId, name, description, idempotencyKey, cmdName, evtName, bindings,
-//     fanOutOn, fanOutWhere, evtHostAgg, evtPayloads}] — the policy notes whose target resolves to
+//     fanOutOn, fanOutWhere, evtHostAgg, evtPayloads, executionSide, entityIdField, dispose}] — the
+//     policy notes whose target resolves to
 //     THIS aggregate (info.targetAggregate || command host), generate=false excluded (rules_domain_gen
 //     skips them). `bindings`/`fanOutOn`/`fanOutWhere` travel raw (声明即权威); `evtPayloads` is the
 //     ②-layer event payload list in declaration order with RAW dataType strings (the Spec's evLit
@@ -554,6 +555,11 @@ const policies = [];
           fanOutWhere: info.fanOutWhere ?? null,
           evtHostAgg: evtHost.get(evtName) ?? null, // null → generator skip (事件签名未解析)
           evtPayloads: evtPayloads.get(evtName) ?? null,
+          // V4-19: the policy-exec face's wiring facts (gen_policy_exec's info.executionSide
+          // gate + sharding key + dispose whitelist) — travel raw, generator 宁缺勿造.
+          executionSide: info.executionSide === true,
+          entityIdField: info.entityIdField ?? null,
+          dispose: info.dispose ?? null,
         });
       }
     }

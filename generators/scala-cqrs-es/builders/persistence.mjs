@@ -16,6 +16,8 @@ const CONVERTERS_PKG = `${PERSIST_PKG}.converters`;
 const ENTITIES_ROOT = 'net.imadz.metarch.domain.entities';
 const DOMAIN_VALUES = 'net.imadz.metarch.domain.values';
 const PRIMITIVE_CONVERTER = 'net.imadz.common.serialization.PrimitiveConverter';
+const REPO_IMPL_PKG = 'net.imadz.metarch.infrastructure.repositories.aggregate';
+const AGGREGATES_ROOT = 'net.imadz.metarch.application.aggregates';
 const eventPackageOf = (agg) => `${PROTO_PKG}.${toSnakeCase(agg)}`;
 const entityObjectPath = (agg) => `${ENTITIES_ROOT}.${agg}Entity`;
 
@@ -211,6 +213,34 @@ export function snapshotAdapterModel(a) {
     imports: [...deps, 'akka.persistence.typed.SnapshotAdapter'].sort(),
     scalaRoot: stateName, protoRoot: `${a.name}StatePO`, convObj: `${stateName}Conv`,
     convTrait: `${a.name}ProtoConverters`,
+    noteIds: a.noteId ? [a.noteId] : [],
+  };
+}
+
+// AggregateRepositoryImplBuilder — the sharding-entity-ref implementation. The synthetic
+// entityRef method is the whole face for this corpus (R6 泳道终局: sharding 型聚合的隐式契约,
+// 置于首位; metadata-declared query methods would follow — corpus-zero across all 27
+// aggregates, grep-verified). The aggregate type is pinned to application.aggregates (the
+// builder's [FIXED] comment: never resolved through the symbol table).
+export function repositoryImplModel(a) {
+  const interfaceFqn = `${AGGREGATES_ROOT}.repository.${a.name}Repository`;
+  const aggFqn = `${AGGREGATES_ROOT}.${a.name}Aggregate`;
+  const commandFamilyFqn = `${AGGREGATES_ROOT}.${a.name}Protocol.${a.name}CommandFamily`;
+  const deps = new Set([
+    'javax.inject.Inject',
+    'javax.inject.Singleton',
+    'akka.cluster.sharding.typed.scaladsl.ClusterSharding',
+    'akka.cluster.sharding.typed.scaladsl.EntityRef',
+    aggFqn,
+    interfaceFqn,
+    commandFamilyFqn,
+  ]);
+  return {
+    name: `${a.name}RepositoryImpl`, pkg: REPO_IMPL_PKG,
+    imports: [...deps].sort(),
+    interfaceName: `${a.name}Repository`,
+    aggregateName: `${a.name}Aggregate`,
+    commandFamilyName: `${a.name}CommandFamily`,
     noteIds: a.noteId ? [a.noteId] : [],
   };
 }

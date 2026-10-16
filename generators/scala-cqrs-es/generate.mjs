@@ -12,14 +12,15 @@ import {
 } from './builders/models.mjs';
 import { valueObjectModel } from './builders/valueObjects.mjs';
 import { protoModels } from './builders/protos.mjs';
-import { converterModel, eventAdapterModel, snapshotAdapterModel } from './builders/persistence.mjs';
+import { converterModel, eventAdapterModel, snapshotAdapterModel, repositoryImplModel } from './builders/persistence.mjs';
+import { aggregateBootstrapModel, projectionBootstrapModel, applicationBootstrapModel } from './builders/bootstrap.mjs';
 import {
   renderProtocol, renderRoot, renderEntity, renderEventHandler, renderRepository,
   renderFactory, renderBehaviors, renderHelpers,
 } from './templates/scala.mjs';
 import { renderValueObject } from './templates/valueObject.mjs';
 import { renderProto } from './templates/proto.mjs';
-import { renderEventAdapter, renderSnapshotAdapter, renderConverters } from './templates/persistence.mjs';
+import { renderEventAdapter, renderSnapshotAdapter, renderConverters, renderRepositoryImpl, renderAggregateBootstrap, renderProjectionBootstrap, renderApplicationBootstrap } from './templates/persistence.mjs';
 
 // di-poc multi-module layout (user ruling 2026-10-12): kind → module router.
 // kernel = domain core (akka-persistence/sharding/guice deps live there); ext = repo impls +
@@ -139,6 +140,39 @@ export function generate({ canonical, options = {} }) {
       content: renderConverters(cm, env),
       kind: 'proto-converters', schemaCategory: 'aggregate', schemaNode: a.name, families: [a.name], deps: [], noteIds: cm.noteIds,
     });
+    // Aggregate RepositoryImpl (V4-18): the sharding entity-ref implementation at the live
+    // infrastructure path (its interface — skeleton kind 'repository' — already deps-name the
+    // impl stem, so concern closures pull this row whenever the repository regenerates).
+    const rim = repositoryImplModel(a);
+    entries.push({
+      path: `app/net/imadz/metarch/infrastructure/repositories/aggregate/${a.name}RepositoryImpl.scala`,
+      content: renderRepositoryImpl(rim, env),
+      kind: 'repository-impl', schemaCategory: 'aggregate', schemaNode: a.name, families: [a.name], deps: [`${a.name}Aggregate`, `${a.name}Repository`], noteIds: rim.noteIds,
+    });
+    // Aggregate bootstrap glue (V4-18) — port-closed for aggregates with fnSpec ports (债④).
+    const abm = aggregateBootstrapModel(a);
+    entries.push({
+      path: `app/net/imadz/metarch/infrastructure/bootstrap/${a.name}Bootstrap.scala`,
+      content: renderAggregateBootstrap(abm, env),
+      kind: 'bootstrap', schemaCategory: 'aggregate', schemaNode: a.name, families: [a.name], deps: [`${a.name}Aggregate`, `${a.name}Behaviors`, `${a.name}EventHandler`], noteIds: a.noteId ? [a.noteId] : [],
+    });
   }
+  // Projection bootstrap glue (V4-18): one <View>Bootstrap per ③-layer-def projection (43 —
+  // the retired PauseProject tombstone stays live-only, disclosed in the identity report), plus
+  // the ApplicationBootstrap composite wiring all of them.
+  for (const v of canonical.projectionViews ?? []) {
+    const pbm = projectionBootstrapModel(v, canonical);
+    entries.push({
+      path: `app/net/imadz/metarch/infrastructure/bootstrap/${pbm.name}.scala`,
+      content: renderProjectionBootstrap(pbm, env),
+      kind: 'bootstrap', schemaCategory: 'projection', schemaNode: pbm.projName, families: [pbm.projName], deps: [`${pbm.projName}`, `${pbm.repoName}`], noteIds: v.noteId ? [v.noteId] : [],
+    });
+  }
+  const appBoot = applicationBootstrapModel(canonical);
+  entries.push({
+    path: 'app/net/imadz/metarch/infrastructure/bootstrap/ApplicationBootstrap.scala',
+    content: renderApplicationBootstrap(appBoot, env),
+    kind: 'application-bootstrap', schemaCategory: 'aggregate', schemaNode: 'ApplicationBootstrap', families: [], deps: [], noteIds: [],
+  });
   return entries;
 }
