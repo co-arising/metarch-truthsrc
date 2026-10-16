@@ -255,6 +255,14 @@ export function generate({ canonical, options = {} }) {
     release: kr ?? null,
   });
 
+  // V4-23 — the RETIRED-emitter support controllers (territory_lib: 「生成器已不产·切流准备
+  // 2026-09-26」 in-service routes): GraphApiController / HealthController / MetaController are
+  // engine-stamped static bytes with no living emitter — carried verbatim from the live tree via
+  // the retired-controllers sidecar (the stale-generations precedent), disclosed in the report.
+  const retired = options.retiredControllers ?? {};
+  for (const [p, content] of Object.entries(retired)) {
+    entries.push({ path: p, content, kind: 'support-controller', schemaCategory: 'aggregate', schemaNode: p.split('/').pop().replace('.scala', ''), families: [], deps: [], noteIds: [] });
+  }
   return entries;
 }
 

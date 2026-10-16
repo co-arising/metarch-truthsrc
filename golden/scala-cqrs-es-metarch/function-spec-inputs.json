@@ -1,0 +1,384 @@
+{
+  "functions": [
+    {
+      "id": "ComputePatchHash",
+      "zh": "计算知识补丁内容指纹（PR≈commit id）",
+      "category": "domain.event-construction",
+      "anchoredTo": "command:SubmitKnowledgePatch",
+      "seam": {
+        "codeAnchor": "@knowledge",
+        "noteRef": "command:SubmitKnowledgePatch",
+        "implPoint": "KnowledgePatchRules.SubmitKnowledgePatchRule"
+      },
+      "signature": {
+        "inputs": [
+          {
+            "name": "concepts",
+            "type": "List<ConceptDelta>",
+            "from": "SubmitKnowledgePatch.concepts"
+          },
+          {
+            "name": "relations",
+            "type": "List<RelationDelta>",
+            "from": "SubmitKnowledgePatch.relations"
+          },
+          {
+            "name": "parentPatchId",
+            "type": "Id",
+            "from": "SubmitKnowledgePatch.parentPatchId"
+          },
+          {
+            "name": "parentPatchHash",
+            "type": "String",
+            "from": "SubmitKnowledgePatch.parentPatchHash"
+          }
+        ],
+        "output": {
+          "name": "patchHash",
+          "type": "String"
+        },
+        "algorithm": "sha256Hex(canonicalJson(concepts ++ relations ++ [parentPatchId.toString] ++ [parentPatchHash]))"
+      },
+      "connector": "canonical-sha256",
+      "callExpr": "net.imadz.metarch.domain.service.ContentFingerprint.computePatchHash({args})",
+      "implRef": "impl/computePatchHash.mjs",
+      "real": true,
+      "io": {
+        "reads": [],
+        "writes": []
+      },
+      "anchoredNoteId": "15287c83-6f3d-4194-b962-2365e26d29b4"
+    },
+    {
+      "id": "ComputeCatalogStateHash",
+      "zh": "计算目录版本状态指纹（目录快照·tree SHA 类比）",
+      "category": "domain.state-fold",
+      "anchoredTo": "command:AssembleMetadata",
+      "seam": {
+        "codeAnchor": "@knowledge",
+        "noteRef": "command:AssembleMetadata",
+        "implPoint": "ModelCatalogEventHandler.MetadataAssembled"
+      },
+      "signature": {
+        "inputs": [
+          {
+            "name": "manifest",
+            "type": "String",
+            "from": "MetadataAssembled.manifest（事件载荷·折叠输入必须事件里有）"
+          },
+          {
+            "name": "parentStateHash",
+            "type": "String",
+            "from": "state:stateHash"
+          }
+        ],
+        "output": {
+          "name": "stateHash",
+          "type": "String"
+        },
+        "algorithm": "sha256Hex(canonicalJson(manifest ++ [parentStateHash]))"
+      },
+      "connector": "canonical-sha256",
+      "callExpr": "net.imadz.metarch.domain.service.ContentFingerprintAccess.fingerprint.computeCatalogStateHash({args})",
+      "portTrait": "net.imadz.metarch.domain.service.ContentFingerprintPort",
+      "scalaImpl": "net.imadz.metarch.domain.service.ContentFingerprintBridge",
+      "implRef": "impl/computeCatalogStateHash.mjs",
+      "real": true,
+      "io": {
+        "reads": [],
+        "writes": []
+      },
+      "anchoredNoteId": "45126419-72dd-46fb-8920-139f9a80888a"
+    },
+    {
+      "id": "ApplyConceptDeltas",
+      "zh": "应用概念增量到名字索引（唯一键 → Id → hash 三阶判定 ＋ 折叠）",
+      "category": "domain.state-fold",
+      "anchoredTo": "event:KnowledgePatched",
+      "seam": {
+        "codeAnchor": "@knowledge",
+        "noteRef": "event:KnowledgePatched",
+        "implPoint": "ModelCatalogEventHandler.KnowledgePatched"
+      },
+      "signature": {
+        "inputs": [
+          {
+            "name": "concepts",
+            "type": "List<ConceptDelta>",
+            "from": "KnowledgePatched.concepts（事件直载·非嵌套 VO——①层 VO.Member 不可投影）"
+          },
+          {
+            "name": "conceptIndex",
+            "type": "List<ConceptIndexEntry>",
+            "from": "state:conceptIndex"
+          }
+        ],
+        "output": {
+          "name": "conceptIndex",
+          "type": "List<ConceptIndexEntry>"
+        },
+        "algorithm": "foldIndex(conceptIndex, resolveAll(conceptIndex, concepts))"
+      },
+      "connector": "concept-delta-resolve",
+      "callExpr": "net.imadz.metarch.domain.service.ConceptDeltaAdjudicatorAccess.adjudicator.applyDeltas({args})",
+      "portTrait": "net.imadz.metarch.domain.service.ConceptDeltaAdjudicator",
+      "scalaImpl": "net.imadz.metarch.domain.service.ConceptDeltaResolver",
+      "implRef": "impl/applyConceptDeltas.mjs",
+      "real": true,
+      "io": {
+        "reads": [],
+        "writes": []
+      },
+      "anchoredNoteId": "658b16a8-92ae-48eb-be10-b85826fdb7c3"
+    },
+    {
+      "id": "DetectConceptConflicts",
+      "zh": "检测概念增量冲突（同键异号／无号／声称存在而库里没有）",
+      "category": "domain.event-construction",
+      "anchoredTo": "command:DetectCatalogConflicts",
+      "seam": {
+        "codeAnchor": "@knowledge",
+        "noteRef": "command:DetectCatalogConflicts",
+        "implPoint": "ModelCatalogRules.DetectCatalogConflictsRule"
+      },
+      "signature": {
+        "inputs": [
+          {
+            "name": "concepts",
+            "type": "List<ConceptDelta>",
+            "from": "ApplyKnowledgePatch.concepts（命令参数·决策侧）"
+          },
+          {
+            "name": "conceptIndex",
+            "type": "List<ConceptIndexEntry>",
+            "from": "state:conceptIndex"
+          }
+        ],
+        "output": {
+          "name": "conflicts",
+          "type": "List<CatalogConflict>"
+        },
+        "algorithm": "resolveAll(conceptIndex, concepts).conflicts"
+      },
+      "connector": "concept-delta-resolve",
+      "callExpr": "net.imadz.metarch.domain.service.ConceptDeltaAdjudicatorAccess.adjudicator.conflicts({args})",
+      "portTrait": "net.imadz.metarch.domain.service.ConceptDeltaAdjudicator",
+      "scalaImpl": "net.imadz.metarch.domain.service.ConceptDeltaResolver",
+      "implRef": "impl/detectConceptConflicts.mjs",
+      "real": true,
+      "io": {
+        "reads": [],
+        "writes": []
+      },
+      "anchoredNoteId": "061f7abd-f40a-4415-aac3-865647716e03"
+    }
+  ],
+  "cases": [
+    {
+      "id": "CASE-STATEHASH-IDEMPOTENT-KEYORDER",
+      "zh": "manifest 键序不同（b,a）→ 与 (a,b) 同指纹（canonical 吸收键序）",
+      "function": "ComputeCatalogStateHash",
+      "given": {
+        "manifest": "{\"b\":2,\"a\":1}",
+        "parentStateHash": null
+      },
+      "when": "ComputeCatalogStateHash",
+      "then": {
+        "output": {
+          "stateHash": "58fbe9ad9c7a525bbb2912f03a07b3072a3f7ae3d2b421f0536b04745f1cc945"
+        }
+      }
+    },
+    {
+      "id": "CASE-STATEHASH-IDEMPOTENT-WHITESPACE",
+      "zh": "manifest 带空白/换行 → 与紧凑形式同指纹（空白是表示）",
+      "function": "ComputeCatalogStateHash",
+      "given": {
+        "manifest": "{ \"a\": 1, \"b\": 2 }",
+        "parentStateHash": null
+      },
+      "when": "ComputeCatalogStateHash",
+      "then": {
+        "output": {
+          "stateHash": "58fbe9ad9c7a525bbb2912f03a07b3072a3f7ae3d2b421f0536b04745f1cc945"
+        },
+        "equal": "CASE-STATEHASH-IDEMPOTENT-KEYORDER"
+      }
+    },
+    {
+      "id": "CASE-STATEHASH-CONTENT-SENSITIVE",
+      "zh": "manifest 内容变（b:2→3）→ 指纹变",
+      "function": "ComputeCatalogStateHash",
+      "given": {
+        "manifest": "{\"a\":1,\"b\":3}",
+        "parentStateHash": null
+      },
+      "when": "ComputeCatalogStateHash",
+      "then": {
+        "output": {
+          "stateHash": "bb5c1314c81879846328ee95c00f0968890b02e00c53960abe65e111d5f05221"
+        },
+        "notEqual": "CASE-STATEHASH-IDEMPOTENT-KEYORDER"
+      }
+    },
+    {
+      "id": "CASE-STATEHASH-PARENT-SENSITIVE",
+      "zh": "manifest 相同但父快照指纹不同 → 指纹不同（快照链）",
+      "function": "ComputeCatalogStateHash",
+      "given": {
+        "manifest": "{\"a\":1,\"b\":2}",
+        "parentStateHash": "prevhash"
+      },
+      "when": "ComputeCatalogStateHash",
+      "then": {
+        "output": {
+          "stateHash": "109342fbc1c4ab88e1a7b0fec230c5a584108e73a0b242b7003251f6b11ab714"
+        },
+        "notEqual": "CASE-STATEHASH-IDEMPOTENT-KEYORDER"
+      }
+    },
+    {
+      "id": "CASE-PATCHHASH-DETERMINISTIC",
+      "zh": "同一组 deltas 反复计算 → 同一指纹（内容寻址）",
+      "function": "ComputePatchHash",
+      "given": {
+        "concepts": [
+          {
+            "action": "ADD",
+            "conceptName": "KnowledgePatch",
+            "contextId": "ctx-1",
+            "noteIds": [
+              "n-1"
+            ],
+            "definition": "知识补丁"
+          }
+        ],
+        "relations": [],
+        "parentPatchId": null,
+        "parentPatchHash": null
+      },
+      "when": "ComputePatchHash",
+      "then": {
+        "output": {
+          "patchHash": "824cad037b7d5a0651701cfe5c162ab468266ce2f280b977261a222cd2b2f0e3"
+        }
+      }
+    },
+    {
+      "id": "CASE-PATCHHASH-ORDER-SENSITIVE",
+      "zh": "两个 delta 交换顺序 → 指纹不同（序是内容）",
+      "function": "ComputePatchHash",
+      "given": {
+        "concepts": [
+          {
+            "action": "ADD",
+            "conceptName": "B",
+            "contextId": "ctx-1",
+            "noteIds": [],
+            "definition": "B"
+          },
+          {
+            "action": "ADD",
+            "conceptName": "A",
+            "contextId": "ctx-1",
+            "noteIds": [],
+            "definition": "A"
+          }
+        ],
+        "relations": [],
+        "parentPatchId": null,
+        "parentPatchHash": null
+      },
+      "when": "ComputePatchHash",
+      "then": {
+        "output": {
+          "patchHash": "ed9c413b1e4ec295df61927cc1b0ce6778a059707a4bce875c3e21a083357c2d"
+        }
+      }
+    },
+    {
+      "id": "CASE-PATCHHASH-PARENT-SENSITIVE",
+      "zh": "同上 deltas 但 parentPatchId 不同 → 指纹不同（stacked PR 语义）",
+      "function": "ComputePatchHash",
+      "given": {
+        "concepts": [
+          {
+            "action": "ADD",
+            "conceptName": "KnowledgePatch",
+            "contextId": "ctx-1",
+            "noteIds": [
+              "n-1"
+            ],
+            "definition": "知识补丁"
+          }
+        ],
+        "relations": [],
+        "parentPatchId": "P-0000",
+        "parentPatchHash": null
+      },
+      "when": "ComputePatchHash",
+      "then": {
+        "output": {
+          "patchHash": "998460f6c7f77d10376efa7236bcc27c632066896fa4878881d50bd9c82a1e1c"
+        },
+        "notEqual": "CASE-PATCHHASH-DETERMINISTIC"
+      }
+    },
+    {
+      "id": "CASE-PATCHHASH-PARENTHASH-SENSITIVE",
+      "zh": "父 id 相同但父**指纹**不同 → 指纹不同（哈希链·git commit hash 性质）",
+      "function": "ComputePatchHash",
+      "given": {
+        "concepts": [
+          {
+            "action": "ADD",
+            "conceptName": "KnowledgePatch",
+            "contextId": "ctx-1",
+            "noteIds": [
+              "n-1"
+            ],
+            "definition": "知识补丁"
+          }
+        ],
+        "relations": [],
+        "parentPatchId": "P-0000",
+        "parentPatchHash": "deadbeef"
+      },
+      "when": "ComputePatchHash",
+      "then": {
+        "output": {
+          "patchHash": "53c0b44e9042f349736e4229fc451990779080e7e4cd5ba4554e4c6ed1191dba"
+        },
+        "notEqual": "CASE-PATCHHASH-PARENT-SENSITIVE"
+      }
+    },
+    {
+      "id": "CASE-PATCHHASH-SELFHASH-SENSITIVE",
+      "zh": "parentPatchId 为空但 parentPatchHash 有值 → 与两者皆空不同（独立入账）",
+      "function": "ComputePatchHash",
+      "given": {
+        "concepts": [
+          {
+            "action": "ADD",
+            "conceptName": "KnowledgePatch",
+            "contextId": "ctx-1",
+            "noteIds": [
+              "n-1"
+            ],
+            "definition": "知识补丁"
+          }
+        ],
+        "relations": [],
+        "parentPatchId": null,
+        "parentPatchHash": "deadbeef"
+      },
+      "when": "ComputePatchHash",
+      "then": {
+        "output": {
+          "patchHash": "0d53c2f6bb1281b7731039acdce7f0afda9529aa28ccb4974efb25c2557bc650"
+        },
+        "notEqual": "CASE-PATCHHASH-DETERMINISTIC"
+      }
+    }
+  ]
+}

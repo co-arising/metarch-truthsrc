@@ -6,12 +6,7 @@
   "pushCondition": "byte-identical for every stamped artifact; isolation zone is the only exemption",
   "total": {
     "files": 1204,
-    "mustGenerate:Vega": 1,
-    "mustGenerate:gen_api_layer": 3,
-    "mustGenerate:gen_function_specs.mjs": 1,
-    "mustGenerate:gen_repository_specs.mjs": 2,
-    "mustGenerate:rules_domain_gen": 2,
-    "mustGenerate": 9,
+    "mustGenerate": 0,
     "isolation": 161
   },
   "groups": {
@@ -202,7 +197,7 @@
       ]
     },
     "measured": {
-      "count": 1018,
+      "count": 1024,
       "paths": [
         "app/controllers/AggregateStateApiController.scala",
         "app/controllers/CemEdgeApiController.scala",
@@ -212,7 +207,10 @@
         "app/controllers/DoRApiController.scala",
         "app/controllers/FieldModelDefinitionApiController.scala",
         "app/controllers/FsmDefinitionApiController.scala",
+        "app/controllers/GraphApiController.scala",
+        "app/controllers/HealthController.scala",
         "app/controllers/KnowledgePatchApiController.scala",
+        "app/controllers/MetaController.scala",
         "app/controllers/ModelCatalogApiController.scala",
         "app/controllers/NoteApiController.scala",
         "app/controllers/OrganizationMemberApiController.scala",
@@ -856,6 +854,8 @@
         "app/net/imadz/metarch/domain/policy/ModelCatalogPolicies.scala",
         "app/net/imadz/metarch/domain/policy/SessionPolicies.scala",
         "app/net/imadz/metarch/domain/policy/TenantPolicies.scala",
+        "app/net/imadz/metarch/domain/service/ConceptDeltaAdjudicator.scala",
+        "app/net/imadz/metarch/domain/service/ContentFingerprintPort.scala",
         "app/net/imadz/metarch/domain/values/AggregateRelationSpec.scala",
         "app/net/imadz/metarch/domain/values/CatalogConflict.scala",
         "app/net/imadz/metarch/domain/values/CatalogConflictSet.scala",
@@ -1206,6 +1206,7 @@
         "test/net/imadz/metarch/domain/policy/ModelCatalogPoliciesSpec.scala",
         "test/net/imadz/metarch/domain/policy/SessionPoliciesSpec.scala",
         "test/net/imadz/metarch/domain/policy/TenantPoliciesSpec.scala",
+        "test/net/imadz/metarch/domain/service/ContentFingerprintSpec.scala",
         "test/net/imadz/metarch/infrastructure/repositories/projection/AcceptTenantInvitationDecisionViewRepositorySpec.scala",
         "test/net/imadz/metarch/infrastructure/repositories/projection/CaptureNoteDecisionViewRepositorySpec.scala",
         "test/net/imadz/metarch/infrastructure/repositories/projection/ClassifySubdomainDecisionViewRepositorySpec.scala",
@@ -1225,7 +1226,7 @@
       ]
     },
     "reverse": {
-      "count": 16,
+      "count": 19,
       "paths": [
         "app/net/imadz/metarch/application/projection/KnInstanceProjection.scala",
         "app/net/imadz/metarch/application/projection/PauseProjectDecisionView.scala",
@@ -1242,41 +1243,10 @@
         "app/net/imadz/metarch/application/projection/repository/PauseProjectDecisionViewRepository.scala",
         "app/net/imadz/metarch/domain/values/UcStep.scala",
         "app/net/imadz/metarch/infrastructure/bootstrap/PauseProjectDecisionViewBootstrap.scala",
-        "app/net/imadz/metarch/infrastructure/repositories/projection/PauseProjectDecisionViewRepositoryImpl.scala"
-      ]
-    },
-    "stamped:Vega": {
-      "count": 1,
-      "paths": [
-        "test/net/imadz/common/auth/TokenServiceSpec.scala"
-      ]
-    },
-    "stamped:gen_api_layer": {
-      "count": 3,
-      "paths": [
-        "app/controllers/GraphApiController.scala",
-        "app/controllers/HealthController.scala",
-        "app/controllers/MetaController.scala"
-      ]
-    },
-    "stamped:gen_function_specs.mjs": {
-      "count": 1,
-      "paths": [
-        "test/net/imadz/metarch/domain/service/ContentFingerprintSpec.scala"
-      ]
-    },
-    "stamped:gen_repository_specs.mjs": {
-      "count": 2,
-      "paths": [
+        "app/net/imadz/metarch/infrastructure/repositories/projection/PauseProjectDecisionViewRepositoryImpl.scala",
+        "test/net/imadz/common/auth/TokenServiceSpec.scala",
         "test/net/imadz/metarch/infrastructure/repositories/projection/OpenSessionDecisionViewRepositorySpec.scala",
         "test/net/imadz/metarch/infrastructure/repositories/projection/ScheduleWorkshopDecisionViewRepositorySpec.scala"
-      ]
-    },
-    "stamped:rules_domain_gen": {
-      "count": 2,
-      "paths": [
-        "app/net/imadz/metarch/domain/service/ConceptDeltaAdjudicator.scala",
-        "app/net/imadz/metarch/domain/service/ContentFingerprintPort.scala"
       ]
     }
   }

@@ -4,24 +4,25 @@
   "canonical": "golden/scala-cqrs-es-metarch/full-corpus.canonical.json",
   "aggregates": 27,
   "counts": {
-    "rows": 1100,
+    "rows": 1106,
     "byStatus": {
-      "identical": 975,
+      "identical": 981,
       "owned-by-other": 108,
       "stale-live": 16,
       "live-missing": 1
     },
     "identicalByFace": {
       "skeleton": 345,
-      "rules": 199,
-      "api": 35,
+      "rules": 201,
+      "api": 38,
       "projection": 369,
       "policyExec": 25,
+      "functionSpecs": 1,
       "ddl": 2
     },
     "diffByKind": {},
     "stampOnlyDiff": 345,
-    "reverseRows": 16,
+    "reverseRows": 19,
     "genErrors": {}
   },
   "rows": [
@@ -4449,6 +4450,24 @@
     },
     {
       "face": "rules",
+      "kind": "port",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/domain/service/ConceptDeltaAdjudicator.scala",
+      "livePath": "app/net/imadz/metarch/domain/service/ConceptDeltaAdjudicator.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-10-04（port 声明面·债④余账批）"
+    },
+    {
+      "face": "rules",
+      "kind": "port",
+      "aggregate": null,
+      "path": "app/net/imadz/metarch/domain/service/ContentFingerprintPort.scala",
+      "livePath": "app/net/imadz/metarch/domain/service/ContentFingerprintPort.scala",
+      "status": "identical",
+      "liveOwner": "rules_domain_gen:2026-10-04（port 声明面·债④余账批）"
+    },
+    {
+      "face": "rules",
       "kind": "behaviors-rules",
       "aggregate": "CemEdge",
       "path": "modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/CemEdgeBehaviors.scala",
@@ -6312,12 +6331,39 @@
     },
     {
       "face": "api",
+      "kind": "support-controller",
+      "aggregate": null,
+      "path": "app/controllers/GraphApiController.scala",
+      "livePath": "app/controllers/GraphApiController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-24 (B3 graph query & backfill; Phase 4 2026-10-09 backfill 四腿退役——活投影 ConceptGraphView 实时增量兜底·消费面零真实调用)"
+    },
+    {
+      "face": "api",
+      "kind": "support-controller",
+      "aggregate": null,
+      "path": "app/controllers/HealthController.scala",
+      "livePath": "app/controllers/HealthController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-24 (健康检查——E2E 冒烟/运维探针)"
+    },
+    {
+      "face": "api",
       "kind": "controller",
       "aggregate": "KnowledgePatch",
       "path": "app/controllers/KnowledgePatchApiController.scala",
       "livePath": "app/controllers/KnowledgePatchApiController.scala",
       "status": "identical",
       "liveOwner": "gen_api_layer:2026-08-26"
+    },
+    {
+      "face": "api",
+      "kind": "support-controller",
+      "aggregate": null,
+      "path": "app/controllers/MetaController.scala",
+      "livePath": "app/controllers/MetaController.scala",
+      "status": "identical",
+      "liveOwner": "gen_api_layer:2026-08-24 (R4 元数据契约服务)"
     },
     {
       "face": "api",
@@ -10258,6 +10304,15 @@
       "liveOwner": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
     },
     {
+      "face": "functionSpecs",
+      "kind": "function-spec",
+      "aggregate": null,
+      "path": "test/net/imadz/metarch/domain/service/ContentFingerprintSpec.scala",
+      "livePath": "test/net/imadz/metarch/domain/service/ContentFingerprintSpec.scala",
+      "status": "identical",
+      "liveOwner": "gen_function_specs.mjs（EP 行为层锚·2026-09-21）—— 请勿手改"
+    },
+    {
       "face": "ddl",
       "kind": "projection-ddl",
       "aggregate": "Context",
@@ -10356,6 +10411,21 @@
       "kind": "relic",
       "aggregate": null,
       "livePath": "app/net/imadz/metarch/infrastructure/bootstrap/PauseProjectDecisionViewBootstrap.scala"
+    },
+    {
+      "kind": "relic",
+      "aggregate": null,
+      "livePath": "test/net/imadz/metarch/infrastructure/repositories/projection/OpenSessionDecisionViewRepositorySpec.scala"
+    },
+    {
+      "kind": "relic",
+      "aggregate": null,
+      "livePath": "test/net/imadz/metarch/infrastructure/repositories/projection/ScheduleWorkshopDecisionViewRepositorySpec.scala"
+    },
+    {
+      "kind": "session-handwritten",
+      "aggregate": null,
+      "livePath": "test/net/imadz/common/auth/TokenServiceSpec.scala"
     }
   ]
 }

@@ -42,12 +42,13 @@ const sidecar = (f) => JSON.parse(fs.readFileSync(join(PROJ_GOLD, f), 'utf8'));
 const GENS = {
   skeleton: { dir: join(ROOT, 'generators', 'scala-cqrs-es'), options: { generatorVersion: 'a0fca3da', elementHashes, relics: { skipValueObjects: ['UcStep'] } } },
   rules: { dir: join(ROOT, 'generators', 'scala-cqrs-es-rules'), options: { generatedBy: 'rules_domain_gen:2026-08-23', elementHashes } },
-  api: { dir: join(ROOT, 'generators', 'scala-cqrs-es-api'), options: { elementHashes } },
+  api: { dir: join(ROOT, 'generators', 'scala-cqrs-es-api'), options: { elementHashes, retiredControllers: JSON.parse(fs.readFileSync(join(GOLD, '..', 'scala-cqrs-es-api-metarch', 'retired-controllers.json'), 'utf8')) } },
   projection: {
     dir: join(ROOT, 'generators', 'scala-cqrs-es-projection'),
     options: { elementHashes, manualBlocks: sidecar('manual-blocks.json'), protoFields: sidecar('proto-fields.json'), staleGenerations: sidecar('stale-generations.json') },
   },
   policyExec: { dir: join(ROOT, 'generators', 'scala-cqrs-es-policy-exec'), options: {} },
+  functionSpecs: { dir: join(ROOT, 'generators', 'scala-cqrs-es-function-specs'), options: { functionSpecs: JSON.parse(fs.readFileSync(join(GOLD, 'function-spec-inputs.json'), 'utf8')) } },
   ddl: { dir: join(ROOT, 'generators', 'scala-cqrs-es-ddl'), options: {} },
 };
 
@@ -104,6 +105,8 @@ function liveOwner(rel) {
   if (/^app\/net\/imadz\/metarch\/(application\/projection\/policy\/|infrastructure\/bootstrap\/PolicyOn)/.test(rel)) return { owner: 'policyExec', stamp };
   // the repository-spec face rides the projection generator (V4-20) — its stamp names the tool
   if (stamp.startsWith('gen_repository_specs')) return { owner: 'projection', stamp };
+  // the Function oracle-spec face (V4-22)
+  if (stamp.startsWith('gen_function_specs')) return { owner: 'functionSpecs', stamp };
   if (/^app\/net\/imadz\/metarch\/(application\/projection|infrastructure\/repositories\/projection)\//.test(rel)) return { owner: 'projection', stamp };
   if (rel === 'app/controllers/AggregateStateApiController.scala') return { owner: 'api', stamp };
   if (rel === 'conf/sql/2.sql' || rel === 'conf/sql/5-pgvector.sql') return { owner: 'ddl', stamp };
@@ -126,7 +129,7 @@ function contentEqualsModuloStamp(emitted, live) {
   const restA = emitted.replace(STAMP_RX, ''), restB = live.replace(STAMP_RX, '');
   return { equal: restA === restB, stampOnly: restA === restB && emitted !== live };
 }
-const FAMILY = { skeleton: 'skeleton', rules: 'rules', api: 'api', projection: 'projection', policyExec: 'policyExec', ddl: 'ddl' };
+const FAMILY = { skeleton: 'skeleton', rules: 'rules', api: 'api', projection: 'projection', policyExec: 'policyExec', functionSpecs: 'functionSpecs', ddl: 'ddl' };
 
 // --- run the three generators ---------------------------------------------------------------
 const rows = [];
@@ -245,6 +248,14 @@ const globals = ['ViewKeys', 'CommandRoleMap', 'CommandDsl'].map((n) => [n === '
     // (c028adad), ①-layer note gone, the current chain's ApplicationBootstrap no longer wires
     // it; the glue face emits the 43 live projections + 27 aggregates and skips this one.
     ['relic', `${pkgBase}/infrastructure/bootstrap/PauseProjectDecisionViewBootstrap.scala`],
+    // OpenSession/ScheduleWorkshop repository specs (V4-22): the CURRENT source skips both
+    // (List<ParticipantRole> MANUAL-stub views) while the live files predate the source state —
+    // the spec face emits the 17 current-form views and discloses these two.
+    ['relic', `test/${pkgBase.replace('app/', '')}/infrastructure/repositories/projection/OpenSessionDecisionViewRepositorySpec.scala`],
+    ['relic', `test/${pkgBase.replace('app/', '')}/infrastructure/repositories/projection/ScheduleWorkshopDecisionViewRepositorySpec.scala`],
+    // TokenServiceSpec (V4-22): a Vega-session artifact (login-500 diagnosis batch) — no
+    // generator exists; session-authored territory, disclosed for the isolation-zone ruling.
+    ['session-handwritten', 'test/net/imadz/common/auth/TokenServiceSpec.scala'],
   ]);
 const reverseRows = [];
 for (const [kind, tpl] of perAggKinds) {

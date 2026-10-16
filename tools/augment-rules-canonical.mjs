@@ -333,12 +333,16 @@ const portDecls = [];
     if (!inPorts) continue;
     if (/^\S/.test(line)) break; // next top-level key — section over
     let m;
-    if ((m = line.match(/^\s*-\s+fq:\s*(\S+)/))) { cur = { fq: m[1], methods: [], bridgeFq: null, testRef: null }; inBridge = false; portDecls.push(cur); continue; }
+    if ((m = line.match(/^\s*-\s+fq:\s*(\S+)/))) { cur = { fq: m[1], zh: null, methods: [], bridgeFq: null, testRef: null, bridge: null }; inBridge = false; portDecls.push(cur); continue; }
     if (!cur) continue;
+    if ((m = line.match(/^\s*zh:\s*(.+?)\s*(?:#.*)?$/)) && cur.zh === null && !cur.methods.length) { cur.zh = m[1].replace(/^['"]|['"]$/g, ''); continue; }
     if ((m = line.match(/^\s*testRef:\s*(\S+)/)) && cur.testRef === null) { cur.testRef = m[1]; continue; }
-    if (/^\s*bridge:\s*$/.test(line)) { inBridge = true; continue; }
+    if (/^\s*bridge:\s*(?:#.*)?$/.test(line)) { inBridge = true; continue; }
     if ((m = line.match(/^\s*-\s+sig:\s*'([^']+)'/))) { cur.methods.push({ sig: m[1] }); continue; }
+    if ((m = line.match(/^\s*zh:\s*(.+?)\s*(?:#.*)?$/)) && cur.methods.length) { cur.methods[cur.methods.length - 1].zh = m[1].replace(/^['"]|['"]$/g, ''); continue; }
     if (inBridge && (m = line.match(/^\s+fq:\s*(\S+)/)) && cur.bridgeFq === null) { cur.bridgeFq = m[1]; continue; }
+    if (inBridge && (m = line.match(/^\s+target:\s*(\S+)/))) { cur.bridge = { ...(cur.bridge ?? {}), fq: cur.bridgeFq, target: m[1] }; continue; }
+    if (inBridge && (m = line.match(/^\s+module:\s*(\S+)/))) { cur.bridge = { ...(cur.bridge ?? {}), fq: cur.bridgeFq, module: m[1] }; continue; }
   }
 }
 const declByFq = new Map(portDecls.map((d) => [d.fq, d]));
@@ -383,12 +387,14 @@ else delete agg.ports;
   let curId = null, inInputs = false;
   for (let i = 0; i < fnLines.length; i++) {
     const im = fnLines[i].match(/^\s*-\s+id:\s*(\S+)/);
-    if (im) { curId = im[1]; inInputs = false; fnById.set(curId, { inputs: [] }); continue; }
+    if (im) { curId = im[1]; inInputs = false; fnById.set(curId, { inputs: [], anchoredTo: undefined }); continue; }
     if (!curId) continue;
     if (/^\s*inputs:\s*$/.test(fnLines[i])) { inInputs = true; continue; }
     if (/^\S/.test(fnLines[i])) { curId = null; inInputs = false; continue; } // left the functions: list
     const cm2 = fnLines[i].match(/^\s*callExpr:\s*'([^']+)'/);
     if (cm2) fnById.get(curId).callExpr = cm2[1];
+    const am2 = fnLines[i].match(/^\s*anchoredTo:\s*(\S+)/);
+    if (am2 && fnById.get(curId).anchoredTo === undefined) fnById.get(curId).anchoredTo = am2[1];
     const tm2 = fnLines[i].match(/^\s*portTrait:\s*(\S+)/);
     if (tm2 && !fnById.get(curId).portTrait) fnById.get(curId).portTrait = tm2[1];
     const im2 = inInputs && fnLines[i].match(/-\s*\{\s*name:\s*(\w+),.*?from:\s*'([^']*)'/);
@@ -412,7 +418,7 @@ else delete agg.ports;
   const fnSpecs = {};
   for (const id of foldFnIds) {
     const spec = fnById.get(id);
-    if (spec?.callExpr) fnSpecs[id] = { callExpr: spec.callExpr, inputs: spec.inputs };
+    if (spec?.callExpr) fnSpecs[id] = { callExpr: spec.callExpr, inputs: spec.inputs, ...(spec.anchoredTo ? { anchoredTo: spec.anchoredTo } : {}) };
   }
   if (Object.keys(fnSpecs).length) agg.fnSpecs = fnSpecs;
   else delete agg.fnSpecs;
@@ -568,6 +574,18 @@ const policies = [];
 }
 if (policies.length) agg.policies = policies;
 else delete agg.policies;
+
+// V4-22: the port-DECLARATION face's global input (rules_domain_gen tail section iterates the
+// whole functions.yaml ports: list once per run — trait method face + bridge wiring + zh).
+// canonical-level slot (build-full-corpus keeps fragment #0's, like voCatalog).
+canonical.portDeclarations = portDecls.map((d) => ({
+  fq: d.fq,
+  ...(d.zh ? { zh: d.zh } : {}),
+  methods: d.methods,
+  ...(d.bridgeFq ? { bridgeFq: d.bridgeFq } : {}),
+  ...(d.bridge ? { bridge: d.bridge } : {}),
+  ...(d.testRef ? { testRef: d.testRef } : {}),
+}));
 
 // --- withPost bit (conservative): any attached EVENT_POSTCONDITION rule exists at all ----------
 // The exact survivor filter (event-construction conflict guard) is the inc9 generator's job; this

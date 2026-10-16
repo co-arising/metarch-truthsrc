@@ -6409,16 +6409,19 @@
           "implKind": null,
           "methods": [
             {
-              "sig": "def hasConflicts(deltas: List[ConceptDelta], conceptIndex: List[ConceptIndexEntry]): Boolean"
+              "sig": "def hasConflicts(deltas: List[ConceptDelta], conceptIndex: List[ConceptIndexEntry]): Boolean",
+              "zh": "决策腿（原 expr: hasConflicts）"
             },
             {
-              "sig": "def conflicts(deltas: List[ConceptDelta], conceptIndex: List[ConceptIndexEntry]): List[CatalogConflict]"
+              "sig": "def conflicts(deltas: List[ConceptDelta], conceptIndex: List[ConceptIndexEntry]): List[CatalogConflict]",
+              "zh": "决策腿冲突集（原 expr: conflicts）"
             },
             {
-              "sig": "def applyDeltas(deltas: List[ConceptDelta], conceptIndex: List[ConceptIndexEntry]): List[ConceptIndexEntry]"
+              "sig": "def applyDeltas(deltas: List[ConceptDelta], conceptIndex: List[ConceptIndexEntry]): List[ConceptIndexEntry]",
+              "zh": "折叠腿（原 EventHandler expr: applyDeltas）"
             }
           ],
-          "bridgeFq": null,
+          "bridgeFq": "net.imadz.metarch.domain.service.ConceptDeltaAdjudicatorBridge",
           "testRef": "TestAdjudicators.resolverBased"
         }
       ],
@@ -6491,7 +6494,8 @@
               "name": "conceptIndex",
               "from": "state:conceptIndex"
             }
-          ]
+          ],
+          "anchoredTo": "event:KnowledgePatched"
         },
         "ComputeCatalogStateHash": {
           "callExpr": "net.imadz.metarch.domain.service.ContentFingerprintAccess.fingerprint.computeCatalogStateHash({args})",
@@ -6504,7 +6508,8 @@
               "name": "parentStateHash",
               "from": "state:stateHash"
             }
-          ]
+          ],
+          "anchoredTo": "command:AssembleMetadata"
         }
       },
       "foldPorts": [
@@ -6517,16 +6522,19 @@
           "implKind": null,
           "methods": [
             {
-              "sig": "def hasConflicts(deltas: List[ConceptDelta], conceptIndex: List[ConceptIndexEntry]): Boolean"
+              "sig": "def hasConflicts(deltas: List[ConceptDelta], conceptIndex: List[ConceptIndexEntry]): Boolean",
+              "zh": "决策腿（原 expr: hasConflicts）"
             },
             {
-              "sig": "def conflicts(deltas: List[ConceptDelta], conceptIndex: List[ConceptIndexEntry]): List[CatalogConflict]"
+              "sig": "def conflicts(deltas: List[ConceptDelta], conceptIndex: List[ConceptIndexEntry]): List[CatalogConflict]",
+              "zh": "决策腿冲突集（原 expr: conflicts）"
             },
             {
-              "sig": "def applyDeltas(deltas: List[ConceptDelta], conceptIndex: List[ConceptIndexEntry]): List[ConceptIndexEntry]"
+              "sig": "def applyDeltas(deltas: List[ConceptDelta], conceptIndex: List[ConceptIndexEntry]): List[ConceptIndexEntry]",
+              "zh": "折叠腿（原 EventHandler expr: applyDeltas）"
             }
           ],
-          "bridgeFq": null,
+          "bridgeFq": "net.imadz.metarch.domain.service.ConceptDeltaAdjudicatorBridge",
           "testRef": "TestAdjudicators.resolverBased"
         },
         {
@@ -6538,16 +6546,19 @@
           "implKind": null,
           "methods": [
             {
-              "sig": "def computePatchHash(concepts: JsArray, relations: JsArray, parentPatchId: String, parentPatchHash: String): String"
+              "sig": "def computePatchHash(concepts: JsArray, relations: JsArray, parentPatchId: String, parentPatchHash: String): String",
+              "zh": "补丁指纹（JsArray 形·pr≈commit id）"
             },
             {
-              "sig": "def computePatchHash(concepts: List[ConceptDelta], relations: List[RelationDelta], parentPatchId: String, parentPatchHash: String): String"
+              "sig": "def computePatchHash(concepts: List[ConceptDelta], relations: List[RelationDelta], parentPatchId: String, parentPatchHash: String): String",
+              "zh": "补丁指纹（领域双载）"
             },
             {
-              "sig": "def computeCatalogStateHash(manifest: String, parentStateHash: String): String"
+              "sig": "def computeCatalogStateHash(manifest: String, parentStateHash: String): String",
+              "zh": "目录版本状态指纹（tree SHA 类比）"
             }
           ],
-          "bridgeFq": null,
+          "bridgeFq": "net.imadz.metarch.domain.service.ContentFingerprintBridge",
           "testRef": "net.imadz.metarch.domain.service.ContentFingerprintBridge"
         }
       ],
@@ -44211,6 +44222,57 @@
           "dataType": "List[ParticipantRole]"
         }
       ]
+    }
+  ],
+  "portDeclarations": [
+    {
+      "fq": "net.imadz.metarch.domain.service.ConceptDeltaAdjudicator",
+      "zh": "概念增量裁决 port（决策腿＋冲突集＋折叠腿）",
+      "methods": [
+        {
+          "sig": "def hasConflicts(deltas: List[ConceptDelta], conceptIndex: List[ConceptIndexEntry]): Boolean",
+          "zh": "决策腿（原 expr: hasConflicts）"
+        },
+        {
+          "sig": "def conflicts(deltas: List[ConceptDelta], conceptIndex: List[ConceptIndexEntry]): List[CatalogConflict]",
+          "zh": "决策腿冲突集（原 expr: conflicts）"
+        },
+        {
+          "sig": "def applyDeltas(deltas: List[ConceptDelta], conceptIndex: List[ConceptIndexEntry]): List[ConceptIndexEntry]",
+          "zh": "折叠腿（原 EventHandler expr: applyDeltas）"
+        }
+      ],
+      "bridgeFq": "net.imadz.metarch.domain.service.ConceptDeltaAdjudicatorBridge",
+      "bridge": {
+        "fq": "net.imadz.metarch.domain.service.ConceptDeltaAdjudicatorBridge",
+        "target": "net.imadz.metarch.domain.service.ConceptDeltaResolver",
+        "module": "ext"
+      },
+      "testRef": "TestAdjudicators.resolverBased"
+    },
+    {
+      "fq": "net.imadz.metarch.domain.service.ContentFingerprintPort",
+      "zh": "内容指纹 port（kernel-logics 静态焊点升 port·POC-3 ep-poc3-04）",
+      "methods": [
+        {
+          "sig": "def computePatchHash(concepts: JsArray, relations: JsArray, parentPatchId: String, parentPatchHash: String): String",
+          "zh": "补丁指纹（JsArray 形·pr≈commit id）"
+        },
+        {
+          "sig": "def computePatchHash(concepts: List[ConceptDelta], relations: List[RelationDelta], parentPatchId: String, parentPatchHash: String): String",
+          "zh": "补丁指纹（领域双载）"
+        },
+        {
+          "sig": "def computeCatalogStateHash(manifest: String, parentStateHash: String): String",
+          "zh": "目录版本状态指纹（tree SHA 类比）"
+        }
+      ],
+      "bridgeFq": "net.imadz.metarch.domain.service.ContentFingerprintBridge",
+      "bridge": {
+        "fq": "net.imadz.metarch.domain.service.ContentFingerprintBridge",
+        "target": "net.imadz.metarch.domain.service.ContentFingerprint"
+      },
+      "testRef": "net.imadz.metarch.domain.service.ContentFingerprintBridge"
     }
   ]
 }
