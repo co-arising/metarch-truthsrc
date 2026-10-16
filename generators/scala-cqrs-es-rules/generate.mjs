@@ -14,6 +14,7 @@
 import { behaviorsModel, commandHelpersModel, ruleParamsModel } from './builders/models.mjs';
 import { rulesFaceModel } from './builders/rules_face.mjs';
 import { eventHandlerRulesModel } from './builders/eventhandler_face.mjs';
+import { tddSpecModel, executableSpecConfig } from './builders/tddSpecs.mjs';
 import { policiesModel, parseRuleParamsSigs } from './builders/policies_face.mjs';
 import { renderBehaviors, renderEventHandlerRules, renderHelpers, renderPolicies, renderPoliciesSpec, renderRuleParams, renderRules, renderRulesSpec } from './templates/scala.mjs';
 
@@ -38,6 +39,7 @@ export function generate({ canonical, options = {} }) {
     voSigs: canonical.valueObjectSigs ?? [],
     voCatalog: canonical.voCatalog ?? [],
     excludedStateFieldNatures: canonical.excludedStateFieldNatures ?? [],
+    knowledgeRelease: kr,
   };
 
   const entries = [];
@@ -79,12 +81,26 @@ export function generate({ canonical, options = {} }) {
     // kind 'event-handlers', deps inherited, event noteIds + causedBy attached). No fieldMeta →
     // no file (source [SKIP-EH] parity).
     const eh = eventHandlerRulesModel(a, env);
+    const ehContent = eh ? renderEventHandlerRules(eh) : null;
     if (eh) {
       entries.push({
         path: `${MODULE}/src/main/scala/${pkgPath}/domain/entities/behaviors/${a.name}EventHandler.scala`,
-        content: renderEventHandlerRules(eh),
+        content: ehContent,
         kind: 'event-handlers', schemaCategory: 'entity', schemaNode: `${a.name}EventHandler`, families: [a.name],
         deps: [`${a.name}Entity`], noteIds: eh.noteIds, ...(eh.causedBy.length ? { causedBy: eh.causedBy } : {}),
+      });
+    }
+    // V4-21 — the behavior ExecutableSpec face (tdd_test_gen.mjs port): the same-run generated
+    // EventHandler content feeds the SURGERY-KEEP direct-assignment scan (the engine scanned the
+    // live file — byte-identical). Aggregates with no executableCases still emit? No — the
+    // engine iterates the CASES roster (byAgg): no cases → no spec file.
+    if ((a.executableCases ?? []).length) {
+      const tdd = tddSpecModel(a, env, { ehContent, eventNoteIds: canonical.eventNoteIds ?? {} });
+      entries.push({
+        path: `test/net/imadz/metarch/behavior/${a.name}ExecutableSpec.scala`,
+        content: tdd.spec,
+        kind: 'executable-spec', schemaCategory: 'aggregate', schemaNode: `${a.name}ExecutableSpec`, families: [a.name],
+        deps: [`${a.name}Behaviors`, `${a.name}EventHandler`], noteIds: tdd.noteIds,
       });
     }
     // Policies (inc10): the S2-44 reaction face — the Params-field types come from the rendered
@@ -103,6 +119,16 @@ export function generate({ canonical, options = {} }) {
         kind: 'policies-spec', schemaCategory: 'aggregate', schemaNode: `${a.name}PoliciesSpec`, families: [a.name], deps: [`${a.name}Policies`],
       });
     }
+  }
+  // the shared testkit config rides the run when any ExecutableSpec was emitted (the engine
+  // writes it unconditionally per run; the corpus always has cases, and the single-aggregate
+  // slices carry their aggregate's cases — global row, families []).
+  if ((canonical.aggregates ?? []).some((a) => (a.executableCases ?? []).length)) {
+    entries.push({
+      path: 'test/net/imadz/metarch/behavior/ExecutableSpecConfig.scala',
+      content: executableSpecConfig(env),
+      kind: 'executable-spec', schemaCategory: 'global', schemaNode: 'ExecutableSpecConfig', families: [], deps: [],
+    });
   }
   return entries;
 }

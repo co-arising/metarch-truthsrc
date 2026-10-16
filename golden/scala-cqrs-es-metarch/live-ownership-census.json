@@ -11,8 +11,7 @@
     "mustGenerate:gen_function_specs.mjs": 1,
     "mustGenerate:gen_repository_specs.mjs": 2,
     "mustGenerate:rules_domain_gen": 2,
-    "mustGenerate:tdd_test_gen": 27,
-    "mustGenerate": 36,
+    "mustGenerate": 9,
     "isolation": 161
   },
   "groups": {
@@ -203,7 +202,7 @@
       ]
     },
     "measured": {
-      "count": 991,
+      "count": 1018,
       "paths": [
         "app/controllers/AggregateStateApiController.scala",
         "app/controllers/CemEdgeApiController.scala",
@@ -1148,6 +1147,33 @@
         "conf/routes",
         "conf/sql/2.sql",
         "conf/sql/5-pgvector.sql",
+        "test/net/imadz/metarch/behavior/CemEdgeExecutableSpec.scala",
+        "test/net/imadz/metarch/behavior/ConceptExecutableSpec.scala",
+        "test/net/imadz/metarch/behavior/ContextExecutableSpec.scala",
+        "test/net/imadz/metarch/behavior/ContextRelationExecutableSpec.scala",
+        "test/net/imadz/metarch/behavior/DoRExecutableSpec.scala",
+        "test/net/imadz/metarch/behavior/ExecutableSpecConfig.scala",
+        "test/net/imadz/metarch/behavior/FieldModelDefinitionExecutableSpec.scala",
+        "test/net/imadz/metarch/behavior/FsmDefinitionExecutableSpec.scala",
+        "test/net/imadz/metarch/behavior/KnowledgePatchExecutableSpec.scala",
+        "test/net/imadz/metarch/behavior/ModelCatalogExecutableSpec.scala",
+        "test/net/imadz/metarch/behavior/NoteExecutableSpec.scala",
+        "test/net/imadz/metarch/behavior/OrganizationMemberExecutableSpec.scala",
+        "test/net/imadz/metarch/behavior/ProjectExecutableSpec.scala",
+        "test/net/imadz/metarch/behavior/QuestionExecutableSpec.scala",
+        "test/net/imadz/metarch/behavior/ReadModelDefinitionExecutableSpec.scala",
+        "test/net/imadz/metarch/behavior/RelationExecutableSpec.scala",
+        "test/net/imadz/metarch/behavior/RoleCommandBindingExecutableSpec.scala",
+        "test/net/imadz/metarch/behavior/SessionExecutableSpec.scala",
+        "test/net/imadz/metarch/behavior/StageExecutableSpec.scala",
+        "test/net/imadz/metarch/behavior/SubdomainExecutableSpec.scala",
+        "test/net/imadz/metarch/behavior/TenantExecutableSpec.scala",
+        "test/net/imadz/metarch/behavior/TruthSourceProvenanceExecutableSpec.scala",
+        "test/net/imadz/metarch/behavior/UserExecutableSpec.scala",
+        "test/net/imadz/metarch/behavior/ValueObjectDefinitionExecutableSpec.scala",
+        "test/net/imadz/metarch/behavior/WorkTicketExecutableSpec.scala",
+        "test/net/imadz/metarch/behavior/WorkgroupExecutableSpec.scala",
+        "test/net/imadz/metarch/behavior/WorkshopExecutableSpec.scala",
         "test/net/imadz/metarch/domain/invariant/CemEdgeRulesSpec.scala",
         "test/net/imadz/metarch/domain/invariant/ConceptRulesSpec.scala",
         "test/net/imadz/metarch/domain/invariant/ContextRelationRulesSpec.scala",
@@ -1251,38 +1277,6 @@
       "paths": [
         "app/net/imadz/metarch/domain/service/ConceptDeltaAdjudicator.scala",
         "app/net/imadz/metarch/domain/service/ContentFingerprintPort.scala"
-      ]
-    },
-    "stamped:tdd_test_gen": {
-      "count": 27,
-      "paths": [
-        "test/net/imadz/metarch/behavior/CemEdgeExecutableSpec.scala",
-        "test/net/imadz/metarch/behavior/ConceptExecutableSpec.scala",
-        "test/net/imadz/metarch/behavior/ContextExecutableSpec.scala",
-        "test/net/imadz/metarch/behavior/ContextRelationExecutableSpec.scala",
-        "test/net/imadz/metarch/behavior/DoRExecutableSpec.scala",
-        "test/net/imadz/metarch/behavior/ExecutableSpecConfig.scala",
-        "test/net/imadz/metarch/behavior/FieldModelDefinitionExecutableSpec.scala",
-        "test/net/imadz/metarch/behavior/FsmDefinitionExecutableSpec.scala",
-        "test/net/imadz/metarch/behavior/KnowledgePatchExecutableSpec.scala",
-        "test/net/imadz/metarch/behavior/ModelCatalogExecutableSpec.scala",
-        "test/net/imadz/metarch/behavior/NoteExecutableSpec.scala",
-        "test/net/imadz/metarch/behavior/OrganizationMemberExecutableSpec.scala",
-        "test/net/imadz/metarch/behavior/ProjectExecutableSpec.scala",
-        "test/net/imadz/metarch/behavior/QuestionExecutableSpec.scala",
-        "test/net/imadz/metarch/behavior/ReadModelDefinitionExecutableSpec.scala",
-        "test/net/imadz/metarch/behavior/RelationExecutableSpec.scala",
-        "test/net/imadz/metarch/behavior/RoleCommandBindingExecutableSpec.scala",
-        "test/net/imadz/metarch/behavior/SessionExecutableSpec.scala",
-        "test/net/imadz/metarch/behavior/StageExecutableSpec.scala",
-        "test/net/imadz/metarch/behavior/SubdomainExecutableSpec.scala",
-        "test/net/imadz/metarch/behavior/TenantExecutableSpec.scala",
-        "test/net/imadz/metarch/behavior/TruthSourceProvenanceExecutableSpec.scala",
-        "test/net/imadz/metarch/behavior/UserExecutableSpec.scala",
-        "test/net/imadz/metarch/behavior/ValueObjectDefinitionExecutableSpec.scala",
-        "test/net/imadz/metarch/behavior/WorkTicketExecutableSpec.scala",
-        "test/net/imadz/metarch/behavior/WorkgroupExecutableSpec.scala",
-        "test/net/imadz/metarch/behavior/WorkshopExecutableSpec.scala"
       ]
     }
   }

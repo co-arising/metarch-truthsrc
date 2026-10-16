@@ -44,7 +44,7 @@ const { entries } = await plan({
     elementHashes: JSON.parse(readFileSync(HASHES, 'utf8')),
   },
 });
-equal(entries.length, 8);
+equal(entries.length, 10); // V4-21: +ModelCatalogExecutableSpec + the shared ExecutableSpecConfig (tdd face rides the rules generator)
 for (const e of entries) {
   const want = readFileSync(join(GOLD, e.path), 'utf8');
   equal(e.content, want, `byte identity: ${e.path}`);

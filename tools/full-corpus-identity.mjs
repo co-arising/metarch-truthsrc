@@ -108,6 +108,8 @@ function liveOwner(rel) {
   if (rel === 'app/controllers/AggregateStateApiController.scala') return { owner: 'api', stamp };
   if (rel === 'conf/sql/2.sql' || rel === 'conf/sql/5-pgvector.sql') return { owner: 'ddl', stamp };
   if (stamp.startsWith('CodegenMain:')) return { owner: 'skeleton', stamp };
+  // the behavior ExecutableSpec face rides the rules generator (V4-21) — the tool's stamp
+  if (stamp.startsWith('tdd_test_gen')) return { owner: 'rules', stamp };
   if (stamp.startsWith('rules_domain_gen:')) return { owner: 'rules', stamp };
   if (stamp.startsWith('gen_api_layer:')) return { owner: 'api', stamp };
   return { owner: 'unknown', stamp };

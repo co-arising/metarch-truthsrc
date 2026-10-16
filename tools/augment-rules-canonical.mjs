@@ -333,8 +333,9 @@ const portDecls = [];
     if (!inPorts) continue;
     if (/^\S/.test(line)) break; // next top-level key — section over
     let m;
-    if ((m = line.match(/^\s*-\s+fq:\s*(\S+)/))) { cur = { fq: m[1], methods: [], bridgeFq: null }; inBridge = false; portDecls.push(cur); continue; }
+    if ((m = line.match(/^\s*-\s+fq:\s*(\S+)/))) { cur = { fq: m[1], methods: [], bridgeFq: null, testRef: null }; inBridge = false; portDecls.push(cur); continue; }
     if (!cur) continue;
+    if ((m = line.match(/^\s*testRef:\s*(\S+)/)) && cur.testRef === null) { cur.testRef = m[1]; continue; }
     if (/^\s*bridge:\s*$/.test(line)) { inBridge = true; continue; }
     if ((m = line.match(/^\s*-\s+sig:\s*'([^']+)'/))) { cur.methods.push({ sig: m[1] }); continue; }
     if (inBridge && (m = line.match(/^\s+fq:\s*(\S+)/)) && cur.bridgeFq === null) { cur.bridgeFq = m[1]; continue; }
@@ -358,7 +359,7 @@ const referenced = [...portByMember.values()]
   .filter((p) => exprStrings.some((s) => s.includes(`${p.member}.`)))
   .map((p) => {
     const decl = declByFq.get(`${p.fqPkg}.${p.trait}`);
-    return { ...p, ...(decl ? { methods: decl.methods, bridgeFq: decl.bridgeFq } : {}) };
+    return { ...p, ...(decl ? { methods: decl.methods, bridgeFq: decl.bridgeFq, testRef: decl.testRef } : {}) };
   })
   .sort((a, b) => a.member.localeCompare(b.member));
 if (referenced.length) agg.ports = referenced;
@@ -443,7 +444,7 @@ else delete agg.ports;
     // member (PORT_RX m[3]); the root-face commandHandler signature needs it
     // (`fingerprint: net.imadz.metarch.domain.service.ContentFingerprintPort` — V4-9).
     const pbMem = [...portByMember.values()].find((p) => `${p.fqPkg}.${p.trait}` === fq) ?? null;
-    return { member: pbMem ? pbMem.member : null, trait, fqPkg, accessObj: accessByTraitFq.get(fq) ?? null, implFq, implKind, ...(decl ? { methods: decl.methods, bridgeFq: decl.bridgeFq } : {}) };
+    return { member: pbMem ? pbMem.member : null, trait, fqPkg, accessObj: accessByTraitFq.get(fq) ?? null, implFq, implKind, ...(decl ? { methods: decl.methods, bridgeFq: decl.bridgeFq, testRef: decl.testRef } : {}) };
   });
   if (foldPorts.length) agg.foldPorts = foldPorts;
   else delete agg.foldPorts;
