@@ -8,7 +8,7 @@
 // voCatalog (RAW fieldTree form).
 import { scalaSig } from './types.mjs';
 
-const PROTO_PKG = 'net.imadz.metarch.infrastructure.proto';
+export const PROTO_PKG = 'net.imadz.metarch.infrastructure.proto';
 const PRIMITIVES = new Set(['String', 'Int', 'Long', 'Double', 'Boolean', 'BigDecimal', 'Date', 'DateTime', 'UUID', 'Id', 'Currency']);
 
 export const toSnakeCase = (name) => {
@@ -24,7 +24,7 @@ const protoFileName = (agg) => `${toSnakeCase(agg)}.proto`;
 const lowerCamel = (s) => (s ? s[0].toLowerCase() + s.slice(1) : '');
 
 // dataType → { name, params } — the TypeRef face the builder walks (params nested one level).
-function typeRefOf(sig) {
+export function typeRefOf(sig) {
   const m = sig.match(/^(List|Option|Seq|Map)\[(.+)\]$/);
   if (!m) return { name: sig, params: [] };
   if (m[1] === 'Map') {
@@ -142,7 +142,7 @@ const tableOrderCompare = (hashA, hashB, len) => {
   if (ba !== bb) return ba - bb;
   return ia < ib ? -1 : ia > ib ? 1 : 0;
 };
-function collectReferencedVos(typeRefs, voNames, voByName, out) {
+export function collectReferencedVos(typeRefs, voNames, voByName, out) {
   const scan = (t) => {
     if (t.params.length) t.params.forEach(scan);
     if (PRIMITIVES.has(t.name) || t.name.startsWith('java.') || t.name.startsWith('scala.')) return;

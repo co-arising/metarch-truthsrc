@@ -4,24 +4,834 @@
   "canonical": "golden/scala-cqrs-es-metarch/full-corpus.canonical.json",
   "aggregates": 27,
   "counts": {
-    "rows": 852,
+    "rows": 933,
     "byStatus": {
-      "identical": 744,
+      "identical": 825,
       "owned-by-other": 108
     },
     "identicalByFace": {
-      "skeleton": 166,
+      "skeleton": 247,
       "rules": 172,
       "api": 35,
       "projection": 369,
       "ddl": 2
     },
     "diffByKind": {},
-    "stampOnlyDiff": 166,
+    "stampOnlyDiff": 247,
     "reverseRows": 15,
     "genErrors": {}
   },
   "rows": [
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "CemEdge",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/CemEdgeEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/CemEdgeEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "CemEdge",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/CemEdgeSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/CemEdgeSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "Concept",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/ConceptEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/ConceptEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "Concept",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/ConceptSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/ConceptSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "Context",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/ContextEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/ContextEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "ContextRelation",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/ContextRelationEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/ContextRelationEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "ContextRelation",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/ContextRelationSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/ContextRelationSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "Context",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/ContextSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/ContextSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "DoR",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/DoREventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/DoREventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "DoR",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/DoRSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/DoRSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/FieldModelDefinitionEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/FieldModelDefinitionEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/FieldModelDefinitionSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/FieldModelDefinitionSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "FsmDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/FsmDefinitionEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/FsmDefinitionEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "FsmDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/FsmDefinitionSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/FsmDefinitionSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "KnowledgePatch",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/KnowledgePatchEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/KnowledgePatchEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "KnowledgePatch",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/KnowledgePatchSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/KnowledgePatchSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/ModelCatalogEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/ModelCatalogEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/ModelCatalogSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/ModelCatalogSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "Note",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/NoteEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/NoteEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "Note",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/NoteSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/NoteSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/OrganizationMemberEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/OrganizationMemberEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/OrganizationMemberSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/OrganizationMemberSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "Project",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/ProjectEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/ProjectEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "Project",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/ProjectSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/ProjectSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "Question",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/QuestionEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/QuestionEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "Question",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/QuestionSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/QuestionSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "ReadModelDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/ReadModelDefinitionEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/ReadModelDefinitionEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "ReadModelDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/ReadModelDefinitionSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/ReadModelDefinitionSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "Relation",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/RelationEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/RelationEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "Relation",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/RelationSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/RelationSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "RoleCommandBinding",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/RoleCommandBindingEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/RoleCommandBindingEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "RoleCommandBinding",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/RoleCommandBindingSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/RoleCommandBindingSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "Session",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/SessionEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/SessionEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "Session",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/SessionSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/SessionSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "Stage",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/StageEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/StageEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "Stage",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/StageSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/StageSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "Subdomain",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/SubdomainEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/SubdomainEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "Subdomain",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/SubdomainSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/SubdomainSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "Tenant",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/TenantEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/TenantEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "Tenant",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/TenantSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/TenantSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "TruthSourceProvenance",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/TruthSourceProvenanceEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/TruthSourceProvenanceEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "TruthSourceProvenance",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/TruthSourceProvenanceSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/TruthSourceProvenanceSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "UseCaseDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/UseCaseDefinitionEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/UseCaseDefinitionEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "UseCaseDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/UseCaseDefinitionSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/UseCaseDefinitionSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "User",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/UserEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/UserEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "User",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/UserSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/UserSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "ValueObjectDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/ValueObjectDefinitionEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/ValueObjectDefinitionEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "ValueObjectDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/ValueObjectDefinitionSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/ValueObjectDefinitionSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "WorkTicket",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/WorkTicketEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/WorkTicketEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "WorkTicket",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/WorkTicketSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/WorkTicketSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "Workgroup",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/WorkgroupEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/WorkgroupEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "Workgroup",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/WorkgroupSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/WorkgroupSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "event-adapter",
+      "aggregate": "Workshop",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/WorkshopEventAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/WorkshopEventAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "snapshot-adapter",
+      "aggregate": "Workshop",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/WorkshopSnapshotAdapter.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/WorkshopSnapshotAdapter.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "CemEdge",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/CemEdgeProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/CemEdgeProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "Concept",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/ConceptProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/ConceptProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "Context",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/ContextProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/ContextProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "ContextRelation",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/ContextRelationProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/ContextRelationProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "DoR",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/DoRProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/DoRProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/FieldModelDefinitionProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/FieldModelDefinitionProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "FsmDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/FsmDefinitionProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/FsmDefinitionProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "KnowledgePatch",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/KnowledgePatchProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/KnowledgePatchProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "ModelCatalog",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/ModelCatalogProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/ModelCatalogProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "Note",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/NoteProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/NoteProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "OrganizationMember",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/OrganizationMemberProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/OrganizationMemberProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "Project",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/ProjectProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/ProjectProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "Question",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/QuestionProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/QuestionProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "ReadModelDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/ReadModelDefinitionProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/ReadModelDefinitionProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "Relation",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/RelationProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/RelationProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "RoleCommandBinding",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/RoleCommandBindingProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/RoleCommandBindingProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "Session",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/SessionProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/SessionProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "Stage",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/StageProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/StageProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "Subdomain",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/SubdomainProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/SubdomainProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "Tenant",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/TenantProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/TenantProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "TruthSourceProvenance",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/TruthSourceProvenanceProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/TruthSourceProvenanceProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "UseCaseDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/UseCaseDefinitionProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/UseCaseDefinitionProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "User",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/UserProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/UserProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "ValueObjectDefinition",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/ValueObjectDefinitionProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/ValueObjectDefinitionProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "WorkTicket",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/WorkTicketProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/WorkTicketProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "Workgroup",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/WorkgroupProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/WorkgroupProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-converters",
+      "aggregate": "Workshop",
+      "path": "app/net/imadz/metarch/infrastructure/persistence/converters/WorkshopProtoConverters.scala",
+      "livePath": "app/net/imadz/metarch/infrastructure/persistence/converters/WorkshopProtoConverters.scala",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
     {
       "face": "skeleton",
       "kind": "proto",

@@ -69,18 +69,18 @@ const optsRules = { generatedBy: 'rules_domain_gen:2026-08-23' };
 
 // full build: skeleton (no concern) → rules → api, both under `full` (overwrite allowed in scope)
 const r1 = await apply({ canonicalFile: CANON, generatorDir: GEN_SKEL, outDir: out, options: optsSkel });
-equal(r1.written, 40); // V4-16: 8 aggregate kinds + 30 value objects + 2 proto files (aggregate + shared)
+equal(r1.written, 43); // V4-16: 8 aggregate kinds + 30 value objects + 2 proto files; V4-17: +3 persistence (event/snapshot adapters + converters)
 const r2 = await apply({ canonicalFile: CANON, generatorDir: GEN_RULES, outDir: out, options: optsRules, concern: { name: 'full', families: null, registryFile: REG } });
 equal(r2.written, 8); // V4-10: the event-handler rewrite joined (8 rules paths, 3 shared-path upserts)
 equal(r2.kept, 0);
-equal(r2.inScope, 45, 'rules full run: scope = merged rows (8 skeleton + 5 new rules paths + 30 global VO rows + 2 proto rows)');
+equal(r2.inScope, 48, 'rules full run: scope = merged rows (11 skeleton + 5 new rules paths + 30 global VO rows + 2 proto rows)');
 const r3 = await apply({ canonicalFile: CANON, generatorDir: GEN_API, outDir: out, options: {}, concern: { name: 'full', families: null, registryFile: REG } });
 equal(r3.written, 8); // V4-13 vector + V4-14 aggregate-state controllers joined (8 api paths)
-equal(r3.inScope, 53, 'api full run: scope = merged rows (45 + 8 api paths)');
+equal(r3.inScope, 56, 'api full run: scope = merged rows (48 + 8 api paths)');
 // merged ledger: the rules face owns the shared Behaviors/CommandHelpers paths (final-writer-wins)
 {
   const ledger = JSON.parse(readFileSync(join(out, 'truthsrc.ledger.json'), 'utf8'));
-  equal(ledger.entries.length, 53, 'merged ledger = (skeleton 8 + VO 30 + proto 2) + rules 8 + api 8 − 3 shared-path upserts (Behaviors/CommandHelpers/EventHandler)');
+  equal(ledger.entries.length, 56, 'merged ledger = (skeleton 11: 8 + VO 30 + proto 2 + persistence 3) + rules 8 + api 8 − 3 shared-path upserts (Behaviors/CommandHelpers/EventHandler)');
   equal(ledger.entries.find((r) => r.path.endsWith('ModelCatalogBehaviors.scala')).kind, 'behaviors-rules');
   ok(ledger.concern && ledger.concern.name === 'full' && ledger.concern.scopeFileHash, 'concern audit chain in ledger');
 }
@@ -89,7 +89,7 @@ const snap = {};
 for (const f of JSON.parse(readFileSync(join(out, 'truthsrc.ledger.json'), 'utf8')).entries) {
   snap[f.path] = readFileSync(join(out, f.path), 'utf8');
 }
-equal(Object.keys(snap).length, 53); // V4-14: the aggregate-state controller joins the snapshot; V4-16: +30 value objects +2 proto files
+equal(Object.keys(snap).length, 56); // V4-14: +state controller; V4-16: +30 VOs +2 protos; V4-17: +3 persistence
 
 // mutate: ADD a state field (state-shape change — additive, so no rule text dangles) in a temp
 // canonical. Consumers verified against the builders: entityModel renders stateFields (Entity
@@ -109,15 +109,15 @@ const r4 = await apply({
   canonicalFile: CANON2, generatorDir: GEN_SKEL, outDir: out, options: optsSkel,
   concern: { name: 'event-journal-suite', families: 'ModelCatalog', registryFile: REG },
 });
-equal(r4.inScope, 9, 'scope = 3 predicate hits + 6 closure-pulled (root/factory/repo via the schemaNode key + the two glue paths via stems + the ModelCatalog proto row via the same key)');
-equal(r4.closureAdded, 6);
-equal(r4.kept, 0, 'all 8 skeleton paths + the proto row sit inside the closure for the single-family corpus');
+equal(r4.inScope, 12, 'scope = 3 predicate hits + 9 closure-pulled (root/factory/repo via the schemaNode key + the two glue paths via stems + the proto row and the V4-17 persistence trio via the same key)');
+equal(r4.closureAdded, 9);
+equal(r4.kept, 0, 'all 11 skeleton-face paths + the proto row sit inside the closure for the single-family corpus');
 {
   const ledger = JSON.parse(readFileSync(join(out, 'truthsrc.ledger.json'), 'utf8'));
   equal(ledger.concern.name, 'event-journal-suite');
   equal(ledger.concern.families, 'ModelCatalog');
-  equal(ledger.concern.inScope, 9);
-  equal(ledger.concern.closureAdded, 6);
+  equal(ledger.concern.inScope, 12);
+  equal(ledger.concern.closureAdded, 9);
 }
 
 // partition: changed files ⊆ scope; the state carrier pair changed; everything outside untouched
@@ -133,6 +133,9 @@ const scope4 = new Set([
   'modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ModelCatalogBehaviors.scala',
   'modules/kernel/src/main/scala/net/imadz/metarch/application/aggregates/behaviors/ModelCatalogCommandHelpers.scala',
   'app/protobuf/model_catalog.proto', // V4-16: StatePO carries the added state field
+  'app/net/imadz/metarch/infrastructure/persistence/ModelCatalogEventAdapter.scala', // V4-17 closure
+  'app/net/imadz/metarch/infrastructure/persistence/ModelCatalogSnapshotAdapter.scala', // V4-17 closure
+  'app/net/imadz/metarch/infrastructure/persistence/converters/ModelCatalogProtoConverters.scala', // V4-17: the state converter carries the added field
 ]);
 const changed = Object.keys(snap).filter((p) => snap[p] !== readFileSync(join(out, p), 'utf8'));
 ok(changed.length > 0, 'the mutation changed something');
@@ -156,6 +159,7 @@ equal(r6.identical, 8); // V4-13+V4-14: eight api paths (the vector/state contro
 // the new state shape by its own replay) — the transient glue clobber is fully undone.
 const stillChanged = Object.keys(snap).filter((p) => snap[p] !== readFileSync(join(out, p), 'utf8')).sort();
 deepEqual(stillChanged, [
+  'app/net/imadz/metarch/infrastructure/persistence/converters/ModelCatalogProtoConverters.scala', // V4-17: state converter picks up the field (skeleton face owns it)
   'app/protobuf/model_catalog.proto', // V4-16: StatePO carries the added state field — proto owns it
   'modules/kernel/src/main/scala/net/imadz/metarch/domain/entities/ModelCatalogEntity.scala',
   'modules/kernel/src/test/scala/net/imadz/metarch/domain/invariant/ModelCatalogRulesSpec.scala',
@@ -164,7 +168,7 @@ deepEqual(stillChanged, [
 // --plan preview: scopeOf + mergedRows without writing
 const { entries } = await import('../src/core/generate.mjs').then((m) => m.plan({ canonicalFile: CANON2, generatorDir: GEN_SKEL, options: optsSkel }));
 const preview = scopeOf(mergedRows(out, entries), { name: 'event-journal-suite', families: 'ModelCatalog', registryFile: REG });
-equal(preview.set.size, 9); // V4-16: the proto row joins via the schemaNode stem
+equal(preview.set.size, 12); // the proto row joins via the schemaNode stem; V4-17: +3 persistence rows via the same key
 
 
 console.log('✅ concerns.test — engine units + incremental-regeneration e2e all green');

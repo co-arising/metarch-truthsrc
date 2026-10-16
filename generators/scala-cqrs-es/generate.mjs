@@ -12,12 +12,14 @@ import {
 } from './builders/models.mjs';
 import { valueObjectModel } from './builders/valueObjects.mjs';
 import { protoModels } from './builders/protos.mjs';
+import { converterModel, eventAdapterModel, snapshotAdapterModel } from './builders/persistence.mjs';
 import {
   renderProtocol, renderRoot, renderEntity, renderEventHandler, renderRepository,
   renderFactory, renderBehaviors, renderHelpers,
 } from './templates/scala.mjs';
 import { renderValueObject } from './templates/valueObject.mjs';
 import { renderProto } from './templates/proto.mjs';
+import { renderEventAdapter, renderSnapshotAdapter, renderConverters } from './templates/persistence.mjs';
 
 // di-poc multi-module layout (user ruling 2026-10-12): kind → module router.
 // kernel = domain core (akka-persistence/sharding/guice deps live there); ext = repo impls +
@@ -116,6 +118,27 @@ export function generate({ canonical, options = {} }) {
   // content, like the DDL face at conf/sql.
   for (const file of protoModels(canonical, env)) {
     entries.push({ ...file, content: renderProto(file, env), schemaCategory: file.families.length ? 'aggregate' : 'global' });
+  }
+  // Persistence face (V4-17): per-aggregate Event/SnapshotAdapter + <Agg>ProtoConverters trait,
+  // at the live paths under app/net/imadz/metarch/infrastructure/persistence/.
+  for (const a of canonical.aggregates ?? []) {
+    const adapterBase = `app/net/imadz/metarch/infrastructure/persistence`;
+    entries.push({
+      path: `${adapterBase}/${a.name}EventAdapter.scala`,
+      content: renderEventAdapter(eventAdapterModel(a, env), env),
+      kind: 'event-adapter', schemaCategory: 'aggregate', schemaNode: a.name, families: [a.name], deps: [`${a.name}ProtoConverters`], noteIds: a.noteId ? [a.noteId] : [],
+    });
+    entries.push({
+      path: `${adapterBase}/${a.name}SnapshotAdapter.scala`,
+      content: renderSnapshotAdapter(snapshotAdapterModel(a), env),
+      kind: 'snapshot-adapter', schemaCategory: 'aggregate', schemaNode: a.name, families: [a.name], deps: [`${a.name}ProtoConverters`], noteIds: a.noteId ? [a.noteId] : [],
+    });
+    const cm = converterModel(a, canonical, env);
+    entries.push({
+      path: `${adapterBase}/converters/${a.name}ProtoConverters.scala`,
+      content: renderConverters(cm, env),
+      kind: 'proto-converters', schemaCategory: 'aggregate', schemaNode: a.name, families: [a.name], deps: [], noteIds: cm.noteIds,
+    });
   }
   return entries;
 }

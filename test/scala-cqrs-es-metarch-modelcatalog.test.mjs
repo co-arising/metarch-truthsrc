@@ -29,7 +29,9 @@ const { entries } = await plan({
   options: { generatorVersion: GOLDEN_VERSION, elementHashes, relics: { skipValueObjects: ['UcStep'] } }, // V4-16: VO face rides along (global voCatalog slot)
 });
 equal(entries.filter((e) => e.kind === 'value-object').length, 30, 'V4-16: 30 value objects ride the same canonical');
-for (const e of entries.filter((e) => e.kind !== 'value-object' && e.kind !== 'proto' && e.kind !== 'proto-shared')) {
+// V4-17: the persistence trio rides along too — corpus-gated against live in the metarch test.
+const RIDERS = ['value-object', 'proto', 'proto-shared', 'event-adapter', 'snapshot-adapter', 'proto-converters'];
+for (const e of entries.filter((e) => !RIDERS.includes(e.kind))) {
   const want = readFileSync(join(GOLD, 'expected', e.path), 'utf8');
   equal(e.content, want, `byte identity: ${e.path}`);
 }
