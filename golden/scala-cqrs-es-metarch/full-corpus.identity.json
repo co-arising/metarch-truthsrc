@@ -1,27 +1,307 @@
 {
-  "generatedAt": "2026-10-15",
+  "generatedAt": "2026-10-16",
   "live": "/Users/zhongdj/Workspaces/ingested-app",
   "canonical": "golden/scala-cqrs-es-metarch/full-corpus.canonical.json",
   "aggregates": 27,
   "counts": {
-    "rows": 824,
+    "rows": 852,
     "byStatus": {
-      "identical": 716,
+      "identical": 744,
       "owned-by-other": 108
     },
     "identicalByFace": {
-      "skeleton": 138,
+      "skeleton": 166,
       "rules": 172,
       "api": 35,
       "projection": 369,
       "ddl": 2
     },
     "diffByKind": {},
-    "stampOnlyDiff": 138,
+    "stampOnlyDiff": 166,
     "reverseRows": 15,
     "genErrors": {}
   },
   "rows": [
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "CemEdge",
+      "path": "app/protobuf/cem_edge.proto",
+      "livePath": "app/protobuf/cem_edge.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "Concept",
+      "path": "app/protobuf/concept.proto",
+      "livePath": "app/protobuf/concept.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "Context",
+      "path": "app/protobuf/context.proto",
+      "livePath": "app/protobuf/context.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "ContextRelation",
+      "path": "app/protobuf/context_relation.proto",
+      "livePath": "app/protobuf/context_relation.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "DoR",
+      "path": "app/protobuf/do_r.proto",
+      "livePath": "app/protobuf/do_r.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "FieldModelDefinition",
+      "path": "app/protobuf/field_model_definition.proto",
+      "livePath": "app/protobuf/field_model_definition.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "FsmDefinition",
+      "path": "app/protobuf/fsm_definition.proto",
+      "livePath": "app/protobuf/fsm_definition.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "KnowledgePatch",
+      "path": "app/protobuf/knowledge_patch.proto",
+      "livePath": "app/protobuf/knowledge_patch.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "ModelCatalog",
+      "path": "app/protobuf/model_catalog.proto",
+      "livePath": "app/protobuf/model_catalog.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "Note",
+      "path": "app/protobuf/note.proto",
+      "livePath": "app/protobuf/note.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "OrganizationMember",
+      "path": "app/protobuf/organization_member.proto",
+      "livePath": "app/protobuf/organization_member.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "Project",
+      "path": "app/protobuf/project.proto",
+      "livePath": "app/protobuf/project.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "Question",
+      "path": "app/protobuf/question.proto",
+      "livePath": "app/protobuf/question.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "ReadModelDefinition",
+      "path": "app/protobuf/read_model_definition.proto",
+      "livePath": "app/protobuf/read_model_definition.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "Relation",
+      "path": "app/protobuf/relation.proto",
+      "livePath": "app/protobuf/relation.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "RoleCommandBinding",
+      "path": "app/protobuf/role_command_binding.proto",
+      "livePath": "app/protobuf/role_command_binding.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "Session",
+      "path": "app/protobuf/session.proto",
+      "livePath": "app/protobuf/session.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto-shared",
+      "aggregate": null,
+      "path": "app/protobuf/shared_value_objects.proto",
+      "livePath": "app/protobuf/shared_value_objects.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "Stage",
+      "path": "app/protobuf/stage.proto",
+      "livePath": "app/protobuf/stage.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "Subdomain",
+      "path": "app/protobuf/subdomain.proto",
+      "livePath": "app/protobuf/subdomain.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "Tenant",
+      "path": "app/protobuf/tenant.proto",
+      "livePath": "app/protobuf/tenant.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "TruthSourceProvenance",
+      "path": "app/protobuf/truth_source_provenance.proto",
+      "livePath": "app/protobuf/truth_source_provenance.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "UseCaseDefinition",
+      "path": "app/protobuf/use_case_definition.proto",
+      "livePath": "app/protobuf/use_case_definition.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "User",
+      "path": "app/protobuf/user.proto",
+      "livePath": "app/protobuf/user.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "ValueObjectDefinition",
+      "path": "app/protobuf/value_object_definition.proto",
+      "livePath": "app/protobuf/value_object_definition.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "WorkTicket",
+      "path": "app/protobuf/work_ticket.proto",
+      "livePath": "app/protobuf/work_ticket.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "Workgroup",
+      "path": "app/protobuf/workgroup.proto",
+      "livePath": "app/protobuf/workgroup.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
+    {
+      "face": "skeleton",
+      "kind": "proto",
+      "aggregate": "Workshop",
+      "path": "app/protobuf/workshop.proto",
+      "livePath": "app/protobuf/workshop.proto",
+      "status": "identical",
+      "stampOnly": true,
+      "liveOwner": "CodegenMain:225ed28b"
+    },
     {
       "face": "skeleton",
       "kind": "aggregate-root",

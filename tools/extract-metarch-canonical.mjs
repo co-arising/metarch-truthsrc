@@ -111,6 +111,7 @@ function payloadField(p) {
   if (p.optional) o.optional = true;
   if (p.description) o.description = p.description;
   if (p.noteId) o.noteId = p.noteId;
+  if (p.introducedIn) o.introducedIn = p.introducedIn; // proto trailing-comment version marker (V4-16)
   const imp = voImportFor(sig);
   if (imp) o.typeImport = imp;
   return o;
@@ -121,6 +122,7 @@ function commandParam(p) {
   const o = { name: p.name, dataType: sig };
   if (p.optional) o.optional = true;
   if (p.noteId) o.noteId = p.noteId;
+  if (p.introducedIn) o.introducedIn = p.introducedIn; // proto trailing-comment version marker (V4-16)
   const imp = voImportFor(sig);
   if (imp) o.typeImport = imp;
   return o;

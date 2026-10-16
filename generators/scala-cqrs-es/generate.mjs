@@ -11,11 +11,13 @@ import {
   factoryModel, behaviorsModel, helpersModel,
 } from './builders/models.mjs';
 import { valueObjectModel } from './builders/valueObjects.mjs';
+import { protoModels } from './builders/protos.mjs';
 import {
   renderProtocol, renderRoot, renderEntity, renderEventHandler, renderRepository,
   renderFactory, renderBehaviors, renderHelpers,
 } from './templates/scala.mjs';
 import { renderValueObject } from './templates/valueObject.mjs';
+import { renderProto } from './templates/proto.mjs';
 
 // di-poc multi-module layout (user ruling 2026-10-12): kind → module router.
 // kernel = domain core (akka-persistence/sharding/guice deps live there); ext = repo impls +
@@ -108,6 +110,12 @@ export function generate({ canonical, options = {} }) {
       deps: model.referencedVos,
       noteIds: model.noteIds,
     });
+  }
+  // Persistence-contract proto face (V4-16 inc-b): 27 per-aggregate files + the shared
+  // value-object file. Emitted at the live single-module path (app/protobuf) — layout-independent
+  // content, like the DDL face at conf/sql.
+  for (const file of protoModels(canonical, env)) {
+    entries.push({ ...file, content: renderProto(file, env), schemaCategory: file.families.length ? 'aggregate' : 'global' });
   }
   return entries;
 }
