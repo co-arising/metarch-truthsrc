@@ -81,12 +81,13 @@ test('unknown ids fail gracefully with a search hint', () => {
 
 // ── BA: business analyst ─────────────────────────────────────────────────────
 test('BA-1: which policies does an event trigger?', () => {
-  // source: policies/*.policy.yaml — all six declare triggers: [{event: run-completed}]
+  // source: policies/*.policy.yaml — the three policies declare
+  // triggers: [{event: run-completed}] (dupes 38/39/40 removed 2026-10-18)
   const got = ids(policies_triggered_by(bank, 'run-completed'));
   assert.deepEqual(got, [
-    'policy:Batch Business Closure', 'policy:BatchBusinessClosure',
-    'policy:Failure Routing Decision', 'policy:FailureRoutingDecision',
-    'policy:Suspicious Reconfirmation', 'policy:SuspiciousReconfirmation',
+    'policy:Batch Business Closure',
+    'policy:Failure Routing Decision',
+    'policy:Suspicious Reconfirmation',
   ]);
 });
 
@@ -227,13 +228,11 @@ test('AR-4: how many read-models consume a field? (reverse lineage)', () => {
 });
 
 test('AR-5: duplicate policies sharing one trigger+invokes signature', () => {
-  // real finding in the bank tree: the three inbox-migrated policies (38/39/40)
-  // duplicate the three originals (35/36/37) — same triggers+invokes.
+  // regression guard: the three inbox-migrated dupes (38/39/40) were removed
+  // 2026-10-18; the tree must stay duplicate-free.
   const { findings } = consistency_check(bank).result;
   const dup = findings.filter((f) => f.type === 'duplicate-policy');
-  assert.equal(dup.length, 3);
-  assert.ok(dup.some((f) => f.policies.includes('policy:Batch Business Closure')
-    && f.policies.includes('policy:BatchBusinessClosure')));
+  assert.equal(dup.length, 0);
 });
 
 test('AR-6: orphans — unclaimed L1 cards and sourceless events', () => {
