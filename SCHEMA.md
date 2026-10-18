@@ -1,4 +1,4 @@
-# SCHEMA — truthsrc v0.4
+# SCHEMA — truthsrc v0.5
 
 The truth source is a **tree** of small YAML atom files. `compile` projects the
 tree to `canonical.json`; `decompose` is its byte-identical inverse. The tree is
@@ -11,7 +11,11 @@ assignments), value objects, read models, stories, use cases. **v0.4** —
 scenario A (trees reverse-engineered from code): the `pipeline` and `scenario`
 kinds; SEQ de-mechanicalized (flow position stays problem-space, renumbering is
 the compiler's job); the 13-artifact inbox layout (one workshop stage → one
-product); the problem-space vocabulary requirement. All shipped rules
+product); the problem-space vocabulary requirement. **v0.5** — the relation
+registry (22 declared relationships between knowledge elements, §"Relation
+registry"); R1/R2 validation rules for relation references; `lib/query.mjs`
+(the DESCRIBE-model query library: 10 verbs + registry-derived named verbs
+over compiled canonical.json). All shipped rules
 are production-verified: the reference generator (a Scala CQRS/ES stack) builds
 compiling code from exactly this vocabulary.
 
@@ -66,6 +70,8 @@ payload:                         # verbatim JSON — I3: the compiler never rewr
 | V3 | `payload.type`/`payload.name`/`payload.stage` (when present) agree with the header — for every atom kind | hard |
 | V12 | `seq` on aggregates and catalog atoms is **optional** (v0.4). When present: integer and collision-free. "Which aggregate is #n" is compiler-derived, not tree content — see "Two SEQs" | hard for present seqs |
 | SEQ1 | `seq` is all-or-nothing per family for ordering: mixed presence compiles (compiler falls back to file order) but the present seqs are ignored for ordering | notice |
+| R1 | every explicit `payload.links` `{relation, target}` object must name a declared registry relation, and the (atom-kind, relation, target-kind) triple must match a registry entry. Legacy string-form links (`event:X`, `A → B` lineage arrows) are **not** R1's business — V8/CS7/ES5 already govern those carriers | hard |
+| R2 | every relation target must resolve to an existing node: explicit-link targets (`"kind:id"`), role `can_issue[]` → slice commands (R12), role `can_view[]` → read-model ids (R13 inverse), read-model `fields[].source` `eventField:E.f` → known event E (R10). (Policy triggers/invokes already covered by V9, slice produces by V6b) | hard |
 
 ### Payload rules (I3 — verbatim)
 
@@ -387,6 +393,96 @@ the solution space:
 - ES4 (solution-language verbs in event names) remains a notice, but v0.4
   elevates the principle: the vocabulary requirement above is the convention
   every new atom is held to, in review as well as in the gate.
+
+## Relation registry (v0.5)
+
+Relationships between knowledge elements are **typed and declared**, a
+first-class metamodel citizen next to `ATOM_KINDS` (see `RELATION_REGISTRY` in
+`lib/shared.mjs`). Query verbs derive from it (§"Query library"): adding a
+relation grows the query surface without engine changes — verbs are grown, not
+designed.
+
+`propagates` marks whether the relation carries *impact* and is adjudicated by
+a human domain expert, not the tool (the flags below are the initial human
+ruling). `blast_radius` walks exactly the `propagates=true` edges, with
+"可能影响" (may-impact, over-approximate) semantics:宁多报，不漏报.
+
+| # | from → relation → to | propagates | 来源产物 | 说明 |
+|---|---|---|---|---|
+| R1 | aggregate —owns→ slice | ✅ | 03/06 | 结构归属 |
+| R2 | aggregate —references→ aggregate | ✅ | 07 | 聚合间引用（引用/基数/业务含义） |
+| R3 | aggregate —emits→ event | ✅ | 06 | 事件池归属 |
+| R4 | slice —issues→ command | ✅ | 02/06 | 切片发出命令（1:1，命令节点即其切片） |
+| R5 | slice —emits→ event | ✅ | 06 | 切片产生事件（定义归属） |
+| R6 | command —produces→ event | ✅ | 08 | 命令产生事件，条件见切片 guards |
+| R7 | event —triggers→ policy | ✅ | 10 | 事件触发政策 |
+| R8 | policy —constrains→ slice | ✅ | 10 | 政策约束切片 |
+| R9 | policy —invokes→ command | ✅ | 10 | 政策调用命令 |
+| R10 | read-model —derives-from→ field | ✅ | 09/13 | 读模型派生自字段（血缘） |
+| R11 | field —lineage→ field | ✅ | 09 | 字段血缘链 |
+| R12 | role —can-issue→ command | ❌ | 02 | 权限，不传播行为影响 |
+| R13 | read-model —visible-to→ role | ❌ | 13 | 权限，不传播行为影响 |
+| R14 | pipeline —has-step→ step | ✅ | 01 | 流程步骤 |
+| R15 | step —performed-by→ role | ❌ | 01/02 | 参与关系 |
+| R16 | step —executes→ slice | ✅ | 01/06 | 步骤执行切片 |
+| R17 | story —covers→ use-case | ❌ | 11/12 | 追溯，不传播 |
+| R18 | use-case —realized-by→ slice | ✅ | 12/06 | 用例由切片实现 |
+| R19 | scenario —exercises→ pipeline/slice | ❌ | 场景 | 演练路径 |
+| R20 | value-object —used-by→ aggregate/slice/field | ✅ | 06/08 | 值对象被使用 |
+| R21 | context —depends-on→ context | ✅ | 05 | 限界上下文依赖 |
+| R22 | aggregate —belongs-to→ subdomain | ❌ | 04 | 归属 |
+
+### Relation carriers (encoding decision)
+
+v0.5 keeps the **kind-specific fields** and defines this mapping table — it does
+*not* introduce a uniform `links` array. Rationale: a uniform array would force
+rewriting every atom of every existing tree and would break the roundtrip
+byte-identity gate (I2); the kind-specific fields already carry the relation
+data and are roundtrip-safe. Where no kind-specific carrier exists, an
+**explicit** `payload.links` object `{relation, target}` (target form
+`"kind:id"`, e.g. `{relation: "constrains", target: "slice:replay-exception"}`)
+fills the gap — R1/R2 validate it.
+
+| Relation | Carrier in the tree |
+|---|---|
+| R1 aggregate owns slice | aggregate dir + `order.commands[]` → slice(command) |
+| R2 aggregate references aggregate | explicit `{relation:"references", target}` (07 notes are prose-only in current trees) |
+| R3 aggregate emits event | `order.events[]` + slice `events` pool → event |
+| R4 slice issues command | synthesized 1:1 — one command per slice (V4/V5); the command node aliases its slice |
+| R5 slice emits event | slice `payload.produces[]` ∩ event pool (definitions live in the aggregate pool per V6) |
+| R6 command produces event | slice `payload.produces[]` (guards carry the conditions) |
+| R7 event triggers policy | policy `triggers[].event` (structured block; V7/V8 dual-track) |
+| R8 policy constrains slice | explicit `{relation:"constrains", target}` (no carrier in current trees) |
+| R9 policy invokes command | policy `invokes[].command` (structured block; V7/V8 dual-track) |
+| R10 read-model derives-from field | read-model `fields[].source` (`eventField:E.f` \| `aggregateIdentity`) |
+| R11 field lineage field | 09-lineage note `payload.links[]` `"A → B"` arrows (chains split pairwise) |
+| R12 role can-issue command | role note `payload.can_issue[]` |
+| R13 read-model visible-to role | read-model `payload.visible_to[]`; inverse populated from role `payload.can_view[]` |
+| R14 pipeline has-step step | pipeline `steps[]` (JSON block) |
+| R15 step performed-by role | `step.actor` (absent in current trees) |
+| R16 step executes slice | `step.slice` (absent in current trees) |
+| R17 story covers use-case | explicit `{relation:"covers", target}` (no carrier in current trees) |
+| R18 use-case realized-by slice | `use-cases.yaml` payload (no use-cases in current pilot trees) |
+| R19 scenario exercises pipeline | scenario `script` (free-form; no machine-readable carrier) |
+| R20 value-object used-by X | explicit `{relation:"used-by", target}` (dataType prose refs not parsed) |
+| R21 context depends-on context | 05-context-map notes (prose-only in current trees — needs from/to) |
+| R22 aggregate belongs-to subdomain | 04-subdomains (skipped in single-context trees) |
+
+### Query library (v0.5)
+
+`lib/query.mjs` — the DESCRIBE-model API over **compiled** `canonical.json`
+(not raw trees). Ten verbs: `describe(kind,id,full?)`, `expand(id,
+{depth=1, direction, relations, limit=100})`, `blast_radius(id, {depth=3})`
+(propagates-only edges), `lineage(field)`, `anchors(kind,id)`, `search(q)`,
+`conditions(command)`, `diff(a,b)`, `orphans()`, `consistency_check()` — plus
+registry-derived named verbs (`slices_of`, `policies_triggered_by`,
+`commands_of`, `read_models_of`, `steps_of`, `participants_of`,
+`consumed_by`, `trigger_source_of`, …).
+
+Uniform envelope: `{summary, result, next_actions[], budget{depth_used,
+nodes_visited}}`. `describe` defaults to summary; `full=true` returns the atom.
+`anchors()` honestly reports `{status:'unanchored', result:[]}` until the
+back-anchor work lands code anchors in canonical.json — never faked.
 
 ## Ownership distribution (where notes live)
 

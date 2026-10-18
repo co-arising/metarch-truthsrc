@@ -1,0 +1,3564 @@
+{
+  "schemaVersion": "truthsrc/v1",
+  "workshop": "bank-batch-transactor-demo",
+  "sessions": [
+    {
+      "session": "eventStorming",
+      "scopes": [
+        {
+          "scope": "reconstructed",
+          "notes": [
+            {
+              "type": "event",
+              "name": "ExceptionReplayed",
+              "name_zh": "人工重放完成",
+              "stage": "eventStorming",
+              "description": "A human reviewed a parked order and replayed it: the money moved (no fault injection this time), and the ledger moved except_pool → credited/paid together with the money — money, ledger and event feed always agree.",
+              "description_zh": "人工复核异常池订单后重放：资金确实到账（这次不注入故障），账本随资金一起从 except_pool 变为 credited/paid——钱、账、事件流永远一致。",
+              "info": {
+                "timeline": "batch-chain",
+                "sequence": 11,
+                "fields": [
+                  {
+                    "name": "chain",
+                    "dataType": "string",
+                    "description": ""
+                  },
+                  {
+                    "name": "customerId",
+                    "dataType": "string",
+                    "description": ""
+                  },
+                  {
+                    "name": "moneyMoved",
+                    "dataType": "boolean",
+                    "description": "true"
+                  },
+                  {
+                    "name": "newTerminal",
+                    "dataType": "string",
+                    "description": "credited 或 paid"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "event",
+              "name": "OrderCredited",
+              "name_zh": "充值入账",
+              "stage": "eventStorming",
+              "description": "A successfully classified recharge item settled: the customer's account was credited. Idempotent by customerId.",
+              "description_zh": "分类成功的充值项入账：客户账户增加金额。按 customerId 幂等。",
+              "info": {
+                "timeline": "batch-chain",
+                "sequence": 6,
+                "fields": [
+                  {
+                    "name": "chain",
+                    "dataType": "string",
+                    "description": "recharge"
+                  },
+                  {
+                    "name": "customerId",
+                    "dataType": "string",
+                    "description": ""
+                  },
+                  {
+                    "name": "amount",
+                    "dataType": "number",
+                    "description": "入账金额"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "event",
+              "name": "OrderEscalated",
+              "name_zh": "转人工",
+              "stage": "eventStorming",
+              "description": "A failed item needs a human: parked as manual with a ticket id for follow-up.",
+              "description_zh": "失败项需要人工：以工单号记为 manual 等待跟进。",
+              "info": {
+                "timeline": "batch-chain",
+                "sequence": 9,
+                "fields": [
+                  {
+                    "name": "chain",
+                    "dataType": "string",
+                    "description": ""
+                  },
+                  {
+                    "name": "customerId",
+                    "dataType": "string",
+                    "description": ""
+                  },
+                  {
+                    "name": "ticketId",
+                    "dataType": "string",
+                    "description": "如 MAX_RETRY_EXCEEDED-TIMEOUT"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "event",
+              "name": "OrderPaid",
+              "name_zh": "申购成交",
+              "stage": "eventStorming",
+              "description": "A successfully classified purchase item settled: balance debited, fund position increased. Idempotent by customerId.",
+              "description_zh": "分类成功的申购项成交：余额扣减、基金持仓增加。按 customerId 幂等。",
+              "info": {
+                "timeline": "batch-chain",
+                "sequence": 7,
+                "fields": [
+                  {
+                    "name": "chain",
+                    "dataType": "string",
+                    "description": "purchase"
+                  },
+                  {
+                    "name": "customerId",
+                    "dataType": "string",
+                    "description": ""
+                  },
+                  {
+                    "name": "amount",
+                    "dataType": "number",
+                    "description": ""
+                  },
+                  {
+                    "name": "fund",
+                    "dataType": "string",
+                    "description": "如 成长混合A"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "event",
+              "name": "OrderParkedInExceptionPool",
+              "name_zh": "进入异常池",
+              "stage": "eventStorming",
+              "description": "The account update failed twice; the order waits in the exception pool for human replay.",
+              "description_zh": "账务更新失败两次；订单进入异常池等待人工重放。",
+              "info": {
+                "timeline": "batch-chain",
+                "sequence": 10,
+                "fields": [
+                  {
+                    "name": "chain",
+                    "dataType": "string",
+                    "description": ""
+                  },
+                  {
+                    "name": "customerId",
+                    "dataType": "string",
+                    "description": ""
+                  }
+                ]
+              }
+            },
+            {
+              "type": "event",
+              "name": "OrderRejected",
+              "name_zh": "订单放弃",
+              "stage": "eventStorming",
+              "description": "A failed item was routed to abandon: terminal, no retry, no human. First write wins.",
+              "description_zh": "失败项被路由为放弃：终态，不重试、不转人工。第一次写入生效。",
+              "info": {
+                "timeline": "batch-chain",
+                "sequence": 8,
+                "fields": [
+                  {
+                    "name": "chain",
+                    "dataType": "string",
+                    "description": ""
+                  },
+                  {
+                    "name": "customerId",
+                    "dataType": "string",
+                    "description": ""
+                  },
+                  {
+                    "name": "reason",
+                    "dataType": "string",
+                    "description": "放弃原因"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "event",
+              "name": "RunCompleted",
+              "name_zh": "批次跑完",
+              "stage": "eventStorming",
+              "description": "All six stages finished; the run's classifications are final and the business closure takes over.",
+              "description_zh": "六阶段全部完成；本批的分类结果已定，业务收尾接手。",
+              "info": {
+                "timeline": "batch-chain",
+                "sequence": 4,
+                "fields": [
+                  {
+                    "name": "runId",
+                    "dataType": "string",
+                    "description": ""
+                  }
+                ]
+              }
+            },
+            {
+              "type": "event",
+              "name": "RunFailed",
+              "name_zh": "运行失败",
+              "stage": "eventStorming",
+              "description": "A stage failed with a classified error and no recovery rule resolved it; the run stops instead of silently continuing.",
+              "description_zh": "某阶段带着已分类的错误失败且无救回规则兜住；运行停下，不静默继续。",
+              "info": {
+                "timeline": "batch-chain",
+                "sequence": 5,
+                "fields": [
+                  {
+                    "name": "runId",
+                    "dataType": "string",
+                    "description": ""
+                  },
+                  {
+                    "name": "stage",
+                    "dataType": "string",
+                    "description": "出错的阶段"
+                  },
+                  {
+                    "name": "errorCode",
+                    "dataType": "string",
+                    "description": "如 ACK_TIMEOUT"
+                  },
+                  {
+                    "name": "detail",
+                    "dataType": "string",
+                    "description": "人可读的细节"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "event",
+              "name": "RunRecovered",
+              "name_zh": "断点恢复",
+              "stage": "eventStorming",
+              "description": "After an interruption the run resumed from the last recorded breakpoint; already-completed stages were skipped, not re-run.",
+              "description_zh": "中断后运行从最后记录的断点续跑；已完成的阶段跳过不重做。",
+              "info": {
+                "timeline": "batch-chain",
+                "sequence": 3,
+                "fields": [
+                  {
+                    "name": "runId",
+                    "dataType": "string",
+                    "description": ""
+                  },
+                  {
+                    "name": "completedCount",
+                    "dataType": "integer",
+                    "description": "续跑时跳过的阶段数"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "event",
+              "name": "RunStarted",
+              "name_zh": "批次启动",
+              "stage": "eventStorming",
+              "description": "A batch run begins: the initial run state (runId, chainId, items) is recorded with the start. A second start for the same batch is refused.",
+              "description_zh": "一批运行启动：初始运行状态（runId、chainId、items）随启动记下。同一批的第二次启动会被拒绝。",
+              "info": {
+                "timeline": "batch-chain",
+                "sequence": 1,
+                "fields": [
+                  {
+                    "name": "runId",
+                    "dataType": "string",
+                    "description": "本次运行标识"
+                  },
+                  {
+                    "name": "chainId",
+                    "dataType": "string",
+                    "description": "链/轮次/批次，如 recharge-r1-b3"
+                  },
+                  {
+                    "name": "items",
+                    "dataType": "string[]",
+                    "description": "编码为 chain:round:customerId 的条目"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "event",
+              "name": "StageCompleted",
+              "name_zh": "阶段完成",
+              "stage": "eventStorming",
+              "description": "One of the six chain stages finished cleanly (file-gen → upload → wait-ack → poll → parse → classify, in order). Records which stage finished and its output info plus the full run state — this is the resume breakpoint.",
+              "description_zh": "六阶段链中的某阶段干净完成（file-gen→upload→wait-ack→poll→parse→classify，按序）。记下完成的阶段、阶段产出信息与当时完整运行状态——这就是断点。",
+              "info": {
+                "timeline": "batch-chain",
+                "sequence": 2,
+                "fields": [
+                  {
+                    "name": "stage",
+                    "dataType": "string",
+                    "description": "阶段名，如 upload（断点）"
+                  },
+                  {
+                    "name": "outputInfo",
+                    "dataType": "map",
+                    "description": "阶段产出信息"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "session": "commandStorming",
+      "scopes": [
+        {
+          "scope": "reconstructed",
+          "notes": [
+            {
+              "type": "command",
+              "name": "AbandonOrder",
+              "id": "abandon-order",
+              "name_zh": "放弃订单",
+              "stage": "commandStorming",
+              "description": "Route a failed item to abandon: terminal, no retry, no human.",
+              "description_zh": "把失败项路由为放弃：终态，不重试、不转人工。",
+              "info": {
+                "id": "abandon-order",
+                "triggers": [
+                  "policy: 失败路由决策"
+                ],
+                "produces": [
+                  "order-rejected"
+                ],
+                "parameters": [
+                  {
+                    "name": "chain",
+                    "dataType": "string",
+                    "description": ""
+                  },
+                  {
+                    "name": "customerId",
+                    "dataType": "string",
+                    "description": ""
+                  },
+                  {
+                    "name": "reason",
+                    "dataType": "string",
+                    "description": ""
+                  }
+                ]
+              },
+              "links": [
+                "event:OrderRejected"
+              ]
+            },
+            {
+              "type": "command",
+              "name": "EscalateToManual",
+              "id": "escalate-to-manual",
+              "name_zh": "转人工",
+              "stage": "commandStorming",
+              "description": "Route a failed item to human handling with a ticket id.",
+              "description_zh": "把失败项转人工，带工单号跟进。",
+              "info": {
+                "id": "escalate-to-manual",
+                "triggers": [
+                  "policy: 失败路由决策"
+                ],
+                "produces": [
+                  "order-escalated"
+                ],
+                "parameters": [
+                  {
+                    "name": "chain",
+                    "dataType": "string",
+                    "description": ""
+                  },
+                  {
+                    "name": "customerId",
+                    "dataType": "string",
+                    "description": ""
+                  },
+                  {
+                    "name": "ticketId",
+                    "dataType": "string",
+                    "description": ""
+                  }
+                ]
+              },
+              "links": [
+                "event:OrderEscalated"
+              ]
+            },
+            {
+              "type": "externalSystem",
+              "name": "PartnerBankSystem",
+              "name_zh": "外部银行/基金公司系统",
+              "stage": "commandStorming",
+              "description": "The counterparty: receives the uploaded batch file, acknowledges receipt, and later serves the processing result file for polling.",
+              "description_zh": "交易对手：接收上传的批量文件、确认回执，稍后提供处理结果文件供轮询。"
+            },
+            {
+              "type": "command",
+              "name": "ParkInExceptionPool",
+              "id": "park-in-exception-pool",
+              "name_zh": "放入异常池",
+              "stage": "commandStorming",
+              "description": "The account update failed twice: park the order in the exception pool to wait for human replay.",
+              "description_zh": "账务更新失败两次：订单进入异常池等待人工重放。",
+              "info": {
+                "id": "park-in-exception-pool",
+                "triggers": [
+                  "policy: 批次业务收尾"
+                ],
+                "produces": [
+                  "order-parked-in-exception-pool"
+                ],
+                "parameters": [
+                  {
+                    "name": "chain",
+                    "dataType": "string",
+                    "description": ""
+                  },
+                  {
+                    "name": "customerId",
+                    "dataType": "string",
+                    "description": ""
+                  }
+                ]
+              },
+              "links": [
+                "event:OrderParkedInExceptionPool"
+              ]
+            },
+            {
+              "type": "command",
+              "name": "ReplayException",
+              "id": "replay-exception",
+              "name_zh": "人工重放",
+              "stage": "commandStorming",
+              "description": "A human replays a parked order: the pool entry is removed, the account update is retried without fault injection, and on success the ledger transitions except_pool → credited/paid together with the money.",
+              "description_zh": "人工重放异常池订单：移除池条目，不注入故障重试账务更新；成功则账本随资金一起从 except_pool 变为 credited/paid。",
+              "info": {
+                "id": "replay-exception",
+                "triggers": [
+                  "role: 运营人员（一键重放）"
+                ],
+                "produces": [
+                  "exception-replayed"
+                ],
+                "parameters": [
+                  {
+                    "name": "chain",
+                    "dataType": "string",
+                    "description": ""
+                  },
+                  {
+                    "name": "customerId",
+                    "dataType": "string",
+                    "description": ""
+                  }
+                ],
+                "guards": [
+                  "订单当前在异常池",
+                  "人工已确认"
+                ]
+              },
+              "links": [
+                "event:ExceptionReplayed"
+              ]
+            },
+            {
+              "type": "role",
+              "name": "Operator",
+              "id": "operator",
+              "name_zh": "运营人员",
+              "stage": "commandStorming",
+              "description": "The human role: starts batch runs, watches the reconciliation dashboard, replays exception-pool orders.",
+              "description_zh": "人的角色：启动批量跑批、看对账大盘、重放异常池订单（含演示时的宕机按钮——本演示中操作员兼任演示者）。",
+              "can_issue": [
+                "start-batch-run",
+                "simulate-crash",
+                "replay-exception"
+              ],
+              "can_view": [
+                "chain-stats",
+                "event-feed",
+                "exception-pool"
+              ],
+              "links": [
+                "command:StartBatchRun",
+                "command:SimulateCrash",
+                "command:ReplayException",
+                "readModel:ChainStatistics",
+                "readModel:LiveEventFeed",
+                "readModel:ExceptionPool"
+              ]
+            },
+            {
+              "type": "role",
+              "name": "System",
+              "id": "system",
+              "name_zh": "系统",
+              "stage": "commandStorming",
+              "description": "The automatic role: executes chain stages, classifies results, routes failures per policy without human involvement.",
+              "description_zh": "自动角色：执行链阶段、分类结果、按策略自动路由失败项，无需人工介入。不查看读模型。",
+              "can_issue": [
+                "settle-recharge",
+                "settle-purchase",
+                "abandon-order",
+                "escalate-to-manual",
+                "park-in-exception-pool"
+              ],
+              "can_view": [],
+              "links": [
+                "command:SettleRecharge",
+                "command:SettlePurchase",
+                "command:AbandonOrder",
+                "command:EscalateToManual",
+                "command:ParkInExceptionPool"
+              ]
+            },
+            {
+              "type": "command",
+              "name": "SettlePurchase",
+              "id": "settle-purchase",
+              "name_zh": "申购结算",
+              "stage": "commandStorming",
+              "description": "A successfully classified purchase item settles: balance debited, fund position increased.",
+              "description_zh": "分类成功的申购项结算：余额扣减、基金持仓增加。",
+              "info": {
+                "id": "settle-purchase",
+                "triggers": [
+                  "policy: 批次业务收尾"
+                ],
+                "produces": [
+                  "order-paid"
+                ],
+                "parameters": [
+                  {
+                    "name": "chain",
+                    "dataType": "string",
+                    "description": "purchase"
+                  },
+                  {
+                    "name": "customerId",
+                    "dataType": "string",
+                    "description": ""
+                  },
+                  {
+                    "name": "amount",
+                    "dataType": "number",
+                    "description": ""
+                  },
+                  {
+                    "name": "fund",
+                    "dataType": "string",
+                    "description": ""
+                  }
+                ],
+                "guards": [
+                  "订单未终态（第一次写入生效）",
+                  "账务更新成功（最多自动重试一次）"
+                ]
+              },
+              "links": [
+                "event:OrderPaid"
+              ]
+            },
+            {
+              "type": "command",
+              "name": "SettleRecharge",
+              "id": "settle-recharge",
+              "name_zh": "充值结算",
+              "stage": "commandStorming",
+              "description": "A successfully classified recharge item settles: the customer account is credited. Feeds the purchase chain.",
+              "description_zh": "分类成功的充值项结算：客户账户入账。是申购链的上游。",
+              "info": {
+                "id": "settle-recharge",
+                "triggers": [
+                  "policy: 批次业务收尾"
+                ],
+                "produces": [
+                  "order-credited"
+                ],
+                "parameters": [
+                  {
+                    "name": "chain",
+                    "dataType": "string",
+                    "description": "recharge"
+                  },
+                  {
+                    "name": "customerId",
+                    "dataType": "string",
+                    "description": ""
+                  },
+                  {
+                    "name": "amount",
+                    "dataType": "number",
+                    "description": "入账金额"
+                  }
+                ],
+                "guards": [
+                  "订单未终态（第一次写入生效）",
+                  "账务更新成功（最多自动重试一次）"
+                ]
+              },
+              "links": [
+                "event:OrderCredited"
+              ]
+            },
+            {
+              "type": "command",
+              "name": "SimulateCrash",
+              "id": "simulate-crash",
+              "name_zh": "模拟宕机",
+              "stage": "commandStorming",
+              "description": "Demo-only: stop the run's process while keeping its progress records; the next instruction restarts it and the run resumes from the breakpoint.",
+              "description_zh": "仅演示用：停掉运行进程但保留进度记录；下一条指令重启进程，运行从断点续跑。",
+              "info": {
+                "id": "simulate-crash",
+                "triggers": [
+                  "role: 运营人员"
+                ],
+                "produces": [
+                  "run-recovered"
+                ],
+                "parameters": [
+                  {
+                    "name": "runId",
+                    "dataType": "string",
+                    "description": "要打断的运行"
+                  }
+                ],
+                "guards": [
+                  "仅演示界面可用，非生产协议"
+                ]
+              },
+              "links": [
+                "event:RunRecovered"
+              ]
+            },
+            {
+              "type": "command",
+              "name": "StartBatchRun",
+              "id": "start-batch-run",
+              "name_zh": "启动批次运行",
+              "stage": "commandStorming",
+              "description": "Begin executing the six-stage chain for a batch. The initial run state is recorded with the start; a second start for the same batch is rejected.",
+              "description_zh": "启动一批的六阶段链执行。初始运行状态随启动记下；同一批第二次启动被拒绝。",
+              "info": {
+                "id": "start-batch-run",
+                "triggers": [
+                  "role: 运营人员"
+                ],
+                "produces": [
+                  "run-started",
+                  "stage-completed",
+                  "run-completed",
+                  "run-failed"
+                ],
+                "parameters": [
+                  {
+                    "name": "runId",
+                    "dataType": "string",
+                    "description": "本次运行唯一标识"
+                  },
+                  {
+                    "name": "chainId",
+                    "dataType": "string",
+                    "description": "链+轮次+批次"
+                  },
+                  {
+                    "name": "items",
+                    "dataType": "string[]",
+                    "description": "chain:round:customerId 编码"
+                  }
+                ],
+                "guards": [
+                  "runId 未在跑也未完工（重复启动→拒绝）"
+                ]
+              },
+              "links": [
+                "event:RunStarted",
+                "event:StageCompleted",
+                "event:RunCompleted",
+                "event:RunFailed"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "session": "aggregateDiscovery",
+      "scopes": [
+        {
+          "scope": "reconstructed",
+          "notes": [
+            {
+              "type": "aggregate",
+              "name": "BatchChainRun",
+              "name_zh": "批次链运行",
+              "stage": "aggregateDiscovery",
+              "description": "One execution of the six-stage batch chain for a single batch. One batch, one run — a second start is refused.",
+              "description_zh": "一批的六阶段链的一次执行。一批一次运行，重复启动被拒绝。"
+            },
+            {
+              "type": "aggregate",
+              "name": "CustomerOrder",
+              "name_zh": "客户订单",
+              "stage": "aggregateDiscovery",
+              "description": "One customer's order in one chain — one row of the terminal ledger. Every (chain × customer) lands in exactly one terminal state; first write wins.",
+              "description_zh": "一条链里一个客户的一笔订单——终态账本的一行。每个（链×客户）有且只有一个终态，第一次写入生效。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "session": "subdomainExploration",
+      "scopes": []
+    },
+    {
+      "session": "contextMapping",
+      "scopes": [
+        {
+          "scope": "reconstructed",
+          "notes": [
+            {
+              "type": "relation",
+              "name": "RechargeUpstreamOfPurchase",
+              "name_zh": "充值链→申购链（上下游）",
+              "stage": "contextMapping",
+              "description": "上下文内上下游关系：充值链是上游，申购链是下游。已入账（credited）的充值客户被组进申购批次、作为新的运行入队；上游不直接写下游的账本，只交付'已入账客户名单'。",
+              "description_zh": "上下文内上下游关系：充值链是上游，申购链是下游。已入账（credited）的充值客户被组进申购批次、作为新的运行入队；上游不直接写下游的账本，只交付“已入账客户名单”。"
+            },
+            {
+              "type": "relation",
+              "name": "SettlementToPartnerBank",
+              "name_zh": "批量结算上下文→外部银行系统",
+              "stage": "contextMapping",
+              "description": "限界上下文级协作：批量结算上下文与外部银行/基金公司系统上下文之间只走文件交换——上传批量文件、等回执确认、轮询结果文件。账务直写不跨上下文边界；对方的确认与结果文件是本上下文一切后续动作的唯一输入。",
+              "description_zh": "限界上下文级协作：批量结算上下文与外部银行/基金公司系统上下文之间只走文件交换——上传批量文件、等回执确认、轮询结果文件。账务直写不跨上下文边界；对方的确认与结果文件是本上下文一切后续动作的唯一输入。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "session": "refining",
+      "scopes": [
+        {
+          "scope": "reconstructed",
+          "notes": [
+            {
+              "type": "entity",
+              "name": "AckResult",
+              "name_zh": "确认结果",
+              "stage": "refining",
+              "description": "What the external system said after upload: Received (continue), Timeout → ACK_TIMEOUT, Rejected → ACK_REJECTED.",
+              "description_zh": "上传后外部系统的确认：收到（继续）、超时→ACK_TIMEOUT、拒绝→ACK_REJECTED。"
+            },
+            {
+              "type": "entity",
+              "name": "BatchChainRunState",
+              "name_zh": "批次链运行状态",
+              "stage": "refining",
+              "description": "State slots of one run: batchId, chainId, items, context, generatedFile, receipt, ack, responseFile, rawResults, classifications, lastStage. Per-stage slots are written by their stage (file-gen writes generatedFile, upload writes receipt, wait-ack writes ack, poll writes responseFile, parse writes rawResults, classify writes classifications).",
+              "description_zh": "一次运行的状态槽位：batchId、chainId、items、context、generatedFile、receipt、ack、responseFile、rawResults、classifications、lastStage。各阶段写自己的槽位（file-gen 写 generatedFile、upload 写 receipt、wait-ack 写 ack、poll 写 responseFile、parse 写 rawResults、classify 写 classifications）。"
+            },
+            {
+              "type": "entity",
+              "name": "BatchFileArtifacts",
+              "name_zh": "批量文件制品",
+              "stage": "refining",
+              "description": "The three file artifacts: GeneratedFile (file-gen), UploadReceipt (upload), ResponseFile (poll).",
+              "description_zh": "三种文件制品：批量文件（file-gen）、上传回执（upload）、响应文件（poll）。"
+            },
+            {
+              "type": "entity",
+              "name": "BatchKey",
+              "name_zh": "批次键",
+              "stage": "refining",
+              "description": "Structured run key: bank-{runId}-{chain}-r{round}-b{index}. '-' is the delimiter, so chain names must not contain it — enforced at creation.",
+              "description_zh": "结构化运行键：bank-{runId}-{chain}-r{round}-b{index}。'-' 是分隔符，chain 名不得包含，创建时强制校验。"
+            },
+            {
+              "type": "entity",
+              "name": "ResultClassification",
+              "name_zh": "结果三分类",
+              "stage": "refining",
+              "description": "Every (raw result × item) lands in exactly one of: Success, Failure, Suspicious. Suspicious must be reconfirmed before a final state.",
+              "description_zh": "每个（原始结果×item）有且仅落入：成功、失败、可疑之一。可疑必须复核才能定终态。"
+            },
+            {
+              "type": "entity",
+              "name": "CustomerOrderState",
+              "name_zh": "客户订单状态",
+              "stage": "refining",
+              "description": "State slots: chain (recharge|purchase), customerId (idempotency key), terminalState (credited|paid|rejected|manual|except_pool; unset while in flight), amount.",
+              "description_zh": "状态槽位：chain（recharge|purchase）、customerId（幂等键）、terminalState（credited|paid|rejected|manual|except_pool，在途时未定）、amount。"
+            },
+            {
+              "type": "entity",
+              "name": "DemoCustomer",
+              "name_zh": "演示客户",
+              "stage": "refining",
+              "description": "One demo customer: customerId, name, amount. The scale demo runs 100,000 of them.",
+              "description_zh": "一个演示客户：customerId、姓名、金额。规模演示跑 10 万个。"
+            },
+            {
+              "type": "entity",
+              "name": "ErrorCodeMapping",
+              "name_zh": "错误码映射",
+              "stage": "refining",
+              "description": "Business meaning of each classified error code (e.g. BALANCE_INSUFFICIENT → 余额不足).",
+              "description_zh": "每个已分类错误码的业务含义（如 BALANCE_INSUFFICIENT→余额不足）。"
+            },
+            {
+              "type": "entity",
+              "name": "NextStep",
+              "name_zh": "路由动作",
+              "stage": "refining",
+              "description": "Four routing actions for a failed item: RetrySameArea, RouteToArea, ManualIntervention, Scrap.",
+              "description_zh": "失败项的四种路由动作：同区重试、换区、转人工、放弃。"
+            },
+            {
+              "type": "entity",
+              "name": "PollResult",
+              "name_zh": "轮询结果",
+              "stage": "refining",
+              "description": "Outcome of pulling the response file: ready, timeout (POLL_TIMEOUT), or polling error (POLL_ERROR).",
+              "description_zh": "拉取响应文件的结果：就绪、超时（POLL_TIMEOUT）、轮询出错（POLL_ERROR）。"
+            },
+            {
+              "type": "entity",
+              "name": "RebatchPolicy",
+              "name_zh": "重批策略",
+              "stage": "refining",
+              "description": "Business parameters for failure routing: retry budget (maxRetries), per-code action overrides, default cooldown.",
+              "description_zh": "失败路由的业务参数：重试预算、按错误码的动作覆盖、默认冷却。"
+            },
+            {
+              "type": "relation",
+              "name": "OrderToRunReference",
+              "name_zh": "客户订单→批次链运行（引用）",
+              "stage": "refining",
+              "description": "已入账的充值客户订单被聚成新的申购批次运行。基数：多对一（多个客户订单 → 一批运行）。业务含义：这是充值链喂给申购链的衔接点——订单不直接触发运行，而是先'组批'，一批 exactly one run。",
+              "description_zh": "已入账的充值客户订单被聚成新的申购批次运行。基数：多对一（多个客户订单 → 一批运行）。业务含义：这是充值链喂给申购链的衔接点——订单不直接触发运行，而是先“组批”，一批恰好一次运行。",
+              "cardinality": "N:1",
+              "meaning": "多客户聚成一批，再启动一次运行"
+            },
+            {
+              "type": "relation",
+              "name": "RunToOrderReference",
+              "name_zh": "批次链运行→客户订单（引用）",
+              "stage": "refining",
+              "description": "一批运行的分类结果写入多行客户订单终态。基数：一对多（一批运行 → 多个客户订单）。业务含义：运行是'生产'方，订单账本是'记录'方；运行只管算出分类，终态落账由业务收尾按规则写。",
+              "description_zh": "一批运行的分类结果写入多行客户订单终态。基数：一对多（一批运行 → 多个客户订单）。业务含义：运行是“生产”方，订单账本是“记录”方；运行只管算出分类，终态落账由业务收尾按规则写。",
+              "cardinality": "1:N",
+              "meaning": "运行产出分类，订单账本记录终态"
+            },
+            {
+              "type": "field",
+              "name": "ExceptionReplayedFields",
+              "name_zh": "人工重放字段",
+              "stage": "refining",
+              "description": "Fields carried by ExceptionReplayed.",
+              "description_zh": "ExceptionReplayed 携带的字段。",
+              "fields": [
+                {
+                  "name": "chain",
+                  "dataType": "string",
+                  "description": ""
+                },
+                {
+                  "name": "customerId",
+                  "dataType": "string",
+                  "description": ""
+                },
+                {
+                  "name": "moneyMoved",
+                  "dataType": "boolean",
+                  "description": ""
+                },
+                {
+                  "name": "newTerminal",
+                  "dataType": "string",
+                  "description": "credited|paid"
+                }
+              ]
+            },
+            {
+              "type": "field",
+              "name": "OrderCreditedFields",
+              "name_zh": "充值入账字段",
+              "stage": "refining",
+              "description": "Fields carried by OrderCredited.",
+              "description_zh": "OrderCredited 携带的字段。",
+              "fields": [
+                {
+                  "name": "chain",
+                  "dataType": "string",
+                  "description": "recharge"
+                },
+                {
+                  "name": "customerId",
+                  "dataType": "string",
+                  "description": ""
+                },
+                {
+                  "name": "amount",
+                  "dataType": "number",
+                  "description": ""
+                }
+              ]
+            },
+            {
+              "type": "field",
+              "name": "OrderEscalatedFields",
+              "name_zh": "转人工字段",
+              "stage": "refining",
+              "description": "Fields carried by OrderEscalated.",
+              "description_zh": "OrderEscalated 携带的字段。",
+              "fields": [
+                {
+                  "name": "chain",
+                  "dataType": "string",
+                  "description": ""
+                },
+                {
+                  "name": "customerId",
+                  "dataType": "string",
+                  "description": ""
+                },
+                {
+                  "name": "ticketId",
+                  "dataType": "string",
+                  "description": ""
+                }
+              ]
+            },
+            {
+              "type": "field",
+              "name": "OrderPaidFields",
+              "name_zh": "申购成交字段",
+              "stage": "refining",
+              "description": "Fields carried by OrderPaid.",
+              "description_zh": "OrderPaid 携带的字段。",
+              "fields": [
+                {
+                  "name": "chain",
+                  "dataType": "string",
+                  "description": "purchase"
+                },
+                {
+                  "name": "customerId",
+                  "dataType": "string",
+                  "description": ""
+                },
+                {
+                  "name": "amount",
+                  "dataType": "number",
+                  "description": ""
+                },
+                {
+                  "name": "fund",
+                  "dataType": "string",
+                  "description": ""
+                }
+              ]
+            },
+            {
+              "type": "field",
+              "name": "OrderParkedFields",
+              "name_zh": "进入异常池字段",
+              "stage": "refining",
+              "description": "Fields carried by OrderParkedInExceptionPool.",
+              "description_zh": "OrderParkedInExceptionPool 携带的字段。",
+              "fields": [
+                {
+                  "name": "chain",
+                  "dataType": "string",
+                  "description": ""
+                },
+                {
+                  "name": "customerId",
+                  "dataType": "string",
+                  "description": ""
+                }
+              ]
+            },
+            {
+              "type": "field",
+              "name": "OrderRejectedFields",
+              "name_zh": "订单放弃字段",
+              "stage": "refining",
+              "description": "Fields carried by OrderRejected.",
+              "description_zh": "OrderRejected 携带的字段。",
+              "fields": [
+                {
+                  "name": "chain",
+                  "dataType": "string",
+                  "description": ""
+                },
+                {
+                  "name": "customerId",
+                  "dataType": "string",
+                  "description": ""
+                },
+                {
+                  "name": "reason",
+                  "dataType": "string",
+                  "description": ""
+                }
+              ]
+            },
+            {
+              "type": "field",
+              "name": "RunCompletedFields",
+              "name_zh": "批次跑完字段",
+              "stage": "refining",
+              "description": "Fields carried by RunCompleted.",
+              "description_zh": "RunCompleted 携带的字段。",
+              "fields": [
+                {
+                  "name": "runId",
+                  "dataType": "string",
+                  "description": ""
+                }
+              ]
+            },
+            {
+              "type": "field",
+              "name": "RunFailedFields",
+              "name_zh": "运行失败字段",
+              "stage": "refining",
+              "description": "Fields carried by RunFailed.",
+              "description_zh": "RunFailed 携带的字段。",
+              "fields": [
+                {
+                  "name": "runId",
+                  "dataType": "string",
+                  "description": ""
+                },
+                {
+                  "name": "stage",
+                  "dataType": "string",
+                  "description": ""
+                },
+                {
+                  "name": "errorCode",
+                  "dataType": "string",
+                  "description": ""
+                },
+                {
+                  "name": "detail",
+                  "dataType": "string",
+                  "description": ""
+                }
+              ]
+            },
+            {
+              "type": "field",
+              "name": "RunRecoveredFields",
+              "name_zh": "断点恢复字段",
+              "stage": "refining",
+              "description": "Fields carried by RunRecovered.",
+              "description_zh": "RunRecovered 携带的字段。",
+              "fields": [
+                {
+                  "name": "runId",
+                  "dataType": "string",
+                  "description": ""
+                },
+                {
+                  "name": "completedCount",
+                  "dataType": "integer",
+                  "description": "跳过的已完成阶段数"
+                }
+              ]
+            },
+            {
+              "type": "field",
+              "name": "RunStartedFields",
+              "name_zh": "批次启动字段",
+              "stage": "refining",
+              "description": "Fields carried by RunStarted.",
+              "description_zh": "RunStarted 携带的字段。",
+              "fields": [
+                {
+                  "name": "runId",
+                  "dataType": "string",
+                  "description": "本次运行标识"
+                },
+                {
+                  "name": "chainId",
+                  "dataType": "string",
+                  "description": "链/轮次/批次"
+                },
+                {
+                  "name": "items",
+                  "dataType": "string[]",
+                  "description": "chain:round:customerId"
+                }
+              ]
+            },
+            {
+              "type": "field",
+              "name": "StageCompletedFields",
+              "name_zh": "阶段完成字段",
+              "stage": "refining",
+              "description": "Fields carried by StageCompleted.",
+              "description_zh": "StageCompleted 携带的字段。",
+              "fields": [
+                {
+                  "name": "stage",
+                  "dataType": "string",
+                  "description": "阶段名（断点）"
+                },
+                {
+                  "name": "outputInfo",
+                  "dataType": "map<string,string>",
+                  "description": "阶段产出信息"
+                }
+              ]
+            },
+            {
+              "type": "relation",
+              "name": "AmountFlow",
+              "name_zh": "金额流向血缘",
+              "stage": "refining",
+              "description": "DemoCustomer.amount → order-credited/order-paid amount → chain-stats flow counters (observation only).",
+              "description_zh": "演示客户.amount → 入账/成交事件的 amount → 链统计的过程流量计数（仅观察）。",
+              "links": [
+                "demo-customer.amount → order-credited.amount",
+                "order-credited.amount → chain-stats.amount"
+              ]
+            },
+            {
+              "type": "relation",
+              "name": "ClassificationToTerminal",
+              "name_zh": "分类→终态血缘",
+              "stage": "refining",
+              "description": "classifications → business-closure: Success → settle (credited/paid); Suspicious → reconfirm → verified success joins settle, verified failure joins routing; Failure → routing-decision → abandon (rejected) / manual / rebatch; double account-update failure → except_pool; replay success → credited/paid.",
+              "description_zh": "classifications → 业务收尾：成功→结算（credited/paid）；可疑→复核→查证成功进结算、查证失败进路由；失败→路由决策→放弃（rejected）/转人工/重批；账务更新两次失败→异常池；重放成功→credited/paid。",
+              "links": [
+                "classifications → terminalState",
+                "suspicious → reconfirm-rule → verified",
+                "failure → routing-decision → next-step",
+                "except_pool → replay → credited|paid"
+              ]
+            },
+            {
+              "type": "relation",
+              "name": "CustomerGrain",
+              "name_zh": "客户粒度血缘",
+              "stage": "refining",
+              "description": "customerId travels inside items encoding → becomes the (chain × customer) grain of the terminal ledger → the idempotency key that makes rebatch re-runs and replays skip already-terminal orders.",
+              "description_zh": "customerId 藏在 items 编码里 → 成为终态账本（链×客户）的粒度 → 幂等键，让重批重跑与重放跳过已终态订单。",
+              "links": [
+                "items.customerId → ledger (chain, customerId)",
+                "customerId → exactly-once guard"
+              ]
+            },
+            {
+              "type": "relation",
+              "name": "ItemsToClassification",
+              "name_zh": "条目→分类血缘",
+              "stage": "refining",
+              "description": "items (chain:round:customerId) → file-gen encodes GeneratedFile → upload yields UploadReceipt → wait-ack yields AckResult → poll yields ResponseFile → parse yields rawResults → classify maps each raw result back to its item (by customerId) into Success/Failure/Suspicious.",
+              "description_zh": "items（chain:round:customerId）→ file-gen 编出批量文件 → upload 得回执 → wait-ack 得确认 → poll 得响应文件 → parse 得原始结果 → classify 按 customerId 把每条原始结果落回它的 item，进成功/失败/可疑三类。",
+              "links": [
+                "items → generatedFile",
+                "generatedFile → receipt",
+                "receipt → ack",
+                "context → responseFile",
+                "responseFile → rawResults",
+                "rawResults × items → classifications"
+              ]
+            },
+            {
+              "type": "story",
+              "name": "BatchPurchaseRun",
+              "name_zh": "批量申购跑批",
+              "stage": "refining",
+              "description": "BatchPurchaseRun: 启动申购批次运行; 六阶段执行; 业务收尾：成功成交、失败路由.",
+              "description_zh": "批量申购跑批：启动申购批次运行；六阶段执行；业务收尾：成功成交、失败路由。",
+              "preconditions": [
+                "充值链已入账客户组批入队"
+              ],
+              "steps": [
+                "启动申购批次运行",
+                "六阶段执行",
+                "业务收尾：成功成交、失败路由",
+                "对账确认"
+              ],
+              "extensions": [
+                "QUOTA_EXCEEDED→放弃",
+                "NETWORK_ERROR→自动重批"
+              ]
+            },
+            {
+              "type": "story",
+              "name": "BatchRechargeRun",
+              "name_zh": "批量充值跑批",
+              "stage": "refining",
+              "description": "BatchRechargeRun: 启动批次运行; 六阶段依次执行：生成文件→上传→等回执→轮询→解析→分类; 业务收尾四步：复核可疑→路由失败→结算成功→衔接申购链.",
+              "description_zh": "批量充值跑批：启动批次运行；六阶段依次执行：生成文件→上传→等回执→轮询→解析→分类；业务收尾四步：复核可疑→路由失败→结算成功→衔接申购链。",
+              "preconditions": [
+                "运营人员配好批次（10 万客户，2000 一批）"
+              ],
+              "steps": [
+                "启动批次运行",
+                "六阶段依次执行：生成文件→上传→等回执→轮询→解析→分类",
+                "业务收尾四步：复核可疑→路由失败→结算成功→衔接申购链",
+                "对账大盘确认 balanced"
+              ],
+              "extensions": [
+                "某阶段失败→运行停止并告警",
+                "宕机→从断点续跑",
+                "可疑项→复核后定终态"
+              ]
+            },
+            {
+              "type": "story",
+              "name": "CrashRecoveryDemo",
+              "name_zh": "宕机恢复演示",
+              "stage": "refining",
+              "description": "CrashRecoveryDemo: 点宕机按钮：进程停止、进度记录保留; 下一条指令重启进程; 运行从断点续跑，已完成阶段跳过.",
+              "description_zh": "宕机恢复演示：点宕机按钮：进程停止、进度记录保留；下一条指令重启进程；运行从断点续跑，已完成阶段跳过。",
+              "preconditions": [
+                "有运行中的批次"
+              ],
+              "steps": [
+                "点宕机按钮：进程停止、进度记录保留",
+                "下一条指令重启进程",
+                "运行从断点续跑，已完成阶段跳过"
+              ]
+            },
+            {
+              "type": "story",
+              "name": "ExceptionOrderHandling",
+              "name_zh": "异常订单处理",
+              "stage": "refining",
+              "description": "ExceptionOrderHandling: 运营人员查看异常池; 一键重放（单个或全部）; 资金到账、账本同步变为 credited/paid.",
+              "description_zh": "异常订单处理：运营人员查看异常池；一键重放（单个或全部）；资金到账、账本同步变为 credited/paid。",
+              "preconditions": [
+                "异常池有待处理订单"
+              ],
+              "steps": [
+                "运营人员查看异常池",
+                "一键重放（单个或全部）",
+                "资金到账、账本同步变为 credited/paid"
+              ],
+              "extensions": [
+                "重放仍失败→保留在池中等待下次"
+              ]
+            },
+            {
+              "type": "readModel",
+              "name": "ChainStatistics",
+              "id": "chain-stats",
+              "name_zh": "链统计",
+              "stage": "refining",
+              "description": "The reconciliation dashboard: per-chain terminal ledger (entered / in-flight / terminal buckets) asserting the balanced equation; flow counters alongside for observation only.",
+              "description_zh": "对账大盘：每条链的终态账本（进入/在途/终态桶）并断言 balanced 等式；旁边是仅供观察的过程流量计数。",
+              "served_by": "GET /api/bank-batch/state",
+              "sources": [
+                "customer-order",
+                "batch-chain-run"
+              ],
+              "fields": [
+                {
+                  "name": "per-chain.entered",
+                  "dataType": "integer",
+                  "description": "distinct (chain × customer) 见过的"
+                },
+                {
+                  "name": "per-chain.inFlight",
+                  "dataType": "integer",
+                  "description": "entered − 终态数"
+                },
+                {
+                  "name": "per-chain.terminals",
+                  "dataType": "map",
+                  "description": "按终态计数"
+                },
+                {
+                  "name": "per-chain.balanced",
+                  "dataType": "boolean",
+                  "description": "entered == inFlight + Σ终态（断言）"
+                },
+                {
+                  "name": "flow counters",
+                  "dataType": "map",
+                  "description": "过程计数（含重跑，不对账）"
+                }
+              ],
+              "visible_to": [
+                "operator"
+              ]
+            },
+            {
+              "type": "readModel",
+              "name": "LiveEventFeed",
+              "id": "event-feed",
+              "name_zh": "实时事件流",
+              "stage": "refining",
+              "description": "The WebSocket stream the demo page renders: every run/chain lifecycle transition publishes a typed frame.",
+              "description_zh": "演示页实时渲染的 WebSocket 流：每次运行/链生命周期变化发布一个类型化帧。",
+              "served_by": "WS /ws/bank-batch/events",
+              "sources": [
+                "batch-chain-run",
+                "customer-order"
+              ],
+              "fields": [
+                {
+                  "name": "frame",
+                  "dataType": "{seq, type, data}",
+                  "description": "领域事件的实时投影"
+                },
+                {
+                  "name": "frame types",
+                  "dataType": "run-started · job-start · batch-started · stage-done · stage-failed · batch-completed · batch-failed · recovering · credited · progress · crash",
+                  "description": ""
+                }
+              ],
+              "visible_to": [
+                "operator"
+              ]
+            },
+            {
+              "type": "readModel",
+              "name": "ExceptionPool",
+              "id": "exception-pool",
+              "name_zh": "人工异常池",
+              "stage": "refining",
+              "description": "Orders whose account update failed twice, waiting for human replay. Replay moves the money and the ledger except_pool → credited/paid together.",
+              "description_zh": "账务更新失败两次、等人工重放的订单。重放时资金与账本一起从 except_pool 变为 credited/paid。",
+              "served_by": [
+                "GET /api/bank-batch/exceptions",
+                "POST /api/bank-batch/exceptions/replay"
+              ],
+              "sources": [
+                "customer-order"
+              ],
+              "fields": [
+                {
+                  "name": "count",
+                  "dataType": "integer",
+                  "description": "池大小"
+                },
+                {
+                  "name": "entries[].chain ← 订单所在链",
+                  "dataType": "",
+                  "description": ""
+                },
+                {
+                  "name": "entries[].customerId ← 客户",
+                  "dataType": "",
+                  "description": ""
+                },
+                {
+                  "name": "entries[].name ← 展示名",
+                  "dataType": "",
+                  "description": ""
+                }
+              ],
+              "visible_to": [
+                "operator"
+              ]
+            },
+            {
+              "type": "policy",
+              "id": "business-closure",
+              "name": "Batch Business Closure",
+              "name_zh": "批次业务收尾",
+              "stage": "refining",
+              "description": "What happens when one batch run completes: the four-step business orchestration that turns classifications into ledger transitions and, for recharge, chains credited customers into the purchase chain. Steps run in order; account settlement is idempotent by customerId.",
+              "description_zh": "一批跑完后的四步业务编排：把分类变成账本终态，充值链的已入账客户 衔接进申购链。按顺序执行；账务结算按 customerId 幂等。",
+              "links": [
+                "event:run-completed",
+                "command:settle-recharge",
+                "command:settle-purchase",
+                "command:abandon-order",
+                "command:escalate-to-manual",
+                "command:park-in-exception-pool",
+                "command:start-batch-run"
+              ],
+              "info": {
+                "triggers": [
+                  {
+                    "event": "run-completed",
+                    "aggregate": "Batch Chain Run"
+                  }
+                ],
+                "invokes": [
+                  {
+                    "command": "settle-recharge",
+                    "aggregate": "Customer Order"
+                  },
+                  {
+                    "command": "settle-purchase",
+                    "aggregate": "Customer Order"
+                  },
+                  {
+                    "command": "abandon-order",
+                    "aggregate": "Customer Order"
+                  },
+                  {
+                    "command": "escalate-to-manual",
+                    "aggregate": "Customer Order"
+                  },
+                  {
+                    "command": "park-in-exception-pool",
+                    "aggregate": "Customer Order"
+                  },
+                  {
+                    "command": "start-batch-run",
+                    "aggregate": "Batch Chain Run"
+                  }
+                ]
+              },
+              "rules": [
+                {
+                  "when": "run completed with suspicious classifications",
+                  "then": "reconfirm-rule (policy)",
+                  "note": "Step 1 — suspicious → verified success joins settlement; verified failure joins routing."
+                },
+                {
+                  "when": "run completed with failure classifications",
+                  "then": "routing-decision (policy)",
+                  "note": "Step 2 — Scrap → abandon-order (rejected); ManualIntervention → escalate-to-manual (manual); RetrySameArea → collected into ONE next-round batch (start-batch-run), never per-item."
+                },
+                {
+                  "when": "success or verified-success items not already terminal",
+                  "then": "settle-recharge / settle-purchase, else park-in-exception-pool",
+                  "note": "Step 3 — account update has a 1% transient fault (demo script); one auto-retry; still failing → park-in-exception-pool (except_pool). Idempotent: already-terminal customers are skipped."
+                },
+                {
+                  "when": "chain == recharge and account targets settled as credited",
+                  "then": "start-batch-run (purchase chain)",
+                  "note": "Step 4 — credited recharge customers are grouped into purchase batches and enqueued; only then is the batch job done."
+                }
+              ]
+            },
+            {
+              "type": "policy",
+              "id": "reconfirm-rule",
+              "name": "Suspicious Reconfirmation",
+              "name_zh": "可疑复核",
+              "stage": "refining",
+              "description": "Suspicious is never a final state. Each suspicious item is verified against the authoritative source; verification decides success or failure. Still uncertain after verification → conservatively treated as failure (it then goes through routing-decision, never silently dropped).",
+              "description_zh": "可疑永远不是终态。每个可疑项都要拿权威数据源查证，查证结论定成功或失败； 查证后仍不确定 → 保守按失败处理（进 routing-decision，绝不静默丢弃）。",
+              "triggerNote": "with suspicious classifications in the run's progress records",
+              "links": [
+                "event:run-completed",
+                "command:settle-recharge",
+                "command:settle-purchase",
+                "command:abandon-order",
+                "command:escalate-to-manual",
+                "command:start-batch-run"
+              ],
+              "info": {
+                "triggers": [
+                  {
+                    "event": "run-completed",
+                    "aggregate": "Batch Chain Run"
+                  }
+                ],
+                "invokes": [
+                  {
+                    "command": "settle-recharge",
+                    "aggregate": "Customer Order"
+                  },
+                  {
+                    "command": "settle-purchase",
+                    "aggregate": "Customer Order"
+                  },
+                  {
+                    "command": "abandon-order",
+                    "aggregate": "Customer Order"
+                  },
+                  {
+                    "command": "escalate-to-manual",
+                    "aggregate": "Customer Order"
+                  },
+                  {
+                    "command": "start-batch-run",
+                    "aggregate": "Batch Chain Run"
+                  }
+                ]
+              },
+              "rules": [
+                {
+                  "when": "verified success",
+                  "then": "settle-recharge / settle-purchase (joins the success settlement flow)",
+                  "note": "demo: 60% of suspicious verify as VERIFIED_SUCCESS"
+                },
+                {
+                  "when": "verified failure",
+                  "then": "routing-decision (as a fresh failure)",
+                  "note": "demo: 40% verify as NETWORK_ERROR with suggestedAction RetrySameArea → auto-rebatch"
+                },
+                {
+                  "when": "still uncertain after verification",
+                  "then": "routing-decision as Failure (conservative)",
+                  "note": "Never stays suspicious — the type system of the flow forbids it."
+                }
+              ]
+            },
+            {
+              "type": "policy",
+              "id": "routing-decision",
+              "name": "Failure Routing Decision",
+              "name_zh": "失败路由决策",
+              "stage": "refining",
+              "description": "Every failed item gets exactly one routing decision, from the rebatch-policy (ref value-object rebatch-policy). First matching rule wins. RetrySameArea items are collected and enqueued as ONE next-round batch — never one batch per item (that would deadlock the scheduler).",
+              "description_zh": "每个失败项有且只有一个路由决策，按 rebatch-policy（见 value-object） 的规则表，第一条命中生效。判为 RetrySameArea 的项会被收集起来， 作为**一个**下一轮批次入队——绝不逐项入队（那会卡死调度器）。",
+              "triggerNote": "with failure classifications in the run's progress records",
+              "links": [
+                "event:run-completed",
+                "command:abandon-order",
+                "command:escalate-to-manual",
+                "command:start-batch-run"
+              ],
+              "info": {
+                "triggers": [
+                  {
+                    "event": "run-completed",
+                    "aggregate": "Batch Chain Run"
+                  }
+                ],
+                "invokes": [
+                  {
+                    "command": "abandon-order",
+                    "aggregate": "Customer Order"
+                  },
+                  {
+                    "command": "escalate-to-manual",
+                    "aggregate": "Customer Order"
+                  },
+                  {
+                    "command": "start-batch-run",
+                    "aggregate": "Batch Chain Run"
+                  }
+                ]
+              },
+              "rules": [
+                {
+                  "when": "retryCount >= maxRetries",
+                  "then": "escalate-to-manual",
+                  "note": "Ticket id \"MAX_RETRY_EXCEEDED-{code}\". retryCount = round - 1."
+                },
+                {
+                  "when": "failure carries suggestedAction",
+                  "then": "suggestedAction",
+                  "note": "The classifier's hint wins over the policy table."
+                },
+                {
+                  "when": "actionMap contains the failure code",
+                  "then": "actionMap[code]",
+                  "note": "e.g. BALANCE_INSUFFICIENT → Scrap, NETWORK_ERROR → RetrySameArea"
+                },
+                {
+                  "when": "otherwise",
+                  "then": "start-batch-run (next round, RetrySameArea with defaultCooldown)",
+                  "note": "Collected into a single next-round batch after minDelay."
+                }
+              ]
+            },
+            {
+              "type": "policy",
+              "name": "BatchBusinessClosure",
+              "name_zh": "批次业务收尾",
+              "stage": "refining",
+              "description": "When a run completes: (1) suspicious → reconfirm; (2) failures → routing; (3) successes settle, double account-update failures park in the exception pool; (4) credited recharge customers chain into the purchase chain. Steps in order, idempotent by customerId.",
+              "description_zh": "一批跑完：(1)可疑→复核；(2)失败→路由；(3)成功结算、账务更新两次失败进异常池；(4)已入账充值客户衔接申购链。按序执行，按 customerId 幂等。",
+              "links": [
+                "event:run-completed",
+                "command:settle-recharge",
+                "command:settle-purchase",
+                "command:abandon-order",
+                "command:escalate-to-manual",
+                "command:park-in-exception-pool",
+                "command:start-batch-run"
+              ],
+              "info": {
+                "triggers": [
+                  {
+                    "event": "run-completed",
+                    "aggregate": "Batch Chain Run"
+                  }
+                ],
+                "invokes": [
+                  {
+                    "command": "settle-recharge",
+                    "aggregate": "Customer Order"
+                  },
+                  {
+                    "command": "settle-purchase",
+                    "aggregate": "Customer Order"
+                  },
+                  {
+                    "command": "abandon-order",
+                    "aggregate": "Customer Order"
+                  },
+                  {
+                    "command": "escalate-to-manual",
+                    "aggregate": "Customer Order"
+                  },
+                  {
+                    "command": "park-in-exception-pool",
+                    "aggregate": "Customer Order"
+                  },
+                  {
+                    "command": "start-batch-run",
+                    "aggregate": "Batch Chain Run"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "policy",
+              "name": "SuspiciousReconfirmation",
+              "name_zh": "可疑复核",
+              "stage": "refining",
+              "description": "Suspicious is never final: verify each suspicious item against the authoritative source. Verified success joins settlement; verified failure (or still-uncertain, conservatively) joins routing. Demo: 60% verify success, 40% NETWORK_ERROR → auto-rebatch.",
+              "description_zh": "可疑永远不是终态：拿权威数据源逐项查证。查证成功进结算；查证失败（或仍不确定，保守按失败）进路由。演示：60% 查证成功，40% 为 NETWORK_ERROR→自动重批。",
+              "triggerNote": "with suspicious",
+              "links": [
+                "event:run-completed",
+                "command:settle-recharge",
+                "command:settle-purchase",
+                "command:abandon-order",
+                "command:escalate-to-manual",
+                "command:start-batch-run"
+              ],
+              "info": {
+                "triggers": [
+                  {
+                    "event": "run-completed",
+                    "aggregate": "Batch Chain Run"
+                  }
+                ],
+                "invokes": [
+                  {
+                    "command": "settle-recharge",
+                    "aggregate": "Customer Order"
+                  },
+                  {
+                    "command": "settle-purchase",
+                    "aggregate": "Customer Order"
+                  },
+                  {
+                    "command": "abandon-order",
+                    "aggregate": "Customer Order"
+                  },
+                  {
+                    "command": "escalate-to-manual",
+                    "aggregate": "Customer Order"
+                  },
+                  {
+                    "command": "start-batch-run",
+                    "aggregate": "Batch Chain Run"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "policy",
+              "name": "FailureRoutingDecision",
+              "name_zh": "失败路由决策",
+              "stage": "refining",
+              "description": "Every failed item gets exactly one routing decision, first matching rule wins: retryCount ≥ maxRetries → manual; classifier's suggestedAction wins; else actionMap[code]; else RetrySameArea(defaultCooldown). RetrySameArea items form ONE next-round batch.",
+              "description_zh": "每个失败项有且只有一个路由决策，首条命中生效：重试超限→转人工；分类器的 suggestedAction 优先；再按 actionMap；兜底同区重试。同区重试的项聚成一个下一轮批次。",
+              "triggerNote": "with failures",
+              "links": [
+                "event:run-completed",
+                "command:abandon-order",
+                "command:escalate-to-manual",
+                "command:start-batch-run"
+              ],
+              "info": {
+                "triggers": [
+                  {
+                    "event": "run-completed",
+                    "aggregate": "Batch Chain Run"
+                  }
+                ],
+                "invokes": [
+                  {
+                    "command": "abandon-order",
+                    "aggregate": "Customer Order"
+                  },
+                  {
+                    "command": "escalate-to-manual",
+                    "aggregate": "Customer Order"
+                  },
+                  {
+                    "command": "start-batch-run",
+                    "aggregate": "Batch Chain Run"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "session": "storyMapping",
+      "scopes": [
+        {
+          "scope": "reconstructed",
+          "notes": [
+            {
+              "type": "story",
+              "name": "CrashRecoveryDemo",
+              "name_zh": "宕机恢复演示",
+              "stage": "storyMapping",
+              "description": "As 演示者: 点宕机按钮后看到运行从断点续跑 — 现场证明崩溃恢复能力.",
+              "description_zh": "演示者点宕机按钮后看到运行从断点续跑，现场证明崩溃恢复能力。",
+              "role": "演示者",
+              "goal": "点宕机按钮后看到运行从断点续跑",
+              "benefit": "现场证明崩溃恢复能力"
+            },
+            {
+              "type": "story",
+              "name": "HandleExceptionPool",
+              "name_zh": "处理异常池",
+              "stage": "storyMapping",
+              "description": "As 运营人员: 一键重放异常池里的订单（单个或全部） — 把卡住的资金放行.",
+              "description_zh": "运营人员一键重放异常池里的订单（单个或全部），把卡住的资金放行。",
+              "role": "运营人员",
+              "goal": "一键重放异常池里的订单（单个或全部）",
+              "benefit": "把卡住的资金放行"
+            },
+            {
+              "type": "story",
+              "name": "StartBatchRun",
+              "name_zh": "启动批量跑批",
+              "stage": "storyMapping",
+              "description": "As 运营人员: 一键启动一批充值/申购跑批 — 把当天的批量请求发给银行/基金公司.",
+              "description_zh": "运营人员一键启动一批充值/申购跑批，把当天的批量请求发给银行/基金公司。",
+              "role": "运营人员",
+              "goal": "一键启动一批充值/申购跑批",
+              "benefit": "把当天的批量请求发给银行/基金公司"
+            },
+            {
+              "type": "story",
+              "name": "WatchReconciliationDashboard",
+              "name_zh": "查看对账大盘",
+              "stage": "storyMapping",
+              "description": "As 运营人员: 在对账大盘看到每条链的终态分布与 balanced 断言 — 确认账实相符.",
+              "description_zh": "运营人员在对账大盘看到每条链的终态分布与 balanced 断言，确认账实相符。",
+              "role": "运营人员",
+              "goal": "在对账大盘看到每条链的终态分布与 balanced 断言",
+              "benefit": "确认账实相符"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "aggregates": [
+    {
+      "name": "Batch Chain Run",
+      "name_zh": "批次链运行",
+      "description": "One execution of the six-stage batch chain for a single batch of items. Every completed stage records its progress (including the full run state at that moment), so if the run is interrupted it resumes from the breakpoint — finished stages are not repeated.",
+      "description_zh": "一批 items 的六阶段链的一次执行。每完成一阶段就记下进度（含当时的 完整运行状态），中途被打断后从断点继续——已完成的阶段不重复。",
+      "entity": "BatchChainRun",
+      "identifier": {
+        "name": "runId",
+        "dataType": "string",
+        "origin": "identity fields: runId — one batch, one run; the run key embeds a per-launch runId, so progress records from one launch are never confused with another's"
+      },
+      "identityDetail": {
+        "format": "bank-{runId}-{chain}-r{round}-b{index}",
+        "formatInvariant": "A4 (arbitrated 2026-10-18): '-' is the delimiter, so chain names and runIds must not contain '-' — enforced where the key is created (a violating name is rejected on the spot). Encoding and decoding live in one place as inverse operations; they cannot drift apart.",
+        "description": "One batch, one run. The run key embeds a per-launch runId, so progress records from one launch are never confused with another's.",
+        "singleRun": "A2 (arbitrated 2026-10-18): a batch has exactly one run. The web UI and the engine both address the same run — there is never a second, parallel run for the same batch, and a repeat start for an active or finished run is refused."
+      },
+      "stateFields": [
+        {
+          "name": "batchId",
+          "dataType": "string",
+          "description": "Batch identifier (== runId in the web demo)."
+        },
+        {
+          "name": "chainId",
+          "dataType": "string",
+          "description": "Which chain and round, e.g. \"recharge-r1-b3\"."
+        },
+        {
+          "name": "items",
+          "dataType": "string[]",
+          "description": "The batch items, encoded \"chain:round:customerId\" so one chain definition can serve both the recharge and the purchase chain."
+        },
+        {
+          "name": "context",
+          "dataType": "map<string, string>",
+          "description": "Free-form run context (batchId, chainId travel with it)."
+        },
+        {
+          "name": "generatedFile",
+          "dataType": "batch-file.GeneratedFile",
+          "description": "Produced by file-gen.",
+          "writtenBy": [
+            "stage file-gen"
+          ]
+        },
+        {
+          "name": "receipt",
+          "dataType": "batch-file.UploadReceipt",
+          "description": "Produced by upload.",
+          "writtenBy": [
+            "stage upload"
+          ]
+        },
+        {
+          "name": "ack",
+          "dataType": "ack-result",
+          "description": "Produced by wait-ack.",
+          "writtenBy": [
+            "stage wait-ack"
+          ]
+        },
+        {
+          "name": "responseFile",
+          "dataType": "batch-file.ResponseFile",
+          "description": "Produced by poll.",
+          "writtenBy": [
+            "stage poll"
+          ]
+        },
+        {
+          "name": "rawResults",
+          "dataType": "string[]",
+          "description": "Produced by parse.",
+          "writtenBy": [
+            "stage parse"
+          ]
+        },
+        {
+          "name": "classifications",
+          "dataType": "classification[]",
+          "description": "Produced by classify; consumed by the business closure.",
+          "writtenBy": [
+            "stage classify"
+          ]
+        },
+        {
+          "name": "lastStage",
+          "dataType": "stage-id",
+          "description": "Which stage completed last."
+        }
+      ],
+      "statusEnum": [
+        "idle",
+        "running",
+        "completed",
+        "failed",
+        "recovering"
+      ],
+      "statusTransitions": {
+        "start-batch-run": "running",
+        "run-completed": "completed",
+        "run-failed": "failed",
+        "simulate-crash": "recovering",
+        "run-recovered": "running"
+      },
+      "stateGates": {
+        "start-batch-run": {
+          "fromStates": [
+            "idle"
+          ],
+          "toState": "running"
+        },
+        "run-completed": {
+          "fromStates": [
+            "running"
+          ],
+          "toState": "completed"
+        },
+        "run-failed": {
+          "fromStates": [
+            "running"
+          ],
+          "toState": "failed"
+        },
+        "simulate-crash": {
+          "fromStates": [
+            "running"
+          ],
+          "toState": "recovering"
+        },
+        "run-recovered": {
+          "fromStates": [
+            "recovering"
+          ],
+          "toState": "running"
+        }
+      },
+      "aggregateRuleRefs": [
+        {
+          "ruleId": "run-id-unique",
+          "desc": "One batch, one run; a second start for an active or finished run is rejected.",
+          "desc_zh": "一批，一次运行；已在跑或已完工的批次再次启动会被拒绝。"
+        },
+        {
+          "ruleId": "stages-in-order",
+          "desc": "Stages complete in pipeline order; after an interruption the run resumes from the breakpoint, skipping already-completed stages.",
+          "desc_zh": "阶段按链顺序完成；中断后续跑从断点继续，跳过已完成的阶段。"
+        },
+        {
+          "ruleId": "no-repeat-of-finished",
+          "desc": "A stage confirmed finished never runs again. A stage interrupted mid-execution may run once more — each stage must tolerate being executed twice without double effect.",
+          "desc_zh": "已确认完成的阶段永不重跑。中断时正在执行的阶段可能再跑一次—— 每个阶段都要能承受\"跑两次\"而不产生双重效果。"
+        }
+      ],
+      "progressRecording": {
+        "rule": "Every finished stage records its progress, including the full run state at that moment.",
+        "rule_zh": "每完成一阶段就记录进度，包含当时的完整运行状态。",
+        "recovery": "After an interruption the run continues from the last recorded breakpoint.",
+        "recovery_zh": "中断后从最后记录的断点继续。",
+        "retention": "Progress records are kept independently of the running process; rebuilding the process loses nothing.",
+        "retention_zh": "进度记录独立于运行进程保存；进程重建不丢失记录。"
+      },
+      "commands": [
+        {
+          "name": "start-batch-run",
+          "name_zh": "启动批次运行",
+          "description": "Begin executing the six-stage chain for a batch. The initial run state is recorded with the start; a second start for the same batch is rejected, so a batch can never execute twice.",
+          "description_zh": "启动一批 items 的六阶段链执行。初始运行状态随启动记下； 同一批的第二次启动会被拒绝，一批永远不会执行两次。",
+          "parameters": [
+            {
+              "name": "runId",
+              "dataType": "string",
+              "description": "Unique run id; identifies this one run."
+            },
+            {
+              "name": "chainId",
+              "dataType": "string",
+              "description": "Chain + round + batch index, e.g. \"recharge-r1-b3\"."
+            },
+            {
+              "name": "items",
+              "dataType": "string[]",
+              "description": "Items encoded \"chain:round:customerId\"."
+            }
+          ],
+          "guards": [
+            "runId not already active or finished (duplicate start → rejected)"
+          ],
+          "produces": [
+            "run-started",
+            "stage-completed",
+            "run-completed",
+            "run-failed"
+          ]
+        },
+        {
+          "name": "simulate-crash",
+          "name_zh": "模拟宕机",
+          "description": "Demo-only command: stop the run's process while keeping its progress records. The next instruction restarts the process and the run resumes from the breakpoint — completed stages are not re-run. This is how the web UI's crash button proves crash-resilience live.",
+          "description_zh": "仅演示用命令：停掉运行进程，但保留进度记录。下一条指令重启进程， 运行从断点续跑——已完成的阶段不重做。Web UI 的宕机按钮就是靠它 现场证明崩溃恢复。",
+          "parameters": [
+            {
+              "name": "runId",
+              "dataType": "string",
+              "description": "The running batch to interrupt."
+            }
+          ],
+          "guards": [
+            "demo surface only — not part of the production protocol"
+          ],
+          "produces": [
+            "run-recovered"
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "run-started",
+          "description": "The run began; the initial run state is recorded with it.",
+          "payloads": [
+            {
+              "name": "runId",
+              "dataType": "string",
+              "description": "Run identifier"
+            },
+            {
+              "name": "chainId",
+              "dataType": "string",
+              "description": "Chain/round/batch"
+            },
+            {
+              "name": "items",
+              "dataType": "string[]",
+              "description": "Encoded items"
+            }
+          ]
+        },
+        {
+          "name": "stage-completed",
+          "description": "One stage finished cleanly. Records which stage (the breakpoint), the stage's output info, and the full run state at that moment — this is the resume point.",
+          "payloads": [
+            {
+              "name": "stage",
+              "dataType": "string",
+              "description": "Stage name, e.g. upload — the breakpoint"
+            },
+            {
+              "name": "outputInfo",
+              "dataType": "map<string",
+              "description": "Stage-specific output info"
+            }
+          ]
+        },
+        {
+          "name": "run-completed",
+          "description": "All six stages finished; classifications are final.",
+          "payloads": [
+            {
+              "name": "runId",
+              "dataType": "string",
+              "description": "Run identifier"
+            }
+          ]
+        },
+        {
+          "name": "run-failed",
+          "description": "A stage failed with a classified error and no recovery rule resolved it.",
+          "payloads": [
+            {
+              "name": "runId",
+              "dataType": "string",
+              "description": "Run identifier"
+            },
+            {
+              "name": "stage",
+              "dataType": "string",
+              "description": "Stage where it failed"
+            },
+            {
+              "name": "errorCode",
+              "dataType": "string",
+              "description": "Classified code, e.g. ACK_TIMEOUT"
+            },
+            {
+              "name": "detail",
+              "dataType": "string",
+              "description": "Human-readable detail"
+            }
+          ]
+        },
+        {
+          "name": "run-recovered",
+          "description": "The process restarted and resumed from the last recorded breakpoint; already-completed stages were skipped.",
+          "payloads": [
+            {
+              "name": "runId",
+              "dataType": "string",
+              "description": "Run identifier"
+            },
+            {
+              "name": "completedCount",
+              "dataType": "integer",
+              "description": "Stages skipped on resume"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Customer Order",
+      "name_zh": "客户订单",
+      "description": "One customer's order in one chain — one row of the terminal ledger. Every (chain × customer) pair lands in exactly one terminal state; the first write wins and later duplicates (rebatch re-runs, replays) are skipped. This is the unit the web UI's \"balanced\" check reconciles against.",
+      "description_zh": "一条链里一个客户的一笔订单——终态账本的一行。每个（链 × 客户）有且只有 一个终态；第一次写入生效，重批重跑等重复写入会被跳过。Web UI 的 \"balanced\" 对账就是对着它算的。",
+      "entity": "CustomerOrder",
+      "identifier": {
+        "name": "customerId",
+        "dataType": "string",
+        "origin": "identity fields: chain, customerId — (chain, customerId) is the grain of the terminal ledger; customerId is the idempotency key within a chain"
+      },
+      "stateFields": [
+        {
+          "name": "chain",
+          "dataType": "string",
+          "description": "recharge or purchase"
+        },
+        {
+          "name": "customerId",
+          "dataType": "string",
+          "description": "Customer identifier (deterministic UUID in the demo)."
+        },
+        {
+          "name": "terminalState",
+          "dataType": "string",
+          "description": "Exactly one of: recharge → credited | rejected | manual | except_pool; purchase → paid | rejected | manual | except_pool. Unset while in flight."
+        },
+        {
+          "name": "amount",
+          "dataType": "number",
+          "description": "Order amount."
+        }
+      ],
+      "statusEnum": [
+        "credited",
+        "paid",
+        "rejected",
+        "manual",
+        "except_pool"
+      ],
+      "statusTransitions": {
+        "settle-recharge": "credited",
+        "settle-purchase": "paid",
+        "abandon-order": "rejected",
+        "escalate-to-manual": "manual",
+        "park-in-exception-pool": "except_pool",
+        "replay-exception": [
+          "credited",
+          "paid"
+        ]
+      },
+      "stateGates": {
+        "settle-recharge": {
+          "fromStates": [
+            "in-flight"
+          ],
+          "toState": "credited"
+        },
+        "settle-purchase": {
+          "fromStates": [
+            "in-flight"
+          ],
+          "toState": "paid"
+        },
+        "abandon-order": {
+          "fromStates": [
+            "in-flight"
+          ],
+          "toState": "rejected"
+        },
+        "escalate-to-manual": {
+          "fromStates": [
+            "in-flight"
+          ],
+          "toState": "manual"
+        },
+        "park-in-exception-pool": {
+          "fromStates": [
+            "in-flight"
+          ],
+          "toState": "except_pool"
+        },
+        "replay-exception": {
+          "fromStates": [
+            "except_pool"
+          ],
+          "toState": [
+            "credited",
+            "paid"
+          ],
+          "note": "A1 (arbitrated 2026-10-18): replay success is a legal transition except_pool → credited/paid. The ledger and the money move together or not at all — money, ledger, and event feed always agree."
+        }
+      },
+      "aggregateRuleRefs": [
+        {
+          "ruleId": "exactly-once-terminal",
+          "desc": "First terminal write wins. A customer already terminal is never settled again — rebatch re-runs and double classifications are skipped by customerId.",
+          "desc_zh": "终态第一次写入生效。已是终态的客户不再结算——重批重跑与重复分类 都按 customerId 跳过。"
+        },
+        {
+          "ruleId": "balanced-ledger",
+          "desc": "entered == inFlight + credited/paid + rejected + manual + except_pool, per chain. The stats view asserts this.",
+          "desc_zh": "每条链：进入数 == 在途数 + 各终态数之和。统计页断言此等式。"
+        }
+      ],
+      "ledgerDurability": {
+        "rule": "The terminal ledger is a read model, not a second write model. It is rebuilt from the batch runs' progress records whenever the service (re)starts.",
+        "rule_zh": "终态账本是读模型，不是第二套写模型。服务每次（重）启，都从各批次 的进度记录重建账本。",
+        "rebuild": "A3 (arbitrated 2026-10-18): on (re)start, the service replays the latest runs' progress records (which carry the full classifications) through the terminal-decision rules — the same rules the live business closure uses, by construction — and restores terminal states, the seen-set, and the exception pool. A service crash no longer loses the ledger; the progress records are the single source of truth.",
+        "rebuild_zh": "A3（2026-10-18 仲裁）：（重）启时，服务把最近各批次的进度记录 （含完整分类结果）按终态判定规则重放一遍——这套规则与实时业务收尾 是同一套（同一份规则，不是两份拷贝）——恢复终态、已见集合与异常池。 服务宕机不再丢失账本；进度记录是唯一的事实来源。"
+      },
+      "commands": [
+        {
+          "name": "settle-recharge",
+          "name_zh": "充值入账",
+          "description": "A successfully classified recharge item settles: the customer's account is credited. Idempotent by customerId — already-terminal orders are skipped. Recharge settlement is what feeds the purchase chain (credited customers are enqueued for purchase).",
+          "description_zh": "分类成功的充值项入账：客户账户增加金额。按 customerId 幂等， 已是终态的订单跳过。充值入账是申购链的上游（已入账客户被送入申购）。",
+          "parameters": [
+            {
+              "name": "chain",
+              "dataType": "string",
+              "description": "\"recharge\""
+            },
+            {
+              "name": "customerId",
+              "dataType": "string",
+              "description": "Customer identifier"
+            },
+            {
+              "name": "amount",
+              "dataType": "number",
+              "description": "Amount to credit"
+            }
+          ],
+          "guards": [
+            "order not already terminal (first write wins)",
+            "account update succeeded (after at most one auto-retry)"
+          ],
+          "produces": [
+            "order-credited"
+          ]
+        },
+        {
+          "name": "settle-purchase",
+          "name_zh": "申购成交",
+          "description": "A successfully classified purchase item settles: the customer's balance is debited and the fund position increased. Idempotent by customerId.",
+          "description_zh": "分类成功的申购项成交：客户余额扣减、基金持仓增加。按 customerId 幂等。",
+          "parameters": [
+            {
+              "name": "chain",
+              "dataType": "string",
+              "description": "\"purchase\""
+            },
+            {
+              "name": "customerId",
+              "dataType": "string",
+              "description": "Customer identifier"
+            },
+            {
+              "name": "amount",
+              "dataType": "number",
+              "description": "Purchase amount"
+            },
+            {
+              "name": "fund",
+              "dataType": "string",
+              "description": "Fund name"
+            }
+          ],
+          "guards": [
+            "order not already terminal (first write wins)",
+            "account update succeeded (after at most one auto-retry)"
+          ],
+          "produces": [
+            "order-paid"
+          ]
+        },
+        {
+          "name": "abandon-order",
+          "name_zh": "放弃订单",
+          "description": "A failed item the routing policy gives up on (e.g. balance insufficient, quota exceeded → Scrap). Terminal: rejected. No retry, no human involved.",
+          "description_zh": "路由策略决定放弃的失败项（如余额不足、额度超限 → Scrap）。终态 rejected， 不重试、不转人工。",
+          "parameters": [
+            {
+              "name": "chain",
+              "dataType": "string",
+              "description": "Chain the order belongs to"
+            },
+            {
+              "name": "customerId",
+              "dataType": "string",
+              "description": "Customer identifier"
+            },
+            {
+              "name": "reasonCode",
+              "dataType": "string",
+              "description": "Failure code, e.g. BALANCE_INSUFFICIENT"
+            }
+          ],
+          "guards": [
+            "routing decision is Scrap (policy routing-decision)"
+          ],
+          "produces": [
+            "order-rejected"
+          ]
+        },
+        {
+          "name": "escalate-to-manual",
+          "name_zh": "转人工",
+          "description": "A failed item that exhausted its retry budget (retryCount >= maxRetries). Terminal: manual, with a ticket id. A human decides what happens next — the engine stops trying.",
+          "description_zh": "用完重试预算的失败项（retryCount >= maxRetries）。终态 manual，带工单号， 后续由人工决定——引擎不再尝试。",
+          "parameters": [
+            {
+              "name": "chain",
+              "dataType": "string",
+              "description": "Chain the order belongs to"
+            },
+            {
+              "name": "customerId",
+              "dataType": "string",
+              "description": "Customer identifier"
+            },
+            {
+              "name": "ticketId",
+              "dataType": "string",
+              "description": "e.g. MAX_RETRY_EXCEEDED-TIMEOUT"
+            }
+          ],
+          "guards": [
+            "routing decision is ManualIntervention (policy routing-decision)"
+          ],
+          "produces": [
+            "order-escalated"
+          ]
+        },
+        {
+          "name": "park-in-exception-pool",
+          "name_zh": "进入人工异常池",
+          "description": "The account update (the real money movement) failed twice — once plus one auto-retry. The order parks in the exception pool: terminal except_pool, visible in the UI, waiting for a human to replay. Settlement did NOT happen.",
+          "description_zh": "账务更新（真正的资金变动）失败了两次——一次加一次自动重试。订单进入 人工异常池：终态 except_pool，在 UI 可见，等待人工重放。此时并未结算。",
+          "parameters": [
+            {
+              "name": "chain",
+              "dataType": "string",
+              "description": "Chain the order belongs to"
+            },
+            {
+              "name": "customerId",
+              "dataType": "string",
+              "description": "Customer identifier"
+            },
+            {
+              "name": "reason",
+              "dataType": "string",
+              "description": "Why it parked"
+            }
+          ],
+          "guards": [
+            "account update failed twice (initial + one auto-retry)"
+          ],
+          "produces": [
+            "order-parked-in-exception-pool"
+          ]
+        },
+        {
+          "name": "replay-exception",
+          "name_zh": "人工重放",
+          "description": "A human reviewed a parked order and replays it: the pool entry is removed and the account update is retried WITHOUT fault injection, so the money does move. A1 (arbitrated 2026-10-18): a successful replay is a legal terminal transition except_pool → credited/paid. The ledger and the money move together or not at all — if the transition is refused (the order is no longer in except_pool), the money is untouched and the pool entry is restored.",
+          "description_zh": "人工复核被搁置的订单后重放：异常池条目移除，账务更新重试时不再注入故障， 资金确实会动。A1（2026-10-18 仲裁）：重放成功是一次合法的终态迁移， except_pool → credited/paid。账和钱要么一起变，要么都不变——若迁移被拒绝 （订单已不在 except_pool），资金不动，池条目恢复。",
+          "parameters": [
+            {
+              "name": "chain",
+              "dataType": "string",
+              "description": "Chain the order belongs to"
+            },
+            {
+              "name": "customerId",
+              "dataType": "string",
+              "description": "Customer identifier"
+            }
+          ],
+          "guards": [
+            "order is currently in except_pool",
+            "human confirmed (one-click replay in the UI)"
+          ],
+          "produces": [
+            "exception-replayed"
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "order-credited",
+          "description": "The recharge settled; the customer can now enter the purchase chain.",
+          "payloads": [
+            {
+              "name": "chain",
+              "dataType": "string",
+              "description": "\"recharge\""
+            },
+            {
+              "name": "customerId",
+              "dataType": "string",
+              "description": "Customer identifier"
+            },
+            {
+              "name": "amount",
+              "dataType": "number",
+              "description": "Credited amount"
+            }
+          ]
+        },
+        {
+          "name": "order-paid",
+          "description": "The purchase settled: balance debited, fund position increased.",
+          "payloads": [
+            {
+              "name": "chain",
+              "dataType": "string",
+              "description": "\"purchase\""
+            },
+            {
+              "name": "customerId",
+              "dataType": "string",
+              "description": "Customer identifier"
+            },
+            {
+              "name": "amount",
+              "dataType": "number",
+              "description": "Purchase amount"
+            },
+            {
+              "name": "fund",
+              "dataType": "string",
+              "description": "Fund name"
+            }
+          ]
+        },
+        {
+          "name": "order-rejected",
+          "description": "The order was abandoned per policy; terminal.",
+          "payloads": [
+            {
+              "name": "chain",
+              "dataType": "string",
+              "description": "Chain"
+            },
+            {
+              "name": "customerId",
+              "dataType": "string",
+              "description": "Customer identifier"
+            },
+            {
+              "name": "reasonCode",
+              "dataType": "string",
+              "description": "Failure code"
+            }
+          ]
+        },
+        {
+          "name": "order-escalated",
+          "description": "The order left the automatic flow with a manual ticket.",
+          "payloads": [
+            {
+              "name": "chain",
+              "dataType": "string",
+              "description": "Chain"
+            },
+            {
+              "name": "customerId",
+              "dataType": "string",
+              "description": "Customer identifier"
+            },
+            {
+              "name": "ticketId",
+              "dataType": "string",
+              "description": "Manual ticket id"
+            }
+          ]
+        },
+        {
+          "name": "order-parked-in-exception-pool",
+          "description": "The order waits in the exception pool for human replay.",
+          "payloads": [
+            {
+              "name": "chain",
+              "dataType": "string",
+              "description": "Chain"
+            },
+            {
+              "name": "customerId",
+              "dataType": "string",
+              "description": "Customer identifier"
+            },
+            {
+              "name": "reason",
+              "dataType": "string",
+              "description": "Park reason"
+            }
+          ]
+        },
+        {
+          "name": "exception-replayed",
+          "description": "The pooled order settled after human replay; the ledger moved with the money.",
+          "payloads": [
+            {
+              "name": "chain",
+              "dataType": "string",
+              "description": "Chain"
+            },
+            {
+              "name": "customerId",
+              "dataType": "string",
+              "description": "Customer identifier"
+            },
+            {
+              "name": "moneyMoved",
+              "dataType": "boolean",
+              "description": "true — replay always moves the money (no fault injection)"
+            },
+            {
+              "name": "newTerminal",
+              "dataType": "string",
+              "description": "\"credited\" or \"paid\" — the ledger transitioned with the money"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "valueObjects": [
+    {
+      "id": "ack-result",
+      "name": "Ack Result",
+      "name_zh": "确认结果",
+      "description": "What the external system said after receiving the uploaded file. Timeout and Rejected become classified stage failures (ACK_TIMEOUT / ACK_REJECTED); Received lets the chain continue.",
+      "description_zh": "文件上传后外部系统的确认。超时与拒绝会变成已分类的阶段失败 （ACK_TIMEOUT / ACK_REJECTED）；收到确认则链继续。",
+      "fields": [],
+      "variants": [
+        {
+          "name": "AckReceived",
+          "description": "External system acknowledged receipt."
+        },
+        {
+          "name": "AckTimeout",
+          "description": "Silence past the wait — classified failure ACK_TIMEOUT.",
+          "fields": [
+            {
+              "name": "waitMs",
+              "dataType": "integer",
+              "description": "How long we waited"
+            }
+          ]
+        },
+        {
+          "name": "AckRejected",
+          "description": "External system refused the file — classified failure ACK_REJECTED.",
+          "fields": [
+            {
+              "name": "reason",
+              "dataType": "string",
+              "description": "Rejection reason"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "batch-file",
+      "name": "Batch File Artifacts",
+      "name_zh": "批量文件制品",
+      "description": "The three file artifacts that flow through the chain: the generated batch file, the upload receipt, and the external system's response file. These are the per-stage state slots (see aggregate batch-chain-run).",
+      "description_zh": "流经链的三种文件制品：生成的批量文件、上传回执、外部系统的响应文件。 它们就是各阶段的状态槽位（见 aggregate batch-chain-run）。",
+      "fields": [],
+      "variants": [
+        {
+          "name": "GeneratedFile",
+          "description": "The transfer file encoded from the batch items (written by file-gen).",
+          "fields": [
+            {
+              "name": "localPath",
+              "dataType": "string",
+              "description": "Local path"
+            },
+            {
+              "name": "fileName",
+              "dataType": "string",
+              "description": "File name"
+            },
+            {
+              "name": "byteSize",
+              "dataType": "integer",
+              "description": "Size in bytes"
+            },
+            {
+              "name": "encoding",
+              "dataType": "string",
+              "description": "Encoding/format, e.g. dat"
+            }
+          ]
+        },
+        {
+          "name": "UploadReceipt",
+          "description": "Proof the external system received the file (written by upload).",
+          "fields": [
+            {
+              "name": "remotePath",
+              "dataType": "string",
+              "description": "Remote path"
+            },
+            {
+              "name": "bytesTransferred",
+              "dataType": "integer",
+              "description": "Bytes sent"
+            },
+            {
+              "name": "timestamp",
+              "dataType": "integer",
+              "description": "Upload time (epoch ms)"
+            }
+          ]
+        },
+        {
+          "name": "ResponseFile",
+          "description": "The external system's processing result (written by poll).",
+          "fields": [
+            {
+              "name": "localPath",
+              "dataType": "string",
+              "description": "Local path"
+            },
+            {
+              "name": "fileName",
+              "dataType": "string",
+              "description": "File name"
+            },
+            {
+              "name": "byteSize",
+              "dataType": "integer",
+              "description": "Size in bytes"
+            },
+            {
+              "name": "content",
+              "dataType": "bytes",
+              "description": "Raw content"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "batch-key",
+      "name": "Batch Key",
+      "name_zh": "批次键",
+      "description": "The business key of one batch run: `bank-{runId}-{chain}-r{round}-b{index}`. A4 (arbitrated 2026-10-18): '-' is the delimiter, so chain names and runIds must not contain '-'. The invariant is enforced where the key is created — a violating name is rejected on the spot. Encoding and decoding live in one place as inverse operations, so they cannot drift apart.",
+      "description_zh": "一次批次运行的业务键：`bank-{runId}-{chain}-r{round}-b{index}`。 A4（2026-10-18 仲裁）：'-' 是分隔符，因此链名与运行号都不得包含 '-'。 该不变量在键创建处强制——违规的名字当场被拒绝。编码与解码在同一处 互为逆操作，不可能互相漂移。",
+      "fields": [
+        {
+          "name": "runId",
+          "dataType": "string",
+          "description": "Per-launch token; progress records from one launch are never confused with another's. Must not contain '-'."
+        },
+        {
+          "name": "chain",
+          "dataType": "string",
+          "description": "recharge | purchase. Must not contain '-' (enforced at creation)."
+        },
+        {
+          "name": "round",
+          "dataType": "integer",
+          "description": "1-based rebatch round."
+        },
+        {
+          "name": "index",
+          "dataType": "integer",
+          "description": "0-based batch index within the round."
+        }
+      ],
+      "invariants": [
+        {
+          "id": "delimiter-exclusion",
+          "description": "Neither runId nor chain may contain '-'. Violations are rejected where the key is created (fail fast), not where it is parsed.",
+          "description_zh": "runId 与链名都不得含 '-'。违规在键创建处被拒绝（快速失败），而不是在解析处。"
+        },
+        {
+          "id": "encode-decode-inverse",
+          "description": "decode(encode(runId, chain, round, index)) == (runId, chain, round, index), always. A single owner for both directions.",
+          "description_zh": "编码解码互为逆操作，恒成立。两个方向同一处负责。"
+        }
+      ]
+    },
+    {
+      "id": "demo-customer",
+      "name": "Demo Customer",
+      "name_zh": "演示客户",
+      "description": "One simulated bank customer in the scale demo. Deterministic (UUID v3 from the index), so reruns and breakpoint-resumes reproduce the same population.",
+      "description_zh": "规模演示中的一个模拟银行客户。确定性生成（按序号的 UUID v3）， 重跑与断点续跑得到同样的人群。",
+      "fields": [
+        {
+          "name": "idx",
+          "dataType": "integer",
+          "description": "0-based index"
+        },
+        {
+          "name": "customerId",
+          "dataType": "string",
+          "description": "Deterministic UUID"
+        },
+        {
+          "name": "name",
+          "dataType": "string",
+          "description": "Display name, e.g. 客户000123"
+        },
+        {
+          "name": "amount",
+          "dataType": "number",
+          "description": "Order amount"
+        },
+        {
+          "name": "fund",
+          "dataType": "string",
+          "description": "Fund for the purchase chain, e.g. 成长混合A"
+        }
+      ],
+      "item_encoding": {
+        "format": "chain:round:customerId",
+        "description": "How a batch item travels through the pipeline. The chain and round ride along with the customer id so a single chain definition can serve both the recharge and the purchase chain.\n",
+        "example": "recharge:1:3f2a…"
+      },
+      "chain_item": {
+        "description": "Decoded item = customer + its chain and round.",
+        "fields": [
+          {
+            "name": "customer",
+            "type": "demo-customer",
+            "description": "The customer"
+          },
+          {
+            "name": "chain",
+            "type": "string",
+            "description": "recharge or purchase"
+          },
+          {
+            "name": "round",
+            "type": "integer",
+            "description": "1-based retry round"
+          }
+        ]
+      }
+    },
+    {
+      "id": "error-code-mapping",
+      "name": "Error Code Mapping",
+      "name_zh": "错误码映射",
+      "description": "Business-configurable mapping from external-system result codes to the tri-classification. Exact-match on the extracted code; anything unlisted falls through to Failure.",
+      "description_zh": "业务可配置的外部系统结果码 → 三分类映射。对提取出的码做精确匹配； 未列出的码一律落入 Failure。",
+      "fields": [
+        {
+          "name": "successCodes",
+          "dataType": "string[]",
+          "description": "Codes that mark the item Success outright.",
+          "default": [
+            "OK",
+            "SUCCESS"
+          ]
+        },
+        {
+          "name": "failureCodes",
+          "dataType": "map<string, next-step>",
+          "description": "Codes that mark the item Failure, each with a suggested next step (ref next-step).",
+          "default": {}
+        },
+        {
+          "name": "suspiciousCodes",
+          "dataType": "string[]",
+          "description": "Codes that mark the item Suspicious (needs reconfirm).",
+          "default": [
+            "TIMEOUT",
+            "PARTIAL",
+            "NETWORK_ERROR"
+          ]
+        }
+      ],
+      "algorithm": "code = extractCode(raw); item = associateItem(raw, items); successCodes ∋ code → Success; suspiciousCodes ∋ code → Suspicious; otherwise → Failure(code, message, failureCodes.get(code))."
+    },
+    {
+      "id": "next-step",
+      "name": "Next Step",
+      "name_zh": "路由动作",
+      "description": "The four possible routing actions for a failed item, decided by policy routing-decision. Process-manager vocabulary shared with the fab domain.",
+      "description_zh": "失败项的四种路由动作，由 policy routing-decision 决定。 与 fab 领域共用的 process-manager 词汇。",
+      "fields": [],
+      "variants": [
+        {
+          "name": "RetrySameArea",
+          "description": "Retry in the same area after a delay.",
+          "fields": [
+            {
+              "name": "delay",
+              "dataType": "duration",
+              "description": "Cooldown before re-batching"
+            }
+          ]
+        },
+        {
+          "name": "RouteToArea",
+          "description": "Route to a different area, optionally with a recipe.",
+          "fields": [
+            {
+              "name": "areaId",
+              "dataType": "string",
+              "description": "Target area"
+            },
+            {
+              "name": "recipeId",
+              "dataType": "string",
+              "description": "Optional recipe"
+            }
+          ]
+        },
+        {
+          "name": "ManualIntervention",
+          "description": "Needs a human; carries a ticket id.",
+          "fields": [
+            {
+              "name": "ticketId",
+              "dataType": "string",
+              "description": "e.g. MAX_RETRY_EXCEEDED-TIMEOUT"
+            }
+          ]
+        },
+        {
+          "name": "Scrap",
+          "description": "Abandon — terminal, no retry, no human."
+        }
+      ]
+    },
+    {
+      "id": "poll-result",
+      "name": "Poll Result",
+      "name_zh": "轮询结果",
+      "description": "What response-polling returned. Timeout and Error become classified stage failures (POLL_TIMEOUT / POLL_ERROR); Ready continues the chain.",
+      "description_zh": "响应轮询的结果。超时与错误会变成已分类的阶段失败 （POLL_TIMEOUT / POLL_ERROR）；就绪则链继续。",
+      "fields": [],
+      "variants": [
+        {
+          "name": "ResponseReady",
+          "description": "The result file is ready.",
+          "fields": [
+            {
+              "name": "file",
+              "dataType": "batch-file.ResponseFile",
+              "description": "The response file"
+            }
+          ]
+        },
+        {
+          "name": "PollTimeout",
+          "description": "Never became ready in time — classified failure POLL_TIMEOUT.",
+          "fields": [
+            {
+              "name": "attempts",
+              "dataType": "integer",
+              "description": "Poll attempts made"
+            },
+            {
+              "name": "waitMs",
+              "dataType": "integer",
+              "description": "Total wait"
+            }
+          ]
+        },
+        {
+          "name": "PollError",
+          "description": "Polling itself errored — classified failure POLL_ERROR.",
+          "fields": [
+            {
+              "name": "cause",
+              "dataType": "string",
+              "description": "Underlying cause"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rebatch-policy",
+      "name": "Rebatch Policy",
+      "name_zh": "重批策略",
+      "description": "Business parameters for failure routing: the retry budget, per-code action overrides, and the default cooldown. Consumed by policy routing-decision.",
+      "description_zh": "失败路由的业务参数：重试预算、按错误码的动作覆盖、默认冷却。 被 policy routing-decision 消费。",
+      "fields": [
+        {
+          "name": "maxRetries",
+          "dataType": "integer",
+          "description": "Beyond this many retries the item escalates to manual.",
+          "default": 3
+        },
+        {
+          "name": "actionMap",
+          "dataType": "map<string, next-step>",
+          "description": "Error code → next step override (ref next-step).",
+          "default": {}
+        },
+        {
+          "name": "defaultCooldown",
+          "dataType": "duration",
+          "description": "Delay before re-batching when nothing more specific applies."
+        }
+      ],
+      "decision": "For each failure, in order: (1) retryCount >= maxRetries → ManualIntervention(\"MAX_RETRY_EXCEEDED-{code}\"); (2) the failure's own suggestedAction if present; (3) actionMap[code] if present; (4) RetrySameArea(defaultCooldown).",
+      "demo_policies": [
+        {
+          "chain": "recharge",
+          "maxRetries": 2,
+          "actionMap": {
+            "BALANCE_INSUFFICIENT": "Scrap",
+            "NETWORK_ERROR": "RetrySameArea(3s)"
+          },
+          "defaultCooldown": "3s"
+        },
+        {
+          "chain": "purchase",
+          "maxRetries": 2,
+          "actionMap": {
+            "QUOTA_EXCEEDED": "Scrap",
+            "NETWORK_ERROR": "RetrySameArea(3s)"
+          },
+          "defaultCooldown": "3s"
+        }
+      ]
+    },
+    {
+      "id": "classification",
+      "name": "Result Classification",
+      "name_zh": "结果三分类",
+      "description": "Every (raw result × item) pair lands in exactly one of three buckets. Success and failure flow straight through; suspicious items must be reconfirmed (policy reconfirm-rule) before they get a final state.",
+      "description_zh": "每个（原始结果 × item）有且仅落入三类之一。成功与失败直接分流； 可疑项必须经过复核（policy reconfirm-rule）才能定终态。",
+      "fields": [],
+      "variants": [
+        {
+          "name": "Success",
+          "description": "The external system accepted the item.",
+          "fields": [
+            {
+              "name": "item",
+              "dataType": "string",
+              "description": "Item identifier"
+            },
+            {
+              "name": "rawResult",
+              "dataType": "string",
+              "description": "The raw result payload"
+            }
+          ]
+        },
+        {
+          "name": "Failure",
+          "description": "The external system rejected the item, or verification failed it.",
+          "fields": [
+            {
+              "name": "item",
+              "dataType": "string",
+              "description": "Item identifier"
+            },
+            {
+              "name": "reason",
+              "dataType": "failure-reason",
+              "description": "ref value-object (inline below)"
+            }
+          ]
+        },
+        {
+          "name": "Suspicious",
+          "description": "Uncertain — needs reconfirmation before a final state.",
+          "fields": [
+            {
+              "name": "item",
+              "dataType": "string",
+              "description": "Item identifier"
+            },
+            {
+              "name": "reason",
+              "dataType": "suspicious-reason",
+              "description": "ref value-object (inline below)"
+            }
+          ]
+        }
+      ],
+      "inline_types": [
+        {
+          "name": "failure-reason",
+          "fields": [
+            {
+              "name": "code",
+              "dataType": "string",
+              "description": "Machine code, e.g. BALANCE_INSUFFICIENT"
+            },
+            {
+              "name": "message",
+              "dataType": "string",
+              "description": "Human-readable message"
+            },
+            {
+              "name": "suggestedAction",
+              "dataType": "next-step",
+              "description": "Optional hint from the classifier (ref next-step); not part of the progress record"
+            }
+          ]
+        },
+        {
+          "name": "suspicious-reason",
+          "fields": [
+            {
+              "name": "code",
+              "dataType": "string",
+              "description": "Machine code, e.g. TIMEOUT"
+            },
+            {
+              "name": "message",
+              "dataType": "string",
+              "description": "Human-readable message"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "readModels": [
+    {
+      "id": "chain-stats",
+      "name": "Chain Statistics",
+      "name_zh": "链统计",
+      "description": "The reconciliation dashboard. Per chain it shows the terminal ledger (entered / in-flight / terminal buckets) and asserts the balanced equation; alongside it, flow counters for observation only (they count re-runs and are NOT reconciled).",
+      "description_zh": "对账大盘。每条链展示终态账本（进入 / 在途 / 终态桶）并断言 balanced 等式；旁边是只供观察的过程流量计数（含重跑，不参与对账）。",
+      "served_by": "GET /api/bank-batch/state",
+      "sources": [
+        "Customer Order",
+        "Batch Chain Run"
+      ],
+      "sourceAggregate": "Customer Order",
+      "visible_to": [],
+      "fields": [
+        {
+          "name": "scale",
+          "dataType": "object",
+          "description": "fixed demo config — customers 100000, batchSize 2000, batches 50, concurrency 6",
+          "source": "eventField:run-started.items"
+        },
+        {
+          "name": "batches.running",
+          "dataType": "integer",
+          "description": "live batch entities",
+          "source": "eventField:run-started.runId"
+        },
+        {
+          "name": "batches.queued",
+          "dataType": "integer",
+          "description": "waiting batch jobs",
+          "source": "eventField:run-started.runId"
+        },
+        {
+          "name": "batches.done",
+          "dataType": "integer",
+          "description": "completed batch runs",
+          "source": "eventField:run-completed.runId"
+        },
+        {
+          "name": "batches.recoveries",
+          "dataType": "integer",
+          "description": "crash-resume count",
+          "source": "eventField:run-recovered.runId"
+        },
+        {
+          "name": "per-chain.entered",
+          "dataType": "integer",
+          "description": "distinct (chain × customer) seen",
+          "source": "aggregateIdentity"
+        },
+        {
+          "name": "per-chain.inFlight",
+          "dataType": "integer",
+          "description": "entered − terminalCount",
+          "source": "aggregateIdentity"
+        },
+        {
+          "name": "per-chain.terminals",
+          "dataType": "map",
+          "description": "count by terminal state — recharge: credited/rejected/manual/except_pool; purchase: paid/rejected/manual/except_pool",
+          "source": "aggregateIdentity"
+        },
+        {
+          "name": "per-chain.balanced",
+          "dataType": "boolean",
+          "description": "entered == inFlight + Σ terminals (asserted per chain)",
+          "source": "aggregateIdentity"
+        },
+        {
+          "name": "flow counters",
+          "dataType": "map",
+          "description": "total / ok / suspicious / reconfirmOk / networkRetry / accountRetry / amount — observation only, include rebatch re-runs, not reconciled",
+          "source": "eventField:run-completed.runId"
+        },
+        {
+          "name": "feed",
+          "dataType": "string[]",
+          "description": "last 40 human-readable event lines",
+          "source": "eventField:run-completed.runId"
+        }
+      ]
+    },
+    {
+      "id": "exception-pool",
+      "name": "Exception Pool",
+      "name_zh": "人工异常池",
+      "description": "Orders whose account update failed twice, waiting for human replay. Queryable in the UI; replay is one click (single or all). Replay moves the money without fault injection, and a successful replay is a legal terminal transition: the ledger moves except_pool → credited/paid (see slice replay-exception).",
+      "description_zh": "账务更新失败两次、等待人工重放的订单。UI 可查，一键重放（单个或全部）。 重放时资金确实会动且不再注入故障；重放成功是一次合法的终态迁移， 账本从 except_pool 变为 credited/paid（见 slice replay-exception）。",
+      "served_by": [
+        "GET /api/bank-batch/exceptions",
+        "POST /api/bank-batch/exceptions/replay",
+        "POST /api/bank-batch/exceptions/:chain/:customerId/replay"
+      ],
+      "sources": [
+        "Customer Order"
+      ],
+      "sourceAggregate": "Customer Order",
+      "visible_to": [],
+      "fields": [
+        {
+          "name": "count",
+          "dataType": "integer",
+          "description": "pool size",
+          "source": "aggregateIdentity"
+        },
+        {
+          "name": "entries[].chain",
+          "dataType": "string",
+          "description": "chain of the parked order",
+          "source": "eventField:order-parked-in-exception-pool.chain"
+        },
+        {
+          "name": "entries[].customerId",
+          "dataType": "string",
+          "description": "customer of the parked order",
+          "source": "eventField:order-parked-in-exception-pool.customerId"
+        },
+        {
+          "name": "entries[].name",
+          "dataType": "string",
+          "description": "display name",
+          "source": "eventField:order-parked-in-exception-pool.customerId"
+        },
+        {
+          "name": "entries[].amount",
+          "dataType": "number",
+          "description": "order amount",
+          "source": "eventField:order-credited.amount"
+        },
+        {
+          "name": "entries[].reason",
+          "dataType": "string",
+          "description": "park reason, e.g. 账务更新两次失败",
+          "source": "eventField:order-parked-in-exception-pool.reason"
+        },
+        {
+          "name": "entries[].at",
+          "dataType": "instant",
+          "description": "park time",
+          "source": "eventField:order-parked-in-exception-pool.customerId"
+        }
+      ]
+    },
+    {
+      "id": "event-feed",
+      "name": "Live Event Feed",
+      "name_zh": "实时事件流",
+      "description": "The WebSocket stream the demo page renders live: every run/chain lifecycle transition publishes a typed frame. This is the demo's observable behavior — an agent re-scaffolding the UI needs exactly these frame types.",
+      "description_zh": "演示页实时渲染的 WebSocket 流：每次运行/链的生命周期变化都发布一个 类型化帧。这是演示的可观察行为——重搭 UI 的 agent 需要的正是这些帧类型。",
+      "served_by": "WS /ws/bank-batch/events",
+      "sources": [
+        "Batch Chain Run",
+        "Customer Order"
+      ],
+      "sourceAggregate": "Batch Chain Run",
+      "visible_to": [],
+      "fields": [
+        {
+          "name": "frame",
+          "dataType": "object",
+          "description": "{seq, type, data} JSON per frame",
+          "source": "eventField:run-started.runId"
+        },
+        {
+          "name": "frame types",
+          "dataType": "string[]",
+          "description": "run-started · job-start · batch-started · stage-done · stage-failed · batch-completed · batch-failed · recovering · credited · progress · crash — the complete vocabulary the page subscribes to",
+          "source": "eventField:run-started.runId"
+        }
+      ]
+    }
+  ],
+  "stories": [],
+  "pipelines": [
+    {
+      "id": "batch-chain",
+      "name": "Six-Stage Batch Chain",
+      "name_zh": "六阶段批量链",
+      "description": "The six business steps of one batch's interaction with the external bank / fund-company system, in fixed order: build the batch file, send it, wait for the receipt confirmation, pull the processing result, decode it, and classify every item. Each stage reads its input from the run state and writes its output back; a missing input fails fast — stages must run in chain order. The stage names (file-gen … classify) are the shared resume vocabulary: a breakpoint is always \"which stage finished last\".",
+      "description_zh": "一批 items 与外部银行 / 基金公司系统交互的六个业务步骤，顺序固定： 生成批量文件、上传、等回执确认、拉取处理结果、解码、逐项分类。 每阶段从运行状态读输入、写回输出；输入缺失则快速失败——阶段必须 按链顺序跑。阶段名（file-gen … classify）是共用的续跑词汇： 断点永远是\"上一个完成的阶段是哪个\"。",
+      "failure_semantics": "A failed stage fails the run — the same business outcome as the old manual process: a batch that cannot finish a step does not silently continue. (A recovery rule could be installed to resolve-and-continue instead; the demo configures none.)",
+      "steps": [
+        {
+          "id": "file-gen",
+          "name": "Generate batch file",
+          "name_zh": "生成批量文件",
+          "description": "Encode the batch items into the transfer file the bank expects.",
+          "reads": [
+            "items",
+            "context"
+          ],
+          "writes": [
+            "generatedFile"
+          ],
+          "failure_codes": [],
+          "output_info": [
+            "localPath",
+            "fileName",
+            "byteSize",
+            "encoding"
+          ]
+        },
+        {
+          "id": "upload",
+          "name": "Upload file",
+          "name_zh": "上传文件",
+          "description": "Send the local file to the external system.",
+          "reads": [
+            "generatedFile"
+          ],
+          "writes": [
+            "receipt"
+          ],
+          "precondition": "generatedFile present",
+          "failure_codes": [],
+          "output_info": [
+            "remotePath",
+            "bytesTransferred",
+            "timestamp"
+          ]
+        },
+        {
+          "id": "wait-ack",
+          "name": "Wait for acknowledgement",
+          "name_zh": "等待外部确认",
+          "description": "Wait for the external system to acknowledge receipt of the file.",
+          "reads": [
+            "receipt"
+          ],
+          "writes": [
+            "ack"
+          ],
+          "precondition": "receipt present",
+          "failure_codes": [
+            {
+              "code": "ACK_TIMEOUT",
+              "meaning": "External system stayed silent past the wait"
+            },
+            {
+              "code": "ACK_REJECTED",
+              "meaning": "External system refused the file"
+            }
+          ],
+          "output_info": [
+            "ackResult"
+          ]
+        },
+        {
+          "id": "poll",
+          "name": "Poll response",
+          "name_zh": "轮询响应",
+          "description": "Pull the external system's processing result file.",
+          "reads": [
+            "context"
+          ],
+          "writes": [
+            "responseFile"
+          ],
+          "failure_codes": [
+            {
+              "code": "POLL_TIMEOUT",
+              "meaning": "Response never became ready in time"
+            },
+            {
+              "code": "POLL_ERROR",
+              "meaning": "Polling itself errored"
+            }
+          ],
+          "output_info": [
+            "localPath",
+            "fileName",
+            "byteSize"
+          ]
+        },
+        {
+          "id": "parse",
+          "name": "Parse response",
+          "name_zh": "解析响应",
+          "description": "Decode the response file into structured raw results.",
+          "reads": [
+            "responseFile"
+          ],
+          "writes": [
+            "rawResults"
+          ],
+          "precondition": "responseFile present",
+          "failure_codes": [],
+          "output_info": [
+            "resultCount"
+          ]
+        },
+        {
+          "id": "classify",
+          "name": "Classify results",
+          "name_zh": "结果分类",
+          "description": "Map each raw result to its item and tri-classify (success / failure / suspicious).",
+          "reads": [
+            "rawResults",
+            "items"
+          ],
+          "writes": [
+            "classifications"
+          ],
+          "precondition": "rawResults present",
+          "failure_codes": [],
+          "output_info": [
+            "successCount",
+            "failureCount",
+            "suspiciousCount"
+          ]
+        }
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "console-demo",
+      "name": "Console Demo Script",
+      "name_zh": "命令行演示剧本",
+      "description": "The standalone runnable (sbt run): the same six-stage chain against a simulated bank host, with printing hooks. Two scenarios — the happy path and the ack-timeout failure path — the smallest possible tour of the chain's behavior.",
+      "description_zh": "独立可运行版本（sbt run）：同一条六阶段链，对接模拟银行，带打印钩子。 两个场景——happy path 与 ack 超时失败路径——链行为的最小巡览。",
+      "script": {
+        "scale": {
+          "items": 3,
+          "note": "in-process only — no persistent progress records"
+        },
+        "chains": [
+          {
+            "id": "demo-chain",
+            "name": "Demo chain",
+            "description": "The six-stage chain against a simulated bank host (chainId \"recharge\")."
+          }
+        ],
+        "outcome_rules": [
+          {
+            "scenario": "happy-path",
+            "rules": [
+              {
+                "when": "raw starts with OK:",
+                "then": "Success"
+              },
+              {
+                "when": "raw starts with PENDING:",
+                "then": "Suspicious(PENDING, bank has not settled yet)"
+              },
+              {
+                "when": "otherwise",
+                "then": "Failure(BANK_REJECT)"
+              }
+            ]
+          },
+          {
+            "scenario": "ack-timeout",
+            "rules": [
+              {
+                "when": "external system stays silent",
+                "then": "wait-ack fails with ACK_TIMEOUT → batch aborted"
+              }
+            ],
+            "note": "A recovery rule could be installed to resolve-and-continue instead."
+          }
+        ],
+        "observability": {
+          "description": "Printing hooks log the breakpoint + output info per stage (>> started / << done / !! FAILED)."
+        }
+      }
+    },
+    {
+      "id": "scale-demo",
+      "name": "Scale Demo Script",
+      "name_zh": "规模演示剧本",
+      "description": "The web demo's deterministic script: 100,000 customers flow through two chains (recharge then purchase) in 2,000-item batches, 6 at a time. Outcomes are a deterministic hash of (chain, customer, round) — the same customer always gets the same result, so breakpoint-resumes and reruns reproduce the story exactly, including the crash-button demo.",
+      "description_zh": "Web 演示的确定性剧本：10 万客户经两条链（先充值后申购），每批 2000， 6 批并发。结果是（链，客户，轮次）的确定性哈希——同一客户永远同一结果， 断点续跑与重跑（包括宕机按钮演示）都能复现。",
+      "script": {
+        "scale": {
+          "customers": 100000,
+          "batch_size": 2000,
+          "batches": 50,
+          "max_concurrency": 6,
+          "funds": [
+            "成长混合A",
+            "稳健增利B",
+            "科技创新C"
+          ]
+        },
+        "chains": [
+          {
+            "id": "recharge",
+            "name": "Recharge",
+            "name_zh": "充值链",
+            "description": "Batch file exchange with the partner bank → credited."
+          },
+          {
+            "id": "purchase",
+            "name": "Purchase",
+            "name_zh": "申购链",
+            "description": "Credited recharge customers auto-initiate fund purchase → paid (balance debited, position increased)."
+          }
+        ],
+        "outcome_rules": [
+          {
+            "round": 1,
+            "rules": [
+              {
+                "when": "hash < 2%",
+                "then": "reject",
+                "note": "recharge: BALANCE_INSUFFICIENT; purchase: QUOTA_EXCEEDED → policy abandons"
+              },
+              {
+                "when": "hash < 4%",
+                "then": "timeout → suspicious",
+                "note": "→ reconfirm-rule"
+              },
+              {
+                "when": "otherwise",
+                "then": "ok"
+              }
+            ]
+          },
+          {
+            "round": "2+",
+            "rules": [
+              {
+                "when": "hash < 10%",
+                "then": "timeout → suspicious"
+              },
+              {
+                "when": "otherwise",
+                "then": "ok"
+              }
+            ],
+            "note": "Round 2+ only contains round-1 timeouts that reconfirmed as NETWORK_ERROR."
+          },
+          {
+            "reconfirm": null,
+            "rules": [
+              {
+                "when": "hash < 60%",
+                "then": "VERIFIED_SUCCESS → joins settlement"
+              },
+              {
+                "when": "otherwise",
+                "then": "NETWORK_ERROR → failure, suggestedAction RetrySameArea → auto-rebatch"
+              }
+            ]
+          },
+          {
+            "retry_budget": null,
+            "rules": [
+              {
+                "when": "round 3 (retryCount >= maxRetries=2)",
+                "then": "escalate-to-manual"
+              }
+            ]
+          },
+          {
+            "account_update": null,
+            "rules": [
+              {
+                "when": "1% transient fault",
+                "then": "auto-retry once after 200ms"
+              },
+              {
+                "when": "still failing",
+                "then": "park-in-exception-pool"
+              }
+            ]
+          }
+        ],
+        "chaining": {
+          "description": "Credited recharge customers are grouped into purchase batches and enqueued; the recharge batch job only completes after its purchase batches are queued.\n"
+        },
+        "crash_demo": {
+          "description": "The crash button stops a random running batch process (progress records kept); the process restarts on the next instruction and resumes from the breakpoint — the page shows RECOVERING then continues from the breakpoint.\n"
+        }
+      }
+    }
+  ],
+  "inboxLayout": {
+    "eventStorming|reconstructed|0": "01-event-flow",
+    "eventStorming|reconstructed|1": "01-event-flow",
+    "eventStorming|reconstructed|2": "01-event-flow",
+    "eventStorming|reconstructed|3": "01-event-flow",
+    "eventStorming|reconstructed|4": "01-event-flow",
+    "eventStorming|reconstructed|5": "01-event-flow",
+    "eventStorming|reconstructed|6": "01-event-flow",
+    "eventStorming|reconstructed|7": "01-event-flow",
+    "eventStorming|reconstructed|8": "01-event-flow",
+    "eventStorming|reconstructed|9": "01-event-flow",
+    "eventStorming|reconstructed|10": "01-event-flow",
+    "commandStorming|reconstructed|0": "02-commands",
+    "commandStorming|reconstructed|1": "02-commands",
+    "commandStorming|reconstructed|3": "02-commands",
+    "commandStorming|reconstructed|4": "02-commands",
+    "commandStorming|reconstructed|7": "02-commands",
+    "commandStorming|reconstructed|8": "02-commands",
+    "commandStorming|reconstructed|9": "02-commands",
+    "commandStorming|reconstructed|10": "02-commands",
+    "commandStorming|reconstructed|2": "02-commands",
+    "commandStorming|reconstructed|5": "02-commands",
+    "commandStorming|reconstructed|6": "02-commands",
+    "aggregateDiscovery|reconstructed|0": "03-aggregates",
+    "aggregateDiscovery|reconstructed|1": "03-aggregates",
+    "contextMapping|reconstructed|0": "05-context-map",
+    "contextMapping|reconstructed|1": "05-context-map",
+    "refining|reconstructed|0": "06-aggregate-detail",
+    "refining|reconstructed|1": "06-aggregate-detail",
+    "refining|reconstructed|2": "06-aggregate-detail",
+    "refining|reconstructed|3": "06-aggregate-detail",
+    "refining|reconstructed|5": "06-aggregate-detail",
+    "refining|reconstructed|6": "06-aggregate-detail",
+    "refining|reconstructed|7": "06-aggregate-detail",
+    "refining|reconstructed|8": "06-aggregate-detail",
+    "refining|reconstructed|9": "06-aggregate-detail",
+    "refining|reconstructed|10": "06-aggregate-detail",
+    "refining|reconstructed|4": "06-aggregate-detail",
+    "refining|reconstructed|11": "07-aggregate-relations",
+    "refining|reconstructed|12": "07-aggregate-relations",
+    "refining|reconstructed|13": "08-message-detail",
+    "refining|reconstructed|14": "08-message-detail",
+    "refining|reconstructed|15": "08-message-detail",
+    "refining|reconstructed|16": "08-message-detail",
+    "refining|reconstructed|17": "08-message-detail",
+    "refining|reconstructed|18": "08-message-detail",
+    "refining|reconstructed|19": "08-message-detail",
+    "refining|reconstructed|20": "08-message-detail",
+    "refining|reconstructed|21": "08-message-detail",
+    "refining|reconstructed|22": "08-message-detail",
+    "refining|reconstructed|23": "08-message-detail",
+    "refining|reconstructed|24": "09-lineage",
+    "refining|reconstructed|25": "09-lineage",
+    "refining|reconstructed|26": "09-lineage",
+    "refining|reconstructed|27": "09-lineage",
+    "storyMapping|reconstructed|0": "11-stories",
+    "storyMapping|reconstructed|1": "11-stories",
+    "storyMapping|reconstructed|2": "11-stories",
+    "storyMapping|reconstructed|3": "11-stories",
+    "refining|reconstructed|28": "12-use-cases",
+    "refining|reconstructed|29": "12-use-cases",
+    "refining|reconstructed|30": "12-use-cases",
+    "refining|reconstructed|31": "12-use-cases",
+    "refining|reconstructed|32": "13-read-models",
+    "refining|reconstructed|34": "13-read-models",
+    "refining|reconstructed|33": "13-read-models"
+  }
+}

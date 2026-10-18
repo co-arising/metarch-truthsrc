@@ -1,0 +1,4014 @@
+{
+  "schemaVersion": "truthsrc/v1",
+  "workshop": "fab-simulator-demo",
+  "sessions": [
+    {
+      "session": "eventStorming",
+      "scopes": [
+        {
+          "scope": "reconstructed",
+          "notes": [
+            {
+              "type": "event",
+              "name": "WorkOrderCreated",
+              "name_zh": "工单创建",
+              "description": "A work order opened: the fab run has something to execute. One work order, one run.",
+              "description_zh": "工单创建：fab 运行有了执行对象。一个工单，一次运行。",
+              "links": [
+                "command:create-work-order"
+              ],
+              "info": {
+                "timeline": "fab-pipeline",
+                "sequence": 1,
+                "payloadFields": [
+                  "workOrderId: string — 工单号",
+                  "scenarioId: string — 如 m35"
+                ]
+              }
+            },
+            {
+              "type": "event",
+              "name": "RunStarted",
+              "name_zh": "流水线启动",
+              "description": "Start executing the fab step queue for a work order: the run's start (with initial state) is recorded, then steps run in order. A second start for a running or finished work order is refused.",
+              "description_zh": "为一个工单启动 fab 步骤队列：记下运行开始（含初始状态），然后按序执行。对已在跑或已完工的工单再次启动被拒绝。",
+              "links": [
+                "command:start-pipeline-run"
+              ],
+              "info": {
+                "timeline": "fab-pipeline",
+                "sequence": 2,
+                "payloadFields": [
+                  "workOrderId: string",
+                  "scenarioId: string"
+                ]
+              }
+            },
+            {
+              "type": "event",
+              "name": "StepCompleted",
+              "name_zh": "步骤完成",
+              "description": "One queue step finished cleanly. Records which step finished and the full run state at that moment — the resume breakpoint.",
+              "description_zh": "队列中某步骤干净完成。记下完成的步骤与当时完整运行状态——这就是断点。",
+              "links": [
+                "command:start-pipeline-run"
+              ],
+              "info": {
+                "timeline": "fab-pipeline",
+                "sequence": 3,
+                "payloadFields": [
+                  "stepName: string — 步骤名（断点）",
+                  "outputInfo: map — 步骤产出信息"
+                ]
+              }
+            },
+            {
+              "type": "event",
+              "name": "WaferMeasured",
+              "name_zh": "晶圆量测",
+              "description": "A wafer's CD measurement was recorded from the metrology equipment. The measurement carries no judgment — classification is a separate step.",
+              "description_zh": "量测设备报出一片晶圆的 CD 值并记录。量测值本身不带判断——分类是另一步。",
+              "links": [
+                "command:record-measurement"
+              ],
+              "info": {
+                "timeline": "fab-pipeline",
+                "sequence": 4,
+                "payloadFields": [
+                  "waferId: string",
+                  "cdNm: number — CD 值（nm）",
+                  "equipmentId: string — 量测设备"
+                ]
+              }
+            },
+            {
+              "type": "event",
+              "name": "WaferClassified",
+              "name_zh": "晶圆分类",
+              "description": "A wafer got its disposition classification against the DecisionConfig thresholds: PASS / BORDERLINE / FAIL / SCRAP.",
+              "description_zh": "一片晶圆按 DecisionConfig 阈值定出去向：PASS / BORDERLINE / FAIL / SCRAP。",
+              "links": [
+                "command:classify-wafer"
+              ],
+              "info": {
+                "timeline": "fab-pipeline",
+                "sequence": 5,
+                "payloadFields": [
+                  "waferId: string",
+                  "verdict: string — PASS|BORDERLINE|FAIL|SCRAP"
+                ]
+              }
+            },
+            {
+              "type": "event",
+              "name": "SubLotSplit",
+              "name_zh": "切分子 Lot",
+              "description": "Wafers were carved out of a lot into a child lot (rework / pilot / scrap). Transfer goes reserve-then-confirm, so an interruption never loses or duplicates a wafer.",
+              "description_zh": "从 Lot 切出晶圆组成子 Lot（返工/先导/报废）。转移先预留后确认，中断不丢片不重片。",
+              "info": {
+                "timeline": "fab-pipeline",
+                "sequence": 6,
+                "payloadFields": [
+                  "parentLotId: string",
+                  "childLotId: string",
+                  "waferIds: string[]",
+                  "purpose: string — rework|pilot|scrap"
+                ]
+              }
+            },
+            {
+              "type": "event",
+              "name": "SubLotMerged",
+              "name_zh": "合并子 Lot",
+              "description": "The child lot's wafers returned to the parent lot; the child-lot view transitions.",
+              "description_zh": "子 Lot 的晶圆回归母 Lot；子 Lot 视图迁移。",
+              "info": {
+                "timeline": "fab-pipeline",
+                "sequence": 7,
+                "payloadFields": [
+                  "parentLotId: string",
+                  "childLotId: string",
+                  "waferIds: string[]"
+                ]
+              }
+            },
+            {
+              "type": "event",
+              "name": "WafersHeld",
+              "name_zh": "晶圆暂存",
+              "description": "Wafers were parked out of the flow pending review or disposition.",
+              "description_zh": "晶圆暂存，脱离流程等待复核或处置。",
+              "links": [
+                "command:hold-wafers"
+              ],
+              "info": {
+                "timeline": "fab-pipeline",
+                "sequence": 8,
+                "payloadFields": [
+                  "lotId: string",
+                  "waferIds: string[]",
+                  "reason: string"
+                ]
+              }
+            },
+            {
+              "type": "event",
+              "name": "WafersReleased",
+              "name_zh": "晶圆放行",
+              "description": "Held wafers were released back into the flow.",
+              "description_zh": "暂存的晶圆放行，回到流程中。",
+              "links": [
+                "command:hold-wafers"
+              ],
+              "info": {
+                "timeline": "fab-pipeline",
+                "sequence": 9,
+                "payloadFields": [
+                  "lotId: string",
+                  "waferIds: string[]"
+                ]
+              }
+            },
+            {
+              "type": "event",
+              "name": "WafersScrapped",
+              "name_zh": "晶圆报废",
+              "description": "Wafers left the lot as scrap — terminal, no rework.",
+              "description_zh": "晶圆报废离 Lot——终态，不再返工。",
+              "links": [
+                "command:scrap-wafers"
+              ],
+              "info": {
+                "timeline": "fab-pipeline",
+                "sequence": 10,
+                "payloadFields": [
+                  "lotId: string",
+                  "waferIds: string[]"
+                ]
+              }
+            },
+            {
+              "type": "event",
+              "name": "StepFailed",
+              "name_zh": "步骤失败",
+              "description": "A step failed with a classified equipment/process error (HARDWARE_FAULT, COMM_TIMEOUT, SENSOR_ANOMALY, POWER_FLUCTUATION, ABORTED).",
+              "description_zh": "某步骤带着已分类的设备/工艺错误失败（HARDWARE_FAULT、COMM_TIMEOUT、SENSOR_ANOMALY、POWER_FLUCTUATION、ABORTED）。",
+              "links": [
+                "command:start-pipeline-run"
+              ],
+              "info": {
+                "timeline": "fab-pipeline",
+                "sequence": 11,
+                "payloadFields": [
+                  "stepName: string",
+                  "equipmentId: string",
+                  "errorCode: string",
+                  "detail: string"
+                ]
+              }
+            },
+            {
+              "type": "event",
+              "name": "OcapHandled",
+              "name_zh": "OCAP 处置完成",
+              "description": "A step failed and an OCAP rule matched: its action plan was carried out (hold / rework / scrap / notify / adjust recipe, or a combination). The queue moved on — the save is recorded as its own fact, because a rescued step is not a clean completion.",
+              "description_zh": "某步骤失败且命中 OCAP 规则：执行其处置预案（暂存/返工/报废/通知/调整配方，或组合）。队列继续往下走——救回记为一条独立事实，因为被救回的步骤不算干净完成。",
+              "links": [
+                "command:handle-ocap"
+              ],
+              "info": {
+                "timeline": "fab-pipeline",
+                "sequence": 12,
+                "payloadFields": [
+                  "stepName: string — 被救回的步骤",
+                  "ruleId: string — 命中的 OCAP 规则",
+                  "action: string — 执行的处置预案"
+                ]
+              }
+            },
+            {
+              "type": "event",
+              "name": "RunCompleted",
+              "name_zh": "流水线完工",
+              "description": "All queue steps finished; the work order is sealed.",
+              "description_zh": "队列步骤全部完成；工单封单。",
+              "links": [
+                "command:start-pipeline-run"
+              ],
+              "info": {
+                "timeline": "fab-pipeline",
+                "sequence": 13,
+                "payloadFields": [
+                  "workOrderId: string"
+                ]
+              }
+            },
+            {
+              "type": "event",
+              "name": "CrashInjected",
+              "name_zh": "宕机注入",
+              "description": "M3.5 demo-only: the run was interrupted; progress records were kept.",
+              "description_zh": "M3.5 仅演示用：运行被打断，进度记录保留。",
+              "links": [
+                "command:inject-crash"
+              ],
+              "info": {
+                "timeline": "fab-pipeline",
+                "sequence": 14,
+                "payloadFields": [
+                  "workOrderId: string"
+                ]
+              }
+            },
+            {
+              "type": "event",
+              "name": "RunRecovered",
+              "name_zh": "断点恢复",
+              "description": "After an interruption the run resumed from the last recorded breakpoint; finished steps were skipped. Cross-lot transactions reuse their original numbers.",
+              "description_zh": "中断后运行从最后记录的断点续跑；已完成的步骤跳过。跨 Lot 事务沿用原编号。",
+              "links": [
+                "command:inject-crash"
+              ],
+              "info": {
+                "timeline": "fab-pipeline",
+                "sequence": 15,
+                "payloadFields": [
+                  "workOrderId: string",
+                  "completedStepCount: integer — 跳过的已完成步骤数"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "session": "commandStorming",
+      "scopes": [
+        {
+          "scope": "reconstructed",
+          "notes": [
+            {
+              "type": "command",
+              "name": "ClassifyWafer",
+              "id": "classify-wafer",
+              "name_zh": "晶圆分类",
+              "description": "Classify a measured wafer against DecisionConfig thresholds into PASS / BORDERLINE / FAIL / SCRAP.",
+              "description_zh": "按 DecisionConfig 阈值把已量测晶圆分成 PASS / BORDERLINE / FAIL / SCRAP。",
+              "links": [
+                "event:WaferClassified"
+              ],
+              "info": {
+                "triggers": [
+                  "policy: 量测分类"
+                ],
+                "produces": [
+                  "wafer-classified"
+                ],
+                "parameters": [
+                  "waferId: string",
+                  "cdNm: number"
+                ]
+              }
+            },
+            {
+              "type": "command",
+              "name": "CreateWorkOrder",
+              "id": "create-work-order",
+              "name_zh": "创建工单",
+              "description": "Open a work order for a lot to be processed through the fab step queue.",
+              "description_zh": "为一批 Lot 创建工单，走 fab 步骤队列加工。",
+              "links": [
+                "event:WorkOrderCreated",
+                "role:ProcessEngineer"
+              ],
+              "info": {
+                "triggers": [
+                  "role: 工艺工程师"
+                ],
+                "produces": [
+                  "work-order-created"
+                ],
+                "parameters": [
+                  "workOrderId: string — 工单号",
+                  "lotId: string — 首批 Lot",
+                  "scenarioId: string — 演示场景"
+                ]
+              }
+            },
+            {
+              "type": "externalSystem",
+              "name": "MetrologyEquipment",
+              "name_zh": "量测设备",
+              "description": "External equipment: reports CD measurements per wafer. The fab never measures itself — it records what the equipment reports.",
+              "description_zh": "外部设备：逐片上报 CD 量测值。fab 自己不量测，只记录设备上报的值。",
+              "links": [
+                "event:WaferMeasured"
+              ],
+              "info": {}
+            },
+            {
+              "type": "externalSystem",
+              "name": "ProcessEquipment",
+              "name_zh": "工艺设备",
+              "description": "External equipment across the 10 areas (湿法清洗/扩散/光刻/刻蚀/离子注入/薄膜沉积/CMP/量测/干燥/物流): receives recipes (track-in), runs them, reports track-out and faults.",
+              "description_zh": "10 个设备区的外部设备（湿法清洗/扩散/光刻/刻蚀/离子注入/薄膜沉积/CMP/量测/干燥/物流）：接收配方（track-in）、执行、上报 track-out 与故障。",
+              "links": [
+                "event:StepFailed"
+              ],
+              "info": {}
+            },
+            {
+              "type": "command",
+              "name": "HandleOcap",
+              "id": "handle-ocap",
+              "name_zh": "执行 OCAP 处置",
+              "description": "A step failed and an OCAP rule matched: carry out its action plan in priority order. The queue then moves on.",
+              "description_zh": "某步骤失败且命中 OCAP 规则：按优先级执行处置预案，然后队列继续。",
+              "links": [
+                "event:OcapHandled"
+              ],
+              "info": {
+                "triggers": [
+                  "policy: OCAP 求值"
+                ],
+                "produces": [
+                  "ocap-handled"
+                ],
+                "parameters": [
+                  "stepName: string — 失败的步骤",
+                  "ruleId: string — 命中的规则"
+                ],
+                "guards": [
+                  "步骤已失败且规则触发条件成立",
+                  "规则未超本 Lot 的 maxTriggersPerLot"
+                ]
+              }
+            },
+            {
+              "type": "command",
+              "name": "HoldWafers",
+              "id": "hold-wafers",
+              "name_zh": "暂存晶圆",
+              "description": "Park wafers out of the flow pending review; release returns them.",
+              "description_zh": "晶圆暂存脱离流程等待复核；放行则回归。",
+              "links": [
+                "event:WafersHeld",
+                "event:WafersReleased"
+              ],
+              "info": {
+                "triggers": [
+                  "policy: 晶圆处置"
+                ],
+                "produces": [
+                  "wafers-held",
+                  "wafers-released"
+                ],
+                "parameters": [
+                  "lotId: string",
+                  "waferIds: string[]",
+                  "reason: string"
+                ]
+              }
+            },
+            {
+              "type": "command",
+              "name": "InjectCrash",
+              "id": "inject-crash",
+              "name_zh": "注入宕机",
+              "description": "M3.5 demo-only: interrupt the running pipeline while keeping progress records, to demonstrate crash recovery live.",
+              "description_zh": "M3.5 仅演示用：打断运行中的流水线但保留进度记录，现场演示崩溃恢复。",
+              "links": [
+                "event:CrashInjected",
+                "event:RunRecovered",
+                "role:DemoPresenter"
+              ],
+              "info": {
+                "triggers": [
+                  "role: 演示者"
+                ],
+                "produces": [
+                  "crash-injected",
+                  "run-recovered"
+                ],
+                "parameters": [
+                  "workOrderId: string"
+                ],
+                "guards": [
+                  "仅演示界面可用"
+                ]
+              }
+            },
+            {
+              "type": "command",
+              "name": "MergeSubLot",
+              "id": "merge-sublot",
+              "name_zh": "合并子 Lot",
+              "description": "Return a child lot's wafers to the parent lot.",
+              "description_zh": "子 Lot 的晶圆回归母 Lot。",
+              "links": [
+                "event:SubLotMerged",
+                "role:ProcessEngineer"
+              ],
+              "info": {
+                "triggers": [
+                  "role: 工艺工程师"
+                ],
+                "produces": [
+                  "sublot-merged"
+                ],
+                "parameters": [
+                  "parentLotId: string",
+                  "childLotId: string"
+                ]
+              }
+            },
+            {
+              "type": "command",
+              "name": "RecordMeasurement",
+              "id": "record-measurement",
+              "name_zh": "记录量测",
+              "description": "Record a wafer's CD measurement from the metrology equipment. Pure data, no judgment.",
+              "description_zh": "记录量测设备报出的晶圆 CD 值。纯数据，不带判断。",
+              "links": [
+                "event:WaferMeasured",
+                "externalSystem:MetrologyEquipment"
+              ],
+              "info": {
+                "triggers": [
+                  "externalSystem: 量测设备"
+                ],
+                "produces": [
+                  "wafer-measured"
+                ],
+                "parameters": [
+                  "waferId: string",
+                  "cdNm: number",
+                  "equipmentId: string"
+                ]
+              }
+            },
+            {
+              "type": "role",
+              "name": "DemoPresenter",
+              "id": "demo-presenter",
+              "name_zh": "演示者",
+              "description": "The human demo role: injects equipment crashes to demonstrate recovery live. Watches the same demo pages as the process engineer.",
+              "description_zh": "演示用的人的角色：注入设备宕机以现场演示恢复。与工艺工程师看同一套演示页面。",
+              "links": [
+                "command:InjectCrash"
+              ],
+              "info": {
+                "roleId": "demo-presenter",
+                "can_issue": [
+                  "inject-crash"
+                ],
+                "can_view": [
+                  "equipment-board",
+                  "event-feed",
+                  "pipeline-timeline",
+                  "recovery-status",
+                  "scenario-ledger"
+                ]
+              }
+            },
+            {
+              "type": "role",
+              "name": "ProcessEngineer",
+              "id": "process-engineer",
+              "name_zh": "工艺工程师",
+              "description": "The human role: creates work orders, watches the equipment board and pipeline timeline, handles holds and reviews.",
+              "description_zh": "人的角色：创建工单、看设备看板与流水线时间线、处理暂存与复核。",
+              "links": [
+                "command:CreateWorkOrder",
+                "command:StartPipelineRun",
+                "command:MergeSubLot"
+              ],
+              "info": {
+                "roleId": "process-engineer",
+                "can_issue": [
+                  "create-work-order",
+                  "start-pipeline-run",
+                  "merge-sublot"
+                ],
+                "can_view": [
+                  "equipment-board",
+                  "event-feed",
+                  "pipeline-timeline",
+                  "recovery-status",
+                  "scenario-ledger"
+                ]
+              }
+            },
+            {
+              "type": "role",
+              "name": "System",
+              "id": "system",
+              "name_zh": "系统",
+              "description": "The automatic role: executes queue steps, evaluates OCAP rules, classifies wafers, routes dispositions without human involvement.",
+              "description_zh": "自动角色：执行队列步骤、求值 OCAP 规则、分类晶圆、自动路由处置，无需人工介入。不查看读模型。",
+              "links": [
+                "command:HandleOcap",
+                "command:RecordMeasurement",
+                "command:ClassifyWafer",
+                "command:SplitSubLot",
+                "command:ScrapWafers",
+                "command:HoldWafers"
+              ],
+              "info": {
+                "roleId": "system",
+                "can_issue": [
+                  "handle-ocap",
+                  "record-measurement",
+                  "classify-wafer",
+                  "split-sublot",
+                  "scrap-wafers",
+                  "hold-wafers"
+                ],
+                "can_view": []
+              }
+            },
+            {
+              "type": "command",
+              "name": "ScrapWafers",
+              "id": "scrap-wafers",
+              "name_zh": "报废晶圆",
+              "description": "Scrap wafers out of the lot — terminal, no rework.",
+              "description_zh": "把晶圆报废出 Lot——终态，不再返工。",
+              "links": [
+                "event:WafersScrapped"
+              ],
+              "info": {
+                "triggers": [
+                  "policy: 晶圆处置"
+                ],
+                "produces": [
+                  "wafers-scrapped"
+                ],
+                "parameters": [
+                  "lotId: string",
+                  "waferIds: string[]",
+                  "reason: string"
+                ]
+              }
+            },
+            {
+              "type": "command",
+              "name": "SplitSubLot",
+              "id": "split-sublot",
+              "name_zh": "切分子 Lot",
+              "description": "Carve wafers out of a lot into a child lot (rework / pilot / scrap). Reserve-then-confirm transfer.",
+              "description_zh": "从 Lot 切出晶圆组成子 Lot（返工/先导/报废）。先预留后确认。",
+              "links": [
+                "event:SubLotSplit"
+              ],
+              "info": {
+                "triggers": [
+                  "policy: 晶圆处置"
+                ],
+                "produces": [
+                  "sublot-split"
+                ],
+                "parameters": [
+                  "lotId: string",
+                  "waferIds: string[]",
+                  "purpose: string"
+                ],
+                "guards": [
+                  "晶圆在 Lot 中且未被预留"
+                ]
+              }
+            },
+            {
+              "type": "command",
+              "name": "StartPipelineRun",
+              "id": "start-pipeline-run",
+              "name_zh": "启动流水线运行",
+              "description": "Start executing the fab step queue for a work order. One work order, one run — a second start is refused.",
+              "description_zh": "为一个工单启动 fab 步骤队列。一个工单一次运行，重复启动被拒绝。",
+              "links": [
+                "event:RunStarted",
+                "event:StepCompleted",
+                "event:StepFailed",
+                "event:RunCompleted",
+                "event:run-failed",
+                "role:ProcessEngineer"
+              ],
+              "info": {
+                "triggers": [
+                  "role: 工艺工程师"
+                ],
+                "produces": [
+                  "run-started",
+                  "step-completed",
+                  "step-failed",
+                  "run-completed"
+                ],
+                "parameters": [
+                  "workOrderId: string",
+                  "scenarioId: string"
+                ],
+                "guards": [
+                  "工单未在跑也未完工"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "session": "aggregateDiscovery",
+      "scopes": [
+        {
+          "scope": "reconstructed",
+          "notes": [
+            {
+              "type": "aggregate",
+              "name": "FabPipelineRun",
+              "name_zh": "Fab 流水线运行",
+              "description": "One execution of the fab step queue for a single work order, from start to seal. One work order, one run.",
+              "description_zh": "一个工单的 fab 步骤队列的一次执行，从启动到封单。一个工单，一次运行。",
+              "info": {}
+            },
+            {
+              "type": "aggregate",
+              "name": "WaferLot",
+              "name_zh": "晶圆 Lot",
+              "description": "A batch of wafers traveling together in a FOUP. Tracks membership, per-wafer classification, the route card, and child lots. The authority on recovery: a lot's position on its route IS the state.",
+              "description_zh": "装在 FOUP 里一起走的一批晶圆。跟踪成员、每片分类、route card 与子 Lot。恢复时的权威：Lot 在工艺路线上的位置就是状态。",
+              "info": {}
+            },
+            {
+              "type": "aggregate",
+              "name": "WorkOrder",
+              "name_zh": "工单",
+              "description": "The production order that triggers one fab pipeline run: which lot, which scenario, which POR.",
+              "description_zh": "触发一次 fab 流水线运行的生产工单：哪个 Lot、哪个场景、哪套 POR。",
+              "info": {}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "session": "subdomainExploration",
+      "scopes": []
+    },
+    {
+      "session": "contextMapping",
+      "scopes": [
+        {
+          "scope": "reconstructed",
+          "notes": [
+            {
+              "type": "relation",
+              "name": "FabToEquipment",
+              "name_zh": "Fab 制造执行上下文↔设备上下文",
+              "description": "限界上下文级协作：Fab 制造执行上下文向设备上下文下发工艺指令（配方、track-in），设备上下文上报量测值、track-out 与故障。通知必须得到确认（Lot 通知确认保障）——这是两个上下文之间不丢消息的契约。",
+              "description_zh": "限界上下文级协作：Fab 制造执行上下文向设备上下文下发工艺指令（配方、track-in），设备上下文上报量测值、track-out 与故障。通知必须得到确认（Lot 通知确认保障）——这是两个上下文之间不丢消息的契约。",
+              "info": {}
+            },
+            {
+              "type": "relation",
+              "name": "WorkOrderUpstream",
+              "name_zh": "工单→制造执行（上游）",
+              "description": "上下文内上下游关系：工单是上游触发器，一个工单启动一次流水线运行。上游只交付'做什么、做哪个 Lot'，不干预运行内部。",
+              "description_zh": "上下文内上下游关系：工单是上游触发器，一个工单启动一次流水线运行。上游只交付“做什么、做哪个 Lot”，不干预运行内部。",
+              "info": {}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "session": "refining",
+      "scopes": [
+        {
+          "scope": "reconstructed",
+          "notes": [
+            {
+              "type": "entity",
+              "name": "DecisionConfig",
+              "name_zh": "判定配置",
+              "description": "Classification thresholds: lowerSpecNm, upperSpecNm, borderlineWindowNm, maxReworkCount (default 2).",
+              "description_zh": "分类阈值：下限、上限、边缘窗口、最大返工次数（默认 2）。",
+              "info": {
+                "pilotType": "valueObject"
+              }
+            },
+            {
+              "type": "entity",
+              "name": "EquipmentArea",
+              "name_zh": "设备区",
+              "description": "The 10 fab areas: CLEAN 湿法清洗, DIFF 扩散/氧化, LITHO 光刻, ETCH 刻蚀, IMPL 离子注入, DEP 薄膜沉积, CMP 化学机械抛光, MET 量测, DRY 干燥, LOG 物流指挥.",
+              "description_zh": "10 个设备区：CLEAN 湿法清洗、DIFF 扩散/氧化、LITHO 光刻、ETCH 刻蚀、IMPL 离子注入、DEP 薄膜沉积、CMP 化学机械抛光、MET 量测、DRY 干燥、LOG 物流指挥。",
+              "info": {
+                "pilotType": "valueObject"
+              }
+            },
+            {
+              "type": "entity",
+              "name": "EquipmentConfig",
+              "name_zh": "设备配置",
+              "description": "Per-equipment configuration: area, capabilities, fault probabilities for the demo.",
+              "description_zh": "单台设备配置：所属区、能力、演示用的故障概率。",
+              "info": {
+                "pilotType": "valueObject"
+              }
+            },
+            {
+              "type": "entity",
+              "name": "EquipmentStatus",
+              "name_zh": "设备状态",
+              "description": "Per-equipment status and error counts feeding OCAP equipment conditions.",
+              "description_zh": "单台设备的状态与错误计数，喂给 OCAP 的设备条件。",
+              "info": {
+                "pilotType": "valueObject"
+              }
+            },
+            {
+              "type": "entity",
+              "name": "FabPipelineRunState",
+              "name_zh": "流水线运行状态",
+              "description": "State slots of one run: scenarioId, workOrderId, wafers (per-wafer info), passCount, scrapCount, currentRoutingStep (POR index), areaVisitHistory, equipmentState, ocapActions, childLotView, completedStepCount (the breakpoint), lastStepOutcome (completed | ocap-recovered).",
+              "description_zh": "一次运行的状态槽位：scenarioId、workOrderId、wafers（逐片信息）、passCount、scrapCount、currentRoutingStep（POR 序号）、areaVisitHistory、equipmentState、ocapActions、childLotView、completedStepCount（断点）、lastStepOutcome（completed | ocap-recovered）。",
+              "info": {
+                "pilotType": "aggregateState"
+              }
+            },
+            {
+              "type": "entity",
+              "name": "FabRunState",
+              "name_zh": "运行快照",
+              "description": "The full run state recorded with each step's progress: the resume payload.",
+              "description_zh": "每步进度记录里含的完整运行状态：续跑载荷。",
+              "info": {
+                "pilotType": "valueObject"
+              }
+            },
+            {
+              "type": "entity",
+              "name": "Foup",
+              "name_zh": "FOUP",
+              "description": "The front-opening unified pod carrying a lot between areas; identity foupId.",
+              "description_zh": "在设备区之间运送 Lot 的前开式晶圆盒；标识 foupId。",
+              "info": {
+                "pilotType": "valueObject"
+              }
+            },
+            {
+              "type": "entity",
+              "name": "LotState",
+              "name_zh": "Lot 状态",
+              "description": "State slots: lotId, productId, wafers (membership), per-wafer classification, route card (ordered area steps), completed steps, child lots from splits. Transfers are reserve-then-confirm.",
+              "description_zh": "状态槽位：lotId、productId、wafers（成员）、逐片分类、route card（有序设备区步骤）、已完成步骤、切分产生的子 Lot。转移先预留后确认。",
+              "info": {
+                "pilotType": "aggregateState"
+              }
+            },
+            {
+              "type": "entity",
+              "name": "OcapActionPlan",
+              "name_zh": "OCAP 处置预案",
+              "description": "Six variants: Hold, Rework, Scrap, Notify, AdjustRecipe, Composite (combination).",
+              "description_zh": "六种：暂存、返工、报废、通知、调整配方、组合。",
+              "info": {
+                "pilotType": "valueObject"
+              }
+            },
+            {
+              "type": "entity",
+              "name": "OcapRule",
+              "name_zh": "OCAP 规则",
+              "description": "Trigger condition + action plan + priority + maxTriggersPerLot. First matching rule in priority order wins.",
+              "description_zh": "触发条件+处置预案+优先级+单 Lot 最大触发次数。按优先级首条命中生效。",
+              "info": {
+                "pilotType": "valueObject"
+              }
+            },
+            {
+              "type": "entity",
+              "name": "StepError",
+              "name_zh": "步骤错误",
+              "description": "Classified step failure: stepName, equipmentId, errorCode (HARDWARE_FAULT | COMM_TIMEOUT | SENSOR_ANOMALY | POWER_FLUCTUATION | ABORTED), detail.",
+              "description_zh": "已分类的步骤失败：步骤名、设备、错误码、细节。",
+              "info": {
+                "pilotType": "valueObject"
+              }
+            },
+            {
+              "type": "entity",
+              "name": "TransactionNumber",
+              "name_zh": "事务编号",
+              "description": "Cross-lot transaction numbers follow workOrderId + step name + execution index, so recovery reuses the original number.",
+              "description_zh": "跨 Lot 事务编号=工单号+步骤名+执行序号，恢复后沿用原编号。",
+              "info": {
+                "pilotType": "valueObject"
+              }
+            },
+            {
+              "type": "entity",
+              "name": "WaferClassification",
+              "name_zh": "晶圆分类",
+              "description": "Disposition verdicts: PASS (continue), BORDERLINE (wait for review), FAIL (rework until budget out), SCRAP (terminal).",
+              "description_zh": "去向判定：PASS（继续）、BORDERLINE（等复核）、FAIL（返工，预算用完为止）、SCRAP（终态）。",
+              "info": {
+                "pilotType": "valueObject"
+              }
+            },
+            {
+              "type": "entity",
+              "name": "WorkOrderState",
+              "name_zh": "工单状态",
+              "description": "State slots: workOrderId, lotId (first lot), scenarioId, porId. A work order is sealed when its run completes.",
+              "description_zh": "状态槽位：workOrderId、lotId（首批 Lot）、scenarioId、porId。运行完工则工单封单。",
+              "info": {
+                "pilotType": "aggregateState"
+              }
+            },
+            {
+              "type": "relation",
+              "name": "LotToLotReference",
+              "name_zh": "Lot→Lot（父子引用）",
+              "description": "切分产生子 Lot（返工/先导/报废），合并时晶圆回归母 Lot。基数：一对多（一个母 Lot → 多个子 Lot）。业务含义：血缘可查——子 Lot 记得自己从哪来，母 Lot 记得自己切出过谁。",
+              "description_zh": "切分产生子 Lot（返工/先导/报废），合并时晶圆回归母 Lot。基数：一对多（一个母 Lot → 多个子 Lot）。业务含义：血缘可查——子 Lot 记得自己从哪来，母 Lot 记得自己切出过谁。",
+              "info": {
+                "pilotType": "aggregateRelation",
+                "cardinality": "1:N",
+                "meaning": "母 Lot 切分子 Lot，血缘可查"
+              }
+            },
+            {
+              "type": "relation",
+              "name": "RunToLotReference",
+              "name_zh": "流水线运行→Lot（引用）",
+              "description": "一次运行驱动多个 Lot 的步骤推进：运行向 Lot 下发'记录量测/分类/切分'等通知，Lot 必须确认收到（Lot 通知确认保障）后该步骤才算完成。基数：一对多。业务含义：运行是'指挥'方，Lot 是'执行'方；指挥不等执行确认就不往下走。",
+              "description_zh": "一次运行驱动多个 Lot 的步骤推进：运行向 Lot 下发“记录量测/分类/切分”等通知，Lot 必须确认收到（Lot 通知确认保障）后该步骤才算完成。基数：一对多。业务含义：运行是“指挥”方，Lot 是“执行”方；指挥不等执行确认就不往下走。",
+              "info": {
+                "pilotType": "aggregateRelation",
+                "cardinality": "1:N",
+                "meaning": "运行指挥多 Lot 推进，通知必须确认"
+              }
+            },
+            {
+              "type": "relation",
+              "name": "WorkOrderToRunReference",
+              "name_zh": "工单→流水线运行（引用）",
+              "description": "一个工单对应一次流水线运行。基数：一对一。业务含义：工单是生产的'委托单'，运行是'执行单'；委托单封单以执行单完工为准。",
+              "description_zh": "一个工单对应一次流水线运行。基数：一对一。业务含义：工单是生产的“委托单”，运行是“执行单”；委托单封单以执行单完工为准。",
+              "info": {
+                "pilotType": "aggregateRelation",
+                "cardinality": "1:1",
+                "meaning": "一单对一次运行"
+              }
+            },
+            {
+              "type": "field",
+              "name": "CrashInjectedFields",
+              "name_zh": "宕机注入字段",
+              "description": "Fields of CrashInjected.",
+              "description_zh": "CrashInjected 的字段。",
+              "info": {
+                "pilotType": "messageFields",
+                "fields": [
+                  "workOrderId: string"
+                ]
+              }
+            },
+            {
+              "type": "field",
+              "name": "OcapHandledFields",
+              "name_zh": "OCAP 处置字段",
+              "description": "Fields of OcapHandled.",
+              "description_zh": "OcapHandled 的字段。",
+              "info": {
+                "pilotType": "messageFields",
+                "fields": [
+                  "stepName: string",
+                  "ruleId: string",
+                  "action: string"
+                ]
+              }
+            },
+            {
+              "type": "field",
+              "name": "RunCompletedFields",
+              "name_zh": "流水线完工字段",
+              "description": "Fields of RunCompleted.",
+              "description_zh": "RunCompleted 的字段。",
+              "info": {
+                "pilotType": "messageFields",
+                "fields": [
+                  "workOrderId: string"
+                ]
+              }
+            },
+            {
+              "type": "field",
+              "name": "RunRecoveredFields",
+              "name_zh": "断点恢复字段",
+              "description": "Fields of RunRecovered.",
+              "description_zh": "RunRecovered 的字段。",
+              "info": {
+                "pilotType": "messageFields",
+                "fields": [
+                  "workOrderId: string",
+                  "completedStepCount: integer"
+                ]
+              }
+            },
+            {
+              "type": "field",
+              "name": "RunStartedFields",
+              "name_zh": "流水线启动字段",
+              "description": "Fields of RunStarted.",
+              "description_zh": "RunStarted 的字段。",
+              "info": {
+                "pilotType": "messageFields",
+                "fields": [
+                  "workOrderId: string",
+                  "scenarioId: string"
+                ]
+              }
+            },
+            {
+              "type": "field",
+              "name": "StepCompletedFields",
+              "name_zh": "步骤完成字段",
+              "description": "Fields of StepCompleted.",
+              "description_zh": "StepCompleted 的字段。",
+              "info": {
+                "pilotType": "messageFields",
+                "fields": [
+                  "stepName: string — 步骤名（断点）",
+                  "outputInfo: map — 步骤产出信息"
+                ]
+              }
+            },
+            {
+              "type": "field",
+              "name": "StepFailedFields",
+              "name_zh": "步骤失败字段",
+              "description": "Fields of StepFailed.",
+              "description_zh": "StepFailed 的字段。",
+              "info": {
+                "pilotType": "messageFields",
+                "fields": [
+                  "stepName: string",
+                  "equipmentId: string",
+                  "errorCode: string",
+                  "detail: string"
+                ]
+              }
+            },
+            {
+              "type": "field",
+              "name": "SubLotMergedFields",
+              "name_zh": "合并子 Lot 字段",
+              "description": "Fields of SubLotMerged.",
+              "description_zh": "SubLotMerged 的字段。",
+              "info": {
+                "pilotType": "messageFields",
+                "fields": [
+                  "parentLotId: string",
+                  "childLotId: string",
+                  "waferIds: string[]"
+                ]
+              }
+            },
+            {
+              "type": "field",
+              "name": "SubLotSplitFields",
+              "name_zh": "切分子 Lot 字段",
+              "description": "Fields of SubLotSplit.",
+              "description_zh": "SubLotSplit 的字段。",
+              "info": {
+                "pilotType": "messageFields",
+                "fields": [
+                  "parentLotId: string",
+                  "childLotId: string",
+                  "waferIds: string[]",
+                  "purpose: string"
+                ]
+              }
+            },
+            {
+              "type": "field",
+              "name": "WaferClassifiedFields",
+              "name_zh": "晶圆分类字段",
+              "description": "Fields of WaferClassified.",
+              "description_zh": "WaferClassified 的字段。",
+              "info": {
+                "pilotType": "messageFields",
+                "fields": [
+                  "waferId: string",
+                  "verdict: string — PASS|BORDERLINE|FAIL|SCRAP"
+                ]
+              }
+            },
+            {
+              "type": "field",
+              "name": "WaferMeasuredFields",
+              "name_zh": "晶圆量测字段",
+              "description": "Fields of WaferMeasured.",
+              "description_zh": "WaferMeasured 的字段。",
+              "info": {
+                "pilotType": "messageFields",
+                "fields": [
+                  "waferId: string",
+                  "cdNm: number",
+                  "equipmentId: string"
+                ]
+              }
+            },
+            {
+              "type": "field",
+              "name": "WafersHeldFields",
+              "name_zh": "晶圆暂存字段",
+              "description": "Fields of WafersHeld.",
+              "description_zh": "WafersHeld 的字段。",
+              "info": {
+                "pilotType": "messageFields",
+                "fields": [
+                  "lotId: string",
+                  "waferIds: string[]",
+                  "reason: string"
+                ]
+              }
+            },
+            {
+              "type": "field",
+              "name": "WafersReleasedFields",
+              "name_zh": "晶圆放行字段",
+              "description": "Fields of WafersReleased.",
+              "description_zh": "WafersReleased 的字段。",
+              "info": {
+                "pilotType": "messageFields",
+                "fields": [
+                  "lotId: string",
+                  "waferIds: string[]"
+                ]
+              }
+            },
+            {
+              "type": "field",
+              "name": "WafersScrappedFields",
+              "name_zh": "晶圆报废字段",
+              "description": "Fields of WafersScrapped.",
+              "description_zh": "WafersScrapped 的字段。",
+              "info": {
+                "pilotType": "messageFields",
+                "fields": [
+                  "lotId: string",
+                  "waferIds: string[]"
+                ]
+              }
+            },
+            {
+              "type": "field",
+              "name": "WorkOrderCreatedFields",
+              "name_zh": "工单创建字段",
+              "description": "Fields of WorkOrderCreated.",
+              "description_zh": "WorkOrderCreated 的字段。",
+              "info": {
+                "pilotType": "messageFields",
+                "fields": [
+                  "workOrderId: string — 工单号",
+                  "lotId: string — 首批 Lot",
+                  "scenarioId: string"
+                ]
+              }
+            },
+            {
+              "type": "relation",
+              "name": "CdToDisposition",
+              "name_zh": "CD 量测→处置血缘",
+              "description": "wafer-measured.cdNm → classify against DecisionConfig (lowerSpecNm/upperSpecNm/borderlineWindowNm) → wafer-classified.verdict → wafer-disposition: PASS continues, BORDERLINE waits for review, FAIL reworks (until maxReworkCount), SCRAP is terminal. The measurement is pure data; the judgment lives in the policy.",
+              "description_zh": "量测的 CD 值 → 按 DecisionConfig（下限/上限/边缘窗口）分类 → 晶圆去向判定 → 处置策略：PASS 继续、BORDERLINE 等复核、FAIL 返工（预算内）、SCRAP 终态。量测是纯数据，判断在策略里。",
+              "info": {
+                "pilotType": "lineage",
+                "links": [
+                  "wafer-measured.cdNm → wafer-classified.verdict",
+                  "verdict → split/hold/scrap slices",
+                  "decision-config thresholds → classification"
+                ]
+              }
+            },
+            {
+              "type": "relation",
+              "name": "RoutePositionLineage",
+              "name_zh": "工艺路线位置血缘",
+              "description": "A lot's position on its route card and the run's currentRoutingStep describe the same fact from two sides. The lot is authoritative (like a real fab's MES): on recovery the run reconciles from lot-reported positions.",
+              "description_zh": "Lot 在 route card 上的位置与运行的 currentRoutingStep 是同一事实的两面。以 Lot 为准（如真实晶圆厂的 MES）：恢复时运行按 Lot 上报的位置对账。",
+              "info": {
+                "pilotType": "lineage",
+                "links": [
+                  "lot.routeCard position ↔ run.currentRoutingStep",
+                  "lot is the authority on recovery"
+                ]
+              }
+            },
+            {
+              "type": "relation",
+              "name": "TransactionNumberLineage",
+              "name_zh": "事务编号血缘",
+              "description": "Cross-lot transaction numbers are derived workOrderId + step name + execution index. On recovery the same inputs reproduce the same number — no duplicate transactions.",
+              "description_zh": "跨 Lot 事务编号由工单号+步骤名+执行序号派生。恢复时同样输入算出同样编号——不产生重复事务。",
+              "info": {
+                "pilotType": "lineage",
+                "links": [
+                  "(workOrderId, stepName, execIndex) → transaction number",
+                  "recovery reuses the number"
+                ]
+              }
+            },
+            {
+              "type": "relation",
+              "name": "WaferSubLotLineage",
+              "name_zh": "晶圆子 Lot 血缘",
+              "description": "Wafers move parent → child on split (reserve-then-confirm), child → parent on merge. The child-lot view (suffix → status, wafer count) is created at split and transitioned at merge, so lineage is queryable both ways.",
+              "description_zh": "晶圆在切分时从母 Lot 到子 Lot（先预留后确认），合并时回归。子 Lot 视图（后缀→状态、片数）在切分时建立、合并时迁移，双向可查血缘。",
+              "info": {
+                "pilotType": "lineage",
+                "links": [
+                  "split: parentLot.wafers → childLot.wafers",
+                  "merge: childLot.wafers → parentLot.wafers",
+                  "childLotView tracks suffix → status"
+                ]
+              }
+            },
+            {
+              "type": "story",
+              "name": "CrashRecoveryFlow",
+              "name_zh": "宕机恢复流程",
+              "description": "CrashRecoveryFlow: 注入宕机：进程停止、进度记录保留; 重启后从断点续跑; 跨 Lot 事务沿用原编号.",
+              "description_zh": "宕机恢复流程：注入宕机：进程停止、进度记录保留；重启后从断点续跑；跨 Lot 事务沿用原编号。",
+              "info": {
+                "pilotType": "useCase",
+                "preconditions": [
+                  "有运行中的流水线"
+                ],
+                "steps": [
+                  "注入宕机：进程停止、进度记录保留",
+                  "重启后从断点续跑",
+                  "跨 Lot 事务沿用原编号"
+                ],
+                "extensions": [
+                  "Lot 未确认的通知→按 LOT_ACK_TIMEOUT 失败处理"
+                ]
+              }
+            },
+            {
+              "type": "story",
+              "name": "FabTourFlow",
+              "name_zh": "Fab 参观流程",
+              "description": "FabTourFlow: 创建参观工单; 看 Lot 在 10 个设备区之间流转; 看设备看板与流水线时间线.",
+              "description_zh": "Fab 参观流程：创建参观工单；看 Lot 在 10 个设备区之间流转；看设备看板与流水线时间线。",
+              "info": {
+                "pilotType": "useCase",
+                "preconditions": [
+                  "演示场景就绪"
+                ],
+                "steps": [
+                  "创建参观工单",
+                  "看 Lot 在 10 个设备区之间流转",
+                  "看设备看板与流水线时间线"
+                ],
+                "extensions": []
+              }
+            },
+            {
+              "type": "story",
+              "name": "M35DemoFlow",
+              "name_zh": "M3.5 演示流程",
+              "description": "M35DemoFlow: 创建工单并启动流水线; Lot 按 POR 走 24 步：上料→传输→track-in/out→跑配方→量测→分类; 量测异常触发 OCAP 处置（暂存/返工/报废）.",
+              "description_zh": "M3.5 演示流程：创建工单并启动流水线；Lot 按 POR 走 24 步：上料→传输→track-in/out→跑配方→量测→分类；量测异常触发 OCAP 处置（暂存/返工/报废）。",
+              "info": {
+                "pilotType": "useCase",
+                "preconditions": [
+                  "M3.5 场景已配置（含 OCAP 规则与故障注入）"
+                ],
+                "steps": [
+                  "创建工单并启动流水线",
+                  "Lot 按 POR 走 24 步：上料→传输→track-in/out→跑配方→量测→分类",
+                  "量测异常触发 OCAP 处置（暂存/返工/报废）",
+                  "全流程走完封单"
+                ],
+                "extensions": [
+                  "步骤失败无 OCAP 命中→运行失败告警",
+                  "宕机→从断点续跑"
+                ]
+              }
+            },
+            {
+              "type": "story",
+              "name": "OcapHandlingFlow",
+              "name_zh": "OCAP 处置流程",
+              "description": "OcapHandlingFlow: OCAP 求值按优先级匹配规则; 执行处置预案; 队列继续，救回记为独立事实.",
+              "description_zh": "OCAP 处置流程：OCAP 求值按优先级匹配规则；执行处置预案；队列继续，救回记为独立事实。",
+              "info": {
+                "pilotType": "useCase",
+                "preconditions": [
+                  "运行中某步骤失败"
+                ],
+                "steps": [
+                  "OCAP 求值按优先级匹配规则",
+                  "执行处置预案",
+                  "队列继续，救回记为独立事实"
+                ],
+                "extensions": [
+                  "无规则命中→运行失败",
+                  "超触发上限→转人工复核"
+                ]
+              }
+            },
+            {
+              "type": "readModel",
+              "name": "EquipmentBoard",
+              "id": "equipment-board",
+              "name_zh": "设备看板",
+              "description": "Per-area, per-equipment status board: which equipment is running, faulted, or idle, with error counts feeding OCAP conditions.",
+              "description_zh": "按设备区、单台设备的状态看板：谁在跑、谁故障、谁空闲，错误计数喂给 OCAP 条件。",
+              "info": {
+                "served_by": "fab-demo equipment page",
+                "sources": [
+                  "fab-pipeline-run"
+                ],
+                "fields": [
+                  "area.status: map ← 各区设备状态汇总",
+                  "equipment.errorCount: map ← 单台错误计数 → OCAP 设备条件",
+                  "equipment.state: map ← 运行/故障/空闲"
+                ],
+                "visible_to": [
+                  "process-engineer",
+                  "demo-presenter"
+                ]
+              }
+            },
+            {
+              "type": "readModel",
+              "name": "EventFeed",
+              "id": "event-feed",
+              "name_zh": "事件流",
+              "description": "The live event stream the demo pages render: every run/lot lifecycle transition publishes a typed frame.",
+              "description_zh": "演示页实时渲染的事件流：每次运行/Lot 生命周期变化发布一个类型化帧。",
+              "info": {
+                "served_by": "WS fab events",
+                "sources": [
+                  "fab-pipeline-run",
+                  "lot"
+                ],
+                "fields": [
+                  "frame: {type, data} ← 领域事件的实时投影",
+                  "frame types ← run/lot 生命周期帧词汇"
+                ],
+                "visible_to": [
+                  "process-engineer",
+                  "demo-presenter"
+                ]
+              }
+            },
+            {
+              "type": "readModel",
+              "name": "PipelineTimeline",
+              "id": "pipeline-timeline",
+              "name_zh": "流水线时间线",
+              "description": "Step-by-step timeline of a run: which steps finished, which were OCAP-recovered, where the breakpoint is. Read-side projection — recovery replays the progress records, never this view.",
+              "description_zh": "一次运行的逐步时间线：哪些步骤完成、哪些被 OCAP 救回、断点在哪。读侧投影——恢复重放的是进度记录，不是这个视图。",
+              "info": {
+                "served_by": "fab-demo timeline page",
+                "sources": [
+                  "fab-pipeline-run"
+                ],
+                "fields": [
+                  "steps[].name ← 步骤名",
+                  "steps[].outcome ← completed|ocap-recovered|failed",
+                  "breakpoint ← completedStepCount"
+                ],
+                "visible_to": [
+                  "process-engineer",
+                  "demo-presenter"
+                ]
+              }
+            },
+            {
+              "type": "readModel",
+              "name": "RecoveryStatus",
+              "id": "recovery-status",
+              "name_zh": "恢复状态",
+              "description": "What the UI shows during and after recovery: recovering flag, resumed-from breakpoint, skipped steps.",
+              "description_zh": "恢复中与恢复后 UI 展示：恢复中标志、从哪个断点续跑、跳过了哪些步骤。",
+              "info": {
+                "served_by": "fab-demo status page",
+                "sources": [
+                  "fab-pipeline-run"
+                ],
+                "fields": [
+                  "recovering: boolean",
+                  "resumedFrom: string ← 断点步骤",
+                  "skippedSteps: integer"
+                ],
+                "visible_to": [
+                  "process-engineer",
+                  "demo-presenter"
+                ]
+              }
+            },
+            {
+              "type": "readModel",
+              "name": "ScenarioLedger",
+              "id": "scenario-ledger",
+              "name_zh": "场景台账",
+              "description": "Per-scenario ledger: lots launched, wafers by verdict, scrap count — the demo's scoreboard.",
+              "description_zh": "按场景的台账：投了哪些 Lot、各去向晶圆数、报废数——演示的记分牌。",
+              "info": {
+                "served_by": "fab-demo summary",
+                "sources": [
+                  "fab-pipeline-run",
+                  "lot"
+                ],
+                "fields": [
+                  "lotsLaunched: integer",
+                  "wafersByVerdict: map ← PASS/BORDERLINE/FAIL/SCRAP 计数",
+                  "scrapCount: integer"
+                ],
+                "visible_to": [
+                  "process-engineer",
+                  "demo-presenter"
+                ]
+              }
+            },
+            {
+              "id": "lot-notification-guarantee",
+              "type": "policy",
+              "name": "Lot Notification Guarantee",
+              "name_zh": "Lot 通知确认保障",
+              "description": "When the pipeline tells a lot \"record this measurement / classification / split\", the lot must confirm it received and journaled the fact before the step counts as done. A lot that crashed or is too slow fails the step (LOT_ACK_TIMEOUT) instead of leaving the two sides silently diverged — and the failure flows through the normal step-failure path (OCAP evaluation). 2026-10-18 ARBITRATED: fire-and-forget lot notifications are retired; every notification is acknowledged per step. The guarantee is established when the run starts and governs every step.",
+              "description_zh": "流水线通知 Lot\"记下这次量测 / 分类 / 分批\"时，Lot 必须确认收到并记账， 该步骤才算完成。崩溃或过慢的 Lot 会让步骤失败（LOT_ACK_TIMEOUT）， 而不是让两边悄悄脱节——失败走正常的步骤失败路径（OCAP 求值）。 2026-10-18 已仲裁：fire-and-forget 的 Lot 通知退役，每条通知按步骤确认。",
+              "links": [
+                "event:run-started",
+                "command:start-pipeline-run"
+              ],
+              "info": {
+                "triggers": [
+                  {
+                    "event": "run-started",
+                    "aggregate": "Fab Pipeline Run"
+                  }
+                ],
+                "invokes": [
+                  {
+                    "command": "start-pipeline-run",
+                    "aggregate": "Fab Pipeline Run"
+                  }
+                ]
+              },
+              "rules": [
+                {
+                  "when": "a step sends any lot notification",
+                  "then": "the notification is tracked in the step's acknowledgment gate",
+                  "note": "gate installed fresh per step by the step interpreter"
+                },
+                {
+                  "when": "all tracked notifications are confirmed before the step body finishes",
+                  "then": "the step completes normally"
+                },
+                {
+                  "when": "any notification is unconfirmed after the ack timeout",
+                  "then": "the step fails with LOT_ACK_TIMEOUT (flows to OCAP evaluation like any step failure)",
+                  "note": "5s timeout; local lot actors confirm in milliseconds"
+                },
+                {
+                  "when": "steps run outside the actor pipeline (direct invocation)",
+                  "then": "the old fire-and-forget behavior applies (no gate to drain)",
+                  "note": "demo/test path only, not the production run path"
+                }
+              ],
+              "workshopCard": {
+                "name": "LotNotificationGuarantee",
+                "name_zh": "Lot 通知确认保障",
+                "description": "When the pipeline tells a lot 'record this measurement / classification / split', the lot must confirm receipt before the step counts as complete. Unconfirmed notifications fail the step as LOT_ACK_TIMEOUT through the normal failure path (OCAP evaluates).",
+                "description_zh": "流水线通知 Lot'记录量测/分类/切分'时，Lot 必须确认收到该步骤才算完成。未确认的通知按 LOT_ACK_TIMEOUT 走正常失败路径（进 OCAP 求值）。"
+              }
+            },
+            {
+              "id": "measurement-classification",
+              "type": "policy",
+              "name": "Measurement Classification",
+              "name_zh": "量测分类",
+              "description": "Every recorded CD measurement is classified against the DecisionConfig thresholds. The measurement is pure data (\"CD is 33.5nm\"); the judgment lives in the thresholds. Classification is what the disposition policy routes on.",
+              "description_zh": "每个记下的 CD 量测都对照 DecisionConfig 阈值分类。量测值是纯数据 （\"CD 是 33.5nm\"）；判断力在阈值里。分类结果是处置策略路由的依据。",
+              "links": [
+                "event:wafer-measured",
+                "command:classify-wafer"
+              ],
+              "info": {
+                "triggers": [
+                  {
+                    "event": "wafer-measured",
+                    "aggregate": "Wafer Lot"
+                  }
+                ],
+                "invokes": [
+                  {
+                    "command": "classify-wafer",
+                    "aggregate": "Wafer Lot"
+                  }
+                ]
+              },
+              "rules": [
+                {
+                  "when": "lowerSpecNm <= cd <= upperSpecNm",
+                  "then": "PASS — continue the flow"
+                },
+                {
+                  "when": "upperSpecNm < cd <= upperSpecNm + borderlineWindowNm",
+                  "then": "BORDERLINE — hold for review"
+                },
+                {
+                  "when": "cd > upperSpecNm + borderlineWindowNm but reworkCount < maxReworkCount",
+                  "then": "FAIL — route to rework"
+                },
+                {
+                  "when": "cd far above spec, or reworkCount >= maxReworkCount",
+                  "then": "SCRAP — leaves the lot permanently"
+                }
+              ],
+              "workshopCard": {
+                "name": "MeasurementClassification",
+                "name_zh": "量测分类",
+                "description": "Every recorded CD measurement is classified against DecisionConfig thresholds. The measurement is pure data ('CD is 33.5nm'); the judgment (PASS/BORDERLINE/FAIL/SCRAP) is the policy's.",
+                "description_zh": "每个记录的 CD 量测值按 DecisionConfig 阈值分类。量测是纯数据（'CD 是 33.5nm'），判断（PASS/BORDERLINE/FAIL/SCRAP）是策略的。"
+              }
+            },
+            {
+              "id": "ocap-evaluation",
+              "type": "policy",
+              "name": "OCAP Evaluation",
+              "name_zh": "OCAP 求值",
+              "description": "When a step fails, evaluate the OCAP rules against the current run state in priority order (lower number first). The first matching rule whose per-lot trigger budget is not exhausted wins; its action plan is executed. A missing metric obeys the rule's MissingMetricPolicy: ConservativePass skips the rule, ConservativeReject fires it. With no matching rule, the failure stands.",
+              "description_zh": "步骤失败时，按优先级对当前运行状态求值 OCAP 规则（数字越小越先）。 第一条命中且本 Lot 触发预算没用完的规则获胜，执行其处置预案。 缺失的指标按规则的 MissingMetricPolicy 处理：ConservativePass 跳过 该规则，ConservativeReject 则触发。没有命中的规则，失败成立。",
+              "links": [
+                "event:step-failed",
+                "command:handle-ocap"
+              ],
+              "info": {
+                "triggers": [
+                  {
+                    "event": "step-failed",
+                    "aggregate": "Fab Pipeline Run"
+                  }
+                ],
+                "invokes": [
+                  {
+                    "command": "handle-ocap",
+                    "aggregate": "Fab Pipeline Run"
+                  }
+                ]
+              },
+              "rules": [
+                {
+                  "when": "a rule's trigger condition holds on the run state",
+                  "then": "execute its action plan via handle-ocap",
+                  "note": "rules evaluated in priority order; first match wins"
+                },
+                {
+                  "when": "the winning rule already hit maxTriggersPerLot for this lot",
+                  "then": "skip it, try the next matching rule"
+                },
+                {
+                  "when": "a needed metric is missing and onMissingMetric is ConservativePass",
+                  "then": "skip the rule"
+                },
+                {
+                  "when": "a needed metric is missing and onMissingMetric is ConservativeReject",
+                  "then": "treat the rule as matched"
+                },
+                {
+                  "when": "no rule matches",
+                  "then": "the step failure stands; the run fails"
+                }
+              ],
+              "workshopCard": {
+                "name": "OcapEvaluation",
+                "name_zh": "OCAP 求值",
+                "description": "When a step fails, evaluate OCAP rules against the current run state in priority order (lower number first). The first matching rule whose trigger condition holds and which has not exceeded maxTriggersPerLot fires its action plan; the queue moves on.",
+                "description_zh": "步骤失败时按优先级对当前运行状态求值 OCAP 规则（数字小的先）。首条触发条件成立且未超本 Lot 触发上限的规则执行处置预案，队列继续。"
+              }
+            },
+            {
+              "id": "transaction-number-reuse",
+              "type": "policy",
+              "name": "Transaction Number Reuse",
+              "name_zh": "事务编号沿用",
+              "description": "Transactions that span multiple lots (split / merge) are numbered by a fixed rule: work order number + step name + execution index. When a run recovers from an interruption, split and merge pick up their ORIGINAL numbers instead of opening new transactions — so recovery never creates a duplicate transaction for work that already has one.",
+              "description_zh": "跨多个 Lot 的事务（切分 / 合并）按固定规则编号：工单号+步骤名+ 执行序号。运行从中断恢复后，切分和合并沿用原编号，不另开新事务—— 恢复永不为已有事务再建一个重复。",
+              "links": [
+                "event:run-recovered",
+                "command:split-sublot",
+                "command:merge-sublot"
+              ],
+              "info": {
+                "triggers": [
+                  {
+                    "event": "run-recovered",
+                    "aggregate": "Fab Pipeline Run"
+                  }
+                ],
+                "invokes": [
+                  {
+                    "command": "split-sublot",
+                    "aggregate": "Wafer Lot"
+                  },
+                  {
+                    "command": "merge-sublot",
+                    "aggregate": "Wafer Lot"
+                  }
+                ]
+              },
+              "rules": [
+                {
+                  "when": "the run resumes after an interruption",
+                  "then": "split-sublot and merge-sublot reuse the transaction number from before the interruption",
+                  "note": "number = workOrderId + step name + execution index (unchanged inputs → unchanged number)"
+                },
+                {
+                  "when": "a step executes for the first time",
+                  "then": "its execution index is 0, minting a fresh number"
+                }
+              ],
+              "workshopCard": {
+                "name": "TransactionNumberReuse",
+                "name_zh": "事务编号沿用",
+                "description": "Transactions spanning multiple lots are numbered workOrderId + step name + execution index. When a run recovers, the same inputs reproduce the same number instead of opening a duplicate transaction.",
+                "description_zh": "跨 Lot 事务编号=工单号+步骤名+执行序号。运行恢复时同样输入算出同样编号，不另开重复事务。"
+              }
+            },
+            {
+              "id": "wafer-disposition",
+              "type": "policy",
+              "name": "Wafer Disposition",
+              "name_zh": "晶圆处置",
+              "description": "Every classified wafer is routed exactly once: PASS continues, BORDERLINE waits for review, FAIL goes to rework (until its rework budget runs out), SCRAP leaves the lot. Disposition is driven by classification, never by raw measurements.",
+              "description_zh": "每个分好类的晶圆恰好被路由一次：PASS 继续走，BORDERLINE 等评审， FAIL 去返工（返工次数用完为止），SCRAP 离开 Lot。处置只看分类， 不看原始量测值。",
+              "links": [
+                "event:wafer-classified",
+                "command:split-sublot",
+                "command:scrap-wafers",
+                "command:hold-wafers"
+              ],
+              "info": {
+                "triggers": [
+                  {
+                    "event": "wafer-classified",
+                    "aggregate": "Wafer Lot"
+                  }
+                ],
+                "invokes": [
+                  {
+                    "command": "split-sublot",
+                    "aggregate": "Wafer Lot"
+                  },
+                  {
+                    "command": "scrap-wafers",
+                    "aggregate": "Wafer Lot"
+                  },
+                  {
+                    "command": "hold-wafers",
+                    "aggregate": "Wafer Lot"
+                  }
+                ]
+              },
+              "rules": [
+                {
+                  "when": "classification is PASS",
+                  "then": "wafer continues the flow (no slice invoked)"
+                },
+                {
+                  "when": "classification is BORDERLINE",
+                  "then": "hold-wafers — park until human review"
+                },
+                {
+                  "when": "classification is FAIL and reworkCount < maxReworkCount",
+                  "then": "split-sublot with reason rework"
+                },
+                {
+                  "when": "classification is FAIL and reworkCount >= maxReworkCount",
+                  "then": "scrap-wafers — budget exhausted"
+                },
+                {
+                  "when": "classification is SCRAP",
+                  "then": "scrap-wafers"
+                }
+              ],
+              "workshopCard": {
+                "name": "WaferDisposition",
+                "name_zh": "晶圆处置",
+                "description": "Every classified wafer is routed exactly once: PASS continues, BORDERLINE waits for review, FAIL goes to rework (until its rework budget runs out), SCRAP is terminal.",
+                "description_zh": "每片已分类晶圆有且仅被路由一次：PASS 继续、BORDERLINE 等复核、FAIL 返工（预算用完为止）、SCRAP 终态。"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "session": "storyMapping",
+      "scopes": [
+        {
+          "scope": "reconstructed",
+          "notes": [
+            {
+              "type": "story",
+              "name": "FabDemoTour",
+              "name_zh": "Fab 参观",
+              "description": "As 参观者: 跟着演示 tour 了解晶圆在 fab 里的旅程 — 直观理解晶圆制造流程.",
+              "description_zh": "参观者跟着演示 tour 了解晶圆在 fab 里的旅程，直观理解晶圆制造流程。",
+              "info": {
+                "role": "参观者",
+                "goal": "跟着演示 tour 了解晶圆在 fab 里的旅程",
+                "benefit": "直观理解晶圆制造流程"
+              }
+            },
+            {
+              "type": "story",
+              "name": "M35DemoRun",
+              "name_zh": "M3.5 演示跑",
+              "description": "As 工艺工程师: 跑 M3.5 演示看一条 Lot 走完含 OCAP 处置的全流程 — 验证异常处置逻辑.",
+              "description_zh": "工艺工程师跑 M3.5 演示看一条 Lot 走完含 OCAP 处置的全流程，验证异常处置逻辑。",
+              "info": {
+                "role": "工艺工程师",
+                "goal": "跑 M3.5 演示看一条 Lot 走完含 OCAP 处置的全流程",
+                "benefit": "验证异常处置逻辑"
+              }
+            },
+            {
+              "type": "story",
+              "name": "WatchOcapHandling",
+              "name_zh": "观察 OCAP 处置",
+              "description": "As 工艺工程师: 在步骤失败时看到 OCAP 规则命中与处置执行 — 确认异常有预案兜住.",
+              "description_zh": "工艺工程师在步骤失败时看到 OCAP 规则命中与处置执行，确认异常有预案兜住。",
+              "info": {
+                "role": "工艺工程师",
+                "goal": "在步骤失败时看到 OCAP 规则命中与处置执行",
+                "benefit": "确认异常有预案兜住"
+              }
+            },
+            {
+              "type": "story",
+              "name": "CrashRecoveryDemo",
+              "name_zh": "宕机恢复演示",
+              "description": "As 演示者: 注入宕机后看到运行从断点续跑 — 现场证明崩溃恢复能力.",
+              "description_zh": "演示者注入宕机后看到运行从断点续跑，现场证明崩溃恢复能力。",
+              "info": {
+                "role": "演示者",
+                "goal": "注入宕机后看到运行从断点续跑",
+                "benefit": "现场证明崩溃恢复能力"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "aggregates": [
+    {
+      "id": "fab-pipeline-run",
+      "name": "Fab Pipeline Run",
+      "name_zh": "Fab 流水线运行",
+      "description": "One execution of the fab step queue for a single work order: from start to seal, the lot moves through process steps in order. Every completed step records its progress; if the run is interrupted (equipment crash, system restart), it resumes from the breakpoint — finished steps are not repeated. A failed step may be recovered by an OCAP plan, in which case the queue moves on as if the step completed (the recovery itself is recorded as its own fact). Cross-lot transactions reuse their original numbers after recovery instead of creating duplicates.",
+      "description_zh": "一个工单的 fab 步骤队列的一次执行：从启动到封单，Lot 按顺序走过 各个工艺步骤。每完成一步就记下进度；运行中途被打断（设备宕机、 系统重启）后，从断点继续——已完成的步骤不重复。失败的步骤可能被 OCAP 预案救回来，这时队列照常往下走（救回本身记为一条独立事实）。 跨 Lot 的事务在恢复后沿用原编号，不产生重复事务。",
+      "entity": "FabPipelineRun",
+      "identifier": {
+        "name": "workOrderId",
+        "dataType": "string",
+        "origin": "One work order, one run. A second start for an already running or finished work order is refused.",
+        "origin_zh": "一个工单，一次运行。对已在跑或已完工的工单再次启动会被拒绝。"
+      },
+      "stateFields": [
+        {
+          "name": "scenarioId",
+          "dataType": "string",
+          "description": "Which demo scenario drives this run (e.g. \"m35\")."
+        },
+        {
+          "name": "workOrderId",
+          "dataType": "string",
+          "description": "The work order under execution."
+        },
+        {
+          "name": "wafers",
+          "dataType": "map<string, wafer>",
+          "description": "WaferId → per-wafer info (rework count, CD history, classification, sub-lot)."
+        },
+        {
+          "name": "passCount",
+          "dataType": "integer",
+          "description": "Wafers passed so far."
+        },
+        {
+          "name": "scrapCount",
+          "dataType": "integer",
+          "description": "Wafers scrapped so far."
+        },
+        {
+          "name": "currentRoutingStep",
+          "dataType": "integer",
+          "description": "Index into the POR (process of record) steps, 0-based."
+        },
+        {
+          "name": "areaVisitHistory",
+          "dataType": "string[]",
+          "description": "Ordered area IDs visited (drives reentry-index calculation)."
+        },
+        {
+          "name": "equipmentState",
+          "dataType": "map<string, equipment-state>",
+          "description": "Per-equipment status/error counts feeding OCAP equipment conditions."
+        },
+        {
+          "name": "ocapActions",
+          "dataType": "list<(string, ocap-action-plan)>",
+          "description": "Pending OCAP actions, (ruleId, plan) in priority order."
+        },
+        {
+          "name": "childLotView",
+          "dataType": "map<string, (string, integer)>",
+          "description": "Child-lot view descriptor set at split, transitioned at merge (suffix → status, waferCount)."
+        },
+        {
+          "name": "completedStepCount",
+          "dataType": "integer",
+          "description": "How many steps have finished; the resume breakpoint."
+        },
+        {
+          "name": "lastStepOutcome",
+          "dataType": "string",
+          "description": "How the most recent step finished: \"completed\", or \"ocap-recovered\" (the step failed but an OCAP plan saved it — the queue moved on, but no clean completion is claimed)."
+        }
+      ],
+      "statusEnum": [
+        "idle",
+        "running",
+        "recovering",
+        "completed",
+        "failed"
+      ],
+      "statusTransitions": {
+        "run-completed": "completed",
+        "run-failed": "failed",
+        "run-recovered": "running"
+      },
+      "stateGates": {
+        "start-pipeline-run": {
+          "fromStates": [
+            "idle"
+          ],
+          "toState": "running"
+        },
+        "inject-crash": {
+          "fromStates": [
+            "running"
+          ],
+          "toState": "recovering"
+        }
+      },
+      "aggregateRuleRefs": [
+        {
+          "ruleId": "steps-in-order",
+          "desc": "Steps finish in queue order; after an interruption the run skips already-finished steps.",
+          "desc_zh": "步骤按队列顺序完成；中断后续跑跳过已完成的步骤。"
+        },
+        {
+          "ruleId": "no-repeat-of-finished",
+          "desc": "A step confirmed finished never runs again. A step interrupted mid-execution may run once more — each step must tolerate being executed twice without double effect.",
+          "desc_zh": "已确认完成的步骤永不重跑。中断时正在执行的步骤可能再跑一次—— 每个步骤都要能承受\"跑两次\"而不产生双重效果。"
+        },
+        {
+          "ruleId": "single-effective-run",
+          "desc": "One work order has at most one effective run at a time; instructions from a superseded run are void and cause no side effects.",
+          "desc_zh": "一个工单同时最多一次有效运行；被取代的运行发出的指令自动作废，不产生副作用。"
+        },
+        {
+          "ruleId": "transaction-number-reuse",
+          "desc": "Cross-lot transaction numbers follow a fixed rule (workOrderId + step name + execution index), so recovery reuses the original number instead of opening a duplicate transaction.",
+          "desc_zh": "跨 Lot 事务编号遵循固定规则（工单号+步骤名+执行序号），恢复后沿用 原编号，不另开重复事务。"
+        },
+        {
+          "ruleId": "progress-recording",
+          "desc": "Every finished step records its progress, including the full run state at that moment. After an interruption the run continues from the last recorded breakpoint. Progress records are kept independently of the running process; rebuilding the process loses nothing.",
+          "desc_zh": "每完成一步就记录进度，包含当时的完整运行状态。 中断后从最后记录的断点继续。 进度记录独立于运行进程保存；进程重建不丢失记录。"
+        }
+      ],
+      "commands": [
+        {
+          "id": "start-pipeline-run",
+          "name": "start-pipeline-run",
+          "title": "Start Pipeline Run",
+          "name_zh": "启动流水线运行",
+          "description": "Start executing the fab step queue for a work order: record the run's start with its initial state, then work through the steps in order. A second start for an already running or finished work order is refused.",
+          "description_zh": "为一个工单启动 fab 步骤队列：记下运行开始（含初始状态），然后按顺序 执行各步骤。对已在跑或已完工的工单再次启动会被拒绝。",
+          "parameters": [
+            {
+              "name": "scenarioId",
+              "dataType": "string",
+              "description": "Demo scenario driving the run"
+            },
+            {
+              "name": "workOrderId",
+              "dataType": "string",
+              "description": "Work order under execution"
+            },
+            {
+              "name": "steps",
+              "dataType": "step[]",
+              "description": "Ordered step queue for this run"
+            },
+            {
+              "name": "initialState",
+              "dataType": "fab-run-state",
+              "description": "Initial run state"
+            }
+          ],
+          "guards": [
+            {
+              "description": "no running or finished run exists for this workOrderId"
+            }
+          ],
+          "produces": [
+            "run-started",
+            "step-completed",
+            "step-failed",
+            "run-completed",
+            "run-failed"
+          ]
+        },
+        {
+          "id": "inject-crash",
+          "name": "inject-crash",
+          "title": "Inject Crash (M3.5)",
+          "name_zh": "注入宕机（M3.5）",
+          "description": "M3.5 demo control: interrupt the run WITHOUT erasing its progress records, then let recovery continue from the breakpoint. Proves crash-resilience live: finished steps are skipped, the run picks up where it stopped. Injecting a fault into a single piece of equipment is the finer-grained variant — force its next job to fail with a chosen fault type.",
+          "description_zh": "M3.5 演示控制：打断运行但不清除进度记录，然后让恢复逻辑从断点继续。 现场证明抗宕机能力：已完成的步骤跳过，从停下的地方接着跑。 往单台设备注入故障是更细的变体——强制它的下一个 job 按指定故障类型失败。",
+          "parameters": [
+            {
+              "name": "workOrderId",
+              "dataType": "string",
+              "description": "Run to interrupt"
+            }
+          ],
+          "guards": [
+            {
+              "description": "run is currently active"
+            }
+          ],
+          "produces": [
+            "crash-injected",
+            "run-recovered"
+          ]
+        },
+        {
+          "id": "handle-ocap",
+          "name": "handle-ocap",
+          "title": "Handle OCAP",
+          "name_zh": "执行 OCAP 处置",
+          "description": "A step failed and an OCAP rule matched: carry out its action plan (hold / rework / scrap / notify / adjust recipe, or a combination). The queue then moves on — the save is recorded as its own fact, because a rescued step is not a clean completion.",
+          "description_zh": "某步骤失败且命中 OCAP 规则：执行其处置预案（暂存 / 返工 / 报废 / 通知 / 调整配方，或组合）。然后队列继续往下走——救回记为一条独立 事实，因为被救回的步骤不算干净完成。",
+          "parameters": [
+            {
+              "name": "stepName",
+              "dataType": "string",
+              "description": "Failed step"
+            },
+            {
+              "name": "ruleId",
+              "dataType": "string",
+              "description": "OCAP rule that matched"
+            },
+            {
+              "name": "action",
+              "dataType": "ocap-action-plan",
+              "description": "Plan to execute"
+            }
+          ],
+          "guards": [
+            {
+              "description": "the step failed and the rule's trigger condition holds"
+            },
+            {
+              "description": "the rule has not exceeded maxTriggersPerLot for this lot"
+            }
+          ],
+          "produces": [
+            "ocap-handled"
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "run-started",
+          "description": "The run began; its initial state was recorded.",
+          "payloads": [
+            {
+              "name": "workOrderId",
+              "dataType": "string",
+              "description": "Work order under execution"
+            },
+            {
+              "name": "scenarioId",
+              "dataType": "string",
+              "description": "Driving scenario"
+            }
+          ],
+          "bindings": [],
+          "foldAssignments": []
+        },
+        {
+          "name": "step-completed",
+          "description": "A step finished cleanly; the breakpoint moved forward.",
+          "payloads": [
+            {
+              "name": "stepName",
+              "dataType": "string",
+              "description": "Business step name"
+            },
+            {
+              "name": "completedStepCount",
+              "dataType": "integer",
+              "description": "Steps finished so far"
+            },
+            {
+              "name": "metadata",
+              "dataType": "map<string",
+              "description": "Step-emitted metadata"
+            }
+          ],
+          "bindings": [],
+          "foldAssignments": []
+        },
+        {
+          "name": "step-failed",
+          "description": "A step failed before OCAP got its chance (recorded for ordering; OCAP may still save it).",
+          "payloads": [
+            {
+              "name": "stepName",
+              "dataType": "string",
+              "description": "Failing step"
+            },
+            {
+              "name": "error",
+              "dataType": "step-error",
+              "description": "Structured step error"
+            }
+          ],
+          "bindings": [],
+          "foldAssignments": []
+        },
+        {
+          "name": "run-completed",
+          "description": "All steps done; the run reached its terminal state.",
+          "payloads": [
+            {
+              "name": "workOrderId",
+              "dataType": "string",
+              "description": "Work order"
+            },
+            {
+              "name": "passCount",
+              "dataType": "integer",
+              "description": "Wafers passed"
+            },
+            {
+              "name": "scrapCount",
+              "dataType": "integer",
+              "description": "Wafers scrapped"
+            }
+          ],
+          "bindings": [],
+          "foldAssignments": []
+        },
+        {
+          "name": "run-failed",
+          "description": "A step failed and no OCAP plan saved it.",
+          "payloads": [
+            {
+              "name": "workOrderId",
+              "dataType": "string",
+              "description": "Work order"
+            },
+            {
+              "name": "stepName",
+              "dataType": "string",
+              "description": "Failing step"
+            },
+            {
+              "name": "error",
+              "dataType": "step-error",
+              "description": "Structured step error"
+            }
+          ],
+          "bindings": [],
+          "foldAssignments": []
+        },
+        {
+          "name": "crash-injected",
+          "description": "The run was interrupted; progress records kept.",
+          "payloads": [
+            {
+              "name": "workOrderId",
+              "dataType": "string",
+              "description": "Interrupted run"
+            }
+          ],
+          "bindings": [],
+          "foldAssignments": []
+        },
+        {
+          "name": "run-recovered",
+          "description": "Recovery finished; the run continued from its breakpoint.",
+          "payloads": [
+            {
+              "name": "workOrderId",
+              "dataType": "string",
+              "description": "Recovered run"
+            },
+            {
+              "name": "resumedFromStep",
+              "dataType": "string",
+              "description": "Step the run resumed from"
+            }
+          ],
+          "bindings": [],
+          "foldAssignments": []
+        },
+        {
+          "name": "ocap-handled",
+          "description": "An OCAP plan saved a failed step; the queue moved on.",
+          "payloads": [
+            {
+              "name": "stepName",
+              "dataType": "string",
+              "description": "Saved step"
+            },
+            {
+              "name": "ruleId",
+              "dataType": "string",
+              "description": "OCAP rule that fired"
+            },
+            {
+              "name": "action",
+              "dataType": "ocap-action-plan",
+              "description": "Action plan executed"
+            }
+          ],
+          "bindings": [],
+          "foldAssignments": []
+        }
+      ]
+    },
+    {
+      "id": "lot",
+      "name": "Wafer Lot",
+      "name_zh": "晶圆 Lot",
+      "description": "A batch of wafers traveling together in a FOUP through the fab. Tracks wafer membership, per-wafer classification, the route card (ordered area steps), completed steps, and child lots created by splits (rework / pilot / scrap). Wafer transfers between lots go in two moves — reserve, then confirm — so an interruption never loses or duplicates a wafer: it resolves to either fully-transferred or not-transferred, never half.",
+      "description_zh": "装在 FOUP 里一起走 fab 的一批晶圆。跟踪晶圆成员、每片晶圆的分类、 route card（有序的设备区步骤）、已完成步骤，以及切分产生的子 Lot （返工 / 先导 / 报废）。Lot 之间的晶圆转移分两步——先预留、再确认， 中断时要么全转要么没转，不丢片也不重片。 2026-10-18 已仲裁：Lot 是恢复时的权威——Lot 在工艺路线上的位置就是状态 （如真实晶圆厂的 MES）。流水线恢复时应以 Lot 上报的状态为准来对账； 目前实现上靠\"通知确认 + 幂等重放\"收敛，显式对账是已知缺口（见 EXTRACTION-NOTES #7）。",
+      "entity": "WaferLot",
+      "identifier": {
+        "name": "lotId",
+        "dataType": "string",
+        "origin": "Entity id == lotId. Child lots get their own ids; the parent records the split (RecordSubLotCreated) so lineage is queryable."
+      },
+      "stateFields": [
+        {
+          "name": "lotId",
+          "dataType": "string",
+          "description": "Lot identity."
+        },
+        {
+          "name": "productId",
+          "dataType": "string",
+          "description": "Product being manufactured."
+        },
+        {
+          "name": "wafers",
+          "dataType": "map<string, wafer-state>",
+          "description": "WaferId → state (status, classification, rework count, measurements)."
+        },
+        {
+          "name": "status",
+          "dataType": "string",
+          "description": "Lifecycle status (created, in-process, held, sealed, …)."
+        },
+        {
+          "name": "currentArea",
+          "dataType": "string",
+          "description": "Equipment area the lot is currently in (or at)."
+        },
+        {
+          "name": "routeCard",
+          "dataType": "string[]",
+          "description": "Ordered area-id steps assigned to this lot."
+        },
+        {
+          "name": "completedSteps",
+          "dataType": "string[]",
+          "description": "Route-card steps already executed."
+        },
+        {
+          "name": "childLots",
+          "dataType": "map<string, string>",
+          "description": "Child lot id → split reason (rework / pilot / scrap)."
+        },
+        {
+          "name": "parentLotId",
+          "dataType": "string",
+          "description": "Set on child lots; empty on root lots."
+        }
+      ],
+      "statusEnum": [
+        "created",
+        "in-process",
+        "held",
+        "sealed"
+      ],
+      "statusTransitions": {},
+      "stateGates": {
+        "hold-wafers": {
+          "fromStates": [
+            "in-process"
+          ],
+          "toState": "held"
+        },
+        "split-sublot": {
+          "fromStates": [
+            "in-process"
+          ],
+          "toState": "in-process"
+        },
+        "merge-sublot": {
+          "fromStates": [
+            "in-process"
+          ],
+          "toState": "in-process"
+        }
+      },
+      "aggregateRuleRefs": [
+        {
+          "ruleId": "no-lost-wafers",
+          "desc": "Wafer transfers go reserve-then-confirm; an interruption between the two resolves to either fully-transferred or not-transferred, never half.",
+          "desc_zh": "晶圆转移先预留后确认；两步之间被打断时，要么全转要么没转，绝不转一半。"
+        },
+        {
+          "ruleId": "reentry-tracked",
+          "desc": "A lot may visit the same area multiple times; reentryIndex counts the visit (0, 1, 2, …) so step identity stays unambiguous.",
+          "desc_zh": "Lot 可多次重入同一设备区；reentryIndex 记录第几次，保证步骤身份不混淆。"
+        },
+        {
+          "ruleId": "change-recording",
+          "desc": "Every change to a lot (creation, transfers, measurements, classifications, splits, merges, scraps) is recorded as it happens.",
+          "desc_zh": "Lot 的每次变更（创建、转移、量测、分类、切分、合并、报废）发生时即被记录。"
+        },
+        {
+          "ruleId": "lifecycle-unmodeled-commands",
+          "desc": "The full lifecycle also uses create-lot (created -> in-process), release-wafers (held -> in-process) and seal-lot (in-process -> sealed); these commands are not modeled as slices in this tree."
+        }
+      ],
+      "commands": [
+        {
+          "id": "classify-wafer",
+          "name": "classify-wafer",
+          "title": "Classify Wafer",
+          "name_zh": "晶圆分类",
+          "description": "Map a wafer's CD measurement to a disposition via DecisionConfig thresholds: PASS (within spec), BORDERLINE (slightly over upper spec, within the borderline window), FAIL (out of spec, reworkable), SCRAP (far over spec, or rework count exhausted). The classification drives wafer-disposition routing.",
+          "description_zh": "按 DecisionConfig 阈值把晶圆的 CD 量测映射为处置： PASS（spec 内）、BORDERLINE（略超上 spec、在 borderline 窗口内）、 FAIL（超 spec、可返工）、SCRAP（远超 spec，或返工次数用完）。 分类结果驱动 wafer-disposition 路由。",
+          "parameters": [
+            {
+              "name": "waferId",
+              "dataType": "string",
+              "description": "Measured wafer"
+            },
+            {
+              "name": "cdNm",
+              "dataType": "number",
+              "description": "Measured critical dimension (nm)"
+            }
+          ],
+          "guards": [
+            {
+              "description": "wafer is a member of the lot"
+            }
+          ],
+          "produces": [
+            "wafer-classified"
+          ]
+        },
+        {
+          "id": "hold-wafers",
+          "name": "hold-wafers",
+          "title": "Hold Wafers",
+          "name_zh": "暂存晶圆",
+          "description": "Hold wafers out of the flow — e.g. BORDERLINE wafers awaiting human review, or wafers an OCAP Hold plan parked. Held wafers stay in the lot but no step touches them until released.",
+          "description_zh": "把晶圆暂存在流程之外——如等人工评审的 BORDERLINE 晶圆，或被 OCAP Hold 预案暂存的晶圆。暂存的晶圆仍在 Lot 里，但放行前任何步骤不动它们。",
+          "parameters": [
+            {
+              "name": "waferIds",
+              "dataType": "string[]",
+              "description": "Wafers to hold"
+            },
+            {
+              "name": "reason",
+              "dataType": "string",
+              "description": "Why held"
+            }
+          ],
+          "guards": [
+            {
+              "description": "all waferIds are members of the lot"
+            }
+          ],
+          "produces": [
+            "wafers-held",
+            "wafers-released"
+          ]
+        },
+        {
+          "id": "merge-sublot",
+          "name": "merge-sublot",
+          "title": "Merge Sub-Lot",
+          "name_zh": "合并子 Lot",
+          "description": "Merge a reworked (or piloted) child lot back into its parent. Wafers return via the reserve-then-confirm transfer; the child lot view transitions to \"merged\" and the parent's wafer states pick up the rework history (reworkCount++). A scrapped child lot is never merged — it goes through scrap-sublot.",
+          "description_zh": "把返工（或先导）完的子 Lot 合并回父 Lot。晶圆经预留-确认两步转移返回； 子 Lot 视图迁移为\"已合并\"，父 Lot 的晶圆状态带上返工历史 （reworkCount++）。报废的子 Lot 永不合并——走 scrap-sublot。",
+          "parameters": [
+            {
+              "name": "parentLotId",
+              "dataType": "string",
+              "description": "Parent lot"
+            },
+            {
+              "name": "childLotId",
+              "dataType": "string",
+              "description": "Child lot to merge back"
+            }
+          ],
+          "guards": [
+            {
+              "description": "childLotId was split from parentLotId for rework or pilot (not scrap)"
+            }
+          ],
+          "produces": [
+            "sublot-merged"
+          ]
+        },
+        {
+          "id": "record-measurement",
+          "name": "record-measurement",
+          "title": "Record Measurement",
+          "name_zh": "记录量测",
+          "description": "Record a wafer's CD measurement from the metrology equipment. The measurement itself carries no judgment — classification is a separate step.",
+          "description_zh": "记录量测设备报出的一片晶圆的 CD 值。量测值本身不带判断——分类是另一步。",
+          "parameters": [
+            {
+              "name": "waferId",
+              "dataType": "string",
+              "description": "Measured wafer"
+            },
+            {
+              "name": "cdNm",
+              "dataType": "number",
+              "description": "Measured critical dimension (nm)"
+            }
+          ],
+          "guards": [
+            {
+              "description": "wafer is a member of the lot"
+            }
+          ],
+          "produces": [
+            "wafer-measured"
+          ]
+        },
+        {
+          "id": "scrap-wafers",
+          "name": "scrap-wafers",
+          "title": "Scrap Wafers",
+          "name_zh": "报废晶圆",
+          "description": "Scrap wafers classified SCRAP (or whose rework budget is exhausted). Scrapped wafers leave the lot permanently and count toward scrapCount.",
+          "description_zh": "报废判为 SCRAP 的晶圆（或返工次数用完的）。报废的晶圆永久离开 Lot，计入 scrapCount。",
+          "parameters": [
+            {
+              "name": "waferIds",
+              "dataType": "string[]",
+              "description": "Wafers to scrap"
+            },
+            {
+              "name": "reason",
+              "dataType": "string",
+              "description": "Why scrapped"
+            }
+          ],
+          "guards": [
+            {
+              "description": "all waferIds are members of the lot"
+            },
+            {
+              "description": "each wafer is classified SCRAP or rework-exhausted"
+            }
+          ],
+          "produces": [
+            "wafers-scrapped"
+          ]
+        },
+        {
+          "id": "split-sublot",
+          "name": "split-sublot",
+          "title": "Split Sub-Lot",
+          "name_zh": "切分子 Lot",
+          "description": "Carve wafers out of a lot into a child lot for rework, pilot runs, or scrap. The transfer goes in two moves — first reserve the wafers on both sides, then confirm — so an interruption never loses or duplicates a wafer. The child lot view (suffix → status, waferCount) is set at split and transitioned at merge.",
+          "description_zh": "从一个 Lot 切出晶圆组成子 Lot，用于返工、先导或报废。转移分两步—— 先在两边预留晶圆，再确认，中断时不丢片不重片。子 Lot 视图 （后缀 → 状态、片数）在切分时建立，在合并时迁移。",
+          "parameters": [
+            {
+              "name": "lotId",
+              "dataType": "string",
+              "description": "Source lot"
+            },
+            {
+              "name": "waferIds",
+              "dataType": "string[]",
+              "description": "Wafers to carve out"
+            },
+            {
+              "name": "splitReason",
+              "dataType": "string",
+              "description": "rework | pilot | scrap"
+            }
+          ],
+          "guards": [
+            {
+              "description": "all waferIds are members of the source lot"
+            },
+            {
+              "description": "splitReason is one of rework"
+            }
+          ],
+          "produces": [
+            "sublot-split"
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "wafer-classified",
+          "description": "A wafer got its disposition classification.",
+          "payloads": [
+            {
+              "name": "waferId",
+              "dataType": "string",
+              "description": "Wafer"
+            },
+            {
+              "name": "classification",
+              "dataType": "wafer-classification",
+              "description": "PASS | BORDERLINE | FAIL | SCRAP"
+            },
+            {
+              "name": "cdNm",
+              "dataType": "number",
+              "description": "Measured CD (nm)"
+            },
+            {
+              "name": "reworkCount",
+              "dataType": "integer",
+              "description": "Rework attempts so far"
+            }
+          ],
+          "bindings": [],
+          "foldAssignments": []
+        },
+        {
+          "name": "wafers-held",
+          "description": "Wafers parked out of the flow.",
+          "payloads": [
+            {
+              "name": "waferIds",
+              "dataType": "string[]",
+              "description": "Held wafers"
+            },
+            {
+              "name": "reason",
+              "dataType": "string",
+              "description": "Why held"
+            }
+          ],
+          "bindings": [],
+          "foldAssignments": []
+        },
+        {
+          "name": "wafers-released",
+          "description": "Held wafers released back into the flow.",
+          "payloads": [
+            {
+              "name": "waferIds",
+              "dataType": "string",
+              "description": "Released wafers"
+            }
+          ],
+          "bindings": [],
+          "foldAssignments": []
+        },
+        {
+          "name": "sublot-merged",
+          "description": "The child lot's wafers returned to the parent.",
+          "payloads": [
+            {
+              "name": "parentLotId",
+              "dataType": "string",
+              "description": "Parent lot"
+            },
+            {
+              "name": "childLotId",
+              "dataType": "string",
+              "description": "Merged child lot"
+            },
+            {
+              "name": "waferIds",
+              "dataType": "string[]",
+              "description": "Returned wafers"
+            }
+          ],
+          "bindings": [],
+          "foldAssignments": []
+        },
+        {
+          "name": "wafer-measured",
+          "description": "A CD measurement was recorded, awaiting classification.",
+          "payloads": [
+            {
+              "name": "waferId",
+              "dataType": "string",
+              "description": "Wafer"
+            },
+            {
+              "name": "cdNm",
+              "dataType": "number",
+              "description": "Measured CD (nm)"
+            }
+          ],
+          "bindings": [],
+          "foldAssignments": []
+        },
+        {
+          "name": "wafers-scrapped",
+          "description": "Wafers left the lot as scrap.",
+          "payloads": [
+            {
+              "name": "waferIds",
+              "dataType": "string[]",
+              "description": "Scrapped wafers"
+            },
+            {
+              "name": "reason",
+              "dataType": "string",
+              "description": "Why scrapped"
+            }
+          ],
+          "bindings": [],
+          "foldAssignments": []
+        },
+        {
+          "name": "sublot-split",
+          "description": "A child lot was created carrying the carved-out wafers.",
+          "payloads": [
+            {
+              "name": "parentLotId",
+              "dataType": "string",
+              "description": "Source lot"
+            },
+            {
+              "name": "childLotId",
+              "dataType": "string",
+              "description": "New child lot"
+            },
+            {
+              "name": "splitReason",
+              "dataType": "string",
+              "description": "rework | pilot | scrap"
+            },
+            {
+              "name": "waferIds",
+              "dataType": "string[]",
+              "description": "Transferred wafers"
+            }
+          ],
+          "bindings": [],
+          "foldAssignments": []
+        }
+      ]
+    },
+    {
+      "id": "work-order",
+      "name": "Work Order",
+      "name_zh": "工单",
+      "description": "The customer-facing order: a product to build, the lots running for it, and its completion accounting (lots completed / failed). The pipeline run executes against a work order; the work order aggregates the outcome.",
+      "description_zh": "面向客户的订单：要做的产品、为它跑的 Lot、完工核算（完成的 Lot / 失败的 Lot）。pipeline run 针对工单执行；工单汇总结果。",
+      "entity": "WorkOrder",
+      "identifier": {
+        "name": "workOrderId",
+        "dataType": "string",
+        "origin": "Entity id == workOrderId; also the pipeline run's entity id."
+      },
+      "stateFields": [
+        {
+          "name": "workOrderId",
+          "dataType": "string",
+          "description": "Work order identity."
+        },
+        {
+          "name": "productId",
+          "dataType": "string",
+          "description": "Product being manufactured."
+        },
+        {
+          "name": "lotIds",
+          "dataType": "string[]",
+          "description": "Lots running for this order."
+        },
+        {
+          "name": "completedLots",
+          "dataType": "integer",
+          "description": "Lots finished successfully."
+        },
+        {
+          "name": "failedLots",
+          "dataType": "integer",
+          "description": "Lots failed."
+        },
+        {
+          "name": "phase",
+          "dataType": "string",
+          "description": "Order phase (created, in-progress, completed, failed)."
+        }
+      ],
+      "statusEnum": [
+        "created",
+        "in-progress",
+        "completed",
+        "failed"
+      ],
+      "statusTransitions": {},
+      "stateGates": {
+        "create-work-order": {
+          "fromStates": [
+            "created"
+          ],
+          "toState": "in-progress"
+        }
+      },
+      "aggregateRuleRefs": [
+        {
+          "ruleId": "lots-accounted",
+          "desc": "completedLots + failedLots never exceeds the lots started for the order."
+        },
+        {
+          "ruleId": "change-recording",
+          "desc": "Every change to a work order (creation, lot outcomes) is recorded as it happens.",
+          "desc_zh": "工单的每次变更（创建、Lot 结果）发生时即被记录。"
+        },
+        {
+          "ruleId": "lifecycle-unmodeled-commands",
+          "desc": "The full lifecycle also uses record-lot-completed (in-progress -> in-progress), complete-work-order (in-progress -> completed) and record-lot-failed (in-progress -> failed); these commands are not modeled as slices in this tree."
+        }
+      ],
+      "commands": [
+        {
+          "id": "create-work-order",
+          "name": "create-work-order",
+          "title": "Create Work Order",
+          "name_zh": "创建工单",
+          "description": "Open a work order for a product: allocate the lot(s) that will run for it and hand the work order id to the pipeline run as its entity id.",
+          "description_zh": "为一个产品开工单：分配要跑的 Lot，把工单 id 交给 pipeline run 作为它的实体 id。",
+          "parameters": [
+            {
+              "name": "workOrderId",
+              "dataType": "string",
+              "description": "New work order id"
+            },
+            {
+              "name": "productId",
+              "dataType": "string",
+              "description": "Product to build"
+            },
+            {
+              "name": "lotIds",
+              "dataType": "string[]",
+              "description": "Lots allocated to this order"
+            }
+          ],
+          "guards": [
+            {
+              "description": "workOrderId is unused"
+            }
+          ],
+          "produces": [
+            "work-order-created"
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "work-order-created",
+          "description": "A work order opened.",
+          "payloads": [
+            {
+              "name": "workOrderId",
+              "dataType": "string",
+              "description": "Work order"
+            },
+            {
+              "name": "productId",
+              "dataType": "string",
+              "description": "Product"
+            },
+            {
+              "name": "lotIds",
+              "dataType": "string[]",
+              "description": "Allocated lots"
+            }
+          ],
+          "bindings": [],
+          "foldAssignments": []
+        }
+      ]
+    }
+  ],
+  "valueObjects": [
+    {
+      "id": "transaction-number",
+      "name": "Cross-Lot Transaction Number",
+      "name_zh": "跨 Lot 事务编号",
+      "description": "The number of a transaction that spans multiple lots (split/merge). The numbering rule is fixed — work order number + step name + execution index — so after an interruption the same transaction is picked up under its original number instead of opening a duplicate. Atomicity: either all lots in the transaction move, or none do.",
+      "description_zh": "跨多个 Lot 的事务（切分/合并）的编号。编号规则固定——工单号+步骤名+ 执行序号，所以中断后沿用原编号继续，不另开重复事务。原子性： 事务里的 Lot 要么全动，要么全不动。",
+      "fields": [
+        {
+          "name": "workOrderId",
+          "dataType": "string",
+          "description": "Work order the transaction belongs to"
+        },
+        {
+          "name": "stepName",
+          "dataType": "string",
+          "description": "Step that opened the transaction"
+        },
+        {
+          "name": "executionIndex",
+          "dataType": "integer",
+          "description": "How many times this step has executed"
+        }
+      ]
+    },
+    {
+      "id": "decision-config",
+      "name": "Decision Config",
+      "name_zh": "判定配置",
+      "description": "The process spec limits: the CD thresholds that separate PASS from BORDERLINE from FAIL, and how many rework attempts a wafer gets before it is scrapped. Measurements are pure data; these thresholds are where the fab's judgment lives.",
+      "description_zh": "工艺 spec 上下限：区分 PASS / BORDERLINE / FAIL 的 CD 阈值， 以及一片晶圆在报废前允许返工几次。量测值是纯数据；fab 的判断力 住在这组阈值里。",
+      "fields": [
+        {
+          "name": "lowerSpecNm",
+          "dataType": "number",
+          "description": "Lower spec limit (nm)"
+        },
+        {
+          "name": "upperSpecNm",
+          "dataType": "number",
+          "description": "Upper spec limit (nm)"
+        },
+        {
+          "name": "borderlineWindowNm",
+          "dataType": "number",
+          "description": "Margin above upperSpec that is still BORDERLINE"
+        },
+        {
+          "name": "maxReworkCount",
+          "dataType": "integer",
+          "description": "Rework attempts allowed before forced scrap (default 2)"
+        }
+      ]
+    },
+    {
+      "id": "equipment-area",
+      "name": "Equipment Area",
+      "name_zh": "设备区",
+      "description": "The ten equipment areas of the fab: nine process areas plus the logistics command system. Each area owns a pipeline + rebatch policy + physical constraints but shares the connector components. A lot may re-enter the same area multiple times — reentryIndex counts the visit (0, 1, 2, …).",
+      "description_zh": "晶圆厂的十个设备区：九个工艺区加物流指挥系统。每个区有自己的 Pipeline + ReBatchPolicy + 物理约束，但共享连接器组件。 Lot 可能多次重入同一设备区——reentryIndex 记录第几次访问（0, 1, 2, …）。",
+      "fields": [],
+      "variants": [
+        {
+          "name": "WetClean",
+          "fields": [
+            {
+              "name": "areaId",
+              "type": "string",
+              "description": "\"CLEAN\""
+            },
+            {
+              "name": "displayName",
+              "type": "string",
+              "description": "\"湿法清洗\""
+            }
+          ]
+        },
+        {
+          "name": "Diffusion",
+          "fields": [
+            {
+              "name": "areaId",
+              "type": "string",
+              "description": "\"DIFF\""
+            },
+            {
+              "name": "displayName",
+              "type": "string",
+              "description": "\"扩散/氧化\""
+            }
+          ]
+        },
+        {
+          "name": "Lithography",
+          "fields": [
+            {
+              "name": "areaId",
+              "type": "string",
+              "description": "\"LITHO\""
+            },
+            {
+              "name": "displayName",
+              "type": "string",
+              "description": "\"光刻\""
+            }
+          ]
+        },
+        {
+          "name": "Etch",
+          "fields": [
+            {
+              "name": "areaId",
+              "type": "string",
+              "description": "\"ETCH\""
+            },
+            {
+              "name": "displayName",
+              "type": "string",
+              "description": "\"刻蚀\""
+            }
+          ]
+        },
+        {
+          "name": "Implant",
+          "fields": [
+            {
+              "name": "areaId",
+              "type": "string",
+              "description": "\"IMPL\""
+            },
+            {
+              "name": "displayName",
+              "type": "string",
+              "description": "\"离子注入\""
+            }
+          ]
+        },
+        {
+          "name": "Deposition",
+          "fields": [
+            {
+              "name": "areaId",
+              "type": "string",
+              "description": "\"DEP\""
+            },
+            {
+              "name": "displayName",
+              "type": "string",
+              "description": "\"薄膜沉积\""
+            }
+          ]
+        },
+        {
+          "name": "CMP",
+          "fields": [
+            {
+              "name": "areaId",
+              "type": "string",
+              "description": "\"CMP\""
+            },
+            {
+              "name": "displayName",
+              "type": "string",
+              "description": "\"化学机械抛光\""
+            }
+          ]
+        },
+        {
+          "name": "Metrology",
+          "fields": [
+            {
+              "name": "areaId",
+              "type": "string",
+              "description": "\"MET\""
+            },
+            {
+              "name": "displayName",
+              "type": "string",
+              "description": "\"量测\""
+            }
+          ]
+        },
+        {
+          "name": "Drying",
+          "fields": [
+            {
+              "name": "areaId",
+              "type": "string",
+              "description": "\"DRY\""
+            },
+            {
+              "name": "displayName",
+              "type": "string",
+              "description": "\"干燥\""
+            }
+          ]
+        },
+        {
+          "name": "Logistics",
+          "fields": [
+            {
+              "name": "areaId",
+              "type": "string",
+              "description": "\"LOG\""
+            },
+            {
+              "name": "displayName",
+              "type": "string",
+              "description": "\"物流指挥\""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "equipment-config",
+      "name": "Equipment Config",
+      "name_zh": "设备配置",
+      "description": "How one piece of equipment behaves in the demo: how long a job takes, and how likely it is to fail (fault injection knob for the M3.5 demo).",
+      "description_zh": "一台设备在演示里的行为：一个 job 跑多久、多大概率出故障 （M3.5 演示的故障注入旋钮）。",
+      "fields": [
+        {
+          "name": "equipmentId",
+          "dataType": "string",
+          "description": "Equipment identity"
+        },
+        {
+          "name": "areaId",
+          "dataType": "string",
+          "description": "Equipment area it belongs to"
+        },
+        {
+          "name": "processingTime",
+          "dataType": "duration",
+          "description": "How long one job takes"
+        },
+        {
+          "name": "faultProbability",
+          "dataType": "number",
+          "description": "Chance a job fails — 0.0 never"
+        },
+        {
+          "name": "speedMultiplier",
+          "dataType": "number",
+          "description": "Demo clock speed — 1.0 real-time"
+        }
+      ]
+    },
+    {
+      "id": "equipment-status",
+      "name": "Equipment Status",
+      "name_zh": "设备状态",
+      "description": "The equipment state machine: idle → busy → idle. Error and Maintenance are terminal-ish states reported by the area actor; the simulator itself only models idle/busy (a failed job returns the simulator to idle and counts totalFailed).",
+      "description_zh": "设备状态机：idle → busy → idle。Error 和 Maintenance 是区 actor 上报的准终态；仿真器自身只建模 idle/busy（失败的 job 让仿真器回 idle 并计 totalFailed）。",
+      "fields": [],
+      "variants": [
+        {
+          "name": "Idle",
+          "fields": []
+        },
+        {
+          "name": "Busy",
+          "fields": [
+            {
+              "name": "currentJob",
+              "type": "string",
+              "description": "Running job id"
+            }
+          ]
+        },
+        {
+          "name": "Error",
+          "fields": [
+            {
+              "name": "errorCode",
+              "type": "string",
+              "description": "Fault code"
+            }
+          ]
+        },
+        {
+          "name": "Maintenance",
+          "fields": []
+        }
+      ]
+    },
+    {
+      "id": "foup",
+      "name": "FOUP",
+      "name_zh": "晶圆传送盒",
+      "description": "Front-Opening Unified Pod — the sealed container a lot travels in. Equipment tracks port occupancy (portId → foupId); AMHS moves FOUPs between ports/areas (FoupArrived / FoupDeparted events).",
+      "description_zh": "前开式晶圆传送盒——Lot 在 fab 里移动时坐的密封盒子。设备跟踪端口占用 （portId → foupId）；AMHS 在端口/区间搬送 FOUP (FoupArrived / FoupDeparted 事件).",
+      "fields": [
+        {
+          "name": "foupId",
+          "dataType": "string",
+          "description": "FOUP identity"
+        },
+        {
+          "name": "slotMap",
+          "dataType": "map<integer",
+          "description": "Slot → waferId"
+        },
+        {
+          "name": "location",
+          "dataType": "string",
+          "description": "Current port or area"
+        }
+      ]
+    },
+    {
+      "id": "ocap-action-plan",
+      "name": "OCAP Action Plan",
+      "name_zh": "OCAP 处置预案",
+      "description": "Out-of-Control Action Plan — what to do when a process goes out of control. Plans compose: OcapComposite runs a list in order. Stored in the run state (ocapActions) in rule-priority order, executed by the OcapActionRouter step.",
+      "description_zh": "失控处置预案——工艺失控时做什么。预案可组合：OcapComposite 按顺序 执行一个列表。存在运行状态的 ocapActions 里，按规则优先级排序， 由 OcapActionRouter 步骤执行。",
+      "fields": [],
+      "variants": [
+        {
+          "name": "OcapHold",
+          "fields": [
+            {
+              "name": "durationMs",
+              "type": "integer",
+              "description": "How long to hold"
+            },
+            {
+              "name": "reason",
+              "type": "string",
+              "description": "Why held"
+            }
+          ]
+        },
+        {
+          "name": "OcapRework",
+          "fields": [
+            {
+              "name": "recipeId",
+              "type": "string",
+              "description": "Rework recipe to run"
+            },
+            {
+              "name": "maxCount",
+              "type": "integer",
+              "description": "Max rework attempts under this plan"
+            }
+          ]
+        },
+        {
+          "name": "OcapScrap",
+          "fields": [
+            {
+              "name": "reason",
+              "type": "string",
+              "description": "Why scrapped"
+            }
+          ]
+        },
+        {
+          "name": "OcapNotify",
+          "fields": [
+            {
+              "name": "reason",
+              "type": "string",
+              "description": "What happened"
+            },
+            {
+              "name": "escalationPath",
+              "type": "string",
+              "description": "Who to notify"
+            }
+          ]
+        },
+        {
+          "name": "OcapAdjustRecipe",
+          "fields": [
+            {
+              "name": "recipeId",
+              "type": "string",
+              "description": "Recipe to adjust"
+            },
+            {
+              "name": "offsetNm",
+              "type": "number",
+              "description": "CD offset to apply (nm)"
+            }
+          ]
+        },
+        {
+          "name": "OcapComposite",
+          "fields": [
+            {
+              "name": "actions",
+              "type": "ocap-action-plan[]",
+              "description": "Sub-plans",
+              "executed in order": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ocap-rule",
+      "name": "OCAP Rule",
+      "name_zh": "OCAP 规则",
+      "description": "One OCAP rule: a trigger condition over the run state plus the action plan to execute when it fires. Rules are evaluated in priority order (lower number = higher priority); each rule fires at most maxTriggersPerLot times per lot. Missing metrics obey onMissingMetric.",
+      "description_zh": "一条 OCAP 规则：对运行状态的触发条件加触发时执行的处置预案。 规则按优先级求值（数字越小优先级越高）；每条规则每 Lot 最多触发 maxTriggersPerLot 次。缺失的指标按 onMissingMetric 处理。",
+      "fields": [
+        {
+          "name": "ruleId",
+          "dataType": "string",
+          "description": "Rule identity"
+        },
+        {
+          "name": "name",
+          "dataType": "string",
+          "description": "Human-readable rule name"
+        },
+        {
+          "name": "triggerCondition",
+          "dataType": "string",
+          "description": "Condition expression over FabDemoState"
+        },
+        {
+          "name": "actionPlan",
+          "dataType": "ocap-action-plan",
+          "description": "Plan to execute when the rule fires"
+        },
+        {
+          "name": "priority",
+          "dataType": "integer",
+          "description": "Lower = higher priority"
+        },
+        {
+          "name": "maxTriggersPerLot",
+          "dataType": "integer",
+          "description": "Cap per lot (default 3)"
+        },
+        {
+          "name": "onMissingMetric",
+          "dataType": "string",
+          "description": "ConservativePass (skip rule) | ConservativeReject (trigger rule)"
+        }
+      ]
+    },
+    {
+      "id": "fab-run-state",
+      "name": "Run State Record",
+      "name_zh": "运行状态记录",
+      "description": "What gets written down every time a step finishes: whose run it is, the full run state at that moment, how many steps are done (the resume breakpoint), and how the last step ended. Recovery rebuilds the run from the latest record.",
+      "description_zh": "每完成一步记下的东西：谁的运行、当时的完整运行状态、已完成几步 （续跑断点）、上一步怎么结束的。恢复时从最新一条记录重建运行。",
+      "fields": [
+        {
+          "name": "scenarioId",
+          "dataType": "string",
+          "description": "Driving scenario"
+        },
+        {
+          "name": "workOrderId",
+          "dataType": "string",
+          "description": "Work order under execution"
+        },
+        {
+          "name": "state",
+          "dataType": "string",
+          "description": "Full run state (wafers"
+        },
+        {
+          "name": "completedStepCount",
+          "dataType": "integer",
+          "description": "Steps finished — the breakpoint"
+        },
+        {
+          "name": "lastOutcome",
+          "dataType": "string",
+          "description": "completed | ocap-recovered"
+        }
+      ]
+    },
+    {
+      "id": "step-error",
+      "name": "Step Error",
+      "name_zh": "步骤失败",
+      "description": "What a failed step reports: which step, which equipment (if any), the fault code, and a human-readable detail. This is what OCAP rules match against.",
+      "description_zh": "失败步骤上报的内容：哪个步骤、哪台设备（若有）、故障码、 人可读的详情。OCAP 规则就按这个匹配。",
+      "fields": [
+        {
+          "name": "stepName",
+          "dataType": "string",
+          "description": "Failing step"
+        },
+        {
+          "name": "equipmentId",
+          "dataType": "string",
+          "description": "Equipment involved"
+        },
+        {
+          "name": "errorCode",
+          "dataType": "string",
+          "description": "Fault code (HARDWARE_FAULT"
+        },
+        {
+          "name": "detail",
+          "dataType": "string",
+          "description": "Human-readable detail"
+        }
+      ]
+    },
+    {
+      "id": "wafer-classification",
+      "name": "Wafer Classification",
+      "name_zh": "晶圆分类",
+      "description": "Disposition of one wafer from its CD measurement, decided by FabMeasurementClassifier against DecisionConfig thresholds.",
+      "description_zh": "一片晶圆按 CD 量测的处置，由 FabMeasurementClassifier 对照 DecisionConfig 阈值判定。",
+      "fields": [],
+      "variants": [
+        {
+          "name": "PASS",
+          "fields": [],
+          "description": "Within spec — continue the flow.",
+          "description_zh": "spec 内——继续走流程。"
+        },
+        {
+          "name": "BORDERLINE",
+          "fields": [],
+          "description": "Slightly over upper spec but inside the borderline window — hold for review / reconfirm.",
+          "description_zh": "略超上 spec 但在 borderline 窗口内——暂存 等评审/复核。"
+        },
+        {
+          "name": "FAIL",
+          "fields": [
+            {
+              "name": "reworkTarget",
+              "type": "string",
+              "description": "Area to rework in (e.g. LITHO)"
+            }
+          ],
+          "description": "Out of spec but reworkable — route to rework (reworkCount++).",
+          "description_zh": "超 spec 但可返工——路由去返工（reworkCount++）。"
+        },
+        {
+          "name": "SCRAP",
+          "fields": [
+            {
+              "name": "reason",
+              "type": "string",
+              "description": "Why scrapped"
+            }
+          ],
+          "description": "Far over spec, or rework count exhausted — leaves the lot permanently.",
+          "description_zh": "远超 spec，或返工次数用完——永久离开 Lot。"
+        }
+      ]
+    }
+  ],
+  "readModels": [
+    {
+      "id": "equipment-board",
+      "name": "Equipment Board",
+      "name_zh": "设备看板",
+      "description": "Live status of every equipment area: which are up, which are down, what each machine is doing. Operators can take an area down or reset it from here (M3.5 chaos controls).",
+      "description_zh": "每个设备区的实时状态：哪些开着、哪些停了、每台机器在干什么。 操作员可在这里停掉或重置一个区（M3.5 混沌控制）。",
+      "served_by": "fab demo page equipment panel",
+      "fields": [
+        {
+          "name": "areas",
+          "dataType": "map<string, string>",
+          "source": "eventField:step-failed.error",
+          "description": "AreaId → status (up / down). [pilot derived_from: equipment-state in the run state + area down/reset commands]"
+        },
+        {
+          "name": "machines",
+          "dataType": "map<string, equipment-state>",
+          "source": "eventField:step-failed.error",
+          "description": "EquipmentId → status, error count. [pilot derived_from: equipment-state in the run state]"
+        }
+      ],
+      "sourceAggregate": "Fab Pipeline Run",
+      "sources": [
+        "Fab Pipeline Run"
+      ],
+      "visible_to": []
+    },
+    {
+      "id": "event-feed",
+      "name": "Event Feed",
+      "name_zh": "事件流",
+      "description": "The live firehose of domain events pushed to the demo pages as they happen: demo start, equipment state changes, FOUP movements, processing updates, measurements, decisions, OCAP triggers, transaction operations, lot updates. The 3D view and the timeline both drink from this feed. 2026-10-18 ARBITRATED (CQRS authority split): this feed is a READ-side projection for the UI — it never drives recovery and may lag or be rebuilt. Write-side truth lives in the journals (run journal: per-step progress records; lot journal: lot facts). If the feed says a step completed but the run journal disagrees, the journal wins — recovery replays the journal, never the feed.",
+      "description_zh": "推送到演示页面的实时领域事件流：演示启动、设备状态变化、FOUP 移动、 加工更新、量测、判定、OCAP 触发、事务操作、Lot 更新。3D 视图和时间线 都从这条流取数。",
+      "served_by": "fab demo and M3.5 pages (live socket)",
+      "fields": [
+        {
+          "name": "frames",
+          "dataType": "string[]",
+          "source": "eventField:run-started.workOrderId",
+          "description": "Domain event frames in occurrence order (demo-started, equipment-state-changed, foup-in-transit, processing-started/completed, measurement-result, decision-made, ocap-action-triggered, transaction-operation, lot-updated, …). [pilot derived_from: domain events as recorded]"
+        }
+      ],
+      "sourceAggregate": "Fab Pipeline Run",
+      "sources": [
+        "Fab Pipeline Run",
+        "Wafer Lot",
+        "Work Order"
+      ],
+      "visible_to": []
+    },
+    {
+      "id": "pipeline-timeline",
+      "name": "Pipeline Timeline",
+      "name_zh": "流水线时间线",
+      "description": "Step-by-step timeline of one work order's run: which steps finished, in what order, with what outcome (completed / failed / OCAP-rescued), and the live counts. This is what the fab timeline page renders.",
+      "description_zh": "一个工单运行的分步时间线：哪些步骤完成了、什么顺序、什么结果 （完成 / 失败 / OCAP 救回），以及实时计数。fab 时间线页面渲染的就是它。 2026-10-18 已仲裁（CQRS 读写分工）：时间线是读侧投影，只管展示—— 恢复只认写侧的运行记录（journal），时间线说完成了、记录里没有，以记录为准。",
+      "served_by": "fab timeline page",
+      "fields": [
+        {
+          "name": "steps",
+          "dataType": "string[]",
+          "source": "eventField:step-completed.stepName",
+          "description": "Step names in completion order. [pilot derived_from: step-completed events, in order]"
+        },
+        {
+          "name": "outcomes",
+          "dataType": "map<string, string>",
+          "source": "eventField:step-completed.stepName",
+          "description": "Step name → completed | failed | ocap-recovered. [pilot derived_from: step-completed / step-failed / ocap-handled events]"
+        },
+        {
+          "name": "passCount",
+          "dataType": "integer",
+          "source": "eventField:run-completed.passCount",
+          "description": "Wafers passed so far. [pilot derived_from: latest run state]"
+        },
+        {
+          "name": "scrapCount",
+          "dataType": "integer",
+          "source": "eventField:run-completed.scrapCount",
+          "description": "Wafers scrapped so far. [pilot derived_from: latest run state]"
+        },
+        {
+          "name": "currentStep",
+          "dataType": "string",
+          "source": "eventField:step-completed.stepName",
+          "description": "Step currently executing. [pilot derived_from: last step-completed + queue position]"
+        }
+      ],
+      "sourceAggregate": "Fab Pipeline Run",
+      "sources": [
+        "Fab Pipeline Run"
+      ],
+      "visible_to": []
+    },
+    {
+      "id": "recovery-status",
+      "name": "Recovery Status",
+      "name_zh": "恢复状态",
+      "description": "M3.5 crash-demo observability: for one interrupted run, where the breakpoint was, whether recovery finished, and the fault history that led here. This is what the M3.5 page polls after you hit the crash button.",
+      "description_zh": "M3.5 宕机演示的可观测性：一次被打断的运行，断点在哪、恢复完了没、 走到这一步的故障历史。点了 crash 按钮后，M3.5 页面轮询的就是它。",
+      "served_by": "M3.5 demo page",
+      "fields": [
+        {
+          "name": "breakpoint",
+          "dataType": "string",
+          "source": "eventField:step-completed.completedStepCount",
+          "description": "Step the run was interrupted at / resumed from. [pilot derived_from: last recorded completedStepCount]"
+        },
+        {
+          "name": "recovered",
+          "dataType": "boolean",
+          "source": "eventField:run-recovered.workOrderId",
+          "description": "Whether recovery finished. [pilot derived_from: run-recovered event present]"
+        },
+        {
+          "name": "faultHistory",
+          "dataType": "string[]",
+          "source": "eventField:step-failed.error",
+          "description": "Fault codes seen by this run, in order. [pilot derived_from: step-failed events' error codes]"
+        }
+      ],
+      "sourceAggregate": "Fab Pipeline Run",
+      "sources": [
+        "Fab Pipeline Run"
+      ],
+      "visible_to": []
+    },
+    {
+      "id": "scenario-ledger",
+      "name": "Scenario Ledger",
+      "name_zh": "场景台账",
+      "description": "Per-scenario accounting: which work orders ran under this scenario and how each ended. The demo's \"what happened\" summary.",
+      "description_zh": "按场景的台账：这个场景下跑了哪些工单、每个什么结局。演示的\"发生了什么\"汇总。",
+      "served_by": "fab demo page scenario panel",
+      "fields": [
+        {
+          "name": "entries",
+          "dataType": "map<string, string>",
+          "source": "eventField:run-completed.workOrderId",
+          "description": "WorkOrderId → completed | failed. [pilot derived_from: run-completed / run-failed events]"
+        },
+        {
+          "name": "totals",
+          "dataType": "map<string, integer>",
+          "source": "eventField:run-completed.passCount",
+          "description": "Aggregate pass / scrap counts across the scenario's runs. [pilot derived_from: sum over run states]"
+        }
+      ],
+      "sourceAggregate": "Fab Pipeline Run",
+      "sources": [
+        "Fab Pipeline Run",
+        "Work Order"
+      ],
+      "visible_to": []
+    }
+  ],
+  "stories": [],
+  "pipelines": [
+    {
+      "id": "fab-pipeline",
+      "name": "Fab Step Queue",
+      "name_zh": "Fab 步骤队列",
+      "description": "The vocabulary of steps the step queue runs to move a wafer lot through the fab. Listed in canonical flow order: FOUP logistics → equipment processing → measurement → classification → disposition branching (rework / scrap / hold / release / OCAP) → review → seal. Control steps (Branch, OcapEvaluate, DynamicPorExecution, …) rewire the queue at runtime. The step names below are the shared language for \"where did we stop\" — the resume breakpoint.",
+      "description_zh": "步骤队列的步骤词汇，驱动晶圆 Lot 走过 fab。按 canonical 流程顺序：FOUP 物流 → 设备加工 → 量测 → 分类 → 处置分支 （返工 / 报废 / 暂存 / 放行 / OCAP）→ 评审 → 封单。 控制步骤（Branch、OcapEvaluate、DynamicPorExecution……）在运行时 重排队列。下面的步骤名是\"停在哪了\"的共同语言——续跑的断点。",
+      "failure_semantics": "When a step fails, OCAP gets the first chance — before the failure is treated as final. If an OCAP plan saves the step, its progress is recorded normally and the queue moves on; the save itself is recorded as a separate fact (ocap-handled), because a rescued step is not a clean completion. With no matching OCAP plan, the failure stands and the run fails. Business reason OCAP lives inside the step (not as an afterthought): a saved step must still count as \"done\" for the breakpoint, otherwise recovery would replay it and double its effect.",
+      "failure_semantics_zh": "步骤失败时，OCAP 先接手——在失败被判为终局之前。若 OCAP 预案救回了 步骤，进度照常记录、队列继续往下走；救回本身记为一条独立事实 （ocap-handled），因为被救回的步骤不算\"干净完成\"。 没有命中的 OCAP 预案，失败成立，运行失败。 OCAP 之所以长在步骤里面（而不是事后补救）：被救回的步骤必须算 \"已做完\"，断点才能往前走，否则恢复时会重跑它、效果翻倍。",
+      "steps": [
+        {
+          "id": "load-foup",
+          "name": "Load FOUP",
+          "name_zh": "装载 FOUP",
+          "description": "Load the lot's FOUP onto an equipment port (tracks port occupancy).",
+          "reads": [
+            "lot",
+            "foup"
+          ],
+          "writes": [
+            "port-occupancy"
+          ],
+          "failure_codes": [],
+          "metadata": [
+            "foupId",
+            "portId"
+          ]
+        },
+        {
+          "id": "transport",
+          "name": "Transport FOUP",
+          "name_zh": "搬送 FOUP",
+          "description": "AMHS moves the FOUP between areas along a configured route (from → to).",
+          "reads": [
+            "foup"
+          ],
+          "writes": [
+            "foup-location"
+          ],
+          "failure_codes": [],
+          "metadata": [
+            "fromArea",
+            "toArea",
+            "etaMs"
+          ]
+        },
+        {
+          "id": "at-equipment",
+          "name": "Arrive At Equipment",
+          "name_zh": "到达设备",
+          "description": "Logical arrival marker — the lot is now at this equipment in this area.",
+          "reads": [
+            "lot"
+          ],
+          "writes": [
+            "current-area"
+          ],
+          "failure_codes": [],
+          "metadata": [
+            "area",
+            "equipId"
+          ]
+        },
+        {
+          "id": "track-in",
+          "name": "Track In",
+          "name_zh": "进站",
+          "description": "Equipment takes ownership of the lot (validated by the per-area EquipmentAreaActor state machine).",
+          "reads": [
+            "lot",
+            "equipment-state"
+          ],
+          "writes": [
+            "equipment-state"
+          ],
+          "failure_codes": [],
+          "metadata": [
+            "equipId",
+            "portId"
+          ]
+        },
+        {
+          "id": "run-recipe",
+          "name": "Run Recipe",
+          "name_zh": "跑配方",
+          "description": "Execute the process recipe on the equipment: processing takes processingTime (scaled by speedMultiplier), then the equipment reports completion — or failure, if a fault was injected or arose spontaneously (faultProbability). A reported failure throws the step into OCAP's hands.",
+          "reads": [
+            "lot",
+            "equipment-state"
+          ],
+          "writes": [
+            "equipment-result"
+          ],
+          "failure_codes": [
+            {
+              "code": "HARDWARE_FAULT",
+              "meaning": "Injected or spontaneous hardware fault"
+            },
+            {
+              "code": "COMM_TIMEOUT",
+              "meaning": "Equipment communication timed out"
+            },
+            {
+              "code": "SENSOR_ANOMALY",
+              "meaning": "Sensor reading out of plausible range"
+            },
+            {
+              "code": "POWER_FLUCTUATION",
+              "meaning": "Power fluctuation during processing"
+            },
+            {
+              "code": "ABORTED",
+              "meaning": "Job aborted by operator command"
+            }
+          ],
+          "metadata": [
+            "jobId",
+            "equipId",
+            "recipeId"
+          ]
+        },
+        {
+          "id": "track-out",
+          "name": "Track Out",
+          "name_zh": "出站",
+          "description": "Equipment releases the lot (validated by the per-area state machine).",
+          "reads": [
+            "lot",
+            "equipment-state"
+          ],
+          "writes": [
+            "equipment-state"
+          ],
+          "failure_codes": [],
+          "metadata": [
+            "equipId",
+            "portId"
+          ]
+        },
+        {
+          "id": "measure",
+          "name": "Measure",
+          "name_zh": "量测",
+          "description": "CD-SEM measures per-wafer critical dimensions.",
+          "reads": [
+            "lot"
+          ],
+          "writes": [
+            "wafer-measurements"
+          ],
+          "failure_codes": [],
+          "metadata": [
+            "equipId",
+            "waferCount"
+          ]
+        },
+        {
+          "id": "classify",
+          "name": "Classify Wafers",
+          "name_zh": "晶圆分类",
+          "description": "Map each wafer's CD to PASS / BORDERLINE / FAIL / SCRAP via DecisionConfig.",
+          "reads": [
+            "wafer-measurements"
+          ],
+          "writes": [
+            "wafer-classifications"
+          ],
+          "failure_codes": [],
+          "metadata": [
+            "passCount",
+            "borderlineCount",
+            "failCount",
+            "scrapCount"
+          ]
+        },
+        {
+          "id": "tx-split",
+          "name": "Transactional Split",
+          "name_zh": "事务切分",
+          "description": "Split wafers into a child lot inside a cross-lot transaction. The transaction number follows a fixed rule (work order number + step name + execution index), so recovery picks up the original number instead of opening a duplicate.",
+          "reads": [
+            "lot"
+          ],
+          "writes": [
+            "child-lot"
+          ],
+          "failure_codes": [],
+          "metadata": [
+            "lotKey",
+            "transactionId"
+          ]
+        },
+        {
+          "id": "tx-merge",
+          "name": "Transactional Merge",
+          "name_zh": "事务合并",
+          "description": "Merge the child lot back inside the same cross-lot transaction (original number reused).",
+          "reads": [
+            "child-lot"
+          ],
+          "writes": [
+            "lot"
+          ],
+          "failure_codes": [],
+          "metadata": [
+            "lotKey",
+            "transactionId"
+          ]
+        },
+        {
+          "id": "scrap-wafers",
+          "name": "Scrap Wafers",
+          "name_zh": "报废晶圆",
+          "description": "Scrap wafers classified SCRAP (or rework-exhausted); they leave the lot permanently.",
+          "reads": [
+            "wafer-classifications"
+          ],
+          "writes": [
+            "scrap-count"
+          ],
+          "failure_codes": [],
+          "metadata": [
+            "waferIds",
+            "reason"
+          ]
+        },
+        {
+          "id": "hold-wafers",
+          "name": "Hold Wafers",
+          "name_zh": "暂 Hold 晶圆",
+          "description": "Hold wafers (e.g. BORDERLINE awaiting review or OCAP Hold action).",
+          "reads": [
+            "wafer-classifications"
+          ],
+          "writes": [
+            "lot-status"
+          ],
+          "failure_codes": [],
+          "metadata": [
+            "waferIds",
+            "reason"
+          ]
+        },
+        {
+          "id": "release-wafers",
+          "name": "Release Wafers",
+          "name_zh": "放行晶圆",
+          "description": "Release held wafers back into the flow.",
+          "reads": [
+            "lot-status"
+          ],
+          "writes": [
+            "lot-status"
+          ],
+          "failure_codes": [],
+          "metadata": [
+            "waferIds"
+          ]
+        },
+        {
+          "id": "post-release-classify",
+          "name": "Post-Release Classify",
+          "name_zh": "放行后复分类",
+          "description": "Re-classify wafers after release (their state may have changed while held).",
+          "reads": [
+            "wafer-measurements"
+          ],
+          "writes": [
+            "wafer-classifications"
+          ],
+          "failure_codes": [],
+          "metadata": [
+            "passCount",
+            "failCount",
+            "scrapCount"
+          ]
+        },
+        {
+          "id": "ocap-evaluate",
+          "name": "OCAP Evaluate",
+          "name_zh": "OCAP 求值",
+          "description": "Evaluate OCAP rules against the current state in priority order (lower number = higher priority, maxTriggersPerLot cap each). Matching rules append (ruleId, actionPlan) to ocapActions. Missing metrics obey the rule's MissingMetricPolicy (ConservativePass = skip, ConservativeReject = trigger).",
+          "reads": [
+            "fab-demo-state",
+            "ocap-rules"
+          ],
+          "writes": [
+            "ocap-actions"
+          ],
+          "failure_codes": [],
+          "metadata": [
+            "matchedRuleIds"
+          ]
+        },
+        {
+          "id": "m35-classify-with-ocap",
+          "name": "M3.5 Classify With OCAP",
+          "name_zh": "M3.5 分类带 OCAP",
+          "description": "M3.5 variant of classify: classification and OCAP evaluation fused into one step, so a measurement excursion triggers its action plan in the same step.",
+          "reads": [
+            "wafer-measurements",
+            "ocap-rules"
+          ],
+          "writes": [
+            "wafer-classifications",
+            "ocap-actions"
+          ],
+          "failure_codes": [],
+          "metadata": [
+            "passCount",
+            "failCount",
+            "scrapCount",
+            "matchedRuleIds"
+          ]
+        },
+        {
+          "id": "ocap-action-router",
+          "name": "OCAP Action Router",
+          "name_zh": "OCAP 动作路由",
+          "description": "Execute the pending ocapActions in priority order (hold / rework / scrap / notify / adjust-recipe, or composites).",
+          "reads": [
+            "ocap-actions"
+          ],
+          "writes": [
+            "lot",
+            "equipment-state"
+          ],
+          "failure_codes": [],
+          "metadata": [
+            "executedRuleIds"
+          ]
+        },
+        {
+          "id": "wait-for-review",
+          "name": "Wait For Review",
+          "name_zh": "等待人工评审",
+          "description": "Pause for human review (e.g. BORDERLINE lots); the reviewer approves or escalates.",
+          "reads": [
+            "lot"
+          ],
+          "writes": [
+            "review-approved"
+          ],
+          "failure_codes": [],
+          "metadata": [
+            "durationMs",
+            "approved"
+          ]
+        },
+        {
+          "id": "pilot-subflow",
+          "name": "Pilot Sub-Flow",
+          "name_zh": "先导子流程",
+          "description": "Send a few wafers ahead as a pilot lot; the main lot waits (AwaitSubLotResult) for the pilot outcome before proceeding.",
+          "reads": [
+            "lot"
+          ],
+          "writes": [
+            "child-lot"
+          ],
+          "failure_codes": [],
+          "metadata": [
+            "lotKey",
+            "pilotWaferIds"
+          ]
+        },
+        {
+          "id": "await-sublot-result",
+          "name": "Await Sub-Lot Result",
+          "name_zh": "等待子 Lot 结果",
+          "description": "Suspend until the sub-lot (pilot/rework) resolves — \"merged\" or \"scrapped\" — then continue with the returned state.",
+          "reads": [
+            "child-lot"
+          ],
+          "writes": [
+            "fab-demo-state"
+          ],
+          "failure_codes": [],
+          "metadata": [
+            "lotKey",
+            "outcome"
+          ]
+        },
+        {
+          "id": "photocell-rework-pipeline",
+          "name": "Photocell Rework Pipeline",
+          "name_zh": "光刻返工子流水线",
+          "description": "Fixed rework sub-pipeline for the lithography cell (re-clean → re-expose → re-measure).",
+          "reads": [
+            "child-lot"
+          ],
+          "writes": [
+            "child-lot"
+          ],
+          "failure_codes": [],
+          "metadata": [
+            "reworkCount"
+          ]
+        },
+        {
+          "id": "seal-complete",
+          "name": "Seal Complete",
+          "name_zh": "封单完成",
+          "description": "Terminal step — the run is done, lot sealed, counts final.",
+          "reads": [
+            "fab-demo-state"
+          ],
+          "writes": [],
+          "failure_codes": [],
+          "metadata": [
+            "passCount",
+            "scrapCount"
+          ]
+        },
+        {
+          "id": "branch",
+          "name": "Branch",
+          "name_zh": "分支",
+          "description": "Runtime conditional — evaluate a predicate on the state and splice the ifTrue / ifFalse step list into the queue.",
+          "reads": [
+            "fab-demo-state"
+          ],
+          "writes": [],
+          "failure_codes": [],
+          "metadata": [
+            "taken"
+          ]
+        },
+        {
+          "id": "execute-subprocess",
+          "name": "Execute Sub-Process",
+          "name_zh": "执行子流程",
+          "description": "Splice a named, pre-compiled sub-process (SubProcessRef) into the queue.",
+          "reads": [
+            "fab-demo-state"
+          ],
+          "writes": [],
+          "failure_codes": [],
+          "metadata": [
+            "ref"
+          ]
+        },
+        {
+          "id": "dynamic-por-execution",
+          "name": "Dynamic POR Execution",
+          "name_zh": "动态 POR 执行",
+          "description": "Execute a dynamically assembled POR (process of record): the DynamicFlowAssembler compiles routing + DecisionConfig into a step list at runtime, instead of using the static FabScenarioPipeline list. 2026-10-18 ARBITRATED: dynamic POR is the canonical way to define NEW scenarios — the static step list is frozen legacy (existing demos keep running on it, but no new scenario should be built on it).",
+          "reads": [
+            "por",
+            "decision-config"
+          ],
+          "writes": [],
+          "failure_codes": [],
+          "metadata": [
+            "stepCount"
+          ]
+        }
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "fab-demo-tour",
+      "name": "Fab Demo Tour",
+      "name_zh": "Fab 演示巡览",
+      "description": "The standard walkthrough: pick a scenario, start it, watch the lot move through areas on the designer view, follow measurements and classifications on the timeline, and inspect the scenario ledger at the end. No faults injected — the happy path that shows what the fab does when nothing breaks.",
+      "description_zh": "标准巡览：选个场景、启动，在 designer 视图看 Lot 走过各区，在时间线 跟量测和分类，最后看场景台账。不注入故障——展示一切正常时 fab 是什么样。",
+      "script": {
+        "scale": {
+          "lots": 1,
+          "wafers_per_lot": 25,
+          "equipment": "fab equipment simulators (litho, cd-sem, amhs, stocker)"
+        },
+        "chains": [
+          "fab-pipeline"
+        ],
+        "outcome_rules": [
+          {
+            "rule": "start scenario",
+            "expect": "run-started recorded"
+          },
+          {
+            "rule": "wafers measured",
+            "expect": "every wafer classified exactly once"
+          },
+          {
+            "rule": "run seals",
+            "expect": "passCount + scrapCount == wafers started"
+          }
+        ],
+        "notes": [
+          "2026-10-18 ARBITRATED (true chaos): spontaneous equipment faults are unseeded -- the happy path above assumes faultProbability = 0. With faults on, \"结果不保证重复\"."
+        ]
+      }
+    },
+    {
+      "id": "m35-demo",
+      "name": "M3.5 Crash & OCAP Demo",
+      "name_zh": "M3.5 宕机与 OCAP 演示",
+      "description": "The resilience showpiece. A lot runs the fab queue with fault injection turned up; the operator hits the crash button mid-run, watches recovery pick up from the breakpoint, and sees OCAP plans fire on excursions — all on the 3D fab view. What \"correct\" looks like: finished steps are never repeated, OCAP-rescued steps count as done, and the final counts add up.",
+      "description_zh": "韧性展示。Lot 跑 fab 队列，故障注入开大；操作员中途点 crash 按钮， 看恢复从断点接上，看 OCAP 预案在 excursion 时触发——都在 3D fab 视图上。\"正确\"长什么样：已完成的步骤永不重跑、OCAP 救回的步骤 算做完、最终计数对得上。",
+      "script": {
+        "scale": {
+          "lots": 1,
+          "wafers_per_lot": 25,
+          "equipment": "fab equipment simulators (litho, cd-sem, amhs, stocker)"
+        },
+        "chains": [
+          "fab-pipeline"
+        ],
+        "outcome_rules": [
+          {
+            "rule": "crash mid-run",
+            "expect": "run recovers from the breakpoint; completedStepCount only moves forward"
+          },
+          {
+            "rule": "inject equipment fault",
+            "expect": "step-failed recorded"
+          },
+          {
+            "rule": "full run",
+            "expect": "passCount + scrapCount == wafers started"
+          }
+        ],
+        "notes": [
+          "2026-10-18 ARBITRATED (true chaos): spontaneous equipment faults use unseeded randomness -- two runs of this scenario may fail different wafers. \"结果不保证重复\". Only the injected-fault script above is deterministic; the background chaos is not."
+        ]
+      }
+    }
+  ],
+  "inboxLayout": {
+    "eventStorming|reconstructed|13": "01-event-flow",
+    "eventStorming|reconstructed|11": "01-event-flow",
+    "eventStorming|reconstructed|12": "01-event-flow",
+    "eventStorming|reconstructed|14": "01-event-flow",
+    "eventStorming|reconstructed|1": "01-event-flow",
+    "eventStorming|reconstructed|2": "01-event-flow",
+    "eventStorming|reconstructed|10": "01-event-flow",
+    "eventStorming|reconstructed|6": "01-event-flow",
+    "eventStorming|reconstructed|5": "01-event-flow",
+    "eventStorming|reconstructed|4": "01-event-flow",
+    "eventStorming|reconstructed|3": "01-event-flow",
+    "eventStorming|reconstructed|7": "01-event-flow",
+    "eventStorming|reconstructed|8": "01-event-flow",
+    "eventStorming|reconstructed|9": "01-event-flow",
+    "eventStorming|reconstructed|0": "01-event-flow",
+    "commandStorming|reconstructed|0": "02-commands",
+    "commandStorming|reconstructed|1": "02-commands",
+    "commandStorming|reconstructed|4": "02-commands",
+    "commandStorming|reconstructed|5": "02-commands",
+    "commandStorming|reconstructed|6": "02-commands",
+    "commandStorming|reconstructed|7": "02-commands",
+    "commandStorming|reconstructed|8": "02-commands",
+    "commandStorming|reconstructed|12": "02-commands",
+    "commandStorming|reconstructed|13": "02-commands",
+    "commandStorming|reconstructed|14": "02-commands",
+    "commandStorming|reconstructed|2": "02-commands",
+    "commandStorming|reconstructed|3": "02-commands",
+    "commandStorming|reconstructed|9": "02-commands",
+    "commandStorming|reconstructed|10": "02-commands",
+    "commandStorming|reconstructed|11": "02-commands",
+    "aggregateDiscovery|reconstructed|0": "03-aggregates",
+    "aggregateDiscovery|reconstructed|1": "03-aggregates",
+    "aggregateDiscovery|reconstructed|2": "03-aggregates",
+    "contextMapping|reconstructed|0": "05-context-map",
+    "contextMapping|reconstructed|1": "05-context-map",
+    "refining|reconstructed|0": "06-aggregate-detail",
+    "refining|reconstructed|1": "06-aggregate-detail",
+    "refining|reconstructed|2": "06-aggregate-detail",
+    "refining|reconstructed|3": "06-aggregate-detail",
+    "refining|reconstructed|4": "06-aggregate-detail",
+    "refining|reconstructed|5": "06-aggregate-detail",
+    "refining|reconstructed|6": "06-aggregate-detail",
+    "refining|reconstructed|7": "06-aggregate-detail",
+    "refining|reconstructed|8": "06-aggregate-detail",
+    "refining|reconstructed|9": "06-aggregate-detail",
+    "refining|reconstructed|10": "06-aggregate-detail",
+    "refining|reconstructed|11": "06-aggregate-detail",
+    "refining|reconstructed|12": "06-aggregate-detail",
+    "refining|reconstructed|13": "06-aggregate-detail",
+    "refining|reconstructed|14": "07-aggregate-relations",
+    "refining|reconstructed|15": "07-aggregate-relations",
+    "refining|reconstructed|16": "07-aggregate-relations",
+    "refining|reconstructed|17": "08-message-detail",
+    "refining|reconstructed|18": "08-message-detail",
+    "refining|reconstructed|19": "08-message-detail",
+    "refining|reconstructed|20": "08-message-detail",
+    "refining|reconstructed|21": "08-message-detail",
+    "refining|reconstructed|22": "08-message-detail",
+    "refining|reconstructed|23": "08-message-detail",
+    "refining|reconstructed|24": "08-message-detail",
+    "refining|reconstructed|25": "08-message-detail",
+    "refining|reconstructed|26": "08-message-detail",
+    "refining|reconstructed|27": "08-message-detail",
+    "refining|reconstructed|28": "08-message-detail",
+    "refining|reconstructed|29": "08-message-detail",
+    "refining|reconstructed|30": "08-message-detail",
+    "refining|reconstructed|31": "08-message-detail",
+    "refining|reconstructed|32": "09-lineage",
+    "refining|reconstructed|33": "09-lineage",
+    "refining|reconstructed|34": "09-lineage",
+    "refining|reconstructed|35": "09-lineage",
+    "storyMapping|reconstructed|3": "11-stories",
+    "storyMapping|reconstructed|0": "11-stories",
+    "storyMapping|reconstructed|1": "11-stories",
+    "storyMapping|reconstructed|2": "11-stories",
+    "refining|reconstructed|36": "12-use-cases",
+    "refining|reconstructed|37": "12-use-cases",
+    "refining|reconstructed|38": "12-use-cases",
+    "refining|reconstructed|39": "12-use-cases",
+    "refining|reconstructed|40": "13-read-models",
+    "refining|reconstructed|41": "13-read-models",
+    "refining|reconstructed|42": "13-read-models",
+    "refining|reconstructed|43": "13-read-models",
+    "refining|reconstructed|44": "13-read-models"
+  }
+}

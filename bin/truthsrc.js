@@ -16,11 +16,11 @@ const [cmd] = process.argv.slice(2);
 const TREE = arg('--tree', resolve('tree'));
 const OUT = arg('--out', resolve('canonical.json'));
 
-const USAGE = `truthsrc v0.4 — git-native Event Storming truth source
+const USAGE = `truthsrc v0.5 — git-native Event Storming truth source
 
   truthsrc compile   --tree <dir> [--out canonical.json]   tree → canonical projection
   truthsrc decompose --canonical <file> --tree <dir>       canonical → tree atoms
-  truthsrc validate  [--tree <dir>]                        V* structure + ES/CS/AG/RF/SM stage rules
+  truthsrc validate  [--tree <dir>]                        V* structure + R* relations + ES/CS/AG/RF/SM stage rules
   truthsrc roundtrip [--tree <dir>]                        compile∘decompose∘compile identity gate
   truthsrc init      <dir>                                 scaffold a minimal workshop tree
   truthsrc generate  --in <canonical> --generator <dir> --out <dir> [--option k=v]
