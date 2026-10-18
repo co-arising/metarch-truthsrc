@@ -1,0 +1,18 @@
+{
+  "package": "goldens.monarchdsl",
+  "objectName": "BatchRun",
+  "stageType": "BatchStage",
+  "stateType": "BatchState",
+  "stateFields": [
+    {"name": "processed", "type": "Int"},
+    {"name": "failed", "type": "Int"}
+  ],
+  "stageLogic": {
+    "file-gen": "state.copy(processed = state.processed + 100)",
+    "upload": "state",
+    "wait-ack": "state",
+    "poll": "state",
+    "parse": "state",
+    "classify": "state"
+  }
+}
