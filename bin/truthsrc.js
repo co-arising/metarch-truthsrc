@@ -30,6 +30,9 @@ const USAGE = `truthsrc v0.5 — git-native Event Storming truth source
                                                            concern scope selects are rewritten (engine: core;
                                                            presets: project-level registry, default ./concerns.json)
   truthsrc init-generator <dir>                            scaffold a custom generator
+  truthsrc mcp                                         MCP stdio server: query verbs as tools
+                                                       (stdio JSON-RPC; configure your MCP client with
+                                                       "command": "truthsrc", "args": ["mcp"])
 `;
 
 const die = (msg) => { console.error(msg); process.exit(2); };
@@ -127,6 +130,11 @@ switch (cmd) {
     writeFileSync(join(root, 'generator.json'),
       readFileSync(join(root, 'generator.json'), 'utf8').replace('"name": "_template"', `"name": "${root.split('/').pop()}"`));
     console.log(`✅ generator scaffolded at ${root} — edit generate.mjs, then: truthsrc generate --generator ${root} --in <canonical> --out <dir>`);
+    break;
+  }
+  case 'mcp': {
+    const { runMcpServer } = await import('../mcp/server.mjs');
+    runMcpServer();
     break;
   }
   default:
