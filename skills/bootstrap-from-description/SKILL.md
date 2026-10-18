@@ -64,20 +64,38 @@ Worked examples:
   - 用什么解决方案：把每次构建的结果记下来，按提交查
   - 做了什么流程：发布流程 · 运营与治理阶段
 
-## 3. Draft all 13 products — with honesty labels
+## 3. Draft all 13 products — in workshop order, with honesty labels
 
-Walk the 13 products in order. For each element, label its basis:
+The 13 products follow the classic EventStorming arc (Brandolini): diverge
+(events on a timeline) → enrich (commands, actors, policies, read models) →
+converge (aggregates, bounded contexts). Our 13 extend the classic flow with
+lineage, stories, use-cases and first-class read models. Walk them in order;
+for each element, label its basis:
 
-- ✅ **可独立起草** (01 事件流、02 命令、03 聚合、06 聚合细化、08 消息字段、13 读模型):
-  draft from domain knowledge, `confidence: high`, but every field still
-  needs the steward's eye.
-- ⚠️ **起草+必审** (05 上下文映射、07 聚合间关系、09 血缘、10 策略、12 用例):
-  draft the structure, leave intent blank, `confidence: low`. Business
-  meaning, cardinalities, policy intent — the human fills these.
-- ❌ **只列提纲不填内容** (04 子域划分、11 用户故事):
-  write the slot with `confidence: low` and a `[NEEDS CALL]` note. Subdomain
-  boundaries and user stories are human judgments; your draft is a seating
-  chart, not a decision.
+| # | Product | Classic phase | Honesty |
+|---|---|---|---|
+| 01 | event-flow | chaotic exploration + timeline | ✅ 可独立起草 |
+| 02 | commands | commands + actors | ✅ 可独立起草 |
+| 03 | aggregates | aggregates (clustering) | ✅ 可独立起草 |
+| 04 | subdomains | bounded contexts, first cut | ❌ 只列提纲 |
+| 05 | context-map | context mapping | ⚠️ 起草+必审 |
+| 06 | aggregate-detail | aggregates, refined | ✅ 可独立起草 |
+| 07 | aggregate-relations | aggregates, refined | ⚠️ 起草+必审 |
+| 08 | message-detail | events/commands, refined | ✅ 可独立起草 |
+| 09 | lineage | — (our extension) | ⚠️ 起草+必审 |
+| 10 | policies | policies (lilac stickies) | ⚠️ 起草+必审 |
+| 11 | stories | — (our extension) | ❌ 只列提纲 |
+| 12 | use-cases | — (our extension) | ⚠️ 起草+必审 |
+| 13 | read-models | read models (green stickies) | ✅ 可独立起草 |
+
+- ✅ **可独立起草**: draft from domain knowledge, `confidence: high`, but
+  every field still needs the steward's eye.
+- ⚠️ **起草+必审**: draft the structure, leave intent blank,
+  `confidence: low`. Business meaning, cardinalities, policy intent — the
+  human fills these.
+- ❌ **只列提纲不填内容**: write the slot with `confidence: low` and a
+  `[NEEDS CALL]` note. Subdomain boundaries and user stories are human
+  judgments; your draft is a seating chart, not a decision.
 
 ## 4. Language gate — the problem-space check
 
