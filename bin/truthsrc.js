@@ -16,7 +16,7 @@ const [cmd] = process.argv.slice(2);
 const TREE = arg('--tree', resolve('tree'));
 const OUT = arg('--out', resolve('canonical.json'));
 
-const USAGE = `truthsrc v0.3 — git-native Event Storming truth source
+const USAGE = `truthsrc v0.4 — git-native Event Storming truth source
 
   truthsrc compile   --tree <dir> [--out canonical.json]   tree → canonical projection
   truthsrc decompose --canonical <file> --tree <dir>       canonical → tree atoms
