@@ -1,0 +1,44 @@
+{
+  "package": "goldens.sagadsl",
+  "objectName": "TransferSaga",
+  "version": 1,
+  "participantRef": "ledger",
+  "protocolType": "LedgerCommand",
+  "argsFields": [
+    {
+      "name": "fromAccount",
+      "type": "String"
+    },
+    {
+      "name": "toAccount",
+      "type": "String"
+    },
+    {
+      "name": "amount",
+      "type": "Long"
+    }
+  ],
+  "mapReply": "mapLedger",
+  "preCheck": "args.amount > 0",
+  "preCheckError": "\"amount must be positive\"",
+  "errorCode": "TRANSFER_REJECTED",
+  "prelude": "// \u2500\u2500 protocol (from event/command generators; shown here verbatim) \u2500\u2500\nsealed trait LedgerCommand\nfinal case class Reserve(from: String, to: String, amount: Long, txId: String, replyTo: ActorRef[LedgerReply])\n    extends LedgerCommand\nfinal case class Settle(txId: String, replyTo: ActorRef[LedgerReply]) extends LedgerCommand\nfinal case class Release(txId: String, replyTo: ActorRef[LedgerReply]) extends LedgerCommand\nfinal case class LedgerReply(ok: Boolean, error: Option[String])",
+  "helpers": "  private def mapLedger(r: LedgerReply): Either[String, SagaResult[String]] =\n    r.error.map(Left(_)).getOrElse(Right(SagaResult(\"ok\")))",
+  "commandArgs": {
+    "Reserve": [
+      "args.fromAccount",
+      "args.toAccount",
+      "args.amount",
+      "txId",
+      "replyTo"
+    ],
+    "Settle": [
+      "txId",
+      "replyTo"
+    ],
+    "Release": [
+      "txId",
+      "replyTo"
+    ]
+  }
+}

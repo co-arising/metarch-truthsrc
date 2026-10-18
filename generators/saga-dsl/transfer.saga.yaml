@@ -1,0 +1,24 @@
+kind: saga
+id: transfer
+name: "Transfer Saga"
+name_zh: "转账 Saga"
+description: "TCC transfer: reserve funds, then settle or release."
+args_type: TransferArgs
+error_type: String
+context_type: TransferContext
+steps:
+  - id: reserve
+    name: "Reserve funds"
+    participant_ref: ledger
+    resilience:
+      max_retries: 3
+    phases:
+      prepare:
+        command: Reserve
+        reply_type: LedgerReply
+      commit:
+        command: Settle
+        reply_type: LedgerReply
+      compensate:
+        command: Release
+        reply_type: LedgerReply
