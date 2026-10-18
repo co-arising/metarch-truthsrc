@@ -1,8 +1,10 @@
 package goldens.sagadsl
 
-import akka.actor.typed.{ActorRef, RecipientRef}
+import akka.actor.typed.{ActorRef, RecipientRef, Scheduler}
 import net.imadz.infra.saga.SagaParticipant.SagaResult
 import net.imadz.infra.saga.dsl._
+
+import scala.concurrent.ExecutionContext
 
 /** Golden sample: transfer saga on the saga-core 0.2 DSL.
  *
@@ -43,7 +45,11 @@ object TransferSaga {
   private def mapLedger(r: LedgerReply): Either[String, SagaResult[String]] =
     r.error.map(Left(_)).getOrElse(Right(SagaResult("ok")))
 
-  val definition: SagaDefinition[String, TransferContext, TransferArgs] =
+  /** Built where an ActorSystem is in scope (it provides both implicits). */
+  def definition(implicit
+      ec: ExecutionContext,
+      scheduler: Scheduler
+  ): SagaDefinition[String, TransferContext, TransferArgs] =
     SagaDefinition[String, TransferContext, TransferArgs](
       name = "transfer",
       version = 1,
@@ -76,5 +82,6 @@ object TransferSaga {
     )
 
   /** Call once at node startup, before cluster sharding recovers entities. */
-  def register(): Unit = SagaRegistry.register(definition)
+  def register()(implicit ec: ExecutionContext, scheduler: Scheduler): Unit =
+    SagaRegistry.register(definition)
 }
