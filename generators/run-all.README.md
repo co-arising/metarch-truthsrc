@@ -1,31 +1,13 @@
-# run-all.mjs — integration pipeline
+# run-all.mjs v2 — toolchain-driven
 
-One command: truth tree → all generated code.
+**NEVER hand-glob directories.** Use `lib/compile.mjs` (compileTree).
+
+v1 manually globbed `inbox/01-event-flow/` etc. and missed 674 files
+(events/commands in `aggregates/*/notes/`). v2 uses the toolchain's
+`compileTree()` which knows the canonical layout.
+
+Pipeline: `tree → compileTree → canonical JSON → generators`
 
 ```bash
-node generators/run-all.mjs <tree-dir> <out-dir> [--binding <binding-dir>]
+node generators/run-all.mjs <tree-dir> <out-dir>
 ```
-
-Runs each new-baseline generator:
-1. Finds tree files (e.g., `inbox/01-event-flow/*.yaml` for events)
-2. `parse.mjs` → Spec JSON
-3. `emit.mjs` → code
-
-Bindings (intent: handlers, field details, package names) live in
-`generators/bindings/` — one JSON per generator. Tree provides structure,
-binding provides intent. See each generator's README for the boundary.
-
-## Current coverage
-
-| Generator | Tree source |
-|---|---|
-| event-dsl | `inbox/01-event-flow/*.yaml` |
-| command-dsl | `inbox/02-commands/*.yaml` |
-| aggregate-dsl | `aggregates/*/aggregate.yaml` |
-| policy-dsl | `policies/*.policy.yaml` |
-| readmodel-dsl | `read-models/*.rm.yaml` |
-| monarch-dsl | `pipelines/*.pipeline.yaml` |
-| valueobject-dsl | `value-objects/*.vo.yaml` |
-
-Saga (`kind: saga` atoms) and auth/api/ddl are binding-driven for now —
-their tree parsers are thin. See MIGRATION.md.

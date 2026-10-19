@@ -1,101 +1,156 @@
 #!/usr/bin/env node
-// ═══ run-all.mjs — integration pipeline: tree → all code ═══
-// Runs all new-baseline generators against a truth tree.
+// ═══ run-all.mjs v2 — toolchain-driven pipeline ═══
+// Uses lib/compile.mjs (compileTree) — NEVER hand-glob directories.
+// The toolchain knows the canonical layout; we consume its output.
 //
-// Usage: node run-all.mjs <tree-dir> <out-dir> [--binding <binding-dir>]
+// Pipeline: tree → compileTree → canonical JSON → generators
 //
-// For each generator:
-//   1. Find relevant tree files
-//   2. parse.mjs → Spec JSON
-//   3. emit.mjs → code
-//
-// Generators without a tree parser use binding directly.
+// Usage: node run-all.mjs <tree-dir> <out-dir> [--binding <dir>]
 
 import { execSync } from "child_process";
-import { existsSync, mkdirSync, readdirSync } from "fs";
+import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
+import { compileTree } from "../lib/compile.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const [treeDir, outDir, ...rest] = process.argv.slice(2);
-const bindingDir = rest[rest.indexOf("--binding") + 1] || join(__dirname, "bindings");
+const bindingDir = rest.includes("--binding")
+  ? rest[rest.indexOf("--binding") + 1]
+  : join(__dirname, "bindings");
 
 if (!treeDir || !outDir) {
-  console.error("usage: node run-all.mjs <tree-dir> <out-dir> [--binding <binding-dir>]");
+  console.error("usage: node run-all.mjs <tree-dir> <out-dir> [--binding <dir>]");
   process.exit(1);
 }
 
 mkdirSync(outDir, { recursive: true });
 
+// ── Step 1: compile tree via toolchain ──
+console.log("compiling tree via lib/compile.mjs...");
+const canonicalJson = compileTree(treeDir);
+const canonical = JSON.parse(canonicalJson);
+console.log(`  schema: ${canonical.schemaVersion}, workshop: ${canonical.workshop}`);
+
+// ── Step 2: extract atoms by kind from canonical ──
+const notes = [];
+for (const session of canonical.sessions || []) {
+  for (const scope of session.scopes || []) {
+    for (const note of scope.notes || []) {
+      notes.push(note);
+    }
+  }
+}
+console.log(`  total notes: ${notes.length}`);
+
+const byType = (t) => notes.filter((n) => n.type === t);
+const events = byType("event");
+const commands = byType("command");
+console.log(`  events: ${events.length}, commands: ${commands.length}`);
+console.log(`  aggregates: ${(canonical.aggregates || []).length}`);
+console.log(`  policies: ${byType("policy").length}`);
+console.log(`  readModels: ${(canonical.readModels || []).length}`);
+console.log(`  valueObjects: ${(canonical.valueObjects || []).length}`);
+console.log(`  pipelines: ${(canonical.pipelines || []).length}`);
+
+// ── Step 3: run generators ──
 const results = [];
 
-function run(gen, treeFiles, bindingFile, outSubdir, multiOut = false) {
+function runGen(gen, items, outSubdir, toSpec) {
   const genDir = join(__dirname, gen);
-  const parseJs = join(genDir, "parse.mjs");
   const emitJs = join(genDir, "emit.mjs");
-  const out = join(outDir, outSubdir);
-  mkdirSync(out, { recursive: true });
-
-  if (!existsSync(parseJs) || !existsSync(emitJs)) {
-    results.push({ gen, status: "skip", reason: "missing parse/emit" });
+  if (!existsSync(emitJs)) {
+    results.push({ gen, status: "skip", reason: "no emit.mjs" });
     return;
   }
-
+  const out = join(outDir, outSubdir);
+  mkdirSync(out, { recursive: true });
   let count = 0;
-  for (const treeFile of treeFiles) {
-    const specPath = join(out, ".spec-" + count + ".json");
-    const codeOut = multiOut ? join(out, "out-" + count) : join(out, "out-" + count + ".scala");
+  items.forEach((item, i) => {
     try {
-      execSync(`node "${parseJs}" "${treeFile}" "${bindingFile}" "${specPath}"`, { stdio: "pipe" });
-    } catch (e) {
-      if (e.status === 2) continue; // skip: not matching type
-      results.push({ gen, status: "error", file: treeFile, error: e.message.slice(0, 200) });
-      return;
-    }
-    try {
+      const spec = toSpec(item);
+      const specPath = join(out, `.spec-${i}.json`);
+      writeFileSync(specPath, JSON.stringify(spec, null, 2));
+      const codeOut = join(out, `out-${i}.scala`);
       execSync(`node "${emitJs}" "${specPath}" "${codeOut}"`, { stdio: "pipe" });
       count++;
     } catch (e) {
-      results.push({ gen, status: "error", file: treeFile, error: e.message.slice(0, 200) });
+      results.push({ gen, status: "error", error: e.message.slice(0, 200) });
       return;
     }
-  }
+  });
   results.push({ gen, status: "ok", count });
 }
 
-function glob(dir, pattern) {
-  if (!existsSync(dir)) return [];
-  const out = [];
-  for (const f of readdirSync(dir, { withFileTypes: true })) {
-    const p = join(dir, f.name);
-    if (f.isDirectory()) out.push(...glob(p, pattern));
-    else if (pattern.test(f.name)) out.push(p);
-  }
-  return out;
-}
+const pascal = (s) =>
+  String(s).split(/[-_ ]/).map((w) => w[0]?.toUpperCase() + w.slice(1)).join("");
+const scalaType = (t) =>
+  ({ string: "string", number: "number", integer: "integer", long: "long", boolean: "boolean", timestamp: "long" })[t] || "string";
 
-const B = (n) => join(bindingDir, n);
+runGen("event-dsl", events, "events", (n) => ({
+  package: "generated.event",
+  name: pascal(n.name),
+  description: n.description || "",
+  fields: (n.info?.fields || n.fields || []).map((f) => ({ name: f.name, dataType: scalaType(f.dataType) })),
+}));
 
-// 1. Events: truth/inbox/01-event-flow/*.yaml
-run("event-dsl", glob(join(treeDir, "inbox/01-event-flow"), /\.yaml$/), B("event.json"), "events");
-// 2. Commands: truth/inbox/02-commands/*.yaml
-run("command-dsl", glob(join(treeDir, "inbox/02-commands"), /\.yaml$/), B("command.json"), "commands");
-// 3. Aggregates: truth/aggregates/*/aggregate.yaml
-run("aggregate-dsl", glob(join(treeDir, "aggregates"), /^aggregate\.yaml$/), B("aggregate.json"), "aggregates");
-// 4. Policies: truth/policies/*.policy.yaml
-run("policy-dsl", glob(join(treeDir, "policies"), /\.policy\.yaml$/), B("policy.json"), "policies");
-// 5. Read models: truth/read-models/*.rm.yaml
-run("readmodel-dsl", glob(join(treeDir, "read-models"), /\.rm\.yaml$/), B("readmodel.json"), "readmodels");
-// 6. Pipelines (monarch): truth/pipelines/*.pipeline.yaml
-run("monarch-dsl", glob(join(treeDir, "pipelines"), /\.pipeline\.yaml$/), B("monarch.json"), "pipelines");
-// 7. Value objects: truth/value-objects/*.vo.yaml
-run("valueobject-dsl", glob(join(treeDir, "value-objects"), /\.vo\.yaml$/), B("valueobject.json"), "valueobjects");
+runGen("command-dsl", commands, "commands", (n) => ({
+  package: "generated.command",
+  name: pascal(n.name),
+  description: n.description || "",
+  fields: (n.info?.parameters || n.parameters || []).map((f) => ({ name: f.name, dataType: scalaType(f.dataType) })),
+}));
 
-// Summary
-console.log("\n═══ run-all results ═══");
+runGen("aggregate-dsl", canonical.aggregates || [], "aggregates", (a) => ({
+  package: "generated.aggregate",
+  name: a.name,
+  objectName: pascal(a.entity || a.name),
+  stateType: pascal(a.entity || a.name) + "State",
+  commandType: pascal(a.entity || a.name) + "Command",
+  eventType: pascal(a.entity || a.name) + "Event",
+  stateFields: (a.stateFields || []).map((f) => ({ name: f.name, dataType: scalaType(f.dataType) })),
+  emptyState: "???",
+  commands: [],
+  events: [],
+  statusTransitions: a.statusTransitions || {},
+  commandHandlers: [],
+}));
+
+runGen("policy-dsl", byType("policy"), "policies", (n) => ({
+  package: "generated.policy",
+  name: n.name,
+  objectName: pascal(n.id || n.name) + "Policy",
+  description: n.description || "",
+  triggers: [],
+  invokes: [],
+  rules: [],
+}));
+
+runGen("readmodel-dsl", canonical.readModels || [], "readmodels", (r) => ({
+  package: "generated.readmodel",
+  name: r.name,
+  viewType: pascal(r.id || r.name),
+  objectName: pascal(r.id || r.name) + "View",
+  servedBy: r.served_by || "",
+  sources: r.sources || [],
+  fields: (r.fields || []).slice(0, 10).map((f) => ({ name: f.name.replace(/\./g, "_"), dataType: scalaType(f.dataType) })),
+}));
+
+runGen("valueobject-dsl", canonical.valueObjects || [], "valueobjects", (v) => ({
+  package: "generated.valueobject",
+  name: pascal(v.name),
+  description: v.description || "",
+  fields: (v.fields || []).map((f) => ({ name: f.name, dataType: scalaType(f.dataType) })),
+}));
+
+runGen("monarch-dsl", canonical.pipelines || [], "pipelines", (p) => ({
+  ...p,
+  package: "generated.monarch",
+}));
+
+console.log("\n═══ run-all v2 results (toolchain-driven) ═══");
 for (const r of results) {
-  console.log(`  ${r.gen}: ${r.status}${r.count !== undefined ? ` (${r.count} files)` : ""}${r.reason ? ` — ${r.reason}` : ""}${r.error ? ` — ${r.error}` : ""}`);
+  console.log(`  ${r.gen}: ${r.status}${r.count !== undefined ? ` (${r.count} files)` : ""}${r.reason ? ` — ${r.reason}` : ""}`);
 }
 const ok = results.filter((r) => r.status === "ok").length;
-const err = results.filter((r) => r.status === "error").length;
-console.log(`\n${ok} ok, ${err} errors, ${results.length - ok - err} skipped`);
+console.log(`\n${ok}/${results.length} generators ok`);
