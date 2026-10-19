@@ -113,6 +113,33 @@ try {
 mkdirSync(outDir, { recursive: true });
 
 writeFileSync(join(outDir, `${containerName}.scala`), out);
+
+// ── params/<Aggregate>RuleParams.scala ──
+// Per-command parameter case classes, referenced as <Cmd>Params by rule objects.
+const scalaTypeOf = (t) =>
+  ({ string: "String", number: "BigDecimal", integer: "Int", long: "Long", boolean: "Boolean", timestamp: "Long" })[t] ?? "String";
+const paramObjects = rules
+  .map((r) => {
+    const cmdBase = r.commandName || r.name || "Command";
+    const cmdName = pascal(String(cmdBase).replace(/Rule$/, ""));
+    const pfields = (r.fields || []).map((f) => `${f.name}: ${scalaTypeOf(f.dataType)}`).join(", ");
+    return `  case class ${cmdName}Params(${pfields})`;
+  })
+  .join("\n");
+
+if (paramObjects) {
+  const paramsDir = join(outDir, "params");
+  mkdirSync(paramsDir, { recursive: true });
+  const paramsOut = `package ${pkg}.params
+
+object ${containerName}Params {
+${paramObjects}
+}
+`;
+  writeFileSync(join(paramsDir, `${aggName}RuleParams.scala`), paramsOut);
+  console.log(`invariant-dsl: wrote params/${aggName}RuleParams.scala`);
+}
+
 console.log(`invariant-dsl: wrote ${containerName}.scala`);
 
 // placeholder for run-all single-file contract

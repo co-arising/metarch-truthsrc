@@ -70,6 +70,13 @@ ${initCalls}
 }
 `;
 
-writeFileSync(join(outDir, `${traitName}.scala`), trait);
-writeFileSync(join(outDir, `ApplicationBootstrap.scala`), app);
-console.log(`emitted ${traitName}.scala, ApplicationBootstrap.scala`);
+if (!spec.skipTrait) {
+  writeFileSync(join(outDir, `${traitName}.scala`), trait);
+}
+// ApplicationBootstrap is written once by run-all with the full list;
+// per-aggregate calls pass skipApp: true. A final call with appOnly: true
+// (name "Application") writes just the wiring class.
+if (!spec.skipApp) {
+  writeFileSync(join(outDir, `ApplicationBootstrap.scala`), app);
+}
+console.log(`emitted${spec.skipTrait ? "" : ` ${traitName}.scala`}${spec.skipApp ? "" : ", ApplicationBootstrap.scala"}`);

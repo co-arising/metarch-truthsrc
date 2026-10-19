@@ -12,7 +12,20 @@ const [specPath, outDir] = process.argv.slice(2);
 const spec = JSON.parse(readFileSync(specPath, "utf8"));
 mkdirSync(outDir, { recursive: true });
 
+// DDD layering (ingested-app 1:1):
+//   trait → spec.traitPackage (e.g. net.imadz.metarch.application.aggregates.repository)
+//   impl  → spec.implPackage  (e.g. net.imadz.metarch.infrastructure.repositories.aggregate)
+// When spec.projectRoot is set, files are written under
+//   <projectRoot>/<package path>/ ; otherwise both land in outDir (legacy).
 const pkg = spec.package || "net.imadz.infrastructure.repositories";
+const traitPkg = spec.traitPackage || `${pkg}.aggregate`;
+const implPkg = spec.implPackage || `${pkg}.aggregate`;
+const dirFor = (p) =>
+  spec.projectRoot ? join(spec.projectRoot, ...p.split(".")) : outDir;
+const traitDir = dirFor(traitPkg);
+const implDir = dirFor(implPkg);
+mkdirSync(traitDir, { recursive: true });
+mkdirSync(implDir, { recursive: true });
 const name = spec.name; // e.g. "CreditBalance"
 const kind = spec.kind || "aggregate"; // "aggregate" | "projection"
 
@@ -22,7 +35,7 @@ function emitAggregate() {
   const cmdFamily = `${name}CommandFamily`;
   const command = `${name}Command`;
 
-  const iface = `package ${pkg}.aggregate
+  const iface = `package ${traitPkg}
 
 import akka.cluster.sharding.typed.scaladsl.EntityRef
 import ${spec.aggregatePackage || "net.imadz.application.aggregates"}.${command}
@@ -42,7 +55,7 @@ ${(spec.methods || []).map(m =>
 }
 `;
 
-  const impl = `package ${pkg}.aggregate
+  const impl = `package ${implPkg}
 
 import akka.cluster.sharding.typed.scaladsl.ClusterSharding
 import akka.cluster.sharding.typed.scaladsl.EntityRef
@@ -51,7 +64,7 @@ import javax.inject.Singleton
 import ${spec.aggregatePackage || "net.imadz.application.aggregates"}.${name}Aggregate
 import ${spec.aggregatePackage || "net.imadz.application.aggregates"}.${command}
 import ${spec.aggregatePackage || "net.imadz.application.aggregates"}.${name}Protocol.${cmdFamily}
-import ${spec.repositoryPackage || "net.imadz.application.aggregates.repository"}.${ifaceName}
+import ${traitPkg}.${ifaceName}
 import net.imadz.common.CommonTypes.Id
 
 /**
@@ -71,8 +84,8 @@ ${(spec.methods || []).map(m =>
 }
 `;
 
-  writeFileSync(join(outDir, `${ifaceName}.scala`), iface);
-  writeFileSync(join(outDir, `${implName}.scala`), impl);
+  writeFileSync(join(traitDir, `${ifaceName}.scala`), iface);
+  writeFileSync(join(implDir, `${implName}.scala`), impl);
   console.log(`emitted ${ifaceName}.scala, ${implName}.scala`);
 }
 
