@@ -88,13 +88,18 @@ object ${objName}Aggregate {
   def commandHandler: ${pkg}.${objName}CommandHandler = ${objName}Behaviors.apply
 
   val entityTypeKey: EntityTypeKey[${commandTrait}] = EntityTypeKey("${objName}")
-  val tags: Vector[String] = Vector.tabulate(5)(i => s"${kebab}-$$i")
+  val tags: Vector[String] = Vector.tabulate(5)(i => s"${kebab}-$i")
 
 }
 `;
 
 // ── 3. Behaviors ──
 const commandImports = commands.map((c) => `import ${pkg}.${c.name}`).join("\n");
+// Rule imports for handled commands (from invariant-dsl)
+const ruleImports = commands
+  .filter((c) => handled.has(c.name))
+  .map((c) => `import ${pkg}.invariant.${c.name}RuleRule`)
+  .join("\n");
 
 const behaviorCases = commands
   .map((c) => {
@@ -126,6 +131,7 @@ import ${pkg}.${confirmation}
 import ${pkg}.${objName}Protocol
 import ${pkg}.${objName}Protocol._
 ${commandImports}
+${ruleImports}
 import net.imadz.common.application.CommandHandlerReplyingBehavior.runReplyingPolicy
 import scala.concurrent.duration._
 
