@@ -1,11 +1,30 @@
 #!/usr/bin/env node
+// === proto-dsl emitter — 1:1 restoration of old codegen ===
+// Generates: .proto file for protobuf
+// Usage: node emit.mjs <spec.json> <out.proto>
+
 import { readFileSync, writeFileSync } from "fs";
-const [s, o] = process.argv.slice(2);
-const spec = JSON.parse(readFileSync(s, "utf8"));
-const protoType = (t) => ({string:"string",number:"double",integer:"int32",long:"int64",boolean:"bool"})[t] || "string";
-const messages = (spec.messages || []).map((m, mi) => {
-  const fields = (m.fields || []).map((f, i) => "  " + protoType(f.dataType) + " " + f.name + " = " + (i+1) + ";").join("\n");
-  return "message " + m.name + " {\n" + fields + "\n}";
+
+const [specPath, outPath] = process.argv.slice(2);
+const spec = JSON.parse(readFileSync(specPath, "utf8"));
+
+const packageName = spec.protoPackage || "net.imadz.infrastructure.proto";
+
+const messages = (spec.messages || []).map(m => {
+  const fields = (m.fields || []).map((f, i) =>
+    `  ${f.type} ${f.name} = ${i + 1};`
+  ).join("\n");
+  return `message ${m.name} {
+${fields}
+}`;
 }).join("\n\n");
-const out = 'syntax = "proto3";\n\npackage ' + spec.package + ';\n\n' + messages + "\n";
-writeFileSync(o, out); console.log("emitted " + o);
+
+const out = `syntax = "proto3";
+
+package ${packageName};
+
+${messages}
+`;
+
+writeFileSync(outPath, out);
+console.log(`emitted ${outPath}`);

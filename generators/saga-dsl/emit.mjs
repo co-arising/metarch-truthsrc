@@ -97,3 +97,7 @@ ${spec.steps.map(emitStep).join(",\n")}
 
 writeFileSync(outPath, out);
 console.log(`emitted ${outPath} (${out.split("\n").length} lines)`);
+
+
+// === SagaTrigger models (1:1 restoration) ===
+// When spec.trigger is present, also generate Trigger Protocol/Behaviors
