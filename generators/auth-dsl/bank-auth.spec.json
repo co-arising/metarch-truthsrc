@@ -1,0 +1,9 @@
+{
+  "package": "goldens.authdsl",
+  "name": "Bank Auth Policy",
+  "objectName": "BankAuthPolicy",
+  "endpoints": [
+    {"method": "GET", "path": "/api/batches", "roles": ["User"]},
+    {"method": "POST", "path": "/api/batches", "roles": ["SystemOperator"]}
+  ]
+}
