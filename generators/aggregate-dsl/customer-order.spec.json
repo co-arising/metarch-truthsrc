@@ -1,0 +1,31 @@
+{
+  "package": "goldens.aggregatedsl",
+  "name": "Customer Order",
+  "objectName": "CustomerOrder",
+  "stateType": "OrderState",
+  "commandType": "OrderCommand",
+  "eventType": "OrderEvent",
+  "stateFields": [
+    {"name": "chain", "dataType": "string"},
+    {"name": "customerId", "dataType": "string"},
+    {"name": "terminalState", "dataType": "string"},
+    {"name": "amount", "dataType": "number"}
+  ],
+  "emptyState": "OrderState(\"\", \"\", \"\", BigDecimal(0))",
+  "commands": [
+    {"name": "SettleRecharge", "fields": [{"name": "customerId", "dataType": "string"}, {"name": "amount", "dataType": "number"}]},
+    {"name": "AbandonOrder", "fields": [{"name": "customerId", "dataType": "string"}]}
+  ],
+  "events": [
+    {"name": "OrderCredited", "fields": [{"name": "customerId", "dataType": "string"}, {"name": "amount", "dataType": "number"}]},
+    {"name": "OrderRejected", "fields": [{"name": "customerId", "dataType": "string"}]}
+  ],
+  "statusTransitions": {
+    "OrderCredited": "credited",
+    "OrderRejected": "rejected"
+  },
+  "commandHandlers": [
+    {"command": "SettleRecharge", "logic": "Effect.persist(OrderCredited(cmd.customerId, cmd.amount))"},
+    {"command": "AbandonOrder", "logic": "Effect.persist(OrderRejected(cmd.customerId))"}
+  ]
+}

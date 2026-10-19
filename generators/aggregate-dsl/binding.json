@@ -1,0 +1,16 @@
+{
+  "package": "goldens.aggregatedsl",
+  "emptyState": "CustomerOrderState(\"\", \"\", \"\", BigDecimal(0))",
+  "commandFields": {
+    "settle-recharge": [{"name": "customerId", "dataType": "string"}, {"name": "amount", "dataType": "number"}],
+    "abandon-order": [{"name": "customerId", "dataType": "string"}]
+  },
+  "eventFields": {
+    "order-credited": [{"name": "customerId", "dataType": "string"}, {"name": "amount", "dataType": "number"}],
+    "order-rejected": [{"name": "customerId", "dataType": "string"}]
+  },
+  "commandHandlers": [
+    {"command": "SettleRecharge", "logic": "Effect.persist(OrderCredited(cmd.customerId, cmd.amount))"},
+    {"command": "AbandonOrder", "logic": "Effect.persist(OrderRejected(cmd.customerId))"}
+  ]
+}
