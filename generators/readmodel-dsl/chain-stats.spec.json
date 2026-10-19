@@ -1,0 +1,12 @@
+{
+  "package": "goldens.readmodeldsl",
+  "name": "Chain Statistics",
+  "viewType": "ChainStatistics",
+  "objectName": "ChainStatisticsView",
+  "servedBy": "GET /api/bank-batch/state",
+  "sources": ["Customer Order", "Batch Chain Run"],
+  "fields": [
+    {"name": "chain", "dataType": "string"},
+    {"name": "total", "dataType": "integer"}
+  ]
+}
