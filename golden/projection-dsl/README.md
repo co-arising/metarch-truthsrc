@@ -1,1 +1,0 @@
-# golden: projection-dsl
