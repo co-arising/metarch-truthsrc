@@ -1,0 +1,13 @@
+{
+  "package": "generated.policy",
+  "name": "概念确立后检测冲突",
+  "objectName": "概念确立后检测冲突Policy",
+  "description": "whenever ConceptEstablished then DetectConceptConflict（S203 E→E 直连正解·冲突检测为系统自动语义）",
+  "triggers": [
+    "ConceptEstablished"
+  ],
+  "invokes": [
+    "DetectConceptConflict"
+  ],
+  "rules": []
+}

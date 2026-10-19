@@ -1,0 +1,492 @@
+{
+  "package": "generated.aggregate",
+  "name": "DoR",
+  "objectName": "DoREntity",
+  "stateType": "DoREntityState",
+  "commandType": "DoREntityCommand",
+  "eventType": "DoREntityEvent",
+  "stateFields": [
+    {
+      "name": "tenantId",
+      "dataType": "String (UUID)",
+      "description": "所属租户",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "DoRFindingsSubmitted.tenantId",
+        "DoRPassed.tenantId",
+        "DoRReopened.tenantId",
+        "DoRRequested.tenantId",
+        "DoRVerdictFixed.tenantId",
+        "DoRVerdictSubmitted.tenantId"
+      ],
+      "role": "State",
+      "noteId": "dca41953-0429-4d0e-b0c4-75cf0c5c41ce",
+      "codeFqn": "net.imadz.metarch.domain.entities.DoREntity.DoRState.tenantId",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "status",
+      "dataType": "String",
+      "description": "REQUESTED / IN_PROGRESS / BLOCKED / CONCLUDED / REOPENED",
+      "origin": "",
+      "writtenBy": [
+        "DoRFindingsSubmitted",
+        "DoRPassed",
+        "DoRReopened",
+        "DoRRequested",
+        "DoRVerdictSubmitted"
+      ],
+      "role": "State",
+      "noteId": "ff8ab1b7-eb82-4777-bdfd-3051232cd8d1",
+      "codeFqn": "net.imadz.metarch.domain.entities.DoREntity.DoRState.status",
+      "codeFqnCount": 4,
+      "businessDef": "REQUESTED / IN_PROGRESS / BLOCKED / CONCLUDED / REOPENED"
+    },
+    {
+      "name": "projectId",
+      "dataType": "String (UUID)",
+      "description": "本次评审针对的专项",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "DoRRequested.projectId"
+      ],
+      "role": "State",
+      "noteId": "dc9d5fb7-6d77-4c04-b7ae-282dfceffa28",
+      "codeFqn": "net.imadz.metarch.domain.entities.DoREntity.DoRState.projectId",
+      "codeFqnCount": 4,
+      "businessDef": "本次评审针对的专项",
+      "uiLabel": "所属专项"
+    },
+    {
+      "name": "targetSessionIds",
+      "dataType": "List<String (UUID)>",
+      "description": "本次评审覆盖的 Session 列表",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "DoRRequested.targetSessionIds"
+      ],
+      "role": "State",
+      "noteId": "5c53b71c-066e-4273-9bf7-9920f61a6c94",
+      "codeFqn": "net.imadz.metarch.domain.entities.DoREntity.DoRState.targetSessionIds",
+      "codeFqnCount": 4,
+      "businessDef": "本次评审覆盖的 Session 列表",
+      "uiLabel": "目标场次列表",
+      "derivation": "RequestDoR.targetSessionIds -> DoRRequested.targetSessionIds -> State"
+    },
+    {
+      "name": "scopeSnapshot",
+      "dataType": "JSON",
+      "description": "评审时的 Board/Note/Question 快照",
+      "origin": "SYSTEM_GENERATED",
+      "role": "State",
+      "noteId": "b1d86ba6-f25e-46ff-86f1-ceec4a08d4fc",
+      "codeFqn": "net.imadz.metarch.domain.entities.DoREntity.DoRState.scopeSnapshot",
+      "codeFqnCount": 4,
+      "businessDef": "评审时的 Board/Note/Question 快照",
+      "uiLabel": "范围快照"
+    },
+    {
+      "name": "knowledgeSnapshot",
+      "dataType": "JSON",
+      "description": "评审时的领域知识快照",
+      "origin": "SYSTEM_GENERATED",
+      "role": "State",
+      "noteId": "6aac61aa-97b7-4f6a-8046-a62f554960f1",
+      "codeFqn": "net.imadz.metarch.domain.entities.DoREntity.DoRState.knowledgeSnapshot",
+      "codeFqnCount": 4,
+      "businessDef": "评审时的领域知识快照",
+      "uiLabel": "知识快照"
+    },
+    {
+      "name": "verdicts",
+      "dataType": "List<DoRVerdict>",
+      "description": "所有标准的详细裁决明细集合",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "DoRVerdictSubmitted.verdict"
+      ],
+      "role": "State",
+      "noteId": "d44b7ab8-c384-4a32-9e80-65f289252e41",
+      "codeFqn": "net.imadz.metarch.domain.entities.DoREntity.DoRState.verdicts",
+      "codeFqnCount": 4,
+      "businessDef": "各标准项裁决明细",
+      "uiLabel": "裁决明细"
+    },
+    {
+      "name": "evaluatedAt",
+      "dataType": "Instant",
+      "description": "汇总所有裁决的时间",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "DoRVerdictSubmitted.verdict.recordedAt"
+      ],
+      "role": "State",
+      "noteId": "67886805-3468-476a-a204-925e7195cff2",
+      "codeFqn": "net.imadz.metarch.domain.entities.DoREntity.DoRState.evaluatedAt",
+      "codeFqnCount": 4,
+      "businessDef": "汇总所有裁决的时间",
+      "uiLabel": "评估完成时间"
+    },
+    {
+      "name": "evaluatedBy",
+      "dataType": "String",
+      "description": "执行汇总的实体",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "DoRVerdictSubmitted.verdict.recordedBy"
+      ],
+      "role": "State",
+      "noteId": "d4114899-6bca-445e-aa9b-6932c33a456e",
+      "codeFqn": "net.imadz.metarch.domain.entities.DoREntity.DoRState.evaluatedBy",
+      "codeFqnCount": 4,
+      "businessDef": "执行汇总的实体",
+      "uiLabel": "评估人/系统"
+    },
+    {
+      "name": "findings",
+      "dataType": "List<Finding>",
+      "description": "评估发现的阻塞问题集合（Agent 阻塞时写入，DomainExpert 可追加；清零后 ProjectOwner 才可批准）",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "DoRFindingsSubmitted.findings"
+      ],
+      "role": "State",
+      "noteId": "475cdd23-ffa4-4a3a-b26c-6f0afc1c0e77",
+      "codeFqn": "net.imadz.metarch.domain.entities.DoREntity.DoRState.findings",
+      "codeFqnCount": 4,
+      "businessDef": "评估发现的阻塞问题集合（Agent 阻塞时写入，DomainExpert 可追加；清零后 ProjectOwner 才可批准）",
+      "uiLabel": "发现问题清单"
+    },
+    {
+      "name": "workshopId",
+      "dataType": "String (UUID)",
+      "description": "评审针对的工作坊（1:1）",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "DoRRequested.workshopId"
+      ],
+      "role": "State",
+      "noteId": "2251052b-1fc9-4181-a914-cb2839476412",
+      "codeFqn": "net.imadz.metarch.domain.entities.DoREntity.DoRState.workshopId",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "patchId",
+      "dataType": "String (UUID)",
+      "description": "评审范围的工作坊补丁",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "DoRRequested.patchId"
+      ],
+      "role": "State",
+      "noteId": "cc3f926d-f8a4-42ff-806b-72d70023398b",
+      "codeFqn": "net.imadz.metarch.domain.entities.DoREntity.DoRState.patchId",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "criterion",
+      "dataType": "String",
+      "description": "",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "DoRVerdictSubmitted.verdict.criterion"
+      ],
+      "role": "ValueObject.Member",
+      "noteId": "e72a48ef-1d5e-48ed-9844-01194c0c40cc",
+      "parent": "Finding",
+      "businessDef": "N1/N2/N3/N4",
+      "uiLabel": "标准项"
+    },
+    {
+      "name": "evaluatorType",
+      "dataType": "String",
+      "description": "",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "DoRVerdictSubmitted.verdict.evaluatorType"
+      ],
+      "role": "ValueObject.Member",
+      "noteId": "3fae72ab-6ad6-4ede-a6db-9e1d01c46e8f",
+      "parent": "DoRVerdict",
+      "businessDef": "HUMAN / AI_MODEL；(parent=DoRVerdict)",
+      "uiLabel": "评估者类型"
+    },
+    {
+      "name": "evaluatorId",
+      "dataType": "String (UUID)",
+      "description": "",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "DoRVerdictSubmitted.verdict.evaluatorId"
+      ],
+      "role": "ValueObject.Member",
+      "noteId": "94067d18-a511-41c2-9804-a3b835f6ca50",
+      "parent": "DoRVerdict",
+      "businessDef": "人或AI模型名；(parent=DoRVerdict)",
+      "uiLabel": "评估者ID"
+    },
+    {
+      "name": "evaluatorRole",
+      "dataType": "String",
+      "description": "",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "DoRVerdictSubmitted.verdict.evaluatorRole"
+      ],
+      "role": "ValueObject.Member",
+      "noteId": "a811207e-0907-4a21-8109-3d572efb5fee",
+      "parent": "DoRVerdict",
+      "businessDef": "人类角色；(parent=DoRVerdict)",
+      "uiLabel": "评估者角色"
+    },
+    {
+      "name": "aiModelVersion",
+      "dataType": "String",
+      "description": "",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "DoRVerdictSubmitted.verdict.aiModelVersion"
+      ],
+      "role": "ValueObject.Member",
+      "noteId": "2e473c92-5c9c-49bb-b54d-41143492820c",
+      "parent": "DoRVerdict",
+      "businessDef": "若AI；(parent=DoRVerdict)",
+      "uiLabel": "AI模型版本"
+    },
+    {
+      "name": "harnessBrand",
+      "dataType": "String",
+      "description": "",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "DoRVerdictSubmitted.verdict.harnessBrand"
+      ],
+      "role": "ValueObject.Member",
+      "noteId": "e0412d05-38c6-424f-ae2d-b0cfb193325b",
+      "parent": "DoRVerdict",
+      "businessDef": "如 LangChain；(parent=DoRVerdict)",
+      "uiLabel": "Harness品牌"
+    },
+    {
+      "name": "harnessVersion",
+      "dataType": "String",
+      "description": "",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "DoRVerdictSubmitted.verdict.harnessVersion"
+      ],
+      "role": "ValueObject.Member",
+      "noteId": "c684ee40-0371-47a4-af00-4ff1237acf35",
+      "parent": "DoRVerdict",
+      "businessDef": "version of the harness used for evaluation；(parent=DoRVerdict)",
+      "uiLabel": "Harness版本"
+    },
+    {
+      "name": "effort",
+      "dataType": "String",
+      "description": "",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "DoRVerdictSubmitted.verdict.effort"
+      ],
+      "role": "ValueObject.Member",
+      "noteId": "9623246a-a957-4c5a-a2b8-3fbe3a2c6b44",
+      "parent": "DoRVerdict",
+      "businessDef": "quick/standard/deep；(parent=DoRVerdict)",
+      "uiLabel": "评估投入"
+    },
+    {
+      "name": "result",
+      "dataType": "String",
+      "description": "",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "DoRVerdictSubmitted.verdict.result"
+      ],
+      "role": "ValueObject.Member",
+      "noteId": "1eff2f35-af8d-42ea-abc7-fb236f89a861",
+      "parent": "DoRVerdict",
+      "businessDef": "PASS/FAIL/PARTIAL；(parent=DoRVerdict)",
+      "uiLabel": "裁决结果"
+    },
+    {
+      "name": "reason",
+      "dataType": "String",
+      "description": "",
+      "origin": "PROPAGATED",
+      "role": "ValueObject.Member",
+      "noteId": "f6d10b2f-cfd7-4f2a-8d6e-d13cb23b1357",
+      "parent": "DoRVerdict",
+      "businessDef": "人类或AI摘要；(parent=DoRVerdict)",
+      "uiLabel": "依据与逻辑"
+    },
+    {
+      "name": "evidenceLinks",
+      "dataType": "List<String>",
+      "description": "",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "DoRVerdictSubmitted.verdict.evidenceLinks"
+      ],
+      "role": "ValueObject.Member",
+      "noteId": "c68e7592-4c87-41aa-9d7e-6e26640a8165",
+      "parent": "DoRVerdict",
+      "businessDef": "外部链接；(parent=DoRVerdict)",
+      "uiLabel": "证据链接"
+    },
+    {
+      "name": "recordedAt",
+      "dataType": "Instant",
+      "description": "",
+      "origin": "PROPAGATED",
+      "role": "ValueObject.Member",
+      "noteId": "0b17efd8-b86a-4969-8aa2-fc011abd0326",
+      "parent": "DoRVerdict",
+      "businessDef": "time when the DoR verdict was recorded；(parent=DoRVerdict)",
+      "uiLabel": "记录时间"
+    },
+    {
+      "name": "recordedBy",
+      "dataType": "String",
+      "description": "",
+      "origin": "PROPAGATED",
+      "role": "ValueObject.Member",
+      "noteId": "b300c056-973f-4751-a89b-e67c2164601b",
+      "parent": "DoRVerdict",
+      "businessDef": "user who recorded the DoR verdict；(parent=DoRVerdict)",
+      "uiLabel": "记录者"
+    },
+    {
+      "name": "evaluatedScope",
+      "dataType": "String",
+      "description": "",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "DoRVerdictSubmitted.verdict.evaluatedScope"
+      ],
+      "role": "ValueObject.Member",
+      "noteId": "1b83f365-9d77-4d20-8cda-0ddd3443c92b",
+      "parent": "DoRAssessmentResult",
+      "businessDef": "目标场次+快照",
+      "uiLabel": "评估范围"
+    },
+    {
+      "name": "summary",
+      "dataType": "String",
+      "description": "",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "DoRVerdictSubmitted.verdict.summary"
+      ],
+      "role": "ValueObject.Member",
+      "noteId": "63dfa157-732c-4690-8367-f929c7186c31",
+      "parent": "DoRAssessmentResult",
+      "businessDef": "各标准通过情况汇总",
+      "uiLabel": "评估汇总"
+    },
+    {
+      "name": "description",
+      "dataType": "String",
+      "description": "",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "DoRFindingsSubmitted.findings[].description"
+      ],
+      "role": "ValueObject.Member",
+      "noteId": "503dbd9e-b6b2-4406-b1ff-2061f191e977",
+      "parent": "Finding",
+      "businessDef": "问题描述（Agent 或领域专家提出）",
+      "uiLabel": "问题描述",
+      "fold": "LATEST_WINS"
+    },
+    {
+      "name": "severity",
+      "dataType": "String",
+      "description": "",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "DoRFindingsSubmitted.findings[].severity"
+      ],
+      "role": "ValueObject.Member",
+      "noteId": "cb67c058-a9f6-40cc-bad1-4828868ed177",
+      "parent": "Finding",
+      "businessDef": "BLOCKER / WARNING",
+      "uiLabel": "严重级",
+      "fold": "LATEST_WINS"
+    }
+  ],
+  "emptyState": "TODO",
+  "commands": [
+    {
+      "name": "SubmitDoRVerdict",
+      "fields": []
+    },
+    {
+      "name": "ConcludeDoR",
+      "fields": []
+    },
+    {
+      "name": "ReopenDoR",
+      "fields": []
+    },
+    {
+      "name": "SubmitDoRFindings",
+      "fields": []
+    },
+    {
+      "name": "EvaluateDoR",
+      "fields": []
+    },
+    {
+      "name": "FixDoRVerdict",
+      "fields": []
+    },
+    {
+      "name": "RequestDoR",
+      "fields": []
+    },
+    {
+      "name": "BlockDoR",
+      "fields": []
+    }
+  ],
+  "events": [
+    {
+      "name": "DoRRequested",
+      "fields": []
+    },
+    {
+      "name": "DoRVerdictSubmitted",
+      "fields": []
+    },
+    {
+      "name": "DoRPassed",
+      "fields": []
+    },
+    {
+      "name": "DoRFindingsSubmitted",
+      "fields": []
+    },
+    {
+      "name": "DoRReopened",
+      "fields": []
+    },
+    {
+      "name": "DoRVerdictFixed",
+      "fields": []
+    },
+    {
+      "name": "DoRBlocked",
+      "fields": []
+    }
+  ],
+  "statusTransitions": {
+    "DoRFindingsSubmitted": "IN_PROGRESS",
+    "DoRPassed": "CONCLUDED",
+    "DoRVerdictSubmitted": "IN_PROGRESS",
+    "DoRVerdictFixed": "IN_PROGRESS",
+    "DoRReopened": "REOPENED",
+    "DoRRequested": "REQUESTED"
+  },
+  "commandHandlers": []
+}

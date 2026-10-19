@@ -1,0 +1,257 @@
+{
+  "package": "generated.aggregate",
+  "name": "UseCaseDefinition",
+  "objectName": "UseCaseDefinitionEntity",
+  "stateType": "UseCaseDefinitionEntityState",
+  "commandType": "UseCaseDefinitionEntityCommand",
+  "eventType": "UseCaseDefinitionEntityEvent",
+  "stateFields": [
+    {
+      "name": "tenantId",
+      "dataType": "String",
+      "description": "所属租户 id",
+      "origin": "",
+      "writtenBy": [
+        "UseCaseDeclared.tenantId"
+      ],
+      "role": "State",
+      "noteId": "b10edd38-34f5-40a7-a426-2e91fdfc1596",
+      "codeFqn": "net.imadz.metarch.domain.entities.UseCaseDefinitionEntity.UseCaseDefinitionState.tenantId",
+      "codeFqnCount": 4,
+      "businessDef": "所属租户 id"
+    },
+    {
+      "name": "useCaseName",
+      "dataType": "String",
+      "description": "用例名（story info.usecase.name·系统级唯一）",
+      "origin": "",
+      "writtenBy": [
+        "UseCaseDeclared.useCaseName"
+      ],
+      "role": "State",
+      "noteId": "6918e1b8-ea55-40dd-8f01-9e34e754aa57",
+      "codeFqn": "net.imadz.metarch.domain.entities.UseCaseDefinitionEntity.UseCaseDefinitionState.useCaseName",
+      "codeFqnCount": 4,
+      "businessDef": "用例名（story info.usecase.name·系统级唯一）"
+    },
+    {
+      "name": "realizes",
+      "dataType": "List<String>",
+      "description": "关联 story 引用集",
+      "origin": "",
+      "writtenBy": [
+        "UseCaseDeclared.realizes"
+      ],
+      "role": "State",
+      "noteId": "502ee415-a2e0-4257-bc4d-8d678be24773",
+      "codeFqn": "net.imadz.metarch.domain.entities.UseCaseDefinitionEntity.UseCaseDefinitionState.realizes",
+      "codeFqnCount": 4,
+      "businessDef": "关联 story 引用集"
+    },
+    {
+      "name": "actors",
+      "dataType": "List<String>",
+      "description": "参与者集",
+      "origin": "",
+      "writtenBy": [
+        "UseCaseDeclared.actors"
+      ],
+      "role": "State",
+      "noteId": "4356881d-37b4-4ee0-abad-89ea88e9513f",
+      "codeFqn": "net.imadz.metarch.domain.entities.UseCaseDefinitionEntity.UseCaseDefinitionState.actors",
+      "codeFqnCount": 4,
+      "businessDef": "参与者集"
+    },
+    {
+      "name": "trigger",
+      "dataType": "String",
+      "description": "触发条件描述",
+      "origin": "",
+      "writtenBy": [
+        "UseCaseDeclared.trigger"
+      ],
+      "role": "State",
+      "noteId": "f4c2fc3c-552c-42c5-b9b2-b858d4e1d69e",
+      "codeFqn": "net.imadz.metarch.domain.entities.UseCaseDefinitionEntity.UseCaseDefinitionState.trigger",
+      "codeFqnCount": 4,
+      "businessDef": "触发条件描述"
+    },
+    {
+      "name": "preconditions",
+      "dataType": "List<String>",
+      "description": "前置条件集",
+      "origin": "",
+      "writtenBy": [
+        "UseCaseDeclared.preconditions"
+      ],
+      "role": "State",
+      "noteId": "c0bb9e48-6486-4d4d-94fb-e8442c8e664a",
+      "codeFqn": "net.imadz.metarch.domain.entities.UseCaseDefinitionEntity.UseCaseDefinitionState.preconditions",
+      "codeFqnCount": 4,
+      "businessDef": "前置条件集"
+    },
+    {
+      "name": "postconditions",
+      "dataType": "List<String>",
+      "description": "后置条件集",
+      "origin": "",
+      "writtenBy": [
+        "UseCaseDeclared.postconditions"
+      ],
+      "role": "State",
+      "noteId": "ff9b277a-a141-487a-ada2-d07a3a9be20b",
+      "codeFqn": "net.imadz.metarch.domain.entities.UseCaseDefinitionEntity.UseCaseDefinitionState.postconditions",
+      "codeFqnCount": 4,
+      "businessDef": "后置条件集"
+    },
+    {
+      "name": "orchestrationType",
+      "dataType": "String",
+      "description": "编排类型（sync-oncall/async-policy·真源路由分类）",
+      "origin": "",
+      "writtenBy": [
+        "UseCaseDeclared.orchestrationType"
+      ],
+      "role": "State",
+      "noteId": "fa53c616-728a-4b00-9ee1-e9c6dd59511c",
+      "codeFqn": "net.imadz.metarch.domain.entities.UseCaseDefinitionEntity.UseCaseDefinitionState.orchestrationType",
+      "codeFqnCount": 4,
+      "businessDef": "编排类型（sync-oncall/async-policy·真源路由分类）"
+    },
+    {
+      "name": "mainFlowJson",
+      "dataType": "JSON",
+      "description": "主流程步骤集（JSON 串承载·UseCaseJsonIo step 形状）",
+      "origin": "",
+      "writtenBy": [
+        "UseCaseDeclared.mainFlowJson"
+      ],
+      "role": "State",
+      "noteId": "54dfa4cf-6072-4428-833c-7e444530ae02",
+      "codeFqn": "net.imadz.metarch.domain.entities.UseCaseDefinitionEntity.UseCaseDefinitionState.mainFlowJson",
+      "codeFqnCount": 4,
+      "businessDef": "主流程步骤集（JSON 串承载·UseCaseJsonIo step 形状）"
+    },
+    {
+      "name": "extensionsJson",
+      "dataType": "JSON",
+      "description": "扩展流集（JSON 串承载·FlowExtension 形状）",
+      "origin": "",
+      "writtenBy": [
+        "UseCaseDeclared.extensionsJson"
+      ],
+      "role": "State",
+      "noteId": "5a994a68-0607-4700-b758-463a993f29fe",
+      "codeFqn": "net.imadz.metarch.domain.entities.UseCaseDefinitionEntity.UseCaseDefinitionState.extensionsJson",
+      "codeFqnCount": 4,
+      "businessDef": "扩展流集（JSON 串承载·FlowExtension 形状）"
+    },
+    {
+      "name": "generatedIds",
+      "dataType": "List<String>",
+      "description": "生成的 id 字段名集",
+      "origin": "",
+      "writtenBy": [
+        "UseCaseDeclared.generatedIds"
+      ],
+      "role": "State",
+      "noteId": "ff643a28-a7e7-46ec-80a2-89078ae2b5ee",
+      "codeFqn": "net.imadz.metarch.domain.entities.UseCaseDefinitionEntity.UseCaseDefinitionState.generatedIds",
+      "codeFqnCount": 4,
+      "businessDef": "生成的 id 字段名集"
+    },
+    {
+      "name": "optionalInputs",
+      "dataType": "List<String>",
+      "description": "可选输入集",
+      "origin": "",
+      "writtenBy": [
+        "UseCaseDeclared.optionalInputs"
+      ],
+      "role": "State",
+      "noteId": "9e32b83c-1ffd-4ed7-83bf-4b211cadbaad",
+      "codeFqn": "net.imadz.metarch.domain.entities.UseCaseDefinitionEntity.UseCaseDefinitionState.optionalInputs",
+      "codeFqnCount": 4,
+      "businessDef": "可选输入集"
+    },
+    {
+      "name": "declaredAt",
+      "dataType": "Instant",
+      "description": "声明时间戳",
+      "origin": "",
+      "writtenBy": [
+        "UseCaseDeclared.declaredAt"
+      ],
+      "role": "State",
+      "noteId": "b340143e-85c9-4c4b-9f46-40906d553626",
+      "codeFqn": "net.imadz.metarch.domain.entities.UseCaseDefinitionEntity.UseCaseDefinitionState.declaredAt",
+      "codeFqnCount": 4,
+      "businessDef": "声明时间戳"
+    },
+    {
+      "name": "declaredBy",
+      "dataType": "String",
+      "description": "声明人",
+      "origin": "",
+      "writtenBy": [
+        "UseCaseDeclared.declaredBy"
+      ],
+      "role": "State",
+      "noteId": "b33f465e-8592-4d31-a633-e1d9ef49e8e4",
+      "codeFqn": "net.imadz.metarch.domain.entities.UseCaseDefinitionEntity.UseCaseDefinitionState.declaredBy",
+      "codeFqnCount": 4,
+      "businessDef": "声明人"
+    },
+    {
+      "name": "removedAt",
+      "dataType": "Instant",
+      "description": "墓碑时间（软删除令·删除即打戳不物删）",
+      "origin": "",
+      "writtenBy": [
+        "UseCaseRemoved.timestamp"
+      ],
+      "role": "State",
+      "noteId": "d98165e2-0609-4e2a-b987-da0f3b2e8044",
+      "codeFqn": "net.imadz.metarch.domain.entities.UseCaseDefinitionEntity.UseCaseDefinitionState.removedAt",
+      "codeFqnCount": 4,
+      "businessDef": "墓碑时间（软删除令·删除即打戳不物删）"
+    },
+    {
+      "name": "removedBy",
+      "dataType": "String",
+      "description": "执行移除操作的用户/AI",
+      "origin": "",
+      "writtenBy": [
+        "UseCaseRemoved.triggeredBy"
+      ],
+      "role": "State",
+      "noteId": "b234186d-386a-4db3-8423-e02e879d952a",
+      "codeFqn": "net.imadz.metarch.domain.entities.UseCaseDefinitionEntity.UseCaseDefinitionState.removedBy",
+      "codeFqnCount": 4,
+      "businessDef": "执行移除操作的用户/AI"
+    }
+  ],
+  "emptyState": "TODO",
+  "commands": [
+    {
+      "name": "DeclareUseCaseDefinition",
+      "fields": []
+    },
+    {
+      "name": "RemoveUseCaseDefinition",
+      "fields": []
+    }
+  ],
+  "events": [
+    {
+      "name": "UseCaseDeclared",
+      "fields": []
+    },
+    {
+      "name": "UseCaseRemoved",
+      "fields": []
+    }
+  ],
+  "statusTransitions": {},
+  "commandHandlers": []
+}

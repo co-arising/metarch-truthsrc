@@ -1,0 +1,199 @@
+{
+  "package": "generated.aggregate",
+  "name": "CemEdge",
+  "objectName": "CemEdgeEntity",
+  "stateType": "CemEdgeEntityState",
+  "commandType": "CemEdgeEntityCommand",
+  "eventType": "CemEdgeEntityEvent",
+  "stateFields": [
+    {
+      "name": "tenantId",
+      "dataType": "String (UUID)",
+      "description": "所属租户 id",
+      "origin": "",
+      "writtenBy": [
+        "EdgeDeclared.tenantId"
+      ],
+      "role": "State",
+      "noteId": "a39aa597-2731-470a-a3c5-6497a0ad949e",
+      "codeFqn": "net.imadz.metarch.domain.entities.CemEdgeEntity.CemEdgeState.tenantId",
+      "codeFqnCount": 4,
+      "businessDef": "所属租户 id"
+    },
+    {
+      "name": "commandName",
+      "dataType": "String",
+      "description": "边指向的命令名",
+      "origin": "",
+      "writtenBy": [
+        "EdgeDeclared.commandName"
+      ],
+      "role": "State",
+      "noteId": "b662439c-39a6-481a-a59c-f799fcb49dfb",
+      "codeFqn": "net.imadz.metarch.domain.entities.CemEdgeEntity.CemEdgeState.commandName",
+      "codeFqnCount": 4,
+      "businessDef": "边指向的命令名"
+    },
+    {
+      "name": "eventName",
+      "dataType": "String",
+      "description": "边指向的事件名",
+      "origin": "",
+      "writtenBy": [
+        "EdgeDeclared.eventName"
+      ],
+      "role": "State",
+      "noteId": "c1f288d7-d1ff-402f-84dd-f7f68bae9420",
+      "codeFqn": "net.imadz.metarch.domain.entities.CemEdgeEntity.CemEdgeState.eventName",
+      "codeFqnCount": 4,
+      "businessDef": "边指向的事件名"
+    },
+    {
+      "name": "aggregateName",
+      "dataType": "String",
+      "description": "边归属的聚合名",
+      "origin": "",
+      "writtenBy": [
+        "EdgeDeclared.aggregateName",
+        "EdgePatched.aggregateName"
+      ],
+      "role": "State",
+      "noteId": "3c05e307-5e72-41c9-a6b8-3cc98fb5c9d4",
+      "codeFqn": "net.imadz.metarch.domain.entities.CemEdgeEntity.CemEdgeState.aggregateName",
+      "codeFqnCount": 4,
+      "businessDef": "边归属的聚合名"
+    },
+    {
+      "name": "sources",
+      "dataType": "JSON",
+      "description": "判定来源数组",
+      "origin": "",
+      "writtenBy": [
+        "EdgeDeclared.sources",
+        "EdgePatched.sources"
+      ],
+      "role": "State",
+      "noteId": "e96af640-56d4-405b-a19b-b668e065d16b",
+      "codeFqn": "net.imadz.metarch.domain.entities.CemEdgeEntity.CemEdgeState.sources",
+      "codeFqnCount": 4,
+      "businessDef": "判定来源数组"
+    },
+    {
+      "name": "confidence",
+      "dataType": "String (Enum)",
+      "description": "L1/L2 置信度",
+      "origin": "",
+      "writtenBy": [
+        "EdgeDeclared.confidence",
+        "EdgePatched.confidence"
+      ],
+      "role": "State",
+      "noteId": "ce1110a2-337b-4ed0-aa43-a0cb40188a6d",
+      "codeFqn": "net.imadz.metarch.domain.entities.CemEdgeEntity.CemEdgeState.confidence",
+      "codeFqnCount": 4,
+      "businessDef": "L1/L2 置信度"
+    },
+    {
+      "name": "status",
+      "dataType": "String",
+      "description": "active / retired",
+      "origin": "",
+      "writtenBy": [
+        "EdgeDeclared",
+        "EdgeRetired"
+      ],
+      "role": "State",
+      "noteId": "44aef26d-8007-4d93-a568-865e09ed6980",
+      "codeFqn": "net.imadz.metarch.domain.entities.CemEdgeEntity.CemEdgeState.status",
+      "codeFqnCount": 4,
+      "businessDef": "active / retired"
+    },
+    {
+      "name": "declaredAt",
+      "dataType": "Instant",
+      "description": "声明时间戳",
+      "origin": "",
+      "writtenBy": [
+        "EdgeDeclared.declaredAt"
+      ],
+      "role": "State",
+      "noteId": "dc53dcfd-9950-4dfd-96e2-a3589fccde67",
+      "codeFqn": "net.imadz.metarch.domain.entities.CemEdgeEntity.CemEdgeState.declaredAt",
+      "codeFqnCount": 4,
+      "businessDef": "声明时间戳"
+    },
+    {
+      "name": "declaredBy",
+      "dataType": "String",
+      "description": "声明人",
+      "origin": "",
+      "writtenBy": [
+        "EdgeDeclared.declaredBy"
+      ],
+      "role": "State",
+      "noteId": "7ecd0ea4-c5b4-476c-888b-5ab039da7e8b",
+      "codeFqn": "net.imadz.metarch.domain.entities.CemEdgeEntity.CemEdgeState.declaredBy",
+      "codeFqnCount": 4,
+      "businessDef": "声明人"
+    },
+    {
+      "name": "retiredAt",
+      "dataType": "Instant",
+      "description": "退役时间戳",
+      "origin": "",
+      "writtenBy": [
+        "EdgeRetired.retiredAt"
+      ],
+      "role": "State",
+      "noteId": "c352ae7a-e1bc-44dd-b593-6fb988e91544",
+      "codeFqn": "net.imadz.metarch.domain.entities.CemEdgeEntity.CemEdgeState.retiredAt",
+      "codeFqnCount": 4,
+      "businessDef": "退役时间戳"
+    },
+    {
+      "name": "retiredReason",
+      "dataType": "String",
+      "description": "退役原因",
+      "origin": "",
+      "writtenBy": [
+        "EdgeRetired.reason"
+      ],
+      "role": "State",
+      "noteId": "94a60e68-acc2-41ce-a574-b33d24ca852e",
+      "codeFqn": "net.imadz.metarch.domain.entities.CemEdgeEntity.CemEdgeState.retiredReason",
+      "codeFqnCount": 4,
+      "businessDef": "退役原因"
+    }
+  ],
+  "emptyState": "TODO",
+  "commands": [
+    {
+      "name": "DeclareEdge",
+      "fields": []
+    },
+    {
+      "name": "PatchEdge",
+      "fields": []
+    },
+    {
+      "name": "RetireEdge",
+      "fields": []
+    }
+  ],
+  "events": [
+    {
+      "name": "EdgeDeclared",
+      "fields": []
+    },
+    {
+      "name": "EdgePatched",
+      "fields": []
+    },
+    {
+      "name": "EdgeRetired",
+      "fields": []
+    }
+  ],
+  "statusTransitions": {},
+  "commandHandlers": []
+}

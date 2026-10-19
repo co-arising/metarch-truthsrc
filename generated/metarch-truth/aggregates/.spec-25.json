@@ -1,0 +1,224 @@
+{
+  "package": "generated.aggregate",
+  "name": "Workgroup",
+  "objectName": "WorkgroupEntity",
+  "stateType": "WorkgroupEntityState",
+  "commandType": "WorkgroupEntityCommand",
+  "eventType": "WorkgroupEntityEvent",
+  "stateFields": [
+    {
+      "name": "tenantId",
+      "dataType": "String (UUID)",
+      "description": "所属租户",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "WorkgroupArchived.tenantId",
+        "WorkgroupFormed.tenantId",
+        "WorkgroupMemberInvited.tenantId",
+        "WorkgroupMemberJoined.tenantId",
+        "WorkgroupMemberRemoved.tenantId",
+        "WorkgroupNameUpdated.tenantId",
+        "WorkgroupOwnerAssigned.tenantId"
+      ],
+      "role": "State",
+      "noteId": "08bdbf12-8a1c-4c1d-8e56-3c171a85c520",
+      "codeFqn": "net.imadz.metarch.domain.entities.WorkgroupEntity.WorkgroupState.tenantId",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "status",
+      "dataType": "String",
+      "description": "active / archived",
+      "origin": "",
+      "writtenBy": [
+        "WorkgroupArchived",
+        "WorkgroupFormed"
+      ],
+      "role": "State",
+      "noteId": "df6628b1-0152-4ab8-81f5-964dac1f8bbf",
+      "codeFqn": "net.imadz.metarch.domain.entities.WorkgroupEntity.WorkgroupState.status",
+      "codeFqnCount": 4,
+      "businessDef": "active / archived"
+    },
+    {
+      "name": "name",
+      "dataType": "String",
+      "description": "公司的正式注册名称",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "WorkgroupFormed.name"
+      ],
+      "role": "State",
+      "noteId": "d127bee1-b072-45ea-81ec-268d8e77c188",
+      "codeFqn": "net.imadz.metarch.domain.entities.WorkgroupEntity.WorkgroupState.name",
+      "codeFqnCount": 4,
+      "businessDef": "公司的正式注册名称",
+      "uiLabel": "工作组名称"
+    },
+    {
+      "name": "ownerUserId",
+      "dataType": "String (UUID)",
+      "description": "最高权限管理员",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "WorkgroupOwnerAssigned.ownerUserId"
+      ],
+      "role": "State",
+      "noteId": "09d3fa86-b371-4b34-939b-e1b0e46e6a66",
+      "codeFqn": "net.imadz.metarch.domain.entities.WorkgroupEntity.WorkgroupState.ownerUserId",
+      "codeFqnCount": 4,
+      "businessDef": "最高权限管理员",
+      "uiLabel": "负责人"
+    },
+    {
+      "name": "memberUserIds",
+      "dataType": "List<String (UUID)>",
+      "description": "属于该组织的所有用户",
+      "origin": "DERIVED",
+      "writtenBy": [
+        "WorkgroupMemberJoined.userId",
+        "WorkgroupMemberRemoved.userId"
+      ],
+      "role": "State",
+      "noteId": "5f8c9612-66cd-4602-8ae0-c3a978e6a8dd",
+      "codeFqn": "net.imadz.metarch.domain.entities.WorkgroupEntity.WorkgroupState.memberUserIds",
+      "codeFqnCount": 4,
+      "businessDef": "属于该组织的所有用户",
+      "uiLabel": "成员列表",
+      "derivation": "邀请接受后累积（WorkgroupMemberJoined 追加）"
+    },
+    {
+      "name": "invitedUserIds",
+      "dataType": "List<String (UUID)>",
+      "description": "已收到工作组成员邀请、尚未加入的用户(2026-08-21 评审:IR-WG-CMD-004「用户必须收到邀请且为 pending」的载体)",
+      "origin": "DERIVED",
+      "writtenBy": [
+        "WorkgroupMemberInvited.userId",
+        "WorkgroupMemberJoined.userId"
+      ],
+      "role": "State",
+      "noteId": "0f7239fa-a769-4649-a999-6251a1d542a6",
+      "codeFqn": "net.imadz.metarch.domain.entities.WorkgroupEntity.WorkgroupState.invitedUserIds",
+      "codeFqnCount": 4,
+      "businessDef": "已收到工作组成员邀请、尚未加入的用户(2026-08-21 评审:IR-WG-CMD-004「用户必须收到邀请且为 pending」的载体)",
+      "uiLabel": "待加入成员",
+      "derivation": "邀请发出后累积（WorkgroupMemberInvited 追加，WorkgroupMemberJoined 或拒绝后移除）"
+    },
+    {
+      "name": "createdAt",
+      "dataType": "Instant",
+      "description": "组织注册时间",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "WorkgroupFormed.timestamp"
+      ],
+      "role": "State",
+      "noteId": "d9be1b0a-9756-4c74-857b-56fed0b652b1",
+      "codeFqn": "net.imadz.metarch.domain.entities.WorkgroupEntity.WorkgroupState.createdAt",
+      "codeFqnCount": 4,
+      "businessDef": "组织注册时间",
+      "uiLabel": "创建时间"
+    },
+    {
+      "name": "createdBy",
+      "dataType": "String",
+      "description": "发起入驻的用户",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "WorkgroupFormed.triggeredBy"
+      ],
+      "role": "State",
+      "noteId": "2f4f833d-fbb2-4935-a44f-574e58fef187",
+      "codeFqn": "net.imadz.metarch.domain.entities.WorkgroupEntity.WorkgroupState.createdBy",
+      "codeFqnCount": 4,
+      "businessDef": "发起入驻的用户",
+      "uiLabel": "创建人"
+    },
+    {
+      "name": "archivedAt",
+      "dataType": "Instant",
+      "description": "time when the workgroup was archived",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "WorkgroupArchived.timestamp"
+      ],
+      "role": "State",
+      "noteId": "cfb2b4d7-6e2c-4c48-bc50-55d13a5c8c32",
+      "codeFqn": "net.imadz.metarch.domain.entities.WorkgroupEntity.WorkgroupState.archivedAt",
+      "codeFqnCount": 4,
+      "businessDef": "time when the workgroup was archived",
+      "uiLabel": "归档时间"
+    }
+  ],
+  "emptyState": "TODO",
+  "commands": [
+    {
+      "name": "CreateWorkgroup",
+      "fields": []
+    },
+    {
+      "name": "AssignWorkgroupOwner",
+      "fields": []
+    },
+    {
+      "name": "InviteWorkgroupMember",
+      "fields": []
+    },
+    {
+      "name": "AcceptWorkgroupInvitation",
+      "fields": []
+    },
+    {
+      "name": "RemoveWorkgroupMember",
+      "fields": []
+    },
+    {
+      "name": "ArchiveWorkgroup",
+      "fields": []
+    },
+    {
+      "name": "UpdateWorkgroupName",
+      "fields": []
+    }
+  ],
+  "events": [
+    {
+      "name": "WorkgroupFormed",
+      "fields": []
+    },
+    {
+      "name": "WorkgroupOwnerAssigned",
+      "fields": []
+    },
+    {
+      "name": "WorkgroupMemberInvited",
+      "fields": []
+    },
+    {
+      "name": "WorkgroupMemberJoined",
+      "fields": []
+    },
+    {
+      "name": "WorkgroupMemberRemoved",
+      "fields": []
+    },
+    {
+      "name": "WorkgroupArchived",
+      "fields": []
+    },
+    {
+      "name": "WorkgroupNameUpdated",
+      "fields": []
+    }
+  ],
+  "statusTransitions": {
+    "WorkgroupFormed": "active",
+    "WorkgroupMemberInvited": null,
+    "WorkgroupMemberJoined": null,
+    "WorkgroupNameUpdated": null,
+    "WorkgroupOwnerAssigned": null,
+    "WorkgroupMemberRemoved": null,
+    "WorkgroupArchived": "archived"
+  },
+  "commandHandlers": []
+}

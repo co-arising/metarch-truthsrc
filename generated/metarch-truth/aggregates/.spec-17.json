@@ -1,0 +1,202 @@
+{
+  "package": "generated.aggregate",
+  "name": "Stage",
+  "objectName": "StageEntity",
+  "stateType": "StageEntityState",
+  "commandType": "StageEntityCommand",
+  "eventType": "StageEntityEvent",
+  "stateFields": [
+    {
+      "name": "tenantId",
+      "dataType": "String (UUID)",
+      "description": "所属租户",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "StageActivated.tenantId",
+        "StageApproved.tenantId",
+        "StageRejected.tenantId",
+        "StageSkipped.tenantId"
+      ],
+      "role": "State",
+      "noteId": "327e66f6-deeb-424e-8a27-6bbbac1562a7",
+      "codeFqn": "net.imadz.metarch.domain.entities.StageEntity.StageState.tenantId",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "status",
+      "dataType": "String",
+      "description": "activated / approved / rejected / skipped",
+      "origin": "",
+      "writtenBy": [
+        "StageActivated",
+        "StageApproved",
+        "StageRejected",
+        "StageSkipped"
+      ],
+      "role": "State",
+      "noteId": "94bd4a68-593b-4e63-9f3d-777ea901a259",
+      "codeFqn": "net.imadz.metarch.domain.entities.StageEntity.StageState.status",
+      "codeFqnCount": 4,
+      "businessDef": "activated / approved / rejected / skipped"
+    },
+    {
+      "name": "workshopId",
+      "dataType": "String (UUID)",
+      "description": "ID of the workshop this stage belongs to",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "StageActivated.workshopId"
+      ],
+      "role": "State",
+      "noteId": "75dffb8c-8551-4896-b38c-fdd9aa704046",
+      "codeFqn": "net.imadz.metarch.domain.entities.StageEntity.StageState.workshopId",
+      "codeFqnCount": 4,
+      "businessDef": "ID of the workshop this stage belongs to",
+      "uiLabel": "所属工作坊"
+    },
+    {
+      "name": "order",
+      "dataType": "Int",
+      "description": "46029",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "StageActivated.order"
+      ],
+      "role": "State",
+      "noteId": "2af19fc4-a926-4e32-acbd-23d4f10d16aa",
+      "codeFqn": "net.imadz.metarch.domain.entities.StageEntity.StageState.order",
+      "codeFqnCount": 4,
+      "businessDef": "46029",
+      "uiLabel": "阶段序号"
+    },
+    {
+      "name": "name",
+      "dataType": "String",
+      "description": "eventStorming/commandStorming/…",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "StageActivated.name"
+      ],
+      "role": "State",
+      "noteId": "feed4f9a-d609-42ca-8e3c-cb1cd73ab8d5",
+      "codeFqn": "net.imadz.metarch.domain.entities.StageEntity.StageState.name",
+      "codeFqnCount": 4,
+      "businessDef": "eventStorming/commandStorming/…",
+      "uiLabel": "阶段名称"
+    },
+    {
+      "name": "activatedAt",
+      "dataType": "Instant",
+      "description": "time when the stage was activated",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "StageActivated.timestamp"
+      ],
+      "role": "State",
+      "noteId": "c169b0eb-83be-45c7-9f7e-d47ac412e668",
+      "codeFqn": "net.imadz.metarch.domain.entities.StageEntity.StageState.activatedAt",
+      "codeFqnCount": 4,
+      "businessDef": "time when the stage was activated",
+      "uiLabel": "激活时间"
+    },
+    {
+      "name": "approvedAt",
+      "dataType": "Instant",
+      "description": "time when the stage was approved",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "StageApproved.timestamp"
+      ],
+      "role": "State",
+      "noteId": "df6c877a-83d2-44ac-8300-0d8bbcd72fa4",
+      "codeFqn": "net.imadz.metarch.domain.entities.StageEntity.StageState.approvedAt",
+      "codeFqnCount": 4,
+      "businessDef": "time when the stage was approved",
+      "uiLabel": "放行时间"
+    },
+    {
+      "name": "rejectedAt",
+      "dataType": "Instant",
+      "description": "time when the stage was rejected",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "StageRejected.timestamp"
+      ],
+      "role": "State",
+      "noteId": "2ddce768-8188-466b-b49b-39dbc792177b",
+      "codeFqn": "net.imadz.metarch.domain.entities.StageEntity.StageState.rejectedAt",
+      "codeFqnCount": 4,
+      "businessDef": "time when the stage was rejected",
+      "uiLabel": "驳回时间"
+    },
+    {
+      "name": "rejectionReason",
+      "dataType": "String",
+      "description": "reason the stage was rejected",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "StageRejected.rejectionReason"
+      ],
+      "role": "State",
+      "noteId": "b30df05c-e29f-4a4d-ac1c-0384cf375c3a",
+      "codeFqn": "net.imadz.metarch.domain.entities.StageEntity.StageState.rejectionReason",
+      "codeFqnCount": 4,
+      "businessDef": "reason the stage was rejected",
+      "uiLabel": "驳回原因"
+    },
+    {
+      "name": "sessionId",
+      "dataType": "String (UUID)",
+      "description": "",
+      "origin": "",
+      "role": "State",
+      "noteId": "4d560b56-bfde-42ce-b9d4-eab1f7e02b6d",
+      "codeFqn": "net.imadz.metarch.domain.entities.StageEntity.StageState.sessionId",
+      "codeFqnCount": 4
+    }
+  ],
+  "emptyState": "TODO",
+  "commands": [
+    {
+      "name": "ActivateStage",
+      "fields": []
+    },
+    {
+      "name": "ApproveStage",
+      "fields": []
+    },
+    {
+      "name": "RejectStage",
+      "fields": []
+    },
+    {
+      "name": "SkipStage",
+      "fields": []
+    }
+  ],
+  "events": [
+    {
+      "name": "StageActivated",
+      "fields": []
+    },
+    {
+      "name": "StageApproved",
+      "fields": []
+    },
+    {
+      "name": "StageRejected",
+      "fields": []
+    },
+    {
+      "name": "StageSkipped",
+      "fields": []
+    }
+  ],
+  "statusTransitions": {
+    "StageActivated": "activated",
+    "StageApproved": "approved",
+    "StageRejected": "rejected",
+    "StageSkipped": "skipped"
+  },
+  "commandHandlers": []
+}

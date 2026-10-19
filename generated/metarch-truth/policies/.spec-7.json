@@ -1,0 +1,13 @@
+{
+  "package": "generated.policy",
+  "name": "立项后创建目录版本",
+  "objectName": "立项后创建目录版本Policy",
+  "description": "项目启动后自动创建目录版本 v1.0.0（catalogId 与 Project 一对一）",
+  "triggers": [
+    "ProjectInitiated"
+  ],
+  "invokes": [
+    "CreateCatalogVersion"
+  ],
+  "rules": []
+}

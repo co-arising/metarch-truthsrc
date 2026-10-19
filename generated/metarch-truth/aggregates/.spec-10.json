@@ -1,0 +1,221 @@
+{
+  "package": "generated.aggregate",
+  "name": "OrganizationMember",
+  "objectName": "OrganizationMemberEntity",
+  "stateType": "OrganizationMemberEntityState",
+  "commandType": "OrganizationMemberEntityCommand",
+  "eventType": "OrganizationMemberEntityEvent",
+  "stateFields": [
+    {
+      "name": "tenantId",
+      "dataType": "String (UUID)",
+      "description": "组织标识",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "TenantMemberInvitationAccepted.tenantId",
+        "TenantMemberInvitationExpired.tenantId",
+        "TenantMemberInvitationResent.tenantId",
+        "TenantMemberInvitationRevoked.tenantId",
+        "TenantMemberInvited.tenantId",
+        "TenantMemberJoined.tenantId",
+        "TenantMemberRemoved.tenantId"
+      ],
+      "role": "State",
+      "noteId": "35f4e6a2-fdcd-44f8-8e17-6fbb960db556",
+      "codeFqn": "net.imadz.metarch.domain.entities.OrganizationMemberEntity.OrganizationMemberState.tenantId",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "status",
+      "dataType": "String",
+      "description": "PENDING / ACTIVE / REMOVED",
+      "origin": "STATE_TRANSITION",
+      "writtenBy": [
+        "TenantMemberInvitationAccepted",
+        "TenantMemberInvitationExpired",
+        "TenantMemberInvitationResent",
+        "TenantMemberInvitationRevoked",
+        "TenantMemberInvited",
+        "TenantMemberJoined",
+        "TenantMemberRemoved"
+      ],
+      "role": "State",
+      "noteId": "abdf187b-1d9a-4b12-bddb-03beba36a019",
+      "codeFqn": "net.imadz.metarch.domain.entities.OrganizationMemberEntity.OrganizationMemberState.status",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "userId",
+      "dataType": "String (UUID)",
+      "description": "用户标识（复合标识之二）",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "TenantMemberInvitationAccepted.userId",
+        "TenantMemberInvitationExpired.userId",
+        "TenantMemberInvitationResent.userId",
+        "TenantMemberInvitationRevoked.userId",
+        "TenantMemberInvited.userId",
+        "TenantMemberJoined.userId",
+        "TenantMemberRemoved.userId"
+      ],
+      "role": "State",
+      "noteId": "11caefdc-e128-4160-a583-28f3da3427f5",
+      "codeFqn": "net.imadz.metarch.domain.entities.OrganizationMemberEntity.OrganizationMemberState.userId",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "department",
+      "dataType": "String",
+      "description": "组织内部门（Organization×User 关系属性）",
+      "origin": "BUSINESS_INPUT",
+      "writtenBy": [
+        "TenantMemberInvited.department"
+      ],
+      "role": "State",
+      "noteId": "fafe727a-95a6-41f5-aa4a-56fdc54a687d",
+      "codeFqn": "net.imadz.metarch.domain.entities.OrganizationMemberEntity.OrganizationMemberState.department",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "jobTitle",
+      "dataType": "String",
+      "description": "组织内职务（Organization×User 关系属性）",
+      "origin": "BUSINESS_INPUT",
+      "writtenBy": [
+        "TenantMemberInvited.jobTitle"
+      ],
+      "role": "State",
+      "noteId": "5f9cfc4b-8f74-4cb8-8649-0889a3fe7aeb",
+      "codeFqn": "net.imadz.metarch.domain.entities.OrganizationMemberEntity.OrganizationMemberState.jobTitle",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "displayName",
+      "dataType": "String",
+      "description": "成员姓名快照（投影自 User）",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "UserRegistered.displayName"
+      ],
+      "role": "State",
+      "noteId": "495b2e07-a8f0-4e42-bfaf-7a5764dfcf4f",
+      "codeFqn": "net.imadz.metarch.domain.entities.OrganizationMemberEntity.OrganizationMemberState.displayName",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "email",
+      "dataType": "String",
+      "description": "成员邮箱快照（投影自 User）",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "UserRegistered.email"
+      ],
+      "role": "State",
+      "noteId": "63bba58f-67dd-4712-b784-16c76583e920",
+      "codeFqn": "net.imadz.metarch.domain.entities.OrganizationMemberEntity.OrganizationMemberState.email",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "phoneNumber",
+      "dataType": "String",
+      "description": "成员电话快照（投影自 User）",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "UserProfileUpdated.phoneNumber"
+      ],
+      "role": "State",
+      "noteId": "22864d95-62d9-4bb2-a5b0-c73d2ff54797",
+      "codeFqn": "net.imadz.metarch.domain.entities.OrganizationMemberEntity.OrganizationMemberState.phoneNumber",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "joinedAt",
+      "dataType": "Instant",
+      "description": "加入时间",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "TenantMemberJoined.timestamp"
+      ],
+      "role": "State",
+      "noteId": "1e8a9814-be5d-4050-b091-4acf9d1dd4b8",
+      "codeFqn": "net.imadz.metarch.domain.entities.OrganizationMemberEntity.OrganizationMemberState.joinedAt",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "removedAt",
+      "dataType": "Instant",
+      "description": "移除时间",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "TenantMemberRemoved.timestamp"
+      ],
+      "role": "State",
+      "noteId": "6a958540-87fc-4d3a-9b25-a12e7119a95d",
+      "codeFqn": "net.imadz.metarch.domain.entities.OrganizationMemberEntity.OrganizationMemberState.removedAt",
+      "codeFqnCount": 4
+    }
+  ],
+  "emptyState": "TODO",
+  "commands": [
+    {
+      "name": "InviteTenantMember",
+      "fields": []
+    },
+    {
+      "name": "AcceptTenantInvitation",
+      "fields": []
+    },
+    {
+      "name": "RevokeInvitation",
+      "fields": []
+    },
+    {
+      "name": "ResendInvitation",
+      "fields": []
+    },
+    {
+      "name": "RemoveTenantMember",
+      "fields": []
+    }
+  ],
+  "events": [
+    {
+      "name": "TenantMemberInvited",
+      "fields": []
+    },
+    {
+      "name": "TenantMemberInvitationAccepted",
+      "fields": []
+    },
+    {
+      "name": "TenantMemberJoined",
+      "fields": []
+    },
+    {
+      "name": "TenantMemberInvitationRevoked",
+      "fields": []
+    },
+    {
+      "name": "TenantMemberInvitationExpired",
+      "fields": []
+    },
+    {
+      "name": "TenantMemberInvitationResent",
+      "fields": []
+    },
+    {
+      "name": "TenantMemberRemoved",
+      "fields": []
+    }
+  ],
+  "statusTransitions": {
+    "TenantMemberInvited": "PENDING",
+    "TenantMemberInvitationAccepted": "ACTIVE",
+    "TenantMemberJoined": "ACTIVE",
+    "TenantMemberInvitationRevoked": "PENDING",
+    "TenantMemberInvitationExpired": "PENDING",
+    "TenantMemberInvitationResent": "PENDING",
+    "TenantMemberRemoved": "REMOVED"
+  },
+  "commandHandlers": []
+}

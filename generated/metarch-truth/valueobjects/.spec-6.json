@@ -1,0 +1,102 @@
+{
+  "package": "generated.valueobject",
+  "name": "ConceptDelta",
+  "fields": [
+    {
+      "name": "action",
+      "dataType": "String"
+    },
+    {
+      "name": "conceptName",
+      "dataType": "String"
+    },
+    {
+      "name": "contextId",
+      "dataType": "String"
+    },
+    {
+      "name": "noteIds",
+      "dataType": "List<String>"
+    },
+    {
+      "name": "definition",
+      "dataType": "String"
+    },
+    {
+      "name": "conceptId",
+      "dataType": "String (UUID)"
+    },
+    {
+      "name": "contentHash",
+      "dataType": "String"
+    },
+    {
+      "name": "kind",
+      "dataType": "String (Enum)"
+    },
+    {
+      "name": "sourceStage",
+      "dataType": "String"
+    },
+    {
+      "name": "sourceSessionId",
+      "dataType": "String (UUID)"
+    },
+    {
+      "name": "noteId",
+      "dataType": "String (UUID)"
+    },
+    {
+      "name": "anchors",
+      "dataType": "List<CodeAnchorDelta>"
+    },
+    {
+      "name": "guards",
+      "dataType": "List<GuardSpec>"
+    },
+    {
+      "name": "aggregateRuleRefs",
+      "dataType": "List<RuleRef>"
+    },
+    {
+      "name": "preconditionRefs",
+      "dataType": "List<RuleRef>"
+    },
+    {
+      "name": "postconditionRefs",
+      "dataType": "List<RuleRef>"
+    },
+    {
+      "name": "fields",
+      "dataType": "List<FieldSpec>"
+    },
+    {
+      "name": "emits",
+      "dataType": "List<EdgeTarget>"
+    },
+    {
+      "name": "folds",
+      "dataType": "List<FieldEdge>"
+    },
+    {
+      "name": "emissions",
+      "dataType": "List<FieldEdge>"
+    },
+    {
+      "name": "steps",
+      "dataType": "List<UcStep>"
+    },
+    {
+      "name": "extensions",
+      "dataType": "List<UcStep>"
+    },
+    {
+      "name": "ucWrites",
+      "dataType": "List<EdgeTarget>"
+    },
+    {
+      "name": "ucPublishes",
+      "dataType": "List<EdgeTarget>"
+    }
+  ]
+}

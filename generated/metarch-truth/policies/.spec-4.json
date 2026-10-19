@@ -1,0 +1,13 @@
+{
+  "package": "generated.policy",
+  "name": "成员加入后维护租户名册",
+  "objectName": "成员加入后维护租户名册Policy",
+  "description": "whenever TenantMemberJoined then UpdateTenantMemberRoster（S2-32 名册双写联动兑现·⑤层 AcceptTenantInvitation.update-roster 声明）",
+  "triggers": [
+    "TenantMemberJoined"
+  ],
+  "invokes": [
+    "UpdateTenantMemberRoster"
+  ],
+  "rules": []
+}

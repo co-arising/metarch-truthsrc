@@ -1,0 +1,95 @@
+{
+  "package": "generated.aggregate",
+  "name": "TruthSourceProvenance",
+  "objectName": "TruthSourceProvenanceEntity",
+  "stateType": "TruthSourceProvenanceEntityState",
+  "commandType": "TruthSourceProvenanceEntityCommand",
+  "eventType": "TruthSourceProvenanceEntityEvent",
+  "stateFields": [
+    {
+      "name": "tenantId",
+      "dataType": "String",
+      "description": "所属租户 id",
+      "origin": "",
+      "writtenBy": [
+        "TruthProvenanceRecorded.tenantId"
+      ],
+      "role": "State",
+      "noteId": "d4d120af-0495-4668-a532-63561a24c2fb",
+      "codeFqn": "net.imadz.metarch.domain.entities.TruthSourceProvenanceEntity.TruthSourceProvenanceState.tenantId",
+      "codeFqnCount": 4,
+      "businessDef": "所属租户 id"
+    },
+    {
+      "name": "sourceKey",
+      "dataType": "String",
+      "description": "真源键（metarch/cem/role-command-map/fields-template/readmodels）",
+      "origin": "",
+      "writtenBy": [
+        "TruthProvenanceRecorded.sourceKey"
+      ],
+      "role": "State",
+      "noteId": "4c9cef58-3f2c-47bd-9188-9cf469ac1ae9",
+      "codeFqn": "net.imadz.metarch.domain.entities.TruthSourceProvenanceEntity.TruthSourceProvenanceState.sourceKey",
+      "codeFqnCount": 4,
+      "businessDef": "真源键（metarch/cem/role-command-map/fields-template/readmodels）"
+    },
+    {
+      "name": "payloadJson",
+      "dataType": "JSON",
+      "description": "包装/裁决面 JSON 原文（不可再生成·含历史时间戳）",
+      "origin": "",
+      "writtenBy": [
+        "TruthProvenanceRecorded.payloadJson"
+      ],
+      "role": "State",
+      "noteId": "617d2e3c-10f3-4cd1-9b65-84ad3e5f27ff",
+      "codeFqn": "net.imadz.metarch.domain.entities.TruthSourceProvenanceEntity.TruthSourceProvenanceState.payloadJson",
+      "codeFqnCount": 4,
+      "businessDef": "包装/裁决面 JSON 原文（不可再生成·含历史时间戳）"
+    },
+    {
+      "name": "recordedAt",
+      "dataType": "Instant",
+      "description": "入库时间戳",
+      "origin": "",
+      "writtenBy": [
+        "TruthProvenanceRecorded.recordedAt"
+      ],
+      "role": "State",
+      "noteId": "3bd756fa-bd33-4d55-a52b-076a09ec2233",
+      "codeFqn": "net.imadz.metarch.domain.entities.TruthSourceProvenanceEntity.TruthSourceProvenanceState.recordedAt",
+      "codeFqnCount": 4,
+      "businessDef": "入库时间戳"
+    },
+    {
+      "name": "recordedBy",
+      "dataType": "String",
+      "description": "入库人",
+      "origin": "",
+      "writtenBy": [
+        "TruthProvenanceRecorded.recordedBy"
+      ],
+      "role": "State",
+      "noteId": "1605f851-780c-4d1c-9104-c6a9ec162b32",
+      "codeFqn": "net.imadz.metarch.domain.entities.TruthSourceProvenanceEntity.TruthSourceProvenanceState.recordedBy",
+      "codeFqnCount": 4,
+      "businessDef": "入库人"
+    }
+  ],
+  "emptyState": "TODO",
+  "commands": [
+    {
+      "name": "RecordTruthProvenance",
+      "fields": []
+    }
+  ],
+  "events": [
+    {
+      "name": "TruthProvenanceRecorded",
+      "fields": []
+    }
+  ],
+  "statusTransitions": {},
+  "commandHandlers": []
+}

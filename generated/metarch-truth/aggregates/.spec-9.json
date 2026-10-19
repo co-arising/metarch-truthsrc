@@ -1,0 +1,324 @@
+{
+  "package": "generated.aggregate",
+  "name": "Note",
+  "objectName": "NoteEntity",
+  "stateType": "NoteEntityState",
+  "commandType": "NoteEntityCommand",
+  "eventType": "NoteEntityEvent",
+  "stateFields": [
+    {
+      "name": "tenantId",
+      "dataType": "String (UUID)",
+      "description": "所属租户",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "CollisionDetected.tenantId",
+        "CollisionResolved.tenantId",
+        "NoteCaptured.tenantId",
+        "NoteContentUpdated.tenantId",
+        "NoteRemoved.tenantId"
+      ],
+      "role": "State",
+      "noteId": "e83da258-ce3c-4510-9ce7-35a0ee9aa572",
+      "codeFqn": "net.imadz.metarch.domain.entities.NoteEntity.NoteState.tenantId",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "status",
+      "dataType": "String",
+      "description": "captured / collisionPending / resolved / removed",
+      "origin": "",
+      "writtenBy": [
+        "CollisionDetected",
+        "CollisionResolved",
+        "NoteCaptured",
+        "NoteRemoved"
+      ],
+      "role": "State",
+      "noteId": "579542e4-8723-45c5-bf63-02947b49c6e2",
+      "codeFqn": "net.imadz.metarch.domain.entities.NoteEntity.NoteState.status",
+      "codeFqnCount": 4,
+      "businessDef": "captured / collisionPending / resolved / removed"
+    },
+    {
+      "name": "externalId",
+      "dataType": "String",
+      "description": "【新增】Miro板上的Item ID",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "NoteCaptured.externalId"
+      ],
+      "role": "State",
+      "noteId": "0e0b8683-daca-4292-92db-13a27664060a",
+      "codeFqn": "net.imadz.metarch.domain.entities.NoteEntity.NoteState.externalId",
+      "codeFqnCount": 4,
+      "businessDef": "【新增】Miro板上的Item ID",
+      "uiLabel": "Miro卡片ID"
+    },
+    {
+      "name": "boardId",
+      "dataType": "String",
+      "description": "【新增】所属白板",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "NoteCaptured.boardId"
+      ],
+      "role": "State",
+      "noteId": "adbec919-2e4e-4079-90fa-f2ad803730ef",
+      "codeFqn": "net.imadz.metarch.domain.entities.NoteEntity.NoteState.boardId",
+      "codeFqnCount": 4,
+      "businessDef": "【新增】所属白板",
+      "uiLabel": "Miro板ID"
+    },
+    {
+      "name": "sessionId",
+      "dataType": "String (UUID)",
+      "description": "唯一标识",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "NoteCaptured.sessionId"
+      ],
+      "role": "State",
+      "noteId": "43bb424c-ce12-4291-b46a-fa7c230f834f",
+      "codeFqn": "net.imadz.metarch.domain.entities.NoteEntity.NoteState.sessionId",
+      "codeFqnCount": 4,
+      "businessDef": "唯一标识",
+      "uiLabel": "所属场次"
+    },
+    {
+      "name": "content",
+      "dataType": "String",
+      "description": "便签核心文本",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "NoteCaptured.content"
+      ],
+      "role": "State",
+      "noteId": "8822759c-cb93-4ea1-ade9-6390b7837685",
+      "codeFqn": "net.imadz.metarch.domain.entities.NoteEntity.NoteState.content",
+      "codeFqnCount": 4,
+      "businessDef": "便签核心文本",
+      "uiLabel": "业务事实"
+    },
+    {
+      "name": "type",
+      "dataType": "String",
+      "description": "EVENT/COMMAND/ROLE/EXTERNAL_SYSTEM/TIMER/POLICY/PROCESS_MANAGER/AGGREGATE/SUBDOMAIN/CONTEXT/CONTEXT_RELATION/INVARIANT/STORY/READ_MODEL/QUESTION(工作坊便签形态,2026-08-21 评审定稿;question 即 hotspot)",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "NoteCaptured.type"
+      ],
+      "role": "State",
+      "noteId": "afc057aa-7384-4b0c-bfb9-ff3f492d0262",
+      "codeFqn": "net.imadz.metarch.domain.entities.NoteEntity.NoteState.type",
+      "codeFqnCount": 2,
+      "businessDef": "EVENT/COMMAND/ROLE/EXTERNAL_SYSTEM/TIMER/POLICY/PROCESS_MANAGER/AGGREGATE/SUBDOMAIN/CONTEXT/CONTEXT_RELATION/INVARIANT/STORY/READ_MODEL/QUESTION/RELATION(工作坊便签形态,2026-08-21 评审定稿;question 即 hotspot)",
+      "uiLabel": "类型"
+    },
+    {
+      "name": "timeline",
+      "dataType": "String",
+      "description": "仅事件类型需要",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "NoteCaptured.timeline"
+      ],
+      "role": "State",
+      "noteId": "794f4052-6ab6-4423-ab66-a926d9a267c5",
+      "codeFqn": "net.imadz.metarch.domain.entities.NoteEntity.NoteState.timeline",
+      "codeFqnCount": 4,
+      "businessDef": "仅事件类型需要",
+      "uiLabel": "时间线"
+    },
+    {
+      "name": "pivotal",
+      "dataType": "Boolean",
+      "description": "红色标签",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "NoteCaptured.pivotal"
+      ],
+      "role": "State",
+      "noteId": "e8f8941f-b95b-4405-8370-de83c81f39c9",
+      "codeFqn": "net.imadz.metarch.domain.entities.NoteEntity.NoteState.pivotal",
+      "codeFqnCount": 4,
+      "businessDef": "红色标签",
+      "uiLabel": "关键事件"
+    },
+    {
+      "name": "name",
+      "dataType": "String",
+      "description": "便签名称（结构知识本体锚点——图投影 LINKS 边端点解析键）",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "NoteCaptured.name"
+      ],
+      "role": "State",
+      "noteId": "6587cd24-340f-40f9-aa2c-f442cc5fc63f",
+      "codeFqn": "net.imadz.metarch.domain.entities.NoteEntity.NoteState.name",
+      "codeFqnCount": 4,
+      "businessDef": "便签名称（结构知识本体锚点——图投影 LINKS 边端点解析键）",
+      "uiLabel": "便签名称"
+    },
+    {
+      "name": "links",
+      "dataType": "List<String>",
+      "description": "血缘链接列表（真源 type:name 原文·图投影按 externalId 解析端点）",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "NoteCaptured.links"
+      ],
+      "role": "State",
+      "noteId": "f344e883-8e89-4788-a3cc-8a30bc6f85a9",
+      "codeFqn": "net.imadz.metarch.domain.entities.NoteEntity.NoteState.links",
+      "codeFqnCount": 4,
+      "businessDef": "血缘链接列表（真源 type:name 原文·图投影按 externalId 解析端点）",
+      "uiLabel": "血缘链接"
+    },
+    {
+      "name": "createdAt",
+      "dataType": "Instant",
+      "description": "系统时间",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "NoteCaptured.timestamp"
+      ],
+      "role": "State",
+      "noteId": "aaa86067-f953-4f73-9704-45b8c6a82707",
+      "codeFqn": "net.imadz.metarch.domain.entities.NoteEntity.NoteState.createdAt",
+      "codeFqnCount": 4,
+      "businessDef": "系统时间",
+      "uiLabel": "创建时间"
+    },
+    {
+      "name": "createdBy",
+      "dataType": "String",
+      "description": "贴便签的人",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "NoteCaptured.triggeredBy"
+      ],
+      "role": "State",
+      "noteId": "955afdf6-de2a-4fda-bea2-1a702cc47446",
+      "codeFqn": "net.imadz.metarch.domain.entities.NoteEntity.NoteState.createdBy",
+      "codeFqnCount": 4,
+      "businessDef": "贴便签的人",
+      "uiLabel": "创建人"
+    },
+    {
+      "name": "collisionName",
+      "dataType": "String",
+      "description": "同名冲突记录",
+      "origin": "SYSTEM_QUERIED",
+      "writtenBy": [
+        "CollisionDetected.name"
+      ],
+      "role": "State",
+      "noteId": "40cc02d8-bac5-49aa-bc30-ee1c61392a76",
+      "codeFqn": "net.imadz.metarch.domain.entities.NoteEntity.NoteState.collisionName",
+      "codeFqnCount": 4,
+      "businessDef": "同名冲突记录",
+      "uiLabel": "冲突名称"
+    },
+    {
+      "name": "removedAt",
+      "dataType": "Instant",
+      "description": "软删除时间(2026-08-21 评审:IR-NOTE-CMD-004/007 便签未被移除/删除的载体)",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "NoteRemoved.timestamp"
+      ],
+      "role": "State",
+      "noteId": "e2b9c3b8-0aa1-41ec-83c7-9d94cf625d95",
+      "codeFqn": "net.imadz.metarch.domain.entities.NoteEntity.NoteState.removedAt",
+      "codeFqnCount": 4,
+      "businessDef": "软删除时间(2026-08-21 评审:IR-NOTE-CMD-004/007 便签未被移除/删除的载体)",
+      "uiLabel": "移除时间"
+    },
+    {
+      "name": "knowledgeId",
+      "dataType": "String",
+      "description": "知识库概念 id（可空——项目选取知识库内容入 workshop 时建立·同一逻辑便签身份三键之一；R3c 同 knowledgeId 不同 noteId＝替身非冲突／R4 无 knowledgeId 撞知识库名＝冲突·EP_S2_89 R1-R6）",
+      "origin": "",
+      "writtenBy": [
+        "NoteCaptured.knowledgeId",
+        "CollisionResolved.targetKnowledgeId"
+      ],
+      "noteId": "f4b48131-d8eb-408b-823d-8a6837078a2b",
+      "codeFqn": "net.imadz.metarch.domain.entities.NoteEntity.NoteState.knowledgeId",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "info",
+      "dataType": "String",
+      "description": "显示信息（NoteInfoUpdated.info 更新）",
+      "writtenBy": [
+        "NoteInfoUpdated.info"
+      ],
+      "role": "State",
+      "noteId": "248fd896-6ab0-4e6c-884e-4e90d2443255",
+      "codeFqn": "net.imadz.metarch.domain.entities.NoteEntity.NoteState.info",
+      "codeFqnCount": 4,
+      "businessDef": "显示信息",
+      "uiLabel": "信息"
+    }
+  ],
+  "emptyState": "TODO",
+  "commands": [
+    {
+      "name": "CaptureNote",
+      "fields": []
+    },
+    {
+      "name": "ResolveCollision",
+      "fields": []
+    },
+    {
+      "name": "UpdateNoteContent",
+      "fields": []
+    },
+    {
+      "name": "RemoveNote",
+      "fields": []
+    },
+    {
+      "name": "UpdateNoteInfo",
+      "fields": []
+    }
+  ],
+  "events": [
+    {
+      "name": "NoteCaptured",
+      "fields": []
+    },
+    {
+      "name": "CollisionDetected",
+      "fields": []
+    },
+    {
+      "name": "CollisionResolved",
+      "fields": []
+    },
+    {
+      "name": "NoteContentUpdated",
+      "fields": []
+    },
+    {
+      "name": "NoteRemoved",
+      "fields": []
+    },
+    {
+      "name": "NoteInfoUpdated",
+      "fields": []
+    }
+  ],
+  "statusTransitions": {
+    "NoteContentUpdated": null,
+    "CollisionDetected": "collisionPending",
+    "CollisionResolved": "resolved",
+    "NoteCaptured": "captured",
+    "NoteRemoved": "removed",
+    "NoteInfoUpdated": null
+  },
+  "commandHandlers": []
+}

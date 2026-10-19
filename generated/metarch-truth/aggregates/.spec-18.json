@@ -1,0 +1,153 @@
+{
+  "package": "generated.aggregate",
+  "name": "Subdomain",
+  "objectName": "SubdomainEntity",
+  "stateType": "SubdomainEntityState",
+  "commandType": "SubdomainEntityCommand",
+  "eventType": "SubdomainEntityEvent",
+  "stateFields": [
+    {
+      "name": "tenantId",
+      "dataType": "String (UUID)",
+      "description": "所属租户",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "SubdomainClassified.tenantId",
+        "SubdomainKindUpdated.tenantId"
+      ],
+      "role": "State",
+      "noteId": "75ef8908-21b3-4de1-b8cb-90457b25ff73",
+      "codeFqn": "net.imadz.metarch.domain.entities.SubdomainEntity.SubdomainState.tenantId",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "name",
+      "dataType": "String",
+      "description": "公司的正式注册名称",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "SubdomainClassified.name"
+      ],
+      "role": "State",
+      "noteId": "c16d7a50-1751-4fb0-b7a6-29a555fc3ad6",
+      "codeFqn": "net.imadz.metarch.domain.entities.SubdomainEntity.SubdomainState.name",
+      "codeFqnCount": 4,
+      "businessDef": "公司的正式注册名称",
+      "uiLabel": "子域名称"
+    },
+    {
+      "name": "description",
+      "dataType": "String",
+      "description": "为什么做这件事",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "SubdomainClassified.description"
+      ],
+      "role": "State",
+      "noteId": "11115017-2b16-42d8-8fb8-2943e391c817",
+      "codeFqn": "net.imadz.metarch.domain.entities.SubdomainEntity.SubdomainState.description",
+      "codeFqnCount": 4,
+      "businessDef": "为什么做这件事",
+      "uiLabel": "子域职责"
+    },
+    {
+      "name": "kind",
+      "dataType": "String",
+      "description": "core/supporting/generic",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "SubdomainClassified.kind"
+      ],
+      "role": "State",
+      "noteId": "9ea07e07-6079-4c21-8969-571db8308225",
+      "codeFqn": "net.imadz.metarch.domain.entities.SubdomainEntity.SubdomainState.kind",
+      "codeFqnCount": 4,
+      "businessDef": "core/supporting/generic",
+      "uiLabel": "业务类型"
+    },
+    {
+      "name": "buyOrBuild",
+      "dataType": "String",
+      "description": "buy/build/undecided",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "SubdomainClassified.buyOrBuild"
+      ],
+      "role": "State",
+      "noteId": "1d9786dc-0c17-41a7-aa1a-88e06589860a",
+      "codeFqn": "net.imadz.metarch.domain.entities.SubdomainEntity.SubdomainState.buyOrBuild",
+      "codeFqnCount": 4,
+      "businessDef": "buy/build/undecided",
+      "uiLabel": "采购策略"
+    },
+    {
+      "name": "aggregateIds",
+      "dataType": "List<String (UUID)>",
+      "description": "IDs of aggregates in this subdomain",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "SubdomainClassified.aggregateIds"
+      ],
+      "role": "State",
+      "noteId": "e06a4f70-4a4c-4367-b9ca-3a3bfbed1665",
+      "codeFqn": "net.imadz.metarch.domain.entities.SubdomainEntity.SubdomainState.aggregateIds",
+      "codeFqnCount": 4,
+      "businessDef": "IDs of aggregates in this subdomain",
+      "uiLabel": "包含聚合",
+      "derivation": "ClassifySubdomain.aggregateIds -> SubdomainClassified.aggregateIds -> State"
+    },
+    {
+      "name": "classifiedAt",
+      "dataType": "Instant",
+      "description": "time when the subdomain was classified",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "SubdomainClassified.timestamp"
+      ],
+      "role": "State",
+      "noteId": "34cf0b19-b6f8-436e-b4ac-e089658f2d97",
+      "codeFqn": "net.imadz.metarch.domain.entities.SubdomainEntity.SubdomainState.classifiedAt",
+      "codeFqnCount": 4,
+      "businessDef": "time when the subdomain was classified",
+      "uiLabel": "分类时间"
+    },
+    {
+      "name": "classifiedBy",
+      "dataType": "String",
+      "description": "user who classified the subdomain",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "SubdomainClassified.triggeredBy"
+      ],
+      "role": "State",
+      "noteId": "66e2f6b4-17b9-47b3-b84d-d5ea4effd9de",
+      "codeFqn": "net.imadz.metarch.domain.entities.SubdomainEntity.SubdomainState.classifiedBy",
+      "codeFqnCount": 4,
+      "businessDef": "user who classified the subdomain",
+      "uiLabel": "分类人"
+    }
+  ],
+  "emptyState": "TODO",
+  "commands": [
+    {
+      "name": "ClassifySubdomain",
+      "fields": []
+    },
+    {
+      "name": "UpdateSubdomainKind",
+      "fields": []
+    }
+  ],
+  "events": [
+    {
+      "name": "SubdomainClassified",
+      "fields": []
+    },
+    {
+      "name": "SubdomainKindUpdated",
+      "fields": []
+    }
+  ],
+  "statusTransitions": {},
+  "commandHandlers": []
+}

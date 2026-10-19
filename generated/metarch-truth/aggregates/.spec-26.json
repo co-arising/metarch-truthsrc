@@ -1,0 +1,171 @@
+{
+  "package": "generated.aggregate",
+  "name": "Workshop",
+  "objectName": "WorkshopEntity",
+  "stateType": "WorkshopEntityState",
+  "commandType": "WorkshopEntityCommand",
+  "eventType": "WorkshopEntityEvent",
+  "stateFields": [
+    {
+      "name": "tenantId",
+      "dataType": "String (UUID)",
+      "description": "所属租户",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "WorkshopCompleted.tenantId",
+        "WorkshopScheduled.tenantId",
+        "WorkshopStarted.tenantId"
+      ],
+      "role": "State",
+      "noteId": "0d9461c5-2ad6-43be-9aef-21a13c7bf749",
+      "codeFqn": "net.imadz.metarch.domain.entities.WorkshopEntity.WorkshopState.tenantId",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "status",
+      "dataType": "String",
+      "description": "scheduled / active / completed",
+      "origin": "",
+      "writtenBy": [
+        "WorkshopCompleted",
+        "WorkshopScheduled",
+        "WorkshopStarted"
+      ],
+      "role": "State",
+      "noteId": "95e67fa4-84a8-4e9e-b7bb-c9b0c943b235",
+      "codeFqn": "net.imadz.metarch.domain.entities.WorkshopEntity.WorkshopState.status",
+      "codeFqnCount": 4,
+      "businessDef": "scheduled / active / completed"
+    },
+    {
+      "name": "projectId",
+      "dataType": "String (UUID)",
+      "description": "本次评审针对的专项",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "WorkshopScheduled.projectId"
+      ],
+      "role": "State",
+      "noteId": "1a32cc95-f9a9-48a0-9341-1dc35d541ab6",
+      "codeFqn": "net.imadz.metarch.domain.entities.WorkshopEntity.WorkshopState.projectId",
+      "codeFqnCount": 4,
+      "businessDef": "本次评审针对的专项",
+      "uiLabel": "所属专项"
+    },
+    {
+      "name": "scheduledAt",
+      "dataType": "Instant",
+      "description": "time when the workshop was scheduled",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "WorkshopScheduled.scheduledAt"
+      ],
+      "role": "State",
+      "noteId": "498bad95-c76d-49dd-a034-ae4447713d53",
+      "codeFqn": "net.imadz.metarch.domain.entities.WorkshopEntity.WorkshopState.scheduledAt",
+      "codeFqnCount": 4,
+      "businessDef": "time when the workshop was scheduled",
+      "uiLabel": "计划时间"
+    },
+    {
+      "name": "startedAt",
+      "dataType": "Instant",
+      "description": "time when the workshop started",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "WorkshopStarted.startedAt"
+      ],
+      "role": "State",
+      "noteId": "5c4c68b7-bd03-4647-887d-a3f0888f15f6",
+      "codeFqn": "net.imadz.metarch.domain.entities.WorkshopEntity.WorkshopState.startedAt",
+      "codeFqnCount": 4,
+      "businessDef": "time when the workshop started",
+      "uiLabel": "实际开始时间"
+    },
+    {
+      "name": "completedAt",
+      "dataType": "Instant",
+      "description": "time when the workshop was completed",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "WorkshopCompleted.completedAt"
+      ],
+      "role": "State",
+      "noteId": "becd3883-6cd3-4105-8ca9-b82695592222",
+      "codeFqn": "net.imadz.metarch.domain.entities.WorkshopEntity.WorkshopState.completedAt",
+      "codeFqnCount": 4,
+      "businessDef": "time when the workshop was completed",
+      "uiLabel": "实际结束时间"
+    },
+    {
+      "name": "patchId",
+      "dataType": "String (UUID)",
+      "description": "工作坊补丁号（出生即定）",
+      "origin": "SYSTEM_GENERATED",
+      "writtenBy": [
+        "WorkshopScheduled.patchId"
+      ],
+      "role": "State",
+      "noteId": "1ba16f50-9eb2-4b7e-bd56-65d2f90da94f",
+      "codeFqn": "net.imadz.metarch.domain.entities.WorkshopEntity.WorkshopState.patchId",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "memberRoles",
+      "dataType": "List<ParticipantRole>",
+      "businessDef": "工作坊名册（userId→role 键控·Session 协作面预置角色·同 key 再赋值＝改角不重复）",
+      "uiLabel": "名册角色",
+      "origin": "PROPAGATED",
+      "derivation": "AssignWorkshopRole.userId/role -> WorkshopRoleAssigned -> State（upsert by userId）",
+      "writtenBy": [
+        "WorkshopRoleAssigned.userId"
+      ],
+      "noteId": "eb0dbc22-a3b5-4ac4-864f-0b3bdff81a09",
+      "codeFqn": "net.imadz.metarch.domain.entities.WorkshopEntity.WorkshopState.memberRoles",
+      "codeFqnCount": 4
+    }
+  ],
+  "emptyState": "TODO",
+  "commands": [
+    {
+      "name": "ScheduleWorkshop",
+      "fields": []
+    },
+    {
+      "name": "StartWorkshop",
+      "fields": []
+    },
+    {
+      "name": "CompleteWorkshop",
+      "fields": []
+    },
+    {
+      "name": "AssignWorkshopRole",
+      "fields": []
+    }
+  ],
+  "events": [
+    {
+      "name": "WorkshopScheduled",
+      "fields": []
+    },
+    {
+      "name": "WorkshopStarted",
+      "fields": []
+    },
+    {
+      "name": "WorkshopCompleted",
+      "fields": []
+    },
+    {
+      "name": "WorkshopRoleAssigned",
+      "fields": []
+    }
+  ],
+  "statusTransitions": {
+    "WorkshopStarted": "active",
+    "WorkshopCompleted": "completed",
+    "WorkshopScheduled": "scheduled"
+  },
+  "commandHandlers": []
+}

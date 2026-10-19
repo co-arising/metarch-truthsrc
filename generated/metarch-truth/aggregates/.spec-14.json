@@ -1,0 +1,191 @@
+{
+  "package": "generated.aggregate",
+  "name": "Relation",
+  "objectName": "RelationEntity",
+  "stateType": "RelationEntityState",
+  "commandType": "RelationEntityCommand",
+  "eventType": "RelationEntityEvent",
+  "stateFields": [
+    {
+      "name": "tenantId",
+      "dataType": "String (UUID)",
+      "description": "所属租户",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "RelationCreated.tenantId",
+        "RelationRemoved.tenantId",
+        "RelationUpdated.tenantId"
+      ],
+      "role": "State",
+      "noteId": "dd984620-08db-44f1-ac69-affb6b3fdf40",
+      "codeFqn": "net.imadz.metarch.domain.entities.RelationEntity.RelationState.tenantId",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "sourceId",
+      "dataType": "String (UUID)",
+      "description": "关系起始概念节点",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "RelationCreated.sourceId"
+      ],
+      "role": "State",
+      "noteId": "6a062c03-26d0-404c-8299-28bfb9051664",
+      "codeFqn": "net.imadz.metarch.domain.entities.RelationEntity.RelationState.sourceId",
+      "codeFqnCount": 4,
+      "businessDef": "关系起始概念节点",
+      "uiLabel": "源概念ID"
+    },
+    {
+      "name": "targetId",
+      "dataType": "String (UUID)",
+      "description": "关系结束概念节点",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "RelationCreated.targetId"
+      ],
+      "role": "State",
+      "noteId": "af35f81e-291c-400d-ad67-f92778ea3382",
+      "codeFqn": "net.imadz.metarch.domain.entities.RelationEntity.RelationState.targetId",
+      "codeFqnCount": 4,
+      "businessDef": "关系结束概念节点",
+      "uiLabel": "目标概念ID"
+    },
+    {
+      "name": "relationType",
+      "dataType": "String (Enum)",
+      "description": "关系语义（OWNS/PRODUCES/TRANSITIONS_TO 等 15 种）",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "RelationCreated.relationType"
+      ],
+      "role": "State",
+      "noteId": "766a4f8d-c318-483f-acc5-ca2148dca9f5",
+      "codeFqn": "net.imadz.metarch.domain.entities.RelationEntity.RelationState.relationType",
+      "codeFqnCount": 4,
+      "businessDef": "关系语义（OWNS/PRODUCES/TRANSITIONS_TO 等 15 种）",
+      "uiLabel": "关系类型"
+    },
+    {
+      "name": "condition",
+      "dataType": "JSON",
+      "description": "行为触发条件（如 triggerEvent、表达式）",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "RelationCreated.condition"
+      ],
+      "role": "State",
+      "noteId": "e83144e1-267f-497d-afc0-df554ebcf8f7",
+      "codeFqn": "net.imadz.metarch.domain.entities.RelationEntity.RelationState.condition",
+      "codeFqnCount": 4,
+      "businessDef": "行为触发条件（如 triggerEvent、表达式）",
+      "uiLabel": "守卫条件"
+    },
+    {
+      "name": "mapping",
+      "dataType": "JSON",
+      "description": "源→目标字段对应关系",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "RelationCreated.mapping"
+      ],
+      "role": "State",
+      "noteId": "e0cb377e-12fa-4e66-a950-a3e82cf16efa",
+      "codeFqn": "net.imadz.metarch.domain.entities.RelationEntity.RelationState.mapping",
+      "codeFqnCount": 4,
+      "businessDef": "源→目标字段对应关系",
+      "uiLabel": "数据映射"
+    },
+    {
+      "name": "order",
+      "dataType": "Integer",
+      "description": "同类型关系中的执行顺序",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "RelationCreated.order"
+      ],
+      "role": "State",
+      "noteId": "3fab5c96-afe5-45ed-ad5d-45b6ec3dbe0b",
+      "codeFqn": "net.imadz.metarch.domain.entities.RelationEntity.RelationState.order",
+      "codeFqnCount": 4,
+      "businessDef": "同类型关系中的执行顺序",
+      "uiLabel": "执行顺序"
+    },
+    {
+      "name": "metadata",
+      "dataType": "JSON",
+      "description": "携带一致性、上下游关系细分等",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "RelationCreated.metadata"
+      ],
+      "role": "State",
+      "noteId": "cb81ddb0-263a-473c-a170-9a993684ec50",
+      "codeFqn": "net.imadz.metarch.domain.entities.RelationEntity.RelationState.metadata",
+      "codeFqnCount": 4,
+      "businessDef": "携带一致性、上下游关系细分等",
+      "uiLabel": "扩展属性"
+    },
+    {
+      "name": "createdAt",
+      "dataType": "Instant",
+      "description": "关系创建时间戳",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "RelationCreated.createdAt"
+      ],
+      "role": "State",
+      "noteId": "0658ffe0-9771-4d58-a7eb-a745547ed6b8",
+      "codeFqn": "net.imadz.metarch.domain.entities.RelationEntity.RelationState.createdAt",
+      "codeFqnCount": 4,
+      "businessDef": "关系创建时间戳",
+      "uiLabel": "创建时间"
+    },
+    {
+      "name": "createdBy",
+      "dataType": "String",
+      "description": "创建者（用户或 AI）",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "RelationCreated.triggeredBy"
+      ],
+      "role": "State",
+      "noteId": "9773b0eb-02e4-428d-80b8-26ff58c7c66f",
+      "codeFqn": "net.imadz.metarch.domain.entities.RelationEntity.RelationState.createdBy",
+      "codeFqnCount": 4,
+      "businessDef": "创建者（用户或 AI）",
+      "uiLabel": "创建人"
+    }
+  ],
+  "emptyState": "TODO",
+  "commands": [
+    {
+      "name": "RelateConcept",
+      "fields": []
+    },
+    {
+      "name": "UnrelateConcept",
+      "fields": []
+    },
+    {
+      "name": "UpdateRelation",
+      "fields": []
+    }
+  ],
+  "events": [
+    {
+      "name": "RelationCreated",
+      "fields": []
+    },
+    {
+      "name": "RelationRemoved",
+      "fields": []
+    },
+    {
+      "name": "RelationUpdated",
+      "fields": []
+    }
+  ],
+  "statusTransitions": {},
+  "commandHandlers": []
+}

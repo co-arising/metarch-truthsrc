@@ -1,0 +1,138 @@
+{
+  "package": "generated.aggregate",
+  "name": "FsmDefinition",
+  "objectName": "FsmDefinitionEntity",
+  "stateType": "FsmDefinitionEntityState",
+  "commandType": "FsmDefinitionEntityCommand",
+  "eventType": "FsmDefinitionEntityEvent",
+  "stateFields": [
+    {
+      "name": "status",
+      "dataType": "String",
+      "description": "PROPOSED / ESTABLISHED",
+      "origin": "",
+      "writtenBy": [
+        "FsmDefinitionEstablished",
+        "FsmDefinitionProposed",
+        "FsmElementsUpdated"
+      ],
+      "role": "State",
+      "noteId": "374f225e-8aad-4e71-a1f3-7c285633c172",
+      "codeFqn": "net.imadz.metarch.domain.entities.FsmDefinitionEntity.FsmDefinitionState.status",
+      "codeFqnCount": 4,
+      "businessDef": "PROPOSED / ESTABLISHED"
+    },
+    {
+      "name": "aggregateName",
+      "dataType": "String",
+      "description": "该状态机所属的聚合名（18 聚合之一）",
+      "origin": "BUSINESS_INPUT",
+      "writtenBy": [
+        "FsmDefinitionProposed.aggregateName"
+      ],
+      "role": "State",
+      "noteId": "d723e3c0-9e78-42a6-aeed-a1eb637a6d46",
+      "codeFqn": "net.imadz.metarch.domain.entities.FsmDefinitionEntity.FsmDefinitionState.aggregateName",
+      "codeFqnCount": 4,
+      "businessDef": "该状态机所属的聚合名（18 聚合之一）",
+      "uiLabel": "聚合名"
+    },
+    {
+      "name": "states",
+      "dataType": "List<FsmStateDef>",
+      "description": "状态清单（INITIAL 至多一个）",
+      "origin": "BUSINESS_INPUT",
+      "writtenBy": [
+        "FsmDefinitionProposed.states",
+        "FsmElementsUpdated.states"
+      ],
+      "role": "State",
+      "noteId": "ca816403-b834-4177-833c-21cac513b685",
+      "codeFqn": "net.imadz.metarch.domain.entities.FsmDefinitionEntity.FsmDefinitionState.states",
+      "codeFqnCount": 4,
+      "businessDef": "状态清单（INITIAL 至多一个）",
+      "uiLabel": "状态"
+    },
+    {
+      "name": "transitions",
+      "dataType": "List<FsmTransition>",
+      "description": "迁移清单（source/target 须存在于 states·guard=RuleRef）",
+      "origin": "BUSINESS_INPUT",
+      "writtenBy": [
+        "FsmDefinitionProposed.transitions",
+        "FsmElementsUpdated.transitions"
+      ],
+      "role": "State",
+      "noteId": "97082845-883d-4a83-be25-65ac874f4930",
+      "codeFqn": "net.imadz.metarch.domain.entities.FsmDefinitionEntity.FsmDefinitionState.transitions",
+      "codeFqnCount": 4,
+      "businessDef": "迁移清单（source/target 须存在于 states·guard=RuleRef）",
+      "uiLabel": "迁移"
+    },
+    {
+      "name": "createdAt",
+      "dataType": "Instant",
+      "description": "创建时间",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "FsmDefinitionProposed.createdAt"
+      ],
+      "role": "State",
+      "noteId": "135836f4-1065-41b7-b475-1ff2dd9ee563",
+      "codeFqn": "net.imadz.metarch.domain.entities.FsmDefinitionEntity.FsmDefinitionState.createdAt",
+      "codeFqnCount": 4,
+      "businessDef": "创建时间",
+      "uiLabel": "创建时间"
+    },
+    {
+      "name": "createdBy",
+      "dataType": "String",
+      "description": "创建者（AI 提案=ai-inference）",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "FsmDefinitionProposed.createdBy"
+      ],
+      "role": "State",
+      "noteId": "b989e283-97a8-4e39-9cfd-fd20952d6ae9",
+      "codeFqn": "net.imadz.metarch.domain.entities.FsmDefinitionEntity.FsmDefinitionState.createdBy",
+      "codeFqnCount": 4,
+      "businessDef": "创建者（AI 提案=ai-inference）",
+      "uiLabel": "创建者"
+    }
+  ],
+  "emptyState": "TODO",
+  "commands": [
+    {
+      "name": "ProposeFsmDefinition",
+      "fields": []
+    },
+    {
+      "name": "UpdateFsmElements",
+      "fields": []
+    },
+    {
+      "name": "EstablishFsmDefinition",
+      "fields": []
+    }
+  ],
+  "events": [
+    {
+      "name": "FsmDefinitionProposed",
+      "fields": []
+    },
+    {
+      "name": "FsmElementsUpdated",
+      "fields": []
+    },
+    {
+      "name": "FsmDefinitionEstablished",
+      "fields": []
+    }
+  ],
+  "statusTransitions": {
+    "FsmDefinitionProposed": "PROPOSED",
+    "FsmElementsUpdated": "PROPOSED",
+    "FsmDefinitionEstablished": "ESTABLISHED"
+  },
+  "commandHandlers": []
+}

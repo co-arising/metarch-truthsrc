@@ -1,0 +1,224 @@
+{
+  "package": "generated.aggregate",
+  "name": "Session",
+  "objectName": "SessionEntity",
+  "stateType": "SessionEntityState",
+  "commandType": "SessionEntityCommand",
+  "eventType": "SessionEntityEvent",
+  "stateFields": [
+    {
+      "name": "tenantId",
+      "dataType": "String (UUID)",
+      "description": "所属租户",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "ObserverInvited.tenantId",
+        "ParticipantInvited.tenantId",
+        "SessionClosed.tenantId",
+        "SessionCompleted.tenantId",
+        "SessionOpened.tenantId",
+        "SessionPrepared.tenantId",
+        "SessionRoleAssigned.tenantId"
+      ],
+      "role": "State",
+      "noteId": "400bcfb1-5d59-479f-8ff0-cbc6299677d2",
+      "codeFqn": "net.imadz.metarch.domain.entities.SessionEntity.SessionState.tenantId",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "status",
+      "dataType": "String",
+      "description": "prepared / opened / closed / completed",
+      "origin": "",
+      "writtenBy": [
+        "SessionCompleted",
+        "SessionOpened",
+        "SessionPrepared",
+        "SessionClosed"
+      ],
+      "role": "State",
+      "noteId": "1944dfbe-98a8-4b7e-b73e-64a5d9e02a91",
+      "codeFqn": "net.imadz.metarch.domain.entities.SessionEntity.SessionState.status",
+      "codeFqnCount": 4,
+      "businessDef": "prepared / opened / closed / completed"
+    },
+    {
+      "name": "stageId",
+      "dataType": "String (UUID)",
+      "description": "唯一标识",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "SessionOpened.stageId"
+      ],
+      "role": "State",
+      "noteId": "063f2508-1c1c-409d-b143-303fe8cb708b",
+      "codeFqn": "net.imadz.metarch.domain.entities.SessionEntity.SessionState.stageId",
+      "codeFqnCount": 4,
+      "businessDef": "唯一标识",
+      "uiLabel": "所属阶段"
+    },
+    {
+      "name": "participantUserIds",
+      "dataType": "List<String (UUID)>",
+      "description": "list of participant user IDs",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "SessionPrepared.participantUserIds"
+      ],
+      "role": "State",
+      "noteId": "fb3f3023-6627-4add-93ca-7a5ec4ac99ab",
+      "codeFqn": "net.imadz.metarch.domain.entities.SessionEntity.SessionState.participantUserIds",
+      "codeFqnCount": 4,
+      "businessDef": "list of participant user IDs",
+      "uiLabel": "在场成员",
+      "derivation": "PrepareSession.participantUserIds -> SessionPrepared.participantUserIds -> State"
+    },
+    {
+      "name": "observerUserIds",
+      "dataType": "List<String (UUID)>",
+      "description": "list of observer user IDs",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "SessionPrepared.observerUserIds"
+      ],
+      "role": "State",
+      "noteId": "05a4f3b7-e54d-4f99-ba8d-8104a56613d6",
+      "codeFqn": "net.imadz.metarch.domain.entities.SessionEntity.SessionState.observerUserIds",
+      "codeFqnCount": 4,
+      "businessDef": "list of observer user IDs",
+      "uiLabel": "观察员",
+      "derivation": "PrepareSession.observerUserIds -> SessionPrepared.observerUserIds -> State"
+    },
+    {
+      "name": "openedAt",
+      "dataType": "Instant",
+      "description": "time when the session was opened",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "SessionOpened.timestamp"
+      ],
+      "role": "State",
+      "noteId": "7deaf753-fc78-4dcd-ba9b-8ac2d691b8db",
+      "codeFqn": "net.imadz.metarch.domain.entities.SessionEntity.SessionState.openedAt",
+      "codeFqnCount": 4,
+      "businessDef": "time when the session was opened",
+      "uiLabel": "开启时间"
+    },
+    {
+      "name": "preparedAt",
+      "dataType": "Instant",
+      "description": "time when the session was prepared",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "SessionPrepared.timestamp"
+      ],
+      "role": "State",
+      "noteId": "bb3ef4e2-bc0e-4380-94e2-9b56b977843e",
+      "codeFqn": "net.imadz.metarch.domain.entities.SessionEntity.SessionState.preparedAt",
+      "codeFqnCount": 4,
+      "businessDef": "time when the session was prepared",
+      "uiLabel": "就绪时间"
+    },
+    {
+      "name": "closedAt",
+      "dataType": "Instant",
+      "description": "time when the session was closed",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "SessionClosed.timestamp",
+        "SessionCompleted.timestamp"
+      ],
+      "role": "State",
+      "noteId": "4c98fa1d-af37-497e-b55c-35417f2207f0",
+      "codeFqn": "net.imadz.metarch.domain.entities.SessionEntity.SessionState.closedAt",
+      "codeFqnCount": 4,
+      "businessDef": "time when the session was closed",
+      "uiLabel": "关闭时间"
+    },
+    {
+      "name": "participantRoles",
+      "dataType": "List<ParticipantRole>",
+      "businessDef": "会话角色名册（userId→role 键控·同 key 再赋值＝改角不重复）",
+      "uiLabel": "会话角色名册",
+      "origin": "PROPAGATED",
+      "derivation": "AssignSessionRole.userId/role -> SessionRoleAssigned -> State（upsert by userId）",
+      "writtenBy": [
+        "SessionRoleAssigned.userId"
+      ],
+      "noteId": "37ec8988-9e5f-44c9-8fd2-ec300f598e27",
+      "codeFqn": "net.imadz.metarch.domain.entities.SessionEntity.SessionState.participantRoles",
+      "codeFqnCount": 4
+    }
+  ],
+  "emptyState": "TODO",
+  "commands": [
+    {
+      "name": "AssignSessionRole",
+      "fields": []
+    },
+    {
+      "name": "CloseSession",
+      "fields": []
+    },
+    {
+      "name": "CompleteSession",
+      "fields": []
+    },
+    {
+      "name": "InviteObserver",
+      "fields": []
+    },
+    {
+      "name": "InviteParticipant",
+      "fields": []
+    },
+    {
+      "name": "OpenSession",
+      "fields": []
+    },
+    {
+      "name": "PrepareSession",
+      "fields": []
+    }
+  ],
+  "events": [
+    {
+      "name": "ObserverInvited",
+      "fields": []
+    },
+    {
+      "name": "ParticipantInvited",
+      "fields": []
+    },
+    {
+      "name": "SessionClosed",
+      "fields": []
+    },
+    {
+      "name": "SessionCompleted",
+      "fields": []
+    },
+    {
+      "name": "SessionOpened",
+      "fields": []
+    },
+    {
+      "name": "SessionPrepared",
+      "fields": []
+    },
+    {
+      "name": "SessionRoleAssigned",
+      "fields": []
+    }
+  ],
+  "statusTransitions": {
+    "ObserverInvited": null,
+    "ParticipantInvited": null,
+    "SessionRoleAssigned": null,
+    "SessionPrepared": "prepared",
+    "SessionOpened": "opened",
+    "SessionCompleted": "completed",
+    "SessionClosed": "closed"
+  },
+  "commandHandlers": []
+}

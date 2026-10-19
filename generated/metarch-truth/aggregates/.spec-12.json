@@ -1,0 +1,268 @@
+{
+  "package": "generated.aggregate",
+  "name": "Question",
+  "objectName": "QuestionEntity",
+  "stateType": "QuestionEntityState",
+  "commandType": "QuestionEntityCommand",
+  "eventType": "QuestionEntityEvent",
+  "stateFields": [
+    {
+      "name": "tenantId",
+      "dataType": "String (UUID)",
+      "description": "所属租户",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "QuestionAnswered.tenantId",
+        "QuestionDismissed.tenantId",
+        "QuestionRaised.tenantId",
+        "QuestionReopened.tenantId"
+      ],
+      "role": "State",
+      "noteId": "4aea85cd-1647-46ac-9f84-dc421c13b3c9",
+      "codeFqn": "net.imadz.metarch.domain.entities.QuestionEntity.QuestionState.tenantId",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "status",
+      "dataType": "String",
+      "description": "raised / answered / dismissed",
+      "origin": "",
+      "writtenBy": [
+        "QuestionAnswered",
+        "QuestionDismissed",
+        "QuestionRaised",
+        "QuestionReopened"
+      ],
+      "role": "State",
+      "noteId": "1db13c5a-1266-43a9-9a98-c30e164547a6",
+      "codeFqn": "net.imadz.metarch.domain.entities.QuestionEntity.QuestionState.status",
+      "codeFqnCount": 4,
+      "businessDef": "raised / answered / dismissed"
+    },
+    {
+      "name": "externalId",
+      "dataType": "String",
+      "description": "【新增】Miro卡片ID",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "QuestionRaised.externalId"
+      ],
+      "role": "State",
+      "noteId": "05dc422e-5fb7-4045-a1a5-3c4374e2102f",
+      "codeFqn": "net.imadz.metarch.domain.entities.QuestionEntity.QuestionState.externalId",
+      "codeFqnCount": 4,
+      "businessDef": "【新增】Miro卡片ID",
+      "uiLabel": "Miro卡片ID"
+    },
+    {
+      "name": "boardId",
+      "dataType": "String",
+      "description": "【新增】Miro板ID",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "QuestionRaised.boardId"
+      ],
+      "role": "State",
+      "noteId": "2de57c50-87bf-4f4c-bb4d-c553ebfdd869",
+      "codeFqn": "net.imadz.metarch.domain.entities.QuestionEntity.QuestionState.boardId",
+      "codeFqnCount": 4,
+      "businessDef": "【新增】Miro板ID",
+      "uiLabel": "Miro板ID"
+    },
+    {
+      "name": "sessionId",
+      "dataType": "String (UUID)",
+      "description": "唯一标识",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "QuestionRaised.sessionId"
+      ],
+      "role": "State",
+      "noteId": "20c106c1-19d4-4c8e-9734-7e4d7f2d6326",
+      "codeFqn": "net.imadz.metarch.domain.entities.QuestionEntity.QuestionState.sessionId",
+      "codeFqnCount": 4,
+      "businessDef": "唯一标识",
+      "uiLabel": "所属场次"
+    },
+    {
+      "name": "content",
+      "dataType": "String",
+      "description": "便签核心文本",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "QuestionRaised.content"
+      ],
+      "role": "State",
+      "noteId": "702dc452-3643-4ffb-96dd-e9ee2e4d1fc0",
+      "codeFqn": "net.imadz.metarch.domain.entities.QuestionEntity.QuestionState.content",
+      "codeFqnCount": 4,
+      "businessDef": "便签核心文本",
+      "uiLabel": "待决疑问"
+    },
+    {
+      "name": "linkedNoteIds",
+      "dataType": "List<String (UUID)>",
+      "description": "引用的系统便签ID",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "QuestionRaised.linkedNoteIds"
+      ],
+      "role": "State",
+      "noteId": "8cf26514-7b35-46a3-8cd2-19bf55af3a4c",
+      "codeFqn": "net.imadz.metarch.domain.entities.QuestionEntity.QuestionState.linkedNoteIds",
+      "codeFqnCount": 4,
+      "businessDef": "引用的系统便签ID",
+      "uiLabel": "关联便签",
+      "derivation": "RaiseQuestion.linkedNoteIds -> QuestionRaised.linkedNoteIds -> State"
+    },
+    {
+      "name": "raisedBy",
+      "dataType": "String",
+      "description": "user who raised the question",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "QuestionRaised.triggeredBy"
+      ],
+      "role": "State",
+      "noteId": "eb1b13c2-ce80-430e-ba9f-a5d11319d2bb",
+      "codeFqn": "net.imadz.metarch.domain.entities.QuestionEntity.QuestionState.raisedBy",
+      "codeFqnCount": 4,
+      "businessDef": "user who raised the question",
+      "uiLabel": "提问人"
+    },
+    {
+      "name": "raisedAt",
+      "dataType": "Instant",
+      "description": "time when the question was raised",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "QuestionRaised.timestamp"
+      ],
+      "role": "State",
+      "noteId": "50a90180-a25d-4f39-883e-d4235c5eefb1",
+      "codeFqn": "net.imadz.metarch.domain.entities.QuestionEntity.QuestionState.raisedAt",
+      "codeFqnCount": 4,
+      "businessDef": "time when the question was raised",
+      "uiLabel": "提问时间"
+    },
+    {
+      "name": "answeredBy",
+      "dataType": "String",
+      "description": "user who answered the question",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "QuestionAnswered.triggeredBy"
+      ],
+      "role": "State",
+      "noteId": "0e2a7e46-c3ad-441a-a033-cecd5563918e",
+      "codeFqn": "net.imadz.metarch.domain.entities.QuestionEntity.QuestionState.answeredBy",
+      "codeFqnCount": 4,
+      "businessDef": "user who answered the question",
+      "uiLabel": "解答人"
+    },
+    {
+      "name": "answeredAt",
+      "dataType": "Instant",
+      "description": "time when the question was answered",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "QuestionAnswered.timestamp"
+      ],
+      "role": "State",
+      "noteId": "2d3065ed-d949-4705-abbd-79f58a82d0cd",
+      "codeFqn": "net.imadz.metarch.domain.entities.QuestionEntity.QuestionState.answeredAt",
+      "codeFqnCount": 4,
+      "businessDef": "time when the question was answered",
+      "uiLabel": "解答时间"
+    },
+    {
+      "name": "answer",
+      "dataType": "String",
+      "description": "answer content for the question",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "QuestionAnswered.answer"
+      ],
+      "role": "State",
+      "noteId": "f6fa5d90-89a7-4518-8321-30ca3f65d656",
+      "codeFqn": "net.imadz.metarch.domain.entities.QuestionEntity.QuestionState.answer",
+      "codeFqnCount": 4,
+      "businessDef": "answer content for the question",
+      "uiLabel": "解答内容"
+    },
+    {
+      "name": "dismissedBy",
+      "dataType": "String",
+      "description": "user who dismissed the question",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "QuestionDismissed.triggeredBy"
+      ],
+      "role": "State",
+      "noteId": "ff7c4c4c-dbaa-4726-9ab7-b6451c1126a7",
+      "codeFqn": "net.imadz.metarch.domain.entities.QuestionEntity.QuestionState.dismissedBy",
+      "codeFqnCount": 4,
+      "businessDef": "user who dismissed the question",
+      "uiLabel": "关闭人"
+    },
+    {
+      "name": "dismissedAt",
+      "dataType": "Instant",
+      "description": "time when the question was dismissed",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "QuestionDismissed.timestamp"
+      ],
+      "role": "State",
+      "noteId": "c74f114f-2e5e-4b5f-b572-ee5a2d04dd44",
+      "codeFqn": "net.imadz.metarch.domain.entities.QuestionEntity.QuestionState.dismissedAt",
+      "codeFqnCount": 4,
+      "businessDef": "time when the question was dismissed",
+      "uiLabel": "关闭时间"
+    }
+  ],
+  "emptyState": "TODO",
+  "commands": [
+    {
+      "name": "RaiseQuestion",
+      "fields": []
+    },
+    {
+      "name": "AnswerQuestion",
+      "fields": []
+    },
+    {
+      "name": "DismissQuestion",
+      "fields": []
+    },
+    {
+      "name": "ReopenQuestion",
+      "fields": []
+    }
+  ],
+  "events": [
+    {
+      "name": "QuestionRaised",
+      "fields": []
+    },
+    {
+      "name": "QuestionAnswered",
+      "fields": []
+    },
+    {
+      "name": "QuestionDismissed",
+      "fields": []
+    },
+    {
+      "name": "QuestionReopened",
+      "fields": []
+    }
+  ],
+  "statusTransitions": {
+    "QuestionReopened": "raised",
+    "QuestionAnswered": "answered",
+    "QuestionDismissed": "dismissed",
+    "QuestionRaised": "raised"
+  },
+  "commandHandlers": []
+}

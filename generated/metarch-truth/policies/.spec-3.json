@@ -1,0 +1,13 @@
+{
+  "package": "generated.policy",
+  "name": "目录应用后确认补丁合并",
+  "objectName": "目录应用后确认补丁合并Policy",
+  "description": "目录应用成功后回执补丁合并（Option A 两阶段·catalog 是权威）",
+  "triggers": [
+    "KnowledgePatched"
+  ],
+  "invokes": [
+    "ConfirmPatchMerged"
+  ],
+  "rules": []
+}

@@ -1,0 +1,252 @@
+{
+  "package": "generated.aggregate",
+  "name": "KnowledgePatch",
+  "objectName": "KnowledgePatchEntity",
+  "stateType": "KnowledgePatchEntityState",
+  "commandType": "KnowledgePatchEntityCommand",
+  "eventType": "KnowledgePatchEntityEvent",
+  "stateFields": [
+    {
+      "name": "tenantId",
+      "dataType": "String (UUID)",
+      "description": "所属租户",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "KnowledgePatchMergeDeclined.tenantId",
+        "KnowledgePatchMergeRequested.tenantId",
+        "KnowledgePatchMerged.tenantId",
+        "KnowledgePatchReadyToMerged.tenantId",
+        "KnowledgePatchRejected.tenantId",
+        "KnowledgePatchSubmitted.tenantId"
+      ],
+      "role": "State",
+      "noteId": "7b09d2d5-13e9-4162-a348-4d0f4cd14f8c",
+      "codeFqn": "net.imadz.metarch.domain.entities.KnowledgePatchEntity.KnowledgePatchState.tenantId",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "status",
+      "dataType": "String",
+      "description": "PENDING/READY_TO_MERGE/MERGED/REJECTED",
+      "origin": "STATE_TRANSITION",
+      "writtenBy": [
+        "KnowledgePatchMerged",
+        "KnowledgePatchReadyToMerged",
+        "KnowledgePatchRejected",
+        "KnowledgePatchSubmitted",
+        "KnowledgePatchMergeRequested",
+        "KnowledgePatchMergeDeclined",
+        "KnowledgeMergeConflictDetected"
+      ],
+      "role": "State",
+      "noteId": "ffa73c70-4aa1-4dbb-a30c-93f443a1d843",
+      "codeFqn": "net.imadz.metarch.domain.entities.KnowledgePatchEntity.KnowledgePatchState.status",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "sessionIds",
+      "dataType": "List<String (UUID)>",
+      "description": "来源场次（累积）",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "KnowledgePatchSubmitted.sessionId"
+      ],
+      "role": "State",
+      "noteId": "0cfe2128-98b5-47a6-a45e-a45389d02ebb",
+      "codeFqn": "net.imadz.metarch.domain.entities.KnowledgePatchEntity.KnowledgePatchState.sessionIds",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "catalogId",
+      "dataType": "String (UUID)",
+      "description": "目标目录",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "KnowledgePatchSubmitted.catalogId"
+      ],
+      "role": "State",
+      "noteId": "e26fb65c-26e2-4dc7-801d-71719ace9b36",
+      "codeFqn": "net.imadz.metarch.domain.entities.KnowledgePatchEntity.KnowledgePatchState.catalogId",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "contextId",
+      "dataType": "String (UUID)",
+      "description": "限界上下文",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "KnowledgePatchSubmitted.contextId"
+      ],
+      "role": "State",
+      "noteId": "37635613-ba37-4756-8848-34de0d2ec0fd",
+      "codeFqn": "net.imadz.metarch.domain.entities.KnowledgePatchEntity.KnowledgePatchState.contextId",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "createdBy",
+      "dataType": "String",
+      "description": "提交人（git author 类比）",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "KnowledgePatchSubmitted.triggeredBy"
+      ],
+      "role": "State",
+      "noteId": "e8400121-f50d-444c-bae5-58c3c1e0c0f8",
+      "codeFqn": "net.imadz.metarch.domain.entities.KnowledgePatchEntity.KnowledgePatchState.createdBy",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "parentPatchId",
+      "dataType": "String (UUID)",
+      "description": "父提交（git parent 类比，revert 预留）",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "KnowledgePatchSubmitted.parentPatchId"
+      ],
+      "role": "State",
+      "noteId": "98e0fbdd-a9ac-44d3-9e4f-d3adadeffa69",
+      "codeFqn": "net.imadz.metarch.domain.entities.KnowledgePatchEntity.KnowledgePatchState.parentPatchId",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "patchHash",
+      "dataType": "String",
+      "description": "知识补丁内容指纹（PR≈commit id·哈希链）",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "KnowledgePatchSubmitted.patchHash"
+      ],
+      "role": "State",
+      "noteId": "1c36e604-45c4-4106-848c-df7155df7e04",
+      "codeFqn": "net.imadz.metarch.domain.entities.KnowledgePatchEntity.KnowledgePatchState.patchHash",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "concepts",
+      "dataType": "List<ConceptDelta>",
+      "description": "概念差异集（files 之一）",
+      "origin": "BUSINESS_INPUT",
+      "writtenBy": [
+        "KnowledgePatchSubmitted.concepts"
+      ],
+      "role": "State",
+      "noteId": "614d234c-f684-4026-8b0b-c8e6c9e3611a",
+      "codeFqn": "net.imadz.metarch.domain.entities.KnowledgePatchEntity.KnowledgePatchState.concepts",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "relations",
+      "dataType": "List<RelationDelta>",
+      "description": "关系差异集（files 之二）",
+      "origin": "BUSINESS_INPUT",
+      "writtenBy": [
+        "KnowledgePatchSubmitted.relations"
+      ],
+      "role": "State",
+      "noteId": "74daf424-0b46-4237-b049-54b95d5e5c15",
+      "codeFqn": "net.imadz.metarch.domain.entities.KnowledgePatchEntity.KnowledgePatchState.relations",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "createdAt",
+      "dataType": "Instant",
+      "description": "提交时间",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "KnowledgePatchSubmitted.timestamp"
+      ],
+      "role": "State",
+      "noteId": "758e13e5-9afd-43fb-971a-0a9b6618ee2e",
+      "codeFqn": "net.imadz.metarch.domain.entities.KnowledgePatchEntity.KnowledgePatchState.createdAt",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "mergedAt",
+      "dataType": "Instant",
+      "description": "正式合并时间",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "KnowledgePatchMerged.timestamp"
+      ],
+      "role": "State",
+      "noteId": "af5f28e3-0a16-44e0-828a-e848ac430fb7",
+      "codeFqn": "net.imadz.metarch.domain.entities.KnowledgePatchEntity.KnowledgePatchState.mergedAt",
+      "codeFqnCount": 4
+    }
+  ],
+  "emptyState": "TODO",
+  "commands": [
+    {
+      "name": "SubmitKnowledgePatch",
+      "fields": []
+    },
+    {
+      "name": "MergeKnowledgePatch",
+      "fields": []
+    },
+    {
+      "name": "ConfirmKnowledgeReady",
+      "fields": []
+    },
+    {
+      "name": "RejectKnowledgePatch",
+      "fields": []
+    },
+    {
+      "name": "RequestKnowledgeMerge",
+      "fields": []
+    },
+    {
+      "name": "DeclineKnowledgeMerge",
+      "fields": []
+    },
+    {
+      "name": "ConfirmPatchMerged",
+      "fields": []
+    }
+  ],
+  "events": [
+    {
+      "name": "KnowledgePatchSubmitted",
+      "fields": []
+    },
+    {
+      "name": "KnowledgePatchReadyToMerged",
+      "fields": []
+    },
+    {
+      "name": "KnowledgePatchMerged",
+      "fields": []
+    },
+    {
+      "name": "KnowledgePatchRejected",
+      "fields": []
+    },
+    {
+      "name": "KnowledgePatchMergeRequested",
+      "fields": []
+    },
+    {
+      "name": "KnowledgePatchMergeDeclined",
+      "fields": []
+    },
+    {
+      "name": "KnowledgeMergeConflictDetected",
+      "fields": []
+    },
+    {
+      "name": "KnowledgePatchMergeCommitted",
+      "fields": []
+    }
+  ],
+  "statusTransitions": {
+    "KnowledgePatchSubmitted": "PENDING",
+    "KnowledgePatchReadyToMerged": "READY_TO_MERGE",
+    "KnowledgePatchMerged": "MERGED",
+    "KnowledgePatchRejected": "REJECTED",
+    "KnowledgePatchMergeRequested": "MERGE_REQUESTED",
+    "KnowledgePatchMergeDeclined": "READY_TO_MERGE",
+    "KnowledgeMergeConflictDetected": "MERGE_REQUESTED"
+  },
+  "commandHandlers": []
+}

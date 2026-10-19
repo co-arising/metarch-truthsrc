@@ -1,0 +1,506 @@
+{
+  "package": "generated.aggregate",
+  "name": "Concept",
+  "objectName": "ConceptEntity",
+  "stateType": "ConceptEntityState",
+  "commandType": "ConceptEntityCommand",
+  "eventType": "ConceptEntityEvent",
+  "stateFields": [
+    {
+      "name": "tenantId",
+      "dataType": "String (UUID)",
+      "description": "所属租户",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "ConceptConflictWarningCreated.tenantId",
+        "ConceptConflictWarningResolved.tenantId",
+        "ConceptDeprecated.tenantId",
+        "ConceptEstablished.tenantId",
+        "ConceptParked.tenantId",
+        "ConceptRemoved.tenantId",
+        "ConceptUnparked.tenantId",
+        "ConceptUpdated.tenantId",
+        "ConceptsMerged.tenantId"
+      ],
+      "role": "State",
+      "noteId": "e13ef627-6bb7-4de5-b108-fe090f1c2160",
+      "codeFqn": "net.imadz.metarch.domain.entities.ConceptEntity.ConceptState.tenantId",
+      "codeFqnCount": 4
+    },
+    {
+      "name": "status",
+      "dataType": "String",
+      "description": "PARKED / ESTABLISHED / DEPRECATED",
+      "origin": "",
+      "writtenBy": [
+        "ConceptEstablished",
+        "ConceptDeprecated",
+        "ConceptEstablished",
+        "ConceptParked",
+        "ConceptUnparked"
+      ],
+      "role": "State",
+      "noteId": "e6d97c8b-ca22-475d-bf55-5d1da2ebaf54",
+      "codeFqn": "net.imadz.metarch.domain.entities.ConceptEntity.ConceptState.status",
+      "codeFqnCount": 4,
+      "businessDef": "PARKED / ESTABLISHED / DEPRECATED"
+    },
+    {
+      "name": "version",
+      "dataType": "Integer",
+      "description": "乐观锁版本，每次更新递增",
+      "origin": "STATE_TRANSITION",
+      "writtenBy": [
+        "ConceptConflictWarningCreated.newVersion",
+        "ConceptConflictWarningResolved.newVersion",
+        "ConceptEstablished.newVersion",
+        "ConceptDeprecated.newVersion",
+        "ConceptEstablished.newVersion",
+        "ConceptParked.newVersion",
+        "ConceptRemoved.newVersion",
+        "ConceptUnparked.newVersion",
+        "ConceptUpdated.newVersion",
+        "ConceptsMerged.newVersion"
+      ],
+      "role": "State",
+      "noteId": "48abe09d-e5e5-49d4-b65c-0a5a6717f5fd",
+      "codeFqn": "net.imadz.metarch.domain.entities.ConceptEntity.ConceptState.version",
+      "codeFqnCount": 4,
+      "businessDef": "乐观锁版本，每次更新递增",
+      "uiLabel": "版本号"
+    },
+    {
+      "name": "contextId",
+      "dataType": "String (UUID)",
+      "description": "区分同名术语，指向限界上下文/子域",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "ConceptEstablished.contextId"
+      ],
+      "role": "State",
+      "noteId": "6c3453aa-4467-48cc-8f7c-a3f437efb45a",
+      "codeFqn": "net.imadz.metarch.domain.entities.ConceptEntity.ConceptState.contextId",
+      "codeFqnCount": 4,
+      "businessDef": "区分同名术语，指向限界上下文/子域",
+      "uiLabel": "所属上下文"
+    },
+    {
+      "name": "name",
+      "dataType": "String",
+      "description": "概念的业务名称，同一上下文+类型下唯一",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "ConceptEstablished.name"
+      ],
+      "role": "State",
+      "noteId": "a1ea19d7-86c7-48e8-b0c0-c9fa3ecee9b1",
+      "codeFqn": "net.imadz.metarch.domain.entities.ConceptEntity.ConceptState.name",
+      "codeFqnCount": 4,
+      "businessDef": "概念的业务名称，同一上下文+类型下唯一",
+      "uiLabel": "标准术语"
+    },
+    {
+      "name": "kind",
+      "dataType": "String (Enum)",
+      "description": "概念分类（AGGREGATE/COMMAND/EVENT 等 22 种）",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "ConceptEstablished.kind"
+      ],
+      "role": "State",
+      "noteId": "b6dd6b3f-263f-488d-a389-b2587d21df2d",
+      "codeFqn": "net.imadz.metarch.domain.entities.ConceptEntity.ConceptState.kind",
+      "codeFqnCount": 4,
+      "businessDef": "概念分类（AGGREGATE/COMMAND/EVENT 等 22 种）",
+      "uiLabel": "DDD 类型"
+    },
+    {
+      "name": "description",
+      "dataType": "String",
+      "description": "人类可读的业务准确定义",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "ConceptEstablished.description"
+      ],
+      "role": "State",
+      "noteId": "08388f68-fd35-42f8-8bd4-336cb216aa56",
+      "codeFqn": "net.imadz.metarch.domain.entities.ConceptEntity.ConceptState.description",
+      "codeFqnCount": 4,
+      "businessDef": "人类可读的业务准确定义",
+      "uiLabel": "术语定义"
+    },
+    {
+      "name": "sourceStage",
+      "dataType": "String",
+      "description": "概念产生的工作坊阶段（如 Phase 01）",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "ConceptEstablished.sourceStage"
+      ],
+      "role": "State",
+      "noteId": "ad796e07-7a0a-4822-9e63-149710884520",
+      "codeFqn": "net.imadz.metarch.domain.entities.ConceptEntity.ConceptState.sourceStage",
+      "codeFqnCount": 4,
+      "businessDef": "概念产生的工作坊阶段（如 Phase 01）",
+      "uiLabel": "来源阶段"
+    },
+    {
+      "name": "sourceNoteIds",
+      "dataType": "List<String (UUID)>",
+      "description": "系统便签 ID 列表",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "ConceptEstablished.sourceNoteIds"
+      ],
+      "role": "State",
+      "noteId": "56518039-39c4-49b8-ac32-1342c3e076c2",
+      "codeFqn": "net.imadz.metarch.domain.entities.ConceptEntity.ConceptState.sourceNoteIds",
+      "codeFqnCount": 4,
+      "businessDef": "系统便签 ID 列表",
+      "uiLabel": "来源便签",
+      "derivation": "CreateConcept.sourceNoteIds -> ConceptEstablished.sourceNoteIds -> State"
+    },
+    {
+      "name": "hasConflictWarning",
+      "dataType": "Boolean",
+      "description": "是否存在待解决的冲突",
+      "origin": "DERIVED",
+      "role": "State",
+      "noteId": "fe1efa30-1d6b-4b49-af10-cffc57daaacd",
+      "codeFqn": "net.imadz.metarch.domain.entities.ConceptEntity.ConceptState.hasConflictWarning",
+      "codeFqnCount": 4,
+      "businessDef": "是否存在待解决的冲突",
+      "uiLabel": "冲突警告",
+      "derivation": "system calculated (conflict detection trigger)",
+      "source": "derivedFrom:conflicts.nonEmpty"
+    },
+    {
+      "name": "establishedAt",
+      "dataType": "Instant",
+      "description": "概念正式生效的时间",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "ConceptEstablished.timestamp"
+      ],
+      "role": "State",
+      "noteId": "bc3bad7d-8009-458b-826a-1f33c84b6212",
+      "codeFqn": "net.imadz.metarch.domain.entities.ConceptEntity.ConceptState.establishedAt",
+      "codeFqnCount": 4,
+      "businessDef": "概念正式生效的时间",
+      "uiLabel": "确立时间"
+    },
+    {
+      "name": "establishedBy",
+      "dataType": "String",
+      "description": "执行确立操作的用户/AI",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "ConceptEstablished.triggeredBy"
+      ],
+      "role": "State",
+      "noteId": "a13beb95-43c4-481c-adcc-d7d360393e4f",
+      "codeFqn": "net.imadz.metarch.domain.entities.ConceptEntity.ConceptState.establishedBy",
+      "codeFqnCount": 4,
+      "businessDef": "执行确立操作的用户/AI",
+      "uiLabel": "确立人"
+    },
+    {
+      "name": "parkedAt",
+      "dataType": "Instant",
+      "description": "概念被搁置的时间",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "ConceptParked.timestamp"
+      ],
+      "role": "State",
+      "noteId": "2d9d0a2f-533f-4941-8978-19abfbb47d59",
+      "codeFqn": "net.imadz.metarch.domain.entities.ConceptEntity.ConceptState.parkedAt",
+      "codeFqnCount": 4,
+      "businessDef": "概念被搁置的时间",
+      "uiLabel": "搁置时间"
+    },
+    {
+      "name": "parkedBy",
+      "dataType": "String",
+      "description": "执行搁置操作的用户/AI",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "ConceptParked.triggeredBy"
+      ],
+      "role": "State",
+      "noteId": "abfacbd4-8da7-4550-bed1-577ea8cb9c32",
+      "codeFqn": "net.imadz.metarch.domain.entities.ConceptEntity.ConceptState.parkedBy",
+      "codeFqnCount": 4,
+      "businessDef": "执行搁置操作的用户/AI",
+      "uiLabel": "搁置操作人"
+    },
+    {
+      "name": "removedAt",
+      "dataType": "Instant",
+      "description": "概念被物理移除的时间",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "ConceptRemoved.timestamp"
+      ],
+      "role": "State",
+      "noteId": "d931e369-dd7c-409d-b2df-dec0754c6546",
+      "codeFqn": "net.imadz.metarch.domain.entities.ConceptEntity.ConceptState.removedAt",
+      "codeFqnCount": 4,
+      "businessDef": "概念被物理移除的时间",
+      "uiLabel": "移除时间"
+    },
+    {
+      "name": "removedBy",
+      "dataType": "String",
+      "description": "执行移除操作的用户/AI",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "ConceptRemoved.triggeredBy"
+      ],
+      "role": "State",
+      "noteId": "cdd52d34-f2bf-4e34-bf41-8674e3b96f37",
+      "codeFqn": "net.imadz.metarch.domain.entities.ConceptEntity.ConceptState.removedBy",
+      "codeFqnCount": 4,
+      "businessDef": "执行移除操作的用户/AI",
+      "uiLabel": "移除操作人"
+    },
+    {
+      "name": "createdAt",
+      "dataType": "Instant",
+      "description": "概念首次创建的时间",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "ConceptEstablished.createdAt"
+      ],
+      "role": "State",
+      "noteId": "0ae1a312-fdd1-4fa9-9ed8-77b427414b14",
+      "codeFqn": "net.imadz.metarch.domain.entities.ConceptEntity.ConceptState.createdAt",
+      "codeFqnCount": 4,
+      "businessDef": "概念首次创建的时间",
+      "uiLabel": "创建时间"
+    },
+    {
+      "name": "createdBy",
+      "dataType": "String",
+      "description": "创建者（用户或 AI）",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "ConceptEstablished.triggeredBy"
+      ],
+      "role": "State",
+      "noteId": "10ad34ff-bad8-4700-b3b1-f254ec73472d",
+      "codeFqn": "net.imadz.metarch.domain.entities.ConceptEntity.ConceptState.createdBy",
+      "codeFqnCount": 4,
+      "businessDef": "创建者（用户或 AI）",
+      "uiLabel": "创建人"
+    },
+    {
+      "name": "modifiedAt",
+      "dataType": "Instant",
+      "description": "最后一次修改的时间戳",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "ConceptDeprecated.timestamp",
+        "ConceptEstablished.timestamp",
+        "ConceptRemoved.timestamp",
+        "ConceptUnparked.timestamp"
+      ],
+      "role": "State",
+      "noteId": "223162c3-16ea-49df-adce-3be1e6ebeb90",
+      "codeFqn": "net.imadz.metarch.domain.entities.ConceptEntity.ConceptState.modifiedAt",
+      "codeFqnCount": 4,
+      "businessDef": "最后一次修改的时间戳",
+      "uiLabel": "最近修改时间"
+    },
+    {
+      "name": "modifiedBy",
+      "dataType": "String",
+      "description": "最后一次修改的用户/AI",
+      "origin": "SYSTEM_INJECTED",
+      "writtenBy": [
+        "ConceptDeprecated.triggeredBy",
+        "ConceptEstablished.triggeredBy",
+        "ConceptRemoved.triggeredBy",
+        "ConceptUnparked.triggeredBy"
+      ],
+      "role": "State",
+      "noteId": "011846e4-57fd-4e43-ad48-697e85a3841a",
+      "codeFqn": "net.imadz.metarch.domain.entities.ConceptEntity.ConceptState.modifiedBy",
+      "codeFqnCount": 4,
+      "businessDef": "最后一次修改的用户/AI",
+      "uiLabel": "最近修改人"
+    },
+    {
+      "name": "machineSpec",
+      "dataType": "JSON",
+      "description": "机器可执行的表达式/Schema/配置",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "ConceptEstablished.machineSpec"
+      ],
+      "role": "State",
+      "noteId": "914b2c9e-2688-403d-b089-4f3490f7b61c",
+      "codeFqn": "net.imadz.metarch.domain.entities.ConceptEntity.ConceptState.machineSpec",
+      "codeFqnCount": 4,
+      "businessDef": "机器可执行的表达式/Schema/配置",
+      "uiLabel": "机器规格"
+    },
+    {
+      "name": "metadata",
+      "dataType": "JSON",
+      "description": "通用及按类型的扩展字段",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "ConceptEstablished.metadata"
+      ],
+      "role": "State",
+      "noteId": "db263514-f3b8-4d3e-97e6-05ce355dcab7",
+      "codeFqn": "net.imadz.metarch.domain.entities.ConceptEntity.ConceptState.metadata",
+      "codeFqnCount": 4,
+      "businessDef": "通用及按类型的扩展字段",
+      "uiLabel": "扩展属性"
+    },
+    {
+      "name": "sourceSessionId",
+      "dataType": "String",
+      "description": "追溯概念产生的工作坊会话",
+      "origin": "PROPAGATED",
+      "writtenBy": [
+        "ConceptEstablished.sourceSessionId"
+      ],
+      "role": "State",
+      "noteId": "85438833-cde2-418f-94b0-bdd5f0c443d7",
+      "codeFqn": "net.imadz.metarch.domain.entities.ConceptEntity.ConceptState.sourceSessionId",
+      "codeFqnCount": 4,
+      "businessDef": "追溯概念产生的工作坊会话",
+      "uiLabel": "来源会话"
+    },
+    {
+      "name": "contentHash",
+      "dataType": "String",
+      "description": "概念内容指纹（与 ConceptDelta.contentHash 比对·判定更新 vs 重放）",
+      "origin": "PROPAGATED",
+      "role": "State",
+      "noteId": "97fc2e56-e36e-46c0-97ca-859f5d2bf912",
+      "writtenBy": [
+        "ConceptEstablished",
+        "ConceptUpdated"
+      ],
+      "codeFqn": "net.imadz.metarch.domain.entities.ConceptEntity.ConceptState.contentHash",
+      "codeFqnCount": 4,
+      "businessDef": "概念内容指纹（与 ConceptDelta.contentHash 比对·判定更新 vs 重放）",
+      "uiLabel": "内容指纹"
+    },
+    {
+      "name": "anchors",
+      "dataType": "List<CodeAnchorDelta>",
+      "description": "本概念的代码落点（锚＝知识图与代码图的桥梁知识·生成期发现·整表携带）",
+      "origin": "",
+      "writtenBy": [
+        "ConceptLandingsRecorded.anchors"
+      ],
+      "role": "State",
+      "noteId": "bc399997-651d-4380-bff6-2ba14050fe93",
+      "codeFqn": "net.imadz.metarch.domain.entities.ConceptEntity.ConceptState.anchors",
+      "codeFqnCount": 4,
+      "businessDef": "本概念的代码落点（锚＝知识图与代码图的桥梁知识·生成期发现·整表携带）"
+    }
+  ],
+  "emptyState": "TODO",
+  "commands": [
+    {
+      "name": "ParkConcept",
+      "fields": []
+    },
+    {
+      "name": "UnparkConcept",
+      "fields": []
+    },
+    {
+      "name": "EstablishConcept",
+      "fields": []
+    },
+    {
+      "name": "DeprecateConcept",
+      "fields": []
+    },
+    {
+      "name": "UpdateConcept",
+      "fields": []
+    },
+    {
+      "name": "ResolveConflict",
+      "fields": []
+    },
+    {
+      "name": "RemoveConcept",
+      "fields": []
+    },
+    {
+      "name": "MergeConcepts",
+      "fields": []
+    },
+    {
+      "name": "DetectConceptConflict",
+      "fields": []
+    },
+    {
+      "name": "RecordConceptLandings",
+      "fields": []
+    }
+  ],
+  "events": [
+    {
+      "name": "ConceptParked",
+      "fields": []
+    },
+    {
+      "name": "ConceptUnparked",
+      "fields": []
+    },
+    {
+      "name": "ConceptEstablished",
+      "fields": []
+    },
+    {
+      "name": "ConceptDeprecated",
+      "fields": []
+    },
+    {
+      "name": "ConceptUpdated",
+      "fields": []
+    },
+    {
+      "name": "ConceptConflictWarningCreated",
+      "fields": []
+    },
+    {
+      "name": "ConceptConflictWarningResolved",
+      "fields": []
+    },
+    {
+      "name": "ConceptRemoved",
+      "fields": []
+    },
+    {
+      "name": "ConceptsMerged",
+      "fields": []
+    },
+    {
+      "name": "ConceptLandingsRecorded",
+      "fields": []
+    }
+  ],
+  "statusTransitions": {
+    "ConceptConflictWarningCreated": null,
+    "ConceptConflictWarningResolved": null,
+    "ConceptRemoved": null,
+    "ConceptUnparked": "ESTABLISHED",
+    "ConceptUpdated": null,
+    "ConceptsMerged": null,
+    "ConceptEstablished": "ESTABLISHED",
+    "ConceptDeprecated": "DEPRECATED",
+    "ConceptParked": "PARKED"
+  },
+  "commandHandlers": []
+}
