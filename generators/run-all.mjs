@@ -47,6 +47,12 @@ function run(gen, treeFiles, bindingFile, outSubdir, multiOut = false) {
     const codeOut = multiOut ? join(out, "out-" + count) : join(out, "out-" + count + ".scala");
     try {
       execSync(`node "${parseJs}" "${treeFile}" "${bindingFile}" "${specPath}"`, { stdio: "pipe" });
+    } catch (e) {
+      if (e.status === 2) continue; // skip: not matching type
+      results.push({ gen, status: "error", file: treeFile, error: e.message.slice(0, 200) });
+      return;
+    }
+    try {
       execSync(`node "${emitJs}" "${specPath}" "${codeOut}"`, { stdio: "pipe" });
       count++;
     } catch (e) {

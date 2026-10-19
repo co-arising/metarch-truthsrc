@@ -35,7 +35,7 @@ ${names}
 }
 
 function emitStateType() {
-  const fields = spec.stateFields.map((f) => `${f.name}: ${f.type}`).join(", ");
+  const fields = (spec.stateFields || []).map((f) => `${f.name}: ${f.type}`).join(", ");
   return `final case class ${spec.stateType}(${fields})
 object ${spec.stateType} {
   implicit val format: play.api.libs.json.Format[${spec.stateType}] =
