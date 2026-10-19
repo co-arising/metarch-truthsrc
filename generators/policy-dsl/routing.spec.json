@@ -1,0 +1,12 @@
+{
+  "package": "goldens.policydsl",
+  "name": "Failure Routing Decision",
+  "objectName": "FailureRoutingDecision",
+  "description": "Every failed item gets exactly one routing decision.",
+  "triggers": ["RunCompleted"],
+  "invokes": ["AbandonOrder", "EscalateToManual"],
+  "rules": [
+    {"onEvent": "RunCompleted", "when": "e.failedCount > 0", "emit": ["AbandonOrder(\"c1\")"]},
+    {"onEvent": "RunCompleted", "when": "e.suspicious", "emit": ["EscalateToManual(\"c1\")"]}
+  ]
+}
