@@ -1,4 +1,4 @@
 package generated.valueobject
 
-/** Value object: undefined */
-final case class VOMemberSpec(fieldName: String, dataType: String, description: String, noteId: String)
+/** Value object:  */
+final case class UcStep(no: String, atStep: String, text: String)

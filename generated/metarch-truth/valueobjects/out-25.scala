@@ -1,4 +1,4 @@
 package generated.valueobject
 
-/** Value object: undefined */
-final case class RelationDelta(action: String, relationName: String, sourceConceptName: String, targetConceptName: String, mapping: String)
+/** Value object:  */
+final case class EventBinding(slot: String, expr: String)

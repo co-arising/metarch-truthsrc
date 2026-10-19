@@ -6,46 +6,32 @@ import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}
 import net.imadz.common.CborSerializable
 import scala.math.BigDecimal
 
-final case class TenantEntityState(status: String, name: String, ownerUserId: String, orgMemberIds: String, createdAt: String, createdBy: String, suspendedAt: String, archivedAt: String) extends CborSerializable
+final case class WorkshopEntityState(tenantId: String, status: String, projectId: String, scheduledAt: String, startedAt: String, completedAt: String, patchId: String, memberRoles: String) extends CborSerializable
 
-sealed trait TenantEntityCommand extends CborSerializable
-final case class OnboardTenant() extends TenantEntityCommand
-final case class AssignTenantOwner() extends TenantEntityCommand
-final case class SuspendTenant() extends TenantEntityCommand
-final case class ResumeTenant() extends TenantEntityCommand
-final case class ArchiveTenant() extends TenantEntityCommand
-final case class UpdateTenantMemberRoster() extends TenantEntityCommand
+sealed trait WorkshopEntityCommand extends CborSerializable
 
-sealed trait TenantEntityEvent extends CborSerializable
-final case class TenantOnboarded() extends TenantEntityEvent
-final case class TenantOwnerChanged() extends TenantEntityEvent
-final case class TenantSuspended() extends TenantEntityEvent
-final case class TenantResumed() extends TenantEntityEvent
-final case class TenantArchived() extends TenantEntityEvent
-final case class TenantMemberRosterUpdated() extends TenantEntityEvent
 
-object TenantEntity {
-  def behavior(persistenceId: PersistenceId): Behavior[TenantEntityCommand] =
-    EventSourcedBehavior[TenantEntityCommand, TenantEntityEvent, TenantEntityState](
+sealed trait WorkshopEntityEvent extends CborSerializable
+
+
+object WorkshopEntity {
+  def behavior(persistenceId: PersistenceId): Behavior[WorkshopEntityCommand] =
+    EventSourcedBehavior[WorkshopEntityCommand, WorkshopEntityEvent, WorkshopEntityState](
       persistenceId = persistenceId,
-      emptyState = TODO,
+      emptyState = ???,
       commandHandler = (state, cmd) => handleCommand(state, cmd),
       eventHandler = (state, event) => applyEvent(state, event)
     )
 
-  private def handleCommand(state: TenantEntityState, cmd: TenantEntityCommand): Effect[TenantEntityEvent, TenantEntityState] =
+  private def handleCommand(state: WorkshopEntityState, cmd: WorkshopEntityCommand): Effect[WorkshopEntityEvent, WorkshopEntityState] =
     cmd match {
 
       case _ => Effect.unhandled
     }
 
-  private def applyEvent(state: TenantEntityState, event: TenantEntityEvent): TenantEntityState =
+  private def applyEvent(state: WorkshopEntityState, event: WorkshopEntityEvent): WorkshopEntityState =
     event match {
-      case _: TenantOwnerChanged => state.copy(terminalState = "null")
-      case _: TenantArchived => state.copy(terminalState = "archived")
-      case _: TenantOnboarded => state.copy(terminalState = "active")
-      case _: TenantResumed => state.copy(terminalState = "active")
-      case _: TenantSuspended => state.copy(terminalState = "suspended")
+
       case _ => state
     }
 }

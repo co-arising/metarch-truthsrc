@@ -1,468 +1,71 @@
 {
   "package": "generated.aggregate",
-  "name": "FieldModelDefinition",
-  "objectName": "FieldModelDefinitionEntity",
-  "stateType": "FieldModelDefinitionEntityState",
-  "commandType": "FieldModelDefinitionEntityCommand",
-  "eventType": "FieldModelDefinitionEntityEvent",
+  "name": "KnowledgePatch",
+  "objectName": "KnowledgePatchEntity",
+  "stateType": "KnowledgePatchEntityState",
+  "commandType": "KnowledgePatchEntityCommand",
+  "eventType": "KnowledgePatchEntityEvent",
   "stateFields": [
     {
       "name": "tenantId",
-      "dataType": "String (UUID)",
-      "description": "所属租户 id",
-      "origin": "",
-      "writtenBy": [
-        "FieldModelDeclared.tenantId"
-      ],
-      "role": "State",
-      "noteId": "f7a4d4b9-129e-43b4-93cf-99f7aab06508",
-      "codeFqn": "net.imadz.metarch.domain.entities.FieldModelDefinitionEntity.FieldModelDefinitionState.tenantId",
-      "codeFqnCount": 4,
-      "businessDef": "所属租户 id"
+      "dataType": "string"
     },
     {
-      "name": "aggregateName",
-      "dataType": "String",
-      "description": "④层聚合键",
-      "origin": "",
-      "writtenBy": [
-        "FieldModelDeclared.aggregateName"
-      ],
-      "role": "State",
-      "noteId": "0f9d707e-5bd4-4243-9951-a3eddcb6342e",
-      "codeFqn": "net.imadz.metarch.domain.entities.FieldModelDefinitionEntity.FieldModelDefinitionState.aggregateName",
-      "codeFqnCount": 4,
-      "businessDef": "④层聚合键"
+      "name": "status",
+      "dataType": "string"
     },
     {
-      "name": "entityName",
-      "dataType": "String",
-      "description": "聚合实体名",
-      "origin": "",
-      "writtenBy": [
-        "FieldModelDeclared.entityName"
-      ],
-      "role": "State",
-      "noteId": "4b570cf6-83c2-4d78-b25d-af844bb4785c",
-      "codeFqn": "net.imadz.metarch.domain.entities.FieldModelDefinitionEntity.FieldModelDefinitionState.entityName",
-      "codeFqnCount": 4,
-      "businessDef": "聚合实体名"
+      "name": "sessionIds",
+      "dataType": "string"
     },
     {
-      "name": "description",
-      "dataType": "String",
-      "description": "聚合业务描述",
-      "origin": "",
-      "writtenBy": [
-        "FieldModelDeclared.description",
-        "DescriptionRenamed.description"
-      ],
-      "role": "State",
-      "noteId": "2800fa30-a9e8-46f9-8168-7a57a8731bc7",
-      "codeFqn": "net.imadz.metarch.domain.entities.FieldModelDefinitionEntity.FieldModelDefinitionState.description",
-      "codeFqnCount": 4,
-      "businessDef": "聚合业务描述"
+      "name": "catalogId",
+      "dataType": "string"
     },
     {
-      "name": "identifierName",
-      "dataType": "String",
-      "description": "标识字段名",
-      "origin": "",
-      "writtenBy": [
-        "FieldModelDeclared.identifierName"
-      ],
-      "role": "State",
-      "noteId": "aa30bc26-f56b-460e-a2d8-7fa3146ef749",
-      "codeFqn": "net.imadz.metarch.domain.entities.FieldModelDefinitionEntity.FieldModelDefinitionState.identifierName",
-      "codeFqnCount": 4,
-      "businessDef": "标识字段名"
+      "name": "contextId",
+      "dataType": "string"
     },
     {
-      "name": "identifierType",
-      "dataType": "String",
-      "description": "标识字段类型",
-      "origin": "",
-      "writtenBy": [
-        "FieldModelDeclared.identifierType"
-      ],
-      "role": "State",
-      "noteId": "a85da15e-078e-415f-a091-c5cb5035fcd8",
-      "codeFqn": "net.imadz.metarch.domain.entities.FieldModelDefinitionEntity.FieldModelDefinitionState.identifierType",
-      "codeFqnCount": 4,
-      "businessDef": "标识字段类型"
+      "name": "createdBy",
+      "dataType": "string"
     },
     {
-      "name": "identifierOrigin",
-      "dataType": "String",
-      "description": "④层模板 identifier.origin（B4a 补面）",
-      "origin": "S2-82-B4a",
-      "writtenBy": [
-        "FieldModelDeclared.identifierOrigin"
-      ],
-      "role": "State",
-      "noteId": "ebc8acac-a05b-4029-9b31-1bc486511484",
-      "codeFqn": "net.imadz.metarch.domain.entities.FieldModelDefinitionEntity.FieldModelDefinitionState.identifierOrigin",
-      "codeFqnCount": 4,
-      "businessDef": "④层模板 identifier.origin（B4a 补面）"
+      "name": "parentPatchId",
+      "dataType": "string"
     },
     {
-      "name": "identifierDescription",
-      "dataType": "String",
-      "description": "④层模板 identifier.description（B4a 补面）",
-      "origin": "S2-82-B4a",
-      "writtenBy": [
-        "FieldModelDeclared.identifierDescription"
-      ],
-      "role": "State",
-      "noteId": "a112bd70-8a35-4339-98f1-dd100e000b45",
-      "codeFqn": "net.imadz.metarch.domain.entities.FieldModelDefinitionEntity.FieldModelDefinitionState.identifierDescription",
-      "codeFqnCount": 4,
-      "businessDef": "④层模板 identifier.description（B4a 补面）"
+      "name": "patchHash",
+      "dataType": "string"
     },
     {
-      "name": "tenantScoped",
-      "dataType": "Boolean",
-      "description": "租户作用域标记",
-      "origin": "",
-      "writtenBy": [
-        "FieldModelDeclared.tenantScoped"
-      ],
-      "role": "State",
-      "noteId": "ca6dfc80-da37-4b71-80d6-d0563a61492e",
-      "codeFqn": "net.imadz.metarch.domain.entities.FieldModelDefinitionEntity.FieldModelDefinitionState.tenantScoped",
-      "codeFqnCount": 4,
-      "businessDef": "租户作用域标记"
-    },
-    {
-      "name": "statusEnumValues",
-      "dataType": "List<String>",
-      "description": "statusEnum 值集",
-      "origin": "",
-      "writtenBy": [
-        "AggregateStatusPatched.statusEnumValues"
-      ],
-      "role": "State",
-      "noteId": "81e5728b-0b98-494d-b188-0c0861a2959f",
-      "codeFqn": "net.imadz.metarch.domain.entities.FieldModelDefinitionEntity.FieldModelDefinitionState.statusEnumValues",
-      "codeFqnCount": 4,
-      "businessDef": "statusEnum 值集"
-    },
-    {
-      "name": "statusTransitions",
-      "dataType": "List<StatusTransitionSpec>",
-      "description": "事件→目标状态迁移集",
-      "origin": "",
-      "writtenBy": [
-        "AggregateStatusPatched.statusTransitions"
-      ],
-      "role": "State",
-      "noteId": "fa2fb9ac-2716-444f-9927-487b37a12980",
-      "codeFqn": "net.imadz.metarch.domain.entities.FieldModelDefinitionEntity.FieldModelDefinitionState.statusTransitions",
-      "codeFqnCount": 4,
-      "businessDef": "事件→目标状态迁移集"
-    },
-    {
-      "name": "stateFields",
-      "dataType": "List<FieldStateSpec>",
-      "description": "状态字段规格集合",
-      "origin": "",
-      "writtenBy": [
-        "StateFieldDeclared.fieldSpec",
-        "WrittenByAdded.fieldName",
-        "WrittenByReplaced.fieldName",
-        "WrittenByCut.fieldName"
-      ],
-      "role": "State",
-      "noteId": "7351464f-fae0-4a43-abc9-a1ea5bae08bd",
-      "codeFqn": "net.imadz.metarch.domain.entities.FieldModelDefinitionEntity.FieldModelDefinitionState.stateFields",
-      "codeFqnCount": 4,
-      "businessDef": "状态字段规格集合"
-    },
-    {
-      "name": "commands",
-      "dataType": "List<FieldCommandSpec>",
-      "description": "命令规格集合",
-      "origin": "",
-      "writtenBy": [
-        "CommandDeclared.commandSpec",
-        "CommandParameterAdded.commandName"
-      ],
-      "role": "State",
-      "noteId": "a4ee2e08-8b39-4ebd-ae03-6a7699e7fc0e",
-      "codeFqn": "net.imadz.metarch.domain.entities.FieldModelDefinitionEntity.FieldModelDefinitionState.commands",
-      "codeFqnCount": 4,
-      "businessDef": "命令规格集合"
-    },
-    {
-      "name": "events",
-      "dataType": "List<FieldEventSpec>",
-      "description": "事件规格集合",
-      "origin": "",
-      "writtenBy": [
-        "EventDeclared.eventSpec",
-        "EventPayloadAdded.eventName"
-      ],
-      "role": "State",
-      "noteId": "c8c7b77e-c17f-4d71-beb5-1f1d9b95279c",
-      "codeFqn": "net.imadz.metarch.domain.entities.FieldModelDefinitionEntity.FieldModelDefinitionState.events",
-      "codeFqnCount": 4,
-      "businessDef": "事件规格集合"
+      "name": "concepts",
+      "dataType": "string"
     },
     {
       "name": "relations",
-      "dataType": "List<AggregateRelationSpec>",
-      "description": "聚合间关系规格集合",
-      "origin": "",
-      "writtenBy": [
-        "RelationDeclared.relationSpec"
-      ],
-      "role": "State",
-      "noteId": "9cf65691-725b-4c61-9fa8-b63567980217",
-      "codeFqn": "net.imadz.metarch.domain.entities.FieldModelDefinitionEntity.FieldModelDefinitionState.relations",
-      "codeFqnCount": 4,
-      "businessDef": "聚合间关系规格集合"
+      "dataType": "string"
     },
     {
-      "name": "stateGates",
-      "dataType": "List<StateGateSpec>",
-      "description": "命令级状态门禁集合",
-      "origin": "",
-      "writtenBy": [
-        "StateGateDeclared.gateSpec"
-      ],
-      "role": "State",
-      "noteId": "eb9ed292-da65-4f6a-a973-4399cf31a902",
-      "codeFqn": "net.imadz.metarch.domain.entities.FieldModelDefinitionEntity.FieldModelDefinitionState.stateGates",
-      "codeFqnCount": 4,
-      "businessDef": "命令级状态门禁集合"
+      "name": "createdAt",
+      "dataType": "string"
     },
     {
-      "name": "declaredAt",
-      "dataType": "Instant",
-      "description": "声明时间戳",
-      "origin": "",
-      "writtenBy": [
-        "FieldModelDeclared.declaredAt"
-      ],
-      "role": "State",
-      "noteId": "84582b51-90ff-49eb-954f-f35a6d6ece60",
-      "codeFqn": "net.imadz.metarch.domain.entities.FieldModelDefinitionEntity.FieldModelDefinitionState.declaredAt",
-      "codeFqnCount": 4,
-      "businessDef": "声明时间戳"
-    },
-    {
-      "name": "declaredBy",
-      "dataType": "String",
-      "description": "声明人",
-      "origin": "",
-      "writtenBy": [
-        "FieldModelDeclared.declaredBy"
-      ],
-      "role": "State",
-      "noteId": "fec26825-56de-4621-809c-55b073cfd56e",
-      "codeFqn": "net.imadz.metarch.domain.entities.FieldModelDefinitionEntity.FieldModelDefinitionState.declaredBy",
-      "codeFqnCount": 4,
-      "businessDef": "声明人"
-    },
-    {
-      "name": "terminalStates",
-      "dataType": "List<String>",
-      "description": "终态状态值集",
-      "origin": "",
-      "writtenBy": [
-        "AggregateStatusPatched.terminalStates"
-      ],
-      "role": "State",
-      "noteId": "0d52de4b-5ff2-46a1-baec-17164182c364",
-      "codeFqn": "net.imadz.metarch.domain.entities.FieldModelDefinitionEntity.FieldModelDefinitionState.terminalStates",
-      "codeFqnCount": 4,
-      "businessDef": "终态状态值集"
-    },
-    {
-      "name": "removedAt",
-      "dataType": "Instant",
-      "description": "墓碑时间（软删除令·删除即打戳不物删·FieldModelRemoved 承载）",
-      "writtenBy": [
-        "FieldModelRemoved.timestamp"
-      ],
-      "role": "State",
-      "noteId": "630bddae-8a6e-4a5e-a439-babf0b385558",
-      "codeFqn": "net.imadz.metarch.domain.entities.FieldModelDefinitionEntity.FieldModelDefinitionState.removedAt",
-      "codeFqnCount": 4,
-      "businessDef": "墓碑时间（软删除令·删除即打戳不物删·FieldModelRemoved 承载）"
-    },
-    {
-      "name": "aggregateRuleRefs",
-      "dataType": "List<RuleRef>",
-      "origin": "",
-      "writtenBy": [
-        "FieldModelDeclared.aggregateRuleRefs"
-      ],
-      "role": "State",
-      "description": "聚合不变式规则引用集（立项A·登记表 aggregateInvariants·40 条剥后）",
-      "noteId": "6e716f3d-8aa7-4efd-ae13-a61b120966cd",
-      "codeFqn": "net.imadz.metarch.domain.entities.FieldModelDefinitionEntity.FieldModelDefinitionState.aggregateRuleRefs",
-      "codeFqnCount": 4,
-      "businessDef": "聚合不变式规则引用集（立项A·登记表 aggregateInvariants·40 条剥后）"
+      "name": "mergedAt",
+      "dataType": "string"
     }
   ],
-  "emptyState": "TODO",
-  "commands": [
-    {
-      "name": "DeclareFieldModel",
-      "fields": []
-    },
-    {
-      "name": "DeclareStateField",
-      "fields": []
-    },
-    {
-      "name": "AddWrittenBy",
-      "fields": []
-    },
-    {
-      "name": "ReplaceWrittenBy",
-      "fields": []
-    },
-    {
-      "name": "CutWrittenBy",
-      "fields": []
-    },
-    {
-      "name": "DeclareCommand",
-      "fields": []
-    },
-    {
-      "name": "AddCommandParameter",
-      "fields": []
-    },
-    {
-      "name": "DeclareEvent",
-      "fields": []
-    },
-    {
-      "name": "AddEventPayload",
-      "fields": []
-    },
-    {
-      "name": "PatchAggregateStatus",
-      "fields": []
-    },
-    {
-      "name": "DeclareRelation",
-      "fields": []
-    },
-    {
-      "name": "DeclareStateGate",
-      "fields": []
-    },
-    {
-      "name": "RenameDescription",
-      "fields": []
-    },
-    {
-      "name": "RemoveStateField",
-      "fields": []
-    },
-    {
-      "name": "RemoveCommand",
-      "fields": []
-    },
-    {
-      "name": "RemoveEvent",
-      "fields": []
-    },
-    {
-      "name": "RemoveRelation",
-      "fields": []
-    },
-    {
-      "name": "RemoveStateGate",
-      "fields": []
-    },
-    {
-      "name": "RemoveFieldModel",
-      "fields": []
-    }
-  ],
-  "events": [
-    {
-      "name": "FieldModelDeclared",
-      "fields": []
-    },
-    {
-      "name": "StateFieldDeclared",
-      "fields": []
-    },
-    {
-      "name": "WrittenByAdded",
-      "fields": []
-    },
-    {
-      "name": "WrittenByReplaced",
-      "fields": []
-    },
-    {
-      "name": "WrittenByCut",
-      "fields": []
-    },
-    {
-      "name": "CommandDeclared",
-      "fields": []
-    },
-    {
-      "name": "CommandParameterAdded",
-      "fields": []
-    },
-    {
-      "name": "EventDeclared",
-      "fields": []
-    },
-    {
-      "name": "EventPayloadAdded",
-      "fields": []
-    },
-    {
-      "name": "AggregateStatusPatched",
-      "fields": []
-    },
-    {
-      "name": "RelationDeclared",
-      "fields": []
-    },
-    {
-      "name": "StateGateDeclared",
-      "fields": []
-    },
-    {
-      "name": "DescriptionRenamed",
-      "fields": []
-    },
-    {
-      "name": "StateFieldRemoved",
-      "fields": []
-    },
-    {
-      "name": "CommandRemoved",
-      "fields": []
-    },
-    {
-      "name": "EventRemoved",
-      "fields": []
-    },
-    {
-      "name": "AggregateRelationRemoved",
-      "fields": []
-    },
-    {
-      "name": "StateGateRemoved",
-      "fields": []
-    },
-    {
-      "name": "FieldModelRemoved",
-      "fields": []
-    }
-  ],
-  "statusTransitions": {},
+  "emptyState": "???",
+  "commands": [],
+  "events": [],
+  "statusTransitions": {
+    "KnowledgePatchSubmitted": "PENDING",
+    "KnowledgePatchReadyToMerged": "READY_TO_MERGE",
+    "KnowledgePatchMerged": "MERGED",
+    "KnowledgePatchRejected": "REJECTED",
+    "KnowledgePatchMergeRequested": "MERGE_REQUESTED",
+    "KnowledgePatchMergeDeclined": "READY_TO_MERGE",
+    "KnowledgeMergeConflictDetected": "MERGE_REQUESTED"
+  },
   "commandHandlers": []
 }

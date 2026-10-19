@@ -6,32 +6,30 @@ import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}
 import net.imadz.common.CborSerializable
 import scala.math.BigDecimal
 
-final case class ContextRelationEntityState(tenantId: String, upstreamContextId: String, downstreamContextId: String, kind: String, integration: String, description: String, createdAt: String, createdBy: String) extends CborSerializable
+final case class DoREntityState(tenantId: String, status: String, projectId: String, targetSessionIds: String, scopeSnapshot: String, knowledgeSnapshot: String, verdicts: String, evaluatedAt: String, evaluatedBy: String, findings: String, workshopId: String, patchId: String, criterion: String, evaluatorType: String, evaluatorId: String, evaluatorRole: String, aiModelVersion: String, harnessBrand: String, harnessVersion: String, effort: String, result: String, reason: String, evidenceLinks: String, recordedAt: String, recordedBy: String, evaluatedScope: String, summary: String, description: String, severity: String) extends CborSerializable
 
-sealed trait ContextRelationEntityCommand extends CborSerializable
-final case class DefineContextRelation() extends ContextRelationEntityCommand
-final case class UpdateContextRelation() extends ContextRelationEntityCommand
+sealed trait DoREntityCommand extends CborSerializable
 
-sealed trait ContextRelationEntityEvent extends CborSerializable
-final case class ContextRelationDefined() extends ContextRelationEntityEvent
-final case class ContextRelationUpdated() extends ContextRelationEntityEvent
 
-object ContextRelationEntity {
-  def behavior(persistenceId: PersistenceId): Behavior[ContextRelationEntityCommand] =
-    EventSourcedBehavior[ContextRelationEntityCommand, ContextRelationEntityEvent, ContextRelationEntityState](
+sealed trait DoREntityEvent extends CborSerializable
+
+
+object DoREntity {
+  def behavior(persistenceId: PersistenceId): Behavior[DoREntityCommand] =
+    EventSourcedBehavior[DoREntityCommand, DoREntityEvent, DoREntityState](
       persistenceId = persistenceId,
-      emptyState = TODO,
+      emptyState = ???,
       commandHandler = (state, cmd) => handleCommand(state, cmd),
       eventHandler = (state, event) => applyEvent(state, event)
     )
 
-  private def handleCommand(state: ContextRelationEntityState, cmd: ContextRelationEntityCommand): Effect[ContextRelationEntityEvent, ContextRelationEntityState] =
+  private def handleCommand(state: DoREntityState, cmd: DoREntityCommand): Effect[DoREntityEvent, DoREntityState] =
     cmd match {
 
       case _ => Effect.unhandled
     }
 
-  private def applyEvent(state: ContextRelationEntityState, event: ContextRelationEntityEvent): ContextRelationEntityState =
+  private def applyEvent(state: DoREntityState, event: DoREntityEvent): DoREntityState =
     event match {
 
       case _ => state

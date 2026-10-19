@@ -1,11 +1,11 @@
 package generated.policy
 
-// Policy: 立项后创建目录版本
-// Triggers: ProjectInitiated
-// Invokes: CreateCatalogVersion
+// Policy: 成员加入后维护租户名册
+// Triggers: 
+// Invokes: 
 
-object 立项后创建目录版本Policy {
-  /** 项目启动后自动创建目录版本 v1.0.0（catalogId 与 Project 一对一） */
+object 成员加入后维护租户名册Policy {
+  /** whenever TenantMemberJoined then UpdateTenantMemberRoster（S2-32 名册双写联动兑现·⑤层 AcceptTenantInvitation.update-roster 声明） */
   def decide(event: Any): Seq[Any] = event match {
 
     case _ => Seq.empty

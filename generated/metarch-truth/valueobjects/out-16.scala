@@ -1,4 +1,4 @@
 package generated.valueobject
 
-/** Value object: undefined */
-final case class FieldSpec(name: String, dataType: String, description: String, role: String, noteId: String, writtenBy: String, fieldConceptId: String)
+/** Value object:  */
+final case class AggregateRelationSpec(toAggregate: String, cardinality: String, foreignKey: String, writePath: String, ruling: String, semanticType: String, causal: String, temporal: String, existence: String, targetDeletionPolicy: String, targetTypes: String, noteId: String)

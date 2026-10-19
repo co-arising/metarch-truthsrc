@@ -1,13 +1,9 @@
 {
   "package": "generated.policy",
-  "name": "补丁合并后应用到目录",
-  "objectName": "补丁合并后应用到目录Policy",
-  "description": "KnowledgePatchMerged 发生后触发 ApplyKnowledgePatch——补丁合并进链（MERGED）后自动应用到目录（headPatchId 前移 + FF/祖先冲突判定），补上「MERGE 完就停」的缺环",
-  "triggers": [
-    "KnowledgePatchMergeCommitted"
-  ],
-  "invokes": [
-    "ApplyKnowledgePatch"
-  ],
+  "name": "概念确立后检测冲突",
+  "objectName": "概念确立后检测冲突Policy",
+  "description": "whenever ConceptEstablished then DetectConceptConflict（S203 E→E 直连正解·冲突检测为系统自动语义）",
+  "triggers": [],
+  "invokes": [],
   "rules": []
 }

@@ -1,29 +1,34 @@
 {
   "package": "generated.readmodel",
-  "name": "UseCaseDefinitionDecisionView",
-  "viewType": "ReadModelUseCaseDefinition",
-  "objectName": "ReadModelUseCaseDefinitionView",
+  "name": "ValueObjectDefinitionDecisionView",
+  "viewType": "ReadModelValueObjectDefinition",
+  "objectName": "ReadModelValueObjectDefinitionView",
+  "servedBy": "",
   "sources": [],
   "fields": [
     {
       "name": "definitionId",
-      "dataType": "String (UUID)"
+      "dataType": "string"
+    },
+    {
+      "name": "voName",
+      "dataType": "string"
+    },
+    {
+      "name": "members",
+      "dataType": "string"
+    },
+    {
+      "name": "declaredAt",
+      "dataType": "string"
+    },
+    {
+      "name": "declaredBy",
+      "dataType": "string"
     },
     {
       "name": "tenantId",
-      "dataType": "String"
-    },
-    {
-      "name": "useCaseName",
-      "dataType": "String"
-    },
-    {
-      "name": "realizes",
-      "dataType": "List<String>"
-    },
-    {
-      "name": "actors",
-      "dataType": "List<String>"
+      "dataType": "string"
     }
   ]
 }

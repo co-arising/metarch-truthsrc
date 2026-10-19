@@ -6,32 +6,30 @@ import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}
 import net.imadz.common.CborSerializable
 import scala.math.BigDecimal
 
-final case class SubdomainEntityState(tenantId: String, name: String, description: String, kind: String, buyOrBuild: String, aggregateIds: String, classifiedAt: String, classifiedBy: String) extends CborSerializable
+final case class WorkgroupEntityState(tenantId: String, status: String, name: String, ownerUserId: String, memberUserIds: String, invitedUserIds: String, createdAt: String, createdBy: String, archivedAt: String) extends CborSerializable
 
-sealed trait SubdomainEntityCommand extends CborSerializable
-final case class ClassifySubdomain() extends SubdomainEntityCommand
-final case class UpdateSubdomainKind() extends SubdomainEntityCommand
+sealed trait WorkgroupEntityCommand extends CborSerializable
 
-sealed trait SubdomainEntityEvent extends CborSerializable
-final case class SubdomainClassified() extends SubdomainEntityEvent
-final case class SubdomainKindUpdated() extends SubdomainEntityEvent
 
-object SubdomainEntity {
-  def behavior(persistenceId: PersistenceId): Behavior[SubdomainEntityCommand] =
-    EventSourcedBehavior[SubdomainEntityCommand, SubdomainEntityEvent, SubdomainEntityState](
+sealed trait WorkgroupEntityEvent extends CborSerializable
+
+
+object WorkgroupEntity {
+  def behavior(persistenceId: PersistenceId): Behavior[WorkgroupEntityCommand] =
+    EventSourcedBehavior[WorkgroupEntityCommand, WorkgroupEntityEvent, WorkgroupEntityState](
       persistenceId = persistenceId,
-      emptyState = TODO,
+      emptyState = ???,
       commandHandler = (state, cmd) => handleCommand(state, cmd),
       eventHandler = (state, event) => applyEvent(state, event)
     )
 
-  private def handleCommand(state: SubdomainEntityState, cmd: SubdomainEntityCommand): Effect[SubdomainEntityEvent, SubdomainEntityState] =
+  private def handleCommand(state: WorkgroupEntityState, cmd: WorkgroupEntityCommand): Effect[WorkgroupEntityEvent, WorkgroupEntityState] =
     cmd match {
 
       case _ => Effect.unhandled
     }
 
-  private def applyEvent(state: SubdomainEntityState, event: SubdomainEntityEvent): SubdomainEntityState =
+  private def applyEvent(state: WorkgroupEntityState, event: WorkgroupEntityEvent): WorkgroupEntityState =
     event match {
 
       case _ => state

@@ -1,4 +1,4 @@
 package generated.valueobject
 
-/** Value object: undefined */
-final case class StatusTransitionSpec(eventName: String, toState: String, noteId: String)
+/** Value object:  */
+final case class FieldEdge(fieldNoteId: String, slot: String, expr: String, fieldConceptId: String)

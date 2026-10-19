@@ -1,46 +1,39 @@
 {
   "package": "generated.valueobject",
-  "name": "FieldEventSpec",
+  "name": "FieldCommandSpec",
+  "description": "",
   "fields": [
     {
-      "name": "eventName",
-      "dataType": "String"
+      "name": "commandName",
+      "dataType": "string"
     },
     {
       "name": "description",
-      "dataType": "String"
+      "dataType": "string"
     },
     {
-      "name": "humanDescription",
-      "dataType": "String"
+      "name": "produces",
+      "dataType": "string"
     },
     {
-      "name": "origin",
-      "dataType": "String"
+      "name": "preconditions",
+      "dataType": "string"
     },
     {
-      "name": "payloads",
-      "dataType": "List<FieldParamSpec>"
+      "name": "parameters",
+      "dataType": "string"
     },
     {
       "name": "noteId",
-      "dataType": "String"
+      "dataType": "string"
     },
     {
-      "name": "bindings",
-      "dataType": "List<EventBinding>"
+      "name": "guards",
+      "dataType": "string"
     },
     {
-      "name": "forEach",
-      "dataType": "String"
-    },
-    {
-      "name": "foldAssignments",
-      "dataType": "List<EventBinding>"
-    },
-    {
-      "name": "postconditionRefs",
-      "dataType": "List<RuleRef>"
+      "name": "preconditionRefs",
+      "dataType": "string"
     }
   ]
 }

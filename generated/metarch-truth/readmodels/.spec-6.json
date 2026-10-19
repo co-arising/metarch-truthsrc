@@ -3,27 +3,44 @@
   "name": "CreateWorkgroupDecisionView",
   "viewType": "ReadModelCreateWorkgroup",
   "objectName": "ReadModelCreateWorkgroupView",
+  "servedBy": "",
   "sources": [],
   "fields": [
     {
       "name": "workgroupId",
-      "dataType": "String"
+      "dataType": "string"
     },
     {
       "name": "name",
-      "dataType": "String"
+      "dataType": "string"
     },
     {
       "name": "ownerUserId",
-      "dataType": "String"
+      "dataType": "string"
     },
     {
       "name": "memberUserIds",
-      "dataType": "List<String (UUID)>"
+      "dataType": "string"
     },
     {
       "name": "invitedUserIds",
-      "dataType": "List<String (UUID)>"
+      "dataType": "string"
+    },
+    {
+      "name": "createdAt",
+      "dataType": "string"
+    },
+    {
+      "name": "createdBy",
+      "dataType": "string"
+    },
+    {
+      "name": "archivedAt",
+      "dataType": "string"
+    },
+    {
+      "name": "tenantId",
+      "dataType": "string"
     }
   ]
 }

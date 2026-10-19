@@ -6,40 +6,32 @@ import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}
 import net.imadz.common.CborSerializable
 import scala.math.BigDecimal
 
-final case class WorkshopEntityState(tenantId: String, status: String, projectId: String, scheduledAt: String, startedAt: String, completedAt: String, patchId: String, memberRoles: String) extends CborSerializable
+final case class UseCaseDefinitionEntityState(tenantId: String, useCaseName: String, realizes: String, actors: String, trigger: String, preconditions: String, postconditions: String, orchestrationType: String, mainFlowJson: String, extensionsJson: String, generatedIds: String, optionalInputs: String, declaredAt: String, declaredBy: String, removedAt: String, removedBy: String) extends CborSerializable
 
-sealed trait WorkshopEntityCommand extends CborSerializable
-final case class ScheduleWorkshop() extends WorkshopEntityCommand
-final case class StartWorkshop() extends WorkshopEntityCommand
-final case class CompleteWorkshop() extends WorkshopEntityCommand
-final case class AssignWorkshopRole() extends WorkshopEntityCommand
+sealed trait UseCaseDefinitionEntityCommand extends CborSerializable
 
-sealed trait WorkshopEntityEvent extends CborSerializable
-final case class WorkshopScheduled() extends WorkshopEntityEvent
-final case class WorkshopStarted() extends WorkshopEntityEvent
-final case class WorkshopCompleted() extends WorkshopEntityEvent
-final case class WorkshopRoleAssigned() extends WorkshopEntityEvent
 
-object WorkshopEntity {
-  def behavior(persistenceId: PersistenceId): Behavior[WorkshopEntityCommand] =
-    EventSourcedBehavior[WorkshopEntityCommand, WorkshopEntityEvent, WorkshopEntityState](
+sealed trait UseCaseDefinitionEntityEvent extends CborSerializable
+
+
+object UseCaseDefinitionEntity {
+  def behavior(persistenceId: PersistenceId): Behavior[UseCaseDefinitionEntityCommand] =
+    EventSourcedBehavior[UseCaseDefinitionEntityCommand, UseCaseDefinitionEntityEvent, UseCaseDefinitionEntityState](
       persistenceId = persistenceId,
-      emptyState = TODO,
+      emptyState = ???,
       commandHandler = (state, cmd) => handleCommand(state, cmd),
       eventHandler = (state, event) => applyEvent(state, event)
     )
 
-  private def handleCommand(state: WorkshopEntityState, cmd: WorkshopEntityCommand): Effect[WorkshopEntityEvent, WorkshopEntityState] =
+  private def handleCommand(state: UseCaseDefinitionEntityState, cmd: UseCaseDefinitionEntityCommand): Effect[UseCaseDefinitionEntityEvent, UseCaseDefinitionEntityState] =
     cmd match {
 
       case _ => Effect.unhandled
     }
 
-  private def applyEvent(state: WorkshopEntityState, event: WorkshopEntityEvent): WorkshopEntityState =
+  private def applyEvent(state: UseCaseDefinitionEntityState, event: UseCaseDefinitionEntityEvent): UseCaseDefinitionEntityState =
     event match {
-      case _: WorkshopStarted => state.copy(terminalState = "active")
-      case _: WorkshopCompleted => state.copy(terminalState = "completed")
-      case _: WorkshopScheduled => state.copy(terminalState = "scheduled")
+
       case _ => state
     }
 }

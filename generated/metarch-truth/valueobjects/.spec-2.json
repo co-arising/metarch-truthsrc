@@ -1,38 +1,19 @@
 {
   "package": "generated.valueobject",
-  "name": "CatalogConflict",
+  "name": "CatalogPatchSet",
+  "description": "",
   "fields": [
     {
-      "name": "conflictId",
-      "dataType": "String"
+      "name": "sessionId",
+      "dataType": "string"
     },
     {
-      "name": "conflictType",
-      "dataType": "String"
+      "name": "concepts",
+      "dataType": "string"
     },
     {
-      "name": "involvedSessionIds",
-      "dataType": "List<String>"
-    },
-    {
-      "name": "details",
-      "dataType": "JSON"
-    },
-    {
-      "name": "resolvedAt",
-      "dataType": "Instant"
-    },
-    {
-      "name": "resolvedBy",
-      "dataType": "String"
-    },
-    {
-      "name": "resolutionAction",
-      "dataType": "String"
-    },
-    {
-      "name": "resolutionNote",
-      "dataType": "String"
+      "name": "appliedAt",
+      "dataType": "string"
     }
   ]
 }

@@ -1,4 +1,4 @@
 package generated.valueobject
 
-/** Value object: undefined */
-final case class UcStep(no: String, atStep: String, text: String)
+/** Value object:  */
+final case class EdgeTarget(conceptId: String, name: String)

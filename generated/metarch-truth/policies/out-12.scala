@@ -1,11 +1,11 @@
 package generated.policy
 
-// Policy: DoR通过后请求合并知识
-// Triggers: DoRPassed
-// Invokes: RequestKnowledgeMerge
+// Policy: 知识就绪后完成会话
+// Triggers: 
+// Invokes: 
 
-object DoR通过后请求合并知识Policy {
-  /** DoR 门通过（DoRPassed）→ 创建合并请求（MR 门·知识管理员审阅合入·占位→正式两段式） */
+object 知识就绪后完成会话Policy {
+  /** 知识补丁确认就绪（ReadyToMerged）→ 自动完成全部来源 Session（fanOut sessionIds·知识沉淀闭环） */
   def decide(event: Any): Seq[Any] = event match {
 
     case _ => Seq.empty

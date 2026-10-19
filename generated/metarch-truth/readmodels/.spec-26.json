@@ -3,27 +3,48 @@
   "name": "RoleCommandBindingDecisionView",
   "viewType": "ReadModelRoleCommandBinding",
   "objectName": "ReadModelRoleCommandBindingView",
+  "servedBy": "",
   "sources": [],
   "fields": [
     {
       "name": "bindingId",
-      "dataType": "String (UUID)"
+      "dataType": "string"
     },
     {
       "name": "boundAt",
-      "dataType": "Instant"
+      "dataType": "string"
     },
     {
       "name": "boundBy",
-      "dataType": "String"
+      "dataType": "string"
     },
     {
       "name": "commandName",
-      "dataType": "String"
+      "dataType": "string"
     },
     {
       "name": "roleName",
-      "dataType": "String"
+      "dataType": "string"
+    },
+    {
+      "name": "ruling",
+      "dataType": "string"
+    },
+    {
+      "name": "status",
+      "dataType": "string"
+    },
+    {
+      "name": "systemCommand",
+      "dataType": "string"
+    },
+    {
+      "name": "tenantId",
+      "dataType": "string"
+    },
+    {
+      "name": "unboundAt",
+      "dataType": "string"
     }
   ]
 }

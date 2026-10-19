@@ -6,34 +6,30 @@ import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}
 import net.imadz.common.CborSerializable
 import scala.math.BigDecimal
 
-final case class RelationEntityState(tenantId: String, sourceId: String, targetId: String, relationType: String, condition: String, mapping: String, order: String, metadata: String, createdAt: String, createdBy: String) extends CborSerializable
+final case class SubdomainEntityState(tenantId: String, name: String, description: String, kind: String, buyOrBuild: String, aggregateIds: String, classifiedAt: String, classifiedBy: String) extends CborSerializable
 
-sealed trait RelationEntityCommand extends CborSerializable
-final case class RelateConcept() extends RelationEntityCommand
-final case class UnrelateConcept() extends RelationEntityCommand
-final case class UpdateRelation() extends RelationEntityCommand
+sealed trait SubdomainEntityCommand extends CborSerializable
 
-sealed trait RelationEntityEvent extends CborSerializable
-final case class RelationCreated() extends RelationEntityEvent
-final case class RelationRemoved() extends RelationEntityEvent
-final case class RelationUpdated() extends RelationEntityEvent
 
-object RelationEntity {
-  def behavior(persistenceId: PersistenceId): Behavior[RelationEntityCommand] =
-    EventSourcedBehavior[RelationEntityCommand, RelationEntityEvent, RelationEntityState](
+sealed trait SubdomainEntityEvent extends CborSerializable
+
+
+object SubdomainEntity {
+  def behavior(persistenceId: PersistenceId): Behavior[SubdomainEntityCommand] =
+    EventSourcedBehavior[SubdomainEntityCommand, SubdomainEntityEvent, SubdomainEntityState](
       persistenceId = persistenceId,
-      emptyState = TODO,
+      emptyState = ???,
       commandHandler = (state, cmd) => handleCommand(state, cmd),
       eventHandler = (state, event) => applyEvent(state, event)
     )
 
-  private def handleCommand(state: RelationEntityState, cmd: RelationEntityCommand): Effect[RelationEntityEvent, RelationEntityState] =
+  private def handleCommand(state: SubdomainEntityState, cmd: SubdomainEntityCommand): Effect[SubdomainEntityEvent, SubdomainEntityState] =
     cmd match {
 
       case _ => Effect.unhandled
     }
 
-  private def applyEvent(state: RelationEntityState, event: RelationEntityEvent): RelationEntityState =
+  private def applyEvent(state: SubdomainEntityState, event: SubdomainEntityEvent): SubdomainEntityState =
     event match {
 
       case _ => state

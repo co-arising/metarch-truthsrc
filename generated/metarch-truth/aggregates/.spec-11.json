@@ -1,284 +1,55 @@
 {
   "package": "generated.aggregate",
-  "name": "Project",
-  "objectName": "ProjectEntity",
-  "stateType": "ProjectEntityState",
-  "commandType": "ProjectEntityCommand",
-  "eventType": "ProjectEntityEvent",
+  "name": "Relation",
+  "objectName": "RelationEntity",
+  "stateType": "RelationEntityState",
+  "commandType": "RelationEntityCommand",
+  "eventType": "RelationEntityEvent",
   "stateFields": [
     {
       "name": "tenantId",
-      "dataType": "String (UUID)",
-      "description": "所属租户",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "ProjectCancelled.tenantId",
-        "ProjectCompleted.tenantId",
-        "ProjectDescriptionUpdated.tenantId",
-        "ProjectInitiated.tenantId",
-        "ProjectOwnerAssigned.tenantId",
-        "ProjectPaused.tenantId",
-        "ProjectResumed.tenantId"
-      ],
-      "role": "State",
-      "noteId": "67098665-a037-4385-a535-095bd5a09ba8",
-      "codeFqn": "net.imadz.metarch.domain.entities.ProjectEntity.ProjectState.tenantId",
-      "codeFqnCount": 4
+      "dataType": "string"
     },
     {
-      "name": "status",
-      "dataType": "String",
-      "description": "initiated / paused / resumed / completed / cancelled",
-      "origin": "",
-      "writtenBy": [
-        "ProjectCancelled",
-        "ProjectCompleted",
-        "ProjectInitiated",
-        "ProjectPaused",
-        "ProjectResumed"
-      ],
-      "role": "State",
-      "noteId": "42b2b206-9240-421b-9604-ebd0aef13420",
-      "codeFqn": "net.imadz.metarch.domain.entities.ProjectEntity.ProjectState.status",
-      "codeFqnCount": 4,
-      "businessDef": "initiated / paused / resumed / completed / cancelled"
+      "name": "sourceId",
+      "dataType": "string"
     },
     {
-      "name": "workgroupId",
-      "dataType": "String (UUID)",
-      "description": "内部协作小组唯一标识",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "ProjectInitiated.workgroupId"
-      ],
-      "role": "State",
-      "noteId": "619bad86-faf5-45a1-b16c-156f9a243ebc",
-      "codeFqn": "net.imadz.metarch.domain.entities.ProjectEntity.ProjectState.workgroupId",
-      "codeFqnCount": 4,
-      "businessDef": "内部协作小组唯一标识",
-      "uiLabel": "所属工作组"
+      "name": "targetId",
+      "dataType": "string"
     },
     {
-      "name": "ownerUserId",
-      "dataType": "String (UUID)",
-      "description": "最高权限管理员",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "ProjectOwnerAssigned.ownerUserId",
-        "ProjectInitiated.projectOwnerUserId"
-      ],
-      "role": "State",
-      "noteId": "ab2f28d1-19b3-439c-9083-db78e230b82e",
-      "codeFqn": "net.imadz.metarch.domain.entities.ProjectEntity.ProjectState.ownerUserId",
-      "codeFqnCount": 4,
-      "businessDef": "最高权限管理员",
-      "uiLabel": "专项负责人"
+      "name": "relationType",
+      "dataType": "string"
     },
     {
-      "name": "name",
-      "dataType": "String",
-      "description": "如“订单履约建模”",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "ProjectInitiated.name"
-      ],
-      "role": "State",
-      "noteId": "2d8d1566-0a1b-4a6d-8d1c-691a4e3c7d1f",
-      "codeFqn": "net.imadz.metarch.domain.entities.ProjectEntity.ProjectState.name",
-      "codeFqnCount": 4,
-      "businessDef": "如“订单履约建模”",
-      "uiLabel": "专项名称"
+      "name": "condition",
+      "dataType": "string"
     },
     {
-      "name": "description",
-      "dataType": "String",
-      "description": "为什么做这件事",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "ProjectInitiated.description"
-      ],
-      "role": "State",
-      "noteId": "018f746b-ed8a-40e1-8376-c17a2dcf4ffa",
-      "codeFqn": "net.imadz.metarch.domain.entities.ProjectEntity.ProjectState.description",
-      "codeFqnCount": 4,
-      "businessDef": "为什么做这件事",
-      "uiLabel": "专项目标"
+      "name": "mapping",
+      "dataType": "string"
+    },
+    {
+      "name": "order",
+      "dataType": "string"
+    },
+    {
+      "name": "metadata",
+      "dataType": "string"
     },
     {
       "name": "createdAt",
-      "dataType": "Instant",
-      "description": "组织注册时间",
-      "origin": "SYSTEM_INJECTED",
-      "writtenBy": [
-        "ProjectInitiated.timestamp"
-      ],
-      "role": "State",
-      "noteId": "ab869ce2-5f4d-4eb0-84bc-b15e026627ec",
-      "codeFqn": "net.imadz.metarch.domain.entities.ProjectEntity.ProjectState.createdAt",
-      "codeFqnCount": 4,
-      "businessDef": "组织注册时间",
-      "uiLabel": "立项时间"
+      "dataType": "string"
     },
     {
       "name": "createdBy",
-      "dataType": "String",
-      "description": "发起入驻的用户",
-      "origin": "SYSTEM_INJECTED",
-      "writtenBy": [
-        "ProjectInitiated.triggeredBy"
-      ],
-      "role": "State",
-      "noteId": "a26d288d-c88a-4928-bcff-e78550488a53",
-      "codeFqn": "net.imadz.metarch.domain.entities.ProjectEntity.ProjectState.createdBy",
-      "codeFqnCount": 4,
-      "businessDef": "发起入驻的用户",
-      "uiLabel": "立项人"
-    },
-    {
-      "name": "startedAt",
-      "dataType": "Instant",
-      "description": "time when the project was started",
-      "origin": "SYSTEM_INJECTED",
-      "writtenBy": [
-        "ProjectInitiated.timestamp"
-      ],
-      "role": "State",
-      "noteId": "92535299-7d63-4ea0-b09c-26b95e646ad2",
-      "codeFqn": "net.imadz.metarch.domain.entities.ProjectEntity.ProjectState.startedAt",
-      "codeFqnCount": 4,
-      "businessDef": "time when the project was started",
-      "uiLabel": "开始时间"
-    },
-    {
-      "name": "completedAt",
-      "dataType": "Instant",
-      "description": "time when the project was completed",
-      "origin": "SYSTEM_INJECTED",
-      "writtenBy": [
-        "ProjectCompleted.timestamp"
-      ],
-      "role": "State",
-      "noteId": "ae2bf6de-9e8d-433c-b860-6c273c47da25",
-      "codeFqn": "net.imadz.metarch.domain.entities.ProjectEntity.ProjectState.completedAt",
-      "codeFqnCount": 4,
-      "businessDef": "time when the project was completed",
-      "uiLabel": "结项时间"
-    },
-    {
-      "name": "pausedAt",
-      "dataType": "Instant",
-      "description": "time when the project was paused",
-      "origin": "SYSTEM_INJECTED",
-      "writtenBy": [
-        "ProjectPaused.timestamp"
-      ],
-      "role": "State",
-      "noteId": "3d31e61d-3289-4460-a59c-64b8df1e727e",
-      "codeFqn": "net.imadz.metarch.domain.entities.ProjectEntity.ProjectState.pausedAt",
-      "codeFqnCount": 4,
-      "businessDef": "time when the project was paused",
-      "uiLabel": "暂缓时间"
-    },
-    {
-      "name": "cancelledAt",
-      "dataType": "Instant",
-      "description": "time when the project was cancelled",
-      "origin": "SYSTEM_INJECTED",
-      "writtenBy": [
-        "ProjectCancelled.timestamp"
-      ],
-      "role": "State",
-      "noteId": "fc77f7a3-affa-4139-960b-d24fc734b626",
-      "codeFqn": "net.imadz.metarch.domain.entities.ProjectEntity.ProjectState.cancelledAt",
-      "codeFqnCount": 4,
-      "businessDef": "time when the project was cancelled",
-      "uiLabel": "取消时间"
-    },
-    {
-      "name": "catalogId",
-      "dataType": "String (UUID)",
-      "description": "关联知识目录（立项时铸）",
-      "origin": "SYSTEM_GENERATED",
-      "writtenBy": [
-        "ProjectInitiated.catalogId"
-      ],
-      "role": "State",
-      "noteId": "d4e7c8a1-5f3b-4d92-a6e1-8c0b7f2d4e93",
-      "codeFqn": "net.imadz.metarch.domain.entities.ProjectEntity.ProjectState.catalogId",
-      "codeFqnCount": 4,
-      "businessDef": "本项目的目录版本号（立项时铸·Project↔MetaCatalog 互指）",
-      "uiLabel": "目录版本号"
+      "dataType": "string"
     }
   ],
-  "emptyState": "TODO",
-  "commands": [
-    {
-      "name": "InitiateProject",
-      "fields": []
-    },
-    {
-      "name": "AssignProjectOwner",
-      "fields": []
-    },
-    {
-      "name": "CompleteProject",
-      "fields": []
-    },
-    {
-      "name": "PauseProject",
-      "fields": []
-    },
-    {
-      "name": "ResumeProject",
-      "fields": []
-    },
-    {
-      "name": "CancelProject",
-      "fields": []
-    },
-    {
-      "name": "UpdateProjectDescription",
-      "fields": []
-    }
-  ],
-  "events": [
-    {
-      "name": "ProjectInitiated",
-      "fields": []
-    },
-    {
-      "name": "ProjectOwnerAssigned",
-      "fields": []
-    },
-    {
-      "name": "ProjectCompleted",
-      "fields": []
-    },
-    {
-      "name": "ProjectPaused",
-      "fields": []
-    },
-    {
-      "name": "ProjectResumed",
-      "fields": []
-    },
-    {
-      "name": "ProjectCancelled",
-      "fields": []
-    },
-    {
-      "name": "ProjectDescriptionUpdated",
-      "fields": []
-    }
-  ],
-  "statusTransitions": {
-    "ProjectDescriptionUpdated": null,
-    "ProjectOwnerAssigned": null,
-    "ProjectCancelled": "cancelled",
-    "ProjectCompleted": "completed",
-    "ProjectInitiated": "initiated",
-    "ProjectPaused": "paused",
-    "ProjectResumed": "resumed"
-  },
+  "emptyState": "???",
+  "commands": [],
+  "events": [],
+  "statusTransitions": {},
   "commandHandlers": []
 }

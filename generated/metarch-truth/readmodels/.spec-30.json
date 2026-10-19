@@ -3,27 +3,32 @@
   "name": "TruthSourceProvenanceDecisionView",
   "viewType": "ReadModelTruthSourceProvenance",
   "objectName": "ReadModelTruthSourceProvenanceView",
+  "servedBy": "",
   "sources": [],
   "fields": [
     {
       "name": "provenanceId",
-      "dataType": "String (UUID)"
+      "dataType": "string"
     },
     {
       "name": "sourceKey",
-      "dataType": "String"
+      "dataType": "string"
     },
     {
       "name": "payloadJson",
-      "dataType": "JSON"
+      "dataType": "string"
     },
     {
       "name": "recordedAt",
-      "dataType": "Instant"
+      "dataType": "string"
     },
     {
       "name": "recordedBy",
-      "dataType": "String"
+      "dataType": "string"
+    },
+    {
+      "name": "tenantId",
+      "dataType": "string"
     }
   ]
 }

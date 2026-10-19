@@ -3,27 +3,40 @@
   "name": "OnboardTenantDecisionView",
   "viewType": "ReadModelOnboardTenant",
   "objectName": "ReadModelOnboardTenantView",
+  "servedBy": "",
   "sources": [],
   "fields": [
     {
       "name": "tenantId",
-      "dataType": "String"
+      "dataType": "string"
     },
     {
       "name": "name",
-      "dataType": "String"
+      "dataType": "string"
     },
     {
       "name": "ownerUserId",
-      "dataType": "String"
+      "dataType": "string"
     },
     {
       "name": "orgMemberIds",
-      "dataType": "List<String (UUID)>"
+      "dataType": "string"
     },
     {
       "name": "createdAt",
-      "dataType": "Instant"
+      "dataType": "string"
+    },
+    {
+      "name": "createdBy",
+      "dataType": "string"
+    },
+    {
+      "name": "suspendedAt",
+      "dataType": "string"
+    },
+    {
+      "name": "archivedAt",
+      "dataType": "string"
     }
   ]
 }

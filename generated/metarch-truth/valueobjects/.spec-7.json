@@ -1,22 +1,27 @@
 {
   "package": "generated.valueobject",
-  "name": "ConceptIndexEntry",
+  "name": "RelationDelta",
+  "description": "",
   "fields": [
     {
-      "name": "conceptName",
-      "dataType": "String"
+      "name": "action",
+      "dataType": "string"
     },
     {
-      "name": "contextId",
-      "dataType": "String"
+      "name": "relationName",
+      "dataType": "string"
     },
     {
-      "name": "conceptId",
-      "dataType": "String (UUID)"
+      "name": "sourceConceptName",
+      "dataType": "string"
     },
     {
-      "name": "contentHash",
-      "dataType": "String"
+      "name": "targetConceptName",
+      "dataType": "string"
+    },
+    {
+      "name": "mapping",
+      "dataType": "string"
     }
   ]
 }

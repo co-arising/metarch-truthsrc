@@ -1,4 +1,4 @@
 package generated.valueobject
 
-/** Value object: undefined */
-final case class StateGateSpec(commandName: String, fromStates: String, toState: String, initial: String, noteId: String)
+/** Value object:  */
+final case class FieldSpec(name: String, dataType: String, description: String, role: String, noteId: String, writtenBy: String, fieldConceptId: String)

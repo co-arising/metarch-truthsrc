@@ -1,131 +1,99 @@
 {
   "package": "generated.aggregate",
-  "name": "ValueObjectDefinition",
-  "objectName": "ValueObjectDefinitionEntity",
-  "stateType": "ValueObjectDefinitionEntityState",
-  "commandType": "ValueObjectDefinitionEntityCommand",
-  "eventType": "ValueObjectDefinitionEntityEvent",
+  "name": "FieldModelDefinition",
+  "objectName": "FieldModelDefinitionEntity",
+  "stateType": "FieldModelDefinitionEntityState",
+  "commandType": "FieldModelDefinitionEntityCommand",
+  "eventType": "FieldModelDefinitionEntityEvent",
   "stateFields": [
     {
       "name": "tenantId",
-      "dataType": "String",
-      "description": "所属租户 id",
-      "origin": "",
-      "writtenBy": [
-        "ValueObjectDeclared.tenantId"
-      ],
-      "role": "State",
-      "noteId": "6c453b07-40e6-4251-9143-65557afbee5e",
-      "codeFqn": "net.imadz.metarch.domain.entities.ValueObjectDefinitionEntity.ValueObjectDefinitionState.tenantId",
-      "codeFqnCount": 4,
-      "businessDef": "所属租户 id"
+      "dataType": "string"
     },
     {
-      "name": "voName",
-      "dataType": "String",
-      "description": "值对象名",
-      "origin": "",
-      "writtenBy": [
-        "ValueObjectDeclared.voName"
-      ],
-      "role": "State",
-      "noteId": "62c3a311-12cf-4bb9-95f4-64a904bf8fcd",
-      "codeFqn": "net.imadz.metarch.domain.entities.ValueObjectDefinitionEntity.ValueObjectDefinitionState.voName",
-      "codeFqnCount": 4,
-      "businessDef": "值对象名"
+      "name": "aggregateName",
+      "dataType": "string"
     },
     {
-      "name": "members",
-      "dataType": "List<VOMemberSpec>",
-      "description": "成员规格（typed 列·B3 同型）",
-      "origin": "",
-      "writtenBy": [
-        "ValueObjectDeclared.members"
-      ],
-      "role": "State",
-      "noteId": "93759353-e737-43c9-827b-5f19d0e84b95",
-      "codeFqn": "net.imadz.metarch.domain.entities.ValueObjectDefinitionEntity.ValueObjectDefinitionState.members",
-      "codeFqnCount": 4,
-      "businessDef": "成员规格（typed 列·B3 同型）"
+      "name": "entityName",
+      "dataType": "string"
+    },
+    {
+      "name": "description",
+      "dataType": "string"
+    },
+    {
+      "name": "identifierName",
+      "dataType": "string"
+    },
+    {
+      "name": "identifierType",
+      "dataType": "string"
+    },
+    {
+      "name": "identifierOrigin",
+      "dataType": "string"
+    },
+    {
+      "name": "identifierDescription",
+      "dataType": "string"
+    },
+    {
+      "name": "tenantScoped",
+      "dataType": "string"
+    },
+    {
+      "name": "statusEnumValues",
+      "dataType": "string"
+    },
+    {
+      "name": "statusTransitions",
+      "dataType": "string"
+    },
+    {
+      "name": "stateFields",
+      "dataType": "string"
+    },
+    {
+      "name": "commands",
+      "dataType": "string"
+    },
+    {
+      "name": "events",
+      "dataType": "string"
+    },
+    {
+      "name": "relations",
+      "dataType": "string"
+    },
+    {
+      "name": "stateGates",
+      "dataType": "string"
     },
     {
       "name": "declaredAt",
-      "dataType": "Instant",
-      "description": "声明时间戳",
-      "origin": "",
-      "writtenBy": [
-        "ValueObjectDeclared.declaredAt"
-      ],
-      "role": "State",
-      "noteId": "59c85c85-6595-4487-b7b7-37c3c002c0d4",
-      "codeFqn": "net.imadz.metarch.domain.entities.ValueObjectDefinitionEntity.ValueObjectDefinitionState.declaredAt",
-      "codeFqnCount": 4,
-      "businessDef": "声明时间戳"
+      "dataType": "string"
     },
     {
       "name": "declaredBy",
-      "dataType": "String",
-      "description": "声明人",
-      "origin": "",
-      "writtenBy": [
-        "ValueObjectDeclared.declaredBy"
-      ],
-      "role": "State",
-      "noteId": "ba8ea27f-cf79-422e-8283-f6fff4244a6b",
-      "codeFqn": "net.imadz.metarch.domain.entities.ValueObjectDefinitionEntity.ValueObjectDefinitionState.declaredBy",
-      "codeFqnCount": 4,
-      "businessDef": "声明人"
+      "dataType": "string"
+    },
+    {
+      "name": "terminalStates",
+      "dataType": "string"
     },
     {
       "name": "removedAt",
-      "dataType": "Instant",
-      "description": "墓碑时间（软删除令·删除即打戳不物删）",
-      "origin": "",
-      "writtenBy": [
-        "ValueObjectRemoved.timestamp"
-      ],
-      "role": "State",
-      "noteId": "34c0d731-f07a-48a7-90e1-2c743635ec28",
-      "codeFqn": "net.imadz.metarch.domain.entities.ValueObjectDefinitionEntity.ValueObjectDefinitionState.removedAt",
-      "codeFqnCount": 4,
-      "businessDef": "墓碑时间（软删除令·删除即打戳不物删）"
+      "dataType": "string"
     },
     {
-      "name": "removedBy",
-      "dataType": "String",
-      "description": "执行移除操作的用户/AI",
-      "origin": "",
-      "writtenBy": [
-        "ValueObjectRemoved.triggeredBy"
-      ],
-      "role": "State",
-      "noteId": "e63b040a-5971-4118-bf78-1a23ccc876d2",
-      "codeFqn": "net.imadz.metarch.domain.entities.ValueObjectDefinitionEntity.ValueObjectDefinitionState.removedBy",
-      "codeFqnCount": 4,
-      "businessDef": "执行移除操作的用户/AI"
+      "name": "aggregateRuleRefs",
+      "dataType": "string"
     }
   ],
-  "emptyState": "TODO",
-  "commands": [
-    {
-      "name": "DeclareValueObject",
-      "fields": []
-    },
-    {
-      "name": "RemoveValueObject",
-      "fields": []
-    }
-  ],
-  "events": [
-    {
-      "name": "ValueObjectDeclared",
-      "fields": []
-    },
-    {
-      "name": "ValueObjectRemoved",
-      "fields": []
-    }
-  ],
+  "emptyState": "???",
+  "commands": [],
+  "events": [],
   "statusTransitions": {},
   "commandHandlers": []
 }

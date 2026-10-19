@@ -1,29 +1,50 @@
 {
   "package": "generated.readmodel",
-  "name": "ValueObjectDefinitionDecisionView",
-  "viewType": "ReadModelValueObjectDefinition",
-  "objectName": "ReadModelValueObjectDefinitionView",
+  "name": "UseCaseDefinitionDecisionView",
+  "viewType": "ReadModelUseCaseDefinition",
+  "objectName": "ReadModelUseCaseDefinitionView",
+  "servedBy": "",
   "sources": [],
   "fields": [
     {
       "name": "definitionId",
-      "dataType": "String (UUID)"
+      "dataType": "string"
     },
     {
-      "name": "voName",
-      "dataType": "String"
+      "name": "tenantId",
+      "dataType": "string"
     },
     {
-      "name": "members",
-      "dataType": "List<VOMemberSpec>"
+      "name": "useCaseName",
+      "dataType": "string"
     },
     {
-      "name": "declaredAt",
-      "dataType": "Instant"
+      "name": "realizes",
+      "dataType": "string"
     },
     {
-      "name": "declaredBy",
-      "dataType": "String"
+      "name": "actors",
+      "dataType": "string"
+    },
+    {
+      "name": "trigger",
+      "dataType": "string"
+    },
+    {
+      "name": "preconditions",
+      "dataType": "string"
+    },
+    {
+      "name": "postconditions",
+      "dataType": "string"
+    },
+    {
+      "name": "orchestrationType",
+      "dataType": "string"
+    },
+    {
+      "name": "mainFlowJson",
+      "dataType": "string"
     }
   ]
 }

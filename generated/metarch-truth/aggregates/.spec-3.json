@@ -1,152 +1,138 @@
 {
   "package": "generated.aggregate",
-  "name": "ContextRelation",
-  "objectName": "ContextRelationEntity",
-  "stateType": "ContextRelationEntityState",
-  "commandType": "ContextRelationEntityCommand",
-  "eventType": "ContextRelationEntityEvent",
+  "name": "DoR",
+  "objectName": "DoREntity",
+  "stateType": "DoREntityState",
+  "commandType": "DoREntityCommand",
+  "eventType": "DoREntityEvent",
   "stateFields": [
     {
       "name": "tenantId",
-      "dataType": "String (UUID)",
-      "description": "所属租户",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "ContextRelationDefined.tenantId",
-        "ContextRelationUpdated.tenantId"
-      ],
-      "role": "State",
-      "noteId": "49550678-51a5-4af5-87f1-8c88563c0d92",
-      "codeFqn": "net.imadz.metarch.domain.entities.ContextRelationEntity.ContextRelationState.tenantId",
-      "codeFqnCount": 4
+      "dataType": "string"
     },
     {
-      "name": "upstreamContextId",
-      "dataType": "String (UUID)",
-      "description": "ID of the upstream context",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "ContextRelationDefined.upstreamContextId"
-      ],
-      "role": "State",
-      "noteId": "38e9664f-a6f1-447d-a9b3-fdc82fad54bf",
-      "codeFqn": "net.imadz.metarch.domain.entities.ContextRelationEntity.ContextRelationState.upstreamContextId",
-      "codeFqnCount": 4,
-      "businessDef": "ID of the upstream context",
-      "uiLabel": "上游上下文"
+      "name": "status",
+      "dataType": "string"
     },
     {
-      "name": "downstreamContextId",
-      "dataType": "String (UUID)",
-      "description": "ID of the downstream context",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "ContextRelationDefined.downstreamContextId"
-      ],
-      "role": "State",
-      "noteId": "d9a29c9e-8f82-4828-8295-4e31cdee9a9e",
-      "codeFqn": "net.imadz.metarch.domain.entities.ContextRelationEntity.ContextRelationState.downstreamContextId",
-      "codeFqnCount": 4,
-      "businessDef": "ID of the downstream context",
-      "uiLabel": "下游上下文"
+      "name": "projectId",
+      "dataType": "string"
     },
     {
-      "name": "kind",
-      "dataType": "String",
-      "description": "CustomerSupplier/Partnership/Conformist/SharedKernel/SeparateWays",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "ContextRelationDefined.kind"
-      ],
-      "role": "State",
-      "noteId": "4ee96f28-bddb-465e-b2f8-d41817b5520c",
-      "codeFqn": "net.imadz.metarch.domain.entities.ContextRelationEntity.ContextRelationState.kind",
-      "codeFqnCount": 4,
-      "businessDef": "CustomerSupplier/Partnership/Conformist/SharedKernel/SeparateWays",
-      "uiLabel": "关系类型"
+      "name": "targetSessionIds",
+      "dataType": "string"
     },
     {
-      "name": "integration",
-      "dataType": "String",
-      "description": "ACL/OHS+PL/null",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "ContextRelationDefined.integration"
-      ],
-      "role": "State",
-      "noteId": "589d6873-6643-4236-8ada-8e467251c6b1",
-      "codeFqn": "net.imadz.metarch.domain.entities.ContextRelationEntity.ContextRelationState.integration",
-      "codeFqnCount": 4,
-      "businessDef": "ACL/OHS+PL/null",
-      "uiLabel": "防腐策略"
+      "name": "scopeSnapshot",
+      "dataType": "string"
+    },
+    {
+      "name": "knowledgeSnapshot",
+      "dataType": "string"
+    },
+    {
+      "name": "verdicts",
+      "dataType": "string"
+    },
+    {
+      "name": "evaluatedAt",
+      "dataType": "string"
+    },
+    {
+      "name": "evaluatedBy",
+      "dataType": "string"
+    },
+    {
+      "name": "findings",
+      "dataType": "string"
+    },
+    {
+      "name": "workshopId",
+      "dataType": "string"
+    },
+    {
+      "name": "patchId",
+      "dataType": "string"
+    },
+    {
+      "name": "criterion",
+      "dataType": "string"
+    },
+    {
+      "name": "evaluatorType",
+      "dataType": "string"
+    },
+    {
+      "name": "evaluatorId",
+      "dataType": "string"
+    },
+    {
+      "name": "evaluatorRole",
+      "dataType": "string"
+    },
+    {
+      "name": "aiModelVersion",
+      "dataType": "string"
+    },
+    {
+      "name": "harnessBrand",
+      "dataType": "string"
+    },
+    {
+      "name": "harnessVersion",
+      "dataType": "string"
+    },
+    {
+      "name": "effort",
+      "dataType": "string"
+    },
+    {
+      "name": "result",
+      "dataType": "string"
+    },
+    {
+      "name": "reason",
+      "dataType": "string"
+    },
+    {
+      "name": "evidenceLinks",
+      "dataType": "string"
+    },
+    {
+      "name": "recordedAt",
+      "dataType": "string"
+    },
+    {
+      "name": "recordedBy",
+      "dataType": "string"
+    },
+    {
+      "name": "evaluatedScope",
+      "dataType": "string"
+    },
+    {
+      "name": "summary",
+      "dataType": "string"
     },
     {
       "name": "description",
-      "dataType": "String",
-      "description": "为什么做这件事",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "ContextRelationDefined.description"
-      ],
-      "role": "State",
-      "noteId": "ee8b31a4-9dc9-4c76-b2ce-a9b6f32e34b7",
-      "codeFqn": "net.imadz.metarch.domain.entities.ContextRelationEntity.ContextRelationState.description",
-      "codeFqnCount": 4,
-      "businessDef": "为什么做这件事",
-      "uiLabel": "关系描述"
+      "dataType": "string"
     },
     {
-      "name": "createdAt",
-      "dataType": "Instant",
-      "description": "组织注册时间",
-      "origin": "SYSTEM_INJECTED",
-      "writtenBy": [
-        "ContextRelationDefined.timestamp"
-      ],
-      "role": "State",
-      "noteId": "ee8c8d0d-3c8a-4029-96d3-686ac0b5f4ad",
-      "codeFqn": "net.imadz.metarch.domain.entities.ContextRelationEntity.ContextRelationState.createdAt",
-      "codeFqnCount": 4,
-      "businessDef": "组织注册时间",
-      "uiLabel": "创建时间"
-    },
-    {
-      "name": "createdBy",
-      "dataType": "String",
-      "description": "发起入驻的用户",
-      "origin": "SYSTEM_INJECTED",
-      "writtenBy": [
-        "ContextRelationDefined.triggeredBy"
-      ],
-      "role": "State",
-      "noteId": "d3a3ff15-9ea0-4d2a-b81b-122769c49515",
-      "codeFqn": "net.imadz.metarch.domain.entities.ContextRelationEntity.ContextRelationState.createdBy",
-      "codeFqnCount": 4,
-      "businessDef": "发起入驻的用户",
-      "uiLabel": "创建人"
+      "name": "severity",
+      "dataType": "string"
     }
   ],
-  "emptyState": "TODO",
-  "commands": [
-    {
-      "name": "DefineContextRelation",
-      "fields": []
-    },
-    {
-      "name": "UpdateContextRelation",
-      "fields": []
-    }
-  ],
-  "events": [
-    {
-      "name": "ContextRelationDefined",
-      "fields": []
-    },
-    {
-      "name": "ContextRelationUpdated",
-      "fields": []
-    }
-  ],
-  "statusTransitions": {},
+  "emptyState": "???",
+  "commands": [],
+  "events": [],
+  "statusTransitions": {
+    "DoRFindingsSubmitted": "IN_PROGRESS",
+    "DoRPassed": "CONCLUDED",
+    "DoRVerdictSubmitted": "IN_PROGRESS",
+    "DoRVerdictFixed": "IN_PROGRESS",
+    "DoRReopened": "REOPENED",
+    "DoRRequested": "REQUESTED"
+  },
   "commandHandlers": []
 }

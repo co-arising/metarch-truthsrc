@@ -1,168 +1,71 @@
 {
   "package": "generated.aggregate",
-  "name": "User",
-  "objectName": "UserEntity",
-  "stateType": "UserEntityState",
-  "commandType": "UserEntityCommand",
-  "eventType": "UserEntityEvent",
+  "name": "ReadModelDefinition",
+  "objectName": "ReadModelDefinitionEntity",
+  "stateType": "ReadModelDefinitionEntityState",
+  "commandType": "ReadModelDefinitionEntityCommand",
+  "eventType": "ReadModelDefinitionEntityEvent",
   "stateFields": [
     {
-      "name": "status",
-      "dataType": "String",
-      "description": "active / deactivated",
-      "origin": "",
-      "writtenBy": [
-        "UserDeactivated",
-        "UserReactivated",
-        "UserRegistered"
-      ],
-      "role": "State",
-      "noteId": "ef3cbc57-58ba-4228-90a3-d21d1592429d",
-      "codeFqn": "net.imadz.metarch.domain.entities.UserEntity.UserState.status",
-      "codeFqnCount": 4,
-      "businessDef": "active / deactivated"
+      "name": "tenantId",
+      "dataType": "string"
     },
     {
-      "name": "email",
-      "dataType": "String",
-      "description": "登录凭证",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "UserRegistered.email"
-      ],
-      "role": "State",
-      "noteId": "de4477d7-6036-46f2-b372-dfb3cb29436e",
-      "codeFqn": "net.imadz.metarch.domain.entities.UserEntity.UserState.email",
-      "codeFqnCount": 4,
-      "businessDef": "登录凭证",
-      "uiLabel": "登录邮箱"
+      "name": "viewName",
+      "dataType": "string"
     },
     {
-      "name": "passwordSalt",
-      "dataType": "String",
-      "description": "【新增】为哈希增加随机盐",
-      "origin": "SYSTEM_GENERATED",
-      "role": "State",
-      "nature": "credential",
-      "noteId": "95f2fa3c-616d-41b1-a9d6-d0059f8ddc4d",
-      "businessDef": "【新增】为哈希增加随机盐",
-      "uiLabel": "密码盐值"
+      "name": "parentAggregate",
+      "dataType": "string"
     },
     {
-      "name": "passwordHash",
-      "dataType": "String",
-      "description": "不可逆加密存储",
-      "origin": "DERIVED",
-      "role": "State",
-      "nature": "credential",
-      "noteId": "b9396444-68e8-435f-a44c-b874a9df87b6",
-      "businessDef": "不可逆加密存储",
-      "uiLabel": "密码密文",
-      "derivation": "PBKDF2(RegisterUser.password, passwordSalt)（审核表 DER-USER-001）",
-      "lineageHint": "RegisterUser.password -> State"
+      "name": "viewId",
+      "dataType": "string"
     },
     {
-      "name": "authMethod",
-      "dataType": "String",
-      "description": "password / sso",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "UserRegistered.authMethod"
-      ],
-      "role": "State",
-      "noteId": "313c97e5-6c43-4b23-b7c0-6036d6736c50",
-      "codeFqn": "net.imadz.metarch.domain.entities.UserEntity.UserState.authMethod",
-      "codeFqnCount": 4,
-      "businessDef": "password / sso",
-      "uiLabel": "认证方式"
+      "name": "sourceAggregates",
+      "dataType": "string"
     },
     {
-      "name": "displayName",
-      "dataType": "String",
-      "description": "界面显示名称",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "UserRegistered.displayName"
-      ],
-      "role": "State",
-      "noteId": "4e2b84ba-daec-47a2-ade9-070502c7d4e5",
-      "codeFqn": "net.imadz.metarch.domain.entities.UserEntity.UserState.displayName",
-      "codeFqnCount": 4,
-      "businessDef": "界面显示名称",
-      "uiLabel": "姓名/昵称"
+      "name": "consumesEvents",
+      "dataType": "string"
     },
     {
-      "name": "registeredAt",
-      "dataType": "Instant",
-      "description": "time when the user registered",
-      "origin": "SYSTEM_INJECTED",
-      "writtenBy": [
-        "UserRegistered.timestamp"
-      ],
-      "role": "State",
-      "noteId": "2245a005-6114-47f0-90ab-796a3ef529a9",
-      "codeFqn": "net.imadz.metarch.domain.entities.UserEntity.UserState.registeredAt",
-      "codeFqnCount": 4,
-      "businessDef": "time when the user registered",
-      "uiLabel": "注册时间"
+      "name": "linkedStories",
+      "dataType": "string"
     },
     {
-      "name": "phoneNumber",
-      "dataType": "String",
-      "description": "全局联系电话",
-      "origin": "BUSINESS_INPUT",
-      "writtenBy": [
-        "UserProfileUpdated.phoneNumber",
-        "UserRegistered.phoneNumber"
-      ],
-      "role": "State",
-      "noteId": "d52a30b4-d8ae-4d84-b573-7dde52207bd3",
-      "codeFqn": "net.imadz.metarch.domain.entities.UserEntity.UserState.phoneNumber",
-      "codeFqnCount": 4
+      "name": "description",
+      "dataType": "string"
+    },
+    {
+      "name": "fields",
+      "dataType": "string"
+    },
+    {
+      "name": "decisionCommands",
+      "dataType": "string"
+    },
+    {
+      "name": "declaredAt",
+      "dataType": "string"
+    },
+    {
+      "name": "declaredBy",
+      "dataType": "string"
+    },
+    {
+      "name": "removedAt",
+      "dataType": "string"
+    },
+    {
+      "name": "removedBy",
+      "dataType": "string"
     }
   ],
-  "emptyState": "TODO",
-  "commands": [
-    {
-      "name": "RegisterUser",
-      "fields": []
-    },
-    {
-      "name": "DeactivateUser",
-      "fields": []
-    },
-    {
-      "name": "UpdateUserProfile",
-      "fields": []
-    },
-    {
-      "name": "ReactivateUser",
-      "fields": []
-    }
-  ],
-  "events": [
-    {
-      "name": "UserRegistered",
-      "fields": []
-    },
-    {
-      "name": "UserDeactivated",
-      "fields": []
-    },
-    {
-      "name": "UserProfileUpdated",
-      "fields": []
-    },
-    {
-      "name": "UserReactivated",
-      "fields": []
-    }
-  ],
-  "statusTransitions": {
-    "UserProfileUpdated": null,
-    "UserDeactivated": "deactivated",
-    "UserReactivated": "active",
-    "UserRegistered": "active"
-  },
+  "emptyState": "???",
+  "commands": [],
+  "events": [],
+  "statusTransitions": {},
   "commandHandlers": []
 }

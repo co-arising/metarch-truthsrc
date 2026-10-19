@@ -1,54 +1,39 @@
 {
   "package": "generated.valueobject",
-  "name": "AggregateRelationSpec",
+  "name": "CatalogConflict",
+  "description": "",
   "fields": [
     {
-      "name": "toAggregate",
-      "dataType": "String"
+      "name": "conflictId",
+      "dataType": "string"
     },
     {
-      "name": "cardinality",
-      "dataType": "String"
+      "name": "conflictType",
+      "dataType": "string"
     },
     {
-      "name": "foreignKey",
-      "dataType": "String"
+      "name": "involvedSessionIds",
+      "dataType": "string"
     },
     {
-      "name": "writePath",
-      "dataType": "String"
+      "name": "details",
+      "dataType": "string"
     },
     {
-      "name": "ruling",
-      "dataType": "String"
+      "name": "resolvedAt",
+      "dataType": "string"
     },
     {
-      "name": "semanticType",
-      "dataType": "String"
+      "name": "resolvedBy",
+      "dataType": "string"
     },
     {
-      "name": "causal",
-      "dataType": "JSON"
+      "name": "resolutionAction",
+      "dataType": "string"
     },
     {
-      "name": "temporal",
-      "dataType": "Boolean"
-    },
-    {
-      "name": "existence",
-      "dataType": "String"
-    },
-    {
-      "name": "targetDeletionPolicy",
-      "dataType": "String"
-    },
-    {
-      "name": "targetTypes",
-      "dataType": "List<String>"
-    },
-    {
-      "name": "noteId",
-      "dataType": "String"
+      "name": "resolutionNote",
+      "dataType": "string"
     }
   ]
 }

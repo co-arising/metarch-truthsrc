@@ -1,182 +1,43 @@
 {
   "package": "generated.aggregate",
-  "name": "WorkTicket",
-  "objectName": "WorkTicketEntity",
-  "stateType": "WorkTicketEntityState",
-  "commandType": "WorkTicketEntityCommand",
-  "eventType": "WorkTicketEntityEvent",
+  "name": "ValueObjectDefinition",
+  "objectName": "ValueObjectDefinitionEntity",
+  "stateType": "ValueObjectDefinitionEntityState",
+  "commandType": "ValueObjectDefinitionEntityCommand",
+  "eventType": "ValueObjectDefinitionEntityEvent",
   "stateFields": [
     {
-      "name": "status",
-      "dataType": "String",
-      "description": "DRAFT / IN_REVIEW / APPROVED",
-      "origin": "",
-      "writtenBy": [
-        "WorkTicketApproved",
-        "WorkTicketCreated",
-        "WorkTicketItemsUpdated"
-      ],
-      "role": "State",
-      "noteId": "237f7eb4-c26f-428a-8e0b-f22ba6c7bf15",
-      "codeFqn": "net.imadz.metarch.domain.entities.WorkTicketEntity.WorkTicketState.status",
-      "codeFqnCount": 4,
-      "businessDef": "DRAFT / IN_REVIEW / APPROVED"
+      "name": "tenantId",
+      "dataType": "string"
     },
     {
-      "name": "subjectType",
-      "dataType": "String",
-      "description": "加工对象类型：aggregate / story（领域层/应用层双看板）",
-      "origin": "BUSINESS_INPUT",
-      "writtenBy": [
-        "WorkTicketCreated.subjectType"
-      ],
-      "role": "State",
-      "noteId": "bd4cd856-9ab4-4fb9-90b0-a33415730413",
-      "codeFqn": "net.imadz.metarch.domain.entities.WorkTicketEntity.WorkTicketState.subjectType",
-      "codeFqnCount": 4,
-      "businessDef": "加工对象类型：aggregate / story（领域层/应用层双看板）",
-      "uiLabel": "对象类型"
+      "name": "voName",
+      "dataType": "string"
     },
     {
-      "name": "subjectId",
-      "dataType": "String (UUID)",
-      "description": "加工对象标识（聚合名或 storyId）",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "WorkTicketCreated.subjectId"
-      ],
-      "role": "State",
-      "noteId": "34f60853-24c1-45ce-b411-1e6f934e0ee6",
-      "codeFqn": "net.imadz.metarch.domain.entities.WorkTicketEntity.WorkTicketState.subjectId",
-      "codeFqnCount": 4,
-      "businessDef": "加工对象标识（聚合名或 storyId）",
-      "uiLabel": "对象标识"
+      "name": "members",
+      "dataType": "string"
     },
     {
-      "name": "stage",
-      "dataType": "String",
-      "description": "所属工作坊阶段（如 06/07）",
-      "origin": "BUSINESS_INPUT",
-      "writtenBy": [
-        "WorkTicketCreated.stage"
-      ],
-      "role": "State",
-      "noteId": "102bce6d-ae89-4551-99b7-095b93168372",
-      "codeFqn": "net.imadz.metarch.domain.entities.WorkTicketEntity.WorkTicketState.stage",
-      "codeFqnCount": 4,
-      "businessDef": "所属工作坊阶段（如 06/07）",
-      "uiLabel": "阶段"
+      "name": "declaredAt",
+      "dataType": "string"
     },
     {
-      "name": "ticketType",
-      "dataType": "String",
-      "description": "工位类型：FSM / FIELDS / LINEAGE / STORY_VALUE",
-      "origin": "BUSINESS_INPUT",
-      "writtenBy": [
-        "WorkTicketCreated.ticketType"
-      ],
-      "role": "State",
-      "noteId": "231e49ce-2d94-4101-9046-a7dc0453b224",
-      "codeFqn": "net.imadz.metarch.domain.entities.WorkTicketEntity.WorkTicketState.ticketType",
-      "codeFqnCount": 4,
-      "businessDef": "工位类型：FSM / FIELDS / LINEAGE / STORY_VALUE",
-      "uiLabel": "工位类型"
+      "name": "declaredBy",
+      "dataType": "string"
     },
     {
-      "name": "title",
-      "dataType": "String",
-      "description": "加工单标题（人读）",
-      "origin": "BUSINESS_INPUT",
-      "writtenBy": [
-        "WorkTicketCreated.title"
-      ],
-      "role": "State",
-      "noteId": "d3c98107-5a16-4fc1-8d15-598b43a8b9bd",
-      "codeFqn": "net.imadz.metarch.domain.entities.WorkTicketEntity.WorkTicketState.title",
-      "codeFqnCount": 4,
-      "businessDef": "加工单标题（人读）",
-      "uiLabel": "标题"
+      "name": "removedAt",
+      "dataType": "string"
     },
     {
-      "name": "checklist",
-      "dataType": "List<ChecklistItem>",
-      "description": "检查条目清单（条目级签收·批量交互提交）",
-      "origin": "BUSINESS_INPUT",
-      "writtenBy": [
-        "WorkTicketCreated.checklist",
-        "WorkTicketItemsUpdated.items"
-      ],
-      "role": "State",
-      "noteId": "2e59c119-a603-42c5-8074-9ad9b9630a56",
-      "codeFqn": "net.imadz.metarch.domain.entities.WorkTicketEntity.WorkTicketState.checklist",
-      "codeFqnCount": 4,
-      "businessDef": "检查条目清单（条目级签收·批量交互提交）",
-      "uiLabel": "检查清单"
-    },
-    {
-      "name": "createdAt",
-      "dataType": "Instant",
-      "description": "创建时间",
-      "origin": "SYSTEM_INJECTED",
-      "writtenBy": [
-        "WorkTicketCreated.createdAt"
-      ],
-      "role": "State",
-      "noteId": "90ea0a48-8545-4c94-8f48-f4c02f8773c3",
-      "codeFqn": "net.imadz.metarch.domain.entities.WorkTicketEntity.WorkTicketState.createdAt",
-      "codeFqnCount": 4,
-      "businessDef": "创建时间",
-      "uiLabel": "创建时间"
-    },
-    {
-      "name": "createdBy",
-      "dataType": "String",
-      "description": "创建者",
-      "origin": "SYSTEM_INJECTED",
-      "writtenBy": [
-        "WorkTicketCreated.createdBy"
-      ],
-      "role": "State",
-      "noteId": "2314524c-82f6-42f3-86a4-db9cc2d4cf01",
-      "codeFqn": "net.imadz.metarch.domain.entities.WorkTicketEntity.WorkTicketState.createdBy",
-      "codeFqnCount": 4,
-      "businessDef": "创建者",
-      "uiLabel": "创建者"
+      "name": "removedBy",
+      "dataType": "string"
     }
   ],
-  "emptyState": "TODO",
-  "commands": [
-    {
-      "name": "CreateWorkTicket",
-      "fields": []
-    },
-    {
-      "name": "UpdateWorkTicketItems",
-      "fields": []
-    },
-    {
-      "name": "ConcludeWorkTicket",
-      "fields": []
-    }
-  ],
-  "events": [
-    {
-      "name": "WorkTicketCreated",
-      "fields": []
-    },
-    {
-      "name": "WorkTicketItemsUpdated",
-      "fields": []
-    },
-    {
-      "name": "WorkTicketApproved",
-      "fields": []
-    }
-  ],
-  "statusTransitions": {
-    "WorkTicketCreated": "DRAFT",
-    "WorkTicketItemsUpdated": "IN_REVIEW",
-    "WorkTicketApproved": "APPROVED"
-  },
+  "emptyState": "???",
+  "commands": [],
+  "events": [],
+  "statusTransitions": {},
   "commandHandlers": []
 }

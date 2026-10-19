@@ -1,70 +1,27 @@
 {
   "package": "generated.valueobject",
-  "name": "FieldStateSpec",
+  "name": "StateGateSpec",
+  "description": "",
   "fields": [
     {
-      "name": "fieldName",
-      "dataType": "String"
+      "name": "commandName",
+      "dataType": "string"
     },
     {
-      "name": "dataType",
-      "dataType": "String"
+      "name": "fromStates",
+      "dataType": "string"
     },
     {
-      "name": "description",
-      "dataType": "String"
+      "name": "toState",
+      "dataType": "string"
     },
     {
-      "name": "uiLabel",
-      "dataType": "String"
-    },
-    {
-      "name": "businessDef",
-      "dataType": "String"
-    },
-    {
-      "name": "derivation",
-      "dataType": "String"
-    },
-    {
-      "name": "lineageHint",
-      "dataType": "String"
-    },
-    {
-      "name": "parent",
-      "dataType": "String"
-    },
-    {
-      "name": "fold",
-      "dataType": "String"
-    },
-    {
-      "name": "source",
-      "dataType": "String"
-    },
-    {
-      "name": "origin",
-      "dataType": "String"
-    },
-    {
-      "name": "role",
-      "dataType": "String"
-    },
-    {
-      "name": "writtenBy",
-      "dataType": "List<String>"
-    },
-    {
-      "name": "nature",
-      "dataType": "String"
+      "name": "initial",
+      "dataType": "string"
     },
     {
       "name": "noteId",
-      "dataType": "String"
-    },
-    {
-      "name": "foldAssignments",
-      "dataType": "List<EventBinding>"
+      "dataType": "string"
     }
   ]
 }

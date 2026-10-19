@@ -1,4 +1,4 @@
 package generated.valueobject
 
-/** Value object: undefined */
-final case class ChecklistItem(criterion: String, status: String, evidence: String, proposedBy: String, confirmedBy: String, confirmedAt: String)
+/** Value object:  */
+final case class DoRAssessmentResult(verdicts: String, evaluatedScope: String, summary: String)

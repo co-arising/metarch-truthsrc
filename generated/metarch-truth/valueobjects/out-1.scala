@@ -1,4 +1,4 @@
 package generated.valueobject
 
-/** Value object: undefined */
+/** Value object:  */
 final case class CatalogConflictSet(detectedAt: String, conflicts: String)

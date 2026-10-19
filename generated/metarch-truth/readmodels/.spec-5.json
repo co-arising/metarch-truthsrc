@@ -3,27 +3,48 @@
   "name": "CreateCatalogVersionDecisionView",
   "viewType": "ReadModelCreateCatalogVersion",
   "objectName": "ReadModelCreateCatalogVersionView",
+  "servedBy": "",
   "sources": [],
   "fields": [
     {
       "name": "catalogId",
-      "dataType": "String"
+      "dataType": "string"
     },
     {
       "name": "projectId",
-      "dataType": "String"
+      "dataType": "string"
     },
     {
       "name": "version",
-      "dataType": "String"
+      "dataType": "string"
     },
     {
       "name": "baseVersion",
-      "dataType": "String"
+      "dataType": "string"
     },
     {
       "name": "patchSessionIds",
-      "dataType": "List<String (UUID)>"
+      "dataType": "string"
+    },
+    {
+      "name": "knowledgePackages",
+      "dataType": "string"
+    },
+    {
+      "name": "conflicts",
+      "dataType": "string"
+    },
+    {
+      "name": "assembledAt",
+      "dataType": "string"
+    },
+    {
+      "name": "assembledBy",
+      "dataType": "string"
+    },
+    {
+      "name": "exportedAt",
+      "dataType": "string"
     }
   ]
 }

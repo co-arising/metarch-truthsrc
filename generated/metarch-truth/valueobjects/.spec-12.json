@@ -1,38 +1,71 @@
 {
   "package": "generated.valueobject",
-  "name": "FieldCommandSpec",
+  "name": "FieldStateSpec",
+  "description": "",
   "fields": [
     {
-      "name": "commandName",
-      "dataType": "String"
+      "name": "fieldName",
+      "dataType": "string"
+    },
+    {
+      "name": "dataType",
+      "dataType": "string"
     },
     {
       "name": "description",
-      "dataType": "String"
+      "dataType": "string"
     },
     {
-      "name": "produces",
-      "dataType": "List<String>"
+      "name": "uiLabel",
+      "dataType": "string"
     },
     {
-      "name": "preconditions",
-      "dataType": "List<String>"
+      "name": "businessDef",
+      "dataType": "string"
     },
     {
-      "name": "parameters",
-      "dataType": "List<FieldParamSpec>"
+      "name": "derivation",
+      "dataType": "string"
+    },
+    {
+      "name": "lineageHint",
+      "dataType": "string"
+    },
+    {
+      "name": "parent",
+      "dataType": "string"
+    },
+    {
+      "name": "fold",
+      "dataType": "string"
+    },
+    {
+      "name": "source",
+      "dataType": "string"
+    },
+    {
+      "name": "origin",
+      "dataType": "string"
+    },
+    {
+      "name": "role",
+      "dataType": "string"
+    },
+    {
+      "name": "writtenBy",
+      "dataType": "string"
+    },
+    {
+      "name": "nature",
+      "dataType": "string"
     },
     {
       "name": "noteId",
-      "dataType": "String"
+      "dataType": "string"
     },
     {
-      "name": "guards",
-      "dataType": "List<GuardSpec>"
-    },
-    {
-      "name": "preconditionRefs",
-      "dataType": "List<RuleRef>"
+      "name": "foldAssignments",
+      "dataType": "string"
     }
   ]
 }

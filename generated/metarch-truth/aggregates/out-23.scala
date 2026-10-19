@@ -6,32 +6,30 @@ import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}
 import net.imadz.common.CborSerializable
 import scala.math.BigDecimal
 
-final case class ValueObjectDefinitionEntityState(tenantId: String, voName: String, members: String, declaredAt: String, declaredBy: String, removedAt: String, removedBy: String) extends CborSerializable
+final case class FieldModelDefinitionEntityState(tenantId: String, aggregateName: String, entityName: String, description: String, identifierName: String, identifierType: String, identifierOrigin: String, identifierDescription: String, tenantScoped: String, statusEnumValues: String, statusTransitions: String, stateFields: String, commands: String, events: String, relations: String, stateGates: String, declaredAt: String, declaredBy: String, terminalStates: String, removedAt: String, aggregateRuleRefs: String) extends CborSerializable
 
-sealed trait ValueObjectDefinitionEntityCommand extends CborSerializable
-final case class DeclareValueObject() extends ValueObjectDefinitionEntityCommand
-final case class RemoveValueObject() extends ValueObjectDefinitionEntityCommand
+sealed trait FieldModelDefinitionEntityCommand extends CborSerializable
 
-sealed trait ValueObjectDefinitionEntityEvent extends CborSerializable
-final case class ValueObjectDeclared() extends ValueObjectDefinitionEntityEvent
-final case class ValueObjectRemoved() extends ValueObjectDefinitionEntityEvent
 
-object ValueObjectDefinitionEntity {
-  def behavior(persistenceId: PersistenceId): Behavior[ValueObjectDefinitionEntityCommand] =
-    EventSourcedBehavior[ValueObjectDefinitionEntityCommand, ValueObjectDefinitionEntityEvent, ValueObjectDefinitionEntityState](
+sealed trait FieldModelDefinitionEntityEvent extends CborSerializable
+
+
+object FieldModelDefinitionEntity {
+  def behavior(persistenceId: PersistenceId): Behavior[FieldModelDefinitionEntityCommand] =
+    EventSourcedBehavior[FieldModelDefinitionEntityCommand, FieldModelDefinitionEntityEvent, FieldModelDefinitionEntityState](
       persistenceId = persistenceId,
-      emptyState = TODO,
+      emptyState = ???,
       commandHandler = (state, cmd) => handleCommand(state, cmd),
       eventHandler = (state, event) => applyEvent(state, event)
     )
 
-  private def handleCommand(state: ValueObjectDefinitionEntityState, cmd: ValueObjectDefinitionEntityCommand): Effect[ValueObjectDefinitionEntityEvent, ValueObjectDefinitionEntityState] =
+  private def handleCommand(state: FieldModelDefinitionEntityState, cmd: FieldModelDefinitionEntityCommand): Effect[FieldModelDefinitionEntityEvent, FieldModelDefinitionEntityState] =
     cmd match {
 
       case _ => Effect.unhandled
     }
 
-  private def applyEvent(state: ValueObjectDefinitionEntityState, event: ValueObjectDefinitionEntityEvent): ValueObjectDefinitionEntityState =
+  private def applyEvent(state: FieldModelDefinitionEntityState, event: FieldModelDefinitionEntityEvent): FieldModelDefinitionEntityState =
     event match {
 
       case _ => state

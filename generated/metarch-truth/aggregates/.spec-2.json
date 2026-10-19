@@ -1,123 +1,47 @@
 {
   "package": "generated.aggregate",
-  "name": "Context",
-  "objectName": "ContextEntity",
-  "stateType": "ContextEntityState",
-  "commandType": "ContextEntityCommand",
-  "eventType": "ContextEntityEvent",
+  "name": "ContextRelation",
+  "objectName": "ContextRelationEntity",
+  "stateType": "ContextRelationEntityState",
+  "commandType": "ContextRelationEntityCommand",
+  "eventType": "ContextRelationEntityEvent",
   "stateFields": [
     {
       "name": "tenantId",
-      "dataType": "String (UUID)",
-      "description": "所属租户",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "ContextDiscovered.tenantId",
-        "ContextScopeUpdated.tenantId"
-      ],
-      "role": "State",
-      "noteId": "7b69a66e-ee59-45a6-9fee-6a01f0649289",
-      "codeFqn": "net.imadz.metarch.domain.entities.ContextEntity.ContextState.tenantId",
-      "codeFqnCount": 4
+      "dataType": "string"
     },
     {
-      "name": "name",
-      "dataType": "String",
-      "description": "公司的正式注册名称",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "ContextDiscovered.name"
-      ],
-      "role": "State",
-      "noteId": "cddda78f-3e8d-4e8d-abac-68148d381dcf",
-      "codeFqn": "net.imadz.metarch.domain.entities.ContextEntity.ContextState.name",
-      "codeFqnCount": 4,
-      "businessDef": "公司的正式注册名称",
-      "uiLabel": "边界名称"
+      "name": "upstreamContextId",
+      "dataType": "string"
+    },
+    {
+      "name": "downstreamContextId",
+      "dataType": "string"
+    },
+    {
+      "name": "kind",
+      "dataType": "string"
+    },
+    {
+      "name": "integration",
+      "dataType": "string"
     },
     {
       "name": "description",
-      "dataType": "String",
-      "description": "为什么做这件事",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "ContextDiscovered.description"
-      ],
-      "role": "State",
-      "noteId": "726be773-0918-4122-8f1c-d7aec5a43538",
-      "codeFqn": "net.imadz.metarch.domain.entities.ContextEntity.ContextState.description",
-      "codeFqnCount": 4,
-      "businessDef": "为什么做这件事",
-      "uiLabel": "边界职责"
+      "dataType": "string"
     },
     {
-      "name": "subdomainIds",
-      "dataType": "List<String (UUID)>",
-      "description": "IDs of subdomains in this context",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "ContextDiscovered.subdomainIds"
-      ],
-      "role": "State",
-      "noteId": "a8a52264-8dac-4168-9612-314563ca45dd",
-      "codeFqn": "net.imadz.metarch.domain.entities.ContextEntity.ContextState.subdomainIds",
-      "codeFqnCount": 4,
-      "businessDef": "IDs of subdomains in this context",
-      "uiLabel": "归属子域",
-      "derivation": "DiscoverContext.subdomainIds -> ContextDiscovered.subdomainIds -> State"
+      "name": "createdAt",
+      "dataType": "string"
     },
     {
-      "name": "discoveredAt",
-      "dataType": "Instant",
-      "description": "time when the context was discovered",
-      "origin": "SYSTEM_INJECTED",
-      "writtenBy": [
-        "ContextDiscovered.timestamp"
-      ],
-      "role": "State",
-      "noteId": "fc115776-4d03-4a99-859c-73d3a51f13d7",
-      "codeFqn": "net.imadz.metarch.domain.entities.ContextEntity.ContextState.discoveredAt",
-      "codeFqnCount": 4,
-      "businessDef": "time when the context was discovered",
-      "uiLabel": "发现时间"
-    },
-    {
-      "name": "discoveredBy",
-      "dataType": "String",
-      "description": "user who discovered the context",
-      "origin": "SYSTEM_INJECTED",
-      "writtenBy": [
-        "ContextDiscovered.triggeredBy"
-      ],
-      "role": "State",
-      "noteId": "8ff1a0ae-af68-420c-99b5-2c1b07c0a90b",
-      "codeFqn": "net.imadz.metarch.domain.entities.ContextEntity.ContextState.discoveredBy",
-      "codeFqnCount": 4,
-      "businessDef": "user who discovered the context",
-      "uiLabel": "发现人"
+      "name": "createdBy",
+      "dataType": "string"
     }
   ],
-  "emptyState": "TODO",
-  "commands": [
-    {
-      "name": "DiscoverContext",
-      "fields": []
-    },
-    {
-      "name": "UpdateContextScope",
-      "fields": []
-    }
-  ],
-  "events": [
-    {
-      "name": "ContextDiscovered",
-      "fields": []
-    },
-    {
-      "name": "ContextScopeUpdated",
-      "fields": []
-    }
-  ],
+  "emptyState": "???",
+  "commands": [],
+  "events": [],
   "statusTransitions": {},
   "commandHandlers": []
 }

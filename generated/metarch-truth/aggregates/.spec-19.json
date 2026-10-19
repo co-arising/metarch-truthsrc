@@ -1,195 +1,51 @@
 {
   "package": "generated.aggregate",
-  "name": "Tenant",
-  "objectName": "TenantEntity",
-  "stateType": "TenantEntityState",
-  "commandType": "TenantEntityCommand",
-  "eventType": "TenantEntityEvent",
+  "name": "Workshop",
+  "objectName": "WorkshopEntity",
+  "stateType": "WorkshopEntityState",
+  "commandType": "WorkshopEntityCommand",
+  "eventType": "WorkshopEntityEvent",
   "stateFields": [
     {
+      "name": "tenantId",
+      "dataType": "string"
+    },
+    {
       "name": "status",
-      "dataType": "String",
-      "description": "active / suspended / archived",
-      "origin": "",
-      "writtenBy": [
-        "TenantArchived",
-        "TenantOnboarded",
-        "TenantResumed",
-        "TenantSuspended"
-      ],
-      "role": "State",
-      "noteId": "1238c902-0b7d-412e-a849-7e5a167ed337",
-      "codeFqn": "net.imadz.metarch.domain.entities.TenantEntity.TenantState.status",
-      "codeFqnCount": 4,
-      "businessDef": "active / suspended / archived"
+      "dataType": "string"
     },
     {
-      "name": "name",
-      "dataType": "String",
-      "description": "公司的正式注册名称",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "TenantOnboarded.name"
-      ],
-      "role": "State",
-      "noteId": "3873281b-a265-4a90-892e-0790b7ad296c",
-      "codeFqn": "net.imadz.metarch.domain.entities.TenantEntity.TenantState.name",
-      "codeFqnCount": 4,
-      "businessDef": "公司的正式注册名称",
-      "uiLabel": "组织名称"
+      "name": "projectId",
+      "dataType": "string"
     },
     {
-      "name": "ownerUserId",
-      "dataType": "String (UUID)",
-      "description": "最高权限管理员",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "TenantOnboarded.ownerUserId",
-        "TenantOwnerChanged.newOwnerUserId"
-      ],
-      "role": "State",
-      "noteId": "4fc074c1-9277-48bb-81d5-af5976cfa0be",
-      "codeFqn": "net.imadz.metarch.domain.entities.TenantEntity.TenantState.ownerUserId",
-      "codeFqnCount": 4,
-      "businessDef": "最高权限管理员",
-      "uiLabel": "组织拥有者"
+      "name": "scheduledAt",
+      "dataType": "string"
     },
     {
-      "name": "orgMemberIds",
-      "dataType": "List<String (UUID)>",
-      "description": "租户名册：组织成员关系引用全集（活跃 OrganizationMember.orgMemberId·最终一致收敛·S2-81）",
-      "origin": "DERIVED",
-      "writtenBy": [
-        "TenantMemberRosterUpdated.orgMemberId"
-      ],
-      "role": "State",
-      "noteId": "4081f644-b98e-41be-ab4b-e842ab0db2a6",
-      "codeFqn": "net.imadz.metarch.domain.entities.TenantEntity.TenantState.orgMemberIds",
-      "codeFqnCount": 4,
-      "businessDef": "属于该组织的所有用户",
-      "uiLabel": "组织成员",
-      "derivation": "接受邀请的成员累积（TenantMemberInvitationAccepted → TenantMemberJoined 追加）"
+      "name": "startedAt",
+      "dataType": "string"
     },
     {
-      "name": "createdAt",
-      "dataType": "Instant",
-      "description": "组织注册时间",
-      "origin": "SYSTEM_INJECTED",
-      "writtenBy": [
-        "TenantOnboarded.timestamp"
-      ],
-      "role": "State",
-      "noteId": "58b008a9-4147-4a4a-b470-01370389f27c",
-      "codeFqn": "net.imadz.metarch.domain.entities.TenantEntity.TenantState.createdAt",
-      "codeFqnCount": 4,
-      "businessDef": "组织注册时间",
-      "uiLabel": "入驻时间"
+      "name": "completedAt",
+      "dataType": "string"
     },
     {
-      "name": "createdBy",
-      "dataType": "String",
-      "description": "发起入驻的用户",
-      "origin": "SYSTEM_INJECTED",
-      "writtenBy": [
-        "TenantOnboarded.triggeredBy"
-      ],
-      "role": "State",
-      "noteId": "b7a33c38-f850-4188-a819-82bbb555557f",
-      "codeFqn": "net.imadz.metarch.domain.entities.TenantEntity.TenantState.createdBy",
-      "codeFqnCount": 4,
-      "businessDef": "发起入驻的用户",
-      "uiLabel": "入驻操作人"
+      "name": "patchId",
+      "dataType": "string"
     },
     {
-      "name": "suspendedAt",
-      "dataType": "Instant",
-      "description": "time when the tenant was suspended",
-      "origin": "SYSTEM_INJECTED",
-      "writtenBy": [
-        "TenantSuspended.timestamp"
-      ],
-      "role": "State",
-      "noteId": "fc8debb2-edc7-46c0-9544-c9fef551fbba",
-      "codeFqn": "net.imadz.metarch.domain.entities.TenantEntity.TenantState.suspendedAt",
-      "codeFqnCount": 4,
-      "businessDef": "time when the tenant was suspended",
-      "uiLabel": "冻结时间"
-    },
-    {
-      "name": "archivedAt",
-      "dataType": "Instant",
-      "description": "time when the tenant was archived",
-      "origin": "SYSTEM_INJECTED",
-      "writtenBy": [
-        "TenantArchived.timestamp"
-      ],
-      "role": "State",
-      "noteId": "cdf80852-d23d-4c55-9933-11ae15bf6c85",
-      "codeFqn": "net.imadz.metarch.domain.entities.TenantEntity.TenantState.archivedAt",
-      "codeFqnCount": 4,
-      "businessDef": "time when the tenant was archived",
-      "uiLabel": "归档时间"
+      "name": "memberRoles",
+      "dataType": "string"
     }
   ],
-  "emptyState": "TODO",
-  "commands": [
-    {
-      "name": "OnboardTenant",
-      "fields": []
-    },
-    {
-      "name": "AssignTenantOwner",
-      "fields": []
-    },
-    {
-      "name": "SuspendTenant",
-      "fields": []
-    },
-    {
-      "name": "ResumeTenant",
-      "fields": []
-    },
-    {
-      "name": "ArchiveTenant",
-      "fields": []
-    },
-    {
-      "name": "UpdateTenantMemberRoster",
-      "fields": []
-    }
-  ],
-  "events": [
-    {
-      "name": "TenantOnboarded",
-      "fields": []
-    },
-    {
-      "name": "TenantOwnerChanged",
-      "fields": []
-    },
-    {
-      "name": "TenantSuspended",
-      "fields": []
-    },
-    {
-      "name": "TenantResumed",
-      "fields": []
-    },
-    {
-      "name": "TenantArchived",
-      "fields": []
-    },
-    {
-      "name": "TenantMemberRosterUpdated",
-      "fields": []
-    }
-  ],
+  "emptyState": "???",
+  "commands": [],
+  "events": [],
   "statusTransitions": {
-    "TenantOwnerChanged": null,
-    "TenantArchived": "archived",
-    "TenantOnboarded": "active",
-    "TenantResumed": "active",
-    "TenantSuspended": "suspended"
+    "WorkshopStarted": "active",
+    "WorkshopCompleted": "completed",
+    "WorkshopScheduled": "scheduled"
   },
   "commandHandlers": []
 }

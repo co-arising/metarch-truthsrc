@@ -1,4 +1,4 @@
 package generated.valueobject
 
-/** Value object: undefined */
-final case class ConceptIndexEntry(conceptName: String, contextId: String, conceptId: String, contentHash: String)
+/** Value object:  */
+final case class RelationDelta(action: String, relationName: String, sourceConceptName: String, targetConceptName: String, mapping: String)

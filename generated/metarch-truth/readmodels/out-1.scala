@@ -2,10 +2,10 @@ package generated.readmodel
 
 import scala.math.BigDecimal
 
-/** Read model: AssembleMetadataDecisionView — served by undefined */
-final case class ReadModelAssembleMetadata(catalogId: String, projectId: String, version: String, baseVersion: String, patchSessionIds: String)
+/** Read model: AssembleMetadataDecisionView — served by  */
+final case class ReadModelAssembleMetadata(catalogId: String, projectId: String, version: String, baseVersion: String, patchSessionIds: String, knowledgePackages: String, conflicts: String, assembledAt: String, assembledBy: String, exportedAt: String)
 
 object ReadModelAssembleMetadataView {
-  def empty: ReadModelAssembleMetadata = ReadModelAssembleMetadata("", "", "", "", "")
+  def empty: ReadModelAssembleMetadata = ReadModelAssembleMetadata("", "", "", "", "", "", "", "", "", "")
   // TODO(intent): projection logic from 
 }

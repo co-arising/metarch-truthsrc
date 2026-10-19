@@ -6,34 +6,30 @@ import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}
 import net.imadz.common.CborSerializable
 import scala.math.BigDecimal
 
-final case class CemEdgeEntityState(tenantId: String, commandName: String, eventName: String, aggregateName: String, sources: String, confidence: String, status: String, declaredAt: String, declaredBy: String, retiredAt: String, retiredReason: String) extends CborSerializable
+final case class ConceptEntityState(tenantId: String, status: String, version: String, contextId: String, name: String, kind: String, description: String, sourceStage: String, sourceNoteIds: String, hasConflictWarning: String, establishedAt: String, establishedBy: String, parkedAt: String, parkedBy: String, removedAt: String, removedBy: String, createdAt: String, createdBy: String, modifiedAt: String, modifiedBy: String, machineSpec: String, metadata: String, sourceSessionId: String, contentHash: String, anchors: String) extends CborSerializable
 
-sealed trait CemEdgeEntityCommand extends CborSerializable
-final case class DeclareEdge() extends CemEdgeEntityCommand
-final case class PatchEdge() extends CemEdgeEntityCommand
-final case class RetireEdge() extends CemEdgeEntityCommand
+sealed trait ConceptEntityCommand extends CborSerializable
 
-sealed trait CemEdgeEntityEvent extends CborSerializable
-final case class EdgeDeclared() extends CemEdgeEntityEvent
-final case class EdgePatched() extends CemEdgeEntityEvent
-final case class EdgeRetired() extends CemEdgeEntityEvent
 
-object CemEdgeEntity {
-  def behavior(persistenceId: PersistenceId): Behavior[CemEdgeEntityCommand] =
-    EventSourcedBehavior[CemEdgeEntityCommand, CemEdgeEntityEvent, CemEdgeEntityState](
+sealed trait ConceptEntityEvent extends CborSerializable
+
+
+object ConceptEntity {
+  def behavior(persistenceId: PersistenceId): Behavior[ConceptEntityCommand] =
+    EventSourcedBehavior[ConceptEntityCommand, ConceptEntityEvent, ConceptEntityState](
       persistenceId = persistenceId,
-      emptyState = TODO,
+      emptyState = ???,
       commandHandler = (state, cmd) => handleCommand(state, cmd),
       eventHandler = (state, event) => applyEvent(state, event)
     )
 
-  private def handleCommand(state: CemEdgeEntityState, cmd: CemEdgeEntityCommand): Effect[CemEdgeEntityEvent, CemEdgeEntityState] =
+  private def handleCommand(state: ConceptEntityState, cmd: ConceptEntityCommand): Effect[ConceptEntityEvent, ConceptEntityState] =
     cmd match {
 
       case _ => Effect.unhandled
     }
 
-  private def applyEvent(state: CemEdgeEntityState, event: CemEdgeEntityEvent): CemEdgeEntityState =
+  private def applyEvent(state: ConceptEntityState, event: ConceptEntityEvent): ConceptEntityState =
     event match {
 
       case _ => state

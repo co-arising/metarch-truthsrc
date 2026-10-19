@@ -1,4 +1,4 @@
 package generated.valueobject
 
-/** Value object: undefined */
-final case class FieldParamSpec(paramName: String, dataType: String, description: String, uiLabel: String, businessDef: String, origin: String, lineageHint: String, derivation: String, role: String, optional: String, optionalWhen: String, noteId: String)
+/** Value object:  */
+final case class FieldEventSpec(eventName: String, description: String, humanDescription: String, origin: String, payloads: String, noteId: String, bindings: String, forEach: String, foldAssignments: String, postconditionRefs: String)

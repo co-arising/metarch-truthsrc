@@ -1,174 +1,53 @@
 {
   "package": "generated.aggregate",
-  "name": "RoleCommandBinding",
-  "objectName": "RoleCommandBindingEntity",
-  "stateType": "RoleCommandBindingEntityState",
-  "commandType": "RoleCommandBindingEntityCommand",
-  "eventType": "RoleCommandBindingEntityEvent",
+  "name": "Tenant",
+  "objectName": "TenantEntity",
+  "stateType": "TenantEntityState",
+  "commandType": "TenantEntityCommand",
+  "eventType": "TenantEntityEvent",
   "stateFields": [
     {
-      "name": "tenantId",
-      "dataType": "String (UUID)",
-      "description": "所属租户 id",
-      "origin": "",
-      "writtenBy": [
-        "CommandBound.tenantId"
-      ],
-      "role": "State",
-      "noteId": "b2402e0b-db18-4faa-a9df-ca025928ad02",
-      "codeFqn": "net.imadz.metarch.domain.entities.RoleCommandBindingEntity.RoleCommandBindingState.tenantId",
-      "codeFqnCount": 4,
-      "businessDef": "所属租户 id"
-    },
-    {
-      "name": "roleName",
-      "dataType": "String",
-      "description": "绑定角色",
-      "origin": "",
-      "writtenBy": [
-        "CommandBound.roleName"
-      ],
-      "role": "State",
-      "noteId": "32466967-0ed5-492b-adbd-efcb23e1eac0",
-      "codeFqn": "net.imadz.metarch.domain.entities.RoleCommandBindingEntity.RoleCommandBindingState.roleName",
-      "codeFqnCount": 4,
-      "businessDef": "绑定角色"
-    },
-    {
-      "name": "commandName",
-      "dataType": "String",
-      "description": "绑定命令",
-      "origin": "",
-      "writtenBy": [
-        "CommandBound.commandName"
-      ],
-      "role": "State",
-      "noteId": "0850f5c2-974f-4d37-9195-dc6ab6d724c0",
-      "codeFqn": "net.imadz.metarch.domain.entities.RoleCommandBindingEntity.RoleCommandBindingState.commandName",
-      "codeFqnCount": 4,
-      "businessDef": "绑定命令"
-    },
-    {
-      "name": "ruling",
-      "dataType": "String",
-      "description": "裁决依据",
-      "origin": "",
-      "writtenBy": [
-        "CommandBound.ruling"
-      ],
-      "role": "State",
-      "noteId": "fc53adbd-1b37-4924-b451-737d98e05b3a",
-      "codeFqn": "net.imadz.metarch.domain.entities.RoleCommandBindingEntity.RoleCommandBindingState.ruling",
-      "codeFqnCount": 4,
-      "businessDef": "裁决依据"
-    },
-    {
-      "name": "systemCommand",
-      "dataType": "Boolean",
-      "description": "系统命令豁免标记",
-      "origin": "",
-      "writtenBy": [
-        "CommandBound.systemCommand"
-      ],
-      "role": "State",
-      "noteId": "cdace11d-8e1f-4b3c-9a8c-5a7d2a663eac",
-      "codeFqn": "net.imadz.metarch.domain.entities.RoleCommandBindingEntity.RoleCommandBindingState.systemCommand",
-      "codeFqnCount": 4,
-      "businessDef": "系统命令豁免标记"
-    },
-    {
       "name": "status",
-      "dataType": "String",
-      "description": "bound / unbound",
-      "origin": "",
-      "writtenBy": [
-        "CommandBound",
-        "CommandUnbound"
-      ],
-      "role": "State",
-      "noteId": "2b25d94b-842d-4433-9664-e35f55befc7c",
-      "codeFqn": "net.imadz.metarch.domain.entities.RoleCommandBindingEntity.RoleCommandBindingState.status",
-      "codeFqnCount": 4,
-      "businessDef": "bound / unbound"
+      "dataType": "string"
     },
     {
-      "name": "boundAt",
-      "dataType": "Instant",
-      "description": "绑定时间戳",
-      "origin": "",
-      "writtenBy": [
-        "CommandBound.boundAt"
-      ],
-      "role": "State",
-      "noteId": "a0db3eff-8f24-4bd6-9cf4-28922a71f059",
-      "codeFqn": "net.imadz.metarch.domain.entities.RoleCommandBindingEntity.RoleCommandBindingState.boundAt",
-      "codeFqnCount": 4,
-      "businessDef": "绑定时间戳"
+      "name": "name",
+      "dataType": "string"
     },
     {
-      "name": "boundBy",
-      "dataType": "String",
-      "description": "绑定人",
-      "origin": "",
-      "writtenBy": [
-        "CommandBound.boundBy"
-      ],
-      "role": "State",
-      "noteId": "1c465ee7-cfd6-4330-a0d5-613189081868",
-      "codeFqn": "net.imadz.metarch.domain.entities.RoleCommandBindingEntity.RoleCommandBindingState.boundBy",
-      "codeFqnCount": 4,
-      "businessDef": "绑定人"
+      "name": "ownerUserId",
+      "dataType": "string"
     },
     {
-      "name": "unboundAt",
-      "dataType": "Instant",
-      "description": "解绑时间戳",
-      "origin": "",
-      "writtenBy": [
-        "CommandUnbound.unboundAt"
-      ],
-      "role": "State",
-      "noteId": "07eeb40a-ace4-4a23-a4ab-bfc4695bf2e8",
-      "codeFqn": "net.imadz.metarch.domain.entities.RoleCommandBindingEntity.RoleCommandBindingState.unboundAt",
-      "codeFqnCount": 4,
-      "businessDef": "解绑时间戳"
+      "name": "orgMemberIds",
+      "dataType": "string"
     },
     {
-      "name": "unboundReason",
-      "dataType": "String",
-      "description": "解绑原因",
-      "origin": "",
-      "writtenBy": [
-        "CommandUnbound.reason"
-      ],
-      "role": "State",
-      "noteId": "551b5bc4-0798-4b9a-be6f-b83108e52613",
-      "codeFqn": "net.imadz.metarch.domain.entities.RoleCommandBindingEntity.RoleCommandBindingState.unboundReason",
-      "codeFqnCount": 4,
-      "businessDef": "解绑原因"
+      "name": "createdAt",
+      "dataType": "string"
+    },
+    {
+      "name": "createdBy",
+      "dataType": "string"
+    },
+    {
+      "name": "suspendedAt",
+      "dataType": "string"
+    },
+    {
+      "name": "archivedAt",
+      "dataType": "string"
     }
   ],
-  "emptyState": "TODO",
-  "commands": [
-    {
-      "name": "BindCommand",
-      "fields": []
-    },
-    {
-      "name": "UnbindCommand",
-      "fields": []
-    }
-  ],
-  "events": [
-    {
-      "name": "CommandBound",
-      "fields": []
-    },
-    {
-      "name": "CommandUnbound",
-      "fields": []
-    }
-  ],
-  "statusTransitions": {},
+  "emptyState": "???",
+  "commands": [],
+  "events": [],
+  "statusTransitions": {
+    "TenantOwnerChanged": null,
+    "TenantArchived": "archived",
+    "TenantOnboarded": "active",
+    "TenantResumed": "active",
+    "TenantSuspended": "suspended"
+  },
   "commandHandlers": []
 }

@@ -6,34 +6,30 @@ import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}
 import net.imadz.common.CborSerializable
 import scala.math.BigDecimal
 
-final case class ReadModelDefinitionEntityState(tenantId: String, viewName: String, parentAggregate: String, viewId: String, sourceAggregates: String, consumesEvents: String, linkedStories: String, description: String, fields: String, decisionCommands: String, declaredAt: String, declaredBy: String, removedAt: String, removedBy: String) extends CborSerializable
+final case class StageEntityState(tenantId: String, status: String, workshopId: String, order: String, name: String, activatedAt: String, approvedAt: String, rejectedAt: String, rejectionReason: String, sessionId: String) extends CborSerializable
 
-sealed trait ReadModelDefinitionEntityCommand extends CborSerializable
-final case class DeclareReadModel() extends ReadModelDefinitionEntityCommand
-final case class PatchReadModelField() extends ReadModelDefinitionEntityCommand
-final case class RemoveReadModel() extends ReadModelDefinitionEntityCommand
+sealed trait StageEntityCommand extends CborSerializable
 
-sealed trait ReadModelDefinitionEntityEvent extends CborSerializable
-final case class ReadModelDeclared() extends ReadModelDefinitionEntityEvent
-final case class ReadModelFieldPatched() extends ReadModelDefinitionEntityEvent
-final case class ReadModelRemoved() extends ReadModelDefinitionEntityEvent
 
-object ReadModelDefinitionEntity {
-  def behavior(persistenceId: PersistenceId): Behavior[ReadModelDefinitionEntityCommand] =
-    EventSourcedBehavior[ReadModelDefinitionEntityCommand, ReadModelDefinitionEntityEvent, ReadModelDefinitionEntityState](
+sealed trait StageEntityEvent extends CborSerializable
+
+
+object StageEntity {
+  def behavior(persistenceId: PersistenceId): Behavior[StageEntityCommand] =
+    EventSourcedBehavior[StageEntityCommand, StageEntityEvent, StageEntityState](
       persistenceId = persistenceId,
-      emptyState = TODO,
+      emptyState = ???,
       commandHandler = (state, cmd) => handleCommand(state, cmd),
       eventHandler = (state, event) => applyEvent(state, event)
     )
 
-  private def handleCommand(state: ReadModelDefinitionEntityState, cmd: ReadModelDefinitionEntityCommand): Effect[ReadModelDefinitionEntityEvent, ReadModelDefinitionEntityState] =
+  private def handleCommand(state: StageEntityState, cmd: StageEntityCommand): Effect[StageEntityEvent, StageEntityState] =
     cmd match {
 
       case _ => Effect.unhandled
     }
 
-  private def applyEvent(state: ReadModelDefinitionEntityState, event: ReadModelDefinitionEntityEvent): ReadModelDefinitionEntityState =
+  private def applyEvent(state: StageEntityState, event: StageEntityEvent): StageEntityState =
     event match {
 
       case _ => state

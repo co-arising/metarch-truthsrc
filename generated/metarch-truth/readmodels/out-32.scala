@@ -2,10 +2,10 @@ package generated.readmodel
 
 import scala.math.BigDecimal
 
-/** Read model: UseCaseDefinitionDecisionView — served by undefined */
-final case class ReadModelUseCaseDefinition(definitionId: String, tenantId: String, useCaseName: String, realizes: String, actors: String)
+/** Read model: ValueObjectDefinitionDecisionView — served by  */
+final case class ReadModelValueObjectDefinition(definitionId: String, voName: String, members: String, declaredAt: String, declaredBy: String, tenantId: String)
 
-object ReadModelUseCaseDefinitionView {
-  def empty: ReadModelUseCaseDefinition = ReadModelUseCaseDefinition("", "", "", "", "")
+object ReadModelValueObjectDefinitionView {
+  def empty: ReadModelValueObjectDefinition = ReadModelValueObjectDefinition("", "", "", "", "", "")
   // TODO(intent): projection logic from 
 }

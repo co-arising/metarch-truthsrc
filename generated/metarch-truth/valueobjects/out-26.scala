@@ -1,4 +1,4 @@
 package generated.valueobject
 
-/** Value object: undefined */
+/** Value object:  */
 final case class RuleRef(ruleId: String, errCode: String, desc: String)

@@ -1,11 +1,11 @@
 package generated.policy
 
-// Policy: 成员加入后维护租户名册
-// Triggers: TenantMemberJoined
-// Invokes: UpdateTenantMemberRoster
+// Policy: 概念增量后确立概念
+// Triggers: 
+// Invokes: 
 
-object 成员加入后维护租户名册Policy {
-  /** whenever TenantMemberJoined then UpdateTenantMemberRoster（S2-32 名册双写联动兑现·⑤层 AcceptTenantInvitation.update-roster 声明） */
+object 概念增量后确立概念Policy {
+  /** 目录应用补丁（KnowledgePatched）→ 逐条把「新建」增量转发为 Concept 聚合的 EstablishConcept（扇出 list<ConceptDelta>·只取 action=insert）。概念是独立聚合，「聚合只发自己事件」铁律下 catalog 发不出 EstablishConcept——本策略补上写侧最后一跳。 */
   def decide(event: Any): Seq[Any] = event match {
 
     case _ => Seq.empty

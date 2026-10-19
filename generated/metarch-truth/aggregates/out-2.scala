@@ -6,32 +6,30 @@ import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}
 import net.imadz.common.CborSerializable
 import scala.math.BigDecimal
 
-final case class ContextEntityState(tenantId: String, name: String, description: String, subdomainIds: String, discoveredAt: String, discoveredBy: String) extends CborSerializable
+final case class ContextRelationEntityState(tenantId: String, upstreamContextId: String, downstreamContextId: String, kind: String, integration: String, description: String, createdAt: String, createdBy: String) extends CborSerializable
 
-sealed trait ContextEntityCommand extends CborSerializable
-final case class DiscoverContext() extends ContextEntityCommand
-final case class UpdateContextScope() extends ContextEntityCommand
+sealed trait ContextRelationEntityCommand extends CborSerializable
 
-sealed trait ContextEntityEvent extends CborSerializable
-final case class ContextDiscovered() extends ContextEntityEvent
-final case class ContextScopeUpdated() extends ContextEntityEvent
 
-object ContextEntity {
-  def behavior(persistenceId: PersistenceId): Behavior[ContextEntityCommand] =
-    EventSourcedBehavior[ContextEntityCommand, ContextEntityEvent, ContextEntityState](
+sealed trait ContextRelationEntityEvent extends CborSerializable
+
+
+object ContextRelationEntity {
+  def behavior(persistenceId: PersistenceId): Behavior[ContextRelationEntityCommand] =
+    EventSourcedBehavior[ContextRelationEntityCommand, ContextRelationEntityEvent, ContextRelationEntityState](
       persistenceId = persistenceId,
-      emptyState = TODO,
+      emptyState = ???,
       commandHandler = (state, cmd) => handleCommand(state, cmd),
       eventHandler = (state, event) => applyEvent(state, event)
     )
 
-  private def handleCommand(state: ContextEntityState, cmd: ContextEntityCommand): Effect[ContextEntityEvent, ContextEntityState] =
+  private def handleCommand(state: ContextRelationEntityState, cmd: ContextRelationEntityCommand): Effect[ContextRelationEntityEvent, ContextRelationEntityState] =
     cmd match {
 
       case _ => Effect.unhandled
     }
 
-  private def applyEvent(state: ContextEntityState, event: ContextEntityEvent): ContextEntityState =
+  private def applyEvent(state: ContextRelationEntityState, event: ContextRelationEntityEvent): ContextRelationEntityState =
     event match {
 
       case _ => state

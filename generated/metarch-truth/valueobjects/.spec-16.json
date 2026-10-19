@@ -1,34 +1,55 @@
 {
   "package": "generated.valueobject",
-  "name": "FieldSpec",
+  "name": "AggregateRelationSpec",
+  "description": "",
   "fields": [
     {
-      "name": "name",
-      "dataType": "String"
+      "name": "toAggregate",
+      "dataType": "string"
     },
     {
-      "name": "dataType",
-      "dataType": "String"
+      "name": "cardinality",
+      "dataType": "string"
     },
     {
-      "name": "description",
-      "dataType": "String"
+      "name": "foreignKey",
+      "dataType": "string"
     },
     {
-      "name": "role",
-      "dataType": "String"
+      "name": "writePath",
+      "dataType": "string"
+    },
+    {
+      "name": "ruling",
+      "dataType": "string"
+    },
+    {
+      "name": "semanticType",
+      "dataType": "string"
+    },
+    {
+      "name": "causal",
+      "dataType": "string"
+    },
+    {
+      "name": "temporal",
+      "dataType": "string"
+    },
+    {
+      "name": "existence",
+      "dataType": "string"
+    },
+    {
+      "name": "targetDeletionPolicy",
+      "dataType": "string"
+    },
+    {
+      "name": "targetTypes",
+      "dataType": "string"
     },
     {
       "name": "noteId",
-      "dataType": "String"
-    },
-    {
-      "name": "writtenBy",
-      "dataType": "List<String>"
-    },
-    {
-      "name": "fieldConceptId",
-      "dataType": "String"
+      "dataType": "string"
     }
   ]
 }

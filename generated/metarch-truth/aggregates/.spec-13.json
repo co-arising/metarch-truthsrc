@@ -1,238 +1,60 @@
 {
   "package": "generated.aggregate",
-  "name": "ReadModelDefinition",
-  "objectName": "ReadModelDefinitionEntity",
-  "stateType": "ReadModelDefinitionEntityState",
-  "commandType": "ReadModelDefinitionEntityCommand",
-  "eventType": "ReadModelDefinitionEntityEvent",
+  "name": "Stage",
+  "objectName": "StageEntity",
+  "stateType": "StageEntityState",
+  "commandType": "StageEntityCommand",
+  "eventType": "StageEntityEvent",
   "stateFields": [
     {
       "name": "tenantId",
-      "dataType": "String (UUID)",
-      "description": "所属租户 id",
-      "origin": "",
-      "writtenBy": [
-        "ReadModelDeclared.tenantId"
-      ],
-      "role": "State",
-      "noteId": "f2207d3f-6bbf-4138-ba04-1d58cdd646e1",
-      "codeFqn": "net.imadz.metarch.domain.entities.ReadModelDefinitionEntity.ReadModelDefinitionState.tenantId",
-      "codeFqnCount": 4,
-      "businessDef": "所属租户 id"
+      "dataType": "string"
     },
     {
-      "name": "viewName",
-      "dataType": "String",
-      "description": "读模型视图名",
-      "origin": "",
-      "writtenBy": [
-        "ReadModelDeclared.viewName"
-      ],
-      "role": "State",
-      "noteId": "d7ac14f6-319a-4768-9520-89d488fffe46",
-      "codeFqn": "net.imadz.metarch.domain.entities.ReadModelDefinitionEntity.ReadModelDefinitionState.viewName",
-      "codeFqnCount": 4,
-      "businessDef": "读模型视图名"
+      "name": "status",
+      "dataType": "string"
     },
     {
-      "name": "parentAggregate",
-      "dataType": "String",
-      "description": "视图源聚合",
-      "origin": "",
-      "writtenBy": [
-        "ReadModelDeclared.parentAggregate"
-      ],
-      "role": "State",
-      "noteId": "668891f5-e6d8-430c-8412-0093fe7f6101",
-      "codeFqn": "net.imadz.metarch.domain.entities.ReadModelDefinitionEntity.ReadModelDefinitionState.parentAggregate",
-      "codeFqnCount": 4,
-      "businessDef": "视图源聚合"
+      "name": "workshopId",
+      "dataType": "string"
     },
     {
-      "name": "viewId",
-      "dataType": "String",
-      "description": "③层文件侧视图 id（readmodels.json id 键）",
-      "origin": "S2-82-B4a",
-      "writtenBy": [
-        "ReadModelDeclared.viewId"
-      ],
-      "role": "State",
-      "noteId": "9784d7b6-8055-4fd0-aff1-9144fc19adeb",
-      "codeFqn": "net.imadz.metarch.domain.entities.ReadModelDefinitionEntity.ReadModelDefinitionState.viewId",
-      "codeFqnCount": 4,
-      "businessDef": "③层文件侧视图 id（readmodels.json id 键）"
+      "name": "order",
+      "dataType": "string"
     },
     {
-      "name": "sourceAggregates",
-      "dataType": "List<String>",
-      "description": "源聚合列表（文件 sourceAggregates 键）",
-      "origin": "S2-82-B4a",
-      "writtenBy": [
-        "ReadModelDeclared.sourceAggregates"
-      ],
-      "role": "State",
-      "noteId": "5c4944c4-c75b-4b5a-bb2c-fbfbe998c34a",
-      "codeFqn": "net.imadz.metarch.domain.entities.ReadModelDefinitionEntity.ReadModelDefinitionState.sourceAggregates",
-      "codeFqnCount": 4,
-      "businessDef": "源聚合列表（文件 sourceAggregates 键）"
+      "name": "name",
+      "dataType": "string"
     },
     {
-      "name": "consumesEvents",
-      "dataType": "List<String>",
-      "description": "消费事件列表（文件 consumesEvents 键）",
-      "origin": "S2-82-B4a",
-      "writtenBy": [
-        "ReadModelDeclared.consumesEvents"
-      ],
-      "role": "State",
-      "noteId": "83ad4b30-2545-4915-ae75-a74f8664d542",
-      "codeFqn": "net.imadz.metarch.domain.entities.ReadModelDefinitionEntity.ReadModelDefinitionState.consumesEvents",
-      "codeFqnCount": 4,
-      "businessDef": "消费事件列表（文件 consumesEvents 键）"
+      "name": "activatedAt",
+      "dataType": "string"
     },
     {
-      "name": "linkedStories",
-      "dataType": "List<String>",
-      "description": "关联故事列表（文件 linkedStories 键）",
-      "origin": "S2-82-B4a",
-      "writtenBy": [
-        "ReadModelDeclared.linkedStories"
-      ],
-      "role": "State",
-      "noteId": "6bbd5799-9745-4a55-92ec-0e0947575989",
-      "codeFqn": "net.imadz.metarch.domain.entities.ReadModelDefinitionEntity.ReadModelDefinitionState.linkedStories",
-      "codeFqnCount": 4,
-      "businessDef": "关联故事列表（文件 linkedStories 键）"
+      "name": "approvedAt",
+      "dataType": "string"
     },
     {
-      "name": "description",
-      "dataType": "String",
-      "description": "决策视图描述",
-      "origin": "",
-      "writtenBy": [
-        "ReadModelDeclared.description"
-      ],
-      "role": "State",
-      "noteId": "40e967bc-2457-42fe-990b-c7bfedc4cd93",
-      "codeFqn": "net.imadz.metarch.domain.entities.ReadModelDefinitionEntity.ReadModelDefinitionState.description",
-      "codeFqnCount": 4,
-      "businessDef": "决策视图描述"
+      "name": "rejectedAt",
+      "dataType": "string"
     },
     {
-      "name": "fields",
-      "dataType": "List<ReadModelFieldSpec>",
-      "description": "视图字段规格集合",
-      "origin": "",
-      "writtenBy": [
-        "ReadModelDeclared.fields",
-        "ReadModelFieldPatched.fieldSpec.fieldName"
-      ],
-      "role": "State",
-      "noteId": "1808a328-3630-44d8-9841-ef5bc5e504c3",
-      "codeFqn": "net.imadz.metarch.domain.entities.ReadModelDefinitionEntity.ReadModelDefinitionState.fields",
-      "codeFqnCount": 4,
-      "businessDef": "视图字段规格集合"
+      "name": "rejectionReason",
+      "dataType": "string"
     },
     {
-      "name": "decisionCommands",
-      "dataType": "List<String>",
-      "description": "决策命令清单",
-      "origin": "",
-      "writtenBy": [
-        "ReadModelDeclared.decisionCommands"
-      ],
-      "role": "State",
-      "noteId": "db0dee20-50e7-4eef-9751-c7eb5fb5a2d8",
-      "codeFqn": "net.imadz.metarch.domain.entities.ReadModelDefinitionEntity.ReadModelDefinitionState.decisionCommands",
-      "codeFqnCount": 4,
-      "businessDef": "决策命令清单"
-    },
-    {
-      "name": "declaredAt",
-      "dataType": "Instant",
-      "description": "声明时间戳",
-      "origin": "",
-      "writtenBy": [
-        "ReadModelDeclared.declaredAt"
-      ],
-      "role": "State",
-      "noteId": "1c386836-d31d-43d6-b3f2-f6cf2784acc3",
-      "codeFqn": "net.imadz.metarch.domain.entities.ReadModelDefinitionEntity.ReadModelDefinitionState.declaredAt",
-      "codeFqnCount": 4,
-      "businessDef": "声明时间戳"
-    },
-    {
-      "name": "declaredBy",
-      "dataType": "String",
-      "description": "声明人",
-      "origin": "",
-      "writtenBy": [
-        "ReadModelDeclared.declaredBy"
-      ],
-      "role": "State",
-      "noteId": "40dee990-d911-4914-aa9b-d76f8d83c822",
-      "codeFqn": "net.imadz.metarch.domain.entities.ReadModelDefinitionEntity.ReadModelDefinitionState.declaredBy",
-      "codeFqnCount": 4,
-      "businessDef": "声明人"
-    },
-    {
-      "name": "removedAt",
-      "dataType": "Instant",
-      "description": "墓碑时间（软删除令·删除即打戳不物删）",
-      "origin": "",
-      "writtenBy": [
-        "ReadModelRemoved.timestamp"
-      ],
-      "role": "State",
-      "noteId": "c3cc7725-4423-47db-b1ef-78e5e12c10b9",
-      "codeFqn": "net.imadz.metarch.domain.entities.ReadModelDefinitionEntity.ReadModelDefinitionState.removedAt",
-      "codeFqnCount": 4,
-      "businessDef": "墓碑时间（软删除令·删除即打戳不物删）"
-    },
-    {
-      "name": "removedBy",
-      "dataType": "String",
-      "description": "执行移除操作的用户/AI",
-      "origin": "",
-      "writtenBy": [
-        "ReadModelRemoved.triggeredBy"
-      ],
-      "role": "State",
-      "noteId": "d4048115-ca1e-4fdf-8e69-d9a55ac94664",
-      "codeFqn": "net.imadz.metarch.domain.entities.ReadModelDefinitionEntity.ReadModelDefinitionState.removedBy",
-      "codeFqnCount": 4,
-      "businessDef": "执行移除操作的用户/AI"
+      "name": "sessionId",
+      "dataType": "string"
     }
   ],
-  "emptyState": "TODO",
-  "commands": [
-    {
-      "name": "DeclareReadModel",
-      "fields": []
-    },
-    {
-      "name": "PatchReadModelField",
-      "fields": []
-    },
-    {
-      "name": "RemoveReadModel",
-      "fields": []
-    }
-  ],
-  "events": [
-    {
-      "name": "ReadModelDeclared",
-      "fields": []
-    },
-    {
-      "name": "ReadModelFieldPatched",
-      "fields": []
-    },
-    {
-      "name": "ReadModelRemoved",
-      "fields": []
-    }
-  ],
-  "statusTransitions": {},
+  "emptyState": "???",
+  "commands": [],
+  "events": [],
+  "statusTransitions": {
+    "StageActivated": "activated",
+    "StageApproved": "approved",
+    "StageRejected": "rejected",
+    "StageSkipped": "skipped"
+  },
   "commandHandlers": []
 }

@@ -1,552 +1,63 @@
 {
   "package": "generated.aggregate",
-  "name": "ModelCatalog",
-  "objectName": "ModelCatalogEntity",
-  "stateType": "ModelCatalogEntityState",
-  "commandType": "ModelCatalogEntityCommand",
-  "eventType": "ModelCatalogEntityEvent",
+  "name": "OrganizationMember",
+  "objectName": "OrganizationMemberEntity",
+  "stateType": "OrganizationMemberEntityState",
+  "commandType": "OrganizationMemberEntityCommand",
+  "eventType": "OrganizationMemberEntityEvent",
   "stateFields": [
     {
       "name": "tenantId",
-      "dataType": "String (UUID)",
-      "description": "所属租户",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "CatalogConflictDetected.tenantId",
-        "CatalogConflictResolved.tenantId",
-        "CatalogVersionCreated.tenantId",
-        "CatalogVersionReleased.tenantId",
-        "KnowledgePatched.tenantId",
-        "MetadataAssembled.tenantId",
-        "MetadataExported.tenantId",
-        "MetadataVersionReleased.tenantId"
-      ],
-      "role": "State",
-      "noteId": "72dbece8-f05d-4987-a19d-40de66df4c63",
-      "codeFqn": "net.imadz.metarch.domain.entities.ModelCatalogEntity.ModelCatalogState.tenantId",
-      "codeFqnCount": 4
+      "dataType": "string"
     },
     {
       "name": "status",
-      "dataType": "String",
-      "description": "DRAFT / CONFLICT_DETECTED / RESOLVED / RELEASED",
-      "origin": "",
-      "writtenBy": [
-        "CatalogConflictDetected",
-        "CatalogConflictResolved",
-        "CatalogVersionCreated",
-        "CatalogVersionReleased",
-        "MetadataVersionReleased"
-      ],
-      "role": "State",
-      "noteId": "e2dd6d8b-8d5c-4354-96cd-206d3200a43f",
-      "codeFqn": "net.imadz.metarch.domain.entities.ModelCatalogEntity.ModelCatalogState.status",
-      "codeFqnCount": 4,
-      "businessDef": "DRAFT / CONFLICT_DETECTED / RESOLVED / RELEASED"
+      "dataType": "string"
     },
     {
-      "name": "projectId",
-      "dataType": "String (UUID)",
-      "description": "知识库归属",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "CatalogVersionCreated.projectId"
-      ],
-      "role": "State",
-      "noteId": "b733a35f-4f16-4a7d-bcef-58c29d3e6c64",
-      "codeFqn": "net.imadz.metarch.domain.entities.ModelCatalogEntity.ModelCatalogState.projectId",
-      "codeFqnCount": 4,
-      "businessDef": "知识库归属",
-      "uiLabel": "所属专项"
+      "name": "userId",
+      "dataType": "string"
     },
     {
-      "name": "version",
-      "dataType": "String",
-      "description": "语义化版本",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "CatalogVersionCreated.version"
-      ],
-      "role": "State",
-      "noteId": "63486008-3eaf-40c0-b1ab-d208abe2222d",
-      "codeFqn": "net.imadz.metarch.domain.entities.ModelCatalogEntity.ModelCatalogState.version",
-      "codeFqnCount": 4,
-      "businessDef": "语义化版本",
-      "uiLabel": "版本号"
+      "name": "department",
+      "dataType": "string"
     },
     {
-      "name": "baseVersion",
-      "dataType": "String",
-      "description": "基于哪个版本打补丁",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "CatalogVersionCreated.baseVersion"
-      ],
-      "role": "State",
-      "noteId": "76948d2d-1250-4957-b7af-a4d11115271b",
-      "codeFqn": "net.imadz.metarch.domain.entities.ModelCatalogEntity.ModelCatalogState.baseVersion",
-      "codeFqnCount": 4,
-      "businessDef": "基于哪个版本打补丁",
-      "uiLabel": "父版本"
+      "name": "jobTitle",
+      "dataType": "string"
     },
     {
-      "name": "patchSessionIds",
-      "dataType": "List<String (UUID)>",
-      "description": "本版本包含的 Session 补丁列表",
-      "origin": "DERIVED",
-      "writtenBy": [
-        "KnowledgePatchReadyToMerged.sessionIds"
-      ],
-      "role": "State",
-      "noteId": "dd7d2d28-1e8e-47dc-b5df-600a5c9bffe8",
-      "codeFqn": "net.imadz.metarch.domain.entities.ModelCatalogEntity.ModelCatalogState.patchSessionIds",
-      "codeFqnCount": 4,
-      "businessDef": "本版本包含的 Session 补丁列表",
-      "uiLabel": "补丁来源",
-      "derivation": "ApplyKnowledgePatch 的会话补丁去重累积（union(patchSessionIds, [sessionId])）"
+      "name": "displayName",
+      "dataType": "string"
     },
     {
-      "name": "knowledgePackages",
-      "dataType": "JSON",
-      "description": "完整内容（Concept/Subdomain/Context等）",
-      "origin": "DERIVED",
-      "writtenBy": [
-        "MetadataAssembled.manifest"
-      ],
-      "role": "State",
-      "noteId": "7a1aefa3-68ad-42fb-ac07-a08abd8ad5b2",
-      "codeFqn": "net.imadz.metarch.domain.entities.ModelCatalogEntity.ModelCatalogState.knowledgePackages",
-      "codeFqnCount": 4,
-      "businessDef": "完整内容（Concept/Subdomain/Context等）",
-      "uiLabel": "知识包",
-      "derivation": "每次 ApplyKnowledgePatch 应用后由知识增量重组装（CatalogVersionReleased 时冻结）"
+      "name": "email",
+      "dataType": "string"
     },
     {
-      "name": "stateHash",
-      "dataType": "String",
-      "description": "目录快照指纹（tree SHA 类比）——MetadataAssembled 时由 manifest 折叠算出（fn:ComputeCatalogStateHash·函数表唯一真源）",
-      "origin": "",
-      "writtenBy": [],
-      "role": "State",
-      "noteId": "63ab6a2f-1d9e-4f44-91e4-44a3b2c9b2fd",
-      "codeFqn": "net.imadz.metarch.domain.entities.ModelCatalogEntity.ModelCatalogState.stateHash",
-      "codeFqnCount": 4,
-      "businessDef": "目录快照指纹（tree SHA 类比）——MetadataAssembled 时由 manifest 折叠算出",
-      "uiLabel": "状态指纹"
+      "name": "phoneNumber",
+      "dataType": "string"
     },
     {
-      "name": "headPatchId",
-      "dataType": "String (UUID)",
-      "description": "HEAD：当前已合并补丁位置（git HEAD/ref 类比）——FF 祖先判定用",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "KnowledgePatched.patchId"
-      ],
-      "role": "State",
-      "noteId": "e81dec16-315f-4420-a623-d17fa5118715",
-      "codeFqn": "net.imadz.metarch.domain.entities.ModelCatalogEntity.ModelCatalogState.headPatchId",
-      "codeFqnCount": 4
+      "name": "joinedAt",
+      "dataType": "string"
     },
     {
-      "name": "headPatchHash",
-      "dataType": "String",
-      "description": "HEAD 补丁的指纹（ref 指向的 commit hash·父链取用）",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "KnowledgePatched.patchHash"
-      ],
-      "role": "State",
-      "noteId": "521a6a9b-919e-49c2-83dc-7449bb84ba58",
-      "codeFqn": "net.imadz.metarch.domain.entities.ModelCatalogEntity.ModelCatalogState.headPatchHash",
-      "codeFqnCount": 4
-    },
-    {
-      "name": "conflicts",
-      "dataType": "List<CatalogConflict>",
-      "description": "冲突检测与修复历史",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "CatalogConflictDetected.conflictSet",
-        "CatalogConflictResolved.resolvedConflicts",
-        "CatalogVersionCreated"
-      ],
-      "role": "State",
-      "noteId": "3dcf06f2-cf88-4afd-8301-53ec06af493e",
-      "codeFqn": "net.imadz.metarch.domain.entities.ModelCatalogEntity.ModelCatalogState.conflicts",
-      "codeFqnCount": 4,
-      "businessDef": "检测到的冲突列表",
-      "uiLabel": "冲突列表"
-    },
-    {
-      "name": "assembledAt",
-      "dataType": "Instant",
-      "description": "time when metadata was assembled",
-      "origin": "SYSTEM_INJECTED",
-      "writtenBy": [
-        "MetadataAssembled.timestamp"
-      ],
-      "role": "State",
-      "noteId": "06409b3f-ef12-4b1e-8686-610cb8af525c",
-      "codeFqn": "net.imadz.metarch.domain.entities.ModelCatalogEntity.ModelCatalogState.assembledAt",
-      "codeFqnCount": 4,
-      "businessDef": "time when metadata was assembled",
-      "uiLabel": "组装时间"
-    },
-    {
-      "name": "assembledBy",
-      "dataType": "String",
-      "description": "user or system that assembled metadata",
-      "origin": "SYSTEM_INJECTED",
-      "writtenBy": [
-        "MetadataAssembled.triggeredBy"
-      ],
-      "role": "State",
-      "noteId": "4b43c474-0750-42c1-bb4d-117adc4ae192",
-      "codeFqn": "net.imadz.metarch.domain.entities.ModelCatalogEntity.ModelCatalogState.assembledBy",
-      "codeFqnCount": 4,
-      "businessDef": "user or system that assembled metadata",
-      "uiLabel": "组装人"
-    },
-    {
-      "name": "exportedAt",
-      "dataType": "Instant",
-      "description": "time when metadata was exported",
-      "origin": "SYSTEM_INJECTED",
-      "writtenBy": [
-        "MetadataExported.timestamp"
-      ],
-      "role": "State",
-      "noteId": "1e99fa37-9c79-44ca-bf23-f1cccd35b963",
-      "codeFqn": "net.imadz.metarch.domain.entities.ModelCatalogEntity.ModelCatalogState.exportedAt",
-      "codeFqnCount": 4,
-      "businessDef": "time when metadata was exported",
-      "uiLabel": "导出时间"
-    },
-    {
-      "name": "exportedBy",
-      "dataType": "String",
-      "description": "user or system that exported metadata",
-      "origin": "SYSTEM_INJECTED",
-      "writtenBy": [
-        "MetadataExported.triggeredBy"
-      ],
-      "role": "State",
-      "noteId": "21665ef6-7331-4399-92eb-acd99f9a7dc2",
-      "codeFqn": "net.imadz.metarch.domain.entities.ModelCatalogEntity.ModelCatalogState.exportedBy",
-      "codeFqnCount": 4,
-      "businessDef": "user or system that exported metadata",
-      "uiLabel": "导出人"
-    },
-    {
-      "name": "releasedAt",
-      "dataType": "Instant",
-      "description": "time when the catalog version was released",
-      "origin": "SYSTEM_INJECTED",
-      "writtenBy": [
-        "MetadataVersionReleased.timestamp"
-      ],
-      "role": "State",
-      "noteId": "c35771e2-11cd-408b-83cb-41abafabe2f5",
-      "codeFqn": "net.imadz.metarch.domain.entities.ModelCatalogEntity.ModelCatalogState.releasedAt",
-      "codeFqnCount": 4,
-      "businessDef": "time when the catalog version was released",
-      "uiLabel": "发布时间"
-    },
-    {
-      "name": "releasedBy",
-      "dataType": "String",
-      "description": "user or system that released the catalog version",
-      "origin": "SYSTEM_INJECTED",
-      "writtenBy": [
-        "MetadataVersionReleased.triggeredBy"
-      ],
-      "role": "State",
-      "noteId": "bfbc869c-d676-47d8-9e17-6a7dbb3c4502",
-      "codeFqn": "net.imadz.metarch.domain.entities.ModelCatalogEntity.ModelCatalogState.releasedBy",
-      "codeFqnCount": 4,
-      "businessDef": "user or system that released the catalog version",
-      "uiLabel": "发布人"
-    },
-    {
-      "name": "conflictId",
-      "dataType": "String (UUID)",
-      "description": "",
-      "origin": "",
-      "writtenBy": [
-        "CatalogConflictDetected.conflictSet.conflicts[].conflictId",
-        "CatalogConflictResolved.resolvedConflicts[].conflictId"
-      ],
-      "role": "ValueObject.Member",
-      "noteId": "d3f0150d-793a-423a-b3d6-5a676b18d6ff",
-      "parent": "CatalogConflict",
-      "businessDef": "唯一标识；(parent=CatalogConflict)",
-      "uiLabel": "冲突编号",
-      "fold": "LATEST_WINS"
-    },
-    {
-      "name": "conflictType",
-      "dataType": "String",
-      "description": "",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "CatalogConflictDetected.conflictSet.conflicts[].conflictType",
-        "CatalogConflictResolved.resolvedConflicts[].conflictType"
-      ],
-      "role": "ValueObject.Member",
-      "noteId": "8c72a2f5-9a57-4d27-b10b-1d383248be6e",
-      "parent": "CatalogConflict",
-      "businessDef": "NAME_CONFLICT / DEFINITION_CONFLICT / KIND_MISMATCH / CONTEXT_MISMATCH；(parent=CatalogConflict)",
-      "uiLabel": "冲突类型",
-      "fold": "LATEST_WINS"
-    },
-    {
-      "name": "involvedSessionIds",
-      "dataType": "List<String>",
-      "description": "",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "CatalogConflictDetected.conflictSet.conflicts[].involvedSessionIds",
-        "CatalogConflictResolved.resolvedConflicts[].involvedSessionIds"
-      ],
-      "role": "ValueObject.Member",
-      "noteId": "ca1e8beb-4406-4478-a6ba-a70494cd0bbb",
-      "parent": "CatalogConflict",
-      "businessDef": "相关 Session 列表；(parent=CatalogConflict)",
-      "uiLabel": "冲突来源",
-      "derivation": "member of conflicts",
-      "fold": "LATEST_WINS"
-    },
-    {
-      "name": "details",
-      "dataType": "JSON",
-      "description": "",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "CatalogConflictDetected.conflictSet.conflicts[].details",
-        "CatalogConflictResolved.resolvedConflicts[].details"
-      ],
-      "role": "ValueObject.Member",
-      "noteId": "bebfc780-0988-4318-934f-dd9e0bd02496",
-      "parent": "CatalogConflict",
-      "businessDef": "各方内容对比；(parent=CatalogConflict)",
-      "uiLabel": "冲突详情",
-      "fold": "LATEST_WINS"
-    },
-    {
-      "name": "resolvedAt",
-      "dataType": "Instant",
-      "description": "",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "CatalogConflictDetected.conflictSet.conflicts[].resolvedAt",
-        "CatalogConflictResolved.resolvedConflicts[].resolvedAt"
-      ],
-      "role": "ValueObject.Member",
-      "noteId": "3d7ea5e8-0d83-4d86-bc77-d476d4bed4be",
-      "parent": "CatalogConflict",
-      "businessDef": "time when the conflict was resolved；(parent=CatalogConflict)",
-      "uiLabel": "修复时间",
-      "fold": "LATEST_WINS"
-    },
-    {
-      "name": "resolvedBy",
-      "dataType": "String",
-      "description": "",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "CatalogConflictDetected.conflictSet.conflicts[].resolvedBy",
-        "CatalogConflictResolved.resolvedConflicts[].resolvedBy"
-      ],
-      "role": "ValueObject.Member",
-      "noteId": "f701aff6-eb56-4f03-af5d-cf3fadc1e553",
-      "parent": "CatalogConflict",
-      "businessDef": "元数据工程师 ID；(parent=CatalogConflict)",
-      "uiLabel": "修复人",
-      "fold": "LATEST_WINS"
-    },
-    {
-      "name": "resolutionAction",
-      "dataType": "String",
-      "description": "",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "CatalogConflictDetected.conflictSet.conflicts[].resolutionAction",
-        "CatalogConflictResolved.resolvedConflicts[].resolutionAction"
-      ],
-      "role": "ValueObject.Member",
-      "noteId": "13f8c1d7-5508-44ec-a7ad-30b1c90e8980",
-      "parent": "CatalogConflict",
-      "businessDef": "MERGE / RENAME / DEPRECATE / SPLIT；(parent=CatalogConflict)",
-      "uiLabel": "修复动作",
-      "fold": "LATEST_WINS"
-    },
-    {
-      "name": "resolutionNote",
-      "dataType": "String",
-      "description": "",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "CatalogConflictDetected.conflictSet.conflicts[].resolutionNote",
-        "CatalogConflictResolved.resolvedConflicts[].resolutionNote"
-      ],
-      "role": "ValueObject.Member",
-      "noteId": "72751e28-deeb-4ad9-8782-905b5655ab7a",
-      "parent": "CatalogConflict",
-      "businessDef": "note explaining the conflict resolution；(parent=CatalogConflict)",
-      "uiLabel": "裁决说明",
-      "fold": "LATEST_WINS"
-    },
-    {
-      "name": "sessionId",
-      "dataType": "String (UUID)",
-      "description": "",
-      "origin": "",
-      "writtenBy": [
-        "KnowledgePatched.patchSet.sessionId"
-      ],
-      "role": "ValueObject.Member",
-      "noteId": "d5a5b814-e291-44d7-b31f-1e90f919abe3",
-      "parent": "CatalogPatchSet",
-      "businessDef": "补丁来自哪个 Session；(parent=CatalogPatchSet)",
-      "uiLabel": "来源场次"
-    },
-    {
-      "name": "concepts",
-      "dataType": "List<ConceptDelta>",
-      "description": "",
-      "origin": "PROPAGATED",
-      "writtenBy": [
-        "KnowledgePatched.patchSet.concepts"
-      ],
-      "role": "ValueObject.Member",
-      "noteId": "c668a05d-0d01-4a59-9d3f-83031e235341",
-      "parent": "CatalogPatchSet",
-      "businessDef": "本次补丁的具体内容；(parent=CatalogPatchSet)",
-      "uiLabel": "知识增量"
-    },
-    {
-      "name": "appliedAt",
-      "dataType": "Instant",
-      "description": "",
-      "origin": "SYSTEM_INJECTED",
-      "writtenBy": [
-        "KnowledgePatched.patchSet.appliedAt"
-      ],
-      "role": "ValueObject.Member",
-      "noteId": "72e1b3eb-0282-474d-8312-3e88381cbbce",
-      "parent": "CatalogPatchSet",
-      "businessDef": "time when the patch was applied；(parent=CatalogPatchSet)",
-      "uiLabel": "应用时间"
-    },
-    {
-      "name": "detectedAt",
-      "dataType": "Instant",
-      "description": "",
-      "origin": "SYSTEM_INJECTED",
-      "writtenBy": [
-        "CatalogConflictDetected.conflictSet.detectedAt"
-      ],
-      "role": "ValueObject.Member",
-      "noteId": "4dbc5994-0e23-4f83-9b61-80bb782c55f5",
-      "parent": "CatalogConflictSet",
-      "businessDef": "time when conflicts were detected；(parent=CatalogConflictSet)",
-      "uiLabel": "检测时间"
-    },
-    {
-      "name": "conceptIndex",
-      "dataType": "List<ConceptIndexEntry>",
-      "description": "名字索引：(conceptName, contextId) → conceptId ＋ contentHash（冲突检测/FF 判定用）",
-      "origin": "PROPAGATED",
-      "role": "State",
-      "noteId": "5b8a6c5a-fe5b-4b03-81e6-2b02fa88c5ce",
-      "writtenBy": [
-        "KnowledgePatched"
-      ],
-      "codeFqn": "net.imadz.metarch.domain.entities.ModelCatalogEntity.ModelCatalogState.conceptIndex",
-      "codeFqnCount": 4,
-      "businessDef": "名字索引：(conceptName, contextId) → conceptId ＋ contentHash（冲突检测/FF 判定用）",
-      "uiLabel": "概念索引",
-      "parent": "ConceptIndexSet"
+      "name": "removedAt",
+      "dataType": "string"
     }
   ],
-  "emptyState": "TODO",
-  "commands": [
-    {
-      "name": "CreateCatalogVersion",
-      "fields": []
-    },
-    {
-      "name": "ApplyKnowledgePatch",
-      "fields": []
-    },
-    {
-      "name": "DetectCatalogConflicts",
-      "fields": []
-    },
-    {
-      "name": "ResolveCatalogConflict",
-      "fields": []
-    },
-    {
-      "name": "ReleaseCatalogVersion",
-      "fields": []
-    },
-    {
-      "name": "AssembleMetadata",
-      "fields": []
-    },
-    {
-      "name": "ExportMetadata",
-      "fields": []
-    },
-    {
-      "name": "ReleaseMetadataVersion",
-      "fields": []
-    }
-  ],
-  "events": [
-    {
-      "name": "CatalogVersionCreated",
-      "fields": []
-    },
-    {
-      "name": "KnowledgePatched",
-      "fields": []
-    },
-    {
-      "name": "CatalogConflictDetected",
-      "fields": []
-    },
-    {
-      "name": "CatalogConflictResolved",
-      "fields": []
-    },
-    {
-      "name": "CatalogVersionReleased",
-      "fields": []
-    },
-    {
-      "name": "MetadataAssembled",
-      "fields": []
-    },
-    {
-      "name": "MetadataExported",
-      "fields": []
-    },
-    {
-      "name": "MetadataVersionReleased",
-      "fields": []
-    }
-  ],
+  "emptyState": "???",
+  "commands": [],
+  "events": [],
   "statusTransitions": {
-    "CatalogVersionCreated": "DRAFT",
-    "KnowledgePatched": null,
-    "MetadataAssembled": null,
-    "MetadataExported": null,
-    "CatalogConflictDetected": "CONFLICT_DETECTED",
-    "CatalogConflictResolved": "RESOLVED",
-    "MetadataVersionReleased": "RELEASED",
-    "CatalogVersionReleased": "RELEASED"
+    "TenantMemberInvited": "PENDING",
+    "TenantMemberInvitationAccepted": "ACTIVE",
+    "TenantMemberJoined": "ACTIVE",
+    "TenantMemberInvitationRevoked": "PENDING",
+    "TenantMemberInvitationExpired": "PENDING",
+    "TenantMemberInvitationResent": "PENDING",
+    "TenantMemberRemoved": "REMOVED"
   },
   "commandHandlers": []
 }

@@ -1,11 +1,11 @@
 package generated.policy
 
-// Policy: 概念确立后检测冲突
-// Triggers: ConceptEstablished
-// Invokes: DetectConceptConflict
+// Policy: 立项后创建目录版本
+// Triggers: 
+// Invokes: 
 
-object 概念确立后检测冲突Policy {
-  /** whenever ConceptEstablished then DetectConceptConflict（S203 E→E 直连正解·冲突检测为系统自动语义） */
+object 立项后创建目录版本Policy {
+  /** 项目启动后自动创建目录版本 v1.0.0（catalogId 与 Project 一对一） */
   def decide(event: Any): Seq[Any] = event match {
 
     case _ => Seq.empty

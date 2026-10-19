@@ -1,13 +1,9 @@
 {
   "package": "generated.policy",
-  "name": "知识就绪后完成会话",
-  "objectName": "知识就绪后完成会话Policy",
-  "description": "知识补丁确认就绪（ReadyToMerged）→ 自动完成全部来源 Session（fanOut sessionIds·知识沉淀闭环）",
-  "triggers": [
-    "KnowledgePatchReadyToMerged"
-  ],
-  "invokes": [
-    "CompleteSession"
-  ],
+  "name": "DoR通过后请求合并知识",
+  "objectName": "DoR通过后请求合并知识Policy",
+  "description": "DoR 门通过（DoRPassed）→ 创建合并请求（MR 门·知识管理员审阅合入·占位→正式两段式）",
+  "triggers": [],
+  "invokes": [],
   "rules": []
 }
