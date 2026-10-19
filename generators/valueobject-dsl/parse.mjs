@@ -7,11 +7,12 @@ const binding = JSON.parse(readFileSync(bindingPath, "utf8"));
 const payloadText = text.slice(text.indexOf("payload:") + 8).trim();
 const payload = JSON.parse(payloadText);
 const fieldKey = "fields";
+const fields = payload.fields ?? payload.info?.fields ?? [];
 const spec = {
   package: binding.package,
   name: payload.name,
   description: payload.description,
-  fields: (payload.info[fieldKey] ?? []).map((f) => ({ name: f.name, dataType: f.dataType })),
+  fields: fields.map((f) => ({ name: f.name, dataType: f.dataType })),
 };
 writeFileSync(outPath, JSON.stringify(spec, null, 2));
 console.log(`parsed event ${spec.name}`);
