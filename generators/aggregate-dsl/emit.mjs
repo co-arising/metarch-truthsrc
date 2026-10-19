@@ -1,11 +1,12 @@
 #!/usr/bin/env node
-// ═══ aggregate-dsl emitter v2 — AggregateSpec → 3 Scala files (old codegen 1:1) ═══
-// Matches golden_master/net/imadz/application/aggregates/CreditBalance*.scala pattern:
-//   <Name>Protocol.scala          — sealed Command trait + case classes (replyTo) + Confirmations + CommandHandler type alias
-//   <Name>Aggregate.scala         — object with commandHandler wiring + entityTypeKey + tags
-//   behaviors/<Name>Behaviors.scala — object extends <Name>CommandHelpers, runReplyingPolicy groups, AI_PROMPT for unhandled
+// ═══ aggregate-dsl emitter v3 — AggregateSpec → 4 Scala files (ingested-app 1:1) ═══
+// Matches ingested-app app/net/imadz/metarch/application/aggregates/ pattern:
+//   <Name>Protocol.scala              — sealed Command trait + case classes (replyTo) + Confirmations + CommandHandler type alias
+//   <Name>Aggregate.scala             — object with commandHandler wiring + entityTypeKey + tags
+//   behaviors/<Name>Behaviors.scala   — object extends <Name>CommandHelpers, runReplyingPolicy(<Agg>Rules.<Cmd>Rule, Helper), AI_PROMPT for unhandled
+//   factories/<Name>AggregateFactory.scala — @Inject factory with create<Name>For<Cmd> per command via ClusterSharding
 // Usage: node emit.mjs <spec.json> <out.scala>
-//   (out.scala is a placeholder; the 3 files are written alongside it in the same dir)
+//   (out.scala is a placeholder; the 4 files are written alongside it in the same dir)
 
 import { readFileSync, writeFileSync, mkdirSync } from "fs";
 import { dirname, join } from "path";
@@ -95,16 +96,14 @@ object ${objName}Aggregate {
 
 // ── 3. Behaviors ──
 const commandImports = commands.map((c) => `import ${pkg}.${c.name}`).join("\n");
-// Rule imports for handled commands (from invariant-dsl)
-const ruleImports = commands
-  .filter((c) => handled.has(c.name))
-  .map((c) => `import ${pkg}.invariant.${c.name}RuleRule`)
-  .join("\n");
+// Rule imports for handled commands (from invariant-dsl v3: <Agg>Rules container object)
+const hasHandled = commands.some((c) => handled.has(c.name));
+const ruleImport = hasHandled ? `import ${pkg}.invariant.${objName}Rules` : "";
 
 const behaviorCases = commands
   .map((c) => {
     if (handled.has(c.name)) {
-      const rule = `${c.name}RuleRule`; // old convention: <Cmd>RuleRule (cf. WithdrawRuleRule)
+      const rule = `${objName}Rules.${c.name}Rule`; // v3: container.inner (cf. ConceptRules.EstablishConceptRule)
       const helper = `${c.name}Helper`;
       return `    case cmd: ${c.name} => runReplyingPolicy(${rule}, ${helper})(state, cmd).replyWith(cmd.replyTo)`;
     } else {
@@ -131,7 +130,7 @@ import ${pkg}.${confirmation}
 import ${pkg}.${objName}Protocol
 import ${pkg}.${objName}Protocol._
 ${commandImports}
-${ruleImports}
+${ruleImport}
 import net.imadz.common.application.CommandHandlerReplyingBehavior.runReplyingPolicy
 import scala.concurrent.duration._
 
@@ -147,15 +146,56 @@ ${behaviorCases}
 }
 `;
 
+// ── 4. Factory ──
+// Matches ingested-app .../application/aggregates/factories/<Name>AggregateFactory.scala:
+//   class <Name>AggregateFactory @Inject() (clusterSharding: ClusterSharding)(implicit ec: ExecutionContext) {
+//     implicit val askTimeout: Timeout = Timeout(10.seconds)
+//     def create<Name>For<Cmd>(id: String): EntityRef[<CommandTrait>] = ...
+//   }
+const factoryMethods = commands
+  .map(
+    (c) => `  def create${objName}For${c.name}(id: String): EntityRef[${commandTrait}] = {
+    clusterSharding.entityRefFor(${objName}Aggregate.entityTypeKey, id)
+  }`
+  )
+  .join("\n\n");
+
+const factory = `package ${pkg}.factories
+
+import akka.cluster.sharding.typed.scaladsl.ClusterSharding
+import akka.cluster.sharding.typed.scaladsl.EntityRef
+import akka.util.Timeout
+import javax.inject.Inject
+import ${pkg}.${objName}Aggregate
+import ${pkg}.${commandTrait}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.duration._
+
+/**
+ * ${objName}AggregateFactory: creates ${objName} aggregate instances via cluster sharding
+ */
+class ${objName}AggregateFactory @Inject() (clusterSharding: ClusterSharding)(implicit ec: ExecutionContext) {
+  implicit val askTimeout: Timeout = Timeout(10.seconds)
+
+${factoryMethods}
+
+}
+`;
+
 // ── Write ──
 const outDir = dirname(outPath);
 const behaviorsDir = join(outDir, "behaviors");
+const factoriesDir = join(outDir, "factories");
 mkdirSync(behaviorsDir, { recursive: true });
+mkdirSync(factoriesDir, { recursive: true });
 
 writeFileSync(join(outDir, `${objName}Protocol.scala`), protocol);
 writeFileSync(join(outDir, `${objName}Aggregate.scala`), aggregate);
 writeFileSync(join(behaviorsDir, `${objName}Behaviors.scala`), behaviors);
+writeFileSync(join(factoriesDir, `${objName}AggregateFactory.scala`), factory);
 // placeholder so run-all's single-file contract still resolves
-writeFileSync(outPath, `// generated: ${objName}Protocol.scala, ${objName}Aggregate.scala, behaviors/${objName}Behaviors.scala\n`);
+writeFileSync(outPath, `// generated: ${objName}Protocol.scala, ${objName}Aggregate.scala, behaviors/${objName}Behaviors.scala, factories/${objName}AggregateFactory.scala\n`);
 
-console.log(`aggregate-dsl: wrote ${objName}Protocol.scala, ${objName}Aggregate.scala, behaviors/${objName}Behaviors.scala`);
+console.log(
+  `aggregate-dsl: wrote ${objName}Protocol.scala, ${objName}Aggregate.scala, behaviors/${objName}Behaviors.scala, factories/${objName}AggregateFactory.scala`
+);
