@@ -716,6 +716,12 @@ runGen(
         fields: normFieldsRich(c.parameters),
         noteId: noteIdOf("command", c.name, a.name),
         elementHash: elementHashOf("command", c.name, a.name),
+        // B-assembly fix (2026-10-20): decision/emissionBindings carry the
+        // port-member references (`adjudicator.hasConflicts(...)`) that tell
+        // aggregate-dsl a command's rule is a port class needing `new` +
+        // a threaded apply parameter (ModelCatalog.ApplyKnowledgePatch).
+        decision: c.decision || null,
+        emissionBindings: c.emissionBindings || null,
       })),
       events: (a.events || []).map((e) => ({
         name: e.name,

@@ -349,6 +349,13 @@ const statusLiteralText = (slot, val) =>
 
 const foldNotes = [];
 const handlerPortTraits = new Set();
+// B-assembly fix (2026-10-20): port members used by fn: fold bodies, derived
+// from declaredFunction callExpr (`<pkg>.<X>Access.<member>.<method>({args})`
+// → member). Fold bodies reference the bare member, so the EventHandler /
+// Behaviors / Aggregate faces must thread it as an apply parameter (golden
+// ModelCatalog 债④ closure form); previously only the trait import was
+// emitted and the generated code did not compile.
+const handlerPortMembers = new Map();
 
 const renderHandlerCase = (e) => {
   const S = handlerStateFields;
@@ -479,7 +486,12 @@ const renderHandlerCase = (e) => {
       }
       // 债④ closure form: `<pkg>.<X>Access.<member>.<method>({args})` → `<member>.<method>(...)`
       const ce = df.callExpr.replace(/^.*Access\./, "").replace("{args}", args.join(", "));
-      if (df.portTrait) handlerPortTraits.add(df.portTrait);
+      if (df.portTrait) {
+        handlerPortTraits.add(df.portTrait);
+        const member = ce.split(".")[0];
+        if (/^[A-Za-z_]\w*$/.test(member) && !handlerPortMembers.has(member))
+          handlerPortMembers.set(member, df.portTrait);
+      }
       return { text: `${qref(slot)} = ${ce}` };
     }
     if ((m = /^append:(?:event\.)?([\w.]+)$/.exec(expr))) {
@@ -660,6 +672,28 @@ const renderHandlerCase = (e) => {
 };
 
 const handlerBlocks = orderedEvents.map(renderHandlerCase);
+// B-assembly fix (2026-10-20): handler ports (fold side) + rule ports
+// (decision side). A handled command's rule is a port CLASS (invariant-dsl
+// emits `class XRule(member: Trait)`) iff its decision / emissionBindings
+// text references a fold port member — the tree carries both texts; run-all
+// forwards them on the aggregate spec. Port-free aggregates keep the exact
+// Phase 1 emission shapes below.
+const handlerPorts = [...handlerPortMembers.entries()].map(([member, fqn]) => ({
+  member,
+  fqn,
+  trait: fqn.split(".").pop(),
+}));
+const cmdPortRefs = new Map();
+for (const c of commands) {
+  const text = `${JSON.stringify(c.decision ?? "")}\n${JSON.stringify(c.emissionBindings ?? "")}`;
+  const refs = handlerPorts.filter(
+    (p) => text.includes(`${p.member}.`) || text.includes(`${p.member}(`)
+  );
+  if (refs.length) cmdPortRefs.set(c.name, refs);
+}
+const behaviorsPorts = handlerPorts.filter((p) =>
+  [...cmdPortRefs.values()].some((refs) => refs.includes(p))
+);
 // VO imports for `upsert:`/`memberUpsert:` fold slots (old-codegen behavior):
 // the slot's element VO type, first-appearance ordered by the aggregate's
 // order.events (spec event order), e.g. golden FMD = FieldStateSpec first.
@@ -716,10 +750,19 @@ ${handlerImportBlock}
  * status 按事件名词干匹配枚举（STATE_TRANSITION）；待确认项标 TODO + 审校清单（story/eventhandler_review.md）。
  */
 object ${objName}EventHandler {
-  def apply: ${objName}EventHandler = (state, event) => event match {
+${handlerPorts.length
+  ? `  // 债④（2026-10-04·闭包形）：port 折叠点带参重载——装配点传实现，闭包捕获不可变。
+  def apply(${handlerPorts.map((p) => `${p.member}: ${p.trait}`).join(", ")}): ${objName}EventHandler = {
+${handlerPorts.map((p) => `    require(${p.member} != null, "${p.member} 未绑定");`).join("\n")}
+    (state, event) => event match {
 ${handlerBlocks.join("\n\n")}
     case _ => state // 默认兜底
-  }
+    }
+  }`
+  : `  def apply: ${objName}EventHandler = (state, event) => event match {
+${handlerBlocks.join("\n\n")}
+    case _ => state // 默认兜底
+  }`}
 }
 `;
 if (foldNotes.length) {
@@ -828,7 +871,9 @@ object ${objName}Aggregate {
 
 
   // Wiring (Separated Behavior) - Type alias now in Protocol
-  def commandHandler: ${pkg}.${objName}Protocol.${handlerFamily} = ${objName}Behaviors.apply
+${handlerPorts.length
+  ? `  def commandHandler(${handlerPorts.map((p) => `${p.member}: ${p.fqn}`).join(", ")}): ${pkg}.${objName}Protocol.${handlerFamily} = ${objName}Behaviors.apply${behaviorsPorts.length ? `(${behaviorsPorts.map((p) => p.member).join(", ")})` : ""}`
+  : `  def commandHandler: ${pkg}.${objName}Protocol.${handlerFamily} = ${objName}Behaviors.apply`}
 
 
 
@@ -847,11 +892,20 @@ const ruleImport = hasHandled ? `import ${invariantPkg}.${objName}Rules` : "";
 const behaviorCases = orderedCommands
   .map((c) => {
     if (handled.has(c.name)) {
-      const rule = `${objName}Rules.${c.name}Rule`;
+      // B-assembly fix (2026-10-20): port-class rules are constructed with
+      // `new` + the port members captured by Behaviors.apply (golden form).
+      const refs = cmdPortRefs.get(c.name) ?? [];
+      const rule = refs.length
+        ? `new ${objName}Rules.${c.name}Rule(${refs.map((r) => r.member).join(", ")})`
+        : `${objName}Rules.${c.name}Rule`;
       const helper = `${c.name}Helper`;
       return `    case cmd: ${c.name} => runReplyingPolicy(${rule}, ${helper})(state, cmd).replyWith(cmd.replyTo)`;
     } else {
-      return `    case ${c.name}(replyTo) =>
+      // B-assembly fix (2026-10-20): the stub pattern was `case X(replyTo)`,
+      // an unapply of arity 1 against multi-field command case classes —
+      // generated Behaviors never compiled. Typed wildcard matches any arity;
+      // the body is the AI_PROMPT ??? stub either way.
+      return `    case _: ${c.name} =>
       /*
       >>> AI_PROMPT_START
       Context: Command Handler
@@ -875,7 +929,7 @@ import net.imadz.common.application.CommandHandlerReplyingBehavior.runReplyingPo
 import ${pkg}.${objName}Protocol._
 import ${entityPkg}.${objName}Entity.${eventType}
 import ${entityPkg}.${objName}Entity.${stateType}
-${ruleImport ? `${ruleImport}\n` : ""}
+${ruleImport ? `${ruleImport}\n` : ""}${behaviorsPorts.map((p) => `import ${p.fqn}`).join("\n")}${behaviorsPorts.length ? "\n" : ""}
 /**
  * ${objName} 命令流接线（rules_domain_gen.mjs 生成，2026-08-22）：
  * 每个命令 → runReplyingPolicy(规则, Helper)(state, cmd).replyWith(replyTo)；
@@ -884,9 +938,14 @@ ${ruleImport ? `${ruleImport}\n` : ""}
 object ${objName}Behaviors extends ${objName}CommandHelpers {
 
   type ${objName}AggregateCommandHandler = (${stateType}, ${commandFamily}) => Effect[${eventType}, ${stateType}]
-  def apply: ${objName}AggregateCommandHandler = (state, command) => defaultBehaviors(state).apply(command)
+${behaviorsPorts.length
+  ? `  // 债④（2026-10-04·闭包形）：port 注入重载——装配点（Bootstrap）传手写实现，闭包捕获不可变。
+  def apply(${behaviorsPorts.map((p) => `${p.member}: ${p.trait}`).join(", ")}): ${objName}AggregateCommandHandler = { ${behaviorsPorts.map((p) => `require(${p.member} != null, "${p.member} 未绑定");`).join(" ")}
+    (state, command) => defaultBehaviors(state, ${behaviorsPorts.map((p) => p.member).join(", ")}).apply(command)
+  }`
+  : `  def apply: ${objName}AggregateCommandHandler = (state, command) => defaultBehaviors(state).apply(command)`}
 
-  private def defaultBehaviors(state: ${stateType}): PartialFunction[${commandFamily}, Effect[${eventType}, ${stateType}]] = {
+  private def defaultBehaviors(state: ${stateType}${behaviorsPorts.length ? `, ${behaviorsPorts.map((p) => `${p.member}: ${p.trait}`).join(", ")}` : ""}): PartialFunction[${commandFamily}, Effect[${eventType}, ${stateType}]] = {
 ${behaviorCases}
   }
 
