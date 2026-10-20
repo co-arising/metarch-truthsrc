@@ -242,6 +242,35 @@ key, e.g. `park-concept` → `parked-knowledge`). The api generator reads it
 for the `OkReceipt` decision-view value and the `ViewKeys` object; a view
 whose name is not renamed keeps its command-style kebab key as `viewKey`.
 
+Read-model field markers (optional, v0.5.2 — Phase 2 typed read models).
+The storyMapping `field` notes behind every read model
+(`info.kind: "readModelField"`, `info.parent: <View>`) may carry three
+adjudicated markers in `info`. All three are **opt-in**: a note without
+them generates exactly the Phase 1 shape (the markers are the only
+Phase 2 signal; nothing is inferred from `dataType` alone).
+
+- `info.opaque: true` — the field's content is an adjudicated opaque
+  payload (a point-in-time snapshot or an external original whose
+  structure is deliberately *not* modeled). Generators keep the DTO
+  field a `String`, annotate it as opaque, and store it verbatim.
+  Setting it is an owner adjudication, recorded per field; a `JSON`
+  field that is neither `opaque` nor expanded (below) is an un-adjudicated
+  leftover, not a design.
+- `info.structure: { name, fields: [{ name, dataType }] }` — the
+  adjudicated expansion of a `JSON` field into a typed sub-document.
+  `name` is the generated DTO's name; `fields` is the sub-document's
+  field list, and every entry must trace to a definition the tree
+  already carries (an event payload field, a value object's members) —
+  expansion structures are never invented at generation time. The
+  generator emits the DTO beside the view DTO and a typed storage
+  codec; the field's `dataType` stays `JSON` (the marker, not the
+  type string, carries the Phase 2 semantics).
+- `info.queryable: true` — on a `List`-typed field: the list's elements
+  are a query dimension. Generators emit an element finder
+  (`findBy<Element>`) and the matching element index (SQL: the
+  sub-table's `value`/key columns). Absence means the list is stored
+  structured but not element-queryable.
+
 Domain-service atoms (`domain-services/*.port.yaml`, v0.5 E1) declare a
 cross-aggregate port: `payload` = `{name, fq, zh, testRef?, methods:
 [{sig, zh}], bridge?: {fq, target, module?}}`. They are the truth source for
