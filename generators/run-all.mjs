@@ -105,6 +105,13 @@ const normType = (t) =>
   ({ string: "string", number: "number", integer: "integer", long: "long", boolean: "boolean", timestamp: "long" })[t] || "string";
 const normFields = (fields) =>
   (fields || []).map((f) => ({ name: f.name, dataType: normType(f.dataType) }));
+// Raw passthrough for the golden-faithful emitters (aggregate-dsl, invariant-dsl):
+// they port the old codegen's DataTypeMapper themselves, so the tree's raw
+// dataType ("List<CodeAnchorDelta>", "Instant", "String (UUID)", bare VO names)
+// and the `optional` flag must reach emit.mjs intact — normType would collapse
+// every VO reference to "string" and value-object imports could never be derived.
+const normFieldsRaw = (fields) =>
+  (fields || []).map((f) => ({ name: f.name, dataType: f.dataType, optional: !!f.optional }));
 
 const pkgDir = (pkg) => join(outDir, "app", ...pkg.split("."));
 
@@ -200,18 +207,19 @@ runGen(
       objectName: objName,
       stateType: `${objName}State`,
       eventType: `${objName}Event`,
-      stateFields: normFields(a.stateFields),
+      stateFields: normFieldsRaw(a.stateFields),
       // Entity files go to the domain.entities package tree (ingested-app 1:1)
       entityDir: pkgDir(`${basePkg}.domain.entities`),
       entityPackage: `${basePkg}.domain.entities`,
+      valuesPackage: `${basePkg}.domain.values`,
       invariantPackage: `${basePkg}.domain.invariant`,
       commands: (a.commands || []).map((c) => ({
         name: c.name,
-        fields: normFields(c.parameters),
+        fields: normFieldsRaw(c.parameters),
       })),
       events: (a.events || []).map((e) => ({
         name: e.name,
-        fields: normFields(e.payloads),
+        fields: normFieldsRaw(e.payloads),
       })),
       statusTransitions: a.statusTransitions || {},
       commandHandlers: (a.commands || [])
@@ -234,17 +242,18 @@ runGen(
       for (const g of c.guards || []) {
         if (g.kind === "invariantRef" && !seen.has(c.name)) {
           seen.add(c.name);
-          rules.push({ commandName: c.name, fields: normFields(c.parameters) });
+          rules.push({ commandName: c.name, fields: normFieldsRaw(c.parameters) });
         }
       }
     }
     // All commands for params generation (ingested-app has 27/27 params files)
     const allCommands = (a.commands || []).map((c) => ({
       commandName: c.name,
-      fields: normFields(c.parameters),
+      fields: normFieldsRaw(c.parameters),
     }));
     return {
       package: `${basePkg}.domain.invariant`,
+      valuesPackage: `${basePkg}.domain.values`,
       aggregateName: objName,
       eventType: `${objName}Event`,
       stateType: `${objName}State`,

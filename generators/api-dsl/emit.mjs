@@ -27,13 +27,53 @@ const commands = spec.commands || [];
 // ─── Helpers ───
 const firstLower = (s) => s.charAt(0).toLowerCase() + s.slice(1);
 const kebab = (s) => s.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
+// codepoint compare — deterministic across locales
+const cmpName = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+
+// ─── Bug 4: golden emits endpoints in alphabetical (codepoint) order of command
+// name — verified across all B2-DSL golden controllers (ingested-app 1:1). Req VOs
+// and the routes fragment follow the same order.
+const ordered = [...commands].sort((a, b) => cmpName(a.name, b.name));
+
+// ─── Bug 5b: empty body detection ───
+// Golden uses api.tenant.write[JsObject] (+ the emptyBodyReads helper) for commands
+// whose body carries nothing: their only Req field is the path id key (idp). The spec's
+// reqFields already excludes tenantId/userId/triggeredBy/replyTo, so "sole reqField is
+// the path key" ⇒ empty body. (MergeConcepts-style multi-key commands keep a real Req.)
+const isEmptyBody = (cmd) => {
+  const fs = cmd.reqFields || [];
+  if (fs.length === 0) return true;
+  return fs.length === 1 && cmd.pathParam && fs[0].name === cmd.pathParam;
+};
+const reqTypeName = (cmd) =>
+  isEmptyBody(cmd) ? "play.api.libs.json.JsObject" : `${cmd.name}Req`;
+
+// ─── Bug 3: extra constructor injections ───
+// Ported from old codegen buildAggregateController (1:1 golden decisions):
+//   needsParkRepo    = a command named EstablishConcept (its 409 duplicate-name
+//                      pre-check reads parkConceptViewRepository.findAll())
+//   needsRegisterFlow = a command named RegisterUser (anonymous five-step flow)
+//   needsDoRFlow     = a command named RequestDoR (serverScoped flow delegate)
+//   needsParamEnricher= SYSTEM_QUERIED params in the old builder; in golden only the
+//                      Note controller hits it → agg === 'Note' fallback
+// Explicit spec flags always win over the derived defaults.
+const cmdNames = new Set(ordered.map((c) => c.name));
+const specFlags = spec.flags || {};
+const needsParkRepo = specFlags.needsParkRepo ?? cmdNames.has("EstablishConcept");
+const needsRegisterFlow = specFlags.needsRegisterFlow ?? cmdNames.has("RegisterUser");
+const needsDoRFlow = specFlags.needsDoRFlow ?? cmdNames.has("RequestDoR");
+const needsParamEnricher = specFlags.needsParamEnricher ?? agg === "Note";
+
+// ─── Bug 5b (cont.): the emptyBodyReads helper is emitted iff any command is empty-body.
+// Golden comment text kept byte-identical.
+const aggHasEmptyBody = specFlags.aggHasEmptyBody || ordered.some(isEmptyBody);
 
 // ─── Endpoint rendering (B2 DSL) ───
 // Matches tpl_dsl.mjs renderStandardEndpoint
 function renderEndpoint(cmd) {
   const tier = cmd.tier || "tenant";
   const actionName = cmd.actionName || firstLower(cmd.name);
-  const reqName = `${cmd.name}Req`;
+  const reqName = reqTypeName(cmd);   // JsObject for empty-body commands (Bug 5b)
   const reply = `${cmd.name}Reply`;
 
   // Gate declaration
@@ -55,11 +95,27 @@ function renderEndpoint(cmd) {
         ctx: "(req, body)",
       };
 
+  // B2 idp addressing (Bug 5 family): golden always names the path variable `id`
+  // (the JSON key in IdGuard.parse keeps the protocol name). Only the scala binding
+  // is renamed — routes keep the protocol name via c.routeParams. sig is rebuilt so a
+  // spec-provided "(conceptId: String)" also lands on the golden form.
+  // The rename applies only to a TRUE path id: the param named <agg>id (old builder's
+  // idp test). R2/R3 body keys the spec mislabels as pathParam (definitionId, patchId,
+  // edgeId, sourceConceptId…) keep their protocol name — golden addresses those from
+  // the body, so renaming them would move us away from golden, not towards it.
+  const pathParam = cmd.pathParam || null;
+  const isAggIdParam = pathParam
+    && pathParam.toLowerCase() === `${agg.toLowerCase()}id`;
+  const pathVar = isAggIdParam ? "id" : null;
+  const sig = pathVar ? "(id: String)" : (cmd.sig || "");
+  const entityExpr = cmd.entityExpr === pathParam && pathVar ? pathVar : (cmd.entityExpr || "id");
+
   // ID guard
   const idGuard = cmd.idGuard;
   let guardOpen = "", guardClose = "";
   if (idGuard) {
-    const pairs = idGuard.pairs || [];
+    const pairs = (idGuard.pairs || []).map((p) =>
+      pathVar ? p.replace(new RegExp(` -> ${pathParam}$`), ` -> ${pathVar}`) : p);
     const cids = idGuard.cids || [];
     guardOpen = `          IdGuard.parse(${pairs.join(", ")}) match {
             case Right(Seq(${cids.join(", ")})) =>`;
@@ -78,22 +134,57 @@ function renderEndpoint(cmd) {
   }
 
   // Ask pipeline
-  const entityExpr = cmd.entityExpr || "id";
   const ctorArgs = cmd.ctorArgs || "";
   const dvExpr = cmd.dvExpr || "JsNull";
 
+  // Bug 5a: tenant session pattern — the protocol's `triggeredBy` param is never
+  // taken from the body; it is injected from the session as ts.userId (tenant tier)
+  // or gc.userId (global tier), right before replyTo. Anonymous tier has no session.
+  // Specs that already carry it are left untouched; cmd.triggeredBy === false opts out.
+  let sessionUser = null;
+  if (cmd.triggeredBy !== false
+      && !(ctorArgs.includes("ts.userId") || ctorArgs.includes("gc.userId"))) {
+    sessionUser = tier === "tenant" ? "ts.userId" : tier === "global" ? "gc.userId" : null;
+  }
+  const fullCtorArgs = [ctorArgs, sessionUser].filter(Boolean).join(", ");
+
   const askBody = `          repository.entityRef(${entityExpr}).ask {
-            (replyTo: akka.actor.typed.ActorRef[${reply}]) => ${cmd.name}(${ctorArgs}${ctorArgs ? ", " : ""}replyTo)
+            (replyTo: akka.actor.typed.ActorRef[${reply}]) => ${cmd.name}(${fullCtorArgs}${fullCtorArgs ? ", " : ""}replyTo)
           }.map { reply =>
             reply.error.fold[Either[net.imadz.common.auth.ApiError, net.imadz.metarch.infrastructure.api.OkReceipt]](
               Right(net.imadz.metarch.infrastructure.api.OkReceipt(${entityExpr}, ${dvExpr}))
             )(e => Left(net.imadz.common.auth.ApiError.badRequest(e.code, e.message)))
           }`;
 
-  // Sig: (id: String) for path-param commands, () for body-only
-  const sig = cmd.sig || (cmd.pathParam ? `(${cmd.pathParam}: String)` : "");
-
   const noteAnchor = cmd.noteId ? `  // @knowledge ${cmd.noteId}\n` : "";
+
+  // B5-L establish 409 特例（ported from old tpl_dsl.mjs renderEstablishEndpoint):
+  // EstablishConcept does a uniqueness pre-check against the park decision view
+  // before the ask pipeline — this is what the Bug-3 parkConceptViewRepository
+  // injection is for. Condition shape is byte-identical to the golden controller.
+  if (cmd.name === "EstablishConcept" && needsParkRepo) {
+    const inner = `${instantOpen}${guardOpen}
+${askBody}
+${guardClose}${instantClose}`
+      .split("\n")
+      .map((l) => (l.trim() === "" ? l : "  " + l))
+      .join("\n");
+    return `${noteAnchor}  /** B5-L：${cmd.name}（tenant 档——409 查重前置＋typed payload·三键顶层逐字节保持） */
+  def ${actionName}${sig}: play.api.mvc.Action[play.api.mvc.AnyContent] =
+    ${gate.decl}
+      .apply[net.imadz.metarch.infrastructure.api.OkReceipt] { ${gate.ctx} =>
+        parkConceptViewRepository.findAll().flatMap { all =>
+          val conflict = all.find(v => v.contextId == req.contextId && v.name == req.name && v.conceptId.toString != ${entityExpr} && v.removedAt.isEmpty && v.tenantId == ts.tenantId)
+          if (conflict.isDefined) {
+            Future.successful(Left(net.imadz.common.auth.ApiError.conflict("CONCEPT_NAME_TAKEN",
+              "(contextId,name) already established", ConceptNameTaken(conflict.get.conceptId.toString))))
+          } else {
+${inner}
+          }
+        }
+      }
+`;
+  }
 
   return `${noteAnchor}  /** B2 DSL：${cmd.name}（${gate.comment}） */
   def ${actionName}${sig}: play.api.mvc.Action[play.api.mvc.AnyContent] =
@@ -107,25 +198,41 @@ ${guardClose}${instantClose}
 }
 
 // ─── Req VO rendering ───
+// Comments ported verbatim from the old tpl_controller (golden byte form).
 function renderReqVo(cmd) {
   const reqName = `${cmd.name}Req`;
   const fields = (cmd.reqFields || []).map((f) => `${f.name}: ${f.type}`).join(", ");
   const noteAnchor = cmd.noteId ? `// @knowledge ${cmd.noteId}\n` : "";
-  return `${noteAnchor}/** M2: 命令载荷 VO——typed Reads 派生 */
+  return `${noteAnchor}/** M2（EP_S2_9c 余量并入 B2）：命令载荷 VO——typed Reads 派生，缺键/类型错 → 400 PARAM_INVALID（含字段明细）。 */
 final case class ${reqName}(${fields})
 object ${reqName} {
+  // S2-82-B3（2026-09-11）：D3 companion 嵌套 VO Reads 退役——VO 自带 companion jsonFormat
+  //（ValueObjectTemplate 发射）全域自动发现。原按字母序的 8 隐式存在初始化序险：嵌套 List<VO>
+  // 的 traversal 在内层 VO Reads 初始化前捕获 null（declare-command 非空 parameters NPE 实证）。
   implicit val reads: play.api.libs.json.Reads[${reqName}] = play.api.libs.json.Json.reads
+}`;
+}
+
+// B5-L（样例 B·VO 归属裁定）：409 typed payload——companion＋Json.format（OFormat 写侧对称），
+// 与命令 M2 Req 相邻（紧随 EstablishConceptReq 发射——见 renderController）。
+function renderConceptNameTaken() {
+  return `/** B5-L（样例 B·VO 归属裁定）：409 typed payload——companion＋Json.format（OFormat 写侧对称），与命令 M2 Req 相邻。 */
+final case class ConceptNameTaken(existingConceptId: String)
+object ConceptNameTaken {
+  implicit val format: play.api.libs.json.OFormat[ConceptNameTaken] = play.api.libs.json.Json.format
 }`;
 }
 
 // ─── Controller assembly (tpl_controller.mjs) ───
 function renderController() {
-  const flags = spec.flags || {};
   const extraInjection = [
-    flags.needsParkRepo
+    needsParkRepo
       ? `, parkConceptViewRepository: ${basePkg}.application.projection.repository.ParkConceptDecisionViewRepository` : "",
-    flags.needsRegisterFlow ? `, registerUserFlow: ${basePkg}.application.RegisterUserFlow` : "",
-    flags.needsDoRFlow ? `, requestDoRFlow: ${basePkg}.application.RequestDoRFlow` : "",
+    needsRegisterFlow ? `, registerUserFlow: ${basePkg}.application.RegisterUserFlow` : "",
+    needsDoRFlow ? `, requestDoRFlow: ${basePkg}.application.RequestDoRFlow` : "",
+    // S2-89 WP-A: SYSTEM_QUERIED params are assembled server-side by a hand-written
+    // <Agg>ParamEnricher application service (golden only the Note controller needs it).
+    needsParamEnricher ? `, ${firstLower(agg)}ParamEnricher: ${basePkg}.application.${agg}ParamEnricher` : "",
   ].join("");
 
   const dslInjection = `api: net.imadz.common.auth.Endpoint, `;
@@ -145,15 +252,24 @@ function renderController() {
     "import scala.concurrent.duration._",
   ].join("\n");
 
-  const endpoints = commands.map(renderEndpoint).join("\n");
-  const reqVos = commands.map(renderReqVo).join("\n\n");
+  const endpoints = ordered.map(renderEndpoint).join("\n");
 
-  const emptyBodyReads = flags.aggHasEmptyBody ? `
-  /** 空 body 命令通道（write[JsObject]）：任意合法 JSON 体即过 */
+  // Req VOs follow endpoint order; empty-body commands have none (Bug 5b).
+  // B5-L: the 409 ConceptNameTaken typed payload is emitted right after EstablishConceptReq.
+  const reqVoParts = [];
+  for (const cmd of ordered) {
+    if (isEmptyBody(cmd)) continue;
+    reqVoParts.push(renderReqVo(cmd));
+    if (cmd.name === "EstablishConcept" && needsParkRepo) reqVoParts.push(renderConceptNameTaken());
+  }
+  const reqVos = reqVoParts.join("\n\n");
+
+  const emptyBodyReads = aggHasEmptyBody ? `
+  /** 空 body 命令通道（write[JsObject]）：任意合法 JSON 体即过——与旧 parse.json 行为等价（body 必须是合法 JSON） */
   private implicit val emptyBodyReads: play.api.libs.json.Reads[play.api.libs.json.JsObject] =
     play.api.libs.json.Reads(_ => play.api.libs.json.JsSuccess(play.api.libs.json.Json.obj()))` : "";
 
-  return `// @generated by api-dsl (truthsrc)
+  return `// @generated by gen_api_layer:2026-08-26
 // @knowledge-release 1.0.0
 package controllers
 
@@ -174,8 +290,9 @@ ${reqVos ? "\n" + reqVos + "\n" : ""}
 
 // ─── Routes fragment (RoutesBuilder) ───
 // Format: METHOD(9-col) + path + 2 spaces + controllers.<Ctrl>.<action>(params)
+// Bug 4: sorted like the endpoints (golden routes are alphabetical).
 function renderRoutes() {
-  const lines = commands
+  const lines = ordered
     .filter((c) => !c.skip)
     .map((c) => {
       const method = (c.httpMethod || "POST").padEnd(9, " ");
