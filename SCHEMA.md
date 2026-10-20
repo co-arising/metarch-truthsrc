@@ -649,7 +649,15 @@ back verbatim by decompose. No other canonical content changes shape.
   expressions) that the event definitions' `foldAssignments` do not, and
   stored decision guards predate the payload guard normalization
   (scalar/array shape drift in 11 guards). They are therefore carried as
-  authored surface, like the payload itself. (This supersedes the
+  authored surface, like the payload itself. **Owner ruling (2026-10-20):**
+  verbatim carry stands — stored decision/fold content is information and
+  is never dropped for format reasons; where only the *shape* has drifted,
+  the shape is normalized and the information is kept in the new form.
+  Under that ruling the 11 drifted guard fields were normalized in both
+  metarch trees, each to match its payload guard exactly (`notStatus`
+  scalar → single-element array ×5, `notStatus` `""` → `[]` ×3, `from`
+  single-element array → scalar ×3, across 9 slices); every conversion is
+  lossless and all other stored bytes are untouched. (This supersedes the
   "decisions and folds are never stored" line in AGENTS.md for trees that
   already store them; re-deriving them wholesale is a schema decision for
   the tree's owner, not a compiler behaviour.)
