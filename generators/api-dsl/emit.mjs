@@ -230,8 +230,9 @@ ${guardClose}${instantClose}
 function renderReqVo(cmd) {
   const reqName = `${cmd.name}Req`;
   const fields = (cmd.reqFields || []).map((f) => `${f.name}: ${f.type}`).join(", ");
-  const noteAnchor = cmd.noteId ? `// @knowledge ${cmd.noteId}\n` : "";
-  return `${noteAnchor}/** M2（EP_S2_9c 余量并入 B2）：命令载荷 VO——typed Reads 派生，缺键/类型错 → 400 PARAM_INVALID（含字段明细）。 */
+  // Category A: golden places `// @knowledge <noteId>` ONLY on the endpoint (the
+  // command note), never on the Req VO — verified across all golden controllers.
+  return `/** M2（EP_S2_9c 余量并入 B2）：命令载荷 VO——typed Reads 派生，缺键/类型错 → 400 PARAM_INVALID（含字段明细）。 */
 final case class ${reqName}(${fields})
 object ${reqName} {
   // S2-82-B3（2026-09-11）：D3 companion 嵌套 VO Reads 退役——VO 自带 companion jsonFormat
@@ -303,7 +304,7 @@ package controllers
 
 ${imports}
 
-/** ${ctrlName}: ${agg} 命令 API（api-dsl 直出·B2 DSL 形态） */
+/** ${ctrlName}: ${agg} 命令 API（gen_api_layer 直出·B2 DSL 形态） */
 @Singleton
 class ${ctrlName} @Inject() (${dslInjection}repository: ${agg}Repository${extraInjection}, val cc: ControllerComponents)(implicit ec: ExecutionContext) extends BaseController {
 

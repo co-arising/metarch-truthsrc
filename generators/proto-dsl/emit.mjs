@@ -1,17 +1,17 @@
 #!/usr/bin/env node
-// === proto-dsl emitter v2 — ingested-app 1:1 ===
+// === proto-dsl emitter v3 — ingested-app 1:1 ===
 // Generates: <snake_name>.proto with:
-//   - <Event>PO message per event
-//   - <Event>PO wrapper with oneof event { ... }
+//   - <Event>PO message per event (alphabetical by event name)
+//   - <Event>PO wrapper with oneof event { ... } (same order)
 //   - <State>PO message
-// Matches: app/protobuf/subdomain.proto (golden scala-cqrs-es-metarch)
+// Matches: app/protobuf/concept.proto (golden ingested-app)
 // Usage: node emit.mjs <spec.json> <out.proto>
 //
 // Spec: {
 //   protoPackage: "net.imadz.metarch.infrastructure.proto",
-//   aggregateName: "Subdomain",          // PascalCase
-//   stateFields: [{name, dataType}],     // canonical dataTypes
-//   events: [{name, fields: [{name, dataType}]}]
+//   aggregateName: "Concept",            // PascalCase
+//   stateFields: [{name, dataType}],     // RAW dataTypes
+//   events: [{name, fields: [{name, dataType (RAW), noteId}]}]
 // }
 // Legacy spec {messages: [{name, fields: [{name, type}]}]} still supported.
 
@@ -22,36 +22,101 @@ const spec = JSON.parse(readFileSync(specPath, "utf8"));
 
 const packageName = spec.protoPackage || "net.imadz.infrastructure.proto";
 
-const protoType = (t) =>
-  ({ string: "string", number: "double", integer: "int32", long: "int64", boolean: "bool", timestamp: "int64" })[t] ?? "string";
+// Shared value-object catalog of golden shared_value_objects.proto (all in
+// package net.imadz.metarch.infrastructure.proto): fields typed with one of
+// these names map to <protoPackage>.<Name>PO and REQUIRE the
+// `import "shared_value_objects.proto";` header. Non-catalog VO names are
+// aggregate-local (defined in the aggregate's own proto); they map to the
+// same <protoPackage>.<Name>PO shape but need no import.
+const SHARED_VOS = new Set([
+  "AggregateRelationSpec", "CatalogConflict", "CatalogConflictSet",
+  "CatalogPatchSet", "CodeAnchorDelta", "ConceptDelta", "ConceptIndexEntry",
+  "EdgeTarget", "EventBinding", "FieldCommandSpec", "FieldEdge",
+  "FieldEventSpec", "FieldParamSpec", "FieldSpec", "FieldStateSpec",
+  "GuardSpec", "ParticipantRole", "RelationDelta", "RuleRef",
+  "StateGateSpec", "StatusTransitionSpec", "UcStep",
+]);
+
+const SCALAR_MAP = {
+  // RAW tree dataTypes → proto types (verified against golden protos)
+  String: "string",
+  "String (UUID)": "string",
+  "String (Enum)": "string",
+  "String (JSON)": "string",
+  Enum: "string",
+  JSON: "string",
+  Integer: "int32",
+  Int: "int32",
+  Long: "int64",
+  timestamp: "int64",
+  Instant: "int64",
+  Boolean: "bool",
+  // no golden example of number/BigDecimal payloads (golden has zero
+  // `double` fields across all protos); fall back to double.
+  number: "double",
+  BigDecimal: "double",
+  Double: "double",
+};
+
+const protoType = (t) => {
+  const raw = String(t || "");
+  // List<X> / Array<X> → repeated <map(X)>
+  const list = raw.match(/^(List|Array)<(.*)>$/);
+  if (list) return `repeated ${protoType(list[2])}`;
+  if (SCALAR_MAP[raw]) return SCALAR_MAP[raw];
+  // bare VO name (catalog or aggregate-local) → <protoPackage>.<Name>PO
+  return `${packageName}.${raw}PO`;
+};
+
+const usesSharedVO = (t) => {
+  const raw = String(t || "");
+  const list = raw.match(/^(List|Array)<(.*)>$/);
+  if (list) return usesSharedVO(list[2]);
+  if (SCALAR_MAP[raw]) return false;
+  return SHARED_VOS.has(raw);
+};
 
 const camel = (s) => s[0].toLowerCase() + s.slice(1);
 
 let out;
 if (spec.aggregateName) {
-  // v2: aggregate-driven
+  // v3: aggregate-driven, alphabetical by event name
   const agg = spec.aggregateName;
-  const fieldLines = (fields) =>
-    (fields || []).map((f, i) => `  ${protoType(f.dataType)} ${f.name} = ${i + 1};`).join("\n");
+  const events = [...(spec.events || [])].sort((a, b) =>
+    a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
 
-  const eventPOs = (spec.events || [])
-    .map((e) => `message ${e.name}PO {\n${fieldLines(e.fields)}\n}`)
+  // golden: fields carrying an `introducedIn` annotation render it inline
+  // before the @knowledge anchor (`// S2-73 补载荷 ... @knowledge <noteId>`)
+  const knowledgeOf = (f) => {
+    if (!f || !f.noteId) return f && f.introducedIn ? ` // ${f.introducedIn}` : "";
+    return f.introducedIn
+      ? ` // ${f.introducedIn} @knowledge ${f.noteId}`
+      : ` // @knowledge ${f.noteId}`;
+  };
+
+  const fieldLines = (fields) =>
+    (fields || []).map((f, i) => {
+      const opt = f.optional ? "optional " : "";
+      return `  ${opt}${protoType(f.dataType)} ${f.name} = ${i + 1};${knowledgeOf(f)}`;
+    }).join("\n");
+
+  // blank line BEFORE the closing } of every payload message
+  const eventPOs = events
+    .map((e) => `message ${e.name}PO {\n${fieldLines(e.fields)}\n\n}`)
     .join("\n\n");
 
-  const oneofFields = (spec.events || [])
+  const oneofFields = events
     .map((e, i) => `    ${e.name}PO ${camel(e.name)} = ${i + 1};`)
     .join("\n");
 
-  const eventWrapper = `message ${agg}EventPO {\n  oneof event {\n${oneofFields}\n  }\n}`;
+  const eventWrapper = `message ${agg}EventPO {\n\n\n  oneof event {\n${oneofFields}\n  }\n}`;
 
-  const statePO = `message ${agg}StatePO {\n${fieldLines(spec.stateFields)}\n}`;
+  const statePO = `message ${agg}StatePO {\n${fieldLines(spec.stateFields)}\n\n}`;
 
-  // Import shared_value_objects.proto only when fields reference shared VO types.
-  // Golden: 6/29 protos have the import (concept, field_model_definition,
-  // knowledge_patch, model_catalog, session, workshop); all have java_multiple_files.
-  const PRIMITIVES = new Set(["string", "number", "integer", "long", "boolean", "timestamp"]);
-  const allFields = [...(spec.stateFields || []), ...((spec.events || []).flatMap(e => e.fields || []))];
-  const needsSharedImport = allFields.some(f => f.dataType && !PRIMITIVES.has(f.dataType));
+  // Shared import IFF some field references a catalog VO type (golden rule:
+  // exactly the 6 protos referencing catalog VOs carry the import).
+  const allFields = [...(spec.stateFields || []), ...events.flatMap(e => e.fields || [])];
+  const needsSharedImport = allFields.some(f => f.dataType && usesSharedVO(f.dataType));
   const sharedImport = needsSharedImport ? '\nimport "shared_value_objects.proto";\n' : '\n\n';
 
   out = `// @generated by CodegenMain:225ed28b
@@ -61,6 +126,7 @@ syntax = "proto3";
 package ${packageName};
 ${sharedImport}
 option java_multiple_files = true;
+
 
 
 

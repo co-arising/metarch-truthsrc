@@ -60,13 +60,17 @@ const scalaSig = (dataType) => {
   return raw !== "" ? raw : "String"; // VO / custom type name verbatim; empty → String
 };
 
+// Scala keyword field names are backtick-quoted in golden (e.g. `type`).
+const SCALA_KEYWORDS = new Set(["type","match","case","object","yield","val","var","def","class","trait","extends","with","new","for","import","package","private","protected","sealed","final","abstract","override","implicit","lazy","return","super","this","true","false","null","if","else","while","do","throws","try","catch","finally"]);
+const qref = (n) => (SCALA_KEYWORDS.has(n) ? "`" + n + "`" : n);
+
 // Field → "name: Type" (optional fields wrap in Option + "= None", ingested-app 1:1).
 // NOTE: dataType is authoritative. The old name heuristic ("ends with Id → Id")
 // misfires on 32 tree fields (e.g. tenantId with dataType "String" renders String
 // in ingested-app; conceptIds with dataType "List<String>" renders List[String]).
 const fieldDecl = (f) => {
   const sig = scalaSig(f.dataType);
-  return f.optional ? `${f.name}: Option[${sig}] = None` : `${f.name}: ${sig}`;
+  return f.optional ? `${qref(f.name)}: Option[${sig}] = None` : `${qref(f.name)}: ${sig}`;
 };
 
 const fieldsOf = (fields) =>
@@ -162,11 +166,52 @@ const sortedImportBlock = (fqns) =>
 // commands carry no List defaults). Optional state fields keep `Option[T] = None`.
 const stateFieldDecl = (f) => {
   const sig = scalaSig(f.dataType);
-  if (f.optional) return `${f.name}: Option[${sig}] = None`;
-  return sig.startsWith("List[") ? `${f.name}: ${sig} = List.empty` : `${f.name}: ${sig}`;
+  if (f.optional) return `${qref(f.name)}: Option[${sig}] = None`;
+  return sig.startsWith("List[") ? `${qref(f.name)}: ${sig} = List.empty` : `${qref(f.name)}: ${sig}`;
 };
 const fieldsOfState = (fields) => (fields ?? []).map(stateFieldDecl).join(", ");
-const entityStateDef = `  case class ${stateType}(${fieldsOfState(spec.stateFields)})`;
+
+// Compile-flattened value-object member fields ride along in spec.stateFields
+// (e.g. DoR.recordedAt, ModelCatalog.appliedAt) but are NOT Entity state
+// fields in golden: they are marked by a `(parent=<VO>)` businessDef note or
+// by writtenBy entries that are all deep member paths (≥3 segments).
+// (foldAssignSkip silences them everywhere; foldTodoSkip keeps items for
+// SYSTEM_INJECTED fields like DoR.evaluatedAt whose writtenBy is a member
+// path into a payload VO but which golden does carry as state fields.)
+const parentMarker = (f) => !!f && String(f.businessDef || "").includes("(parent=");
+const allWbDeep = (f) =>
+  !!f && (f.writtenBy || []).length > 0 && (f.writtenBy || []).every((w) => w.split(".").length >= 3);
+const foldAssignSkip = (f) => parentMarker(f) || allWbDeep(f);
+const foldTodoSkip = (f) => parentMarker(f) || (allWbDeep(f) && f.origin !== "SYSTEM_INJECTED");
+
+// State visibility (ingested-app 1:1):
+//  - the aggregate identifier (spec.identifier) LEADS the State case class —
+//    it is NOT part of spec.stateFields (ConceptState(conceptId: Id, ...)),
+//    carries its own @param anchor (noteId only) and is empty()'s parameter;
+//  - fields with nature === "credential" never reach State (User drops
+//    passwordHash/passwordSalt entirely: no State field, no empty() arg,
+//    no @param line, no EventHandler fold/待审 mention);
+//  - compile-flattened VO members (foldTodoSkip) are not State fields either.
+const isCredential = (f) => !!f && f.nature === "credential";
+const identifierField =
+  spec.identifier && typeof spec.identifier === "object" && spec.identifier.name
+    ? {
+        name: spec.identifier.name,
+        dataType: spec.identifier.dataType || "String (UUID)",
+        noteId: spec.identifier.noteId || null,
+        description: "",
+        optional: false,
+      }
+    : null;
+const entityStateFields = [
+  ...(identifierField ? [identifierField] : []),
+  ...(spec.stateFields ?? []).filter((f) => !isCredential(f) && !foldTodoSkip(f)),
+];
+// EventHandler view: state fields minus credentials; flattened VO members
+// stay visible to the fold phases (their skip rules already silence them).
+const handlerStateFields = (spec.stateFields ?? []).filter((f) => !isCredential(f));
+
+const entityStateDef = `  case class ${stateType}(${fieldsOfState(entityStateFields)})`;
 
 // empty(): identity param (first state field, the aggregate's own Id) passed
 // through; remaining fields get old-codegen type defaults. ingested-app 1:1
@@ -190,7 +235,7 @@ const emptyDefault = (f) => {
   }
 };
 const emptyDef = (() => {
-  const sfs = spec.stateFields ?? [];
+  const sfs = entityStateFields;
   if (sfs.length === 0) return `  def empty: ${stateType} = ???`;
   const [first, ...rest] = sfs;
   const firstSig = scalaSig(first.dataType);
@@ -198,17 +243,38 @@ const emptyDef = (() => {
   return `  def empty(${first.name}: ${firstSig}): ${stateType} = ${stateType}(${args})`;
 })();
 
-const entityEventDefs = events
-  .map((e) => `  case class ${e.name}(${fieldsOf(e.fields)}) extends ${eventType}`)
+// Events in alphabetical order (ingested-app 1:1: Entity event defs and
+// EventHandler cases are both alphabetical by event name).
+const orderedEvents = [...events].sort(byName);
+
+// @knowledge scaladoc (Category A, noteId-only — the `@<16hex>` suffix was
+// computed by the old pipeline and is intentionally not reproduced).
+// A doc block is emitted only when at least one field carries a noteId;
+// every field gets a @param line (description text, then the anchor).
+const paramDoc = (fields) => {
+  if (!(fields ?? []).some((f) => f.noteId)) return "";
+  const lines = (fields ?? []).map((f) => {
+    const desc = f.description ? ` ${f.description}` : "";
+    const kn = f.noteId ? `  @knowledge ${f.noteId}` : "";
+    return `   * @param ${qref(f.name)}${desc}${kn}`;
+  });
+  return `  /**\n${lines.join("\n")}\n   */\n`;
+};
+const stateDoc = paramDoc(entityStateFields);
+const aggDoc = spec.aggNoteId ? `/**\n * @knowledge ${spec.aggNoteId}\n */\n\n` : "";
+
+const entityEventDefs = orderedEvents
+  .map((e) => `${paramDoc(e.fields)}  case class ${e.name}(${fieldsOf(e.fields)}) extends ${eventType}`)
   .join("\n");
+const anyEventDoc = orderedEvents.some((e) => (e.fields ?? []).some((f) => f.noteId));
 
 // Entity imports: CborSerializable + data-driven Id/Instant/List/VO imports,
 // alphabetical (ingested-app 1:1 modulo golden's duplicated List lines — see above).
 const entityImportBlock = sortedImportBlock([
   "net.imadz.common.CborSerializable",
   ...typeImports([
-    ...(spec.stateFields ?? []),
-    ...events.flatMap((e) => e.fields ?? []),
+    ...entityStateFields,
+    ...orderedEvents.flatMap((e) => e.fields ?? []),
   ]),
 ]);
 
@@ -218,70 +284,424 @@ package ${entityPkg}
 
 ${entityImportBlock}
 
-object ${objName}Entity {
-
-${entityStateDef}
+${aggDoc}object ${objName}Entity {
+${stateDoc || "\n"}${entityStateDef}
 
 ${emptyDef}
 
   sealed trait ${eventType} extends CborSerializable
-${entityEventDefs}
+${anyEventDoc ? "\n" : ""}${entityEventDefs}
 
   type ${objName}EventHandler = (${stateType}, ${eventType}) => ${stateType}
-
 }
 `;
 
 // ═══ 2. EventHandler (domain/entities/behaviors/<Name>EventHandler.scala) ═══
-const handlerCases = events
-  .map(
-    (e) => `    case event: ${e.name} =>
-      /*
-      >>> AI_PROMPT_START
-      Context: Event Handler (state fold)
-      Task: Fold event '${e.name}' into state
-      State: ${stateType}
-      Expected Result: Return updated state via state.copy(...)
-      <<< AI_PROMPT_END
-      */
-      // ==== BEGIN MANUAL ====
-      ???
-      // ==== END MANUAL ====
-`
-  )
-  .join("\n");
+// Fold bodies ported from the old rules_domain_gen EventHandler projection
+// (writtenBy lineage authoritative + audit rules + status transitions +
+// same-name payload fallback), driven by the rich spec: slice foldAssignments
+// (④-layer verbs first), then writtenBy derivations, status, audit fields,
+// same-name fallback, version. Unassigned state fields and unmapped payload
+// fields are reported in the per-case `// 待审:` comment exactly as golden.
+// Ordering model (verified against all 27 golden handlers): phase 0 = slice
+// verb folds (append/concat/remove/upsert/member*/keep/fn) in declaration
+// order; phase 1 = writtenBy-backed direct assignments in stateFields order;
+// phase 2 = status literal/transition; phase 3 = audit derivations;
+// phase 4 = same-name fallback in stateFields order; phase 5 = version.
+// Exprs that need data the spec does not carry (bare `upsert:` VO
+// construction, `memberPatch:` source-VO shape) pass through verbatim and are
+// logged to stderr as fold notes.
+const sigOfField = (f) => {
+  const s = scalaSig(f.dataType);
+  return f.optional ? `Option[${s}]` : s;
+};
+const elemSigOf = (dataType) => {
+  const sig = scalaSig(dataType);
+  return sig.startsWith("List[") ? sig.slice(5, -1) : sig;
+};
+// (parentMarker / allWbDeep / foldAssignSkip / foldTodoSkip are defined with
+// the Entity scaladoc helpers above — the same compile-flattening filter.)
 
-const eventHandler = `// @generated by CodegenMain:225ed28b
+const AUDIT_CREATE_STEMS = new Set(["Created", "Onboarded", "Registered", "Captured", "Raised", "Started", "Accepted", "Joined"]);
+const AUDIT_UPDATE_STEMS = new Set(["Updated", "Changed", "Modified", "Edited", "Patched", "Resolved", "Released", "Concluded", "Submitted", "Rejected", "Approved", "Blocked", "Classified", "Assigned", "Evaluated", "Answered", "Completed", "Scheduled", "Published", "Saved", "Requested", "Detected", "Reactivated", "Deleted", "Skipped", "Activated", "Invited", "Merged", "Removed", "Unparked", "Deprecated", "Established", "Suspended", "Resumed", "Archived"]);
+const FOLD_VERB_RE = /^(append|concat|remove|upsert|keep|patch|member[A-Z]\w+|fn):/;
+
+// Terminal-state one-way guard (port of old codegen eventhandler_face):
+// a non-terminal status literal becomes
+//   status = if (Set("t1", ...).contains(state.status)) state.status else "v"
+// so replayed history cannot resurrect a terminal state; a literal that IS
+// terminal stays plain. Golden evidence is CemEdge (terminalStates
+// ["retired"], status literals "active" wrapped, "retired" plain). The old
+// pipeline keyed this on the behavior-model (bmExtra) terminalStates, which
+// only CemEdge declares; at spec level the faithful gate is terminalStates
+// non-empty AND no explicit statusTransitions ruling table (Session / Stage
+// / Note carry tables and emit plain literals in golden).
+const terminalStates = spec.terminalStates ?? [];
+const terminalGuardApplies =
+  terminalStates.length > 0 && Object.keys(spec.statusTransitions ?? {}).length === 0;
+const statusLiteralText = (slot, val) =>
+  slot === "status" && terminalGuardApplies && !terminalStates.includes(val)
+    ? `${qref(slot)} = if (Set(${terminalStates.map((t) => `"${t}"`).join(", ")}).contains(state.status)) state.status else "${val}"`
+    : `${qref(slot)} = "${val}"`;
+
+const foldNotes = [];
+const handlerPortTraits = new Set();
+
+const renderHandlerCase = (e) => {
+  const S = handlerStateFields;
+  const sfByName = new Map(S.map((f) => [f.name, f]));
+  const P = e.fields ?? [];
+  const pfByName = new Map(P.map((f) => [f.name, f]));
+  const sIdx = (slot) => S.findIndex((f) => f.name === slot);
+  const evRef = (name) => `event.${qref(name)}`;
+  const assigns = []; // {slot, text, phase, sIdx, fIdx, verbatim}
+  const assigned = new Set();
+  const todos1 = []; // writtenBy-phase todos (incompatibility / missing field)
+  const addAssign = (slot, text, phase, fIdx = 0, verbatim = false) => {
+    if (assigned.has(slot)) return false;
+    assigned.add(slot);
+    assigns.push({ slot, text, phase, sIdx: sIdx(slot), fIdx, verbatim });
+    return true;
+  };
+  // Type compatibility between a state field and an event payload field
+  // (old ehCompat over Entity signature types, Option-aware): same type →
+  // direct; String ← Id → .toString; List[X] ← X → List(...); else null.
+  const compat = (slot, evField) => {
+    const sfd = sfByName.get(slot);
+    const pf = pfByName.get(evField);
+    if (!sfd || !pf) return null;
+    const st = sigOfField(sfd);
+    const et = sigOfField(pf);
+    if (st === et) return evRef(evField);
+    if (st === "String" && et === "Id") return `${evRef(evField)}.toString`;
+    if (st.startsWith("List[") && elemSigOf(sfd.dataType) === et) return `List(${evRef(evField)})`;
+    return null;
+  };
+  const backed = (slot) => (sfByName.get(slot)?.writtenBy || []).some((w) => w.startsWith(e.name + "."));
+
+  // ── slice foldAssignments ──
+  const renderFold = (f) => {
+    const slot = f.slot;
+    const expr = String(f.expr);
+    const sf = sfByName.get(slot);
+    let m;
+    if ((m = /^literal:(.*)$/.exec(expr))) return { text: statusLiteralText(slot, m[1]) };
+    if ((m = /^event\.(\w+)$/.exec(expr))) {
+      const c = compat(slot, m[1]);
+      if (c === null) {
+        foldNotes.push(`${objName}.${e.name}: fold ${slot} = ${expr} dropped (type-incompatible; writtenBy/fallback phases report it)`);
+        return null;
+      }
+      return { text: `${qref(slot)} = ${c}` };
+    }
+    if ((m = /^state\.(\w+)$/.exec(expr))) return { text: `${qref(slot)} = state.${qref(m[1])}` };
+    if ((m = /^fn:(.+)$/.exec(expr))) {
+      const df = (spec.declaredFunctions || {})[m[1]];
+      if (!df || !df.callExpr) {
+        foldNotes.push(`${objName}.${e.name}: fn:${m[1]} has no declaredFunction spec — passed through verbatim`);
+        return { text: `${qref(slot)} = ${expr}`, verbatim: true };
+      }
+      const args = [];
+      let bad = false;
+      for (const inp of df.signature?.inputs || []) {
+        const rawFrom = String(inp.from || "").split(/[（(]/)[0].trim(); // strip 真源括注
+        if (rawFrom.startsWith("state:")) {
+          const fld = rawFrom.slice("state:".length).trim().split(".").pop();
+          if (!sfByName.has(fld)) bad = true;
+          else args.push(`state.${qref(fld)}`);
+        } else {
+          const fld = rawFrom.split(".").pop();
+          if (!pfByName.has(fld)) bad = true;
+          else args.push(evRef(fld));
+        }
+      }
+      if (bad) {
+        foldNotes.push(`${objName}.${e.name}: fn:${m[1]} input not resolvable from event payload/state — passed through verbatim`);
+        return { text: `${qref(slot)} = ${expr}`, verbatim: true };
+      }
+      // 债④ closure form: `<pkg>.<X>Access.<member>.<method>({args})` → `<member>.<method>(...)`
+      const ce = df.callExpr.replace(/^.*Access\./, "").replace("{args}", args.join(", "));
+      if (df.portTrait) handlerPortTraits.add(df.portTrait);
+      return { text: `${qref(slot)} = ${ce}` };
+    }
+    if ((m = /^append:(?:event\.)?([\w.]+)$/.exec(expr))) {
+      const head = m[1].split(".")[0];
+      const pf = pfByName.get(head);
+      const val = pf && scalaSig(pf.dataType) === "Id" && elemSigOf(sf.dataType) === "String" ? `${evRef(m[1])}.toString` : evRef(m[1]);
+      return { text: `${qref(slot)} = Option(state.${qref(slot)}).getOrElse(Nil) :+ ${val}` };
+    }
+    if ((m = /^concat:(?:event\.)?([\w.]+)$/.exec(expr)))
+      return { text: `${qref(slot)} = Option(state.${qref(slot)}).getOrElse(Nil) ++ ${evRef(m[1])}` };
+    if ((m = /^remove:(?:event\.)?([\w.]+)$/.exec(expr)))
+      return { text: `${qref(slot)} = Option(state.${qref(slot)}).getOrElse(Nil).filter(_ != ${evRef(m[1])})` };
+    if ((m = /^keep:(.+)$/.exec(expr))) {
+      const inner = m[1];
+      let newVal = null;
+      if (inner.startsWith("literal:")) newVal = `"${inner.slice("literal:".length)}"`;
+      else if (inner.startsWith("event.")) newVal = evRef(inner.slice("event.".length));
+      if (newVal === null) {
+        foldNotes.push(`${objName}.${e.name}: keep:${inner} unsupported form — passed through verbatim`);
+        return { text: `${qref(slot)} = ${expr}`, verbatim: true };
+      }
+      const sRef = `state.${qref(slot)}`;
+      const stSig = scalaSig(sf.dataType);
+      const nonEmpty = stSig === "String" || stSig.startsWith("List[") ? `Option(${sRef}).exists(_.nonEmpty)` : `Option(${sRef}).isDefined`;
+      return { text: `${qref(slot)} = (if (${nonEmpty}) ${sRef} else ${newVal})` };
+    }
+    if ((m = /^upsert:event\.(\w+)\.(\w+)$/.exec(expr))) {
+      // path-key upsert: payload field IS the VO instance → filterNot + append it
+      const [, head, keyMember] = m;
+      const pf = pfByName.get(head);
+      if (pf && scalaSig(pf.dataType) === elemSigOf(sf.dataType))
+        return { text: `${qref(slot)} = Option(state.${qref(slot)}).getOrElse(Nil).filterNot(x => x.${qref(keyMember)} == ${evRef(head)}.${qref(keyMember)}) :+ ${evRef(head)}` };
+      foldNotes.push(`${objName}.${e.name}: ${expr} needs VO construction data not in spec — passed through verbatim`);
+      return { text: `${qref(slot)} = ${expr}`, verbatim: true };
+    }
+    if ((m = /^memberUpsert:(\w+)\.(\w+)\.(\w+)$/.exec(expr))) {
+      const [, , keyM, valM] = m;
+      const pObj = pfByName.has(valM) ? valM : pfByName.has("paramSpec") ? "paramSpec" : pfByName.has("payloadSpec") ? "payloadSpec" : null;
+      if (!pObj) {
+        foldNotes.push(`${objName}.${e.name}: ${expr} has no payload object to append — passed through verbatim`);
+        return { text: `${qref(slot)} = ${expr}`, verbatim: true };
+      }
+      return { text: `${qref(slot)} = Option(state.${qref(slot)}).getOrElse(Nil).map(x => if (x.${qref(keyM)} == ${evRef(keyM)}) x.copy(${qref(valM)} = Option(x.${qref(valM)}).getOrElse(Nil) :+ ${evRef(pObj)}) else x)` };
+    }
+    if ((m = /^memberRemove:(\w+)\.(\w+)$/.exec(expr))) {
+      const [, , keyM] = m;
+      return { text: `${qref(slot)} = Option(state.${qref(slot)}).getOrElse(Nil).filterNot(x => x.${qref(keyM)} == ${evRef(keyM)})` };
+    }
+    if ((m = /^member(Append|Replace|Cut):(\w+)\.(\w+)\.(\w+)$/.exec(expr))) {
+      const [, kind, , keyM, valM] = m;
+      const pf = pfByName.get(valM);
+      const innerOld = `Option(x.${qref(valM)}).getOrElse(Nil)`;
+      const pIsList = pf ? scalaSig(pf.dataType).startsWith("List[") : false;
+      let inner;
+      if (kind === "Append") inner = pIsList ? `${innerOld} ++ ${evRef(valM)}` : `${innerOld} :+ ${evRef(valM)}`;
+      else if (kind === "Replace") inner = pIsList ? evRef(valM) : `List(${evRef(valM)})`;
+      else inner = `${innerOld}.filterNot(_ == ${evRef(valM)})`;
+      return { text: `${qref(slot)} = Option(state.${qref(slot)}).getOrElse(Nil).map(x => if (x.${qref(keyM)} == ${evRef(keyM)}) x.copy(${qref(valM)} = ${inner}) else x)` };
+    }
+    foldNotes.push(`${objName}.${e.name}: expr ${expr} not translatable from spec data — passed through verbatim`);
+    return { text: `${qref(slot)} = ${expr}`, verbatim: true };
+  };
+  (e.foldAssignments ?? []).forEach((f, i) => {
+    if (!sfByName.has(f.slot)) return; // identifier folds (slot ∉ state): golden drops them; source stays 未映射
+    const expr = String(f.expr);
+    let phase;
+    if (FOLD_VERB_RE.test(expr)) phase = 0;
+    else if (f.slot === "status" && expr.startsWith("literal:")) phase = 2;
+    else phase = backed(f.slot) ? 1 : 4;
+    const r = renderFold(f);
+    if (r === null) return;
+    addAssign(f.slot, r.text, phase, i, !!r.verbatim);
+  });
+
+  // ── Phase 1: writtenBy derivations (2+-segment entries, head = payload field) ──
+  for (const sf of S) {
+    if (assigned.has(sf.name) || foldTodoSkip(sf)) continue;
+    for (const w of sf.writtenBy || []) {
+      if (assigned.has(sf.name)) break;
+      const seg = w.split(".");
+      if (seg.length < 2 || seg[0] !== e.name || seg[1].includes("[")) continue;
+      const evField = seg[1];
+      if (!pfByName.has(evField)) {
+        todos1.push(`${sf.name}（writtenBy ${e.name}.${evField} 事件字段不存在）`);
+        continue;
+      }
+      const text = compat(sf.name, evField);
+      if (text) addAssign(sf.name, `${qref(sf.name)} = ${text}`, 1);
+      else todos1.push(`${sf.name}（writtenBy ${e.name}.${evField} 类型不兼容 ${sigOfField(sf)}←${sigOfField(pfByName.get(evField))}）`);
+    }
+  }
+
+  // ── Phase 2: status (explicit transition table; literal folds already placed) ──
+  let statusTodo = false;
+  if (sfByName.has("status") && !assigned.has("status")) {
+    const tr = (spec.statusTransitions || {})[e.name];
+    if (tr !== undefined && tr !== null) addAssign("status", statusLiteralText("status", tr), 2);
+    else statusTodo = true; // no ruling → 枚举值无法判定 (golden: explicit-null ≈ absent, one known exception)
+  }
+
+  // ── Phase 3: audit fields (same-name payload > stem-exclusive > create/update class) ──
+  const auditTodos = [];
+  const stemRaw = e.name.startsWith(objName) ? e.name.slice(objName.length) : e.name;
+  const stem = stemRaw.replace(/(Created|Updated|Changed|Occurred)$/, "");
+  const stemField = stem ? stem.charAt(0).toLowerCase() + stem.slice(1) : "";
+  const isCreate = AUDIT_CREATE_STEMS.has(stem);
+  const isUpdate = AUDIT_UPDATE_STEMS.has(stem);
+  for (const sf of S) {
+    const fname = sf.name;
+    if (assigned.has(fname) || foldTodoSkip(sf)) continue;
+    const sig = scalaSig(sf.dataType);
+    const atKind = /At$/.test(fname) && sig === "Instant";
+    const byKind = /By$/.test(fname) && sig === "String";
+    if (!atKind && !byKind) continue;
+    let text = null;
+    if (pfByName.has(fname)) text = compat(fname, fname);
+    else if (atKind && pfByName.has("timestamp") && fname === `${stemField}At`) text = "event.timestamp";
+    else if (byKind && pfByName.has("triggeredBy") && fname === `${stemField}By`) text = "event.triggeredBy";
+    else if (atKind && pfByName.has("timestamp") && fname === "createdAt" && isCreate) text = "event.timestamp";
+    else if (byKind && pfByName.has("triggeredBy") && fname === "createdBy" && isCreate) text = "event.triggeredBy";
+    else if (atKind && pfByName.has("timestamp") && fname === "modifiedAt" && isUpdate) text = "event.timestamp";
+    else if (byKind && pfByName.has("triggeredBy") && fname === "modifiedBy" && isUpdate) text = "event.triggeredBy";
+    if (text) addAssign(fname, `${qref(fname)} = ${text}`, 3);
+    else auditTodos.push(`${fname}（审计字段，本事件无同名载荷/词干专属/创建更新类）`);
+  }
+
+  // ── Phase 4: same-name payload fallback; DERIVED fields → review items ──
+  const phase4Todos = [];
+  for (const sf of S) {
+    const fname = sf.name;
+    if (assigned.has(fname) || foldAssignSkip(sf)) continue;
+    if (/At$/.test(fname) || /By$/.test(fname)) continue; // audit handled in phase 3
+    if (sf.origin === "DERIVED") {
+      phase4Todos.push({ sIdx: sIdx(fname), text: `${fname}（DERIVED：${sf.derivation || "无公式"}）` });
+      continue;
+    }
+    if (fname === "status") continue;
+    if (pfByName.has(fname)) {
+      const text = compat(fname, fname);
+      if (text) addAssign(fname, `${qref(fname)} = ${text}`, 4);
+      else phase4Todos.push({ sIdx: sIdx(fname), text: `${fname}（同名载荷类型不兼容）` });
+    }
+  }
+
+  // ── Phase 5: version ← newVersion ──
+  if (sfByName.has("version") && pfByName.has("newVersion") && !assigned.has("version"))
+    addAssign("version", "version = event.newVersion", 5);
+
+  assigns.sort((a, b) => a.phase - b.phase || (a.phase === 0 ? a.fIdx - b.fIdx : a.sIdx - b.sIdx));
+  const argsText = assigns.map((a) => a.text);
+  const copyText = argsText.length ? `state.copy(${argsText.join(", ")})` : "state";
+
+  // ── 待审 assembly: writtenBy todos → status → audit → phase-4 (DERIVED/同名) → payload ──
+  const items = [...todos1];
+  if (statusTodo) items.push(`status（${e.name} → 枚举值无法判定）`);
+  items.push(...auditTodos.filter((t) => !foldTodoSkip(sfByName.get(t.split("（")[0]))));
+  items.push(
+    ...phase4Todos
+      .filter((t) => !foldTodoSkip(sfByName.get(t.text.split("（")[0])))
+      .sort((a, b) => a.sIdx - b.sIdx)
+      .map((t) => t.text)
+  );
+  const envelope = new Set(["lastVersion", "newVersion", "triggeredBy", "timestamp"]);
+  const consumedTexts = assigns.filter((a) => !a.verbatim).map((a) => a.text);
+  const unmapped = P.map((f) => f.name).filter((n) => !envelope.has(n) && !consumedTexts.some((t) => t.endsWith("." + n)));
+  if (unmapped.length) items.push(`payload 未映射: ${unmapped.join(", ")}`);
+
+  const lines = [];
+  if (e.noteId) lines.push(`    // @knowledge ${e.noteId}`);
+  lines.push(`    case event: ${e.name} =>`);
+  lines.push(`      ${copyText}`);
+  if (items.length) lines.push(`      // 待审: ${items.join("；")}`);
+  return lines.join("\n");
+};
+
+const handlerBlocks = orderedEvents.map(renderHandlerCase);
+// VO imports for `upsert:`/`memberUpsert:` fold slots (old-codegen behavior):
+// the slot's element VO type, first-appearance ordered by the aggregate's
+// order.events (spec event order), e.g. golden FMD = FieldStateSpec first.
+const voImportNames = [];
+{
+  const seenVo = new Set();
+  const prims = new Set(["String", "Int", "Long", "Double", "Boolean", "BigDecimal", "Instant", "Id", "Unit"]);
+  for (const e of events) {
+    const sfByName = new Map(handlerStateFields.map((f) => [f.name, f]));
+    const pfByName = new Map((e.fields ?? []).map((f) => [f.name, f]));
+    for (const f of e.foldAssignments ?? []) {
+      const expr = String(f.expr ?? "");
+      const sf = sfByName.get(f.slot);
+      if (!sf) continue;
+      const elem = elemSigOf(sf.dataType);
+      if (!elem || prims.has(elem) || seenVo.has(elem)) continue;
+      let renders = false;
+      let m;
+      if ((m = /^upsert:event\.(\w+)\.(\w+)$/.exec(expr))) {
+        const pf = pfByName.get(m[1]);
+        renders = !!(pf && scalaSig(pf.dataType) === elemSigOf(sf.dataType));
+      } else if ((m = /^memberUpsert:(\w+)\.(\w+)\.(\w+)$/.exec(expr))) {
+        const valM = m[3];
+        renders = !!(pfByName.has(valM) || pfByName.has("paramSpec") || pfByName.has("payloadSpec"));
+      }
+      if (renders) {
+        seenVo.add(elem);
+        voImportNames.push(`${valuesPkg}.${elem}`);
+      }
+    }
+  }
+}
+const handlerImportBlock = [
+  ...orderedEvents.map((ev) => `import ${entityPkg}.${objName}Entity.${ev.name}`),
+  `import ${entityPkg}.${objName}Entity.${eventType}`,
+  `import ${entityPkg}.${objName}Entity.${objName}EventHandler`,
+  `import ${entityPkg}.${objName}Entity.${stateType}`,
+  ...[...handlerPortTraits].sort().map((t) => `import ${t}`),
+  ...voImportNames.map((i) => `import ${i}`),
+].join("\n");
+
+const eventHandler = `// @generated by rules_domain_gen:2026-08-23
 // @knowledge-release 1.0.0
 package ${entityPkg}.behaviors
 
-import ${entityPkg}.${objName}Entity._
-import ${entityPkg}.${objName}Entity.${eventType}
-import ${entityPkg}.${objName}Entity.${objName}EventHandler
-import ${entityPkg}.${objName}Entity.${stateType}
+${handlerImportBlock}
 
+/**
+ * ${objName} 状态投影（rules_domain_gen.mjs 生成，2026-08-22）：
+ * writtenBy 血缘为权威映射（metarch.fields.template.json）；审计字段按同名载荷/创建更新类事件规则；
+ * status 按事件名词干匹配枚举（STATE_TRANSITION）；待确认项标 TODO + 审校清单（story/eventhandler_review.md）。
+ */
 object ${objName}EventHandler {
   def apply: ${objName}EventHandler = (state, event) => event match {
-${handlerCases}
-    case _ => state
+${handlerBlocks.join("\n\n")}
+    case _ => state // 默认兜底
   }
 }
 `;
+if (foldNotes.length) {
+  for (const n of foldNotes) process.stderr.write(`aggregate-dsl fold-note: ${n}\n`);
+}
 
 // ═══ 3. Protocol (application/aggregates/<Name>Protocol.scala) ═══
 // Commands + per-command Replies. State/Event imported from Entity.
 // ingested-app 1:1: headers, Id import, nested type imports (alphabetical order)
+// Golden Protocol command docs carry @knowledge anchors but NO description
+// text (unlike Entity docs): `   * @param <name>  @knowledge <noteId>`.
+// Only fields WITH noteIds get lines (envelope fields like triggeredBy are
+// absent in golden); verified across all 27 golden Protocols.
+const paramDocNoDesc = (fields) => {
+  const kn = (fields ?? []).filter((f) => f.noteId);
+  if (!kn.length) return "";
+  const lines = kn.map((f) => `   * @param ${qref(f.name)}  @knowledge ${f.noteId}`);
+  return `  /**\n${lines.join("\n")}\n   */\n`;
+};
 const commandDefs = orderedCommands
   .map((c) => {
     const fields = fieldsOf(c.fields);
     const allFields = fields ? `${fields}, replyTo: ActorRef[${c.name}Reply]` : `replyTo: ActorRef[${c.name}Reply]`;
-    return `  case class ${c.name}(${allFields}) extends ${commandFamily}`;
+    return `${paramDocNoDesc(c.fields)}  case class ${c.name}(${allFields}) extends ${commandFamily}`;
   })
   .join("\n");
+
+// Get<Agg>State synthesis (old pipeline): a state-query command that is NOT
+// tree data — appended after all regular command case classes (last, no
+// scaladoc), its Reply appended LAST after the alphabetical replies, and the
+// Protocol import block gains the self-import of the Reply type (sorted in
+// with the per-command Reply imports). Keyed on the aggregate identifier.
+const getStateName = `Get${objName}State`;
+const getStateReplyName = `${getStateName}Reply`;
+const synthesizeGet = !!identifierField && !commands.some((c) => c.name === getStateName);
+const getStateCmdDef = synthesizeGet
+  ? `  case class ${getStateName}(${qref(identifierField.name)}: ${scalaSig(identifierField.dataType)}, replyTo: ActorRef[${getStateReplyName}]) extends ${commandFamily}`
+  : null;
+const commandDefsAll = getStateCmdDef ? `${commandDefs}\n${getStateCmdDef}` : commandDefs;
 
 const replyDefs = orderedCommands
   .map((c) => `  case class ${c.name}Reply(error: Option[iMadzError]) extends CborSerializable`)
   .join("\n");
+const getStateReplyDef = synthesizeGet
+  ? `  case class ${getStateReplyName}(state: ${stateType}) extends CborSerializable`
+  : null;
+const replyDefsAll = getStateReplyDef ? `${replyDefs}\n${getStateReplyDef}` : replyDefs;
 
 // Protocol imports: fully alphabetical single block (ingested-app 1:1) —
 // framework refs, nested Protocol types, Entity types, then data-driven
@@ -292,9 +712,13 @@ const protocolImportBlock = sortedImportBlock([
   "net.imadz.common.CommonTypes.iMadzError",
   `${pkg}.${objName}Protocol.${commandFamily}`,
   ...commands.map((c) => `${pkg}.${objName}Protocol.${c.name}Reply`),
+  ...(synthesizeGet ? [`${pkg}.${objName}Protocol.${getStateReplyName}`] : []),
   `${entityPkg}.${objName}Entity.${eventType}`,
   `${entityPkg}.${objName}Entity.${stateType}`,
-  ...typeImports(commands.flatMap((c) => c.fields ?? [])),
+  ...typeImports([
+    ...commands.flatMap((c) => c.fields ?? []),
+    ...(synthesizeGet ? [identifierField] : []),
+  ]),
 ]);
 
 const protocol = `// @generated by CodegenMain:225ed28b
@@ -307,14 +731,13 @@ object ${objName}Protocol {
 
   // Commands
   sealed trait ${commandFamily} extends CborSerializable
-${commandDefs}
+${commandDefsAll}
 
   // Replies
-${replyDefs}
-
+${replyDefsAll}${synthesizeGet ? "\n\n\n" : "\n"}
   // CommandHandler type alias (moved from Aggregate to break circular dependency)
   type ${handlerFamily} = (${stateType}, ${commandFamily}) => akka.persistence.typed.scaladsl.Effect[${eventType}, ${stateType}]
-
+${synthesizeGet ? "\n" : ""}
 }
 `;
 

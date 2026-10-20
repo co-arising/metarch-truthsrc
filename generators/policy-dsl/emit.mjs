@@ -141,7 +141,7 @@ ${body}
   }).join("\n");
 
   const importLines = [
-    `import ${basePkg}.common.Id`,
+    `import net.imadz.common.Id`,
     ...[...evtImports].sort().map((i) => `import ${i}`),
     ...[...paramsImports].sort().map((i) => `import ${i}`),
   ].join("\n");
@@ -155,8 +155,9 @@ package ${pkg}
 ${importLines}
 
 /**
- * ${aggDesc}（policy-dsl 生成）。
- * Policy = event → command 的领域语义；纯 domain：零 akka / 零 application 依赖。
+ * ${aggDesc}（S2-44·2026-09-05，rules_domain_gen.mjs 生成）。
+ * Policy = event → command 的领域语义（独立于 usecase·usecase 仅为引用方）；
+ * 纯 domain：零 akka / 零 application 依赖——Runner（application/projection）接线另批落地。
  * 与 domain/invariant 对偶：Rules 吃 (State, Params) 产 Events；Policy 吃 Event 产 Params。
  */
 object ${agg}Policies {

@@ -82,6 +82,36 @@ const dvJsExpr = (cmdName) => {
   return dv ? `play.api.libs.json.JsString("${dv}")` : "play.api.libs.json.JsNull";
 };
 
+// ── @knowledge noteId index (Category A, noteId half) ──
+// Golden annotates elements with `// @knowledge <noteId>@<hash>`; the noteId
+// half lives in canonical session notes keyed by (type, name) with the owning
+// aggregate in `links` (aggregate:<Name>). The same logical note appears in
+// several sessions with the SAME noteId (verified), so first-wins is safe;
+// 'refining' stage is preferred when present (its notes carry the richest
+// payloads). The @<hash> suffix is NOT derivable (old-pipeline fingerprint).
+const noteIdIndex = new Map();
+for (const n of notes) {
+  if (!n.noteId || !n.type || !n.name) continue;
+  const agg = (n.links || []).find((l) => String(l).startsWith("aggregate:"));
+  const aggName = agg ? agg.slice("aggregate:".length) : "";
+  const key = `${n.type}|${aggName}|${n.name}`;
+  const prev = noteIdIndex.get(key);
+  if (!prev || n.stage === "refining") noteIdIndex.set(key, n.noteId);
+}
+const noteIdOf = (type, name, aggName) =>
+  noteIdIndex.get(`${type}|${aggName || ""}|${name}`) ||
+  noteIdIndex.get(`${type}||${name}`) ||
+  null;
+
+// Projection intent exprs (Category D): storyMapping readModel notes carry
+// info.projectionRefCodes[<EventName>] = golden's `// 投影意图` comment body.
+const projRefCodes = new Map();
+for (const n of notes) {
+  if (n.type !== "readModel" || !n.name) continue;
+  const rc = n.info && n.info.projectionRefCodes;
+  if (rc && typeof rc === "object") projRefCodes.set(n.name, rc);
+}
+
 // ── Step 3: run generators into package directories ──
 const results = [];
 
@@ -125,6 +155,28 @@ const normFields = (fields) =>
 // every VO reference to "string" and value-object imports could never be derived.
 const normFieldsRaw = (fields) =>
   (fields || []).map((f) => ({ name: f.name, dataType: f.dataType, optional: !!f.optional }));
+// Rich passthrough (Categories A/B): golden-faithful emitters also need the
+// per-field noteId (@knowledge anchors), origin (fold/rule classification),
+// businessDef/description (scaladoc + 待审 reasons), derivation and writtenBy
+// (fold coverage). Keep every key the payload carries; never invent.
+const normFieldsRich = (fields) =>
+  (fields || []).map((f) => ({
+    name: f.name,
+    dataType: f.dataType,
+    optional: !!f.optional,
+    noteId: f.noteId || null,
+    origin: f.origin || "",
+    businessDef: f.businessDef || "",
+    description: f.description || "",
+    derivation: f.derivation || "",
+    uiLabel: f.uiLabel || "",
+    writtenBy: f.writtenBy || [],
+    lineageHint: f.lineageHint || "",
+    role: f.role || "",
+    nature: f.nature || "",
+    parent: f.parent || null,
+    defaultValue: f.defaultValue !== undefined ? f.defaultValue : null,
+  }));
 
 const pkgDir = (pkg) => join(outDir, "app", ...pkg.split("."));
 
@@ -220,19 +272,38 @@ runGen(
       objectName: objName,
       stateType: `${objName}State`,
       eventType: `${objName}Event`,
-      stateFields: normFieldsRaw(a.stateFields),
+      stateFields: normFieldsRich(a.stateFields),
       // Entity files go to the domain.entities package tree (ingested-app 1:1)
       entityDir: pkgDir(`${basePkg}.domain.entities`),
       entityPackage: `${basePkg}.domain.entities`,
       valuesPackage: `${basePkg}.domain.values`,
       invariantPackage: `${basePkg}.domain.invariant`,
+      aggNoteId: noteIdOf("aggregate", a.name, a.name),
+      identifier: a.identifier
+        ? {
+            name: a.identifier.name || a.identifier,
+            dataType: a.identifier.dataType || "String (UUID)",
+            noteId: a.identifier.noteId || null,
+          }
+        : null,
+      terminalStates: a.terminalStates || [],
+      // fn: fold verbs resolve through the slice-declared function specs
+      declaredFunctions: Object.fromEntries(
+        (a.commands || [])
+          .filter((c) => c.declaredFunction && c.declaredFunction.id)
+          .map((c) => [c.declaredFunction.id, c.declaredFunction])
+      ),
       commands: (a.commands || []).map((c) => ({
         name: c.name,
-        fields: normFieldsRaw(c.parameters),
+        fields: normFieldsRich(c.parameters),
+        noteId: noteIdOf("command", c.name, a.name),
       })),
       events: (a.events || []).map((e) => ({
         name: e.name,
-        fields: normFieldsRaw(e.payloads),
+        fields: normFieldsRich(e.payloads),
+        foldAssignments: e.foldAssignments || [],
+        noteId: noteIdOf("event", e.name, a.name),
+        humanDescription: e.humanDescription || "",
       })),
       statusTransitions: a.statusTransitions || {},
       commandHandlers: (a.commands || [])
@@ -255,14 +326,23 @@ runGen(
       for (const g of c.guards || []) {
         if (g.kind === "invariantRef" && !seen.has(c.name)) {
           seen.add(c.name);
-          rules.push({ commandName: c.name, fields: normFieldsRaw(c.parameters) });
+          rules.push({
+            commandName: c.name,
+            fields: normFieldsRich(c.parameters),
+            guards: c.guards || [],
+            produces: c.produces || [],
+            preconditions: c.preconditions || [],
+            preconditionRefs: c.preconditionRefs || [],
+            declaredFunction: c.declaredFunction || null,
+            noteId: noteIdOf("command", c.name, a.name),
+          });
         }
       }
     }
     // All commands for params generation (ingested-app has 27/27 params files)
     const allCommands = (a.commands || []).map((c) => ({
       commandName: c.name,
-      fields: normFieldsRaw(c.parameters),
+      fields: normFieldsRich(c.parameters),
     }));
     return {
       package: `${basePkg}.domain.invariant`,
@@ -272,6 +352,19 @@ runGen(
       stateType: `${objName}State`,
       rules,
       allCommands,
+      // Category B2: everything the golden rule bodies are built from
+      aggregateRuleRefs: a.aggregateRuleRefs || [],
+      statusEnum: a.statusEnum || null,
+      stateGates: a.stateGates || {},
+      stateFields: normFieldsRich(a.stateFields),
+      events: (a.events || []).map((e) => ({
+        name: e.name,
+        fields: normFieldsRich(e.payloads),
+        bindings: e.bindings || [],
+        postconditionRefs: e.postconditionRefs || [],
+        noteId: noteIdOf("event", e.name, a.name),
+      })),
+      aggNoteId: noteIdOf("aggregate", a.name, a.name),
     };
   },
   { mode: "dir" }
@@ -350,6 +443,10 @@ runGen(
         protoEventType,
         events,
         projectionId: viewName.replace(/([a-z])([A-Z])/g, "$1_$2").toLowerCase(),
+        // Category D: golden's per-(view,event) intent comment + view @knowledge
+        refCodes: projRefCodes.get(viewName) || projRefCodes.get(viewName.replace(/DecisionView$/, "")) || {},
+        viewNoteId: noteIdOf("readModel", r.name, ""),
+        fields: normFieldsRich(r.fields),
       };
       const specPath = join(specDir, `projection-dsl-${i}.json`);
       writeFileSync(specPath, JSON.stringify(spec, null, 2));
@@ -369,7 +466,8 @@ runGen("valueobject-dsl", valueObjects, `${basePkg}.domain.values`, (v) => ({
   package: `${basePkg}.domain.values`,
   name: pascal(v.name),
   description: v.description || "",
-  fields: normFields(v.fields),
+  fields: normFieldsRich(v.fields),
+  noteId: v.noteId || null,
 }), { fileName: (v) => `${pascal(v.name)}.scala` });
 
 runGen(
@@ -415,10 +513,27 @@ const snake = (s) =>
       const spec = {
         protoPackage: `${basePkg}.infrastructure.proto`,
         aggregateName: objName,
-        stateFields: (a.stateFields || []).map((f) => ({ name: f.name, dataType: f.dataType })),
+        // golden StatePO: identifier FIRST (its noteId annotates the line),
+        // then stateFields in order, each with its field noteId.
+        stateFields: [
+          ...(a.identifier
+            ? [{ name: a.identifier.name, dataType: a.identifier.dataType, noteId: a.identifier.noteId || null, introducedIn: a.identifier.introducedIn || null }]
+            : []),
+          // credential-nature fields never reach the proto StatePO (golden
+          // rule, same exclusion as Entity state)
+          ...(a.stateFields || [])
+            .filter((f) => f.nature !== "credential")
+            .map((f) => ({ name: f.name, dataType: f.dataType, noteId: f.noteId || null, introducedIn: f.introducedIn || null, optional: !!f.optional })),
+        ],
         events: (a.events || []).map((e) => ({
           name: e.name,
-          fields: (e.payloads || []).map((f) => ({ name: f.name, dataType: f.dataType })),
+          fields: (e.payloads || []).map((f) => ({
+            name: f.name,
+            dataType: f.dataType,
+            noteId: f.noteId || null,
+            introducedIn: f.introducedIn || null,
+            optional: !!f.optional,
+          })),
         })),
       };
       const specPath = join(specDir, `proto-dsl-${i}.json`);
@@ -500,7 +615,7 @@ const snake = (s) =>
             reqFields,
             entityExpr: idParams.length ? idParams[0].name : "id",
             dvExpr: dvJsExpr(c.name),
-            noteId: c.noteId || null,
+            noteId: noteIdOf("command", c.name, a.name),
           };
         }),
       };
@@ -594,35 +709,54 @@ runGen(
   `${basePkg}.infrastructure.persistence.converters`,
   (a) => {
     const objName = objNameOf(a);
-    const fieldMap = (fields, toProto) =>
-      (fields || []).map((f) => {
-        const rhs = toProto ? `d.${f.name}` : `p.${f.name}`;
-        return `${f.name} = ${rhs}`;
-      });
+    // Category A/B: pass RAW rich fields — the emitter ports the old
+    // ConverterBuilder (typed conversions + per-field @knowledge comments).
+    const rawFields = (fields) =>
+      (fields || []).map((f) => ({
+        name: f.name,
+        dataType: f.dataType,
+        noteId: f.noteId || null,
+        optional: !!f.optional,
+        // converter exclusion keys: golden drops state fields flattened from
+        // a catalog VO (parent = VO name, role ValueObject.Member) and
+        // credential fields (nature: "credential") from the state converter
+        parent: f.parent || null,
+        role: f.role || "",
+        nature: f.nature || "",
+      }));
     const converters = [
       {
         name: `${objName}State`,
         domainType: `${objName}State`,
         protoType: `${objName}StatePO`,
-        toProtoFields: fieldMap(a.stateFields, true),
-        fromProtoFields: fieldMap(a.stateFields, false),
+        fields: rawFields(a.stateFields),
       },
       ...(a.events || []).map((e) => ({
         name: e.name,
         domainType: e.name,
         protoType: `${e.name}PO`,
-        toProtoFields: fieldMap(e.payloads, true),
-        fromProtoFields: fieldMap(e.payloads, false),
+        fields: rawFields(e.payloads),
       })),
     ];
     return {
       package: `${basePkg}.infrastructure.persistence.converters`,
       name: objName,
-      domainImports: [
-        `import ${basePkg}.domain.entities.${objName}Entity.${objName}State`,
-        `import ${basePkg}.domain.entities.${objName}Entity._`,
-      ],
-      protoImports: [`import ${basePkg}.infrastructure.proto._`],
+      // golden's state converter leads with the aggregate identifier field
+      identifier: a.identifier
+        ? {
+            name: a.identifier.name || a.identifier,
+            dataType: a.identifier.dataType || "String (UUID)",
+            noteId: a.identifier.noteId || null,
+          }
+        : null,
+      valuesPackage: `${basePkg}.domain.values`,
+      entityPackage: `${basePkg}.domain.entities`,
+      protoPackage: `${basePkg}.infrastructure.proto`,
+      sharedProtoPackage: `${basePkg}.infrastructure.proto.shared_value_objects`,
+      valueObjects: (valueObjects || []).map((v) => ({
+        name: pascal(v.name),
+        fields: rawFields(v.fields),
+      })),
       converters,
     };
   },
