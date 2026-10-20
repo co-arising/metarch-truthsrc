@@ -74,6 +74,32 @@ const results = [];
 
 const pascal = (s) =>
   String(s).split(/[-_ ]/).map((w) => w[0]?.toUpperCase() + w.slice(1)).join("");
+// Transliteration map: Chinese policy names → English PascalCase.
+// The truth tree has 13 policies with Chinese names; these must become ASCII
+// for Scala filenames (e.g. PolicyOn<Name>Bootstrap.scala).
+const ZH_NAME_MAP = {
+  "租户入驻后创建者自动成为Owner": "TenantOnboardedCreatorAutoBecomesOwner",
+  "租户入驻后TenantOwner可创建工作组": "TenantOnboardedOwnerCanCreateWorkgroup",
+  "注册选择新建租户后自动入驻": "RegisterNewTenantAutoOnboard",
+  "目录应用后确认补丁合并": "CatalogAppliedConfirmPatchMerge",
+  "成员加入后维护租户名册": "MemberJoinedMaintainTenantRoster",
+  "补丁合并后应用到目录": "PatchMergedApplyToCatalog",
+  "概念增量后确立概念": "ConceptDeltaEstablishConcept",
+  "立项后创建目录版本": "ProjectInitiatedCreateCatalogVersion",
+  "知识就绪后完成会话": "KnowledgeReadyCompleteSession",
+  "概念确立后检测冲突": "ConceptEstablishedDetectConflict",
+  "补丁合并后回锚落点": "PatchMergedAnchorLandingPoint",
+  "立项并指定Owner后安排工作坊": "ProjectInitiatedAssignOwnerScheduleWorkshop",
+  "DoR通过后请求合并知识": "DoRPassedRequestMergeKnowledge",
+};
+// asciiName: transliterate known Chinese names, else strip non-ASCII so the
+// result is always a safe Scala identifier fragment.
+const asciiName = (s) => {
+  const raw = String(s);
+  if (ZH_NAME_MAP[raw]) return ZH_NAME_MAP[raw];
+  const stripped = raw.replace(/[^\x00-\x7F]/g, "");
+  return stripped || "Unnamed";
+};
 // normalize canonical dataType → emitter type key (emitter maps key → Scala type)
 const normType = (t) =>
   ({ string: "string", number: "number", integer: "integer", long: "long", boolean: "boolean", timestamp: "long" })[t] || "string";
@@ -610,7 +636,7 @@ runGen(
   policies.forEach((p, i) => {
     if (bootErr) return;
     try {
-      const policyName = "PolicyOn" + pascal(p.id || p.name);
+      const policyName = "PolicyOn" + pascal(asciiName(p.name));
       bootNames.push(`${policyName}Bootstrap`);
       // source aggregate - use first aggregate as default, or from policy metadata
       const aggName = aggregates.length > 0 ? objNameOf(aggregates[0]) + "Aggregate" : "ConceptAggregate";
