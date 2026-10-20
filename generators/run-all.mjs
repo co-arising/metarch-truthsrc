@@ -95,6 +95,20 @@ const dvJsExpr = (cmdName) => {
 // backfilled into the tree next to its noteId (Decision 1, 2026-10-20; the
 // old-pipeline fingerprint itself is not derivable, so it is carried as
 // data). Emitters render `@knowledge <noteId>@<elementHash>` when present.
+// ── B-CAUSAL: event→event causal provenance ──
+// A commandStorming event note may carry `event:<Source>@<strong|eventual>`
+// in payload.links (SCHEMA.md §CS: an event→event causal chain). The old
+// pipeline rendered it into the EventHandler case as a `// 因果溯源:` comment.
+// Keyed by event name (globally unique in this corpus; first hit wins).
+const causalByEvent = new Map();
+for (const n of notes) {
+  if (n.stage !== "commandStorming" || n.type !== "event" || !n.name) continue;
+  for (const l of n.links || []) {
+    const m = /^event:(.+)@(strong|eventual)$/.exec(String(l));
+    if (m && !causalByEvent.has(n.name)) causalByEvent.set(n.name, { source: m[1], strength: m[2] });
+  }
+}
+
 const noteIdIndex = new Map();
 const noteHashIndex = new Map();
 const hashByNoteId = new Map();
@@ -710,6 +724,7 @@ runGen(
         noteId: noteIdOf("event", e.name, a.name),
         elementHash: elementHashOf("event", e.name, a.name),
         humanDescription: e.humanDescription || "",
+        causal: causalByEvent.get(e.name) || null,
       })),
       statusTransitions: a.statusTransitions || {},
       commandHandlers: (a.commands || [])

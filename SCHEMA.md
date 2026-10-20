@@ -597,3 +597,81 @@ When proposing a new key, ask three questions:
   at `aggregates/project/notes/readModel-sm-pause-project-decision-view-777.yaml`
   with the next storyMapping seq (777; existing seqs are never renumbered).
   A missing atom is restored from evidence, never re-authored.
+- **Restored causal links (2026-10-20, B-CAUSAL)**: the migration dropped every
+  `event:Y@strong` / `event:Y@eventual` causal link (§CS) from event-note
+  payloads. Exactly three existed in the corpus; all three survive verbatim
+  in the pre-tree commandStorming board payload
+  (`.ingest/metarch-stage02-payload.json` in the legacy backend-codegen repo)
+  and were restored from that evidence: `event:TenantOwnerDesignated@strong`
+  appended to the `TenantOnboarded` cs note's `links`,
+  `event:MetadataConsumed@eventual` appended to the `MetadataExported` cs
+  note's `links`, and the whole `StageApproved` cs note — missing like
+  PauseProject above — recreated at
+  `aggregates/stage/notes/event-cs-stage-approved-114.yaml` (noteId
+  `40b95b31-ca40-4f86-af0b-ede9a83e1fc6`, the id its other stage variants
+  share; elementHash `c255afc18ace0ba5`; seq 114, the next commandStorming
+  board1 seq) with its stage02 payload (`event:SessionClosed@strong`).
+  Generators render these links as `// 因果溯源:` comments in EventHandler
+  cases. Restored from evidence, never re-authored.
+
+## Surface carry (v0.5.1, 2026-10-20, B-TREESTAGE)
+
+The canonical projections above are payload-centric: they do not carry every
+byte of an atom's surface (headers, origins, stored blocks, physical
+residence). Before v0.5.1 that made `decompose(compile(tree))` differ from
+the tree in ~1,900 places on the metarch tree (tree-stage roundtrip red).
+v0.5.1 closes the gap with **additive, compiler-reserved carry keys** —
+present in canonical only when the tree atom carries the data, and written
+back verbatim by decompose. No other canonical content changes shape.
+
+- `noteSurface` (top level, keyed `stage|board|rank` like `inboxLayout`):
+  per note, only the non-default fields — header `id` when it differs from
+  `payload.noteId` (`null` = the atom has no header id), origin
+  `author`/`createdAt` when the atom's origin carries those keys, and origin
+  `seq` when it differs from the note's positional rank in its scope.
+- `noteResidence` (top level, same keys): the note's physical directory
+  (relative to the tree root) when it differs from decompose's default
+  placement (`policies/` for policies, the owning aggregate's `notes/` for
+  owned command/event notes, `inbox/<layout dir>` otherwise). Residence is
+  the tree's organisational semantics; it is recorded, never recomputed
+  away.
+- Aggregate entries: `context`, `bmExtra`, `extraFolds` verbatim;
+  `orderDecisions` / `orderFolds` (the stored `order.decisions` /
+  `order.folds` lists — historical index orders, not derivable from
+  `order.commands` / `order.events`); `eventResidence` (event name →
+  defining slice's command, or `null` for `extraEvents`) recorded only
+  where the definition's residence differs from the default (first
+  producing command).
+- Command entries: the slice's stored `decision` / `fold` blocks verbatim.
+  The §slice formulas describe how these blocks were originally derived,
+  but the stored blocks are **not** reproducible from payload + pool in
+  general: stored folds carry override assignments (e.g. `patch:event.*`
+  expressions) that the event definitions' `foldAssignments` do not, and
+  stored decision guards predate the payload guard normalization
+  (scalar/array shape drift in 11 guards). They are therefore carried as
+  authored surface, like the payload itself. (This supersedes the
+  "decisions and folds are never stored" line in AGENTS.md for trees that
+  already store them; re-deriving them wholesale is a schema decision for
+  the tree's owner, not a compiler behaviour.)
+- Root: compile accepts the workshop name under either `name:` or
+  `workshop:`; `workshopKey: "workshop"` is recorded when the tree uses the
+  latter, and decompose writes the tree's own spelling back.
+- Policy atoms: decompose re-derives the structured `bindings:` block from
+  `payload.info.bindings` (verified a verbatim mirror of the stored block
+  on every policy in the corpus) and the filename from
+  `policy-<stage-code>-<slug>-<seq>` with the atom's own origin seq.
+- Catalog atoms: the header `id` is the payload's `id`, else its `noteId`
+  (value objects carry identity in `noteId`; atoms with neither emit no id
+  line). Read-model filenames drop the `DecisionView` suffix.
+- `slug()` is per-character (every non-`[a-z0-9]` char becomes one `-`,
+  runs not collapsed, edges kept) — the reference shape the metarch tree's
+  filenames were built with.
+
+With the carry in place, both metarch trees were surface-normalized once
+(regenerated from decompose output; canonical byte-identical before and
+after). Deliberate adoptions in that normalization: subdomainExploration
+filenames converge from the migration-era `sx` code to the documented `sd`
+code (121 files renamed, content untouched), policy atoms gain the
+`type: policy` header line, and `workshop.yaml`'s `schemaVersion` adopts
+the toolchain stamp `truthsrc/v1`. Tree-stage roundtrip is green on both
+trees from v0.5.1 on.

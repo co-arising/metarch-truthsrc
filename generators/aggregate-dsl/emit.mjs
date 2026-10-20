@@ -650,6 +650,10 @@ const renderHandlerCase = (e) => {
   const lines = [];
   if (e.noteId) lines.push(`    // @knowledge ${kh(e.noteId, e.elementHash)}`);
   lines.push(`    case event: ${e.name} =>`);
+  // 因果溯源 (B-CAUSAL): the event note's commandStorming causal link
+  // (`event:<Source>@<strong|eventual>` in payload.links), restored into the
+  // tree from the stage02 board payload evidence — see SCHEMA.md §CS.
+  if (e.causal) lines.push(`      // 因果溯源: ${e.causal.source}（${e.causal.strength}）⇒ 本事件`);
   lines.push(`      ${copyText}`);
   if (items.length) lines.push(`      // 待审: ${items.join("；")}`);
   return lines.join("\n");
