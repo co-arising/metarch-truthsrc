@@ -108,6 +108,7 @@ const importsCode = (fqns) =>
 function indexCanonical(canonical) {
   const fieldsByView = new Map(); // view -> [field]
   const storageByView = new Map(); // view -> storage obj
+  const extraIndexesByView = new Map(); // view -> [{name, columns}] (design-declared, Q7)
   const viewNames = [];
   for (const session of canonical.sessions || []) {
     for (const scope of session.scopes || []) {
@@ -125,12 +126,19 @@ function indexCanonical(canonical) {
             opaque: !!note.info.opaque,
             queryable: !!note.info.queryable,
             structure: note.info.structure || null,
+            // Q7 marker: an adjudicated finder on a non-*Id scalar field
+            // (findBy<Field> + the Q5 tier-3 same-name index).
+            finder: !!note.info.finder,
           });
           fieldsByView.set(note.info.parent, arr);
         }
         if (note.type === "readModel" && note.name) {
           if (!storageByView.has(note.name)) {
             storageByView.set(note.name, (note.info && note.info.storage) || {});
+            // Design-declared supplementary indexes (Q7 §3): carried on the
+            // readModel note's info, outside storage (SQL-default views have
+            // no storage key at all). Absent = baseline Q5 tiers only.
+            extraIndexesByView.set(note.name, (note.info && note.info.extraIndexes) || []);
             viewNames.push(note.name);
           }
         }
@@ -144,7 +152,7 @@ function indexCanonical(canonical) {
   for (const v of canonical.valueObjects || []) {
     if (v && v.name && Array.isArray(v.fields)) voByName.set(v.name, v);
   }
-  return { fieldsByView, storageByView, viewNames, voByName };
+  return { fieldsByView, storageByView, viewNames, voByName, extraIndexesByView };
 }
 
 // Field-aware type resolution (Phase 2 R1): an adjudicated expansion
@@ -171,7 +179,10 @@ function tableMethods(view, fields) {
   const keys = fields.filter((f) => f.isKey).map((f) => f.name).sort();
   const nonKeyIds = fields.map((f) => f.name).filter((n) => !keys.includes(n) && n.endsWith("Id"));
   const compKeyIds = keys.length > 1 ? keys.filter((n) => n.endsWith("Id")) : [];
-  const idNames = [...new Set([...nonKeyIds, ...compKeyIds])].sort();
+  // Q7: fields adjudicated with info.finder join the finder set even when
+  // their name does not end in Id (e.g. FsmDefinitionDecisionView.aggregateName).
+  const markedIds = fields.filter((f) => f.finder && !keys.includes(f.name)).map((f) => f.name);
+  const idNames = [...new Set([...nonKeyIds, ...compKeyIds, ...markedIds])].sort();
   const p = (name) => {
     const f = byName.get(name);
     return { name, type: "String", noteId: f ? f.noteId : null, elementHash: f ? f.elementHash : null };
@@ -818,7 +829,7 @@ const SQL_COL_TYPE = (f) => {
   }
 };
 export function generateViewDdl(canonical, basePkg = "net.imadz.metarch") {
-  const { fieldsByView, storageByView, viewNames, voByName } = indexCanonical(canonical);
+  const { fieldsByView, storageByView, viewNames, voByName, extraIndexesByView } = indexCanonical(canonical);
   const blocks = [];
   for (const view of viewNames) {
     const fields = fieldsByView.get(view) || [];
@@ -836,10 +847,16 @@ export function generateViewDdl(canonical, basePkg = "net.imadz.metarch") {
     if (fields.some((f) => f.name === "tenantId")) idx.push(`  INDEX \`idx_${table}_tenant\` (\`tenantId\`)`);
     for (const f of scalars) {
       if (f.isKey || f.name === "tenantId") continue;
-      if (/_id$/i.test(f.name) || /Id$/.test(f.name)) idx.push(`  INDEX \`idx_${table}_${f.name.toLowerCase()}\` (\`${f.name}\`)`);
+      if (/_id$/i.test(f.name) || /Id$/.test(f.name) || f.finder) idx.push(`  INDEX \`idx_${table}_${f.name.toLowerCase()}\` (\`${f.name}\`)`);
     }
     if (fields.some((f) => f.name === "tenantId") && keys.length)
       idx.push(`  INDEX \`idx_${table}_tenant_page\` (\`tenantId\`, ${pk})`);
+    // Q7 §3: design-declared supplementary indexes (readModel note
+    // info.extraIndexes) — appended after the Q5 baseline tiers, in
+    // declaration order. No pre-existing note declares any.
+    for (const x of extraIndexesByView.get(view) || []) {
+      idx.push(`  INDEX \`idx_${table}_${x.name}\` (${x.columns.map((c) => "\`" + c + "\`").join(", ")})`);
+    }
     blocks.push(
       `CREATE TABLE IF NOT EXISTS \`${table}\` (\n${colDefs},\n  PRIMARY KEY (${pk})${idx.length ? ",\n" + idx.join(",\n") : ""}\n);`
     );
@@ -894,7 +911,7 @@ export function generateMongoIndexSpec(canonical, basePkg = "net.imadz.metarch")
     if (fields.some((f) => f.name === "tenantId")) fieldIndexes.set(`${coll}|tenantId`, true);
     for (const f of fields) {
       if (f.isKey || f.name === "tenantId") continue;
-      if (/_id$/i.test(f.name) || /Id$/.test(f.name)) fieldIndexes.set(`${coll}|${f.name}`, true);
+      if (/_id$/i.test(f.name) || /Id$/.test(f.name) || f.finder) fieldIndexes.set(`${coll}|${f.name}`, true);
     }
   }
   if (!collections.size) return null;
@@ -941,10 +958,22 @@ export function generateViewRepos(canonical, basePkg = "net.imadz.metarch") {
       // Phase 2 R3: SQL traits gain the tenant paged/count pair and element
       // finders for queryable list fields (appended after the table methods,
       // mirroring the Mongo extra-methods layout).
+      // Q7 fix (mongo branch): the tenant pair is field-driven for Mongo —
+      // a view whose aggregate is not tenant-scoped carries no tenantId
+      // field (FsmDefinitionDecisionView, Q7 §2 ruling) and must not grow
+      // tenant methods that query a permanently-empty field. All
+      // pre-existing Mongo views carry tenantId, so their shape is
+      // unchanged. SQL keeps the legacy unconditional pair (three
+      // pre-existing SQL views without tenantId rely on the historical
+      // shape; changing them is a separate adjudication).
+      const tenantPair =
+        kind === "mongo" && !fields.some((f) => f.name === "tenantId")
+          ? []
+          : mongoExtraMethods(view, fields);
       methods =
         kind === "mongo"
-          ? [...t.methods, ...mongoExtraMethods(view, fields)]
-          : [...t.methods, ...mongoExtraMethods(view, fields), ...elementFinders(view, fields)];
+          ? [...t.methods, ...tenantPair]
+          : [...t.methods, ...tenantPair, ...elementFinders(view, fields)];
       impl =
         kind === "mongo"
           ? mongoBodies(view, fields, storage, voByName, basePkg)
