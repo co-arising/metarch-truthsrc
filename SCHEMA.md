@@ -270,6 +270,29 @@ Phase 2 signal; nothing is inferred from `dataType` alone).
   (`findBy<Element>`) and the matching element index (SQL: the
   sub-table's `value`/key columns). Absence means the list is stored
   structured but not element-queryable.
+- `info.finder: true` — on a scalar field whose name does not end in
+  `Id`: the field is an adjudicated query dimension. Generators emit a
+  `findBy<Field>` finder and the Q5 tier-3 same-name index (SQL DDL /
+  Mongo index spec), exactly as for `*Id` fields (Q7,
+  FsmDefinitionDecisionView.aggregateName).
+
+Read-model storage registration (v0.5.2). A view's backend is declared
+on its storyMapping `readModel` note's `info.storage` — and **the
+absence of the `storage` key is itself the SQL declaration**: every
+SQL-backed view carries a readModel note with no `storage` key, while
+mongo/graph/vector views spell one out. A view with field notes but no
+readModel note at all is *unregistered*, whatever its fields claim.
+Tenant scope follows the aggregate, never the view template: a view
+whose aggregate is not tenant-scoped (no `tenantId` on its events,
+commands, or state) must not carry a `tenantId` field note either —
+the tenant query pair and the tenant index are field-driven and are
+generated only when the field exists (Q7 ruling, 2026-10-20:
+FsmDefinitionDecisionView is a global registry, its template-carried
+`tenantId` note was removed rather than generated against an
+always-empty field). Supplementary indexes beyond the Q5 tiers are
+declared on the readModel note as `info.extraIndexes:
+[{name, columns}]` and emitted by the DDL generator in declaration
+order (Q7: QuestionListView `(tenantId, status)`).
 
 Domain-service atoms (`domain-services/*.port.yaml`, v0.5 E1) declare a
 cross-aggregate port: `payload` = `{name, fq, zh, testRef?, methods:
