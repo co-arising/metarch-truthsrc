@@ -20,7 +20,7 @@ import { fileURLToPath } from "url";
 import { compileTree } from "../lib/compile.mjs";
 import { generatePolicyExec, generatePolicyBootstraps } from "./policy-dsl/policyexec.mjs";
 import { generateSmViews } from "./projection-dsl/smviews.mjs";
-import { generateViewRepos } from "./projection-dsl/viewrepo.mjs";
+import { generateViewRepos, generateViewDdl, generateMongoIndexSpec } from "./projection-dsl/viewrepo.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const [treeDir, outDir, ...rest] = process.argv.slice(2);
@@ -1901,6 +1901,11 @@ runGen(
 {
   try {
     const files = generateViewRepos(canonical);
+    // Phase 2 R10: SQL DDL + Mongo index spec ride along with the view repos.
+    const ddl = generateViewDdl(canonical);
+    if (ddl) files.push(ddl);
+    const mongoIdx = generateMongoIndexSpec(canonical);
+    if (mongoIdx) files.push(mongoIdx);
     for (const f of files) {
       const p = join(outDir, f.path);
       mkdirSync(dirname(p), { recursive: true });

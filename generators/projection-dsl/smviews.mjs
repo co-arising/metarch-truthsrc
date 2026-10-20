@@ -67,7 +67,17 @@ function indexCanonical(canonical) {
     if (promoted.has(n.name)) continue;
     if (!smNotes.has(n.name)) smNotes.set(n.name, n);
   }
-  return { eventOwner, eventPayloadTypes, smNotes };
+  // Phase 2 R9: target-view field types (adjudicated dataTypes from the
+  // readModelField notes) — graph prop conversion follows the TARGET type.
+  const viewFieldTypes = new Map(); // viewName -> Map(field -> dataType)
+  for (const n of notes) {
+    if (n.type === "field" && n.info && n.info.kind === "readModelField" && n.info.parent) {
+      const m = viewFieldTypes.get(n.info.parent) || new Map();
+      m.set(n.name, n.info.dataType || "String");
+      viewFieldTypes.set(n.info.parent, m);
+    }
+  }
+  return { eventOwner, eventPayloadTypes, smNotes, viewFieldTypes };
 }
 
 // Per-view wiring: source aggregates in link order; per-source events in
@@ -127,7 +137,24 @@ function baseType(t) {
   return s.replace(/\s*\(.*\)$/, "").trim();
 }
 // graph prop value: event.f -> po.f (+ .toString for non-String proto scalars)
-function graphValue(value, fieldTypes) {
+// Phase 2 R9: when the TARGET view field carries an adjudicated non-String
+// type (graph dataType backfill), the value travels typed through the
+// Map[String, Any] props channel — no .toString — and Boolean string
+// literals are unquoted. String/JSON targets keep the Phase 1 behaviour.
+function graphValue(value, fieldTypes, viewFieldTypes, propKey) {
+  const target = viewFieldTypes ? viewFieldTypes.get(propKey) : null;
+  const tb = target ? baseType(target) : null;
+  if (tb && tb !== "String" && tb !== "JSON") {
+    if (value.startsWith('"')) {
+      if (tb === "Boolean" && (value === '"true"' || value === '"false"'))
+        return { text: value.slice(1, -1), scalar: true };
+      return { text: value, scalar: true };
+    }
+    const m = value.match(/^event\.(`?\w+`?)(?:\.(\w+))?$/);
+    if (!m) return { text: value, scalar: false };
+    if (m[2]) return { text: `po.${m[1]}.${m[2]}`, scalar: false };
+    return { text: `po.${m[1]}`, scalar: true };
+  }
   if (value.startsWith('"')) return { text: value, scalar: true };
   const m = value.match(/^event\.(`?\w+`?)(?:\.(\w+))?$/);
   if (!m) return { text: value, scalar: false };
@@ -162,9 +189,9 @@ function translateGraph(refCode, ctx) {
         return { residual: `duplicate prop keys in refCode (${keys.join(",")}) — refCode is lossy vs golden body` };
       const pairs = [];
       for (const a of args) {
-        const v = graphValue(a.value, ctx.fieldTypes);
+        const v = graphValue(a.value, ctx.fieldTypes, ctx.viewFieldTypes, a.key);
         if (!v.scalar)
-          return { residual: `non-scalar prop value '${a.key} = ${a.value}' — cannot fold into Map[String,String] mechanically` };
+          return { residual: `non-scalar prop value '${a.key} = ${a.value}' — cannot fold into the props map mechanically` };
         pairs.push(`"${a.key}" -> ${v.text}`);
       }
       calls.push(`${ctx.repoVar}.${op}(po.${keyField}, Map(${pairs.join(", ")}))`);
@@ -557,7 +584,7 @@ ${manual}
 
 // ── main entry ─────────────────────────────────────────────────────────────
 export function generateSmViews(canonical) {
-  const { eventOwner, eventPayloadTypes, smNotes } = indexCanonical(canonical);
+  const { eventOwner, eventPayloadTypes, smNotes, viewFieldTypes } = indexCanonical(canonical);
   const out = [];
   const projRel = "app/net/imadz/metarch/application/projection";
   for (const viewName of [...smNotes.keys()].sort()) {
@@ -584,6 +611,7 @@ export function generateSmViews(canonical) {
           protoObj: s.protoObj,
           eventName,
           fieldTypes: eventPayloadTypes.get(`${s.aggName}|${eventName}`),
+          viewFieldTypes: viewFieldTypes.get(viewName),
         };
         const body = manualBodyFor(note, viewName, eventName, ctx);
         const manualLines = body.lines || [`        ???`];
