@@ -1,0 +1,22 @@
+package net.imadz.metarch.infrastructure.persistence
+
+import akka.persistence.typed.SnapshotAdapter
+import net.imadz.metarch.domain.entities.SessionEntity.SessionState
+import net.imadz.metarch.infrastructure.persistence.converters.SessionProtoConverters
+import net.imadz.metarch.infrastructure.proto.SessionStatePO
+
+/**
+ * SessionSnapshotAdapter: 快照适配器，负责在领域快照和protobuf快照之间进行转换
+ */
+class SessionSnapshotAdapter extends SnapshotAdapter[SessionState] with SessionProtoConverters {
+
+  override def toJournal(state: SessionState): Any = {
+    SessionStateConv.toProto(state)
+  }
+
+  override def fromJournal(from: Any): SessionState = {
+    val proto = from.asInstanceOf[SessionStatePO]
+    SessionStateConv.fromProto(proto)
+  }
+
+}

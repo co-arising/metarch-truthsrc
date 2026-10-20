@@ -1,0 +1,22 @@
+package net.imadz.metarch.infrastructure.persistence
+
+import akka.persistence.typed.SnapshotAdapter
+import net.imadz.metarch.domain.entities.RelationEntity.RelationState
+import net.imadz.metarch.infrastructure.persistence.converters.RelationProtoConverters
+import net.imadz.metarch.infrastructure.proto.RelationStatePO
+
+/**
+ * RelationSnapshotAdapter: 快照适配器，负责在领域快照和protobuf快照之间进行转换
+ */
+class RelationSnapshotAdapter extends SnapshotAdapter[RelationState] with RelationProtoConverters {
+
+  override def toJournal(state: RelationState): Any = {
+    RelationStateConv.toProto(state)
+  }
+
+  override def fromJournal(from: Any): RelationState = {
+    val proto = from.asInstanceOf[RelationStatePO]
+    RelationStateConv.fromProto(proto)
+  }
+
+}

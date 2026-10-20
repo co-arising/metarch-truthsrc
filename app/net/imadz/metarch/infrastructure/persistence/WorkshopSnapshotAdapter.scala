@@ -1,0 +1,22 @@
+package net.imadz.metarch.infrastructure.persistence
+
+import akka.persistence.typed.SnapshotAdapter
+import net.imadz.metarch.domain.entities.WorkshopEntity.WorkshopState
+import net.imadz.metarch.infrastructure.persistence.converters.WorkshopProtoConverters
+import net.imadz.metarch.infrastructure.proto.WorkshopStatePO
+
+/**
+ * WorkshopSnapshotAdapter: 快照适配器，负责在领域快照和protobuf快照之间进行转换
+ */
+class WorkshopSnapshotAdapter extends SnapshotAdapter[WorkshopState] with WorkshopProtoConverters {
+
+  override def toJournal(state: WorkshopState): Any = {
+    WorkshopStateConv.toProto(state)
+  }
+
+  override def fromJournal(from: Any): WorkshopState = {
+    val proto = from.asInstanceOf[WorkshopStatePO]
+    WorkshopStateConv.fromProto(proto)
+  }
+
+}

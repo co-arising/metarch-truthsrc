@@ -1,0 +1,22 @@
+package net.imadz.metarch.infrastructure.persistence
+
+import akka.persistence.typed.SnapshotAdapter
+import net.imadz.metarch.domain.entities.WorkTicketEntity.WorkTicketState
+import net.imadz.metarch.infrastructure.persistence.converters.WorkTicketProtoConverters
+import net.imadz.metarch.infrastructure.proto.WorkTicketStatePO
+
+/**
+ * WorkTicketSnapshotAdapter: 快照适配器，负责在领域快照和protobuf快照之间进行转换
+ */
+class WorkTicketSnapshotAdapter extends SnapshotAdapter[WorkTicketState] with WorkTicketProtoConverters {
+
+  override def toJournal(state: WorkTicketState): Any = {
+    WorkTicketStateConv.toProto(state)
+  }
+
+  override def fromJournal(from: Any): WorkTicketState = {
+    val proto = from.asInstanceOf[WorkTicketStatePO]
+    WorkTicketStateConv.fromProto(proto)
+  }
+
+}

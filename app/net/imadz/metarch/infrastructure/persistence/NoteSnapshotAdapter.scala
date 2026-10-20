@@ -1,0 +1,22 @@
+package net.imadz.metarch.infrastructure.persistence
+
+import akka.persistence.typed.SnapshotAdapter
+import net.imadz.metarch.domain.entities.NoteEntity.NoteState
+import net.imadz.metarch.infrastructure.persistence.converters.NoteProtoConverters
+import net.imadz.metarch.infrastructure.proto.NoteStatePO
+
+/**
+ * NoteSnapshotAdapter: 快照适配器，负责在领域快照和protobuf快照之间进行转换
+ */
+class NoteSnapshotAdapter extends SnapshotAdapter[NoteState] with NoteProtoConverters {
+
+  override def toJournal(state: NoteState): Any = {
+    NoteStateConv.toProto(state)
+  }
+
+  override def fromJournal(from: Any): NoteState = {
+    val proto = from.asInstanceOf[NoteStatePO]
+    NoteStateConv.fromProto(proto)
+  }
+
+}

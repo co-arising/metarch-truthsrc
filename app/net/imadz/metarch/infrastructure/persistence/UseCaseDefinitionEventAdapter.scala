@@ -1,0 +1,46 @@
+package net.imadz.metarch.infrastructure.persistence
+
+import akka.persistence.typed.EventAdapter
+import akka.persistence.typed.EventSeq
+import net.imadz.metarch.domain.entities.UseCaseDefinitionEntity.UseCaseDeclared
+import net.imadz.metarch.domain.entities.UseCaseDefinitionEntity.UseCaseRemoved
+import net.imadz.metarch.infrastructure.persistence.converters.UseCaseDefinitionProtoConverters
+import net.imadz.metarch.infrastructure.proto.UseCaseDefinitionEventPO
+
+/**
+ * UseCaseDefinitionEventAdapter: 事件适配器，负责在领域事件和protobuf事件之间进行转换
+ */
+class UseCaseDefinitionEventAdapter extends EventAdapter[UseCaseDefinitionEvent, UseCaseDefinitionEventPO.Event] with UseCaseDefinitionProtoConverters {
+
+  override def manifest(event: UseCaseDefinitionEvent): String = event.getClass.getName
+
+  override def toJournal(e: UseCaseDefinitionEvent): UseCaseDefinitionEventPO.Event = {
+    val eventUnion = e match {
+
+      case evt: UseCaseDeclared =>
+        UseCaseDefinitionEventPO.Event.UseCaseDeclared(UseCaseDeclaredConv.toProto(evt))
+
+
+      case evt: UseCaseRemoved =>
+        UseCaseDefinitionEventPO.Event.UseCaseRemoved(UseCaseRemovedConv.toProto(evt))
+
+    }
+    eventUnion
+  }
+
+  override def fromJournal(p: UseCaseDefinitionEventPO.Event, manifest: String): EventSeq[UseCaseDefinitionEvent] = {
+    p match {
+
+      case UseCaseDefinitionEventPO.Event.UseCaseDeclared(po) =>
+        EventSeq.single(UseCaseDeclaredConv.fromProto(po))
+
+
+      case UseCaseDefinitionEventPO.Event.UseCaseRemoved(po) =>
+        EventSeq.single(UseCaseRemovedConv.fromProto(po))
+
+      case UseCaseDefinitionEventPO.Event.Empty =>
+        EventSeq.empty
+    }
+  }
+
+}

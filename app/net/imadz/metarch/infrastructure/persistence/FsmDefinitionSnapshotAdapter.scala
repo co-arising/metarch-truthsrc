@@ -1,0 +1,22 @@
+package net.imadz.metarch.infrastructure.persistence
+
+import akka.persistence.typed.SnapshotAdapter
+import net.imadz.metarch.domain.entities.FsmDefinitionEntity.FsmDefinitionState
+import net.imadz.metarch.infrastructure.persistence.converters.FsmDefinitionProtoConverters
+import net.imadz.metarch.infrastructure.proto.FsmDefinitionStatePO
+
+/**
+ * FsmDefinitionSnapshotAdapter: 快照适配器，负责在领域快照和protobuf快照之间进行转换
+ */
+class FsmDefinitionSnapshotAdapter extends SnapshotAdapter[FsmDefinitionState] with FsmDefinitionProtoConverters {
+
+  override def toJournal(state: FsmDefinitionState): Any = {
+    FsmDefinitionStateConv.toProto(state)
+  }
+
+  override def fromJournal(from: Any): FsmDefinitionState = {
+    val proto = from.asInstanceOf[FsmDefinitionStatePO]
+    FsmDefinitionStateConv.fromProto(proto)
+  }
+
+}

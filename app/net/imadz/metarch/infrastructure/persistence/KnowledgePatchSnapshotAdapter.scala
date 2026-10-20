@@ -1,0 +1,22 @@
+package net.imadz.metarch.infrastructure.persistence
+
+import akka.persistence.typed.SnapshotAdapter
+import net.imadz.metarch.domain.entities.KnowledgePatchEntity.KnowledgePatchState
+import net.imadz.metarch.infrastructure.persistence.converters.KnowledgePatchProtoConverters
+import net.imadz.metarch.infrastructure.proto.KnowledgePatchStatePO
+
+/**
+ * KnowledgePatchSnapshotAdapter: 快照适配器，负责在领域快照和protobuf快照之间进行转换
+ */
+class KnowledgePatchSnapshotAdapter extends SnapshotAdapter[KnowledgePatchState] with KnowledgePatchProtoConverters {
+
+  override def toJournal(state: KnowledgePatchState): Any = {
+    KnowledgePatchStateConv.toProto(state)
+  }
+
+  override def fromJournal(from: Any): KnowledgePatchState = {
+    val proto = from.asInstanceOf[KnowledgePatchStatePO]
+    KnowledgePatchStateConv.fromProto(proto)
+  }
+
+}

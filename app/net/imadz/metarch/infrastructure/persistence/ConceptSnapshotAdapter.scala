@@ -1,0 +1,22 @@
+package net.imadz.metarch.infrastructure.persistence
+
+import akka.persistence.typed.SnapshotAdapter
+import net.imadz.metarch.domain.entities.ConceptEntity.ConceptState
+import net.imadz.metarch.infrastructure.persistence.converters.ConceptProtoConverters
+import net.imadz.metarch.infrastructure.proto.ConceptStatePO
+
+/**
+ * ConceptSnapshotAdapter: 快照适配器，负责在领域快照和protobuf快照之间进行转换
+ */
+class ConceptSnapshotAdapter extends SnapshotAdapter[ConceptState] with ConceptProtoConverters {
+
+  override def toJournal(state: ConceptState): Any = {
+    ConceptStateConv.toProto(state)
+  }
+
+  override def fromJournal(from: Any): ConceptState = {
+    val proto = from.asInstanceOf[ConceptStatePO]
+    ConceptStateConv.fromProto(proto)
+  }
+
+}

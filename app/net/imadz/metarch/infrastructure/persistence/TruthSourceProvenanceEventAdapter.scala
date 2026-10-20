@@ -1,0 +1,37 @@
+package net.imadz.metarch.infrastructure.persistence
+
+import akka.persistence.typed.EventAdapter
+import akka.persistence.typed.EventSeq
+import net.imadz.metarch.domain.entities.TruthSourceProvenanceEntity.TruthProvenanceRecorded
+import net.imadz.metarch.infrastructure.persistence.converters.TruthSourceProvenanceProtoConverters
+import net.imadz.metarch.infrastructure.proto.TruthSourceProvenanceEventPO
+
+/**
+ * TruthSourceProvenanceEventAdapter: 事件适配器，负责在领域事件和protobuf事件之间进行转换
+ */
+class TruthSourceProvenanceEventAdapter extends EventAdapter[TruthSourceProvenanceEvent, TruthSourceProvenanceEventPO.Event] with TruthSourceProvenanceProtoConverters {
+
+  override def manifest(event: TruthSourceProvenanceEvent): String = event.getClass.getName
+
+  override def toJournal(e: TruthSourceProvenanceEvent): TruthSourceProvenanceEventPO.Event = {
+    val eventUnion = e match {
+
+      case evt: TruthProvenanceRecorded =>
+        TruthSourceProvenanceEventPO.Event.TruthProvenanceRecorded(TruthProvenanceRecordedConv.toProto(evt))
+
+    }
+    eventUnion
+  }
+
+  override def fromJournal(p: TruthSourceProvenanceEventPO.Event, manifest: String): EventSeq[TruthSourceProvenanceEvent] = {
+    p match {
+
+      case TruthSourceProvenanceEventPO.Event.TruthProvenanceRecorded(po) =>
+        EventSeq.single(TruthProvenanceRecordedConv.fromProto(po))
+
+      case TruthSourceProvenanceEventPO.Event.Empty =>
+        EventSeq.empty
+    }
+  }
+
+}

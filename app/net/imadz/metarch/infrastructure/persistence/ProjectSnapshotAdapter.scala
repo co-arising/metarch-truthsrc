@@ -1,0 +1,22 @@
+package net.imadz.metarch.infrastructure.persistence
+
+import akka.persistence.typed.SnapshotAdapter
+import net.imadz.metarch.domain.entities.ProjectEntity.ProjectState
+import net.imadz.metarch.infrastructure.persistence.converters.ProjectProtoConverters
+import net.imadz.metarch.infrastructure.proto.ProjectStatePO
+
+/**
+ * ProjectSnapshotAdapter: 快照适配器，负责在领域快照和protobuf快照之间进行转换
+ */
+class ProjectSnapshotAdapter extends SnapshotAdapter[ProjectState] with ProjectProtoConverters {
+
+  override def toJournal(state: ProjectState): Any = {
+    ProjectStateConv.toProto(state)
+  }
+
+  override def fromJournal(from: Any): ProjectState = {
+    val proto = from.asInstanceOf[ProjectStatePO]
+    ProjectStateConv.fromProto(proto)
+  }
+
+}
