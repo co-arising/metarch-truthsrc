@@ -1,0 +1,309 @@
+{
+  "schema": "truthsrc.function-categories/v1",
+  "source": "backend-codegen knowledge_base/functions/functions.yaml functionCategories (2026-09-21 taxonomy)",
+  "categories": [
+    {
+      "id": "domain.event-construction",
+      "zh": "领域·事件构造投影",
+      "layer": "domain",
+      "shape": "Command ⟶ Field（供事件载荷·宿主 (State,Command)⟹List[Event]）",
+      "purity": "pure",
+      "source": "主线 ArchitectMetadata.FieldDerivation.ComputedField（525）",
+      "specNote": "输入**全来自命令参数**；输出是事件字段。规格＝确定性／顺序语义／边界；用例＝纯值断言。",
+      "casesNote": "given=命令参数 · then=事件字段值。**最易写**——无状态、无时序、无外部依赖。"
+    },
+    {
+      "id": "domain.state-fold",
+      "zh": "领域·状态折叠投影",
+      "layer": "domain",
+      "shape": "Event ⟶ Field（供状态·宿主 (State,Event)⟹State）",
+      "purity": "pure",
+      "source": "主线 ArchitectMetadata.EventStateMutation（226）＋EventDerivation",
+      "specNote": "输入**必须全在事件载荷里**——折叠只能吃事件有的东西（replay/determinism 硬约束）。",
+      "casesNote": "given=事件载荷 · then=状态字段值。★**幂等**必测（同语义事件 → 同状态，键序/空白不敏感）。"
+    },
+    {
+      "id": "domain.guard",
+      "zh": "领域·守卫判定（不变量）",
+      "layer": "domain",
+      "shape": "(State, Command) ⟶ Either[Error, Unit]",
+      "purity": "pure",
+      "source": "主线 ArchitectMetadata.InvariantRuleMetadata（229·conditions/errorCode）",
+      "contract": {
+        "neverThrows": true,
+        "failureAsValue": "Either[iMadzError, List[Event]]（朴素 Effect）"
+      },
+      "specNote": "纯判定·不改状态；失败必带 errCode（可读人话·对齐 Palantir submission criteria）。 ★**永不抛异常**——抛异常＝隐式控制流副作用（栈展开逃逸）＝**非纯**；失败必须成为**值**（Effect）。 理由＝**pure**（函数是全函数·所有失败路径都是返回值），**不是** Akka 适配——Akka 只是受益方。 这是比 Chassaing `decide` 更彻底的选择（各家对 decide 失败表示有分歧·有的就抛）。",
+      "casesNote": "given=状态+命令 · then=Right(事件)／Left(errCode)。**纯·可穷举**。"
+    },
+    {
+      "id": "domain.guard-scope",
+      "zh": "领域·守卫作用域判据",
+      "layer": "domain",
+      "shape": "判据（非实现）：单聚合状态能判定 ⟺ 域内不变量",
+      "purity": "pure",
+      "source": "Khorikov「validation 与 invariant 是同一业务规则的两个视角」",
+      "specNote": "真源里 `ir_agg_*`（聚合级不变量）与 `ir_cmd_*`（命令级）都属此列—— **它们的判据只需 (State, Command)**。凡需要查仓库/外部状态才能判的，**不属于域**（见 app.validation）。",
+      "casesNote": "判据类·无用例；用于给 guard 分类归属做裁决。"
+    },
+    {
+      "id": "domain.reaction",
+      "zh": "领域·策略反应",
+      "layer": "domain",
+      "shape": "Event ⟶ List[Command]",
+      "purity": "pure",
+      "source": "主线 PolicyMetadata（243）／elab source/reactions.yaml（7 条）",
+      "aka": [
+        "Process Manager",
+        "Policy"
+      ],
+      "specNote": "纯反应对象（对偶 domain/invariant）；触发条件＋幂等键声明即权威。 ★**别名**：Young/微软叫 **Process Manager**（同限界上下文内路由），Brandolini 叫 **Policy**—— 三名一物，跨体系对话时最易踩的坑。 ★**执行侧形态**（2026-09-21 摘·原型＝已删的 `ModelCatalogPolicyRunner.scala`）—— 本类在主线长期「有声明·无执行」（`ModelCatalogPolicies.PolicyOnCreateCatalogVersion` 自 S2-44 只声明未接线·journal 里 ModelCatalog 0 事件）。可复用的接法三条： ① 桥：`JdbcProjection.exactlyOnce` 订阅上游事件流 → `policy.on(event).foreach(dispatch)` → `sharding.entityRefFor(<目标聚合>, key).ask(<命令>)`（事件→policy→命令→聚合）； ② 幂等：`exactlyOnce` 的 offset 与业务写**同事务**；聚合身份取 policy 声明的对应键 （如 catalogId≡projectId）→ 同事件重放只建一次； ③ ★**未知事件优雅跳过**（`case _ => ()`）——不打爆投影流（BUG-012 同族教训）。",
+      "casesNote": "given=事件 · then=产生的命令集。执行侧另测幂等（同事件重放）+ 未知事件不炸。"
+    },
+    {
+      "id": "domain.projection",
+      "zh": "领域·读模型投影（纯映射部）",
+      "layer": "domain",
+      "shape": "Event ⟶ ReadModel",
+      "purity": "pure",
+      "source": "主线 ArchitectMetadata.ReadModelField.derivation（551）",
+      "specNote": "只做字段映射（血缘可追）；触碰存储/查询的部分属 infra 面。",
+      "casesNote": "given=事件 · then=读模型行。"
+    },
+    {
+      "id": "infra.driving-adapter",
+      "zh": "基建·驱动适配器（用例入口）",
+      "layer": "infrastructure",
+      "shape": "外部输入（HTTP body / 消息 / CLI / 定时）⟶ 一次应用调用",
+      "purity": "mixed",
+      "source": "主线 Endpoint DSL（infrastructure/auth/Endpoint.scala）＋ Controller/Routes 生成物",
+      "contract": {
+        "responsibilities": [
+          "输入翻译",
+          "验签",
+          "租户门卫",
+          "角色声明",
+          "错误折叠"
+        ],
+        "errorFolding": "单点错误折叠（Endpoint G5）＋ crash guard（R1·BUG-003/005/008 语义固化）",
+        "identityLadder": "四域根×类型阶梯（Global/Tenant/Workgroup/Project/Workshop Ctx）"
+      },
+      "specNote": "★不是「路由」——它**把外部世界的输入翻译成一次应用调用**，并承担四件事 （验签/租户门卫/角色声明/错误折叠）。与 `infra.adapter`（Driven/出口）**方向相反**。 **判据**＝谁发起调用：外部发起（本类）vs 系统发起（infra.adapter）。",
+      "casesNote": "given=HTTP 请求（含缺 token/错租户/角色不符） · then=调用／拒绝码。 验签与门卫须真测（安全面）——**错误折叠与 crash guard 是回归重点**（BUG-003/005/008）。"
+    },
+    {
+      "id": "infra.adapter",
+      "zh": "基建·无状态适配器（序列化/编解码/连接器）",
+      "layer": "infrastructure",
+      "shape": "A ⟷ B（Event↔Proto、Entity↔Row、外部工具子进程）",
+      "purity": "pure",
+      "source": "主线 EventAdapter/ProtoConverter 生成物 ＋ ConnectorImpl（Node 子进程）",
+      "specNote": "双向可逆性＋往返一致（round-trip）；无外呼。 ★**无状态**（连接器亦按每次调用新建/机械委托）——有状态的连接管理归 `infra.connection`。",
+      "casesNote": "given=一侧对象 · then=另一侧对象（往返等值）。"
+    },
+    {
+      "id": "infra.algorithm",
+      "zh": "基建·纯算法（★跨仓镜像契约）",
+      "layer": "infrastructure",
+      "shape": "纯计算（如 FQN 链式构造·kindTag 白名单渲染）",
+      "purity": "pure",
+      "source": "主线 FqnBuilder（\"与算法内核 evtgraph.FqnBuilder 逐行镜像·契约同步靠两侧用例镜像维护\"）",
+      "contract": {
+        "mirror": "跨仓镜像——同一算法两处实现（backend-codegen 内核 ↔ ingested-app 基建）",
+        "sync": "两侧用例镜像（本分类的 cases 机制正是为此——**镜像契约的机器化**）"
+      },
+      "specNote": "纯算法但**有跨仓一致性义务**——两侧实现必须同口径；**契约由同一组用例钉住**。 这正是「Function + cases」机制最能兑现价值的地方（比单侧实现更有理由写规格）。",
+      "casesNote": "given=输入 · then=输出（**两侧各跑同一组用例**·用例即契约）。"
+    },
+    {
+      "id": "infra.guard",
+      "zh": "基建·守卫/断言（租户戳·版本·跨租户边）",
+      "layer": "infrastructure",
+      "shape": "(操作, 上下文, 配置) ⟶ Either[Violation, Unit]",
+      "purity": "pure（判定）| effectful（读配置/环境）",
+      "source": "主线 GraphMutationExecutor（DanglingEndpoint/MissingTenantStamp/CrossTenantEdge/VersionConflict 四守卫）",
+      "contract": {
+        "enforcementMode": "Off | Warn | Strict（配置驱动·见 infra.policy）",
+        "violations": [
+          "DanglingEndpointException",
+          "MissingTenantStampException",
+          "CrossTenantEdgeException",
+          "VersionConflictException"
+        ]
+      },
+      "specNote": "是**真逻辑**不是胶水——多租户隔离的关键守卫（跨租户边必须拦）。 ★注意与 `domain.guard` 的区别：后者是**业务不变量**（聚合状态能判）， 这里的是**基建约束**（租户戳/版本/悬空端点——属技术一致性问题）。",
+      "casesNote": "given=操作+上下文 · then=通过／违规类型。strict/warn/off 三模式各测。"
+    },
+    {
+      "id": "infra.scope",
+      "zh": "基建·多租户作用域谓词",
+      "layer": "infrastructure",
+      "shape": "可见租户集 ⟶ 查询谓词（Cypher/SQL 片段）",
+      "purity": "pure",
+      "source": "主线 GraphProjectionRepository（tenantScopePred/tenantScopeParams·租户戳继承 inheritTenantStamp）",
+      "contract": {
+        "isolation": "租户隔离的**查询侧**——防跨租户数据泄漏",
+        "inheritance": "租户戳继承（子节点从父继承 tenantId·缺失即违规）"
+      },
+      "specNote": "隔离有两个面——**写侧**（infra.guard 拦跨租户边）＋**读侧**（本类生成作用域谓词）。 两侧都必须有，缺一即泄漏。",
+      "casesNote": "given=可见租户集 · then=谓词正确（含空集/单租户/多租户边界）。"
+    },
+    {
+      "id": "infra.policy",
+      "zh": "基建·配置派生策略",
+      "layer": "infrastructure",
+      "shape": "Config(Option[String]) ⟶ 枚举（Off/Warn/Strict）",
+      "purity": "pure",
+      "source": "主线 StampEnforcement.of(raw)（含 ConfigException 降级 → Warn）",
+      "specNote": "配置→行为的**纯派生**（含缺省与异常降级语义）；**易测**（纯函数）。 与 `app.db-transactional` 等副作用编排不同——它只**决定**策略，不执行。",
+      "casesNote": "given=配置值（含缺失/类型错） · then=策略枚举。"
+    },
+    {
+      "id": "infra.connection",
+      "zh": "基建·连接管理（有状态适配器）",
+      "layer": "infrastructure",
+      "shape": "连接生命周期（池/短连接/驱动单例）",
+      "purity": "effectful",
+      "source": "主线 GraphConnectionConfig（Neo4j 驱动单例·口令缺失 fail-fast）／PgVectorStore（每次短连接）",
+      "contract": {
+        "pooling": "池 vs 短连接是**有意的成本权衡**（PgVectorStore 注：\"检索 QPS 低、嵌入才是瓶颈；避免引入第二套池\"）",
+        "failFast": "口令/配置缺失**无缺省**（GraphConnectionConfig：\"缺失即 fail-fast·带修复指引\"）"
+      },
+      "specNote": "★与 `infra.adapter` 的区别：**有状态**（连接池/驱动生命周期）。 口令**不入代码不入库**（Git 历史泄露 18 天的教训）——配置来源本身是约束。",
+      "casesNote": "given=配置（含缺失） · then=建连成功／fail-fast；池的复用与释放须测（资源泄漏主要在这是）。"
+    },
+    {
+      "id": "infra.resilience",
+      "zh": "基建·韧性（★能力模型不完整）",
+      "layer": "infrastructure",
+      "shape": "操作 ⟶ 带策略的执行（timeout/retry/circuit-breaker/bulkhead/…）",
+      "purity": "effectful",
+      "source": "主线 ArchitectMetadata.ResiliencePolicy（480）＋ SagaStepMetadata（461）／Nygard《Release It!》",
+      "contract": {
+        "declared": "ResiliencePolicy(timeoutPerAttempt, retryStrategy, circuitBreaker, recoveryBehavior, errorRules)",
+        "consumedBy": "SagaDefinitionTemplate/SagaDefinitionBuilder/AssemblyEngine（生成侧可消费）",
+        "truthUsage": "❌ 真源零使用（ResiliencePolicy:0 / retryStrategy:0 / circuitBreaker:0·实测）",
+        "existing": "OllamaEmbeddingClient（timeout＋backoff）／StepExecutor（akka.pattern.CircuitBreaker）",
+        "nygardChecklist": {
+          "Timeout": "✅ 已声明（timeoutPerAttempt）",
+          "CircuitBreaker": "✅ 已声明",
+          "Bulkhead": "❌ **缺**——一处失败吃光共享资源（线程池/资源隔离）",
+          "SteadyState": "❌ **缺**——累积型资源泄漏",
+          "FailFast": "⚠️ 部分（GraphConnectionConfig 口令缺失 fail-fast）",
+          "Handshaking": "❌ **缺**——假死连接",
+          "DecouplingMiddleware": "⚠️ 部分（Akka 异步天然解耦）",
+          "TestHarness": "⚠️ 部分"
+        }
+      },
+      "specNote": "★声明面缺口**（同 `app.validation`）。elab 已在 `actionTypes` 声明 resilience， 主线真源零使用——**同为「代码/元数据有、真源没接」**。",
+      "casesNote": "given=失败序列+策略 · then=重试次数/退避/熔断状态。"
+    },
+    {
+      "id": "app.validation",
+      "zh": "应用·用例级一致性校验（跨聚合）★缺口",
+      "layer": "application",
+      "shape": "Command ⟶ Either[Error, Unit]（须查仓库/外部状态）",
+      "purity": "effectful",
+      "source": "Khorikov「跨实体/跨聚合一致性（唯一性/存在性/授权）归控制器/应用服务，不归域模型」",
+      "contract": {
+        "scope": "单聚合状态**判不了**的——唯一性/存在性/权限/外部状态",
+        "failureStyle": "Either（非异常·与 domain.guard 同款值化失败）",
+        "declaredWhere": "❌ 真源**无声明位**（uniqueness:0 / crossAggregate:0 / useCaseValidation:0·实测）"
+      },
+      "specNote": "判据＝Khorikov 的作用域分界——**能只靠 (State,Command) 判的属 domain.guard；要查仓库/外部的属此列**。 注意：**不是「格式校验」**——那是表现层（UI/API 边界）的事，不在此。",
+      "casesNote": "★待补——须真库或仓库桩。existing＝`RegisterUserFlowSpec`（409 USERNAME_TAKEN 契约测·已存在）。"
+    },
+    {
+      "id": "app.db-transactional",
+      "zh": "应用·DBTransactional 编排",
+      "layer": "application",
+      "shape": "Command ⟶ Receipt（单事务内多步）",
+      "purity": "effectful",
+      "source": "playAkkaCQRS（无独立模块·DB 事务即边界）／elab `A-RegisterCredential`",
+      "contract": {
+        "atomicity": "要么全成要么回滚",
+        "idempotencyKey": "声明即权威",
+        "failure": "异常冒泡（不自造补偿）"
+      },
+      "specNote": "原子性＝要么全成要么回滚；幂等键声明；失败语义＝异常冒泡。",
+      "casesNote": "given=命令 · then=提交态／回滚态／幂等重放。**须真 DB 或事务桩**（不可纯断言）。"
+    },
+    {
+      "id": "app.saga-participant",
+      "zh": "应用·Saga 参与者 TCC",
+      "layer": "application",
+      "shape": "Prepare / Commit / Compensate 三方法",
+      "purity": "effectful",
+      "source": "playAkkaCQRS saga-core/SagaParticipant.scala（doPrepare/doCommit/doCompensate）",
+      "contract": {
+        "methods": [
+          "doPrepare",
+          "doCommit",
+          "doCompensate"
+        ],
+        "failureClassification": [
+          "RetryableFailure",
+          "NonRetryableFailure"
+        ],
+        "compensationOrder": "逆序 Cj…C1（Saga 1987 硬约束·设计时备补偿）"
+      },
+      "specNote": "每步**设计时备补偿**；不得声明 checkpoint（它是向后）。",
+      "casesNote": "given=参与步 · then=正常路径／补偿**逆序**／幂等重放。参照 elab `sagaTransfer.runTcc`。"
+    },
+    {
+      "id": "app.forward-recovery",
+      "zh": "应用·Monarch 向前恢复编排",
+      "layer": "application",
+      "shape": "游标链 + resume 入口（不重跑已完成步）",
+      "purity": "effectful",
+      "source": "playAkkaCQRS monarch-core（Monarch/LifecycleHooks/StageInterpreter/FailureInterceptor）",
+      "contract": {
+        "cursor": "\"<stageName>#<position>\"（稳定·重复变体带位置后缀）",
+        "resume": [
+          "byCount(resumeFromIndex)",
+          "byNames(completedCursors)"
+        ],
+        "staleness": "generation token（RunRegistry.isFresh·每 stage 边界检查·**陈旧优先于失败策略**）",
+        "interpreter": "run(stage, state): Future[State]（引擎对宿主的唯一必需依赖）",
+        "failureInterceptor": "intercept(cursor, error, state): Future[State]（失败策略·返回续跑状态）"
+      },
+      "specNote": "失败重试/续跑**不重跑**已完成步；StaleRun 须可判（guard-first）。",
+      "casesNote": "given=中断点 · then=resume 只跑剩余步／StaleRun 拒绝。参照 elab `advanceStage.runChain`。"
+    },
+    {
+      "id": "app.chain-host",
+      "zh": "应用·链式宿主（编排的**实现侧**）",
+      "layer": "application",
+      "shape": "StageInterpreter 实现 + LifecycleHooks + FailureInterceptor",
+      "purity": "effectful",
+      "source": "playAkkaCQRS dag-engine-core（M2.5·BankChain 六步＝Monarch 的宿主实现）",
+      "contract": {
+        "relation": "宿主（**不是**第三个引擎）——dag-engine-core import net.imadz.monarch，是 monarch 的用法样板",
+        "implements": "StageInterpreter.run(stage, state) ＋ LifecycleHooks ＋ FailureInterceptor",
+        "stageExample": "BankStage：FileGen→Upload→WaitAck→Poll→Parse→Classify"
+      },
+      "specNote": "业务链＝**一套标准组件库 + ~20 行参数**（M2.5+ 教训：不用生成、只给参数）。 **比 app.forward-recovery 更细一层**：那一类描述引擎语义，本类描述宿主如何接引擎。",
+      "casesNote": "given=阶段 + 状态 · then=下一状态；失败走 FailureInterceptor。每 stage 独立可测（宿主是纯适配）。"
+    },
+    {
+      "id": "app.failure-classification",
+      "zh": "应用·失败分类（重试性判定）",
+      "layer": "application",
+      "shape": "Throwable ⟶ RetryableFailure / NonRetryableFailure",
+      "purity": "pure",
+      "source": "playAkkaCQRS saga-core（custom/default/fallback 三级分类）",
+      "specNote": "决定重试与否——误判可重试的当不可重试＝放弃太早；反之＝无限重试。",
+      "casesNote": "given=异常类型 · then=分类结果。**纯判定·易测**（编排里最难测的部分被抽成纯函数）。"
+    },
+    {
+      "id": "app.projection-effectful",
+      "zh": "应用·读模型投影（副作用部）",
+      "layer": "application",
+      "shape": "Event ⟶ DB 写（JdbcHandler.process）",
+      "purity": "effectful",
+      "source": "主线 CatalogGraphViewOn*Handler（MANUAL 块·graph.upsertNode/updateNodeProps）",
+      "specNote": "与 domain.projection 配成对——那里是纯映射，这里是落库/落图的副作用半。",
+      "casesNote": "given=事件 · then=库/图状态；须真库或仓储桩。**与 domain.projection 分开测**（纯的部分别拖进 DB）。"
+    }
+  ]
+}

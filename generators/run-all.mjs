@@ -62,12 +62,25 @@ const policies = byType("policy");
 const readModels = canonical.readModels || [];
 const valueObjects = canonical.valueObjects || [];
 const pipelines = canonical.pipelines || [];
+const domainServices = canonical.domainServices || [];
 console.log(`  events: ${events.length}, commands: ${commands.length}`);
 console.log(`  aggregates: ${aggregates.length}`);
 console.log(`  policies: ${policies.length}`);
 console.log(`  readModels: ${readModels.length}`);
 console.log(`  valueObjects: ${valueObjects.length}`);
 console.log(`  pipelines: ${pipelines.length}`);
+console.log(`  domainServices: ${domainServices.length}`);
+
+// ── E2: command → decision-view key map (1:1 old rule: first view wins over
+// decisionSupport; keys come from the read-model atoms' viewKey payload) ──
+const cmdDecisionView = new Map();
+for (const r of readModels) for (const c of (r.decisionSupport || [])) {
+  if (!cmdDecisionView.has(c) && r.viewKey) cmdDecisionView.set(c, r.viewKey);
+}
+const dvJsExpr = (cmdName) => {
+  const dv = cmdDecisionView.get(cmdName);
+  return dv ? `play.api.libs.json.JsString("${dv}")` : "play.api.libs.json.JsNull";
+};
 
 // ── Step 3: run generators into package directories ──
 const results = [];
@@ -486,7 +499,7 @@ const snake = (s) =>
             ctorArgs,
             reqFields,
             entityExpr: idParams.length ? idParams[0].name : "id",
-            dvExpr: "play.api.libs.json.JsNull",
+            dvExpr: dvJsExpr(c.name),
             noteId: c.noteId || null,
           };
         }),
@@ -517,6 +530,41 @@ const snake = (s) =>
   }
   results.push(apiErr ? { gen: "api-dsl", status: "error", error: apiErr } : { gen: "api-dsl", status: "ok", count: apiOk });
 }
+
+// api-dsl (viewkeys mode) → app/<pkg>/infrastructure/auth/ViewKeys.scala (E2)
+{
+  try {
+    const authDir = pkgDir(`${basePkg}.infrastructure.auth`);
+    mkdirSync(authDir, { recursive: true });
+    const vkSpec = {
+      mode: "viewkeys",
+      basePkg,
+      views: readModels.filter((r) => r.viewKey).map((r) => ({ name: r.name, viewKey: r.viewKey })),
+    };
+    const vkSpecPath = join(specDir, "api-dsl-viewkeys.json");
+    writeFileSync(vkSpecPath, JSON.stringify(vkSpec, null, 2));
+    execSync(
+      `node "${join(__dirname, "api-dsl", "emit.mjs")}" "${vkSpecPath}" "${authDir}"`,
+      { stdio: "pipe" }
+    );
+    results.push({ gen: "api-dsl:viewkeys", status: "ok", count: vkSpec.views.length });
+  } catch (e) {
+    results.push({ gen: "api-dsl:viewkeys", status: "error", error: e.message.slice(0, 300) });
+  }
+}
+
+// service-dsl (port kind) → app/<pkg>/domain/service/<Port>.scala (E1)
+runGen("service-dsl", domainServices, `${basePkg}.domain.service`, (ds) => ({
+  kind: "port",
+  package: (ds.fq || "").split(".").slice(0, -1).join(".") || `${basePkg}.domain.service`,
+  name: (ds.fq || "").split(".").pop() || ds.name,
+  fq: ds.fq,
+  zh: ds.zh || "",
+  testRef: ds.testRef || null,
+  valuesPkg: `${basePkg}.domain.values`,
+  methods: ds.methods || [],
+  bridge: ds.bridge || null,
+}), { mode: "single", fileName: (item, spec) => `${spec.name}.scala` });
 
 // adapter-dsl → infrastructure/persistence/*EventAdapter.scala + *SnapshotAdapter.scala
 runGen(

@@ -33,6 +33,7 @@ tree/
   value-objects/<slug>.vo.yaml
   read-models/<slug>.rm.yaml
   stories/<slug>.story.yaml
+  domain-services/<slug>.port.yaml   # v0.5 E1: domain-service port declarations
   use-cases.yaml                    # single flow-model file (optional)
   pipelines/<slug>.pipeline.yaml    # v0.4: ordered business-step queues
   scenarios/<slug>.scenario.yaml    # v0.4: narrative scripts / demo runbooks
@@ -47,7 +48,7 @@ verbatim JSON blocks (`payload:`, `events:`, `extraEvents:`).
 ```yaml
 # ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
 
-kind: note                       # note | policy | aggregate | slice | value-object | read-model | story | use-cases | pipeline | scenario
+kind: note                       # note | policy | aggregate | slice | value-object | read-model | story | use-cases | pipeline | scenario | domain-service
 type: event                      # notes only — see vocabulary below
 name: LoanRequested              # raw token; quoted if it contains spaces/punctuation
 origin:                          # notes/policies — board capture position (see "Two SEQs" below)
@@ -232,7 +233,29 @@ same shape: `kind` + `name` + `seq` + verbatim `payload`.
 |---|---|---|
 | V10 | value object `payload.fields` is an array | hard |
 | V11 | read model: `payload.fields` array, every field has a `source` derivation (`aggregateIdentity` or `eventField:<Event>.<field>`); `payload.sourceAggregate` resolves to an aggregate | hard |
+| V13 | domain service: `payload.fq` present, `payload.methods` a non-empty array, every method carries a `sig` | hard |
 | SM2 | story has `role` and `goal` | notice |
+
+Read-model `payload.viewKey` (optional, v0.5 E2) is the read-side semantic
+key for the view (kebab; a 2026-08-27 adjudicated rename of the command-style
+key, e.g. `park-concept` → `parked-knowledge`). The api generator reads it
+for the `OkReceipt` decision-view value and the `ViewKeys` object; a view
+whose name is not renamed keeps its command-style kebab key as `viewKey`.
+
+Domain-service atoms (`domain-services/*.port.yaml`, v0.5 E1) declare a
+cross-aggregate port: `payload` = `{name, fq, zh, testRef?, methods:
+[{sig, zh}], bridge?: {fq, target, module?}}`. They are the truth source for
+the port trait files (service generator emits trait + thin Bridge verbatim
+from `methods`/`bridge`). A port belongs to no single aggregate; functions
+reference it by `portTrait: <fq>` from their anchor slice.
+
+Slice `payload.declaredFunction` (optional, v0.5 E1) declares a Function —
+the named verb behind an `fn:<id>` fold verb or an `expr:` call in that
+slice: `{id, zh, category, anchoredTo, seam, signature, callExpr, portTrait?,
+scalaImpl?, implRef, real, io, ...}` copied verbatim from the function
+spec. Category ids come from the toolchain registry
+`lib/function-categories.json` (the function taxonomy). `implRef` is a plain
+reference — the implementation is code, never tree content.
 
 `use-cases.yaml` (optional, single file) carries the flow model:
 `{useCases: [{useCase, preconditions[], steps[{id, story, command, aggregate,
