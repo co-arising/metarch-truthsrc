@@ -433,6 +433,12 @@ function eventArgs(evName, cmdName) {
     return f ? sigOf(f) : "";
   };
   const bindings = new Map(ev.bindings);
+  // Per-command decision.emissions bindings override the event-definition
+  // bindings for this command's construction (golden: SubmitDoRVerdict builds
+  // DoRVerdictSubmitted from its decision spec, EvaluateDoR from the event's).
+  const cmdEmission = rulesByCmd.get(cmdName)?.emissionBindings?.[evName];
+  if (cmdEmission)
+    for (const [k, v] of Object.entries(cmdEmission)) bindings.set(k, v);
   const ew = EMITWHEN[`${aggName}.${cmdName}`];
   if (ew?.branchBindings?.[evName])
     for (const [k, v] of Object.entries(ew.branchBindings[evName])) bindings.set(k, v);

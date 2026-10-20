@@ -588,3 +588,12 @@ When proposing a new key, ask three questions:
   without a seed keep no `elementHash` (absence is meaningful — do not
   backfill by inference). Like `noteId`, it is downstream identity, not
   tree identity.
+- **Restored atom (2026-10-20)**: the storyMapping readModel note
+  `PauseProjectDecisionView` (noteId `fec73b9c-c76c-4b76-a502-c3a5b2785585`,
+  elementHash `035607b1ed592a9c`) was missing from the tree although every
+  other readModel note survived; its `info.projectionRefCodes` survive
+  verbatim in the pre-tree compiled metadata (`kn-system-metadata-v11.json`,
+  byte-identical across all copies). The note was restored from that source
+  at `aggregates/project/notes/readModel-sm-pause-project-decision-view-777.yaml`
+  with the next storyMapping seq (777; existing seqs are never renumbered).
+  A missing atom is restored from evidence, never re-authored.

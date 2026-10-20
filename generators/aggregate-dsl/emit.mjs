@@ -369,7 +369,7 @@ const renderHandlerCase = (e) => {
   // Type compatibility between a state field and an event payload field
   // (old ehCompat over Entity signature types, Option-aware): same type →
   // direct; String ← Id → .toString; List[X] ← X → List(...); else null.
-  const compat = (slot, evField) => {
+  const compat = (slot, evField, optionUnwrap = false) => {
     const sfd = sfByName.get(slot);
     const pf = pfByName.get(evField);
     if (!sfd || !pf) return null;
@@ -378,6 +378,12 @@ const renderHandlerCase = (e) => {
     if (st === et) return evRef(evField);
     if (st === "String" && et === "Id") return `${evRef(evField)}.toString`;
     if (st.startsWith("List[") && elemSigOf(sfd.dataType) === et) return `List(${evRef(evField)})`;
+    // writtenBy-phase only (golden CemEdge EdgePatched): a scalar Option
+    // payload field backed by writtenBy folds as getOrElse(state). List-
+    // typed state fields stay incompatible (golden FieldModelDefinition
+    // AggregateStatusPatched), and the same-name fallback phase never
+    // unwraps (golden OrganizationMember review items).
+    if (optionUnwrap && !st.startsWith("List[") && et === `Option[${st}]`) return `${evRef(evField)}.getOrElse(state.${qref(slot)})`;
     return null;
   };
   const backed = (slot) => (sfByName.get(slot)?.writtenBy || []).some((w) => w.startsWith(e.name + "."));
@@ -390,12 +396,61 @@ const renderHandlerCase = (e) => {
     let m;
     if ((m = /^literal:(.*)$/.exec(expr))) return { text: statusLiteralText(slot, m[1]) };
     if ((m = /^event\.(\w+)$/.exec(expr))) {
+      // Whole-table-carry list fields (description carries 整表携带; the one
+      // corpus case is Concept.anchors): golden replaces the list only when
+      // the event's list is non-empty.
+      const sfDesc = `${sf?.description || ""}${sf?.businessDef || ""}`;
+      if (sf && scalaSig(sf.dataType).startsWith("List[") && sfDesc.includes("整表携带"))
+        return { text: `${qref(slot)} = (if (Option(${evRef(m[1])}).exists(_.nonEmpty)) ${evRef(m[1])} else state.${qref(slot)})` };
       const c = compat(slot, m[1]);
       if (c === null) {
         foldNotes.push(`${objName}.${e.name}: fold ${slot} = ${expr} dropped (type-incompatible; writtenBy/fallback phases report it)`);
         return null;
       }
       return { text: `${qref(slot)} = ${c}` };
+    }
+    if ((m = /^upsert:event\.(\w+)$/.exec(expr))) {
+      // bare upsert: key-only expr — construct the element VO from the event
+      // fields named like the VO's fields (golden Session/Workshop
+      // ParticipantRole folds), replacing any element with the same key.
+      const key = m[1];
+      const elem = elemSigOf(sf.dataType);
+      const voFields = (spec.voCatalog || {})[elem];
+      if (!voFields || !pfByName.has(key) || voFields.some((vf) => !pfByName.has(vf.name))) {
+        foldNotes.push(`${objName}.${e.name}: ${expr} needs VO construction data not in spec — passed through verbatim`);
+        return { text: `${qref(slot)} = ${expr}`, verbatim: true };
+      }
+      const ctorArgs = voFields.map((vf) => evRef(vf.name)).join(", ");
+      return { text: `${qref(slot)} = Option(state.${qref(slot)}).getOrElse(Nil).filterNot(x => x.${qref(key)} == ${evRef(key)}) :+ ${elem}(${ctorArgs})` };
+    }
+    if ((m = /^memberPatch:(\w+)\.(\w+)\.(\w+)$/.exec(expr))) {
+      // memberPatch:<slot>.<keyField>.<patchParam> — map over the list,
+      // patching the element whose key matches the patch VO's key from the
+      // event (golden ReadModelDefinition fields fold). Per element field:
+      // Option patch field → getOrElse(x.f); List patch field → keep x.f
+      // when the patch list is empty; plain → direct.
+      const [, , keyField, patchParam] = m;
+      const elem = elemSigOf(sf.dataType);
+      const elemFields = (spec.voCatalog || {})[elem];
+      const patchField = pfByName.get(patchParam);
+      const patchFields = patchField ? (spec.voCatalog || {})[scalaSig(patchField.dataType)] : null;
+      if (!elemFields || !patchFields) {
+        foldNotes.push(`${objName}.${e.name}: ${expr} needs VO patch data not in spec — passed through verbatim`);
+        return { text: `${qref(slot)} = ${expr}`, verbatim: true };
+      }
+      const patchByName = new Map(patchFields.map((f) => [f.name, f]));
+      const copyArgs = [];
+      for (const ef of elemFields) {
+        if (ef.name === keyField) continue;
+        const pf2 = patchByName.get(ef.name);
+        if (!pf2) continue;
+        const lhs = qref(ef.name);
+        const rhs = `${evRef(patchParam)}.${qref(ef.name)}`;
+        if (pf2.optional) copyArgs.push(`${lhs} = ${rhs}.getOrElse(x.${lhs})`);
+        else if (scalaSig(pf2.dataType).startsWith("List[")) copyArgs.push(`${lhs} = (if (${rhs}.isEmpty) x.${lhs} else ${rhs})`);
+        else copyArgs.push(`${lhs} = ${rhs}`);
+      }
+      return { text: `${qref(slot)} = Option(state.${qref(slot)}).getOrElse(Nil).map(x => if (x.${qref(keyField)} == ${evRef(patchParam)}.${qref(keyField)}) x.copy(${copyArgs.join(", ")}) else x)` };
     }
     if ((m = /^state\.(\w+)$/.exec(expr))) return { text: `${qref(slot)} = state.${qref(m[1])}` };
     if ((m = /^fn:(.+)$/.exec(expr))) {
@@ -511,7 +566,7 @@ const renderHandlerCase = (e) => {
         todos1.push(`${sf.name}（writtenBy ${e.name}.${evField} 事件字段不存在）`);
         continue;
       }
-      const text = compat(sf.name, evField);
+      const text = compat(sf.name, evField, true);
       if (text) addAssign(sf.name, `${qref(sf.name)} = ${text}`, 1);
       else todos1.push(`${sf.name}（writtenBy ${e.name}.${evField} 类型不兼容 ${sigOfField(sf)}←${sigOfField(pfByName.get(evField))}）`);
     }
@@ -622,6 +677,9 @@ const voImportNames = [];
       if ((m = /^upsert:event\.(\w+)\.(\w+)$/.exec(expr))) {
         const pf = pfByName.get(m[1]);
         renders = !!(pf && scalaSig(pf.dataType) === elemSigOf(sf.dataType));
+      } else if (/^upsert:event\.\w+$/.exec(expr)) {
+        // bare upsert constructs the element VO by name → import it
+        renders = !!((spec.voCatalog || {})[elem]);
       } else if ((m = /^memberUpsert:(\w+)\.(\w+)\.(\w+)$/.exec(expr))) {
         const valM = m[3];
         renders = !!(pfByName.has(valM) || pfByName.has("paramSpec") || pfByName.has("payloadSpec"));
