@@ -61,7 +61,7 @@ ${hintBlock}*/
 `;
 };
 
-const commandImports = commands.map((c) => `import ${pkg}.${c.name}`).join("\n");
+const commandImports = commands.map((c) => `import ${pkg}.${objName}Protocol.${c.name}`).join("\n");
 
 const out = `package ${pkg}.behaviors
 

@@ -50,7 +50,7 @@ if (spec.aggregateName) {
 
 package ${packageName};
 
-option java_multiple_files = true;
+import "shared_value_objects.proto";
 
 ${eventPOs}
 

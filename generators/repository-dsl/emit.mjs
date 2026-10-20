@@ -38,6 +38,7 @@ function emitAggregate() {
   const iface = `package ${traitPkg}
 
 import akka.cluster.sharding.typed.scaladsl.EntityRef
+import com.google.inject.ImplementedBy
 import ${spec.aggregatePackage || "net.imadz.application.aggregates"}.${command}
 import ${spec.aggregatePackage || "net.imadz.application.aggregates"}.${name}Protocol.${cmdFamily}
 import net.imadz.common.CommonTypes.Id
@@ -45,6 +46,7 @@ import net.imadz.common.CommonTypes.Id
 /**
  * ${ifaceName}: Aggregate Repository Interface
  */
+@ImplementedBy(classOf[${implPkg}.${implName}])
 trait ${ifaceName} {
 
   def entityRef(id: String): EntityRef[${cmdFamily}]

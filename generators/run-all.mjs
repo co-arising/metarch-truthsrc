@@ -212,39 +212,110 @@ runGen(
         }
       }
     }
+    // All commands for params generation (ingested-app has 27/27 params files)
+    const allCommands = (a.commands || []).map((c) => ({
+      commandName: c.name,
+      fields: normFields(c.parameters),
+    }));
     return {
       package: `${basePkg}.domain.invariant`,
       aggregateName: objName,
       eventType: `${objName}Event`,
       stateType: `${objName}State`,
       rules,
+      allCommands,
     };
   },
   { mode: "dir" }
 );
 
-runGen("policy-dsl", policies, `${basePkg}.domain.policy`, (n) => ({
-  package: `${basePkg}.domain.policy`,
-  name: n.name,
-  objectName: pascal(n.id || n.name) + "Policy",
-  description: n.description || "",
-  triggers: [],
-  invokes: [],
-  rules: [],
-}), { fileName: (n) => `${pascal(n.id || n.name)}Policy.scala` });
+// policy-dsl → GROUPED by target aggregate: <Agg>Policies.scala (ingested-app 1:1)
+// Matches rules_domain_gen.mjs output format (not per-policy files).
+{
+  const polDir = pkgDir(`${basePkg}.domain.policy`);
+  mkdirSync(polDir, { recursive: true });
+  const polSpec = {
+    package: `${basePkg}.domain.policy`,
+    basePkg,
+    policies: policies.map((n) => {
+      const info = n.info || {};
+      const triggers = info.triggers || [];
+      const invokes = info.invokes || [];
+      const t0 = triggers[0] || {};
+      const i0 = invokes[0] || {};
+      return {
+        name: n.name,
+        description: n.description || "",
+        idempotencyKey: info.idempotencyKey || "command-level",
+        triggerEvent: t0.event || "",
+        eventAggregate: t0.aggregate || "",
+        command: i0.command || "",
+        targetAggregate: i0.aggregate || info.targetAggregate || "",
+        bindings: info.bindings || {},
+        fanOutOn: info.fanOutOn || null,
+        fanOutWhere: info.fanOutWhere || null,
+      };
+    }),
+  };
+  const specPath = join(specDir, `policy-dsl-grouped.json`);
+  writeFileSync(specPath, JSON.stringify(polSpec, null, 2));
+  try {
+    execSync(
+      `node "${join(__dirname, "policy-dsl", "emit.mjs")}" "${specPath}" "${polDir}"`,
+      { stdio: "pipe" }
+    );
+    results.push({ gen: "policy-dsl", status: "ok", count: polSpec.policies.length });
+  } catch (e) {
+    results.push({ gen: "policy-dsl", status: "error", error: e.message.slice(0, 300) });
+  }
+}
 
-runGen("readmodel-dsl", readModels, `${basePkg}.application.projection`, (r) => ({
-  package: `${basePkg}.application.projection`,
-  name: r.name,
-  viewType: pascal(r.id || r.name),
-  objectName: pascal(r.id || r.name) + "View",
-  servedBy: r.served_by || "",
-  sources: r.sources || [],
-  fields: (r.fields || []).slice(0, 10).map((f) => ({
-    name: String(f.name).replace(/\./g, "_"),
-    dataType: normType(f.dataType),
-  })),
-}), { fileName: (r) => `${pascal(r.id || r.name)}View.scala` });
+// projection-dsl → application/projection/ (DecisionView + handlers)
+// Replaces readmodel-dsl for Akka Projection views
+{
+  const projDir = pkgDir(`${basePkg}.application.projection`);
+  mkdirSync(projDir, { recursive: true });
+  let projOk = 0, projErr = null;
+  readModels.forEach((r, i) => {
+    if (projErr) return;
+    try {
+      // r.name already ends with DecisionView (e.g. "AcceptTenantInvitationDecisionView")
+      const viewName = pascal(r.name);
+      const servedBy = r.sourceAggregate || r.served_by || (r.sources && r.sources[0]) || "";
+      const aggName = pascal(servedBy);
+      const aggregateName = aggName + "Aggregate";
+      const entityName = aggName + "Entity";
+      // proto package: snake_case of aggregate name
+      const protoPkg = aggName.replace(/([a-z])([A-Z])/g, "$1_$2").toLowerCase();
+      const protoEventType = `${aggName}EventPO.Event`;
+      // events from consumesEvents (already in the readModel)
+      const events = (r.consumesEvents || []).map(e => ({
+        name: pascal(e),
+      }));
+      const spec = {
+        package: `${basePkg}.application.projection`,
+        basePkg,
+        viewName,
+        aggregateName,
+        entityName,
+        protoPackage: protoPkg,
+        protoEventType,
+        events,
+        projectionId: viewName.replace(/([a-z])([A-Z])/g, "$1_$2").toLowerCase(),
+      };
+      const specPath = join(specDir, `projection-dsl-${i}.json`);
+      writeFileSync(specPath, JSON.stringify(spec, null, 2));
+      execSync(
+        `node "${join(__dirname, "projection-dsl", "emit.mjs")}" "${specPath}" "${projDir}"`,
+        { stdio: "pipe" }
+      );
+      projOk++;
+    } catch (e) {
+      projErr = e.message.slice(0, 300);
+    }
+  });
+  results.push(projErr ? { gen: "projection-dsl", status: "error", error: projErr } : { gen: "projection-dsl", status: "ok", count: projOk });
+}
 
 runGen("valueobject-dsl", valueObjects, `${basePkg}.domain.values`, (v) => ({
   package: `${basePkg}.domain.values`,
@@ -316,7 +387,7 @@ const snake = (s) =>
   results.push(protoErr ? { gen: "proto-dsl", status: "error", error: protoErr } : { gen: "proto-dsl", status: "ok", count: protoOk });
 }
 
-// api-dsl → app/controllers/<Name>ApiController.scala
+// api-dsl → app/controllers/<Name>ApiController.scala (B2 DSL, ingested-app 1:1)
 {
   const ctrlDir = join(outDir, "app", "controllers");
   mkdirSync(ctrlDir, { recursive: true });
@@ -326,14 +397,64 @@ const snake = (s) =>
     if (apiErr) return;
     try {
       const objName = objNameOf(a);
+      const aggBase = objName.replace(/Aggregate$/, "");
       const spec = {
         package: "controllers",
+        aggregate: aggBase,
+        basePkg,
         name: objName,
-        actions: (a.commands || []).map((c) => ({
-          name: c.name[0].toLowerCase() + c.name.slice(1),
-          httpMethod: "POST",
-          routePath: snake(c.name),
-        })),
+        flags: {
+          aggHasDsl: true,
+          aggHasEmptyBody: (a.commands || []).some(c => !(c.parameters || c.params || []).length),
+        },
+        commands: (a.commands || []).map((c) => {
+          const params = c.parameters || c.params || [];
+          // ID guard: find Id-typed params
+          // Path param = first Id param (by convention, the aggregate's own ID)
+          const idParams = params.filter(p =>
+            /Id$/.test(p.name) || /^(.*)Id$/.test(p.type || ""));
+          const pathParamName = idParams.length ? idParams[0].name : "id";
+          const idGuard = idParams.length ? {
+            pairs: idParams.map((p, idx) => {
+              // "conceptId" -> id  (path param) or "conceptId" -> req.conceptId (body)
+              const src = idx === 0 ? pathParamName : `req.${p.name}`;
+              return `"${p.name}" -> ${src}`;
+            }),
+            cids: idParams.map(p => `${p.name.replace(/Id$/, "")}Cid`),
+          } : null;
+          // Build ctor args from params (excluding replyTo, triggeredBy)
+          const ctorParams = params.filter(p =>
+            p.name !== "replyTo" && p.name !== "triggeredBy");
+          const ctorArgs = ctorParams.map(p => {
+            if (/Id$/.test(p.name) && idGuard) {
+              // Map to guard-extracted Cid
+              const base = p.name.replace(/Id$/, "");
+              return `${base}Cid`;
+            }
+            if (p.name === "tenantId") return "ts.tenantId";
+            if (p.name === "userId") return "ts.userId";
+            return `req.${p.name}`;
+          }).join(", ");
+          // Req fields: params excluding tenantId/userId/triggeredBy/replyTo/Id-guarded
+          const reqFields = params
+            .filter(p => !["tenantId", "userId", "triggeredBy", "replyTo"].includes(p.name))
+            .map(p => ({ name: p.name, type: normType(p.dataType || p.type) }));
+          return {
+            name: c.name,
+            actionName: c.name[0].toLowerCase() + c.name.slice(1),
+            tier: c.tier || "tenant",
+            httpMethod: "POST",
+            routePath: `/api/${snake(aggBase)}/${snake(c.name)}`,
+            sig: idParams.length ? `(${idParams[0].name}: String)` : "",
+            pathParam: idParams.length ? idParams[0].name : null,
+            idGuard,
+            ctorArgs,
+            reqFields,
+            entityExpr: idParams.length ? idParams[0].name : "id",
+            dvExpr: "play.api.libs.json.JsNull",
+            noteId: c.noteId || null,
+          };
+        }),
       };
       const specPath = join(specDir, `api-dsl-${i}.json`);
       writeFileSync(specPath, JSON.stringify(spec, null, 2));
@@ -447,6 +568,61 @@ runGen(
         ],
       };
       const specPath = join(specDir, `bootstrap-dsl-${i}.json`);
+      writeFileSync(specPath, JSON.stringify(spec, null, 2));
+      execSync(
+        `node "${join(__dirname, "bootstrap-dsl", "emit.mjs")}" "${specPath}" "${bootDir}"`,
+        { stdio: "pipe" }
+      );
+      bootOk++;
+    } catch (e) {
+      bootErr = e.message.slice(0, 300);
+    }
+  });
+  // per-projection bootstraps (DecisionView)
+  readModels.forEach((r, i) => {
+    if (bootErr) return;
+    try {
+      const viewName = pascal(r.name); // already ends with DecisionView
+      bootNames.push(`${viewName}Bootstrap`);
+      // source aggregate from sourceAggregate field
+      const servedBy = r.sourceAggregate || r.served_by || (r.sources && r.sources[0]) || "";
+      const aggName = pascal(servedBy) + "Aggregate";
+      const spec = {
+        package: `${basePkg}.infrastructure.bootstrap`,
+        name: viewName,
+        kind: "projection",
+        sourceAggregate: aggName,
+        basePkg,
+        skipApp: true,
+      };
+      const specPath = join(specDir, `bootstrap-dsl-proj-${i}.json`);
+      writeFileSync(specPath, JSON.stringify(spec, null, 2));
+      execSync(
+        `node "${join(__dirname, "bootstrap-dsl", "emit.mjs")}" "${specPath}" "${bootDir}"`,
+        { stdio: "pipe" }
+      );
+      bootOk++;
+    } catch (e) {
+      bootErr = e.message.slice(0, 300);
+    }
+  });
+  // per-policy bootstraps
+  policies.forEach((p, i) => {
+    if (bootErr) return;
+    try {
+      const policyName = "PolicyOn" + pascal(p.id || p.name);
+      bootNames.push(`${policyName}Bootstrap`);
+      // source aggregate - use first aggregate as default, or from policy metadata
+      const aggName = aggregates.length > 0 ? objNameOf(aggregates[0]) + "Aggregate" : "ConceptAggregate";
+      const spec = {
+        package: `${basePkg}.infrastructure.bootstrap`,
+        name: policyName,
+        kind: "policy",
+        sourceAggregate: aggName,
+        basePkg,
+        skipApp: true,
+      };
+      const specPath = join(specDir, `bootstrap-dsl-pol-${i}.json`);
       writeFileSync(specPath, JSON.stringify(spec, null, 2));
       execSync(
         `node "${join(__dirname, "bootstrap-dsl", "emit.mjs")}" "${specPath}" "${bootDir}"`,

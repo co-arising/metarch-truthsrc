@@ -156,22 +156,22 @@ ${replyDefs}
 `;
 
 // ═══ 4. Aggregate ═══
-const kebab = objName.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
+// ingested-app 1:1: imports CommandFamily via Protocol, tags = tabulate(1) "XxxTag$i"
 const aggregate = `package ${pkg}
 
 import akka.cluster.sharding.typed.scaladsl.EntityTypeKey
 import akka.persistence.typed.scaladsl.Effect
 import ${entityPkg}.${objName}Entity.${eventType}
 import ${entityPkg}.${objName}Entity.${stateType}
-import ${pkg}.${commandFamily}
+import ${pkg}.${objName}Protocol.${commandFamily}
 import ${pkg}.behaviors.${objName}Behaviors
 
 object ${objName}Aggregate {
 
-  def commandHandler: ${pkg}.${handlerFamily} = ${objName}Behaviors.apply
+  def commandHandler: ${pkg}.${objName}Protocol.${handlerFamily} = ${objName}Behaviors.apply
 
   val entityTypeKey: EntityTypeKey[${commandFamily}] = EntityTypeKey("${objName}")
-  val tags: Vector[String] = Vector.tabulate(5)(i => s"${kebab}-$i")
+  val tags: Vector[String] = Vector.tabulate(1)(i => s"${objName}Tag$i")
 
 }
 `;
@@ -208,7 +208,7 @@ const behaviors = `package ${pkg}.behaviors
 import akka.persistence.typed.scaladsl.Effect
 import ${entityPkg}.${objName}Entity.${eventType}
 import ${entityPkg}.${objName}Entity.${stateType}
-import ${pkg}.${commandFamily}
+import ${pkg}.${objName}Protocol.${commandFamily}
 import ${pkg}.${objName}Protocol
 import ${pkg}.${objName}Protocol._
 ${ruleImport}

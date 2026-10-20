@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // === bootstrap-dsl emitter — 1:1 restoration of old codegen ===
 // Generates: <Name>Bootstrap (trait) + ApplicationBootstrap (@Singleton)
+// Kinds: "aggregate" (default), "projection", "policy"
 // Usage: node emit.mjs <spec.json> <out-dir>
 
 import { readFileSync, writeFileSync, mkdirSync } from "fs";
@@ -12,18 +13,97 @@ mkdirSync(outDir, { recursive: true });
 
 const pkg = spec.package || "net.imadz.infrastructure.bootstrap";
 const name = spec.name;
+const kind = spec.kind || "aggregate";
 
-// Individual bootstrap trait (e.g. CreditBalanceBootstrap)
-const traitName = `${name}Bootstrap`;
-const initMethods = (spec.initMethods || []).map(m =>
-  `  def ${m.name}(${m.params || ""}): Unit = {
+// ── Projection bootstrap: <Name>DecisionViewBootstrap ──
+// e.g. AcceptTenantInvitationDecisionViewBootstrap
+function emitProjectionBootstrap() {
+  const traitName = `${name}Bootstrap`; // name already includes DecisionView
+  const viewName = name; // e.g. AcceptTenantInvitationDecisionView
+  const aggregateName = spec.sourceAggregate; // e.g. OrganizationMemberAggregate
+  const repositoryName = `${viewName}Repository`;
+  const basePkg = spec.basePkg || "net.imadz.metarch";
+
+  return `package ${pkg}
+
+import akka.actor.typed.ActorSystem
+import akka.cluster.sharding.typed.ShardedDaemonProcessSettings
+import akka.cluster.sharding.typed.scaladsl.ClusterSharding
+import akka.cluster.sharding.typed.scaladsl.ShardedDaemonProcess
+import akka.projection.ProjectionBehavior
+import ${basePkg}.application.aggregates.${aggregateName}
+import ${basePkg}.application.projection.${viewName}
+import ${basePkg}.application.projection.repository.${repositoryName}
+
+/**
+ * ${traitName}: ProjectionBootstrapType 引导组件
+ */
+trait ${traitName} {
+
+
+  def init${viewName}Projection(system: ActorSystem[_], sharding: ClusterSharding, repository: ${repositoryName}): Unit = {
+    ShardedDaemonProcess(system).init(
+      name = ${viewName}.projectionName,
+      numberOfInstances = ${aggregateName}.tags.size,
+      behaviorFactory = index => ProjectionBehavior(${viewName}.createProjection(system, sharding, index, repository)),
+      settings = ShardedDaemonProcessSettings(system),
+      stopMessage = Some(ProjectionBehavior.Stop)
+    )
+  }
+
+
+}
+`;
+}
+
+// ── Policy bootstrap: PolicyOn<X>Bootstrap ──
+// e.g. PolicyOnEstablishConceptBootstrap
+function emitPolicyBootstrap() {
+  const traitName = `${name}Bootstrap`; // name already includes PolicyOn prefix
+  const runnerName = `${name}Runner`;
+  const aggregateName = spec.sourceAggregate;
+  const basePkg = spec.basePkg || "net.imadz.metarch";
+
+  return `package ${pkg}
+
+import akka.actor.typed.ActorSystem
+import akka.cluster.sharding.typed.ShardedDaemonProcessSettings
+import akka.cluster.sharding.typed.scaladsl.ClusterSharding
+import akka.cluster.sharding.typed.scaladsl.ShardedDaemonProcess
+import akka.projection.ProjectionBehavior
+import ${basePkg}.application.aggregates.${aggregateName}
+import ${basePkg}.application.projection.policy.${runnerName}
+
+/**
+ * ${traitName}: PolicyBootstrapType 引导组件（ShardedDaemonProcess 注册仪式）。
+ */
+trait ${traitName} {
+
+  def init${runnerName}(system: ActorSystem[_], sharding: ClusterSharding): Unit = {
+    ShardedDaemonProcess(system).init(
+      name = ${runnerName}.projectionName,
+      numberOfInstances = ${aggregateName}.tags.size,
+      behaviorFactory = index => ProjectionBehavior(${runnerName}.createProjection(system, sharding, index)),
+      settings = ShardedDaemonProcessSettings(system),
+      stopMessage = Some(ProjectionBehavior.Stop)
+    )
+  }
+}
+`;
+}
+
+// ── Aggregate bootstrap (default) ──
+function emitAggregateBootstrap() {
+  const traitName = `${name}Bootstrap`;
+  const initMethods = (spec.initMethods || []).map(m =>
+    `  def ${m.name}(${m.params || ""}): Unit = {
     // ==== BEGIN MANUAL ====
     ???
     // ==== END MANUAL ====
   }`
-).join("\n\n");
+  ).join("\n\n");
 
-const trait = `package ${pkg}
+  return `package ${pkg}
 
 /**
  * ${traitName}: ${name} 引导组件
@@ -34,6 +114,20 @@ ${initMethods}
 
 }
 `;
+}
+
+// ── Dispatch by kind ──
+let traitContent, traitName;
+if (kind === "projection") {
+  traitName = `${name}Bootstrap`;
+  traitContent = emitProjectionBootstrap();
+} else if (kind === "policy") {
+  traitName = `${name}Bootstrap`;
+  traitContent = emitPolicyBootstrap();
+} else {
+  traitName = `${name}Bootstrap`;
+  traitContent = emitAggregateBootstrap();
+}
 
 // ApplicationBootstrap - wires everything together
 const mixins = (spec.bootstraps || []).map(b => `with ${b}Bootstrap`).join(" ");
@@ -71,7 +165,7 @@ ${initCalls}
 `;
 
 if (!spec.skipTrait) {
-  writeFileSync(join(outDir, `${traitName}.scala`), trait);
+  writeFileSync(join(outDir, `${traitName}.scala`), traitContent);
 }
 // ApplicationBootstrap is written once by run-all with the full list;
 // per-aggregate calls pass skipApp: true. A final call with appOnly: true

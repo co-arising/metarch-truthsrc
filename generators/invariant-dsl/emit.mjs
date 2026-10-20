@@ -116,9 +116,11 @@ writeFileSync(join(outDir, `${containerName}.scala`), out);
 
 // ── params/<Aggregate>RuleParams.scala ──
 // Per-command parameter case classes, referenced as <Cmd>Params by rule objects.
+// Uses allCommands (all aggregate commands) not just rules — ingested-app has 27/27 params files.
 const scalaTypeOf = (t) =>
   ({ string: "String", number: "BigDecimal", integer: "Int", long: "Long", boolean: "Boolean", timestamp: "Long" })[t] ?? "String";
-const paramObjects = rules
+const paramsSource = spec.allCommands ?? rules;
+const paramObjects = paramsSource
   .map((r) => {
     const cmdBase = r.commandName || r.name || "Command";
     const cmdName = pascal(String(cmdBase).replace(/Rule$/, ""));
