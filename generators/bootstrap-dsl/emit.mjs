@@ -249,11 +249,21 @@ if (kind === "projection") {
 
 // ── ApplicationBootstrap ──
 // spec: { aggTraits: [base names, alphabetical], viewTraits: [view names,
-// alphabetical — wired projections only], servicePorts: [{param, type}] }
+// alphabetical — wired projections only], aggPorts: { <aggName>: [{param,
+// type}] } } — per-aggregate domain-service ports, keyed by aggregate name.
+// The application constructor injects the UNION of all aggregates' ports;
+// each aggregate's init call receives exactly its own ports. No aggregate
+// name is known to this emitter: port wiring is spec data, end to end.
 function emitApplicationBootstrap() {
   const aggTraits = [...(spec.aggTraits || [])].sort();
   const viewTraits = [...(spec.viewTraits || [])].sort();
-  const ports = spec.servicePorts || [];
+  const aggPorts = spec.aggPorts || {};
+  const ports = [];
+  for (const t of aggTraits) {
+    for (const p of aggPorts[t] || []) {
+      if (!ports.some((q) => q.param === p.param)) ports.push(p);
+    }
+  }
   const repoParams = viewTraits.map((v) => ({
     param: `${firstLower(v)}Repository`,
     type: `${v}Repository`,
@@ -289,13 +299,13 @@ function emitApplicationBootstrap() {
     ...aggTraits.map((t) => `${t}Bootstrap`),
     ...viewTraits.map((t) => `${t}Bootstrap`),
   ];
-  const portArgs = ports.map((p) => p.param).join(", ");
   const initCalls = [
-    ...aggTraits.map((t) =>
-      ports.length && t === "ModelCatalog"
-        ? `  init${t}Aggregate(sharding, ${portArgs})`
-        : `  init${t}Aggregate(sharding)`
-    ),
+    ...aggTraits.map((t) => {
+      const ps = aggPorts[t] || [];
+      return ps.length
+        ? `  init${t}Aggregate(sharding, ${ps.map((p) => p.param).join(", ")})`
+        : `  init${t}Aggregate(sharding)`;
+    }),
     ...viewTraits.map(
       (v) => `  init${v}Projection(system, sharding, ${firstLower(v)}Repository)`
     ),

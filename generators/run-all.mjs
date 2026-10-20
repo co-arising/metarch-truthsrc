@@ -1840,7 +1840,7 @@ runGen(
         basePkg,
         aggTraits: aggregates.map((a) => objNameOf(a)),
         viewTraits: wiredViews,
-        servicePorts: PHASE1_SERVICE_PORTS.ModelCatalog || [],
+        aggPorts: PHASE1_SERVICE_PORTS,
       };
       const specPath = join(specDir, `bootstrap-dsl-app.json`);
       writeFileSync(specPath, JSON.stringify(appSpec, null, 2));
