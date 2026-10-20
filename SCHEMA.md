@@ -286,10 +286,13 @@ Tenant scope follows the aggregate, never the view template: a view
 whose aggregate is not tenant-scoped (no `tenantId` on its events,
 commands, or state) must not carry a `tenantId` field note either —
 the tenant query pair and the tenant index are field-driven and are
-generated only when the field exists (Q7 ruling, 2026-10-20:
-FsmDefinitionDecisionView is a global registry, its template-carried
-`tenantId` note was removed rather than generated against an
-always-empty field). Supplementary indexes beyond the Q5 tiers are
+generated only when the field exists. The converse also holds: when
+the owner rules an aggregate tenant-scoped, `tenantId` is stamped at
+the aggregate source (creation command parameter, event payloads,
+state field — the question aggregate's shape), never left as an
+unbacked view field (Q7 ruling, 2026-10-20: FsmDefinitionDecisionView
+kept its `tenantId` field note and the fsm-definition aggregate was
+stamped to back it). Supplementary indexes beyond the Q5 tiers are
 declared on the readModel note as `info.extraIndexes:
 [{name, columns}]` and emitted by the DDL generator in declaration
 order (Q7: QuestionListView `(tenantId, status)`).
