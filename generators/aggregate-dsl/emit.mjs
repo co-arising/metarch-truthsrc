@@ -199,6 +199,7 @@ const identifierField =
         name: spec.identifier.name,
         dataType: spec.identifier.dataType || "String (UUID)",
         noteId: spec.identifier.noteId || null,
+        elementHash: spec.identifier.elementHash || null,
         description: "",
         optional: false,
       }
@@ -247,21 +248,23 @@ const emptyDef = (() => {
 // EventHandler cases are both alphabetical by event name).
 const orderedEvents = [...events].sort(byName);
 
-// @knowledge scaladoc (Category A, noteId-only — the `@<16hex>` suffix was
-// computed by the old pipeline and is intentionally not reproduced).
+// @knowledge scaladoc (Category A). The `@<16hex>` suffix is the element's
+// elementHash, seed-carried in the tree next to its noteId (Decision 1,
+// 2026-10-20); kh() renders the full anchor when a hash is present.
 // A doc block is emitted only when at least one field carries a noteId;
 // every field gets a @param line (description text, then the anchor).
+const kh = (id, h) => (id ? (h ? `${id}@${h}` : id) : "");
 const paramDoc = (fields) => {
   if (!(fields ?? []).some((f) => f.noteId)) return "";
   const lines = (fields ?? []).map((f) => {
     const desc = f.description ? ` ${f.description}` : "";
-    const kn = f.noteId ? `  @knowledge ${f.noteId}` : "";
+    const kn = f.noteId ? `  @knowledge ${kh(f.noteId, f.elementHash)}` : "";
     return `   * @param ${qref(f.name)}${desc}${kn}`;
   });
   return `  /**\n${lines.join("\n")}\n   */\n`;
 };
 const stateDoc = paramDoc(entityStateFields);
-const aggDoc = spec.aggNoteId ? `/**\n * @knowledge ${spec.aggNoteId}\n */\n\n` : "";
+const aggDoc = spec.aggNoteId ? `/**\n * @knowledge ${kh(spec.aggNoteId, spec.aggElementHash)}\n */\n\n` : "";
 
 const entityEventDefs = orderedEvents
   .map((e) => `${paramDoc(e.fields)}  case class ${e.name}(${fieldsOf(e.fields)}) extends ${eventType}`)
@@ -590,7 +593,7 @@ const renderHandlerCase = (e) => {
   if (unmapped.length) items.push(`payload 未映射: ${unmapped.join(", ")}`);
 
   const lines = [];
-  if (e.noteId) lines.push(`    // @knowledge ${e.noteId}`);
+  if (e.noteId) lines.push(`    // @knowledge ${kh(e.noteId, e.elementHash)}`);
   lines.push(`    case event: ${e.name} =>`);
   lines.push(`      ${copyText}`);
   if (items.length) lines.push(`      // 待审: ${items.join("；")}`);
@@ -671,7 +674,7 @@ if (foldNotes.length) {
 const paramDocNoDesc = (fields) => {
   const kn = (fields ?? []).filter((f) => f.noteId);
   if (!kn.length) return "";
-  const lines = kn.map((f) => `   * @param ${qref(f.name)}  @knowledge ${f.noteId}`);
+  const lines = kn.map((f) => `   * @param ${qref(f.name)}  @knowledge ${kh(f.noteId, f.elementHash)}`);
   return `  /**\n${lines.join("\n")}\n   */\n`;
 };
 const commandDefs = orderedCommands
@@ -829,34 +832,114 @@ ${behaviorCases}
 `;
 
 // ═══ 6. Factory ═══
-const factoryMethods = orderedCommands
-  .map(
-    (c) => `  def create${objName}For${c.name}(id: String): EntityRef[${commandFamily}] = {
-    clusterSharding.entityRefFor(${objName}Aggregate.entityTypeKey, id)
-  }`
-  )
-  .join("\n\n");
+// Golden form (old AggregateFactoryBuilder): exactly TWO methods —
+// create<Name>WithoutBalance (bare EntityRef) and
+// create<Name>WithInitialValue (ask pattern over the init command).
+// Init command = first command in family (alphabetical) order — verified
+// 27/27 against golden; the synthetic Get<Name>State is read-only and never
+// in spec.commands. If the init command has no parameter named as the
+// aggregate identifier, the identifier (Id) is prepended to the method
+// parameters, used only for entityRefFor, and excluded from the ask args
+// (3 golden cases: DoR, Note, OrganizationMember).
+const sigOfF = (f) => {
+  const sig = scalaSig(f.dataType);
+  return f.optional ? `Option[${sig}]` : sig;
+};
+const firstLowerF = (s) => s.charAt(0).toLowerCase() + s.slice(1);
+const initCmd = [...(spec.commands ?? [])].sort((a, b) => (a.name < b.name ? -1 : 1))[0];
+const identF = spec.identifier || { name: `${firstLowerF(objName)}Id`, noteId: null, elementHash: null };
+const initParamsRaw = (initCmd?.fields ?? []).map((f) => ({
+  name: f.name,
+  type: sigOfF(f),
+  noteId: f.noteId || null,
+  elementHash: f.elementHash || null,
+}));
+const hasIdParam = initParamsRaw.some((p) => p.name === identF.name);
+const idParamForFactory = {
+  name: identF.name,
+  type: "Id",
+  noteId: identF.noteId || null,
+  elementHash: identF.elementHash || null,
+};
+const method2Params = hasIdParam ? initParamsRaw : [idParamForFactory, ...initParamsRaw];
+const askParams = hasIdParam ? method2Params : initParamsRaw;
+
+const factoryDocLines = (params) =>
+  params
+    .filter((p) => p.noteId)
+    .map((p) => `   * @param ${qref(p.name)}  @knowledge ${kh(p.noteId, p.elementHash)}`);
+const factoryDocBlock = (params) => {
+  const lines = factoryDocLines(params);
+  return lines.length ? `  /**\n${lines.join("\n")}\n   */\n` : "";
+};
+
+// Imports: one ASCII-sorted list, duplicates retained (old
+// CodeGenerationDSL semantics): Future appears twice; the List import
+// appears once per distinct List[<elem>] signature in the init params.
+const factoryTypeFqns = new Set();
+const factoryListSigs = new Set();
+for (const p of method2Params) {
+  if (p.type.startsWith("List[")) factoryListSigs.add(p.type);
+  for (const b of p.type.match(/[A-Z][A-Za-z0-9]*/g) || []) {
+    if (b === "List") continue;
+    if (b === "Id") continue; // already in the fixed import set (golden: once)
+    else if (b === "Instant") factoryTypeFqns.add("java.time.Instant");
+    else if (["String", "Int", "Long", "Double", "Float", "Boolean", "BigDecimal", "Option", "Unit"].includes(b)) {}
+    else if (["Map", "Seq", "Set", "Vector"].includes(b)) factoryTypeFqns.add(`scala.collection.immutable.${b}`);
+    else factoryTypeFqns.add(`${valuesPkg}.${b}`);
+  }
+}
+const factoryImports = [
+  "akka.cluster.sharding.typed.scaladsl.ClusterSharding",
+  "akka.cluster.sharding.typed.scaladsl.EntityRef",
+  "akka.util.Timeout",
+  "javax.inject.Inject",
+  "net.imadz.common.CommonTypes.Id",
+  "net.imadz.common.CommonTypes.iMadzError",
+  `${pkg}.${objName}Aggregate`,
+  ...(spec.commands ?? []).flatMap((c) => [
+    `${pkg}.${objName}Protocol.${c.name}`,
+    `${pkg}.${objName}Protocol.${c.name}Reply`,
+  ]),
+  `${pkg}.${objName}Protocol.Get${objName}State`,
+  `${pkg}.${objName}Protocol.Get${objName}StateReply`,
+  `${pkg}.${objName}Protocol.${commandFamily}`,
+  ...factoryTypeFqns,
+  "scala.concurrent.ExecutionContext",
+  "scala.concurrent.Future",
+  "scala.concurrent.Future",
+  ...[...factoryListSigs].map(() => "scala.collection.immutable.List"),
+  "scala.concurrent.duration._",
+].sort();
 
 const factory = `// @generated by CodegenMain:225ed28b
 // @knowledge-release 1.0.0
 package ${pkg}.factories
 
-import akka.cluster.sharding.typed.scaladsl.ClusterSharding
-import akka.cluster.sharding.typed.scaladsl.EntityRef
-import akka.util.Timeout
-import javax.inject.Inject
-import ${pkg}.${objName}Aggregate
-import ${pkg}.${commandFamily}
-import scala.concurrent.ExecutionContext
-import scala.concurrent.duration._
+${factoryImports.map((i) => `import ${i}`).join("\n")}
 
 /**
- * ${objName}AggregateFactory: creates ${objName} aggregate instances via cluster sharding
+ * ${objName}AggregateFactory: Aggregate Factory for ${objName}Aggregate
+ * Creates and manages aggregate instances via cluster sharding
  */
 class ${objName}AggregateFactory @Inject() (clusterSharding: ClusterSharding)(implicit ec: ExecutionContext) {
   implicit val askTimeout: Timeout = Timeout(10.seconds)
 
-${factoryMethods}
+${factoryDocBlock([idParamForFactory])}  def create${objName}WithoutBalance(${identF.name}: Id): EntityRef[${commandFamily}] = {
+    clusterSharding.entityRefFor(${objName}Aggregate.entityTypeKey, ${identF.name}.toString)
+  }
+
+${factoryDocBlock(method2Params)}  def create${objName}WithInitialValue(${method2Params.map((p) => `${qref(p.name)}: ${p.type}`).join(", ")}): Future[Either[iMadzError, EntityRef[${commandFamily}]]] = {
+    val entityRef: EntityRef[${commandFamily}] = clusterSharding
+      .entityRefFor[${commandFamily}](${objName}Aggregate.entityTypeKey, ${identF.name}.toString)
+    for {
+      confirmation <- entityRef.ask[${initCmd.name}Reply](${initCmd.name}(${askParams.map((p) => qref(p.name)).join(", ")}, _))
+    } yield {
+      confirmation.error
+        .map(Left.apply[iMadzError, EntityRef[${commandFamily}]])
+        .getOrElse(Right(entityRef))
+    }
+  }
 
 }
 `;

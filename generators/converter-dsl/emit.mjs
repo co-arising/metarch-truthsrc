@@ -234,7 +234,7 @@ const sortedImports = [...new Set(imports)].sort(cmp);
 // ─── Converter object rendering ───
 function renderConv(domainType, protoType, fields) {
   const arg = (f, expr) =>
-    `${f.noteId ? `      // @knowledge ${f.noteId}\n` : ""}      ${esc(f.name)} = ${expr}`;
+    `${f.noteId ? `      // @knowledge ${f.elementHash ? `${f.noteId}@${f.elementHash}` : f.noteId}\n` : ""}      ${esc(f.name)} = ${expr}`;
   const toArgs = (fields || []).map((f) => arg(f, toExpr(f))).join(",\n");
   const fromArgs = (fields || []).map((f) => arg(f, fromExpr(f))).join(",\n");
   return `  object ${domainType}Conv extends ProtoConverter[${domainType}, ${protoType}] {

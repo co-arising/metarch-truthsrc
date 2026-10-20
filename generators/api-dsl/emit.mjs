@@ -184,7 +184,7 @@ function renderEndpoint(cmd) {
             )(e => Left(net.imadz.common.auth.ApiError.badRequest(e.code, e.message)))
           }`;
 
-  const noteAnchor = cmd.noteId ? `  // @knowledge ${cmd.noteId}\n` : "";
+  const noteAnchor = cmd.noteId ? `  // @knowledge ${cmd.elementHash ? `${cmd.noteId}@${cmd.elementHash}` : cmd.noteId}\n` : "";
 
   // B5-L establish 409 特例（ported from old tpl_dsl.mjs renderEstablishEndpoint):
   // EstablishConcept does a uniqueness pre-check against the park decision view

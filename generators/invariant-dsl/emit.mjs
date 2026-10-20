@@ -12,10 +12,10 @@
 //     checkEventPostconditions + firstBad<Event> helpers (postconditionRefs
 //       conflict-filtered exactly as the old pipeline did + generic Id/timestamp checks)
 //   }
-// @knowledge anchors: noteId ONLY (never the golden @<16hex> suffix), emitted
-//   only where the spec carries the noteId (command noteId for command-level
-//   anchors, aggregate noteId for aggregate-level anchors). Event postcondition
-//   anchors are NOT emitted: the invariant spec carries no event noteIds.
+// @knowledge anchors: full `<noteId>@<elementHash>` anchors (elementHash is
+//   seed-carried in the tree next to the noteId — Decision 1, 2026-10-20),
+//   emitted only where the spec carries the noteId (command noteId for
+//   command-level anchors, aggregate noteId for aggregate-level anchors).
 // Known spec gaps (run-all does not forward them; handled by golden-derived
 // exception tables below and reported): guards/produces/noteId for commands
 //   without an invariantRef guard; decision.emitWhen / idempotentOn;
@@ -93,28 +93,12 @@ const q = (vals) => vals.map((v) => `"${v}"`).join(", ");
 // types in postconditions. Static snapshot of the tree's value-objects.
 const VO_FIELDS = {"AggregateRelationSpec":[["toAggregate","String"],["cardinality","String"],["foreignKey","String"],["writePath","String"],["ruling","String"],["semanticType","String"],["causal","JSON"],["temporal","Boolean"],["existence","String"],["targetDeletionPolicy","String"],["targetTypes","List<String>"],["noteId","String"]],"CatalogConflictSet":[["detectedAt","Instant"],["conflicts","List<CatalogConflict>"]],"CatalogConflict":[["conflictId","String"],["conflictType","String"],["involvedSessionIds","List<String>"],["details","JSON"],["resolvedAt","Instant"],["resolvedBy","String"],["resolutionAction","String"],["resolutionNote","String"]],"CatalogPatchSet":[["sessionId","String"],["concepts","List<ConceptDelta>"],["appliedAt","Instant"]],"ChecklistItem":[["criterion","String"],["status","String"],["evidence","String"],["proposedBy","String"],["confirmedBy","String"],["confirmedAt","String"]],"CodeAnchorDelta":[["noteId","String (UUID)"],["role","String"],["host","String"],["file","String"],["symbols","List<String>"]],"ConceptDelta":[["action","String"],["conceptName","String"],["contextId","String"],["noteIds","List<String>"],["definition","String"],["conceptId","String (UUID)"],["contentHash","String"],["kind","String (Enum)"],["sourceStage","String"],["sourceSessionId","String (UUID)"],["noteId","String (UUID)"],["anchors","List<CodeAnchorDelta>"],["guards","List<GuardSpec>"],["aggregateRuleRefs","List<RuleRef>"],["preconditionRefs","List<RuleRef>"],["postconditionRefs","List<RuleRef>"],["fields","List<FieldSpec>"],["emits","List<EdgeTarget>"],["folds","List<FieldEdge>"],["emissions","List<FieldEdge>"],["steps","List<UcStep>"],["extensions","List<UcStep>"],["ucWrites","List<EdgeTarget>"],["ucPublishes","List<EdgeTarget>"]],"ConceptIndexEntry":[["conceptName","String"],["contextId","String"],["conceptId","String (UUID)"],["contentHash","String"]],"DoRAssessmentResult":[["verdicts","List<DoRVerdict>"],["evaluatedScope","String"],["summary","String"]],"DoRVerdict":[["criterion","String"],["evaluatorType","String"],["evaluatorId","String"],["evaluatorRole","String"],["aiModelVersion","String"],["harnessBrand","String"],["harnessVersion","String"],["effort","String"],["result","String"],["reason","String"],["evidenceLinks","List<String>"],["recordedAt","Instant"],["recordedBy","String"],["evaluatedScope","JSON"],["summary","String"],["sessionId","String"],["proposal","String"]],"EdgeTarget":[["conceptId","String"],["name","String"]],"EventBinding":[["slot","String"],["expr","String"]],"FieldCommandSpec":[["commandName","String"],["description","String"],["produces","List<String>"],["preconditions","List<String>"],["parameters","List<FieldParamSpec>"],["noteId","String"],["guards","List<GuardSpec>"],["preconditionRefs","List<RuleRef>"]],"FieldEdge":[["fieldNoteId","String"],["slot","String"],["expr","String"],["fieldConceptId","String"]],"FieldEventSpec":[["eventName","String"],["description","String"],["humanDescription","String"],["origin","String"],["payloads","List<FieldParamSpec>"],["noteId","String"],["bindings","List<EventBinding>"],["forEach","String"],["foldAssignments","List<EventBinding>"],["postconditionRefs","List<RuleRef>"]],"FieldParamSpec":[["paramName","String"],["dataType","String"],["description","String"],["uiLabel","String"],["businessDef","String"],["origin","String"],["lineageHint","String"],["derivation","String"],["role","String"],["optional","Boolean"],["optionalWhen","String"],["noteId","String"]],"FieldSpec":[["name","String"],["dataType","String"],["description","String"],["role","String"],["noteId","String"],["writtenBy","List<String>"],["fieldConceptId","String"]],"FieldStateSpec":[["fieldName","String"],["dataType","String"],["description","String"],["uiLabel","String"],["businessDef","String"],["derivation","String"],["lineageHint","String"],["parent","String"],["fold","String"],["source","String"],["origin","String"],["role","String"],["writtenBy","List<String>"],["nature","String"],["noteId","String"],["foldAssignments","List<EventBinding>"]],"Finding":[["criterion","String"],["description","String"],["severity","String"],["sessionId","String"],["proposal","String"]],"FsmStateDef":[["name","String"],["kind","String"],["notes","String"],["confirmedBy","String"],["confirmedAt","String"]],"FsmTransition":[["source","String"],["target","String"],["event","String"],["guard","String"],["notes","String"],["confirmedBy","String"],["confirmedAt","String"]],"GuardSpec":[["kind","String"],["ref","String"],["errCode","String"],["desc","String"],["cond","String"],["from","String"],["toStatus","String"],["notStatus","List<String>"],["note","String"]],"ParticipantRole":[["userId","String (UUID)"],["role","String"]],"PatchReadModelFieldSpec":[["fieldName","String"],["dataType","String"],["uiLabel","String"],["source","String"],["isKey","Boolean"],["origin","String"],["writtenBy","List<String>"]],"ReadModelFieldSpec":[["fieldName","String"],["dataType","String"],["uiLabel","String"],["source","String"],["isKey","Boolean"],["origin","String"],["writtenBy","List<String>"],["noteId","String"]],"RelationDelta":[["action","String"],["relationName","String"],["sourceConceptName","String"],["targetConceptName","String"],["mapping","String"]],"RuleRef":[["ruleId","String"],["errCode","String"],["desc","String"]],"StateGateSpec":[["commandName","String"],["fromStates","List<String>"],["toState","String"],["initial","Boolean"],["noteId","String"]],"StatusTransitionSpec":[["eventName","String"],["toState","String"],["noteId","String"]],"UcStep":[["no","String"],["atStep","String"],["text","String"]],"VOMemberSpec":[["fieldName","String"],["dataType","String"],["description","String"],["noteId","String"]]};
 
-// ── RULING5 (裁决⑤): creation-family whitelist + timestamp gate fields ──
-// Verbatim from rules_domain_gen.mjs (the old table was authoritative; the
-// tree's stateGates.initial disagrees with golden for several aggregates).
-const RULING5_INITIAL = {
-  Concept: ["EstablishConcept"], Context: ["DiscoverContext"], ContextRelation: ["DefineContextRelation"],
-  DoR: ["RequestDoR"], KnowledgePatch: ["SubmitKnowledgePatch"], ModelCatalog: ["CreateCatalogVersion"],
-  Note: ["CaptureNote"], OrganizationMember: ["InviteTenantMember"], Project: ["InitiateProject"],
-  Question: ["RaiseQuestion"], Relation: ["RelateConcept"], Session: ["OpenSession"],
-  Stage: ["ActivateStage"], Subdomain: ["ClassifySubdomain"], Tenant: ["OnboardTenant"],
-  User: ["RegisterUser"], Workshop: ["ScheduleWorkshop"], Workgroup: ["CreateWorkgroup"],
-  FieldModelDefinition: ["DeclareFieldModel", "DeclareStateField", "AddWrittenBy", "ReplaceWrittenBy", "CutWrittenBy",
-    "DeclareCommand", "AddCommandParameter", "DeclareEvent", "AddEventPayload", "PatchAggregateStatus",
-    "DeclareRelation", "DeclareStateGate", "RenameDescription",
-    "RemoveStateField", "RemoveCommand", "RemoveEvent", "RemoveRelation", "RemoveStateGate", "RemoveFieldModel"],
-  CemEdge: ["DeclareEdge", "PatchEdge", "RetireEdge"],
-  ReadModelDefinition: ["DeclareReadModel", "PatchReadModelField", "RemoveReadModel"],
-  RoleCommandBinding: ["BindCommand", "UnbindCommand"],
-  ValueObjectDefinition: ["DeclareValueObject", "RemoveValueObject"],
-  TruthSourceProvenance: ["RecordTruthProvenance"],
-  UseCaseDefinition: ["DeclareUseCaseDefinition", "RemoveUseCaseDefinition"],
-  FsmDefinition: ["ProposeFsmDefinition"],
-};
+// ── RULING5 (裁决⑤): timestamp gate fields ──
+// InitialCommands are NO LONGER read from a generator-side table: the
+// tree's stateGates.initial is the single source (Decision 3, 2026-10-20 —
+// EstablishConcept is Concept's initial command; ParkConcept is shelving).
+// buildCheckAggregate derives the whitelist from spec.stateGates in command
+// order. The timestamp-field half of 裁决⑤ remains a table below.
 const RULING5_TS_FIELD = {
   Context: "discoveredAt", Relation: "createdAt", ContextRelation: "createdAt", Subdomain: "classifiedAt",
   FieldModelDefinition: "declaredAt", ReadModelDefinition: "declaredAt", ValueObjectDefinition: "declaredAt",
@@ -205,39 +189,39 @@ const MEMBEROF_SPECIAL = {
 // (their noteIds live in the tree but run-all only forwards rules[] noteIds
 // for commands carrying invariantRef guards — spec gap; values from golden).
 const EXTRA_OBJECT_ANCHORS = {
-  "CemEdge.DeclareEdge": "b4fdd5c5-d93f-4920-a687-ff5bded22f5d",
-  "CemEdge.PatchEdge": "6e39a0f8-2485-479d-9095-8405fcd21440",
-  "CemEdge.RetireEdge": "c7ee50ea-ef30-4ba8-87aa-243cfe589d10",
-  "FieldModelDefinition.AddCommandParameter": "859c42b1-8133-4b6e-8edf-98a233ec3637",
-  "FieldModelDefinition.AddEventPayload": "104bfe0b-31ff-4b4a-82f2-ef3ba6111d9e",
-  "FieldModelDefinition.AddWrittenBy": "40633e91-270e-4399-b4ca-598ca9ae9d2e",
-  "FieldModelDefinition.CutWrittenBy": "a0199bfd-c722-4d2c-bfd5-8b12c306b070",
-  "FieldModelDefinition.DeclareCommand": "9c4e7c19-775e-4cbb-83d4-3c39d5770a88",
-  "FieldModelDefinition.DeclareEvent": "2f9bd4c5-dc1c-4e68-a431-3820af7156b5",
-  "FieldModelDefinition.DeclareFieldModel": "3f0fbb8a-077c-4fee-a220-ff02480eeb5f",
-  "FieldModelDefinition.DeclareRelation": "425e120b-9877-4bca-9632-4fc35d3321ed",
-  "FieldModelDefinition.DeclareStateField": "d62cd80a-a48e-46e6-9fe7-2f6547323c9c",
-  "FieldModelDefinition.DeclareStateGate": "7582491d-c3ec-48ef-aa7c-5a52f801f02c",
-  "FieldModelDefinition.PatchAggregateStatus": "08119712-d309-4bed-85a2-c4e559ed3fc7",
-  "FieldModelDefinition.RemoveCommand": "8d83b498-5345-41f9-a2ff-0aadefad9794",
-  "FieldModelDefinition.RemoveEvent": "789cc6f5-6135-418d-84f5-29040e129396",
-  "FieldModelDefinition.RemoveFieldModel": "0cc260a4-06c4-42bb-8bf6-518c42487729",
-  "FieldModelDefinition.RemoveRelation": "1effad24-4952-4de7-b7f7-8515c1ca286b",
-  "FieldModelDefinition.RemoveStateField": "3dacf252-bd58-4544-9c21-8ac40d3c31df",
-  "FieldModelDefinition.RemoveStateGate": "98d1fc87-a3e4-41e1-bd44-a080c6ae1f3b",
-  "FieldModelDefinition.RenameDescription": "8a55be8a-94f1-4fd1-ba35-20b09d496216",
-  "FieldModelDefinition.ReplaceWrittenBy": "0760c290-b317-4a00-ba05-9f49d5b06264",
-  "KnowledgePatch.ConfirmPatchMerged": "e9653632-d4bb-449e-850f-edae639d3099",
-  "ReadModelDefinition.DeclareReadModel": "0a338a77-62e4-4917-8d25-6b8ed771b6f2",
-  "ReadModelDefinition.PatchReadModelField": "84afce48-3b24-47b1-b24c-7de7535ba5e3",
-  "ReadModelDefinition.RemoveReadModel": "62f16b78-f325-4910-9774-5e6d4f239f43",
-  "RoleCommandBinding.BindCommand": "9513ebe9-6d19-43aa-9c13-99966dcfcc30",
-  "RoleCommandBinding.UnbindCommand": "e2ea84da-cc01-4a59-a0df-6657ca3460a1",
-  "TruthSourceProvenance.RecordTruthProvenance": "527e7354-5b69-4767-8ed6-32faf0502b32",
-  "UseCaseDefinition.DeclareUseCaseDefinition": "f7976567-78a7-4b2a-add7-3063e4d7b668",
-  "UseCaseDefinition.RemoveUseCaseDefinition": "2254785f-56df-41ca-853d-240ef7d90a2c",
-  "ValueObjectDefinition.DeclareValueObject": "c1b27e42-f75d-40bf-a303-ae28476b653a",
-  "ValueObjectDefinition.RemoveValueObject": "3c7573a0-6ba2-4fd4-97dd-f924d2864789",
+  "CemEdge.DeclareEdge": "b4fdd5c5-d93f-4920-a687-ff5bded22f5d@a4d7da540a146dbc",
+  "CemEdge.PatchEdge": "6e39a0f8-2485-479d-9095-8405fcd21440@56c4cec55513e65c",
+  "CemEdge.RetireEdge": "c7ee50ea-ef30-4ba8-87aa-243cfe589d10@61754e2953b8daa9",
+  "FieldModelDefinition.AddCommandParameter": "859c42b1-8133-4b6e-8edf-98a233ec3637@bc66dbfef4ff7ea9",
+  "FieldModelDefinition.AddEventPayload": "104bfe0b-31ff-4b4a-82f2-ef3ba6111d9e@790dc17201bbfa04",
+  "FieldModelDefinition.AddWrittenBy": "40633e91-270e-4399-b4ca-598ca9ae9d2e@090e768693c24c2f",
+  "FieldModelDefinition.CutWrittenBy": "a0199bfd-c722-4d2c-bfd5-8b12c306b070@76d995284224b934",
+  "FieldModelDefinition.DeclareCommand": "9c4e7c19-775e-4cbb-83d4-3c39d5770a88@9689987edda89a2b",
+  "FieldModelDefinition.DeclareEvent": "2f9bd4c5-dc1c-4e68-a431-3820af7156b5@821caebac40154b7",
+  "FieldModelDefinition.DeclareFieldModel": "3f0fbb8a-077c-4fee-a220-ff02480eeb5f@442a53ff5cf2caff",
+  "FieldModelDefinition.DeclareRelation": "425e120b-9877-4bca-9632-4fc35d3321ed@ec21a5dc004bfcf7",
+  "FieldModelDefinition.DeclareStateField": "d62cd80a-a48e-46e6-9fe7-2f6547323c9c@416d4e6bc20a2267",
+  "FieldModelDefinition.DeclareStateGate": "7582491d-c3ec-48ef-aa7c-5a52f801f02c@6296e6ddd15a66e9",
+  "FieldModelDefinition.PatchAggregateStatus": "08119712-d309-4bed-85a2-c4e559ed3fc7@702b31d37cf53ef0",
+  "FieldModelDefinition.RemoveCommand": "8d83b498-5345-41f9-a2ff-0aadefad9794@11c6d9200d72a1b6",
+  "FieldModelDefinition.RemoveEvent": "789cc6f5-6135-418d-84f5-29040e129396@28eb293abf02407d",
+  "FieldModelDefinition.RemoveFieldModel": "0cc260a4-06c4-42bb-8bf6-518c42487729@3a99ea69c2f27d4c",
+  "FieldModelDefinition.RemoveRelation": "1effad24-4952-4de7-b7f7-8515c1ca286b@b3e76f171291944d",
+  "FieldModelDefinition.RemoveStateField": "3dacf252-bd58-4544-9c21-8ac40d3c31df@ea6f813728570a0e",
+  "FieldModelDefinition.RemoveStateGate": "98d1fc87-a3e4-41e1-bd44-a080c6ae1f3b@cb1900d4625784d3",
+  "FieldModelDefinition.RenameDescription": "8a55be8a-94f1-4fd1-ba35-20b09d496216@922df7141f2b879b",
+  "FieldModelDefinition.ReplaceWrittenBy": "0760c290-b317-4a00-ba05-9f49d5b06264@2ca32207dbebb5de",
+  "KnowledgePatch.ConfirmPatchMerged": "e9653632-d4bb-449e-850f-edae639d3099@72afd0094f931198",
+  "ReadModelDefinition.DeclareReadModel": "0a338a77-62e4-4917-8d25-6b8ed771b6f2@8d9632615dce4f7e",
+  "ReadModelDefinition.PatchReadModelField": "84afce48-3b24-47b1-b24c-7de7535ba5e3@d9151186b66f0739",
+  "ReadModelDefinition.RemoveReadModel": "62f16b78-f325-4910-9774-5e6d4f239f43@dc46381abc47d4c5",
+  "RoleCommandBinding.BindCommand": "9513ebe9-6d19-43aa-9c13-99966dcfcc30@95ddfbc1231e6252",
+  "RoleCommandBinding.UnbindCommand": "e2ea84da-cc01-4a59-a0df-6657ca3460a1@3a0c35275eaf6fd8",
+  "TruthSourceProvenance.RecordTruthProvenance": "527e7354-5b69-4767-8ed6-32faf0502b32@d1c154e76aba3813",
+  "UseCaseDefinition.DeclareUseCaseDefinition": "f7976567-78a7-4b2a-add7-3063e4d7b668@904fd8bcddd0ba70",
+  "UseCaseDefinition.RemoveUseCaseDefinition": "2254785f-56df-41ca-853d-240ef7d90a2c@41fe1603e46349e6",
+  "ValueObjectDefinition.DeclareValueObject": "c1b27e42-f75d-40bf-a303-ae28476b653a@ddc9407212071f08",
+  "ValueObjectDefinition.RemoveValueObject": "3c7573a0-6ba2-4fd4-97dd-f924d2864789@5075c934e2289aff",
 };
 // Single-guard overrides where the spec desc/backfill diverges from golden
 // (prose descs, truncated enums — none derivable; values verified in golden).
@@ -318,7 +302,7 @@ const TRIGGERED_BY_OMITTED = new Set(["Concept.RecordConceptLandings", "Workshop
 // without any invariantRef guard are absent from spec.rules).
 const EXTRA_CHECKS = {
   "Concept.EstablishConcept": [
-    { id: "ir_cmd_EstablishConcept_triggered_by", cond: "notNull(p.triggeredBy)", errCode: "OPERATOR_REQUIRED", desc: "EstablishConcept.triggeredBy 不能为空", anchored: true, anchorNoteId: "348bf3d6-da29-4aee-8e29-820b24819339" },
+    { id: "ir_cmd_EstablishConcept_triggered_by", cond: "notNull(p.triggeredBy)", errCode: "OPERATOR_REQUIRED", desc: "EstablishConcept.triggeredBy 不能为空", anchored: true, anchorNoteId: "348bf3d6-da29-4aee-8e29-820b24819339", anchorElementHash: "25e889027b5598c7" },
   ],
   "CemEdge.PatchEdge": [
     { id: "bm:st:not-retired", cond: `Option(state.status).forall(x => !Set("retired").contains(x))`, errCode: "CEM_EDGE_RETIRED", desc: "已退役边不可补丁（终态单向·如需新边请 DeclareEdge）", anchored: false },
@@ -1019,9 +1003,12 @@ function producesOf(cmdName) {
 }
 
 // ── checkAggregate ──
+const kh = (id, h) => (id ? (h ? `${id}@${h}` : id) : null);
 function buildCheckAggregate() {
   const lines = [];
-  const initials = RULING5_INITIAL[aggName] ?? [];
+  const initials = (spec.allCommands ?? [])
+    .map((c) => c.commandName)
+    .filter((n) => spec.stateGates?.[n]?.initial === true);
   lines.push("  // 聚合级共享校验（AGGREGATE_INVARIANT，先于命令级执行）");
   lines.push("  // 创建族白名单（裁决⑤）：仅这些命令可作用于未初始化实体");
   lines.push(`  private val InitialCommands: Set[String] = Set(${initials.map((x) => `"${x}"`).join(", ")})`);
@@ -1059,10 +1046,10 @@ function buildCheckAggregate() {
     });
   }
   const items = [...mainItems, ...synth, ...genrefItems];
-  const aggAnchor = spec.aggNoteId ? `    // @knowledge ${spec.aggNoteId}\n` : "";
+  const aggAnchor = spec.aggNoteId ? `    // @knowledge ${kh(spec.aggNoteId, spec.aggElementHash)}\n` : "";
   let anyCheck = false;
   for (const it of items) {
-    if (spec.aggNoteId) lines.push(`    // @knowledge ${spec.aggNoteId}`);
+    if (spec.aggNoteId) lines.push(`    // @knowledge ${kh(spec.aggNoteId, spec.aggElementHash)}`);
     if (it.type === "check") {
       lines.push(`    // ${it.id}${it.suffix || ""}`);
       lines.push(`    else if (!(${it.cond})) Some(err("${it.errCode}", "${escDesc(it.desc)}"))`);
@@ -1083,7 +1070,12 @@ function buildRuleObject(cmdName) {
   const key = `${aggName}.${cmdName}`;
   const ew = EMITWHEN[key];
   const portParams = ew?.portParams ?? [];
-  const noteId = rule?.noteId ?? EXTRA_CHECKS[key]?.find((c) => c.anchorNoteId)?.anchorNoteId ?? EXTRA_OBJECT_ANCHORS[key] ?? null;
+  const extraAnchor = EXTRA_CHECKS[key]?.find((c) => c.anchorNoteId);
+  const noteId =
+    (rule?.noteId ? kh(rule.noteId, rule.elementHash) : null) ??
+    (extraAnchor ? kh(extraAnchor.anchorNoteId, extraAnchor.anchorElementHash) : null) ??
+    EXTRA_OBJECT_ANCHORS[key] ??
+    null;
   const lines = [];
   if (noteId) lines.push(`  // @knowledge ${noteId}`);
   const decl = portParams.length
@@ -1099,7 +1091,7 @@ function buildRuleObject(cmdName) {
   let anyCheck = false;
   for (const it of items) {
     if (it.type === "check") {
-      const nid = it.anchorNoteId ?? noteId;
+      const nid = it.anchorNoteId ? kh(it.anchorNoteId, it.anchorElementHash) : noteId;
       if (it.anchored !== false && nid) lines.push(`      // @knowledge ${nid}`);
       lines.push(`      // ${it.id}${it.degraded ? `（${it.degraded}）` : ""}`);
       lines.push(`      ${first ? "" : "else "}if (!(${it.cond})) err("${it.errCode}", "${escDesc(it.desc)}")`);
@@ -1265,7 +1257,7 @@ function buildPostconditions() {
   lines.push("    events.collect {");
   for (const evName of ordered) lines.push(`      case e: ${evName} => firstBad${evName}(e)`);
   lines.push("    }.collectFirst { case Some(bad) => bad }");
-  const evNoteId = new Map((spec.events ?? []).map((e) => [e.name, e.noteId]));
+  const evNoteId = new Map((spec.events ?? []).map((e) => [e.name, e.noteId ? kh(e.noteId, e.elementHash) : null]));
   for (const evName of ordered) {
     lines.push("");
     lines.push(`  private def firstBad${evName}(e: ${evName}): Option[iMadzError] =`);
@@ -1394,17 +1386,34 @@ const typeImports = (fields) => {
   for (const f of fields ?? []) walk(fieldTypeOf(f));
   return [...new Set(fqns)];
 };
-const paramsSource = spec.allCommands ?? rules;
-const paramsImportBlock = typeImports(paramsSource.flatMap((r) => r.fields ?? []))
+// ── RuleParams VO: golden form ──
+// object <Agg>RuleParams (singular "Rule"); commands alphabetical; per
+// command: the command's full @knowledge anchor (when its note carries one),
+// the 规则投影 comment (the command's invariantRef refs, codepoint order —
+// run-all sorts them; （无命令级规则） when none), then
+// `final case class <Cmd>Params(...)` over the 5-stage paramDefs subset.
+// Defaults: List fields get `= List.empty`; Option fields get NO default.
+const paramDefs = spec.paramDefs ?? {};
+const paramsCmdNames = Object.keys(paramDefs).sort();
+const paramsImportBlock = typeImports(
+  paramsCmdNames.flatMap((cmd) => (paramDefs[cmd].fields || []).map((f) => ({ dataType: f.type })))
+)
   .sort()
   .map((i) => `import ${i}`)
   .join("\n");
-const paramObjects = paramsSource
-  .map((r) => {
-    const cmdBase = r.commandName || r.name || "Command";
-    const cmdName = pascal(String(cmdBase).replace(/Rule$/, ""));
-    const pfields = (r.fields || []).map(fieldDeclOf).join(", ");
-    return `  case class ${cmdName}Params(${pfields})`;
+const paramObjects = paramsCmdNames
+  .map((cmd) => {
+    const e = paramDefs[cmd];
+    const lines = [];
+    if (e.noteId) lines.push(`  // @knowledge ${kh(e.noteId, e.elementHash)}`);
+    lines.push(
+      `  /** ${cmd} 规则投影：${(e.refs || []).length ? e.refs.join(" / ") : "（无命令级规则）"} */`
+    );
+    const pfields = (e.fields || [])
+      .map((f) => `${scalaRef(f.name)}: ${f.type}${f.type.startsWith("List[") ? " = List.empty" : ""}`)
+      .join(", ");
+    lines.push(`  final case class ${cmd}Params(${pfields})`);
+    return lines.join("\n");
   })
   .join("\n");
 
@@ -1415,7 +1424,12 @@ if (paramObjects) {
 // @knowledge-release 1.0.0
 package ${pkg}.params
 
-${paramsImportBlock ? paramsImportBlock + "\n" : ""}object ${containerName}Params {
+${paramsImportBlock ? paramsImportBlock + "\n" : ""}/**
+ * 命令 → 领域规则参数的投影 VO（方案 A，2026-08-22，rules_domain_gen.mjs 生成）。
+ * 业务不变性（InvariantRule）是 domain 层资产——规则只依赖领域实体状态、事件与这些投影 VO，
+ * 不依赖 application 层命令类型。字段 = 该命令被**规则或策略**引用的输入 + 操作人（triggeredBy）。
+ */
+object ${aggName}RuleParams {
 ${paramObjects}
 }
 `;

@@ -89,9 +89,10 @@ if (spec.aggregateName) {
   // before the @knowledge anchor (`// S2-73 补载荷 ... @knowledge <noteId>`)
   const knowledgeOf = (f) => {
     if (!f || !f.noteId) return f && f.introducedIn ? ` // ${f.introducedIn}` : "";
+    const anchor = f.elementHash ? `${f.noteId}@${f.elementHash}` : f.noteId;
     return f.introducedIn
-      ? ` // ${f.introducedIn} @knowledge ${f.noteId}`
-      : ` // @knowledge ${f.noteId}`;
+      ? ` // ${f.introducedIn} @knowledge ${anchor}`
+      : ` // @knowledge ${anchor}`;
   };
 
   const fieldLines = (fields) =>

@@ -176,7 +176,7 @@ Payload vocabulary (each key passes through untouched; generators consume them):
 | `statusEnum[]` | legal status values |
 | `aggregateRuleRefs[]` | aggregate invariants `{ruleId, errCode, desc}` |
 | `statusTransitions` | event → status it sets |
-| `stateGates` | command → `{fromStates[], toState, initial?}` |
+| `stateGates` | command → `{fromStates[], toState, initial?}`; aggregates with no status lifecycle may carry flag-only entries `{initial: true}` recording creation-family membership (the initial-command whitelist is read from `initial` alone) |
 | `relations[]` | cross-aggregate references `{to, cardinality, foreignKey, semanticType}` |
 
 ## The slice atom — one command, vertical
@@ -578,3 +578,13 @@ When proposing a new key, ask three questions:
 - **Board order** = `origin.seq` (frozen at capture; never renumbered by tools).
 - **noteId** (if your capture pipeline mints one) lives in `payload` and is
   passed through untouched — it is downstream identity, not tree identity.
+- **elementHash** (optional) lives in `payload` immediately after the
+  `noteId` of the element it fingerprints: a 16-hex-char fingerprint of that
+  knowledge element, carried so generated code can emit the full
+  `@knowledge <noteId>@<elementHash>` anchor. It is a **read-only anchor**:
+  tools pass it through untouched and never recompute, mint, or update it.
+  Seed-backfilled once from the 2026-10-11 generation (user adjudication,
+  2026-10-20) for exactly the noteIds that generation annotated; elements
+  without a seed keep no `elementHash` (absence is meaningful — do not
+  backfill by inference). Like `noteId`, it is downstream identity, not
+  tree identity.

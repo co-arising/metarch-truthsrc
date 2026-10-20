@@ -43,22 +43,54 @@ function translateBinding(expr, params) {
   return expr;
 }
 
+// Wrap a translated binding expression for the target Params field type
+// (old pipeline L2930–L3010): Id targets fed from String sources wrap in
+// Id.of(...); List[Id] from List[String] wraps in .map(Id.of); String targets
+// fed from bare literals get quoted.
+function wrapArg(expr, targetType, sourceType, rawBinding) {
+  if (rawBinding && rawBinding.startsWith("literal:")) {
+    const lit = rawBinding.slice(8);
+    if (targetType === "String" && lit && !lit.startsWith('"') && !/^(true|false|Nil|None)$/.test(lit))
+      return `"${lit}"`;
+    return expr;
+  }
+  if (targetType === "Id" && sourceType === "String") return `Id.of(${expr})`;
+  if (targetType === "List[Id]" && sourceType === "List[String]") return `${expr}.map(Id.of)`;
+  return expr;
+}
+
 // Build the on() method body from bindings.
 // - Simple: List(CmdParams(e.a, e.b, ...))
 // - Fan-out: e.items.map(item => CmdParams(...))
 // - Fan-out with filter: e.items.filter(item => <cond>).map(item => CmdParams(...))
+// Positional order = paramDefs order (spec.paramFields, run-all computed);
+// bindings only supply the value per position (old pipeline L2978–L2981).
 function buildOnBody(p) {
   const bindings = p.bindings || {};
-  const paramNames = p.paramFields || Object.keys(bindings);
+  const paramFields = (p.paramFields || []).map((f) =>
+    typeof f === "string" ? { name: f, type: null } : f
+  );
+  const paramNames = paramFields.length ? paramFields.map((f) => f.name) : Object.keys(bindings);
+  const typeOfParam = new Map(paramFields.map((f) => [f.name, f.type]));
+  const triggerTypeOf = new Map((p.triggerFields || []).map((f) => [f.name, f.type]));
+  const itemTypeOf = new Map((p.fanOutElement?.fields || []).map((f) => [f.name, f.type]));
 
-  // Build arg list: for each param, translate its binding expr
+  const sourceTypeOf = (raw) => {
+    if (raw === "item") return p.fanOutElement?.elementType || null;
+    if (raw && raw.startsWith("item.")) return itemTypeOf.get(raw.slice(5)) || null;
+    if (raw && raw.startsWith("event.")) return triggerTypeOf.get(raw.slice(6)) || null;
+    return null;
+  };
+
+  // Build arg list: for each param (paramDefs order), translate + wrap
   const args = paramNames.map((pn) => {
     const expr = bindings[pn];
     if (expr === undefined) {
-      // No binding — try event.<pn> convention, else MANUAL
-      return `e.${pn}`;
+      // No binding — event.<pn> convention (old pipeline fallback)
+      return wrapArg(`e.${pn}`, typeOfParam.get(pn), triggerTypeOf.get(pn), null);
     }
-    return translateBinding(expr, paramNames);
+    const translated = translateBinding(expr, paramNames);
+    return wrapArg(translated, typeOfParam.get(pn), sourceTypeOf(expr), expr);
   });
 
   const paramsCtor = (itemExpr) =>
@@ -77,28 +109,30 @@ function buildOnBody(p) {
   return `    List(${paramsCtor()})`;
 }
 
-// Translate fanOutWhere predicate to Scala.
+// Translate fanOutWhere predicate to Scala (old pipeline parenthesization,
+// fitted to golden): leaves render bare at the root and parenthesized as
+// operands; `and` wraps once; `or` wraps TWICE.
 // Supports: { eq: [{var: "item.field"}, value] }, { notEmpty: {var: "item.field"} },
 //           { and: [...] }, { or: [...] }
-function translateFanOutWhere(pred) {
+function translateFanOutWhere(pred, isRoot = true) {
   if (!pred || typeof pred !== "object") return "true";
   const [k, v] = Object.entries(pred)[0];
   if (k === "eq" && Array.isArray(v)) {
-    const field = v[0].var.replace(/^item\./, "item.");
     const rhs = typeof v[1] === "string" ? `"${v[1]}"` : JSON.stringify(v[1]);
-    // Option(item.field).contains(value) pattern from golden
     const fname = v[0].var.replace(/^item\./, "");
-    return `(Option(item.${fname}).contains(${rhs}))`;
+    const core = `Option(item.${fname}).contains(${rhs})`;
+    return isRoot ? core : `(${core})`;
   }
   if (k === "notEmpty" && v && v.var) {
     const fname = v.var.replace(/^item\./, "");
-    return `(Option(item.${fname}).exists(_.nonEmpty))`;
+    const core = `Option(item.${fname}).exists(_.nonEmpty)`;
+    return isRoot ? core : `(${core})`;
   }
   if (k === "and" && Array.isArray(v)) {
-    return `(${v.map(translateFanOutWhere).join(" && ")})`;
+    return `(${v.map((x) => translateFanOutWhere(x, false)).join(" && ")})`;
   }
   if (k === "or" && Array.isArray(v)) {
-    return `(${v.map(translateFanOutWhere).join(" || ")})`;
+    return `((${v.map((x) => translateFanOutWhere(x, false)).join(" || ")}))`;
   }
   // Fallback: MANUAL block for untranslatable predicates
   return `??? /* MANUAL: translate fanOutWhere ${JSON.stringify(pred)} */`;

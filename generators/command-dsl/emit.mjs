@@ -1,14 +1,14 @@
 #!/usr/bin/env node
-// ═══ command-dsl emitter v2 — HelpersSpec → Scala (old codegen 1:1) ═══
-// Matches golden_master/.../behaviors/CreditBalanceCommandHelpers.scala:
-//   trait <Name>CommandHelpers {
-//     implicit object <Cmd>Helper extends CommandHelper[<Cmd>, <State>, <Param>, <Confirmation>] {
-//       override def toParam(...) = { // ==== BEGIN MANUAL ==== ... ??? ... // ==== END MANUAL ==== }
-//       override def createFailureReply(...) = { // ==== BEGIN MANUAL ==== ... ??? ... // ==== END MANUAL ==== }
-//       override def createSuccessReply(...) = { // ==== BEGIN MANUAL ==== ... ??? ... // ==== END MANUAL ==== }
-//     }
-//   }
-// Spec: {package, objectName, stateType, commands: [{name, fields, paramType, confirmationType, paramHint}]}
+// ═══ command-dsl emitter v3 — CommandHelpers (old codegen 1:1) ═══
+// Golden form (rules_domain_gen): a trait of implicit CommandHelper objects,
+// one per command that has a paramDefs entry (query fragments have none).
+// toParam projects the command onto its RuleParams VO positionally, in
+// paramDefs order (5-stage ordering computed by run-all); replies are the
+// uniform Some(error)/None wrappers. NO MANUAL regions — helpers are fully
+// generated (the user's contract: command handlers are generated artifacts).
+// Spec: {package, basePkg, objectName, stateType,
+//        commands: [{name, fields, confirmationType}],
+//        paramDefs: {<Cmd>: [fieldName, ...]}}
 // Usage: node emit.mjs <spec.json> <out.scala>
 
 import { readFileSync, writeFileSync } from "fs";
@@ -16,78 +16,72 @@ import { readFileSync, writeFileSync } from "fs";
 const [specPath, outPath] = process.argv.slice(2);
 const spec = JSON.parse(readFileSync(specPath, "utf8"));
 
-const scalaType = (t) =>
-  ({ string: "String", number: "BigDecimal", integer: "Int", long: "Long", boolean: "Boolean", timestamp: "Long" })[t] ?? "String";
-
 const objName = spec.objectName || "Aggregate";
 const pkg = spec.package || "generated.aggregate";
+const basePkg = spec.basePkg || pkg.replace(/\.application\.aggregates$/, "");
 const stateType = spec.stateType || `${objName}State`;
-// Emission order (ingested-app 1:1, same rule as aggregate-dsl Protocol):
-// non-Get commands alphabetical (codepoint), Get<Name>State last.
+const paramDefs = spec.paramDefs || {};
+
+const SCALA_KEYWORDS = new Set([
+  "type", "class", "object", "def", "val", "var", "if", "else", "for", "while",
+  "import", "package", "match", "case", "extends", "trait", "with", "return",
+  "null", "true", "false", "new", "this", "super", "private", "protected",
+  "sealed", "abstract", "final", "implicit", "lazy", "override", "try",
+  "catch", "finally", "throw", "yield", "do", "then", "elseif",
+]);
+const scalaRef = (n) => (SCALA_KEYWORDS.has(n) ? `\`${n}\`` : n);
+
 const byName = (a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
-const commands = [
-  ...(spec.commands ?? []).filter((c) => !c.name.startsWith("Get")).sort(byName),
-  ...(spec.commands ?? []).filter((c) => c.name.startsWith("Get")).sort(byName),
-];
+const commands = [...(spec.commands ?? [])].sort(byName);
+const helperCmds = commands.filter((c) => paramDefs[c.name]);
 
 const helperFor = (c) => {
-  const paramType = c.paramType || "Unit";
-  const confirmationType = c.confirmationType || `${objName}Confirmation`;
-  const paramHint = c.paramHint || (c.fields ?? []).map((f) => `command.${f.name}`).join(", ") || "";
-  const hintBlock = paramHint ? `      ${paramHint}\n    ` : `      \n    `;
+  const paramsType = `${c.name}Params`;
+  const replyType = c.confirmationType || `${c.name}Reply`;
+  const args = (paramDefs[c.name] || []).map((f) => `command.${scalaRef(f)}`).join(", ");
+  return `  implicit object ${c.name}Helper extends CommandHelper[${c.name}, ${stateType}, ${paramsType}, ${replyType}] {
+    override def toParam(state: ${stateType}, command: ${c.name}): ${paramsType} =
+      ${paramsType}(${args})
 
-  return `
-  implicit object ${c.name}Helper extends CommandHelper[${c.name}, ${stateType}, ${paramType}, ${confirmationType}] {
-    override def toParam(state: ${stateType}, command: ${c.name}): ${paramType} = {
-    // ==== BEGIN MANUAL ====
-    /*
-${hintBlock}*/
-    ???
-    // ==== END MANUAL ====
-    }
+    override def createFailureReply(param: ${paramsType})(error: iMadzError): ${replyType} =
+      ${replyType}(Some(error))
 
-    override def createFailureReply(param: ${paramType})(error: iMadzError): ${confirmationType} = {
-      // ==== BEGIN MANUAL ====
-      /*
-      ???
-      */
-      ???
-      // ==== END MANUAL ====
-    }
-
-    override def createSuccessReply(param: ${paramType})(state: ${stateType}): ${confirmationType} = {
-      // ==== BEGIN MANUAL ====
-      /*
-      ???
-      */
-      ???
-      // ==== END MANUAL ====
-    }
-  }
-`;
+    override def createSuccessReply(param: ${paramsType})(state: ${stateType}): ${replyType} =
+      ${replyType}(None)
+  }`;
 };
 
-const commandImports = commands.map((c) => `import ${pkg}.${objName}Protocol.${c.name}`).join("\n");
+// Imports (golden order): framework pair, then Protocol members — commands
+// alphabetical, Get<Name>State after them, replies alphabetical, Get reply
+// last — then Entity state and the RuleParams wildcard.
+const proto = `${pkg}.${objName}Protocol`;
+const commandImports = [
+  ...commands.map((c) => `import ${proto}.${c.name}`),
+  `import ${proto}.Get${objName}State`,
+  ...commands.map((c) => `import ${proto}.${c.confirmationType || `${c.name}Reply`}`),
+  `import ${proto}.Get${objName}StateReply`,
+];
 
 const out = `// @generated by rules_domain_gen:2026-08-23
 // @knowledge-release 1.0.0
 package ${pkg}.behaviors
 
-${commandImports}
-import ${pkg}.${objName}Protocol._
 import net.imadz.common.CommonTypes.iMadzError
 import net.imadz.common.application.CommandHandlerReplyingBehavior.CommandHelper
-
+${commandImports.join("\n")}
+import ${basePkg}.domain.entities.${objName}Entity.${stateType}
+import ${basePkg}.domain.invariant.params.${objName}RuleParams._
 
 /**
- * 胶水代码库：负责将 Command 转换为 Policy 参数，并将结果包装为 Reply。
- * 这里是 AI 填空的主要战场。
+ * 胶水代码库：Command → 领域规则投影 VO（方案 A，2026-08-22，rules_domain_gen.mjs 生成）。
+ * toParam 把命令参数转换为 domain 层规则可消费的 VO（规则不再依赖 application 命令类型）。
  */
-
 trait ${objName}CommandHelpers {
-${commands.map(helperFor).join("\n")}
+
+${helperCmds.map(helperFor).join("\n\n")}
+
 }
 `;
 
 writeFileSync(outPath, out);
-console.log(`command-dsl: wrote ${objName}CommandHelpers (${commands.length} helpers) → ${outPath}`);
+console.log(`command-dsl: wrote ${objName}CommandHelpers (${helperCmds.length} helpers) → ${outPath}`);
