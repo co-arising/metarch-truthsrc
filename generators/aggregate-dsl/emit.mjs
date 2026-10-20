@@ -107,6 +107,17 @@ const handled = new Set((spec.commandHandlers ?? []).map((h) => h.command));
 const commands = spec.commands ?? [];
 const events = spec.events ?? [];
 
+// Protocol/Behaviors emission order (ingested-app 1:1, verified across all 27
+// golden Protocols): non-Get commands alphabetical (codepoint), then the
+// synthetic Get<Name>State query command last (alphabetical among themselves).
+// Replies follow the same order. Golden Factory methods are NOT per-command
+// (createXWithoutBalance/WithInitialValue), so factory order is moot there.
+const byName = (a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+const orderedCommands = [
+  ...commands.filter((c) => !c.name.startsWith("Get")).sort(byName),
+  ...commands.filter((c) => c.name.startsWith("Get")).sort(byName),
+];
+
 // Value-object package. Golden: net.imadz.metarch.domain.values.<VO>.
 // Derived from entityPkg, overridable via spec.valuesPackage.
 const valuesPkg = spec.valuesPackage || entityPkg.replace(/\.domain\.entities$/, ".domain.values");
@@ -145,7 +156,47 @@ const sortedImportBlock = (fqns) =>
 
 // ═══ 1. Entity (domain/entities/<Name>Entity.scala) ═══
 // Canonical home of State + Events. Protocol imports from here.
-const entityStateDef = `  case class ${stateType}(${fieldsOf(spec.stateFields)})`;
+
+// State field → "name: Type"; List-typed state fields get `= List.empty`
+// (ingested-app 1:1: 46 occurrences, all on *State case classes; events and
+// commands carry no List defaults). Optional state fields keep `Option[T] = None`.
+const stateFieldDecl = (f) => {
+  const sig = scalaSig(f.dataType);
+  if (f.optional) return `${f.name}: Option[${sig}] = None`;
+  return sig.startsWith("List[") ? `${f.name}: ${sig} = List.empty` : `${f.name}: ${sig}`;
+};
+const fieldsOfState = (fields) => (fields ?? []).map(stateFieldDecl).join(", ");
+const entityStateDef = `  case class ${stateType}(${fieldsOfState(spec.stateFields)})`;
+
+// empty(): identity param (first state field, the aggregate's own Id) passed
+// through; remaining fields get old-codegen type defaults. ingested-app 1:1
+// over all 27 golden Entities (fully-qualified Id.of, never imported).
+const ZERO_ID = `net.imadz.common.Id.of("00000000-0000-0000-0000-000000000001")`;
+const emptyDefault = (f) => {
+  if (f.optional) return "None";
+  const sig = scalaSig(f.dataType);
+  const base = sig.includes("[") ? sig.slice(0, sig.indexOf("[")) : sig;
+  switch (base) {
+    case "Id": return ZERO_ID;
+    case "String": return '""';
+    case "Int": return f.name === "order" ? "1" : "0"; // order is 1-based in golden (2/2); version → 0
+    case "Long": return "0L";
+    case "Double": return "0.0";
+    case "BigDecimal": return 'BigDecimal("0")';
+    case "Boolean": return "false";
+    case "List": case "Seq": case "Set": case "Vector": return "Nil";
+    case "Instant": return "null";
+    default: return "null";
+  }
+};
+const emptyDef = (() => {
+  const sfs = spec.stateFields ?? [];
+  if (sfs.length === 0) return `  def empty: ${stateType} = ???`;
+  const [first, ...rest] = sfs;
+  const firstSig = scalaSig(first.dataType);
+  const args = [first.name, ...rest.map(emptyDefault)].join(", ");
+  return `  def empty(${first.name}: ${firstSig}): ${stateType} = ${stateType}(${args})`;
+})();
 
 const entityEventDefs = events
   .map((e) => `  case class ${e.name}(${fieldsOf(e.fields)}) extends ${eventType}`)
@@ -171,12 +222,7 @@ object ${objName}Entity {
 
 ${entityStateDef}
 
-  // ==== BEGIN MANUAL ====
-  // empty(): construct the initial state. Intent: field defaults filled by human/agent.
-  def empty: ${stateType} = {
-    ???
-  }
-  // ==== END MANUAL ====
+${emptyDef}
 
   sealed trait ${eventType} extends CborSerializable
 ${entityEventDefs}
@@ -225,7 +271,7 @@ ${handlerCases}
 // ═══ 3. Protocol (application/aggregates/<Name>Protocol.scala) ═══
 // Commands + per-command Replies. State/Event imported from Entity.
 // ingested-app 1:1: headers, Id import, nested type imports (alphabetical order)
-const commandDefs = commands
+const commandDefs = orderedCommands
   .map((c) => {
     const fields = fieldsOf(c.fields);
     const allFields = fields ? `${fields}, replyTo: ActorRef[${c.name}Reply]` : `replyTo: ActorRef[${c.name}Reply]`;
@@ -233,7 +279,7 @@ const commandDefs = commands
   })
   .join("\n");
 
-const replyDefs = commands
+const replyDefs = orderedCommands
   .map((c) => `  case class ${c.name}Reply(error: Option[iMadzError]) extends CborSerializable`)
   .join("\n");
 
@@ -310,7 +356,7 @@ const invariantPkg = spec.invariantPackage || `${pkg}.invariant`;
 const hasHandled = commands.some((c) => handled.has(c.name));
 const ruleImport = hasHandled ? `import ${invariantPkg}.${objName}Rules` : "";
 
-const behaviorCases = commands
+const behaviorCases = orderedCommands
   .map((c) => {
     if (handled.has(c.name)) {
       const rule = `${objName}Rules.${c.name}Rule`;
@@ -360,7 +406,7 @@ ${behaviorCases}
 `;
 
 // ═══ 6. Factory ═══
-const factoryMethods = commands
+const factoryMethods = orderedCommands
   .map(
     (c) => `  def create${objName}For${c.name}(id: String): EntityRef[${commandFamily}] = {
     clusterSharding.entityRefFor(${objName}Aggregate.entityTypeKey, id)

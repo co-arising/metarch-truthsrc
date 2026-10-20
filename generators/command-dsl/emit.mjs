@@ -22,7 +22,13 @@ const scalaType = (t) =>
 const objName = spec.objectName || "Aggregate";
 const pkg = spec.package || "generated.aggregate";
 const stateType = spec.stateType || `${objName}State`;
-const commands = spec.commands ?? [];
+// Emission order (ingested-app 1:1, same rule as aggregate-dsl Protocol):
+// non-Get commands alphabetical (codepoint), Get<Name>State last.
+const byName = (a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+const commands = [
+  ...(spec.commands ?? []).filter((c) => !c.name.startsWith("Get")).sort(byName),
+  ...(spec.commands ?? []).filter((c) => c.name.startsWith("Get")).sort(byName),
+];
 
 const helperFor = (c) => {
   const paramType = c.paramType || "Unit";
