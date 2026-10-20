@@ -1953,6 +1953,13 @@ console.log(`\n${ok}/${results.length} generators ok`);
 // generators/scaffold-static/). Phase 2 must replace these with a properly
 // templated project scaffold (parameterized name/deps) and delete the
 // transcriptions.
+// Phase 2 scaffold fix (2026-10-20): the build.sbt transcription was patched
+// in place - Huawei Cloud resolver removed (user directive: no Huawei
+// software/services; resolvers are Maven Central + Aliyun only) and the
+// net.imadz engine dependencies the generated code actually imports were
+// added (common-core + auth-core, both 0.2 from Maven Central; see the
+// evidence comment in scaffold-static/build.sbt). The file remains a static
+// transcription otherwise; full parameterization is still pending.
 const scaffoldStatic = (name) => readFileSync(join(__dirname, "scaffold-static", name)); // Buffer: byte-exact (golden files carry legacy-encoded comments)
 
 writeFileSync(join(outDir, "build.sbt"), scaffoldStatic("build.sbt"));
