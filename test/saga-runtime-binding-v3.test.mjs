@@ -87,7 +87,16 @@ function synthetic(count = 2, receipts = true) {
   }));
   const binding = { schemaVersion: 'truthsrc.saga-binding/v1', sagas: [{ sagaId: 'synthetic-receipts', version: 'v2',
     module: 'fixture.SyntheticModule', engine: clone(exampleBinding.sagas[0].engine), codec: clone(exampleBinding.sagas[0].codec),
-    types: clone(exampleBinding.sagas[0].types),
+    // Independent type surface: the synthetic fixture owns the step-receipt
+    // dataflow demo (participant-minted handle), so it declares its own
+    // ReservationId instead of borrowing the real example's type list.
+    types: [
+      { id: 'TxId', canonicalType: 'TxId', implementation: 'fixture.types.TxId', kind: 'id', minLength: 1, maxLength: 128 },
+      { id: 'OperationId', canonicalType: 'OperationId', implementation: 'fixture.types.OperationId', kind: 'id', minLength: 1, maxLength: 128 },
+      { id: 'AccountId', canonicalType: 'AccountId', implementation: 'fixture.types.AccountId', kind: 'id', minLength: 1, maxLength: 128 },
+      { id: 'ReservationId', canonicalType: 'ReservationId', implementation: 'fixture.types.ReservationId', kind: 'id', minLength: 1, maxLength: 128 },
+      { id: 'Money', canonicalType: 'Money', implementation: 'fixture.types.Money', kind: 'money', currency: 'ISO-4217', amountEncoding: 'minor-unit-string', scale: 2, precision: 38, codec: 'fixture.ExactMoneyCodec' },
+    ],
     participants: [{ participantId: 'resource', addressing: { resolver: 'fixture.SyntheticResolver', aggregate: 'SyntheticResource', resourceType: 'AccountId', mode: 'exact-resource' } }],
     steps: steps.map(step => ({ stepId: step.id, phases: clone(technicalPhases) })),
     triggerMappers: triggers.map(trigger => ({ triggerId: trigger.id, argsMapper: 'fixture.SyntheticArgsMapper', idempotencyMapper: 'fixture.SyntheticIdentityMapper' })),
@@ -122,16 +131,28 @@ test('real independent v2 transfer retains both exact resources, all six phases 
   assert.equal(saga.participants.flatMap(row => Object.values(row.phases)).length, 6);
   for (const row of saga.participants) {
     assert.equal(row.resource.addressing.aggregate, 'CreditBalance');
-    for (const phase of ['commit', 'compensate']) assert.deepEqual(row.phases[phase].inputs.find(mapping => mapping.slot === 'reservation'),
-      { slot: 'reservation', type: 'ReservationId', source: { kind: 'receipt-field', stepId: row.stepId, phase: 'prepare', slot: 'reservation' } });
-    assert.deepEqual(row.phases.prepare.outputs, [{ slot: 'reservation', type: 'ReservationId' }]);
-    assert.deepEqual(row.phases.commit.outputs, [{ slot: 'receiptId', type: 'TxId' }]);
-    assert.deepEqual(row.phases.compensate.outputs, []);
+    // P4 receipt re-cut (2026-10-23, user ruling): ReservationId retired — the
+    // transaction identity addresses every phase and no step-receipt reads remain.
+    for (const phase of ['prepare', 'commit', 'compensate']) {
+      const inputs = row.phases[phase].inputs;
+      assert.equal(inputs.find(mapping => mapping.slot === 'txid').source.kind, 'transaction-id');
+      assert.equal(inputs.find(mapping => mapping.slot === 'reservation'), undefined);
+    }
+    // Confirmation facts: (txid, amount) for prepare; (txid) for commit/compensate.
+    assert.deepEqual(row.phases.prepare.outputs, [
+      { slot: 'txid', type: 'TxId' },
+      { slot: 'amount', type: 'Money' },
+    ]);
+    assert.deepEqual(row.phases.commit.outputs, [{ slot: 'txid', type: 'TxId' }]);
+    assert.deepEqual(row.phases.compensate.outputs, [{ slot: 'txid', type: 'TxId' }]);
   }
   assert.ok(saga.completions.every(row => row.inputs.length === 1 && row.inputs[0].source.kind === 'transaction-id'));
   assert.deepEqual(saga.runtimeBinding, { target: input.runtimeBinding.target, saga: input.runtimeBinding.sagas[0] });
   assert.equal(saga.definitionDigest, 'sha256:' + hash({ ...saga.contract, runtimeBinding: saga.runtimeBinding }));
-  assert.equal(saga.definitionDigest, 'sha256:16c3bf7a72b7f0b9da8fe9212650e044b8a08145a8baebeef04d36c8eeb26dde');
+  // P4 receipt re-cut (2026-10-23): ReservationId retired, txid-addressed
+  // phases — definition material, so the digest advances from the P1 baseline
+  // 16c3bf7a….
+  assert.equal(saga.definitionDigest, 'sha256:3a586c81b1a9af9a2cadfdc66306bc06ce063c1b37989985b5568c88fed9971d');
   for (const row of [ir, saga]) { assert.equal(row.readiness, 'lowered-contract-only'); assert.equal(row.runtimeBindingVerified, false); assert.equal(row.runnable, false); }
   assert.ok(saga.blocked.includes('real-phase-ports-and-participant-receipts-unverified'));
 });
@@ -139,19 +160,49 @@ test('real independent v2 transfer retains both exact resources, all six phases 
 test('copy leaves all base domain bytes intact, modifies only new products via parse/emit and records current design', () => {
   const originalTree = new URL('tree/', ORIGINAL), newTree = new URL('tree/', EXAMPLE);
   assert.deepEqual(files(newTree), files(originalTree));
-  for (const name of files(originalTree)) if (!['sagas/money-transfer.saga.yaml', 'pipelines/money-transfer-invoke.pipeline.yaml'].includes(name)) {
+  // P4 state deepening (2026-10-23): the serial tree's credit-balance aggregate
+  // is deliberately AHEAD of the v1 twin (four-field golden-master state,
+  // structured fold/guard forms, receipt value origins). The v1 tree remains
+  // the pre-deepening reference; byte identity now covers everything outside
+  // the forked aggregate and the saga/pipeline headers.
+  const forkedOrHeader = (name) => name.startsWith('aggregates/credit-balance/')
+    || ['sagas/money-transfer.saga.yaml', 'pipelines/money-transfer-invoke.pipeline.yaml'].includes(name);
+  for (const name of files(originalTree)) if (!forkedOrHeader(name)) {
     assert.deepEqual(readFileSync(new URL(name, originalTree)), readFileSync(new URL(name, newTree)), name);
   }
   const original = parseDoc(readFileSync(new URL('sagas/money-transfer.saga.yaml', originalTree), 'utf8'));
   const added = parseDoc(readFileSync(new URL('sagas/money-transfer.saga.yaml', newTree), 'utf8'));
   assert.equal(original.version, 'v1'); assert.equal(original.payload.admission.maxInFlight, 2);
   assert.deepEqual(original.payload.resilience, { maxAttempts: 3, phaseTimeoutMs: 1000, queryTimeoutMs: 500, backoffMs: 100, totalTimeoutMs: 10000 });
-  assert.deepEqual(added.payload.steps.map(row => row.phases), original.payload.steps.map(row => row.phases));
+  // P4 receipt re-cut (serial only): the phases diverge beyond slot shapes —
+  // the serial steps carry no step-receipt reads and txid-addressed facts.
+  // Compare the stable #197 spine (phase commands in order) and pin the re-cut shape.
+  assert.deepEqual(added.payload.steps.map(row => Object.values(row.phases).map(p => p.commandRef.name)),
+    original.payload.steps.map(row => Object.values(row.phases).map(p => p.commandRef.name)));
+  for (const step of added.payload.steps) {
+    for (const [phase, ph] of Object.entries(step.phases)) {
+      assert.ok(!JSON.stringify(ph).includes('reservation'), `${step.id}/${phase} must be txid-addressed`);
+      assert.deepEqual(ph.outputs.map(o => o.slot),
+        phase === 'prepare' ? ['txid', 'amount'] : ['txid']);
+    }
+  }
   assert.equal(added.seq, original.seq); assert.equal(Object.hasOwn(added, 'origin'), false);
   assert.match(added.payload.purpose, /Designed 2026-10-22 under approved #197/);
   assert.match(added.payload.purpose, /not a historical note or observed runtime payload/);
   const binding = json(new URL('bindings.json', ORIGINAL));
   binding.sagas[0].version = 'v2'; binding.sagas[0].engine.artifact = exampleMapping.target.artifact;
+  // P4 receipt re-cut (serial tree only, 2026-10-23): ReservationId retired, the
+  // transaction identity addresses every phase, prepare receipts carry the
+  // reserved amount. Transformed here so the v1 twin remains the pre-re-cut bytes.
+  binding.sagas[0].types = binding.sagas[0].types.filter(t => t.id !== 'ReservationId');
+  for (const step of binding.sagas[0].steps) {
+    const ph = step.phases;
+    ph.prepare.confirmation.outputs = [
+      { slot: 'txid', ref: 'receipt:txid', type: 'TxId' },
+      { slot: 'amount', ref: 'receipt:amount', type: 'Money' }];
+    ph.commit.confirmation.outputs = [{ slot: 'txid', ref: 'receipt:txid', type: 'TxId' }];
+    ph.compensate.confirmation.outputs = [{ slot: 'txid', ref: 'receipt:txid', type: 'TxId' }];
+  }
   assert.deepEqual(exampleBinding, binding);
   const pipeline = parseDoc(readFileSync(new URL('pipelines/money-transfer-invoke.pipeline.yaml', newTree), 'utf8'));
   assert.equal(pipeline.steps[0].execution.invokeSaga.ref.version, 'v2');
@@ -377,8 +428,13 @@ test('v1/v2 explicitly reject new document/capabilities and do not inherit v3 ba
     const input = real(); assert.ok(lower(input).diagnostics.some(row => row.code === 'RUNTIME_SCHEMA'));
     input.runtimeBinding.schemaVersion = 'truthsrc.saga-runtime-binding/v1';
     assert.ok(lower(input).diagnostics.some(row => row.code === 'RUNTIME_CAPABILITY_UNSUPPORTED'));
-    input.runtimeBinding.target.capabilities = input.runtimeBinding.target.capabilities.slice(0, 7);
-    const result = lower(input); assert.equal(result.ir, null); assert.equal(result.plan, null);
+    // P4 receipt re-cut: the real serial example carries no step-receipt reads
+    // anymore, so the barrier/dataflow rejections are exercised on the synthetic
+    // fixture — the step-receipt dataflow carrier.
+    const legacyInput = synthetic(2);
+    legacyInput.runtimeBinding.schemaVersion = 'truthsrc.saga-runtime-binding/v1';
+    legacyInput.runtimeBinding.target.capabilities = legacyInput.runtimeBinding.target.capabilities.slice(0, 7);
+    const result = lower(legacyInput); assert.equal(result.ir, null); assert.equal(result.plan, null);
     assert.ok(result.diagnostics.some(row => row.code === 'RUNTIME_GROUP_UNSUPPORTED'));
     assert.ok(result.diagnostics.some(row => row.code === 'RUNTIME_DATAFLOW_UNSUPPORTED'));
   }

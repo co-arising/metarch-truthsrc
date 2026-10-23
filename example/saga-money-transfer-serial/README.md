@@ -63,7 +63,14 @@ positive/negative cases belong to an independent synthetic engineering fixture i
 because the host completion adapter is not connected.
 
 The exact definition digest for this example is
-`sha256:16c3bf7a72b7f0b9da8fe9212650e044b8a08145a8baebeef04d36c8eeb26dde`.
+`sha256:3a586c81b1a9af9a2cadfdc66306bc06ce063c1b37989985b5568c88fed9971d`.
+(P4 state deepening + receipt re-cut, 2026-10-23: the aggregate gained the
+golden-master four-field money state with real fold assignments and structured
+guards; the `ReservationId` participant-handle type was retired by user ruling —
+the transaction identity addresses every phase, no step-receipt reads remain,
+and the confirmation facts are `(txid, amount)` for prepare / `(txid)` for
+commit and compensate. Receipt shape is definition material, so the digest
+advanced from the P1 baseline `16c3bf7a…`.)
 It hashes stable-key JSON of `{ definition, binding, runtimeBinding: { target,
 saga } }` once. All six receipt mapping rows and target capability arrays retain
 their exact authored order; there is no sorting or permutation fallback. Mapping

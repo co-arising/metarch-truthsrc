@@ -58,14 +58,6 @@
           "maxLength": 128
         },
         {
-          "id": "ReservationId",
-          "canonicalType": "ReservationId",
-          "implementation": "fixture.types.ReservationId",
-          "kind": "id",
-          "minLength": 1,
-          "maxLength": 128
-        },
-        {
           "id": "Money",
           "canonicalType": "Money",
           "implementation": "fixture.types.Money",
@@ -114,9 +106,14 @@
                 "mapper": "fixture.ConfirmationMapper",
                 "outputs": [
                   {
-                    "slot": "reservation",
-                    "ref": "receipt:reservation",
-                    "type": "ReservationId"
+                    "slot": "txid",
+                    "ref": "receipt:txid",
+                    "type": "TxId"
+                  },
+                  {
+                    "slot": "amount",
+                    "ref": "receipt:amount",
+                    "type": "Money"
                   }
                 ]
               },
@@ -181,8 +178,8 @@
                 "mapper": "fixture.ConfirmationMapper",
                 "outputs": [
                   {
-                    "slot": "receiptId",
-                    "ref": "receipt:receiptId",
+                    "slot": "txid",
+                    "ref": "receipt:txid",
                     "type": "TxId"
                   }
                 ]
@@ -246,7 +243,13 @@
                   "name": "ReleaseReservedFundsConfirmed"
                 },
                 "mapper": "fixture.ConfirmationMapper",
-                "outputs": []
+                "outputs": [
+                  {
+                    "slot": "txid",
+                    "ref": "receipt:txid",
+                    "type": "TxId"
+                  }
+                ]
               },
               "query": {
                 "mapper": "fixture.QueryMapper",
@@ -314,9 +317,14 @@
                 "mapper": "fixture.ConfirmationMapper",
                 "outputs": [
                   {
-                    "slot": "reservation",
-                    "ref": "receipt:reservation",
-                    "type": "ReservationId"
+                    "slot": "txid",
+                    "ref": "receipt:txid",
+                    "type": "TxId"
+                  },
+                  {
+                    "slot": "amount",
+                    "ref": "receipt:amount",
+                    "type": "Money"
                   }
                 ]
               },
@@ -381,8 +389,8 @@
                 "mapper": "fixture.ConfirmationMapper",
                 "outputs": [
                   {
-                    "slot": "receiptId",
-                    "ref": "receipt:receiptId",
+                    "slot": "txid",
+                    "ref": "receipt:txid",
                     "type": "TxId"
                   }
                 ]
@@ -446,7 +454,13 @@
                   "name": "CancelIncomingCreditConfirmed"
                 },
                 "mapper": "fixture.ConfirmationMapper",
-                "outputs": []
+                "outputs": [
+                  {
+                    "slot": "txid",
+                    "ref": "receipt:txid",
+                    "type": "TxId"
+                  }
+                ]
               },
               "query": {
                 "mapper": "fixture.QueryMapper",

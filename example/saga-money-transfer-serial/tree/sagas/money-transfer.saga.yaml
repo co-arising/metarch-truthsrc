@@ -88,8 +88,12 @@ payload:
             ],
             "outputs": [
               {
-                "slot": "reservation",
-                "type": "ReservationId"
+                "slot": "txid",
+                "type": "TxId"
+              },
+              {
+                "slot": "amount",
+                "type": "Money"
               }
             ]
           },
@@ -109,16 +113,11 @@ payload:
                 "slot": "resource",
                 "ref": "args:from",
                 "type": "AccountId"
-              },
-              {
-                "slot": "reservation",
-                "ref": "step:reserve-source:prepare:reservation",
-                "type": "ReservationId"
               }
             ],
             "outputs": [
               {
-                "slot": "receiptId",
+                "slot": "txid",
                 "type": "TxId"
               }
             ]
@@ -139,14 +138,14 @@ payload:
                 "slot": "resource",
                 "ref": "args:from",
                 "type": "AccountId"
-              },
-              {
-                "slot": "reservation",
-                "ref": "step:reserve-source:prepare:reservation",
-                "type": "ReservationId"
               }
             ],
-            "outputs": []
+            "outputs": [
+              {
+                "slot": "txid",
+                "type": "TxId"
+              }
+            ]
           }
         }
       },
@@ -180,8 +179,12 @@ payload:
             ],
             "outputs": [
               {
-                "slot": "reservation",
-                "type": "ReservationId"
+                "slot": "txid",
+                "type": "TxId"
+              },
+              {
+                "slot": "amount",
+                "type": "Money"
               }
             ]
           },
@@ -201,16 +204,11 @@ payload:
                 "slot": "resource",
                 "ref": "args:to",
                 "type": "AccountId"
-              },
-              {
-                "slot": "reservation",
-                "ref": "step:reserve-target:prepare:reservation",
-                "type": "ReservationId"
               }
             ],
             "outputs": [
               {
-                "slot": "receiptId",
+                "slot": "txid",
                 "type": "TxId"
               }
             ]
@@ -231,14 +229,14 @@ payload:
                 "slot": "resource",
                 "ref": "args:to",
                 "type": "AccountId"
-              },
-              {
-                "slot": "reservation",
-                "ref": "step:reserve-target:prepare:reservation",
-                "type": "ReservationId"
               }
             ],
-            "outputs": []
+            "outputs": [
+              {
+                "slot": "txid",
+                "type": "TxId"
+              }
+            ]
           }
         }
       }

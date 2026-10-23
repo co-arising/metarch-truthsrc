@@ -16,15 +16,23 @@ payload:
         "name": "resource",
         "dataType": "AccountId",
         "origin": "BUSINESS_INPUT"
-      },
-      {
-        "name": "reservation",
-        "dataType": "ReservationId",
-        "origin": "BUSINESS_INPUT"
       }
     ],
     "produces": [
       "CancelIncomingCreditConfirmed"
+    ],
+    "guards": [
+      {
+        "ruleId": "IR-CB-CANCEL-001",
+        "errCode": "60009",
+        "onFail": "reject",
+        "when": {
+          "form": "map-contains",
+          "map": "incomingCredits",
+          "key": "param.txid"
+        },
+        "desc": "Incoming credits cannot be found or already canceled (golden master 60009)."
+      }
     ],
     "description": "Stable operation identity, exact payload compatibility and durable participant receipt required."
   }
@@ -32,9 +40,26 @@ events:
   {
     "CancelIncomingCreditConfirmed": {
       "name": "CancelIncomingCreditConfirmed",
-      "payloads": [],
-      "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
-      "bindings": [],
-      "foldAssignments": []
+      "payloads": [
+        {
+          "name": "txid",
+          "dataType": "TxId",
+          "origin": "BUSINESS_INPUT"
+        }
+      ],
+      "description": "Designed durable fact: the incoming credits under this transaction identity were canceled; the fold clears the entry the txid names.",
+      "bindings": [
+        {
+          "slot": "txid",
+          "expr": "param.txid"
+        }
+      ],
+      "foldAssignments": [
+        {
+          "slot": "incomingCredits",
+          "op": "remove",
+          "key": "event.txid"
+        }
+      ]
     }
   }

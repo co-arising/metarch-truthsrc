@@ -18,7 +18,83 @@ payload:
     "stateFields": [
       {
         "name": "phase",
-        "dataType": "String"
+        "dataType": "String",
+        "description": "Saga phase bookkeeping; the truth source declares no write semantics for it (no fold assignments — passes through)."
+      },
+      {
+        "name": "accountBalance",
+        "dataType": "Map[String, Money]",
+        "description": "Available balance keyed by currency code (golden master: Map[String, Money]).",
+        "writtenBy": [
+          "ReserveFundsConfirmed.amount",
+          "ReleaseReservedFundsConfirmed.txid",
+          "CommitIncomingCreditsConfirmed.txid"
+        ],
+        "role": "State"
+      },
+      {
+        "name": "reservedAmount",
+        "dataType": "Map[TxId, Money]",
+        "description": "Prepared reservations keyed by transaction identity (golden master keys reservations by transferId).",
+        "writtenBy": [
+          "ReserveFundsConfirmed.txid",
+          "DeductFundsConfirmed.txid",
+          "ReleaseReservedFundsConfirmed.txid"
+        ],
+        "role": "State"
+      },
+      {
+        "name": "incomingCredits",
+        "dataType": "Map[TxId, Money]",
+        "description": "Recorded incoming credits keyed by transaction identity (golden master: Map[Id, Money]).",
+        "writtenBy": [
+          "RecordIncomingCreditsConfirmed.txid",
+          "CommitIncomingCreditsConfirmed.txid",
+          "CancelIncomingCreditConfirmed.txid"
+        ],
+        "role": "State"
+      }
+    ],
+    "aggregateRuleRefs": [
+      {
+        "ruleId": "IR-CB-RESERVE-001",
+        "errCode": "60008",
+        "desc": "Already reserved for this transaction: idempotent success, no events (golden master validateTransfer 60008 → Right(Nil))."
+      },
+      {
+        "ruleId": "IR-CB-RESERVE-002",
+        "errCode": "60003",
+        "desc": "Insufficient balance for transfer (golden master 60003)."
+      },
+      {
+        "ruleId": "IR-CB-RESERVE-003",
+        "errCode": "60004",
+        "desc": "Transfer amount must be positive (golden master 60004)."
+      },
+      {
+        "ruleId": "IR-CB-DEDUCT-001",
+        "errCode": "60006",
+        "desc": "No reserved funds found for this transaction (golden master 60006)."
+      },
+      {
+        "ruleId": "IR-CB-RELEASE-001",
+        "errCode": "60006",
+        "desc": "No reserved funds found for this transaction (golden master 60006)."
+      },
+      {
+        "ruleId": "IR-CB-RECORD-001",
+        "errCode": "60007",
+        "desc": "Incoming credits already registered for this transaction (golden master 60007)."
+      },
+      {
+        "ruleId": "IR-CB-COMMIT-001",
+        "errCode": "60008",
+        "desc": "Incoming credits cannot be found or already committed (golden master 60008)."
+      },
+      {
+        "ruleId": "IR-CB-CANCEL-001",
+        "errCode": "60009",
+        "desc": "Incoming credits cannot be found or already canceled (golden master 60009)."
       }
     ]
   }

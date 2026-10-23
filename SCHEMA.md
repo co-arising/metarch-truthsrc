@@ -195,7 +195,13 @@ events:                                   # full event definitions owned by this
   produces[]}` (RF3: parameters carry `dataType`; RF5: empty parameters is a
   notice). Guard kinds: `initialized`, `statusTransition` (`from`/`toStatus`/
   `notStatus` — `notStatus` is an **array**), `invariantRef` (`ref`/`errCode`/
-  `cond`), `expression`.
+  `cond`), `expression`. **P4 structured form** (2026-10-23, money trees):
+  `{ruleId, errCode, onFail, when, desc}` where `when.form` ∈ `money-positive`
+  (`amount`), `money-sufficient` (`amount`, `in`), `map-contains` / `map-absent`
+  (`map`, `key`); `key`/`amount` are V13 expressions against the command
+  parameters; `map`/`in` name state fields; `onFail` ∈ `reject` (default) |
+  `succeed-empty` (idempotent no-op success — reply success, emit no events).
+  Declaration order is the evaluation order.
 - **events** — the single event pool. A full event definition lives in **exactly
   one** slice: the first command in `order.commands` whose `produces` names it
   (V6). Every produced event must resolve into the pool (V6b). An event no
@@ -228,7 +234,7 @@ binding row at all.
 | V5 | `order.commands` ≡ slice set, both directions, no duplicates | hard |
 | V6 | `order.events` ≡ event pool both directions; a definition lives in exactly one slice; every produced event resolves | hard |
 | V12 | `seq` unique per family (aggregates / value objects / read models / stories), integer | hard |
-| V13 | binding/fold exprs resolve: `param.X` ∈ owning command parameters (slice-owned events; extraEvents have no owner → notice), `state.X` ∈ stateFields/identifier, `receipt.X` bindings-only ∈ own payload slots, known form required | hard (extraEvent `param.` = notice) |
+| V13 | binding/fold exprs resolve: `param.X` ∈ owning command parameters (slice-owned events; extraEvents have no owner → notice), `state.X` ∈ stateFields/identifier, `receipt.X` bindings-only ∈ own payload slots, `event.X` fold-only ∈ own payload slots, `state.K[E]` fold-only indexed read (`E` ∈ param/command or event/payload), known form required. Structured fold rows (`op` ∈ `set\|put\|remove\|money-apply`, per-op required fields, `sign` ∈ {1,−1}) and structured guards (`when.form` ∈ `money-positive\|money-sufficient\|map-contains\|map-absent`, `onFail` ∈ `reject\|succeed-empty`) are closed-vocabulary validated; guards carrying legacy `kind:` remain authoring-surface passthrough | hard (extraEvent `param.` = notice) |
 | RF1/RF2/RF3 | entity, identifier, field data types present | hard |
 | RF4/RF5 | empty event payload / parameterless command | notice |
 
