@@ -159,7 +159,22 @@ test('real independent v2 transfer retains both exact resources, all six phases 
 
 test('copy leaves all base domain bytes intact, modifies only new products via parse/emit and records current design', () => {
   const originalTree = new URL('tree/', ORIGINAL), newTree = new URL('tree/', EXAMPLE);
-  assert.deepEqual(files(newTree), files(originalTree));
+  // P4 Slice 2 (2026-10-23): the forked credit-balance aggregate also carries the
+  // read-only evidence query command (get-balance.slice.yaml) that the v1
+  // pre-deepening reference does not — file-list identity therefore covers
+  // everything outside the forked aggregate directory, whose inventory is pinned.
+  assert.deepEqual(files(newTree).filter(n => !n.startsWith('aggregates/credit-balance/')),
+    files(originalTree).filter(n => !n.startsWith('aggregates/credit-balance/')));
+  assert.deepEqual(files(newTree).filter(n => n.startsWith('aggregates/credit-balance/')),
+    ['aggregates/credit-balance/aggregate.yaml',
+     'aggregates/credit-balance/slices/cancel-incoming-credit.slice.yaml',
+     'aggregates/credit-balance/slices/commit-incoming-credits.slice.yaml',
+     'aggregates/credit-balance/slices/deduct-funds.slice.yaml',
+     'aggregates/credit-balance/slices/get-balance.slice.yaml',
+     'aggregates/credit-balance/slices/record-incoming-credits.slice.yaml',
+     'aggregates/credit-balance/slices/release-reserved-funds.slice.yaml',
+     'aggregates/credit-balance/slices/reserve-funds.slice.yaml',
+     'aggregates/credit-balance/slices/start-transfer.slice.yaml']);
   // P4 state deepening (2026-10-23): the serial tree's credit-balance aggregate
   // is deliberately AHEAD of the v1 twin (four-field golden-master state,
   // structured fold/guard forms, receipt value origins). The v1 tree remains

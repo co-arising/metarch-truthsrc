@@ -238,6 +238,20 @@ binding row at all.
 | RF1/RF2/RF3 | entity, identifier, field data types present | hard |
 | RF4/RF5 | empty event payload / parameterless command | notice |
 
+**Query-command convention (2026-10-23, P4 Slice 2).** A slice command that
+declares **no guards and no `produces`** (events pool `{}`) is a read-only
+state query — the durable-evidence read path saga participants need
+(golden master: `GetBalance(replyTo)` asking the entity for its state). The
+truth source carries it as a first-class command so the tree stays the single
+semantic source; generators apply the mechanical shape: the protocol message
+carries only `replyTo: ActorRef[Get<Agg>StateReply]`, and the behavior handler
+is `Effect.reply(cmd.replyTo)(Get<Agg>StateReply(state))` — the whole entity
+state, keyed maps included (the golden master's flattened confirmation lists
+are a display view; evidence queries need the `reservedAmount` /
+`incomingCredits` **keys** for exact `contains(txid)` determination). The
+definition digest is unaffected: the saga IR hashes sagas + workshop, not
+aggregates.
+
 ## Catalog atoms (v0.3 — refining & storyMapping faces)
 
 `value-objects/*.vo.yaml`, `read-models/*.rm.yaml`, `stories/*.story.yaml` —

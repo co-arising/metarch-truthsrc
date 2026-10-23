@@ -3,7 +3,7 @@
 kind: aggregate
 name: CreditBalance
 order:
-  commands: ["ReserveFunds","DeductFunds","ReleaseReservedFunds","RecordIncomingCredits","CommitIncomingCredits","CancelIncomingCredit","StartTransfer"]
+  commands: ["ReserveFunds","DeductFunds","ReleaseReservedFunds","RecordIncomingCredits","CommitIncomingCredits","CancelIncomingCredit","StartTransfer","GetBalance"]
   events: ["ReserveFundsConfirmed","DeductFundsConfirmed","ReleaseReservedFundsConfirmed","RecordIncomingCreditsConfirmed","CommitIncomingCreditsConfirmed","CancelIncomingCreditConfirmed","TransferRequested","result-succeeded","result-rejected-before-effects","result-compensated","result-recovery-required","result-outcome-unknown"]
 payload:
   {
