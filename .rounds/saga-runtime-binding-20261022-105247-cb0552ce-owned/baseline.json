@@ -1,0 +1,34 @@
+{
+  "owned": [
+    "lib/saga/runtime-binding.mjs",
+    "test/saga-runtime-binding.test.mjs",
+    "SAGA-RUNTIME-BINDING-V1.md"
+  ],
+  "readOnlyHashes": {
+    "AGENTS.md": "657bd16c32ba8e3399ac77cf87e7736e089aeb3a295a4559d1486a7a5b84af77",
+    "lib/saga/compile.mjs": "3ed660a3eaedfbbcb3e27f139170656154bc4700dee546fd5650c6a6ceb8f083",
+    "schema/saga-ir-v1.schema.json": "f94eeead3a956f4ce54b002d942e6b2a1f3fe49008cf738b15da10e0ad8ea46c",
+    "test/fixtures/saga-contract.mjs": "8fce13824f6cb54687583b7aad65dcf47a46603fbec5ef25412fd72f34912351",
+    "test/saga-compile.test.mjs": "1618f3c3fcbc9e2f8485c33ffaa7495cfc9a3767ddd5f34b26051c97172f7569",
+    "generators/saga-dsl/generate.mjs": "671905dbfb656cea9aee5ecf789c45dd6f1a3f50ec4640d7f6819336983fc1fb",
+    "generators/saga-dsl/parse.mjs": "0db38a7a5fedb9dba0fec8f046a9450227672b69124c25f28cf08d21eed2c48b",
+    "generators/saga-dsl/emit.mjs": "bf4ce289b979eb06e043452326a6d58ac93704bff3be4553989dcdb15c887d8a",
+    "generators/saga-dsl/generator.json": "447ab238e4061af86f363f0132b595bac85325a9b2b05efa89af32644afea694",
+    "example/saga-money-transfer/execution-bindings.json": "c3e76df5d5ea7ec113c8be8c2e8e23313a68bcb97993db810db5c1b6bae2c92a",
+    "example/saga-money-transfer/bindings.json": "384734e021894fc1a1b35739aab37772cdc812e601a32803306eda6a771e9a6f",
+    "example/saga-money-transfer/README.md": "7a275e1f3a32e63cebec130d0d6f0f09e031a34e090b87312fa1568b02418233",
+    "example/saga-money-transfer/tree/workshop.yaml": "400bfb07d66a4d7e4bbcc9253a4f3b3af17e14bc778a2b7f0b82f63b8a04ecf5",
+    "example/saga-money-transfer/tree/aggregates/credit-balance/aggregate.yaml": "907dc75bd56fde10a6d43e4376b236e4067a7645ed712fe6659cc92972ed5c84",
+    "example/saga-money-transfer/tree/aggregates/credit-balance/slices/release-reserved-funds.slice.yaml": "d0195def3c34b2e42b417e69b774660adbb9a4d2fab39880a1d0e5864f732047",
+    "example/saga-money-transfer/tree/aggregates/credit-balance/slices/reserve-funds.slice.yaml": "cf05f77ddd0495263fc781abb324a0a611f8514b7c7e4f48727f654300557b1c",
+    "example/saga-money-transfer/tree/aggregates/credit-balance/slices/deduct-funds.slice.yaml": "e11aa50b48ff7e5f7450642d05b85187d02da768499efa8775e737ca4bbd3ed2",
+    "example/saga-money-transfer/tree/aggregates/credit-balance/slices/commit-incoming-credits.slice.yaml": "53f112eb3008e05e34ec1c9f4d2865597e2ac42bbaa00b6b6bbdcaf74aa68c06",
+    "example/saga-money-transfer/tree/aggregates/credit-balance/slices/cancel-incoming-credit.slice.yaml": "25e7f85aec7f49e86d3e49d084526406a2329e0c97b625bdbc75d08e25e37a02",
+    "example/saga-money-transfer/tree/aggregates/credit-balance/slices/record-incoming-credits.slice.yaml": "73c2a928a1e6f76ba69a190149a10a4b68f3bdb57f811db7ca8eb13cdaa36841",
+    "example/saga-money-transfer/tree/aggregates/credit-balance/slices/start-transfer.slice.yaml": "79971684dd0c43327c7a7692078f58a5fd536dc80cb79dac4ae1af51a331c2cc",
+    "example/saga-money-transfer/tree/pipelines/money-transfer-invoke.pipeline.yaml": "1f53d3ad10bf5f66ae47913b04e22a0304e45e9be33e2bb5c09e753a8b00cd51",
+    "example/saga-money-transfer/tree/sagas/money-transfer.saga.yaml": "7dc618e7c50a40da4819b51f3debd78201bf44f3c2ffcd7c9a7e83bacc034af4"
+  },
+  "gitStatus": " M AGENTS.md\n M CODEGEN.md\n M SCHEMA.md\n M bin/truthsrc.js\n M generators/saga-dsl/emit.mjs\n M generators/saga-dsl/generator.json\n M generators/saga-dsl/parse.mjs\n M lib/compile.mjs\n M lib/decompose.mjs\n M lib/query.mjs\n M lib/shared.mjs\n M lib/validate.mjs\n M mcp/server.mjs\n M src/core/generate.mjs\n M test/concerns.test.mjs\n M test/diff-apply.test.mjs\n M test/generate.test.mjs\n M test/roundtrip.test.mjs\n M test/scala-cqrs-es-api-metarch.test.mjs\n M test/scala-cqrs-es-ddl-metarch.test.mjs\n M test/scala-cqrs-es-metarch-modelcatalog.test.mjs\n M test/scala-cqrs-es-metarch.test.mjs\n M test/scala-cqrs-es-projection-metarch.test.mjs\n M test/scala-cqrs-es-rules-metarch.test.mjs\n M test/scala-cqrs-es.test.mjs\n?? .rounds/\n?? example/fab-split-merge/\n?? example/saga-money-transfer/\n?? example/tree/inbox/eventStorming/question-es-how-is-a-distributed-transfer-reconciled--7.yaml\n?? generators/saga-dsl/generate.mjs\n?? lib/anchor-query.mjs\n?? lib/execution/\n?? lib/saga/\n?? schema/\n?? src/core/anchors.mjs\n?? src/core/apply-preflight.mjs\n?? test/anchor-query.test.mjs\n?? test/anchors.test.mjs\n?? test/contract-cli.test.mjs\n?? test/execution-compile.test.mjs\n?? test/execution-saga.test.mjs\n?? test/fixtures/saga-contract.mjs\n?? test/generate-anchors.test.mjs\n?? test/generate-cli.test.mjs\n?? test/saga-compile.test.mjs\n?? test/saga-examples.test.mjs\n?? test/saga-generator-safety.test.mjs\n?? test/saga-generator.test.mjs\n?? test/saga-mcp.test.mjs\n?? test/saga-query.test.mjs\n?? test/saga-tree.test.mjs\n",
+  "node": "v22.23.2"
+}

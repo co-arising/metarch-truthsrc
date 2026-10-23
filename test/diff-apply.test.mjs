@@ -17,8 +17,8 @@ import { mergeManualBlocks, mergeRoutesBlock, hasManualBlocks } from '../src/cor
 import { apply } from '../src/core/generate.mjs';
 
 const ROOT = join(import.meta.dirname, '..');
-const API_GEN = join(ROOT, 'generators', 'scala-cqrs-es-api');
-const SKELETON_GEN = join(ROOT, 'generators', 'scala-cqrs-es');
+const API_GEN = join(ROOT, 'generators', '_deprecated', 'scala-cqrs-es-api');
+const SKELETON_GEN = join(ROOT, 'generators', '_deprecated', 'scala-cqrs-es');
 const CANON = join(ROOT, 'golden', 'scala-cqrs-es-metarch', 'model-catalog.canonical.json');
 const HASHES = JSON.parse(readFileSync(join(ROOT, 'golden', 'scala-cqrs-es-api-metarch', 'elementHashes.json'), 'utf8'));
 const SKELETON_HASHES = JSON.parse(readFileSync(join(ROOT, 'golden', 'scala-cqrs-es-metarch', 'elementHashes.json'), 'utf8'));

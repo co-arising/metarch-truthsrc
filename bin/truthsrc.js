@@ -13,18 +13,23 @@ const arg = (name, dflt) => {
   return i > 0 ? resolve(process.argv[i + 1]) : dflt;
 };
 const [cmd] = process.argv.slice(2);
-const TREE = arg('--tree', resolve('tree'));
-const OUT = arg('--out', resolve('canonical.json'));
+const strictCompilation = cmd === 'compile-execution' || cmd === 'compile-sagas' || cmd === 'generate';
+const TREE = strictCompilation ? undefined : arg('--tree', resolve('tree'));
+const OUT = strictCompilation ? undefined : arg('--out', resolve('canonical.json'));
 
 const USAGE = `truthsrc v0.5 — git-native Event Storming truth source
 
   truthsrc compile   --tree <dir> [--out canonical.json]   tree → canonical projection
+  truthsrc compile-execution --tree <dir> | --in <canonical> [--binding <file>] --out <ir>
+  truthsrc compile-sagas     --tree <dir> | --in <canonical> [--binding <file>] --out <ir>
+                                                           strict contract compilation; never runtime certification
   truthsrc decompose --canonical <file> --tree <dir>       canonical → tree atoms
   truthsrc validate  [--tree <dir>]                        V* structure + R* relations + ES/CS/AG/RF/SM stage rules
   truthsrc roundtrip [--tree <dir>]                        compile∘decompose∘compile identity gate
   truthsrc init      <dir>                                 scaffold a minimal workshop tree
   truthsrc generate  --in <canonical> --generator <dir> --out <dir> [--option k=v]
                                                            run a generator (ledger + anchors emitted)
+                     [--options-json <file>]                explicit producer options, including nested bindings/IR
                      [--concern <name>] [--families A,B] [--concerns <file>]
                                                            incremental regeneration: only the faces the
                                                            concern scope selects are rewritten (engine: core;
@@ -38,6 +43,17 @@ const USAGE = `truthsrc v0.5 — git-native Event Storming truth source
 const die = (msg) => { console.error(msg); process.exit(2); };
 
 switch (cmd) {
+  case 'compile-execution':
+  case 'compile-sagas': {
+    try {
+      const { compileContractCli } = await import('../lib/execution/cli.mjs');
+      const result = await compileContractCli(cmd === 'compile-execution' ? 'execution' : 'saga', process.argv.slice(3));
+      console.log(`✅ ${cmd} → ${result.output} (contract-only; runtime not verified)`);
+    } catch (error) {
+      die(`[FAIL] ${error.message}`);
+    }
+    break;
+  }
   case 'compile': {
     writeFileSync(OUT, compileTree(TREE));
     console.log(`✅ ${TREE} → ${OUT}`);
@@ -78,26 +94,25 @@ switch (cmd) {
   case 'generate': {
     // generate --in <canonical.json> --generator <dir> --out <target> [--option k=v ...]
     //          [--concern <name>] [--families A,B] [--concerns <file>]
-    const gen = arg('--generator');
-    const c = arg('--in');
-    const o = arg('--out');
-    if (!gen || !c || (!o && !process.argv.includes('--plan'))) die('usage: truthsrc generate --in <canonical.json> --generator <dir> --out <dir> [--plan] [--concern <name>] [--families A,B] [--concerns <file>]');
-    const options = {};
-    for (let i = 2; i < process.argv.length; i++) {
-      if (process.argv[i] === '--option') {
-        const [k, v] = String(process.argv[i + 1] ?? '').split('=');
-        if (k) options[k] = v ?? true;
-      }
-    }
-    const CONCERN = process.argv.includes('--concern') ? process.argv[process.argv.indexOf('--concern') + 1] : null;
-    const FAMILIES = process.argv.includes('--families') ? process.argv[process.argv.indexOf('--families') + 1] : null;
-    if (process.argv.includes('--concern') && !CONCERN) die('--concern requires a name (see the project concerns registry)');
-    if (process.argv.includes('--families') && !CONCERN) die('--families requires --concern');
-    const concern = CONCERN ? { name: CONCERN, families: FAMILIES, registryFile: arg('--concerns', resolve('concerns.json')) } : null;
+    let parsed;
+    try {
+      const { generatorCliArgs } = await import('../lib/execution/generate-cli.mjs');
+      parsed = generatorCliArgs(process.argv.slice(3));
+    } catch (error) { die(`[FAIL] ${error.message}`); }
+    const { values, options } = parsed;
+    const gen = values['--generator'];
+    const c = values['--in'];
+    const o = values['--out'];
+    const CONCERN = values['--concern'] ?? null;
+    const FAMILIES = values['--families'] ?? null;
+    const concern = CONCERN ? { name: CONCERN, families: FAMILIES, registryFile: values['--concerns'] ?? resolve('concerns.json') } : null;
     if (concern && !existsSync(concern.registryFile)) die(`concerns registry not found: ${concern.registryFile} (--concerns <file>; default ./concerns.json)`);
     if (process.argv.includes('--plan')) {
       const { plan, mergedRows, scopeOf } = await import('../src/core/generate.mjs');
-      const { manifest, entries } = await plan({ canonicalFile: c, generatorDir: gen, options });
+      let planResult;
+      try { planResult = await plan({ canonicalFile: c, generatorDir: gen, options }); }
+      catch (error) { die(`[FAIL] ${error.message}`); }
+      const { manifest, entries } = planResult;
       if (concern) {
         const rows = mergedRows(o ?? resolve('.'), entries);
         const s = scopeOf(rows, concern);

@@ -31,10 +31,14 @@ roundtrip gate is what makes thousands of autonomous agent edits reconcilable.
    hand-slugify. Aggregate atoms live at `aggregates/<slug>/aggregate.yaml`,
    slices at `aggregates/<slug>/slices/<command-slug>.slice.yaml`, catalog
    atoms at `value-objects|read-models|stories/<slug>.{vo,rm,story}.yaml`,
-   policy atoms at `policies/policy-<code>-<slug>-<seq>.policy.yaml`.
+   policy atoms at `policies/policy-<code>-<slug>-<seq>.policy.yaml`. Saga
+   products live at `sagas/<slug(id)>.saga.yaml` (stable scalar header id,
+   not display name); do not add an inbox stage to make a Saga appear.
 2. **`origin.seq` is frozen board order.** Append new notes with the next seq;
    never renumber existing atoms (downstream tools key on it). Aggregate /
-   catalog `seq` is product order — unique per family.
+   catalog / Saga `seq` is optional product order — unique per family; never
+   invent or densify a Saga seq. Uniform Saga seq orders the products; mixed
+   presence uses file order and reports SEQ1.
 3. **Payload is verbatim.** Fix capture typos in `payload` only when a human
    asked; never "normalize", re-key, or enrich it on your own initiative.
    Additive keys must pass the three-layer test (SCHEMA.md §The three-layer key test).
@@ -65,6 +69,24 @@ roundtrip gate is what makes thousands of autonomous agent edits reconcilable.
 // 3. emit with emitDoc (never hand-format the payload block)
 // 4. run validate + roundtrip
 ```
+
+## Saga product boundary
+
+- Use `kind: saga` with non-empty scalar header `id`, `name`, and definition
+  `version` (non-empty string or positive safe integer), then one JSON-object
+  `payload` block. Extra headers are strings/numbers; rich content belongs in
+  payload. Headers come first. Use parseDoc/emitDoc, not regex-expanded YAML.
+- `canonical.sagas[]` carries the **whole atom minus kind**, not just payload.
+  Preserve id/version, header order, optional seq presence and payload; do not
+  infer identity from payload or manufacture origins/notes/execution history.
+  New designs record their actual provenance, never fictional old stickies.
+- `validate` checks only Saga identity, kind/filename, uniqueness, seq and basic
+  payload/surface shape (SA1–SA3/V1/V3/V12). SA0 explicitly reports that payload
+  and extra headers are **not execution-validated**. Unknown Saga execution
+  keys/capabilities need the separate strict semantic/compiler gate; green
+  validate/compile/roundtrip is not semantic validity or runnable certification.
+- With no Saga products, compile emits no sagas key and decompose creates no
+  Saga product directory. Do not add empty or invented products to old trees.
 
 ## What agents should NOT do
 

@@ -1,0 +1,88 @@
+[
+  {
+    "label": "tree compilation",
+    "command": [
+      "/Users/zhongdj/.nvm/versions/node/v22.23.2/bin/node",
+      "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/bin/truthsrc.js",
+      "compile",
+      "--tree",
+      "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/example/saga-money-transfer/tree",
+      "--out",
+      "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/s8-public-cli-20261022-092243-d42147/observed/compiled.json"
+    ],
+    "exit": 0,
+    "stdout": "\u2705 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/example/saga-money-transfer/tree \u2192 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/s8-public-cli-20261022-092243-d42147/observed/compiled.json\n",
+    "stderr": ""
+  },
+  {
+    "label": "plan",
+    "command": [
+      "/Users/zhongdj/.nvm/versions/node/v22.23.2/bin/node",
+      "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/bin/truthsrc.js",
+      "generate",
+      "--in",
+      "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/s8-public-cli-20261022-092243-d42147/observed/compiled.json",
+      "--generator",
+      "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/s8-public-cli-20261022-092243-d42147/observed/fixture-generator",
+      "--out",
+      "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/s8-public-cli-20261022-092243-d42147/observed/output",
+      "--plan"
+    ],
+    "exit": 0,
+    "stdout": "  fixture          fixture/one.txt\n  fixture          fixture/two.txt\n\u2705 plan [s8-public-fixture] \u2014 2 files (nothing written)\n",
+    "stderr": ""
+  },
+  {
+    "label": "first apply",
+    "command": [
+      "/Users/zhongdj/.nvm/versions/node/v22.23.2/bin/node",
+      "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/bin/truthsrc.js",
+      "generate",
+      "--in",
+      "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/s8-public-cli-20261022-092243-d42147/observed/compiled.json",
+      "--generator",
+      "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/s8-public-cli-20261022-092243-d42147/observed/fixture-generator",
+      "--out",
+      "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/s8-public-cli-20261022-092243-d42147/observed/output"
+    ],
+    "exit": 0,
+    "stdout": "\u2705 generate [s8-public-fixture] \u2014 2 planned \u00b7 2 written \u00b7 0 identical\n   ledger \u2192 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/s8-public-cli-20261022-092243-d42147/observed/output/truthsrc.ledger.json\n   anchors \u2192 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/s8-public-cli-20261022-092243-d42147/observed/output/anchors.json\n",
+    "stderr": ""
+  },
+  {
+    "label": "repeat apply",
+    "command": [
+      "/Users/zhongdj/.nvm/versions/node/v22.23.2/bin/node",
+      "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/bin/truthsrc.js",
+      "generate",
+      "--in",
+      "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/s8-public-cli-20261022-092243-d42147/observed/compiled.json",
+      "--generator",
+      "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/s8-public-cli-20261022-092243-d42147/observed/fixture-generator",
+      "--out",
+      "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/s8-public-cli-20261022-092243-d42147/observed/output"
+    ],
+    "exit": 0,
+    "stdout": "\u2705 generate [s8-public-fixture] \u2014 2 planned \u00b7 0 written \u00b7 2 identical\n   ledger \u2192 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/s8-public-cli-20261022-092243-d42147/observed/output/truthsrc.ledger.json\n   anchors \u2192 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/s8-public-cli-20261022-092243-d42147/observed/output/anchors.json\n",
+    "stderr": ""
+  },
+  {
+    "label": "case alias probe",
+    "command": [
+      "/Users/zhongdj/.nvm/versions/node/v22.23.2/bin/node",
+      "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/bin/truthsrc.js",
+      "generate",
+      "--in",
+      "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/s8-public-cli-20261022-092243-d42147/observed/compiled.json",
+      "--generator",
+      "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/s8-public-cli-20261022-092243-d42147/observed/fixture-generator",
+      "--out",
+      "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/s8-public-cli-20261022-092243-d42147/observed/output",
+      "--option",
+      "collision=yes"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "[FAIL] duplicate/case-fold output path: fixture/one.txt\n"
+  }
+]

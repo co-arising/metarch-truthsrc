@@ -50,7 +50,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { plan } from '../src/core/generate.mjs';
 
-const GEN = join(import.meta.dirname, '..', 'generators', 'scala-cqrs-es-api');
+const GEN = join(import.meta.dirname, '..', 'generators', '_deprecated', 'scala-cqrs-es-api');
 const CANON = join(import.meta.dirname, '..', 'golden', 'scala-cqrs-es-metarch', 'model-catalog.canonical.json');
 const HASHES = join(import.meta.dirname, '..', 'golden', 'scala-cqrs-es-api-metarch', 'elementHashes.json');
 const GOLD = join(import.meta.dirname, '..', 'golden', 'scala-cqrs-es-api-metarch', 'expected');

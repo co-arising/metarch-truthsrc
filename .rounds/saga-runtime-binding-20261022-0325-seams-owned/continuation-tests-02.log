@@ -1,0 +1,748 @@
+TAP version 13
+# Subtest: minimal compiler-closed static allTCC lowers actual resolved adapter data, never a runtime certificate
+ok 1 - minimal compiler-closed static allTCC lowers actual resolved adapter data, never a runtime certificate
+  ---
+  duration_ms: 79.324443
+  type: 'test'
+  ...
+# Subtest: JSON-serialized lowered output is consumable by a narrow adapter without rejoining input IR
+ok 2 - JSON-serialized lowered output is consumable by a narrow adapter without rejoining input IR
+  ---
+  duration_ms: 14.272115
+  type: 'test'
+  ...
+# Subtest: compiler-legal string business version "v1" maps exactly, never parsed
+ok 3 - compiler-legal string business version "v1" maps exactly, never parsed
+  ---
+  duration_ms: 25.405776
+  type: 'test'
+  ...
+# Subtest: compiler-legal string business version "release-2026_10" maps exactly, never parsed
+ok 4 - compiler-legal string business version "release-2026_10" maps exactly, never parsed
+  ---
+  duration_ms: 22.48329
+  type: 'test'
+  ...
+# Subtest: compiler-legal string business version "V01" maps exactly, never parsed
+ok 5 - compiler-legal string business version "V01" maps exactly, never parsed
+  ---
+  duration_ms: 28.697253
+  type: 'test'
+  ...
+# Subtest: live compiler rejects unsupported string business version "1" unchanged
+ok 6 - live compiler rejects unsupported string business version "1" unchanged
+  ---
+  duration_ms: 7.631456
+  type: 'test'
+  ...
+# Subtest: live compiler rejects unsupported string business version " release/2026.10 " unchanged
+ok 7 - live compiler rejects unsupported string business version " release/2026.10 " unchanged
+  ---
+  duration_ms: 7.848916
+  type: 'test'
+  ...
+# Subtest: live compiler rejects unsupported string business version "" unchanged
+ok 8 - live compiler rejects unsupported string business version "" unchanged
+  ---
+  duration_ms: 7.982956
+  type: 'test'
+  ...
+# Subtest: live compiler rejects unsupported string business version "   " unchanged
+ok 9 - live compiler rejects unsupported string business version "   " unchanged
+  ---
+  duration_ms: 7.801243
+  type: 'test'
+  ...
+# Subtest: live compiler rejects unsupported number business version 1 unchanged
+ok 10 - live compiler rejects unsupported number business version 1 unchanged
+  ---
+  duration_ms: 6.760742
+  type: 'test'
+  ...
+# Subtest: live compiler rejects unsupported number business version 9007199254740991 unchanged
+ok 11 - live compiler rejects unsupported number business version 9007199254740991 unchanged
+  ---
+  duration_ms: 6.641626
+  type: 'test'
+  ...
+# Subtest: live compiler rejects unsupported number business version 0 unchanged
+ok 12 - live compiler rejects unsupported number business version 0 unchanged
+  ---
+  duration_ms: 6.836408
+  type: 'test'
+  ...
+# Subtest: live compiler rejects unsupported number business version -1 unchanged
+ok 13 - live compiler rejects unsupported number business version -1 unchanged
+  ---
+  duration_ms: 7.898088
+  type: 'test'
+  ...
+# Subtest: live compiler rejects unsupported number business version 1.5 unchanged
+ok 14 - live compiler rejects unsupported number business version 1.5 unchanged
+  ---
+  duration_ms: 9.143
+  type: 'test'
+  ...
+# Subtest: live compiler rejects unsupported boolean business version true unchanged
+ok 15 - live compiler rejects unsupported boolean business version true unchanged
+  ---
+  duration_ms: 6.202679
+  type: 'test'
+  ...
+# Subtest: live compiler rejects unsupported object business version null unchanged
+ok 16 - live compiler rejects unsupported object business version null unchanged
+  ---
+  duration_ms: 6.534818
+  type: 'test'
+  ...
+# Subtest: live compiler rejects unsupported object business version {} unchanged
+ok 17 - live compiler rejects unsupported object business version {} unchanged
+  ---
+  duration_ms: 6.582445
+  type: 'test'
+  ...
+# Subtest: runtime mapping exact string mismatch v2 is rejected
+ok 18 - runtime mapping exact string mismatch v2 is rejected
+  ---
+  duration_ms: 20.437523
+  type: 'test'
+  ...
+# Subtest: technical business version mismatch v2 stays rejected by compiler
+ok 19 - technical business version mismatch v2 stays rejected by compiler
+  ---
+  duration_ms: 3.219656
+  type: 'test'
+  ...
+# Subtest: runtime mapping exact string mismatch V1 is rejected
+ok 20 - runtime mapping exact string mismatch V1 is rejected
+  ---
+  duration_ms: 19.687056
+  type: 'test'
+  ...
+# Subtest: technical business version mismatch V1 stays rejected by compiler
+ok 21 - technical business version mismatch V1 stays rejected by compiler
+  ---
+  duration_ms: 3.397619
+  type: 'test'
+  ...
+# Subtest: runtime mapping does not strip or coerce 1
+ok 22 - runtime mapping does not strip or coerce 1
+  ---
+  duration_ms: 1.40261
+  type: 'test'
+  ...
+# Subtest: runtime mapping does not strip or coerce " v1 "
+ok 23 - runtime mapping does not strip or coerce " v1 "
+  ---
+  duration_ms: 1.593819
+  type: 'test'
+  ...
+# Subtest: runtime mapping does not strip or coerce "v1 "
+ok 24 - runtime mapping does not strip or coerce "v1 "
+  ---
+  duration_ms: 1.430684
+  type: 'test'
+  ...
+# Subtest: runtime mapping does not strip or coerce "1"
+ok 25 - runtime mapping does not strip or coerce "1"
+  ---
+  duration_ms: 1.344771
+  type: 'test'
+  ...
+# Subtest: runtime mapping does not strip or coerce null
+ok 26 - runtime mapping does not strip or coerce null
+  ---
+  duration_ms: 1.317672
+  type: 'test'
+  ...
+# Subtest: invalid runtime Int "1" is rejected, not coerced
+ok 27 - invalid runtime Int "1" is rejected, not coerced
+  ---
+  duration_ms: 1.421481
+  type: 'test'
+  ...
+# Subtest: invalid runtime Int "v1" is rejected, not coerced
+ok 28 - invalid runtime Int "v1" is rejected, not coerced
+  ---
+  duration_ms: 1.444151
+  type: 'test'
+  ...
+# Subtest: invalid runtime Int 0 is rejected, not coerced
+ok 29 - invalid runtime Int 0 is rejected, not coerced
+  ---
+  duration_ms: 1.310826
+  type: 'test'
+  ...
+# Subtest: invalid runtime Int -1 is rejected, not coerced
+ok 30 - invalid runtime Int -1 is rejected, not coerced
+  ---
+  duration_ms: 1.29502
+  type: 'test'
+  ...
+# Subtest: invalid runtime Int 1.2 is rejected, not coerced
+ok 31 - invalid runtime Int 1.2 is rejected, not coerced
+  ---
+  duration_ms: 1.289029
+  type: 'test'
+  ...
+# Subtest: invalid runtime Int 2147483648 is rejected, not coerced
+ok 32 - invalid runtime Int 2147483648 is rejected, not coerced
+  ---
+  duration_ms: 1.271755
+  type: 'test'
+  ...
+# Subtest: invalid runtime Int 9007199254740991 is rejected, not coerced
+ok 33 - invalid runtime Int 9007199254740991 is rejected, not coerced
+  ---
+  duration_ms: 1.707347
+  type: 'test'
+  ...
+# Subtest: maximum positive Scala Int is explicitly independent of legal string business version
+ok 34 - maximum positive Scala Int is explicitly independent of legal string business version
+  ---
+  duration_ms: 10.608143
+  type: 'test'
+  ...
+# Subtest: args codec runtimeVersion is mandatory and cannot default to the definition or another codec
+ok 35 - args codec runtimeVersion is mandatory and cannot default to the definition or another codec
+  ---
+  duration_ms: 1.531423
+  type: 'test'
+  ...
+# Subtest: args codec rejects non-positive-Int runtimeVersion "1" without coercion
+ok 36 - args codec rejects non-positive-Int runtimeVersion "1" without coercion
+  ---
+  duration_ms: 1.334961
+  type: 'test'
+  ...
+# Subtest: args codec rejects non-positive-Int runtimeVersion "codec-v1" without coercion
+ok 37 - args codec rejects non-positive-Int runtimeVersion "codec-v1" without coercion
+  ---
+  duration_ms: 1.272408
+  type: 'test'
+  ...
+# Subtest: args codec rejects non-positive-Int runtimeVersion 0 without coercion
+ok 38 - args codec rejects non-positive-Int runtimeVersion 0 without coercion
+  ---
+  duration_ms: 1.275826
+  type: 'test'
+  ...
+# Subtest: args codec rejects non-positive-Int runtimeVersion -1 without coercion
+ok 39 - args codec rejects non-positive-Int runtimeVersion -1 without coercion
+  ---
+  duration_ms: 1.271755
+  type: 'test'
+  ...
+# Subtest: args codec rejects non-positive-Int runtimeVersion 1.5 without coercion
+ok 40 - args codec rejects non-positive-Int runtimeVersion 1.5 without coercion
+  ---
+  duration_ms: 1.307901
+  type: 'test'
+  ...
+# Subtest: args codec rejects non-positive-Int runtimeVersion 2147483648 without coercion
+ok 41 - args codec rejects non-positive-Int runtimeVersion 2147483648 without coercion
+  ---
+  duration_ms: 1.288208
+  type: 'test'
+  ...
+# Subtest: args codec rejects non-positive-Int runtimeVersion 9007199254740991 without coercion
+ok 42 - args codec rejects non-positive-Int runtimeVersion 9007199254740991 without coercion
+  ---
+  duration_ms: 1.640535
+  type: 'test'
+  ...
+# Subtest: args codec rejects non-positive-Int runtimeVersion true without coercion
+ok 43 - args codec rejects non-positive-Int runtimeVersion true without coercion
+  ---
+  duration_ms: 1.419613
+  type: 'test'
+  ...
+# Subtest: args codec rejects non-positive-Int runtimeVersion null without coercion
+ok 44 - args codec rejects non-positive-Int runtimeVersion null without coercion
+  ---
+  duration_ms: 1.309308
+  type: 'test'
+  ...
+# Subtest: prepare receipt codec runtimeVersion is mandatory and cannot default to the definition or another codec
+ok 45 - prepare receipt codec runtimeVersion is mandatory and cannot default to the definition or another codec
+  ---
+  duration_ms: 1.391893
+  type: 'test'
+  ...
+# Subtest: prepare receipt codec rejects non-positive-Int runtimeVersion "1" without coercion
+ok 46 - prepare receipt codec rejects non-positive-Int runtimeVersion "1" without coercion
+  ---
+  duration_ms: 1.304137
+  type: 'test'
+  ...
+# Subtest: prepare receipt codec rejects non-positive-Int runtimeVersion "codec-v1" without coercion
+ok 47 - prepare receipt codec rejects non-positive-Int runtimeVersion "codec-v1" without coercion
+  ---
+  duration_ms: 1.422957
+  type: 'test'
+  ...
+# Subtest: prepare receipt codec rejects non-positive-Int runtimeVersion 0 without coercion
+ok 48 - prepare receipt codec rejects non-positive-Int runtimeVersion 0 without coercion
+  ---
+  duration_ms: 1.335797
+  type: 'test'
+  ...
+# Subtest: prepare receipt codec rejects non-positive-Int runtimeVersion -1 without coercion
+ok 49 - prepare receipt codec rejects non-positive-Int runtimeVersion -1 without coercion
+  ---
+  duration_ms: 1.30315
+  type: 'test'
+  ...
+# Subtest: prepare receipt codec rejects non-positive-Int runtimeVersion 1.5 without coercion
+ok 50 - prepare receipt codec rejects non-positive-Int runtimeVersion 1.5 without coercion
+  ---
+  duration_ms: 1.421583
+  type: 'test'
+  ...
+# Subtest: prepare receipt codec rejects non-positive-Int runtimeVersion 2147483648 without coercion
+ok 51 - prepare receipt codec rejects non-positive-Int runtimeVersion 2147483648 without coercion
+  ---
+  duration_ms: 1.284858
+  type: 'test'
+  ...
+# Subtest: prepare receipt codec rejects non-positive-Int runtimeVersion 9007199254740991 without coercion
+ok 52 - prepare receipt codec rejects non-positive-Int runtimeVersion 9007199254740991 without coercion
+  ---
+  duration_ms: 1.781246
+  type: 'test'
+  ...
+# Subtest: prepare receipt codec rejects non-positive-Int runtimeVersion true without coercion
+ok 53 - prepare receipt codec rejects non-positive-Int runtimeVersion true without coercion
+  ---
+  duration_ms: 1.330216
+  type: 'test'
+  ...
+# Subtest: prepare receipt codec rejects non-positive-Int runtimeVersion null without coercion
+ok 54 - prepare receipt codec rejects non-positive-Int runtimeVersion null without coercion
+  ---
+  duration_ms: 1.333028
+  type: 'test'
+  ...
+# Subtest: commit receipt codec runtimeVersion is mandatory and cannot default to the definition or another codec
+ok 55 - commit receipt codec runtimeVersion is mandatory and cannot default to the definition or another codec
+  ---
+  duration_ms: 1.361684
+  type: 'test'
+  ...
+# Subtest: commit receipt codec rejects non-positive-Int runtimeVersion "1" without coercion
+ok 56 - commit receipt codec rejects non-positive-Int runtimeVersion "1" without coercion
+  ---
+  duration_ms: 1.397621
+  type: 'test'
+  ...
+# Subtest: commit receipt codec rejects non-positive-Int runtimeVersion "codec-v1" without coercion
+ok 57 - commit receipt codec rejects non-positive-Int runtimeVersion "codec-v1" without coercion
+  ---
+  duration_ms: 1.320836
+  type: 'test'
+  ...
+# Subtest: commit receipt codec rejects non-positive-Int runtimeVersion 0 without coercion
+ok 58 - commit receipt codec rejects non-positive-Int runtimeVersion 0 without coercion
+  ---
+  duration_ms: 1.28323
+  type: 'test'
+  ...
+# Subtest: commit receipt codec rejects non-positive-Int runtimeVersion -1 without coercion
+ok 59 - commit receipt codec rejects non-positive-Int runtimeVersion -1 without coercion
+  ---
+  duration_ms: 1.276401
+  type: 'test'
+  ...
+# Subtest: commit receipt codec rejects non-positive-Int runtimeVersion 1.5 without coercion
+ok 60 - commit receipt codec rejects non-positive-Int runtimeVersion 1.5 without coercion
+  ---
+  duration_ms: 1.274167
+  type: 'test'
+  ...
+# Subtest: commit receipt codec rejects non-positive-Int runtimeVersion 2147483648 without coercion
+ok 61 - commit receipt codec rejects non-positive-Int runtimeVersion 2147483648 without coercion
+  ---
+  duration_ms: 1.270844
+  type: 'test'
+  ...
+# Subtest: commit receipt codec rejects non-positive-Int runtimeVersion 9007199254740991 without coercion
+ok 62 - commit receipt codec rejects non-positive-Int runtimeVersion 9007199254740991 without coercion
+  ---
+  duration_ms: 1.733499
+  type: 'test'
+  ...
+# Subtest: commit receipt codec rejects non-positive-Int runtimeVersion true without coercion
+ok 63 - commit receipt codec rejects non-positive-Int runtimeVersion true without coercion
+  ---
+  duration_ms: 1.290082
+  type: 'test'
+  ...
+# Subtest: commit receipt codec rejects non-positive-Int runtimeVersion null without coercion
+ok 64 - commit receipt codec rejects non-positive-Int runtimeVersion null without coercion
+  ---
+  duration_ms: 1.339002
+  type: 'test'
+  ...
+# Subtest: compensate receipt codec runtimeVersion is mandatory and cannot default to the definition or another codec
+ok 65 - compensate receipt codec runtimeVersion is mandatory and cannot default to the definition or another codec
+  ---
+  duration_ms: 1.291866
+  type: 'test'
+  ...
+# Subtest: compensate receipt codec rejects non-positive-Int runtimeVersion "1" without coercion
+ok 66 - compensate receipt codec rejects non-positive-Int runtimeVersion "1" without coercion
+  ---
+  duration_ms: 1.276857
+  type: 'test'
+  ...
+# Subtest: compensate receipt codec rejects non-positive-Int runtimeVersion "codec-v1" without coercion
+ok 67 - compensate receipt codec rejects non-positive-Int runtimeVersion "codec-v1" without coercion
+  ---
+  duration_ms: 1.448505
+  type: 'test'
+  ...
+# Subtest: compensate receipt codec rejects non-positive-Int runtimeVersion 0 without coercion
+ok 68 - compensate receipt codec rejects non-positive-Int runtimeVersion 0 without coercion
+  ---
+  duration_ms: 1.320865
+  type: 'test'
+  ...
+# Subtest: compensate receipt codec rejects non-positive-Int runtimeVersion -1 without coercion
+ok 69 - compensate receipt codec rejects non-positive-Int runtimeVersion -1 without coercion
+  ---
+  duration_ms: 1.431718
+  type: 'test'
+  ...
+# Subtest: compensate receipt codec rejects non-positive-Int runtimeVersion 1.5 without coercion
+ok 70 - compensate receipt codec rejects non-positive-Int runtimeVersion 1.5 without coercion
+  ---
+  duration_ms: 1.378358
+  type: 'test'
+  ...
+# Subtest: compensate receipt codec rejects non-positive-Int runtimeVersion 2147483648 without coercion
+ok 71 - compensate receipt codec rejects non-positive-Int runtimeVersion 2147483648 without coercion
+  ---
+  duration_ms: 1.353045
+  type: 'test'
+  ...
+# Subtest: compensate receipt codec rejects non-positive-Int runtimeVersion 9007199254740991 without coercion
+ok 72 - compensate receipt codec rejects non-positive-Int runtimeVersion 9007199254740991 without coercion
+  ---
+  duration_ms: 1.857553
+  type: 'test'
+  ...
+# Subtest: compensate receipt codec rejects non-positive-Int runtimeVersion true without coercion
+ok 73 - compensate receipt codec rejects non-positive-Int runtimeVersion true without coercion
+  ---
+  duration_ms: 1.297709
+  type: 'test'
+  ...
+# Subtest: compensate receipt codec rejects non-positive-Int runtimeVersion null without coercion
+ok 74 - compensate receipt codec rejects non-positive-Int runtimeVersion null without coercion
+  ---
+  duration_ms: 1.280464
+  type: 'test'
+  ...
+# Subtest: definition, args and every phase codec have independent explicit positive Int pins and digest coverage
+ok 75 - definition, args and every phase codec have independent explicit positive Int pins and digest coverage
+  ---
+  duration_ms: 57.141965
+  type: 'test'
+  ...
+# Subtest: same business version full definition and technical semantics produce different digests
+ok 76 - same business version full definition and technical semantics produce different digests
+  ---
+  duration_ms: 120.78325
+  type: 'test'
+  ...
+# Subtest: anchors/sourceMap are provenance only; forged IR digest/readiness never passes the closure gate
+ok 77 - anchors/sourceMap are provenance only; forged IR digest/readiness never passes the closure gate
+  ---
+  duration_ms: 453.237676
+  type: 'test'
+  ...
+# Subtest: args and every receipt codec id/version independently enter semantic digest
+ok 78 - args and every receipt codec id/version independently enter semantic digest
+  ---
+  duration_ms: 101.20231
+  type: 'test'
+  ...
+# Subtest: prepare receipt codec must be explicit even for empty outputs; receipt.mapper cannot supply it
+ok 79 - prepare receipt codec must be explicit even for empty outputs; receipt.mapper cannot supply it
+  ---
+  duration_ms: 20.150962
+  type: 'test'
+  ...
+# Subtest: commit receipt codec must be explicit even for empty outputs; receipt.mapper cannot supply it
+ok 80 - commit receipt codec must be explicit even for empty outputs; receipt.mapper cannot supply it
+  ---
+  duration_ms: 19.675025
+  type: 'test'
+  ...
+# Subtest: compensate receipt codec must be explicit even for empty outputs; receipt.mapper cannot supply it
+ok 81 - compensate receipt codec must be explicit even for empty outputs; receipt.mapper cannot supply it
+  ---
+  duration_ms: 19.241298
+  type: 'test'
+  ...
+# Subtest: missing receipt codec id rejects the entire plan
+ok 82 - missing receipt codec id rejects the entire plan
+  ---
+  duration_ms: 1.565388
+  type: 'test'
+  ...
+# Subtest: missing receipt codec version rejects the entire plan
+ok 83 - missing receipt codec version rejects the entire plan
+  ---
+  duration_ms: 1.293636
+  type: 'test'
+  ...
+# Subtest: receipt pins reject unknown steps/phases, duplicate keys and mismatched versions
+ok 84 - receipt pins reject unknown steps/phases, duplicate keys and mismatched versions
+  ---
+  duration_ms: 53.5281
+  type: 'test'
+  ...
+# Subtest: unknown runtime target/API artifact rejects all output
+ok 85 - unknown runtime target/API artifact rejects all output
+  ---
+  duration_ms: 1.243115
+  type: 'test'
+  ...
+# Subtest: unknown runtime target/API artifactStatus rejects all output
+ok 86 - unknown runtime target/API artifactStatus rejects all output
+  ---
+  duration_ms: 1.190424
+  type: 'test'
+  ...
+# Subtest: unknown runtime target/API apiMode rejects all output
+ok 87 - unknown runtime target/API apiMode rejects all output
+  ---
+  duration_ms: 1.159138
+  type: 'test'
+  ...
+# Subtest: unknown runtime target/API definitionApi rejects all output
+ok 88 - unknown runtime target/API definitionApi rejects all output
+  ---
+  duration_ms: 1.100943
+  type: 'test'
+  ...
+# Subtest: unknown runtime target/API coordinatorApi rejects all output
+ok 89 - unknown runtime target/API coordinatorApi rejects all output
+  ---
+  duration_ms: 1.107771
+  type: 'test'
+  ...
+# Subtest: unknown runtime target/API executionMode rejects all output
+ok 90 - unknown runtime target/API executionMode rejects all output
+  ---
+  duration_ms: 1.093779
+  type: 'test'
+  ...
+# Subtest: technical artifact/API mismatch cannot be hidden by a claimed strict target
+ok 91 - technical artifact/API mismatch cannot be hidden by a claimed strict target
+  ---
+  duration_ms: 17.336783
+  type: 'test'
+  ...
+# Subtest: released saga-core 0.2 is neither a strict target candidate nor a compatible technical pin
+ok 92 - released saga-core 0.2 is neither a strict target candidate nor a compatible technical pin
+  ---
+  duration_ms: 27.188564
+  type: 'test'
+  ...
+# Subtest: unsupported lowering capability parallel cannot certify execution
+ok 93 - unsupported lowering capability parallel cannot certify execution
+  ---
+  duration_ms: 1.372955
+  type: 'test'
+  ...
+# Subtest: unsupported lowering capability dynamic-manifest cannot certify execution
+ok 94 - unsupported lowering capability dynamic-manifest cannot certify execution
+  ---
+  duration_ms: 1.43782
+  type: 'test'
+  ...
+# Subtest: unsupported lowering capability result-slot-dataflow cannot certify execution
+ok 95 - unsupported lowering capability result-slot-dataflow cannot certify execution
+  ---
+  duration_ms: 1.054582
+  type: 'test'
+  ...
+# Subtest: unsupported lowering capability strict-scala cannot certify execution
+ok 96 - unsupported lowering capability strict-scala cannot certify execution
+  ---
+  duration_ms: 1.047626
+  type: 'test'
+  ...
+# Subtest: unsupported lowering capability durable-commit-decision cannot certify execution
+ok 97 - unsupported lowering capability durable-commit-decision cannot certify execution
+  ---
+  duration_ms: 1.037863
+  type: 'test'
+  ...
+# Subtest: missing or duplicate known capabilities return null IR and plan
+ok 98 - missing or duplicate known capabilities return null IR and plan
+  ---
+  duration_ms: 2.118649
+  type: 'test'
+  ...
+# Subtest: mapping requires exact sagaId, no name fallback or partial/orphan mapping
+ok 99 - mapping requires exact sagaId, no name fallback or partial/orphan mapping
+  ---
+  duration_ms: 35.232215
+  type: 'test'
+  ...
+# Subtest: existing two-account fixture stays compiler-green but group, slots and resilience yield zero plan
+ok 100 - existing two-account fixture stays compiler-green but group, slots and resilience yield zero plan
+  ---
+  duration_ms: 81.827239
+  type: 'test'
+  ...
+# Subtest: two actual transfer steps in compiler-valid serial barrier groups remain blocked without deleting resources or receipt flow
+ok 101 - two actual transfer steps in compiler-valid serial barrier groups remain blocked without deleting resources or receipt flow
+  ---
+  duration_ms: 74.234896
+  type: 'test'
+  ...
+# Subtest: owned test reads actual authored money-transfer compile output and preserves the contract gate
+ok 102 - owned test reads actual authored money-transfer compile output and preserves the contract gate
+  ---
+  duration_ms: 75.74631
+  type: 'test'
+  ...
+# Subtest: legal dependent groups/durable manifest/result flow are rejected, not serialized after semantics vanish
+ok 103 - legal dependent groups/durable manifest/result flow are rejected, not serialized after semantics vanish
+  ---
+  duration_ms: 65.028469
+  type: 'test'
+  ...
+# Subtest: legal completion result-slot dataflow is rejected separately from command slot flow
+ok 104 - legal completion result-slot dataflow is rejected separately from command slot flow
+  ---
+  duration_ms: 26.896819
+  type: 'test'
+  ...
+# Subtest: read-only none steps cannot masquerade as strict allTCC
+ok 105 - read-only none steps cannot masquerade as strict allTCC
+  ---
+  duration_ms: 17.317291
+  type: 'test'
+  ...
+# Subtest: decimal-string Money is compiler-valid but outside first minor-unit-string adapter contract
+ok 106 - decimal-string Money is compiler-valid but outside first minor-unit-string adapter contract
+  ---
+  duration_ms: 27.573195
+  type: 'test'
+  ...
+# Subtest: one invalid Saga discards a second valid Saga plan
+ok 107 - one invalid Saga discards a second valid Saga plan
+  ---
+  duration_ms: 57.013294
+  type: 'test'
+  ...
+# Subtest: context unknown field is rejected using complete closure, not readiness/digest
+ok 108 - context unknown field is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 1.183927
+  type: 'test'
+  ...
+# Subtest: runtime document unknown field is rejected using complete closure, not readiness/digest
+ok 109 - runtime document unknown field is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 1.078659
+  type: 'test'
+  ...
+# Subtest: target claimed certification is rejected using complete closure, not readiness/digest
+ok 110 - target claimed certification is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 1.369923
+  type: 'test'
+  ...
+# Subtest: pin unknown field is rejected using complete closure, not readiness/digest
+ok 111 - pin unknown field is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 1.325474
+  type: 'test'
+  ...
+# Subtest: args codec unknown field is rejected using complete closure, not readiness/digest
+ok 112 - args codec unknown field is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 1.169573
+  type: 'test'
+  ...
+# Subtest: definition unknown field is rejected using complete closure, not readiness/digest
+ok 113 - definition unknown field is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 4.924669
+  type: 'test'
+  ...
+# Subtest: payload unknown field is rejected using complete closure, not readiness/digest
+ok 114 - payload unknown field is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 3.586516
+  type: 'test'
+  ...
+# Subtest: technical unknown field is rejected using complete closure, not readiness/digest
+ok 115 - technical unknown field is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 3.785999
+  type: 'test'
+  ...
+# Subtest: technical capability unknown is rejected using complete closure, not readiness/digest
+ok 116 - technical capability unknown is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 3.549757
+  type: 'test'
+  ...
+# Subtest: owned command wrong type is rejected using complete closure, not readiness/digest
+ok 117 - owned command wrong type is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 4.621412
+  type: 'test'
+  ...
+# Subtest: resource addressing mismatch is rejected using complete closure, not readiness/digest
+ok 118 - resource addressing mismatch is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 4.376583
+  type: 'test'
+  ...
+# Subtest: unknown command reference is rejected using complete closure, not readiness/digest
+ok 119 - unknown command reference is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 5.787597
+  type: 'test'
+  ...
+# Subtest: duplicate type is rejected using complete closure, not readiness/digest
+ok 120 - duplicate type is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 4.429511
+  type: 'test'
+  ...
+# Subtest: immutable inputs, stable byte output and no output object borrowed from callers
+ok 121 - immutable inputs, stable byte output and no output object borrowed from callers
+  ---
+  duration_ms: 47.636534
+  type: 'test'
+  ...
+# Subtest: non-JSON inputs reject before getters, proxies, toJSON or other user code can execute
+ok 122 - non-JSON inputs reject before getters, proxies, toJSON or other user code can execute
+  ---
+  duration_ms: 26.900778
+  type: 'test'
+  ...
+# Subtest: explicit parsed object context/document only; no JSON text, implicit binding or plan from validation
+ok 123 - explicit parsed object context/document only; no JSON text, implicit binding or plan from validation
+  ---
+  duration_ms: 5.540451
+  type: 'test'
+  ...
+1..123
+# tests 123
+# suites 0
+# pass 123
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2062.64845

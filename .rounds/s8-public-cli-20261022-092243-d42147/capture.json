@@ -1,0 +1,51 @@
+[
+  {
+    "label": "branch",
+    "argv": [
+      "git",
+      "branch",
+      "--show-current"
+    ],
+    "cwd": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+    "stdout": "execution-compiler-v1\n",
+    "stderr": "",
+    "exit": 0
+  },
+  {
+    "label": "revision",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+    "stdout": "87fd44b820e9d7b075411fb3fdabb79fbbd37aea\n",
+    "stderr": "",
+    "exit": 0
+  },
+  {
+    "label": "origin",
+    "argv": [
+      "git",
+      "remote",
+      "get-url",
+      "origin"
+    ],
+    "cwd": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+    "stdout": "https://github.com/zhongdj/metarch-truthsrc.git\n",
+    "stderr": "",
+    "exit": 0
+  },
+  {
+    "label": "public-help",
+    "argv": [
+      "node",
+      "bin/truthsrc.js",
+      "--help"
+    ],
+    "cwd": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+    "stdout": "truthsrc v0.5 — git-native Event Storming truth source\n\n  truthsrc compile   --tree <dir> [--out canonical.json]   tree → canonical projection\n  truthsrc compile-execution --tree <dir> | --in <canonical> [--binding <file>] --out <ir>\n  truthsrc compile-sagas     --tree <dir> | --in <canonical> [--binding <file>] --out <ir>\n                                                           strict contract compilation; never runtime certification\n  truthsrc decompose --canonical <file> --tree <dir>       canonical → tree atoms\n  truthsrc validate  [--tree <dir>]                        V* structure + R* relations + ES/CS/AG/RF/SM stage rules\n  truthsrc roundtrip [--tree <dir>]                        compile∘decompose∘compile identity gate\n  truthsrc init      <dir>                                 scaffold a minimal workshop tree\n  truthsrc generate  --in <canonical> --generator <dir> --out <dir> [--option k=v]\n                                                           run a generator (ledger + anchors emitted)\n                     [--options-json <file>]                explicit producer options, including nested bindings/IR\n                     [--concern <name>] [--families A,B] [--concerns <file>]\n                                                           incremental regeneration: only the faces the\n                                                           concern scope selects are rewritten (engine: core;\n                                                           presets: project-level registry, default ./concerns.json)\n  truthsrc init-generator <dir>                            scaffold a custom generator\n  truthsrc mcp                                         MCP stdio server: query verbs as tools\n                                                       (stdio JSON-RPC; configure your MCP client with\n                                                       \"command\": \"truthsrc\", \"args\": [\"mcp\"])\n",
+    "stderr": "",
+    "exit": 2
+  }
+]

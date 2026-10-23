@@ -1,0 +1,490 @@
+TAP version 13
+# Subtest: minimal compiler-closed static allTCC lowers actual resolved adapter data, never a runtime certificate
+ok 1 - minimal compiler-closed static allTCC lowers actual resolved adapter data, never a runtime certificate
+  ---
+  duration_ms: 71.739673
+  type: 'test'
+  ...
+# Subtest: JSON-serialized lowered output is consumable by a narrow adapter without rejoining input IR
+ok 2 - JSON-serialized lowered output is consumable by a narrow adapter without rejoining input IR
+  ---
+  duration_ms: 18.322608
+  type: 'test'
+  ...
+# Subtest: compiler-legal string business version "v1" maps exactly, never parsed
+ok 3 - compiler-legal string business version "v1" maps exactly, never parsed
+  ---
+  duration_ms: 20.299776
+  type: 'test'
+  ...
+# Subtest: compiler-legal string business version "release-2026_10" maps exactly, never parsed
+ok 4 - compiler-legal string business version "release-2026_10" maps exactly, never parsed
+  ---
+  duration_ms: 21.577956
+  type: 'test'
+  ...
+# Subtest: compiler-legal string business version "V01" maps exactly, never parsed
+ok 5 - compiler-legal string business version "V01" maps exactly, never parsed
+  ---
+  duration_ms: 27.807476
+  type: 'test'
+  ...
+# Subtest: live compiler rejects unsupported string business version "1" unchanged
+ok 6 - live compiler rejects unsupported string business version "1" unchanged
+  ---
+  duration_ms: 7.294223
+  type: 'test'
+  ...
+# Subtest: live compiler rejects unsupported string business version " release/2026.10 " unchanged
+ok 7 - live compiler rejects unsupported string business version " release/2026.10 " unchanged
+  ---
+  duration_ms: 6.984447
+  type: 'test'
+  ...
+# Subtest: live compiler rejects unsupported string business version "" unchanged
+ok 8 - live compiler rejects unsupported string business version "" unchanged
+  ---
+  duration_ms: 7.58918
+  type: 'test'
+  ...
+# Subtest: live compiler rejects unsupported string business version "   " unchanged
+ok 9 - live compiler rejects unsupported string business version "   " unchanged
+  ---
+  duration_ms: 7.134817
+  type: 'test'
+  ...
+# Subtest: live compiler rejects unsupported number business version 1 unchanged
+ok 10 - live compiler rejects unsupported number business version 1 unchanged
+  ---
+  duration_ms: 7.057525
+  type: 'test'
+  ...
+# Subtest: live compiler rejects unsupported number business version 9007199254740991 unchanged
+ok 11 - live compiler rejects unsupported number business version 9007199254740991 unchanged
+  ---
+  duration_ms: 6.302603
+  type: 'test'
+  ...
+# Subtest: live compiler rejects unsupported number business version 0 unchanged
+ok 12 - live compiler rejects unsupported number business version 0 unchanged
+  ---
+  duration_ms: 6.286766
+  type: 'test'
+  ...
+# Subtest: live compiler rejects unsupported number business version -1 unchanged
+ok 13 - live compiler rejects unsupported number business version -1 unchanged
+  ---
+  duration_ms: 6.981842
+  type: 'test'
+  ...
+# Subtest: live compiler rejects unsupported number business version 1.5 unchanged
+ok 14 - live compiler rejects unsupported number business version 1.5 unchanged
+  ---
+  duration_ms: 6.164925
+  type: 'test'
+  ...
+# Subtest: live compiler rejects unsupported boolean business version true unchanged
+ok 15 - live compiler rejects unsupported boolean business version true unchanged
+  ---
+  duration_ms: 4.611093
+  type: 'test'
+  ...
+# Subtest: live compiler rejects unsupported object business version null unchanged
+ok 16 - live compiler rejects unsupported object business version null unchanged
+  ---
+  duration_ms: 8.734703
+  type: 'test'
+  ...
+# Subtest: live compiler rejects unsupported object business version {} unchanged
+ok 17 - live compiler rejects unsupported object business version {} unchanged
+  ---
+  duration_ms: 6.592478
+  type: 'test'
+  ...
+# Subtest: runtime mapping exact string mismatch v2 is rejected
+ok 18 - runtime mapping exact string mismatch v2 is rejected
+  ---
+  duration_ms: 19.438887
+  type: 'test'
+  ...
+# Subtest: technical business version mismatch v2 stays rejected by compiler
+ok 19 - technical business version mismatch v2 stays rejected by compiler
+  ---
+  duration_ms: 3.175887
+  type: 'test'
+  ...
+# Subtest: runtime mapping exact string mismatch V1 is rejected
+ok 20 - runtime mapping exact string mismatch V1 is rejected
+  ---
+  duration_ms: 17.603975
+  type: 'test'
+  ...
+# Subtest: technical business version mismatch V1 stays rejected by compiler
+ok 21 - technical business version mismatch V1 stays rejected by compiler
+  ---
+  duration_ms: 2.971779
+  type: 'test'
+  ...
+# Subtest: runtime mapping does not strip or coerce 1
+ok 22 - runtime mapping does not strip or coerce 1
+  ---
+  duration_ms: 1.166176
+  type: 'test'
+  ...
+# Subtest: runtime mapping does not strip or coerce " v1 "
+ok 23 - runtime mapping does not strip or coerce " v1 "
+  ---
+  duration_ms: 1.137764
+  type: 'test'
+  ...
+# Subtest: runtime mapping does not strip or coerce "v1 "
+ok 24 - runtime mapping does not strip or coerce "v1 "
+  ---
+  duration_ms: 1.087176
+  type: 'test'
+  ...
+# Subtest: runtime mapping does not strip or coerce "1"
+ok 25 - runtime mapping does not strip or coerce "1"
+  ---
+  duration_ms: 1.083395
+  type: 'test'
+  ...
+# Subtest: runtime mapping does not strip or coerce null
+ok 26 - runtime mapping does not strip or coerce null
+  ---
+  duration_ms: 1.254161
+  type: 'test'
+  ...
+# Subtest: invalid runtime Int "1" is rejected, not coerced
+ok 27 - invalid runtime Int "1" is rejected, not coerced
+  ---
+  duration_ms: 1.216221
+  type: 'test'
+  ...
+# Subtest: invalid runtime Int "v1" is rejected, not coerced
+ok 28 - invalid runtime Int "v1" is rejected, not coerced
+  ---
+  duration_ms: 1.0858
+  type: 'test'
+  ...
+# Subtest: invalid runtime Int 0 is rejected, not coerced
+ok 29 - invalid runtime Int 0 is rejected, not coerced
+  ---
+  duration_ms: 1.098227
+  type: 'test'
+  ...
+# Subtest: invalid runtime Int -1 is rejected, not coerced
+ok 30 - invalid runtime Int -1 is rejected, not coerced
+  ---
+  duration_ms: 1.090657
+  type: 'test'
+  ...
+# Subtest: invalid runtime Int 1.2 is rejected, not coerced
+ok 31 - invalid runtime Int 1.2 is rejected, not coerced
+  ---
+  duration_ms: 1.64862
+  type: 'test'
+  ...
+# Subtest: invalid runtime Int 2147483648 is rejected, not coerced
+ok 32 - invalid runtime Int 2147483648 is rejected, not coerced
+  ---
+  duration_ms: 1.970374
+  type: 'test'
+  ...
+# Subtest: invalid runtime Int 9007199254740991 is rejected, not coerced
+ok 33 - invalid runtime Int 9007199254740991 is rejected, not coerced
+  ---
+  duration_ms: 1.331366
+  type: 'test'
+  ...
+# Subtest: maximum positive Scala Int is explicitly independent of legal string business version
+ok 34 - maximum positive Scala Int is explicitly independent of legal string business version
+  ---
+  duration_ms: 8.895671
+  type: 'test'
+  ...
+# Subtest: same business version full definition and technical semantics produce different digests
+ok 35 - same business version full definition and technical semantics produce different digests
+  ---
+  duration_ms: 116.679685
+  type: 'test'
+  ...
+# Subtest: anchors/sourceMap are provenance only; forged IR digest/readiness never passes the closure gate
+ok 36 - anchors/sourceMap are provenance only; forged IR digest/readiness never passes the closure gate
+  ---
+  duration_ms: 264.804825
+  type: 'test'
+  ...
+# Subtest: args and every receipt codec id/version independently enter semantic digest
+ok 37 - args and every receipt codec id/version independently enter semantic digest
+  ---
+  duration_ms: 94.595093
+  type: 'test'
+  ...
+# Subtest: prepare receipt codec must be explicit even for empty outputs; receipt.mapper cannot supply it
+ok 38 - prepare receipt codec must be explicit even for empty outputs; receipt.mapper cannot supply it
+  ---
+  duration_ms: 16.094903
+  type: 'test'
+  ...
+# Subtest: commit receipt codec must be explicit even for empty outputs; receipt.mapper cannot supply it
+ok 39 - commit receipt codec must be explicit even for empty outputs; receipt.mapper cannot supply it
+  ---
+  duration_ms: 16.441987
+  type: 'test'
+  ...
+# Subtest: compensate receipt codec must be explicit even for empty outputs; receipt.mapper cannot supply it
+ok 40 - compensate receipt codec must be explicit even for empty outputs; receipt.mapper cannot supply it
+  ---
+  duration_ms: 16.926753
+  type: 'test'
+  ...
+# Subtest: missing receipt codec id rejects the entire plan
+ok 41 - missing receipt codec id rejects the entire plan
+  ---
+  duration_ms: 1.166809
+  type: 'test'
+  ...
+# Subtest: missing receipt codec version rejects the entire plan
+ok 42 - missing receipt codec version rejects the entire plan
+  ---
+  duration_ms: 1.051478
+  type: 'test'
+  ...
+# Subtest: receipt pins reject unknown steps/phases, duplicate keys and mismatched versions
+ok 43 - receipt pins reject unknown steps/phases, duplicate keys and mismatched versions
+  ---
+  duration_ms: 57.046583
+  type: 'test'
+  ...
+# Subtest: unknown runtime target/API artifact rejects all output
+ok 44 - unknown runtime target/API artifact rejects all output
+  ---
+  duration_ms: 1.180752
+  type: 'test'
+  ...
+# Subtest: unknown runtime target/API artifactStatus rejects all output
+ok 45 - unknown runtime target/API artifactStatus rejects all output
+  ---
+  duration_ms: 1.124977
+  type: 'test'
+  ...
+# Subtest: unknown runtime target/API apiMode rejects all output
+ok 46 - unknown runtime target/API apiMode rejects all output
+  ---
+  duration_ms: 1.049027
+  type: 'test'
+  ...
+# Subtest: unknown runtime target/API definitionApi rejects all output
+ok 47 - unknown runtime target/API definitionApi rejects all output
+  ---
+  duration_ms: 1.287511
+  type: 'test'
+  ...
+# Subtest: unknown runtime target/API coordinatorApi rejects all output
+ok 48 - unknown runtime target/API coordinatorApi rejects all output
+  ---
+  duration_ms: 1.168554
+  type: 'test'
+  ...
+# Subtest: unknown runtime target/API executionMode rejects all output
+ok 49 - unknown runtime target/API executionMode rejects all output
+  ---
+  duration_ms: 1.125107
+  type: 'test'
+  ...
+# Subtest: technical artifact/API mismatch cannot be hidden by a claimed strict target
+ok 50 - technical artifact/API mismatch cannot be hidden by a claimed strict target
+  ---
+  duration_ms: 16.717009
+  type: 'test'
+  ...
+# Subtest: unsupported lowering capability parallel cannot certify execution
+ok 51 - unsupported lowering capability parallel cannot certify execution
+  ---
+  duration_ms: 1.134674
+  type: 'test'
+  ...
+# Subtest: unsupported lowering capability dynamic-manifest cannot certify execution
+ok 52 - unsupported lowering capability dynamic-manifest cannot certify execution
+  ---
+  duration_ms: 1.51192
+  type: 'test'
+  ...
+# Subtest: unsupported lowering capability result-slot-dataflow cannot certify execution
+ok 53 - unsupported lowering capability result-slot-dataflow cannot certify execution
+  ---
+  duration_ms: 1.102909
+  type: 'test'
+  ...
+# Subtest: unsupported lowering capability strict-scala cannot certify execution
+ok 54 - unsupported lowering capability strict-scala cannot certify execution
+  ---
+  duration_ms: 1.054569
+  type: 'test'
+  ...
+# Subtest: unsupported lowering capability durable-commit-decision cannot certify execution
+ok 55 - unsupported lowering capability durable-commit-decision cannot certify execution
+  ---
+  duration_ms: 1.140175
+  type: 'test'
+  ...
+# Subtest: missing or duplicate known capabilities return null IR and plan
+ok 56 - missing or duplicate known capabilities return null IR and plan
+  ---
+  duration_ms: 2.170616
+  type: 'test'
+  ...
+# Subtest: mapping requires exact sagaId, no name fallback or partial/orphan mapping
+ok 57 - mapping requires exact sagaId, no name fallback or partial/orphan mapping
+  ---
+  duration_ms: 36.464617
+  type: 'test'
+  ...
+# Subtest: existing two-account fixture stays compiler-green but group, slots and resilience yield zero plan
+ok 58 - existing two-account fixture stays compiler-green but group, slots and resilience yield zero plan
+  ---
+  duration_ms: 75.332899
+  type: 'test'
+  ...
+# Subtest: owned test reads actual authored money-transfer compile output and preserves the contract gate
+ok 59 - owned test reads actual authored money-transfer compile output and preserves the contract gate
+  ---
+  duration_ms: 59.592093
+  type: 'test'
+  ...
+# Subtest: legal dependent groups/durable manifest/result flow are rejected, not serialized after semantics vanish
+ok 60 - legal dependent groups/durable manifest/result flow are rejected, not serialized after semantics vanish
+  ---
+  duration_ms: 67.550499
+  type: 'test'
+  ...
+# Subtest: legal completion result-slot dataflow is rejected separately from command slot flow
+ok 61 - legal completion result-slot dataflow is rejected separately from command slot flow
+  ---
+  duration_ms: 26.342662
+  type: 'test'
+  ...
+# Subtest: read-only none steps cannot masquerade as strict allTCC
+ok 62 - read-only none steps cannot masquerade as strict allTCC
+  ---
+  duration_ms: 14.118319
+  type: 'test'
+  ...
+# Subtest: decimal-string Money is compiler-valid but outside first minor-unit-string adapter contract
+ok 63 - decimal-string Money is compiler-valid but outside first minor-unit-string adapter contract
+  ---
+  duration_ms: 24.273372
+  type: 'test'
+  ...
+# Subtest: one invalid Saga discards a second valid Saga plan
+ok 64 - one invalid Saga discards a second valid Saga plan
+  ---
+  duration_ms: 53.083191
+  type: 'test'
+  ...
+# Subtest: context unknown field is rejected using complete closure, not readiness/digest
+ok 65 - context unknown field is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 1.145084
+  type: 'test'
+  ...
+# Subtest: runtime document unknown field is rejected using complete closure, not readiness/digest
+ok 66 - runtime document unknown field is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 1.124268
+  type: 'test'
+  ...
+# Subtest: target claimed certification is rejected using complete closure, not readiness/digest
+ok 67 - target claimed certification is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 1.170583
+  type: 'test'
+  ...
+# Subtest: pin unknown field is rejected using complete closure, not readiness/digest
+ok 68 - pin unknown field is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 1.183074
+  type: 'test'
+  ...
+# Subtest: args codec unknown field is rejected using complete closure, not readiness/digest
+ok 69 - args codec unknown field is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 1.117091
+  type: 'test'
+  ...
+# Subtest: definition unknown field is rejected using complete closure, not readiness/digest
+ok 70 - definition unknown field is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 3.592964
+  type: 'test'
+  ...
+# Subtest: payload unknown field is rejected using complete closure, not readiness/digest
+ok 71 - payload unknown field is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 3.626245
+  type: 'test'
+  ...
+# Subtest: technical unknown field is rejected using complete closure, not readiness/digest
+ok 72 - technical unknown field is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 4.074485
+  type: 'test'
+  ...
+# Subtest: technical capability unknown is rejected using complete closure, not readiness/digest
+ok 73 - technical capability unknown is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 3.903455
+  type: 'test'
+  ...
+# Subtest: owned command wrong type is rejected using complete closure, not readiness/digest
+ok 74 - owned command wrong type is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 4.260287
+  type: 'test'
+  ...
+# Subtest: resource addressing mismatch is rejected using complete closure, not readiness/digest
+ok 75 - resource addressing mismatch is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 3.985533
+  type: 'test'
+  ...
+# Subtest: unknown command reference is rejected using complete closure, not readiness/digest
+ok 76 - unknown command reference is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 4.392739
+  type: 'test'
+  ...
+# Subtest: duplicate type is rejected using complete closure, not readiness/digest
+ok 77 - duplicate type is rejected using complete closure, not readiness/digest
+  ---
+  duration_ms: 3.188211
+  type: 'test'
+  ...
+# Subtest: immutable inputs, stable byte output and no output object borrowed from callers
+ok 78 - immutable inputs, stable byte output and no output object borrowed from callers
+  ---
+  duration_ms: 34.828476
+  type: 'test'
+  ...
+# Subtest: non-JSON inputs reject before getters, proxies, toJSON or other user code can execute
+ok 79 - non-JSON inputs reject before getters, proxies, toJSON or other user code can execute
+  ---
+  duration_ms: 22.756893
+  type: 'test'
+  ...
+# Subtest: explicit parsed object context/document only; no JSON text, implicit binding or plan from validation
+ok 80 - explicit parsed object context/document only; no JSON text, implicit binding or plan from validation
+  ---
+  duration_ms: 5.042567
+  type: 'test'
+  ...
+1..80
+# tests 80
+# suites 0
+# pass 80
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1522.04076

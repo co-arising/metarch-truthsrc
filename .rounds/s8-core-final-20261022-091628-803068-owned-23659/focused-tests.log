@@ -1,0 +1,707 @@
+NODE_VERSION=v22.23.2
+COMMAND=node --test test/generate-anchors.test.mjs test/anchors.test.mjs test/anchor-query.test.mjs test/generate.test.mjs test/diff-apply.test.mjs test/concerns.test.mjs test/generate-cli.test.mjs
+TAP version 13
+# Subtest: anchors query exposes all actual current files without inventing symbol verification
+ok 1 - anchors query exposes all actual current files without inventing symbol verification
+  ---
+  duration_ms: 77.779506
+  type: 'test'
+  ...
+# Subtest: anchors query marks renamed, edited and missing files accurately
+ok 2 - anchors query marks renamed, edited and missing files accurately
+  ---
+  duration_ms: 73.485807
+  type: 'test'
+  ...
+# Subtest: anchors query rejects symlink sources rather than following them
+ok 3 - anchors query rejects symlink sources rather than following them
+  ---
+  duration_ms: 61.452979
+  type: 'test'
+  ...
+# Subtest: without an explicit derived index the legacy query remains unanchored
+ok 4 - without an explicit derived index the legacy query remains unanchored
+  ---
+  duration_ms: 0.317713
+  type: 'test'
+  ...
+# Subtest: pure plan is detached, multi-valued, and never certifies planned templates
+ok 5 - pure plan is detached, multi-valued, and never certifies planned templates
+  ---
+  duration_ms: 4.001563
+  type: 'test'
+  ...
+# Subtest: one knowledge key retains multiple files, symbols and generator-declared modules/spans
+ok 6 - one knowledge key retains multiple files, symbols and generator-declared modules/spans
+  ---
+  duration_ms: 72.958303
+  type: 'test'
+  ...
+# Subtest: successful path-scoped replacement preserves other paths and other generators without reading them
+ok 7 - successful path-scoped replacement preserves other paths and other generators without reading them
+  ---
+  duration_ms: 73.572745
+  type: 'test'
+  ...
+# Subtest: KEEP hashes actual changed content, ignores planned templates, and cannot claim a missing symbol
+ok 8 - KEEP hashes actual changed content, ignores planned templates, and cannot claim a missing symbol
+  ---
+  duration_ms: 8.774961
+  type: 'test'
+  ...
+# Subtest: KEEP with changed content and generator-declared stale span must not reuse planned anchors
+ok 9 - KEEP with changed content and generator-declared stale span must not reuse planned anchors
+  ---
+  duration_ms: 7.172244
+  type: 'test'
+  ...
+# Subtest: KEEP retains distinct prior anchors and can refresh authentic matching symbol evidence with a source check
+ok 10 - KEEP retains distinct prior anchors and can refresh authentic matching symbol evidence with a source check
+  ---
+  duration_ms: 24.283305
+  type: 'test'
+  ...
+# Subtest: KEEP prior evidence is invalidated by actual byte changes and generator version changes
+ok 11 - KEEP prior evidence is invalidated by actual byte changes and generator version changes
+  ---
+  duration_ms: 34.368927
+  type: 'test'
+  ...
+# Subtest: rename/delete do not delete human files; old location stays unmapped and new path is separately mapped
+ok 12 - rename/delete do not delete human files; old location stays unmapped and new path is separately mapped
+  ---
+  duration_ms: 14.89329
+  type: 'test'
+  ...
+# Subtest: stale prior fingerprint is never reused, including after legacy migration
+ok 13 - stale prior fingerprint is never reused, including after legacy migration
+  ---
+  duration_ms: 27.535938
+  type: 'test'
+  ...
+# Subtest: MISSING and FAILED never certify existing source from planned output and retain prior locations
+ok 14 - MISSING and FAILED never certify existing source from planned output and retain prior locations
+  ---
+  duration_ms: 23.394457
+  type: 'test'
+  ...
+# Subtest: a missing final outcome stays planned even when source bytes exist
+ok 15 - a missing final outcome stays planned even when source bytes exist
+  ---
+  duration_ms: 4.368274
+  type: 'test'
+  ...
+# Subtest: final bytehash guards ADD/COVER/IDENTICAL; MERGE uses final bytes, not a pre-merge template
+ok 16 - final bytehash guards ADD/COVER/IDENTICAL; MERGE uses final bytes, not a pre-merge template
+  ---
+  duration_ms: 16.321244
+  type: 'test'
+  ...
+# Subtest: no module/symbol inference; absent parser or actual symbol gives only file verification
+ok 17 - no module/symbol inference; absent parser or actual symbol gives only file verification
+  ---
+  duration_ms: 59.479097
+  type: 'test'
+  ...
+# Subtest: parser gets post-apply actual bytes and cannot mutate the bytes used to fingerprint/verify
+ok 18 - parser gets post-apply actual bytes and cannot mutate the bytes used to fingerprint/verify
+  ---
+  duration_ms: 23.992865
+  type: 'test'
+  ...
+# Subtest: parser symbol/span must quote literal source, lie outside no declared span and be unambiguous
+ok 19 - parser symbol/span must quote literal source, lie outside no declared span and be unambiguous
+  ---
+  duration_ms: 13.5908
+  type: 'test'
+  ...
+# Subtest: span is only generator-declared UTF-8 byte span, never parser-inferred into location
+ok 20 - span is only generator-declared UTF-8 byte span, never parser-inferred into location
+  ---
+  duration_ms: 12.740735
+  type: 'test'
+  ...
+# Subtest: legacy reader requires explicit migration, converts one value to planned array and discards fake evidence
+ok 21 - legacy reader requires explicit migration, converts one value to planned array and discards fake evidence
+  ---
+  duration_ms: 8.237792
+  type: 'test'
+  ...
+# Subtest: legacy migration can be committed explicitly to its own derived index without authenticating old anchors
+ok 22 - legacy migration can be committed explicitly to its own derived index without authenticating old anchors
+  ---
+  duration_ms: 63.770438
+  type: 'test'
+  ...
+# Subtest: lexical escaping/absolute/backslash paths fail before any writes
+ok 23 - lexical escaping/absolute/backslash paths fail before any writes
+  ---
+  duration_ms: 1.53077
+  type: 'test'
+  ...
+# Subtest: escaping symlink, ancestor symlink and dangling symlink fail preflight with no verified receipt
+ok 24 - escaping symlink, ancestor symlink and dangling symlink fail preflight with no verified receipt
+  ---
+  duration_ms: 5.961165
+  type: 'test'
+  ...
+# Subtest: inside symlinks are allowed once, but realpath/hardlink aliases are rejected across paths/repos
+ok 25 - inside symlinks are allowed once, but realpath/hardlink aliases are rejected across paths/repos
+  ---
+  duration_ms: 8.333434
+  type: 'test'
+  ...
+# Subtest: casefold duplicate paths and existing directory aliases fail even before source parsing
+ok 26 - casefold duplicate paths and existing directory aliases fail even before source parsing
+  ---
+  duration_ms: 7.081198
+  type: 'test'
+  ...
+# Subtest: preflight includes unplanned final outcomes before opening any index temporary file
+ok 27 - preflight includes unplanned final outcomes before opening any index temporary file
+  ---
+  duration_ms: 2.384406
+  type: 'test'
+  ...
+# Subtest: derived anchors/source maps never participate in source digest/anchoring; explicit names avoid self references
+ok 28 - derived anchors/source maps never participate in source digest/anchoring; explicit names avoid self references
+  ---
+  duration_ms: 24.315035
+  type: 'test'
+  ...
+# Subtest: failed atomic rename leaves prior index unchanged, returns no certificate and removes only its own temp
+ok 29 - failed atomic rename leaves prior index unchanged, returns no certificate and removes only its own temp
+  ---
+  duration_ms: 110.505605
+  type: 'test'
+  ...
+# Subtest: failed first index write/sync creates no verified receipt and no temp residue
+ok 30 - failed first index write/sync creates no verified receipt and no temp residue
+  ---
+  duration_ms: 9.940267
+  type: 'test'
+  ...
+# Subtest: unknown existing index/JSON, symlink index, missing parent cannot be overwritten
+ok 31 - unknown existing index/JSON, symlink index, missing parent cannot be overwritten
+  ---
+  duration_ms: 25.81949
+  type: 'test'
+  ...
+# Subtest: index concurrency mismatch and post-read source change abort before atomic rename
+ok 32 - index concurrency mismatch and post-read source change abort before atomic rename
+  ---
+  duration_ms: 11.492811
+  type: 'test'
+  ...
+# Subtest: source change during temporary write and index change just before rename leave no helper receipt
+ok 33 - source change during temporary write and index change just before rename leave no helper receipt
+  ---
+  duration_ms: 93.454427
+  type: 'test'
+  ...
+# Subtest: successful outcome with missing/mismatching actual source preserves prior path as unmapped/stale
+ok 34 - successful outcome with missing/mismatching actual source preserves prior path as unmapped/stale
+  ---
+  duration_ms: 10.511592
+  type: 'test'
+  ...
+# Subtest: KEEP contradictory final hash downgrades matching prior certificate rather than silently retaining it
+ok 35 - KEEP contradictory final hash downgrades matching prior certificate rather than silently retaining it
+  ---
+  duration_ms: 9.161181
+  type: 'test'
+  ...
+# Subtest: MISSING/FAILED matching location retains its prior observed fingerprint and becomes stale, not deleted
+ok 36 - MISSING/FAILED matching location retains its prior observed fingerprint and becomes stale, not deleted
+  ---
+  duration_ms: 26.953677
+  type: 'test'
+  ...
+# Subtest: temporary stat/close/open failure never returns a receipt or deletes a pre-existing collision
+ok 37 - temporary stat/close/open failure never returns a receipt or deletes a pre-existing collision
+  ---
+  duration_ms: 34.468494
+  type: 'test'
+  ...
+# Subtest: successful owned path apply with empty locations marks prior mapping unmapped instead of deleting it
+ok 38 - successful owned path apply with empty locations marks prior mapping unmapped instead of deleting it
+  ---
+  duration_ms: 7.954388
+  type: 'test'
+  ...
+# Subtest: casefold aliases between index and source fail without overwriting application source
+ok 39 - casefold aliases between index and source fail without overwriting application source
+  ---
+  duration_ms: 2.251599
+  type: 'test'
+  ...
+# Subtest: temporary replaced by an unknown inode is never cleaned up by failure handling
+ok 40 - temporary replaced by an unknown inode is never cleaned up by failure handling
+  ---
+  duration_ms: 24.28257
+  type: 'test'
+  ...
+# Subtest: temporary inode replacement cannot be atomically committed as our verified index
+ok 41 - temporary inode replacement cannot be atomically committed as our verified index
+  ---
+  duration_ms: 27.849567
+  type: 'test'
+  ...
+# Subtest: tampered plan verification claims are rebuilt, and malformed v1 certificates are rejected
+ok 42 - tampered plan verification claims are rebuilt, and malformed v1 certificates are rejected
+  ---
+  duration_ms: 6.199262
+  type: 'test'
+  ...
+# ✅ concerns.test — engine units + incremental-regeneration e2e all green
+# Subtest: test/concerns.test.mjs
+ok 3 - test/concerns.test.mjs
+  ---
+  duration_ms: 4138.396957
+  type: 'test'
+  ...
+# ✅ diff-apply — MANUAL-block merge (anchor implant · orphan refusal · fixed point) + routes territory (swap · append · fail-fast) + ledger noteIds
+# Subtest: test/diff-apply.test.mjs
+ok 4 - test/diff-apply.test.mjs
+  ---
+  duration_ms: 4564.243026
+  type: 'test'
+  ...
+# Subtest: core apply emits multiple actual files per knowledge key and retains other generator evidence/ledger rows
+ok 45 - core apply emits multiple actual files per knowledge key and retains other generator evidence/ledger rows
+  ---
+  duration_ms: 217.362255
+  type: 'test'
+  ...
+# Subtest: core COVER replaces only this generator/path mapping, keeping other paths and a same-path other owner
+ok 46 - core COVER replaces only this generator/path mapping, keeping other paths and a same-path other owner
+  ---
+  duration_ms: 174.779598
+  type: 'test'
+  ...
+# Subtest: core KEEP hashes real out-of-concern bytes, not planned source, while stale old keys remain visible
+ok 47 - core KEEP hashes real out-of-concern bytes, not planned source, while stale old keys remain visible
+  ---
+  duration_ms: 114.656604
+  type: 'test'
+  ...
+# Subtest: core MANUAL MERGE certifies exact final content and repeat regeneration is byte-idempotent
+ok 48 - core MANUAL MERGE certifies exact final content and repeat regeneration is byte-idempotent
+  ---
+  duration_ms: 174.554513
+  type: 'test'
+  ...
+# Subtest: core generated anchors query edits/deletion/rename as stale or unmapped without guessing a new path
+ok 49 - core generated anchors query edits/deletion/rename as stale or unmapped without guessing a new path
+  ---
+  duration_ms: 176.223331
+  type: 'test'
+  ...
+# Subtest: core migrates legacy single-value anchors as planned and discards old fingerprint/span/certification
+ok 50 - core migrates legacy single-value anchors as planned and discards old fingerprint/span/certification
+  ---
+  duration_ms: 40.232735
+  type: 'test'
+  ...
+# Subtest: core without a source parser cannot authenticate entry-supplied or textual symbol/module/span claims
+ok 51 - core without a source parser cannot authenticate entry-supplied or textual symbol/module/span claims
+  ---
+  duration_ms: 62.701383
+  type: 'test'
+  ...
+# Subtest: core dependency closure legitimately COVERs a different kind and fingerprints both final sources
+ok 52 - core dependency closure legitimately COVERs a different kind and fingerprints both final sources
+  ---
+  duration_ms: 81.83846
+  type: 'test'
+  ...
+# Subtest: core missing routes cannot certify planned bytes; subsequent marker MERGE hashes the whole real file
+ok 53 - core missing routes cannot certify planned bytes; subsequent marker MERGE hashes the whole real file
+  ---
+  duration_ms: 90.886174
+  type: 'test'
+  ...
+# Subtest: core identical reapply preserves multivalued anchor/ledger bytes and never rewrites source files
+ok 54 - core identical reapply preserves multivalued anchor/ledger bytes and never rewrites source files
+  ---
+  duration_ms: 118.017643
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: exact duplicate full paths (earlier legal ADD/MERGE and old receipts untouched)
+ok 55 - core preflight zero writes: exact duplicate full paths (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 39.071373
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: case-fold full path duplicate (earlier legal ADD/MERGE and old receipts untouched)
+ok 56 - core preflight zero writes: case-fold full path duplicate (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 38.744158
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: case-fold ancestor with distinct leaf names (earlier legal ADD/MERGE and old receipts untouched)
+ok 57 - core preflight zero writes: case-fold ancestor with distinct leaf names (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 38.43508
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: NFC-equivalent ancestor aliases (earlier legal ADD/MERGE and old receipts untouched)
+ok 58 - core preflight zero writes: NFC-equivalent ancestor aliases (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 37.686001
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: file/directory collision on absent targets (earlier legal ADD/MERGE and old receipts untouched)
+ok 59 - core preflight zero writes: file/directory collision on absent targets (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 38.778307
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: parent traversal (earlier legal ADD/MERGE and old receipts untouched)
+ok 60 - core preflight zero writes: parent traversal (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 39.803153
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: dot path component (earlier legal ADD/MERGE and old receipts untouched)
+ok 61 - core preflight zero writes: dot path component (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 36.921907
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: empty path component (earlier legal ADD/MERGE and old receipts untouched)
+ok 62 - core preflight zero writes: empty path component (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 37.377891
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: trailing separator (earlier legal ADD/MERGE and old receipts untouched)
+ok 63 - core preflight zero writes: trailing separator (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 40.883869
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: POSIX absolute path (earlier legal ADD/MERGE and old receipts untouched)
+ok 64 - core preflight zero writes: POSIX absolute path (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 41.896294
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: Windows absolute path (earlier legal ADD/MERGE and old receipts untouched)
+ok 65 - core preflight zero writes: Windows absolute path (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 37.379285
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: backslash path (earlier legal ADD/MERGE and old receipts untouched)
+ok 66 - core preflight zero writes: backslash path (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 72.595384
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: NUL path (earlier legal ADD/MERGE and old receipts untouched)
+ok 67 - core preflight zero writes: NUL path (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 36.210331
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: reserved ledger path without anchor metadata (earlier legal ADD/MERGE and old receipts untouched)
+ok 68 - core preflight zero writes: reserved ledger path without anchor metadata (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 54.411935
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: reserved anchor index path without anchor metadata (earlier legal ADD/MERGE and old receipts untouched)
+ok 69 - core preflight zero writes: reserved anchor index path without anchor metadata (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 37.828034
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: case alias of reserved ledger (earlier legal ADD/MERGE and old receipts untouched)
+ok 70 - core preflight zero writes: case alias of reserved ledger (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 35.955316
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: case alias of reserved anchors (earlier legal ADD/MERGE and old receipts untouched)
+ok 71 - core preflight zero writes: case alias of reserved anchors (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 36.715991
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: nested anchors self-reference (earlier legal ADD/MERGE and old receipts untouched)
+ok 72 - core preflight zero writes: nested anchors self-reference (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 41.787881
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: source-map self-reference (earlier legal ADD/MERGE and old receipts untouched)
+ok 73 - core preflight zero writes: source-map self-reference (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 38.500956
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: map self-reference (earlier legal ADD/MERGE and old receipts untouched)
+ok 74 - core preflight zero writes: map self-reference (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 55.706559
+  type: 'test'
+  ...
+# Subtest: core filesystem preflight zero writes: existing leaf case alias
+ok 75 - core filesystem preflight zero writes: existing leaf case alias
+  ---
+  duration_ms: 38.809226
+  type: 'test'
+  ...
+# Subtest: core filesystem preflight zero writes: existing ancestor case alias
+ok 76 - core filesystem preflight zero writes: existing ancestor case alias
+  ---
+  duration_ms: 42.953877
+  type: 'test'
+  ...
+# Subtest: core filesystem preflight zero writes: existing non-directory ancestor
+ok 77 - core filesystem preflight zero writes: existing non-directory ancestor
+  ---
+  duration_ms: 40.216109
+  type: 'test'
+  ...
+# Subtest: core filesystem preflight zero writes: existing directory as file target
+ok 78 - core filesystem preflight zero writes: existing directory as file target
+  ---
+  duration_ms: 35.450072
+  type: 'test'
+  ...
+# Subtest: core filesystem preflight zero writes: inside leaf symlink
+ok 79 - core filesystem preflight zero writes: inside leaf symlink
+  ---
+  duration_ms: 41.933215
+  type: 'test'
+  ...
+# Subtest: core filesystem preflight zero writes: escaping leaf symlink
+ok 80 - core filesystem preflight zero writes: escaping leaf symlink
+  ---
+  duration_ms: 37.860583
+  type: 'test'
+  ...
+# Subtest: core filesystem preflight zero writes: inside ancestor symlink
+ok 81 - core filesystem preflight zero writes: inside ancestor symlink
+  ---
+  duration_ms: 38.892469
+  type: 'test'
+  ...
+# Subtest: core filesystem preflight zero writes: escaping ancestor symlink
+ok 82 - core filesystem preflight zero writes: escaping ancestor symlink
+  ---
+  duration_ms: 38.846617
+  type: 'test'
+  ...
+# Subtest: core filesystem preflight zero writes: dangling leaf symlink
+ok 83 - core filesystem preflight zero writes: dangling leaf symlink
+  ---
+  duration_ms: 38.481581
+  type: 'test'
+  ...
+# Subtest: core filesystem preflight zero writes: hardlink to a source outside the owned outDir with no second planned alias
+ok 84 - core filesystem preflight zero writes: hardlink to a source outside the owned outDir with no second planned alias
+  ---
+  duration_ms: 38.489714
+  type: 'test'
+  ...
+# Subtest: core filesystem preflight zero writes: hardlink to prior ledger source
+ok 85 - core filesystem preflight zero writes: hardlink to prior ledger source
+  ---
+  duration_ms: 37.094412
+  type: 'test'
+  ...
+# Subtest: core filesystem preflight zero writes: hardlink to ledger receipt
+ok 86 - core filesystem preflight zero writes: hardlink to ledger receipt
+  ---
+  duration_ms: 37.052856
+  type: 'test'
+  ...
+# Subtest: core filesystem preflight zero writes: hardlink to anchor receipt
+ok 87 - core filesystem preflight zero writes: hardlink to anchor receipt
+  ---
+  duration_ms: 20.597874
+  type: 'test'
+  ...
+# Subtest: core zero writes for hardlink aliases between two incoming full paths
+ok 88 - core zero writes for hardlink aliases between two incoming full paths
+  ---
+  duration_ms: 38.726902
+  type: 'test'
+  ...
+# Subtest: core zero writes when truthsrc.ledger.json itself is a symlink
+ok 89 - core zero writes when truthsrc.ledger.json itself is a symlink
+  ---
+  duration_ms: 38.43172
+  type: 'test'
+  ...
+# Subtest: core zero writes when truthsrc.ledger.json has a filesystem case alias
+ok 90 - core zero writes when truthsrc.ledger.json has a filesystem case alias
+  ---
+  duration_ms: 37.929657
+  type: 'test'
+  ...
+# Subtest: core zero writes when anchors.json itself is a symlink
+ok 91 - core zero writes when anchors.json itself is a symlink
+  ---
+  duration_ms: 38.019887
+  type: 'test'
+  ...
+# Subtest: core zero writes when anchors.json has a filesystem case alias
+ok 92 - core zero writes when anchors.json has a filesystem case alias
+  ---
+  duration_ms: 38.415472
+  type: 'test'
+  ...
+# Subtest: core zero writes for a symlink outDir root, even when its target is owned scratch
+ok 93 - core zero writes for a symlink outDir root, even when its target is owned scratch
+  ---
+  duration_ms: 36.057619
+  type: 'test'
+  ...
+# Subtest: core preflight validates unsafe prior ledger paths before any legal output write
+ok 94 - core preflight validates unsafe prior ledger paths before any legal output write
+  ---
+  duration_ms: 39.88019
+  type: 'test'
+  ...
+# Subtest: core preflight validates case aliases in retained prior ledger rows
+ok 95 - core preflight validates case aliases in retained prior ledger rows
+  ---
+  duration_ms: 39.886858
+  type: 'test'
+  ...
+# Subtest: core preflight validates unplanned own prior anchor paths as well as incoming entries
+ok 96 - core preflight validates unplanned own prior anchor paths as well as incoming entries
+  ---
+  duration_ms: 61.036412
+  type: 'test'
+  ...
+# Subtest: core zero writes when own prior anchor claims a repository outside this outDir
+ok 97 - core zero writes when own prior anchor claims a repository outside this outDir
+  ---
+  duration_ms: 39.797838
+  type: 'test'
+  ...
+# Subtest: core late MANUAL refusal zero writes: incoming unmatched BEGIN
+ok 98 - core late MANUAL refusal zero writes: incoming unmatched BEGIN
+  ---
+  duration_ms: 38.521871
+  type: 'test'
+  ...
+# Subtest: core late MANUAL refusal zero writes: incoming unmatched END
+ok 99 - core late MANUAL refusal zero writes: incoming unmatched END
+  ---
+  duration_ms: 46.481957
+  type: 'test'
+  ...
+# Subtest: core late MANUAL refusal zero writes: incoming reversed markers
+ok 100 - core late MANUAL refusal zero writes: incoming reversed markers
+  ---
+  duration_ms: 37.519815
+  type: 'test'
+  ...
+# Subtest: core late MANUAL refusal zero writes: incoming nested markers
+ok 101 - core late MANUAL refusal zero writes: incoming nested markers
+  ---
+  duration_ms: 56.332945
+  type: 'test'
+  ...
+# Subtest: core late MANUAL orphan refusal leaves earlier legal ADD/MERGE and old receipts untouched
+ok 102 - core late MANUAL orphan refusal leaves earlier legal ADD/MERGE and old receipts untouched
+  ---
+  duration_ms: 40.195306
+  type: 'test'
+  ...
+# Subtest: core late malformed existing MANUAL is checked even for prospective KEEP
+ok 103 - core late malformed existing MANUAL is checked even for prospective KEEP
+  ---
+  duration_ms: 41.765071
+  type: 'test'
+  ...
+# Subtest: core late malformed existing MANUAL is checked even for prospective IDENTICAL
+ok 104 - core late malformed existing MANUAL is checked even for prospective IDENTICAL
+  ---
+  duration_ms: 42.104516
+  type: 'test'
+  ...
+# Subtest: core late scope leak refuses a missing out-of-concern family file before all earlier writes
+ok 105 - core late scope leak refuses a missing out-of-concern family file before all earlier writes
+  ---
+  duration_ms: 38.720492
+  type: 'test'
+  ...
+# Subtest: core late malformed incoming routes block refuses all earlier writes
+ok 106 - core late malformed incoming routes block refuses all earlier writes
+  ---
+  duration_ms: 37.751592
+  type: 'test'
+  ...
+# Subtest: core invalid final entry on an absent outDir does not create even its parent directory
+ok 107 - core invalid final entry on an absent outDir does not create even its parent directory
+  ---
+  duration_ms: 6.184292
+  type: 'test'
+  ...
+# Subtest: public generation plan loads an explicit nested Saga binding without writing artifacts
+ok 108 - public generation plan loads an explicit nested Saga binding without writing artifacts
+  ---
+  duration_ms: 260.658771
+  type: 'test'
+  ...
+# Subtest: public generation rejects strict runnable source when the runtime binding is unverified
+ok 109 - public generation rejects strict runnable source when the runtime binding is unverified
+  ---
+  duration_ms: 189.185051
+  type: 'test'
+  ...
+# Subtest: public generation flags fail before loading/applying: ["--out"]
+ok 110 - public generation flags fail before loading/applying: ["--out"]
+  ---
+  duration_ms: 106.234925
+  type: 'test'
+  ...
+# Subtest: public generation flags fail before loading/applying: ["--unknown","x"]
+ok 111 - public generation flags fail before loading/applying: ["--unknown","x"]
+  ---
+  duration_ms: 91.327937
+  type: 'test'
+  ...
+# Subtest: public generation flags fail before loading/applying: ["--plan","--plan"]
+ok 112 - public generation flags fail before loading/applying: ["--plan","--plan"]
+  ---
+  duration_ms: 97.239887
+  type: 'test'
+  ...
+# Subtest: public generation flags fail before loading/applying: ["--option","mode"]
+ok 113 - public generation flags fail before loading/applying: ["--option","mode"]
+  ---
+  duration_ms: 101.951588
+  type: 'test'
+  ...
+# Subtest: public generation flags fail before loading/applying: ["--option","mode=a","--option","mode=b"]
+ok 114 - public generation flags fail before loading/applying: ["--option","mode=a","--option","mode=b"]
+  ---
+  duration_ms: 92.102201
+  type: 'test'
+  ...
+# ✅ generate.test — manifest/plan/apply/golden/ledger all green
+# Subtest: test/generate.test.mjs
+ok 7 - test/generate.test.mjs
+  ---
+  duration_ms: 231.566404
+  type: 'test'
+  ...
+1..115
+# tests 115
+# suites 0
+# pass 115
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4580.517916
+
+OWNED_EXIT_CODE=0 OUTCOME=completed

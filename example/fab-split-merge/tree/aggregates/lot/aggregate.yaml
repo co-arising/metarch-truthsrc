@@ -1,0 +1,117 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: aggregate
+name: Lot
+order:
+  commands: ["ReserveWaferRemoval","CommitWaferRemoval","ReleaseReservedWafer","ReserveAddWafer","CommitAddWafer","CancelAddWafer","StartTransfer"]
+  events: ["ReserveWaferRemovalConfirmed","CommitWaferRemovalConfirmed","ReleaseReservedWaferConfirmed","ReserveAddWaferConfirmed","CommitAddWaferConfirmed","CancelAddWaferConfirmed","TransferRequested","result-succeeded","result-rejected-before-effects","result-compensated","result-recovery-required","result-outcome-unknown"]
+payload:
+  {
+    "name": "Lot",
+    "identifier": {
+      "name": "id",
+      "dataType": "LotId",
+      "origin": "BUSINESS_INPUT"
+    },
+    "entity": "LotEntity",
+    "description": "Designed strict TCC example; not a statement that the current application implements its receipt contract.",
+    "stateFields": [
+      {
+        "name": "phase",
+        "dataType": "String"
+      }
+    ]
+  }
+extraEvents:
+  [
+    {
+      "name": "result-succeeded",
+      "payloads": [
+        {
+          "name": "txid",
+          "dataType": "TxId",
+          "origin": "BUSINESS_INPUT"
+        }
+      ],
+      "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
+      "bindings": [
+        {
+          "slot": "txid",
+          "expr": "param.txid"
+        }
+      ],
+      "foldAssignments": []
+    },
+    {
+      "name": "result-rejected-before-effects",
+      "payloads": [
+        {
+          "name": "txid",
+          "dataType": "TxId",
+          "origin": "BUSINESS_INPUT"
+        }
+      ],
+      "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
+      "bindings": [
+        {
+          "slot": "txid",
+          "expr": "param.txid"
+        }
+      ],
+      "foldAssignments": []
+    },
+    {
+      "name": "result-compensated",
+      "payloads": [
+        {
+          "name": "txid",
+          "dataType": "TxId",
+          "origin": "BUSINESS_INPUT"
+        }
+      ],
+      "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
+      "bindings": [
+        {
+          "slot": "txid",
+          "expr": "param.txid"
+        }
+      ],
+      "foldAssignments": []
+    },
+    {
+      "name": "result-recovery-required",
+      "payloads": [
+        {
+          "name": "txid",
+          "dataType": "TxId",
+          "origin": "BUSINESS_INPUT"
+        }
+      ],
+      "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
+      "bindings": [
+        {
+          "slot": "txid",
+          "expr": "param.txid"
+        }
+      ],
+      "foldAssignments": []
+    },
+    {
+      "name": "result-outcome-unknown",
+      "payloads": [
+        {
+          "name": "txid",
+          "dataType": "TxId",
+          "origin": "BUSINESS_INPUT"
+        }
+      ],
+      "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
+      "bindings": [
+        {
+          "slot": "txid",
+          "expr": "param.txid"
+        }
+      ],
+      "foldAssignments": []
+    }
+  ]

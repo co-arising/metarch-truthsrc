@@ -23,6 +23,7 @@ import {
   slices_of, events_of, commands_of, read_models_of, policies_triggered_by,
   policies_constraining, steps_of, participants_of, consumed_by,
   trigger_source_of, aggregates_referencing, contexts_depending_on,
+  sagaParticipantsOf, sagaPhasesOf,
 } from '../lib/query.mjs';
 import { compileTree } from '../lib/compile.mjs';
 
@@ -67,9 +68,11 @@ const TOOLS = [
 
   T('anchors',
     'Back-anchors: code locations a knowledge node is anchored to. Honestly reports unanchored until the back-anchor work lands — never faked.',
-    { ...SOURCE_PROPS, kind: { type: 'string' }, id: { type: 'string' } },
+    { ...SOURCE_PROPS, kind: { type: 'string' }, id: { type: 'string' },
+      indexFile: { type: 'string', description: 'Derived truthsrc.anchors/v1 index, outside the truth tree.' },
+      repoRoots: { type: 'object', additionalProperties: { type: 'string' }, description: 'Logical repository IDs mapped to explicit absolute roots.' } },
     ['kind', 'id'],
-    (g, a) => anchors(g, a.kind, a.id)),
+    (g, a) => anchors(g, a.kind, a.id, { indexFile: a.indexFile, repoRoots: a.repoRoots })),
 
   T('search',
     'Full-text search over node names and ids, optionally restricted to one kind.',
@@ -117,6 +120,10 @@ const TOOLS = [
     { ...SOURCE_PROPS, pipeline: { type: 'string' } }, ['pipeline'], (g, a) => steps_of(g, a.pipeline)),
   T('participants_of', 'Steps and performing roles of a pipeline.',
     { ...SOURCE_PROPS, pipeline: { type: 'string' } }, ['pipeline'], (g, a) => participants_of(g, a.pipeline)),
+  T('saga_participants_of', 'Logical participants and aggregate ownership of an explicit Saga product, not pipeline roles.',
+    { ...SOURCE_PROPS, saga: { type: 'string' } }, ['saga'], (g, a) => sagaParticipantsOf(g, a.saga)),
+  T('saga_phases_of', 'Declared Saga steps, TCC phases and aggregate-qualified commands; missing references remain diagnostics.',
+    { ...SOURCE_PROPS, saga: { type: 'string' }, step: { type: 'string' } }, ['saga'], (g, a) => sagaPhasesOf(g, a.saga, a.step ?? null)),
   T('consumed_by', 'Read models deriving from a field.',
     { ...SOURCE_PROPS, field: { type: 'string' } }, ['field'], (g, a) => consumed_by(g, a.field)),
   T('trigger_source_of', 'Commands that produce an event.',

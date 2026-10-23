@@ -1,0 +1,51 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: slice
+aggregate: CreditBalance
+command: ReserveFunds
+payload:
+  {
+    "name": "ReserveFunds",
+    "parameters": [
+      {
+        "name": "txid",
+        "dataType": "TxId",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "resource",
+        "dataType": "AccountId",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "amount",
+        "dataType": "Money",
+        "origin": "BUSINESS_INPUT"
+      }
+    ],
+    "produces": [
+      "ReserveFundsConfirmed"
+    ],
+    "description": "Stable operation identity, exact payload compatibility and durable participant receipt required."
+  }
+events:
+  {
+    "ReserveFundsConfirmed": {
+      "name": "ReserveFundsConfirmed",
+      "payloads": [
+        {
+          "name": "reservation",
+          "dataType": "ReservationId",
+          "origin": "BUSINESS_INPUT"
+        }
+      ],
+      "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
+      "bindings": [
+        {
+          "slot": "reservation",
+          "expr": "param.reservation"
+        }
+      ],
+      "foldAssignments": []
+    }
+  }

@@ -1,0 +1,21 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: note
+type: question
+name: "How is a distributed transfer reconciled?"
+origin:
+  stage: eventStorming
+  board: board1
+  seq: 7
+payload:
+  {
+    "type": "question",
+    "name": "How is a distributed transfer reconciled?",
+    "stage": "eventStorming",
+    "description": "Model the cross-aggregate transaction as a Saga product, independent from a Monarch stage. Freeze args and transaction identity, persist the CommitDecision before Commit, reconcile uncertain acknowledgements under the same identity, and advance the outer checkpoint only from a durable result. Reservation cancellation is not post-commit rollback. Complete contract-only examples are in example/saga-money-transfer and example/fab-split-merge; their fixture bindings are not runtime certifications.",
+    "links": [
+      "event:LoanDisbursed"
+    ],
+    "author": "Saga design task approved 2026-10-22",
+    "createdAt": "2026-10-22"
+  }

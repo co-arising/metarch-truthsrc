@@ -1,9 +1,27 @@
 {
   "name": "saga-dsl",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "baseline": "new",
-  "description": "Emits saga-core 0.2 SagaDefinition from a SagaSpec JSON (vertical slice)",
-  "entrypoint": "emit.mjs",
-  "args": ["<spec.json>", "<out.scala>"],
+  "inputSchema": "truthsrc/v1.0",
+  "products": ["template"],
+  "artifactKinds": ["saga-legacy-source", "saga-contract", "saga-phase-table", "saga-contract-ledger"],
+  "description": "Pure Saga plan producer: explicit legacy Scala or strict contract-only IR consumption; strict runnable source blocked until a runtime API shape is verified",
+  "entrypoint": "generate.mjs",
+  "output": {
+    "language": ["scala", "json"],
+    "layout": "src/main/scala/<package>/<object>.scala or contracts/sagas/<saga-id>.<contract|phases|consumption>.json",
+    "productMeaning": "template denotes physical source/contract artifacts, not a new core Saga product",
+    "canonicalView": "truthsrc/v1",
+    "strictIR": "truthsrc.saga-ir/v1",
+    "strictReadiness": "contract-only",
+    "strictRunnable": false,
+    "options": {
+      "mode": "required: legacy | strict-contract | strict-scala (blocked)",
+      "binding": "strict modes require a closed truthsrc.saga-binding/v1 document",
+      "ir": "optional exact compileSagas(canonical,binding) IR in strict modes",
+      "legacySagaSpecs": "legacy mode requires complete, strictly shaped specs; no canonical Saga downgrade"
+    },
+    "legacyCli": "node emit.mjs <spec.json> <out.scala> [--legacy]"
+  },
   "golden": "../../golden/saga-dsl"
 }

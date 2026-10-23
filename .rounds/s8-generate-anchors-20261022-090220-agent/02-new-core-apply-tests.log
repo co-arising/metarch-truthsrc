@@ -1,0 +1,452 @@
+COMMAND ['node', '--test', 'test/generate-anchors.test.mjs']
+TAP version 13
+# Subtest: core apply emits multiple actual files per knowledge key and retains other generator evidence/ledger rows
+ok 1 - core apply emits multiple actual files per knowledge key and retains other generator evidence/ledger rows
+  ---
+  duration_ms: 128.675946
+  type: 'test'
+  ...
+# Subtest: core COVER replaces only this generator/path mapping, keeping other paths and a same-path other owner
+ok 2 - core COVER replaces only this generator/path mapping, keeping other paths and a same-path other owner
+  ---
+  duration_ms: 124.906738
+  type: 'test'
+  ...
+# Subtest: core KEEP hashes real out-of-concern bytes, not planned source, while stale old keys remain visible
+ok 3 - core KEEP hashes real out-of-concern bytes, not planned source, while stale old keys remain visible
+  ---
+  duration_ms: 84.860151
+  type: 'test'
+  ...
+# Subtest: core MANUAL MERGE certifies exact final content and repeat regeneration is byte-idempotent
+ok 4 - core MANUAL MERGE certifies exact final content and repeat regeneration is byte-idempotent
+  ---
+  duration_ms: 118.305592
+  type: 'test'
+  ...
+# Subtest: core generated anchors query edits/deletion/rename as stale or unmapped without guessing a new path
+ok 5 - core generated anchors query edits/deletion/rename as stale or unmapped without guessing a new path
+  ---
+  duration_ms: 94.488906
+  type: 'test'
+  ...
+# Subtest: core migrates legacy single-value anchors as planned and discards old fingerprint/span/certification
+ok 6 - core migrates legacy single-value anchors as planned and discards old fingerprint/span/certification
+  ---
+  duration_ms: 38.306189
+  type: 'test'
+  ...
+# Subtest: core without a source parser cannot authenticate entry-supplied or textual symbol/module/span claims
+ok 7 - core without a source parser cannot authenticate entry-supplied or textual symbol/module/span claims
+  ---
+  duration_ms: 39.604276
+  type: 'test'
+  ...
+# Subtest: core dependency closure legitimately COVERs a different kind and fingerprints both final sources
+ok 8 - core dependency closure legitimately COVERs a different kind and fingerprints both final sources
+  ---
+  duration_ms: 86.619853
+  type: 'test'
+  ...
+# Subtest: core missing routes cannot certify planned bytes; subsequent marker MERGE hashes the whole real file
+ok 9 - core missing routes cannot certify planned bytes; subsequent marker MERGE hashes the whole real file
+  ---
+  duration_ms: 88.169791
+  type: 'test'
+  ...
+# Subtest: core identical reapply preserves multivalued anchor/ledger bytes and never rewrites source files
+ok 10 - core identical reapply preserves multivalued anchor/ledger bytes and never rewrites source files
+  ---
+  duration_ms: 110.18682
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: exact duplicate full paths (earlier legal ADD/MERGE and old receipts untouched)
+ok 11 - core preflight zero writes: exact duplicate full paths (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 34.663207
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: case-fold full path duplicate (earlier legal ADD/MERGE and old receipts untouched)
+ok 12 - core preflight zero writes: case-fold full path duplicate (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 33.80826
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: case-fold ancestor with distinct leaf names (earlier legal ADD/MERGE and old receipts untouched)
+ok 13 - core preflight zero writes: case-fold ancestor with distinct leaf names (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 37.299451
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: NFC-equivalent ancestor aliases (earlier legal ADD/MERGE and old receipts untouched)
+ok 14 - core preflight zero writes: NFC-equivalent ancestor aliases (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 36.044291
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: file/directory collision on absent targets (earlier legal ADD/MERGE and old receipts untouched)
+ok 15 - core preflight zero writes: file/directory collision on absent targets (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 39.963746
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: parent traversal (earlier legal ADD/MERGE and old receipts untouched)
+ok 16 - core preflight zero writes: parent traversal (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 36.406982
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: dot path component (earlier legal ADD/MERGE and old receipts untouched)
+ok 17 - core preflight zero writes: dot path component (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 41.078987
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: empty path component (earlier legal ADD/MERGE and old receipts untouched)
+ok 18 - core preflight zero writes: empty path component (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 36.637801
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: trailing separator (earlier legal ADD/MERGE and old receipts untouched)
+ok 19 - core preflight zero writes: trailing separator (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 38.804757
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: POSIX absolute path (earlier legal ADD/MERGE and old receipts untouched)
+ok 20 - core preflight zero writes: POSIX absolute path (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 40.107372
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: Windows absolute path (earlier legal ADD/MERGE and old receipts untouched)
+ok 21 - core preflight zero writes: Windows absolute path (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 34.982834
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: backslash path (earlier legal ADD/MERGE and old receipts untouched)
+ok 22 - core preflight zero writes: backslash path (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 36.778277
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: NUL path (earlier legal ADD/MERGE and old receipts untouched)
+ok 23 - core preflight zero writes: NUL path (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 37.381544
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: reserved ledger path without anchor metadata (earlier legal ADD/MERGE and old receipts untouched)
+ok 24 - core preflight zero writes: reserved ledger path without anchor metadata (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 36.838817
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: reserved anchor index path without anchor metadata (earlier legal ADD/MERGE and old receipts untouched)
+ok 25 - core preflight zero writes: reserved anchor index path without anchor metadata (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 37.845808
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: case alias of reserved ledger (earlier legal ADD/MERGE and old receipts untouched)
+ok 26 - core preflight zero writes: case alias of reserved ledger (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 34.82551
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: case alias of reserved anchors (earlier legal ADD/MERGE and old receipts untouched)
+ok 27 - core preflight zero writes: case alias of reserved anchors (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 38.46748
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: nested anchors self-reference (earlier legal ADD/MERGE and old receipts untouched)
+ok 28 - core preflight zero writes: nested anchors self-reference (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 36.405712
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: source-map self-reference (earlier legal ADD/MERGE and old receipts untouched)
+ok 29 - core preflight zero writes: source-map self-reference (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 37.114578
+  type: 'test'
+  ...
+# Subtest: core preflight zero writes: map self-reference (earlier legal ADD/MERGE and old receipts untouched)
+ok 30 - core preflight zero writes: map self-reference (earlier legal ADD/MERGE and old receipts untouched)
+  ---
+  duration_ms: 33.458455
+  type: 'test'
+  ...
+# Subtest: core filesystem preflight zero writes: existing leaf case alias
+ok 31 - core filesystem preflight zero writes: existing leaf case alias
+  ---
+  duration_ms: 40.442422
+  type: 'test'
+  ...
+# Subtest: core filesystem preflight zero writes: existing ancestor case alias
+ok 32 - core filesystem preflight zero writes: existing ancestor case alias
+  ---
+  duration_ms: 34.615565
+  type: 'test'
+  ...
+# Subtest: core filesystem preflight zero writes: existing non-directory ancestor
+ok 33 - core filesystem preflight zero writes: existing non-directory ancestor
+  ---
+  duration_ms: 38.244928
+  type: 'test'
+  ...
+# Subtest: core filesystem preflight zero writes: existing directory as file target
+ok 34 - core filesystem preflight zero writes: existing directory as file target
+  ---
+  duration_ms: 35.553053
+  type: 'test'
+  ...
+# Subtest: core filesystem preflight zero writes: inside leaf symlink
+ok 35 - core filesystem preflight zero writes: inside leaf symlink
+  ---
+  duration_ms: 40.111933
+  type: 'test'
+  ...
+# Subtest: core filesystem preflight zero writes: escaping leaf symlink
+ok 36 - core filesystem preflight zero writes: escaping leaf symlink
+  ---
+  duration_ms: 38.953389
+  type: 'test'
+  ...
+# Subtest: core filesystem preflight zero writes: inside ancestor symlink
+ok 37 - core filesystem preflight zero writes: inside ancestor symlink
+  ---
+  duration_ms: 41.891416
+  type: 'test'
+  ...
+# Subtest: core filesystem preflight zero writes: escaping ancestor symlink
+ok 38 - core filesystem preflight zero writes: escaping ancestor symlink
+  ---
+  duration_ms: 38.42615
+  type: 'test'
+  ...
+# Subtest: core filesystem preflight zero writes: dangling leaf symlink
+ok 39 - core filesystem preflight zero writes: dangling leaf symlink
+  ---
+  duration_ms: 37.29744
+  type: 'test'
+  ...
+# Subtest: core filesystem preflight zero writes: hardlink to prior ledger source
+not ok 40 - core filesystem preflight zero writes: hardlink to prior ledger source
+  ---
+  duration_ms: 37.132498
+  type: 'test'
+  location: '/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/generate-anchors.test.mjs:552:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /hardlink output alias/. Input:
+    
+    'hardlink apply target: 01-existing/Owned.scala'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: 'hardlink apply target: 01-existing/Owned.scala'
+  operator: 'match'
+  stack: |-
+    refusesWithoutWrites (file:///Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/generate-anchors.test.mjs:155:10)
+    async TestContext.<anonymous> (file:///Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/generate-anchors.test.mjs:555:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: core filesystem preflight zero writes: hardlink to ledger receipt
+not ok 41 - core filesystem preflight zero writes: hardlink to ledger receipt
+  ---
+  duration_ms: 39.326239
+  type: 'test'
+  location: '/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/generate-anchors.test.mjs:552:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /hardlink output alias/. Input:
+    
+    'hardlink apply target: z/Linked.scala'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: 'hardlink apply target: z/Linked.scala'
+  operator: 'match'
+  stack: |-
+    refusesWithoutWrites (file:///Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/generate-anchors.test.mjs:155:10)
+    async TestContext.<anonymous> (file:///Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/generate-anchors.test.mjs:555:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: core filesystem preflight zero writes: hardlink to anchor receipt
+not ok 42 - core filesystem preflight zero writes: hardlink to anchor receipt
+  ---
+  duration_ms: 36.928074
+  type: 'test'
+  location: '/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/generate-anchors.test.mjs:552:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /hardlink output alias/. Input:
+    
+    'hardlink apply target: z/Linked.scala'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: 'hardlink apply target: z/Linked.scala'
+  operator: 'match'
+  stack: |-
+    refusesWithoutWrites (file:///Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/generate-anchors.test.mjs:155:10)
+    async TestContext.<anonymous> (file:///Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/generate-anchors.test.mjs:555:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: core zero writes for hardlink aliases between two incoming full paths
+not ok 43 - core zero writes for hardlink aliases between two incoming full paths
+  ---
+  duration_ms: 38.022904
+  type: 'test'
+  location: '/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/generate-anchors.test.mjs:559:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /hardlink output alias/. Input:
+    
+    'hardlink apply target: z/One.scala'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: 'hardlink apply target: z/One.scala'
+  operator: 'match'
+  stack: |-
+    refusesWithoutWrites (file:///Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/generate-anchors.test.mjs:155:10)
+    async TestContext.<anonymous> (file:///Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/generate-anchors.test.mjs:563:3)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: core zero writes when truthsrc.ledger.json itself is a symlink
+ok 44 - core zero writes when truthsrc.ledger.json itself is a symlink
+  ---
+  duration_ms: 39.890532
+  type: 'test'
+  ...
+# Subtest: core zero writes when truthsrc.ledger.json has a filesystem case alias
+ok 45 - core zero writes when truthsrc.ledger.json has a filesystem case alias
+  ---
+  duration_ms: 35.7786
+  type: 'test'
+  ...
+# Subtest: core zero writes when anchors.json itself is a symlink
+ok 46 - core zero writes when anchors.json itself is a symlink
+  ---
+  duration_ms: 36.306368
+  type: 'test'
+  ...
+# Subtest: core zero writes when anchors.json has a filesystem case alias
+ok 47 - core zero writes when anchors.json has a filesystem case alias
+  ---
+  duration_ms: 33.568255
+  type: 'test'
+  ...
+# Subtest: core zero writes for a symlink outDir root, even when its target is owned scratch
+ok 48 - core zero writes for a symlink outDir root, even when its target is owned scratch
+  ---
+  duration_ms: 37.848743
+  type: 'test'
+  ...
+# Subtest: core preflight validates unsafe prior ledger paths before any legal output write
+ok 49 - core preflight validates unsafe prior ledger paths before any legal output write
+  ---
+  duration_ms: 39.383044
+  type: 'test'
+  ...
+# Subtest: core preflight validates case aliases in retained prior ledger rows
+ok 50 - core preflight validates case aliases in retained prior ledger rows
+  ---
+  duration_ms: 39.00486
+  type: 'test'
+  ...
+# Subtest: core preflight validates unplanned own prior anchor paths as well as incoming entries
+ok 51 - core preflight validates unplanned own prior anchor paths as well as incoming entries
+  ---
+  duration_ms: 60.38538
+  type: 'test'
+  ...
+# Subtest: core zero writes when own prior anchor claims a repository outside this outDir
+ok 52 - core zero writes when own prior anchor claims a repository outside this outDir
+  ---
+  duration_ms: 35.2902
+  type: 'test'
+  ...
+# Subtest: core late MANUAL refusal zero writes: incoming unmatched BEGIN
+ok 53 - core late MANUAL refusal zero writes: incoming unmatched BEGIN
+  ---
+  duration_ms: 39.377571
+  type: 'test'
+  ...
+# Subtest: core late MANUAL refusal zero writes: incoming unmatched END
+ok 54 - core late MANUAL refusal zero writes: incoming unmatched END
+  ---
+  duration_ms: 36.74277
+  type: 'test'
+  ...
+# Subtest: core late MANUAL refusal zero writes: incoming reversed markers
+ok 55 - core late MANUAL refusal zero writes: incoming reversed markers
+  ---
+  duration_ms: 38.354468
+  type: 'test'
+  ...
+# Subtest: core late MANUAL refusal zero writes: incoming nested markers
+ok 56 - core late MANUAL refusal zero writes: incoming nested markers
+  ---
+  duration_ms: 40.484737
+  type: 'test'
+  ...
+# Subtest: core late MANUAL orphan refusal leaves earlier legal ADD/MERGE and old receipts untouched
+ok 57 - core late MANUAL orphan refusal leaves earlier legal ADD/MERGE and old receipts untouched
+  ---
+  duration_ms: 36.777044
+  type: 'test'
+  ...
+# Subtest: core late malformed existing MANUAL is checked even for prospective KEEP
+ok 58 - core late malformed existing MANUAL is checked even for prospective KEEP
+  ---
+  duration_ms: 40.108878
+  type: 'test'
+  ...
+# Subtest: core late malformed existing MANUAL is checked even for prospective IDENTICAL
+ok 59 - core late malformed existing MANUAL is checked even for prospective IDENTICAL
+  ---
+  duration_ms: 36.784637
+  type: 'test'
+  ...
+# Subtest: core late scope leak refuses a missing out-of-concern family file before all earlier writes
+ok 60 - core late scope leak refuses a missing out-of-concern family file before all earlier writes
+  ---
+  duration_ms: 39.868449
+  type: 'test'
+  ...
+# Subtest: core late malformed incoming routes block refuses all earlier writes
+ok 61 - core late malformed incoming routes block refuses all earlier writes
+  ---
+  duration_ms: 40.986663
+  type: 'test'
+  ...
+# Subtest: core invalid final entry on an absent outDir does not create even its parent directory
+ok 62 - core invalid final entry on an absent outDir does not create even its parent directory
+  ---
+  duration_ms: 4.928751
+  type: 'test'
+  ...
+1..62
+# tests 62
+# suites 0
+# pass 58
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2953.849735
+EXIT 1

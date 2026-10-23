@@ -67,9 +67,10 @@ const withLoan = (dir) => {
 };
 
 // ── golden example ───────────────────────────────────────────────────────────
-test('golden example: roundtrip identity holds over the full schema (26 atoms)', () => {
+test('golden example: roundtrip identity holds over the full schema plus Saga modeling knowledge (27 atoms)', () => {
   const r = roundtrip(join(import.meta.dirname, '..', 'example', 'tree'));
   assert.equal(r.ok, true, JSON.stringify(r));
+  assert.equal(r.atoms, 27);
 });
 test('golden example: validate is clean and canonical carries all products', () => {
   const tree = join(import.meta.dirname, '..', 'example', 'tree');

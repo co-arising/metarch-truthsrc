@@ -37,6 +37,7 @@ tree/
   use-cases.yaml                    # single flow-model file (optional)
   pipelines/<slug>.pipeline.yaml    # v0.4: ordered business-step queues
   scenarios/<slug>.scenario.yaml    # v0.4: narrative scripts / demo runbooks
+  sagas/<slug(id)>.saga.yaml         # cross-aggregate transaction products (optional)
 ```
 
 ## Atom file
@@ -48,7 +49,7 @@ verbatim JSON blocks (`payload:`, `events:`, `extraEvents:`).
 ```yaml
 # ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
 
-kind: note                       # note | policy | aggregate | slice | value-object | read-model | story | use-cases | pipeline | scenario | domain-service
+kind: note                       # note | policy | aggregate | slice | value-object | read-model | story | use-cases | pipeline | scenario | domain-service | saga
 type: event                      # notes only — see vocabulary below
 name: LoanRequested              # raw token; quoted if it contains spaces/punctuation
 origin:                          # notes/policies — board capture position (see "Two SEQs" below)
@@ -372,8 +373,10 @@ steps:                           # verbatim JSON array — the compiler never re
   step vs equipment stage vs workshop stage. The step vocabulary is the shared
   resume language: a breakpoint is always "which step finished last".)
 - **Shape**: scalar headers first (`id`, `name`, `description`, …), then the
-  single `steps` JSON block. Rich content lives in `steps`; headers stay
-  scalar — the compiler cannot roundtrip what it cannot place.
+  `steps` JSON block and, when explicitly opted in, the schema-validated
+  `execution` JSON object. Arbitrary additional rich headers remain unsupported.
+  Legacy pipelines without execution remain document-only; shape validation does
+  not prove that bindings, codecs or external effects are safe.
 - **Canonical**: `pipelines: [{id, name, description, …, steps}]` (omitted when
   empty). File order is the canonical order.
 
@@ -381,7 +384,16 @@ steps:                           # verbatim JSON array — the compiler never re
 |---|---|---|
 | PL1 | `id` and `name` present | hard |
 | PL2 | `steps` is a non-empty array; every step is an object with `id` + `name`; step ids unique within the pipeline | hard |
-| PL3 | header fields other than `steps` are scalars; block sections follow all scalar headers (roundtrip fidelity) | hard |
+| PL3 | header fields other than `steps`/`execution` are scalars; block sections follow all scalar headers (roundtrip fidelity) | hard |
+| PL4 | explicit `execution` and every step execution declaration conform to the versioned execution schema; orphan or unknown execution fields fail | hard |
+
+The public `compile-execution` and `compile-sagas` commands validate the tree
+before projecting it, then compile the selected contract with an explicit
+binding. Use exactly one of `--tree` or `--in`, and an explicit `--out` outside
+the truth tree. Unknown/repeated flags, input/output aliases, symbolic-link
+outputs and different existing output files are rejected. Output is
+**contract-only**, not runtime certification.
+
 
 ## The scenario atom (v0.4 — scenario A)
 
@@ -408,6 +420,71 @@ script:                          # verbatim JSON — opaque to the compiler
 |---|---|---|
 | SC1 | `name` and `description` present | hard |
 | SC2 | header fields other than `script` are scalars; block sections follow all scalar headers (roundtrip fidelity) | hard |
+
+## The Saga atom (2026-10-22 — additive tree product)
+
+A Saga is an independent **cross-aggregate transaction product**, not a new
+inbox stage and not a pipeline's checkpoint/recovery mechanism. Authored
+knowledge belongs in `sagas/<slug(id)>.saga.yaml`; use the existing
+`parseDoc` / `emitDoc` API, with scalar headers followed by one `payload`
+JSON object. No alternate YAML parser or hand-formatted JSON block is needed.
+
+```yaml
+kind: saga
+id: money-transfer
+name: Money Transfer
+version: v1
+# seq: 0                         # optional; only to pin product order
+payload:
+  {
+    "purpose": "Transfer reserved funds between accounts.",
+    "provenance": {
+      "status": "designed",
+      "source": "New design, not a historical workshop note"
+    }
+  }
+```
+
+This is a **surface-format example only**, not an executable Saga definition.
+`id`, `name`, and definition `version` are required headers: id/name must be
+non-empty strings; version is a non-empty string or a positive safe integer.
+The filename is exactly `${slug(id)}.saga.yaml`, using `lib/shared.mjs slug()`;
+it is not derived from display name or invented by hand. Saga ids are unique
+across the family (even across definition versions). A present `seq` is a
+non-negative safe integer, unique within `sagas/`; omit it when order need not
+be pinned. If every Saga has seq, canonical order follows seq; otherwise it
+follows filename and mixed seq presence emits SEQ1. Sparse seqs are preserved,
+never densified or invented. Additional headers use the existing string/number
+scalar format; all rich content belongs in payload, after all scalar headers.
+
+**Canonical**: `sagas: [{id, name, version, …, payload}]` preserves the **whole
+atom except `kind`**, including authored header order, optional seq presence,
+version and payload. This is deliberately **not** the catalog's payload-only
+projection: identity must not disappear or be inferred from payload.
+`decompose` writes the headers and JSON block back via `emitDoc`, without
+inventing notes, origins, versions, seqs or execution history. No Saga products
+means no `sagas` canonical key and no new product directory on decomposition;
+legacy no-Saga canonical bytes and constructor APIs are unchanged. The
+canonical `schemaVersion` remains `truthsrc/v1`.
+
+| Rule | Tree-level check | Level |
+|---|---|---|
+| V1 | each YAML file in `sagas/` parses; `kind` is exactly `saga` | hard |
+| SA1 | scalar id/name/version identity, exact id-derived filename, no duplicate ids; misnamed YAML is diagnosed, not silently ignored | hard |
+| V12 / SEQ1 | optional seq is a non-negative safe integer and collision-free / mixed presence uses filename order | hard / notice |
+| SA2 | payload is a non-null JSON object, not an array/scalar | hard |
+| V3 | payload id/name/version, **if repeated**, agree with the header | hard |
+| SA3 | only payload is rich content; scalar headers come first and must survive parse/emit unchanged | hard |
+| SA0 | basic tree fidelity only; payload/additional headers are not execution-validated | notice |
+
+**Validation boundary**: these rules certify transport fidelity, not a TCC
+contract. Payload internals, unknown execution keys/capabilities, references,
+typed args, bindings, participant phases, commit/abort decisions, retries and
+outcomes require a separate strict Saga semantic/compiler gate. A green
+`validate` / `compile` / `roundtrip` does **not** make unknown keys valid or a
+Saga runnable. Technical bindings and runtime certification are not supplied
+by this tree projection. New knowledge records its real design provenance;
+it must not manufacture historical stickies or claim observed execution.
 
 ## The 13-artifact inbox (v0.4)
 
@@ -605,6 +682,9 @@ at capture and never rewritten by the move: sessions are ordered by
   omitted when empty (v0.4 additive extension — `schemaVersion` stays
   `truthsrc/v1`).
 - `useCases` is omitted when `use-cases.yaml` is absent.
+- `sagas` is omitted when empty. Each Saga entry is the whole atom minus
+  `kind` (headers + payload); seq, when authored, is preserved with the same
+  uniform-seq/file-order rule, never projected into the payload.
 - A present tree-level `seq` rides along as a compiler-reserved sibling key in
   the corresponding canonical product (per the three-layer key test it is a
   migration/tool artifact, never tree semantics); absent `seq` emits nothing.
@@ -630,6 +710,8 @@ When proposing a new key, ask three questions:
 
 - **Atom identity** = `(stage, type, name, seq)` — the filename tuple.
 - **Aggregate identity** = `name`; **slice identity** = `(aggregate, command)`.
+- **Saga identity** = scalar header `id`, unique in `sagas/`; its definition
+  `version` is explicit and survives canonical/decompose, never inferred.
 - **Board order** = `origin.seq` (frozen at capture; never renumbered by tools).
 - **noteId** (if your capture pipeline mints one) lives in `payload` and is
   passed through untouched — it is downstream identity, not tree identity.

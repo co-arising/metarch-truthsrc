@@ -24,7 +24,7 @@ A generator is a deterministic function over the **compiled products**:
 | | |
 |---|---|
 | **Input** | `canonical.json` (schemaVersion ≥ the generator's declared input) + the product files it declares (template / read-models / stories — JSON, byte-stable by I1) |
-| **Output** | a file set written to a target directory + an `anchors.json` manifest (`knowledgeId → {file, line}` per generated element) |
+| **Output** | a file set written to a target directory + a derived `truthsrc.anchors/v1` index (`knowledgeKey → locations[]`, preserving locations from other generators) |
 | **Determinism** | same input bytes → byte-identical output. No clocks, no random, no environment reads. (Verified by golden-master diff, the same discipline the reference generator runs in CI.) |
 | **Round-trip** | `anchors.json` is what lets code point back at the tree (`@knowledge` annotations) and lets edits in code be reconciled against knowledge (writeback). A generator that skips anchors is lossy and will be marked as such. |
 | **Invocation** | a CLI: `generate --in <products-dir> --out <target-dir> [--plan]`. `--plan` prints the file plan without writing (the dry-run gate). |
@@ -59,6 +59,36 @@ enforced by the manifest, not convention:
 
 Validation is fail-fast: missing required field, unknown `products` entry, or
 duplicate `name` → error before any file is written.
+
+## Apply and anchor evidence (Saga S8, 2026-10-22)
+
+`src/core/generate.mjs` remains the sole application write channel. Producers
+return entries; `knowledgeId` and `noteIds[]` declare knowledge-to-file links.
+Before creating or changing application files, core checks the complete plan,
+prior ledger paths, current generator's prior anchor paths and both receipts:
+relative paths, duplicate/case-fold aliases, symlink targets, hardlinked files,
+file/directory collisions, MANUAL marker/anchor conflicts and concern scope
+leaks. A later invalid entry refuses the whole plan before earlier entries write.
+The caller must explicitly own the target directory; preflight does not acquire
+an inter-process lock or establish ownership from a ledger alone.
+
+Only after actual ADD/COVER/MERGE/KEEP/IDENTICAL policy outcomes does core hash
+final source bytes and atomically replace the derived `anchors.json` index.
+KEEP and MANUAL merges never use planned template bytes as evidence. The v1
+index distinguishes `planned`, `source-verified`, `stale` and `unmapped`, and
+preserves other generators' locations without recertifying them. Without a
+source-language parser, core certifies **file bytes only**, not modules, symbols
+or spans. Legacy single-value indexes migrate explicitly to unverified planned
+locations; old verification claims are discarded. Query rechecks actual bytes;
+missing or changed source is not a fresh anchor. Retired/renamed sources are not
+automatically deleted.
+
+Application files, ledger and index are **not a cross-file transaction**. A
+write failure can leave partially applied source; it rejects the invocation and
+returns no successful index receipt. Index replacement is atomic, but rollback,
+cross-process exclusion and hostile concurrent directory replacement protection
+are not provided. Keep the index outside the authoritative truth tree, and do
+not interpret contract JSON artifacts as runnable Saga code.
 
 ## Concerns: the change-impact → regeneration-scope protocol
 

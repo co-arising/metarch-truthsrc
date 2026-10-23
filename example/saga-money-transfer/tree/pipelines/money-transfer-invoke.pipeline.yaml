@@ -1,0 +1,210 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: pipeline
+id: money-transfer-invoke
+name: "Static money transfer Saga invocation"
+description: "New contract-only single-transfer design for the legacy playAkkaCQRS domain, not Bank batch. Fixture adapters are unimplemented host requirements, not runtime certification; exact Money uses the existing minor-unit-string binding."
+steps:
+  [
+    {
+      "id": "transfer",
+      "name": "Invoke money-transfer v1",
+      "description": "Invoke money-transfer v1 once; replay uses the same durable operation, stage ID, occurrence and exact args, never random, clock, attempt or JVM generation.",
+      "execution": {
+        "invokeSaga": {
+          "ref": {
+            "sagaId": "money-transfer",
+            "version": "v1"
+          },
+          "args": [
+            {
+              "slot": "from",
+              "ref": "input:from",
+              "type": "AccountId"
+            },
+            {
+              "slot": "to",
+              "ref": "input:to",
+              "type": "AccountId"
+            },
+            {
+              "slot": "amount",
+              "ref": "input:amount",
+              "type": "Money"
+            }
+          ],
+          "transactionIdentity": {
+            "type": "TxId",
+            "derivation": "durable-source-stage",
+            "source": {
+              "ref": "input:operation",
+              "type": "OperationId"
+            },
+            "stageId": "transfer",
+            "stageOccurrence": {
+              "ref": "input:occurrence",
+              "type": "OperationId"
+            },
+            "scope": "saga-version",
+            "conflict": "reject-different-args"
+          },
+          "start": "durable-intent-before-start",
+          "completionMode": "await-terminal",
+          "results": [
+            {
+              "resultKind": "succeeded",
+              "code": "Succeeded",
+              "outputs": [
+                {
+                  "slot": "txid",
+                  "ref": "result:txid",
+                  "type": "TxId"
+                }
+              ]
+            },
+            {
+              "resultKind": "rejected-before-effects",
+              "code": "Rejected",
+              "outputs": []
+            },
+            {
+              "resultKind": "compensated",
+              "code": "Compensated",
+              "outputs": []
+            },
+            {
+              "resultKind": "recovery-required",
+              "code": "RecoveryRequired",
+              "outputs": []
+            },
+            {
+              "resultKind": "outcome-unknown",
+              "code": "Unknown",
+              "outputs": []
+            }
+          ]
+        },
+        "reads": [
+          {
+            "slot": "operation",
+            "ref": "input:operation",
+            "type": "OperationId"
+          },
+          {
+            "slot": "occurrence",
+            "ref": "input:occurrence",
+            "type": "OperationId"
+          },
+          {
+            "slot": "from",
+            "ref": "input:from",
+            "type": "AccountId"
+          },
+          {
+            "slot": "to",
+            "ref": "input:to",
+            "type": "AccountId"
+          },
+          {
+            "slot": "amount",
+            "ref": "input:amount",
+            "type": "Money"
+          }
+        ],
+        "writes": [
+          {
+            "id": "txid",
+            "slot": "txid",
+            "type": "TxId",
+            "durability": "durable-reference"
+          }
+        ],
+        "outcomes": [
+          {
+            "code": "Succeeded",
+            "kind": "success",
+            "action": "continue"
+          },
+          {
+            "code": "Rejected",
+            "kind": "business-rejection",
+            "action": "stop"
+          },
+          {
+            "code": "Compensated",
+            "kind": "business-rejection",
+            "action": "stop"
+          },
+          {
+            "code": "RecoveryRequired",
+            "kind": "infrastructure-failure",
+            "action": "manual-recovery"
+          },
+          {
+            "code": "Unknown",
+            "kind": "unknown-effect",
+            "action": "manual-recovery"
+          }
+        ]
+      }
+    }
+  ]
+execution:
+  {
+    "schemaVersion": "truthsrc.execution/v1",
+    "inputs": [
+      {
+        "id": "operation",
+        "type": "OperationId",
+        "durability": "start-record"
+      },
+      {
+        "id": "occurrence",
+        "type": "OperationId",
+        "durability": "durable-reference"
+      },
+      {
+        "id": "from",
+        "type": "AccountId",
+        "durability": "start-record"
+      },
+      {
+        "id": "to",
+        "type": "AccountId",
+        "durability": "start-record"
+      },
+      {
+        "id": "amount",
+        "type": "Money",
+        "durability": "start-record"
+      }
+    ],
+    "outputs": [
+      {
+        "id": "txid",
+        "ref": "step:transfer:txid",
+        "type": "TxId"
+      }
+    ],
+    "recovery": {
+      "inputResponsibility": "host",
+      "inputs": [
+        "input:operation",
+        "input:occurrence",
+        "input:from",
+        "input:to",
+        "input:amount"
+      ],
+      "planVersion": "plan-v1",
+      "planCompatibility": "exact",
+      "checkpoint": "confirmed-prefix",
+      "unknownEffect": "reconcile-before-resume",
+      "ownership": "single-writer"
+    },
+    "admission": {
+      "maxConcurrentRuns": 1,
+      "maxInFlightSteps": 1,
+      "maxItemsPerChunk": 1,
+      "maxInFlightChunks": 1
+    }
+  }

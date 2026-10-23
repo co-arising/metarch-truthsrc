@@ -1,0 +1,83 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: slice
+aggregate: CreditBalance
+command: StartTransfer
+payload:
+  {
+    "name": "StartTransfer",
+    "parameters": [
+      {
+        "name": "operationId",
+        "dataType": "OperationId",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "from",
+        "dataType": "AccountId",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "to",
+        "dataType": "AccountId",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "amount",
+        "dataType": "Money",
+        "origin": "BUSINESS_INPUT"
+      }
+    ],
+    "produces": [
+      "TransferRequested"
+    ],
+    "description": "Stable operation identity, exact payload compatibility and durable participant receipt required."
+  }
+events:
+  {
+    "TransferRequested": {
+      "name": "TransferRequested",
+      "payloads": [
+        {
+          "name": "operationId",
+          "dataType": "OperationId",
+          "origin": "BUSINESS_INPUT"
+        },
+        {
+          "name": "from",
+          "dataType": "AccountId",
+          "origin": "BUSINESS_INPUT"
+        },
+        {
+          "name": "to",
+          "dataType": "AccountId",
+          "origin": "BUSINESS_INPUT"
+        },
+        {
+          "name": "amount",
+          "dataType": "Money",
+          "origin": "BUSINESS_INPUT"
+        }
+      ],
+      "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
+      "bindings": [
+        {
+          "slot": "operationId",
+          "expr": "param.operationId"
+        },
+        {
+          "slot": "from",
+          "expr": "param.from"
+        },
+        {
+          "slot": "to",
+          "expr": "param.to"
+        },
+        {
+          "slot": "amount",
+          "expr": "param.amount"
+        }
+      ],
+      "foldAssignments": []
+    }
+  }

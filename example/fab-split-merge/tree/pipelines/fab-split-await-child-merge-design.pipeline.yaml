@@ -1,0 +1,46 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: pipeline
+id: fab-split-await-child-merge-design
+name: "Fab split, await child, merge design boundary"
+description: "Document-only composition, not a runnable pipeline. Split and merge invocation contracts are independent segments. Execution v1 has no supported bounded durable child-route start/reattach/completion policy; do not replace this gap with a pure port, implicit success or dynamic insertion."
+steps:
+  [
+    {
+      "id": "split",
+      "name": "Split parent wafers into an existing child",
+      "sagaRef": {
+        "sagaId": "fab-split",
+        "version": "v1"
+      },
+      "contractPipelineRef": "fab-split-invoke",
+      "description": "Freeze a bounded manifest and confirm fab-split success before separately admitting child work. New child creation is a host prerequisite, not an owned command in this example."
+    },
+    {
+      "id": "await-child",
+      "name": "Await separately owned child Monarch work",
+      "description": "DOCUMENT-ONLY GAP between fab-split v1 and fab-merge v1. A host must durably identify and bound the child plan, persist start intent, reattach after restart, reconcile unknown effects and confirm its completed wafer manifest. No child policy or implementation is bound; this stage has no execution or port declaration.",
+      "sagaReferences": [
+        {
+          "sagaId": "fab-split",
+          "version": "v1",
+          "relation": "requires-succeeded"
+        },
+        {
+          "sagaId": "fab-merge",
+          "version": "v1",
+          "relation": "must-precede-start"
+        }
+      ]
+    },
+    {
+      "id": "merge",
+      "name": "Merge only the durable completed child result",
+      "sagaRef": {
+        "sagaId": "fab-merge",
+        "version": "v1"
+      },
+      "contractPipelineRef": "fab-merge-invoke",
+      "description": "Only after independently confirmed child completion may a host freeze the merge manifest and supply durable initial args to fab-merge-invoke. Split and merge use distinct Saga/version, stage and occurrence identity scopes."
+    }
+  ]

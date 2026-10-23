@@ -1,0 +1,51 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: slice
+aggregate: CreditBalance
+command: CommitIncomingCredits
+payload:
+  {
+    "name": "CommitIncomingCredits",
+    "parameters": [
+      {
+        "name": "txid",
+        "dataType": "TxId",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "resource",
+        "dataType": "AccountId",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "reservation",
+        "dataType": "ReservationId",
+        "origin": "BUSINESS_INPUT"
+      }
+    ],
+    "produces": [
+      "CommitIncomingCreditsConfirmed"
+    ],
+    "description": "Stable operation identity, exact payload compatibility and durable participant receipt required."
+  }
+events:
+  {
+    "CommitIncomingCreditsConfirmed": {
+      "name": "CommitIncomingCreditsConfirmed",
+      "payloads": [
+        {
+          "name": "receiptId",
+          "dataType": "TxId",
+          "origin": "BUSINESS_INPUT"
+        }
+      ],
+      "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
+      "bindings": [
+        {
+          "slot": "receiptId",
+          "expr": "param.receiptId"
+        }
+      ],
+      "foldAssignments": []
+    }
+  }

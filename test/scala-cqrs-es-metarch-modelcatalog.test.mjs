@@ -18,7 +18,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { plan } from '../src/core/generate.mjs';
 
-const GEN = join(import.meta.dirname, '..', 'generators', 'scala-cqrs-es');
+const GEN = join(import.meta.dirname, '..', 'generators', '_deprecated', 'scala-cqrs-es');
 const GOLD = join(import.meta.dirname, '..', 'golden', 'scala-cqrs-es-metarch');
 const GOLDEN_VERSION = '581683f4';
 const elementHashes = JSON.parse(readFileSync(join(GOLD, 'model-catalog.elementHashes.json'), 'utf8'));

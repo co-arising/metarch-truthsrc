@@ -1,0 +1,1072 @@
+{
+  "schemaVersion": "truthsrc/v1",
+  "workshop": "money-transfer-design",
+  "sessions": [
+    {
+      "session": "eventStorming",
+      "scopes": []
+    },
+    {
+      "session": "commandStorming",
+      "scopes": []
+    },
+    {
+      "session": "aggregateDiscovery",
+      "scopes": []
+    },
+    {
+      "session": "subdomainExploration",
+      "scopes": []
+    },
+    {
+      "session": "contextMapping",
+      "scopes": []
+    },
+    {
+      "session": "refining",
+      "scopes": []
+    },
+    {
+      "session": "storyMapping",
+      "scopes": []
+    }
+  ],
+  "aggregates": [
+    {
+      "name": "CreditBalance",
+      "identifier": {
+        "name": "id",
+        "dataType": "AccountId",
+        "origin": "BUSINESS_INPUT"
+      },
+      "entity": "CreditBalanceEntity",
+      "description": "Designed strict TCC example; not a statement that the current application implements its receipt contract.",
+      "stateFields": [
+        {
+          "name": "phase",
+          "dataType": "String"
+        }
+      ],
+      "commands": [
+        {
+          "name": "ReserveFunds",
+          "parameters": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "resource",
+              "dataType": "AccountId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "amount",
+              "dataType": "Money",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "produces": [
+            "ReserveFundsConfirmed"
+          ],
+          "description": "Stable operation identity, exact payload compatibility and durable participant receipt required."
+        },
+        {
+          "name": "DeductFunds",
+          "parameters": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "resource",
+              "dataType": "AccountId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "reservation",
+              "dataType": "ReservationId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "produces": [
+            "DeductFundsConfirmed"
+          ],
+          "description": "Stable operation identity, exact payload compatibility and durable participant receipt required."
+        },
+        {
+          "name": "ReleaseReservedFunds",
+          "parameters": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "resource",
+              "dataType": "AccountId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "reservation",
+              "dataType": "ReservationId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "produces": [
+            "ReleaseReservedFundsConfirmed"
+          ],
+          "description": "Stable operation identity, exact payload compatibility and durable participant receipt required."
+        },
+        {
+          "name": "RecordIncomingCredits",
+          "parameters": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "resource",
+              "dataType": "AccountId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "amount",
+              "dataType": "Money",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "produces": [
+            "RecordIncomingCreditsConfirmed"
+          ],
+          "description": "Stable operation identity, exact payload compatibility and durable participant receipt required."
+        },
+        {
+          "name": "CommitIncomingCredits",
+          "parameters": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "resource",
+              "dataType": "AccountId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "reservation",
+              "dataType": "ReservationId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "produces": [
+            "CommitIncomingCreditsConfirmed"
+          ],
+          "description": "Stable operation identity, exact payload compatibility and durable participant receipt required."
+        },
+        {
+          "name": "CancelIncomingCredit",
+          "parameters": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "resource",
+              "dataType": "AccountId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "reservation",
+              "dataType": "ReservationId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "produces": [
+            "CancelIncomingCreditConfirmed"
+          ],
+          "description": "Stable operation identity, exact payload compatibility and durable participant receipt required."
+        },
+        {
+          "name": "StartTransfer",
+          "parameters": [
+            {
+              "name": "operationId",
+              "dataType": "OperationId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "from",
+              "dataType": "AccountId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "to",
+              "dataType": "AccountId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "amount",
+              "dataType": "Money",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "produces": [
+            "TransferRequested"
+          ],
+          "description": "Stable operation identity, exact payload compatibility and durable participant receipt required."
+        }
+      ],
+      "events": [
+        {
+          "name": "ReserveFundsConfirmed",
+          "payloads": [
+            {
+              "name": "reservation",
+              "dataType": "ReservationId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
+          "bindings": [
+            {
+              "slot": "reservation",
+              "expr": "param.reservation"
+            }
+          ],
+          "foldAssignments": []
+        },
+        {
+          "name": "DeductFundsConfirmed",
+          "payloads": [
+            {
+              "name": "receiptId",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
+          "bindings": [
+            {
+              "slot": "receiptId",
+              "expr": "param.receiptId"
+            }
+          ],
+          "foldAssignments": []
+        },
+        {
+          "name": "ReleaseReservedFundsConfirmed",
+          "payloads": [],
+          "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
+          "bindings": [],
+          "foldAssignments": []
+        },
+        {
+          "name": "RecordIncomingCreditsConfirmed",
+          "payloads": [
+            {
+              "name": "reservation",
+              "dataType": "ReservationId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
+          "bindings": [
+            {
+              "slot": "reservation",
+              "expr": "param.reservation"
+            }
+          ],
+          "foldAssignments": []
+        },
+        {
+          "name": "CommitIncomingCreditsConfirmed",
+          "payloads": [
+            {
+              "name": "receiptId",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
+          "bindings": [
+            {
+              "slot": "receiptId",
+              "expr": "param.receiptId"
+            }
+          ],
+          "foldAssignments": []
+        },
+        {
+          "name": "CancelIncomingCreditConfirmed",
+          "payloads": [],
+          "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
+          "bindings": [],
+          "foldAssignments": []
+        },
+        {
+          "name": "TransferRequested",
+          "payloads": [
+            {
+              "name": "operationId",
+              "dataType": "OperationId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "from",
+              "dataType": "AccountId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "to",
+              "dataType": "AccountId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "amount",
+              "dataType": "Money",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
+          "bindings": [
+            {
+              "slot": "operationId",
+              "expr": "param.operationId"
+            },
+            {
+              "slot": "from",
+              "expr": "param.from"
+            },
+            {
+              "slot": "to",
+              "expr": "param.to"
+            },
+            {
+              "slot": "amount",
+              "expr": "param.amount"
+            }
+          ],
+          "foldAssignments": []
+        },
+        {
+          "name": "result-succeeded",
+          "payloads": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
+          "bindings": [
+            {
+              "slot": "txid",
+              "expr": "param.txid"
+            }
+          ],
+          "foldAssignments": []
+        },
+        {
+          "name": "result-rejected-before-effects",
+          "payloads": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
+          "bindings": [
+            {
+              "slot": "txid",
+              "expr": "param.txid"
+            }
+          ],
+          "foldAssignments": []
+        },
+        {
+          "name": "result-compensated",
+          "payloads": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
+          "bindings": [
+            {
+              "slot": "txid",
+              "expr": "param.txid"
+            }
+          ],
+          "foldAssignments": []
+        },
+        {
+          "name": "result-recovery-required",
+          "payloads": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
+          "bindings": [
+            {
+              "slot": "txid",
+              "expr": "param.txid"
+            }
+          ],
+          "foldAssignments": []
+        },
+        {
+          "name": "result-outcome-unknown",
+          "payloads": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
+          "bindings": [
+            {
+              "slot": "txid",
+              "expr": "param.txid"
+            }
+          ],
+          "foldAssignments": []
+        }
+      ]
+    }
+  ],
+  "valueObjects": [],
+  "readModels": [],
+  "stories": [],
+  "domainServices": [],
+  "pipelines": [
+    {
+      "id": "money-transfer-invoke",
+      "name": "Static money transfer Saga invocation",
+      "description": "New contract-only single-transfer design for the legacy playAkkaCQRS domain, not Bank batch. Fixture adapters are unimplemented host requirements, not runtime certification; exact Money uses the existing minor-unit-string binding.",
+      "steps": [
+        {
+          "id": "transfer",
+          "name": "Invoke money-transfer v1",
+          "description": "Invoke money-transfer v1 once; replay uses the same durable operation, stage ID, occurrence and exact args, never random, clock, attempt or JVM generation.",
+          "execution": {
+            "invokeSaga": {
+              "ref": {
+                "sagaId": "money-transfer",
+                "version": "v1"
+              },
+              "args": [
+                {
+                  "slot": "from",
+                  "ref": "input:from",
+                  "type": "AccountId"
+                },
+                {
+                  "slot": "to",
+                  "ref": "input:to",
+                  "type": "AccountId"
+                },
+                {
+                  "slot": "amount",
+                  "ref": "input:amount",
+                  "type": "Money"
+                }
+              ],
+              "transactionIdentity": {
+                "type": "TxId",
+                "derivation": "durable-source-stage",
+                "source": {
+                  "ref": "input:operation",
+                  "type": "OperationId"
+                },
+                "stageId": "transfer",
+                "stageOccurrence": {
+                  "ref": "input:occurrence",
+                  "type": "OperationId"
+                },
+                "scope": "saga-version",
+                "conflict": "reject-different-args"
+              },
+              "start": "durable-intent-before-start",
+              "completionMode": "await-terminal",
+              "results": [
+                {
+                  "resultKind": "succeeded",
+                  "code": "Succeeded",
+                  "outputs": [
+                    {
+                      "slot": "txid",
+                      "ref": "result:txid",
+                      "type": "TxId"
+                    }
+                  ]
+                },
+                {
+                  "resultKind": "rejected-before-effects",
+                  "code": "Rejected",
+                  "outputs": []
+                },
+                {
+                  "resultKind": "compensated",
+                  "code": "Compensated",
+                  "outputs": []
+                },
+                {
+                  "resultKind": "recovery-required",
+                  "code": "RecoveryRequired",
+                  "outputs": []
+                },
+                {
+                  "resultKind": "outcome-unknown",
+                  "code": "Unknown",
+                  "outputs": []
+                }
+              ]
+            },
+            "reads": [
+              {
+                "slot": "operation",
+                "ref": "input:operation",
+                "type": "OperationId"
+              },
+              {
+                "slot": "occurrence",
+                "ref": "input:occurrence",
+                "type": "OperationId"
+              },
+              {
+                "slot": "from",
+                "ref": "input:from",
+                "type": "AccountId"
+              },
+              {
+                "slot": "to",
+                "ref": "input:to",
+                "type": "AccountId"
+              },
+              {
+                "slot": "amount",
+                "ref": "input:amount",
+                "type": "Money"
+              }
+            ],
+            "writes": [
+              {
+                "id": "txid",
+                "slot": "txid",
+                "type": "TxId",
+                "durability": "durable-reference"
+              }
+            ],
+            "outcomes": [
+              {
+                "code": "Succeeded",
+                "kind": "success",
+                "action": "continue"
+              },
+              {
+                "code": "Rejected",
+                "kind": "business-rejection",
+                "action": "stop"
+              },
+              {
+                "code": "Compensated",
+                "kind": "business-rejection",
+                "action": "stop"
+              },
+              {
+                "code": "RecoveryRequired",
+                "kind": "infrastructure-failure",
+                "action": "manual-recovery"
+              },
+              {
+                "code": "Unknown",
+                "kind": "unknown-effect",
+                "action": "manual-recovery"
+              }
+            ]
+          }
+        }
+      ],
+      "execution": {
+        "schemaVersion": "truthsrc.execution/v1",
+        "inputs": [
+          {
+            "id": "operation",
+            "type": "OperationId",
+            "durability": "start-record"
+          },
+          {
+            "id": "occurrence",
+            "type": "OperationId",
+            "durability": "durable-reference"
+          },
+          {
+            "id": "from",
+            "type": "AccountId",
+            "durability": "start-record"
+          },
+          {
+            "id": "to",
+            "type": "AccountId",
+            "durability": "start-record"
+          },
+          {
+            "id": "amount",
+            "type": "Money",
+            "durability": "start-record"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "txid",
+            "ref": "step:transfer:txid",
+            "type": "TxId"
+          }
+        ],
+        "recovery": {
+          "inputResponsibility": "host",
+          "inputs": [
+            "input:operation",
+            "input:occurrence",
+            "input:from",
+            "input:to",
+            "input:amount"
+          ],
+          "planVersion": "plan-v1",
+          "planCompatibility": "exact",
+          "checkpoint": "confirmed-prefix",
+          "unknownEffect": "reconcile-before-resume",
+          "ownership": "single-writer"
+        },
+        "admission": {
+          "maxConcurrentRuns": 1,
+          "maxInFlightSteps": 1,
+          "maxItemsPerChunk": 1,
+          "maxInFlightChunks": 1
+        }
+      }
+    }
+  ],
+  "sagas": [
+    {
+      "id": "money-transfer",
+      "name": "Transfer exact money between two accounts",
+      "seq": 0,
+      "version": "v1",
+      "payload": {
+        "schemaVersion": "truthsrc.saga/v1",
+        "purpose": "Reserve outgoing and incoming amounts, commit only after the durable decision, then reconcile forward.",
+        "invariants": [
+          "Currency and exact minor units are conserved"
+        ],
+        "transactionIdType": "TxId",
+        "args": [
+          {
+            "slot": "from",
+            "type": "AccountId"
+          },
+          {
+            "slot": "to",
+            "type": "AccountId"
+          },
+          {
+            "slot": "amount",
+            "type": "Money"
+          }
+        ],
+        "participants": [
+          {
+            "id": "source",
+            "aggregate": "CreditBalance",
+            "resourceRef": {
+              "ref": "args:from",
+              "type": "AccountId"
+            }
+          },
+          {
+            "id": "target",
+            "aggregate": "CreditBalance",
+            "resourceRef": {
+              "ref": "args:to",
+              "type": "AccountId"
+            }
+          }
+        ],
+        "groups": [
+          {
+            "id": 1,
+            "dependsOn": []
+          }
+        ],
+        "steps": [
+          {
+            "id": "reserve-source",
+            "participant": "source",
+            "group": 1,
+            "phases": {
+              "prepare": {
+                "kind": "command",
+                "commandRef": {
+                  "aggregate": "CreditBalance",
+                  "name": "ReserveFunds"
+                },
+                "bindings": [
+                  {
+                    "slot": "txid",
+                    "ref": "txid",
+                    "type": "TxId"
+                  },
+                  {
+                    "slot": "resource",
+                    "ref": "args:from",
+                    "type": "AccountId"
+                  },
+                  {
+                    "slot": "amount",
+                    "ref": "args:amount",
+                    "type": "Money"
+                  }
+                ],
+                "outputs": [
+                  {
+                    "slot": "reservation",
+                    "type": "ReservationId"
+                  }
+                ]
+              },
+              "commit": {
+                "kind": "command",
+                "commandRef": {
+                  "aggregate": "CreditBalance",
+                  "name": "DeductFunds"
+                },
+                "bindings": [
+                  {
+                    "slot": "txid",
+                    "ref": "txid",
+                    "type": "TxId"
+                  },
+                  {
+                    "slot": "resource",
+                    "ref": "args:from",
+                    "type": "AccountId"
+                  },
+                  {
+                    "slot": "reservation",
+                    "ref": "step:reserve-source:prepare:reservation",
+                    "type": "ReservationId"
+                  }
+                ],
+                "outputs": [
+                  {
+                    "slot": "receiptId",
+                    "type": "TxId"
+                  }
+                ]
+              },
+              "compensate": {
+                "kind": "command",
+                "commandRef": {
+                  "aggregate": "CreditBalance",
+                  "name": "ReleaseReservedFunds"
+                },
+                "bindings": [
+                  {
+                    "slot": "txid",
+                    "ref": "txid",
+                    "type": "TxId"
+                  },
+                  {
+                    "slot": "resource",
+                    "ref": "args:from",
+                    "type": "AccountId"
+                  },
+                  {
+                    "slot": "reservation",
+                    "ref": "step:reserve-source:prepare:reservation",
+                    "type": "ReservationId"
+                  }
+                ],
+                "outputs": []
+              }
+            }
+          },
+          {
+            "id": "reserve-target",
+            "participant": "target",
+            "group": 1,
+            "phases": {
+              "prepare": {
+                "kind": "command",
+                "commandRef": {
+                  "aggregate": "CreditBalance",
+                  "name": "RecordIncomingCredits"
+                },
+                "bindings": [
+                  {
+                    "slot": "txid",
+                    "ref": "txid",
+                    "type": "TxId"
+                  },
+                  {
+                    "slot": "resource",
+                    "ref": "args:to",
+                    "type": "AccountId"
+                  },
+                  {
+                    "slot": "amount",
+                    "ref": "args:amount",
+                    "type": "Money"
+                  }
+                ],
+                "outputs": [
+                  {
+                    "slot": "reservation",
+                    "type": "ReservationId"
+                  }
+                ]
+              },
+              "commit": {
+                "kind": "command",
+                "commandRef": {
+                  "aggregate": "CreditBalance",
+                  "name": "CommitIncomingCredits"
+                },
+                "bindings": [
+                  {
+                    "slot": "txid",
+                    "ref": "txid",
+                    "type": "TxId"
+                  },
+                  {
+                    "slot": "resource",
+                    "ref": "args:to",
+                    "type": "AccountId"
+                  },
+                  {
+                    "slot": "reservation",
+                    "ref": "step:reserve-target:prepare:reservation",
+                    "type": "ReservationId"
+                  }
+                ],
+                "outputs": [
+                  {
+                    "slot": "receiptId",
+                    "type": "TxId"
+                  }
+                ]
+              },
+              "compensate": {
+                "kind": "command",
+                "commandRef": {
+                  "aggregate": "CreditBalance",
+                  "name": "CancelIncomingCredit"
+                },
+                "bindings": [
+                  {
+                    "slot": "txid",
+                    "ref": "txid",
+                    "type": "TxId"
+                  },
+                  {
+                    "slot": "resource",
+                    "ref": "args:to",
+                    "type": "AccountId"
+                  },
+                  {
+                    "slot": "reservation",
+                    "ref": "step:reserve-target:prepare:reservation",
+                    "type": "ReservationId"
+                  }
+                ],
+                "outputs": []
+              }
+            }
+          }
+        ],
+        "resilience": {
+          "maxAttempts": 3,
+          "phaseTimeoutMs": 1000,
+          "queryTimeoutMs": 500,
+          "backoffMs": 100,
+          "totalTimeoutMs": 10000
+        },
+        "safety": {
+          "commitDecision": "durable-before-commit",
+          "abortDecision": "durable-before-compensate",
+          "afterCommit": "forward-recovery",
+          "unknown": "reconcile-before-resume",
+          "compensation": "confirmed-reservations",
+          "cancelBeforePrepare": "empty-release-and-fence",
+          "retryIdentity": "stable-operation",
+          "manualRecovery": "authorized-reconciliation-evidence"
+        },
+        "admission": {
+          "maxParticipants": 2,
+          "maxInFlight": 2,
+          "maxItemsPerChunk": 64,
+          "manifest": {
+            "mode": "static",
+            "durable": true
+          }
+        },
+        "triggers": [
+          {
+            "id": "from-command",
+            "kind": "command",
+            "sourceRef": {
+              "aggregate": "CreditBalance",
+              "name": "StartTransfer"
+            },
+            "argsMapping": [
+              {
+                "slot": "from",
+                "ref": "source:from",
+                "type": "AccountId"
+              },
+              {
+                "slot": "to",
+                "ref": "source:to",
+                "type": "AccountId"
+              },
+              {
+                "slot": "amount",
+                "ref": "source:amount",
+                "type": "Money"
+              }
+            ],
+            "idempotency": {
+              "ref": "source:operationId",
+              "type": "OperationId",
+              "scope": "saga-version",
+              "conflict": "reject-different-args"
+            }
+          },
+          {
+            "id": "from-event",
+            "kind": "event",
+            "sourceRef": {
+              "aggregate": "CreditBalance",
+              "name": "TransferRequested"
+            },
+            "argsMapping": [
+              {
+                "slot": "from",
+                "ref": "source:from",
+                "type": "AccountId"
+              },
+              {
+                "slot": "to",
+                "ref": "source:to",
+                "type": "AccountId"
+              },
+              {
+                "slot": "amount",
+                "ref": "source:amount",
+                "type": "Money"
+              }
+            ],
+            "idempotency": {
+              "ref": "source:operationId",
+              "type": "OperationId",
+              "scope": "saga-version",
+              "conflict": "reject-different-args"
+            }
+          }
+        ],
+        "resultKinds": [
+          "succeeded",
+          "rejected-before-effects",
+          "compensated",
+          "recovery-required",
+          "outcome-unknown"
+        ],
+        "completions": [
+          {
+            "kind": "succeeded",
+            "eventRef": {
+              "aggregate": "CreditBalance",
+              "name": "result-succeeded"
+            },
+            "bindings": [
+              {
+                "slot": "txid",
+                "ref": "txid",
+                "type": "TxId"
+              }
+            ]
+          },
+          {
+            "kind": "rejected-before-effects",
+            "eventRef": {
+              "aggregate": "CreditBalance",
+              "name": "result-rejected-before-effects"
+            },
+            "bindings": [
+              {
+                "slot": "txid",
+                "ref": "txid",
+                "type": "TxId"
+              }
+            ]
+          },
+          {
+            "kind": "compensated",
+            "eventRef": {
+              "aggregate": "CreditBalance",
+              "name": "result-compensated"
+            },
+            "bindings": [
+              {
+                "slot": "txid",
+                "ref": "txid",
+                "type": "TxId"
+              }
+            ]
+          },
+          {
+            "kind": "recovery-required",
+            "eventRef": {
+              "aggregate": "CreditBalance",
+              "name": "result-recovery-required"
+            },
+            "bindings": [
+              {
+                "slot": "txid",
+                "ref": "txid",
+                "type": "TxId"
+              }
+            ]
+          },
+          {
+            "kind": "outcome-unknown",
+            "eventRef": {
+              "aggregate": "CreditBalance",
+              "name": "result-outcome-unknown"
+            },
+            "bindings": [
+              {
+                "slot": "txid",
+                "ref": "txid",
+                "type": "TxId"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

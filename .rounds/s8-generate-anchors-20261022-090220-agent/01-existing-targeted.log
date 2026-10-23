@@ -1,0 +1,327 @@
+COMMAND ['node', '--test', 'test/generate.test.mjs', 'test/diff-apply.test.mjs', 'test/concerns.test.mjs', 'test/anchors.test.mjs', 'test/anchor-query.test.mjs', 'test/generate-cli.test.mjs']
+TAP version 13
+# Subtest: anchors query exposes all actual current files without inventing symbol verification
+ok 1 - anchors query exposes all actual current files without inventing symbol verification
+  ---
+  duration_ms: 113.190055
+  type: 'test'
+  ...
+# Subtest: anchors query marks renamed, edited and missing files accurately
+ok 2 - anchors query marks renamed, edited and missing files accurately
+  ---
+  duration_ms: 50.378665
+  type: 'test'
+  ...
+# Subtest: anchors query rejects symlink sources rather than following them
+ok 3 - anchors query rejects symlink sources rather than following them
+  ---
+  duration_ms: 61.663693
+  type: 'test'
+  ...
+# Subtest: without an explicit derived index the legacy query remains unanchored
+ok 4 - without an explicit derived index the legacy query remains unanchored
+  ---
+  duration_ms: 0.487406
+  type: 'test'
+  ...
+# Subtest: pure plan is detached, multi-valued, and never certifies planned templates
+ok 5 - pure plan is detached, multi-valued, and never certifies planned templates
+  ---
+  duration_ms: 3.416084
+  type: 'test'
+  ...
+# Subtest: one knowledge key retains multiple files, symbols and generator-declared modules/spans
+ok 6 - one knowledge key retains multiple files, symbols and generator-declared modules/spans
+  ---
+  duration_ms: 78.626038
+  type: 'test'
+  ...
+# Subtest: successful path-scoped replacement preserves other paths and other generators without reading them
+ok 7 - successful path-scoped replacement preserves other paths and other generators without reading them
+  ---
+  duration_ms: 36.420518
+  type: 'test'
+  ...
+# Subtest: KEEP hashes actual changed content, ignores planned templates, and cannot claim a missing symbol
+ok 8 - KEEP hashes actual changed content, ignores planned templates, and cannot claim a missing symbol
+  ---
+  duration_ms: 27.156561
+  type: 'test'
+  ...
+# Subtest: KEEP with changed content and generator-declared stale span must not reuse planned anchors
+ok 9 - KEEP with changed content and generator-declared stale span must not reuse planned anchors
+  ---
+  duration_ms: 5.990123
+  type: 'test'
+  ...
+# Subtest: KEEP retains distinct prior anchors and can refresh authentic matching symbol evidence with a source check
+ok 10 - KEEP retains distinct prior anchors and can refresh authentic matching symbol evidence with a source check
+  ---
+  duration_ms: 8.866407
+  type: 'test'
+  ...
+# Subtest: KEEP prior evidence is invalidated by actual byte changes and generator version changes
+ok 11 - KEEP prior evidence is invalidated by actual byte changes and generator version changes
+  ---
+  duration_ms: 46.997763
+  type: 'test'
+  ...
+# Subtest: rename/delete do not delete human files; old location stays unmapped and new path is separately mapped
+ok 12 - rename/delete do not delete human files; old location stays unmapped and new path is separately mapped
+  ---
+  duration_ms: 15.841049
+  type: 'test'
+  ...
+# Subtest: stale prior fingerprint is never reused, including after legacy migration
+ok 13 - stale prior fingerprint is never reused, including after legacy migration
+  ---
+  duration_ms: 9.031019
+  type: 'test'
+  ...
+# Subtest: MISSING and FAILED never certify existing source from planned output and retain prior locations
+ok 14 - MISSING and FAILED never certify existing source from planned output and retain prior locations
+  ---
+  duration_ms: 8.92436
+  type: 'test'
+  ...
+# Subtest: a missing final outcome stays planned even when source bytes exist
+ok 15 - a missing final outcome stays planned even when source bytes exist
+  ---
+  duration_ms: 4.553501
+  type: 'test'
+  ...
+# Subtest: final bytehash guards ADD/COVER/IDENTICAL; MERGE uses final bytes, not a pre-merge template
+ok 16 - final bytehash guards ADD/COVER/IDENTICAL; MERGE uses final bytes, not a pre-merge template
+  ---
+  duration_ms: 10.617565
+  type: 'test'
+  ...
+# Subtest: no module/symbol inference; absent parser or actual symbol gives only file verification
+ok 17 - no module/symbol inference; absent parser or actual symbol gives only file verification
+  ---
+  duration_ms: 16.104442
+  type: 'test'
+  ...
+# Subtest: parser gets post-apply actual bytes and cannot mutate the bytes used to fingerprint/verify
+ok 18 - parser gets post-apply actual bytes and cannot mutate the bytes used to fingerprint/verify
+  ---
+  duration_ms: 3.241907
+  type: 'test'
+  ...
+# Subtest: parser symbol/span must quote literal source, lie outside no declared span and be unambiguous
+ok 19 - parser symbol/span must quote literal source, lie outside no declared span and be unambiguous
+  ---
+  duration_ms: 7.722733
+  type: 'test'
+  ...
+# Subtest: span is only generator-declared UTF-8 byte span, never parser-inferred into location
+ok 20 - span is only generator-declared UTF-8 byte span, never parser-inferred into location
+  ---
+  duration_ms: 9.773122
+  type: 'test'
+  ...
+# Subtest: legacy reader requires explicit migration, converts one value to planned array and discards fake evidence
+ok 21 - legacy reader requires explicit migration, converts one value to planned array and discards fake evidence
+  ---
+  duration_ms: 4.385876
+  type: 'test'
+  ...
+# Subtest: legacy migration can be committed explicitly to its own derived index without authenticating old anchors
+ok 22 - legacy migration can be committed explicitly to its own derived index without authenticating old anchors
+  ---
+  duration_ms: 26.977437
+  type: 'test'
+  ...
+# Subtest: lexical escaping/absolute/backslash paths fail before any writes
+ok 23 - lexical escaping/absolute/backslash paths fail before any writes
+  ---
+  duration_ms: 1.083789
+  type: 'test'
+  ...
+# Subtest: escaping symlink, ancestor symlink and dangling symlink fail preflight with no verified receipt
+ok 24 - escaping symlink, ancestor symlink and dangling symlink fail preflight with no verified receipt
+  ---
+  duration_ms: 4.828543
+  type: 'test'
+  ...
+# Subtest: inside symlinks are allowed once, but realpath/hardlink aliases are rejected across paths/repos
+ok 25 - inside symlinks are allowed once, but realpath/hardlink aliases are rejected across paths/repos
+  ---
+  duration_ms: 26.029569
+  type: 'test'
+  ...
+# Subtest: casefold duplicate paths and existing directory aliases fail even before source parsing
+ok 26 - casefold duplicate paths and existing directory aliases fail even before source parsing
+  ---
+  duration_ms: 4.894934
+  type: 'test'
+  ...
+# Subtest: preflight includes unplanned final outcomes before opening any index temporary file
+ok 27 - preflight includes unplanned final outcomes before opening any index temporary file
+  ---
+  duration_ms: 4.219698
+  type: 'test'
+  ...
+# Subtest: derived anchors/source maps never participate in source digest/anchoring; explicit names avoid self references
+ok 28 - derived anchors/source maps never participate in source digest/anchoring; explicit names avoid self references
+  ---
+  duration_ms: 25.083739
+  type: 'test'
+  ...
+# Subtest: failed atomic rename leaves prior index unchanged, returns no certificate and removes only its own temp
+ok 29 - failed atomic rename leaves prior index unchanged, returns no certificate and removes only its own temp
+  ---
+  duration_ms: 60.69317
+  type: 'test'
+  ...
+# Subtest: failed first index write/sync creates no verified receipt and no temp residue
+ok 30 - failed first index write/sync creates no verified receipt and no temp residue
+  ---
+  duration_ms: 9.377495
+  type: 'test'
+  ...
+# Subtest: unknown existing index/JSON, symlink index, missing parent cannot be overwritten
+ok 31 - unknown existing index/JSON, symlink index, missing parent cannot be overwritten
+  ---
+  duration_ms: 6.889595
+  type: 'test'
+  ...
+# Subtest: index concurrency mismatch and post-read source change abort before atomic rename
+ok 32 - index concurrency mismatch and post-read source change abort before atomic rename
+  ---
+  duration_ms: 8.070601
+  type: 'test'
+  ...
+# Subtest: source change during temporary write and index change just before rename leave no helper receipt
+ok 33 - source change during temporary write and index change just before rename leave no helper receipt
+  ---
+  duration_ms: 69.634752
+  type: 'test'
+  ...
+# Subtest: successful outcome with missing/mismatching actual source preserves prior path as unmapped/stale
+ok 34 - successful outcome with missing/mismatching actual source preserves prior path as unmapped/stale
+  ---
+  duration_ms: 7.702468
+  type: 'test'
+  ...
+# Subtest: KEEP contradictory final hash downgrades matching prior certificate rather than silently retaining it
+ok 35 - KEEP contradictory final hash downgrades matching prior certificate rather than silently retaining it
+  ---
+  duration_ms: 5.498944
+  type: 'test'
+  ...
+# Subtest: MISSING/FAILED matching location retains its prior observed fingerprint and becomes stale, not deleted
+ok 36 - MISSING/FAILED matching location retains its prior observed fingerprint and becomes stale, not deleted
+  ---
+  duration_ms: 9.479343
+  type: 'test'
+  ...
+# Subtest: temporary stat/close/open failure never returns a receipt or deletes a pre-existing collision
+ok 37 - temporary stat/close/open failure never returns a receipt or deletes a pre-existing collision
+  ---
+  duration_ms: 33.962362
+  type: 'test'
+  ...
+# Subtest: successful owned path apply with empty locations marks prior mapping unmapped instead of deleting it
+ok 38 - successful owned path apply with empty locations marks prior mapping unmapped instead of deleting it
+  ---
+  duration_ms: 6.40031
+  type: 'test'
+  ...
+# Subtest: casefold aliases between index and source fail without overwriting application source
+ok 39 - casefold aliases between index and source fail without overwriting application source
+  ---
+  duration_ms: 2.241467
+  type: 'test'
+  ...
+# Subtest: temporary replaced by an unknown inode is never cleaned up by failure handling
+ok 40 - temporary replaced by an unknown inode is never cleaned up by failure handling
+  ---
+  duration_ms: 5.547867
+  type: 'test'
+  ...
+# Subtest: temporary inode replacement cannot be atomically committed as our verified index
+ok 41 - temporary inode replacement cannot be atomically committed as our verified index
+  ---
+  duration_ms: 26.566736
+  type: 'test'
+  ...
+# Subtest: tampered plan verification claims are rebuilt, and malformed v1 certificates are rejected
+ok 42 - tampered plan verification claims are rebuilt, and malformed v1 certificates are rejected
+  ---
+  duration_ms: 3.407983
+  type: 'test'
+  ...
+# ✅ concerns.test — engine units + incremental-regeneration e2e all green
+# Subtest: test/concerns.test.mjs
+ok 3 - test/concerns.test.mjs
+  ---
+  duration_ms: 3791.622843
+  type: 'test'
+  ...
+# ✅ diff-apply — MANUAL-block merge (anchor implant · orphan refusal · fixed point) + routes territory (swap · append · fail-fast) + ledger noteIds
+# Subtest: test/diff-apply.test.mjs
+ok 4 - test/diff-apply.test.mjs
+  ---
+  duration_ms: 4296.445436
+  type: 'test'
+  ...
+# Subtest: public generation plan loads an explicit nested Saga binding without writing artifacts
+ok 45 - public generation plan loads an explicit nested Saga binding without writing artifacts
+  ---
+  duration_ms: 259.696026
+  type: 'test'
+  ...
+# Subtest: public generation rejects strict runnable source when the runtime binding is unverified
+ok 46 - public generation rejects strict runnable source when the runtime binding is unverified
+  ---
+  duration_ms: 196.506942
+  type: 'test'
+  ...
+# Subtest: public generation flags fail before loading/applying: ["--out"]
+ok 47 - public generation flags fail before loading/applying: ["--out"]
+  ---
+  duration_ms: 89.36597
+  type: 'test'
+  ...
+# Subtest: public generation flags fail before loading/applying: ["--unknown","x"]
+ok 48 - public generation flags fail before loading/applying: ["--unknown","x"]
+  ---
+  duration_ms: 95.753049
+  type: 'test'
+  ...
+# Subtest: public generation flags fail before loading/applying: ["--plan","--plan"]
+ok 49 - public generation flags fail before loading/applying: ["--plan","--plan"]
+  ---
+  duration_ms: 83.35174
+  type: 'test'
+  ...
+# Subtest: public generation flags fail before loading/applying: ["--option","mode"]
+ok 50 - public generation flags fail before loading/applying: ["--option","mode"]
+  ---
+  duration_ms: 88.756389
+  type: 'test'
+  ...
+# Subtest: public generation flags fail before loading/applying: ["--option","mode=a","--option","mode=b"]
+ok 51 - public generation flags fail before loading/applying: ["--option","mode=a","--option","mode=b"]
+  ---
+  duration_ms: 89.058364
+  type: 'test'
+  ...
+# ✅ generate.test — manifest/plan/apply/golden/ledger all green
+# Subtest: test/generate.test.mjs
+ok 6 - test/generate.test.mjs
+  ---
+  duration_ms: 204.652419
+  type: 'test'
+  ...
+1..52
+# tests 52
+# suites 0
+# pass 52
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4311.411166
+EXIT 0

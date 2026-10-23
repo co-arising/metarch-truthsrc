@@ -1,90 +1,71 @@
 #!/usr/bin/env node
-// ═══ tree → SagaSpec parser ═══
-// Reads a `kind: saga` atom YAML and emits a SagaSpec JSON for
-// generators/saga-dsl/emit.mjs.
-//
-// Honest boundary (see saga.atom.md):
-// - IN TREE: saga id, ordered steps, phases→commands, resilience, types.
-// - NOT IN TREE: command argument expressions, preCheck/mapReply logic,
-//   protocol definitions. These come from --binding JSON or emit as TODO.
-//
-// Usage: node parse.mjs <saga.yaml> <binding.json> <out.spec.json>
+// Pure Saga atom -> strict contract IR. No regex phase parsing or inferred defaults.
+// Existing positional CLI: node parse.mjs <saga.yaml> <binding.json> <out.spec.json>
+// Strict input additionally requires --canonical <canonical.json> for owned refs.
+// Explicit legacy adapter: node parse.mjs <legacy.spec.json> <out.spec.json> --legacy
+import { readFileSync } from 'node:fs';
+import { parseDoc } from '../../lib/shared.mjs';
+import { compileSagas as strictCompileSagas } from '../../lib/saga/compile.mjs';
+import { assertJsonData, isDirectCli, stableJson, validateLegacySagaSpec, writeCliOutput } from './emit.mjs';
 
-import { readFileSync, writeFileSync } from "fs";
-
-const [sagaPath, bindingPath, outPath] = process.argv.slice(2);
-if (!sagaPath || !bindingPath || !outPath) {
-  console.error("usage: node parse.mjs <saga.yaml> <binding.json> <out.spec.json>");
-  process.exit(1);
-}
-
-const text = readFileSync(sagaPath, "utf8");
-const binding = JSON.parse(readFileSync(bindingPath, "utf8"));
-
-function field(re) {
-  return text.match(re)?.[1]?.trim();
-}
-
-// Minimal parse: top-level scalar fields + steps with phases.
-const id = field(/^id:\s*"?([^"\n]+)"?/m);
-const argsType = field(/^args_type:\s*"?([^"\n]+)"?/m);
-const errorType = field(/^error_type:\s*"?([^"\n]+)"?/m) ?? "String";
-const contextType = field(/^context_type:\s*"?([^"\n]+)"?/m);
-
-// Extract steps: "- id: X" blocks with nested phases.
-const steps = [];
-const stepBlocks = text.split(/^\s*-\s+id:\s*/m).slice(1);
-for (const block of stepBlocks) {
-  const stepId = block.match(/^"?([^"\n]+)"?/)?.[1].trim();
-  const participantRef =
-    block.match(/participant_ref:\s*"?([^"\n]+)"?/)?.[1].trim() ??
-    binding.participantRef;
-  const maxRetries =
-    parseInt(block.match(/max_retries:\s*(\d+)/)?.[1] ?? "3", 10);
-  const phases = {};
-  for (const ph of ["prepare", "commit", "compensate"]) {
-    const phBlock = block.match(
-      new RegExp(`${ph}:\\s*\\n((?:\\s+\\w+:.*\\n?)+)`)
-    )?.[1];
-    if (phBlock) {
-      phases[ph] = {
-        command: phBlock.match(/command:\s*"?([^"\n]+)"?/)?.[1].trim(),
-        replyType: phBlock.match(/reply_type:\s*"?([^"\n]+)"?/)?.[1].trim(),
-        // Argument expressions come from binding (command signatures).
-        commandArgs: binding.commandArgs?.[phBlock.match(/command:\s*"?([^"\n]+)"?/)?.[1].trim()] ?? [
-          "txId",
-          "replyTo",
-        ],
-      };
-    }
+export function compileSagaContract(canonical, binding) {
+  if (binding === undefined) throw new Error('SAGA_BINDING_REQUIRED: provide the closed technical binding document explicitly');
+  assertJsonData(canonical, 'canonical');
+  assertJsonData(binding, 'binding');
+  const { ir, diagnostics } = strictCompileSagas(canonical, binding);
+  if (!ir || diagnostics.length) {
+    const error = new Error(diagnostics.map((d) => `${d.code} ${d.source.document}${d.source.pointer}: ${d.message}`).join('\n') || 'Saga compilation failed');
+    error.diagnostics = diagnostics;
+    throw error;
   }
-  steps.push({ id: stepId, participantRef, maxRetries, phases });
+  return ir;
 }
 
-const spec = {
-  name: id,
-  version: binding.version ?? 1,
-  package: binding.package,
-  objectName: binding.objectName,
-  errorType,
-  contextType,
-  participantRef: binding.participantRef,
-  protocolType: binding.protocolType,
-  argsType,
-  argsFields: binding.argsFields,
-  mapReply: binding.mapReply,
-  preCheck: binding.preCheck,
-  preCheckError: binding.preCheckError,
-  errorCode: binding.errorCode,
-  prelude: binding.prelude,
-  helpers: binding.helpers,
-  steps: steps.map((s) => ({
-    id: s.id,
-    group: 1,
-    maxRetries: s.maxRetries,
-    phases: s.phases,
-  })),
-};
+export function parseSagaAtom(text, context = {}) {
+  assertJsonData(context, 'SagaAtomContext');
+  const canonical = Object.hasOwn(context, 'canonical') ? context.canonical : undefined;
+  const binding = Object.hasOwn(context, 'binding') ? context.binding : undefined;
+  const file = Object.hasOwn(context, 'file') ? context.file : '<saga.atom>';
+  if (typeof text !== 'string') throw new Error('Saga atom must be text');
+  const doc = parseDoc(text, file);
+  assertJsonData(doc, file);
+  if (!Object.hasOwn(doc, 'kind') || doc.kind !== 'saga') throw new Error(`${file}: expected kind: saga; legacySagaSpec requires the explicit legacy adapter`);
+  if (canonical === undefined) throw new Error('SAGA_CANONICAL_REQUIRED: Saga atoms need the closed canonical owned-command/event projection');
+  // Compile the entire supplied closure first; never discard other Saga contracts.
+  const ir = compileSagaContract(canonical, binding);
+  const { kind, ...definition } = doc;
+  const declared = canonical.sagas?.find((saga) => saga.id === definition.id);
+  if (!declared || stableJson(definition) !== stableJson(declared)) {
+    throw new Error(`${file}: atom must exactly match its whole canonical Saga definition (including version, seq and payload)`);
+  }
+  return ir;
+}
 
-writeFileSync(outPath, JSON.stringify(spec, null, 2));
-console.log(`parsed saga ${id}: ${steps.length} steps → ${outPath}`);
+export function adaptLegacySagaSpec(spec) {
+  // No conversion from design-only YAML: caller supplies every legacy field.
+  return validateLegacySagaSpec(spec);
+}
+
+export function parseCli(argv = process.argv.slice(2)) {
+  let output, result;
+  if (argv.length === 3 && argv[2] === '--legacy' && !argv[0].startsWith('--') && !argv[1].startsWith('--')) {
+    output = argv[1];
+    result = adaptLegacySagaSpec(JSON.parse(readFileSync(argv[0], 'utf8')));
+  } else if (argv.length === 5 && argv[3] === '--canonical' && argv.slice(0, 3).every((arg) => !arg.startsWith('--'))) {
+    const [sagaPath, bindingPath, outPath, , canonicalPath] = argv;
+    output = outPath;
+    result = parseSagaAtom(readFileSync(sagaPath, 'utf8'), {
+      canonical: JSON.parse(readFileSync(canonicalPath, 'utf8')),
+      binding: JSON.parse(readFileSync(bindingPath, 'utf8')), file: sagaPath,
+    });
+  } else {
+    throw new Error('usage: node parse.mjs <saga.yaml> <binding.json> <out.spec.json> --canonical <canonical.json>\nlegacy: node parse.mjs <legacy.spec.json> <out.spec.json> --legacy\nDesign-only legacy YAML is not an executable contract; no inferred groups, expressions or TODOs.');
+  }
+  const bytes = stableJson(result); // no write until all contracts pass
+  writeCliOutput(output, bytes, argv.length === 3 ? [argv[0]] : [argv[0], argv[1], argv[4]]);
+  console.log(`parsed ${result.schemaVersion ?? 'legacySagaSpec'} -> ${output}`);
+}
+
+if (isDirectCli(import.meta.url)) {
+  try { parseCli(); } catch (error) { console.error(error.message); process.exitCode = 1; }
+}

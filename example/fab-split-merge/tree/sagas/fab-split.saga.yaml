@@ -1,0 +1,439 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: saga
+id: fab-split
+name: "Split a frozen wafer set into a child Lot"
+seq: 0
+version: v1
+payload:
+  {
+    "schemaVersion": "truthsrc.saga/v1",
+    "purpose": "Move an identified frozen set from source Lot to a pre-created target child Lot.",
+    "invariants": [
+      "Frozen manifest and wafer identities are conserved"
+    ],
+    "transactionIdType": "TxId",
+    "args": [
+      {
+        "slot": "from",
+        "type": "LotId"
+      },
+      {
+        "slot": "to",
+        "type": "LotId"
+      },
+      {
+        "slot": "wafers",
+        "type": "WaferSet"
+      },
+      {
+        "slot": "manifest",
+        "type": "ManifestRef"
+      }
+    ],
+    "participants": [
+      {
+        "id": "source",
+        "aggregate": "Lot",
+        "resourceRef": {
+          "ref": "args:from",
+          "type": "LotId"
+        }
+      },
+      {
+        "id": "target",
+        "aggregate": "Lot",
+        "resourceRef": {
+          "ref": "args:to",
+          "type": "LotId"
+        }
+      }
+    ],
+    "groups": [
+      {
+        "id": 1,
+        "dependsOn": []
+      },
+      {
+        "id": 2,
+        "dependsOn": [
+          1
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "id": "reserve-source",
+        "participant": "source",
+        "group": 1,
+        "phases": {
+          "prepare": {
+            "kind": "command",
+            "commandRef": {
+              "aggregate": "Lot",
+              "name": "ReserveWaferRemoval"
+            },
+            "bindings": [
+              {
+                "slot": "txid",
+                "ref": "txid",
+                "type": "TxId"
+              },
+              {
+                "slot": "resource",
+                "ref": "args:from",
+                "type": "LotId"
+              },
+              {
+                "slot": "wafers",
+                "ref": "args:wafers",
+                "type": "WaferSet"
+              }
+            ],
+            "outputs": [
+              {
+                "slot": "reservation",
+                "type": "ReservationId"
+              },
+              {
+                "slot": "carried",
+                "type": "WaferSet"
+              }
+            ]
+          },
+          "commit": {
+            "kind": "command",
+            "commandRef": {
+              "aggregate": "Lot",
+              "name": "CommitWaferRemoval"
+            },
+            "bindings": [
+              {
+                "slot": "txid",
+                "ref": "txid",
+                "type": "TxId"
+              },
+              {
+                "slot": "resource",
+                "ref": "args:from",
+                "type": "LotId"
+              },
+              {
+                "slot": "reservation",
+                "ref": "step:reserve-source:prepare:reservation",
+                "type": "ReservationId"
+              }
+            ],
+            "outputs": [
+              {
+                "slot": "receiptId",
+                "type": "TxId"
+              }
+            ]
+          },
+          "compensate": {
+            "kind": "command",
+            "commandRef": {
+              "aggregate": "Lot",
+              "name": "ReleaseReservedWafer"
+            },
+            "bindings": [
+              {
+                "slot": "txid",
+                "ref": "txid",
+                "type": "TxId"
+              },
+              {
+                "slot": "resource",
+                "ref": "args:from",
+                "type": "LotId"
+              },
+              {
+                "slot": "reservation",
+                "ref": "step:reserve-source:prepare:reservation",
+                "type": "ReservationId"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": "reserve-target",
+        "participant": "target",
+        "group": 2,
+        "phases": {
+          "prepare": {
+            "kind": "command",
+            "commandRef": {
+              "aggregate": "Lot",
+              "name": "ReserveAddWafer"
+            },
+            "bindings": [
+              {
+                "slot": "txid",
+                "ref": "txid",
+                "type": "TxId"
+              },
+              {
+                "slot": "resource",
+                "ref": "args:to",
+                "type": "LotId"
+              },
+              {
+                "slot": "wafers",
+                "ref": "step:reserve-source:prepare:carried",
+                "type": "WaferSet"
+              }
+            ],
+            "outputs": [
+              {
+                "slot": "reservation",
+                "type": "ReservationId"
+              }
+            ]
+          },
+          "commit": {
+            "kind": "command",
+            "commandRef": {
+              "aggregate": "Lot",
+              "name": "CommitAddWafer"
+            },
+            "bindings": [
+              {
+                "slot": "txid",
+                "ref": "txid",
+                "type": "TxId"
+              },
+              {
+                "slot": "resource",
+                "ref": "args:to",
+                "type": "LotId"
+              },
+              {
+                "slot": "reservation",
+                "ref": "step:reserve-target:prepare:reservation",
+                "type": "ReservationId"
+              }
+            ],
+            "outputs": [
+              {
+                "slot": "receiptId",
+                "type": "TxId"
+              }
+            ]
+          },
+          "compensate": {
+            "kind": "command",
+            "commandRef": {
+              "aggregate": "Lot",
+              "name": "CancelAddWafer"
+            },
+            "bindings": [
+              {
+                "slot": "txid",
+                "ref": "txid",
+                "type": "TxId"
+              },
+              {
+                "slot": "resource",
+                "ref": "args:to",
+                "type": "LotId"
+              },
+              {
+                "slot": "reservation",
+                "ref": "step:reserve-target:prepare:reservation",
+                "type": "ReservationId"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      }
+    ],
+    "resilience": {
+      "maxAttempts": 3,
+      "phaseTimeoutMs": 1000,
+      "queryTimeoutMs": 500,
+      "backoffMs": 100,
+      "totalTimeoutMs": 10000
+    },
+    "safety": {
+      "commitDecision": "durable-before-commit",
+      "abortDecision": "durable-before-compensate",
+      "afterCommit": "forward-recovery",
+      "unknown": "reconcile-before-resume",
+      "compensation": "confirmed-reservations",
+      "cancelBeforePrepare": "empty-release-and-fence",
+      "retryIdentity": "stable-operation",
+      "manualRecovery": "authorized-reconciliation-evidence"
+    },
+    "admission": {
+      "maxParticipants": 2,
+      "maxInFlight": 1,
+      "maxItemsPerChunk": 64,
+      "manifest": {
+        "mode": "durable-reference",
+        "durable": true,
+        "ref": {
+          "ref": "args:manifest",
+          "type": "ManifestRef"
+        },
+        "version": "manifest-v1",
+        "selection": "frozen-before-prepare"
+      }
+    },
+    "triggers": [
+      {
+        "id": "from-command",
+        "kind": "command",
+        "sourceRef": {
+          "aggregate": "Lot",
+          "name": "StartTransfer"
+        },
+        "argsMapping": [
+          {
+            "slot": "from",
+            "ref": "source:from",
+            "type": "LotId"
+          },
+          {
+            "slot": "to",
+            "ref": "source:to",
+            "type": "LotId"
+          },
+          {
+            "slot": "wafers",
+            "ref": "source:wafers",
+            "type": "WaferSet"
+          },
+          {
+            "slot": "manifest",
+            "ref": "source:manifest",
+            "type": "ManifestRef"
+          }
+        ],
+        "idempotency": {
+          "ref": "source:operationId",
+          "type": "OperationId",
+          "scope": "saga-version",
+          "conflict": "reject-different-args"
+        }
+      },
+      {
+        "id": "from-event",
+        "kind": "event",
+        "sourceRef": {
+          "aggregate": "Lot",
+          "name": "TransferRequested"
+        },
+        "argsMapping": [
+          {
+            "slot": "from",
+            "ref": "source:from",
+            "type": "LotId"
+          },
+          {
+            "slot": "to",
+            "ref": "source:to",
+            "type": "LotId"
+          },
+          {
+            "slot": "wafers",
+            "ref": "source:wafers",
+            "type": "WaferSet"
+          },
+          {
+            "slot": "manifest",
+            "ref": "source:manifest",
+            "type": "ManifestRef"
+          }
+        ],
+        "idempotency": {
+          "ref": "source:operationId",
+          "type": "OperationId",
+          "scope": "saga-version",
+          "conflict": "reject-different-args"
+        }
+      }
+    ],
+    "resultKinds": [
+      "succeeded",
+      "rejected-before-effects",
+      "compensated",
+      "recovery-required",
+      "outcome-unknown"
+    ],
+    "completions": [
+      {
+        "kind": "succeeded",
+        "eventRef": {
+          "aggregate": "Lot",
+          "name": "result-succeeded"
+        },
+        "bindings": [
+          {
+            "slot": "txid",
+            "ref": "txid",
+            "type": "TxId"
+          }
+        ]
+      },
+      {
+        "kind": "rejected-before-effects",
+        "eventRef": {
+          "aggregate": "Lot",
+          "name": "result-rejected-before-effects"
+        },
+        "bindings": [
+          {
+            "slot": "txid",
+            "ref": "txid",
+            "type": "TxId"
+          }
+        ]
+      },
+      {
+        "kind": "compensated",
+        "eventRef": {
+          "aggregate": "Lot",
+          "name": "result-compensated"
+        },
+        "bindings": [
+          {
+            "slot": "txid",
+            "ref": "txid",
+            "type": "TxId"
+          }
+        ]
+      },
+      {
+        "kind": "recovery-required",
+        "eventRef": {
+          "aggregate": "Lot",
+          "name": "result-recovery-required"
+        },
+        "bindings": [
+          {
+            "slot": "txid",
+            "ref": "txid",
+            "type": "TxId"
+          }
+        ]
+      },
+      {
+        "kind": "outcome-unknown",
+        "eventRef": {
+          "aggregate": "Lot",
+          "name": "result-outcome-unknown"
+        },
+        "bindings": [
+          {
+            "slot": "txid",
+            "ref": "txid",
+            "type": "TxId"
+          }
+        ]
+      }
+    ]
+  }

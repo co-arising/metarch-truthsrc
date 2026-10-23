@@ -8,7 +8,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { plan } from '../src/core/generate.mjs';
 
-const GEN = join(import.meta.dirname, '..', 'generators', 'scala-cqrs-es');
+const GEN = join(import.meta.dirname, '..', 'generators', '_deprecated', 'scala-cqrs-es');
 const GOLD = join(import.meta.dirname, '..', 'golden', 'scala-cqrs-es');
 const GOLDEN_VERSION = 'dbd66fd5';
 

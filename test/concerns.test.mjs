@@ -13,9 +13,9 @@ import { apply, mergedRows, scopeOf } from '../src/core/generate.mjs';
 const ROOT = join(import.meta.dirname, '..');
 const REG = join(ROOT, 'golden', 'scala-cqrs-es-metarch', 'concerns.json');
 const CANON = join(ROOT, 'golden', 'scala-cqrs-es-metarch', 'model-catalog.canonical.json');
-const GEN_SKEL = join(ROOT, 'generators', 'scala-cqrs-es');
-const GEN_RULES = join(ROOT, 'generators', 'scala-cqrs-es-rules');
-const GEN_API = join(ROOT, 'generators', 'scala-cqrs-es-api');
+const GEN_SKEL = join(ROOT, 'generators', '_deprecated', 'scala-cqrs-es');
+const GEN_RULES = join(ROOT, 'generators', '_deprecated', 'scala-cqrs-es-rules');
+const GEN_API = join(ROOT, 'generators', '_deprecated', 'scala-cqrs-es-api');
 const scratch = () => mkdtempSync(join(tmpdir(), 'truthsrc-concerns-'));
 
 // ── unit: registry validation (fail-fast on bad JSON / unregistered flavor / unknown category)

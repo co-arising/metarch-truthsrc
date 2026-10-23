@@ -1,0 +1,714 @@
+[
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "protocolVersion": "2024-11-05",
+        "capabilities": {},
+        "clientInfo": {
+          "name": "s8-observer",
+          "version": "1"
+        }
+      }
+    },
+    "response": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "result": {
+        "protocolVersion": "2024-11-05",
+        "capabilities": {
+          "tools": {}
+        },
+        "serverInfo": {
+          "name": "truthsrc",
+          "version": "0.5.0"
+        }
+      }
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "tools/list",
+      "params": {}
+    },
+    "response": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "result": {
+        "tools": [
+          {
+            "name": "describe",
+            "description": "Describe one knowledge node: one-line summary plus its relation fan-out. Use full=true for the whole atom.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "canonical": {
+                  "type": "string",
+                  "description": "Path to compiled canonical.json (preferred)."
+                },
+                "tree": {
+                  "type": "string",
+                  "description": "Path to a truth tree directory (compiled in-memory). One of canonical/tree is required."
+                },
+                "kind": {
+                  "type": "string",
+                  "description": "Node kind: event, command, slice, aggregate, policy, role, read-model, pipeline, step, field, story, scenario, use-case, value-object."
+                },
+                "id": {
+                  "type": "string",
+                  "description": "Node id (kebab-case), e.g. \"exception-replayed\"."
+                },
+                "full": {
+                  "type": "boolean",
+                  "description": "Return the full atom instead of the summary."
+                }
+              },
+              "required": [
+                "kind",
+                "id"
+              ],
+              "additionalProperties": true
+            }
+          },
+          {
+            "name": "expand",
+            "description": "Walk the relation graph from a node address (\"kind:id\"). Filter by depth, direction (in/out/both), relation names, and a node budget. Defaults: depth=1, limit=100.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "canonical": {
+                  "type": "string",
+                  "description": "Path to compiled canonical.json (preferred)."
+                },
+                "tree": {
+                  "type": "string",
+                  "description": "Path to a truth tree directory (compiled in-memory). One of canonical/tree is required."
+                },
+                "id": {
+                  "type": "string",
+                  "description": "Node address, e.g. \"event:exception-replayed\"."
+                },
+                "depth": {
+                  "type": "integer"
+                },
+                "direction": {
+                  "type": "string",
+                  "enum": [
+                    "in",
+                    "out",
+                    "both"
+                  ]
+                },
+                "relations": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Relation names to follow, e.g. [\"triggers\",\"invokes\"]."
+                },
+                "limit": {
+                  "type": "integer",
+                  "description": "Max nodes visited."
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "additionalProperties": true
+            }
+          },
+          {
+            "name": "blast_radius",
+            "description": "May-impact analysis: walks exactly the human-adjudicated propagates=true edges. Over-approximate by design \u2014\u5b81\u591a\u62a5\uff0c\u4e0d\u6f0f\u62a5. Default depth=3.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "canonical": {
+                  "type": "string",
+                  "description": "Path to compiled canonical.json (preferred)."
+                },
+                "tree": {
+                  "type": "string",
+                  "description": "Path to a truth tree directory (compiled in-memory). One of canonical/tree is required."
+                },
+                "id": {
+                  "type": "string",
+                  "description": "Node address, e.g. \"event:exception-replayed\"."
+                },
+                "depth": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "additionalProperties": true
+            }
+          },
+          {
+            "name": "lineage",
+            "description": "Field-level lineage: where a field comes from and where it flows (derives-from + lineage edges).",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "canonical": {
+                  "type": "string",
+                  "description": "Path to compiled canonical.json (preferred)."
+                },
+                "tree": {
+                  "type": "string",
+                  "description": "Path to a truth tree directory (compiled in-memory). One of canonical/tree is required."
+                },
+                "field": {
+                  "type": "string",
+                  "description": "Field name or \"field:Event.field\" address."
+                },
+                "direction": {
+                  "type": "string",
+                  "enum": [
+                    "in",
+                    "out",
+                    "both"
+                  ]
+                },
+                "depth": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "field"
+              ],
+              "additionalProperties": true
+            }
+          },
+          {
+            "name": "anchors",
+            "description": "Back-anchors: code locations a knowledge node is anchored to. Honestly reports unanchored until the back-anchor work lands \u2014 never faked.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "canonical": {
+                  "type": "string",
+                  "description": "Path to compiled canonical.json (preferred)."
+                },
+                "tree": {
+                  "type": "string",
+                  "description": "Path to a truth tree directory (compiled in-memory). One of canonical/tree is required."
+                },
+                "kind": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "indexFile": {
+                  "type": "string",
+                  "description": "Derived truthsrc.anchors/v1 index, outside the truth tree."
+                },
+                "repoRoots": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "description": "Logical repository IDs mapped to explicit absolute roots."
+                }
+              },
+              "required": [
+                "kind",
+                "id"
+              ],
+              "additionalProperties": true
+            }
+          },
+          {
+            "name": "search",
+            "description": "Full-text search over node names and ids, optionally restricted to one kind.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "canonical": {
+                  "type": "string",
+                  "description": "Path to compiled canonical.json (preferred)."
+                },
+                "tree": {
+                  "type": "string",
+                  "description": "Path to a truth tree directory (compiled in-memory). One of canonical/tree is required."
+                },
+                "q": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string",
+                  "description": "Optional kind filter."
+                }
+              },
+              "required": [
+                "q"
+              ],
+              "additionalProperties": true
+            }
+          },
+          {
+            "name": "conditions",
+            "description": "The guards and produced events of a command (its slice conditions).",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "canonical": {
+                  "type": "string",
+                  "description": "Path to compiled canonical.json (preferred)."
+                },
+                "tree": {
+                  "type": "string",
+                  "description": "Path to a truth tree directory (compiled in-memory). One of canonical/tree is required."
+                },
+                "command": {
+                  "type": "string",
+                  "description": "Command name."
+                }
+              },
+              "required": [
+                "command"
+              ],
+              "additionalProperties": true
+            }
+          },
+          {
+            "name": "diff",
+            "description": "Node-level diff between two canonical.json files: added / removed / changed.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "a": {
+                  "type": "string",
+                  "description": "Path to first canonical.json."
+                },
+                "b": {
+                  "type": "string",
+                  "description": "Path to second canonical.json."
+                }
+              },
+              "required": [
+                "a",
+                "b"
+              ],
+              "additionalProperties": true
+            }
+          },
+          {
+            "name": "orphans",
+            "description": "Orphan detection: unclaimed L1 cards and pool events with no trigger source.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "canonical": {
+                  "type": "string",
+                  "description": "Path to compiled canonical.json (preferred)."
+                },
+                "tree": {
+                  "type": "string",
+                  "description": "Path to a truth tree directory (compiled in-memory). One of canonical/tree is required."
+                }
+              },
+              "required": [],
+              "additionalProperties": true
+            }
+          },
+          {
+            "name": "consistency_check",
+            "description": "Duplicate-policy detection by (triggers, invokes) signature. Condition-level conflict checking is reported, not invented.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "canonical": {
+                  "type": "string",
+                  "description": "Path to compiled canonical.json (preferred)."
+                },
+                "tree": {
+                  "type": "string",
+                  "description": "Path to a truth tree directory (compiled in-memory). One of canonical/tree is required."
+                }
+              },
+              "required": [],
+              "additionalProperties": true
+            }
+          },
+          {
+            "name": "slices_of",
+            "description": "Slices owned by an aggregate.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "canonical": {
+                  "type": "string",
+                  "description": "Path to compiled canonical.json (preferred)."
+                },
+                "tree": {
+                  "type": "string",
+                  "description": "Path to a truth tree directory (compiled in-memory). One of canonical/tree is required."
+                },
+                "aggregate": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "aggregate"
+              ],
+              "additionalProperties": true
+            }
+          },
+          {
+            "name": "events_of",
+            "description": "Events in an aggregate's pool.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "canonical": {
+                  "type": "string",
+                  "description": "Path to compiled canonical.json (preferred)."
+                },
+                "tree": {
+                  "type": "string",
+                  "description": "Path to a truth tree directory (compiled in-memory). One of canonical/tree is required."
+                },
+                "aggregate": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "aggregate"
+              ],
+              "additionalProperties": true
+            }
+          },
+          {
+            "name": "commands_of",
+            "description": "Commands a role can issue.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "canonical": {
+                  "type": "string",
+                  "description": "Path to compiled canonical.json (preferred)."
+                },
+                "tree": {
+                  "type": "string",
+                  "description": "Path to a truth tree directory (compiled in-memory). One of canonical/tree is required."
+                },
+                "role": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "role"
+              ],
+              "additionalProperties": true
+            }
+          },
+          {
+            "name": "read_models_of",
+            "description": "Read models visible to a role.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "canonical": {
+                  "type": "string",
+                  "description": "Path to compiled canonical.json (preferred)."
+                },
+                "tree": {
+                  "type": "string",
+                  "description": "Path to a truth tree directory (compiled in-memory). One of canonical/tree is required."
+                },
+                "role": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "role"
+              ],
+              "additionalProperties": true
+            }
+          },
+          {
+            "name": "policies_triggered_by",
+            "description": "Policies an event triggers.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "canonical": {
+                  "type": "string",
+                  "description": "Path to compiled canonical.json (preferred)."
+                },
+                "tree": {
+                  "type": "string",
+                  "description": "Path to a truth tree directory (compiled in-memory). One of canonical/tree is required."
+                },
+                "event": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "event"
+              ],
+              "additionalProperties": true
+            }
+          },
+          {
+            "name": "policies_constraining",
+            "description": "Policies constraining a slice.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "canonical": {
+                  "type": "string",
+                  "description": "Path to compiled canonical.json (preferred)."
+                },
+                "tree": {
+                  "type": "string",
+                  "description": "Path to a truth tree directory (compiled in-memory). One of canonical/tree is required."
+                },
+                "slice": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "slice"
+              ],
+              "additionalProperties": true
+            }
+          },
+          {
+            "name": "steps_of",
+            "description": "Steps of a pipeline.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "canonical": {
+                  "type": "string",
+                  "description": "Path to compiled canonical.json (preferred)."
+                },
+                "tree": {
+                  "type": "string",
+                  "description": "Path to a truth tree directory (compiled in-memory). One of canonical/tree is required."
+                },
+                "pipeline": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "pipeline"
+              ],
+              "additionalProperties": true
+            }
+          },
+          {
+            "name": "participants_of",
+            "description": "Steps and performing roles of a pipeline.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "canonical": {
+                  "type": "string",
+                  "description": "Path to compiled canonical.json (preferred)."
+                },
+                "tree": {
+                  "type": "string",
+                  "description": "Path to a truth tree directory (compiled in-memory). One of canonical/tree is required."
+                },
+                "pipeline": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "pipeline"
+              ],
+              "additionalProperties": true
+            }
+          },
+          {
+            "name": "saga_participants_of",
+            "description": "Logical participants and aggregate ownership of an explicit Saga product, not pipeline roles.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "canonical": {
+                  "type": "string",
+                  "description": "Path to compiled canonical.json (preferred)."
+                },
+                "tree": {
+                  "type": "string",
+                  "description": "Path to a truth tree directory (compiled in-memory). One of canonical/tree is required."
+                },
+                "saga": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "saga"
+              ],
+              "additionalProperties": true
+            }
+          },
+          {
+            "name": "saga_phases_of",
+            "description": "Declared Saga steps, TCC phases and aggregate-qualified commands; missing references remain diagnostics.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "canonical": {
+                  "type": "string",
+                  "description": "Path to compiled canonical.json (preferred)."
+                },
+                "tree": {
+                  "type": "string",
+                  "description": "Path to a truth tree directory (compiled in-memory). One of canonical/tree is required."
+                },
+                "saga": {
+                  "type": "string"
+                },
+                "step": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "saga"
+              ],
+              "additionalProperties": true
+            }
+          },
+          {
+            "name": "consumed_by",
+            "description": "Read models deriving from a field.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "canonical": {
+                  "type": "string",
+                  "description": "Path to compiled canonical.json (preferred)."
+                },
+                "tree": {
+                  "type": "string",
+                  "description": "Path to a truth tree directory (compiled in-memory). One of canonical/tree is required."
+                },
+                "field": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "field"
+              ],
+              "additionalProperties": true
+            }
+          },
+          {
+            "name": "trigger_source_of",
+            "description": "Commands that produce an event.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "canonical": {
+                  "type": "string",
+                  "description": "Path to compiled canonical.json (preferred)."
+                },
+                "tree": {
+                  "type": "string",
+                  "description": "Path to a truth tree directory (compiled in-memory). One of canonical/tree is required."
+                },
+                "event": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "event"
+              ],
+              "additionalProperties": true
+            }
+          },
+          {
+            "name": "aggregates_referencing",
+            "description": "Aggregates referencing an aggregate.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "canonical": {
+                  "type": "string",
+                  "description": "Path to compiled canonical.json (preferred)."
+                },
+                "tree": {
+                  "type": "string",
+                  "description": "Path to a truth tree directory (compiled in-memory). One of canonical/tree is required."
+                },
+                "aggregate": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "aggregate"
+              ],
+              "additionalProperties": true
+            }
+          },
+          {
+            "name": "contexts_depending_on",
+            "description": "Bounded contexts depending on a context.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "canonical": {
+                  "type": "string",
+                  "description": "Path to compiled canonical.json (preferred)."
+                },
+                "tree": {
+                  "type": "string",
+                  "description": "Path to a truth tree directory (compiled in-memory). One of canonical/tree is required."
+                },
+                "context": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "context"
+              ],
+              "additionalProperties": true
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "tools/call",
+      "params": {
+        "name": "anchors",
+        "arguments": {
+          "canonical": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/s8-public-cli-20261022-092243-d42147/observed/compiled.json",
+          "kind": "saga",
+          "id": "money-transfer",
+          "indexFile": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/s8-public-cli-20261022-092243-d42147/observed/output/anchors.json",
+          "repoRoots": {
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/s8-public-cli-20261022-092243-d42147/observed/output": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/s8-public-cli-20261022-092243-d42147/observed/output"
+          }
+        }
+      }
+    },
+    "response": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"summary\": \"anchors('saga', 'money-transfer'): 2 recorded locations (source-verified)\",\n  \"result\": {\n    \"status\": \"source-verified\",\n    \"result\": [\n      {\n        \"repo\": \"/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/s8-public-cli-20261022-092243-d42147/observed/output\",\n        \"file\": \"fixture/one.txt\",\n        \"module\": null,\n        \"symbol\": null,\n        \"span\": null,\n        \"generator\": \"s8-public-fixture\",\n        \"generatorVersion\": \"unknown\",\n        \"fingerprint\": \"sha256:3e238f4ed9d5879b67acaada4f7fdb1d2dfd33c6aaf187d61b0fa3cd734b89bc\",\n        \"status\": \"source-verified\",\n        \"verification\": {\n          \"method\": \"sha256-bytes\",\n          \"level\": \"file\",\n          \"fileVerified\": true,\n          \"symbolVerified\": false,\n          \"spanVerified\": false\n        },\n        \"freshness\": \"current-bytes\",\n        \"observedFingerprint\": \"sha256:3e238f4ed9d5879b67acaada4f7fdb1d2dfd33c6aaf187d61b0fa3cd734b89bc\"\n      },\n      {\n        \"repo\": \"/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/s8-public-cli-20261022-092243-d42147/observed/output\",\n        \"file\": \"fixture/two.txt\",\n        \"module\": null,\n        \"symbol\": null,\n        \"span\": null,\n        \"generator\": \"s8-public-fixture\",\n        \"generatorVersion\": \"unknown\",\n        \"fingerprint\": \"sha256:f22d17914c349373b608605a14afa9518911537263c06cdc7f03bb74c5fc0493\",\n        \"status\": \"source-verified\",\n        \"verification\": {\n          \"method\": \"sha256-bytes\",\n          \"level\": \"file\",\n          \"fileVerified\": true,\n          \"symbolVerified\": false,\n          \"spanVerified\": false\n        },\n        \"freshness\": \"current-bytes\",\n        \"observedFingerprint\": \"sha256:f22d17914c349373b608605a14afa9518911537263c06cdc7f03bb74c5fc0493\"\n      }\n    ]\n  },\n  \"next_actions\": [\n    \"describe('saga', 'money-transfer')\"\n  ],\n  \"budget\": {\n    \"depth_used\": 0,\n    \"nodes_visited\": 2\n  }\n}"
+          }
+        ]
+      }
+    }
+  }
+]

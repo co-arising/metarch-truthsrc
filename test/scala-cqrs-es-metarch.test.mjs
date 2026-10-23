@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { plan } from '../src/core/generate.mjs';
 
-const GEN = join(import.meta.dirname, '..', 'generators', 'scala-cqrs-es');
+const GEN = join(import.meta.dirname, '..', 'generators', '_deprecated', 'scala-cqrs-es');
 const GOLD = join(import.meta.dirname, '..', 'golden', 'scala-cqrs-es-metarch');
 const GOLDEN_VERSION = 'af096839';
 const elementHashes = JSON.parse(readFileSync(join(GOLD, 'elementHashes.json'), 'utf8'));
@@ -62,7 +62,7 @@ for (const name of ['ConceptDelta', 'CatalogConflict', 'EdgeTarget', 'FieldSpec'
 const protos = corpus.filter((e) => e.kind === 'proto' || e.kind === 'proto-shared');
 equal(protos.length, 28, '27 aggregate protos + shared_value_objects');
 const conceptProto = protos.find((v) => v.path.endsWith('concept.proto'));
-const wantProto = readFileSync(join('/Users/zhongdj/Workspaces/ingested-app', conceptProto.path), 'utf8');
+const wantProto = readFileSync(join('/Users/zhongdj/Workspaces/mad-polaris/ingested-app', conceptProto.path), 'utf8');
 equal(conceptProto.content.replace(ANY_STAMP, ''), wantProto.replace(ANY_STAMP, ''), 'proto byte identity: concept (imports + tenant stamping)');
 const cd = vos.find((v) => v.path.endsWith('ConceptDelta.scala'));
 ok(cd.content.includes('new Reads[ConceptDelta]'), '>22 fields → explicit reads/writes (Function22 wall)');
@@ -78,7 +78,7 @@ ok(vos.find((v) => v.path.endsWith('EdgeTarget.scala')).content.includes('Json.u
 const persistence = corpus.filter((e) => ['event-adapter', 'snapshot-adapter', 'proto-converters', 'repository-impl', 'bootstrap', 'application-bootstrap'].includes(e.kind));
 equal(persistence.length, 179, '27×5 persistence/glue per aggregate + 43 projection bootstraps + ApplicationBootstrap');
 for (const e of persistence) {
-  const want = readFileSync(join('/Users/zhongdj/Workspaces/ingested-app', e.path), 'utf8');
+  const want = readFileSync(join('/Users/zhongdj/Workspaces/mad-polaris/ingested-app', e.path), 'utf8');
   equal(e.content.replace(ANY_STAMP, ''), want.replace(ANY_STAMP, ''), `persistence byte identity: ${e.path}`);
 }
 const snapAdapter = persistence.find((e) => e.path.endsWith('SubdomainSnapshotAdapter.scala')).content;

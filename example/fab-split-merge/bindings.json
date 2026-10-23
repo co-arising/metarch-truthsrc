@@ -1,0 +1,1109 @@
+{
+  "schemaVersion": "truthsrc.saga-binding/v1",
+  "sagas": [
+    {
+      "sagaId": "fab-split",
+      "version": "v1",
+      "module": "fixture.SagaModule",
+      "engine": {
+        "artifact": "net.imadz:saga-core:0.2",
+        "apiMode": "strict",
+        "entrypoint": "fixture.StrictSagaEntry",
+        "capabilities": {
+          "required": [
+            "durable-commit-decision",
+            "durable-abort-decision",
+            "typed-nonterminal-unknown",
+            "safe-status-reattach",
+            "receipt-reconciliation",
+            "participant-idempotency-query",
+            "pinned-definition-codec",
+            "manual-evidence-authorization",
+            "cancel-before-prepare-fencing",
+            "durable-manifest"
+          ]
+        }
+      },
+      "codec": {
+        "id": "ArgsCodec",
+        "version": "codec-v1",
+        "compatibleVersions": [
+          "codec-v1"
+        ],
+        "mapper": "fixture.ArgsCodec"
+      },
+      "types": [
+        {
+          "id": "TxId",
+          "canonicalType": "TxId",
+          "implementation": "fixture.types.TxId",
+          "kind": "id",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "id": "OperationId",
+          "canonicalType": "OperationId",
+          "implementation": "fixture.types.OperationId",
+          "kind": "id",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "id": "LotId",
+          "canonicalType": "LotId",
+          "implementation": "fixture.types.LotId",
+          "kind": "id",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "id": "ReservationId",
+          "canonicalType": "ReservationId",
+          "implementation": "fixture.types.ReservationId",
+          "kind": "id",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "id": "WaferId",
+          "canonicalType": "WaferId",
+          "implementation": "fixture.types.WaferId",
+          "kind": "id",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "id": "WaferSet",
+          "canonicalType": "WaferSet",
+          "implementation": "fixture.types.WaferSet",
+          "kind": "collection",
+          "elementType": "WaferId",
+          "minItems": 1,
+          "maxItems": 64
+        },
+        {
+          "id": "ManifestRef",
+          "canonicalType": "ManifestRef",
+          "implementation": "fixture.types.ManifestRef",
+          "kind": "manifest-reference",
+          "readable": true,
+          "version": "manifest-v1"
+        }
+      ],
+      "participants": [
+        {
+          "participantId": "source",
+          "addressing": {
+            "resolver": "fixture.sourceResolver",
+            "aggregate": "Lot",
+            "resourceType": "LotId",
+            "mode": "exact-resource"
+          }
+        },
+        {
+          "participantId": "target",
+          "addressing": {
+            "resolver": "fixture.targetResolver",
+            "aggregate": "Lot",
+            "resourceType": "LotId",
+            "mode": "exact-resource"
+          }
+        }
+      ],
+      "steps": [
+        {
+          "stepId": "reserve-source",
+          "phases": {
+            "prepare": {
+              "kind": "command",
+              "port": "fixture.PhasePort",
+              "commandMapper": "fixture.CommandMapper",
+              "confirmation": {
+                "kind": "durable-receipt",
+                "eventRef": {
+                  "aggregate": "Lot",
+                  "name": "ReserveWaferRemovalConfirmed"
+                },
+                "mapper": "fixture.ConfirmationMapper",
+                "outputs": [
+                  {
+                    "slot": "reservation",
+                    "ref": "receipt:reservation",
+                    "type": "ReservationId"
+                  },
+                  {
+                    "slot": "carried",
+                    "ref": "receipt:carried",
+                    "type": "WaferSet"
+                  }
+                ]
+              },
+              "query": {
+                "mapper": "fixture.QueryMapper",
+                "mode": "read-only",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "resultKinds": [
+                  "confirmed",
+                  "not-executed",
+                  "unknown"
+                ]
+              },
+              "receipt": {
+                "mapper": "fixture.ReceiptMapper",
+                "version": "receipt-v1",
+                "durable": true,
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "payloadCompatibility": "exact",
+                "evidence": "reservation-decision-effect-reconciliation"
+              },
+              "idempotency": {
+                "mapper": "fixture.IdempotencyMapper",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "payloadConflict": "reject",
+                "attemptIdentity": "excluded"
+              }
+            },
+            "commit": {
+              "kind": "command",
+              "port": "fixture.PhasePort",
+              "commandMapper": "fixture.CommandMapper",
+              "confirmation": {
+                "kind": "durable-receipt",
+                "eventRef": {
+                  "aggregate": "Lot",
+                  "name": "CommitWaferRemovalConfirmed"
+                },
+                "mapper": "fixture.ConfirmationMapper",
+                "outputs": [
+                  {
+                    "slot": "receiptId",
+                    "ref": "receipt:receiptId",
+                    "type": "TxId"
+                  }
+                ]
+              },
+              "query": {
+                "mapper": "fixture.QueryMapper",
+                "mode": "read-only",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "resultKinds": [
+                  "confirmed",
+                  "not-executed",
+                  "unknown"
+                ]
+              },
+              "receipt": {
+                "mapper": "fixture.ReceiptMapper",
+                "version": "receipt-v1",
+                "durable": true,
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "payloadCompatibility": "exact",
+                "evidence": "reservation-decision-effect-reconciliation"
+              },
+              "idempotency": {
+                "mapper": "fixture.IdempotencyMapper",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "payloadConflict": "reject",
+                "attemptIdentity": "excluded"
+              }
+            },
+            "compensate": {
+              "kind": "command",
+              "port": "fixture.PhasePort",
+              "commandMapper": "fixture.CommandMapper",
+              "confirmation": {
+                "kind": "durable-receipt",
+                "eventRef": {
+                  "aggregate": "Lot",
+                  "name": "ReleaseReservedWaferConfirmed"
+                },
+                "mapper": "fixture.ConfirmationMapper",
+                "outputs": []
+              },
+              "query": {
+                "mapper": "fixture.QueryMapper",
+                "mode": "read-only",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "resultKinds": [
+                  "confirmed",
+                  "not-executed",
+                  "unknown"
+                ]
+              },
+              "receipt": {
+                "mapper": "fixture.ReceiptMapper",
+                "version": "receipt-v1",
+                "durable": true,
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "payloadCompatibility": "exact",
+                "evidence": "reservation-decision-effect-reconciliation"
+              },
+              "idempotency": {
+                "mapper": "fixture.IdempotencyMapper",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "payloadConflict": "reject",
+                "attemptIdentity": "excluded"
+              }
+            }
+          }
+        },
+        {
+          "stepId": "reserve-target",
+          "phases": {
+            "prepare": {
+              "kind": "command",
+              "port": "fixture.PhasePort",
+              "commandMapper": "fixture.CommandMapper",
+              "confirmation": {
+                "kind": "durable-receipt",
+                "eventRef": {
+                  "aggregate": "Lot",
+                  "name": "ReserveAddWaferConfirmed"
+                },
+                "mapper": "fixture.ConfirmationMapper",
+                "outputs": [
+                  {
+                    "slot": "reservation",
+                    "ref": "receipt:reservation",
+                    "type": "ReservationId"
+                  }
+                ]
+              },
+              "query": {
+                "mapper": "fixture.QueryMapper",
+                "mode": "read-only",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "resultKinds": [
+                  "confirmed",
+                  "not-executed",
+                  "unknown"
+                ]
+              },
+              "receipt": {
+                "mapper": "fixture.ReceiptMapper",
+                "version": "receipt-v1",
+                "durable": true,
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "payloadCompatibility": "exact",
+                "evidence": "reservation-decision-effect-reconciliation"
+              },
+              "idempotency": {
+                "mapper": "fixture.IdempotencyMapper",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "payloadConflict": "reject",
+                "attemptIdentity": "excluded"
+              }
+            },
+            "commit": {
+              "kind": "command",
+              "port": "fixture.PhasePort",
+              "commandMapper": "fixture.CommandMapper",
+              "confirmation": {
+                "kind": "durable-receipt",
+                "eventRef": {
+                  "aggregate": "Lot",
+                  "name": "CommitAddWaferConfirmed"
+                },
+                "mapper": "fixture.ConfirmationMapper",
+                "outputs": [
+                  {
+                    "slot": "receiptId",
+                    "ref": "receipt:receiptId",
+                    "type": "TxId"
+                  }
+                ]
+              },
+              "query": {
+                "mapper": "fixture.QueryMapper",
+                "mode": "read-only",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "resultKinds": [
+                  "confirmed",
+                  "not-executed",
+                  "unknown"
+                ]
+              },
+              "receipt": {
+                "mapper": "fixture.ReceiptMapper",
+                "version": "receipt-v1",
+                "durable": true,
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "payloadCompatibility": "exact",
+                "evidence": "reservation-decision-effect-reconciliation"
+              },
+              "idempotency": {
+                "mapper": "fixture.IdempotencyMapper",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "payloadConflict": "reject",
+                "attemptIdentity": "excluded"
+              }
+            },
+            "compensate": {
+              "kind": "command",
+              "port": "fixture.PhasePort",
+              "commandMapper": "fixture.CommandMapper",
+              "confirmation": {
+                "kind": "durable-receipt",
+                "eventRef": {
+                  "aggregate": "Lot",
+                  "name": "CancelAddWaferConfirmed"
+                },
+                "mapper": "fixture.ConfirmationMapper",
+                "outputs": []
+              },
+              "query": {
+                "mapper": "fixture.QueryMapper",
+                "mode": "read-only",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "resultKinds": [
+                  "confirmed",
+                  "not-executed",
+                  "unknown"
+                ]
+              },
+              "receipt": {
+                "mapper": "fixture.ReceiptMapper",
+                "version": "receipt-v1",
+                "durable": true,
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "payloadCompatibility": "exact",
+                "evidence": "reservation-decision-effect-reconciliation"
+              },
+              "idempotency": {
+                "mapper": "fixture.IdempotencyMapper",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "payloadConflict": "reject",
+                "attemptIdentity": "excluded"
+              }
+            }
+          }
+        }
+      ],
+      "triggerMappers": [
+        {
+          "triggerId": "from-command",
+          "argsMapper": "fixture.TriggerArgsMapper",
+          "idempotencyMapper": "fixture.TriggerIdempotencyMapper"
+        },
+        {
+          "triggerId": "from-event",
+          "argsMapper": "fixture.TriggerArgsMapper",
+          "idempotencyMapper": "fixture.TriggerIdempotencyMapper"
+        }
+      ],
+      "completionMappers": [
+        {
+          "kind": "succeeded",
+          "mapper": "fixture.CompletionMapper"
+        },
+        {
+          "kind": "rejected-before-effects",
+          "mapper": "fixture.CompletionMapper"
+        },
+        {
+          "kind": "compensated",
+          "mapper": "fixture.CompletionMapper"
+        },
+        {
+          "kind": "recovery-required",
+          "mapper": "fixture.CompletionMapper"
+        },
+        {
+          "kind": "outcome-unknown",
+          "mapper": "fixture.CompletionMapper"
+        }
+      ]
+    },
+    {
+      "sagaId": "fab-merge",
+      "version": "v1",
+      "module": "fixture.SagaModule",
+      "engine": {
+        "artifact": "net.imadz:saga-core:0.2",
+        "apiMode": "strict",
+        "entrypoint": "fixture.StrictSagaEntry",
+        "capabilities": {
+          "required": [
+            "durable-commit-decision",
+            "durable-abort-decision",
+            "typed-nonterminal-unknown",
+            "safe-status-reattach",
+            "receipt-reconciliation",
+            "participant-idempotency-query",
+            "pinned-definition-codec",
+            "manual-evidence-authorization",
+            "cancel-before-prepare-fencing",
+            "durable-manifest"
+          ]
+        }
+      },
+      "codec": {
+        "id": "ArgsCodec",
+        "version": "codec-v1",
+        "compatibleVersions": [
+          "codec-v1"
+        ],
+        "mapper": "fixture.ArgsCodec"
+      },
+      "types": [
+        {
+          "id": "TxId",
+          "canonicalType": "TxId",
+          "implementation": "fixture.types.TxId",
+          "kind": "id",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "id": "OperationId",
+          "canonicalType": "OperationId",
+          "implementation": "fixture.types.OperationId",
+          "kind": "id",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "id": "LotId",
+          "canonicalType": "LotId",
+          "implementation": "fixture.types.LotId",
+          "kind": "id",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "id": "ReservationId",
+          "canonicalType": "ReservationId",
+          "implementation": "fixture.types.ReservationId",
+          "kind": "id",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "id": "WaferId",
+          "canonicalType": "WaferId",
+          "implementation": "fixture.types.WaferId",
+          "kind": "id",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "id": "WaferSet",
+          "canonicalType": "WaferSet",
+          "implementation": "fixture.types.WaferSet",
+          "kind": "collection",
+          "elementType": "WaferId",
+          "minItems": 1,
+          "maxItems": 64
+        },
+        {
+          "id": "ManifestRef",
+          "canonicalType": "ManifestRef",
+          "implementation": "fixture.types.ManifestRef",
+          "kind": "manifest-reference",
+          "readable": true,
+          "version": "manifest-v1"
+        }
+      ],
+      "participants": [
+        {
+          "participantId": "source",
+          "addressing": {
+            "resolver": "fixture.sourceResolver",
+            "aggregate": "Lot",
+            "resourceType": "LotId",
+            "mode": "exact-resource"
+          }
+        },
+        {
+          "participantId": "target",
+          "addressing": {
+            "resolver": "fixture.targetResolver",
+            "aggregate": "Lot",
+            "resourceType": "LotId",
+            "mode": "exact-resource"
+          }
+        }
+      ],
+      "steps": [
+        {
+          "stepId": "reserve-source",
+          "phases": {
+            "prepare": {
+              "kind": "command",
+              "port": "fixture.PhasePort",
+              "commandMapper": "fixture.CommandMapper",
+              "confirmation": {
+                "kind": "durable-receipt",
+                "eventRef": {
+                  "aggregate": "Lot",
+                  "name": "ReserveWaferRemovalConfirmed"
+                },
+                "mapper": "fixture.ConfirmationMapper",
+                "outputs": [
+                  {
+                    "slot": "reservation",
+                    "ref": "receipt:reservation",
+                    "type": "ReservationId"
+                  },
+                  {
+                    "slot": "carried",
+                    "ref": "receipt:carried",
+                    "type": "WaferSet"
+                  }
+                ]
+              },
+              "query": {
+                "mapper": "fixture.QueryMapper",
+                "mode": "read-only",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "resultKinds": [
+                  "confirmed",
+                  "not-executed",
+                  "unknown"
+                ]
+              },
+              "receipt": {
+                "mapper": "fixture.ReceiptMapper",
+                "version": "receipt-v1",
+                "durable": true,
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "payloadCompatibility": "exact",
+                "evidence": "reservation-decision-effect-reconciliation"
+              },
+              "idempotency": {
+                "mapper": "fixture.IdempotencyMapper",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "payloadConflict": "reject",
+                "attemptIdentity": "excluded"
+              }
+            },
+            "commit": {
+              "kind": "command",
+              "port": "fixture.PhasePort",
+              "commandMapper": "fixture.CommandMapper",
+              "confirmation": {
+                "kind": "durable-receipt",
+                "eventRef": {
+                  "aggregate": "Lot",
+                  "name": "CommitWaferRemovalConfirmed"
+                },
+                "mapper": "fixture.ConfirmationMapper",
+                "outputs": [
+                  {
+                    "slot": "receiptId",
+                    "ref": "receipt:receiptId",
+                    "type": "TxId"
+                  }
+                ]
+              },
+              "query": {
+                "mapper": "fixture.QueryMapper",
+                "mode": "read-only",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "resultKinds": [
+                  "confirmed",
+                  "not-executed",
+                  "unknown"
+                ]
+              },
+              "receipt": {
+                "mapper": "fixture.ReceiptMapper",
+                "version": "receipt-v1",
+                "durable": true,
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "payloadCompatibility": "exact",
+                "evidence": "reservation-decision-effect-reconciliation"
+              },
+              "idempotency": {
+                "mapper": "fixture.IdempotencyMapper",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "payloadConflict": "reject",
+                "attemptIdentity": "excluded"
+              }
+            },
+            "compensate": {
+              "kind": "command",
+              "port": "fixture.PhasePort",
+              "commandMapper": "fixture.CommandMapper",
+              "confirmation": {
+                "kind": "durable-receipt",
+                "eventRef": {
+                  "aggregate": "Lot",
+                  "name": "ReleaseReservedWaferConfirmed"
+                },
+                "mapper": "fixture.ConfirmationMapper",
+                "outputs": []
+              },
+              "query": {
+                "mapper": "fixture.QueryMapper",
+                "mode": "read-only",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "resultKinds": [
+                  "confirmed",
+                  "not-executed",
+                  "unknown"
+                ]
+              },
+              "receipt": {
+                "mapper": "fixture.ReceiptMapper",
+                "version": "receipt-v1",
+                "durable": true,
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "payloadCompatibility": "exact",
+                "evidence": "reservation-decision-effect-reconciliation"
+              },
+              "idempotency": {
+                "mapper": "fixture.IdempotencyMapper",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "payloadConflict": "reject",
+                "attemptIdentity": "excluded"
+              }
+            }
+          }
+        },
+        {
+          "stepId": "reserve-target",
+          "phases": {
+            "prepare": {
+              "kind": "command",
+              "port": "fixture.PhasePort",
+              "commandMapper": "fixture.CommandMapper",
+              "confirmation": {
+                "kind": "durable-receipt",
+                "eventRef": {
+                  "aggregate": "Lot",
+                  "name": "ReserveAddWaferConfirmed"
+                },
+                "mapper": "fixture.ConfirmationMapper",
+                "outputs": [
+                  {
+                    "slot": "reservation",
+                    "ref": "receipt:reservation",
+                    "type": "ReservationId"
+                  }
+                ]
+              },
+              "query": {
+                "mapper": "fixture.QueryMapper",
+                "mode": "read-only",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "resultKinds": [
+                  "confirmed",
+                  "not-executed",
+                  "unknown"
+                ]
+              },
+              "receipt": {
+                "mapper": "fixture.ReceiptMapper",
+                "version": "receipt-v1",
+                "durable": true,
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "payloadCompatibility": "exact",
+                "evidence": "reservation-decision-effect-reconciliation"
+              },
+              "idempotency": {
+                "mapper": "fixture.IdempotencyMapper",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "payloadConflict": "reject",
+                "attemptIdentity": "excluded"
+              }
+            },
+            "commit": {
+              "kind": "command",
+              "port": "fixture.PhasePort",
+              "commandMapper": "fixture.CommandMapper",
+              "confirmation": {
+                "kind": "durable-receipt",
+                "eventRef": {
+                  "aggregate": "Lot",
+                  "name": "CommitAddWaferConfirmed"
+                },
+                "mapper": "fixture.ConfirmationMapper",
+                "outputs": [
+                  {
+                    "slot": "receiptId",
+                    "ref": "receipt:receiptId",
+                    "type": "TxId"
+                  }
+                ]
+              },
+              "query": {
+                "mapper": "fixture.QueryMapper",
+                "mode": "read-only",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "resultKinds": [
+                  "confirmed",
+                  "not-executed",
+                  "unknown"
+                ]
+              },
+              "receipt": {
+                "mapper": "fixture.ReceiptMapper",
+                "version": "receipt-v1",
+                "durable": true,
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "payloadCompatibility": "exact",
+                "evidence": "reservation-decision-effect-reconciliation"
+              },
+              "idempotency": {
+                "mapper": "fixture.IdempotencyMapper",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "payloadConflict": "reject",
+                "attemptIdentity": "excluded"
+              }
+            },
+            "compensate": {
+              "kind": "command",
+              "port": "fixture.PhasePort",
+              "commandMapper": "fixture.CommandMapper",
+              "confirmation": {
+                "kind": "durable-receipt",
+                "eventRef": {
+                  "aggregate": "Lot",
+                  "name": "CancelAddWaferConfirmed"
+                },
+                "mapper": "fixture.ConfirmationMapper",
+                "outputs": []
+              },
+              "query": {
+                "mapper": "fixture.QueryMapper",
+                "mode": "read-only",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "resultKinds": [
+                  "confirmed",
+                  "not-executed",
+                  "unknown"
+                ]
+              },
+              "receipt": {
+                "mapper": "fixture.ReceiptMapper",
+                "version": "receipt-v1",
+                "durable": true,
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "payloadCompatibility": "exact",
+                "evidence": "reservation-decision-effect-reconciliation"
+              },
+              "idempotency": {
+                "mapper": "fixture.IdempotencyMapper",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ],
+                "payloadConflict": "reject",
+                "attemptIdentity": "excluded"
+              }
+            }
+          }
+        }
+      ],
+      "triggerMappers": [
+        {
+          "triggerId": "from-command",
+          "argsMapper": "fixture.TriggerArgsMapper",
+          "idempotencyMapper": "fixture.TriggerIdempotencyMapper"
+        },
+        {
+          "triggerId": "from-event",
+          "argsMapper": "fixture.TriggerArgsMapper",
+          "idempotencyMapper": "fixture.TriggerIdempotencyMapper"
+        }
+      ],
+      "completionMappers": [
+        {
+          "kind": "succeeded",
+          "mapper": "fixture.CompletionMapper"
+        },
+        {
+          "kind": "rejected-before-effects",
+          "mapper": "fixture.CompletionMapper"
+        },
+        {
+          "kind": "compensated",
+          "mapper": "fixture.CompletionMapper"
+        },
+        {
+          "kind": "recovery-required",
+          "mapper": "fixture.CompletionMapper"
+        },
+        {
+          "kind": "outcome-unknown",
+          "mapper": "fixture.CompletionMapper"
+        }
+      ]
+    }
+  ]
+}

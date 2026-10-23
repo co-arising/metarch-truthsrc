@@ -1,0 +1,415 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import { compileSagas } from '../lib/saga/compile.mjs';
+import { compileTree } from '../lib/compile.mjs';
+import { lowerSagaRuntimeBinding, validateSagaRuntimeBinding } from '../lib/saga/runtime-binding.mjs';
+import { sagaContract } from './fixtures/saga-contract.mjs';
+
+const PHASES = ['prepare', 'commit', 'compensate'];
+const TARGET = {
+  artifact: 'net.imadz:saga-core:0.2', apiMode: 'strict',
+  definitionApi: 'net.imadz.infra.saga.strict.StrictSagaDefinition',
+  coordinatorApi: 'net.imadz.infra.saga.strict.StrictSagaCoordinator',
+  executionMode: 'static-serial-allTCC',
+  capabilities: ['positive-int-definition-version', 'static-participants', 'serial-all-tcc',
+    'fresh-canonical-args', 'pinned-args-codec', 'pinned-phase-receipt-codecs', 'minor-unit-string-money'],
+};
+const clone = (value) => structuredClone(value);
+const stable = (value) => Array.isArray(value) ? value.map(stable) : value && typeof value === 'object'
+  ? Object.fromEntries(Object.keys(value).sort().map((key) => [key, stable(value[key])])) : value;
+const sha = (value) => createHash('sha256').update(JSON.stringify(stable(value))).digest('hex');
+const reverse = (value) => Array.isArray(value) ? value.map(reverse) : value && typeof value === 'object'
+  ? Object.fromEntries(Object.entries(value).reverse().map(([key, item]) => [key, reverse(item)])) : value;
+function freeze(value) {
+  if (value && typeof value === 'object' && !Object.isFrozen(value)) {
+    Object.values(value).forEach(freeze); Object.freeze(value);
+  }
+  return value;
+}
+function runtimeDocument(canonical, binding, runtimeVersion = 17) {
+  return {
+    schemaVersion: 'truthsrc.saga-runtime-binding/v1', target: clone(TARGET),
+    sagas: canonical.sagas.map((definition) => {
+      const technical = binding.sagas.find((row) => row.sagaId === definition.id);
+      return { sagaId: definition.id, definitionVersion: definition.version, runtimeVersion,
+        argsCodec: { id: technical.codec.id, version: technical.codec.version },
+        receiptCodecs: technical.steps.flatMap((step) => PHASES.filter((phase) => step.phases[phase].kind === 'command')
+          .map((phase) => ({ stepId: step.stepId, phase, id: `Explicit-${phase}-receipt`, version: step.phases[phase].receipt.version }))) };
+    }),
+  };
+}
+// A legal, closed single-step static serial contract. Removing the second resource
+// and result-slot consumption changes only these private synthetic copies, not the
+// shared two-account fixture. In current IR two steps in one group mean PARALLEL.
+function minimal(version = 'v1') {
+  const { canonical, binding } = sagaContract();
+  const definition = canonical.sagas[0];
+  const technical = binding.sagas[0];
+  definition.version = version; technical.version = version;
+  const payload = definition.payload;
+  payload.steps = payload.steps.slice(0, 1);
+  payload.participants = payload.participants.slice(0, 1);
+  technical.steps = technical.steps.slice(0, 1);
+  technical.participants = technical.participants.slice(0, 1);
+  payload.admission.maxInFlight = 1;
+  payload.admission.maxParticipants = 1;
+  payload.resilience = { maxAttempts: 1, phaseTimeoutMs: 1000, queryTimeoutMs: 1000, backoffMs: 0, totalTimeoutMs: 5000 };
+  for (const phase of ['commit', 'compensate']) {
+    const declaration = payload.steps[0].phases[phase];
+    declaration.bindings = declaration.bindings.filter((mapping) => !mapping.ref.startsWith('step:'));
+    const command = canonical.aggregates[0].commands.find((row) => row.name === declaration.commandRef.name);
+    command.parameters = command.parameters.filter((field) => field.name !== 'reservation');
+  }
+  return { canonical, binding, runtimeBinding: runtimeDocument(canonical, binding) };
+}
+function success(context) {
+  const result = lowerSagaRuntimeBinding(context);
+  assert.deepEqual(result.diagnostics, [], JSON.stringify(result.diagnostics));
+  assert.ok(result.ir); assert.equal(result.plan, result.ir);
+  assert.equal(result.ir.runtimeBindingVerified, false);
+  assert.equal(result.ir.runnable, false);
+  return result.ir;
+}
+function failure(context, code, pointer) {
+  const result = lowerSagaRuntimeBinding(context);
+  assert.equal(result.ir, null, 'no partial IR');
+  assert.equal(result.plan, null, 'no partial plan');
+  assert.ok(result.diagnostics.some((entry) => entry.code === code && (!pointer || entry.pointer === pointer)), JSON.stringify(result.diagnostics));
+  const validation = validateSagaRuntimeBinding(context);
+  assert.equal(validation.valid, false);
+  assert.equal(validation.ir, null); assert.equal(validation.plan, null);
+  assert.equal(validation.runnable, false); assert.equal(validation.runtimeBindingVerified, false);
+  assert.deepEqual(validation.diagnostics, result.diagnostics);
+  return result;
+}
+function contract(context) { return success(context).sagas[0]; }
+
+test('minimal compiler-closed static allTCC lowers actual resolved adapter data, never a runtime certificate', () => {
+  const context = minimal();
+  const compiled = compileSagas(context.canonical, context.binding);
+  assert.deepEqual(compiled.diagnostics, []);
+  const lowered = success({ ...context, ir: compiled.ir });
+  const saga = lowered.sagas[0];
+  assert.equal(lowered.schemaVersion, 'truthsrc.saga-runtime-contract/v1');
+  assert.equal(saga.definitionVersion, 'v1');
+  assert.deepEqual(saga.runtimeIdentity, { name: 'money-transfer', version: 17 });
+  assert.deepEqual(saga.contract, { definition: context.canonical.sagas[0], binding: context.binding.sagas[0] });
+  assert.equal(saga.semanticDigest, sha({ definition: context.canonical.sagas[0], binding: context.binding.sagas[0],
+    runtimeBinding: { target: TARGET, saga: context.runtimeBinding.sagas[0] } }));
+  assert.equal(saga.participants[0].resource.ref, 'args:from');
+  assert.deepEqual(saga.participants[0].resource.addressing, context.binding.sagas[0].participants[0].addressing);
+  for (const phase of PHASES) {
+    const row = saga.participants[0].phases[phase];
+    assert.equal(row.runtimePhase, phase[0].toUpperCase() + phase.slice(1));
+    assert.equal(row.port, 'fixture.PhasePort');
+    assert.equal(row.receiptCodec.id, `Explicit-${phase}-receipt`);
+    assert.equal(row.receiptCodec.version, 'receipt-v1');
+    assert.notEqual(row.receiptCodec.id, row.receipt.mapper);
+    assert.deepEqual(row.inputs[0], { slot: 'txid', type: 'TxId', source: { kind: 'transaction-id' } });
+    assert.deepEqual(row.inputs[1], { slot: 'resource', type: 'AccountId', source: { kind: 'args', slot: 'from' } });
+  }
+  assert.equal(saga.hostRequirements.totalDeadline.totalTimeoutMs, 5000);
+  assert.ok(saga.hostRequirements.capabilities.every((row) => row.verified === false));
+  assert.deepEqual(saga.schedule, { prepare: ['reserve-source'], commit: ['reserve-source'], compensate: ['reserve-source'] });
+  assert.equal(saga.runnable, false); assert.equal(saga.runtimeBindingVerified, false);
+  assert.ok(saga.blocked.includes('scala-ast-adapter-missing'));
+  const validation = validateSagaRuntimeBinding(context);
+  assert.equal(validation.valid, true); assert.equal(validation.plan, null);
+});
+
+test('JSON-serialized lowered output is consumable by a narrow adapter without rejoining input IR', () => {
+  const lowered = JSON.parse(JSON.stringify(success(minimal())));
+  const saga = lowered.sagas[0];
+  const args = { from: 'account-a', to: 'account-b', amount: { currency: 'USD', minorUnits: '90071992547409931234567890123456789012' } };
+  const request = { identity: { transactionId: 'transfer-42' }, args };
+  const phase = saga.participants[0].phases.prepare;
+  const command = Object.fromEntries(phase.inputs.map((input) => [input.slot,
+    input.source.kind === 'transaction-id' ? request.identity.transactionId : request.args[input.source.slot]]));
+  assert.deepEqual(command, { txid: 'transfer-42', resource: 'account-a', amount: args.amount });
+  const money = saga.args.types.find((row) => row.id === 'Money');
+  assert.equal(money.amountEncoding, 'minor-unit-string'); assert.equal(money.precision, 38);
+  assert.equal(command.amount.minorUnits, args.amount.minorUnits);
+  assert.equal(typeof command.amount.minorUnits, 'string');
+  assert.equal(phase.receiptCodec.id, 'Explicit-prepare-receipt');
+  assert.equal(saga.completions.find((row) => row.kind === 'succeeded').inputs[0].source.kind, 'transaction-id');
+  assert.equal(saga.triggers[0].binding.triggerId, saga.triggers[0].declaration.id);
+});
+
+for (const version of ['v1', '1', ' release/2026.10 ', 1, Number.MAX_SAFE_INTEGER]) {
+  test(`original ${typeof version} business version ${JSON.stringify(version)} is explicitly mapped, never parsed`, () => {
+    const context = minimal(version);
+    context.runtimeBinding.sagas[0].runtimeVersion = 93;
+    const saga = contract(context);
+    assert.equal(saga.definitionVersion, version);
+    assert.equal(saga.contract.definition.version, version);
+    assert.equal(saga.contract.binding.version, version);
+    assert.equal(saga.runtimeIdentity.version, 93);
+    assert.equal(saga.args.codec.version, 'codec-v1');
+    assert.equal(saga.participants[0].phases.prepare.receiptCodec.version, 'receipt-v1');
+    if (typeof version === 'number') assert.equal(compileSagas(context.canonical, context.binding).ir, null, 'old compiler remains unchanged');
+  });
+}
+for (const [businessVersion, mismatched] of [[1, '1'], ['1', 1], ['v1', 1]]) {
+  test(`runtime mapping rejects type/value mismatch ${JSON.stringify(businessVersion)} versus ${JSON.stringify(mismatched)}`, () => {
+    const context = minimal(businessVersion);
+    context.runtimeBinding.sagas[0].definitionVersion = mismatched;
+    failure(context, 'RUNTIME_VERSION_MISMATCH');
+  });
+  test(`technical binding rejects original type/value mismatch ${JSON.stringify(businessVersion)} versus ${JSON.stringify(mismatched)}`, () => {
+    const context = minimal(businessVersion); context.binding.sagas[0].version = mismatched;
+    failure(context, 'RUNTIME_VERSION_MISMATCH');
+  });
+}
+for (const version of ['', '   ', 0, -1, 1.5, Number.MAX_SAFE_INTEGER + 1, true, null, {}]) {
+  test(`invalid business definition version ${JSON.stringify(version)} is rejected`, () => {
+    const context = minimal(); context.canonical.sagas[0].version = version;
+    context.binding.sagas[0].version = version;
+    failure(context, 'RUNTIME_VERSION');
+  });
+}
+for (const version of ['1', 'v1', 0, -1, 1.2, 2147483648, Number.MAX_SAFE_INTEGER]) {
+  test(`invalid runtime Int ${JSON.stringify(version)} is rejected, not coerced`, () => {
+    const context = minimal(); context.runtimeBinding.sagas[0].runtimeVersion = version;
+    failure(context, 'RUNTIME_VERSION');
+  });
+}
+test('maximum positive Scala Int remains independent of a numeric business version', () => {
+  const context = minimal(2147483648); context.runtimeBinding.sagas[0].runtimeVersion = 2147483647;
+  assert.equal(contract(context).runtimeIdentity.version, 2147483647);
+});
+
+test('same business version full definition and technical semantics produce different digests', () => {
+  const context = minimal(); const first = contract(context).semanticDigest;
+  for (const change of [
+    (c) => { c.canonical.sagas[0].payload.purpose += ' revised'; },
+    (c) => { c.canonical.sagas[0].payload.invariants.push('Different domain requirement'); },
+    (c) => { c.binding.sagas[0].steps[0].phases.compensate.commandMapper = 'fixture.OtherMapper'; },
+    (c) => { c.binding.sagas[0].participants[0].addressing.resolver = 'fixture.OtherResolver'; },
+    (c) => { c.binding.sagas[0].types.find((row) => row.id === 'Money').precision = 37; },
+    (c) => { c.canonical.sagas[0].payload.resilience.totalTimeoutMs = 6000; },
+    (c) => { c.runtimeBinding.sagas[0].runtimeVersion = 18; },
+  ]) {
+    const copy = clone(context); change(copy);
+    const saga = contract(copy);
+    assert.equal(saga.definitionVersion, 'v1'); assert.notEqual(saga.semanticDigest, first);
+  }
+  assert.equal(contract(reverse(context)).semanticDigest, first);
+  assert.notEqual(contract(minimal(1)).semanticDigest, contract(minimal('1')).semanticDigest);
+});
+
+test('anchors/sourceMap are provenance only; forged IR digest/readiness never passes the closure gate', () => {
+  const context = minimal(); const first = contract(context).semanticDigest;
+  context.canonical.anchors = [{ file: 'first.scala', symbol: 'First' }];
+  context.binding.sourceMap = { canonical: { '/sagas/0': { file: 'first.saga.yaml', location: { line: 7, column: 2 } } } };
+  assert.equal(contract(context).semanticDigest, first);
+  context.canonical.anchors[0].symbol = 'Moved';
+  context.binding.sourceMap.canonical['/sagas/0'].file = 'moved.saga.yaml';
+  context.binding.sourceMap.canonical['/sagas/0'].location.line = 999;
+  assert.equal(contract(context).semanticDigest, first);
+  context.ir = compileSagas(context.canonical, context.binding).ir;
+  success(context);
+  for (const forge of [
+    (ir) => { ir.digest = '0'.repeat(64); },
+    (ir) => { ir.readiness = 'runnable'; },
+    (ir) => { ir.sagas[0].runtimeBindingVerified = true; },
+    (ir) => { ir.sagas[0].definition.payload.purpose = 'forged'; },
+    (ir) => { ir.sourceMap[''].file = 'forged'; },
+    (ir) => { ir.unknown = true; },
+  ]) {
+    const copy = clone(context); forge(copy.ir); failure(copy, 'RUNTIME_IR_MISMATCH');
+  }
+});
+
+test('args and every receipt codec id/version independently enter semantic digest', () => {
+  const context = minimal(); const first = contract(context).semanticDigest;
+  for (const change of [
+    (c) => { c.binding.sagas[0].codec.id = 'ArgsCodec2'; c.runtimeBinding.sagas[0].argsCodec.id = 'ArgsCodec2'; },
+    (c) => { c.binding.sagas[0].codec.version = 'codec-v2'; c.binding.sagas[0].codec.compatibleVersions.push('codec-v2'); c.runtimeBinding.sagas[0].argsCodec.version = 'codec-v2'; },
+    (c) => { c.runtimeBinding.sagas[0].receiptCodecs[2].id = 'CompensateReceipt2'; },
+    (c) => { c.runtimeBinding.sagas[0].receiptCodecs[1].version = 'receipt-v2'; c.binding.sagas[0].steps[0].phases.commit.receipt.version = 'receipt-v2'; },
+    (c) => { c.binding.sagas[0].codec.mapper = 'fixture.OtherArgsCodec'; },
+  ]) {
+    const copy = clone(context); change(copy); assert.notEqual(contract(copy).semanticDigest, first);
+  }
+  const copy = clone(context); copy.runtimeBinding.sagas[0].argsCodec.id = 'Other';
+  failure(copy, 'RUNTIME_CODEC_MISMATCH');
+  copy.runtimeBinding.sagas[0].argsCodec.id = 'ArgsCodec'; copy.runtimeBinding.sagas[0].argsCodec.version = 'codec-v2';
+  failure(copy, 'RUNTIME_CODEC_MISMATCH');
+});
+
+for (const phase of PHASES) {
+  test(`${phase} receipt codec must be explicit even for empty outputs; receipt.mapper cannot supply it`, () => {
+    const context = minimal(); context.runtimeBinding.sagas[0].receiptCodecs = context.runtimeBinding.sagas[0].receiptCodecs.filter((row) => row.phase !== phase);
+    failure(context, 'RUNTIME_CODEC_MISSING');
+  });
+}
+for (const field of ['id', 'version']) {
+  test(`missing receipt codec ${field} rejects the entire plan`, () => {
+    const context = minimal(); delete context.runtimeBinding.sagas[0].receiptCodecs[0][field];
+    failure(context, 'RUNTIME_SCHEMA');
+  });
+}
+test('receipt pins reject unknown steps/phases, duplicate keys and mismatched versions', () => {
+  for (const [change, code] of [
+    [(c) => { c.runtimeBinding.sagas[0].receiptCodecs[0].stepId = 'NotDeclared'; }, 'RUNTIME_CODEC_ORPHAN'],
+    [(c) => { c.runtimeBinding.sagas[0].receiptCodecs[0].phase = 'execute'; }, 'RUNTIME_SCHEMA'],
+    [(c) => { c.runtimeBinding.sagas[0].receiptCodecs.push(clone(c.runtimeBinding.sagas[0].receiptCodecs[0])); }, 'RUNTIME_DUPLICATE'],
+    [(c) => { c.runtimeBinding.sagas[0].receiptCodecs[0].version = 'receipt-v2'; }, 'RUNTIME_CODEC_MISMATCH'],
+    [(c) => { c.runtimeBinding.sagas[0].receiptCodecs[0].mapper = 'fixture.ReceiptMapper'; }, 'RUNTIME_UNKNOWN'],
+  ]) { const context = minimal(); change(context); failure(context, code); }
+});
+
+for (const key of Object.keys(TARGET).filter((key) => key !== 'capabilities')) {
+  test(`unknown runtime target/API ${key} rejects all output`, () => {
+    const context = minimal(); context.runtimeBinding.target[key] = 'unknown'; failure(context, 'RUNTIME_TARGET');
+  });
+}
+test('technical artifact/API mismatch cannot be hidden by a claimed strict target', () => {
+  const context = minimal(); context.binding.sagas[0].engine.artifact = 'net.imadz:saga-core:0.3';
+  failure(context, 'RUNTIME_TARGET_MISMATCH');
+});
+for (const capability of ['parallel', 'dynamic-manifest', 'result-slot-dataflow', 'strict-scala', 'durable-commit-decision']) {
+  test(`unsupported lowering capability ${capability} cannot certify execution`, () => {
+    const context = minimal(); context.runtimeBinding.target.capabilities.push(capability);
+    failure(context, 'RUNTIME_CAPABILITY_UNSUPPORTED');
+  });
+}
+test('missing or duplicate known capabilities return null IR and plan', () => {
+  const context = minimal(); context.runtimeBinding.target.capabilities.pop(); failure(context, 'RUNTIME_CAPABILITY_MISSING');
+  context.runtimeBinding.target = clone(TARGET); context.runtimeBinding.target.capabilities.push(TARGET.capabilities[0]);
+  failure(context, 'RUNTIME_DUPLICATE');
+});
+test('mapping requires exact sagaId, no name fallback or partial/orphan mapping', () => {
+  const context = minimal(); context.runtimeBinding.sagas = []; failure(context, 'RUNTIME_MAPPING_MISSING');
+  context.runtimeBinding = runtimeDocument(context.canonical, context.binding);
+  context.runtimeBinding.sagas[0].sagaId = 'MoneyTransfer'; failure(context, 'RUNTIME_MAPPING_ORPHAN');
+  context.runtimeBinding = runtimeDocument(context.canonical, context.binding);
+  context.runtimeBinding.sagas.push(clone(context.runtimeBinding.sagas[0])); failure(context, 'RUNTIME_DUPLICATE');
+});
+
+test('existing two-account fixture stays compiler-green but group, slots and resilience yield zero plan', () => {
+  const { canonical, binding } = sagaContract();
+  const { ir, diagnostics } = compileSagas(canonical, binding);
+  assert.deepEqual(diagnostics, []); assert.ok(ir);
+  const context = { canonical, binding, ir, runtimeBinding: runtimeDocument(canonical, binding) };
+  const result = failure(context, 'RUNTIME_PARALLEL_UNSUPPORTED');
+  assert.ok(result.diagnostics.some((row) => row.code === 'RUNTIME_DATAFLOW_UNSUPPORTED'));
+  assert.ok(result.diagnostics.some((row) => row.code === 'RUNTIME_RESILIENCE_UNSUPPORTED'));
+  assert.equal(compileSagas(canonical, binding).ir.digest, ir.digest);
+});
+
+test('owned test reads actual authored money-transfer compile output and preserves the contract gate', () => {
+  const canonical = JSON.parse(compileTree(new URL('../example/saga-money-transfer/tree', import.meta.url).pathname));
+  const binding = JSON.parse(readFileSync(new URL('../example/saga-money-transfer/bindings.json', import.meta.url), 'utf8'));
+  const before = clone({ canonical, binding });
+  const compiled = compileSagas(canonical, binding);
+  assert.deepEqual(compiled.diagnostics, []); assert.ok(compiled.ir);
+  const context = { canonical, binding, ir: compiled.ir, runtimeBinding: runtimeDocument(canonical, binding) };
+  const result = failure(context, 'RUNTIME_PARALLEL_UNSUPPORTED');
+  assert.ok(result.diagnostics.some((row) => row.pointer.endsWith('/bindings/2/ref') && row.code === 'RUNTIME_DATAFLOW_UNSUPPORTED'));
+  assert.ok(result.diagnostics.some((row) => row.code === 'RUNTIME_RESILIENCE_UNSUPPORTED'));
+  assert.deepEqual({ canonical, binding }, before);
+});
+
+test('legal dependent groups/durable manifest/result flow are rejected, not serialized after semantics vanish', () => {
+  const { canonical, binding } = sagaContract('Fab');
+  const compiled = compileSagas(canonical, binding);
+  assert.deepEqual(compiled.diagnostics, []);
+  const context = { canonical, binding, ir: compiled.ir, runtimeBinding: runtimeDocument(canonical, binding) };
+  const result = failure(context, 'RUNTIME_GROUP_UNSUPPORTED');
+  for (const code of ['RUNTIME_MANIFEST_UNSUPPORTED', 'RUNTIME_DATAFLOW_UNSUPPORTED', 'RUNTIME_TYPE_UNSUPPORTED']) assert.ok(result.diagnostics.some((row) => row.code === code));
+});
+
+test('legal completion result-slot dataflow is rejected separately from command slot flow', () => {
+  const context = minimal();
+  context.canonical.aggregates[0].events.find((row) => row.name === 'result-succeeded').payloads.push({ name: 'receiptId', dataType: 'TxId', origin: 'PROPAGATED' });
+  context.canonical.sagas[0].payload.completions[0].bindings.push({ slot: 'receiptId', ref: 'step:reserve-source:commit:receiptId', type: 'TxId' });
+  assert.deepEqual(compileSagas(context.canonical, context.binding).diagnostics, []);
+  failure(context, 'RUNTIME_DATAFLOW_UNSUPPORTED', '/ir/sagas/0/definition/payload/completions/0/bindings/1/ref');
+});
+
+test('read-only none steps cannot masquerade as strict allTCC', () => {
+  const context = minimal();
+  for (const phase of PHASES) {
+    context.canonical.sagas[0].payload.steps[0].phases[phase] = { kind: 'none', reason: 'read-only' };
+    context.binding.sagas[0].steps[0].phases[phase] = { kind: 'none', reason: 'read-only' };
+  }
+  context.runtimeBinding = runtimeDocument(context.canonical, context.binding);
+  assert.deepEqual(compileSagas(context.canonical, context.binding).diagnostics, []);
+  failure(context, 'RUNTIME_ALL_TCC_REQUIRED');
+});
+test('decimal-string Money is compiler-valid but outside first minor-unit-string adapter contract', () => {
+  const context = minimal(); context.binding.sagas[0].types.find((row) => row.id === 'Money').amountEncoding = 'decimal-string';
+  assert.deepEqual(compileSagas(context.canonical, context.binding).diagnostics, []);
+  failure(context, 'RUNTIME_MONEY_UNSUPPORTED');
+});
+test('one invalid Saga discards a second valid Saga plan', () => {
+  const context = minimal(); const second = clone(context);
+  second.canonical.sagas[0].id = 'other-transfer'; second.canonical.sagas[0].seq = 1;
+  second.binding.sagas[0].sagaId = 'other-transfer';
+  second.runtimeBinding.sagas[0].sagaId = 'other-transfer';
+  context.canonical.sagas.push(second.canonical.sagas[0]); context.binding.sagas.push(second.binding.sagas[0]);
+  context.runtimeBinding.sagas.push(second.runtimeBinding.sagas[0]);
+  assert.equal(success(context).sagas.length, 2);
+  context.runtimeBinding.sagas[1].receiptCodecs.pop(); failure(context, 'RUNTIME_CODEC_MISSING');
+});
+
+for (const [name, change, code] of [
+  ['context unknown field', (c) => { c.certified = true; }, 'RUNTIME_UNKNOWN'],
+  ['runtime document unknown field', (c) => { c.runtimeBinding.anchors = []; }, 'RUNTIME_UNKNOWN'],
+  ['target claimed certification', (c) => { c.runtimeBinding.target.verified = true; }, 'RUNTIME_UNKNOWN'],
+  ['pin unknown field', (c) => { c.runtimeBinding.sagas[0].runnable = true; }, 'RUNTIME_UNKNOWN'],
+  ['args codec unknown field', (c) => { c.runtimeBinding.sagas[0].argsCodec.mapper = 'fixture.ArgsCodec'; }, 'RUNTIME_UNKNOWN'],
+  ['definition unknown field', (c) => { c.canonical.sagas[0].unknown = true; }, 'SAGA_SCHEMA'],
+  ['payload unknown field', (c) => { c.canonical.sagas[0].payload.unknown = true; }, 'SAGA_SCHEMA'],
+  ['technical unknown field', (c) => { c.binding.sagas[0].unknown = true; }, 'SAGA_SCHEMA'],
+  ['technical capability unknown', (c) => { c.binding.sagas[0].engine.capabilities.required[0] = 'unknown'; }, 'SAGA_SCHEMA'],
+  ['owned command wrong type', (c) => { c.canonical.aggregates[0].commands[0].parameters[0].dataType = 'OperationId'; }, 'SAGA_TYPE_MISMATCH'],
+  ['resource addressing mismatch', (c) => { c.binding.sagas[0].participants[0].addressing.aggregate = 'Other'; }, 'SAGA_RESOURCE'],
+  ['unknown command reference', (c) => { c.canonical.sagas[0].payload.steps[0].phases.prepare.commandRef.name = 'Missing'; }, 'SAGA_REFERENCE_UNKNOWN'],
+  ['duplicate type', (c) => { c.binding.sagas[0].types.push(clone(c.binding.sagas[0].types[0])); }, 'SAGA_DUPLICATE'],
+]) {
+  test(`${name} is rejected using complete closure, not readiness/digest`, () => {
+    const context = minimal(); change(context); failure(context, code);
+  });
+}
+
+test('immutable inputs, stable byte output and no output object borrowed from callers', () => {
+  const context = minimal(); const before = clone(context); freeze(context);
+  const lowered = success(context);
+  assert.deepEqual(context, before);
+  assert.equal(JSON.stringify(success(context)), JSON.stringify(lowered));
+  assert.equal(JSON.stringify(success(reverse(context))), JSON.stringify(lowered));
+  const objects = new Set();
+  const walk = (value, visit) => { if (value && typeof value === 'object') { visit(value); Object.values(value).forEach((child) => walk(child, visit)); } };
+  walk(context, (value) => objects.add(value)); walk(lowered, (value) => assert.ok(!objects.has(value)));
+});
+
+test('non-JSON inputs reject before getters, proxies, toJSON or other user code can execute', () => {
+  let invoked = 0;
+  const accessor = minimal(); Object.defineProperty(accessor.runtimeBinding, 'sagas', { enumerable: true, get() { invoked++; return []; } });
+  failure(accessor, 'RUNTIME_JSON');
+  const proxy = new Proxy({}, { ownKeys() { invoked++; throw new Error('must not inspect proxy'); }, getPrototypeOf() { invoked++; throw new Error('must not inspect proxy'); } });
+  const proxied = minimal(); proxied.canonical.opaque = proxy; failure(proxied, 'RUNTIME_JSON');
+  const callback = minimal(); callback.canonical.opaque = { toJSON() { invoked++; return {}; } }; failure(callback, 'RUNTIME_JSON');
+  assert.equal(invoked, 0);
+  for (const value of [undefined, () => {}, NaN, Infinity, 1n, new Date(), new Map(), Object.create({ inherited: true }), Symbol('x')]) {
+    const context = minimal(); context.canonical.opaque = value; failure(context, 'RUNTIME_JSON');
+  }
+  const cyclic = minimal(); cyclic.canonical.opaque = cyclic.canonical; failure(cyclic, 'RUNTIME_JSON');
+  const sparse = minimal(); sparse.runtimeBinding.sagas = new Array(2); failure(sparse, 'RUNTIME_JSON');
+  const symbol = minimal(); symbol.runtimeBinding[Symbol('x')] = 'secret'; failure(symbol, 'RUNTIME_JSON');
+  const hidden = minimal(); Object.defineProperty(hidden.runtimeBinding, 'hidden', { value: 1 }); failure(hidden, 'RUNTIME_JSON');
+  const deep = minimal(); let end = deep.canonical;
+  for (let i = 0; i < 132; i++) { end.opaque = {}; end = end.opaque; }
+  failure(deep, 'RUNTIME_JSON');
+});
+
+test('explicit parsed object context/document only; no JSON text, implicit binding or plan from validation', () => {
+  failure(JSON.stringify(minimal()), 'RUNTIME_SCHEMA');
+  failure(undefined, 'RUNTIME_JSON'); failure(null, 'RUNTIME_SCHEMA');
+  for (const field of ['canonical', 'binding', 'runtimeBinding']) { const context = minimal(); delete context[field]; failure(context, 'RUNTIME_SCHEMA'); }
+  const context = minimal(); context.runtimeBinding = JSON.stringify(context.runtimeBinding); failure(context, 'RUNTIME_SCHEMA');
+});

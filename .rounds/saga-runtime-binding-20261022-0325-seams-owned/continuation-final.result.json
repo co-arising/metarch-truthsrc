@@ -1,0 +1,61 @@
+{
+  "state": "completed-directed-test-migration",
+  "at": "2026-10-22T03:49:49.471Z",
+  "ownedGuardExit": 0,
+  "previousEvidence": {
+    "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/saga-runtime-binding-20261022-0325-seams-owned/result.json",
+    "pretestGuardExit": 2,
+    "sha256": "b80cbe10dd065c0ca968ea8f791cb2bbf207505e499d66058e007eba5348b53e",
+    "retainedUnchanged": true
+  },
+  "runs": [
+    {
+      "log": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/saga-runtime-binding-20261022-0325-seams-owned/continuation-tests-01.log",
+      "testExit": 0,
+      "tests": 80,
+      "pass": 80,
+      "fail": 0
+    },
+    {
+      "log": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/saga-runtime-binding-20261022-0325-seams-owned/continuation-tests-02.log",
+      "testExit": 0,
+      "tests": 123,
+      "pass": 123,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  ],
+  "gitDiffCheckExit": 0,
+  "gitDiffCaptureExit": 0,
+  "ownedHashes": {
+    "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/saga/runtime-binding.mjs": "d571899a2a9cf2c17d0ec6b40a6af2c1aa8125a24a3373fc4c4d8ee06fee5a7d",
+    "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/saga-runtime-binding.test.mjs": "522968b56c1e2de398f90918800d3e6651bdc9ef6a4336519b25fcd5fa2d69e8",
+    "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/SAGA-RUNTIME-BINDING-V1.md": "ad517b616ff6832cb7db4da8d94e10d0e9e05dbdf583100a4978981fb381d8c1"
+  },
+  "sourceChangesThisContinuation": [
+    "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/saga-runtime-binding.test.mjs"
+  ],
+  "runtimeBindingSemantics": "unchanged original-input compileSagas closure; exact complete optional IR; sha256:hex definitionDigest; explicit independent positive Scala Int runtimeCodec pins",
+  "coverageAdded": [
+    "mandatory/invalid args and all three phase codec runtimeVersion pins",
+    "independent codec Int pin semantic digest coverage",
+    "missing/forged/full IR and stale sourceMap rejection",
+    "legacy 0.2 is not strict candidate",
+    "two actual transfer steps keep resource/receipt semantics and serial barriers remain blocked"
+  ],
+  "onlyDirectedNodeSuite": true,
+  "fullSuiteRun": false,
+  "delegatesStarted": 0,
+  "commits": 0,
+  "publishes": 0,
+  "sharedServicesStarted": 0,
+  "canonicalEdits": false,
+  "parallelOwnerFilesReadOrCompared": false,
+  "runnable": false,
+  "runtimeBindingVerified": false,
+  "remaining": "No directed-suite failure; Scala AST/real runtime/ports/codecs/host obligations remain intentionally blocked. No runtime certification performed.",
+  "initialInspectionExit": 1,
+  "initialInspectionNote": "Optional CLAUDE.md absent; AGENTS.md present. Inspection continued; not a test or ownership failure."
+}

@@ -1,0 +1,17 @@
+PASS saga-money-transfer: port/invokeSaga exclusive
+PASS saga-money-transfer: unknown invoke keys rejected
+PASS saga-money-transfer: nested Saga binding required
+PASS saga-money-transfer: exact stable stage ID required
+PASS saga-money-transfer: stage occurrence must be initial
+PASS saga-money-transfer: compensation cannot become success
+PASS saga-money-transfer: 1 contract-only, 0 document-only, 1 shared Saga IR; exact nested bindings; deterministic non-mutating compile; stable initial identities; 5 outcomes; parse/emit fidelity
+PASS fab-split-merge: port/invokeSaga exclusive
+PASS fab-split-merge: unknown invoke keys rejected
+PASS fab-split-merge: nested Saga binding required
+PASS fab-split-merge: exact stable stage ID required
+PASS fab-split-merge: stage occurrence must be initial
+PASS fab-split-merge: compensation cannot become success
+PASS fab-split-merge: 2 contract-only, 1 document-only, 2 shared Saga IR; exact nested bindings; deterministic non-mutating compile; stable initial identities; 5 outcomes; parse/emit fidelity
+PASS protected source boundary: exactly 6 new example author-data files; existing example payloads, seq, IDs, bindings, root example/tree and golden unchanged
+Concurrent existing-file changes outside owned scope, observed only and not modified by this batch: /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/generators/saga-dsl/generate.mjs, /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/generators/saga-dsl/parse.mjs, /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/src/core/anchors.mjs, /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/anchors.test.mjs
+Concurrent additions outside owned scope, observed only: none
