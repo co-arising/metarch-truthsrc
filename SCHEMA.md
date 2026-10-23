@@ -214,7 +214,13 @@ mapFrom(rows)  = Object.fromEntries(rows.map(r => [r.slot, r.expr]))
 ```
 
 Binding/fold expression forms: `state.<field>`, `param.<parameter>`,
-`literal:<value>` (`literal:SYSTEM_NOW` = injected clock).
+`receipt.<slot>`, `literal:<value>` (`literal:SYSTEM_NOW` = injected clock).
+`receipt.<slot>` is **bindings-only** (never a fold source): the producing
+operation's durable receipt value, recorded in this event's own payload slot —
+a TCC prepare/commit confirmation naming the receipt its phase outputs declare
+(e.g. `reservation` on a prepare confirmation, `receiptId` on a commit
+confirmation). A payload field populated by handler computation carries no
+binding row at all.
 
 | Rule | Check | Level |
 |---|---|---|
@@ -222,6 +228,7 @@ Binding/fold expression forms: `state.<field>`, `param.<parameter>`,
 | V5 | `order.commands` ≡ slice set, both directions, no duplicates | hard |
 | V6 | `order.events` ≡ event pool both directions; a definition lives in exactly one slice; every produced event resolves | hard |
 | V12 | `seq` unique per family (aggregates / value objects / read models / stories), integer | hard |
+| V13 | binding/fold exprs resolve: `param.X` ∈ owning command parameters (slice-owned events; extraEvents have no owner → notice), `state.X` ∈ stateFields/identifier, `receipt.X` bindings-only ∈ own payload slots, known form required | hard (extraEvent `param.` = notice) |
 | RF1/RF2/RF3 | entity, identifier, field data types present | hard |
 | RF4/RF5 | empty event payload / parameterless command | notice |
 
