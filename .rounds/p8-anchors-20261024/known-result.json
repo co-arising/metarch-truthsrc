@@ -1,0 +1,39 @@
+{
+  "batch": "p8-anchors-20261024",
+  "date": "2026-10-24",
+  "title": "P8：BC 生成器锚落点 + 跨索引 1:N 联合查询 + MCP×graphstore 接线",
+  "design": "./design.md",
+  "verification": {
+    "truthsrcFullSuite": { "passed": 1705, "failed": 0, "baseline": 1699, "delta": "+6 新测（anchor-query 联合 4 + saga-mcp store 1 + saga-strict-anchors 跨管线 1）" },
+    "targeted": [
+      { "suite": "test/anchor-query.test.mjs", "result": "8/8（4 存量零改动绿 + 4 新联合测）" },
+      { "suite": "test/saga-mcp.test.mjs", "result": "2/2（store 源 saga_participants_of + anchors 跨索引联合 + 缺库 fail-closed -32603）" },
+      { "suite": "test/saga-strict-anchors.test.mjs", "result": "4/4（新增两管线两索引联合：6 locations 全 source-verified + definitionDigest 跨管线钉 + 篡改单文件精确翻转 stale）" }
+    ],
+    "bcFullSuite": { "passed": 789, "failed": 0, "baseline": 784, "delta": "+5 SagaAnchorIndexSpec（single 7 locations/multi 6/legacy 无锚/scope 无锚/双目录 repo 归一恒等）" }
+  },
+  "endToEnd": {
+    "generatedApp": "target/p8-anchors-20261024/（真实公共入口 CodegenMain，三输入=canonical/bindings/contract-v3 自 P5 指纹核验未漂移，generatorVersion=p8-anchors-20261024+noGit=true）",
+    "anchorIndex": "7 locations 全 source-verified、逐条指纹=磁盘实际字节 SHA256、definitionDigest=sha256:3a586c81… 全钉",
+    "jsApply": ".rounds/p8-anchors-20261024/evidence/js-app（saga-dsl strict-contract 3 契约 + anchors.json 3 locations）",
+    "graphStore": "evidence/graph.db（65 节点 96 边·serial canonical）",
+    "unionQuery": "queryAnchorsIndex(js 索引 + 应用索引) = 10 locations（saga-dsl 3 + codegen-main 7）全 source-verified+current-bytes",
+    "mcpE2e": "tools/call anchors{store, indexFile:[js,app], repoRoots} = '10 recorded locations (source-verified)'；saga_participants_of{store} 正常",
+    "appBuild": "sbt compile exit0（37s，candidate jar 开关，隔离 app 缓存）——anchors.json 对构建惰性；应用内 FixtureSafetySpec 8/8 全绿（P5 守恒族复证）"
+  },
+  "honestMarkers": "全保真：js contract-only/runnable=false/runtimeBindingVerified=false/inputDigest=ba60f58a（裸 hex）/blocked 两项；SagaModule DefinitionDigest=3a586c81 原样；scope 排除与 legacy 路径不落锚",
+  "changedFiles": {
+    "metarch-truthsrc": [
+      "lib/anchor-query.mjs（indexFile string|string[] 联合+六元组去重+fail-closed）",
+      "src/core/anchors.mjs（anchorIdentity 导出+definitionDigest 可选携带）",
+      "mcp/server.mjs（store 源惰性接线+async handle+anchors schema anyOf+描述修正）",
+      "test/anchor-query.test.mjs、test/saga-mcp.test.mjs、test/saga-strict-anchors.test.mjs"
+    ],
+    "backkend-codegen": [
+      "CQRSApplicationGenerator.scala（anchor 状态+writeArtifact 收集+writeTerritorial 返回布尔+收尾发射）",
+      "SagaAnchorIndex.scala（新，truthsrc.anchors/v1 发射器 write-then-verify 原子写）",
+      "SagaAnchorIndexSpec.scala（新，5 测）"
+    ]
+  },
+  "digestDiscipline": "树零改动；ir.digest=ba60f58a…（输入不含 anchors/knowledgeId，compile.mjs:566）与 definitionDigest=sha256:3a586c81…（输入严格 definition/binding/runtimeBinding，runtime-binding.mjs:293）双钉点不变——测试钉死"
+}

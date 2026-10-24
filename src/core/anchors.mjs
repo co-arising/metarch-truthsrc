@@ -13,7 +13,9 @@ const clone = value => structuredClone(value);
 const fold = value => value.normalize('NFC').toLowerCase();
 const hash = bytes => `sha256:${createHash('sha256').update(bytes).digest('hex')}`;
 const scope = location => JSON.stringify([location.repo, location.file]);
-const identity = location => JSON.stringify([
+/** Two records name the same physical anchor iff generator/repo/module/file/symbol/span
+ * all match — extra metadata (e.g. definitionDigest) is not part of the identity. */
+export const anchorIdentity = location => JSON.stringify([
   location.generator, location.repo, location.module, location.file, location.symbol, location.span,
 ]);
 const sortedJson = value => JSON.stringify(value, (_, item) => {
@@ -91,6 +93,10 @@ function checkedLocation(value) {
     generatorVersion: text(value.generatorVersion, 'generatorVersion'),
     fingerprint: fingerprint(value.fingerprint, 'fingerprint'), status: value.status,
     verification: clone(object(value.verification, 'verification')) };
+  // v1 optional location metadata: cross-pipeline reconciliation digest (a producer
+  // pipeline pins the definition its artifacts were generated from). Carried, never
+  // verified here — and deliberately not part of the anchor identity.
+  if (value.definitionDigest != null) result.definitionDigest = fingerprint(value.definitionDigest, 'definitionDigest');
   if (!STATUSES.has(result.status)) fail(`Unknown anchor status: ${result.status}`);
   const verification = result.verification;
   if (!LEVELS.has(verification.level) || typeof verification.method !== 'string' ||
@@ -139,7 +145,7 @@ export function readAnchorsIndex(input, { legacy = 'reject', legacyDefaults = {}
     text(key, 'knowledgeKey');
     if (!Array.isArray(locations)) fail('v1 knowledgeKey values must be location arrays');
     const checked = locations.map(checkedLocation);
-    if (new Set(checked.map(identity)).size !== checked.length) fail(`Duplicate anchor location: ${key}`);
+    if (new Set(checked.map(anchorIdentity)).size !== checked.length) fail(`Duplicate anchor location: ${key}`);
     anchors.set(key, checked);
   }
   return indexFrom(anchors, value.migration);
@@ -204,7 +210,7 @@ export function planAnchors({ priorIndex = { version: ANCHORS_VERSION, anchors: 
       const location = { ...declaration(input), generator: owner.id, generatorVersion: owner.version,
         fingerprint: null, status: 'planned', verification: unverified('awaiting-source-check') };
       if (isExcluded(location)) fail('Derived source maps/anchors cannot anchor themselves', 'ANCHORS_SELF_REFERENCE');
-      const key = JSON.stringify([knowledgeKey, identity(location)]);
+      const key = JSON.stringify([knowledgeKey, anchorIdentity(location)]);
       if (seen.has(key)) fail('Duplicate planned location');
       seen.add(key);
       declarations.push({ knowledgeKey, location, expectedFingerprint: fingerprint(input.expectedFingerprint, 'expectedFingerprint') });
@@ -429,7 +435,7 @@ function reconcile(plan, observations, indexLocation) {
   const anchors = new Map();
   const put = (key, location, replace = false) => {
     const locations = anchors.get(key) ?? [];
-    const old = locations.findIndex(item => identity(item) === identity(location));
+    const old = locations.findIndex(item => anchorIdentity(item) === anchorIdentity(location));
     if (old < 0) locations.push(location);
     else if (replace) locations[old] = location;
     anchors.set(key, locations);
@@ -477,7 +483,7 @@ function reconcile(plan, observations, indexLocation) {
     } else {
       const verified = actualVerification(location, observation);
       // KEEP may reuse authentic v1 evidence only for the EXACT same declared location and fresh bytes.
-      const prior = anchors.get(knowledgeKey)?.find(old => identity(old) === identity(location));
+      const prior = anchors.get(knowledgeKey)?.find(old => anchorIdentity(old) === anchorIdentity(location));
       if (!verified.error && outcome.outcome === 'KEEP' && prior && freshPrior(prior, observation, plan.generator.version) &&
           prior.verification.symbolVerified && !verified.verification.symbolVerified) {
         verified.verification = clone(prior.verification);
@@ -488,7 +494,7 @@ function reconcile(plan, observations, indexLocation) {
     }
     // A non-applied plan must never erase a retained prior certificate. In particular, an
     // unverified KEEP declaration cannot overwrite a different prior symbol/span anchor.
-    const prior = anchors.get(knowledgeKey)?.find(old => identity(old) === identity(location));
+    const prior = anchors.get(knowledgeKey)?.find(old => anchorIdentity(old) === anchorIdentity(location));
     if (prior && !APPLIED.has(outcome?.outcome) && result.status !== 'source-verified') continue;
     put(knowledgeKey, result, true);
   }

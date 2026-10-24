@@ -29,13 +29,20 @@ import { compileTree } from '../lib/compile.mjs';
 
 const SOURCE_PROPS = {
   canonical: { type: 'string', description: 'Path to compiled canonical.json (preferred).' },
-  tree: { type: 'string', description: 'Path to a truth tree directory (compiled in-memory). One of canonical/tree is required.' },
+  tree: { type: 'string', description: 'Path to a truth tree directory (compiled in-memory). One of canonical/tree/store is required.' },
+  store: { type: 'string', description: 'Path to a truthsrc.graphstore/v1 SQLite file (requires Node >= 22.5; fails with a clear error below that).' },
 };
 
-function graphFor(args) {
+async function graphFor(args) {
   if (args.canonical) return buildGraph(loadCanonical(resolve(args.canonical)));
   if (args.tree) return buildGraph(JSON.parse(compileTree(resolve(args.tree))));
-  throw new Error('one of "canonical" or "tree" is required');
+  if (args.store) {
+    // Lazy import keeps the Node >= 18 baseline safe: graphstore only loads (and
+    // only demands node:sqlite) when a caller actually selects the store source.
+    const { graphFromStore } = await import('../lib/graphstore.mjs');
+    return graphFromStore(resolve(args.store));
+  }
+  throw new Error('one of "canonical", "tree" or "store" is required');
 }
 
 const T = (name, description, properties, required, fn) => ({ name, description, properties, required, fn });
@@ -67,10 +74,10 @@ const TOOLS = [
     (g, a) => lineage(g, a.field, { direction: a.direction, depth: a.depth })),
 
   T('anchors',
-    'Back-anchors: code locations a knowledge node is anchored to. Honestly reports unanchored until the back-anchor work lands — never faked.',
+    'Back-anchors: code locations a knowledge node is anchored to, verified against actual bytes at query time. Pass indexFile (one path or several — each pipeline owns its own index; the union is taken here). Honestly reports unanchored without an index — never faked.',
     { ...SOURCE_PROPS, kind: { type: 'string' }, id: { type: 'string' },
-      indexFile: { type: 'string', description: 'Derived truthsrc.anchors/v1 index, outside the truth tree.' },
-      repoRoots: { type: 'object', additionalProperties: { type: 'string' }, description: 'Logical repository IDs mapped to explicit absolute roots.' } },
+      indexFile: { anyOf: [{ type: 'string' }, { type: 'array', items: { type: 'string' } }], description: 'Derived truthsrc.anchors/v1 index path(s), outside the truth tree.' },
+      repoRoots: { type: 'object', additionalProperties: { type: 'string' }, description: 'Recorded repository ids mapped to explicit absolute local roots.' } },
     ['kind', 'id'],
     (g, a) => anchors(g, a.kind, a.id, { indexFile: a.indexFile, repoRoots: a.repoRoots })),
 
@@ -142,7 +149,7 @@ const inputSchema = (t) => ({
   additionalProperties: true,
 });
 
-function handle(req) {
+async function handle(req) {
   const { id, method, params = {} } = req;
   const ok = (result) => ({ jsonrpc: '2.0', id, result });
   const err = (code, message) => ({ jsonrpc: '2.0', id, error: { code, message } });
@@ -170,7 +177,7 @@ function handle(req) {
           return err(-32602, `missing required argument: ${r}`);
       }
       let graph = null;
-      if (tool.name !== 'diff') graph = graphFor(args);
+      if (tool.name !== 'diff') graph = await graphFor(args);
       const envelope = tool.fn(graph, args);
       return ok({ content: [{ type: 'text', text: JSON.stringify(envelope, null, 2) }] });
     }
@@ -182,7 +189,7 @@ function handle(req) {
 
 export function runMcpServer() {
   const rl = createInterface({ input: process.stdin, crlfDelay: Infinity });
-  rl.on('line', (line) => {
+  rl.on('line', async (line) => {
     if (!line.trim()) return;
     let req;
     try {
@@ -190,7 +197,7 @@ export function runMcpServer() {
     } catch {
       return; // not a complete JSON-RPC message — ignore
     }
-    const res = handle(req);
+    const res = await handle(req);
     if (res) process.stdout.write(JSON.stringify(res) + '\n');
   });
 }

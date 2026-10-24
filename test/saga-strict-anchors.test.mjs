@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -150,4 +151,49 @@ test('regeneration is byte-deterministic and the anchor index follows the bytes'
     return index;
   };
   assert.deepEqual(normalize(first), normalize(second));
+});
+
+test('two pipelines, two owned indexes: the union answers one key across both repositories', async (t) => {
+  const { directory, canonicalFile, canonical, binding } = fixture(t);
+  const out = join(directory, 'app');
+  await apply({ canonicalFile, generatorDir: fileURLToPath(new URL('../generators/saga-dsl/', import.meta.url)), outDir: out, options: { mode: 'strict-contract', binding } });
+  // A scala-pipeline (backkend-codegen) shaped index in a separate repo root: generated
+  // source files, 'codegen-main' rows carrying the definition digest the scala
+  // SagaModule quotes. Hand-written here to certify the query union without a scala
+  // build; the real generator emits this same shape (batch P8 stage 2).
+  const app = join(directory, 'scala-app');
+  mkdirSync(join(app, 'app', 'fixture'), { recursive: true });
+  const scalaFiles = ['SagaModule.scala', 'ArgsCodec.scala', 'FixtureHost.scala'];
+  for (const name of scalaFiles) writeFileSync(join(app, 'app', 'fixture', name), `object ${name.replace('.scala', '')}\n`);
+  const scalaLocations = scalaFiles.map(name => ({ repo: app, file: `app/fixture/${name}`, module: null, symbol: null, span: null,
+    generator: 'codegen-main', generatorVersion: 'p8-anchors-20261024',
+    fingerprint: `sha256:${createHash('sha256').update(readFileSync(join(app, 'app', 'fixture', name))).digest('hex')}`,
+    status: 'source-verified', definitionDigest: DEFINITION_DIGEST,
+    verification: { method: 'sha256-bytes', level: 'file', fileVerified: true, symbolVerified: false, spanVerified: false } }));
+  const scalaIndex = join(app, 'anchors.json');
+  writeFileSync(scalaIndex, JSON.stringify({ version: 'truthsrc.anchors/v1', anchors: { 'saga:money-transfer': scalaLocations } }, null, 2));
+
+  const options = { indexFile: [join(out, 'anchors.json'), scalaIndex], repoRoots: { [out]: out, [app]: app } };
+  const union = queryAnchorsIndex('saga:money-transfer', options);
+  assert.equal(union.length, 6);
+  assert.ok(union.every(l => l.status === 'source-verified'), JSON.stringify(union.map(l => l.status)));
+  const fromScala = union.filter(l => l.generator === 'codegen-main');
+  assert.equal(fromScala.length, 3);
+  assert.ok(fromScala.every(l => l.definitionDigest === DEFINITION_DIGEST));
+  // Cross-pipeline reconciliation is machine-checkable end to end: the js pipeline's
+  // lowered plan and every scala row pin the same definition digest.
+  const { ir } = compileSagas(canonical, binding);
+  const lowered = lowerSagaRuntimeBindingV3({ canonical, binding, runtimeBinding: json(new URL('runtime-binding.json', EXAMPLE)), ir });
+  assert.equal(lowered.plan.sagas[0].definitionDigest, fromScala[0].definitionDigest);
+  // The same union through the public anchors verb keeps the aggregate honest.
+  const report = anchors(buildGraph(canonical), 'saga', 'money-transfer', options);
+  assert.match(report.summary, /6 recorded locations \(source-verified\)/);
+  // Tampering with one scala source flips exactly that location to stale — nothing else.
+  writeFileSync(join(app, 'app', 'fixture', 'ArgsCodec.scala'), 'object ArgsCodec // edited\n');
+  const afterEdit = queryAnchorsIndex('saga:money-transfer', options);
+  assert.deepEqual(afterEdit.map(l => l.status).sort(),
+    ['source-verified', 'source-verified', 'source-verified', 'source-verified', 'source-verified', 'stale']);
+  const edited = afterEdit.find(l => l.status === 'stale');
+  assert.equal(edited.file, 'app/fixture/ArgsCodec.scala');
+  assert.equal(edited.verification.reason, 'source-fingerprint-changed');
 });
