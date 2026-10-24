@@ -1,8 +1,9 @@
 // ═══ saga-dsl emit-strict-spec — FixtureSafetySpec（第七件，P5 验证发射族）═══
 // BC FixtureHostTemplate.generateTestFiles 的移植（蓝本=target/p8-anchors-20261024/
 // test/fixture/FixtureSafetySpec.scala）：A 守恒/幂等、B 全 TCC（succeeded/
-// rejected-before-effects/compensated+sagaResults 发布）、C 中断恢复、D 双系统
-// 跨节点拓扑。persistence-testkit 自足（不依赖 Play bootstrap）。
+// rejected-before-effects/compensated+sagaResults 发布）、C 中断恢复、D 部署面
+// （D1 共享 Mongo journal+D2 事件流 source+D3 两 JVM；Mongo 不可达=assume 显式
+// canceled）。A/B/C persistence-testkit 自足（不依赖 Play bootstrap）。
 const jstr = (s) => JSON.stringify(String(s));
 const scalaId = (n) => n;
 
@@ -59,11 +60,15 @@ import scala.concurrent.duration._
   *     (rejected-before-effects) / explicit abort after both prepares (compensated),
   *     each with the durable sagaResults publication;
   *   - C coordinator recovery: an interrupted saga resumes to a terminal state;
-  *   - D the cross-system topology: sharded entities on two clustered systems and a
-  *     singleton coordinator completing a transfer across the network hop.
-  * Test-scoped currency XTS (the ISO-4217 test code). Funding seeds the contract's own
-  * incoming-credit confirmation pair through the persistence test kit — no invented
-  * semantics. Physical multi-JVM with a shared durable journal stays a declared boundary. */
+  *   - D the deployment face against a shared MongoDB journal: D1 two clustered systems
+  *     over ONE durable journal (direct start), D2 the journal event-stream source
+  *     (the persisted trigger event starts the saga, no direct coordinator call),
+  *     D3 physical two-JVM deployment — event-driven across processes. Each D test
+  *     fails honestly (assume) when MongoDB is unreachable; run-scoped databases keep
+  *     runs isolated and leave the journal as evidence.
+  * Test-scoped currency XTS (the ISO-4217 test code). A/B/C fund through the
+  * persistence test kit (no invented semantics); the D family funds through the
+  * aggregate's own command face — the production-honest path a real journal demands. */
 class FixtureSafetySpec extends AnyFunSuite {
 
   private val Money = ${money}
@@ -162,6 +167,49 @@ class FixtureSafetySpec extends AnyFunSuite {
     val probe = kit.createTestProbe[StrictSagaCoordinator.Reply]()
     val source = ${fbase}Protocol.StartTransfer(opId, From, To, amount, kit.createTestProbe[${fbase}Protocol.${fbase}Reply]().ref)
     coordinator ! ${m.entryName}.start(coordinator, host, source, probe.ref)
+  }
+
+  // ---------- deployment-face helpers (shared MongoDB journal) ----------
+
+  private val MongoHostPort = sys.env.getOrElse("SAGA_MONGO_HOSTPORT", "127.0.0.1:27017")
+  private def mongoUri(db: String): String = s"mongodb://$MongoHostPort/$db"
+
+  private def mongoReachable(): Boolean = try {
+    val parts = MongoHostPort.split(":")
+    val socket = new java.net.Socket()
+    try socket.connect(new java.net.InetSocketAddress(parts(0), parts(1).toInt), 2000) finally socket.close()
+    true
+  } catch { case _: Throwable => false }
+
+  /** Deployment-face config: the shared Mongo journal/snapshot stores plus the live
+    * read journal under the RxMongo driver extension (the scaffold's Mongo 6 line).
+    * Everything else inherits the application conf chain — allow-java-serialization
+    * stays off, strict and app payloads ride their strict serializers. */
+  private def mongoClusterConfig(port: Int, seeds: String, uri: String): Config = ConfigFactory.parseString(
+    s\"\"\"
+      akka.loglevel = "WARNING"
+      akka.actor.provider = cluster
+      akka.remote.artery.canonical.hostname = "127.0.0.1"
+      akka.remote.artery.canonical.port = $port
+      akka.remote.artery.bind.hostname = "127.0.0.1"
+      akka.remote.artery.bind.port = $port
+      akka.cluster.seed-nodes = [$seeds]
+      akka.cluster.jmx.multi-mbeans-in-same-jvm = on
+      akka.persistence.journal.plugin = "akka-contrib-mongodb-persistence-journal"
+      akka.persistence.snapshot-store.plugin = "akka-contrib-mongodb-persistence-snapshot"
+      akka.contrib.persistence.mongodb.mongo.driver = "akka.contrib.persistence.mongodb.RxMongoPersistenceExtension"
+      akka.contrib.persistence.mongodb.mongo.mongouri = "$uri"
+    \"\"\".stripMargin).withFallback(ConfigFactory.load())
+
+  /** Deployment-face funding: the aggregate's own command face against the shared
+    * journal — a real journal is not out-of-band seedable, and command seeding is the
+    * production-honest path (the same folds the persistence test-kit seeds fake). */
+  private def seedFundsByCommands(kit: ActorTestKit, sharding: ClusterSharding, entityId: String, txid: String): Unit = {
+    val ref = entityRef(sharding, entityId)
+    val r1 = askNow(kit, ref)(replyTo => ${prot}.RecordIncomingCredits(txid, "deployment-seed", SeedAmount, replyTo))
+    assert(r1.error.isEmpty, s"funding record failed for $entityId: $${'{'}r1.error${'}'}")
+    val r2 = askNow(kit, ref)(replyTo => ${prot}.CommitIncomingCredits(txid, "deployment-seed", replyTo))
+    assert(r2.error.isEmpty, s"funding commit failed for $entityId: $${'{'}r2.error${'}'}")
   }
 
 ${phaseHelpers}
@@ -347,20 +395,23 @@ ${phaseHelpers}
     } finally kit.shutdownTestKit()
   }
 
-  // ---------- D: cross-system topology ----------
+  // ---------- D: the deployment face (shared MongoDB journal) ----------
 
-  test("D1 cross-system topology: two clustered systems complete a transfer over the network hop") {
+  test("D1 shared durable journal: two clustered systems complete a transfer over one Mongo journal") {
+    assume(mongoReachable(), s"MongoDB not reachable at $MongoHostPort — the deployment face (D1-D3) requires the shared durable journal")
+    val uri = mongoUri(s"strict_deployment_d1_$${'{'}System.nanoTime()${'}'}")
     val portA = freePort()
-    val kitA = ActorTestKit("SafetyClusterD1", clusterConfig(portA, s"\\"akka://SafetyClusterD1@127.0.0.1:$portA\\""))
-    val kitB = ActorTestKit("SafetyClusterD1", clusterConfig(freePort(), s"\\"akka://SafetyClusterD1@127.0.0.1:$portA\\""))
+    val kitA = ActorTestKit("SafetyClusterD1", mongoClusterConfig(portA, s"\\"akka://SafetyClusterD1@127.0.0.1:$portA\\"", uri))
+    val kitB = ActorTestKit("SafetyClusterD1", mongoClusterConfig(freePort(), s"\\"akka://SafetyClusterD1@127.0.0.1:$portA\\"", uri))
     try {
       val shardingA = initSharding(kitA)
       val shardingB = initSharding(kitB)
       awaitMembers(kitA, 2)
       awaitMembers(kitB, 2)
-      // Per-system test-kit journals: seed both; each entity reads the journal of the
-      // node its shard lives on (no rebalancing in a short test — declared boundary).
-      Vector(kitA, kitB).foreach { kit => seedFunds(kit, From, "seed-d1-from"); seedFunds(kit, To, "seed-d1-to") }
+      // One shared journal: fund once through the aggregate's own command face — every
+      // node reads the same durable state (the per-system test-kit journals are gone).
+      seedFundsByCommands(kitA, shardingA, From, "seed-d1-from")
+      seedFundsByCommands(kitA, shardingA, To, "seed-d1-to")
       implicit val ec: ExecutionContext = kitB.system.executionContext
       // ClusterSingleton runs the coordinator on the cluster's OLDEST member — every
       // node must init the singleton; the returned proxies route cluster-wide.
@@ -369,11 +420,83 @@ ${phaseHelpers}
       startSaga(kitB, shardingB, coordinatorB, "op-d1", Money("100", Currency))
       val state = awaitTerminal(kitB, coordinatorB)
       assert(state.status == StrictStatus.Succeeded)
-      // Balances verified through BOTH systems' sharding proxies — cross-node asks.
+      // Balances verified through BOTH systems' sharding proxies — cross-node asks
+      // against one shared durable journal.
       assert(balance(kitA, entityRef(shardingA, From)) == BigInt("99900"))
       assert(balance(kitB, entityRef(shardingB, To)) == BigInt("100100"))
       assertPublished(kitA, shardingA, state, "succeeded")
     } finally { kitB.shutdownTestKit(); kitA.shutdownTestKit() }
+  }
+
+  test("D2 event-stream source: the persisted trigger event starts the saga with no direct coordinator call") {
+    assume(mongoReachable(), s"MongoDB not reachable at $MongoHostPort — the deployment face (D1-D3) requires the shared durable journal")
+    val port = freePort()
+    val kit = ActorTestKit("SafetyEventSourceD2", mongoClusterConfig(port, s"\\"akka://SafetyEventSourceD2@127.0.0.1:$port\\"", mongoUri(s"strict_deployment_d2_$${'{'}System.nanoTime()${'}'}")))
+    try {
+      val sharding = initSharding(kit)
+      awaitMembers(kit, 1)
+      seedFundsByCommands(kit, sharding, From, "seed-d2-from")
+      seedFundsByCommands(kit, sharding, To, "seed-d2-to")
+      implicit val ec: ExecutionContext = kit.system.executionContext
+      val coordinator = ${m.entryName}.spawnClusterSingleton(kit.system, sharding, ReconcileToken)
+      // Install the journal event-stream source BEFORE the command: whatever the
+      // stream's catch-up semantics, the trigger event persists after the install.
+      ${m.entryName}.installEventSource(kit.system, sharding, coordinator)
+      // Send the command to the AGGREGATE (never the coordinator): the persisted
+      // TransferRequested event is what starts the saga.
+      val opId = "op-d2-" + System.currentTimeMillis()
+      val commandReply = askNow(kit, entityRef(sharding, From))(replyTo =>
+        ${fbase}Protocol.StartTransfer(opId, From, To, Money("100", Currency), replyTo))
+      assert(commandReply.error.isEmpty)
+      val state = awaitTerminal(kit, coordinator)
+      assert(state.status == StrictStatus.Succeeded)
+      assert(state.identity.get.transactionId == opId)
+      assert(balance(kit, entityRef(sharding, From)) == BigInt("99900"))
+      assert(balance(kit, entityRef(sharding, To)) == BigInt("100100"))
+      assertPublished(kit, sharding, state, "succeeded")
+    } finally kit.shutdownTestKit()
+  }
+
+  test("D3 physical two-JVM deployment: an event-driven saga across two processes and one journal") {
+    assume(mongoReachable(), s"MongoDB not reachable at $MongoHostPort — the deployment face (D1-D3) requires the shared durable journal")
+    val classpath = System.getProperty("java.class.path")
+    assume(classpath.split(java.io.File.pathSeparator).exists(p => p.contains("target") && p.contains("scala-2.13")),
+      "D3 requires Test/fork — java.class.path must carry the application test classpath")
+    val uri = mongoUri(s"strict_deployment_d3_$${'{'}System.nanoTime()${'}'}")
+    val portSeed = freePort()
+    val seedAddr = s"\\"akka://SafetyClusterD3@127.0.0.1:$portSeed\\""
+    val evidenceDir = new java.io.File("target/deployment-face")
+    evidenceDir.mkdirs()
+    val javaBin = s"$${'{'}System.getProperty("java.home")${'}'}/bin/java"
+    def node(args: Seq[String], log: String): java.lang.Process =
+      new java.lang.ProcessBuilder((Vector(javaBin, "-cp", classpath, "${m.pkg}.FixtureDeploymentNode") ++ args): _*)
+        .redirectOutput(new java.io.File(evidenceDir, log))
+        .redirectErrorStream(true)
+        .start()
+    val opId = "op-d3-" + System.currentTimeMillis()
+    val seed = node(Vector("seed", portSeed.toString, seedAddr, uri), "d3-seed.log")
+    try {
+      // Head start: wait until the seed node's artery port accepts connections.
+      val seedUp = System.currentTimeMillis() + 30000L
+      var bound = false
+      while (!bound && System.currentTimeMillis() < seedUp) {
+        try { val s = new java.net.Socket("127.0.0.1", portSeed); s.close(); bound = true }
+        catch { case _: Throwable => Thread.sleep(200) }
+      }
+      assert(bound, "seed node did not bind its artery port in 30s — see target/deployment-face/d3-seed.log")
+      val join = node(Vector("join", freePort().toString, seedAddr, uri, opId, From, To, "100"), "d3-join.log")
+      try {
+        val joinDone = join.waitFor(180, java.util.concurrent.TimeUnit.SECONDS)
+        assert(joinDone, "join node did not finish in 180s — see target/deployment-face/d3-join.log and d3-seed.log")
+        assert(join.exitValue() == 0, s"join node failed (exit $${'{'}join.exitValue()${'}'}) — see target/deployment-face/d3-join.log and d3-seed.log")
+        val source = scala.io.Source.fromFile(new java.io.File(evidenceDir, "d3-join.log"))
+        val out = try source.mkString finally source.close()
+        assert(out.contains(s"D3-RESULT status=Succeeded op=$opId"), s"join node did not report a succeeded transfer — output: $out")
+        assert(out.contains("alice=99900") && out.contains("bob=100100"), s"balances wrong — output: $out")
+      } finally if (join.isAlive) join.destroy()
+    } finally {
+      if (seed.isAlive) { seed.destroy(); seed.waitFor(10, java.util.concurrent.TimeUnit.SECONDS) }
+    }
   }
 
   private def freePort(): Int = {
@@ -382,5 +505,148 @@ ${phaseHelpers}
   }
 }
 `;
-  return [{ name: "FixtureSafetySpec.scala", content: spec }];
+
+  // ── FixtureDeploymentNode.scala（D3 两进程部署面节点）──
+  const nodeMain = `${h}package ${m.pkg}
+
+import akka.actor.typed.{ActorSystem, Behavior, Scheduler}
+import akka.actor.typed.scaladsl.Behaviors
+import akka.actor.typed.scaladsl.AskPattern._
+import akka.cluster.sharding.typed.scaladsl.{ClusterSharding, Entity, EntityRef}
+import akka.cluster.typed.Cluster
+import akka.persistence.typed.PersistenceId
+import akka.util.Timeout
+import com.typesafe.config.{Config, ConfigFactory}
+import net.imadz.infra.saga.strict.{StrictSagaCoordinator, StrictStatus}
+import ${prot.substring(0, prot.lastIndexOf("."))}.{${fbase}Aggregate, ${fbase}Protocol}
+import ${entity}
+import ${face.behaviorsFqn}
+import ${face.eventHandlerFqn}
+import scala.concurrent.{Await, ExecutionContext}
+import scala.concurrent.duration._
+
+/** One node of the deployment-face two-JVM cluster (emitted, not hand-written):
+  *   - seed: forms the cluster and hosts the coordinator singleton, then idles until
+  *     the parent process destroys it;
+  *   - join: funds through the aggregate's own command face, installs the journal
+  *     event-stream source, sends the StartTransfer command to the aggregate — the
+  *     PERSISTED trigger event is what starts the saga — then polls the coordinator
+  *     to a terminal state and prints a machine-checkable result line (exit 0, or
+  *     exit 1 with a stack trace on any failure).
+  * Usage: FixtureDeploymentNode seed|join <port> <seedAddr> <mongoUri> [opId from to amountMinor] */
+object FixtureDeploymentNode {
+
+  private val Money = ${money}
+  private val Currency = "XTS"
+  private val SeedAmount = Money("100000", Currency)
+  private val From = "alice"
+  private val To = "bob"
+  private val ReconcileToken = "safety-spec-reconcile-token"
+
+  def main(args: Array[String]): Unit = {
+    require(args.length >= 4, "usage: FixtureDeploymentNode seed|join <port> <seedAddr> <mongoUri> [opId from to amountMinor]")
+    val role = args(0)
+    val port = args(1).toInt
+    val seedAddr = args(2)
+    val uri = args(3)
+    try {
+      val config = ConfigFactory.parseString(
+        s\"\"\"
+          akka.loglevel = "WARNING"
+          akka.actor.provider = cluster
+          akka.remote.artery.canonical.hostname = "127.0.0.1"
+          akka.remote.artery.canonical.port = $port
+          akka.remote.artery.bind.hostname = "127.0.0.1"
+          akka.remote.artery.bind.port = $port
+          akka.cluster.seed-nodes = [$seedAddr]
+          akka.persistence.journal.plugin = "akka-contrib-mongodb-persistence-journal"
+          akka.persistence.snapshot-store.plugin = "akka-contrib-mongodb-persistence-snapshot"
+          akka.contrib.persistence.mongodb.mongo.driver = "akka.contrib.persistence.mongodb.RxMongoPersistenceExtension"
+          akka.contrib.persistence.mongodb.mongo.mongouri = "$uri"
+        \"\"\".stripMargin).withFallback(ConfigFactory.load())
+      implicit val system: ActorSystem[Nothing] = ActorSystem[Nothing](Behaviors.empty, "SafetyClusterD3", config)
+      implicit val ec: ExecutionContext = system.executionContext
+      val sharding = ClusterSharding(system)
+      sharding.init(Entity(${fbase}Aggregate.entityTypeKey)(ctx => aggregateBehavior(ctx.entityId)))
+      val coordinator = ${m.entryName}.spawnClusterSingleton(system, sharding, ReconcileToken)
+      role match {
+        case "seed" =>
+          // The parent destroys this process once the join node has reported.
+          Await.result(system.whenTerminated, Duration.Inf)
+        case "join" =>
+          require(args.length >= 8, "join node requires: join <port> <seedAddr> <mongoUri> <opId> <from> <to> <amountMinor>")
+          awaitMembers(system, 2)
+          fund(system, sharding, args(5), "seed-d3-from")
+          fund(system, sharding, args(6), "seed-d3-to")
+          val opId = args(4)
+          val from = args(5)
+          val to = args(6)
+          val amount = Money(args(7), Currency)
+          implicit val timeout: Timeout = Timeout(15.seconds)
+          // Event-stream source first, command second: the persisted trigger event must
+          // find the source already streaming the journal.
+          ${m.entryName}.installEventSource(system, sharding, coordinator)
+          val commandReply = Await.result(
+            entityRef(sharding, from).ask(replyTo => ${fbase}Protocol.StartTransfer(opId, from, to, amount, replyTo)), 15.seconds)
+          require(commandReply.error.isEmpty, s"StartTransfer rejected: $${'{'}commandReply.error${'}'}")
+          val deadline = System.currentTimeMillis() + 90000L
+          var state = Await.result(${m.entryName}.status(coordinator), 15.seconds)
+          while (!state.terminal && System.currentTimeMillis() < deadline) {
+            Thread.sleep(300)
+            state = Await.result(${m.entryName}.status(coordinator), 15.seconds)
+          }
+          require(state.terminal, s"the saga did not reach a terminal state in 90s: $${'{'}state.status${'}'}")
+          require(state.status == StrictStatus.Succeeded, s"expected Succeeded, got $${'{'}state.status${'}'}")
+          val alice = balance(system, sharding, from)
+          val bob = balance(system, sharding, to)
+          println(s"D3-RESULT status=$${'{'}state.status${'}'} op=$opId alice=$alice bob=$bob")
+          require(alice == BigInt("99900"), s"alice balance $alice != 99900")
+          require(bob == BigInt("100100"), s"bob balance $bob != 100100")
+          system.terminate()
+          Await.ready(system.whenTerminated, 15.seconds)
+          sys.exit(0)
+        case other =>
+          throw new IllegalArgumentException(s"unknown role: $other")
+      }
+    } catch { case t: Throwable => t.printStackTrace(); sys.exit(1) }
+  }
+
+  private def awaitMembers(system: ActorSystem[_], n: Int): Unit = {
+    val deadline = System.currentTimeMillis() + 30000L
+    while (Cluster(system).state.members.size < n && System.currentTimeMillis() < deadline) Thread.sleep(200)
+    require(Cluster(system).state.members.size >= n, s"cluster did not reach $n members")
+  }
+
+  private def entityRef(sharding: ClusterSharding, id: String): EntityRef[${fbase}Protocol.${fbase}CommandFamily] =
+    sharding.entityRefFor(${fbase}Aggregate.entityTypeKey, id)
+
+  private def aggregateBehavior(entityId: String): Behavior[${fbase}Protocol.${fbase}CommandFamily] =
+    akka.persistence.typed.scaladsl.EventSourcedBehavior(
+      persistenceId = PersistenceId(${fbase}Aggregate.entityTypeKey.name, entityId),
+      emptyState = ${entity}.empty(entityId),
+      commandHandler = ${face.behaviorsFqn}.apply,
+      eventHandler = ${face.eventHandlerFqn}.apply)
+
+  /** Deployment-face funding: the aggregate's own command face (the same folds the
+    * persistence test-kit seeds in the A/B/C family — a real journal is not
+    * out-of-band seedable). */
+  private def fund(system: ActorSystem[_], sharding: ClusterSharding, entityId: String, txid: String): Unit = {
+    implicit val s: ActorSystem[_] = system
+    implicit val timeout: Timeout = Timeout(15.seconds)
+    val ref = entityRef(sharding, entityId)
+    val r1 = Await.result(ref.ask(replyTo => ${fbase}Protocol.RecordIncomingCredits(txid, "deployment-seed", SeedAmount, replyTo)), 15.seconds)
+    require(r1.error.isEmpty, s"funding record failed for $entityId: $${'{'}r1.error${'}'}")
+    val r2 = Await.result(ref.ask(replyTo => ${fbase}Protocol.CommitIncomingCredits(txid, "deployment-seed", replyTo)), 15.seconds)
+    require(r2.error.isEmpty, s"funding commit failed for $entityId: $${'{'}r2.error${'}'}")
+  }
+
+  private def balance(system: ActorSystem[_], sharding: ClusterSharding, entityId: String): BigInt = {
+    implicit val s: ActorSystem[_] = system
+    implicit val timeout: Timeout = Timeout(15.seconds)
+    val state = Await.result(entityRef(sharding, entityId).ask(replyTo => ${fbase}Protocol.GetBalance(replyTo)), 15.seconds).state
+    BigInt(state.accountBalance(Currency).minorUnits)
+  }
+}
+`;
+  return [{ name: "FixtureSafetySpec.scala", content: spec }, { name: "FixtureDeploymentNode.scala", content: nodeMain }];
 }

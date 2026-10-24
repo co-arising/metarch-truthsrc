@@ -1,0 +1,50 @@
+{
+  "batch": "p11-deployment-face-20261024",
+  "date": "2026-10-24",
+  "goal": "部署面三面收口（journal 选型=Mongo·用户决策「mongo 可以用 docker 服务已经启动」）：①event-stream source——聚合事件→协调器真实接线（清 entry 头注释 declared obligation 账）②物理多 JVM——D3 两进程集群 ③共享耐久 journal——D1 从 persistence testkit 换 akka-persistence-mongo",
+  "changes": {
+    "truthsrc": {
+      "modified": [
+        "generators/saga-dsl/emit-strict-host.mjs（entry 增 installEventSource：PersistenceQuery readjournal allEvents()→KillSwitches→事件触发类型 match→from_eventTriggerStart→幂等 Start；replySink=吞回复 system actor；头注释 declared obligation→已交付）",
+        "generators/saga-dsl/emit-strict-spec.mjs（D 面重写：mongoClusterConfig/mongoReachable assume 门/seedFundsByCommands 聚合命令面 seeding；D1 重写共享 Mongo；新增 D2 事件流 source 单 JVM+D3 两 JVM+新发射件 FixtureDeploymentNode.scala）",
+        "generators/scaffold-static/build.sbt（Test / fork := true；摘除 akka-persistence-mongo-scala 插件 jar——双 jar 同名查询类签名冲突）"
+      ]
+    },
+    "backkend-codegen": {
+      "modified": [
+        "src/main/scala/.../transactor/FixtureHostTemplate.scala（renderEntry 同款 installEventSource；renderSafetySpec 同款 D 面；新增 renderDeploymentNode+generateTestFiles 挂 FixtureDeploymentNode）",
+        "scaffold/build.sbt（fork parity+jar 摘除 parity）",
+        "src/test/scala/.../FixtureHostSpec.scala（钉点按新发射契约合法更新：双工件+D 三测断言）",
+        "src/test/scala/.../SagaAnchorIndexSpec.scala（漏斗锚集合+test/fixture/FixtureDeploymentNode.scala）"
+      ]
+    },
+    "saga-core": "零改动（部署面全在生成面+scaffold，协调器/序列化面不动）"
+  },
+  "verification": {
+    "truthsrcStandaloneApp": "serial 树 run-all（tree/ 子目录+--saga-binding）→ FixtureSafetySpec 10/10（A1-A3/B1-B3/C1 testkit+D1 共享 Mongo journal 5.2s+D2 事件流 source 2.9s+D3 物理两 JVM 13.5s，allow-java=off 全 strict 面）",
+    "d3Evidence": "join 节点 stdout『D3-RESULT status=Succeeded op=op-d3-… alice=99900 bob=100100』；日志 target/deployment-face/d3-{seed,join}.log 两侧应用各留一份",
+    "goldenRebase": "P9 配方重产 diff 仅 build.sbt 两处（mongo-scala jar 摘除注释+fork 行）——金样重定基成立，其余字节恒等；双跑字节恒等 ✓（/tmp/p11-golden）",
+    "truthsrcFullSuite": "1705/1705",
+    "bcFullSuite": "789/789（74 suites；FixtureHostSpec+SagaAnchorIndexSpec 两钉点按新契约更新）",
+    "bcApp": "P5 冻结三输入+P10 候选 jar（1009300e…，generatorVersion=p11-deployment-face-20261024）重产 → target/p11-deployment-face-20261024/ → FixtureSafetySpec 10/10（D 面两管线同证）",
+    "mongoEvidence": "run-scoped db strict_deployment_d{1,2,3}_<nano> 留存不删（metarch-mongo 容器=用户授权；D3 最终绿轮 d1_247906778781169/d2_247911975970279/d3_247914857063712）"
+  },
+  "keyFacts": [
+    "物理多 JVM 下 in-JVM eventStream 看不到另一 JVM 持久化事件——event-stream source 的生产形态=共享 journal 的 Persistence Query live 流（allEvents() 免 tag 全库事件流），journal 即事件总线",
+    "akka-persistence-mongo 插件 id：journal=akka-contrib-mongodb-persistence-journal/snapshot=…-snapshot/readjournal=…-readjournal；driver 扩展=RxMongoPersistenceExtension；URI key=akka.contrib.persistence.mongodb.mongo.mongouri；插件 3.0.8 与 app 钉的 akka 2.6.20 同线",
+    "akka-persistence-mongo-scala 与 -rxmongo 两插件 jar 都定义同名查询类（CurrentAllEvents$ 等）签名不兼容（source(ScalaMongoDriver) vs source(RxMongoDriver, Materializer)）——双 jar 同 classpath=掷币 NoSuchMethodError；只留所用驱动的 jar",
+    "协调器 Start 幂等（同 txId+同 args→Status(state)；异 args→ConflictingIdentity）——多节点装 source 重复 Start 安全",
+    "conf 链实锤：Play 把 conf/ 当资源目录→test classpath 有 application.conf→include serialization.conf→allow-java=off+jackson-cbor 绑定在测试生效",
+    "D3 依赖 Test/fork（fork 后 java.class.path 才是应用 test classpath；unforked=sbt launcher classpath）——scaffold build.sbt 唯一金样可见变化",
+    "serial 树 run-all 调用：树参数=tree/ 子目录+--saga-binding <parent>/bindings.json（父目录→sagas:0 静默跳过 strict 段）",
+    "D 面 funding 走聚合自身命令面（RecordIncomingCredits 60007/CommitIncomingCredits 60008 守卫）——真实 journal 不可 out-of-band seeding，命令 seeding=生产诚实路径"
+  ],
+  "boundaries": [
+    "完成侧（terminal 后 publishCompletion 的生产驱动者）未冻结语义：D1/B 面照旧测试驱动发布，D2/D3 断言不含 ledger——『谁拥有结果发布』独立决策留后续批",
+    "D3 集群 failover（杀协调器节点→singleton 迁移续跑）未含——候选后续批",
+    "生产 conf（application.conf/persistence.conf 装配面）零改动——生产 journal 装配（Play 启动面）独立债",
+    "mongo run-scoped db 每轮新增不删（证据留存；可定期人工清理）",
+    "金样已重定基：P11 起金样基线=含 fork+单 mongo jar 的 build.sbt（旧 P9 基线留存 /tmp/p9b-9355/golden-final）"
+  ],
+  "debugRounds": 6
+}

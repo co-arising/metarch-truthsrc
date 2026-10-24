@@ -87,7 +87,9 @@ libraryDependencies ++= Seq(
 
   // Akka Persistence
   "com.typesafe.akka" %% "akka-persistence-typed" % akkaVersion,
-  "com.github.scullxbones" %% "akka-persistence-mongo-scala" % MongoPluginVersion,
+  // RxMongo driver extension only: the scala-driver plugin jar redefines the same
+  // query classes (CurrentAllEvents$ etc.) with incompatible signatures — carrying
+  // both is a classpath coin flip (NoSuchMethodError on the read journal).
   "com.github.scullxbones" %% "akka-persistence-mongo-rxmongo" % MongoPluginVersion,
   "com.typesafe.akka" %% "akka-serialization-jackson" % akkaVersion,
   //  "com.lightbend.akka" %% "akka-persistence-jdbc" % AkkaPersistenceJdbcVersion,
@@ -167,5 +169,9 @@ scalacOptions += "-Yrangepos"
 
 testOptions in Test += Tests.Argument("-oDF")
 logBuffered in Test := false
+
+// Deployment-face (FixtureSafetySpec D3) forks two child JVMs via
+// java.class.path — only a forked test JVM carries the application test classpath.
+Test / fork := true
 
 
