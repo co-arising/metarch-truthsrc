@@ -26,6 +26,11 @@ const USAGE = `truthsrc v0.5 — git-native Event Storming truth source
   truthsrc decompose --canonical <file> --tree <dir>       canonical → tree atoms
   truthsrc validate  [--tree <dir>]                        V* structure + R* relations + ES/CS/AG/RF/SM stage rules
   truthsrc roundtrip [--tree <dir>]                        compile∘decompose∘compile identity gate
+  truthsrc graph     --tree <dir> | --canonical <file> --out <db>
+                                                           build the local SQLite-class graph store
+                                                           (node:sqlite single file; Node >= 22.5; pure
+                                                           cache — delete and rebuild any time; all
+                                                           query verbs apply)
   truthsrc init      <dir>                                 scaffold a minimal workshop tree
   truthsrc generate  --in <canonical> --generator <dir> --out <dir> [--option k=v]
                                                            run a generator (ledger + anchors emitted)
@@ -78,6 +83,25 @@ switch (cmd) {
     const r = roundtrip(TREE);
     if (!r.ok) die(`❌ roundtrip red (${r.stage}): ${r.msg}`);
     console.log(`✅ roundtrip identity — ${r.atoms} atoms, canonical byte-stable`);
+    break;
+  }
+  case 'graph': {
+    // graph --tree <dir> | --canonical <file> --out <db> — local embedded graph store.
+    // Pure cache: the db is derivable from canonical bytes and carries no truth of its own.
+    const source = arg('--canonical', arg('--tree', null));
+    const out = process.argv.includes('--out') ? resolve(process.argv[process.argv.indexOf('--out') + 1]) : null;
+    if (!source) die('usage: truthsrc graph --tree <dir> | --canonical <file> --out <db>');
+    if (!out) die('truthsrc graph requires an explicit --out <db> (never write canonical.json by accident)');
+    try {
+      const canonical = process.argv.includes('--canonical')
+        ? JSON.parse(readFileSync(source, 'utf8'))
+        : JSON.parse(compileTree(source));
+      const { buildGraphStore } = await import('../lib/graphstore.mjs');
+      const s = buildGraphStore(canonical, { file: out });
+      console.log(`✅ graph store ${s.file} — ${s.nodeCount} nodes · ${s.edgeCount} edges · workshop ${s.workshop} · canonical ${s.canonicalSha256.slice(0, 19)}…`);
+    } catch (error) {
+      die(`[FAIL] ${error.message}`);
+    }
     break;
   }
   case 'init': {

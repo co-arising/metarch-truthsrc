@@ -1,0 +1,52 @@
+{
+  "batch": "p7-js-strict-20261024",
+  "date": "2026-10-24",
+  "scope": "P7：js 生成器 saga-strict 支持 + SQLite 类本地轻量图 + 1:N 回锚认证（全在 metarch-truthsrc，BC/saga-core 零改动）",
+  "deliverables": [
+    {
+      "item": "js 生成器 saga-strict 支持",
+      "change": "saga-dsl buildStrictPlan 三 entries 增 knowledgeId=saga:<id>（与 buildGraph 节点寻址同型）→ core apply 锚通道（ledger+anchors.json）首通；CLI 端到端 serial 树实测",
+      "result": "saga:money-transfer → 3 locations 全 source-verified；saga-generator 57/57"
+    },
+    {
+      "item": "SQLite 类本地轻量图",
+      "change": "新 lib/graphstore.mjs（node:sqlite 惰性导入+Node≥22.5 守卫；meta/nodes/edges 三表；节点 extra 列泛化承载 qualifiedRef/sagaId 等节点级字段；边 seq 列保插入序；无时间戳无隐藏状态）+ bin truthsrc graph 子命令（显式 --out 门）",
+      "result": "四树 build→reopen deepStrictEqual parity（serial 65 节点 96 边）+ 六动词双图等值 + 跨进程重开 + 内容确定性"
+    },
+    {
+      "item": "1:N 回锚认证",
+      "change": "新 test/saga-strict-anchors.test.mjs：serial 树 scratch 端到端（compileTree→core apply→anchors→指纹核验→图库汇合）",
+      "result": "1:N=3 locations；逐 location SHA256 source-verified；ledger 748 指针全导航；definitionDigest 3a586c81 跨管线钉（BC r13 SagaModule 同值）；I2+I1 回树；图库 anchors 动词汇合 source-verified；重产字节恒等"
+    }
+  ],
+  "incidentalFix": {
+    "what": "parseDoc 流式空 map 三连环（parseDoc 内联 {} 解析 + compile 空 events surface carry（v0.5.1 decision/fold 先例）+ decompose/emitDoc 空块内联回写）",
+    "why": "P4 查询 slice 刻意写 events:{} 触发：parse 成字符串→validate 4 hard 幻影事件（V4×2/V6×2）；canonical 丢空标记→roundtrip 差一行",
+    "correction": "P5 段「CLI 权威路径 0 hard」登记与今日实测不符（stash 核验 HEAD 干净态同 4 hard）——如实更正",
+    "result": "serial validate 0 hard（2 既有 notice）+ 四树 roundtrip 全绿（serial 17 atoms 首次恒等）"
+  },
+  "verification": {
+    "fullSuite": "1699/1699（基线 1689 + 新增 10）",
+    "trees": "validate serial 0 hard·2 notice；roundtrip serial 17/v1 11/fab 14/demo 27 atoms 全恒等",
+    "digestStability": "树零改动；ir.digest ba60f58a + definitionDigest 3a586c81 双钉点在认证套件内看守；canonical 投影仅 GetBalance atom 增 events:{} 空标记（saga ir 不含 aggregates）",
+    "honestMarkers": "contract-only/runnable=false/runtimeBindingVerified=false/lowered-contract-only/blocked/unverified 全保真；strict-scala 封禁保持"
+  },
+  "changedFiles": [
+    "bin/truthsrc.js",
+    "generators/saga-dsl/generate.mjs",
+    "lib/compile.mjs",
+    "lib/decompose.mjs",
+    "lib/shared.mjs",
+    "lib/graphstore.mjs (新)",
+    "test/graphstore.test.mjs (新)",
+    "test/saga-strict-anchors.test.mjs (新)"
+  ],
+  "boundaries": [
+    "run-all 金样管线未动；strict-scala 封禁保持；js/scala 运行时接线不在 js 生成器侧（BC 侧已交付）",
+    "anchors 跨仓 BC location 不伪造进索引（对账走 definitionDigest）",
+    "MCP 未接 graphstore（verb 层已 store-compatible，未来能力）",
+    "根级不存在 tree/ 时 CLI ENOENT 崩溃为既有行为未修"
+  ],
+  "commit": null,
+  "notes": "无 commit 等用户明示；证据 .rounds/p7-js-strict-20261024/{design.md（§六实施记录/§七边界）,known-result.json}"
+}

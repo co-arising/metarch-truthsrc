@@ -44,6 +44,9 @@ function buildStrictPlan(ir) {
     const entry = (suffix, kind, value, deps = []) => ({
       path: `${prefix}.${suffix}.json`, content: stableJson(value), kind,
       schemaCategory: 'saga', schemaNode: definition.id, families, deps,
+      // Anchor key == buildGraph node addressing (`saga:<id>`): core apply turns this
+      // into anchors.json locations fingerprint-verified against the written bytes.
+      knowledgeId: `saga:${definition.id}`,
     });
     const metadata = { schemaVersion: 'truthsrc.saga-generator-contract/v1',
       inputSchemaVersion: ir.schemaVersion, inputDigest: ir.digest,
