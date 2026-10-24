@@ -14,7 +14,7 @@
 
 import { execSync } from "child_process";
 import { existsSync, mkdirSync, writeFileSync, rmSync, mkdtempSync, renameSync, readFileSync, readdirSync } from "fs";
-import { join, dirname } from "path";
+import { join, dirname, relative } from "path";
 import { tmpdir } from "os";
 import { fileURLToPath } from "url";
 import { compileTree } from "../lib/compile.mjs";
@@ -66,6 +66,70 @@ const readModels = canonical.readModels || [];
 const valueObjects = canonical.valueObjects || [];
 const pipelines = canonical.pipelines || [];
 const domainServices = canonical.domainServices || [];
+const sagas = canonical.sagas || [];
+
+// ── saga binding TypeContracts (truthsrc.saga-binding/v1) ──
+// The saga face's types live in the binding beside the tree (the tree itself
+// declares no valueObjects for them): kind "id" = bounded text → proto string;
+// kind "money" (ISO-4217, minor-unit-string, scale 2) → MoneyPO {minorUnits,
+// currency} — the same shapes the scala pipeline's proto builder emits.
+// Absent binding (e.g. the metarch golden tree) ⇒ both catalogs empty and every
+// consumer below is inert — golden output is byte-stable by construction.
+const sagaBindingPath = flagVal(
+  "--saga-binding",
+  existsSync(join(dirname(treeDir), "bindings.json"))
+    ? join(dirname(treeDir), "bindings.json")
+    : null
+);
+const sagaBinding = sagaBindingPath ? JSON.parse(readFileSync(sagaBindingPath, "utf8")) : null;
+const contractIds = new Set();
+const contractMoneyVos = [];
+if (sagaBinding && Array.isArray(sagaBinding.sagas)) {
+  for (const s of sagaBinding.sagas) {
+    for (const t of s.types || []) {
+      if (t.kind === "id") contractIds.add(t.id);
+      else if (t.kind === "money") contractMoneyVos.push({
+        name: t.id,
+        fields: [
+          { name: "minorUnits", dataType: "String", noteId: null, elementHash: null, optional: false },
+          { name: "currency", dataType: "String", noteId: null, elementHash: null, optional: false },
+        ],
+      });
+    }
+  }
+}
+console.log(`  sagas: ${sagas.length}${sagaBinding ? `, binding types: ${contractIds.size} ids + ${contractMoneyVos.length} money` : ""}`);
+
+// ── serial/saga face normalization (scala pipeline parity) ──
+// Only when a saga binding is present (the metarch golden tree never enters
+// this block — byte-stable by construction):
+//   - hyphenated event names are illegal Scala/proto identifiers → explicit
+//     underscore rename across events AND commands[].produces (the join face);
+//   - binding contract id types (bounded text) collapse to String in every
+//     Scala-facing field, including Map keys (Map[String, Money] — the golden
+//     master's own state shape in the generated app).
+if (sagaBinding) {
+  const normType = (t) => {
+    if (typeof t !== "string") return t;
+    if (contractIds.has(t.trim())) return "String";
+    const m = t.match(/^(Map[<[])([^,>\]]+)(,\s*.*)([>\]])$/);
+    if (m && contractIds.has(m[2].trim())) return `${m[1]}String${m[3]}${m[4]}`;
+    return t;
+  };
+  const scalaName = (n) => (typeof n === "string" && n.includes("-") ? n.replace(/-/g, "_") : n);
+  for (const a of aggregates) {
+    if (a.identifier && contractIds.has(String(a.identifier.dataType || "").trim())) a.identifier.dataType = "String";
+    for (const f of a.stateFields || []) if (f && typeof f === "object" && "dataType" in f) f.dataType = normType(f.dataType);
+    for (const e of a.events || []) {
+      e.name = scalaName(e.name);
+      for (const f of e.payloads || []) if (f && typeof f === "object" && "dataType" in f) f.dataType = normType(f.dataType);
+    }
+    for (const c of a.commands || []) {
+      if (Array.isArray(c.produces)) c.produces = c.produces.map(scalaName);
+      for (const f of c.parameters || []) if (f && typeof f === "object" && "dataType" in f) f.dataType = normType(f.dataType);
+    }
+  }
+}
 console.log(`  events: ${events.length}, commands: ${commands.length}`);
 console.log(`  aggregates: ${aggregates.length}`);
 console.log(`  policies: ${policies.length}`);
@@ -684,7 +748,7 @@ runGen(
       // instances (`upsert:event.<key>`, `memberPatch:`) resolve the VO's
       // field shape from here (golden fold bodies are built from it).
       voCatalog: Object.fromEntries(
-        valueObjects.map((v) => [
+        [...valueObjects, ...contractMoneyVos].map((v) => [
           pascal(v.name),
           (v.fields || []).map((f) => ({ name: f.name, dataType: f.dataType, optional: !!f.optional })),
         ])
@@ -945,7 +1009,7 @@ runGen(
   results.push(projErr ? { gen: "projection-dsl", status: "error", error: projErr } : { gen: "projection-dsl", status: "ok", count: projOk });
 }
 
-runGen("valueobject-dsl", valueObjects, `${basePkg}.domain.values`, (v) => ({
+runGen("valueobject-dsl", [...valueObjects, ...contractMoneyVos], `${basePkg}.domain.values`, (v) => ({
   package: `${basePkg}.domain.values`,
   name: pascal(v.name),
   description: v.description || "",
@@ -979,7 +1043,11 @@ runGen(
   { mode: "dir", noMarker: true }
 );
 
-runGen("monarch-dsl", pipelines, `${basePkg}.application.pipeline`, (p) => ({
+// monarch-dsl: batch-run staged pipelines only — a saga-shaped pipeline atom
+// has no `stages` face and is not a Monarch batchrun; skip rather than error
+// (the saga face is generated by saga-dsl, wired separately).
+runGen("monarch-dsl", pipelines.filter((p) => Array.isArray(p.stages) && p.stages.length),
+  `${basePkg}.application.pipeline`, (p) => ({
   ...p,
   package: `${basePkg}.application.pipeline`,
 }), { fileName: (p) => `${p.objectName || pascal(p.name || "Pipeline")}.scala` });
@@ -1001,11 +1069,16 @@ const snake = (s) =>
       const spec = {
         protoPackage: `${basePkg}.infrastructure.proto`,
         aggregateName: objName,
+        // saga binding TypeContract ids (bounded text) collapse to scalars —
+        // the golden `string id` / `string txid` rule of the scala pipeline.
+        contractIds: [...contractIds],
         // golden StatePO: identifier FIRST (its noteId annotates the line),
         // then stateFields in order, each with its field noteId.
         stateFields: [
           ...(a.identifier
-            ? [{ name: a.identifier.name, dataType: a.identifier.dataType, noteId: a.identifier.noteId || null, elementHash: a.identifier.elementHash || null, introducedIn: a.identifier.introducedIn || null }]
+            ? [{ name: a.identifier.name,
+                dataType: contractIds.has(a.identifier.dataType) ? "String" : a.identifier.dataType,
+                noteId: a.identifier.noteId || null, elementHash: a.identifier.elementHash || null, introducedIn: a.identifier.introducedIn || null }]
             : []),
           // credential-nature fields never reach the proto StatePO (golden
           // rule, same exclusion as Entity state); VO-member fields
@@ -1033,7 +1106,9 @@ const snake = (s) =>
         // derivable — the five affected files' orders are transcribed from
         // golden (≤3 locals each); other aggregates have no locals.
         localVOs: (() => {
-          const voByName = new Map(valueObjects.map((v) => [v.name, v]));
+          // tree VO catalog ∪ saga money contracts: the serial tree declares no
+          // valueObjects — Money's shape comes from the binding TypeContract.
+          const voByName = new Map([...valueObjects, ...contractMoneyVos].map((v) => [v.name, v]));
           const SHARED = new Set([
             "AggregateRelationSpec", "CatalogConflict", "CatalogConflictSet",
             "CatalogPatchSet", "CodeAnchorDelta", "ConceptDelta", "ConceptIndexEntry",
@@ -1053,8 +1128,12 @@ const snake = (s) =>
             let s = String(t || "");
             let m;
             while ((m = s.match(/^(?:List|Array|Option|Seq)<(.*)>$/))) s = m[1];
-            const mm = s.match(/^Map<[^,]+,\s*(.*)>$/);
-            if (mm) s = mm[1];
+            // Map value side only — the key side collapses to a proto scalar
+            // string and never contributes a PO message (square or angle form).
+            const angle = s.match(/^Map<[^,]+,\s*(.*)>$/);
+            if (angle) s = angle[1];
+            const square = s.match(/^Map\[[^,\]]+,\s*(.*)\]$/);
+            if (square) s = square[1];
             return s.trim();
           };
           const seen = [];
@@ -1703,7 +1782,9 @@ runGen(
       entityPackage: `${basePkg}.domain.entities`,
       protoPackage: `${basePkg}.infrastructure.proto`,
       sharedProtoPackage: `${basePkg}.infrastructure.proto.shared_value_objects`,
-      valueObjects: (valueObjects || []).map((v) => ({
+      // 树 VO 目录 ∪ saga 契约 money VO（serial 树无 valueObjects——Money 的
+      // PO/message 语义与 Some() 包装由目录驱动）。
+      valueObjects: [...(valueObjects || []), ...contractMoneyVos].map((v) => ({
         name: pascal(v.name),
         fields: rawFields(v.fields),
       })),
@@ -1759,6 +1840,8 @@ runGen(
         name: objName,
         basePkg,
         servicePorts: PHASE1_SERVICE_PORTS[objName] || [],
+        // 字符串 id 聚合（saga 面，标识符折叠 String）empty 直传 entityId
+        idIsString: !!(a.identifier && String(a.identifier.dataType || "").trim() === "String"),
         skipApp: true,
       };
       const specPath = join(specDir, `bootstrap-dsl-${i}.json`);
@@ -1802,8 +1885,11 @@ runGen(
       bootErr = e.message.slice(0, 300);
     }
   });
-  // extra golden views without tree read-model atoms (PHASE1 table above)
-  PHASE1_EXTRA_VIEWS.forEach((x, i) => {
+  // extra golden views without tree read-model atoms (PHASE1 table above) —
+  // golden transcriptions, kept for the metarch golden face; a saga-binding
+  // tree (serial saga face) drops them (their source aggregates are metarch's).
+  const extraViews = sagaBinding ? [] : PHASE1_EXTRA_VIEWS;
+  extraViews.forEach((x, i) => {
     if (bootErr) return;
     try {
       bootNames.push(`${x.view}Bootstrap`);
@@ -1840,7 +1926,9 @@ runGen(
         basePkg,
         aggTraits: aggregates.map((a) => objNameOf(a)),
         viewTraits: wiredViews,
-        servicePorts: PHASE1_SERVICE_PORTS.ModelCatalog || [],
+        // service ports are metarch-golden wiring (ModelCatalog domain services);
+        // a saga-binding tree has no such aggregate → no phantom ports.
+        servicePorts: sagaBinding ? [] : (PHASE1_SERVICE_PORTS.ModelCatalog || []),
       };
       const specPath = join(specDir, `bootstrap-dsl-app.json`);
       writeFileSync(specPath, JSON.stringify(appSpec, null, 2));
@@ -1985,6 +2073,25 @@ writeFileSync(
 );
 
 writeFileSync(join(outDir, ".gitignore"), scaffoldStatic("gitignore"));
+
+// Serial/saga face support classes (scaffold-static/app transcriptions): the
+// api-dsl controller imports metarch.infrastructure.{api.CommandDsl,
+// auth.CommandRoleMap}; the ingested-app host carries them as its own files —
+// a standalone saga-tree app has no host, so run-all copies them in. Emitted
+// only when a saga binding is present: the golden metarch face keeps its
+// host-app copies and the run-all output stays byte-identical.
+if (sagaBinding) {
+  const supportRoot = join(__dirname, "scaffold-static", "app");
+  const walk = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
+    const p = join(dir, e.name);
+    return e.isDirectory() ? walk(p) : [p];
+  });
+  for (const src of walk(supportRoot)) {
+    const dest = join(outDir, "app", relative(supportRoot, src));
+    mkdirSync(dirname(dest), { recursive: true });
+    writeFileSync(dest, readFileSync(src));
+  }
+}
 
 // Controller routes (old gen_api_layer E301 marker block): the scaffold
 // step above rewrites conf/routes, so the collected controller route lines

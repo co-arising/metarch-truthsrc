@@ -113,11 +113,20 @@ const SCALA_KEYWORDS = new Set([
   "while", "with", "yield",
 ]);
 const esc = (n) => (SCALA_KEYWORDS.has(n) ? `\`${n}\`` : n);
+// Map[K, V]（serial saga 面，键已归一 String）→ PrimitiveConverter 的
+// toProtoMap/fromProtoMap（BC 同款：键/值转换器各一）。
+const mapTypes = (t) => {
+  const m = String(t || "").match(/^Map[<[]([^,>\]]+),\s*(.+)[>\]]$/);
+  return m ? { k: m[1].trim(), v: m[2].trim() } : null;
+};
+const convOf = (type) => scalarConv(type) || "StringConv";
 function toExpr(f) {
   const n = esc(f.name);
   const list = isListType(f.dataType);
   const inner = innerType(f.dataType);
   const sc = scalarConv(inner);
+  const mm = mapTypes(f.dataType);
+  if (mm) return `toProtoMap(d.${n}, ${convOf(mm.k)}, ${convOf(mm.v)})`;
   if (!f.optional) {
     if (list) return `d.${n}.map(${(sc || "StringConv")}.toProto)`;
     if (sc === "IdConv" || sc === "InstantConv") return `${sc}.toProto(d.${n})`;
@@ -137,6 +146,8 @@ function fromExpr(f) {
   const list = isListType(f.dataType);
   const inner = innerType(f.dataType);
   const sc = scalarConv(inner);
+  const mm = mapTypes(f.dataType);
+  if (mm) return `fromProtoMap(p.${n}, ${convOf(mm.k)}, ${convOf(mm.v)})`;
   if (!f.optional) {
     if (list) return `p.${n}.map(${(sc || "StringConv")}.fromProto).toList`;
     if (sc === "IdConv" || sc === "InstantConv") return `${sc}.fromProto(p.${n})`;

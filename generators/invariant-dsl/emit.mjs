@@ -1025,10 +1025,14 @@ function buildCheckAggregate() {
   else {
     const tsField = RULING5_TS_FIELD[aggName] ??
       ["createdAt", "declaredAt", "discoveredAt", "classifiedAt", "recordedAt"].find((f) => stateTypeOf.has(f));
-    gate = tsField ? `Option(state.${scalaRef(tsField)}).isEmpty` : "Option(state.status).forall(_.isEmpty)";
+    // 无 status/时间戳标记字段（saga 真源树聚合）：没有可判的初始化标记——
+    // 不发射 S2-8 门卫，聚合级校验直接从规则项开始（golden 树恒有标记字段）。
+    gate = tsField ? `Option(state.${scalaRef(tsField)}).isEmpty` : null;
   }
-  lines.push(`    if (${gate})`);
-  lines.push('      if (InitialCommands.contains(cmd)) None else Some(err("AGG_NOT_INITIALIZED", cmd + " 拒绝：聚合尚未初始化"))');
+  if (gate) {
+    lines.push(`    if (${gate})`);
+    lines.push('      if (InitialCommands.contains(cmd)) None else Some(err("AGG_NOT_INITIALIZED", cmd + " 拒绝：聚合尚未初始化"))');
+  }
   // refs：非 genref 在前 → status_enum → tenant_id → genref
   const mainItems = [], genrefItems = [];
   for (const r of AGG_REFS_OMIT.has(aggName) ? [] : spec.aggregateRuleRefs ?? []) {
@@ -1058,7 +1062,7 @@ function buildCheckAggregate() {
     if (spec.aggNoteId) lines.push(`    // @knowledge ${kh(spec.aggNoteId, spec.aggElementHash)}`);
     if (it.type === "check") {
       lines.push(`    // ${it.id}${it.suffix || ""}`);
-      lines.push(`    else if (!(${it.cond})) Some(err("${it.errCode}", "${escDesc(it.desc)}"))`);
+      lines.push(`    ${gate || anyCheck ? "else " : ""}if (!(${it.cond})) Some(err("${it.errCode}", "${escDesc(it.desc)}"))`);
       anyCheck = true;
     } else {
       lines.push(`    // ${it.id}${it.suffix || ""}`);
@@ -1066,7 +1070,7 @@ function buildCheckAggregate() {
     }
   }
   if (!items.length) lines.push("    // （无聚合级规则）");
-  lines.push("    else None");
+  lines.push(gate || anyCheck ? "    else None" : "    None");
   return lines;
 }
 
@@ -1282,7 +1286,11 @@ function buildPostconditions() {
 }
 
 // ── assemble the Rules file ──
-const cmdNamesSorted = allCommands.map((c) => c.commandName).sort();
+// 有 <Cmd>Params 才有 <Cmd>Rule（params 是 5-stage 参数面；查询类零参命令
+// 不产 Params——rule 引用悬空即编译红。golden 树 rule/params 1:1，过滤惰性）。
+const cmdNamesSorted = allCommands.map((c) => c.commandName)
+  .filter((c) => Object.prototype.hasOwnProperty.call(spec.paramDefs ?? {}, c))
+  .sort();
 const ruleObjectLines = [];
 cmdNamesSorted.forEach((cmd, i) => {
   if (i > 0) ruleObjectLines.push("");

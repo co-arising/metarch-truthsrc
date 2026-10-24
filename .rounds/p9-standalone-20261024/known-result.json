@@ -1,0 +1,36 @@
+{
+  "batch": "p9-standalone-20261024",
+  "date": "2026-10-24",
+  "goal": "metarch-truthsrc 独立文件版代码生成器（无 BC）——批A「拿到就能编译」完成；批B「拿到就能跑」设计冻结（design.md §三）",
+  "batchA": {
+    "changedFiles": [
+      "generators/proto-dsl/emit.mjs", "generators/aggregate-dsl/emit.mjs", "generators/api-dsl/emit.mjs",
+      "generators/invariant-dsl/emit.mjs", "generators/adapter-dsl/emit.mjs", "generators/converter-dsl/emit.mjs",
+      "generators/bootstrap-dsl/emit.mjs", "generators/run-all.mjs",
+      "generators/scaffold-static/app/net/imadz/metarch/infrastructure/api/CommandDsl.scala (新·逐字转录)",
+      "generators/scaffold-static/app/net/imadz/metarch/infrastructure/auth/CommandRoleMap.scala (新·standalone 空 maps 变体)",
+      "generators/scaffold-static/app/net/imadz/common/MoneyOps.scala (新·逐字转录)",
+      "generators/scaffold-static/app/net/imadz/common/serialization/PrimitiveConverter.scala (新·逐字转录)"
+    ],
+    "verification": {
+      "goldenByteStability": "metarch 树 run-all 产物前后 diff 字节恒等（11 轮迭代每轮回归）",
+      "serialStandaloneCompile": "serial 树 run-all 产物 sbt compile exit0（30s，JDK11+sbt1.4.9，隔离 app 缓存）",
+      "truthsrcFullSuite": "1705/1705",
+      "monarchGraceful": "monarch-dsl 对 saga 树 ok(0 files)，18/18 generators ok"
+    },
+    "iterationRounds": 11,
+    "fixFamilies": [
+      "proto：Map 类型/contractIds 折叠/连字符事件名下划线/optional-map 排除",
+      "Scala：事件名 join 面（events+produces）/id 类型折叠/Map 键折叠/结构化 fold 三算子（put/remove/money-apply+literal 值）/Map.empty 默认值",
+      "api：零参查询命令调用",
+      "invariant：无标记字段聚合免 S2-8 门卫/有 Params 才有 Rule",
+      "adapter：ScalaPB oneof 访问器驼峰化",
+      "converter：toProtoMap/fromProtoMap + 目录∪money VO",
+      "bootstrap：idIsString；run-all：PHASE1 metarch 布线 sagaBinding 门控",
+      "scaffold-static/app：四支撑件（CommandDsl/CommandRoleMap/MoneyOps/PrimitiveConverter）"
+    ]
+  },
+  "batchB": "设计冻结于 design.md §三——移植源三层全通读（Module 268+Builder 61+HostBuilder 320+HostTemplate 925+Model 109）、命名/lowerInputs/证据推导规则全钉、实施结构与验证路径规划。待实施。",
+  "digestDiscipline": "树/binding 零改动；ir.digest ba60f58a 与 definitionDigest 3a586c81 双钉点不变（1705 套件看守）",
+  "noCommit": true
+}

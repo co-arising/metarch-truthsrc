@@ -62,7 +62,7 @@ function askBody(ep) {
       ...(ep.multiTarget ? ['        // TODO(待裁决): 多目标 List 寻址——当前 entityRef=randomUUID 为工厂语义，操作已有实体需确认主聚合'] : []),
     ]),
     `        repository.entityRef(${ep.entityExprRaw}).ask {`,
-    `          (replyTo: akka.actor.typed.ActorRef[${ep.reply}]) => ${ep.cmdName}(${ep.ctorArgsDsl}, replyTo)`,
+    `          (replyTo: akka.actor.typed.ActorRef[${ep.reply}]) => ${ep.cmdName}(${ep.ctorArgsDsl ? `${ep.ctorArgsDsl}, ` : ""}replyTo)`,
     `        }.map { reply =>`,
     `          reply.error.fold[Either[net.imadz.common.auth.ApiError, net.imadz.metarch.infrastructure.api.OkReceipt]](`,
     `            Right(net.imadz.metarch.infrastructure.api.OkReceipt(${ep.entityExprRaw}, ${ep.dvExpr}))`,

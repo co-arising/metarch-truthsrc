@@ -78,6 +78,11 @@ class ${name}SnapshotAdapter extends SnapshotAdapter[${stateType}] with ${conver
 `;
 
 // ─── EventAdapter ───
+// ScalaPB oneof case accessor: the proto field name camelized to PascalCase
+// (`reserveFundsConfirmed` → ReserveFundsConfirmed; `result_compensated` →
+// ResultCompensated). PascalCase event names pass through unchanged (golden).
+const scalapbCase = (n) => n.replace(/(^|_)([a-zA-Z])/g, (_, __, c) => c.toUpperCase());
+
 const entityImports = [eventType, ...events.map((e) => e.name)]
   .sort(cmp)
   .map((n) => `import ${entityPkg}.${name}Entity.${n}`)
@@ -86,13 +91,13 @@ const entityImports = [eventType, ...events.map((e) => e.name)]
 const eventCases = events
   .map(
     (e) => `      case evt: ${e.name} =>
-        ${eventPOType}.Event.${e.name}(${e.name}Conv.toProto(evt))`
+        ${eventPOType}.Event.${scalapbCase(e.name)}(${e.name}Conv.toProto(evt))`
   )
   .join("\n\n\n");
 
 const fromCases = [
   ...events.map(
-    (e) => `      case ${eventPOType}.Event.${e.name}(po) =>
+    (e) => `      case ${eventPOType}.Event.${scalapbCase(e.name)}(po) =>
         EventSeq.single(${e.name}Conv.fromProto(po))`
   ),
   `      case ${eventPOType}.Event.Empty =>

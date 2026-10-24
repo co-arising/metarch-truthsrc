@@ -22,6 +22,9 @@ const spec = JSON.parse(readFileSync(specPath, "utf8"));
 
 const packageName = spec.protoPackage || "net.imadz.infrastructure.proto";
 
+// saga binding TypeContract ids (kind "id": bounded text) collapse to string.
+const CONTRACT_IDS = new Set(spec.contractIds || []);
+
 // Shared value-object catalog of golden shared_value_objects.proto (all in
 // package net.imadz.metarch.infrastructure.proto): fields typed with one of
 // these names map to <protoPackage>.<Name>PO and REQUIRE the
@@ -63,7 +66,16 @@ const protoType = (t) => {
   // List<X> / Array<X> → repeated <map(X)>
   const list = raw.match(/^(List|Array)<(.*)>$/);
   if (list) return `repeated ${protoType(list[2])}`;
+  // Map[K, V] (tree golden-master form) or Map<K, V> → proto map<K, V>.
+  // Keys must be proto scalars; non-scalar keys (bounded-text ids like TxId)
+  // collapse to string — same rule the scala pipeline's proto builder applies
+  // (map<string, MoneyPO> in the generated credit_balance.proto).
+  const map = raw.match(/^Map[<[]([^,>\]]+),\s*(.+)[>\]]$/);
+  if (map) return `map<${SCALAR_MAP[map[1].trim()] ?? "string"}, ${protoType(map[2].trim())}>`;
   if (SCALAR_MAP[raw]) return SCALAR_MAP[raw];
+  // saga binding TypeContract kind "id" = bounded text → plain string (the
+  // scala pipeline emits `string txid` / `string id` for these).
+  if (CONTRACT_IDS.has(raw)) return "string";
   // bare VO name (catalog or aggregate-local) → <protoPackage>.<Name>PO
   return `${packageName}.${raw}PO`;
 };
@@ -72,11 +84,20 @@ const usesSharedVO = (t) => {
   const raw = String(t || "");
   const list = raw.match(/^(List|Array)<(.*)>$/);
   if (list) return usesSharedVO(list[2]);
-  if (SCALAR_MAP[raw]) return false;
+  const map = raw.match(/^Map[<[]([^,>\]]+),\s*(.+)[>\]]$/);
+  if (map) return usesSharedVO(map[2].trim());
+  if (SCALAR_MAP[raw] || CONTRACT_IDS.has(raw)) return false;
   return SHARED_VOS.has(raw);
 };
 
 const camel = (s) => s[0].toLowerCase() + s.slice(1);
+// Hyphenated event names (saga result-* family) are illegal as proto
+// identifiers; the scala pipeline's rule is an explicit hyphen→underscore
+// rename used verbatim for BOTH the message base and the oneof field name
+// (`result_succeededPO result_succeeded = 8;` in the generated proto).
+// Non-hyphenated names keep the golden camel form.
+const protoEventName = (s) => (s.includes("-") ? s.replace(/-/g, "_") : s);
+const oneofFieldName = (s) => (s.includes("-") ? s.replace(/-/g, "_") : camel(s));
 
 let out;
 if (spec.aggregateName) {
@@ -100,8 +121,9 @@ if (spec.aggregateName) {
       const t = protoType(f.dataType);
       // golden: `optional` never prefixes a repeated field (proto3 forbids
       // it; field_model_definition's AggregateStatusPatchedPO proves the
-      // old builder dropped it on Lists even when the field is optional).
-      const opt = f.optional && !t.startsWith("repeated ") ? "optional " : "";
+      // old builder dropped it on Lists even when the field is optional);
+      // same prohibition for map fields.
+      const opt = f.optional && !t.startsWith("repeated ") && !t.startsWith("map<") ? "optional " : "";
       return `  ${opt}${t} ${f.name} = ${i + 1};${knowledgeOf(f)}`;
     }).join("\n");
 
@@ -121,12 +143,12 @@ if (spec.aggregateName) {
       let body = fieldLines(e.fields);
       if (agg !== "User" && !(e.fields || []).some((f) => f.name === "tenantId"))
         body += `\n  string tenantId = ${(e.fields || []).length + 1};`;
-      return `message ${e.name}PO {\n${body}\n\n}`;
+      return `message ${protoEventName(e.name)}PO {\n${body}\n\n}`;
     })
     .join("\n\n");
 
   const oneofFields = events
-    .map((e, i) => `    ${e.name}PO ${camel(e.name)} = ${i + 1};`)
+    .map((e, i) => `    ${protoEventName(e.name)}PO ${oneofFieldName(e.name)} = ${i + 1};`)
     .join("\n");
 
   const eventWrapper = `message ${agg}EventPO {\n\n\n  oneof event {\n${oneofFields}\n  }\n}`;
@@ -169,7 +191,7 @@ ${statePO}
     .map((v) => {
       const fields = (v.fields || []).map((f, i) => {
         const t = protoType(f.dataType);
-        const opt = f.optional && !t.startsWith("repeated ") ? "optional " : "";
+        const opt = f.optional && !t.startsWith("repeated ") && !t.startsWith("map<") ? "optional " : "";
         return `  ${opt}${t} ${f.name} = ${i + 1};${knowledgeOf(f)}`;
       }).join("\n");
       return `message ${v.name}PO {\n${fields}\n\n}`;

@@ -218,7 +218,9 @@ trait ${traitName} {
       Behaviors.setup { actorContext =>
         EventSourcedBehavior(
           persistenceId = PersistenceId(${name}Aggregate.entityTypeKey.name, entityId),
-          emptyState = ${name}Entity.empty(Id.of(entityId)),
+          // 标识符为 Id（UUID）的聚合走 Id.of；字符串 id 聚合（saga 真源树，
+          // 标识符折叠 String）直接传 entityId——empty 的参数型即标识符型。
+          emptyState = ${name}Entity.empty(${spec.idIsString ? "entityId" : "Id.of(entityId)"}),
           commandHandler = ${cmdHandler},
           // [FIX] 使用 EventHandler.apply
           eventHandler = ${evtHandler}
