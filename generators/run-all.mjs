@@ -13,8 +13,8 @@
 //   .gitignore, app/<base package path>/... (ingested-app single-module layout)
 
 import { execSync } from "child_process";
-import { existsSync, mkdirSync, writeFileSync, rmSync, mkdtempSync, renameSync, readFileSync, readdirSync } from "fs";
-import { join, dirname, relative } from "path";
+import { existsSync, mkdirSync, writeFileSync, rmSync, mkdtempSync, renameSync, readFileSync, readdirSync, appendFileSync } from "fs";
+import { join, dirname, relative, isAbsolute, basename } from "path";
 import { tmpdir } from "os";
 import { fileURLToPath } from "url";
 import { compileTree } from "../lib/compile.mjs";
@@ -108,6 +108,10 @@ console.log(`  sagas: ${sagas.length}${sagaBinding ? `, binding types: ${contrac
 //   - binding contract id types (bounded text) collapse to String in every
 //     Scala-facing field, including Map keys (Map[String, Money] — the golden
 //     master's own state shape in the generated app).
+// 原始 canonical 留存：saga-dsl strict 面的 lowering 对账（receipt output type vs
+// canonical 确认事件载荷）与证据推导（writtenBy 命中 `确认事件.txid`）必须用树原语
+// （连字符事件名/契约 id 类型）——规范化只服务 Scala 聚合面生成器。
+const rawCanonical = sagaBinding ? JSON.parse(canonicalJson) : null;
 if (sagaBinding) {
   const normType = (t) => {
     if (typeof t !== "string") return t;
@@ -127,6 +131,29 @@ if (sagaBinding) {
     for (const c of a.commands || []) {
       if (Array.isArray(c.produces)) c.produces = c.produces.map(scalaName);
       for (const f of c.parameters || []) if (f && typeof f === "object" && "dataType" in f) f.dataType = normType(f.dataType);
+      // 结构化 guard（when 形）→ invariant-dsl 母语形状：reject 型翻成
+      // invariantRef+cond 直录（else if (!(cond)) err）；succeed-empty 型（onFail:
+      // succeed-empty）翻成 succeedEmpty 首段（if (cond) Right(Nil)——幂等空成功，
+      // BC 金样 60008/60010 同款）。commandHandlers/handled/rules 链自动接通。
+      const extra = [];
+      for (const g of c.guards || []) {
+        if (!g || !g.when) continue;
+        const w = g.when;
+        const p = (ref) => `p.${String(ref).split(".").pop()}`;
+        // cond 语义约定：invariantRef check=「cond 为真则通过」（!cond 才 err）；
+        // succeedEmpty=「cond 为真则空成功」。map-absent 的通过条件是 absent
+        // （存在才拒——60007）；succeed-empty 的命中条件是 present（已办过→Nil）。
+        let cond = null;
+        if (w.form === "map-absent") cond = `!state.${w.map}.contains(${p(w.key)})`;
+        else if (w.form === "map-contains") cond = `state.${w.map}.contains(${p(w.key)})`;
+        else if (w.form === "money-sufficient") cond = `state.accountBalance.get(${p(w.amount)}.currency).exists(v => MoneyOps.compare(v.minorUnits, ${p(w.amount)}.minorUnits) >= 0)`;
+        else if (w.form === "money-positive") cond = `MoneyOps.isPositive(${p(w.amount)}.minorUnits)`;
+        if (!cond) continue;
+        extra.push(g.onFail === "succeed-empty"
+          ? { kind: "succeedEmpty", ref: g.ruleId, cond: `state.${w.map}.contains(${p(w.key)})`, desc: g.desc || "" }
+          : { kind: "invariantRef", ref: g.ruleId, cond, errCode: g.errCode, desc: g.desc || "" });
+      }
+      if (extra.length) c.guards = [...(c.guards || []), ...extra];
     }
   }
 }
@@ -709,11 +736,15 @@ runGen(
       basePkg,
       objectName: objName,
       stateType: `${objName}State`,
+      sagaFace: !!sagaBinding,
       commands: (a.commands || []).map((c) => ({
         name: c.name,
         fields: normFields(c.parameters),
         paramType: "Unit",
-        confirmationType: `${c.name}Reply`,
+        // saga 面：写命令统一 reply family（协议 sagaFace 改造的配套）
+        confirmationType: sagaBinding
+          ? ((a.commands.find((x) => x.name === c.name) || {}).produces || []).length ? `${objNameOf(a)}Reply` : `${c.name}Reply`
+          : `${c.name}Reply`,
       })),
       // paramDefs field-name lists for the real CommandHelpers toParam bodies
       paramDefs: Object.fromEntries(
@@ -798,8 +829,15 @@ runGen(
       })),
       statusTransitions: a.statusTransitions || {},
       commandHandlers: (a.commands || [])
-        .filter((c) => (c.guards || []).some((g) => g.kind === "invariantRef"))
+        .filter((c) => (c.guards || []).some((g) => g.kind === "invariantRef") ||
+          (sagaBinding && (c.produces || []).length))
         .map((c) => ({ command: c.name })),
+      // saga face（sagaBinding 门控）：查询命令 = 零参零产生（SCHEMA 查询命令
+      // 约定）——协议 whole-state reply + behaviors 真体的标记面。
+      sagaFace: !!sagaBinding,
+      queryCommands: sagaBinding
+        ? (a.commands || []).filter((c) => !(c.parameters || []).length && !(c.produces || []).length).map((c) => c.name)
+        : [],
     };
   },
   { mode: "dir" }
@@ -814,22 +852,23 @@ runGen(
     const seen = new Set();
     const rules = [];
     for (const c of a.commands || []) {
-      for (const g of c.guards || []) {
-        if (g.kind === "invariantRef" && !seen.has(c.name)) {
-          seen.add(c.name);
-          rules.push({
-            commandName: c.name,
-            fields: normFieldsRich(c.parameters),
-            guards: c.guards || [],
-            produces: c.produces || [],
-            emissionBindings: c.emissionBindings || null,
-            preconditions: c.preconditions || [],
-            preconditionRefs: c.preconditionRefs || [],
-            declaredFunction: c.declaredFunction || null,
-            noteId: noteIdOf("command", c.name, a.name),
-            elementHash: elementHashOf("command", c.name, a.name),
-          });
-        }
+      const hasInvariantRef = (c.guards || []).some((g) => g.kind === "invariantRef");
+      // saga 面：无 guard 但有 produces 的命令（触发面 StartTransfer）也入 rules
+      // ——事件构造（Right(List(Event(...)))）与 BC 同款；非 saga 面保持金样口径。
+      if ((hasInvariantRef || (sagaBinding && (c.produces || []).length)) && !seen.has(c.name)) {
+        seen.add(c.name);
+        rules.push({
+          commandName: c.name,
+          fields: normFieldsRich(c.parameters),
+          guards: c.guards || [],
+          produces: c.produces || [],
+          emissionBindings: c.emissionBindings || null,
+          preconditions: c.preconditions || [],
+          preconditionRefs: c.preconditionRefs || [],
+          declaredFunction: c.declaredFunction || null,
+          noteId: noteIdOf("command", c.name, a.name),
+          elementHash: elementHashOf("command", c.name, a.name),
+        });
       }
     }
     // All commands for params generation (ingested-app has 27/27 params files)
@@ -1230,8 +1269,13 @@ const snake = (s) =>
 // The TEMPLATE layer is generators/api-dsl/emit.mjs (tpl_dsl/tpl_controller).
 {
   const ctrlDir = join(outDir, "app", "controllers");
-  mkdirSync(ctrlDir, { recursive: true });
   var apiRouteLinesAll = [];
+  if (sagaBinding) {
+    // saga face：无 HTTP controller 面（BC serial 应用同款——聚合/协议/saga 家族
+    // 之外不产控制器）；routes 保持骨架。
+    results.push({ gen: "api-dsl", status: "skip", reason: "saga face has no HTTP controller (BC serial-app parity)" });
+  } else {
+  mkdirSync(ctrlDir, { recursive: true });
   let apiOk = 0, apiErr = null;
 
   // ── core.mjs port ──
@@ -1671,6 +1715,7 @@ const snake = (s) =>
     }
   });
   results.push(apiErr ? { gen: "api-dsl", status: "error", error: apiErr } : { gen: "api-dsl", status: "ok", count: apiOk });
+  }
 }
 
 // api-dsl (viewkeys mode) → app/<pkg>/infrastructure/auth/ViewKeys.scala (E2)
@@ -2090,6 +2135,105 @@ if (sagaBinding) {
     const dest = join(outDir, "app", relative(supportRoot, src));
     mkdirSync(dirname(dest), { recursive: true });
     writeFileSync(dest, readFileSync(src));
+  }
+}
+
+// ── saga-dsl strict-scala（P9 批B）：v3 契约 + canonical → strict saga 七文件族 ──
+// truthsrc 自己的编译链（compileSagas → lowerSagaRuntimeBindingV3）产契约，BC 的
+// 三层模板知识经 emit-strict{,-host}.mjs 移植发射（蓝本=BC serial 七文件）。契约
+// 工件（strict-contract JSONs）的诚实标记 contract-only/runnable=false 不在本面——
+// saga-dsl generate.mjs 的 strict-scala 封禁保持（那是 core apply entries 管线）。
+// saga-core strict 候选 jar 经 --saga-core-jar 复制到 lib/（sbt 默认 unmanaged）。
+if (sagaBinding && canonical.sagas?.length) {
+  try {
+    const { compileSagas } = await import("../lib/saga/compile.mjs");
+    const { lowerSagaRuntimeBindingV3 } = await import("../lib/saga/runtime-binding.mjs");
+    const { emitStrictFiles } = await import("./saga-dsl/emit-strict.mjs");
+    const { emitStrictHostFiles } = await import("./saga-dsl/emit-strict-host.mjs");
+    const { emitStrictSpecFiles } = await import("./saga-dsl/emit-strict-spec.mjs");
+    const runtimeBindingPath = flagVal("--saga-runtime-binding",
+      existsSync(join(dirname(treeDir), "runtime-binding.json")) ? join(dirname(treeDir), "runtime-binding.json") : null);
+    if (!runtimeBindingPath) throw new Error("no runtime-binding.json beside the tree (pass --saga-runtime-binding)");
+    const runtimeBinding = JSON.parse(readFileSync(runtimeBindingPath, "utf8"));
+    const { ir } = compileSagas(rawCanonical, sagaBinding);
+    const lowered = lowerSagaRuntimeBindingV3({ canonical: rawCanonical, binding: sagaBinding, runtimeBinding, ir });
+    if ((lowered.diagnostics || []).length) throw new Error(`lowering diagnostics: ${JSON.stringify(lowered.diagnostics.slice(0, 2))}`);
+    const strictHeader = `// @generated by truthsrc run-all:strict-scala\n`;
+    const pkgRoot = join(outDir, "app");
+    let count = 0;
+    for (const sagaDecl of lowered.plan.sagas) {
+      const { model, files } = emitStrictFiles(sagaDecl, rawCanonical, { basePkg, header: strictHeader });
+      const hostFiles = emitStrictHostFiles(model, { header: strictHeader });
+      const pkgDir = join(pkgRoot, ...model.pkg.split("."));
+      mkdirSync(pkgDir, { recursive: true });
+      const specDir = join(outDir, "test", ...model.pkg.split("."));
+      mkdirSync(specDir, { recursive: true });
+      for (const f of [...files, ...hostFiles]) {
+        writeFileSync(join(pkgDir, f.name), f.content);
+        count++;
+      }
+      for (const f of emitStrictSpecFiles(model, { header: strictHeader })) {
+        writeFileSync(join(specDir, f.name), f.content);
+        count++;
+      }
+    }
+    // strict 候选 jar → lib/（sbt unmanaged 默认纳入 classpath）。akka 混版钉：
+    // Play 2.8.18 传递 akka 2.6.21 与 2.6.20 家族混装 → ManifestInfo 拒启（P5
+    // scaffold 同款裁决：dependencyOverrides 全家钉 2.6.20）。saga 面追加在产物
+    // build.sbt 尾部——scaffold-static 转录（金样字节）不动。
+    const sagaCoreJar = flagVal("--saga-core-jar", null);
+    if (sagaCoreJar) {
+      if (!isAbsolute(sagaCoreJar)) throw new Error("--saga-core-jar requires an absolute path");
+      mkdirSync(join(outDir, "lib"), { recursive: true });
+      writeFileSync(join(outDir, "lib", basename(sagaCoreJar)), readFileSync(sagaCoreJar));
+      const akkaOverride = `
+
+// saga face (P9 batch B): pin the whole akka family to the declared 2.6.20 —
+// Play 2.8.18 pulls akka 2.6.21 alongside and ManifestInfo refuses mixed versions.
+dependencyOverrides ++= Seq(
+  "com.typesafe.akka" %% "akka-actor" % akkaVersion,
+  "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion,
+  "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
+  "com.typesafe.akka" %% "akka-serialization-jackson" % akkaVersion,
+  "com.typesafe.akka" %% "akka-cluster" % akkaVersion,
+  "com.typesafe.akka" %% "akka-cluster-typed" % akkaVersion,
+  "com.typesafe.akka" %% "akka-cluster-sharding" % akkaVersion,
+  "com.typesafe.akka" %% "akka-cluster-sharding-typed" % akkaVersion,
+  "com.typesafe.akka" %% "akka-cluster-tools" % akkaVersion,
+  "com.typesafe.akka" %% "akka-coordination" % akkaVersion,
+  "com.typesafe.akka" %% "akka-discovery" % akkaVersion,
+  "com.typesafe.akka" %% "akka-distributed-data" % akkaVersion,
+  "com.typesafe.akka" %% "akka-persistence" % akkaVersion,
+  "com.typesafe.akka" %% "akka-persistence-query" % akkaVersion,
+  "com.typesafe.akka" %% "akka-persistence-typed" % akkaVersion,
+  "com.typesafe.akka" %% "akka-persistence-testkit" % akkaVersion,
+  "com.typesafe.akka" %% "akka-pki" % akkaVersion,
+  "com.typesafe.akka" %% "akka-protobuf-v3" % akkaVersion,
+  "com.typesafe.akka" %% "akka-remote" % akkaVersion,
+  "com.typesafe.akka" %% "akka-stream" % akkaVersion,
+  "com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion,
+  "com.typesafe.akka" %% "akka-stream-typed" % akkaVersion,
+  "com.typesafe.akka" %% "akka-testkit" % akkaVersion,
+  "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion,
+  "com.typesafe.akka" %% "akka-cluster-typed" % akkaVersion)
+`;
+      appendFileSync(join(outDir, "build.sbt"), akkaOverride);
+      // 序列化面：BC scaffold/conf/serialization.conf 逐字转录（scaffold-static/conf/
+      // 复制）。注意（2026-10-24 用户质询定案）：strict 持久化面已是真 proto
+      // （jar reference.conf: StrictDurable→strict-saga 独立 serializer）；跨节点
+      // 命令消息（StrictSagaCoordinator$Start/GetStatus 等）经 javap 实锤只
+      // implements java.io.Serializable、非 CborSerializable——runtime reference.conf
+      // 注释与类事实漂移。两条管线（BC 8/8 同款）都靠 allow-java=on 兜底发这些
+      // 消息＝登记继承的 strict 运行时技术债；修法（saga-core Command 族
+      // CborSerializable 化 → jackson-cbor 自动接住 → 两管线收 off）立后续批，
+      // 本批 saga-core 零改动纪律不破。
+      writeFileSync(join(outDir, "conf", "serialization.conf"),
+        readFileSync(join(__dirname, "scaffold-static", "conf", "serialization.conf")));
+    }
+    results.push({ gen: "saga-dsl-strict", status: "ok", count });
+  } catch (e) {
+    console.error("STRICT-ERR:", e.message);
+    results.push({ gen: "saga-dsl-strict", status: "error", error: e.message.slice(0, 300) });
   }
 }
 

@@ -93,3 +93,24 @@ digest 双钉点不动；缓存不入库；不 push/commit 等明示；scratch �
   以 persistence-testkit 自足（BC 同款），部署面另立批。
 - legacy saga 面（SagaSpec 0.2）不迁移——金样复制纪律。
 - runnable/runtimeBindingVerified 翻转语义：批B 交付后单独定案批。
+
+## 八、批B 实施记录（2026-10-24，完成）
+
+- **交付**：emit-strict.mjs（模型推导+四件）+emit-strict-host.mjs（两件）+emit-strict-spec.mjs
+  （第七件）——BC 三层 ~2000 行 Scala 模板知识的 JS 移植，蓝本=target/p8-anchors 七文件。
+  run-all strict 段：--saga-runtime-binding/--saga-core-jar；**rawCanonical**（树原语）走
+  lowering 对账+证据推导（规范化副本只服务 Scala 聚合面——receipt-type 对账与 writtenBy
+  命中都在连字符/契约 id 空间）；产物 build.sbt 尾部 akka 全家 2.6.20 钉（金样转录不动）；
+  conf/serialization.conf=BC 逐字转录。
+- **B1.5（协议/规则/行为 saga 面）**：统一 reply family（`<Agg>Reply(error)`）+树查询命令
+  whole-state reply（免合成 Get<Agg>State）+behaviors 查询真体（Effect.reply 直答）+factory/
+  helpers imports 适配；invariant-dsl 增 succeedEmpty 段型（幂等空成功）+MoneyOps 条件 import；
+  run-all guard 翻译（**map-absent 反极性修复**：check=absent 通过、succeedEmpty=present 命中）；
+  StartTransfer 类无 guard 有 produces 命令入 rules/params。
+- **验收**：独立产物（无 BC）**FixtureSafetySpec 8/8 ×2**（A 守恒/幂等；B 全 TCC 三路径+
+  发布；C1 恢复；D1 双系统跨节点 3.2s）；金样字节恒等；truthsrc 1705/1705。
+- **序列化定案（用户质询 2026-10-24）**：strict 持久化面已 proto（StrictDurable→strict-saga
+  独立 serializer）；跨节点命令面 javap 实锤非 CborSerializable（runtime reference.conf 注释
+  漂移）；BC 同款 allow-java=on 兜底＝继承技术债；修法立后续批 strict-command-serialization。
+- **调试轮次**：~12 轮（type/typeId 字段名、resourceRef 推导、Scala 插值转义、map-absent
+  反极性、CommandFamily 名、akka 钉、conf 逐字）。无 commit（等用户明示）。

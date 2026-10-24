@@ -718,6 +718,13 @@ function translateGuards(cmdName, rule) {
 
   for (const g of guards) {
     if (g.kind === "initialized") continue;
+    // saga 真源树结构化 guard 的幂等面（onFail: succeed-empty）：守卫命中 →
+    // 无事件成功（Right(Nil)），跳过后续 guard 与事件构造（BC 金样 60008/60010
+    // 「if (state.<map>.contains(...)) Right(Nil)」首段同款）。
+    if (g.kind === "succeedEmpty") {
+      items.push({ type: "succeedEmpty", id: g.ref || "succeed-empty", cond: g.cond, desc: g.desc || "" });
+      continue;
+    }
     if (g.kind === "statusTransition") {
       const notList = Array.isArray(g.notStatus) ? g.notStatus.filter(Boolean) : g.notStatus ? [g.notStatus] : [];
       if (notList.length) {
@@ -1107,6 +1114,11 @@ function buildRuleObject(cmdName) {
       lines.push(`      ${first ? "" : "else "}if (!(${it.cond})) err("${it.errCode}", "${escDesc(it.desc)}")`);
       first = false;
       anyCheck = true;
+    } else if (it.type === "succeedEmpty") {
+      lines.push(`      // ${it.id}${it.desc ? `（${it.desc}）` : ""}`);
+      lines.push(`      ${first ? "" : "else "}if (${it.cond}) Right(Nil)`);
+      first = false;
+      anyCheck = true;
     }
     // skip items emit nothing: golden contains no TODO/comment-only lines
     // for untranslated guards at either level (verified by grep over all
@@ -1316,7 +1328,12 @@ ${(() => {
   return Object.keys(VO_FIELDS).some((v) => new RegExp(`(^|[^A-Za-z])${v}([^A-Za-z]|$)`).test(sigText))
     ? `import ${spec.valuesPackage ?? "net.imadz.metarch.domain.values"}._\n` : "";
 })()}import ${pkg}.params.${aggName}RuleParams._
-${hasPorts ? "import net.imadz.metarch.domain.service.ConceptDeltaAdjudicator\nimport net.imadz.metarch.domain.service.ContentFingerprintPort\n" : ""}
+${(() => {
+  // saga 真源树 money guard（money-sufficient/money-positive）的 cond 引用
+  // MoneyOps（minor-unit 精确比较）；guard 文本在 spec.rules[].guards[].cond。
+  const guardText = (spec.rules ?? []).flatMap((r) => (r.guards ?? []).map((g) => `${g.cond ?? ""}${g.kind === "succeedEmpty" ? (g.cond ?? "") : ""}`)).join(" ");
+  return guardText.includes("MoneyOps") ? "import net.imadz.common.MoneyOps\n" : "";
+})()}${hasPorts ? "import net.imadz.metarch.domain.service.ConceptDeltaAdjudicator\nimport net.imadz.metarch.domain.service.ContentFingerprintPort\n" : ""}
 /**
  * ${aggName} 聚合规则实现（方案 A，2026-08-22：规则 = 纯 domain，不依赖 application/akka）。
  * rules_domain_gen.mjs 生成：聚合级校验（checkAggregate）先于命令级；

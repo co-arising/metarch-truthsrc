@@ -54,8 +54,14 @@ const helperFor = (c) => {
 // Imports (golden order): framework pair, then Protocol members — commands
 // alphabetical, Get<Name>State after them, replies alphabetical, Get reply
 // last — then Entity state and the RuleParams wildcard.
+// saga face（spec.sagaFace）：无合成 Get<Agg>State 命令；命令与 reply import 限于
+// 实际有 helper 的命令（paramDefs 面）——零参查询命令无 helper。
 const proto = `${pkg}.${objName}Protocol`;
-const commandImports = [
+const commandImports = spec.sagaFace ? [
+  ...helperCmds.map((c) => `import ${proto}.${c.name}`),
+  ...helperCmds.map((c) => `import ${proto}.${c.confirmationType || `${c.name}Reply`}`),
+  `import ${proto}.Get${objName}StateReply`,
+] : [
   ...commands.map((c) => `import ${proto}.${c.name}`),
   `import ${proto}.Get${objName}State`,
   ...commands.map((c) => `import ${proto}.${c.confirmationType || `${c.name}Reply`}`),

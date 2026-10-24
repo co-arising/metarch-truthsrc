@@ -1,12 +1,17 @@
 {
   "batch": "p9-standalone-20261024",
   "date": "2026-10-24",
-  "goal": "metarch-truthsrc 独立文件版代码生成器（无 BC）——批A「拿到就能编译」完成；批B「拿到就能跑」设计冻结（design.md §三）",
+  "goal": "metarch-truthsrc 独立文件版代码生成器（无 BC）——批A「拿到就能编译」+批B「拿到就能跑」均完成：serial 真源树 run-all 零 BC 独立产出完整 sbt 应用，FixtureSafetySpec 8/8 ×2",
   "batchA": {
     "changedFiles": [
-      "generators/proto-dsl/emit.mjs", "generators/aggregate-dsl/emit.mjs", "generators/api-dsl/emit.mjs",
-      "generators/invariant-dsl/emit.mjs", "generators/adapter-dsl/emit.mjs", "generators/converter-dsl/emit.mjs",
-      "generators/bootstrap-dsl/emit.mjs", "generators/run-all.mjs",
+      "generators/proto-dsl/emit.mjs",
+      "generators/aggregate-dsl/emit.mjs",
+      "generators/api-dsl/emit.mjs",
+      "generators/invariant-dsl/emit.mjs",
+      "generators/adapter-dsl/emit.mjs",
+      "generators/converter-dsl/emit.mjs",
+      "generators/bootstrap-dsl/emit.mjs",
+      "generators/run-all.mjs",
       "generators/scaffold-static/app/net/imadz/metarch/infrastructure/api/CommandDsl.scala (新·逐字转录)",
       "generators/scaffold-static/app/net/imadz/metarch/infrastructure/auth/CommandRoleMap.scala (新·standalone 空 maps 变体)",
       "generators/scaffold-static/app/net/imadz/common/MoneyOps.scala (新·逐字转录)",
@@ -30,7 +35,35 @@
       "scaffold-static/app：四支撑件（CommandDsl/CommandRoleMap/MoneyOps/PrimitiveConverter）"
     ]
   },
-  "batchB": "设计冻结于 design.md §三——移植源三层全通读（Module 268+Builder 61+HostBuilder 320+HostTemplate 925+Model 109）、命名/lowerInputs/证据推导规则全钉、实施结构与验证路径规划。待实施。",
-  "digestDiscipline": "树/binding 零改动；ir.digest ba60f58a 与 definitionDigest 3a586c81 双钉点不变（1705 套件看守）",
-  "noCommit": true
+  "batchB": {
+    "status": "完成（2026-10-24）",
+    "newFiles": [
+      "generators/saga-dsl/emit-strict.mjs（SagaModule/types/ExactMoneyCodec/ArgsCodec 四件渲染+模型推导）",
+      "generators/saga-dsl/emit-strict-host.mjs（FixtureHost/StrictSagaEntry 两件）",
+      "generators/saga-dsl/emit-strict-spec.mjs（FixtureSafetySpec 第七件）",
+      "generators/scaffold-static/conf/serialization.conf（BC 逐字转录）"
+    ],
+    "changedFiles": [
+      "generators/run-all.mjs（strict 段接线：rawCanonical lowering+七文件落位 app/<pkg>+test/<pkg>+lib jar+akka 钉+conf 转录；B1.5 面：guard 翻译（map-absent 反极性修复）+协议统一 Reply+queryCommands+api skip+rules/params 扩 StartTransfer）",
+      "generators/aggregate-dsl/emit.mjs（sagaFace 协议：统一 reply family+查询命令 whole-state reply+免合成+factory/command imports 适配）",
+      "generators/command-dsl/emit.mjs（sagaFace imports：无合成 Get+helper 限界）",
+      "generators/invariant-dsl/emit.mjs（succeedEmpty 段型+MoneyOps import 条件）"
+    ],
+    "verification": {
+      "standaloneApp": "serial 树 run-all 独立产物（无 BC）：七件 saga 族+聚合面+lib/saga-core jar → Test/compile exit0 → **FixtureSafetySpec 8/8 全绿 ×2**（A 守恒/幂等；B 全 TCC 三路径+sagaResults 发布；C1 中断恢复；D1 双系统跨节点 3.2s）",
+      "goldenByteStability": "metarch 金样 run-all 产物前后 diff 字节恒等（含 B1.5 全部改动后）",
+      "truthsrcFullSuite": "1705/1705"
+    },
+    "serializationFinding": {
+      "userChallenge": "『allow-java=off 下 strict 消息序列化失败 => 没有 proto 覆盖 strict saga？那也太不 strict 了』",
+      "facts": [
+        "strict 持久化面已 strict：jar reference.conf 绑 StrictDurable→strict-saga（SerializerWithStringManifest 独立 id，StrictSagaProtoConverters 真 proto）——事件/快照面两条管线都是 strict，零退化",
+        "跨节点命令面存缺口：javap 实锤 StrictSagaCoordinator$Start/GetStatus 只 implements java.io.Serializable、非 CborSerializable——jar reference.conf 注释『Cross-node messages ... are CborSerializable and ride jackson-cbor』与类事实漂移",
+        "BC 通过的 8/8 应用同样靠 conf allow-java-serialization=on 兜底发这些消息（conf 逐字对账实锤）——非本批产物独有",
+        "本批处置：conf 用 BC 逐字转录（parity 最小面）；修法（saga-core Command 族 CborSerializable 化→jackson-cbor 自动接住→两管线 allow-java 收 off→D1 重验）立为独立批『strict-command-serialization』，saga-core 零改动纪律不破"
+      ]
+    },
+    "debugRounds": "约 12 轮（字段名 type/typeId、参与者 resourceRef 推导、Scala 模板插值转义、map-absent 反极性、family 名 CommandFamily、akka 混版钉、conf 逐字转录）"
+  },
+  "digestDiscipline": "树/binding 零改动；ir.digest ba60f58a 与 definitionDigest 3a586c81 双钉点不变（1705 套件看守）"
 }

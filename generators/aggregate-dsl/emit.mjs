@@ -819,10 +819,20 @@ const paramDocNoDesc = (fields) => {
   const lines = kn.map((f) => `   * @param ${qref(f.name)}  @knowledge ${kh(f.noteId, f.elementHash)}`);
   return `  /**\n${lines.join("\n")}\n   */\n`;
 };
+// saga face（sagaBinding 树）：写命令统一 reply family（<Agg>Reply(error)，BC
+// serial 协议同款——FixtureHost 的 replyAsk 单一 reply 面）；树自带查询命令
+// （零参零产生）回答 whole-state（Get<Agg>StateReply(state)——SCHEMA 查询命令
+// 约定），且不再合成第二条 Get<Agg>State。golden（无 sagaFace 标志）零变化。
+const sagaFace = !!spec.sagaFace;
+const queryCmds = new Set(spec.queryCommands || []);
+const getStateName = `Get${objName}State`;
+const getStateReplyName = `${getStateName}Reply`;
+const replyTypeOf = (c) =>
+  sagaFace ? (queryCmds.has(c.name) ? getStateReplyName : `${objName}Reply`) : `${c.name}Reply`;
 const commandDefs = orderedCommands
   .map((c) => {
     const fields = fieldsOf(c.fields);
-    const allFields = fields ? `${fields}, replyTo: ActorRef[${c.name}Reply]` : `replyTo: ActorRef[${c.name}Reply]`;
+    const allFields = fields ? `${fields}, replyTo: ActorRef[${replyTypeOf(c)}]` : `replyTo: ActorRef[${replyTypeOf(c)}]`;
     return `${paramDocNoDesc(c.fields)}  case class ${c.name}(${allFields}) extends ${commandFamily}`;
   })
   .join("\n");
@@ -832,17 +842,21 @@ const commandDefs = orderedCommands
 // scaladoc), its Reply appended LAST after the alphabetical replies, and the
 // Protocol import block gains the self-import of the Reply type (sorted in
 // with the per-command Reply imports). Keyed on the aggregate identifier.
-const getStateName = `Get${objName}State`;
-const getStateReplyName = `${getStateName}Reply`;
-const synthesizeGet = !!identifierField && !commands.some((c) => c.name === getStateName);
+// saga face: the tree carries its own query command — no synthesis.
+const synthesizeGet = !sagaFace && !!identifierField && !commands.some((c) => c.name === getStateName);
 const getStateCmdDef = synthesizeGet
   ? `  case class ${getStateName}(${qref(identifierField.name)}: ${scalaSig(identifierField.dataType)}, replyTo: ActorRef[${getStateReplyName}]) extends ${commandFamily}`
   : null;
 const commandDefsAll = getStateCmdDef ? `${commandDefs}\n${getStateCmdDef}` : commandDefs;
 
-const replyDefs = orderedCommands
-  .map((c) => `  case class ${c.name}Reply(error: Option[iMadzError]) extends CborSerializable`)
-  .join("\n");
+const replyDefs = sagaFace
+  ? [
+      `  case class ${objName}Reply(error: Option[iMadzError]) extends CborSerializable`,
+      ...(queryCmds.size ? [`  case class ${getStateReplyName}(state: ${stateType}) extends CborSerializable`] : []),
+    ].join("\n")
+  : orderedCommands
+      .map((c) => `  case class ${c.name}Reply(error: Option[iMadzError]) extends CborSerializable`)
+      .join("\n");
 const getStateReplyDef = synthesizeGet
   ? `  case class ${getStateReplyName}(state: ${stateType}) extends CborSerializable`
   : null;
@@ -856,8 +870,12 @@ const protocolImportBlock = sortedImportBlock([
   "net.imadz.common.CborSerializable",
   "net.imadz.common.CommonTypes.iMadzError",
   `${pkg}.${objName}Protocol.${commandFamily}`,
-  ...commands.map((c) => `${pkg}.${objName}Protocol.${c.name}Reply`),
-  ...(synthesizeGet ? [`${pkg}.${objName}Protocol.${getStateReplyName}`] : []),
+  ...(sagaFace
+    ? [`${pkg}.${objName}Protocol.${objName}Reply`, ...(queryCmds.size ? [`${pkg}.${objName}Protocol.${getStateReplyName}`] : [])]
+    : [
+        ...commands.map((c) => `${pkg}.${objName}Protocol.${c.name}Reply`),
+        ...(synthesizeGet ? [`${pkg}.${objName}Protocol.${getStateReplyName}`] : []),
+      ]),
   `${entityPkg}.${objName}Entity.${eventType}`,
   `${entityPkg}.${objName}Entity.${stateType}`,
   ...typeImports([
@@ -928,6 +946,11 @@ const ruleImport = hasHandled ? `import ${invariantPkg}.${objName}Rules` : "";
 
 const behaviorCases = orderedCommands
   .map((c) => {
+    if (sagaFace && queryCmds.has(c.name)) {
+      // 查询命令（whole-state reply）：纯读，Effect.reply 直答当前状态——
+      // BC serial behaviors 的 GetBalance 真体同款。
+      return `    case cmd: ${c.name} =>\n      Effect.reply(cmd.replyTo)(${getStateReplyName}(state))`;
+    }
     if (handled.has(c.name)) {
       // B-assembly fix (2026-10-20): port-class rules are constructed with
       // `new` + the port members captured by Behaviors.apply (golden form).
@@ -1057,9 +1080,10 @@ const factoryImports = [
   `${pkg}.${objName}Aggregate`,
   ...(spec.commands ?? []).flatMap((c) => [
     `${pkg}.${objName}Protocol.${c.name}`,
-    `${pkg}.${objName}Protocol.${c.name}Reply`,
+    // saga face：写命令统一 reply family；查询命令 reply 即 Get<Agg>StateReply
+    sagaFace ? `${pkg}.${objName}Protocol.${replyTypeOf(c)}` : `${pkg}.${objName}Protocol.${c.name}Reply`,
   ]),
-  `${pkg}.${objName}Protocol.Get${objName}State`,
+  ...(sagaFace ? [] : [`${pkg}.${objName}Protocol.Get${objName}State`]),
   `${pkg}.${objName}Protocol.Get${objName}StateReply`,
   `${pkg}.${objName}Protocol.${commandFamily}`,
   ...factoryTypeFqns,
@@ -1091,7 +1115,7 @@ ${factoryDocBlock(method2Params)}  def create${objName}WithInitialValue(${method
     val entityRef: EntityRef[${commandFamily}] = clusterSharding
       .entityRefFor[${commandFamily}](${objName}Aggregate.entityTypeKey, ${identF.name}.toString)
     for {
-      confirmation <- entityRef.ask[${initCmd.name}Reply](${initCmd.name}(${askParams.map((p) => qref(p.name)).join(", ")}, _))
+      confirmation <- entityRef.ask[${replyTypeOf(initCmd)}](${initCmd.name}(${askParams.map((p) => qref(p.name)).join(", ")}, _))
     } yield {
       confirmation.error
         .map(Left.apply[iMadzError, EntityRef[${commandFamily}]])
