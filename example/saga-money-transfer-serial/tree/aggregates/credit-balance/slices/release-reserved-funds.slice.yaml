@@ -56,6 +56,12 @@ events:
       ],
       "foldAssignments": [
         {
+          "slot": "compensated",
+          "op": "put",
+          "key": "event.txid",
+          "value": "state.reservedAmount[event.txid]"
+        },
+        {
           "slot": "accountBalance",
           "op": "money-apply",
           "delta": "state.reservedAmount[event.txid]",

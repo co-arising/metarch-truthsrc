@@ -56,6 +56,12 @@ events:
       ],
       "foldAssignments": [
         {
+          "slot": "committed",
+          "op": "put",
+          "key": "event.txid",
+          "value": "state.reservedAmount[event.txid]"
+        },
+        {
           "slot": "reservedAmount",
           "op": "remove",
           "key": "event.txid"

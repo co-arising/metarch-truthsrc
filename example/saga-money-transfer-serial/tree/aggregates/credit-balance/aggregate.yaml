@@ -3,7 +3,7 @@
 kind: aggregate
 name: CreditBalance
 order:
-  commands: ["ReserveFunds","DeductFunds","ReleaseReservedFunds","RecordIncomingCredits","CommitIncomingCredits","CancelIncomingCredit","StartTransfer","GetBalance"]
+  commands: ["ReserveFunds","DeductFunds","ReleaseReservedFunds","RecordIncomingCredits","CommitIncomingCredits","CancelIncomingCredit","StartTransfer","GetBalance","RecordResultSucceeded","RecordResultRejectedBeforeEffects","RecordResultCompensated","RecordResultRecoveryRequired","RecordResultOutcomeUnknown"]
   events: ["ReserveFundsConfirmed","DeductFundsConfirmed","ReleaseReservedFundsConfirmed","RecordIncomingCreditsConfirmed","CommitIncomingCreditsConfirmed","CancelIncomingCreditConfirmed","TransferRequested","result-succeeded","result-rejected-before-effects","result-compensated","result-recovery-required","result-outcome-unknown"]
 payload:
   {
@@ -53,6 +53,39 @@ payload:
           "CancelIncomingCreditConfirmed.txid"
         ],
         "role": "State"
+      },
+      {
+        "name": "committed",
+        "dataType": "Map[TxId, Money]",
+        "description": "Durable commit-phase marker keyed by transaction identity: every commit confirmation puts the txid with the exact committed amount (phase-marker convention, SCHEMA.md P5); the evidence carrier for commit idempotency queries.",
+        "writtenBy": [
+          "DeductFundsConfirmed.txid",
+          "CommitIncomingCreditsConfirmed.txid"
+        ],
+        "role": "State"
+      },
+      {
+        "name": "compensated",
+        "dataType": "Map[TxId, Money]",
+        "description": "Durable compensate-phase marker keyed by transaction identity: every compensate confirmation puts the txid with the exact released amount (phase-marker convention, SCHEMA.md P5); the evidence carrier for compensate idempotency queries.",
+        "writtenBy": [
+          "ReleaseReservedFundsConfirmed.txid",
+          "CancelIncomingCreditConfirmed.txid"
+        ],
+        "role": "State"
+      },
+      {
+        "name": "sagaResults",
+        "dataType": "Map[TxId, String]",
+        "description": "Saga outcome ledger keyed by transaction identity: the idempotent RecordResult* publication commands put the terminal kind here (result-publication convention, SCHEMA.md P5); map-absent guard makes republication an empty success.",
+        "writtenBy": [
+          "result-succeeded.txid",
+          "result-rejected-before-effects.txid",
+          "result-compensated.txid",
+          "result-recovery-required.txid",
+          "result-outcome-unknown.txid"
+        ],
+        "role": "State"
       }
     ],
     "aggregateRuleRefs": [
@@ -95,99 +128,11 @@ payload:
         "ruleId": "IR-CB-CANCEL-001",
         "errCode": "60009",
         "desc": "Incoming credits cannot be found or already canceled (golden master 60009)."
+      },
+      {
+        "ruleId": "IR-CB-RESULT-001",
+        "errCode": "60010",
+        "desc": "Result already recorded for this transaction: idempotent republication success, no events (designed strict TCC outcome ledger; shared by the five RecordResult* publication commands)."
       }
     ]
   }
-extraEvents:
-  [
-    {
-      "name": "result-succeeded",
-      "payloads": [
-        {
-          "name": "txid",
-          "dataType": "TxId",
-          "origin": "BUSINESS_INPUT"
-        }
-      ],
-      "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
-      "bindings": [
-        {
-          "slot": "txid",
-          "expr": "param.txid"
-        }
-      ],
-      "foldAssignments": []
-    },
-    {
-      "name": "result-rejected-before-effects",
-      "payloads": [
-        {
-          "name": "txid",
-          "dataType": "TxId",
-          "origin": "BUSINESS_INPUT"
-        }
-      ],
-      "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
-      "bindings": [
-        {
-          "slot": "txid",
-          "expr": "param.txid"
-        }
-      ],
-      "foldAssignments": []
-    },
-    {
-      "name": "result-compensated",
-      "payloads": [
-        {
-          "name": "txid",
-          "dataType": "TxId",
-          "origin": "BUSINESS_INPUT"
-        }
-      ],
-      "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
-      "bindings": [
-        {
-          "slot": "txid",
-          "expr": "param.txid"
-        }
-      ],
-      "foldAssignments": []
-    },
-    {
-      "name": "result-recovery-required",
-      "payloads": [
-        {
-          "name": "txid",
-          "dataType": "TxId",
-          "origin": "BUSINESS_INPUT"
-        }
-      ],
-      "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
-      "bindings": [
-        {
-          "slot": "txid",
-          "expr": "param.txid"
-        }
-      ],
-      "foldAssignments": []
-    },
-    {
-      "name": "result-outcome-unknown",
-      "payloads": [
-        {
-          "name": "txid",
-          "dataType": "TxId",
-          "origin": "BUSINESS_INPUT"
-        }
-      ],
-      "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
-      "bindings": [
-        {
-          "slot": "txid",
-          "expr": "param.txid"
-        }
-      ],
-      "foldAssignments": []
-    }
-  ]

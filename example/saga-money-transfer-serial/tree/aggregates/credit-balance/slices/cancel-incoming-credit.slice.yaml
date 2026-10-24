@@ -56,6 +56,12 @@ events:
       ],
       "foldAssignments": [
         {
+          "slot": "compensated",
+          "op": "put",
+          "key": "event.txid",
+          "value": "state.incomingCredits[event.txid]"
+        },
+        {
           "slot": "incomingCredits",
           "op": "remove",
           "key": "event.txid"

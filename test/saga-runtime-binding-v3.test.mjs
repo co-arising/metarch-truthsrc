@@ -163,6 +163,8 @@ test('copy leaves all base domain bytes intact, modifies only new products via p
   // read-only evidence query command (get-balance.slice.yaml) that the v1
   // pre-deepening reference does not — file-list identity therefore covers
   // everything outside the forked aggregate directory, whose inventory is pinned.
+  // P5 (2026-10-24): the five record-result-*.slice.yaml publication commands join
+  // the pinned inventory (result-publication convention, SCHEMA.md).
   assert.deepEqual(files(newTree).filter(n => !n.startsWith('aggregates/credit-balance/')),
     files(originalTree).filter(n => !n.startsWith('aggregates/credit-balance/')));
   assert.deepEqual(files(newTree).filter(n => n.startsWith('aggregates/credit-balance/')),
@@ -172,6 +174,11 @@ test('copy leaves all base domain bytes intact, modifies only new products via p
      'aggregates/credit-balance/slices/deduct-funds.slice.yaml',
      'aggregates/credit-balance/slices/get-balance.slice.yaml',
      'aggregates/credit-balance/slices/record-incoming-credits.slice.yaml',
+     'aggregates/credit-balance/slices/record-result-compensated.slice.yaml',
+     'aggregates/credit-balance/slices/record-result-outcome-unknown.slice.yaml',
+     'aggregates/credit-balance/slices/record-result-recovery-required.slice.yaml',
+     'aggregates/credit-balance/slices/record-result-rejected-before-effects.slice.yaml',
+     'aggregates/credit-balance/slices/record-result-succeeded.slice.yaml',
      'aggregates/credit-balance/slices/release-reserved-funds.slice.yaml',
      'aggregates/credit-balance/slices/reserve-funds.slice.yaml',
      'aggregates/credit-balance/slices/start-transfer.slice.yaml']);

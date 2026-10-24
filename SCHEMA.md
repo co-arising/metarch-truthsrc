@@ -252,6 +252,38 @@ are a display view; evidence queries need the `reservedAmount` /
 definition digest is unaffected: the saga IR hashes sagas + workshop, not
 aggregates.
 
+**Phase-marker convention (2026-10-24, P5).** Commit/compensate phases need a
+durable post-execution idempotency carrier, but the business folds of their
+confirmations **remove** the txid from the prepare maps (reservedAmount /
+incomingCredits) — after execution the prepare evidence can no longer
+distinguish "committed/compensated" from "never prepared". Therefore each
+aggregate that hosts saga phases declares two marker fields, `committed` and
+`compensated` (`Map[TxId, Money]`); every commit-phase confirmation event puts
+its txid into `committed`, every compensate-phase confirmation event puts its
+txid into `compensated`, valued with the exact amount taken from the map the
+same event clears (`state.<prepared map>[event.txid]` — fold rows all read the
+pre-fold state, so put+remove coexist in one event with no ordering hazard).
+Prepare-phase evidence stays the writtenBy-lineage lookup over the business
+maps (P4 Slice 2). Generators resolve the marker fail-closed by the triple
+**field name + writtenBy lineage + key type** (the marker must be keyed by the
+phase's txid type): a plain lineage `find` is not enough for commit/compensate
+because other fields (e.g. the balance, credited via an indexed delta read)
+also carry the confirmation event's txid slot in their writtenBy.
+
+**Result-publication convention (2026-10-24, P5).** Every kind in a saga's
+`results` has an aggregate-side publication command named
+`RecordResult<Pascal(kind)>` with parameters `[txid]`, producing the
+`result-<kind>` event; the event payload stays `[txid]` (the kind IS the event
+identity — completion bindings must cover every event payload slot, so a kind
+payload would force a saga.yaml binding change and move the definition
+digest), and the outcome ledger field `sagaResults` (`Map[TxId, String]`)
+records the kind via a `literal:<kind>` fold value. The publication guard is
+`map-absent sagaResults → succeed-empty` (errCode family 60010): republication
+of an already-recorded outcome is an idempotent empty success, zero events.
+Generators resolve the publication command from the event's `produces`
+reverse index (exactly one producer, fail-closed) — not from name matching.
+The digest is unaffected: result commands/events are aggregate-surface only.
+
 ## Catalog atoms (v0.3 — refining & storyMapping faces)
 
 `value-objects/*.vo.yaml`, `read-models/*.rm.yaml`, `stories/*.story.yaml` —
