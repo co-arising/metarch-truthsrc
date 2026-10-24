@@ -1,0 +1,48 @@
+{
+  "batch": "p10-strict-command-serialization-20261024",
+  "date": "2026-10-24",
+  "goal": "P9 序列化定案收尾：strict 跨节点命令面从 allow-java=on 兜底转 strict——saga-core Command/Reply 族 CborSerializable 化（jackson-cbor 接住），两管线 conf 收 off，D1 双系统重验",
+  "changes": {
+    "saga-core": {
+      "modified": [
+        "src/main/scala/net/imadz/infra/saga/strict/StrictSagaCoordinator.scala（Command/Reply extends CborSerializable+头注释撤回 local-only）",
+        "src/main/scala/net/imadz/infra/saga/strict/StrictSagaModel.scala（头注释同步）",
+        "src/main/resources/reference.conf（strict 注释诚实修正+akka.serialization.jackson.jackson-modules 挂 StrictJacksonModule）",
+        "build.sbt（akka-serialization-jackson % Test——此前仅 dependencyOverrides 不引入工件）",
+        "src/test/scala/net/imadz/infra/saga/strict/StrictSagaSpec.scala（旧 local-only 不可序列化断言翻转为正断言——本批唯一契约翻转点）"
+      ],
+      "newFiles": [
+        "src/main/scala/net/imadz/infra/saga/strict/StrictJacksonModule.scala（ByteString base64/Phase·StrictStatus 查表/Evidence kind 标签多态/OperationIdentity 对象+Map 键 base64×12，全 fail-closed）",
+        "src/test/scala/net/imadz/infra/saga/strict/StrictCoordinatorSerializationSpec.scala（wire 契约回归 3 测）"
+      ]
+    },
+    "metarch-truthsrc": ["generators/scaffold-static/conf/serialization.conf（allow-java-serialization on→off）"],
+    "backkend-codegen": ["scaffold/conf/serialization.conf（同款 on→off，与 truthsrc 逐字 parity）"]
+  },
+  "verification": {
+    "sagaCoreProbe": "StrictCoordinatorSerializationSpec 3/3——allow-java=off 下全 wire 族（Start/Attach/GetStatus/Abort/Reconcile/Status/Denied/ConflictingIdentity）jackson-cbor roundtrip+全量 StrictState 图（case-class 键 evidence Map+嵌套 sealed trait）无损+活 ActorRef 送达",
+    "sagaCoreFullSuite": "118/118（11 suites，Test/parallelExecution=false）",
+    "candidateJar": "saga-core_2.13-0.2+1-cf26cd7a+20261024-2108-SNAPSHOT.jar sha256:1009300e2253b0aa70e9a1da91a850ecad2ee1c70dd4c280518dfaccc5ad66d8（packageBin·无 publishLocal/push）",
+    "goldenByteIdentity": "P9 基线复现（example/tree 剥离 aggregates/loan+loan 读模型+两个 loan policy+money.vo）run-all 产物 diff 恒等——conf 翻转金样惰性",
+    "truthsrcStandaloneApp": "serial 树 run-all 零 BC 独立产物（新 jar→lib/）→ conf off → FixtureSafetySpec 8/8（D1 cross-system 3.16s·allow-java=off 全 strict 面）",
+    "truthsrcFullSuite": "1705/1705",
+    "bcFullSuite": "789/789（74 suites）",
+    "bcApp": "P5 冻结三输入+新 jar 重产 → FixtureSafetySpec 8/8（allow-java=off）——两管线同证"
+  },
+  "keyFacts": [
+    "akka 2.6.20 默认 jackson-modules 不含 ByteString 支持；jackson 无 case-class Map 键 KeyDeserializer——StrictJacksonModule 一个模块收口两墙",
+    "jackson-modules 配置根在 2.6.20 是 akka.serialization.jackson（非 akka.actor.serialization.jackson）",
+    "akka-serialization-jackson 此前只在 saga-core dependencyOverrides（不引入工件）；app 侧两 scaffold build.sbt 本就带该工件",
+    "app 协议族（CommandFamily/Event）与生成事件早已 CborSerializable——缺口确为 strict 协调器族独有",
+    "D1 journal=persistence testkit（eventserialization 默认 off）——爆炸半径=跨节点 remoting 消息",
+    "BC strict 目标路径门：拒 /tmp 符号链接+拒仓内重叠；正确落位=工作区根 target/p10-strict-command-serialization-20261024/app",
+    "候选 jar 开关双读：生成期与应用构建期都要 -Dcodegen.candidate.sagaCore"
+  ],
+  "boundaries": [
+    "legacy saga OperationSucceeded/ManualFixCompleted business-result 类型仍依赖 allow-java=on（reference.conf 登记在案的技术债，非 strict 面）",
+    "D1 journal 仍为 persistence testkit；物理多 JVM+共享耐久 journal 留部署面",
+    "app 事件面生产 journal 序列化（严格化）独立债未触",
+    "saga-core/truthsrc/BC 三仓改动已按批提交（2026-10-24，SHA 见各仓 git log 与 BC 登记补记）"
+  ],
+  "debugRounds": 5
+}
