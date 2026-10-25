@@ -282,6 +282,19 @@ ${phaseHelpers}
     assert(stateOf(kit, entityRef(sharding, From)).sagaResults.get(state.identity.get.transactionId).contains(expectedKind))
   }
 
+  /** Deployment-face completion assertion: the event-stream source OWNS the result
+    * publication — poll the aggregate's durable sagaResults ledger until the mapped
+    * kind appears (the publish rides the terminal marker's read-journal hop). */
+  private def awaitPublished(kit: ActorTestKit, sharding: ClusterSharding, txId: String, expectedKind: String): Unit = {
+    val deadline = System.currentTimeMillis() + 30000L
+    var ledger: Map[String, String] = Map.empty
+    while (!ledger.get(txId).contains(expectedKind) && System.currentTimeMillis() < deadline) {
+      Thread.sleep(200)
+      ledger = stateOf(kit, entityRef(sharding, From)).sagaResults
+    }
+    assert(ledger.get(txId).contains(expectedKind), s"the event source did not publish '$expectedKind' for $txId within 30s — ledger: $ledger")
+  }
+
   test("B1 full saga: succeeded transfer books the exact amounts and publishes the ledger") {
     val port = freePort()
     val kit = ActorTestKit("SafetySagaB1", clusterConfig(port, s"\\"akka://SafetySagaB1@127.0.0.1:$port\\""))
@@ -453,7 +466,8 @@ ${phaseHelpers}
       assert(state.identity.get.transactionId == opId)
       assert(balance(kit, entityRef(sharding, From)) == BigInt("99900"))
       assert(balance(kit, entityRef(sharding, To)) == BigInt("100100"))
-      assertPublished(kit, sharding, state, "succeeded")
+      // No manual publish here: the event-stream source owns the completion side.
+      awaitPublished(kit, sharding, opId, "succeeded")
     } finally kit.shutdownTestKit()
   }
 
@@ -499,9 +513,82 @@ ${phaseHelpers}
     }
   }
 
+  test("D4 physical two-JVM failover: coordinator-node loss converges through singleton migration and an authorized reconcile") {
+    assume(mongoReachable(), s"MongoDB not reachable at $MongoHostPort — the deployment face (D1-D4) requires the shared durable journal")
+    val classpath = System.getProperty("java.class.path")
+    assume(classpath.split(java.io.File.pathSeparator).exists(p => p.contains("target") && p.contains("scala-2.13")),
+      "D4 requires Test/fork — java.class.path must carry the application test classpath")
+    val uri = mongoUri(s"strict_deployment_d4_$${'{'}System.nanoTime()${'}'}")
+    val portSeed = freePort()
+    val seedAddr = s"\\"akka://SafetyClusterD4@127.0.0.1:$portSeed\\""
+    val evidenceDir = new java.io.File("target/deployment-face")
+    evidenceDir.mkdirs()
+    val javaBin = s"$${'{'}System.getProperty("java.home")${'}'}/bin/java"
+    def node(args: Seq[String], log: String): java.lang.Process =
+      new java.lang.ProcessBuilder((Vector(javaBin, "-cp", classpath, "${m.pkg}.FixtureDeploymentNode") ++ args): _*)
+        .redirectOutput(new java.io.File(evidenceDir, log))
+        .redirectErrorStream(true)
+        .start()
+    def tailOf(log: java.io.File): String = {
+      val s = scala.io.Source.fromFile(log)
+      try s.mkString finally s.close()
+    }
+    val opId = "op-d4-" + System.currentTimeMillis()
+    val seed = node(Vector("seed", portSeed.toString, seedAddr, uri), "d4-seed.log")
+    try {
+      // Head start: wait until the seed node's artery port accepts connections.
+      val seedUp = System.currentTimeMillis() + 30000L
+      var bound = false
+      while (!bound && System.currentTimeMillis() < seedUp) {
+        try { val s = new java.net.Socket("127.0.0.1", portSeed); s.close(); bound = true }
+        catch { case _: Throwable => Thread.sleep(200) }
+      }
+      assert(bound, "seed node did not bind its artery port in 30s — see target/deployment-face/d4-seed.log")
+      val joinLog = new java.io.File(evidenceDir, "d4-join.log")
+      val join = node(Vector("failover", freePort().toString, seedAddr, uri, opId, From, To, "100"), "d4-join.log")
+      try {
+        // Destroy the coordinator node as early as the transaction is observable
+        // (identity defined). Whatever instant the loss lands — before the Start,
+        // mid-flight or after the terminal marker — the deployment converges: the
+        // recovered journal state resumes on the migrated singleton and the authorized
+        // reconcile completes the saga (the deterministic mid-flight kill semantics
+        // are C1's domain; here the physical topology is the subject).
+        val started = System.currentTimeMillis() + 60000L
+        var seen = false
+        while (!seen && System.currentTimeMillis() < started) {
+          if (joinLog.exists() && tailOf(joinLog).contains("D4-STARTED")) seen = true
+          else Thread.sleep(25)
+        }
+        assert(seen, "failover node never reported D4-STARTED in 60s — see target/deployment-face/d4-join.log")
+        seed.destroy() // SIGTERM → CoordinatedShutdown → graceful cluster leave → singleton migrates
+        seed.waitFor(30, java.util.concurrent.TimeUnit.SECONDS)
+        val joinDone = join.waitFor(180, java.util.concurrent.TimeUnit.SECONDS)
+        assert(joinDone, "failover node did not finish in 180s — see target/deployment-face/d4-join.log and d4-seed.log")
+        assert(join.exitValue() == 0, s"failover node failed (exit $${'{'}join.exitValue()${'}'}) — see target/deployment-face/d4-join.log and d4-seed.log")
+        val out = tailOf(joinLog)
+        assert(out.contains(s"D4-RESULT status=Succeeded op=$opId"), s"failover node did not report a succeeded transfer — output: $out")
+        assert(out.contains("alice=99900") && out.contains("bob=100100"), s"balances wrong — output: $out")
+        assert(out.contains("ledger=succeeded"), s"the source did not publish the ledger after the node loss — output: $out")
+      } finally if (join.isAlive) join.destroy()
+    } finally {
+      if (seed.isAlive) { seed.destroy(); seed.waitFor(10, java.util.concurrent.TimeUnit.SECONDS) }
+    }
+  }
+
   private def freePort(): Int = {
     val socket = new java.net.ServerSocket(0)
     try socket.getLocalPort finally socket.close()
+  }
+
+  test("production conf chain assembles the shared durable journal (saga-gated conf face)") {
+    // The emitted conf/persistence.conf rides the application.conf include chain as the
+    // PRODUCTION default; every other test config overrides the journal explicitly, so
+    // this asserts the assembly (parse only — no journal instantiation).
+    val config = ConfigFactory.load()
+    assert(config.getString("akka.persistence.journal.plugin") == "akka-contrib-mongodb-persistence-journal")
+    assert(config.getString("akka.persistence.snapshot-store.plugin") == "akka-contrib-mongodb-persistence-snapshot")
+    assert(config.getString("akka.contrib.persistence.mongodb.mongo.driver") == "akka.contrib.persistence.mongodb.RxMongoPersistenceExtension")
+    assert(config.hasPath("akka.contrib.persistence.mongodb.mongo.mongouri"))
   }
 }
 `;
@@ -517,7 +604,7 @@ import akka.cluster.typed.Cluster
 import akka.persistence.typed.PersistenceId
 import akka.util.Timeout
 import com.typesafe.config.{Config, ConfigFactory}
-import net.imadz.infra.saga.strict.{StrictSagaCoordinator, StrictStatus}
+import net.imadz.infra.saga.strict.{StrictSagaCoordinator, StrictState, StrictStatus}
 import ${prot.substring(0, prot.lastIndexOf("."))}.{${fbase}Aggregate, ${fbase}Protocol}
 import ${entity}
 import ${face.behaviorsFqn}
@@ -564,7 +651,12 @@ object FixtureDeploymentNode {
           akka.contrib.persistence.mongodb.mongo.driver = "akka.contrib.persistence.mongodb.RxMongoPersistenceExtension"
           akka.contrib.persistence.mongodb.mongo.mongouri = "$uri"
         \"\"\".stripMargin).withFallback(ConfigFactory.load())
-      implicit val system: ActorSystem[Nothing] = ActorSystem[Nothing](Behaviors.empty, "SafetyClusterD3", config)
+      // The cluster name derives from the seed address — both nodes of a deployment
+      // family (D3/D4) derive the same name from the same argument, no hardcoding.
+      // (The parent passes the config-shaped address; the alphanumeric run immediately
+      // before '@' is the system name — quote-safe, no string-escape hazards.)
+      val systemName = seedAddr.takeWhile(_ != '@').reverse.takeWhile(_.isLetterOrDigit).reverse
+      implicit val system: ActorSystem[Nothing] = ActorSystem[Nothing](Behaviors.empty, systemName, config)
       implicit val ec: ExecutionContext = system.executionContext
       val sharding = ClusterSharding(system)
       sharding.init(Entity(${fbase}Aggregate.entityTypeKey)(ctx => aggregateBehavior(ctx.entityId)))
@@ -599,7 +691,60 @@ object FixtureDeploymentNode {
           require(state.status == StrictStatus.Succeeded, s"expected Succeeded, got $${'{'}state.status${'}'}")
           val alice = balance(system, sharding, from)
           val bob = balance(system, sharding, to)
+          awaitLedger(system, sharding, from, opId, "succeeded")
           println(s"D3-RESULT status=$${'{'}state.status${'}'} op=$opId alice=$alice bob=$bob")
+          require(alice == BigInt("99900"), s"alice balance $alice != 99900")
+          require(bob == BigInt("100100"), s"bob balance $bob != 100100")
+          system.terminate()
+          Await.ready(system.whenTerminated, 15.seconds)
+          sys.exit(0)
+        case "failover" =>
+          require(args.length >= 8, "failover node requires: failover <port> <seedAddr> <mongoUri> <opId> <from> <to> <amountMinor>")
+          awaitMembers(system, 2)
+          fund(system, sharding, args(5), "seed-d4-from")
+          fund(system, sharding, args(6), "seed-d4-to")
+          val opId = args(4)
+          val from = args(5)
+          val to = args(6)
+          val amount = Money(args(7), Currency)
+          implicit val timeout: Timeout = Timeout(15.seconds)
+          ${m.entryName}.installEventSource(system, sharding, coordinator)
+          val commandReply = Await.result(
+            entityRef(sharding, from).ask(replyTo => ${fbase}Protocol.StartTransfer(opId, from, to, amount, replyTo)), 15.seconds)
+          require(commandReply.error.isEmpty, s"StartTransfer rejected: $${'{'}commandReply.error${'}'}")
+          // Failover gate: report the transaction as observable (identity defined) —
+          // the parent destroys the seed node the moment it sees this line.
+          var gate: StrictState = null
+          val gateDeadline = System.currentTimeMillis() + 60000L
+          while ((gate == null || gate.identity.isEmpty) && System.currentTimeMillis() < gateDeadline) {
+            Thread.sleep(25)
+            try gate = Await.result(${m.entryName}.status(coordinator), 3.seconds)
+            catch { case _: Throwable => gate = null }
+          }
+          require(gate != null && gate.identity.isDefined, "the saga never started within 60s")
+          println(s"D4-STARTED op=$opId")
+          // Convergence loop: whatever instant the node loss landed, the deployment
+          // converges — the recovered journal state resumes on the migrated singleton
+          // and an authorized reconcile completes the saga (Denied while the previous
+          // instance is still active, accepted on the migrated recovery).
+          val reconcileSink = system.systemActorOf(
+            Behaviors.receiveMessage[StrictSagaCoordinator.Reply](_ => Behaviors.same), "deployment-reconcile-sink")
+          val deadline = System.currentTimeMillis() + 150000L
+          var state: StrictState = null
+          while ((state == null || !state.terminal) && System.currentTimeMillis() < deadline) {
+            Thread.sleep(300)
+            try state = Await.result(${m.entryName}.status(coordinator), 5.seconds)
+            catch { case _: Throwable => state = null } // handover window: singleton moving
+            if (state != null && !state.terminal && state.identity.isDefined) {
+              coordinator ! StrictSagaCoordinator.Reconcile(state.identity.get, ReconcileToken, 32, reconcileSink)
+            }
+          }
+          require(state != null && state.terminal, s"the saga did not converge in 150s: $$state")
+          require(state.status == StrictStatus.Succeeded, s"expected Succeeded, got $${'{'}state.status${'}'}")
+          val alice = balance(system, sharding, from)
+          val bob = balance(system, sharding, to)
+          awaitLedger(system, sharding, from, opId, "succeeded")
+          println(s"D4-RESULT status=$${'{'}state.status${'}'} op=$opId alice=$alice bob=$bob ledger=succeeded")
           require(alice == BigInt("99900"), s"alice balance $alice != 99900")
           require(bob == BigInt("100100"), s"bob balance $bob != 100100")
           system.terminate()
@@ -645,6 +790,20 @@ object FixtureDeploymentNode {
     implicit val timeout: Timeout = Timeout(15.seconds)
     val state = Await.result(entityRef(sharding, entityId).ask(replyTo => ${fbase}Protocol.GetBalance(replyTo)), 15.seconds).state
     BigInt(state.accountBalance(Currency).minorUnits)
+  }
+
+  /** The event-stream source owns the result publication: poll the durable sagaResults
+    * ledger on the initiating entity until the mapped kind appears. */
+  private def awaitLedger(system: ActorSystem[_], sharding: ClusterSharding, entityId: String, txId: String, expectedKind: String): Unit = {
+    implicit val s: ActorSystem[_] = system
+    implicit val timeout: Timeout = Timeout(15.seconds)
+    val deadline = System.currentTimeMillis() + 30000L
+    var ledger: Map[String, String] = Map.empty
+    while (!ledger.get(txId).contains(expectedKind) && System.currentTimeMillis() < deadline) {
+      Thread.sleep(200)
+      ledger = Await.result(entityRef(sharding, entityId).ask(replyTo => ${fbase}Protocol.GetBalance(replyTo)), 15.seconds).state.sagaResults
+    }
+    require(ledger.get(txId).contains(expectedKind), s"the event source did not publish '$expectedKind' for $txId within 30s — ledger: $ledger")
   }
 }
 `;

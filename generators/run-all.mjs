@@ -1974,6 +1974,11 @@ runGen(
         // service ports are metarch-golden wiring (ModelCatalog domain services);
         // a saga-binding tree has no such aggregate → no phantom ports.
         servicePorts: sagaBinding ? [] : (PHASE1_SERVICE_PORTS.ModelCatalog || []),
+        // P12 strict deployment wiring (BC parity): the binding's entrypoints spawn the
+        // cluster-singleton coordinator and install the journal event-stream source.
+        strictEntries: sagaBinding
+          ? (sagaBinding.sagas || []).map((s) => s.engine && s.engine.entrypoint).filter(Boolean)
+          : [],
       };
       const specPath = join(specDir, `bootstrap-dsl-app.json`);
       writeFileSync(specPath, JSON.stringify(appSpec, null, 2));
@@ -2229,6 +2234,24 @@ dependencyOverrides ++= Seq(
       // 本批 saga-core 零改动纪律不破。
       writeFileSync(join(outDir, "conf", "serialization.conf"),
         readFileSync(join(__dirname, "scaffold-static", "conf", "serialization.conf")));
+      // P12 deployment conf face (saga-gated → golden-inert): the production journal
+      // chain assembles the shared durable Mongo journal. Local default URI; production
+      // overrides via the SAGA_MONGO_URI environment variable (HOCON optional
+      // substitution — unset env leaves the default standing). The application.conf
+      // include chain already references this file (it was absent until now); every
+      // test config overrides the journal plugin explicitly, so this only ever acts as
+      // the production default. The D-face proves the wiring against a real journal.
+      writeFileSync(join(outDir, "conf", "persistence.conf"), `# Saga deployment face: shared durable Mongo journal (akka-persistence-mongo).
+# Local default URI; production overrides via the MONGO_URI environment variable
+# (BC scaffold/conf/persistence.conf parity).
+akka.contrib.persistence.mongodb.mongo {
+  driver = "akka.contrib.persistence.mongodb.RxMongoPersistenceExtension"
+  mongouri = "mongodb://127.0.0.1:27017/${canonical.workshop}"
+  mongouri = \${?MONGO_URI}
+}
+akka.persistence.journal.plugin = "akka-contrib-mongodb-persistence-journal"
+akka.persistence.snapshot-store.plugin = "akka-contrib-mongodb-persistence-snapshot"
+`);
     }
     results.push({ gen: "saga-dsl-strict", status: "ok", count });
   } catch (e) {

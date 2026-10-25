@@ -105,6 +105,7 @@ import com.google.protobuf.ByteString
 import net.imadz.infra.saga.strict._
 import ${face.protocolFqn.split(".").slice(0, -1).join(".")}.{${face.base}Aggregate, ${face.base}Protocol}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration._
 import scala.util.{Failure, Success, Try}
 import StrictWire._
 
@@ -201,6 +202,7 @@ import akka.cluster.sharding.typed.scaladsl.ClusterSharding
 import akka.cluster.typed.{ClusterSingleton, SingletonActor}
 import akka.contrib.persistence.mongodb.ScalaDslMongoReadJournal
 import akka.persistence.query.PersistenceQuery
+import akka.persistence.query.EventEnvelope
 import akka.persistence.typed.PersistenceId
 import akka.stream.{KillSwitches, Materializer, SystemMaterializer, UniqueKillSwitch}
 import akka.stream.scaladsl.{Keep, Sink}
@@ -208,6 +210,7 @@ import akka.util.Timeout
 import net.imadz.infra.saga.strict._
 import ${face.protocolFqn}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration._
 
 /** Binding entrypoint (${b_entry(m)}): spawns the strict coordinator in the
   * independent "strict-saga/" persistence namespace, wires the command trigger and
@@ -245,16 +248,20 @@ object ${m.entryName} {
             source: ${cmdTrigger ? cmdTrigger.sourceFqn : "Any"}, replyTo: ActorRef[StrictSagaCoordinator.Reply]): StrictSagaCoordinator.Start =
     ${m.moduleObj}.${cmdTrigger.member}Start(source, host, replyTo)
 
-  /** Event-trigger wiring — the deployment-face event-stream source. Subscribes to the
-    * shared durable journal's live event stream through Persistence Query and drives
-    * the coordinator's idempotent Start from each persisted trigger event. The journal
-    * (not the in-JVM ActorSystem event stream) is the only event source every node of
-    * a physical multi-JVM cluster can observe. Idempotency: a coordinator Start with
-    * the same identity and args returns the existing state, so a replayed event — or
-    * several nodes running this source against the same journal — cannot double-start
-    * a transaction. Install once per system (the reply sink is a named system actor).
-    * Stream failure surfaces as an absent trigger: journal liveness is a deployment
-    * precondition this wiring cannot restore. */
+  /** Event-trigger AND completion wiring — the deployment-face event-stream source.
+    * Subscribes to the shared durable journal's live event stream through Persistence
+    * Query and (a) drives the coordinator's idempotent Start from each persisted trigger
+    * event, (b) owns the completion side: the coordinator's own terminal markers
+    * (StrictEvent.Succeeded/Aborted on this coordinator's journal id) are answered with
+    * a GetStatus and the durable idempotent result publication onto the aggregate
+    * journal — in a physical multi-JVM cluster the journal is the only event source
+    * every node observes, so the deployment wiring that triggers a saga also publishes
+    * its result. Idempotency: a coordinator Start with the same identity and args
+    * returns the existing state (no double-start), and publishCompletion rides the
+    * aggregate's map-absent sagaResults guard (no double-publish). Install once per
+    * system (the reply sink is a named system actor). Stream failure surfaces as an
+    * absent trigger/publish: journal liveness is a deployment precondition this wiring
+    * cannot restore. */
   def installEventSource(system: ActorSystem[_], sharding: ClusterSharding,
                          coordinator: ActorRef[StrictSagaCoordinator.Command])(implicit ec: ExecutionContext): UniqueKillSwitch = {
     val host = new FixtureHost(system, sharding)
@@ -262,13 +269,33 @@ object ${m.entryName} {
     val replySink = system.systemActorOf(
       Behaviors.receiveMessage[StrictSagaCoordinator.Reply](_ => Behaviors.same),
       s"$${'{'}${m.moduleObj}.Name${'}'}-event-source-reply-sink")
+    val coordinatorJournalId = s"$NamespacePrefix/$${'{'}${m.moduleObj}.Name${'}'}"
     val readJournal = PersistenceQuery(system).readJournalFor[ScalaDslMongoReadJournal]("akka-contrib-mongodb-persistence-readjournal")
     readJournal.allEvents()
       .viaMat(KillSwitches.single)(Keep.right)
-      .map(envelope => envelope.event)
-      .toMat(Sink.foreach[Any] {
-${eventTriggers.map((t) => `        case ev: ${t.sourceFqn} => coordinator ! ${m.moduleObj}.${t.member}Start(ev, host, replySink)`).join("\n")}
-        case _ => () // non-trigger journal events: participant folds, results, coordinator internals
+      .toMat(Sink.foreach[EventEnvelope] {
+        case envelope if envelope.persistenceId == coordinatorJournalId =>
+          envelope.event match {
+            case StrictEvent.Succeeded | StrictEvent.Aborted =>
+              // Completion side (this source owns it): the coordinator holds exactly one
+              // transaction per lifetime, so at the terminal marker its current state IS
+              // that terminal state — no cross-transaction race window exists.
+              implicit val scheduler: Scheduler = system.scheduler
+              implicit val timeout: Timeout = Timeout(15.seconds)
+              coordinator.ask(replyTo => StrictSagaCoordinator.GetStatus(replyTo)).map {
+                case StrictSagaCoordinator.Status(state) if state.terminal =>
+                  publishCompletion(sharding, host, state).failed.foreach { t =>
+                    Console.err.println(s"[${m.entryName}-event-source] completion publish failed (idempotent retry is safe): $t")
+                  }
+                case _ => () // non-terminal snapshot (stale marker replay) — nothing to publish
+              }.failed.foreach(t => Console.err.println(s"[${m.entryName}-event-source] terminal status query failed: $t"))
+            case _ => () // coordinator non-terminal events (intents, evidence, reconcile)
+          }
+        case envelope =>
+          envelope.event match {
+${eventTriggers.map((t) => `            case ev: ${t.sourceFqn} => coordinator ! ${m.moduleObj}.${t.member}Start(ev, host, replySink)`).join("\n")}
+            case _ => () // non-trigger journal events: participant folds, results, other aggregates
+          }
       })(Keep.left)
       .run()
   }

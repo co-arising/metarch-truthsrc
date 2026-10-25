@@ -1,0 +1,50 @@
+{
+  "batch": "p12-completion-failover-conf-graphid-20261024",
+  "date": "2026-10-25",
+  "goal": "P11 后四候选并批弧：①完成侧发布者（事件流 source 拥有 terminal 观察与结果发布——『谁拥有结果发布』定案=部署接线层）②D4 failover（物理两 JVM 杀协调器节点→singleton 迁移→授权 Reconcile 续驱）③生产 conf journal 装配（saga 门控 persistence.conf+bootstrap strictEntries 接线·truthsrc 清 P9 批B bootstrap 缺口）④BC 推图 saga 节点 id 统一（kind:id 双通道验证+meta 残留登记）",
+  "changes": {
+    "truthsrc": {
+      "modified": [
+        "generators/saga-dsl/emit-strict-host.mjs（installEventSource 完成侧：EventEnvelope 双分支——协调器自身 journal id 过滤+StrictEvent.Succeeded|Aborted 终态标记→GetStatus→publishCompletion fire-and-forget（幂等守卫重发安全）；头注释 trigger+completion 双面）",
+        "generators/saga-dsl/emit-strict-spec.mjs（D2 断言升级 awaitPublished=source 自动发布；新 D4 failover 测试+node failover 角色+系统名从 seedAddr 派生+awaitLedger+生产 conf 装配测试）",
+        "generators/bootstrap-dsl/emit.mjs（ApplicationBootstrap 增 strictEntries 槽：spawnClusterSingleton+installEventSource——清 P9 批B bootstrap 缺口·BC parity；空态回归原字节）",
+        "generators/run-all.mjs（appSpec.strictEntries 从 sagaBinding.engine.entrypoint；新发射 conf/persistence.conf——journal/snapshot id+RxMongo driver 钉+缺省 URI+${?MONGO_URI} env 覆盖·BC 惯例 parity）"
+      ]
+    },
+    "backkend-codegen": {
+      "modified": [
+        "FixtureHostTemplate.scala（renderEntry/renderSafetySpec/renderDeploymentNode 同款四升级：完成侧+awaitPublished+D4+failover 角色+conf 装配测试+系统名派生）",
+        "scaffold/conf/persistence.conf（RxMongo driver 显式钉定）",
+        "ApplicationBootstrapTemplate.scala（strictWiring 增 installEventSource 行）"
+      ]
+    },
+    "saga-core": "零改动（单事务生命周期为运行时语义，多事务形态=登记边界不改运行时）"
+  },
+  "verification": {
+    "truthsrcStandaloneApp": "12/12 终轮（A1-A3/B1-B3/C1+D1 共享 Mongo+D2 事件源 source 自动发布 awaitPublished+D3 两 JVM 21.6s+D4 failover 22.6s+生产 conf 装配测试；allow-java=off 全 strict 面）",
+    "d4Evidence": "truthsrc：D4-STARTED op=op-d4-1792883853498 →（seed destroy）→ D4-RESULT status=Succeeded op=op-d4-1792883853498 alice=99900 bob=100100 ledger=succeeded；BC：D4-RESULT status=Succeeded op=op-d4-1792884605958 alice=99900 bob=100100 ledger=succeeded——节点丢失→singleton 迁移→授权 Reconcile 续驱→收敛+ledger 由 source 自动发布",
+    "d3Evidence": "truthsrc op-d3-1792883831930 / BC op-d3-1792884592151，均 Succeeded 守恒",
+    "bcFullSuite": "789/789（模板终版复跑确认）",
+    "bcApp": "P5 冻结三输入+P10 候选 jar（1009300e…·generatorVersion=p12-completion-failover-conf-graphid-20261024）重产 → target/p12-completion-failover-20261024/ → 12/12（D2 3.1s/D3 13.8s/D4 12.8s）——两管线同证",
+    "goldenInert": "零 diff（out5 终复核；bootstrap-dsl 空态回归原字节；spec/conf 模板改动全 saga 门控构造性惰性）",
+    "truthsrcFullSuite": "1705/1705",
+    "graphIdUnification": "queryAnchorsIndex('saga:money-transfer', [js 索引, BC p12 应用索引]) → 11 locations 全 source-verified（js saga-dsl 3+BC codegen-main 8·含新 FixtureDeploymentNode）；definitionDigest 钉 3a586c81 不变——kind:id 双通道（anchors+graphstore）已统一，无投机代码"
+  },
+  "keyFacts": [
+    "『谁拥有结果发布』定案：事件流 source（部署接线层）——terminal 标记（StrictEvent.Succeeded/Aborted case object）经共享 journal 事件流被 source 观察→GetStatus→publishCompletion；无竞态窗口：协调器单事务生命周期下终态标记落库瞬间其当前状态即该事务终态",
+    "publishCompletion 幂等（aggregate sagaResults map-absent 守卫）+Start 幂等（同 txId+同 args→Status(state)）——source 的 trigger+completion 双面在多节点/重放下全安全",
+    "D4 failover 语义：join 节点收敛循环对非终态持续授权 Reconcile(token,32)——活跃期 Denied（前实例在）、迁移后恢复体 enabled=false 接受→drive；手递窗 status ask 异常吞掉重试",
+    "node 系统名必须从 seedAddr 派生且取 @ 前最后一段字母数字（takeWhile(!='@').reverse.takeWhile(alnum).reverse）——硬编码族名=跨族握手死锁；config 形状 arg 带字面引号，引号剥离在 Scala s\"\"\" 模板有转义陷阱",
+    "Scala s\"\"\" 插值三引号串会处理反斜杠转义（\\\"→\"，反斜杠被吃）——与 JS 模板字面量行为相反；引号安全写法=纯字母数字字符类逻辑（dropWhile/takeWhile/reverse），避免在模板中发射引号字面量",
+    "BC Scala 模板惯用法两形态：$$${\"{X}\"} 发射 ${X} 产物源码（运行时插值 ✓）vs $${\"{X}\"} 发射嵌套字面量（运行时产出死串 ${X} 文本 ✗）——死串用于 actor 名碰巧可用（唯一常量），用于 journal pid 精确匹配=完成分支静默失效（诊断线索：saga 照常完成+余额全对+仅 ledger 空）",
+    "HOCON env 覆盖惯例统一：MONGO_URI（BC scaffold 既有）——truthsrc persistence.conf 用 ${?MONGO_URI}；conf 解析失败会株连全部 withFallback 测试（11 测全红信号=conf 语法错）",
+    "conf 解析链：application.conf include persistence.conf（此前缺文件态静默忽略）→落盘即激活为生产缺省；全部测试显式覆盖 journal 插件不受影响；mongo 直接查 journal（pid 分段文档 from/to+events 数组）可分离写侧/读侧故障"
+  ],
+  "boundaries": [
+    "协调器单事务生命周期（一 persistenceId 一事务）——多事务生产形态（per-transaction 协调器/分片协调器）独立批；source 多事务行为=新事件重新触发（重复 Start 幂等被拒）",
+    "meta 图 id（application.services.transactor.*）统一待真实 BC 图推送消费者出现——零投机代码",
+    "mongo run-scoped db 每轮留存不删（证据；可定期人工清理）",
+    "D4 seed destroy=SIGTERM→CoordinatedShutdown graceful leave；-9 强杀路径未含（candidate 后续）"
+  ],
+  "debugRounds": 8
+}
