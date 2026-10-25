@@ -198,7 +198,9 @@ events:                                   # full event definitions owned by this
   `cond`), `expression`. **P4 structured form** (2026-10-23, money trees):
   `{ruleId, errCode, onFail, when, desc}` where `when.form` ∈ `money-positive`
   (`amount`), `money-sufficient` (`amount`, `in`), `map-contains` / `map-absent`
-  (`map`, `key`); `key`/`amount` are V13 expressions against the command
+  (`map`, `key`), `collection-covered` (`map`, `collection` — P13: ∀ e ∈
+  collection: map.contains(e); the conservation precondition for set migration);
+  `key`/`amount`/`collection` are V13 expressions against the command
   parameters; `map`/`in` name state fields; `onFail` ∈ `reject` (default) |
   `succeed-empty` (idempotent no-op success — reply success, emit no events).
   Declaration order is the evaluation order.
@@ -234,7 +236,7 @@ binding row at all.
 | V5 | `order.commands` ≡ slice set, both directions, no duplicates | hard |
 | V6 | `order.events` ≡ event pool both directions; a definition lives in exactly one slice; every produced event resolves | hard |
 | V12 | `seq` unique per family (aggregates / value objects / read models / stories), integer | hard |
-| V13 | binding/fold exprs resolve: `param.X` ∈ owning command parameters (slice-owned events; extraEvents have no owner → notice), `state.X` ∈ stateFields/identifier, `receipt.X` bindings-only ∈ own payload slots, `event.X` fold-only ∈ own payload slots, `state.K[E]` fold-only indexed read (`E` ∈ param/command or event/payload), known form required. Structured fold rows (`op` ∈ `set\|put\|remove\|money-apply`, per-op required fields, `sign` ∈ {1,−1}) and structured guards (`when.form` ∈ `money-positive\|money-sufficient\|map-contains\|map-absent`, `onFail` ∈ `reject\|succeed-empty`) are closed-vocabulary validated; guards carrying legacy `kind:` remain authoring-surface passthrough | hard (extraEvent `param.` = notice) |
+| V13 | binding/fold exprs resolve: `param.X` ∈ owning command parameters (slice-owned events; extraEvents have no owner → notice), `state.X` ∈ stateFields/identifier, `receipt.X` bindings-only ∈ own payload slots, `event.X` fold-only ∈ own payload slots, `state.K[E]` fold-only indexed read (`E` ∈ param/command or event/payload), known form required. Structured fold rows (`op` ∈ `set\|put\|remove\|money-apply\|put-all\|remove-all` (P13 set-migration ops: per-element keyed put/remove over the event's collection slot), per-op required fields, `sign` ∈ {1,−1}) and structured guards (`when.form` ∈ `money-positive\|money-sufficient\|map-contains\|map-absent\|collection-covered`, `onFail` ∈ `reject\|succeed-empty`) are closed-vocabulary validated; guards carrying legacy `kind:` remain authoring-surface passthrough | hard (extraEvent `param.` = notice) |
 | RF1/RF2/RF3 | entity, identifier, field data types present | hard |
 | RF4/RF5 | empty event payload / parameterless command | notice |
 
@@ -445,6 +447,33 @@ steps:                           # verbatim JSON array — the compiler never re
 | PL2 | `steps` is a non-empty array; every step is an object with `id` + `name`; step ids unique within the pipeline | hard |
 | PL3 | header fields other than `steps`/`execution` are scalars; block sections follow all scalar headers (roundtrip fidelity) | hard |
 | PL4 | explicit `execution` and every step execution declaration conform to the versioned execution schema; orphan or unknown execution fields fail | hard |
+
+Step execution is one of **three** discriminators (execution schema
+`stepExecution`): `port`, `invokeSaga`, or `awaitChildRun` (added 2026-10-25,
+P14). An awaited child run is never a pure port, implicit success, or dynamic
+insertion. The `awaitChildRun` declaration pins:
+
+- `childRun.planRef` — a separately authored stages-shaped child pipeline (see
+  the `monarch` block below).
+- `childRun.identity` — `derivation: "durable-parent-step"`: the parent
+  operation key, the exact await step id, and a durable stage-occurrence token
+  (plus an optional chunk token). No expressions, FQNs, clock, random, attempt
+  or JVM generation. `conflict: "reject-different-args"`.
+- `childRun.payloadCompatibility: "exact"`.
+- `start: "durable-intent-before-start"`, `completionMode: "await-terminal"`,
+  and exactly five `results`: `succeeded` (publishes the durable
+  completed-manifest writes), `child-rejected` (StartRun refused with a reason
+  other than already-in-state), `child-failed` (RunFailedEvt), and
+  `recovery-required` / `outcome-unknown`. A refused re-attach reporting
+  already-in-state is **not** a result kind — the host treats it as
+  already-attached and keeps observing. Compensation is never stage recovery.
+
+A child stages pipeline is authored as `kind: pipeline` whose `steps` block
+lists the stage cursors, plus an explicit `monarch` JSON block (validated as an
+opaque-but-shaped declaration: `stages[]` cursor names matching the steps,
+optional `stateFields`, `description`). It carries **no** `execution` block —
+its bounded durable execution is owned by the parent's `awaitChildRun` step and
+the monarch-persistence engine, not by its own pipeline execution contract.
 
 The public `compile-execution` and `compile-sagas` commands validate the tree
 before projecting it, then compile the selected contract with an explicit

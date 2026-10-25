@@ -92,11 +92,11 @@ payload:
             ],
             "outputs": [
               {
-                "slot": "reservation",
-                "type": "ReservationId"
+                "slot": "txid",
+                "type": "TxId"
               },
               {
-                "slot": "carried",
+                "slot": "wafers",
                 "type": "WaferSet"
               }
             ]
@@ -117,16 +117,11 @@ payload:
                 "slot": "resource",
                 "ref": "args:from",
                 "type": "LotId"
-              },
-              {
-                "slot": "reservation",
-                "ref": "step:reserve-source:prepare:reservation",
-                "type": "ReservationId"
               }
             ],
             "outputs": [
               {
-                "slot": "receiptId",
+                "slot": "txid",
                 "type": "TxId"
               }
             ]
@@ -149,12 +144,17 @@ payload:
                 "type": "LotId"
               },
               {
-                "slot": "reservation",
-                "ref": "step:reserve-source:prepare:reservation",
-                "type": "ReservationId"
+                "slot": "wafers",
+                "ref": "step:reserve-source:prepare:wafers",
+                "type": "WaferSet"
               }
             ],
-            "outputs": []
+            "outputs": [
+              {
+                "slot": "txid",
+                "type": "TxId"
+              }
+            ]
           }
         }
       },
@@ -182,14 +182,18 @@ payload:
               },
               {
                 "slot": "wafers",
-                "ref": "step:reserve-source:prepare:carried",
+                "ref": "step:reserve-source:prepare:wafers",
                 "type": "WaferSet"
               }
             ],
             "outputs": [
               {
-                "slot": "reservation",
-                "type": "ReservationId"
+                "slot": "txid",
+                "type": "TxId"
+              },
+              {
+                "slot": "wafers",
+                "type": "WaferSet"
               }
             ]
           },
@@ -211,14 +215,14 @@ payload:
                 "type": "LotId"
               },
               {
-                "slot": "reservation",
-                "ref": "step:reserve-target:prepare:reservation",
-                "type": "ReservationId"
+                "slot": "wafers",
+                "ref": "step:reserve-target:prepare:wafers",
+                "type": "WaferSet"
               }
             ],
             "outputs": [
               {
-                "slot": "receiptId",
+                "slot": "txid",
                 "type": "TxId"
               }
             ]
@@ -239,23 +243,23 @@ payload:
                 "slot": "resource",
                 "ref": "args:to",
                 "type": "LotId"
-              },
-              {
-                "slot": "reservation",
-                "ref": "step:reserve-target:prepare:reservation",
-                "type": "ReservationId"
               }
             ],
-            "outputs": []
+            "outputs": [
+              {
+                "slot": "txid",
+                "type": "TxId"
+              }
+            ]
           }
         }
       }
     ],
     "resilience": {
-      "maxAttempts": 3,
+      "maxAttempts": 1,
       "phaseTimeoutMs": 1000,
-      "queryTimeoutMs": 500,
-      "backoffMs": 100,
+      "queryTimeoutMs": 1000,
+      "backoffMs": 0,
       "totalTimeoutMs": 10000
     },
     "safety": {

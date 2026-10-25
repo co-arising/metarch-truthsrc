@@ -93,34 +93,47 @@ export function emitStrictFiles(saga, canonical, opts = {}) {
   const typeById = new Map(types.map((t) => [t.id, t]));
   const shapeOf = (typeId) => {
     const t = typeById.get(typeId) || fail(`type "${typeId}" is not in the binding type table`);
-    if (t.kind === "id" || t.kind === "text") return "text";
+    if (t.kind === "id" || t.kind === "text" || t.kind === "manifest-reference") return "text";
+    if (t.kind === "collection") return "collection";
     if (t.kind === "money") return "money";
-    fail(`type "${typeId}" kind ${t.kind} is outside the fixture wire (bounded text / money)`);
+    fail(`type "${typeId}" kind ${t.kind} is outside the fixture wire (bounded text / collection / manifest anchor / money)`);
   };
   const boundsOf = (typeId) => {
     const t = typeById.get(typeId);
-    return t && (t.kind === "id" || t.kind === "text") ? [t.minLength, t.maxLength] : null;
+    if (t && (t.kind === "id" || t.kind === "text")) return [t.minLength, t.maxLength];
+    if (t && t.kind === "collection") return [t.minItems, t.maxItems];
+    if (t && t.kind === "manifest-reference") return [1, 128];
+    return null;
   };
+  // wire 序守卫：money 槽必须居尾（codec 解析序——money 走 decodeWithRest 尾段）；
+  // text/collection 可交错（同族字符串序列化，按声明序逐槽读写）。
   const checkOrder = (fields, what) => {
-    const seenMoney = fields.dropWhile ? null : null; // (语义见下：直接扫描)
     let moneySeen = false;
     for (const [name, shape] of fields) {
       if (shape === "money") moneySeen = true;
-      else if (moneySeen) fail(`${what}: money slot must not precede a text slot on the fixture wire (${name})`);
+      else if (moneySeen) fail(`${what}: money slot must not precede a text/collection slot on the fixture wire (${name})`);
     }
-    return seenMoney;
   };
 
   // 值类型 FQN：契约 id 类型在 saga 面已折叠 String（run-all 规范化）；money 别名
-  // 指向聚合值对象（树 VO 目录∪契约 money VO——valueobject-dsl 发射）。
+  // 指向聚合值对象（树 VO 目录∪契约 money VO——valueobject-dsl 发射）；collection
+  // 折叠 Vector[String]（P13 有界标量集合）；manifest-reference 折叠 String（审计锚）。
   const valueFqn = (name) => `${basePkg}.domain.values.${name}`;
-  const scalaTypeOf = (typeId) => (shapeOf(typeId) === "money" ? moneyFqn : "String");
+  const scalaTypeOf = (typeId) => {
+    const shape = shapeOf(typeId);
+    if (shape === "money") return moneyFqn;
+    if (shape === "collection") return "Vector[String]";
+    return "String";
+  };
   const argsFields = payload.args.map((sl) => ({ name: sl.slot, typeId: sl.type, shape: shapeOf(sl.type) }));
   checkOrder(argsFields.map((f) => [f.name, f.shape]), "args");
-  const moneyType = types.find((t) => t.kind === "money") || fail("no money-shaped type in the binding table");
-  const moneyFqn = valueFqn(moneyType.id);
+  // P13：money 类型可选（fab 族无 money 面——ExactMoneyCodec/money VO 不发射）。
+  const moneyType = types.find((t) => t.kind === "money") || null;
+  const moneyFqn = moneyType ? valueFqn(moneyType.id) : null;
   const typeAliases = types.map((t) => ({
-    id: t.id, fqn: t.kind === "money" ? moneyFqn : "String", money: t.kind === "money",
+    id: t.id,
+    fqn: t.kind === "money" ? moneyFqn : t.kind === "collection" ? "Vector[String]" : "String",
+    money: t.kind === "money",
   }));
 
   // ── 契约命名的实现面名（mapper FQN 尾段）──
@@ -130,10 +143,10 @@ export function emitStrictFiles(saga, canonical, opts = {}) {
     return dotted.slice(idx + 1);
   };
   const argsCodecName = lastSegment(b.codec.mapper, "args codec mapper");
-  const moneyCodecName = lastSegment(moneyType.codec, "money codec");
+  const moneyCodecName = moneyType ? lastSegment(moneyType.codec, "money codec") : null;
   const entryName = lastSegment(b.engine.entrypoint, "entrypoint");
   for (const [n, what] of [[argsCodecName, "args codec"], [moneyCodecName, "money codec"], [entryName, "entrypoint"]])
-    if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(n)) fail(`${what} name "${n}" is not a plain Scala object name`);
+    if (n !== null && !/^[A-Za-z_][A-Za-z0-9_]*$/.test(n)) fail(`${what} name "${n}" is not a plain Scala object name`);
 
   // ── 聚合 runtime 面（protocol/entity key/reply/query/behaviors——B1.5 协议面）──
   const aggregatesRoot = `${basePkg}.application.aggregates`;
@@ -323,8 +336,15 @@ export function emitStrictFiles(saga, canonical, opts = {}) {
     const ph = phases.find((p) => p.stepId === fundingStep.stepId && p.wire === wire)
       || fail(`funding seed: step "${fundingStep.stepId}" declares no ${wire} phase`);
     const evtName = strictSymbol(ph.tech.confirmation.eventRef.name);
+    // P13：确认事件的真实载荷清单（种子事件构造按载荷而非 outputs——fab 族
+    // 事件载荷携带 outputs 之外的回执槽如 reservation）。
+    const evtDecl = eventsOf(ph.aggName).find((e) => e.name === ph.tech.confirmation.eventRef.name)
+      || fail(`funding seed: confirmation event ${ph.tech.confirmation.eventRef.name} not in the aggregate face`);
     return {
       fqn: `${ph.face.entityFqn}.${evtName}`,
+      commandName: ph.commandName,
+      commandParams: (commandsOf(ph.aggName).find((c) => c.name === ph.commandName) || fail(`command ${ph.commandName} missing`)).parameters || [],
+      payloads: (evtDecl.payloads || []).map((pl) => ({ name: pl.name, typeId: pl.dataType, shape: shapeOf(pl.dataType) })),
       slots: ph.outputs.map((o) => ({ name: o.slot, typeId: o.type, shape: shapeOf(o.type) })),
     };
   });
@@ -383,18 +403,30 @@ function renderFiles(m, { header }) {
   // 值形状串（TypeContract）
   const shapeExpr = (t) => {
     if (t.kind === "id" || t.kind === "text") return `BoundedText(${jstr(t.kind)}, ${t.minLength}, ${t.maxLength})`;
+    if (t.kind === "collection") {
+      const element = (b.types || []).find((x) => x.id === t.elementType) || fail(`collection "${t.id}" element type missing`);
+      if (!["id", "text"].includes(element.kind)) fail(`collection "${t.id}" element must be bounded text`);
+      const eb = (element.kind === "id" || element.kind === "text") ? [element.minLength, element.maxLength] : [1, 128];
+      return `SequenceShape(BoundedText(${jstr(element.kind)}, ${eb[0]}, ${eb[1]}), ${t.minItems}, ${t.maxItems})`;
+    }
+    if (t.kind === "manifest-reference") {
+      if (t.readable !== true || !t.version) fail(`manifest-reference "${t.id}" requires readable + version anchor`);
+      return `ManifestRefShape(${jstr(t.version)})`;
+    }
     if (t.kind === "money") return `MoneyShape(${t.scale}, ${t.precision}, ${jstr(t.codec)}, "ISO-4217", "minor-unit-string")`;
     if (t.kind === "bool") return "BooleanShape";
     if (t.kind === "integer") return `IntegerShape(${t.minimum}L, ${t.maximum}L)`;
     fail(`type kind ${t.kind} outside the emitted shape table`);
   };
 
-  const argsScalaFields = m.argsFields.map((f) => `${scalaId(f.name)}: ${f.shape === "money" ? m.moneyFqn : "String"}`);
+  const argsScalaFields = m.argsFields.map((f) => `${scalaId(f.name)}: ${f.shape === "money" ? m.moneyFqn : f.shape === "collection" ? "Vector[String]" : "String"}`);
   const fieldOf = (slot, typeId) => `${scalaId(slot)}: ${shapeOfScala(typeId)}`;
   function shapeOfScala(typeId) {
     const t = b.types.find((x) => x.id === typeId);
     if (!t) fail(`type ${typeId} missing`);
-    return t.kind === "money" ? m.moneyFqn : "String";
+    if (t.kind === "money") return m.moneyFqn;
+    if (t.kind === "collection") return "Vector[String]";
+    return "String";
   }
 
   // ── 1. SagaModule.scala ──
@@ -471,7 +503,20 @@ ${reads.join("\n")}
     function inputExprOf(i) {
       if (i.source.kind === "transaction-id") return "request.identity.transaction.transactionId";
       if (i.source.kind === "args") return `request.args.${scalaId(i.source.slot)}`;
-      fail("phase input source outside args/transaction-id (step receipts arrive via request.receipt reads — not yet carried by this face)");
+      if (i.source.kind === "receipt-field") {
+        // P13 回执字段输入：从 StrictReceiptContext 按 producer 身份查前序回执
+        // （OperationRequest.receipt——coordinator 从持久化 intent 构建），宿主绑定
+        // 的同款 codec 解码；Try .get 失败即本相位输入构造失败（fail-closed）。
+        const producer = m.phases.find((x) => x.stepId === i.source.stepId && x.wire === i.source.phase)
+          || fail(`receipt producer phase ${i.source.stepId}:${i.source.phase} is not declared`);
+        const producerAddress = m.addressMembers.find((a) => a.participantId === producer.participantId)
+          || fail(`receipt producer address member for ${producer.participantId}`);
+        return `request.receipt(
+          OperationIdentity(request.identity.transaction, ${jstr(producer.participantId)}, host.${producerAddress.member}(request.args.${scalaId(producerAddress.resourceSlot)}), ${jstr(i.source.stepId)}, Phase.${producer.runtime}),
+          ${pin({ id: producer.pinId, version: 1 })},
+          host.${producer.member}.receiptCodec).get.${scalaId(i.source.slot)}`;
+      }
+      fail("phase input source outside args/transaction-id/receipt-field");
     }
   }).join("\n\n");
 
@@ -613,6 +658,8 @@ ${addressContracts}
   final case class EnumerationShape(values: Vector[String]) extends ValueShape
   final case class ValueObjectShape(fields: Vector[SlotContract]) extends ValueShape
   final case class MoneyShape(scale: Int, precision: Int, codecFqn: String, currency: String, encoding: String) extends ValueShape
+  final case class SequenceShape(element: ValueShape, minItems: Int, maxItems: Int) extends ValueShape
+  final case class ManifestRefShape(version: String) extends ValueShape
   val RequiredTypes: Vector[TypeContract] = Vector(${typeContracts})
   final case class ArgsCodecContract(mapperFqn: String, id: String, version: String, compatibleVersions: Vector[String], runtimePin: CodecPin)
   val RequiredArgsCodec = ArgsCodecContract(${jstr(b.codec.mapper)}, ${jstr(b.codec.id)}, ${jstr(b.codec.version)}, ${strs(b.codec.compatibleVersions)}, ArgsPin)
@@ -675,15 +722,15 @@ ${m.typeAliases.map((a) => `  type ${a.id} = ${a.fqn}`).join("\n")}
 }
 `;
 
-  // ── 3. ExactMoneyCodec.scala（含 StrictWire）──
-  const moneyFile = `${header}package ${m.pkg}
+  // ── 3. StrictWire.scala（P13 独立成件——money 面可选后 wire 原语需常驻包内）──
+  const strictWireFile = `${header}package ${m.pkg}
 
 import com.google.protobuf.ByteString
-import net.imadz.infra.saga.strict.{CodecPin, PayloadCodec}
-import scala.util.{Failure, Success, Try}
+import scala.util.Try
 
 /** Canonical fixture wire: 4-byte big-endian length prefix + UTF-8 bytes per text
-  * field. Prefix-free, fixed field order — encode(decode(bytes)) == bytes holds
+  * field; collections add a 4-byte big-endian element count before the elements.
+  * Prefix-free, fixed field order — encode(decode(bytes)) == bytes holds
   * and the coordinator enforces it at admission. */
 object StrictWire {
   /** ByteString concat for canonical wire composition (protobuf ByteString has no ++). */
@@ -691,16 +738,23 @@ object StrictWire {
     def ++(b: ByteString): ByteString = a.concat(b)
   }
 
-  def lengthPrefixed(value: String): ByteString = {
-    val utf8 = value.getBytes(java.nio.charset.StandardCharsets.UTF_8)
-    val out = new Array[Byte](4 + utf8.length)
-    out(0) = ((utf8.length >>> 24) & 0xff).toByte
-    out(1) = ((utf8.length >>> 16) & 0xff).toByte
-    out(2) = ((utf8.length >>> 8) & 0xff).toByte
-    out(3) = (utf8.length & 0xff).toByte
-    utf8.copyToArray(out, 4)
+  private def lengthHeader(length: Int): ByteString = {
+    val out = new Array[Byte](4)
+    out(0) = ((length >>> 24) & 0xff).toByte
+    out(1) = ((length >>> 16) & 0xff).toByte
+    out(2) = ((length >>> 8) & 0xff).toByte
+    out(3) = (length & 0xff).toByte
     ByteString.copyFrom(out)
   }
+
+  def lengthPrefixed(value: String): ByteString =
+    lengthHeader(value.getBytes(java.nio.charset.StandardCharsets.UTF_8).length)
+      .concat(ByteString.copyFrom(value.getBytes(java.nio.charset.StandardCharsets.UTF_8)))
+
+  /** P13 bounded scalar collection: 4-byte element count + per-element length prefix. */
+  def lengthPrefixedAll(values: Vector[String]): ByteString =
+    values.foldLeft(lengthHeader(values.length))((acc, v) => acc.concat(lengthPrefixed(v)))
+
   /** Reads \`count\` length-prefixed text fields, returning them with the unconsumed remainder. */
   def readPrefixed(bytes: ByteString, count: Int): Try[(Vector[String], ByteString)] = Try {
     val data = bytes.toByteArray
@@ -718,8 +772,24 @@ object StrictWire {
     }
     (fields.result(), ByteString.copyFrom(data, offset, data.length - offset))
   }
-}
 
+  /** P13 bounded scalar collection read: count header + elements, remainder preserved. */
+  def readPrefixedAll(bytes: ByteString): Try[(Vector[String], ByteString)] = Try {
+    val data = bytes.toByteArray
+    require(data.length >= 4, "truncated collection count prefix")
+    val count = ((data(0) & 0xff) << 24) | ((data(1) & 0xff) << 16) |
+      ((data(2) & 0xff) << 8) | (data(3) & 0xff)
+    readPrefixed(ByteString.copyFrom(data, 4, data.length - 4), count).get
+  }
+}
+`;
+
+  // ── 4. ExactMoneyCodec.scala（可选——money 面缺席不发射）──
+  const moneyFile = m.moneyCodecName ? `${header}package ${m.pkg}
+
+import com.google.protobuf.ByteString
+import net.imadz.infra.saga.strict.{CodecPin, PayloadCodec}
+import scala.util.{Failure, Success, Try}
 import StrictWire._
 
 /** Canonical money codec (MoneyShape codecFqn = ${moneyTypeRef().codec}):
@@ -742,14 +812,12 @@ object ${m.moneyCodecName} extends PayloadCodec[${m.moneyFqn}] {
       case _ => Failure(new IllegalArgumentException("exact money wire: expected two length-prefixed fields"))
     }
 }
-`;
+` : null;
   function moneyTypeRef() {
     return b.types.find((t) => t.kind === "money");
   }
 
-  // ── 4. ArgsCodec.scala ──
-  const textSlots = m.argsFields.filter((f) => f.shape === "text");
-  const moneySlots = m.argsFields.filter((f) => f.shape === "money");
+  // ── 5. ArgsCodec.scala（P13 逐槽 wire 链——text/collection/money 按声明序）──
   const argsFile = `${header}package ${m.pkg}
 
 import com.google.protobuf.ByteString
@@ -759,28 +827,34 @@ import StrictWire._
 
 /** Canonical args codec (ArgsCodecContract.mapperFqn = ${b.codec.mapper},
   * runtime pin CodecPin(${jstr(b.codec.id)}, ${argsRuntimeVersion()})): field order is the declared
-  * args slot order; the coordinator enforces encode(decode(bytes)) == bytes at admission. */
+  * args slot order (money pinned last by the wire-order guard); the coordinator
+  * enforces encode(decode(bytes)) == bytes at admission. */
 final class ${m.argsCodecName} extends PayloadCodec[${m.moduleObj}.Args] {
   override val pin: CodecPin = CodecPin(${jstr(b.codec.id)}, ${argsRuntimeVersion()})
   override def encode(value: ${m.moduleObj}.Args): ByteString =
-${[...textSlots.map((f) => `    StrictWire.lengthPrefixed(value.${scalaId(f.name)})`), ...moneySlots.map((f) => `    ${m.moneyCodecName}.encode(value.${scalaId(f.name)})`)].join(" ++\n")}
+${m.argsFields.map((f) =>
+    f.shape === "money" ? `    ${m.moneyCodecName}.encode(value.${scalaId(f.name)})`
+      : f.shape === "collection" ? `    StrictWire.lengthPrefixedAll(value.${scalaId(f.name)})`
+        : `    StrictWire.lengthPrefixed(value.${scalaId(f.name)})`).join(" ++\n")}
   override def decode(bytes: ByteString): Try[${m.moduleObj}.Args] =
 ${decodeChain()}
 }
 `;
   function decodeChain() {
-    if (!moneySlots.length) {
-      return `    StrictWire.readPrefixed(bytes, ${textSlots.length}).flatMap { case (Vector(${textSlots.map((f) => scalaId(f.name)).join(", ")}), rest0) =>
-        if (rest0.isEmpty) Success(${m.moduleObj}.Args(${textSlots.map((f) => scalaId(f.name)).join(", ")}))
+    const slots = m.argsFields;
+    if (!slots.length) fail("args codec: no declared args slots");
+    const step = (f, i) => {
+      const src = i === 0 ? "bytes" : `rest${i}`;
+      const out = `rest${i + 1}`;
+      const name = scalaId(f.name);
+      if (f.shape === "money") return `${m.moneyCodecName}.decodeWithRest(${src}).flatMap { case (${name}, ${out}) =>`;
+      if (f.shape === "collection") return `StrictWire.readPrefixedAll(${src}).flatMap { case (${name}, ${out}) =>`;
+      return `StrictWire.readPrefixed(${src}, 1).flatMap { case (Vector(${name}), ${out}) =>`;
+    };
+    return `${slots.map((f, i) => `      ${step(f, i)}`).join("\n")}
+        if (rest${slots.length}.isEmpty) Success(${m.moduleObj}.Args(${slots.map((f) => scalaId(f.name)).join(", ")}))
         else Failure(new IllegalArgumentException("args wire: trailing bytes after the declared fields"))
-    }`;
-    }
-    return `    StrictWire.readPrefixed(bytes, ${textSlots.length}).flatMap { case (Vector(${textSlots.map((f) => scalaId(f.name)).join(", ")}), rest0) =>
-${moneySlots.map((f, i) => `      ${m.moneyCodecName}.decodeWithRest(rest${i}).flatMap { case (${scalaId(f.name)}, rest${i + 1}) =>`).join("\n")}
-        if (rest${moneySlots.length}.isEmpty) Success(${m.moduleObj}.Args(${m.argsFields.map((f) => scalaId(f.name)).join(", ")}))
-        else Failure(new IllegalArgumentException("args wire: trailing bytes after the declared fields"))
-${moneySlots.map(() => "      }").join("\n")}
-    }`;
+${slots.map(() => "      }").join("\n")}`;
   }
 
   return {
@@ -788,7 +862,8 @@ ${moneySlots.map(() => "      }").join("\n")}
     files: [
       { name: `${m.moduleObj}.scala`, content: sagaModule },
       { name: "types.scala", content: typesFile },
-      { name: `${m.moneyCodecName}.scala`, content: moneyFile },
+      { name: "StrictWire.scala", content: strictWireFile },
+      ...(m.moneyCodecName ? [{ name: `${m.moneyCodecName}.scala`, content: moneyFile }] : []),
       { name: `${m.argsCodecName}.scala`, content: argsFile },
     ],
   };

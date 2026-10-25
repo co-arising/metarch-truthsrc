@@ -52,9 +52,9 @@
           },
           "adapter": "fixture.StrictSagaAdapter",
           "runtime": {
-            "artifact": "net.imadz:saga-core:0.2",
+            "artifact": "net.imadz:saga-core:strict-runtime-binding-v1-SNAPSHOT",
             "apiMode": "strict",
-            "entrypoint": "fixture.StrictSagaEntry"
+            "entrypoint": "fixture.split.FabSplitSagaEntry"
           },
           "argsCodec": {
             "id": "ArgsCodec",
@@ -125,9 +125,9 @@
           },
           "adapter": "fixture.StrictSagaAdapter",
           "runtime": {
-            "artifact": "net.imadz:saga-core:0.2",
+            "artifact": "net.imadz:saga-core:strict-runtime-binding-v1-SNAPSHOT",
             "apiMode": "strict",
-            "entrypoint": "fixture.StrictSagaEntry"
+            "entrypoint": "fixture.merge.FabMergeSagaEntry"
           },
           "argsCodec": {
             "id": "ArgsCodec",
@@ -146,6 +146,122 @@
           }
         }
       ]
+    },
+    {
+      "pipelineId": "fab-split-child-merge",
+      "engine": "monarch-persistence/0.2.1",
+      "module": "fixture.FabCompositionModule",
+      "codec": {
+        "id": "PipelineCodec",
+        "version": "pipeline-v1",
+        "compatibleVersions": [
+          "pipeline-v1"
+        ]
+      },
+      "types": [
+        {
+          "id": "TxId",
+          "implementation": "fixture.types.TxId"
+        },
+        {
+          "id": "OperationId",
+          "implementation": "fixture.types.OperationId"
+        },
+        {
+          "id": "LotId",
+          "implementation": "fixture.types.LotId"
+        },
+        {
+          "id": "ReservationId",
+          "implementation": "fixture.types.ReservationId"
+        },
+        {
+          "id": "WaferId",
+          "implementation": "fixture.types.WaferId"
+        },
+        {
+          "id": "WaferSet",
+          "implementation": "fixture.types.WaferSet"
+        },
+        {
+          "id": "ManifestRef",
+          "implementation": "fixture.types.ManifestRef"
+        }
+      ],
+      "ports": [],
+      "invocations": [
+        {
+          "stepId": "split",
+          "ref": {
+            "sagaId": "fab-split",
+            "version": "v1"
+          },
+          "adapter": "fixture.StrictSagaAdapter",
+          "runtime": {
+            "artifact": "net.imadz:saga-core:strict-runtime-binding-v1-SNAPSHOT",
+            "apiMode": "strict",
+            "entrypoint": "fixture.split.FabSplitSagaEntry"
+          },
+          "argsCodec": {
+            "id": "ArgsCodec",
+            "version": "codec-v1",
+            "mapper": "fixture.ArgsCodec"
+          },
+          "resultCodec": {
+            "id": "SagaResultCodec",
+            "version": "codec-v1",
+            "mapper": "fixture.SagaResultCodec"
+          },
+          "transactionIdentity": {
+            "mapper": "fixture.DurableSourceStageIdentity",
+            "derivation": "durable-source-stage",
+            "payloadCompatibility": "exact"
+          }
+        },
+        {
+          "stepId": "merge",
+          "ref": {
+            "sagaId": "fab-merge",
+            "version": "v1"
+          },
+          "adapter": "fixture.StrictSagaAdapter",
+          "runtime": {
+            "artifact": "net.imadz:saga-core:strict-runtime-binding-v1-SNAPSHOT",
+            "apiMode": "strict",
+            "entrypoint": "fixture.merge.FabMergeSagaEntry"
+          },
+          "argsCodec": {
+            "id": "ArgsCodec",
+            "version": "codec-v1",
+            "mapper": "fixture.ArgsCodec"
+          },
+          "resultCodec": {
+            "id": "SagaResultCodec",
+            "version": "codec-v1",
+            "mapper": "fixture.SagaResultCodec"
+          },
+          "transactionIdentity": {
+            "mapper": "fixture.DurableSourceStageIdentity",
+            "derivation": "durable-source-stage",
+            "payloadCompatibility": "exact"
+          }
+        }
+      ],
+      "childRuns": [
+        {
+          "stepId": "await-child",
+          "planRef": {
+            "pipelineId": "fab-child-process"
+          },
+          "runtime": {
+            "artifact": "net.imadz:monarch-persistence_2.13:0.2.1",
+            "apiMode": "strict"
+          },
+          "journal": {
+            "pidPrefix": "fab-child"
+          }
+        }
+      ]
     }
   ],
   "sagaBindings": {
@@ -154,11 +270,11 @@
       {
         "sagaId": "fab-split",
         "version": "v1",
-        "module": "fixture.SagaModule",
+        "module": "fixture.split.FabSplitSagaModule",
         "engine": {
-          "artifact": "net.imadz:saga-core:0.2",
+          "artifact": "net.imadz:saga-core:strict-runtime-binding-v1-SNAPSHOT",
           "apiMode": "strict",
-          "entrypoint": "fixture.StrictSagaEntry",
+          "entrypoint": "fixture.split.FabSplitSagaEntry",
           "capabilities": {
             "required": [
               "durable-commit-decision",
@@ -278,13 +394,13 @@
                   "mapper": "fixture.ConfirmationMapper",
                   "outputs": [
                     {
-                      "slot": "reservation",
-                      "ref": "receipt:reservation",
-                      "type": "ReservationId"
+                      "slot": "txid",
+                      "ref": "receipt:txid",
+                      "type": "TxId"
                     },
                     {
-                      "slot": "carried",
-                      "ref": "receipt:carried",
+                      "slot": "wafers",
+                      "ref": "receipt:wafers",
                       "type": "WaferSet"
                     }
                   ]
@@ -350,8 +466,8 @@
                   "mapper": "fixture.ConfirmationMapper",
                   "outputs": [
                     {
-                      "slot": "receiptId",
-                      "ref": "receipt:receiptId",
+                      "slot": "txid",
+                      "ref": "receipt:txid",
                       "type": "TxId"
                     }
                   ]
@@ -415,7 +531,13 @@
                     "name": "ReleaseReservedWaferConfirmed"
                   },
                   "mapper": "fixture.ConfirmationMapper",
-                  "outputs": []
+                  "outputs": [
+                    {
+                      "slot": "txid",
+                      "ref": "receipt:txid",
+                      "type": "TxId"
+                    }
+                  ]
                 },
                 "query": {
                   "mapper": "fixture.QueryMapper",
@@ -483,9 +605,14 @@
                   "mapper": "fixture.ConfirmationMapper",
                   "outputs": [
                     {
-                      "slot": "reservation",
-                      "ref": "receipt:reservation",
-                      "type": "ReservationId"
+                      "slot": "txid",
+                      "ref": "receipt:txid",
+                      "type": "TxId"
+                    },
+                    {
+                      "slot": "wafers",
+                      "ref": "receipt:wafers",
+                      "type": "WaferSet"
                     }
                   ]
                 },
@@ -550,8 +677,8 @@
                   "mapper": "fixture.ConfirmationMapper",
                   "outputs": [
                     {
-                      "slot": "receiptId",
-                      "ref": "receipt:receiptId",
+                      "slot": "txid",
+                      "ref": "receipt:txid",
                       "type": "TxId"
                     }
                   ]
@@ -615,7 +742,13 @@
                     "name": "CancelAddWaferConfirmed"
                   },
                   "mapper": "fixture.ConfirmationMapper",
-                  "outputs": []
+                  "outputs": [
+                    {
+                      "slot": "txid",
+                      "ref": "receipt:txid",
+                      "type": "TxId"
+                    }
+                  ]
                 },
                 "query": {
                   "mapper": "fixture.QueryMapper",
@@ -706,11 +839,11 @@
       {
         "sagaId": "fab-merge",
         "version": "v1",
-        "module": "fixture.SagaModule",
+        "module": "fixture.merge.FabMergeSagaModule",
         "engine": {
-          "artifact": "net.imadz:saga-core:0.2",
+          "artifact": "net.imadz:saga-core:strict-runtime-binding-v1-SNAPSHOT",
           "apiMode": "strict",
-          "entrypoint": "fixture.StrictSagaEntry",
+          "entrypoint": "fixture.merge.FabMergeSagaEntry",
           "capabilities": {
             "required": [
               "durable-commit-decision",
@@ -830,13 +963,13 @@
                   "mapper": "fixture.ConfirmationMapper",
                   "outputs": [
                     {
-                      "slot": "reservation",
-                      "ref": "receipt:reservation",
-                      "type": "ReservationId"
+                      "slot": "txid",
+                      "ref": "receipt:txid",
+                      "type": "TxId"
                     },
                     {
-                      "slot": "carried",
-                      "ref": "receipt:carried",
+                      "slot": "wafers",
+                      "ref": "receipt:wafers",
                       "type": "WaferSet"
                     }
                   ]
@@ -902,8 +1035,8 @@
                   "mapper": "fixture.ConfirmationMapper",
                   "outputs": [
                     {
-                      "slot": "receiptId",
-                      "ref": "receipt:receiptId",
+                      "slot": "txid",
+                      "ref": "receipt:txid",
                       "type": "TxId"
                     }
                   ]
@@ -967,7 +1100,13 @@
                     "name": "ReleaseReservedWaferConfirmed"
                   },
                   "mapper": "fixture.ConfirmationMapper",
-                  "outputs": []
+                  "outputs": [
+                    {
+                      "slot": "txid",
+                      "ref": "receipt:txid",
+                      "type": "TxId"
+                    }
+                  ]
                 },
                 "query": {
                   "mapper": "fixture.QueryMapper",
@@ -1035,9 +1174,14 @@
                   "mapper": "fixture.ConfirmationMapper",
                   "outputs": [
                     {
-                      "slot": "reservation",
-                      "ref": "receipt:reservation",
-                      "type": "ReservationId"
+                      "slot": "txid",
+                      "ref": "receipt:txid",
+                      "type": "TxId"
+                    },
+                    {
+                      "slot": "wafers",
+                      "ref": "receipt:wafers",
+                      "type": "WaferSet"
                     }
                   ]
                 },
@@ -1102,8 +1246,8 @@
                   "mapper": "fixture.ConfirmationMapper",
                   "outputs": [
                     {
-                      "slot": "receiptId",
-                      "ref": "receipt:receiptId",
+                      "slot": "txid",
+                      "ref": "receipt:txid",
                       "type": "TxId"
                     }
                   ]
@@ -1167,7 +1311,13 @@
                     "name": "CancelAddWaferConfirmed"
                   },
                   "mapper": "fixture.ConfirmationMapper",
-                  "outputs": []
+                  "outputs": [
+                    {
+                      "slot": "txid",
+                      "ref": "receipt:txid",
+                      "type": "TxId"
+                    }
+                  ]
                 },
                 "query": {
                   "mapper": "fixture.QueryMapper",

@@ -82,12 +82,27 @@ const sagaBindingPath = flagVal(
     : null
 );
 const sagaBinding = sagaBindingPath ? JSON.parse(readFileSync(sagaBindingPath, "utf8")) : null;
+// P14 批B：组合管线绑定（truthsrc.execution-binding/v1；--saga-execution-binding 显式
+// 传入或例目录缺省 execution-bindings.json）。非组合树缺省无此文件 → 组合面 inert。
+const sagaExecutionBindingPath = flagVal(
+  "--saga-execution-binding",
+  existsSync(join(dirname(treeDir), "execution-bindings.json"))
+    ? join(dirname(treeDir), "execution-bindings.json")
+    : null
+);
+const sagaExecutionBinding = sagaExecutionBindingPath
+  ? JSON.parse(readFileSync(sagaExecutionBindingPath, "utf8"))
+  : null;
 const contractIds = new Set();
+const contractCollections = new Set();
+const contractManifestRefs = new Set();
 const contractMoneyVos = [];
 if (sagaBinding && Array.isArray(sagaBinding.sagas)) {
   for (const s of sagaBinding.sagas) {
     for (const t of s.types || []) {
       if (t.kind === "id") contractIds.add(t.id);
+      else if (t.kind === "collection") contractCollections.add(t.id);
+      else if (t.kind === "manifest-reference") contractManifestRefs.add(t.id);
       else if (t.kind === "money") contractMoneyVos.push({
         name: t.id,
         fields: [
@@ -113,11 +128,25 @@ console.log(`  sagas: ${sagas.length}${sagaBinding ? `, binding types: ${contrac
 // （连字符事件名/契约 id 类型）——规范化只服务 Scala 聚合面生成器。
 const rawCanonical = sagaBinding ? JSON.parse(canonicalJson) : null;
 if (sagaBinding) {
+  // P13：有界标量集合（elementType id/text）→ List[String]（元素折叠）；manifest-reference
+  // → String（不透明审计锚——运行时永不解引用）。Map 键/值两侧同折叠。
+  const scalarOf = (name) => {
+    const trimmed = String(name).trim();
+    if (contractIds.has(trimmed) || contractManifestRefs.has(trimmed)) return "String";
+    if (contractCollections.has(trimmed)) return "List[String]";
+    return null;
+  };
   const normType = (t) => {
     if (typeof t !== "string") return t;
-    if (contractIds.has(t.trim())) return "String";
+    const scalar = scalarOf(t);
+    if (scalar) return scalar;
     const m = t.match(/^(Map[<[])([^,>\]]+)(,\s*.*)([>\]])$/);
-    if (m && contractIds.has(m[2].trim())) return `${m[1]}String${m[3]}${m[4]}`;
+    if (m) {
+      const key = scalarOf(m[2]) || m[2];
+      const valueRaw = m[3].replace(/^,\s*/, "").replace(/\s*$/, "");
+      const value = scalarOf(valueRaw) || valueRaw;
+      return `${m[1]}${key}, ${value}${m[4]}`;
+    }
     return t;
   };
   const scalaName = (n) => (typeof n === "string" && n.includes("-") ? n.replace(/-/g, "_") : n);
@@ -146,6 +175,7 @@ if (sagaBinding) {
         let cond = null;
         if (w.form === "map-absent") cond = `!state.${w.map}.contains(${p(w.key)})`;
         else if (w.form === "map-contains") cond = `state.${w.map}.contains(${p(w.key)})`;
+        else if (w.form === "collection-covered") cond = `${p(w.collection)}.forall(state.${w.map}.contains)`;
         else if (w.form === "money-sufficient") cond = `state.accountBalance.get(${p(w.amount)}.currency).exists(v => MoneyOps.compare(v.minorUnits, ${p(w.amount)}.minorUnits) >= 0)`;
         else if (w.form === "money-positive") cond = `MoneyOps.isPositive(${p(w.amount)}.minorUnits)`;
         if (!cond) continue;
@@ -2257,6 +2287,104 @@ akka.persistence.snapshot-store.plugin = "akka-contrib-mongodb-persistence-snaps
   } catch (e) {
     console.error("STRICT-ERR:", e.message);
     results.push({ gen: "saga-dsl-strict", status: "error", error: e.message.slice(0, 300) });
+  }
+}
+
+// ── saga-dsl invocation-host（P14 批B）：组合管线 → InvocationPipelineHost +
+//    monarch 子计划模块 + FixtureCompositionSpec。monarch 双 jar 经 --monarch-jar-dir
+//    复制到 lib/（sbt unmanaged；scalapb-runtime 0.11.14 与应用既有同版，零新增
+//    序列化框架——探针 .rounds/p14-composition-face-20261025/probe GO 在案）。──
+if (sagaExecutionBinding && sagaBinding && canonical.sagas?.length) {
+  try {
+    const { compileExecution } = await import("../lib/execution/compile.mjs");
+    const { emitInvocationHostFiles } = await import("./saga-dsl/emit-invocation-host.mjs");
+    const { emitInvocationSpecFiles } = await import("./saga-dsl/emit-invocation-spec.mjs");
+    const execResult = compileExecution(rawCanonical, sagaExecutionBinding);
+    if (!execResult.ir) {
+      throw new Error(`execution compile diagnostics: ${JSON.stringify(execResult.diagnostics.slice(0, 2).map((d) => [d.code, d.message]))}`);
+    }
+    // 组合管线=绑定带 childRuns 的执行管线；child 计划=其 planRef 指向的 monarch 管线。
+    const pipelineByld = new Map(rawCanonical.pipelines.map((p) => [p.id, p]));
+    const composeIr = execResult.ir.pipelines.find((p) => p.binding.childRuns?.length);
+    if (!composeIr) {
+      // No composition face in this tree (e.g. the money example): inert skip,
+      // never an error — the strict saga face still emitted above.
+      results.push({ gen: "saga-dsl-invocation-host", status: "skip", error: "no composition pipeline (childRuns binding)" });
+    } else {
+    const childRunBinding = composeIr.binding.childRuns[0];
+    const childPipeline = pipelineByld.get(childRunBinding.planRef.pipelineId);
+    if (!childPipeline || !childPipeline.monarch) throw new Error("child plan pipeline lacks a monarch block");
+    const stepModel = composeIr.steps.map((s) => ({
+      id: s.id,
+      kind: s.awaitChildRun ? "awaitChildRun" : "invokeSaga",
+    }));
+    const invocationByStep = new Map(composeIr.binding.invocations.map((i) => [i.stepId, i]));
+    const sagaRefs = {};
+    for (const step of stepModel) {
+      if (step.kind !== "invokeSaga") continue;
+      const entry = invocationByStep.get(step.id)?.runtime?.entrypoint || "";
+      const pkg = entry.split(".").slice(0, -1).join(".");
+      const moduleObj = (entry.split(".").pop() || "").replace(/Entry$/, "Module");
+      sagaRefs[step.id] = { pkg, moduleObj, entryName: entry.split(".").pop() };
+    }
+    const pascalPlan = childRunBinding.planRef.pipelineId.split("-").filter(Boolean)
+      .map((p) => p[0].toUpperCase() + p.slice(1)).join("");
+    const planObj = (pascalPlan.startsWith("Fab") ? pascalPlan : "Fab" + pascalPlan) + "Plan";
+    const model = {
+      pkg: "fixture.composition",
+      specPkg: "fixture.composition",
+      hostName: "FabCompositionHost",
+      pipelineId: composeIr.id,
+      pidPrefix: "fab-composition",
+      steps: stepModel,
+      split: sagaRefs[stepModel[0].id],
+      merge: sagaRefs[stepModel[stepModel.length - 1].id],
+      child: {
+        pkg: "fixture.composition",
+        planId: childRunBinding.planRef.pipelineId,
+        planObj,
+        stageType: "ChildStage",
+        stateType: "ChildPlanState",
+        pidPrefix: childRunBinding.journal.pidPrefix,
+        stages: childPipeline.monarch.stages,
+        stateFields: childPipeline.monarch.stateFields || [],
+      },
+    };
+    const strictHeader = `// @generated by truthsrc run-all:invocation-host\n`;
+    const pkgDir = join(outDir, "app", ...model.pkg.split("."));
+    const specDir = join(outDir, "test", ...model.specPkg.split("."));
+    mkdirSync(pkgDir, { recursive: true });
+    mkdirSync(specDir, { recursive: true });
+    let count = 0;
+    for (const f of emitInvocationHostFiles(model, { header: strictHeader })) {
+      writeFileSync(join(pkgDir, f.name), f.content);
+      count++;
+    }
+    for (const f of emitInvocationSpecFiles(model, { header: strictHeader })) {
+      writeFileSync(join(specDir, f.name), f.content);
+      count++;
+    }
+    // monarch 双 jar → lib/（unmanaged；sha256 与 fab-simulator-demo/VALIDATION-0.2.1.md
+    // 在案恒等——探针 GO 结论）。scalapb-runtime 0.11.14 应用既有（零新增依赖面）。
+    const monarchJarDir = flagVal("--monarch-jar-dir", null);
+    if (monarchJarDir) {
+      const jarRoot = isAbsolute(monarchJarDir) ? monarchJarDir : join(process.cwd(), monarchJarDir);
+      const jars = readdirSync(jarRoot, { recursive: true }).filter((f) => String(f).endsWith(".jar")
+        && !String(f).includes("sources") && !String(f).includes("javadoc"));
+      if (!jars.length) throw new Error(`no monarch jars under ${jarRoot}`);
+      mkdirSync(join(outDir, "lib"), { recursive: true });
+      for (const rel of jars) {
+        const src = join(jarRoot, String(rel));
+        writeFileSync(join(outDir, "lib", basename(String(rel))), readFileSync(src));
+      }
+    }
+    if (composeIr) {
+      results.push({ gen: "saga-dsl-invocation-host", status: "ok", count });
+    }
+    }
+  } catch (e) {
+    console.error("INVOCATION-ERR:", e.message);
+    results.push({ gen: "saga-dsl-invocation-host", status: "error", error: e.message.slice(0, 300) });
   }
 }
 

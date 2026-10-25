@@ -63,8 +63,9 @@ const SCALAR_MAP = {
 
 const protoType = (t) => {
   const raw = String(t || "");
-  // List<X> / Array<X> → repeated <map(X)>
-  const list = raw.match(/^(List|Array)<(.*)>$/);
+  // List<X> / List[X] / Array<X> → repeated <map(X)>（saga 规范化折叠的集合用
+  // Scala 方括号形态——两种括号都收）。
+  const list = raw.match(/^(List|Array)[<[](.*)[>\]]$/);
   if (list) return `repeated ${protoType(list[2])}`;
   // Map[K, V] (tree golden-master form) or Map<K, V> → proto map<K, V>.
   // Keys must be proto scalars; non-scalar keys (bounded-text ids like TxId)
@@ -82,7 +83,7 @@ const protoType = (t) => {
 
 const usesSharedVO = (t) => {
   const raw = String(t || "");
-  const list = raw.match(/^(List|Array)<(.*)>$/);
+  const list = raw.match(/^(List|Array)[<[](.*)[>\]]$/);
   if (list) return usesSharedVO(list[2]);
   const map = raw.match(/^Map[<[]([^,>\]]+),\s*(.+)[>\]]$/);
   if (map) return usesSharedVO(map[2].trim());

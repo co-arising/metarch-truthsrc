@@ -34,13 +34,19 @@ for (const [name, expected] of [['saga-money-transfer', ['money-transfer']], ['f
       '--tree', tree, '--binding', join(example, 'execution-bindings.json'), '--out', executionOutput], { encoding: 'utf8' });
     assert.equal(execution.status, 0, execution.stderr);
     const model = JSON.parse(readFileSync(executionOutput));
-    assert.equal(model.pipelines.length, expected.length);
+    assert.equal(model.pipelines.length, name === 'fab-split-merge' ? 3 : expected.length);
     assert.ok(model.pipelines.every(pipeline => pipeline.readiness === 'contract-only'));
     assert.deepEqual(model.sagas.map(({ definition }) => definition.id).sort(), [...expected].sort());
     for (const source of Object.values(model.sourceMap).filter(source => source.document === 'canonical' && source.pointer.startsWith('/sagas/'))) {
       assert.ok(source.file.includes('/sagas/'), `Saga provenance must not fall back to workshop: ${JSON.stringify(source)}`);
       assert.equal(source.location, null);
     }
-    if (name === 'fab-split-merge') assert.equal(model.documentOnly.length, 1, 'Unimplemented durable child waiting stays narrative-only');
+    if (name === 'fab-split-merge') {
+      // The design-boundary pipeline stays document-only, and the monarch child
+      // stages plan carries no execution block of its own (P14).
+      assert.equal(model.documentOnly.length, 2, 'design boundary + monarch child plan stay narrative-only');
+      assert.deepEqual(model.documentOnly.map(({ id }) => id).sort(),
+        ['fab-child-process', 'fab-split-await-child-merge-design']);
+    }
   });
 }

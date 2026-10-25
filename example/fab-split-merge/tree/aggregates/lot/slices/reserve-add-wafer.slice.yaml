@@ -26,6 +26,19 @@ payload:
     "produces": [
       "ReserveAddWaferConfirmed"
     ],
+    "guards": [
+      {
+        "ruleId": "IR-LOT-RESERVE-ADD-001",
+        "errCode": "61007",
+        "onFail": "reject",
+        "when": {
+          "form": "map-absent",
+          "map": "reservedAdditions",
+          "key": "param.txid"
+        },
+        "desc": "Addition already registered for this transaction (deterministic target-prepare rejection — the auto-abort/compensate face)."
+      }
+    ],
     "description": "Stable operation identity, exact payload compatibility and durable participant receipt required."
   }
 events:
@@ -34,18 +47,43 @@ events:
       "name": "ReserveAddWaferConfirmed",
       "payloads": [
         {
+          "name": "txid",
+          "dataType": "TxId",
+          "origin": "BUSINESS_INPUT"
+        },
+        {
           "name": "reservation",
           "dataType": "ReservationId",
           "origin": "BUSINESS_INPUT"
+        },
+        {
+          "name": "wafers",
+          "dataType": "WaferSet",
+          "origin": "BUSINESS_INPUT"
         }
       ],
-      "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
+      "description": "Designed durable fact: the wafer set was reserved for addition under this transaction identity; the fold keys the reservation by txid (the wafers are not carried until commit).",
       "bindings": [
+        {
+          "slot": "txid",
+          "expr": "param.txid"
+        },
         {
           "slot": "reservation",
           "expr": "receipt.reservation"
+        },
+        {
+          "slot": "wafers",
+          "expr": "param.wafers"
         }
       ],
-      "foldAssignments": []
+      "foldAssignments": [
+        {
+          "slot": "reservedAdditions",
+          "op": "put",
+          "key": "event.txid",
+          "value": "event.reservation"
+        }
+      ]
     }
   }

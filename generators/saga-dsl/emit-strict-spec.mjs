@@ -2,8 +2,9 @@
 // BC FixtureHostTemplate.generateTestFiles 的移植（蓝本=target/p8-anchors-20261024/
 // test/fixture/FixtureSafetySpec.scala）：A 守恒/幂等、B 全 TCC（succeeded/
 // rejected-before-effects/compensated+sagaResults 发布）、C 中断恢复、D 部署面
-// （D1 共享 Mongo journal+D2 事件流 source+D3 两 JVM；Mongo 不可达=assume 显式
-// canceled）。A/B/C persistence-testkit 自足（不依赖 Play bootstrap）。
+// （D1 共享 Mongo journal+D2 事件流 source+D3 两 JVM+D4 failover；Mongo 不可达=
+// assume 显式 canceled）。A/B/C persistence-testkit 自足（不依赖 Play bootstrap）。
+// P13 分族：money（金额守恒族）/ fab（有界 wafer 集合守恒族——无 money 面）。
 const jstr = (s) => JSON.stringify(String(s));
 const scalaId = (n) => n;
 
@@ -15,21 +16,125 @@ export function emitStrictSpecFiles(model, { header } = {}) {
   const prot = face.protocolFqn;
   const entity = face.entityFqn;
   const money = m.moneyFqn;
+  // P13 家族旗标：fab=无 money 面而有界集合 args（种子/断言/字面量全形状驱动）。
+  const fabFamily = !money && m.argsFields.some((f) => f.shape === "collection");
+  const queryName = face.queryCommandFqn.split(".").pop();
 
-  // 相位命令 helper（A 族直驱面）——每 phase 的命令与其输入槽
-  const scalaTypeOfInput = (p, i) => (p.shapes?.[i.slot] === "money" ? m.moneyFqn : "String");
+  // 相位命令 helper（A 族直驱面）——每 phase 的命令与其输入槽（集合槽 Vector→List）
   const phaseHelpers = m.phases.map((p) => {
-    const args = p.inputs.map((i) => `${scalaId(i.slot)}: ${p.inputShapes?.[i.slot] === "money" ? m.moneyFqn : "String"}`);
-    const callArgs = p.inputs.map((i) => scalaId(i.slot));
+    const args = p.inputs.map((i) => `${scalaId(i.slot)}: ${p.inputShapes?.[i.slot] === "money" ? m.moneyFqn : p.inputShapes?.[i.slot] === "collection" ? "Vector[String]" : "String"}`);
+    const callArgs = p.inputs.map((i) => (p.inputShapes?.[i.slot] === "collection" ? `${scalaId(i.slot)}.toList` : scalaId(i.slot)));
     return `  private def ${p.member.replace(/Binding$/, "")}(kit: ActorTestKit, ref: ActorRef[${prot}.${fbase}CommandFamily], ${args.join(", ")}): ${prot}.${fbase}Reply =
     askNow(kit, ref)(replyTo => ${prot}.${p.commandName}(${callArgs.join(", ")}, replyTo))`;
   }).join("\n");
 
-  // funding 种子：第二参与者 prepare（含金额）+ commit（仅 txid）确认对
-  const seedEvts = m.fundingSeedEvents.map((e) => {
-    const args = e.slots.map((s2) => (s2.shape === "money" ? "SeedAmount" : "txid")).join(", ");
-    return `${entity}.${e.fqn.split(".").pop()}(${args})`;
-  });
+  // funding 种子：第二参与者 prepare+commit 确认对——按确认事件真实载荷构造
+  // （fab 族事件载荷携带 outputs 之外的回执槽如 reservation）。
+  const seedArgOf = (pl) => {
+    if (pl.name === "txid") return "txid";
+    if (pl.shape === "money") return "SeedAmount";
+    if (pl.shape === "collection") return "wafers.toList";
+    return `"seed-${pl.name}"`;
+  };
+  const seedEvts = m.fundingSeedEvents.map((e) => `${entity}.${e.fqn.split(".").pop()}(${e.payloads.map(seedArgOf).join(", ")})`);
+  // B3 预录事件（目标 prepare 确认事件，saga txid 定值触发 61007/60007 拒绝面）。
+  const b3SeedEvt = `${entity}.${m.fundingSeedEvents[0].fqn.split(".").pop()}(${m.fundingSeedEvents[0].payloads.map((pl) => {
+    if (pl.name === "txid") return '"op-b3"';
+    if (pl.shape === "collection") return "SplitWafers.toList";
+    if (pl.shape === "money") return 'Money("70", Currency)';
+    return `"seed-${pl.name}"`;
+  }).join(", ")})`;
+  // D 面命令播种（第二参与者 prepare+commit 命令对，参数按命令声明槽形状驱动；
+  // resource 槽=实体寻址回显字面量；fab 集合槽=可注入的 wafers 形参——child 侧
+  // 播不相交 ChildBaseWafers 使 To 断言锋利）。
+  const colSeedExpr = fabFamily ? "wafers.toList" : "SeedWafers.toList";
+  const seedCmdArgs = (params) => params.map((pp) => {
+    if (pp.name === "txid") return "txid";
+    if (pp.name === "resource") return '"deployment-seed"';
+    const alias = m.typeAliases.find((t) => t.id === pp.dataType);
+    if (alias && alias.money) return "SeedAmount";
+    return colSeedExpr;
+  }).join(", ");
+  const seedCommands = m.fundingSeedEvents.map((e) => ({ name: e.commandName, params: e.commandParams }));
+  // To 侧播种调用行（fab 带 ChildBaseWafers 实参——testkit 面与命令面同款）。
+  const seedToLine = (kit, txid) => (fabFamily
+    ? `seedFunds(${kit}, To, "${txid}", ChildBaseWafers)`
+    : `seedFunds(${kit}, To, "${txid}")`);
+  const seedToByCommandsLine = (kit, sharding, txid) => (fabFamily
+    ? `seedFundsByCommands(${kit}, ${sharding}, To, "${txid}", ChildBaseWafers)`
+    : `seedFundsByCommands(${kit}, ${sharding}, To, "${txid}")`);
+
+  // ── 分族块 ──
+  const constantsBlock = fabFamily
+    ? `  private val SeedWafers = Vector("w-001", "w-002", "w-003", "w-004")
+  private val SplitWafers = Vector("w-001", "w-002")
+  private val ChildBaseWafers = Vector("w-101")
+  private val ManifestSeed = "manifest-seed-v1"
+  private val From = "parent-lot"
+  private val To = "child-lot"`
+    : `  private val Money = ${money}
+  private val Currency = "XTS"
+  private val SeedAmount = Money("100000", Currency)
+  private val From = "alice"
+  private val To = "bob"`;
+
+  const valueHelpers = fabFamily
+    ? `  private def carriedOf(kit: ActorTestKit, ref: akka.actor.typed.RecipientRef[${fbase}Protocol.${fbase}CommandFamily]): Set[String] =
+    stateOf(kit, ref).carried.keySet.toSet`
+    : `  private def balance(kit: ActorTestKit, ref: akka.actor.typed.RecipientRef[${fbase}Protocol.${fbase}CommandFamily]): BigInt =
+    BigInt(stateOf(kit, ref).accountBalance(Currency).minorUnits)`;
+
+  const seedByCommandsDef = `  private def seedFundsByCommands(kit: ActorTestKit, sharding: ClusterSharding, entityId: String, txid: String${fabFamily ? ", wafers: Vector[String] = SeedWafers" : ""}): Unit = {
+    val ref = entityRef(sharding, entityId)
+${seedCommands.map((c, i) => `    val r${i + 1} = askNow(kit, ref)(replyTo => ${prot}.${c.name}(${seedCmdArgs(c.params)}, replyTo))
+    assert(r${i + 1}.error.isEmpty, s"funding step ${i + 1} failed for $${'{'}entityId${'}'}: $${'{'}r${i + 1}.error${'}'}")`).join("\n")}
+  }`;
+
+  const startSagaDef = fabFamily
+    ? `  private def startSaga(kit: ActorTestKit, sharding: ClusterSharding, coordinator: ActorRef[StrictSagaCoordinator.Command], opId: String, wafers: Vector[String]): Unit = {
+    implicit val system: ActorSystem[_] = kit.system
+    implicit val ec: ExecutionContext = kit.system.executionContext
+    val host = new FixtureHost(kit.system, sharding)
+    val probe = kit.createTestProbe[StrictSagaCoordinator.Reply]()
+    val source = ${fbase}Protocol.StartTransfer(opId, From, To, wafers.toList, ManifestSeed, kit.createTestProbe[${fbase}Protocol.${fbase}Reply]().ref)
+    coordinator ! ${m.entryName}.start(coordinator, host, source, probe.ref)
+  }`
+    : `  private def startSaga(kit: ActorTestKit, sharding: ClusterSharding, coordinator: ActorRef[StrictSagaCoordinator.Command], opId: String, amount: ${money}): Unit = {
+    implicit val system: ActorSystem[_] = kit.system
+    implicit val ec: ExecutionContext = kit.system.executionContext
+    val host = new FixtureHost(kit.system, sharding)
+    val probe = kit.createTestProbe[StrictSagaCoordinator.Reply]()
+    val source = ${fbase}Protocol.StartTransfer(opId, From, To, amount, kit.createTestProbe[${fbase}Protocol.${fbase}Reply]().ref)
+    coordinator ! ${m.entryName}.start(coordinator, host, source, probe.ref)
+  }`;
+
+  // B1/B2/C1 的 saga 启动值与终态断言（金额族/集合族）
+  const sagaValue = fabFamily ? "SplitWafers" : 'Money("100", Currency)';
+  const sagaValueB2 = fabFamily ? 'Vector("w-404")' : 'Money("999999", Currency)';
+  const sagaValueC1 = fabFamily ? "SplitWafers" : 'Money("20", Currency)';
+  const fromAfterSuccess = fabFamily
+    ? `assert(carriedOf(kit, entityRef(sharding, From)) == (SeedWafers.toSet -- SplitWafers.toSet))`
+    : `assert(balance(kit, entityRef(sharding, From)) == BigInt("99900"))`;
+  const toAfterSuccess = fabFamily
+    ? `assert(carriedOf(kit, entityRef(sharding, To)) == (ChildBaseWafers.toSet ++ SplitWafers.toSet))`
+    : `assert(balance(kit, entityRef(sharding, To)) == BigInt("100100"))`;
+  const fromAfterRestore = fabFamily
+    ? `assert(carriedOf(kit, entityRef(sharding, From)) == SeedWafers.toSet)`
+    : `assert(balance(kit, entityRef(sharding, From)) == BigInt("100000"))`;
+  const toAfterRestore = fabFamily
+    ? `assert(carriedOf(kit, entityRef(sharding, To)) == ChildBaseWafers.toSet)`
+    : `assert(balance(kit, entityRef(sharding, To)) == BigInt("100000"))`;
+
+  // D2 触发命令构造（发聚合不发协调器）
+  const d2Trigger = fabFamily
+    ? `${fbase}Protocol.StartTransfer(opId, From, To, SplitWafers.toList, ManifestSeed, replyTo))`
+    : `${fbase}Protocol.StartTransfer(opId, From, To, Money("100", Currency), replyTo))`;
+  // D3/D4 节点末位参数与结果断言（金额 minor / wafer CSV）
+  const nodeTailArg = fabFamily ? '"w-001,w-002"' : '"100"';
+  const d3ParentAsserts = fabFamily
+    ? `        assert(out.contains("from-carried=2") && out.contains("to-carried=3"), s"carried sets wrong — output: $out")`
+    : `        assert(out.contains("alice=99900") && out.contains("bob=100100"), s"balances wrong — output: $out")`;
+  const d4ParentAsserts = d3ParentAsserts;
 
   const spec = `${h}package ${m.pkg}
 
@@ -63,19 +168,15 @@ import scala.concurrent.duration._
   *   - D the deployment face against a shared MongoDB journal: D1 two clustered systems
   *     over ONE durable journal (direct start), D2 the journal event-stream source
   *     (the persisted trigger event starts the saga, no direct coordinator call),
-  *     D3 physical two-JVM deployment — event-driven across processes. Each D test
-  *     fails honestly (assume) when MongoDB is unreachable; run-scoped databases keep
-  *     runs isolated and leave the journal as evidence.
-  * Test-scoped currency XTS (the ISO-4217 test code). A/B/C fund through the
-  * persistence test kit (no invented semantics); the D family funds through the
-  * aggregate's own command face — the production-honest path a real journal demands. */
+  *     D3 physical two-JVM deployment, D4 failover convergence. Each D test fails
+  *     honestly (assume) when MongoDB is unreachable; run-scoped databases keep runs
+  *     isolated and leave the journal as evidence.
+  * A/B/C fund through the persistence test kit (no invented semantics); the D family
+  * funds through the aggregate's own command face — the production-honest path a real
+  * journal demands. */
 class FixtureSafetySpec extends AnyFunSuite {
 
-  private val Money = ${money}
-  private val Currency = "XTS"
-  private val SeedAmount = Money("100000", Currency)
-  private val From = "alice"
-  private val To = "bob"
+${constantsBlock}
   private val ReconcileToken = "safety-spec-reconcile-token"
 
   private def singleNodeConfig(): Config = ConfigFactory.parseString(
@@ -98,9 +199,7 @@ class FixtureSafetySpec extends AnyFunSuite {
       akka.remote.artery.canonical.port = $port
       akka.remote.artery.bind.hostname = "127.0.0.1"
       akka.remote.artery.bind.port = $port
-      akka.persistence.journal.plugin = "akka.persistence.testkit.journal"
       akka.persistence.testkit.journal.class = "akka.persistence.testkit.PersistenceTestKitPlugin"
-      akka.persistence.snapshot-store.plugin = "akka.persistence.testkit.snapshots"
       akka.persistence.testkit.snapshots.class = "akka.persistence.testkit.PersistenceTestKitSnapshotPlugin"
       akka.cluster.seed-nodes = [$seeds]
       akka.cluster.jmx.multi-mbeans-in-same-jvm = on
@@ -113,9 +212,9 @@ class FixtureSafetySpec extends AnyFunSuite {
       commandHandler = ${face.behaviorsFqn}.apply,
       eventHandler = ${face.eventHandlerFqn}.apply)
 
-  /** Funds an account through the contract's own fund-entry fold pair, seeded into the
+  /** Funds a participant through the contract's own fund-entry fold pair, seeded into the
     * journal before the entity spawns (the recovery fold applies it at spawn). */
-  private def seedFunds(kit: ActorTestKit, entityId: String, txid: String): Unit =
+  private def seedFunds(kit: ActorTestKit, entityId: String, txid: String${fabFamily ? ", wafers: Vector[String] = SeedWafers" : ""}): Unit =
     PersistenceTestKit(kit.system).persistForRecovery(
       PersistenceId(${fbase}Aggregate.entityTypeKey.name, entityId).id,
       Vector(${seedEvts[0]}, ${seedEvts[1]}))
@@ -127,10 +226,9 @@ class FixtureSafetySpec extends AnyFunSuite {
   }
 
   private def stateOf(kit: ActorTestKit, ref: akka.actor.typed.RecipientRef[${fbase}Protocol.${fbase}CommandFamily]) =
-    askNow(kit, ref)(replyTo => ${fbase}Protocol.GetBalance(replyTo)).state
+    askNow(kit, ref)(replyTo => ${fbase}Protocol.${queryName}(replyTo)).state
 
-  private def balance(kit: ActorTestKit, ref: akka.actor.typed.RecipientRef[${fbase}Protocol.${fbase}CommandFamily]): BigInt =
-    BigInt(stateOf(kit, ref).accountBalance(Currency).minorUnits)
+${valueHelpers}
 
   private def initSharding(kit: ActorTestKit): ClusterSharding = {
     val sharding = ClusterSharding(kit.system)
@@ -160,14 +258,7 @@ class FixtureSafetySpec extends AnyFunSuite {
     s
   }
 
-  private def startSaga(kit: ActorTestKit, sharding: ClusterSharding, coordinator: ActorRef[StrictSagaCoordinator.Command], opId: String, amount: ${money}): Unit = {
-    implicit val system: ActorSystem[_] = kit.system
-    implicit val ec: ExecutionContext = kit.system.executionContext
-    val host = new FixtureHost(kit.system, sharding)
-    val probe = kit.createTestProbe[StrictSagaCoordinator.Reply]()
-    val source = ${fbase}Protocol.StartTransfer(opId, From, To, amount, kit.createTestProbe[${fbase}Protocol.${fbase}Reply]().ref)
-    coordinator ! ${m.entryName}.start(coordinator, host, source, probe.ref)
-  }
+${startSagaDef}
 
   // ---------- deployment-face helpers (shared MongoDB journal) ----------
 
@@ -204,24 +295,27 @@ class FixtureSafetySpec extends AnyFunSuite {
   /** Deployment-face funding: the aggregate's own command face against the shared
     * journal — a real journal is not out-of-band seedable, and command seeding is the
     * production-honest path (the same folds the persistence test-kit seeds fake). */
-  private def seedFundsByCommands(kit: ActorTestKit, sharding: ClusterSharding, entityId: String, txid: String): Unit = {
-    val ref = entityRef(sharding, entityId)
-    val r1 = askNow(kit, ref)(replyTo => ${prot}.RecordIncomingCredits(txid, "deployment-seed", SeedAmount, replyTo))
-    assert(r1.error.isEmpty, s"funding record failed for $entityId: $${'{'}r1.error${'}'}")
-    val r2 = askNow(kit, ref)(replyTo => ${prot}.CommitIncomingCredits(txid, "deployment-seed", replyTo))
-    assert(r2.error.isEmpty, s"funding commit failed for $entityId: $${'{'}r2.error${'}'}")
-  }
+${seedByCommandsDef}
 
 ${phaseHelpers}
 
   // ---------- A: aggregate conservation and idempotency ----------
 
-  test("A1 aggregate conservation: commit books exactly the prepared amount and leaves the marker") {
+  test("A1 aggregate conservation: commit books exactly the prepared value and leaves the marker") {
     val kit = ActorTestKit("SafetyAggregateA1", singleNodeConfig())
     try {
       seedFunds(kit, "a1", "seed-a1")
       val ref = kit.spawn(aggregateBehavior("a1"))
-      val r1 = reserve_sourcePrepare(kit, ref, "tx-a1-1", "a1", Money("100", Currency))
+${fabFamily ? `      val r1 = reserve_sourcePrepare(kit, ref, "tx-a1-1", "a1", SplitWafers)
+      assert(r1.error.isEmpty)
+      assert(carriedOf(kit, ref) == (SeedWafers.toSet -- SplitWafers.toSet))
+      assert(stateOf(kit, ref).reservedRemovals.contains("tx-a1-1"))
+      val r2 = reserve_sourceCommit(kit, ref, "tx-a1-1", "a1")
+      assert(r2.error.isEmpty)
+      val s = stateOf(kit, ref)
+      assert(carriedOf(kit, ref) == (SeedWafers.toSet -- SplitWafers.toSet))
+      assert(s.committed.contains("tx-a1-1"))
+      assert(!s.reservedRemovals.contains("tx-a1-1"))` : `      val r1 = reserve_sourcePrepare(kit, ref, "tx-a1-1", "a1", Money("100", Currency))
       assert(r1.error.isEmpty)
       assert(balance(kit, ref) == BigInt("99900"))
       assert(stateOf(kit, ref).reservedAmount("tx-a1-1").minorUnits == "100")
@@ -230,22 +324,28 @@ ${phaseHelpers}
       val s = stateOf(kit, ref)
       assert(balance(kit, ref) == BigInt("99900"))
       assert(s.committed("tx-a1-1").minorUnits == "100")
-      assert(!s.reservedAmount.contains("tx-a1-1"))
+      assert(!s.reservedAmount.contains("tx-a1-1"))`}
     } finally kit.shutdownTestKit()
   }
 
-  test("A2 aggregate conservation: compensation restores the balance and leaves the marker") {
+  test("A2 aggregate conservation: compensation restores the value and leaves the marker") {
     val kit = ActorTestKit("SafetyAggregateA2", singleNodeConfig())
     try {
       seedFunds(kit, "a2", "seed-a2")
       val ref = kit.spawn(aggregateBehavior("a2"))
-      reserve_sourcePrepare(kit, ref, "tx-a2-1", "a2", Money("50", Currency))
+${fabFamily ? `      reserve_sourcePrepare(kit, ref, "tx-a2-1", "a2", SplitWafers)
+      val r = reserve_sourceCompensate(kit, ref, "tx-a2-1", "a2", SplitWafers)
+      assert(r.error.isEmpty)
+      val s = stateOf(kit, ref)
+      assert(carriedOf(kit, ref) == SeedWafers.toSet)
+      assert(s.compensated.contains("tx-a2-1"))
+      assert(!s.reservedRemovals.contains("tx-a2-1"))` : `      reserve_sourcePrepare(kit, ref, "tx-a2-1", "a2", Money("50", Currency))
       val r = reserve_sourceCompensate(kit, ref, "tx-a2-1", "a2")
       assert(r.error.isEmpty)
       val s = stateOf(kit, ref)
       assert(balance(kit, ref) == BigInt("100000"))
       assert(s.compensated("tx-a2-1").minorUnits == "50")
-      assert(!s.reservedAmount.contains("tx-a2-1"))
+      assert(!s.reservedAmount.contains("tx-a2-1"))`}
     } finally kit.shutdownTestKit()
   }
 
@@ -254,12 +354,16 @@ ${phaseHelpers}
     try {
       seedFunds(kit, "a3", "seed-a3")
       val ref = kit.spawn(aggregateBehavior("a3"))
-      // duplicate prepare while prepared: succeed-empty, no double effect (the 60008 rule)
-      reserve_sourcePrepare(kit, ref, "tx-a3-1", "a3", Money("30", Currency))
+      // duplicate prepare while prepared: succeed-empty, no double effect (the idempotency rule)
+${fabFamily ? `      reserve_sourcePrepare(kit, ref, "tx-a3-1", "a3", SplitWafers)
+      val replay = reserve_sourcePrepare(kit, ref, "tx-a3-1", "a3", SplitWafers)
+      assert(replay.error.isEmpty)
+      assert(stateOf(kit, ref).reservedRemovals.contains("tx-a3-1"))
+      assert(carriedOf(kit, ref) == (SeedWafers.toSet -- SplitWafers.toSet))` : `      reserve_sourcePrepare(kit, ref, "tx-a3-1", "a3", Money("30", Currency))
       val replay = reserve_sourcePrepare(kit, ref, "tx-a3-1", "a3", Money("30", Currency))
       assert(replay.error.isEmpty)
       assert(stateOf(kit, ref).reservedAmount("tx-a3-1").minorUnits == "30")
-      assert(balance(kit, ref) == BigInt("99970"))
+      assert(balance(kit, ref) == BigInt("99970"))`}
       // result republication: the second publish hits the succeed-empty guard, zero events
       val first = askNow(kit, ref)(replyTo => ${prot}.RecordResultSucceeded("tx-a3-result", replyTo))
       assert(first.error.isEmpty)
@@ -295,21 +399,21 @@ ${phaseHelpers}
     assert(ledger.get(txId).contains(expectedKind), s"the event source did not publish '$expectedKind' for $txId within 30s — ledger: $ledger")
   }
 
-  test("B1 full saga: succeeded transfer books the exact amounts and publishes the ledger") {
+  test("B1 full saga: succeeded transfer books the exact value and publishes the ledger") {
     val port = freePort()
     val kit = ActorTestKit("SafetySagaB1", clusterConfig(port, s"\\"akka://SafetySagaB1@127.0.0.1:$port\\""))
     try {
       val sharding = initSharding(kit)
       awaitMembers(kit, 1)
       seedFunds(kit, From, "seed-b1-from")
-      seedFunds(kit, To, "seed-b1-to")
+      ${seedToLine("kit", "seed-b1-to")}
       implicit val ec: ExecutionContext = kit.system.executionContext
       val coordinator = ${m.entryName}.spawnClusterSingleton(kit.system, sharding, ReconcileToken)
-      startSaga(kit, sharding, coordinator, "op-b1", Money("100", Currency))
+      startSaga(kit, sharding, coordinator, "op-b1", ${sagaValue})
       val state = awaitTerminal(kit, coordinator)
       assert(state.status == StrictStatus.Succeeded)
-      assert(balance(kit, entityRef(sharding, From)) == BigInt("99900"))
-      assert(balance(kit, entityRef(sharding, To)) == BigInt("100100"))
+      ${fromAfterSuccess}
+      ${toAfterSuccess}
       assertPublished(kit, sharding, state, "succeeded")
     } finally kit.shutdownTestKit()
   }
@@ -321,14 +425,14 @@ ${phaseHelpers}
       val sharding = initSharding(kit)
       awaitMembers(kit, 1)
       seedFunds(kit, From, "seed-b2-from")
-      seedFunds(kit, To, "seed-b2-to")
+      ${seedToLine("kit", "seed-b2-to")}
       implicit val ec: ExecutionContext = kit.system.executionContext
       val coordinator = ${m.entryName}.spawnClusterSingleton(kit.system, sharding, ReconcileToken)
-      startSaga(kit, sharding, coordinator, "op-b2", Money("999999", Currency))
+      startSaga(kit, sharding, coordinator, "op-b2", ${sagaValueB2})
       val state = awaitTerminal(kit, coordinator)
       assert(state.status == StrictStatus.Aborted)
-      assert(balance(kit, entityRef(sharding, From)) == BigInt("100000"))
-      assert(balance(kit, entityRef(sharding, To)) == BigInt("100000"))
+      ${fromAfterRestore}
+      ${toAfterRestore}
       assertPublished(kit, sharding, state, "rejected-before-effects")
     } finally kit.shutdownTestKit()
   }
@@ -340,21 +444,21 @@ ${phaseHelpers}
       val sharding = initSharding(kit)
       awaitMembers(kit, 1)
       seedFunds(kit, From, "seed-b3-from")
-      // Deterministic target-prepare rejection: pre-record the incoming credit for the
-      // saga's txid — the target prepare hits its 60007 guard, the runtime records the
-      // safe absence and auto-aborts, compensating exactly the confirmed source prepare.
+      // Deterministic target-prepare rejection: pre-record the target prepare fact for the
+      // saga's txid — the target prepare hits its duplicate-registration guard, the runtime
+      // records the safe absence and auto-aborts, compensating exactly the confirmed source.
       PersistenceTestKit(kit.system).persistForRecovery(
         PersistenceId(${fbase}Aggregate.entityTypeKey.name, To).id,
-        Vector(${entity}.${m.fundingSeedEvents[0].fqn.split(".").pop()}("op-b3", Money("70", Currency))))
+        Vector(${b3SeedEvt}))
       implicit val system: ActorSystem[_] = kit.system
       implicit val ec: ExecutionContext = kit.system.executionContext
       implicit val timeout: Timeout = Timeout(10.seconds)
       val coordinator = ${m.entryName}.spawnClusterSingleton(kit.system, sharding, ReconcileToken)
-      startSaga(kit, sharding, coordinator, "op-b3", Money("70", Currency))
+      startSaga(kit, sharding, coordinator, "op-b3", ${fabFamily ? "SplitWafers" : 'Money("70", Currency)'})
       val state = awaitTerminal(kit, coordinator)
       assert(state.status == StrictStatus.Aborted)
-      assert(balance(kit, entityRef(sharding, From)) == BigInt("100000"))
-      assert(stateOf(kit, entityRef(sharding, From)).compensated.get("op-b3").map(_.minorUnits).contains("70"))
+      ${fromAfterRestore}
+${fabFamily ? `      assert(stateOf(kit, entityRef(sharding, From)).compensated.contains("op-b3"))` : `      assert(stateOf(kit, entityRef(sharding, From)).compensated.get("op-b3").map(_.minorUnits).contains("70"))`}
       assertPublished(kit, sharding, state, "compensated")
     } finally kit.shutdownTestKit()
   }
@@ -368,17 +472,17 @@ ${phaseHelpers}
       val sharding = initSharding(kit)
       awaitMembers(kit, 1)
       seedFunds(kit, From, "seed-c1-from")
-      seedFunds(kit, To, "seed-c1-to")
+      ${seedToLine("kit", "seed-c1-to")}
       implicit val system: ActorSystem[_] = kit.system
       implicit val ec: ExecutionContext = kit.system.executionContext
       val coordinator = ${m.entryName}.spawn(kit.system, sharding, ReconcileToken)
-      startSaga(kit, sharding, coordinator, "op-c1", Money("20", Currency))
+      startSaga(kit, sharding, coordinator, "op-c1", ${sagaValueC1})
       Thread.sleep(250) // mid-flight: the pinned interaction timeout is ${m.interactionTimeoutMs}ms
       // Kill through the classic cell (PoisonPill is cell-intercepted regardless of
     // the typed behavior's internal state) and await termination on a death watch.
       coordinator.toClassic ! akka.actor.PoisonPill
       // Re-spawn only succeeds once the old actor (same system-actor name) is dead —
-    // the loop itself is the termination gate; the pill is cell-intercepted.
+      // the loop itself is the termination gate; the pill is cell-intercepted.
       var again: ActorRef[StrictSagaCoordinator.Command] = null
       val respawnDeadline = System.currentTimeMillis() + 20000L
       while (again == null && System.currentTimeMillis() < respawnDeadline) {
@@ -396,14 +500,15 @@ ${phaseHelpers}
       again ! StrictSagaCoordinator.Reconcile(recovered.identity.get, ReconcileToken, 32, reconcileProbe.ref)
       val state = awaitTerminal(kit, again)
       assert(state.terminal || state.status == StrictStatus.RecoveryRequired)
-      // Outcome-bounded conservation: succeeded moved exactly the amount; aborted restored it;
+      // Outcome-bounded conservation: succeeded moved exactly the value; aborted restored it;
       // RecoveryRequired awaits authorized reconciliation (manual path, out of spec scope).
       if (state.status == StrictStatus.Succeeded) {
-        assert(balance(kit, entityRef(sharding, From)) == BigInt("99980"))
-        assert(balance(kit, entityRef(sharding, To)) == BigInt("100020"))
+        ${fabFamily ? `assert(carriedOf(kit, entityRef(sharding, From)) == (SeedWafers.toSet -- SplitWafers.toSet))
+        assert(carriedOf(kit, entityRef(sharding, To)) == (ChildBaseWafers.toSet ++ SplitWafers.toSet))` : `assert(balance(kit, entityRef(sharding, From)) == BigInt("99980"))
+        assert(balance(kit, entityRef(sharding, To)) == BigInt("100020"))`}
       } else if (state.status == StrictStatus.Aborted) {
-        assert(balance(kit, entityRef(sharding, From)) == BigInt("100000"))
-        assert(balance(kit, entityRef(sharding, To)) == BigInt("100000"))
+        ${fromAfterRestore}
+        ${toAfterRestore}
       } else assert(state.status == StrictStatus.RecoveryRequired)
     } finally kit.shutdownTestKit()
   }
@@ -411,7 +516,7 @@ ${phaseHelpers}
   // ---------- D: the deployment face (shared MongoDB journal) ----------
 
   test("D1 shared durable journal: two clustered systems complete a transfer over one Mongo journal") {
-    assume(mongoReachable(), s"MongoDB not reachable at $MongoHostPort — the deployment face (D1-D3) requires the shared durable journal")
+    assume(mongoReachable(), s"MongoDB not reachable at $MongoHostPort — the deployment face (D1-D4) requires the shared durable journal")
     val uri = mongoUri(s"strict_deployment_d1_$${'{'}System.nanoTime()${'}'}")
     val portA = freePort()
     val kitA = ActorTestKit("SafetyClusterD1", mongoClusterConfig(portA, s"\\"akka://SafetyClusterD1@127.0.0.1:$portA\\"", uri))
@@ -424,55 +529,56 @@ ${phaseHelpers}
       // One shared journal: fund once through the aggregate's own command face — every
       // node reads the same durable state (the per-system test-kit journals are gone).
       seedFundsByCommands(kitA, shardingA, From, "seed-d1-from")
-      seedFundsByCommands(kitA, shardingA, To, "seed-d1-to")
+      ${seedToByCommandsLine("kitA", "shardingA", "seed-d1-to")}
       implicit val ec: ExecutionContext = kitB.system.executionContext
       // ClusterSingleton runs the coordinator on the cluster's OLDEST member — every
       // node must init the singleton; the returned proxies route cluster-wide.
       val coordinatorA = ${m.entryName}.spawnClusterSingleton(kitA.system, shardingA, ReconcileToken)
       val coordinatorB = ${m.entryName}.spawnClusterSingleton(kitB.system, shardingB, ReconcileToken)
-      startSaga(kitB, shardingB, coordinatorB, "op-d1", Money("100", Currency))
+      startSaga(kitB, shardingB, coordinatorB, "op-d1", ${sagaValue})
       val state = awaitTerminal(kitB, coordinatorB)
       assert(state.status == StrictStatus.Succeeded)
-      // Balances verified through BOTH systems' sharding proxies — cross-node asks
+      // Values verified through BOTH systems' sharding proxies — cross-node asks
       // against one shared durable journal.
-      assert(balance(kitA, entityRef(shardingA, From)) == BigInt("99900"))
-      assert(balance(kitB, entityRef(shardingB, To)) == BigInt("100100"))
+      ${fabFamily ? `assert(carriedOf(kitA, entityRef(shardingA, From)) == (SeedWafers.toSet -- SplitWafers.toSet))
+      assert(carriedOf(kitB, entityRef(shardingB, To)) == (ChildBaseWafers.toSet ++ SplitWafers.toSet))` : `assert(balance(kitA, entityRef(shardingA, From)) == BigInt("99900"))
+      assert(balance(kitB, entityRef(shardingB, To)) == BigInt("100100"))`}
       assertPublished(kitA, shardingA, state, "succeeded")
     } finally { kitB.shutdownTestKit(); kitA.shutdownTestKit() }
   }
 
   test("D2 event-stream source: the persisted trigger event starts the saga with no direct coordinator call") {
-    assume(mongoReachable(), s"MongoDB not reachable at $MongoHostPort — the deployment face (D1-D3) requires the shared durable journal")
+    assume(mongoReachable(), s"MongoDB not reachable at $MongoHostPort — the deployment face (D1-D4) requires the shared durable journal")
     val port = freePort()
     val kit = ActorTestKit("SafetyEventSourceD2", mongoClusterConfig(port, s"\\"akka://SafetyEventSourceD2@127.0.0.1:$port\\"", mongoUri(s"strict_deployment_d2_$${'{'}System.nanoTime()${'}'}")))
     try {
       val sharding = initSharding(kit)
       awaitMembers(kit, 1)
       seedFundsByCommands(kit, sharding, From, "seed-d2-from")
-      seedFundsByCommands(kit, sharding, To, "seed-d2-to")
+      ${seedToByCommandsLine("kit", "sharding", "seed-d2-to")}
       implicit val ec: ExecutionContext = kit.system.executionContext
       val coordinator = ${m.entryName}.spawnClusterSingleton(kit.system, sharding, ReconcileToken)
       // Install the journal event-stream source BEFORE the command: whatever the
       // stream's catch-up semantics, the trigger event persists after the install.
       ${m.entryName}.installEventSource(kit.system, sharding, coordinator)
       // Send the command to the AGGREGATE (never the coordinator): the persisted
-      // TransferRequested event is what starts the saga.
+      // trigger event is what starts the saga.
       val opId = "op-d2-" + System.currentTimeMillis()
       val commandReply = askNow(kit, entityRef(sharding, From))(replyTo =>
-        ${fbase}Protocol.StartTransfer(opId, From, To, Money("100", Currency), replyTo))
+        ${d2Trigger}
       assert(commandReply.error.isEmpty)
       val state = awaitTerminal(kit, coordinator)
       assert(state.status == StrictStatus.Succeeded)
       assert(state.identity.get.transactionId == opId)
-      assert(balance(kit, entityRef(sharding, From)) == BigInt("99900"))
-      assert(balance(kit, entityRef(sharding, To)) == BigInt("100100"))
+      ${fromAfterSuccess}
+      ${toAfterSuccess}
       // No manual publish here: the event-stream source owns the completion side.
       awaitPublished(kit, sharding, opId, "succeeded")
     } finally kit.shutdownTestKit()
   }
 
   test("D3 physical two-JVM deployment: an event-driven saga across two processes and one journal") {
-    assume(mongoReachable(), s"MongoDB not reachable at $MongoHostPort — the deployment face (D1-D3) requires the shared durable journal")
+    assume(mongoReachable(), s"MongoDB not reachable at $MongoHostPort — the deployment face (D1-D4) requires the shared durable journal")
     val classpath = System.getProperty("java.class.path")
     assume(classpath.split(java.io.File.pathSeparator).exists(p => p.contains("target") && p.contains("scala-2.13")),
       "D3 requires Test/fork — java.class.path must carry the application test classpath")
@@ -498,7 +604,7 @@ ${phaseHelpers}
         catch { case _: Throwable => Thread.sleep(200) }
       }
       assert(bound, "seed node did not bind its artery port in 30s — see target/deployment-face/d3-seed.log")
-      val join = node(Vector("join", freePort().toString, seedAddr, uri, opId, From, To, "100"), "d3-join.log")
+      val join = node(Vector("join", freePort().toString, seedAddr, uri, opId, From, To, ${nodeTailArg}), "d3-join.log")
       try {
         val joinDone = join.waitFor(180, java.util.concurrent.TimeUnit.SECONDS)
         assert(joinDone, "join node did not finish in 180s — see target/deployment-face/d3-join.log and d3-seed.log")
@@ -506,7 +612,7 @@ ${phaseHelpers}
         val source = scala.io.Source.fromFile(new java.io.File(evidenceDir, "d3-join.log"))
         val out = try source.mkString finally source.close()
         assert(out.contains(s"D3-RESULT status=Succeeded op=$opId"), s"join node did not report a succeeded transfer — output: $out")
-        assert(out.contains("alice=99900") && out.contains("bob=100100"), s"balances wrong — output: $out")
+        ${d3ParentAsserts}
       } finally if (join.isAlive) join.destroy()
     } finally {
       if (seed.isAlive) { seed.destroy(); seed.waitFor(10, java.util.concurrent.TimeUnit.SECONDS) }
@@ -545,7 +651,7 @@ ${phaseHelpers}
       }
       assert(bound, "seed node did not bind its artery port in 30s — see target/deployment-face/d4-seed.log")
       val joinLog = new java.io.File(evidenceDir, "d4-join.log")
-      val join = node(Vector("failover", freePort().toString, seedAddr, uri, opId, From, To, "100"), "d4-join.log")
+      val join = node(Vector("failover", freePort().toString, seedAddr, uri, opId, From, To, ${nodeTailArg}), "d4-join.log")
       try {
         // Destroy the coordinator node as early as the transaction is observable
         // (identity defined). Whatever instant the loss lands — before the Start,
@@ -567,7 +673,7 @@ ${phaseHelpers}
         assert(join.exitValue() == 0, s"failover node failed (exit $${'{'}join.exitValue()${'}'}) — see target/deployment-face/d4-join.log and d4-seed.log")
         val out = tailOf(joinLog)
         assert(out.contains(s"D4-RESULT status=Succeeded op=$opId"), s"failover node did not report a succeeded transfer — output: $out")
-        assert(out.contains("alice=99900") && out.contains("bob=100100"), s"balances wrong — output: $out")
+        ${d4ParentAsserts}
         assert(out.contains("ledger=succeeded"), s"the source did not publish the ledger after the node loss — output: $out")
       } finally if (join.isAlive) join.destroy()
     } finally {
@@ -593,7 +699,73 @@ ${phaseHelpers}
 }
 `;
 
-  // ── FixtureDeploymentNode.scala（D3 两进程部署面节点）──
+  // ── FixtureDeploymentNode.scala（D3/D4 两进程部署面节点；P13 分族常量/播种/断言）──
+  const nodeConstants = fabFamily
+    ? `  private val SeedWafers = Vector("w-001", "w-002", "w-003", "w-004")
+  private val SplitWafers = Vector("w-001", "w-002")
+  private val ChildBaseWafers = Vector("w-101")
+  private val ManifestSeed = "manifest-seed-v1"
+  private val From = "parent-lot"
+  private val To = "child-lot"`
+    : `  private val Money = ${money}
+  private val Currency = "XTS"
+  private val SeedAmount = Money("100000", Currency)
+  private val From = "alice"
+  private val To = "bob"`;
+  const nodeUsage = fabFamily ? "[opId from to wafersCsv]" : "[opId from to amountMinor]";
+  const nodeTailParse = fabFamily
+    ? `          val wafers = args(7).split(",").toVector
+          require(wafers.nonEmpty, "wafersCsv must name at least one wafer")`
+    : `          val amount = Money(args(7), Currency)`;
+  const nodeTrigger = fabFamily
+    ? `entityRef(sharding, from).ask(replyTo => ${fbase}Protocol.StartTransfer(opId, from, to, wafers.toList, ManifestSeed, replyTo)), 15.seconds)`
+    : `entityRef(sharding, from).ask(replyTo => ${fbase}Protocol.StartTransfer(opId, from, to, amount, replyTo)), 15.seconds)`;
+  const nodeFundDef = `  private def fund(system: ActorSystem[_], sharding: ClusterSharding, entityId: String, txid: String${fabFamily ? ", wafers: Vector[String]" : ""}): Unit = {
+    implicit val s: ActorSystem[_] = system
+    implicit val timeout: Timeout = Timeout(15.seconds)
+    val ref = entityRef(sharding, entityId)
+${seedCommands.map((c, i) => `    val r${i + 1} = Await.result(ref.ask(replyTo => ${fbase}Protocol.${c.name}(${seedCmdArgs(c.params)}, replyTo)), 15.seconds)
+    require(r${i + 1}.error.isEmpty, s"funding step ${i + 1} failed for $entityId: $${'{'}r${i + 1}.error${'}'}")`).join("\n")}
+  }`;
+  const nodeValueDef = fabFamily
+    ? `  private def carriedOf(system: ActorSystem[_], sharding: ClusterSharding, entityId: String): Set[String] = {
+    implicit val s: ActorSystem[_] = system
+    implicit val timeout: Timeout = Timeout(15.seconds)
+    Await.result(entityRef(sharding, entityId).ask(replyTo => ${fbase}Protocol.${queryName}(replyTo)), 15.seconds).state.carried.keySet.toSet
+  }`
+    : `  private def balance(system: ActorSystem[_], sharding: ClusterSharding, entityId: String): BigInt = {
+    implicit val s: ActorSystem[_] = system
+    implicit val timeout: Timeout = Timeout(15.seconds)
+    val state = Await.result(entityRef(sharding, entityId).ask(replyTo => ${fbase}Protocol.${queryName}(replyTo)), 15.seconds).state
+    BigInt(state.accountBalance(Currency).minorUnits)
+  }`;
+  const nodeResultD3 = fabFamily
+    ? `          val fromCarried = carriedOf(system, sharding, from)
+          val toCarried = carriedOf(system, sharding, to)
+          awaitLedger(system, sharding, from, opId, "succeeded")
+          println(s"D3-RESULT status=$${'{'}state.status${'}'} op=$opId from-carried=$${'{'}fromCarried.size${'}'} to-carried=$${'{'}toCarried.size${'}'}")
+          require(fromCarried == (SeedWafers.toSet -- SplitWafers.toSet), s"from carried set wrong: $fromCarried")
+          require(toCarried == (ChildBaseWafers.toSet ++ SplitWafers.toSet), s"to carried set wrong: $toCarried")`
+    : `          val alice = balance(system, sharding, from)
+          val bob = balance(system, sharding, to)
+          awaitLedger(system, sharding, from, opId, "succeeded")
+          println(s"D3-RESULT status=$${'{'}state.status${'}'} op=$opId alice=$alice bob=$bob")
+          require(alice == BigInt("99900"), s"alice balance $alice != 99900")
+          require(bob == BigInt("100100"), s"bob balance $bob != 100100")`;
+  const nodeResultD4 = fabFamily
+    ? `          val fromCarried = carriedOf(system, sharding, from)
+          val toCarried = carriedOf(system, sharding, to)
+          awaitLedger(system, sharding, from, opId, "succeeded")
+          println(s"D4-RESULT status=$${'{'}state.status${'}'} op=$opId from-carried=$${'{'}fromCarried.size${'}'} to-carried=$${'{'}toCarried.size${'}'} ledger=succeeded")
+          require(fromCarried == (SeedWafers.toSet -- SplitWafers.toSet), s"from carried set wrong: $fromCarried")
+          require(toCarried == (ChildBaseWafers.toSet ++ SplitWafers.toSet), s"to carried set wrong: $toCarried")`
+    : `          val alice = balance(system, sharding, from)
+          val bob = balance(system, sharding, to)
+          awaitLedger(system, sharding, from, opId, "succeeded")
+          println(s"D4-RESULT status=$${'{'}state.status${'}'} op=$opId alice=$alice bob=$bob ledger=succeeded")
+          require(alice == BigInt("99900"), s"alice balance $alice != 99900")
+          require(bob == BigInt("100100"), s"bob balance $bob != 100100")`;
+
   const nodeMain = `${h}package ${m.pkg}
 
 import akka.actor.typed.{ActorSystem, Behavior, Scheduler}
@@ -619,19 +791,17 @@ import scala.concurrent.duration._
   *     event-stream source, sends the StartTransfer command to the aggregate — the
   *     PERSISTED trigger event is what starts the saga — then polls the coordinator
   *     to a terminal state and prints a machine-checkable result line (exit 0, or
-  *     exit 1 with a stack trace on any failure).
-  * Usage: FixtureDeploymentNode seed|join <port> <seedAddr> <mongoUri> [opId from to amountMinor] */
+  *     exit 1 with a stack trace on any failure);
+  *   - failover: the join-role drive with a D4-STARTED gate and a convergence loop
+  *     of authorized reconciles across the singleton migration.
+  * Usage: FixtureDeploymentNode seed|join|failover <port> <seedAddr> <mongoUri> ${nodeUsage} */
 object FixtureDeploymentNode {
 
-  private val Money = ${money}
-  private val Currency = "XTS"
-  private val SeedAmount = Money("100000", Currency)
-  private val From = "alice"
-  private val To = "bob"
+${nodeConstants}
   private val ReconcileToken = "safety-spec-reconcile-token"
 
   def main(args: Array[String]): Unit = {
-    require(args.length >= 4, "usage: FixtureDeploymentNode seed|join <port> <seedAddr> <mongoUri> [opId from to amountMinor]")
+    require(args.length >= 4, "usage: FixtureDeploymentNode seed|join|failover <port> <seedAddr> <mongoUri> ${nodeUsage}")
     val role = args(0)
     val port = args(1).toInt
     val seedAddr = args(2)
@@ -666,20 +836,20 @@ object FixtureDeploymentNode {
           // The parent destroys this process once the join node has reported.
           Await.result(system.whenTerminated, Duration.Inf)
         case "join" =>
-          require(args.length >= 8, "join node requires: join <port> <seedAddr> <mongoUri> <opId> <from> <to> <amountMinor>")
+          require(args.length >= 8, "join node requires: join <port> <seedAddr> <mongoUri> <opId> <from> <to> ${nodeUsage}")
           awaitMembers(system, 2)
-          fund(system, sharding, args(5), "seed-d3-from")
-          fund(system, sharding, args(6), "seed-d3-to")
+          fund(system, sharding, args(5), "seed-d3-from"${fabFamily ? ", SeedWafers" : ""})
+          fund(system, sharding, args(6), "seed-d3-to"${fabFamily ? ", ChildBaseWafers" : ""})
           val opId = args(4)
           val from = args(5)
           val to = args(6)
-          val amount = Money(args(7), Currency)
+${nodeTailParse}
           implicit val timeout: Timeout = Timeout(15.seconds)
           // Event-stream source first, command second: the persisted trigger event must
           // find the source already streaming the journal.
           ${m.entryName}.installEventSource(system, sharding, coordinator)
           val commandReply = Await.result(
-            entityRef(sharding, from).ask(replyTo => ${fbase}Protocol.StartTransfer(opId, from, to, amount, replyTo)), 15.seconds)
+            ${nodeTrigger}
           require(commandReply.error.isEmpty, s"StartTransfer rejected: $${'{'}commandReply.error${'}'}")
           val deadline = System.currentTimeMillis() + 90000L
           var state = Await.result(${m.entryName}.status(coordinator), 15.seconds)
@@ -689,28 +859,23 @@ object FixtureDeploymentNode {
           }
           require(state.terminal, s"the saga did not reach a terminal state in 90s: $${'{'}state.status${'}'}")
           require(state.status == StrictStatus.Succeeded, s"expected Succeeded, got $${'{'}state.status${'}'}")
-          val alice = balance(system, sharding, from)
-          val bob = balance(system, sharding, to)
-          awaitLedger(system, sharding, from, opId, "succeeded")
-          println(s"D3-RESULT status=$${'{'}state.status${'}'} op=$opId alice=$alice bob=$bob")
-          require(alice == BigInt("99900"), s"alice balance $alice != 99900")
-          require(bob == BigInt("100100"), s"bob balance $bob != 100100")
+          ${nodeResultD3}
           system.terminate()
           Await.ready(system.whenTerminated, 15.seconds)
           sys.exit(0)
         case "failover" =>
-          require(args.length >= 8, "failover node requires: failover <port> <seedAddr> <mongoUri> <opId> <from> <to> <amountMinor>")
+          require(args.length >= 8, "failover node requires: failover <port> <seedAddr> <mongoUri> <opId> <from> <to> ${nodeUsage}")
           awaitMembers(system, 2)
-          fund(system, sharding, args(5), "seed-d4-from")
-          fund(system, sharding, args(6), "seed-d4-to")
+          fund(system, sharding, args(5), "seed-d4-from"${fabFamily ? ", SeedWafers" : ""})
+          fund(system, sharding, args(6), "seed-d4-to"${fabFamily ? ", ChildBaseWafers" : ""})
           val opId = args(4)
           val from = args(5)
           val to = args(6)
-          val amount = Money(args(7), Currency)
+${nodeTailParse}
           implicit val timeout: Timeout = Timeout(15.seconds)
           ${m.entryName}.installEventSource(system, sharding, coordinator)
           val commandReply = Await.result(
-            entityRef(sharding, from).ask(replyTo => ${fbase}Protocol.StartTransfer(opId, from, to, amount, replyTo)), 15.seconds)
+            ${nodeTrigger}
           require(commandReply.error.isEmpty, s"StartTransfer rejected: $${'{'}commandReply.error${'}'}")
           // Failover gate: report the transaction as observable (identity defined) —
           // the parent destroys the seed node the moment it sees this line.
@@ -741,12 +906,7 @@ object FixtureDeploymentNode {
           }
           require(state != null && state.terminal, s"the saga did not converge in 150s: $$state")
           require(state.status == StrictStatus.Succeeded, s"expected Succeeded, got $${'{'}state.status${'}'}")
-          val alice = balance(system, sharding, from)
-          val bob = balance(system, sharding, to)
-          awaitLedger(system, sharding, from, opId, "succeeded")
-          println(s"D4-RESULT status=$${'{'}state.status${'}'} op=$opId alice=$alice bob=$bob ledger=succeeded")
-          require(alice == BigInt("99900"), s"alice balance $alice != 99900")
-          require(bob == BigInt("100100"), s"bob balance $bob != 100100")
+          ${nodeResultD4}
           system.terminate()
           Await.ready(system.whenTerminated, 15.seconds)
           sys.exit(0)
@@ -775,22 +935,9 @@ object FixtureDeploymentNode {
   /** Deployment-face funding: the aggregate's own command face (the same folds the
     * persistence test-kit seeds in the A/B/C family — a real journal is not
     * out-of-band seedable). */
-  private def fund(system: ActorSystem[_], sharding: ClusterSharding, entityId: String, txid: String): Unit = {
-    implicit val s: ActorSystem[_] = system
-    implicit val timeout: Timeout = Timeout(15.seconds)
-    val ref = entityRef(sharding, entityId)
-    val r1 = Await.result(ref.ask(replyTo => ${fbase}Protocol.RecordIncomingCredits(txid, "deployment-seed", SeedAmount, replyTo)), 15.seconds)
-    require(r1.error.isEmpty, s"funding record failed for $entityId: $${'{'}r1.error${'}'}")
-    val r2 = Await.result(ref.ask(replyTo => ${fbase}Protocol.CommitIncomingCredits(txid, "deployment-seed", replyTo)), 15.seconds)
-    require(r2.error.isEmpty, s"funding commit failed for $entityId: $${'{'}r2.error${'}'}")
-  }
+${nodeFundDef}
 
-  private def balance(system: ActorSystem[_], sharding: ClusterSharding, entityId: String): BigInt = {
-    implicit val s: ActorSystem[_] = system
-    implicit val timeout: Timeout = Timeout(15.seconds)
-    val state = Await.result(entityRef(sharding, entityId).ask(replyTo => ${fbase}Protocol.GetBalance(replyTo)), 15.seconds).state
-    BigInt(state.accountBalance(Currency).minorUnits)
-  }
+${nodeValueDef}
 
   /** The event-stream source owns the result publication: poll the durable sagaResults
     * ledger on the initiating entity until the mapped kind appears. */
@@ -801,7 +948,7 @@ object FixtureDeploymentNode {
     var ledger: Map[String, String] = Map.empty
     while (!ledger.get(txId).contains(expectedKind) && System.currentTimeMillis() < deadline) {
       Thread.sleep(200)
-      ledger = Await.result(entityRef(sharding, entityId).ask(replyTo => ${fbase}Protocol.GetBalance(replyTo)), 15.seconds).state.sagaResults
+      ledger = Await.result(entityRef(sharding, entityId).ask(replyTo => ${fbase}Protocol.${queryName}(replyTo)), 15.seconds).state.sagaResults
     }
     require(ledger.get(txId).contains(expectedKind), s"the event source did not publish '$expectedKind' for $txId within 30s — ledger: $ledger")
   }

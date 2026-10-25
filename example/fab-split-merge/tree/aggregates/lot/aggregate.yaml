@@ -3,7 +3,7 @@
 kind: aggregate
 name: Lot
 order:
-  commands: ["ReserveWaferRemoval","CommitWaferRemoval","ReleaseReservedWafer","ReserveAddWafer","CommitAddWafer","CancelAddWafer","StartTransfer"]
+  commands: ["ReserveWaferRemoval","CommitWaferRemoval","ReleaseReservedWafer","ReserveAddWafer","CommitAddWafer","CancelAddWafer","StartTransfer","GetLotState","RecordResultSucceeded","RecordResultRejectedBeforeEffects","RecordResultCompensated","RecordResultRecoveryRequired","RecordResultOutcomeUnknown"]
   events: ["ReserveWaferRemovalConfirmed","CommitWaferRemovalConfirmed","ReleaseReservedWaferConfirmed","ReserveAddWaferConfirmed","CommitAddWaferConfirmed","CancelAddWaferConfirmed","TransferRequested","result-succeeded","result-rejected-before-effects","result-compensated","result-recovery-required","result-outcome-unknown"]
 payload:
   {
@@ -18,100 +18,116 @@ payload:
     "stateFields": [
       {
         "name": "phase",
-        "dataType": "String"
+        "dataType": "String",
+        "description": "Saga phase bookkeeping; the truth source declares no write semantics for it (no fold assignments — passes through)."
+      },
+      {
+        "name": "carried",
+        "dataType": "Map[WaferId, String]",
+        "description": "Wafers currently carried by this lot, keyed by wafer identity (presence = carried; the value is the fixed marker). Set migration goes through put-all/remove-all folds so wafer identity and count are conserved end to end.",
+        "writtenBy": [
+          "ReserveWaferRemovalConfirmed.wafers",
+          "ReleaseReservedWaferConfirmed.wafers",
+          "CommitAddWaferConfirmed.wafers"
+        ],
+        "role": "State"
+      },
+      {
+        "name": "reservedRemovals",
+        "dataType": "Map[TxId, ReservationId]",
+        "description": "Prepared wafer-removal reservations keyed by transaction identity; the evidence carrier for source prepare idempotency queries (contains(txid)).",
+        "writtenBy": [
+          "ReserveWaferRemovalConfirmed.txid",
+          "CommitWaferRemovalConfirmed.txid",
+          "ReleaseReservedWaferConfirmed.txid"
+        ],
+        "role": "State"
+      },
+      {
+        "name": "reservedAdditions",
+        "dataType": "Map[TxId, ReservationId]",
+        "description": "Prepared wafer-addition reservations keyed by transaction identity; the evidence carrier for target prepare idempotency queries (contains(txid)).",
+        "writtenBy": [
+          "ReserveAddWaferConfirmed.txid",
+          "CommitAddWaferConfirmed.txid",
+          "CancelAddWaferConfirmed.txid"
+        ],
+        "role": "State"
+      },
+      {
+        "name": "committed",
+        "dataType": "Map[TxId, TxId]",
+        "description": "Durable commit-phase marker keyed by transaction identity: every commit confirmation puts the txid with the durable receipt identity (phase-marker convention, SCHEMA.md P5); the evidence carrier for commit idempotency queries.",
+        "writtenBy": [
+          "CommitWaferRemovalConfirmed.txid",
+          "CommitAddWaferConfirmed.txid"
+        ],
+        "role": "State"
+      },
+      {
+        "name": "compensated",
+        "dataType": "Map[TxId, String]",
+        "description": "Durable compensate-phase marker keyed by transaction identity: every compensate confirmation puts the txid with the released/canceled kind (phase-marker convention, SCHEMA.md P5); the evidence carrier for compensate idempotency queries.",
+        "writtenBy": [
+          "ReleaseReservedWaferConfirmed.txid",
+          "CancelAddWaferConfirmed.txid"
+        ],
+        "role": "State"
+      },
+      {
+        "name": "sagaResults",
+        "dataType": "Map[TxId, String]",
+        "description": "Saga outcome ledger keyed by transaction identity: the idempotent RecordResult* publication commands put the terminal kind here (result-publication convention, SCHEMA.md P5); map-absent guard makes republication an empty success.",
+        "writtenBy": [
+          "result-succeeded.txid",
+          "result-rejected-before-effects.txid",
+          "result-compensated.txid",
+          "result-recovery-required.txid",
+          "result-outcome-unknown.txid"
+        ],
+        "role": "State"
+      }
+    ],
+    "aggregateRuleRefs": [
+      {
+        "ruleId": "IR-LOT-RESERVE-REMOVAL-001",
+        "errCode": "61008",
+        "desc": "Removal already reserved for this transaction: idempotent success, no events (mirror of golden master 60008 semantics)."
+      },
+      {
+        "ruleId": "IR-LOT-RESERVE-REMOVAL-002",
+        "errCode": "61003",
+        "desc": "Source lot does not carry the full frozen wafer set (conservation precondition)."
+      },
+      {
+        "ruleId": "IR-LOT-COMMIT-REMOVAL-001",
+        "errCode": "61006",
+        "desc": "No reserved removal found for this transaction."
+      },
+      {
+        "ruleId": "IR-LOT-RELEASE-001",
+        "errCode": "61006",
+        "desc": "No reserved removal found for this transaction."
+      },
+      {
+        "ruleId": "IR-LOT-RESERVE-ADD-001",
+        "errCode": "61007",
+        "desc": "Addition already registered for this transaction (deterministic target-prepare rejection face)."
+      },
+      {
+        "ruleId": "IR-LOT-COMMIT-ADD-001",
+        "errCode": "61008",
+        "desc": "Addition cannot be found or already committed."
+      },
+      {
+        "ruleId": "IR-LOT-CANCEL-ADD-001",
+        "errCode": "61009",
+        "desc": "Addition cannot be found or already canceled."
+      },
+      {
+        "ruleId": "IR-LOT-RESULT-001",
+        "errCode": "61010",
+        "desc": "Result already recorded for this transaction: idempotent republication success, no events (designed strict TCC outcome ledger; shared by the five RecordResult* publication commands)."
       }
     ]
   }
-extraEvents:
-  [
-    {
-      "name": "result-succeeded",
-      "payloads": [
-        {
-          "name": "txid",
-          "dataType": "TxId",
-          "origin": "BUSINESS_INPUT"
-        }
-      ],
-      "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
-      "bindings": [
-        {
-          "slot": "txid",
-          "expr": "param.txid"
-        }
-      ],
-      "foldAssignments": []
-    },
-    {
-      "name": "result-rejected-before-effects",
-      "payloads": [
-        {
-          "name": "txid",
-          "dataType": "TxId",
-          "origin": "BUSINESS_INPUT"
-        }
-      ],
-      "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
-      "bindings": [
-        {
-          "slot": "txid",
-          "expr": "param.txid"
-        }
-      ],
-      "foldAssignments": []
-    },
-    {
-      "name": "result-compensated",
-      "payloads": [
-        {
-          "name": "txid",
-          "dataType": "TxId",
-          "origin": "BUSINESS_INPUT"
-        }
-      ],
-      "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
-      "bindings": [
-        {
-          "slot": "txid",
-          "expr": "param.txid"
-        }
-      ],
-      "foldAssignments": []
-    },
-    {
-      "name": "result-recovery-required",
-      "payloads": [
-        {
-          "name": "txid",
-          "dataType": "TxId",
-          "origin": "BUSINESS_INPUT"
-        }
-      ],
-      "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
-      "bindings": [
-        {
-          "slot": "txid",
-          "expr": "param.txid"
-        }
-      ],
-      "foldAssignments": []
-    },
-    {
-      "name": "result-outcome-unknown",
-      "payloads": [
-        {
-          "name": "txid",
-          "dataType": "TxId",
-          "origin": "BUSINESS_INPUT"
-        }
-      ],
-      "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
-      "bindings": [
-        {
-          "slot": "txid",
-          "expr": "param.txid"
-        }
-      ],
-      "foldAssignments": []
-    }
-  ]

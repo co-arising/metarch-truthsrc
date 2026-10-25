@@ -1,0 +1,46 @@
+{
+  "batch": "P13 第 5 门批A：fab strict 面——真源深化+双 saga 拿到就能跑",
+  "date": "2026-10-25",
+  "status": "completed-not-committed",
+  "repos": {
+    "metarch-truthsrc": {
+      "branch": "execution-compiler-v1",
+      "changes": [
+        "lib/validate.mjs（put-all/remove-all + collection-covered）",
+        "lib/saga/runtime-binding.mjs（V3 可选能力机制+featureCheckV3 条件放行）",
+        "example/fab-split-merge/**（树深化+bindings 拆名+runtime-binding.json 新建）",
+        "generators/run-all.mjs、aggregate-dsl/emit.mjs、proto-dsl/emit.mjs、converter-dsl/emit.mjs",
+        "generators/saga-dsl/emit-strict{,-host,-spec}.mjs（泛化+分族）",
+        "test/saga-fab-runtime-binding-v3.test.mjs（新）",
+        "SCHEMA.md（guard/fold 新形态条目）"
+      ]
+    },
+    "backkend-codegen": "零改动（P15 parity 批）",
+    "saga-core": "零改动（main@e39899e）"
+  },
+  "verification": {
+    "fabApp": {
+      "path": "/Users/zhongdj/Workspaces/mad-polaris/target/p13-fab-strict-20261025/app",
+      "generatorVersion": null,
+      "candidateJar": "saga-core_2.13-0.2+1-cf26cd7a+20261024-2108-SNAPSHOT.jar (sha256:1009300e…)",
+      "tests": "24/24（fab-split ×12 + fab-merge ×12；A/B/C testkit + D1 共享 Mongo + D2 事件源 + D3 两 JVM + D4 failover + conf 装配；allow-java=off 全 strict 面）",
+      "testLogs": [".rounds/p13-fab-strict-20261025/test-run-r2.log"]
+    },
+    "moneyAppInertness": "重产 /tmp/p13-money-regen 12/12",
+    "truthsrcFull": "1711/1711（1705+6）",
+    "golden": "零 diff（P10 剥 loan 配方重产 vs /tmp/p11-golden/out5 字节恒等）"
+  },
+  "digests": {
+    "fabIr": "9fea619620317479945a48bfd07fa52e31d93f9bd19e1e91b911de8540efdf08",
+    "fabSplitDefinition": "sha256:86da085f794307236236ec8de2326f861d77c5650b0385a36435c09654ea2d5d",
+    "fabMergeDefinition": "sha256:cd186ecbd0bb57e5183dd77e622f7def716f7fc653723a9956a7d5edf4c46cc2",
+    "moneyPinsUntouched": ["ba60f58a (ir)", "3a586c81 (definition)"]
+  },
+  "optionalCapabilities": ["bounded-collection-args", "args-anchored-manifest"],
+  "iterationRounds": 5,
+  "keyLessons": [
+    "D3/D4 父测断言字面量错误且钝：Seed∪Split=4 时 to-carried=6 永不可能——节点语义全对。修法=ChildBaseWafers 不相交播种使 To 断言锋利（put-all 静默失效时=1≠3）",
+    "proto/converter 的 List 匹配只认尖括号——saga 规范化折叠的 List[String] 方括号形态被当 VO 包 PO"
+  ],
+  "next": "P14 批B（组合面：awaitChildRun 策略+InvocationPipelineHost+子 Monarch+E 崩溃窗）等用户口令"
+}

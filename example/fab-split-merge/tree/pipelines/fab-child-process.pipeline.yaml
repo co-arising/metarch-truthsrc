@@ -1,0 +1,49 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: pipeline
+id: fab-child-process
+name: "Child lot staged processing plan"
+description: "Bounded child stages plan for the split→await-child→merge composition. Fixture semantics: each stage is an in-JVM bounded transform over the child wafer set with no equipment I/O. Bounded durable execution of this plan is owned by the parent pipeline's awaitChildRun step and the monarch-persistence engine; this atom declares no pipeline execution contract of its own."
+steps:
+  [
+    {
+      "id": "receive",
+      "name": "Receive the split wafer set into the child plan"
+    },
+    {
+      "id": "process",
+      "name": "Process the child wafer set (fixture transform)"
+    },
+    {
+      "id": "finalize",
+      "name": "Freeze the completed child manifest"
+    }
+  ]
+monarch:
+  {
+    "engine": "monarch-persistence/0.2.1",
+    "stages": [
+      {
+        "cursor": "receive",
+        "description": "Absorb the split wafer set as the child plan's initial state"
+      },
+      {
+        "cursor": "process",
+        "description": "Fixture transform: mark every wafer processed (no equipment I/O)"
+      },
+      {
+        "cursor": "finalize",
+        "description": "Freeze the completed child wafer manifest"
+      }
+    ],
+    "stateFields": [
+      {
+        "name": "wafers",
+        "type": "WaferSet"
+      },
+      {
+        "name": "processedCount",
+        "type": "Int"
+      }
+    ]
+  }

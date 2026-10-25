@@ -1,0 +1,72 @@
+{
+  "batch": "P14 第 5 门批B：组合面——awaitChildRun 契约+InvocationPipelineHost+真 monarch 0.2.1 候选 jar+E 崩溃窗",
+  "date": "2026-10-25",
+  "status": "completed-not-committed",
+  "repos": {
+    "metarch-truthsrc": {
+      "branch": "execution-compiler-v1",
+      "changes": [
+        "schema/execution-ir-v1.schema.json（stepExecution 第三判别 awaitChildRun+childRunIdentity/childResultKind/childResultMapping/childRunBinding+payload 面+stepIr/pipelineBinding/bindingIr 扩展）",
+        "SCHEMA.md（awaitChildRun 契约段+monarch 块条目）",
+        "lib/validate.mjs（PL3 monarch 合法块+PL5 monarch 形状/一致性/互斥）",
+        "lib/execution/compile.mjs（checkAwaitChild+EXECUTION_AWAIT_* 九诊断+IR awaitChildRunStepIr/childRuns）",
+        "example/fab-split-merge/tree/pipelines/fab-child-process.pipeline.yaml（新·monarch 子计划原子）",
+        "example/fab-split-merge/tree/pipelines/fab-split-child-merge.pipeline.yaml（新·三步组合管线）",
+        "example/fab-split-merge/tree/pipelines/fab-split-await-child-merge-design.pipeline.yaml（描述行更新·document-only 保持）",
+        "example/fab-split-merge/execution-bindings.json（组合管线绑定+childRuns）",
+        "generators/run-all.mjs（--saga-execution-binding/--monarch-jar-dir+组合生成段·无组合树 inert skip）",
+        "generators/saga-dsl/emit-invocation-host.mjs（新·InvocationPipelineHost）",
+        "generators/saga-dsl/emit-invocation-plan.mjs（新·monarch 子计划模块）",
+        "generators/saga-dsl/emit-invocation-spec.mjs（新·FixtureCompositionSpec E1-E5）",
+        "test/execution-await-child.test.mjs（新·正例+10 负例）",
+        "test/saga-examples.test.mjs（fab 断言跟上：pipelines 3+documentOnly 2）"
+      ]
+    },
+    "backkend-codegen": "零改动（P15 parity 批）",
+    "saga-core": "零改动（main@e39899e；M README/publish.yml 为存量脏非本批）",
+    "monarch-persistence": "零改动（431c914；存量脏非本批）",
+    "monarch-core": "零改动"
+  },
+  "probe": {
+    "verdict": "GO",
+    "path": ".rounds/p14-composition-face-20261025/probe/",
+    "evidence": "PROBE-OK 全绿：ActorSystem 启动（akka 2.6.20 无混版·ManifestInfo 不拒）；StartRun→Accepted；同 runId 重发→Rejected(reason=run already in state Done)——already-in-state 拒绝=已挂接语义实测；MonarchSerializer roundtrip（scalapb EventPO wire manifest=E1）",
+    "jars": {
+      "monarch-core": "66223d37ab979b59cde557500f3da7aafaf532ddfe3268401c5f786093e0f971",
+      "monarch-persistence": "ba144dbc528e1257a2e9569290b31ec1d35cfb0624bce6ea5d59ef6a7df1b05c"
+    },
+    "dependencyFace": "POM 钉 akka 2.6.20 全家（与 fab 应用同版）；scalapb-runtime 0.11.14 与应用既有同版——零新增序列化框架；jar 自带 reference.conf（monarch-proto serializer 自动注册）"
+  },
+  "verification": {
+    "compositionApp": {
+      "path": "/Users/zhongdj/Workspaces/mad-polaris/target/p14-composition-face-20261025/app",
+      "tests": "29/29（P13 fab-split ×12+fab-merge ×12 回归 + FixtureCompositionSpec E1-E5）",
+      "compositionFace": [
+        "E1 全链：split→child stages→merge，wafer 守恒（parent 恢复原状/child 只留 base）、child journal ≥5 事件（RunStarted+StageDone×3+RunCompleted 实测在案）",
+        "E2 saga 终态已存/checkpoint 未存：宿主 journal $slice 截到 keep=3（Mongo 实据：from=1..2+from=3 存活，4-12 为恢复后续写）→重启→IdentityObserved 落盘路径 Attach 补账→strict-saga/fab-split 11 条+fab-child 5 条+fab-merge 11 条恢复后零新增=checkpoint 丢失不重做正证明",
+        "E3 checkpoint 已存/镜像截断：await checkpoint 后截尾→重启→子 journal 权威对账收敛",
+        "E4 intent 已存/Start 未答：截到 keep=2（identity 未落盘）→重启→同 txid 重发 Start（idempotent 补发）→收敛",
+        "E5 同 txid 异 args：occupier 拒绝终态占据→宿主继承终态 fail-closed（concluded=Rejected+From 零效果泄漏）——saga-core 0.2 将同 identity 异 args 折叠为返回既有终态（无独立 ConflictingIdentity reply），宿主停住=零第二重效果"
+      ]
+    },
+    "truthsrcFull": "1722/1722（1711+11 新：execution-await-child 正例+10 负例）",
+    "golden": "零 diff（P10 剥 loan 配方裸 run-all vs /tmp/p11-golden/out5 字节恒等）",
+    "moneyInertness": "重产 /tmp/p14-money-regen 12/12（serial 树+其 bindings）",
+    "fabTree": "validate 0 hard·3 notice + roundtrip 恒等 22 atoms"
+  },
+  "digests": {
+    "composeIr": "7a73118c0b89346fbf4f37466c026997ed2b3084a873d95b8321fab14f23ac31",
+    "p13PinsUntouched": [
+      "fabIr 9fea6196（测试钉点全绿；compile-sagas CLI 文件级 sha 因树新增两管线原子而变，测试钉点计算面不含管线段——纪律不破）",
+      "fab-split 86da085f / fab-merge cd186ecb（钉点全绿）",
+      "money ba60f58a/3a586c81 不动"
+    ]
+  },
+  "degradations": [
+    "E-D 物理面（双 JVM fork+宿主节点 SIGTERM+singleton 迁移）未实施——按批准计划降级条款如实登记：E1-E5 已是真 Mongo journal 单 JVM 面+真截断崩溃窗；D4 failover 机理在 P13 应用面单独验证（24/24 含 D4）。E-D=后续候选批。"
+  ],
+  "honestMarkers": [
+    "execution 契约 schema 描述 'Contract declaration only' 保持为真——可跑证据只在 fab 应用面",
+    "Attach 接线（saga-core 观察命令首次生成面使用）：宿主 journal 落 IdentityObserved（轮询首见时从协调器权威状态摘取）→恢复时 identity 已存走 Attach+GetStatus 轮询（E2 证零新 saga 事件）；identity 未落盘（Start 未答）走同 txid Start 重发（E4 证恰一 pid）——宿主永不硬造 TransactionIdentity（其七参含 digest 系，须来自协调器）"
+  ]
+}

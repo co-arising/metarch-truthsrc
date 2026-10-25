@@ -124,8 +124,8 @@
       }
     },
     "stepExecution": {
-      "oneOf": [{ "$ref": "#/$defs/portStepExecution" }, { "$ref": "#/$defs/sagaStepExecution" }],
-      "description": "Exactly one discriminator property: port or invokeSaga. An invocation is never a pure port, arbitrary expression, or runtime certificate."
+      "oneOf": [{ "$ref": "#/$defs/portStepExecution" }, { "$ref": "#/$defs/sagaStepExecution" }, { "$ref": "#/$defs/awaitChildRunStepExecution" }],
+      "description": "Exactly one discriminator property: port, invokeSaga or awaitChildRun. An invocation is never a pure port, arbitrary expression, or runtime certificate; an awaited child run is never a pure port, implicit success, or dynamic insertion."
     },
     "portStepExecution": {
       "type": "object", "additionalProperties": false, "required": ["port", "reads", "writes", "outcomes"],
@@ -192,6 +192,60 @@
         "outcomes": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/outcome" } }
       }
     },
+    "childResultKind": {
+      "enum": ["succeeded", "child-rejected", "child-failed", "recovery-required", "outcome-unknown"]
+    },
+    "childResultMapping": {
+      "type": "object", "additionalProperties": false, "required": ["resultKind", "code", "outputs"],
+      "properties": {
+        "resultKind": { "$ref": "#/$defs/childResultKind" }, "code": { "$ref": "#/$defs/id" },
+        "outputs": { "type": "array", "items": { "$ref": "#/$defs/sagaResultOutput" } }
+      },
+      "description": "Exact coverage of the five child-run results. Only succeeded maps to success/continue and publishes writes from the child's durable completed-manifest fields. child-rejected (StartRun refused with a reason other than already-in-state) maps to business-rejection/stop; child-failed (RunFailedEvt) maps to business-rejection/stop. recovery-required maps to infrastructure-failure/manual-recovery; outcome-unknown to unknown-effect/manual-recovery. A rejected re-attach (already in state) is not a result kind — the host treats it as already-attached and keeps observing. Compensation is never stage recovery."
+    },
+    "childRunIdentity": {
+      "type": "object", "additionalProperties": false,
+      "required": ["derivation", "source", "stepId", "stageOccurrence", "conflict"],
+      "properties": {
+        "derivation": { "const": "durable-parent-step" },
+        "source": { "$ref": "#/$defs/identityRef" },
+        "stepId": { "$ref": "#/$defs/id" },
+        "stageOccurrence": { "$ref": "#/$defs/identityRef" },
+        "chunk": { "$ref": "#/$defs/identityRef" },
+        "conflict": { "const": "reject-different-args" }
+      },
+      "description": "Host derives the child run identity from the parent operation key (a durable source token), the exact await step ID and a durable stage occurrence token, plus an optional chunk token. All tokens must be typed reads of durable initial inputs. No expressions, FQNs, clock, random, attempt or JVM generation. Re-attaching with the same identity is the only legal re-entry; different payload with the same identity is a conflict."
+    },
+    "awaitChildRun": {
+      "type": "object", "additionalProperties": false,
+      "required": ["childRun", "start", "completionMode", "results"],
+      "properties": {
+        "childRun": {
+          "type": "object", "additionalProperties": false, "required": ["planRef", "identity", "payload", "payloadCompatibility"],
+          "properties": {
+            "planRef": {
+              "type": "object", "additionalProperties": false, "required": ["pipelineId"],
+              "properties": { "pipelineId": { "$ref": "#/$defs/id" } }
+            },
+            "identity": { "$ref": "#/$defs/childRunIdentity" },
+            "payload": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/read" } },
+            "payloadCompatibility": { "const": "exact" }
+          }
+        },
+        "start": { "const": "durable-intent-before-start" }, "completionMode": { "const": "await-terminal" },
+        "results": { "type": "array", "minItems": 5, "maxItems": 5, "items": { "$ref": "#/$defs/childResultMapping" } }
+      },
+      "description": "Persist the derived child identity and exact payload as durable intent before requesting StartRun; replay reattaches using the same identity (a refusal saying the run is already in state means attached, not conflict). Observe the child's terminal state on its durable journal; a mirrored progress record is derived and never authoritative. RunFailedEvt pauses with recovery-required; it never auto-compensates the parent. Contract declaration only."
+    },
+    "awaitChildRunStepExecution": {
+      "type": "object", "additionalProperties": false, "required": ["awaitChildRun", "reads", "writes", "outcomes"],
+      "properties": {
+        "awaitChildRun": { "$ref": "#/$defs/awaitChildRun" },
+        "reads": { "type": "array", "items": { "$ref": "#/$defs/read" } },
+        "writes": { "type": "array", "items": { "$ref": "#/$defs/write" } },
+        "outcomes": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/outcome" } }
+      }
+    },
     "invocationCodec": {
       "type": "object", "additionalProperties": false, "required": ["id", "version", "mapper"],
       "properties": {
@@ -226,6 +280,33 @@
     "slot": {
       "type": "object", "additionalProperties": false, "required": ["slot", "type"],
       "properties": { "slot": { "$ref": "#/$defs/id" }, "type": { "$ref": "#/$defs/id" } }
+    },
+    "childRunBinding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["stepId", "planRef", "runtime", "journal"],
+      "properties": {
+        "stepId": { "$ref": "#/$defs/id" },
+        "planRef": {
+          "type": "object", "additionalProperties": false, "required": ["pipelineId"],
+          "properties": { "pipelineId": { "$ref": "#/$defs/id" } }
+        },
+        "runtime": {
+          "type": "object", "additionalProperties": false, "required": ["artifact", "apiMode"],
+          "properties": {
+            "artifact": { "type": "string", "pattern": "^[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+(?![\\s\\S])" },
+            "apiMode": { "const": "strict" }
+          }
+        },
+        "stateCodec": {
+          "type": "object", "additionalProperties": false, "required": ["mapper"],
+          "properties": { "mapper": { "$ref": "saga-ir-v1.schema.json#/$defs/symbol" } }
+        },
+        "journal": {
+          "type": "object", "additionalProperties": false, "required": ["pidPrefix"],
+          "properties": { "pidPrefix": { "$ref": "#/$defs/text" } }
+        }
+      },
+      "description": "One child run binding per awaitChildRun step. The child plan is a separately compiled stages pipeline bound to monarch-persistence; the host derives the child persistence id from pidPrefix plus the derived run identity. The child's durable journal is the authoritative terminal-state source. Named mappers are never loaded or certified."
     },
     "typeBinding": {
       "type": "object", "additionalProperties": false, "required": ["id", "implementation"],
@@ -270,7 +351,8 @@
         "module": { "$ref": "#/$defs/text" }, "codec": { "$ref": "#/$defs/codec" },
         "types": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/typeBinding" } },
         "ports": { "type": "array", "items": { "$ref": "#/$defs/port" } },
-        "invocations": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/invocationBinding" } }
+        "invocations": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/invocationBinding" } },
+        "childRuns": { "type": "array", "items": { "$ref": "#/$defs/childRunBinding" } }
       }
     },
     "bindingDocument": {
@@ -291,7 +373,7 @@
       "description": "Only the canonical envelope and pipeline identities are checked here. This does not replace validateTree or validate the rest of canonical. An execution property opts in, including a malformed/null declaration. Steps without a pipeline declaration may not carry execution."
     },
     "stepIr": {
-      "oneOf": [{ "$ref": "#/$defs/portStepIr" }, { "$ref": "#/$defs/sagaStepIr" }]
+      "oneOf": [{ "$ref": "#/$defs/portStepIr" }, { "$ref": "#/$defs/sagaStepIr" }, { "$ref": "#/$defs/awaitChildRunStepIr" }]
     },
     "sagaStepIr": {
       "type": "object", "additionalProperties": false, "required": ["id", "name", "ordinal", "invokeSaga", "reads", "writes", "outcomes"],
@@ -313,6 +395,16 @@
         "outcomes": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/outcome" } }
       }
     },
+    "awaitChildRunStepIr": {
+      "type": "object", "additionalProperties": false, "required": ["id", "name", "ordinal", "awaitChildRun", "reads", "writes", "outcomes"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" }, "name": { "$ref": "#/$defs/text" }, "ordinal": { "type": "integer", "minimum": 0 },
+        "awaitChildRun": { "$ref": "#/$defs/awaitChildRun" },
+        "reads": { "type": "array", "items": { "$ref": "#/$defs/read" } },
+        "writes": { "type": "array", "items": { "$ref": "#/$defs/write" } },
+        "outcomes": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/outcome" } }
+      }
+    },
     "bindingIr": {
       "type": "object", "additionalProperties": false, "required": ["engine", "module", "codec", "types", "ports"],
       "oneOf": [
@@ -324,7 +416,8 @@
         "codec": { "$ref": "#/$defs/codec" },
         "types": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/typeBinding" } },
         "ports": { "type": "array", "items": { "$ref": "#/$defs/port" } },
-        "invocations": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/invocationBinding" } }
+        "invocations": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/invocationBinding" } },
+        "childRuns": { "type": "array", "items": { "$ref": "#/$defs/childRunBinding" } }
       }
     },
     "pipelineIr": {

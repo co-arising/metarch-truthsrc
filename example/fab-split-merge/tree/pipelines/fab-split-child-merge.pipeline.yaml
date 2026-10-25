@@ -1,0 +1,541 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: pipeline
+id: fab-split-child-merge
+name: "Fab split, await child processing, merge back"
+description: "Executable composition: invoke fab-split v1 into the child lot, await the bounded durable child plan (fab-child-process, monarch-persistence) to its terminal state observed on its journal, then invoke fab-merge v1 with the durable completed-child wafer manifest. The child mirror is never authoritative; a failed child pauses with recovery-required and never auto-compensates the parent."
+steps:
+  [
+    {
+      "id": "split",
+      "name": "Invoke fab-split v1 into the child lot",
+      "description": "Invoke fab-split v1 once with durable initial Lot IDs, wafer set and frozen manifest; await Saga success before admitting child work.",
+      "execution": {
+        "invokeSaga": {
+          "ref": {
+            "sagaId": "fab-split",
+            "version": "v1"
+          },
+          "args": [
+            {
+              "slot": "from",
+              "ref": "input:from",
+              "type": "LotId"
+            },
+            {
+              "slot": "to",
+              "ref": "input:to",
+              "type": "LotId"
+            },
+            {
+              "slot": "wafers",
+              "ref": "input:wafers",
+              "type": "WaferSet"
+            },
+            {
+              "slot": "manifest",
+              "ref": "input:manifest",
+              "type": "ManifestRef"
+            }
+          ],
+          "transactionIdentity": {
+            "type": "TxId",
+            "derivation": "durable-source-stage",
+            "source": {
+              "ref": "input:operation",
+              "type": "OperationId"
+            },
+            "stageId": "split",
+            "stageOccurrence": {
+              "ref": "input:occurrence",
+              "type": "OperationId"
+            },
+            "scope": "saga-version",
+            "conflict": "reject-different-args"
+          },
+          "start": "durable-intent-before-start",
+          "completionMode": "await-terminal",
+          "results": [
+            {
+              "resultKind": "succeeded",
+              "code": "Succeeded",
+              "outputs": [
+                {
+                  "slot": "txid",
+                  "ref": "result:txid",
+                  "type": "TxId"
+                }
+              ]
+            },
+            {
+              "resultKind": "rejected-before-effects",
+              "code": "Rejected",
+              "outputs": []
+            },
+            {
+              "resultKind": "compensated",
+              "code": "Compensated",
+              "outputs": []
+            },
+            {
+              "resultKind": "recovery-required",
+              "code": "RecoveryRequired",
+              "outputs": []
+            },
+            {
+              "resultKind": "outcome-unknown",
+              "code": "Unknown",
+              "outputs": []
+            }
+          ]
+        },
+        "reads": [
+          {
+            "slot": "operation",
+            "ref": "input:operation",
+            "type": "OperationId"
+          },
+          {
+            "slot": "occurrence",
+            "ref": "input:occurrence",
+            "type": "OperationId"
+          },
+          {
+            "slot": "from",
+            "ref": "input:from",
+            "type": "LotId"
+          },
+          {
+            "slot": "to",
+            "ref": "input:to",
+            "type": "LotId"
+          },
+          {
+            "slot": "wafers",
+            "ref": "input:wafers",
+            "type": "WaferSet"
+          },
+          {
+            "slot": "manifest",
+            "ref": "input:manifest",
+            "type": "ManifestRef"
+          }
+        ],
+        "writes": [
+          {
+            "id": "txid",
+            "slot": "txid",
+            "type": "TxId",
+            "durability": "durable-reference"
+          }
+        ],
+        "outcomes": [
+          {
+            "code": "Succeeded",
+            "kind": "success",
+            "action": "continue"
+          },
+          {
+            "code": "Rejected",
+            "kind": "business-rejection",
+            "action": "stop"
+          },
+          {
+            "code": "Compensated",
+            "kind": "business-rejection",
+            "action": "stop"
+          },
+          {
+            "code": "RecoveryRequired",
+            "kind": "infrastructure-failure",
+            "action": "manual-recovery"
+          },
+          {
+            "code": "Unknown",
+            "kind": "unknown-effect",
+            "action": "manual-recovery"
+          }
+        ]
+      }
+    },
+    {
+      "id": "await-child",
+      "name": "Await the bounded durable child plan",
+      "description": "Persist the derived child identity and exact payload as durable intent, start the fab-child-process monarch run, and await its terminal state observed on the child's durable journal. A StartRun refusal reporting already-in-state means attached, not conflict. The mirrored progress in this host journal is derived and never authoritative.",
+      "execution": {
+        "awaitChildRun": {
+          "childRun": {
+            "planRef": {
+              "pipelineId": "fab-child-process"
+            },
+            "identity": {
+              "derivation": "durable-parent-step",
+              "source": {
+                "ref": "input:operation",
+                "type": "OperationId"
+              },
+              "stepId": "await-child",
+              "stageOccurrence": {
+                "ref": "input:occurrence",
+                "type": "OperationId"
+              },
+              "conflict": "reject-different-args"
+            },
+            "payload": [
+              {
+                "slot": "from",
+                "ref": "input:from",
+                "type": "LotId"
+              },
+              {
+                "slot": "to",
+                "ref": "input:to",
+                "type": "LotId"
+              },
+              {
+                "slot": "wafers",
+                "ref": "input:wafers",
+                "type": "WaferSet"
+              }
+            ],
+            "payloadCompatibility": "exact"
+          },
+          "start": "durable-intent-before-start",
+          "completionMode": "await-terminal",
+          "results": [
+            {
+              "resultKind": "succeeded",
+              "code": "ChildCompleted",
+              "outputs": [
+                {
+                  "slot": "wafers",
+                  "ref": "result:wafers",
+                  "type": "WaferSet"
+                },
+                {
+                  "slot": "childRun",
+                  "ref": "result:childRun",
+                  "type": "OperationId"
+                }
+              ]
+            },
+            {
+              "resultKind": "child-rejected",
+              "code": "ChildRejected",
+              "outputs": []
+            },
+            {
+              "resultKind": "child-failed",
+              "code": "ChildFailed",
+              "outputs": []
+            },
+            {
+              "resultKind": "recovery-required",
+              "code": "RecoveryRequired",
+              "outputs": []
+            },
+            {
+              "resultKind": "outcome-unknown",
+              "code": "Unknown",
+              "outputs": []
+            }
+          ]
+        },
+        "reads": [
+          {
+            "slot": "operation",
+            "ref": "input:operation",
+            "type": "OperationId"
+          },
+          {
+            "slot": "occurrence",
+            "ref": "input:occurrence",
+            "type": "OperationId"
+          },
+          {
+            "slot": "from",
+            "ref": "input:from",
+            "type": "LotId"
+          },
+          {
+            "slot": "to",
+            "ref": "input:to",
+            "type": "LotId"
+          },
+          {
+            "slot": "wafers",
+            "ref": "input:wafers",
+            "type": "WaferSet"
+          }
+        ],
+        "writes": [
+          {
+            "id": "wafers",
+            "slot": "wafers",
+            "type": "WaferSet",
+            "durability": "durable-reference"
+          },
+          {
+            "id": "childRun",
+            "slot": "childRun",
+            "type": "OperationId",
+            "durability": "durable-reference"
+          }
+        ],
+        "outcomes": [
+          {
+            "code": "ChildCompleted",
+            "kind": "success",
+            "action": "continue"
+          },
+          {
+            "code": "ChildRejected",
+            "kind": "business-rejection",
+            "action": "stop"
+          },
+          {
+            "code": "ChildFailed",
+            "kind": "business-rejection",
+            "action": "stop"
+          },
+          {
+            "code": "RecoveryRequired",
+            "kind": "infrastructure-failure",
+            "action": "manual-recovery"
+          },
+          {
+            "code": "Unknown",
+            "kind": "unknown-effect",
+            "action": "manual-recovery"
+          }
+        ]
+      }
+    },
+    {
+      "id": "merge",
+      "name": "Invoke fab-merge v1 with the durable child result",
+      "description": "Only after the child plan's durable terminal completion may fab-merge v1 start: child lot as source, parent lot as target, and the merge wafer set taken from the child's completed manifest (step:await-child:wafers), never from an unconfirmed mirror. Split and merge keep distinct stage identities under the same operation.",
+      "execution": {
+        "invokeSaga": {
+          "ref": {
+            "sagaId": "fab-merge",
+            "version": "v1"
+          },
+          "args": [
+            {
+              "slot": "from",
+              "ref": "input:to",
+              "type": "LotId"
+            },
+            {
+              "slot": "to",
+              "ref": "input:from",
+              "type": "LotId"
+            },
+            {
+              "slot": "wafers",
+              "ref": "step:await-child:wafers",
+              "type": "WaferSet"
+            },
+            {
+              "slot": "manifest",
+              "ref": "input:manifest",
+              "type": "ManifestRef"
+            }
+          ],
+          "transactionIdentity": {
+            "type": "TxId",
+            "derivation": "durable-source-stage",
+            "source": {
+              "ref": "input:operation",
+              "type": "OperationId"
+            },
+            "stageId": "merge",
+            "stageOccurrence": {
+              "ref": "input:occurrence",
+              "type": "OperationId"
+            },
+            "scope": "saga-version",
+            "conflict": "reject-different-args"
+          },
+          "start": "durable-intent-before-start",
+          "completionMode": "await-terminal",
+          "results": [
+            {
+              "resultKind": "succeeded",
+              "code": "Succeeded",
+              "outputs": [
+                {
+                  "slot": "txid",
+                  "ref": "result:txid",
+                  "type": "TxId"
+                }
+              ]
+            },
+            {
+              "resultKind": "rejected-before-effects",
+              "code": "Rejected",
+              "outputs": []
+            },
+            {
+              "resultKind": "compensated",
+              "code": "Compensated",
+              "outputs": []
+            },
+            {
+              "resultKind": "recovery-required",
+              "code": "RecoveryRequired",
+              "outputs": []
+            },
+            {
+              "resultKind": "outcome-unknown",
+              "code": "Unknown",
+              "outputs": []
+            }
+          ]
+        },
+        "reads": [
+          {
+            "slot": "operation",
+            "ref": "input:operation",
+            "type": "OperationId"
+          },
+          {
+            "slot": "occurrence",
+            "ref": "input:occurrence",
+            "type": "OperationId"
+          },
+          {
+            "slot": "from",
+            "ref": "input:to",
+            "type": "LotId"
+          },
+          {
+            "slot": "to",
+            "ref": "input:from",
+            "type": "LotId"
+          },
+          {
+            "slot": "wafers",
+            "ref": "step:await-child:wafers",
+            "type": "WaferSet"
+          },
+          {
+            "slot": "manifest",
+            "ref": "input:manifest",
+            "type": "ManifestRef"
+          }
+        ],
+        "writes": [
+          {
+            "id": "txid",
+            "slot": "txid",
+            "type": "TxId",
+            "durability": "durable-reference"
+          }
+        ],
+        "outcomes": [
+          {
+            "code": "Succeeded",
+            "kind": "success",
+            "action": "continue"
+          },
+          {
+            "code": "Rejected",
+            "kind": "business-rejection",
+            "action": "stop"
+          },
+          {
+            "code": "Compensated",
+            "kind": "business-rejection",
+            "action": "stop"
+          },
+          {
+            "code": "RecoveryRequired",
+            "kind": "infrastructure-failure",
+            "action": "manual-recovery"
+          },
+          {
+            "code": "Unknown",
+            "kind": "unknown-effect",
+            "action": "manual-recovery"
+          }
+        ]
+      }
+    }
+  ]
+execution:
+  {
+    "schemaVersion": "truthsrc.execution/v1",
+    "inputs": [
+      {
+        "id": "operation",
+        "type": "OperationId",
+        "durability": "start-record"
+      },
+      {
+        "id": "occurrence",
+        "type": "OperationId",
+        "durability": "durable-reference"
+      },
+      {
+        "id": "from",
+        "type": "LotId",
+        "durability": "start-record"
+      },
+      {
+        "id": "to",
+        "type": "LotId",
+        "durability": "start-record"
+      },
+      {
+        "id": "wafers",
+        "type": "WaferSet",
+        "durability": "start-record"
+      },
+      {
+        "id": "manifest",
+        "type": "ManifestRef",
+        "durability": "start-record"
+      }
+    ],
+    "outputs": [
+      {
+        "id": "splitTxid",
+        "ref": "step:split:txid",
+        "type": "TxId"
+      },
+      {
+        "id": "childRun",
+        "ref": "step:await-child:childRun",
+        "type": "OperationId"
+      },
+      {
+        "id": "mergeTxid",
+        "ref": "step:merge:txid",
+        "type": "TxId"
+      }
+    ],
+    "recovery": {
+      "inputResponsibility": "host",
+      "inputs": [
+        "input:operation",
+        "input:occurrence",
+        "input:from",
+        "input:to",
+        "input:wafers",
+        "input:manifest"
+      ],
+      "planVersion": "plan-v1",
+      "planCompatibility": "exact",
+      "checkpoint": "confirmed-prefix",
+      "unknownEffect": "reconcile-before-resume",
+      "ownership": "single-writer"
+    },
+    "admission": {
+      "maxConcurrentRuns": 1,
+      "maxInFlightSteps": 1,
+      "maxItemsPerChunk": 64,
+      "maxInFlightChunks": 1
+    }
+  }

@@ -410,6 +410,10 @@ const renderHandlerCase = (e) => {
       const S = `state.${qref(slot)}`;
       if (f.op === "put") return { text: `${qref(slot)} = ${S} + (${idx(f.key)} -> ${val(f.value)})` };
       if (f.op === "remove") return { text: `${qref(slot)} = ${S} - ${idx(f.key)}` };
+      // P13 集合迁移算子：key=本事件集合槽（List[String]）——按元素逐键 put/remove；
+      // Map ++ List[(K,V)] / Map -- List[K] 的 Scala 语义。
+      if (f.op === "put-all") return { text: `${qref(slot)} = ${S} ++ ${idx(f.key)}.map(k => k -> ${val(f.value)})` };
+      if (f.op === "remove-all") return { text: `${qref(slot)} = ${S} -- ${idx(f.key)}` };
       if (f.op === "money-apply") {
         const d = idx(f.delta);
         return { text: `${qref(slot)} = {

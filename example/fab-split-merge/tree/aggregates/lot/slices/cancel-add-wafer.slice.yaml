@@ -16,25 +16,56 @@ payload:
         "name": "resource",
         "dataType": "LotId",
         "origin": "BUSINESS_INPUT"
-      },
-      {
-        "name": "reservation",
-        "dataType": "ReservationId",
-        "origin": "BUSINESS_INPUT"
       }
     ],
     "produces": [
       "CancelAddWaferConfirmed"
     ],
-    "description": "Stable operation identity, exact payload compatibility and durable participant receipt required."
+    "guards": [
+      {
+        "ruleId": "IR-LOT-CANCEL-ADD-001",
+        "errCode": "61009",
+        "onFail": "reject",
+        "when": {
+          "form": "map-contains",
+          "map": "reservedAdditions",
+          "key": "param.txid"
+        },
+        "desc": "Addition cannot be found or already canceled."
+      }
+    ],
+    "description": "Stable operation identity, exact payload compatibility and durable participant receipt required. The reserved wafers were never carried, so cancellation only clears the reservation."
   }
 events:
   {
     "CancelAddWaferConfirmed": {
       "name": "CancelAddWaferConfirmed",
-      "payloads": [],
-      "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
-      "bindings": [],
-      "foldAssignments": []
+      "payloads": [
+        {
+          "name": "txid",
+          "dataType": "TxId",
+          "origin": "BUSINESS_INPUT"
+        }
+      ],
+      "description": "Designed durable fact: the reserved addition under this transaction identity was canceled; the folds mark the compensation and clear the reservation.",
+      "bindings": [
+        {
+          "slot": "txid",
+          "expr": "param.txid"
+        }
+      ],
+      "foldAssignments": [
+        {
+          "slot": "compensated",
+          "op": "put",
+          "key": "event.txid",
+          "value": "literal:canceled-addition"
+        },
+        {
+          "slot": "reservedAdditions",
+          "op": "remove",
+          "key": "event.txid"
+        }
+      ]
     }
   }

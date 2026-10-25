@@ -78,7 +78,7 @@ const innerType = (t) => {
   const m = /^(?:List|Array)<(.+)>$/.exec((t || "").trim());
   return m ? innerType(m[1]) : (t || "").trim();
 };
-const isListType = (t) => /^(?:List|Array)</.test((t || "").trim());
+const isListType = (t) => /^(?:List|Array)[<[]/.test((t || "").trim());
 const isVOType = (t) => VO_NAMES.has(innerType(t));
 // primitive/scalar converter for a NON-list type; null => direct passthrough
 const scalarConv = (inner) => {
