@@ -75,25 +75,47 @@ ${slots.map(() => "      }").join("\n")}`;
       }.recover { case ex => Unknown(identity, s"phase evidence query failed: $${'{'}ex.getMessage${'}'}") }
 `;
     })() : "";
+    const terminalObserver = p.terminalEvidence ? (() => {
+      const ev = p.terminalEvidence;
+      return `    private def observe(identity: OperationIdentity, input: ${m.moduleObj}.${p.inputType}, absent: => PhaseOutcome[${m.moduleObj}.${p.receiptType}]): Future[PhaseOutcome[${m.moduleObj}.${p.receiptType}]] =
+      ${fbase}StateAsk(input.${p.resourceInput.slot}).map { view =>
+        if (view.state.${ev.oppositeMap}.contains(input.${p.txidSlot}) ||
+            (view.state.${ev.markerMap}.contains(input.${p.txidSlot}) && view.state.${ev.liveMap}.contains(input.${p.txidSlot})))
+          Unknown(identity, "MONEY_TERMINAL_FACT_CONFLICT: opposite terminal or terminal/live facts coexist")
+        else view.state.${ev.markerMap}.get(input.${p.txidSlot}) match {
+          case Some(durable) if durable != null && durable.minorUnits != null && durable.minorUnits.nonEmpty &&
+              durable.currency != null && durable.currency.nonEmpty =>
+            ConfirmedReceipt(identity, ${receiptCtor})
+          case Some(_) => Unknown(identity, "MONEY_TERMINAL_FACT_UNAVAILABLE: durable terminal value is unavailable")
+          case None => absent
+        }
+      }.recover { case ex => Unknown(identity, s"phase evidence query failed: $${'{'}ex.getMessage${'}'}") }
+`;
+    })() : "";
     const executeBody = p.prepareValueEvidence ? `      ${fbase}ReplyAsk(input.${p.resourceInput.slot}, replyTo => ${commandCall}).flatMap {
         case ${face.replyFqn}(None) =>
           observe(identity, input, Unknown(identity, "MONEY_PREPARE_ACK_WITHOUT_FACT: successful reply has no durable Prepare value"))
         case ${face.replyFqn}(Some(error)) =>
           observe(identity, input, NotExecuted(identity, s"aggregate rejected $${'{'}error.code${'}'}: $${'{'}error.message${'}'}; no events persisted", safeToRetry = true))
-      }.recover { case ex => Unknown(identity, s"Prepare interaction failed: $${'{'}ex.getMessage${'}'}") }` : `      ${fbase}ReplyAsk(input.${p.resourceInput.slot}, replyTo => ${commandCall}).map {
+      }.recover { case ex => Unknown(identity, s"Prepare interaction failed: $${'{'}ex.getMessage${'}'}") }` : p.terminalEvidence ? `      ${fbase}ReplyAsk(input.${p.resourceInput.slot}, replyTo => ${commandCall}).flatMap {
+        case ${face.replyFqn}(None) =>
+          observe(identity, input, Unknown(identity, "MONEY_TERMINAL_ACK_WITHOUT_FACT: successful reply has no durable terminal value"))
+        case ${face.replyFqn}(Some(error)) =>
+          observe(identity, input, NotExecuted(identity, s"aggregate rejected $${'{'}error.code${'}'}: $${'{'}error.message${'}'}; no events persisted (controlled profile only)", safeToRetry = true))
+      }.recover { case ex => Unknown(identity, s"terminal interaction failed: $${'{'}ex.getMessage${'}'}") }` : `      ${fbase}ReplyAsk(input.${p.resourceInput.slot}, replyTo => ${commandCall}).map {
         case ${face.replyFqn}(None) =>
           ConfirmedReceipt(identity, ${receiptCtor})
         case ${face.replyFqn}(Some(error)) =>
           NotExecuted(identity, s"aggregate rejected $${'{'}error.code${'}'}: $${'{'}error.message${'}'}; no events persisted", safeToRetry = true)
       }`;
-    const queryBody = p.prepareValueEvidence ? `      observe(identity, input, NotExecuted(identity, "durable Prepare state has no transaction fact (controlled profile only)", safeToRetry = true))` : `      ${fbase}StateAsk(input.${p.resourceInput.slot}).map { view =>
+    const queryBody = p.prepareValueEvidence ? `      observe(identity, input, NotExecuted(identity, "durable Prepare state has no transaction fact (controlled profile only)", safeToRetry = true))` : p.terminalEvidence ? `      observe(identity, input, NotExecuted(identity, "durable aggregate state has no terminal fact for this phase (controlled profile only)", safeToRetry = true))` : `      ${fbase}StateAsk(input.${p.resourceInput.slot}).map { view =>
         if (view.state.${p.evidence}.contains(input.${p.txidSlot}))
           ConfirmedReceipt(identity, ${receiptCtor})
         else
           NotExecuted(identity, s"durable aggregate state: ${p.evidence} does not contain txid $${'{'}input.${p.txidSlot}${'}'}", safeToRetry = true)
       }.recover { case ex => Unknown(identity, s"phase evidence query failed: $${'{'}ex.getMessage${'}'}") }`;
     return `  def ${p.member}: ${m.moduleObj}.${p.hostTrait} = new ${m.moduleObj}.${p.hostTrait} {
-${valueObserver}    private val codec: PayloadCodec[${m.moduleObj}.${p.receiptType}] = new PayloadCodec[${m.moduleObj}.${p.receiptType}] {
+${valueObserver}${terminalObserver}    private val codec: PayloadCodec[${m.moduleObj}.${p.receiptType}] = new PayloadCodec[${m.moduleObj}.${p.receiptType}] {
       override val pin: CodecPin = CodecPin(${jstr(p.pinId)}, 1)
       override def encode(value: ${m.moduleObj}.${p.receiptType}): ByteString =
 ${encodeBody}
@@ -142,6 +164,11 @@ ${moneyRequires}
   }`;
   }).join("\n\n");
 
+  const evidenceNote = m.phases.some(p => p.terminalEvidence)
+    ? '  * Money phases re-read durable facts after replies: exact Prepare value, and\n' +
+      '  * terminal marker without opposite/live conflicts. Terminal receipts are txid-only;\n' +
+      '  * absence is controlled-profile, not production fencing or full-payload evidence.\n'
+    : '';
   const fixtureHost = `${h}package ${m.pkg}
 
 import akka.actor.typed.{ActorSystem, Scheduler}
@@ -167,7 +194,7 @@ import StrictWire._
   *   - commit/compensate query = the phase-marker fields (SCHEMA.md P5): the
   *     committed/compensated maps put-keyed by every confirmation, contains(txid)
   *     precise determination — Confirmed skips re-execution of a durable fact;
-  *   - ask failures = Unknown (a timeout is never an absence). */
+${evidenceNote}  *   - ask failures = Unknown (a timeout is never an absence). */
 object FixtureHost {
   /** What this emitted implementation actually provides — requireImplemented declares
     * against this set, never against an echo of the contract. */

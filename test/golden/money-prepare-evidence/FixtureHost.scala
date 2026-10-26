@@ -24,6 +24,9 @@ import StrictWire._
   *   - commit/compensate query = the phase-marker fields (SCHEMA.md P5): the
   *     committed/compensated maps put-keyed by every confirmation, contains(txid)
   *     precise determination — Confirmed skips re-execution of a durable fact;
+  * Money phases re-read durable facts after replies: exact Prepare value, and
+  * terminal marker without opposite/live conflicts. Terminal receipts are txid-only;
+  * absence is controlled-profile, not production fencing or full-payload evidence.
   *   - ask failures = Unknown (a timeout is never an absence). */
 object FixtureHost {
   /** What this emitted implementation actually provides — requireImplemented declares
@@ -131,6 +134,19 @@ final class FixtureHost(system: ActorSystem[_], sharding: ClusterSharding)(impli
   }
 
   def reserve_sourceCommitBinding: SagaModule.Reserve_sourceCommitHostBinding = new SagaModule.Reserve_sourceCommitHostBinding {
+    private def observe(identity: OperationIdentity, input: SagaModule.Reserve_sourceCommitInput, absent: => PhaseOutcome[SagaModule.Reserve_sourceCommitReceipt]): Future[PhaseOutcome[SagaModule.Reserve_sourceCommitReceipt]] =
+      creditBalanceStateAsk(input.resource).map { view =>
+        if (view.state.compensated.contains(input.txid) ||
+            (view.state.committed.contains(input.txid) && view.state.reservedAmount.contains(input.txid)))
+          Unknown(identity, "MONEY_TERMINAL_FACT_CONFLICT: opposite terminal or terminal/live facts coexist")
+        else view.state.committed.get(input.txid) match {
+          case Some(durable) if durable != null && durable.minorUnits != null && durable.minorUnits.nonEmpty &&
+              durable.currency != null && durable.currency.nonEmpty =>
+            ConfirmedReceipt(identity, SagaModule.Reserve_sourceCommitReceipt(input.txid))
+          case Some(_) => Unknown(identity, "MONEY_TERMINAL_FACT_UNAVAILABLE: durable terminal value is unavailable")
+          case None => absent
+        }
+      }.recover { case ex => Unknown(identity, s"phase evidence query failed: ${ex.getMessage}") }
     private val codec: PayloadCodec[SagaModule.Reserve_sourceCommitReceipt] = new PayloadCodec[SagaModule.Reserve_sourceCommitReceipt] {
       override val pin: CodecPin = CodecPin("reserve-source-commit-receipt", 1)
       override def encode(value: SagaModule.Reserve_sourceCommitReceipt): ByteString =
@@ -145,22 +161,30 @@ final class FixtureHost(system: ActorSystem[_], sharding: ClusterSharding)(impli
     override def receiptCodec: PayloadCodec[SagaModule.Reserve_sourceCommitReceipt] = codec
     override def querySafety: QuerySafety = QuerySafety.DeclaredReadOnly
     override def execute(identity: OperationIdentity, input: SagaModule.Reserve_sourceCommitInput): Future[PhaseOutcome[SagaModule.Reserve_sourceCommitReceipt]] =
-      creditBalanceReplyAsk(input.resource, replyTo => net.imadz.metarch.application.aggregates.CreditBalanceProtocol.DeductFunds(input.txid, input.resource, replyTo)).map {
+      creditBalanceReplyAsk(input.resource, replyTo => net.imadz.metarch.application.aggregates.CreditBalanceProtocol.DeductFunds(input.txid, input.resource, replyTo)).flatMap {
         case net.imadz.metarch.application.aggregates.CreditBalanceProtocol.CreditBalanceReply(None) =>
-          ConfirmedReceipt(identity, SagaModule.Reserve_sourceCommitReceipt(input.txid))
+          observe(identity, input, Unknown(identity, "MONEY_TERMINAL_ACK_WITHOUT_FACT: successful reply has no durable terminal value"))
         case net.imadz.metarch.application.aggregates.CreditBalanceProtocol.CreditBalanceReply(Some(error)) =>
-          NotExecuted(identity, s"aggregate rejected ${error.code}: ${error.message}; no events persisted", safeToRetry = true)
-      }
+          observe(identity, input, NotExecuted(identity, s"aggregate rejected ${error.code}: ${error.message}; no events persisted (controlled profile only)", safeToRetry = true))
+      }.recover { case ex => Unknown(identity, s"terminal interaction failed: ${ex.getMessage}") }
     override def query(identity: OperationIdentity, input: SagaModule.Reserve_sourceCommitInput): Future[PhaseOutcome[SagaModule.Reserve_sourceCommitReceipt]] =
-      creditBalanceStateAsk(input.resource).map { view =>
-        if (view.state.committed.contains(input.txid))
-          ConfirmedReceipt(identity, SagaModule.Reserve_sourceCommitReceipt(input.txid))
-        else
-          NotExecuted(identity, s"durable aggregate state: committed does not contain txid ${input.txid}", safeToRetry = true)
-      }.recover { case ex => Unknown(identity, s"phase evidence query failed: ${ex.getMessage}") }
+      observe(identity, input, NotExecuted(identity, "durable aggregate state has no terminal fact for this phase (controlled profile only)", safeToRetry = true))
   }
 
   def reserve_sourceCompensateBinding: SagaModule.Reserve_sourceCompensateHostBinding = new SagaModule.Reserve_sourceCompensateHostBinding {
+    private def observe(identity: OperationIdentity, input: SagaModule.Reserve_sourceCompensateInput, absent: => PhaseOutcome[SagaModule.Reserve_sourceCompensateReceipt]): Future[PhaseOutcome[SagaModule.Reserve_sourceCompensateReceipt]] =
+      creditBalanceStateAsk(input.resource).map { view =>
+        if (view.state.committed.contains(input.txid) ||
+            (view.state.compensated.contains(input.txid) && view.state.reservedAmount.contains(input.txid)))
+          Unknown(identity, "MONEY_TERMINAL_FACT_CONFLICT: opposite terminal or terminal/live facts coexist")
+        else view.state.compensated.get(input.txid) match {
+          case Some(durable) if durable != null && durable.minorUnits != null && durable.minorUnits.nonEmpty &&
+              durable.currency != null && durable.currency.nonEmpty =>
+            ConfirmedReceipt(identity, SagaModule.Reserve_sourceCompensateReceipt(input.txid))
+          case Some(_) => Unknown(identity, "MONEY_TERMINAL_FACT_UNAVAILABLE: durable terminal value is unavailable")
+          case None => absent
+        }
+      }.recover { case ex => Unknown(identity, s"phase evidence query failed: ${ex.getMessage}") }
     private val codec: PayloadCodec[SagaModule.Reserve_sourceCompensateReceipt] = new PayloadCodec[SagaModule.Reserve_sourceCompensateReceipt] {
       override val pin: CodecPin = CodecPin("reserve-source-compensate-receipt", 1)
       override def encode(value: SagaModule.Reserve_sourceCompensateReceipt): ByteString =
@@ -175,19 +199,14 @@ final class FixtureHost(system: ActorSystem[_], sharding: ClusterSharding)(impli
     override def receiptCodec: PayloadCodec[SagaModule.Reserve_sourceCompensateReceipt] = codec
     override def querySafety: QuerySafety = QuerySafety.DeclaredReadOnly
     override def execute(identity: OperationIdentity, input: SagaModule.Reserve_sourceCompensateInput): Future[PhaseOutcome[SagaModule.Reserve_sourceCompensateReceipt]] =
-      creditBalanceReplyAsk(input.resource, replyTo => net.imadz.metarch.application.aggregates.CreditBalanceProtocol.ReleaseReservedFunds(input.txid, input.resource, replyTo)).map {
+      creditBalanceReplyAsk(input.resource, replyTo => net.imadz.metarch.application.aggregates.CreditBalanceProtocol.ReleaseReservedFunds(input.txid, input.resource, replyTo)).flatMap {
         case net.imadz.metarch.application.aggregates.CreditBalanceProtocol.CreditBalanceReply(None) =>
-          ConfirmedReceipt(identity, SagaModule.Reserve_sourceCompensateReceipt(input.txid))
+          observe(identity, input, Unknown(identity, "MONEY_TERMINAL_ACK_WITHOUT_FACT: successful reply has no durable terminal value"))
         case net.imadz.metarch.application.aggregates.CreditBalanceProtocol.CreditBalanceReply(Some(error)) =>
-          NotExecuted(identity, s"aggregate rejected ${error.code}: ${error.message}; no events persisted", safeToRetry = true)
-      }
+          observe(identity, input, NotExecuted(identity, s"aggregate rejected ${error.code}: ${error.message}; no events persisted (controlled profile only)", safeToRetry = true))
+      }.recover { case ex => Unknown(identity, s"terminal interaction failed: ${ex.getMessage}") }
     override def query(identity: OperationIdentity, input: SagaModule.Reserve_sourceCompensateInput): Future[PhaseOutcome[SagaModule.Reserve_sourceCompensateReceipt]] =
-      creditBalanceStateAsk(input.resource).map { view =>
-        if (view.state.compensated.contains(input.txid))
-          ConfirmedReceipt(identity, SagaModule.Reserve_sourceCompensateReceipt(input.txid))
-        else
-          NotExecuted(identity, s"durable aggregate state: compensated does not contain txid ${input.txid}", safeToRetry = true)
-      }.recover { case ex => Unknown(identity, s"phase evidence query failed: ${ex.getMessage}") }
+      observe(identity, input, NotExecuted(identity, "durable aggregate state has no terminal fact for this phase (controlled profile only)", safeToRetry = true))
   }
 
   def reserve_targetPrepareBinding: SagaModule.Reserve_targetPrepareHostBinding = new SagaModule.Reserve_targetPrepareHostBinding {
@@ -231,6 +250,19 @@ final class FixtureHost(system: ActorSystem[_], sharding: ClusterSharding)(impli
   }
 
   def reserve_targetCommitBinding: SagaModule.Reserve_targetCommitHostBinding = new SagaModule.Reserve_targetCommitHostBinding {
+    private def observe(identity: OperationIdentity, input: SagaModule.Reserve_targetCommitInput, absent: => PhaseOutcome[SagaModule.Reserve_targetCommitReceipt]): Future[PhaseOutcome[SagaModule.Reserve_targetCommitReceipt]] =
+      creditBalanceStateAsk(input.resource).map { view =>
+        if (view.state.compensated.contains(input.txid) ||
+            (view.state.committed.contains(input.txid) && view.state.incomingCredits.contains(input.txid)))
+          Unknown(identity, "MONEY_TERMINAL_FACT_CONFLICT: opposite terminal or terminal/live facts coexist")
+        else view.state.committed.get(input.txid) match {
+          case Some(durable) if durable != null && durable.minorUnits != null && durable.minorUnits.nonEmpty &&
+              durable.currency != null && durable.currency.nonEmpty =>
+            ConfirmedReceipt(identity, SagaModule.Reserve_targetCommitReceipt(input.txid))
+          case Some(_) => Unknown(identity, "MONEY_TERMINAL_FACT_UNAVAILABLE: durable terminal value is unavailable")
+          case None => absent
+        }
+      }.recover { case ex => Unknown(identity, s"phase evidence query failed: ${ex.getMessage}") }
     private val codec: PayloadCodec[SagaModule.Reserve_targetCommitReceipt] = new PayloadCodec[SagaModule.Reserve_targetCommitReceipt] {
       override val pin: CodecPin = CodecPin("reserve-target-commit-receipt", 1)
       override def encode(value: SagaModule.Reserve_targetCommitReceipt): ByteString =
@@ -245,22 +277,30 @@ final class FixtureHost(system: ActorSystem[_], sharding: ClusterSharding)(impli
     override def receiptCodec: PayloadCodec[SagaModule.Reserve_targetCommitReceipt] = codec
     override def querySafety: QuerySafety = QuerySafety.DeclaredReadOnly
     override def execute(identity: OperationIdentity, input: SagaModule.Reserve_targetCommitInput): Future[PhaseOutcome[SagaModule.Reserve_targetCommitReceipt]] =
-      creditBalanceReplyAsk(input.resource, replyTo => net.imadz.metarch.application.aggregates.CreditBalanceProtocol.CommitIncomingCredits(input.txid, input.resource, replyTo)).map {
+      creditBalanceReplyAsk(input.resource, replyTo => net.imadz.metarch.application.aggregates.CreditBalanceProtocol.CommitIncomingCredits(input.txid, input.resource, replyTo)).flatMap {
         case net.imadz.metarch.application.aggregates.CreditBalanceProtocol.CreditBalanceReply(None) =>
-          ConfirmedReceipt(identity, SagaModule.Reserve_targetCommitReceipt(input.txid))
+          observe(identity, input, Unknown(identity, "MONEY_TERMINAL_ACK_WITHOUT_FACT: successful reply has no durable terminal value"))
         case net.imadz.metarch.application.aggregates.CreditBalanceProtocol.CreditBalanceReply(Some(error)) =>
-          NotExecuted(identity, s"aggregate rejected ${error.code}: ${error.message}; no events persisted", safeToRetry = true)
-      }
+          observe(identity, input, NotExecuted(identity, s"aggregate rejected ${error.code}: ${error.message}; no events persisted (controlled profile only)", safeToRetry = true))
+      }.recover { case ex => Unknown(identity, s"terminal interaction failed: ${ex.getMessage}") }
     override def query(identity: OperationIdentity, input: SagaModule.Reserve_targetCommitInput): Future[PhaseOutcome[SagaModule.Reserve_targetCommitReceipt]] =
-      creditBalanceStateAsk(input.resource).map { view =>
-        if (view.state.committed.contains(input.txid))
-          ConfirmedReceipt(identity, SagaModule.Reserve_targetCommitReceipt(input.txid))
-        else
-          NotExecuted(identity, s"durable aggregate state: committed does not contain txid ${input.txid}", safeToRetry = true)
-      }.recover { case ex => Unknown(identity, s"phase evidence query failed: ${ex.getMessage}") }
+      observe(identity, input, NotExecuted(identity, "durable aggregate state has no terminal fact for this phase (controlled profile only)", safeToRetry = true))
   }
 
   def reserve_targetCompensateBinding: SagaModule.Reserve_targetCompensateHostBinding = new SagaModule.Reserve_targetCompensateHostBinding {
+    private def observe(identity: OperationIdentity, input: SagaModule.Reserve_targetCompensateInput, absent: => PhaseOutcome[SagaModule.Reserve_targetCompensateReceipt]): Future[PhaseOutcome[SagaModule.Reserve_targetCompensateReceipt]] =
+      creditBalanceStateAsk(input.resource).map { view =>
+        if (view.state.committed.contains(input.txid) ||
+            (view.state.compensated.contains(input.txid) && view.state.incomingCredits.contains(input.txid)))
+          Unknown(identity, "MONEY_TERMINAL_FACT_CONFLICT: opposite terminal or terminal/live facts coexist")
+        else view.state.compensated.get(input.txid) match {
+          case Some(durable) if durable != null && durable.minorUnits != null && durable.minorUnits.nonEmpty &&
+              durable.currency != null && durable.currency.nonEmpty =>
+            ConfirmedReceipt(identity, SagaModule.Reserve_targetCompensateReceipt(input.txid))
+          case Some(_) => Unknown(identity, "MONEY_TERMINAL_FACT_UNAVAILABLE: durable terminal value is unavailable")
+          case None => absent
+        }
+      }.recover { case ex => Unknown(identity, s"phase evidence query failed: ${ex.getMessage}") }
     private val codec: PayloadCodec[SagaModule.Reserve_targetCompensateReceipt] = new PayloadCodec[SagaModule.Reserve_targetCompensateReceipt] {
       override val pin: CodecPin = CodecPin("reserve-target-compensate-receipt", 1)
       override def encode(value: SagaModule.Reserve_targetCompensateReceipt): ByteString =
@@ -275,19 +315,14 @@ final class FixtureHost(system: ActorSystem[_], sharding: ClusterSharding)(impli
     override def receiptCodec: PayloadCodec[SagaModule.Reserve_targetCompensateReceipt] = codec
     override def querySafety: QuerySafety = QuerySafety.DeclaredReadOnly
     override def execute(identity: OperationIdentity, input: SagaModule.Reserve_targetCompensateInput): Future[PhaseOutcome[SagaModule.Reserve_targetCompensateReceipt]] =
-      creditBalanceReplyAsk(input.resource, replyTo => net.imadz.metarch.application.aggregates.CreditBalanceProtocol.CancelIncomingCredit(input.txid, input.resource, replyTo)).map {
+      creditBalanceReplyAsk(input.resource, replyTo => net.imadz.metarch.application.aggregates.CreditBalanceProtocol.CancelIncomingCredit(input.txid, input.resource, replyTo)).flatMap {
         case net.imadz.metarch.application.aggregates.CreditBalanceProtocol.CreditBalanceReply(None) =>
-          ConfirmedReceipt(identity, SagaModule.Reserve_targetCompensateReceipt(input.txid))
+          observe(identity, input, Unknown(identity, "MONEY_TERMINAL_ACK_WITHOUT_FACT: successful reply has no durable terminal value"))
         case net.imadz.metarch.application.aggregates.CreditBalanceProtocol.CreditBalanceReply(Some(error)) =>
-          NotExecuted(identity, s"aggregate rejected ${error.code}: ${error.message}; no events persisted", safeToRetry = true)
-      }
+          observe(identity, input, NotExecuted(identity, s"aggregate rejected ${error.code}: ${error.message}; no events persisted (controlled profile only)", safeToRetry = true))
+      }.recover { case ex => Unknown(identity, s"terminal interaction failed: ${ex.getMessage}") }
     override def query(identity: OperationIdentity, input: SagaModule.Reserve_targetCompensateInput): Future[PhaseOutcome[SagaModule.Reserve_targetCompensateReceipt]] =
-      creditBalanceStateAsk(input.resource).map { view =>
-        if (view.state.compensated.contains(input.txid))
-          ConfirmedReceipt(identity, SagaModule.Reserve_targetCompensateReceipt(input.txid))
-        else
-          NotExecuted(identity, s"durable aggregate state: compensated does not contain txid ${input.txid}", safeToRetry = true)
-      }.recover { case ex => Unknown(identity, s"phase evidence query failed: ${ex.getMessage}") }
+      observe(identity, input, NotExecuted(identity, "durable aggregate state has no terminal fact for this phase (controlled profile only)", safeToRetry = true))
   }
 
   def from_commandTrigger: SagaModule.From_commandTriggerBinding = new SagaModule.From_commandTriggerBinding {

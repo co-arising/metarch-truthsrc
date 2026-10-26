@@ -81,6 +81,27 @@ real query port. Positive and conflicting-value cases check event counts,
 balances and the applicable terminal ledger. This is single-JVM actor recovery,
 not a physical-process crash claim. Collection/Fab emission is unchanged.
 
+## Money terminal evidence (P20, 2026-10-26)
+
+The same static money profile derives Commit/Compensate evidence from the paired
+Prepare carrier and the real terminal folds: `put(marker, event.txid,
+state.live[event.txid])` plus `remove(live, event.txid)`. Both terminal markers
+must share the admitted txid-keyed Money type and exact parameter origin. Missing,
+ambiguous or cross-carrier evidence fails generation. Query and both success/error
+reply paths re-read durable state; a same-phase marker confirms a repeat only when
+no opposite marker or live reservation conflicts. Opposite/conflicting or
+unavailable facts return Unknown. An acknowledged command without its marker is
+also Unknown; guard-error absence remains controlled-profile evidence.
+
+The existing terminal inputs/receipts carry no amount or full operation identity;
+this does not certify payload matching, role aliases, terminal-to-Prepare fencing
+or production concurrency. The dedicated local oracle template separates synthetic
+state/false-ACK classification from real commands. Four real Commit/Compensate
+ACK-loss windows recover the coordinator and explicitly reconcile, checking durable
+decisions, original receipt codec bytes, balances, events and publication. Two
+explicit opposite-phase injection cases retain RecoveryRequired and the original
+decision. No physical-process crash claim is added; Fab and codecs are unchanged.
+
 ## Apply and anchor evidence (Saga S8, 2026-10-22)
 
 `src/core/generate.mjs` remains the sole application write channel. Producers

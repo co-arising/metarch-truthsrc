@@ -225,6 +225,7 @@ export function emitStrictFiles(saga, canonical, opts = {}) {
 
   // ── 相位模型（命名 + 输入/回执字段 + 证据推导）──
   const stepPrepareKey = new Map();
+  const stepPrepareValue = new Map();
   const phases = steps.flatMap((st) => st.phases.map((ph) => {
     const stem = phaseStem(st.stepId, ph.wire);
     const aggName = ph.commandRef.aggregate;
@@ -288,11 +289,56 @@ export function emitStrictFiles(saga, canonical, opts = {}) {
           valueBindings.length !== 1 || valueBindings[0].expr !== `param.${valueSlot}`)
         invalid("confirmation txid and Money must originate in the matching command inputs");
       prepareValueEvidence = { mapField: carrier.name, valueSlot };
+      stepPrepareValue.set(st.stepId, prepareValueEvidence);
+    }
+    let terminalEvidence;
+    if (ph.wire !== 'prepare' && stepPrepareValue.has(st.stepId)) {
+      const invalid = msg => fail(`Terminal evidence: ${stem}: ${msg}`);
+      const prepared = stepPrepareValue.get(st.stepId);
+      const prepare = st.phases.filter(p => p.wire === 'prepare');
+      if (prepare.length !== 1) invalid('exactly one admitted Money Prepare required');
+      const normalize = type => String(type).replace(/[\[\]]/g, c => c === '[' ? '<' : '>').replace(/\s/g, '');
+      const liveFields = sfs.filter(f => f.name === prepared.mapField);
+      if (liveFields.length !== 1) invalid('exactly one live Prepare map required');
+      for (const wire of ['commit', 'compensate']) {
+        const paired = st.phases.filter(p => p.wire === wire);
+        if (paired.length !== 1) invalid('exactly one paired terminal phase required');
+        const terminal = paired[0];
+        const txids = terminal.inputs.filter(i => i.source.kind === 'transaction-id');
+        const resources = terminal.inputs.filter(i => i.source.kind === 'args' && i.source.slot === st.resourceSlot);
+        if (terminal.commandRef.aggregate !== prepare[0].commandRef.aggregate ||
+            txids.length !== 1 || txids[0].slot !== txidSlot || txids[0].typeId !== txidInput.typeId ||
+            resources.length !== 1 || resources[0].slot !== resourceInput.slot ||
+            terminal.outputs.length !== 1 || terminal.outputs[0].slot !== txidSlot || terminal.outputs[0].type !== txidInput.typeId)
+          invalid('paired phases must share aggregate, resource, txid and a txid-only receipt');
+        const marker = wire === 'commit' ? 'committed' : 'compensated';
+        const opposite = wire === 'commit' ? 'compensated' : 'committed';
+        const eventName = terminal.tech.confirmation.eventRef.name;
+        const fields = sfs.filter(f => f.name === marker);
+        if (fields.length !== 1 || normalize(fields[0].dataType) !== normalize(liveFields[0].dataType) ||
+            !(fields[0].writtenBy || []).includes(`${eventName}.${txidSlot}`))
+          invalid('marker must be the same txid-keyed Money map type as the admitted Prepare');
+        const events = eventsOf(aggName).filter(e => e.name === eventName);
+        if (events.length !== 1) invalid('exactly one terminal confirmation event required');
+        const rows = events[0].foldAssignments || [];
+        const put = rows.filter(r => r.slot === marker);
+        const remove = rows.filter(r => r.slot === prepared.mapField);
+        if (put.length !== 1 || put[0].op !== 'put' || put[0].key !== `event.${txidSlot}` ||
+            put[0].value !== `state.${prepared.mapField}[event.${txidSlot}]` ||
+            remove.length !== 1 || remove[0].op !== 'remove' || remove[0].key !== `event.${txidSlot}` ||
+            rows.some(r => r.slot === opposite))
+          invalid('terminal confirmation must move the exact live value to only its own marker');
+        const bindings = (events[0].bindings || []).filter(b => b.slot === txidSlot);
+        if (bindings.length !== 1 || bindings[0].expr !== `param.${txidSlot}`)
+          invalid('terminal txid must have exactly one matching command-parameter origin');
+      }
+      terminalEvidence = { liveMap: prepared.mapField, markerMap: ph.wire === 'commit' ? 'committed' : 'compensated', oppositeMap: ph.wire === 'commit' ? 'compensated' : 'committed' };
     }
     return {
       stem, stepId: st.stepId, participantId: st.participantId, wire: ph.wire, runtime: ph.runtime,
       aggName, face, inputs: ph.inputs, outputs: ph.outputs, txidSlot, receiptFields, evidence,
       ...(prepareValueEvidence ? { prepareValueEvidence } : {}),
+      ...(terminalEvidence ? { terminalEvidence } : {}),
       inputType: nestedName(stem, "Input"), receiptType: nestedName(stem, "Receipt"),
       inputShapes: Object.fromEntries(ph.inputs.map((i) => [i.slot, shapeOf(i.typeId)])),
       inputShapes: Object.fromEntries(ph.inputs.map((i) => [i.slot, shapeOf(i.typeId)])),
