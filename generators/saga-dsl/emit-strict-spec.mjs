@@ -5,6 +5,8 @@
 // （D1 共享 Mongo journal+D2 事件流 source+D3 两 JVM+D4 failover；Mongo 不可达=
 // assume 显式 canceled）。A/B/C persistence-testkit 自足（不依赖 Play bootstrap）。
 // P13 分族：money（金额守恒族）/ fab（有界 wafer 集合守恒族——无 money 面）。
+import { readFileSync } from 'node:fs';
+
 const jstr = (s) => JSON.stringify(String(s));
 const scalaId = (n) => n;
 
@@ -136,6 +138,14 @@ ${seedCommands.map((c, i) => `    val r${i + 1} = askNow(kit, ref)(replyTo => ${
     : `        assert(out.contains("alice=99900") && out.contains("bob=100100"), s"balances wrong — output: $out")`;
   const d4ParentAsserts = d3ParentAsserts;
 
+  const moneyEvidenceSpec = fabFamily ? "" : (() => {
+    const template = readFileSync(new URL('./templates/money-prepare-evidence.scala.tpl', import.meta.url), 'utf8');
+    const values = { MODULE: m.moduleObj, ENTITY: face.entityFqn,
+      AGGREGATE: face.aggregateKeyFqn.replace(/\.entityTypeKey$/, ''), MONEY: money };
+    const rendered = Object.entries(values).reduce((text, [key, value]) => text.replaceAll(`@${key}@`, value), template);
+    if (/@[A-Z_]+@/.test(rendered)) throw new Error('unresolved money Prepare evidence spec slot');
+    return rendered;
+  })();
   const spec = `${h}package ${m.pkg}
 
 import akka.actor.typed.{ActorRef, ActorSystem, Behavior, Scheduler}
@@ -437,7 +447,7 @@ ${fabFamily ? `      reserve_sourcePrepare(kit, ref, "tx-a3-1", "a3", SplitWafer
     } finally kit.shutdownTestKit()
   }
 
-  test("B3 full saga: a failed target prepare auto-compensates the confirmed source (compensated)") {
+${fabFamily ? `  test("B3 full saga: a failed target prepare auto-compensates the confirmed source (compensated)") {
     val port = freePort()
     val kit = ActorTestKit("SafetySagaB3", clusterConfig(port, s"\\"akka://SafetySagaB3@127.0.0.1:$port\\""))
     try {
@@ -461,7 +471,7 @@ ${fabFamily ? `      reserve_sourcePrepare(kit, ref, "tx-a3-1", "a3", SplitWafer
 ${fabFamily ? `      assert(stateOf(kit, entityRef(sharding, From)).compensated.contains("op-b3"))` : `      assert(stateOf(kit, entityRef(sharding, From)).compensated.get("op-b3").map(_.minorUnits).contains("70"))`}
       assertPublished(kit, sharding, state, "compensated")
     } finally kit.shutdownTestKit()
-  }
+  }` : moneyEvidenceSpec.trimEnd()}
 
   // ---------- C: coordinator recovery ----------
 

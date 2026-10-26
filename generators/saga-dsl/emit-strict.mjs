@@ -260,9 +260,39 @@ export function emitStrictFiles(saga, canonical, opts = {}) {
         fail(`phase "${stem}" marker evidence is not exactly one "${marker}" field written by ${confirmationEvent}.${txidSlot} and keyed like its prepare evidence (found ${hits.length})`);
       evidence = hits[0].name;
     }
+    let prepareValueEvidence;
+    if (ph.wire === "prepare" && ph.inputs.some(i => shapeOf(i.typeId) === "money")) {
+      const invalid = msg => fail(`Prepare value evidence: ${stem}: ${msg}`);
+      const values = ph.inputs.filter(i => shapeOf(i.typeId) === "money");
+      if (values.length !== 1) invalid("exactly one Money input required");
+      const valueSlot = values[0].slot;
+      if (!ph.outputs.some(o => o.slot === valueSlot && o.type === values[0].typeId))
+        invalid("Money receipt must carry the same input slot and type");
+      const candidates = sfs.filter(f => (f.writtenBy || []).includes(`${confirmationEvent}.${txidSlot}`));
+      if (candidates.length !== 1) invalid("exactly one txid evidence map required");
+      const carrier = candidates[0];
+      const command = commandsOf(aggName).find(c => c.name === ph.commandRef.name);
+      const keyType = command.parameters.find(p => p.name === txidSlot)?.dataType;
+      const valueType = command.parameters.find(p => p.name === valueSlot)?.dataType;
+      const mapType = String(carrier.dataType).replace(/[\[\]]/g, c => c === "[" ? "<" : ">").replace(/\s/g, "");
+      if (mapType !== `Map<${keyType},${valueType}>`) invalid("carrier must be a txid-keyed map of the declared Money type");
+      const events = eventsOf(aggName).filter(e => e.name === confirmationEvent);
+      if (events.length !== 1) invalid("exactly one confirmation event required");
+      const rows = (events[0].foldAssignments || []).filter(r => r.slot === carrier.name);
+      if (rows.length !== 1 || rows[0].op !== "put" || rows[0].key !== `event.${txidSlot}` || rows[0].value !== `event.${valueSlot}`)
+        invalid("confirmation must put the exact event txid and Money into the carrier");
+      const bindings = events[0].bindings || [];
+      const txidBindings = bindings.filter(b => b.slot === txidSlot);
+      const valueBindings = bindings.filter(b => b.slot === valueSlot);
+      if (txidBindings.length !== 1 || txidBindings[0].expr !== `param.${txidSlot}` ||
+          valueBindings.length !== 1 || valueBindings[0].expr !== `param.${valueSlot}`)
+        invalid("confirmation txid and Money must originate in the matching command inputs");
+      prepareValueEvidence = { mapField: carrier.name, valueSlot };
+    }
     return {
       stem, stepId: st.stepId, participantId: st.participantId, wire: ph.wire, runtime: ph.runtime,
       aggName, face, inputs: ph.inputs, outputs: ph.outputs, txidSlot, receiptFields, evidence,
+      ...(prepareValueEvidence ? { prepareValueEvidence } : {}),
       inputType: nestedName(stem, "Input"), receiptType: nestedName(stem, "Receipt"),
       inputShapes: Object.fromEntries(ph.inputs.map((i) => [i.slot, shapeOf(i.typeId)])),
       inputShapes: Object.fromEntries(ph.inputs.map((i) => [i.slot, shapeOf(i.typeId)])),

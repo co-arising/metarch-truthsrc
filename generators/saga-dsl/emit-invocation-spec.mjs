@@ -4,6 +4,9 @@
 // 已存/镜像截断（子 journal 权威对账）；E4 intent 已存/Start 未答（同 txid 重发补发）；
 // E5 同 txid 异 args=ConflictingIdentity fail-closed。Mongo 不可达=assume 显式 canceled。
 // E-D 物理面（双 JVM+SIGTERM+singleton 迁移）=D4 机理复用，独立批段。
+import { readFileSync } from 'node:fs';
+const recoveryTemplate = readFileSync(new URL('./templates/composition-recovery.scala.tpl', import.meta.url), 'utf8');
+const deploymentTemplate = readFileSync(new URL('./templates/composition-deployment.scala.tpl', import.meta.url), 'utf8');
 const jstr = (s) => JSON.stringify(String(s));
 
 export function emitInvocationSpecFiles(model, { header } = {}) {
@@ -14,6 +17,15 @@ export function emitInvocationSpecFiles(model, { header } = {}) {
   const mergeEntry = `${m.merge.pkg}.${m.merge.entryName}`;
   const splitModule = `${m.split.pkg}.${m.split.moduleObj}`;
   const mergeModule = `${m.merge.pkg}.${m.merge.moduleObj}`;
+  const replacements = {
+    HOST: host, SPLIT_ENTRY: splitEntry, MERGE_ENTRY: mergeEntry,
+    ENTITY_KEY: 'net.imadz.metarch.application.aggregates.LotAggregate',
+    CHILD_PLAN: m.child.planObj, CHILD_STATE: m.child.stateType,
+  };
+  const recovery = recoveryTemplate.replace(/@([A-Z_]+)@/g, (_, key) => {
+    if (!(key in replacements)) throw new Error('unresolved recovery template token: ' + key);
+    return replacements[key];
+  });
 
   const spec = `${h}package ${m.specPkg || m.pkg}
 
@@ -37,8 +49,9 @@ import scala.concurrent.duration._
   * through the generated InvocationPipelineHost against a shared durable Mongo
   * journal. Crash windows are constructed by prefix-truncating the HOST's
   * journal documents directly in Mongo — recovery sees exactly the surviving
-  * prefix (true crash semantics, no in-process surgery). Every assertion about
-  * "zero new saga events" counts journal documents before and after recovery. */
+  * prefix verified across all atomic batches after writer termination. Test-only
+  * effect barriers prove intent-before-send; raw event bytes and typed journal
+  * facts prove identity and persisted effect counts, not merely final balances. */
 final class FixtureCompositionSpec extends org.scalatest.wordspec.AnyWordSpec with org.scalatest.matchers.should.Matchers {
 
   private val MongoHostPort = sys.env.getOrElse("SAGA_MONGO_HOSTPORT", "127.0.0.1:27017")
@@ -131,12 +144,16 @@ final class FixtureCompositionSpec extends org.scalatest.wordspec.AnyWordSpec wi
     assert(r1.error.isEmpty && r2.error.isEmpty, s"seeding failed for \$entityId")
   }
 
-  private def spawnHost(kit: ActorTestKit, sharding: ClusterSharding, operation: String, occurrence: String): ActorRef[${host}.Command] = {
+  private def spawnHost(kit: ActorTestKit, sharding: ClusterSharding, operation: String, occurrence: String,
+                        audit: Option[(String, String) => Boolean] = None): ActorRef[${host}.Command] = {
     implicit val ec: ExecutionContext = kit.system.executionContext
     val splitCoordinator = ${splitEntry}.spawnClusterSingleton(kit.system, sharding, ReconcileToken)
     val mergeCoordinator = ${mergeEntry}.spawnClusterSingleton(kit.system, sharding, ReconcileToken)
-    kit.spawn(${host}.behavior(kit.system, sharding, splitCoordinator, mergeCoordinator, operation, occurrence),
-      s"composition-\$operation-\$occurrence")
+    val behavior = audit match {
+      case Some(check) => ${host}.behaviorForTest(kit.system, sharding, splitCoordinator, mergeCoordinator, operation, occurrence, check)
+      case None => ${host}.behavior(kit.system, sharding, splitCoordinator, mergeCoordinator, operation, occurrence)
+    }
+    kit.spawn(behavior, s"composition-\$operation-\$occurrence")
   }
 
   private def begin(kit: ActorTestKit, hostRef: ActorRef[${host}.Command], operation: String, occurrence: String,
@@ -160,155 +177,7 @@ final class FixtureCompositionSpec extends org.scalatest.wordspec.AnyWordSpec wi
     report
   }
 
-  // ── Mongo journal surgery: discovery-based (never guess the collection/field) ──
-  private def dbNameOf(uri: String): String = uri.split("/").last
-  // rxmongo journal layout: ONE document per pid — {pid, from, to, events: [...], v}.
-  // Event count = the embedded array length; truncation = $slice on that array.
-  private def journalCollections(client: MongoClient, db: String): Vector[String] =
-    Await.result(client.getDatabase(db).listCollectionNames().toFuture(), 10.seconds).toVector
-      .filter(_.contains("journal"))
-
-  private def countJournal(uri: String, pid: String): Long = {
-    val client = MongoClient(uri)
-    try {
-      val db = dbNameOf(uri)
-      journalCollections(client, db).map { c =>
-        Await.result(client.getDatabase(db).getCollection(c)
-          .find(Document("pid" -> pid)).toFuture(), 10.seconds)
-          .flatMap(d => d.get("events").map(e => e.asArray.size.toLong)).sum
-      }.sum
-    } finally client.close()
-  }
-
-  /** Prefix truncation: keep only the first keep events of the pid's journal
-    * document (a true crash window — recovery sees exactly the surviving prefix). */
-  private def truncateJournal(uri: String, pid: String, keep: Int): Unit = {
-    val client = MongoClient(uri)
-    try {
-      val db = dbNameOf(uri)
-      journalCollections(client, db).foreach { c =>
-        Await.result(client.getDatabase(db).getCollection(c)
-          .updateOne(Document("pid" -> pid),
-            Document("$push" -> Document("events" -> Document("$each" -> org.mongodb.scala.bson.BsonArray(Vector.empty), "$slice" -> keep))))
-          .toFuture(), 10.seconds)
-      }
-    } finally client.close()
-  }
-
-
-  private def hostPid(operation: String, occurrence: String): String =
-    "${m.pidPrefix}/" + operation + "-" + occurrence
-  private def childPid(operation: String, occurrence: String): String =
-    ${host}.childPersistenceId(operation, occurrence)
-  // Saga coordinator singleton journal ids (strict-saga namespace, per-module).
-  private val SplitSagaPid = "strict-saga/FabSplitSagaModule"
-  private val MergeSagaPid = "strict-saga/FabMergeSagaModule"
-
-  private def withCluster[T](name: String)(body: (ActorTestKit, ClusterSharding, String) => T): T = {
-    assume(mongoReachable(), s"MongoDB not reachable at \$MongoHostPort — the composition face requires the shared durable journal")
-    val uri = mongoUri("composition_run_" + System.nanoTime())
-    val port = freePort()
-    val kit = ActorTestKit(name, compositionConfig(name, port, uri))
-    try {
-      val sharding = initSharding(kit)
-      waitClusterUp(kit)
-      body(kit, sharding, uri)
-    } finally kit.shutdownTestKit()
-  }
-
-  "E1 composition full chain" in withCluster("CompositionE1") { (kit, sharding, uri) =>
-    seedFunds(kit, sharding, From, "seed-e1-from")
-    seedFunds(kit, sharding, To, "seed-e1-to", ChildBaseWafers)
-    val hostRef = spawnHost(kit, sharding, "op-e1", "occ-1")
-    val reply = begin(kit, hostRef, "op-e1", "occ-1", SplitWafers)
-    assert(reply.accepted)
-    val report = awaitConcluded(kit, hostRef)
-    assert(report.concluded.contains("AllStepsSucceeded"), s"unexpected conclusion: \$report")
-    assert(report.checkpoints.map(_._1).toVector == Vector("split", "await-child", "merge"))
-    // End-to-end conservation: split moved the wafers out, the child processed them,
-    // merge moved the same set back — parent restored, child keeps its base only.
-    assert(carriedOf(kit, entityRef(sharding, From)) == SeedWafers.toSet)
-    assert(carriedOf(kit, entityRef(sharding, To)) == ChildBaseWafers.toSet)
-    // The child plan completed its bounded stages on the durable journal
-    // (RunStarted + StageDone x3 + RunCompleted = at least five events).
-    assert(countJournal(uri, childPid("op-e1", "occ-1")) >= 5,
-      "child plan journal must carry the full bounded stage chain")
-  }
-
-  "E2 saga terminal stored, checkpoint missing: reattach with zero new saga events" in withCluster("CompositionE2") { (kit, sharding, uri) =>
-    seedFunds(kit, sharding, From, "seed-e2-from")
-    seedFunds(kit, sharding, To, "seed-e2-to", ChildBaseWafers)
-    val hostRef = spawnHost(kit, sharding, "op-e2", "occ-1")
-    begin(kit, hostRef, "op-e2", "occ-1", SplitWafers)
-    awaitConcluded(kit, hostRef) // full chain done; journals hold everything
-    val sagaBefore = countJournal(uri, SplitSagaPid)
-    val childBefore = countJournal(uri, childPid("op-e2", "occ-1"))
-    val mergeBefore = countJournal(uri, MergeSagaPid)
-    // Crash window: drop the host journal back to the split intent + observed
-    // identity (checkpoints and everything after are gone — prefix semantics).
-    truncateJournal(uri, hostPid("op-e2", "occ-1"), keep = 3)
-    kit.shutdownTestKit()
-    val kit2 = ActorTestKit("CompositionE2", compositionConfig("CompositionE2", freePort(), uri))
-    try {
-      val sharding2 = initSharding(kit2)
-      waitClusterUp(kit2)
-      val host2 = spawnHost(kit2, sharding2, "op-e2", "occ-1")
-      val report = awaitConcluded(kit2, host2)
-      assert(report.concluded.contains("AllStepsSucceeded"), s"recovery did not converge: \$report")
-      // checkpoint lost → not redone: the saga/child/merge journals gained NOTHING.
-      assert(countJournal(uri, SplitSagaPid) == sagaBefore, "split saga journal must gain zero events")
-      assert(countJournal(uri, childPid("op-e2", "occ-1")) == childBefore, "child journal must gain zero events")
-      assert(countJournal(uri, MergeSagaPid) == mergeBefore, "merge saga journal must gain zero events")
-      assert(carriedOf(kit2, entityRef(sharding2, From)) == SeedWafers.toSet)
-      assert(carriedOf(kit2, entityRef(sharding2, To)) == ChildBaseWafers.toSet)
-    } finally kit2.shutdownTestKit()
-  }
-
-  "E3 checkpoint stored, mirror truncated: the child journal reconciles authoritatively" in withCluster("CompositionE3") { (kit, sharding, uri) =>
-    seedFunds(kit, sharding, From, "seed-e3-from")
-    seedFunds(kit, sharding, To, "seed-e3-to", ChildBaseWafers)
-    val hostRef = spawnHost(kit, sharding, "op-e3", "occ-1")
-    begin(kit, hostRef, "op-e3", "occ-1", SplitWafers)
-    awaitConcluded(kit, hostRef)
-    // Crash window: keep everything through the await-child checkpoint, drop the
-    // merge intent and conclusion (a truncated tail AFTER a durable checkpoint).
-    val total = countJournal(uri, hostPid("op-e3", "occ-1")).toInt
-    truncateJournal(uri, hostPid("op-e3", "occ-1"), keep = math.max(total - 2, 1))
-    kit.shutdownTestKit()
-    val kit2 = ActorTestKit("CompositionE3", compositionConfig("CompositionE3", freePort(), uri))
-    try {
-      val sharding2 = initSharding(kit2)
-      waitClusterUp(kit2)
-      val host2 = spawnHost(kit2, sharding2, "op-e3", "occ-1")
-      val report = awaitConcluded(kit2, host2)
-      assert(report.concluded.contains("AllStepsSucceeded"), s"authoritative reconciliation did not converge: \$report")
-      assert(carriedOf(kit2, entityRef(sharding2, From)) == SeedWafers.toSet)
-    } finally kit2.shutdownTestKit()
-  }
-
-  "E4 intent stored, start unanswered: same identity re-issue, exactly one saga pid" in withCluster("CompositionE4") { (kit, sharding, uri) =>
-    seedFunds(kit, sharding, From, "seed-e4-from")
-    seedFunds(kit, sharding, To, "seed-e4-to", ChildBaseWafers)
-    val hostRef = spawnHost(kit, sharding, "op-e4", "occ-1")
-    begin(kit, hostRef, "op-e4", "occ-1", SplitWafers)
-    awaitConcluded(kit, hostRef)
-    // Crash window: keep ONLY start-record + split intent (identity unobserved —
-    // the Start was never answered). Recovery must re-issue the SAME idempotent
-    // Start rather than inventing a new identity.
-    truncateJournal(uri, hostPid("op-e4", "occ-1"), keep = 2)
-    kit.shutdownTestKit()
-    val kit2 = ActorTestKit("CompositionE4", compositionConfig("CompositionE4", freePort(), uri))
-    try {
-      val sharding2 = initSharding(kit2)
-      waitClusterUp(kit2)
-      val host2 = spawnHost(kit2, sharding2, "op-e4", "occ-1")
-      val report = awaitConcluded(kit2, host2)
-      assert(report.concluded.contains("AllStepsSucceeded"), s"idempotent re-issue did not converge: \$report")
-      // Exactly one split intent survives in the host journal (no duplicate intent).
-      assert(countJournal(uri, hostPid("op-e4", "occ-1")) >= 2)
-      assert(carriedOf(kit2, entityRef(sharding2, From)) == SeedWafers.toSet)
-    } finally kit2.shutdownTestKit()
-  }
+${recovery}
 
   "E5 same txid with different args: fail closed on the occupied terminal" in withCluster("CompositionE5") { (kit, sharding, _) =>
     seedFunds(kit, sharding, From, "seed-e5-from")
@@ -347,5 +216,23 @@ final class FixtureCompositionSpec extends org.scalatest.wordspec.AnyWordSpec wi
   }
 }
 `;
-  return [{ name: "FixtureCompositionSpec.scala", content: spec }];
+  const facts = (recoveryTemplate.slice(0, recoveryTemplate.indexOf('  private def stoppedWriter')) +
+    recoveryTemplate.slice(recoveryTemplate.indexOf('  private def hostPid'), recoveryTemplate.indexOf('  private def effectAudit')))
+    .replace(/^  private /gm, '  ');
+  const deploymentTokens = {
+    ...replacements, PACKAGE: m.pkg, PACKAGE_TAIL: m.pkg.split('.').pop(), FACTS: facts,
+    COMMAND_FAMILY: 'net.imadz.metarch.application.aggregates.LotProtocol.LotCommandFamily',
+    ENTITY: 'net.imadz.metarch.domain.entities.LotEntity',
+    BEHAVIORS: 'net.imadz.metarch.application.aggregates.behaviors.LotBehaviors',
+    EVENT_HANDLER: 'net.imadz.metarch.domain.entities.behaviors.LotEventHandler',
+    PROTOCOL: 'net.imadz.metarch.application.aggregates.LotProtocol',
+    SEED_WAFERS: 'wafers.toList',
+  };
+  const replace = (text) => text.replace(/@([A-Z_]+)@/g, (_, key) => {
+    if (!(key in deploymentTokens)) throw new Error('unresolved deployment template token: ' + key);
+    return deploymentTokens[key];
+  });
+  const deployment = replace(replace(deploymentTemplate));
+  return [{ name: "FixtureCompositionSpec.scala", content: spec },
+    { name: "FixtureCompositionDeploymentSpec.scala", content: deployment }];
 }

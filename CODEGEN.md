@@ -60,10 +60,37 @@ enforced by the manifest, not convention:
 Validation is fail-fast: missing required field, unknown `products` entry, or
 duplicate `name` → error before any file is written.
 
+## Money Prepare evidence (P19, 2026-10-26)
+
+For the static serial money profile, the two Prepare ports require a unique
+transaction-keyed Money carrier, an exact confirmation `put(event.txid,
+event.amount)`, and matching command-parameter origins. Missing, ambiguous or
+wrongly typed evidence fails generation; a `contains(txid)` fallback is not
+accepted for these ports. Both query and command-reply handling read durable
+state: only exact `minorUnits` and `currency` strings produce a receipt using the
+stored Money. Conflicting payloads or committed/compensated facts return
+`Unknown`, not authoritative safe absence. Normal absence remains limited to
+the controlled profile; this is not production fencing or full participant
+payload certification.
+
+The generator-local money safety template distinguishes a test-only pre-dispatch
+refusal from a previously prepared target. Its ACK-loss oracle executes a real
+participant command, holds the successful reply, waits for RecoveryRequired,
+stops and recovers the coordinator actor, then explicitly reconciles through the
+real query port. Positive and conflicting-value cases check event counts,
+balances and the applicable terminal ledger. This is single-JVM actor recovery,
+not a physical-process crash claim. Collection/Fab emission is unchanged.
+
 ## Apply and anchor evidence (Saga S8, 2026-10-22)
 
 `src/core/generate.mjs` remains the sole application write channel. Producers
-return entries; `knowledgeId` and `noteIds[]` declare knowledge-to-file links.
+return entries; `knowledgeId`, `knowledgeIds[]` and `noteIds[]` declare knowledge-to-file links.
+`applyEntries` reuses this same boundary for already-produced source entries,
+without granting manifest admission. It validates entry metadata before writes.
+The default KEEP actual-file evidence contract is unchanged; an explicit
+`anchorPolicy: 'written-only'` prevents KEEP from declaring new generator-owned
+links. Optional `definitionDigest` is carried from an admitted Saga contract,
+never inferred from source bytes or added to the six-field physical identity.
 Before creating or changing application files, core checks the complete plan,
 prior ledger paths, current generator's prior anchor paths and both receipts:
 relative paths, duplicate/case-fold aliases, symlink targets, hardlinked files,

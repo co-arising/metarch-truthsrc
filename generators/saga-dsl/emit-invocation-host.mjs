@@ -34,6 +34,7 @@ import akka.actor.typed.{ActorRef, ActorSystem, Behavior, Scheduler}
 import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
 import akka.actor.typed.scaladsl.AskPattern._
 import akka.cluster.sharding.typed.scaladsl.ClusterSharding
+import akka.cluster.typed.{ClusterSingleton, SingletonActor}
 import akka.contrib.persistence.mongodb.ScalaDslMongoReadJournal
 import akka.persistence.query.PersistenceQuery
 import akka.persistence.typed.PersistenceId
@@ -106,9 +107,9 @@ object ${m.hostName} {
         .orElse(StepIds.find(id => !intents.contains(id)))
   }
 
-  final case class OperationReply(accepted: Boolean, reason: String)
+  final case class OperationReply(accepted: Boolean, reason: String) extends CborSerializable
   final case class ProgressReport(started: Boolean, checkpoints: Vector[(String, String)],
-                                  concluded: Option[String], childRunKey: Option[String])
+                                  concluded: Option[String], childRunKey: Option[String]) extends CborSerializable
 
   /** durable-parent-step derivation: parent operation key + exact step id +
     * durable occurrence token. No clock, random, or attempt. */
@@ -120,17 +121,64 @@ object ${m.hostName} {
     "${m.child.pidPrefix}/" + childRunKey(operation, occurrence)
 
   def persistenceIdFor(operation: String, occurrence: String): PersistenceId =
-    PersistenceId.ofUniqueId("${m.pidPrefix}/" + operation + "-" + occurrence)
+    {
+      require(operation != null && operation.nonEmpty && occurrence != null && occurrence.nonEmpty,
+        "explicit operation and occurrence required")
+      PersistenceId.ofUniqueId("${m.pidPrefix}/" + operation + "-" + occurrence)
+    }
+
+  private[${pkgTail}] final case class TestHooks(
+    beforeEffect: (String, String) => Boolean = (_, _) => true,
+    beforeChildCheckpoint: () => Boolean = () => true,
+    recovered: (Long, ComposedState) => Unit = (_, _) => (),
+    stopped: () => Unit = () => ())
+
+  private def singletonName(operation: String, occurrence: String): String =
+    "composition-" + java.security.MessageDigest.getInstance("SHA-256")
+      .digest(persistenceIdFor(operation, occurrence).id.getBytes(java.nio.charset.StandardCharsets.UTF_8))
+      .map(b => "%02x".format(b & 0xff)).mkString
+
+  /** A stable singleton for this operation; every node gets a proxy, not a second writer. */
+  def spawnClusterSingleton(system: ActorSystem[_], sharding: ClusterSharding,
+               splitCoordinator: ActorRef[StrictSagaCoordinator.Command],
+               mergeCoordinator: ActorRef[StrictSagaCoordinator.Command],
+               operation: String, occurrence: String)
+              (implicit ec: ExecutionContext): ActorRef[Command] =
+    spawnClusterSingletonForTest(system, sharding, splitCoordinator, mergeCoordinator,
+      operation, occurrence, TestHooks())
+
+  private[${pkgTail}] def spawnClusterSingletonForTest(system: ActorSystem[_], sharding: ClusterSharding,
+               splitCoordinator: ActorRef[StrictSagaCoordinator.Command],
+               mergeCoordinator: ActorRef[StrictSagaCoordinator.Command],
+               operation: String, occurrence: String, hooks: TestHooks)
+              (implicit ec: ExecutionContext): ActorRef[Command] =
+    ClusterSingleton(system).init(SingletonActor(
+      build(system, sharding, splitCoordinator, mergeCoordinator, operation, occurrence, hooks),
+      singletonName(operation, occurrence)))
 
   def behavior(system: ActorSystem[_], sharding: ClusterSharding,
                splitCoordinator: ActorRef[StrictSagaCoordinator.Command],
                mergeCoordinator: ActorRef[StrictSagaCoordinator.Command],
                operation: String, occurrence: String)
               (implicit ec: ExecutionContext): Behavior[Command] =
+    build(system, sharding, splitCoordinator, mergeCoordinator, operation, occurrence, TestHooks())
+
+  private[${pkgTail}] def behaviorForTest(system: ActorSystem[_], sharding: ClusterSharding,
+               splitCoordinator: ActorRef[StrictSagaCoordinator.Command],
+               mergeCoordinator: ActorRef[StrictSagaCoordinator.Command],
+               operation: String, occurrence: String, beforeEffect: (String, String) => Boolean)
+              (implicit ec: ExecutionContext): Behavior[Command] =
+    build(system, sharding, splitCoordinator, mergeCoordinator, operation, occurrence, TestHooks(beforeEffect = beforeEffect))
+
+  private def build(system: ActorSystem[_], sharding: ClusterSharding,
+               splitCoordinator: ActorRef[StrictSagaCoordinator.Command],
+               mergeCoordinator: ActorRef[StrictSagaCoordinator.Command],
+               operation: String, occurrence: String, hooks: TestHooks)
+              (implicit ec: ExecutionContext): Behavior[Command] =
     Behaviors.setup { ctx =>
       implicit val mat: Materializer = SystemMaterializer(system).materializer
       new ${m.hostName}(ctx, system, sharding, splitCoordinator, mergeCoordinator,
-        persistenceIdFor(operation, occurrence)).receive()
+        persistenceIdFor(operation, occurrence), hooks).receive()
     }
 }
 
@@ -142,7 +190,8 @@ final class ${m.hostName}(ctx: ActorContext[${m.hostName}.Command],
                           sharding: ClusterSharding,
                           splitCoordinator: ActorRef[StrictSagaCoordinator.Command],
                           mergeCoordinator: ActorRef[StrictSagaCoordinator.Command],
-                          val persistenceId: PersistenceId)
+                          val persistenceId: PersistenceId,
+                          hooks: ${m.hostName}.TestHooks)
                          (implicit ec: ExecutionContext, mat: Materializer) {
   import ${m.hostName}._
 
@@ -153,6 +202,9 @@ final class ${m.hostName}(ctx: ActorContext[${m.hostName}.Command],
     ctx.spawnAnonymous(Behaviors.ignore[StrictSagaCoordinator.Reply])
   private val lotReplySink: ActorRef[net.imadz.metarch.application.aggregates.LotProtocol.LotReply] =
     ctx.spawnAnonymous(Behaviors.ignore[net.imadz.metarch.application.aggregates.LotProtocol.LotReply])
+  private val beforeEffect = hooks.beforeEffect
+  @volatile private var ownerClosed = false
+  private var scheduledPolls = Map.empty[String, akka.actor.Cancellable]
   private var childWatch: Option[UniqueKillSwitch] = None
   private var childActor: Option[ActorRef[PersistentMonarch.Command[${m.child.planObj}.${m.child.stateType}]]] = None
 
@@ -163,7 +215,14 @@ final class ${m.hostName}(ctx: ActorContext[${m.hostName}.Command],
       (state, command) => onCommand(state, command),
       (state, event) => onEvent(state, event))
       .receiveSignal {
-        case (state, akka.persistence.typed.RecoveryCompleted) => onRecovered(state)
+        case (state, akka.persistence.typed.RecoveryCompleted) =>
+          hooks.recovered(EventSourcedBehavior.lastSequenceNumber(ctx), state)
+          onRecovered(state)
+        case (_, akka.actor.typed.PostStop) =>
+          ownerClosed = true
+          scheduledPolls.values.foreach(_.cancel())
+          childWatch.foreach(_.shutdown())
+          hooks.stopped()
       }
 
   // ── commands ──
@@ -177,7 +236,10 @@ final class ${m.hostName}(ctx: ActorContext[${m.hostName}.Command],
         Effect.none
 
       case BeginOperation(operation, occurrence, from, to, wafers, manifest, replyTo) =>
-        if (state.started.isDefined) {
+        if (persistenceIdFor(operation, occurrence) != persistenceId) {
+          replyTo ! OperationReply(false, "operation does not match this persistence identity")
+          Effect.none
+        } else if (state.started.isDefined) {
           replyTo ! OperationReply(false, "operation already started (single-writer)")
           Effect.none
         } else {
@@ -251,12 +313,13 @@ final class ${m.hostName}(ctx: ActorContext[${m.hostName}.Command],
 
       case ChildObserved(Some((code, wafersCsv))) =>
         if (state.checkpoints.contains(AwaitStep) || state.terminal) Effect.none
+        else if (!hooks.beforeChildCheckpoint()) Effect.none
         else code match {
           case "ChildCompleted" =>
             val runKey = state.intents.getOrElse(AwaitStep, "")
             Effect.persist(StepCheckpointed(AwaitStep, "ChildCompleted",
               Map("wafers" -> wafersCsv, "childRun" -> runKey)))
-              .thenRun { s: ComposedState => startSagaStep(MergeStep, s) }
+              .thenRun { _: ComposedState => ctx.self ! OpenStep(MergeStep) }
           case other =>
             Effect.persist(StepCheckpointed(AwaitStep, other, Map.empty), OperationConcluded(other))
         }
@@ -302,11 +365,12 @@ final class ${m.hostName}(ctx: ActorContext[${m.hostName}.Command],
   // ── effects (intent is already persisted when any of these run) ──
   private def startSagaStep(stepId: String, state: ComposedState): Unit = {
     val st = state.started.getOrElse(throw new IllegalStateException("step start without a started operation"))
-    val txid = state.intents.getOrElse(stepId, txidFor(st.operation, st.occurrence, stepId))
+    val txid = state.intents(stepId)
+    if (!beforeEffect(stepId, txid)) return
     val wafersForStep: Vector[String] = stepId match {
       case MergeStep =>
         // Merge consumes the durable completed-child manifest, never a mirror.
-        state.checkpoints.get(AwaitStep).map(c => c.outputs("wafers").split(",").toVector).getOrElse(st.wafers)
+        state.checkpoints(AwaitStep).outputs("wafers").split(",").toVector
       case _ => st.wafers
     }
     val source = new net.imadz.metarch.application.aggregates.LotProtocol.StartTransfer(
@@ -332,14 +396,19 @@ final class ${m.hostName}(ctx: ActorContext[${m.hostName}.Command],
     ()
   }
 
-  private def scheduleNextPoll(stepId: String): Unit =
-    system.scheduler.scheduleOnce(200.millis, new Runnable {
-      def run(): Unit = pollSaga(stepId, if (stepId == MergeStep) mergeCoordinator else splitCoordinator)
+  private def scheduleNextPoll(stepId: String): Unit = {
+    scheduledPolls.get(stepId).foreach(_.cancel())
+    val pending = system.scheduler.scheduleOnce(200.millis, new Runnable {
+      def run(): Unit = if (!ownerClosed)
+        pollSaga(stepId, if (stepId == MergeStep) mergeCoordinator else splitCoordinator)
     })(ec)
+    scheduledPolls = scheduledPolls + (stepId -> pending)
+  }
 
   private def startChildStep(state: ComposedState): Unit = {
     val st = state.started.getOrElse(throw new IllegalStateException("child start without a started operation"))
-    val runKey = state.intents.getOrElse(AwaitStep, childRunKey(st.operation, st.occurrence))
+    val runKey = state.intents(AwaitStep)
+    if (!beforeEffect(AwaitStep, runKey)) return
     val pid = childPersistenceId(st.operation, st.occurrence)
     val initial = ${m.child.planObj}.${m.child.stateType}(st.wafers, 0)
     val ref = childActor.getOrElse {

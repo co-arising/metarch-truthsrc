@@ -78,78 +78,101 @@ const fingerprint = bytes => `sha256:${createHash('sha256').update(bytes).digest
 function anchorInputs(entries, repo) {
   return entries.flatMap(entry => {
     if (entry.noteIds != null && !Array.isArray(entry.noteIds)) throw new Error('entry.noteIds must be an array');
-    const keys = new Set([...(entry.knowledgeId != null ? [entry.knowledgeId] : []), ...(entry.noteIds ?? [])]);
+    if (entry.knowledgeIds != null && !Array.isArray(entry.knowledgeIds)) throw new Error('entry.knowledgeIds must be an array');
+    const keys = new Set([...(entry.knowledgeId != null ? [entry.knowledgeId] : []),
+      ...(entry.knowledgeIds ?? []), ...(entry.noteIds ?? [])]);
     // Core has no source-language parser: never infer module/symbol/span or certify template text.
-    return [...keys].map(knowledgeKey => ({ knowledgeKey, locations: [{ repo, file: entry.path }] }));
+    return [...keys].map(knowledgeKey => ({ knowledgeKey, locations: [{ repo, file: entry.path,
+      ...(entry.definitionDigest != null ? { definitionDigest: entry.definitionDigest } : {}),
+    }] }));
   });
 }
 
 export function apply({ canonicalFile, generatorDir, outDir, options = {}, concern }) {
-  return plan({ canonicalFile, generatorDir, options }).then(async ({ manifest, entries }) => {
-    const receipts = [LEDGER, ANCHORS];
-    preflightPaths(outDir, [...entries.map(e => e.path), ...receipts], {
-      entryPaths: entries.map(e => e.path), reservedFiles: receipts,
-    });
-    const priorByPath = new Map(readPriorRows(outDir).map(r => [r.path, r]));
-    const ledgerRows = mergedRows(outDir, entries);
-    const scope = concern ? scopeOf(ledgerRows, concern) : null;
-    const repo = resolve(outDir);
-    const generator = { id: manifest.name, version: String(options.generatorVersion ?? manifest.version ?? 'unknown') };
-    const priorIndex = existsSync(join(outDir, ANCHORS))
-      ? readAnchorsIndex(readFileSync(join(outDir, ANCHORS), 'utf8'), {
-        legacy: 'planned', legacyDefaults: { repo, generator: 'legacy', generatorVersion: 'unknown' },
-      }) : { version: ANCHORS_VERSION, anchors: {} };
-    const plannedKnowledgeKeys = anchorInputs(entries, repo);
-    const derivedFiles = receipts.map(file => ({ repo, file }));
-    const anchorPlan = planAnchors({ priorIndex, generator, plannedKnowledgeKeys, derivedFiles });
-    const priorPaths = Object.values(priorIndex.anchors).flat()
-      .filter(location => location.generator === generator.id).map(location => {
-        if (location.repo !== repo) throw new Error(`prior generator anchor outside owned outDir: ${location.repo}`);
-        return location.file;
-      });
-    const { root, targets } = preflightPaths(outDir,
-      [...entries.map(e => e.path), ...ledgerRows.map(r => r.path), ...priorPaths, ...receipts],
-      { entryPaths: entries.map(e => e.path), reservedFiles: receipts });
-    const actions = preflightApply({ entries, targets, priorByPath, scope });
-    let written = 0, identical = 0, kept = 0, globalFlowed = 0, merged = 0, routesNoTarget = 0;
-    const ledger = { generator: manifest.name, entries: ledgerRows };
-    if (concern) ledger.concern = {
-      name: concern.name, families: concern.families ?? 'all', scopeFile: concern.registryFile,
-      scopeFileHash: createHash('sha256').update(readFileSync(concern.registryFile)).digest('hex').slice(0, 16),
-      inScope: scope.set.size, closureAdded: scope.set.size - scope.base.size,
-    };
-    const outcomes = [];
-    // Same mkdir/writeFile application channel as before, using prechecked final merge contents.
-    // Exclusive outDir ownership is required: this is not a cross-file transaction or rollback.
-    for (const action of actions) {
-      const { entry, target, outcome, content, isGlobal } = action;
-      if (action.changed) {
-        mkdirSync(dirname(target), { recursive: true });
-        writeFileSync(target, content);
-        written++;
-        if (action.manualMerged) merged++;
-        if (isGlobal && (scope || outcome !== 'ADD') && entry.merge !== 'markers') globalFlowed++;
-      } else if (outcome === 'KEEP') kept++;
-      else if (outcome === 'MISSING') routesNoTarget++;
-      else identical++;
-      // Capture evidence only after the actual policy outcome, including KEEP/IDENTICAL bytes.
-      outcomes.push({ repo, file: entry.path, outcome,
-        ...(outcome !== 'MISSING' ? { fingerprint: fingerprint(readFileSync(target)) } : {}) });
-    }
-    mkdirSync(root, { recursive: true });
-    if (concern) Object.assign(ledger.concern, { written, identical, kept, globalFlowed });
-    writeFileSync(targets.get(LEDGER), JSON.stringify(ledger, null, 2) + '\n');
-    // No successful index/receipt is returned if any application/ledger write failed above.
-    await writeAnchorsIndex(planAnchors({ priorIndex: anchorPlan.priorIndex, generator,
-      plannedKnowledgeKeys, finalApplyOutcomes: outcomes, derivedFiles }), {
-      repoRoots: { [repo]: root }, indexLocation: { repo, file: ANCHORS },
-    });
-    return {
-      name: manifest.name, written, identical, total: entries.length,
-      kept, globalFlowed, merged, routesNoTarget, outcomes,
-      inScope: scope ? scope.set.size : null,
-      closureAdded: scope ? scope.set.size - scope.base.size : null,
-      ledger: targets.get(LEDGER), anchors: targets.get(ANCHORS),
-    };
+  return plan({ canonicalFile, generatorDir, options }).then(({ manifest, entries }) =>
+    applyEntries({ entries, outDir, concern, generator: {
+      id: manifest.name, version: String(options.generatorVersion ?? manifest.version ?? 'unknown'),
+    } }));
+}
+
+/** Apply already-produced source entries through the same preflight, merge and evidence boundary.
+ * written-only is for producers whose ownership claim requires an actual accepted write;
+ * the ordinary core retains its existing KEEP file-evidence contract. No manifest admission is inferred. */
+export async function applyEntries({ entries, outDir, generator, concern, anchorPolicy = 'final-bytes' }) {
+  if (!Array.isArray(entries) || entries.some(entry => !entry || typeof entry !== 'object' ||
+    typeof entry.path !== 'string' || typeof entry.content !== 'string' ||
+    typeof entry.kind !== 'string' || !entry.kind.trim() ||
+    (entry.families != null && (!Array.isArray(entry.families) || entry.families.some(f => typeof f !== 'string'))))) {
+    throw new Error('source entries require path, content, kind and valid families');
+  }
+  if (!generator || typeof generator.id !== 'string' || !generator.id.trim() ||
+    typeof generator.version !== 'string' || !generator.version.trim()) throw new Error('source generator id/version required');
+  if (!['final-bytes', 'written-only'].includes(anchorPolicy)) throw new Error('unknown anchor policy');
+  const receipts = [LEDGER, ANCHORS];
+  preflightPaths(outDir, [...entries.map(e => e.path), ...receipts], {
+    entryPaths: entries.map(e => e.path), reservedFiles: receipts,
   });
+  const priorByPath = new Map(readPriorRows(outDir).map(r => [r.path, r]));
+  const ledgerRows = mergedRows(outDir, entries);
+  const scope = concern ? scopeOf(ledgerRows, concern) : null;
+  const repo = resolve(outDir);
+  const priorIndex = existsSync(join(outDir, ANCHORS))
+    ? readAnchorsIndex(readFileSync(join(outDir, ANCHORS), 'utf8'), {
+      legacy: 'planned', legacyDefaults: { repo, generator: 'legacy', generatorVersion: 'unknown' },
+    }) : { version: ANCHORS_VERSION, anchors: {} };
+  const plannedKnowledgeKeys = anchorInputs(entries, repo);
+  const derivedFiles = receipts.map(file => ({ repo, file }));
+  const anchorPlan = planAnchors({ priorIndex, generator, plannedKnowledgeKeys, derivedFiles });
+  const priorPaths = Object.values(priorIndex.anchors).flat()
+    .filter(location => location.generator === generator.id).map(location => {
+      if (location.repo !== repo) throw new Error(`prior generator anchor outside owned outDir: ${location.repo}`);
+      return location.file;
+    });
+  const { root, targets } = preflightPaths(outDir,
+    [...entries.map(e => e.path), ...ledgerRows.map(r => r.path), ...priorPaths, ...receipts],
+    { entryPaths: entries.map(e => e.path), reservedFiles: receipts });
+  const actions = preflightApply({ entries, targets, priorByPath, scope });
+  let written = 0, identical = 0, kept = 0, globalFlowed = 0, merged = 0, routesNoTarget = 0;
+  const ledger = { generator: generator.id, entries: ledgerRows };
+  if (concern) ledger.concern = {
+    name: concern.name, families: concern.families ?? 'all', scopeFile: concern.registryFile,
+    scopeFileHash: createHash('sha256').update(readFileSync(concern.registryFile)).digest('hex').slice(0, 16),
+    inScope: scope.set.size, closureAdded: scope.set.size - scope.base.size,
+  };
+  const outcomes = [];
+  // Same mkdir/writeFile application channel as before, using prechecked final merge contents.
+  // Exclusive outDir ownership is required: this is not a cross-file transaction or rollback.
+  for (const action of actions) {
+    const { entry, target, outcome, content, isGlobal } = action;
+    if (action.changed) {
+      mkdirSync(dirname(target), { recursive: true });
+      writeFileSync(target, content);
+      written++;
+      if (action.manualMerged) merged++;
+      if (isGlobal && (scope || outcome !== 'ADD') && entry.merge !== 'markers') globalFlowed++;
+    } else if (outcome === 'KEEP') kept++;
+    else if (outcome === 'MISSING') routesNoTarget++;
+    else identical++;
+    // Capture evidence only after the actual policy outcome, including KEEP/IDENTICAL bytes.
+    outcomes.push({ repo, file: entry.path, outcome,
+      ...(outcome !== 'MISSING' ? { fingerprint: fingerprint(readFileSync(target)) } : {}) });
+  }
+  mkdirSync(root, { recursive: true });
+  if (concern) Object.assign(ledger.concern, { written, identical, kept, globalFlowed });
+  writeFileSync(targets.get(LEDGER), JSON.stringify(ledger, null, 2) + '\n');
+  // No successful index/receipt is returned if any application/ledger write failed above.
+  const anchorEntries = anchorPolicy === 'written-only'
+    ? entries.filter(entry => actions.some(action => action.entry === entry &&
+      ['ADD', 'COVER', 'MERGE', 'IDENTICAL'].includes(action.outcome))) : entries;
+  await writeAnchorsIndex(planAnchors({ priorIndex: anchorPlan.priorIndex, generator,
+    plannedKnowledgeKeys: anchorInputs(anchorEntries, repo), finalApplyOutcomes: outcomes, derivedFiles }), {
+    repoRoots: { [repo]: root }, indexLocation: { repo, file: ANCHORS },
+  });
+  return {
+    name: generator.id, written, identical, total: entries.length,
+    kept, globalFlowed, merged, routesNoTarget, outcomes,
+    inScope: scope ? scope.set.size : null,
+    closureAdded: scope ? scope.set.size - scope.base.size : null,
+    ledger: targets.get(LEDGER), anchors: targets.get(ANCHORS),
+  };
 }

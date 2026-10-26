@@ -68,6 +68,9 @@ function declaration(value) {
     module: value.module == null ? null : text(value.module, 'module'),
     symbol: value.symbol == null ? null : text(value.symbol, 'symbol'),
     span: span(value.span),
+    ...(value.definitionDigest != null ? {
+      definitionDigest: fingerprint(value.definitionDigest, 'definitionDigest'),
+    } : {}),
   };
 }
 function unverified(reason, observedFingerprint = null) {

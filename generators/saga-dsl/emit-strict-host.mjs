@@ -58,8 +58,42 @@ export function emitStrictHostFiles(model, { header } = {}) {
         else Failure(new IllegalArgumentException("${p.receiptType} receipt wire: trailing bytes after the declared fields"))
 ${slots.map(() => "      }").join("\n")}`;
     })();
+    const valueObserver = p.prepareValueEvidence ? (() => {
+      const ev = p.prepareValueEvidence;
+      const receipt = `${m.moduleObj}.${p.receiptType}(${p.outputs.map(o => o.slot === ev.valueSlot ? "durable" : `input.${scalaId(o.slot)}`).join(", ")})`;
+      return `    private def observe(identity: OperationIdentity, input: ${m.moduleObj}.${p.inputType}, absent: => PhaseOutcome[${m.moduleObj}.${p.receiptType}]): Future[PhaseOutcome[${m.moduleObj}.${p.receiptType}]] =
+      ${fbase}StateAsk(input.${p.resourceInput.slot}).map { view =>
+        if (view.state.committed.contains(input.${p.txidSlot}) || view.state.compensated.contains(input.${p.txidSlot}))
+          Unknown(identity, "MONEY_PREPARE_TERMINAL_FACT: Prepare evidence is no longer live")
+        else view.state.${ev.mapField}.get(input.${p.txidSlot}) match {
+          case Some(durable) if durable != null && input.${ev.valueSlot} != null &&
+              durable.minorUnits == input.${ev.valueSlot}.minorUnits && durable.currency == input.${ev.valueSlot}.currency =>
+            ConfirmedReceipt(identity, ${receipt})
+          case Some(_) => Unknown(identity, "MONEY_PREPARE_PAYLOAD_CONFLICT: durable amount or currency differs")
+          case None => absent
+        }
+      }.recover { case ex => Unknown(identity, s"phase evidence query failed: $${'{'}ex.getMessage${'}'}") }
+`;
+    })() : "";
+    const executeBody = p.prepareValueEvidence ? `      ${fbase}ReplyAsk(input.${p.resourceInput.slot}, replyTo => ${commandCall}).flatMap {
+        case ${face.replyFqn}(None) =>
+          observe(identity, input, Unknown(identity, "MONEY_PREPARE_ACK_WITHOUT_FACT: successful reply has no durable Prepare value"))
+        case ${face.replyFqn}(Some(error)) =>
+          observe(identity, input, NotExecuted(identity, s"aggregate rejected $${'{'}error.code${'}'}: $${'{'}error.message${'}'}; no events persisted", safeToRetry = true))
+      }.recover { case ex => Unknown(identity, s"Prepare interaction failed: $${'{'}ex.getMessage${'}'}") }` : `      ${fbase}ReplyAsk(input.${p.resourceInput.slot}, replyTo => ${commandCall}).map {
+        case ${face.replyFqn}(None) =>
+          ConfirmedReceipt(identity, ${receiptCtor})
+        case ${face.replyFqn}(Some(error)) =>
+          NotExecuted(identity, s"aggregate rejected $${'{'}error.code${'}'}: $${'{'}error.message${'}'}; no events persisted", safeToRetry = true)
+      }`;
+    const queryBody = p.prepareValueEvidence ? `      observe(identity, input, NotExecuted(identity, "durable Prepare state has no transaction fact (controlled profile only)", safeToRetry = true))` : `      ${fbase}StateAsk(input.${p.resourceInput.slot}).map { view =>
+        if (view.state.${p.evidence}.contains(input.${p.txidSlot}))
+          ConfirmedReceipt(identity, ${receiptCtor})
+        else
+          NotExecuted(identity, s"durable aggregate state: ${p.evidence} does not contain txid $${'{'}input.${p.txidSlot}${'}'}", safeToRetry = true)
+      }.recover { case ex => Unknown(identity, s"phase evidence query failed: $${'{'}ex.getMessage${'}'}") }`;
     return `  def ${p.member}: ${m.moduleObj}.${p.hostTrait} = new ${m.moduleObj}.${p.hostTrait} {
-    private val codec: PayloadCodec[${m.moduleObj}.${p.receiptType}] = new PayloadCodec[${m.moduleObj}.${p.receiptType}] {
+${valueObserver}    private val codec: PayloadCodec[${m.moduleObj}.${p.receiptType}] = new PayloadCodec[${m.moduleObj}.${p.receiptType}] {
       override val pin: CodecPin = CodecPin(${jstr(p.pinId)}, 1)
       override def encode(value: ${m.moduleObj}.${p.receiptType}): ByteString =
 ${encodeBody}
@@ -70,19 +104,9 @@ ${decodeBody}
     override def receiptCodec: PayloadCodec[${m.moduleObj}.${p.receiptType}] = codec
     override def querySafety: QuerySafety = QuerySafety.DeclaredReadOnly
     override def execute(identity: OperationIdentity, input: ${m.moduleObj}.${p.inputType}): Future[PhaseOutcome[${m.moduleObj}.${p.receiptType}]] =
-      ${fbase}ReplyAsk(input.${p.resourceInput.slot}, replyTo => ${commandCall}).map {
-        case ${face.replyFqn}(None) =>
-          ConfirmedReceipt(identity, ${receiptCtor})
-        case ${face.replyFqn}(Some(error)) =>
-          NotExecuted(identity, s"aggregate rejected $${'{'}error.code${'}'}: $${'{'}error.message${'}'}; no events persisted", safeToRetry = true)
-      }
+${executeBody}
     override def query(identity: OperationIdentity, input: ${m.moduleObj}.${p.inputType}): Future[PhaseOutcome[${m.moduleObj}.${p.receiptType}]] =
-      ${fbase}StateAsk(input.${p.resourceInput.slot}).map { view =>
-        if (view.state.${p.evidence}.contains(input.${p.txidSlot}))
-          ConfirmedReceipt(identity, ${receiptCtor})
-        else
-          NotExecuted(identity, s"durable aggregate state: ${p.evidence} does not contain txid $${'{'}input.${p.txidSlot}${'}'}", safeToRetry = true)
-      }.recover { case ex => Unknown(identity, s"phase evidence query failed: $${'{'}ex.getMessage${'}'}") }
+${queryBody}
   }`;
   }).join("\n\n");
 
