@@ -1,6 +1,7 @@
 // manifest.mjs — generator.json loader/validator (fail-fast, CODEGEN.md §Generator manifest).
 import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { validateDeclaredProducts } from './product-declarations.mjs';
 
 const PRODUCTS = new Set(['template', 'readmodels', 'stories', 'useCases']);
 
@@ -19,5 +20,9 @@ export function loadManifest(genDir) {
   if (!Array.isArray(m.artifactKinds) || !m.artifactKinds.length)
     fail('artifactKinds required (emitted file-kind vocabulary, feeds the concerns protocol)');
   if (!m.output || typeof m.output !== 'object') fail('output required (descriptive object)');
+  if (Object.hasOwn(m, 'declaredProducts')) {
+    const { diagnostics } = validateDeclaredProducts(m);
+    if (diagnostics.length) fail(diagnostics.map(d => `${d.code} ${d.source.pointer}: ${d.message}`).join('; '));
+  }
   return { ...m, __dir: genDir };
 }

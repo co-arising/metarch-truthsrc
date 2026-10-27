@@ -18,6 +18,9 @@ const ANCHORS = 'anchors.json';
 
 export function plan({ canonicalFile, generatorDir, options = {} }) {
   const manifest = loadManifest(generatorDir);
+  if (Object.hasOwn(manifest, 'declaredProducts')) {
+    throw new Error('PRODUCT_PLAN_UNSUPPORTED: versioned products require the explicit admission API; legacy plan cannot deliver declared products to a producer');
+  }
   const canonical = loadCanonical(canonicalFile, manifest.inputSchema);
   const mod = pathToFileURL(join(generatorDir, 'generate.mjs')).href;
   return import(mod).then(({ generate }) => {
