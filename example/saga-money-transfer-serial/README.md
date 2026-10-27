@@ -15,6 +15,24 @@ This independent tree keeps Saga ID `money-transfer` and explicitly declares
 business version **v2**; `bindings.json` pins v2. `runtime-binding.json` independently
 maps it to the integer **2**, without parsing/coercing the business version.
 
+## Incoming-credit positive guard (P22, 2026-10-27)
+
+`RecordIncomingCredits` now reuses the existing `IR-CB-RESERVE-003` positive
+amount rule after its terminal and live-map guards. A new transaction carrying
+parseable zero or negative minor units rejects with `60004`; it must not create
+an incoming credit that a later Commit could book as a balance reduction.
+Existing terminal `60011`/`60012` and live-repeat `60007` priorities remain intact.
+A rejected transaction without durable facts can be corrected to a positive
+amount and retried; this is not a cancel-before-Prepare tombstone.
+
+This reuses `MoneyOps.isPositive`, not new format, null, precision or currency
+validation. Existing invalid-numeric exception behavior and historical journal
+values are not repaired. Host production code, receipt codecs and Saga definition
+are unchanged. P22 verification is tracked separately: real command rejection,
+same-journal participant recovery and corrected transactions, real Host outcomes,
+and explicitly synthetic rule precedence. Basic tree gates do not certify these
+runtime properties, and no P22 acceptance is claimed by this documentation alone.
+
 ## Prepare terminal barrier (P21, 2026-10-27)
 
 The current tree adds two leading guards to both `ReserveFunds` and

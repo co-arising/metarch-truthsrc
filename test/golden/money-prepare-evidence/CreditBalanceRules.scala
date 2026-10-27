@@ -65,6 +65,8 @@ object CreditBalanceRules {
       else if (!(!state.compensated.contains(p.txid))) err("60012", "Transaction already compensated: Prepare must not reopen the durable terminal marker.")
       // IR-CB-RECORD-001
       else if (!(!state.incomingCredits.contains(p.txid))) err("60007", "Incoming credits already registered for this transaction (golden master 60007).")
+      // IR-CB-RESERVE-003
+      else if (!(MoneyOps.isPositive(p.amount.minorUnits))) err("60004", "Transfer amount must be positive (golden master 60004).")
       else Right(List(RecordIncomingCreditsConfirmed(p.txid, p.amount)))
       }
   }

@@ -119,6 +119,24 @@ synthetic rule-priority states. P19/P20 Host evidence and receipt codecs remain
 unchanged. This is not full identity/payload matching, role-alias discrimination,
 cancel-before-Prepare fencing, physical crash or production concurrency proof.
 
+## Money incoming-credit positive guard (P22, 2026-10-27)
+
+The serial-money target Prepare appends the source's existing `money-positive`
+rule (`IR-CB-RESERVE-003`, reject `60004`) after terminal and live-map guards.
+New parseable non-positive amounts must not produce incoming-credit events.
+Terminal `60011`/`60012` and target repeat `60007` retain their earlier priority;
+no new error code or aggregate rule reference is invented.
+
+Independent local test templates exercise real command rejection, same-journal
+participant recovery and correcting the same txid to positive Prepare followed
+by Commit or Compensate. Real Host tests distinguish controlled-profile
+NotExecuted from live payload-conflict Unknown and preserve receipt bytes.
+Synthetic rule-priority states are labeled separately. Host production/codec,
+public rule emitters and runtime are unchanged. This does not validate malformed
+numeric strings, null, precision or currency, migrate old bad journal values, or
+establish production fencing. Runtime acceptance requires the P22 execution
+receipts, not the existence of the templates or basic tree gate results.
+
 ## Apply and anchor evidence (Saga S8, 2026-10-22)
 
 `src/core/generate.mjs` remains the sole application write channel. Producers
