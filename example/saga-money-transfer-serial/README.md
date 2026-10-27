@@ -1,6 +1,6 @@
 # Independent serial money-transfer contract
 
-Last updated: 2026-10-22
+Last updated: 2026-10-27
 
 This is a **new v2 design under approved #197**, derived from the domain tree in
 `../saga-money-transfer/`. It is not a historical workshop capture, observed
@@ -14,6 +14,28 @@ The original example stays unchanged: business v1, two concurrent steps in group
 This independent tree keeps Saga ID `money-transfer` and explicitly declares
 business version **v2**; `bindings.json` pins v2. `runtime-binding.json` independently
 maps it to the integer **2**, without parsing/coercing the business version.
+
+## Prepare terminal barrier (P21, 2026-10-27)
+
+The current tree adds two leading guards to both `ReserveFunds` and
+`RecordIncomingCredits`: an existing committed marker rejects with `60011`, and
+an existing compensated marker rejects with `60012`. These execute before the
+original live-map idempotency and amount checks. An already terminal txid cannot
+reopen its reservation or incoming credit through these aggregate commands.
+Marker presence is sufficient even for contradictory or unavailable values;
+committed has deterministic priority when both terminal maps contain the txid.
+
+This does not add an amount/identity-matching receipt, role-alias discrimination,
+cancel-before-Prepare tombstone or production concurrency/fencing contract. The
+strict Saga plan/digest and existing P19/P20 Host observation/receipt codecs are
+unchanged. The P21 emitted test suite separates real commands and participant
+same-journal recovery from synthetic rule-priority checks. Current application
+verification belongs to the P21 execution receipts, not to this tree's basic
+validate/roundtrip green result.
+
+The sections below retain the original engineering batch history. In particular,
+old placeholder/readiness or not-yet-wired descriptions are not an assertion that
+the later P15–P21 generated application evidence did not occur.
 
 ## Exact retained business shape
 

@@ -154,6 +154,17 @@ ${seedCommands.map((c, i) => `    val r${i + 1} = askNow(kit, ref)(replyTo => ${
     if (/@[A-Z_]+@/.test(rendered)) throw new Error('unresolved money terminal evidence spec slot');
     return rendered;
   })();
+  const moneyPrepareTerminalBarrierSpec = fabFamily ? "" : (() => {
+    const template = readFileSync(new URL('./templates/money-prepare-terminal-barrier.scala.tpl', import.meta.url), 'utf8');
+    const domainPrefix = face.entityFqn.slice(0, face.entityFqn.lastIndexOf('.entities.'));
+    const values = { MODULE: m.moduleObj, ENTITY: face.entityFqn,
+      AGGREGATE: face.aggregateKeyFqn.replace(/\.entityTypeKey$/, ''), MONEY: money, COMMANDS: face.commandsFamilyFqn,
+      RULES: `${domainPrefix}.invariant.${face.base}Rules`,
+      RULE_PARAMS: `${domainPrefix}.invariant.params.${face.base}RuleParams` };
+    const rendered = Object.entries(values).reduce((text, [key, value]) => text.replaceAll(`@${key}@`, value), template);
+    if (/@[A-Z_]+@/.test(rendered)) throw new Error('unresolved money Prepare terminal barrier spec slot');
+    return rendered;
+  })();
   const spec = `${h}package ${m.pkg}
 
 import akka.actor.typed.{ActorRef, ActorSystem, Behavior, Scheduler}
@@ -479,7 +490,7 @@ ${fabFamily ? `  test("B3 full saga: a failed target prepare auto-compensates th
 ${fabFamily ? `      assert(stateOf(kit, entityRef(sharding, From)).compensated.contains("op-b3"))` : `      assert(stateOf(kit, entityRef(sharding, From)).compensated.get("op-b3").map(_.minorUnits).contains("70"))`}
       assertPublished(kit, sharding, state, "compensated")
     } finally kit.shutdownTestKit()
-  }` : moneyEvidenceSpec.trimEnd() + "\n\n" + moneyTerminalEvidenceSpec.trimEnd()}
+  }` : moneyEvidenceSpec.trimEnd() + "\n\n" + moneyTerminalEvidenceSpec.trimEnd() + "\n\n" + moneyPrepareTerminalBarrierSpec.trimEnd()}
 
   // ---------- C: coordinator recovery ----------
 

@@ -133,6 +133,16 @@ payload:
         "ruleId": "IR-CB-RESULT-001",
         "errCode": "60010",
         "desc": "Result already recorded for this transaction: idempotent republication success, no events (designed strict TCC outcome ledger; shared by the five RecordResult* publication commands)."
+      },
+      {
+        "ruleId": "IR-CB-PREPARE-NOT-COMMITTED",
+        "errCode": "60011",
+        "desc": "Transaction already committed: Prepare must not reopen the durable terminal marker."
+      },
+      {
+        "ruleId": "IR-CB-PREPARE-NOT-COMPENSATED",
+        "errCode": "60012",
+        "desc": "Transaction already compensated: Prepare must not reopen the durable terminal marker."
       }
     ]
   }

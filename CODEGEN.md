@@ -102,6 +102,23 @@ decisions, original receipt codec bytes, balances, events and publication. Two
 explicit opposite-phase injection cases retain RecoveryRequired and the original
 decision. No physical-process crash claim is added; Fab and codecs are unchanged.
 
+## Money Prepare terminal barrier (P21, 2026-10-27)
+
+The serial-money truth adds leading `map-absent` rejection guards over `committed`
+and `compensated` to both Prepare commands. They precede live-map idempotency and
+amount checks, so a terminal txid cannot reopen a reservation or incoming credit
+through the aggregate command path. Codes `60011`/`60012` identify committed/
+compensated rejection; marker presence is enough, with committed first for dual
+markers. Existing guard syntax and both rule emitters are reused unchanged.
+
+The independent generator-local P21 templates use real funding/Prepare/terminal
+commands, then stop/deathwatch and recover the participant under the same journal
+identity before retrying late Prepare. They also check real Host Unknown outcomes
+without new participant events, controlled mailbox order and separately labeled
+synthetic rule-priority states. P19/P20 Host evidence and receipt codecs remain
+unchanged. This is not full identity/payload matching, role-alias discrimination,
+cancel-before-Prepare fencing, physical crash or production concurrency proof.
+
 ## Apply and anchor evidence (Saga S8, 2026-10-22)
 
 `src/core/generate.mjs` remains the sole application write channel. Producers

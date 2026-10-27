@@ -28,6 +28,28 @@ payload:
     ],
     "guards": [
       {
+        "ruleId": "IR-CB-PREPARE-NOT-COMMITTED",
+        "errCode": "60011",
+        "onFail": "reject",
+        "when": {
+          "form": "map-absent",
+          "map": "committed",
+          "key": "param.txid"
+        },
+        "desc": "Transaction already committed: Prepare must not reopen the durable terminal marker."
+      },
+      {
+        "ruleId": "IR-CB-PREPARE-NOT-COMPENSATED",
+        "errCode": "60012",
+        "onFail": "reject",
+        "when": {
+          "form": "map-absent",
+          "map": "compensated",
+          "key": "param.txid"
+        },
+        "desc": "Transaction already compensated: Prepare must not reopen the durable terminal marker."
+      },
+      {
         "ruleId": "IR-CB-RESERVE-001",
         "errCode": "60008",
         "onFail": "succeed-empty",
