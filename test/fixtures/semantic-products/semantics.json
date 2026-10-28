@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "truthsrc.domain-semantic-binding/v1",
+  "decisions": {"commands":[{
+    "command":{"context":"inventory","kind":"command","owner":["Stock"],"id":"Reserve"},
+    "source":{"document":"domain","pointer":"/aggregates/0/commands/0"},
+    "decisions":[
+      {"sourceOrdinal":0,"ruleId":"body-match","source":{"document":"domain","pointer":"/aggregates/0/commands/0/guards/0"},
+       "predicate":{"op":"or","left":{"op":"not","argument":{"op":"map-contains","left":{"op":"ref","ref":{"context":"inventory","kind":"state-field","owner":["Stock"],"id":"requests"}},"right":{"op":"ref","ref":{"context":"inventory","kind":"parameter","owner":["Stock","Reserve"],"id":"warehouse"}}}},"right":{"op":"contains","left":{"op":"map-get","left":{"op":"ref","ref":{"context":"inventory","kind":"state-field","owner":["Stock"],"id":"requests"}},"right":{"op":"ref","ref":{"context":"inventory","kind":"parameter","owner":["Stock","Reserve"],"id":"warehouse"}}},"right":{"op":"ref","ref":{"context":"inventory","kind":"parameter","owner":["Stock","Reserve"],"id":"label"}}}},
+       "onFalse":{"kind":"reject","errCode":"conflict"},
+       "dependencies":[{"context":"inventory","kind":"state-field","owner":["Stock"],"id":"requests"},{"context":"inventory","kind":"parameter","owner":["Stock","Reserve"],"id":"warehouse"},{"context":"inventory","kind":"parameter","owner":["Stock","Reserve"],"id":"label"}]},
+      {"sourceOrdinal":1,"ruleId":"duplicate","source":{"document":"domain","pointer":"/aggregates/0/commands/0/guards/1"},
+       "predicate":{"op":"not","argument":{"op":"map-contains","left":{"op":"ref","ref":{"context":"inventory","kind":"state-field","owner":["Stock"],"id":"requests"}},"right":{"op":"ref","ref":{"context":"inventory","kind":"parameter","owner":["Stock","Reserve"],"id":"warehouse"}}}},
+       "onFalse":{"kind":"succeed-empty"},"dependencies":[{"context":"inventory","kind":"state-field","owner":["Stock"],"id":"requests"},{"context":"inventory","kind":"parameter","owner":["Stock","Reserve"],"id":"warehouse"}]},
+      {"sourceOrdinal":2,"ruleId":"warehouse-required","source":{"document":"domain","pointer":"/aggregates/0/commands/0/guards/2"},
+       "predicate":{"op":"non-empty","argument":{"op":"ref","ref":{"context":"inventory","kind":"parameter","owner":["Stock","Reserve"],"id":"warehouse"}}},
+       "onFalse":{"kind":"reject","errCode":"empty-warehouse"},"dependencies":[{"context":"inventory","kind":"parameter","owner":["Stock","Reserve"],"id":"warehouse"}]}
+    ]
+  }]}
+}

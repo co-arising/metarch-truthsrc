@@ -1,0 +1,234 @@
+{
+  "schemaVersion": "truthsrc/v1",
+  "workshop": "Independent inventory pre-event dataflow contract",
+  "sessions": [],
+  "valueObjects": [
+    {
+      "name": "Ratio",
+      "version": "1",
+      "dataType": "Decimal"
+    }
+  ],
+  "readModels": [],
+  "stories": [],
+  "domainServices": [],
+  "ports": [
+    {
+      "name": "release-id",
+      "version": "1",
+      "outputType": "String"
+    }
+  ],
+  "hostComputations": [
+    {
+      "id": {
+        "context": "inventory",
+        "kind": "port",
+        "owner": [],
+        "id": "release-id"
+      },
+      "version": "1",
+      "command": {
+        "context": "inventory",
+        "kind": "command",
+        "owner": [
+          "Stock"
+        ],
+        "id": "Release"
+      },
+      "outputType": {
+        "form": "primitive",
+        "name": "string"
+      },
+      "inputDependencies": [
+        {
+          "context": "inventory",
+          "kind": "parameter",
+          "owner": [
+            "Stock",
+            "Release"
+          ],
+          "id": "requestId"
+        }
+      ],
+      "stableIdentityContract": {
+        "id": "release-for-request",
+        "version": "1",
+        "keys": [
+          {
+            "context": "inventory",
+            "kind": "parameter",
+            "owner": [
+              "Stock",
+              "Release"
+            ],
+            "id": "requestId"
+          }
+        ]
+      }
+    }
+  ],
+  "aggregates": [
+    {
+      "name": "Stock",
+      "context": "inventory",
+      "stateFields": [
+        {
+          "name": "requests",
+          "type": "Map[String,String]",
+          "default": []
+        },
+        {
+          "name": "lastLabel",
+          "type": "Option[String]",
+          "default": { "present": false, "value": null }
+        },
+        {
+          "name": "count",
+          "type": "Long",
+          "default": "0"
+        },
+        {
+          "name": "load",
+          "type": "Ratio",
+          "default": "0.00"
+        },
+        {
+          "name": "processed",
+          "type": "Map[String,String]",
+          "default": []
+        }
+      ],
+      "commands": [
+        {
+          "name": "Release",
+          "parameters": [
+            {
+              "name": "warehouse",
+              "type": "String",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "requestId",
+              "type": "String",
+              "origin": "PROPAGATED"
+            },
+            {
+              "name": "label",
+              "type": "String",
+              "origin": "PROPAGATED"
+            },
+            {
+              "name": "delta",
+              "type": "Ratio",
+              "origin": "PROPAGATED"
+            },
+            {
+              "name": "batch",
+              "type": "List[String]",
+              "origin": "PROPAGATED"
+            }
+          ],
+          "guards": [
+            {
+              "kind": "invariantRef",
+              "ref": "warehouse-required",
+              "errCode": "empty-warehouse",
+              "cond": "param.warehouse.nonEmpty"
+            }
+          ],
+          "produces": [
+            "Released"
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "Released",
+          "payloads": [
+            {
+              "name": "requestId",
+              "type": "String"
+            },
+            {
+              "name": "releaseId",
+              "type": "String"
+            },
+            {
+              "name": "label",
+              "type": "String"
+            },
+            {
+              "name": "delta",
+              "type": "Ratio"
+            },
+            {
+              "name": "batch",
+              "type": "List[String]"
+            }
+          ],
+          "bindings": [
+            {
+              "slot": "requestId",
+              "expr": "param.requestId"
+            },
+            {
+              "slot": "releaseId",
+              "expr": {
+                "form": "host",
+                "id": {
+                  "context": "inventory",
+                  "kind": "port",
+                  "owner": [],
+                  "id": "release-id"
+                },
+                "version": "1"
+              }
+            },
+            {
+              "slot": "label",
+              "expr": "param.label"
+            },
+            {
+              "slot": "delta",
+              "expr": "param.delta"
+            },
+            {
+              "slot": "batch",
+              "expr": "param.batch"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "requests",
+              "op": "remove",
+              "key": "event.requestId"
+            },
+            {
+              "slot": "lastLabel",
+              "expr": "state.requests[event.requestId]"
+            },
+            {
+              "slot": "count",
+              "op": "integer-apply",
+              "delta": "literal:1",
+              "sign": 1
+            },
+            {
+              "slot": "load",
+              "op": "money-apply",
+              "delta": "event.delta",
+              "sign": 1
+            },
+            {
+              "slot": "processed",
+              "op": "put-all",
+              "key": "event.batch",
+              "value": "literal:recorded"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

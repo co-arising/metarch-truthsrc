@@ -1,0 +1,649 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:truthsrc:domain-dataflow:v2",
+  "title": "Explicit v2 exact dataflow and bounded add/subtract production expressions",
+  "$comment": "Shape only. v2 uses decision@2 and exact-value-types@1. Same nominal/integer arithmetic, units, overflow, scope and canonical derivation require semantic validation. v1 is unchanged.",
+  "$defs": {
+    "ref": {
+      "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference"
+    },
+    "source": {
+      "$ref": "urn:truthsrc:product-compilation:v1#/$defs/source"
+    },
+    "type": {
+      "$ref": "urn:truthsrc:product-compilation:v1#/$defs/valueType"
+    },
+    "text": {
+      "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+    },
+    "refs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/ref"
+      }
+    },
+    "json": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "string",
+          "maxLength": 65536
+        },
+        {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/json"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/json"
+          }
+        }
+      ]
+    },
+    "expression": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "op",
+            "ref"
+          ],
+          "properties": {
+            "op": {
+              "const": "ref"
+            },
+            "ref": {
+              "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/ref"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "op",
+            "valueType",
+            "value"
+          ],
+          "properties": {
+            "op": {
+              "const": "literal"
+            },
+            "valueType": {
+              "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/type"
+            },
+            "value": {
+              "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/json"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "op",
+            "id",
+            "version"
+          ],
+          "properties": {
+            "op": {
+              "const": "host"
+            },
+            "id": {
+              "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/ref"
+            },
+            "version": {
+              "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/text"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "op",
+            "argument",
+            "member"
+          ],
+          "properties": {
+            "op": {
+              "const": "member"
+            },
+            "argument": {
+              "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/expression"
+            },
+            "member": {
+              "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/ref"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "op",
+            "map",
+            "key"
+          ],
+          "properties": {
+            "op": {
+              "const": "map-get"
+            },
+            "map": {
+              "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/expression"
+            },
+            "key": {
+              "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/expression"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "op",
+            "left",
+            "right"
+          ],
+          "properties": {
+            "op": {
+              "enum": [
+                "add",
+                "subtract"
+              ]
+            },
+            "left": {
+              "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/expression"
+            },
+            "right": {
+              "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/expression"
+            }
+          }
+        }
+      ]
+    },
+    "parameter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref",
+        "valueType",
+        "origin",
+        "source"
+      ],
+      "properties": {
+        "ref": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/ref"
+        },
+        "valueType": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/type"
+        },
+        "origin": {
+          "enum": [
+            "BUSINESS_INPUT",
+            "PROPAGATED"
+          ]
+        },
+        "source": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/source"
+        }
+      }
+    },
+    "declaredSlot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref",
+        "valueType",
+        "source"
+      ],
+      "properties": {
+        "ref": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/ref"
+        },
+        "valueType": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/type"
+        },
+        "source": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/source"
+        }
+      }
+    },
+    "slot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "slot",
+        "valueType",
+        "source",
+        "producer",
+        "dependencies"
+      ],
+      "properties": {
+        "slot": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/ref"
+        },
+        "valueType": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/type"
+        },
+        "source": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/source"
+        },
+        "producer": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/expression"
+        },
+        "dependencies": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/refs"
+        }
+      }
+    },
+    "emission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event",
+        "source",
+        "slots"
+      ],
+      "properties": {
+        "event": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/ref"
+        },
+        "source": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/source"
+        },
+        "slots": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/slot"
+          }
+        }
+      }
+    },
+    "command": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "command",
+        "source",
+        "declaredSignature",
+        "usedDependencies",
+        "events"
+      ],
+      "properties": {
+        "command": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/ref"
+        },
+        "source": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/source"
+        },
+        "declaredSignature": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/parameter"
+          }
+        },
+        "usedDependencies": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/refs"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/emission"
+          }
+        }
+      }
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event",
+        "source",
+        "declaredSlots"
+      ],
+      "properties": {
+        "event": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/ref"
+        },
+        "source": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/source"
+        },
+        "declaredSlots": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/declaredSlot"
+          }
+        }
+      }
+    },
+    "stableIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "keys"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/text"
+        },
+        "version": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/text"
+        },
+        "keys": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/ref"
+          }
+        }
+      }
+    },
+    "host": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "command",
+        "outputType",
+        "inputDependencies",
+        "stableIdentityContract",
+        "source"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/ref"
+        },
+        "version": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/text"
+        },
+        "command": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/ref"
+        },
+        "outputType": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/type"
+        },
+        "inputDependencies": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/refs"
+        },
+        "stableIdentityContract": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/stableIdentity"
+        },
+        "source": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/source"
+        }
+      }
+    },
+    "dependencies": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "commands",
+        "events",
+        "hosts"
+      ],
+      "properties": {
+        "commands": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/command"
+          }
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/event"
+          }
+        },
+        "hosts": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/host"
+          }
+        }
+      }
+    },
+    "dependencyBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "dependencies"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "truthsrc.domain-dependency-binding/v2"
+        },
+        "dependencies": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/dependencies"
+        }
+      }
+    },
+    "default": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target",
+        "valueType",
+        "source",
+        "value"
+      ],
+      "properties": {
+        "target": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/ref"
+        },
+        "valueType": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/type"
+        },
+        "source": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/source"
+        },
+        "value": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/json"
+        }
+      }
+    },
+    "update": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "op",
+            "value"
+          ],
+          "properties": {
+            "op": {
+              "const": "set"
+            },
+            "value": {
+              "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/expression"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "op",
+            "key",
+            "value"
+          ],
+          "properties": {
+            "op": {
+              "enum": [
+                "put",
+                "put-all"
+              ]
+            },
+            "key": {
+              "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/expression"
+            },
+            "value": {
+              "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/expression"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "op",
+            "key"
+          ],
+          "properties": {
+            "op": {
+              "enum": [
+                "remove",
+                "remove-all"
+              ]
+            },
+            "key": {
+              "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/expression"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "op",
+            "delta",
+            "sign"
+          ],
+          "properties": {
+            "op": {
+              "enum": [
+                "integer-apply",
+                "money-apply"
+              ]
+            },
+            "delta": {
+              "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/expression"
+            },
+            "sign": {
+              "enum": [
+                1,
+                -1
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "assignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target",
+        "valueType",
+        "sourceOrdinal",
+        "source",
+        "update",
+        "dependencies"
+      ],
+      "properties": {
+        "target": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/ref"
+        },
+        "valueType": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/type"
+        },
+        "sourceOrdinal": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "source": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/source"
+        },
+        "update": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/update"
+        },
+        "dependencies": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/refs"
+        }
+      }
+    },
+    "eventFolds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event",
+        "source",
+        "assignments"
+      ],
+      "properties": {
+        "event": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/ref"
+        },
+        "source": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/source"
+        },
+        "assignments": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/assignment"
+          }
+        }
+      }
+    },
+    "folds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "defaults",
+        "events"
+      ],
+      "properties": {
+        "defaults": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/default"
+          }
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/eventFolds"
+          }
+        }
+      }
+    },
+    "foldBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "folds"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "truthsrc.domain-fold-binding/v2"
+        },
+        "folds": {
+          "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/folds"
+        }
+      }
+    }
+  }
+}

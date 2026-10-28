@@ -1,5 +1,330 @@
 # Versioned product admission — canonical and static Saga contracts
 
+最后更新: 2026-10-28
+
+## P24 static semantic compilation slice
+
+The additive `lib/products/compile.mjs` API now exports
+`compileProductSet(request)` → detached, deeply frozen `{result, diagnostics}`.
+Any input/semantic error returns `result: null` and a deterministic first-error
+diagnostic `{code, message, source: {document, pointer}, related}`. This is a
+**reference-layout/ordered-decision/exact-value/dataflow slice**, not the complete P24 capability set.
+The legacy API described below is unchanged; it is a separate versioned contract.
+
+```js
+import { compileProductSet } from './lib/products/compile.mjs';
+import { readProductRequest, captureProductRequest } from './lib/products/cli.mjs';
+
+const request = readProductRequest('/absolute/path/to/files.json');
+const { result, diagnostics } = compileProductSet(request);
+// captureProductRequest(file) also returns the actual per-file path/SHA/byte count.
+// It does not place filesystem claims into the target-neutral semantic products.
+```
+
+Public file entry (from this repository):
+
+```sh
+node bin/truthsrc.js compile-products \
+  --request test/fixtures/semantic-products/files.json \
+  --out /absolute/existing-parent/new-products.json
+```
+
+The output must not exist; it is created exclusively and never overwritten.
+Unknown/duplicate flags fail. CLI stdout is a JSON receipt with output SHA and
+captured input paths/SHA/byte counts. The pure API performs no filesystem,
+process, clock, network, generator or implicit directory lookup. Dependency
+module loading is separate from request processing. These purity checks are not
+an adversarial JavaScript plugin sandbox.
+
+### Exact input and product versions
+
+- File manifest: `truthsrc.product-input-files/v1`, exactly
+  `{schemaVersion, documents, assemblies, requirements, options}`. Each document
+  is `{id, schemaVersion, file}`; paths resolve relative to the manifest. The API
+  manifest path is absolute; the CLI resolves its explicit arguments.
+- Memory request: `truthsrc.product-compilation/v1`, same outer fields, document
+  `{id, schemaVersion, value}` instead of `file`.
+- This slice requires `assemblies: []`, `options: {}`. No automatic unions,
+  document selection, schema guessing, missing bindings or capability defaults.
+- Output: `truthsrc.semantic-product-set/v1`, compiler contract
+  `{id: "truthsrc-semantic-products", version: "1"}`, envelopes
+  `truthsrc.semantic-product/v1`. All original input documents remain in output.
+- `reference-layout@1`: payload `truthsrc.reference-layout/v1`, capability
+  `qualified-reference-layout@1`, roles `canonical` (`truthsrc/v1`) and
+  `referenceBinding` (`truthsrc.reference-binding/v1`), `requires: []`.
+- `domain-decision@1`: payload `truthsrc.domain-decision/v1`, capability
+  `ordered-domain-decision@1`, roles `canonical` and `semanticBinding`
+  (`truthsrc.domain-semantic-binding/v1`), requires exactly `reference-layout@1`
+  on the same canonical document.
+
+Each requirement has exactly `{id, version, payloadSchemaVersion, capabilities,
+inputRoles, requires}`. Capabilities and dependencies are ordered identity arrays
+with string versions. The complete working example is
+[`test/fixtures/semantic-products/files.json`](test/fixtures/semantic-products/files.json).
+Schema documents are [request and payload definitions](schema/product-compilation-v1.schema.json)
+and [output set](schema/semantic-product-set-v1.schema.json). Register their
+absolute `urn:truthsrc:product-compilation:v1` and
+`urn:truthsrc:semantic-product-set:v1` IDs in an offline schema resolver; they are
+identifiers, not URLs to fetch. Schema validation is only shape validation; the
+compiler and BC consumer separately enforce semantics.
+
+### Source-derived semantics and explicit limits
+
+The reference binding declares the nominal/context-qualified layout, value types,
+source pointers and exact owner/type dependencies. This is an explicit mapping,
+not inferred target language types. It must be closed and acyclic. It is **not** a
+complete validation of every raw canonical field/type or unselected artifact.
+
+The semantic binding asserts the complete `decisions: {commands: [...]}` payload.
+The compiler does not trust/copy this assertion as its decision implementation:
+it reparses every canonical command's ordered `guards`, derives predicates,
+on-false behavior and ordered dependencies, then compares the entire assertion.
+Every canonical command must appear exactly once in the decision layout; its
+name, aggregate owner and any explicit context must match. Commands need an
+explicit guard array (including `[]`). No guard reordering or errCode deduplication.
+
+Supported source grammar in this slice:
+
+- Direct declared `param.<identifier>` and `state.<identifier>`; ASCII identifiers
+  in raw expressions. Structured map guards use explicit direct paths.
+- JSON string literals, `true`/`false`, parentheses, `!`, short-circuit `&&`/`||`,
+  type-equal `==`/`!=`.
+- String/collection/optional `.isEmpty`/`.nonEmpty`, typed `.contains(value)`, map
+  `.get(key).contains(value)`, and `.keys.forall(_ == declaredReference)`.
+- `map(key)` only with a dominating `map.contains(key)` true fact: from the current
+  short-circuit branch or an earlier ordered guard whose false branch terminates.
+  Optional map get needs no presence fact. Unknown methods, arbitrary closures,
+  raw Scala/eval and unprotected lookup are refused.
+- Existing structured `map-contains`/`map-absent` guards; invariantRef guards
+  default to reject as before. Every reject retains its errCode; succeed-empty
+  terminates subsequent checks on predicate false.
+- Raw expression bounds: 65,536 characters, 512 tokens, nesting 32, AST depth 64.
+  The v1 decision profile does not gain numeric literals or member syntax; the
+  additive explicit v2 profile below supports exact comparisons and members.
+  Numeric arithmetic, statusTransition, structured Money predicates and
+  collection-covered remain **not implemented**.
+
+File input is strict UTF-8 JSON, non-symlink regular files, maximum 8 MiB per file
+and combined capture. Duplicate keys (including escaped aliases), non-safe or
+non-integer JSON numeric tokens, negative zero and excessive nesting fail.
+Represent exact values as strings; the optional exact profiles below supply
+static reversible conversion descriptors, not runtime codec certification.
+Capture detects ordinary during-read file changes but is not a multi-file atomic
+snapshot or an inter-process source lock.
+
+BC `AdmittedSemanticProducts.fromFile/fromBytes/fromJson` independently parses
+and checks these products, including source/predicate correspondence and lookup
+safety. Its `compilerProvenanceVerified` stays false: only an external execution
+receipt and matching actual bytes establish which compiler produced a file.
+Readiness is always `static-contract-only`, `runnable: false`,
+`runtimeBindingVerified: false`.
+
+### Exact type/codec profiles and explicit decision v2
+
+The same request/CLI now supports `exact-value-types@1` and
+`exact-value-codecs@1`. Their payload schema versions are
+`truthsrc.exact-value-types/v1` and `truthsrc.exact-value-codecs/v1`; capabilities
+are the corresponding singleton `{id, version: "1"}`. Both use the same canonical
+as the reference layout. Types require `reference-layout@1`; codecs require
+`reference-layout@1` followed by `exact-value-types@1` in that order.
+
+- Type roles: `canonical` and `exactTypeBinding` (`truthsrc.exact-type-binding/v1`).
+  Binding exactly `{schemaVersion, types}`. The product payload is the complete
+  **types array** at `/types`, not another `{types: ...}` wrapper.
+- Codec roles: `canonical` and `exactCodecBinding`
+  (`truthsrc.exact-codec-binding/v1`). Binding exactly `{schemaVersion, codecs}`.
+  Payload is the complete **codecs array** at `/codecs`.
+- Types contain `{domain, version, source, form, precision, scale, amountMember,
+  unitMember, units}`. Forms: `decimal` (no members/units) or `unit-decimal`
+  (exactly one decimal amount member plus one string unit member).
+- Layout `record` form is `{form: "record", members: [qualifiedRef, ...]}`.
+  Record/member dependencies and owner identity remain explicit. Exact profiles
+  additionally compare canonical scalar `dataType` or complete ordered `fields`
+  (`name`, `dataType`) and each actual member source pointer. Empty/ghost
+  representations or changing a decimal member to Double fail.
+- Domain, wire and PO type identities must all be declared, distinct and not
+  shared between exact codecs. Their versions are pinned separately. Canonical
+  declarations carry matching string `version`; a codec has its own string
+  `id`/`version` and pinned `domainVersion`.
+- Codec fields: `{domain, domainVersion, id, version, format, wire, po, source}`.
+  Each representation is `{ref, version, amountMember, unitMember}`. Scalar
+  representations are string types; unit records have two string members.
+  Codec source must identify its whole input binding row.
+- Formats: `fixed-decimal-text`, `minor-units-text`. Precision 1..38, scale
+  0..precision. Text must use exactly that many fractional digits; no rounding,
+  exponent, plus sign, leading zero or negative zero. Overflow fails. Unit/currency
+  values must belong to the explicitly declared `units` array; no default unit,
+  currency, NAV, fee or pricing formula exists in the compiler.
+
+```js
+import { encodeExact, decodeExact } from './lib/value-products/exact-codecs.mjs';
+import { compareExact } from './lib/value-products/exact-types.mjs';
+// type/codec are validated descriptors from the compilation result.
+const wire = encodeExact(type, codec, value, 'wire'); // or target 'po'
+const restored = decodeExact(type, codec, wire, 'wire');
+const order = compareExact(type, value, otherValue); // refuses different units
+```
+
+The pure oracle uses BigInt coefficients only; it does not execute target codecs
+or prove that a named codec is installed/registered. BC `ExactValues` independently
+implements descriptor validation and the same exact conversion contract with
+BigInt. Identity/version labels alone are never runtime credentials. Canonical
+fixed-scale text roundtrips exactly; it is not a promise to accept every possible
+historical decimal spelling or preserve a whole serialized receipt envelope.
+
+`domain-decision@2` is explicit: payload `truthsrc.domain-decision/v2`, capability
+`ordered-domain-decision@2`, semantic binding
+`truthsrc.domain-semantic-binding/v2`, dependencies exactly layout@1 then
+exact-value-types@1. It adds declared record member paths and exact decimal text
+literals with `== != < <= > >=`. Comparisons need a specific admitted exact type:
+same-type operands or one representable literal. Bare decimal fields, unrelated
+nominal types and literal-only comparisons do not acquire permission merely
+because some exact type is present. Unit-bearing comparisons verify record scale,
+precision and declared units; comparing two unit records with different units
+fails. v1 source syntax/dependencies remain unchanged; two decision versions in
+one set are refused rather than silently selecting one.
+
+`evaluateDecisions(command, valuesMap, layout, {types})` is a pure JS decision
+oracle using qualified-reference Map keys, Maps for business map values and
+plain objects for records; BC `DomainDecision.evaluate(command, values, layout,
+exactTypes)` supplies its independent oracle. These do not mutate business state
+or implement an application. Exact values are validated when consumed, preserving
+ordered guard/short-circuit behavior. Static compilation still never sets runnable
+or runtimeBindingVerified to true.
+
+The independent logistics fixture is
+[`test/fixtures/exact-products/files.json`](test/fixtures/exact-products/files.json):
+unit-bearing Distance plus unit-free Ratio, with domain/wire/PO layouts and
+ordered ReportLeg rules. Both CLIs use the same file manifest format. Financial
+Money/scale-2 and shares/scale-6 cases in tests are explicitly authored conversion
+oracles, **not bank-owner bindings or bank business acceptance**.
+
+Schema registry additionally needs
+[`schema/exact-values-v1.schema.json`](schema/exact-values-v1.schema.json), ID
+`urn:truthsrc:exact-values:v1`. The original request/set schemas now include these
+additive profiles; their v1 decision branch remains restricted. JSON Schema only
+checks shape; source identity, cross-document coverage and representability are
+checked by the compiler and independent consumer.
+
+### Complete dependency and pre-event fold profiles
+
+The same explicit API/CLI supports these target-neutral static products:
+
+| Product | Payload schema / capability | Binding role | Exact ordered dependencies |
+|---|---|---|---|
+| `domain-dependencies@1` | `truthsrc.domain-dependencies/v1` / `domain-dependencies@1` | `dependencyBinding`: `truthsrc.domain-dependency-binding/v1` | layout@1, decision@1 |
+| `domain-folds@1` | `truthsrc.domain-folds/v1` / `domain-folds@1` | `foldBinding`: `truthsrc.domain-fold-binding/v1` | layout@1, dependencies@1, exact-value-types@1 |
+| `domain-dependencies@2` | `truthsrc.domain-dependencies/v2` / `domain-dependencies@2` | `dependencyBinding`: `truthsrc.domain-dependency-binding/v2` | layout@1, decision@2, exact-value-types@1 |
+| `domain-folds@2` | `truthsrc.domain-folds/v2` / `domain-folds@2` | `foldBinding`: `truthsrc.domain-fold-binding/v2` | layout@1, dependencies@2, exact-value-types@1 |
+
+Both also require `canonical` with the same document as the layout. Binding
+objects are exactly `{schemaVersion, dependencies}` and `{schemaVersion, folds}`;
+their whole payload objects are assertions compared against source derivation,
+not instructions trusted in place of canonical commands/events. The dependency
+v1 profile does not silently accept decision-v2; select the explicit v2 profiles
+and their v2 bindings above. Exact metadata is consumed by v2 event literals and
+arithmetic, not merely listed as a requirement. Guard numeric arithmetic remains
+unsupported; decision-v2 keeps its already declared vocabulary.
+
+- Dependency payload: `{commands, events, hosts}`. Each command preserves
+  `{command, source, declaredSignature, usedDependencies, events}`. A signature
+  parameter is `{ref, valueType, origin, source}`; its explicit origin must be
+  `BUSINESS_INPUT` or `PROPAGATED`. Every canonical parameter stays in signature,
+  including guard-only and unused parameters. Used dependencies are ordered,
+  first-appearance-deduplicated reads: ordered decisions, event slots, then host
+  input dependencies. These lists are not substitutes for each other.
+- Every canonical aggregate/command/event/state field/parameter/payload slot
+  requires exactly one matching context/name/owner/type/source layout declaration.
+  This profile requires explicit aggregate context, `commands`, `events`,
+  `stateFields`, command `parameters`/`produces`, and event `payloads`. The finite
+  canonical type spellings are String/Boolean/Long/Int/Integer/Decimal,
+  Option/List/Seq/Vector/Map brackets and declared nominal names. Conflicting
+  type/dataType spellings or ghost fields fail. It is not a broad legacy spelling
+  adapter or an implicit identifier/default injector.
+- Each command's produced event has its complete ordered slots, each with
+  `{slot, valueType, source, producer, dependencies}`. If `emissionBindings` is
+  present, it must cover all produced events and all their slots; no missing-slot
+  fallback to event `bindings`. Without it, event `{slot, expr}` bindings must
+  cover each slot exactly once. An event without an explicit command producer is
+  refused in this profile; external event producers need their own contract.
+- Canonical `hostComputations` is an explicit array (including `[]`). A host
+  descriptor has `{id, version, command, outputType, inputDependencies,
+  stableIdentityContract, source}` in the product; canonical input omits only
+  derived `source`. Its qualified id is a declared `port`, pinned to an actual
+  canonical `/ports/i` name/version/outputType in the same command context.
+  Stable identity contract is `{id, version, keys}`; keys are nonempty unique
+  declared host inputs. Authored slot `{form:"host", id, version}` becomes a typed
+  host value, never a fabricated command parameter. No implementation, clock or
+  runtime stable-identity enforcement is certified by this descriptor.
+- Finite value expressions are separate from decision grammar: typed direct
+  references, literals, nominal record members, optional map get, and pinned host
+  output. Authored paths are param/state on emission and state/event on replay;
+  `state.map[event.key]` deliberately yields optional, not an unsafe raw lookup.
+  Host and command inputs are forbidden on replay. Literal `{form:"literal",
+  value}` is typed by the explicit target; `literal:text` handles scalar text,
+  boolean and signed-64 integer text. Exact decimals require admitted nominal
+  descriptors. No raw Scala, receipt alias, SYSTEM_NOW or arbitrary expression
+  is treated as a magic runtime value.
+- V2 value producers additionally accept authored `{form:"add"|"subtract",
+  left, right}`, producing closed typed `{op:"add"|"subtract", left, right}`
+  expressions. Each operand is parsed against the explicit target type and must
+  be the same signed-64 integer or admitted exact nominal type. Recursive depth
+  is bounded at 64. Integer and exact coefficients use BigInt with overflow and
+  same-unit checks; there is no bare Decimal, cross-nominal arithmetic,
+  multiplication/division, rounding or implicit unit conversion. V1 authored
+  value grammar and dependencies remain unchanged. All v2 replay RHS still read
+  the original pre-event snapshot.
+- Fold payload: `{defaults, events}`. Every state field has an explicit canonical
+  `default` carrier and product `{target, valueType, source, value}`. Each event
+  retains its complete `foldAssignments`, producing ordered
+  `{target, valueType, sourceOrdinal, source, update, dependencies}`. Targets must
+  be unique. No first-wins or silent missing/extra row filtering.
+- Updates are `set`, `put`, `remove`, `put-all`, `remove-all`, `money-apply`,
+  `integer-apply`. Collection updates require map targets; `*-all` keys are a
+  declared sequence. Arithmetic sign is exactly 1 or -1. Integer carriers are
+  canonical signed-64 decimal **strings**, never JS Number; exact arithmetic uses
+  BigInt coefficients, same nominal type and matching explicit units, rejecting
+  scale/precision/overflow. `money-apply` is the established operator spelling,
+  not a built-in Money/CNY/business policy.
+
+`evaluateFolds(event, qualifiedValuesMap, layout, exactTypesArray)` is a pure JS
+oracle; business maps here are JSON arrays of `{key,value}` (unique keys),
+optional values are `{present: boolean, value}` (absent value is null), and records
+are plain objects. Presence remains distinct even for nested Option[Option[T]].
+This dataflow carrier is
+not `evaluateDecisions`' business-Map carrier. It computes every RHS and update
+base against the original input, then creates a new state map; no intermediate
+assignment is visible to another RHS. BC `DomainFolds.evaluate` independently
+uses immutable JSON values and returns Either diagnostics/result. Neither oracle
+runs a host or application. `evaluateValue` accepts host outputs only as explicit
+qualified inputs; it never executes a descriptor.
+
+Independent inventory input:
+[`test/fixtures/dataflow-products/files.json`](test/fixtures/dataflow-products/files.json).
+It retains guard-only warehouse, explicit release-id host output, complete event
+slots, optional old-label read alongside map removal, collection update and
+integer/exact Ratio arithmetic. These are public contract fixtures, not bank
+bindings or live business acceptance. Schema registry adds
+[`schema/domain-dataflow-v1.schema.json`](schema/domain-dataflow-v1.schema.json),
+ID `urn:truthsrc:domain-dataflow:v1`. Explicit v2 adds
+[`schema/domain-dataflow-v2.schema.json`](schema/domain-dataflow-v2.schema.json),
+ID `urn:truthsrc:domain-dataflow:v2`; register all five URNs locally, do not fetch.
+The independent measurement input
+[`test/fixtures/dataflow-v2/files.json`](test/fixtures/dataflow-v2/files.json)
+combines a guard-only label, exact decision, exact/integer event production and
+pre-event value arithmetic. Its bindings are independently authored expectations,
+not compiler output; the BC resource comes from the actual compile-products CLI.
+
+**Not yet delivered:** `planProductSet`/`generate-products`, six pure source
+producers, structured
+money/collection/status guards, assemblies, execution/runtime/artifact product
+families and new-product file anchors. `compile-products` is not a code-generation
+entry and cannot generate a bank application. These remain public P24/P25 work;
+consumers supply their own business bindings/ports and business acceptance, not a
+replacement compiler.
+
+## Legacy admission contract
+
 This opt-in public contract admits explicit data before a future producer call.
 It does **not** enable versioned products in `truthsrc generate`: the legacy
 `plan()`/`apply()` path rejects every opted-in manifest with

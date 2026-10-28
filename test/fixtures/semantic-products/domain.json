@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "truthsrc/v1",
+  "workshop": "Public inventory decision contract fixture",
+  "sessions": [],
+  "valueObjects": [],
+  "readModels": [],
+  "stories": [],
+  "domainServices": [],
+  "aggregates": [{
+    "name": "Stock",
+    "context": "inventory",
+    "stateFields": [{"name": "requests", "type": "Map[String,String]"}],
+    "commands": [{
+      "name": "Reserve",
+      "parameters": [{"name": "warehouse", "type": "String"}, {"name": "label", "type": "String"}],
+      "guards": [
+        {"kind": "invariantRef", "ref": "body-match", "errCode": "conflict", "cond": "!state.requests.contains(param.warehouse) || state.requests.get(param.warehouse).contains(param.label)"},
+        {"ruleId": "duplicate", "onFail": "succeed-empty", "when": {"form": "map-absent", "map": "requests", "key": "param.warehouse"}},
+        {"kind": "invariantRef", "ref": "warehouse-required", "errCode": "empty-warehouse", "cond": "param.warehouse.nonEmpty"}
+      ]
+    }]
+  }]
+}

@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "truthsrc.domain-semantic-binding/v1",
+  "decisions": {
+    "commands": [
+      {
+        "command": {
+          "context": "inventory",
+          "kind": "command",
+          "owner": [
+            "Stock"
+          ],
+          "id": "Release"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0"
+        },
+        "decisions": [
+          {
+            "sourceOrdinal": 0,
+            "ruleId": "warehouse-required",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/guards/0"
+            },
+            "predicate": {
+              "op": "non-empty",
+              "argument": {
+                "op": "ref",
+                "ref": {
+                  "context": "inventory",
+                  "kind": "parameter",
+                  "owner": [
+                    "Stock",
+                    "Release"
+                  ],
+                  "id": "warehouse"
+                }
+              }
+            },
+            "onFalse": {
+              "kind": "reject",
+              "errCode": "empty-warehouse"
+            },
+            "dependencies": [
+              {
+                "context": "inventory",
+                "kind": "parameter",
+                "owner": [
+                  "Stock",
+                  "Release"
+                ],
+                "id": "warehouse"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

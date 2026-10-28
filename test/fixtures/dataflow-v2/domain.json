@@ -1,0 +1,133 @@
+{
+  "schemaVersion": "truthsrc/v1",
+  "workshop": "Independent measurement v2 exact dataflow",
+  "sessions": [],
+  "valueObjects": [
+    {
+      "name": "Ratio",
+      "version": "1",
+      "dataType": "Decimal"
+    }
+  ],
+  "readModels": [],
+  "stories": [],
+  "domainServices": [],
+  "hostComputations": [],
+  "aggregates": [
+    {
+      "name": "Gauge",
+      "context": "measurement",
+      "stateFields": [
+        {
+          "name": "level",
+          "type": "Ratio",
+          "default": "0.00"
+        },
+        {
+          "name": "previous",
+          "type": "Ratio",
+          "default": "0.00"
+        },
+        {
+          "name": "count",
+          "type": "Long",
+          "default": "0"
+        }
+      ],
+      "commands": [
+        {
+          "name": "Adjust",
+          "parameters": [
+            {
+              "name": "label",
+              "type": "String",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "delta",
+              "type": "Ratio",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "steps",
+              "type": "Long",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "guards": [
+            {
+              "kind": "invariantRef",
+              "ref": "label-required",
+              "errCode": "empty-label",
+              "cond": "param.label.nonEmpty"
+            },
+            {
+              "kind": "invariantRef",
+              "ref": "nonnegative-delta",
+              "errCode": "negative-delta",
+              "cond": "param.delta >= 0.00"
+            }
+          ],
+          "produces": [
+            "Adjusted"
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "Adjusted",
+          "payloads": [
+            {
+              "name": "change",
+              "type": "Ratio"
+            },
+            {
+              "name": "steps",
+              "type": "Long"
+            }
+          ],
+          "bindings": [
+            {
+              "slot": "change",
+              "expr": {
+                "form": "add",
+                "left": "param.delta",
+                "right": "literal:0.10"
+              }
+            },
+            {
+              "slot": "steps",
+              "expr": {
+                "form": "subtract",
+                "left": "param.steps",
+                "right": "literal:1"
+              }
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "level",
+              "expr": {
+                "form": "add",
+                "left": "state.level",
+                "right": "event.change"
+              }
+            },
+            {
+              "slot": "previous",
+              "expr": "state.level"
+            },
+            {
+              "slot": "count",
+              "expr": {
+                "form": "subtract",
+                "left": "state.count",
+                "right": "event.steps"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

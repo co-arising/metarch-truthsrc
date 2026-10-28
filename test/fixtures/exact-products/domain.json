@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "truthsrc/v1",
+  "workshop": "Public logistics exact-value contract fixture",
+  "sessions": [],
+  "valueObjects": [
+    {"name": "Ratio", "version": "1", "meaning": "unit-free ratio", "dataType": "Decimal"},
+    {"name": "Distance", "version": "1", "meaning": "travelled distance with unit", "fields": [{"name":"amount","dataType":"Decimal"},{"name":"unit","dataType":"String"}]},
+    {"name": "WireRatio", "version": "1", "dataType": "String"},
+    {"name": "WireDistance", "version": "1", "fields": [{"name":"wAmount","dataType":"String"},{"name":"wUnit","dataType":"String"}]},
+    {"name": "PoRatio", "version": "1", "dataType": "String"},
+    {"name": "PoDistance", "version": "1", "fields": [{"name":"pAmount","dataType":"String"},{"name":"pUnit","dataType":"String"}]}
+  ],
+  "readModels": [],
+  "stories": [],
+  "domainServices": [],
+  "aggregates": [{
+    "name": "Shipment",
+    "context": "logistics",
+    "stateFields": [{"name": "travelled"}, {"name": "legs"}],
+    "commands": [{
+      "name": "ReportLeg",
+      "parameters": [{"name": "legId"}, {"name": "legDistance"}, {"name": "tolerance"}],
+      "guards": [
+        {"kind": "invariantRef", "ref": "leg-cap", "errCode": "leg-too-long", "cond": "param.legDistance.amount <= 900.000"},
+        {"kind": "invariantRef", "ref": "unit-match", "errCode": "unit-mismatch", "cond": "param.legDistance.unit == state.travelled.unit"},
+        {"kind": "invariantRef", "ref": "tolerance-floor", "errCode": "bad-tolerance", "cond": "param.tolerance >= 0.50"},
+        {"ruleId": "duplicate", "onFail": "succeed-empty", "when": {"form": "map-absent", "map": "legs", "key": "param.legId"}}
+      ]
+    }]
+  }]
+}

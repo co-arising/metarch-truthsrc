@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "truthsrc.domain-semantic-binding/v2",
+  "decisions": {"commands":[{
+    "command":{"context":"logistics","kind":"command","owner":["Shipment"],"id":"ReportLeg"},
+    "source":{"document":"domain","pointer":"/aggregates/0/commands/0"},
+    "decisions":[
+      {"sourceOrdinal":0,"ruleId":"leg-cap","source":{"document":"domain","pointer":"/aggregates/0/commands/0/guards/0"},
+       "predicate":{"op":"less-equal","left":{"op":"member","argument":{"op":"ref","ref":{"context":"logistics","kind":"parameter","owner":["Shipment","ReportLeg"],"id":"legDistance"}},"member":{"context":"logistics","kind":"member","owner":["Distance"],"id":"amount"}},"right":{"op":"decimal","value":"900.000"}},
+       "onFalse":{"kind":"reject","errCode":"leg-too-long"},
+       "dependencies":[{"context":"logistics","kind":"parameter","owner":["Shipment","ReportLeg"],"id":"legDistance"},{"context":"logistics","kind":"member","owner":["Distance"],"id":"amount"}]},
+      {"sourceOrdinal":1,"ruleId":"unit-match","source":{"document":"domain","pointer":"/aggregates/0/commands/0/guards/1"},
+       "predicate":{"op":"equal","left":{"op":"member","argument":{"op":"ref","ref":{"context":"logistics","kind":"parameter","owner":["Shipment","ReportLeg"],"id":"legDistance"}},"member":{"context":"logistics","kind":"member","owner":["Distance"],"id":"unit"}},"right":{"op":"member","argument":{"op":"ref","ref":{"context":"logistics","kind":"state-field","owner":["Shipment"],"id":"travelled"}},"member":{"context":"logistics","kind":"member","owner":["Distance"],"id":"unit"}}},
+       "onFalse":{"kind":"reject","errCode":"unit-mismatch"},
+       "dependencies":[{"context":"logistics","kind":"parameter","owner":["Shipment","ReportLeg"],"id":"legDistance"},{"context":"logistics","kind":"member","owner":["Distance"],"id":"unit"},{"context":"logistics","kind":"state-field","owner":["Shipment"],"id":"travelled"}]},
+      {"sourceOrdinal":2,"ruleId":"tolerance-floor","source":{"document":"domain","pointer":"/aggregates/0/commands/0/guards/2"},
+       "predicate":{"op":"greater-equal","left":{"op":"ref","ref":{"context":"logistics","kind":"parameter","owner":["Shipment","ReportLeg"],"id":"tolerance"}},"right":{"op":"decimal","value":"0.50"}},
+       "onFalse":{"kind":"reject","errCode":"bad-tolerance"},
+       "dependencies":[{"context":"logistics","kind":"parameter","owner":["Shipment","ReportLeg"],"id":"tolerance"}]},
+      {"sourceOrdinal":3,"ruleId":"duplicate","source":{"document":"domain","pointer":"/aggregates/0/commands/0/guards/3"},
+       "predicate":{"op":"not","argument":{"op":"map-contains","left":{"op":"ref","ref":{"context":"logistics","kind":"state-field","owner":["Shipment"],"id":"legs"}},"right":{"op":"ref","ref":{"context":"logistics","kind":"parameter","owner":["Shipment","ReportLeg"],"id":"legId"}}}},
+       "onFalse":{"kind":"succeed-empty"},
+       "dependencies":[{"context":"logistics","kind":"state-field","owner":["Shipment"],"id":"legs"},{"context":"logistics","kind":"parameter","owner":["Shipment","ReportLeg"],"id":"legId"}]}
+    ]
+  }]}
+}

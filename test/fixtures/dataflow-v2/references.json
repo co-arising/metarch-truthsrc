@@ -1,0 +1,354 @@
+{
+  "schemaVersion": "truthsrc.reference-binding/v1",
+  "layout": {
+    "contexts": [
+      "measurement"
+    ],
+    "declarations": [
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "type",
+          "owner": [],
+          "id": "Ratio"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "decimal"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/valueObjects/0"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "aggregate",
+          "owner": [],
+          "id": "Gauge"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "command",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "Adjust"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Gauge"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "event",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "Adjusted"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/0"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Gauge"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "state-field",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "level"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Ratio"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/0"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Gauge"
+          },
+          {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Ratio"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "state-field",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "previous"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Ratio"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/1"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Gauge"
+          },
+          {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Ratio"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "state-field",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "count"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/2"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Gauge"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "parameter",
+          "owner": [
+            "Gauge",
+            "Adjust"
+          ],
+          "id": "label"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0/parameters/0"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "command",
+            "owner": [
+              "Gauge"
+            ],
+            "id": "Adjust"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "parameter",
+          "owner": [
+            "Gauge",
+            "Adjust"
+          ],
+          "id": "delta"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Ratio"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0/parameters/1"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "command",
+            "owner": [
+              "Gauge"
+            ],
+            "id": "Adjust"
+          },
+          {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Ratio"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "parameter",
+          "owner": [
+            "Gauge",
+            "Adjust"
+          ],
+          "id": "steps"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0/parameters/2"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "command",
+            "owner": [
+              "Gauge"
+            ],
+            "id": "Adjust"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "event-slot",
+          "owner": [
+            "Gauge",
+            "Adjusted"
+          ],
+          "id": "change"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Ratio"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/0/payloads/0"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "event",
+            "owner": [
+              "Gauge"
+            ],
+            "id": "Adjusted"
+          },
+          {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Ratio"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "event-slot",
+          "owner": [
+            "Gauge",
+            "Adjusted"
+          ],
+          "id": "steps"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/0/payloads/1"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "event",
+            "owner": [
+              "Gauge"
+            ],
+            "id": "Adjusted"
+          }
+        ]
+      }
+    ]
+  }
+}

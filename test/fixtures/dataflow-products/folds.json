@@ -1,0 +1,440 @@
+{
+  "schemaVersion": "truthsrc.domain-fold-binding/v1",
+  "folds": {
+    "defaults": [
+      {
+        "target": {
+          "context": "inventory",
+          "kind": "state-field",
+          "owner": [
+            "Stock"
+          ],
+          "id": "requests"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "primitive",
+            "name": "string"
+          },
+          "value": {
+            "form": "primitive",
+            "name": "string"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/0/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "inventory",
+          "kind": "state-field",
+          "owner": [
+            "Stock"
+          ],
+          "id": "lastLabel"
+        },
+        "valueType": {
+          "form": "optional",
+          "element": {
+            "form": "primitive",
+            "name": "string"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/1/default"
+        },
+        "value": { "present": false, "value": null }
+      },
+      {
+        "target": {
+          "context": "inventory",
+          "kind": "state-field",
+          "owner": [
+            "Stock"
+          ],
+          "id": "count"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/2/default"
+        },
+        "value": "0"
+      },
+      {
+        "target": {
+          "context": "inventory",
+          "kind": "state-field",
+          "owner": [
+            "Stock"
+          ],
+          "id": "load"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "Ratio"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/3/default"
+        },
+        "value": "0.00"
+      },
+      {
+        "target": {
+          "context": "inventory",
+          "kind": "state-field",
+          "owner": [
+            "Stock"
+          ],
+          "id": "processed"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "primitive",
+            "name": "string"
+          },
+          "value": {
+            "form": "primitive",
+            "name": "string"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/4/default"
+        },
+        "value": []
+      }
+    ],
+    "events": [
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "Stock"
+          ],
+          "id": "Released"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/0"
+        },
+        "assignments": [
+          {
+            "target": {
+              "context": "inventory",
+              "kind": "state-field",
+              "owner": [
+                "Stock"
+              ],
+              "id": "requests"
+            },
+            "valueType": {
+              "form": "map",
+              "key": {
+                "form": "primitive",
+                "name": "string"
+              },
+              "value": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            "sourceOrdinal": 0,
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/0/foldAssignments/0"
+            },
+            "update": {
+              "op": "remove",
+              "key": {
+                "op": "ref",
+                "ref": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Stock",
+                    "Released"
+                  ],
+                  "id": "requestId"
+                }
+              }
+            },
+            "dependencies": [
+              {
+                "context": "inventory",
+                "kind": "state-field",
+                "owner": [
+                  "Stock"
+                ],
+                "id": "requests"
+              },
+              {
+                "context": "inventory",
+                "kind": "event-slot",
+                "owner": [
+                  "Stock",
+                  "Released"
+                ],
+                "id": "requestId"
+              }
+            ]
+          },
+          {
+            "target": {
+              "context": "inventory",
+              "kind": "state-field",
+              "owner": [
+                "Stock"
+              ],
+              "id": "lastLabel"
+            },
+            "valueType": {
+              "form": "optional",
+              "element": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            "sourceOrdinal": 1,
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/0/foldAssignments/1"
+            },
+            "update": {
+              "op": "set",
+              "value": {
+                "op": "map-get",
+                "map": {
+                  "op": "ref",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "state-field",
+                    "owner": [
+                      "Stock"
+                    ],
+                    "id": "requests"
+                  }
+                },
+                "key": {
+                  "op": "ref",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "event-slot",
+                    "owner": [
+                      "Stock",
+                      "Released"
+                    ],
+                    "id": "requestId"
+                  }
+                }
+              }
+            },
+            "dependencies": [
+              {
+                "context": "inventory",
+                "kind": "state-field",
+                "owner": [
+                  "Stock"
+                ],
+                "id": "requests"
+              },
+              {
+                "context": "inventory",
+                "kind": "event-slot",
+                "owner": [
+                  "Stock",
+                  "Released"
+                ],
+                "id": "requestId"
+              }
+            ]
+          },
+          {
+            "target": {
+              "context": "inventory",
+              "kind": "state-field",
+              "owner": [
+                "Stock"
+              ],
+              "id": "count"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "integer"
+            },
+            "sourceOrdinal": 2,
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/0/foldAssignments/2"
+            },
+            "update": {
+              "op": "integer-apply",
+              "delta": {
+                "op": "literal",
+                "valueType": {
+                  "form": "primitive",
+                  "name": "integer"
+                },
+                "value": "1"
+              },
+              "sign": 1
+            },
+            "dependencies": [
+              {
+                "context": "inventory",
+                "kind": "state-field",
+                "owner": [
+                  "Stock"
+                ],
+                "id": "count"
+              }
+            ]
+          },
+          {
+            "target": {
+              "context": "inventory",
+              "kind": "state-field",
+              "owner": [
+                "Stock"
+              ],
+              "id": "load"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "Ratio"
+              }
+            },
+            "sourceOrdinal": 3,
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/0/foldAssignments/3"
+            },
+            "update": {
+              "op": "money-apply",
+              "delta": {
+                "op": "ref",
+                "ref": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Stock",
+                    "Released"
+                  ],
+                  "id": "delta"
+                }
+              },
+              "sign": 1
+            },
+            "dependencies": [
+              {
+                "context": "inventory",
+                "kind": "state-field",
+                "owner": [
+                  "Stock"
+                ],
+                "id": "load"
+              },
+              {
+                "context": "inventory",
+                "kind": "event-slot",
+                "owner": [
+                  "Stock",
+                  "Released"
+                ],
+                "id": "delta"
+              }
+            ]
+          },
+          {
+            "target": {
+              "context": "inventory",
+              "kind": "state-field",
+              "owner": [
+                "Stock"
+              ],
+              "id": "processed"
+            },
+            "valueType": {
+              "form": "map",
+              "key": {
+                "form": "primitive",
+                "name": "string"
+              },
+              "value": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            "sourceOrdinal": 4,
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/0/foldAssignments/4"
+            },
+            "update": {
+              "op": "put-all",
+              "key": {
+                "op": "ref",
+                "ref": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Stock",
+                    "Released"
+                  ],
+                  "id": "batch"
+                }
+              },
+              "value": {
+                "op": "literal",
+                "valueType": {
+                  "form": "primitive",
+                  "name": "string"
+                },
+                "value": "recorded"
+              }
+            },
+            "dependencies": [
+              {
+                "context": "inventory",
+                "kind": "state-field",
+                "owner": [
+                  "Stock"
+                ],
+                "id": "processed"
+              },
+              {
+                "context": "inventory",
+                "kind": "event-slot",
+                "owner": [
+                  "Stock",
+                  "Released"
+                ],
+                "id": "batch"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

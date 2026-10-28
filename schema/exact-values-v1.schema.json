@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:truthsrc:exact-values:v1",
+  "title": "Declared exact decimal types and reversible text codecs",
+  "$defs": {
+    "ref": {"$ref":"urn:truthsrc:product-compilation:v1#/$defs/reference"},
+    "text": {"$ref":"urn:truthsrc:product-compilation:v1#/$defs/text"},
+    "source": {"$ref":"urn:truthsrc:product-compilation:v1#/$defs/source"},
+    "optionalRef": {"oneOf":[{"type":"null"},{"$ref":"urn:truthsrc:exact-values:v1#/$defs/ref"}]},
+    "type": {
+      "type":"object", "additionalProperties":false,
+      "required":["domain","version","source","form","precision","scale","amountMember","unitMember","units"],
+      "properties": {
+        "domain":{"$ref":"urn:truthsrc:exact-values:v1#/$defs/ref"},
+        "version":{"$ref":"urn:truthsrc:exact-values:v1#/$defs/text"},
+        "source":{"$ref":"urn:truthsrc:exact-values:v1#/$defs/source"},
+        "form":{"enum":["decimal","unit-decimal"]},
+        "precision":{"type":"integer","minimum":1,"maximum":38},
+        "scale":{"type":"integer","minimum":0,"maximum":38},
+        "amountMember":{"$ref":"urn:truthsrc:exact-values:v1#/$defs/optionalRef"},
+        "unitMember":{"$ref":"urn:truthsrc:exact-values:v1#/$defs/optionalRef"},
+        "units":{"type":"array","uniqueItems":true,"items":{"$ref":"urn:truthsrc:exact-values:v1#/$defs/text"}}
+      },
+      "allOf":[
+        {"if":{"properties":{"form":{"const":"decimal"}}},"then":{"properties":{"amountMember":{"type":"null"},"unitMember":{"type":"null"},"units":{"maxItems":0}}}},
+        {"if":{"properties":{"form":{"const":"unit-decimal"}}},"then":{"properties":{"amountMember":{"$ref":"urn:truthsrc:exact-values:v1#/$defs/ref"},"unitMember":{"$ref":"urn:truthsrc:exact-values:v1#/$defs/ref"},"units":{"minItems":1}}}}
+      ]
+    },
+    "types":{"type":"array","minItems":1,"items":{"$ref":"urn:truthsrc:exact-values:v1#/$defs/type"}},
+    "representation":{
+      "type":"object","additionalProperties":false,"required":["ref","version","amountMember","unitMember"],
+      "properties":{
+        "ref":{"$ref":"urn:truthsrc:exact-values:v1#/$defs/ref"},"version":{"$ref":"urn:truthsrc:exact-values:v1#/$defs/text"},
+        "amountMember":{"$ref":"urn:truthsrc:exact-values:v1#/$defs/optionalRef"},"unitMember":{"$ref":"urn:truthsrc:exact-values:v1#/$defs/optionalRef"}
+      }
+    },
+    "codec":{
+      "type":"object","additionalProperties":false,"required":["domain","domainVersion","id","version","format","wire","po","source"],
+      "properties":{
+        "domain":{"$ref":"urn:truthsrc:exact-values:v1#/$defs/ref"},"domainVersion":{"$ref":"urn:truthsrc:exact-values:v1#/$defs/text"},
+        "id":{"$ref":"urn:truthsrc:exact-values:v1#/$defs/text"},"version":{"$ref":"urn:truthsrc:exact-values:v1#/$defs/text"},
+        "format":{"enum":["fixed-decimal-text","minor-units-text"]},
+        "wire":{"$ref":"urn:truthsrc:exact-values:v1#/$defs/representation"},"po":{"$ref":"urn:truthsrc:exact-values:v1#/$defs/representation"},
+        "source":{"$ref":"urn:truthsrc:exact-values:v1#/$defs/source"}
+      }
+    },
+    "codecs":{"type":"array","minItems":1,"items":{"$ref":"urn:truthsrc:exact-values:v1#/$defs/codec"}},
+    "typeBinding":{
+      "type":"object","additionalProperties":false,"required":["schemaVersion","types"],
+      "properties":{"schemaVersion":{"const":"truthsrc.exact-type-binding/v1"},"types":{"$ref":"urn:truthsrc:exact-values:v1#/$defs/types"}}
+    },
+    "codecBinding":{
+      "type":"object","additionalProperties":false,"required":["schemaVersion","codecs"],
+      "properties":{"schemaVersion":{"const":"truthsrc.exact-codec-binding/v1"},"codecs":{"$ref":"urn:truthsrc:exact-values:v1#/$defs/codecs"}}
+    }
+  },
+  "$comment":"Shape only. The compiler and typed consumer check scale<=precision, exact domain/wire/PO identities and versions, canonical member layouts, complete coverage, source pointers and dependency closure. Codec pins are declarations, not runtime implementation certification."
+}

@@ -1,0 +1,589 @@
+{
+  "schemaVersion": "truthsrc.domain-dependency-binding/v1",
+  "dependencies": {
+    "commands": [
+      {
+        "command": {
+          "context": "inventory",
+          "kind": "command",
+          "owner": [
+            "Stock"
+          ],
+          "id": "Release"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0"
+        },
+        "declaredSignature": [
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Stock",
+                "Release"
+              ],
+              "id": "warehouse"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/parameters/0"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Stock",
+                "Release"
+              ],
+              "id": "requestId"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "origin": "PROPAGATED",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/parameters/1"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Stock",
+                "Release"
+              ],
+              "id": "label"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "origin": "PROPAGATED",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/parameters/2"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Stock",
+                "Release"
+              ],
+              "id": "delta"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "Ratio"
+              }
+            },
+            "origin": "PROPAGATED",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/parameters/3"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Stock",
+                "Release"
+              ],
+              "id": "batch"
+            },
+            "valueType": {
+              "form": "sequence",
+              "element": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            "origin": "PROPAGATED",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/parameters/4"
+            }
+          }
+        ],
+        "usedDependencies": [
+          {
+            "context": "inventory",
+            "kind": "parameter",
+            "owner": [
+              "Stock",
+              "Release"
+            ],
+            "id": "warehouse"
+          },
+          {
+            "context": "inventory",
+            "kind": "parameter",
+            "owner": [
+              "Stock",
+              "Release"
+            ],
+            "id": "requestId"
+          },
+          {
+            "context": "inventory",
+            "kind": "port",
+            "owner": [],
+            "id": "release-id"
+          },
+          {
+            "context": "inventory",
+            "kind": "parameter",
+            "owner": [
+              "Stock",
+              "Release"
+            ],
+            "id": "label"
+          },
+          {
+            "context": "inventory",
+            "kind": "parameter",
+            "owner": [
+              "Stock",
+              "Release"
+            ],
+            "id": "delta"
+          },
+          {
+            "context": "inventory",
+            "kind": "parameter",
+            "owner": [
+              "Stock",
+              "Release"
+            ],
+            "id": "batch"
+          }
+        ],
+        "events": [
+          {
+            "event": {
+              "context": "inventory",
+              "kind": "event",
+              "owner": [
+                "Stock"
+              ],
+              "id": "Released"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/0/bindings"
+            },
+            "slots": [
+              {
+                "slot": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Stock",
+                    "Released"
+                  ],
+                  "id": "requestId"
+                },
+                "valueType": {
+                  "form": "primitive",
+                  "name": "string"
+                },
+                "source": {
+                  "document": "domain",
+                  "pointer": "/aggregates/0/events/0/bindings/0"
+                },
+                "producer": {
+                  "op": "ref",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Stock",
+                      "Release"
+                    ],
+                    "id": "requestId"
+                  }
+                },
+                "dependencies": [
+                  {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Stock",
+                      "Release"
+                    ],
+                    "id": "requestId"
+                  }
+                ]
+              },
+              {
+                "slot": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Stock",
+                    "Released"
+                  ],
+                  "id": "releaseId"
+                },
+                "valueType": {
+                  "form": "primitive",
+                  "name": "string"
+                },
+                "source": {
+                  "document": "domain",
+                  "pointer": "/aggregates/0/events/0/bindings/1"
+                },
+                "producer": {
+                  "op": "host",
+                  "id": {
+                    "context": "inventory",
+                    "kind": "port",
+                    "owner": [],
+                    "id": "release-id"
+                  },
+                  "version": "1"
+                },
+                "dependencies": [
+                  {
+                    "context": "inventory",
+                    "kind": "port",
+                    "owner": [],
+                    "id": "release-id"
+                  }
+                ]
+              },
+              {
+                "slot": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Stock",
+                    "Released"
+                  ],
+                  "id": "label"
+                },
+                "valueType": {
+                  "form": "primitive",
+                  "name": "string"
+                },
+                "source": {
+                  "document": "domain",
+                  "pointer": "/aggregates/0/events/0/bindings/2"
+                },
+                "producer": {
+                  "op": "ref",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Stock",
+                      "Release"
+                    ],
+                    "id": "label"
+                  }
+                },
+                "dependencies": [
+                  {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Stock",
+                      "Release"
+                    ],
+                    "id": "label"
+                  }
+                ]
+              },
+              {
+                "slot": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Stock",
+                    "Released"
+                  ],
+                  "id": "delta"
+                },
+                "valueType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "Ratio"
+                  }
+                },
+                "source": {
+                  "document": "domain",
+                  "pointer": "/aggregates/0/events/0/bindings/3"
+                },
+                "producer": {
+                  "op": "ref",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Stock",
+                      "Release"
+                    ],
+                    "id": "delta"
+                  }
+                },
+                "dependencies": [
+                  {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Stock",
+                      "Release"
+                    ],
+                    "id": "delta"
+                  }
+                ]
+              },
+              {
+                "slot": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Stock",
+                    "Released"
+                  ],
+                  "id": "batch"
+                },
+                "valueType": {
+                  "form": "sequence",
+                  "element": {
+                    "form": "primitive",
+                    "name": "string"
+                  }
+                },
+                "source": {
+                  "document": "domain",
+                  "pointer": "/aggregates/0/events/0/bindings/4"
+                },
+                "producer": {
+                  "op": "ref",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Stock",
+                      "Release"
+                    ],
+                    "id": "batch"
+                  }
+                },
+                "dependencies": [
+                  {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Stock",
+                      "Release"
+                    ],
+                    "id": "batch"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "events": [
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "Stock"
+          ],
+          "id": "Released"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/0"
+        },
+        "declaredSlots": [
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "Stock",
+                "Released"
+              ],
+              "id": "requestId"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/0/payloads/0"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "Stock",
+                "Released"
+              ],
+              "id": "releaseId"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/0/payloads/1"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "Stock",
+                "Released"
+              ],
+              "id": "label"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/0/payloads/2"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "Stock",
+                "Released"
+              ],
+              "id": "delta"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "Ratio"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/0/payloads/3"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "Stock",
+                "Released"
+              ],
+              "id": "batch"
+            },
+            "valueType": {
+              "form": "sequence",
+              "element": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/0/payloads/4"
+            }
+          }
+        ]
+      }
+    ],
+    "hosts": [
+      {
+        "id": {
+          "context": "inventory",
+          "kind": "port",
+          "owner": [],
+          "id": "release-id"
+        },
+        "version": "1",
+        "command": {
+          "context": "inventory",
+          "kind": "command",
+          "owner": [
+            "Stock"
+          ],
+          "id": "Release"
+        },
+        "outputType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "inputDependencies": [
+          {
+            "context": "inventory",
+            "kind": "parameter",
+            "owner": [
+              "Stock",
+              "Release"
+            ],
+            "id": "requestId"
+          }
+        ],
+        "stableIdentityContract": {
+          "id": "release-for-request",
+          "version": "1",
+          "keys": [
+            {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Stock",
+                "Release"
+              ],
+              "id": "requestId"
+            }
+          ]
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/hostComputations/0"
+        }
+      }
+    ]
+  }
+}

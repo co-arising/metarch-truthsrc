@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "truthsrc.reference-binding/v1",
+  "layout": {
+    "contexts": ["inventory"],
+    "declarations": [
+      {"ref":{"context":"inventory","kind":"aggregate","owner":[],"id":"Stock"},"valueType":null,"source":{"document":"domain","pointer":"/aggregates/0"},"dependencies":[]},
+      {"ref":{"context":"inventory","kind":"state-field","owner":["Stock"],"id":"requests"},"valueType":{"form":"map","key":{"form":"primitive","name":"string"},"value":{"form":"primitive","name":"string"}},"source":{"document":"domain","pointer":"/aggregates/0/stateFields/0"},"dependencies":[{"context":"inventory","kind":"aggregate","owner":[],"id":"Stock"}]},
+      {"ref":{"context":"inventory","kind":"command","owner":["Stock"],"id":"Reserve"},"valueType":null,"source":{"document":"domain","pointer":"/aggregates/0/commands/0"},"dependencies":[{"context":"inventory","kind":"aggregate","owner":[],"id":"Stock"}]},
+      {"ref":{"context":"inventory","kind":"parameter","owner":["Stock","Reserve"],"id":"warehouse"},"valueType":{"form":"primitive","name":"string"},"source":{"document":"domain","pointer":"/aggregates/0/commands/0/parameters/0"},"dependencies":[{"context":"inventory","kind":"command","owner":["Stock"],"id":"Reserve"}]},
+      {"ref":{"context":"inventory","kind":"parameter","owner":["Stock","Reserve"],"id":"label"},"valueType":{"form":"primitive","name":"string"},"source":{"document":"domain","pointer":"/aggregates/0/commands/0/parameters/1"},"dependencies":[{"context":"inventory","kind":"command","owner":["Stock"],"id":"Reserve"}]}
+    ]
+  }
+}

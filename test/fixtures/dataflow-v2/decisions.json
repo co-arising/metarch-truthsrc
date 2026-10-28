@@ -1,0 +1,103 @@
+{
+  "schemaVersion": "truthsrc.domain-semantic-binding/v2",
+  "decisions": {
+    "commands": [
+      {
+        "command": {
+          "context": "measurement",
+          "kind": "command",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "Adjust"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0"
+        },
+        "decisions": [
+          {
+            "sourceOrdinal": 0,
+            "ruleId": "label-required",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/guards/0"
+            },
+            "predicate": {
+              "op": "non-empty",
+              "argument": {
+                "op": "ref",
+                "ref": {
+                  "context": "measurement",
+                  "kind": "parameter",
+                  "owner": [
+                    "Gauge",
+                    "Adjust"
+                  ],
+                  "id": "label"
+                }
+              }
+            },
+            "onFalse": {
+              "kind": "reject",
+              "errCode": "empty-label"
+            },
+            "dependencies": [
+              {
+                "context": "measurement",
+                "kind": "parameter",
+                "owner": [
+                  "Gauge",
+                  "Adjust"
+                ],
+                "id": "label"
+              }
+            ]
+          },
+          {
+            "sourceOrdinal": 1,
+            "ruleId": "nonnegative-delta",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/guards/1"
+            },
+            "predicate": {
+              "op": "greater-equal",
+              "left": {
+                "op": "ref",
+                "ref": {
+                  "context": "measurement",
+                  "kind": "parameter",
+                  "owner": [
+                    "Gauge",
+                    "Adjust"
+                  ],
+                  "id": "delta"
+                }
+              },
+              "right": {
+                "op": "decimal",
+                "value": "0.00"
+              }
+            },
+            "onFalse": {
+              "kind": "reject",
+              "errCode": "negative-delta"
+            },
+            "dependencies": [
+              {
+                "context": "measurement",
+                "kind": "parameter",
+                "owner": [
+                  "Gauge",
+                  "Adjust"
+                ],
+                "id": "delta"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
