@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "truthsrc.exact-type-binding/v1",
+  "types": [
+    {
+      "domain": {
+        "context": "accounts",
+        "kind": "type",
+        "owner": [],
+        "id": "Money"
+      },
+      "version": "money-v1",
+      "source": {
+        "document": "domain",
+        "pointer": "/types/3"
+      },
+      "form": "unit-decimal",
+      "precision": 38,
+      "scale": 2,
+      "amountMember": {
+        "context": "accounts",
+        "kind": "member",
+        "owner": [
+          "Money"
+        ],
+        "id": "amount"
+      },
+      "unitMember": {
+        "context": "accounts",
+        "kind": "member",
+        "owner": [
+          "Money"
+        ],
+        "id": "currency"
+      },
+      "units": [
+        "USD"
+      ]
+    }
+  ]
+}

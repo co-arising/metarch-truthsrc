@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "truthsrc.exact-codec-binding/v1",
+  "codecs": [
+    {
+      "domain": {
+        "context": "measurement",
+        "kind": "type",
+        "owner": [],
+        "id": "Ratio"
+      },
+      "domainVersion": "1",
+      "id": "ratio-text",
+      "version": "1",
+      "format": "fixed-decimal-text",
+      "wire": {
+        "ref": {
+          "context": "measurement",
+          "kind": "type",
+          "owner": [],
+          "id": "WireRatio"
+        },
+        "version": "1",
+        "amountMember": null,
+        "unitMember": null
+      },
+      "po": {
+        "ref": {
+          "context": "measurement",
+          "kind": "type",
+          "owner": [],
+          "id": "PoRatio"
+        },
+        "version": "1",
+        "amountMember": null,
+        "unitMember": null
+      },
+      "source": {
+        "document": "codecs",
+        "pointer": "/codecs/0"
+      }
+    }
+  ]
+}

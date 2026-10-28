@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "truthsrc.product-input-files/v1",
+  "documents": [
+    {"id": "domain", "schemaVersion": "truthsrc/v1", "file": "domain.json"},
+    {"id": "sagas", "schemaVersion": "truthsrc.saga-binding/v1", "file": "sagas.json"},
+    {"id": "runtime", "schemaVersion": "truthsrc.saga-runtime-binding/v2", "file": "runtime.json"},
+    {"id": "execution", "schemaVersion": "truthsrc.execution-binding/v1", "file": "execution.json"}
+  ],
+  "assemblies": [],
+  "requirements": [
+    {
+      "id": "saga-contract", "version": "1", "payloadSchemaVersion": "truthsrc.saga-ir/v1",
+      "capabilities": [{"id": "saga-static-contract", "version": "1"}],
+      "inputRoles": {"canonical": "domain", "sagaBinding": "sagas"}, "requires": []
+    },
+    {
+      "id": "execution-contract", "version": "1", "payloadSchemaVersion": "truthsrc.execution/v1",
+      "capabilities": [{"id": "execution-static-contract", "version": "1"}],
+      "inputRoles": {"canonical": "domain", "sagaBinding": "sagas", "executionBinding": "execution"},
+      "requires": [{"id": "saga-contract", "version": "1"}]
+    },
+    {
+      "id": "saga-runtime-contract", "version": "1", "payloadSchemaVersion": "truthsrc.saga-runtime-contract/v3",
+      "capabilities": [{"id": "saga-runtime-lowering", "version": "3"}],
+      "inputRoles": {"canonical": "domain", "sagaBinding": "sagas", "runtimeBinding": "runtime"},
+      "requires": [{"id": "saga-contract", "version": "1"}]
+    }
+  ],
+  "options": {}
+}

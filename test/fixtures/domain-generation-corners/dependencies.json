@@ -1,0 +1,569 @@
+{
+  "schemaVersion": "truthsrc.domain-dependency-binding/v4",
+  "dependencies": {
+    "commands": [
+      {
+        "command": {
+          "context": "measurement",
+          "kind": "command",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "Adjust"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0"
+        },
+        "declaredSignature": [
+          {
+            "ref": {
+              "context": "measurement",
+              "kind": "parameter",
+              "owner": [
+                "Gauge",
+                "Adjust"
+              ],
+              "id": "label"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/parameters/0"
+            }
+          },
+          {
+            "ref": {
+              "context": "measurement",
+              "kind": "parameter",
+              "owner": [
+                "Gauge",
+                "Adjust"
+              ],
+              "id": "delta"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "measurement",
+                "kind": "type",
+                "owner": [],
+                "id": "Ratio"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/parameters/1"
+            }
+          },
+          {
+            "ref": {
+              "context": "measurement",
+              "kind": "parameter",
+              "owner": [
+                "Gauge",
+                "Adjust"
+              ],
+              "id": "steps"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "integer"
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/parameters/2"
+            }
+          },
+          {
+            "ref": {
+              "context": "measurement",
+              "kind": "parameter",
+              "owner": [
+                "Gauge",
+                "Adjust"
+              ],
+              "id": "batch"
+            },
+            "valueType": {
+              "form": "sequence",
+              "element": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/parameters/3"
+            }
+          }
+        ],
+        "usedDependencies": [
+          {
+            "context": "measurement",
+            "kind": "parameter",
+            "owner": [
+              "Gauge",
+              "Adjust"
+            ],
+            "id": "label"
+          },
+          {
+            "context": "measurement",
+            "kind": "parameter",
+            "owner": [
+              "Gauge",
+              "Adjust"
+            ],
+            "id": "delta"
+          },
+          {
+            "context": "measurement",
+            "kind": "state-field",
+            "owner": [
+              "Gauge"
+            ],
+            "id": "stock"
+          },
+          {
+            "context": "measurement",
+            "kind": "parameter",
+            "owner": [
+              "Gauge",
+              "Adjust"
+            ],
+            "id": "batch"
+          },
+          {
+            "context": "measurement",
+            "kind": "state-field",
+            "owner": [
+              "Gauge"
+            ],
+            "id": "level"
+          },
+          {
+            "context": "measurement",
+            "kind": "state-field",
+            "owner": [
+              "Gauge"
+            ],
+            "id": "status"
+          },
+          {
+            "context": "measurement",
+            "kind": "parameter",
+            "owner": [
+              "Gauge",
+              "Adjust"
+            ],
+            "id": "steps"
+          }
+        ],
+        "events": [
+          {
+            "event": {
+              "context": "measurement",
+              "kind": "event",
+              "owner": [
+                "Gauge"
+              ],
+              "id": "Adjusted"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/0/bindings"
+            },
+            "slots": [
+              {
+                "slot": {
+                  "context": "measurement",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Gauge",
+                    "Adjusted"
+                  ],
+                  "id": "change"
+                },
+                "valueType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "measurement",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "Ratio"
+                  }
+                },
+                "source": {
+                  "document": "domain",
+                  "pointer": "/aggregates/0/events/0/bindings/0"
+                },
+                "producer": {
+                  "op": "add",
+                  "left": {
+                    "op": "ref",
+                    "ref": {
+                      "context": "measurement",
+                      "kind": "parameter",
+                      "owner": [
+                        "Gauge",
+                        "Adjust"
+                      ],
+                      "id": "delta"
+                    }
+                  },
+                  "right": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "nominal",
+                      "ref": {
+                        "context": "measurement",
+                        "kind": "type",
+                        "owner": [],
+                        "id": "Ratio"
+                      }
+                    },
+                    "value": "0.10"
+                  }
+                },
+                "dependencies": [
+                  {
+                    "context": "measurement",
+                    "kind": "parameter",
+                    "owner": [
+                      "Gauge",
+                      "Adjust"
+                    ],
+                    "id": "delta"
+                  }
+                ]
+              },
+              {
+                "slot": {
+                  "context": "measurement",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Gauge",
+                    "Adjusted"
+                  ],
+                  "id": "steps"
+                },
+                "valueType": {
+                  "form": "primitive",
+                  "name": "integer"
+                },
+                "source": {
+                  "document": "domain",
+                  "pointer": "/aggregates/0/events/0/bindings/1"
+                },
+                "producer": {
+                  "op": "subtract",
+                  "left": {
+                    "op": "ref",
+                    "ref": {
+                      "context": "measurement",
+                      "kind": "parameter",
+                      "owner": [
+                        "Gauge",
+                        "Adjust"
+                      ],
+                      "id": "steps"
+                    }
+                  },
+                  "right": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "integer"
+                    },
+                    "value": "1"
+                  }
+                },
+                "dependencies": [
+                  {
+                    "context": "measurement",
+                    "kind": "parameter",
+                    "owner": [
+                      "Gauge",
+                      "Adjust"
+                    ],
+                    "id": "steps"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "events": [
+      {
+        "event": {
+          "context": "measurement",
+          "kind": "event",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "Adjusted"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/0"
+        },
+        "declaredSlots": [
+          {
+            "ref": {
+              "context": "measurement",
+              "kind": "event-slot",
+              "owner": [
+                "Gauge",
+                "Adjusted"
+              ],
+              "id": "change"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "measurement",
+                "kind": "type",
+                "owner": [],
+                "id": "Ratio"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/0/payloads/0"
+            }
+          },
+          {
+            "ref": {
+              "context": "measurement",
+              "kind": "event-slot",
+              "owner": [
+                "Gauge",
+                "Adjusted"
+              ],
+              "id": "steps"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "integer"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/0/payloads/1"
+            }
+          }
+        ]
+      },
+      {
+        "event": {
+          "context": "measurement",
+          "kind": "event",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "Observed"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/1"
+        },
+        "declaredSlots": [
+          {
+            "ref": {
+              "context": "measurement",
+              "kind": "event-slot",
+              "owner": [
+                "Gauge",
+                "Observed"
+              ],
+              "id": "observationId"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/1/payloads/0"
+            }
+          },
+          {
+            "ref": {
+              "context": "measurement",
+              "kind": "event-slot",
+              "owner": [
+                "Gauge",
+                "Observed"
+              ],
+              "id": "level"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "measurement",
+                "kind": "type",
+                "owner": [],
+                "id": "Ratio"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/1/payloads/1"
+            }
+          }
+        ]
+      }
+    ],
+    "hosts": [],
+    "externalProducers": [
+      {
+        "id": "observation-ingress",
+        "version": "observation-v1",
+        "kind": "authority-event",
+        "event": {
+          "context": "measurement",
+          "kind": "event",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "Observed"
+        },
+        "port": {
+          "context": "measurement",
+          "kind": "port",
+          "owner": [],
+          "id": "ObservationSource"
+        },
+        "outputType": {
+          "form": "nominal",
+          "ref": {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Observation"
+          }
+        },
+        "slots": [
+          {
+            "slot": {
+              "context": "measurement",
+              "kind": "event-slot",
+              "owner": [
+                "Gauge",
+                "Observed"
+              ],
+              "id": "observationId"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/externalEventProducers/0/slotMappings/0"
+            },
+            "member": {
+              "context": "measurement",
+              "kind": "member",
+              "owner": [
+                "Observation"
+              ],
+              "id": "observationId"
+            },
+            "dependencies": [
+              {
+                "context": "measurement",
+                "kind": "port",
+                "owner": [],
+                "id": "ObservationSource"
+              },
+              {
+                "context": "measurement",
+                "kind": "member",
+                "owner": [
+                  "Observation"
+                ],
+                "id": "observationId"
+              }
+            ]
+          },
+          {
+            "slot": {
+              "context": "measurement",
+              "kind": "event-slot",
+              "owner": [
+                "Gauge",
+                "Observed"
+              ],
+              "id": "level"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "measurement",
+                "kind": "type",
+                "owner": [],
+                "id": "Ratio"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/externalEventProducers/0/slotMappings/1"
+            },
+            "member": {
+              "context": "measurement",
+              "kind": "member",
+              "owner": [
+                "Observation"
+              ],
+              "id": "level"
+            },
+            "dependencies": [
+              {
+                "context": "measurement",
+                "kind": "port",
+                "owner": [],
+                "id": "ObservationSource"
+              },
+              {
+                "context": "measurement",
+                "kind": "member",
+                "owner": [
+                  "Observation"
+                ],
+                "id": "level"
+              }
+            ]
+          }
+        ],
+        "stableIdentityContract": {
+          "id": "observation-identity",
+          "version": "1",
+          "keys": [
+            {
+              "context": "measurement",
+              "kind": "member",
+              "owner": [
+                "Observation"
+              ],
+              "id": "observationId"
+            }
+          ]
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/externalEventProducers/0"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync, existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { readProductRequest } from '../lib/products/cli.mjs';
+import { compileProductSet } from '../lib/products/compile.mjs';
+import { generate } from '../generators/scala-cqrs-application/generate.mjs';
+import { generateProductCli } from '../lib/products/generate-cli.mjs';
+const root=new URL('./fixtures/inventory-host-products/',import.meta.url);
+const request=()=>readProductRequest(fileURLToPath(new URL('files.json',root)));
+const options=()=>JSON.parse(readFileSync(new URL('options.json',root),'utf8'));
+const manifest=JSON.parse(readFileSync(new URL('../generators/scala-cqrs-application/generator.json',import.meta.url),'utf8'));
+test('formal complete application plan consumes explicit new products and emits every actual host and domain source',()=>{
+ const c=compileProductSet(request());assert.deepEqual(c.diagnostics,[]);
+ const first=generate({compilation:c,manifest,options:options()}),second=generate({compilation:c,manifest,options:options()});
+ assert.deepEqual(first.diagnostics,[]);assert.deepEqual(first,second);assert.equal(first.plan.entries.length,73);
+ assert.ok(first.plan.entries.some(e=>e.kind==='invocation-host'&&e.content.includes('Associated(originalBytes, argsBytes, operation)')));
+ assert.ok(first.plan.entries.some(e=>e.kind==='saga-definition'&&e.content.includes('request.receipt(')));
+ assert.ok(first.plan.entries.some(e=>e.kind==='aggregate'&&e.content.includes('external-authority-denied')));
+ assert.ok(first.plan.entries.some(e=>e.kind==='technical-port'&&e.content.includes('requireInstalled')));
+});
+test('formal application plan rejects wrong frozen artifacts and missing complete product profile',()=>{
+ const c=compileProductSet(request());const o=options();o.runtimeArtifact.sha256='0'.repeat(64);
+ assert.throws(()=>generate({compilation:c,manifest,options:o}),e=>e.diagnostic?.code==='APPLICATION_ARTIFACT');
+ const missing=structuredClone(c);missing.result.products=missing.result.products.filter(p=>p.id!=='saga-host-contract');
+ const result=generate({compilation:missing,manifest,options:options()});assert.equal(result.plan,null);
+});
+test('shipped application CLI plan captures real frozen artifact without creating the target',async()=>{
+ const target=fileURLToPath(new URL('never-written-application-target',root));assert.equal(existsSync(target),false);
+ const result=await generateProductCli(['--request',fileURLToPath(new URL('files.json',root)),'--generator',fileURLToPath(new URL('../generators/scala-cqrs-application',import.meta.url)),'--options-json',fileURLToPath(new URL('options.json',root)),'--out',target,'--plan']);
+ assert.equal(result.applied,false);assert.equal(result.plan.targetProfile,'scala-cqrs-application@1');assert.equal(existsSync(target),false);
+});

@@ -1,46 +1,572 @@
 {
-  "$schema":"https://json-schema.org/draft/2020-12/schema",
-  "$id":"urn:truthsrc:semantic-product-set:v1",
-  "title":"Static semantic product set: explicit reference, decision and exact-value profiles",
-  "type":"object","additionalProperties":false,
-  "required":["schemaVersion","compiler","documents","assemblies","requirements","products","readiness"],
-  "properties":{
-    "schemaVersion":{"const":"truthsrc.semantic-product-set/v1"},
-    "compiler":{"const":{"id":"truthsrc-semantic-products","version":"1"}},
-    "documents":{"type":"array","minItems":1,"items":{"$ref":"urn:truthsrc:product-compilation:v1#/$defs/document"}},
-    "assemblies":{"const":[]},
-    "requirements":{"type":"array","minItems":1,"items":{"$ref":"urn:truthsrc:product-compilation:v1#/$defs/requirement"}},
-    "products":{"type":"array","minItems":1,"items":{"$ref":"urn:truthsrc:semantic-product-set:v1#/$defs/envelope"}},
-    "readiness":{"const":{"level":"static-contract-only","runnable":false,"runtimeBindingVerified":false}}
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:truthsrc:semantic-product-set:v1",
+  "title": "Static semantic product set: explicit reference, decision and exact-value profiles",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "compiler",
+    "documents",
+    "assemblies",
+    "requirements",
+    "products",
+    "readiness"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "truthsrc.semantic-product-set/v1"
+    },
+    "compiler": {
+      "const": {
+        "id": "truthsrc-semantic-products",
+        "version": "1"
+      }
+    },
+    "documents": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "urn:truthsrc:product-compilation:v1#/$defs/document"
+      }
+    },
+    "assemblies": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/assemblyReceipt"
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "urn:truthsrc:product-compilation:v1#/$defs/requirement"
+      }
+    },
+    "products": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "urn:truthsrc:semantic-product-set:v1#/$defs/envelope"
+      }
+    },
+    "readiness": {
+      "const": {
+        "level": "static-contract-only",
+        "runnable": false,
+        "runtimeBindingVerified": false
+      }
+    }
   },
-  "$defs":{
-    "envelope":{
-      "type":"object","additionalProperties":false,
-      "required":["schemaVersion","id","version","payloadSchemaVersion","capabilities","inputRoles","requires","sources","payload"],
-      "properties":{
-        "schemaVersion":{"const":"truthsrc.semantic-product/v1"},
-        "id":{"$ref":"urn:truthsrc:product-compilation:v1#/$defs/text"},
-        "version":{"$ref":"urn:truthsrc:product-compilation:v1#/$defs/text"},
-        "payloadSchemaVersion":{"$ref":"urn:truthsrc:product-compilation:v1#/$defs/text"},
-        "capabilities":{"type":"array","items":{"$ref":"urn:truthsrc:product-compilation:v1#/$defs/identity"}},
-        "inputRoles":{"type":"object","additionalProperties":{"$ref":"urn:truthsrc:product-compilation:v1#/$defs/text"}},
-        "requires":{"type":"array","items":{"$ref":"urn:truthsrc:product-compilation:v1#/$defs/identity"}},
-        "sources":{"type":"array","minItems":1,"maxItems":1,"items":{"$ref":"urn:truthsrc:product-compilation:v1#/$defs/source"}},
-        "payload":{}
+  "$defs": {
+    "envelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "id",
+        "version",
+        "payloadSchemaVersion",
+        "capabilities",
+        "inputRoles",
+        "requires",
+        "sources",
+        "payload"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "truthsrc.semantic-product/v1"
+        },
+        "id": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+        },
+        "version": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+        },
+        "payloadSchemaVersion": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:product-compilation:v1#/$defs/identity"
+          }
+        },
+        "inputRoles": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+          }
+        },
+        "requires": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:product-compilation:v1#/$defs/identity"
+          }
+        },
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "$ref": "urn:truthsrc:product-compilation:v1#/$defs/source"
+          }
+        },
+        "payload": {}
       },
-      "allOf":[
-        {"$ref":"urn:truthsrc:product-compilation:v1#/$defs/profile"},
-        {"if":{"properties":{"id":{"const":"domain-dependencies"},"version":{"const":"1"}}},"then":{"properties":{"payload":{"$ref":"urn:truthsrc:domain-dataflow:v1#/$defs/dependencies"}}}},
-        {"if":{"properties":{"id":{"const":"domain-folds"},"version":{"const":"1"}}},"then":{"properties":{"payload":{"$ref":"urn:truthsrc:domain-dataflow:v1#/$defs/folds"}}}},
-        {"if":{"properties":{"id":{"const":"domain-dependencies"},"version":{"const":"2"}}},"then":{"properties":{"payload":{"$ref":"urn:truthsrc:domain-dataflow:v2#/$defs/dependencies"}}}},
-        {"if":{"properties":{"id":{"const":"domain-folds"},"version":{"const":"2"}}},"then":{"properties":{"payload":{"$ref":"urn:truthsrc:domain-dataflow:v2#/$defs/folds"}}}},
-        {"if":{"properties":{"id":{"const":"reference-layout"}}},"then":{"properties":{"payload":{"$ref":"urn:truthsrc:product-compilation:v1#/$defs/layout"}}}},
-        {"if":{"properties":{"id":{"const":"domain-decision"},"version":{"const":"1"}}},"then":{"properties":{"payload":{"$ref":"urn:truthsrc:product-compilation:v1#/$defs/decisions"}}}},
-        {"if":{"properties":{"id":{"const":"domain-decision"},"version":{"const":"2"}}},"then":{"properties":{"payload":{"$ref":"urn:truthsrc:product-compilation:v1#/$defs/decisionsV2"}}}},
-        {"if":{"properties":{"id":{"const":"exact-value-types"}}},"then":{"properties":{"payload":{"$ref":"urn:truthsrc:exact-values:v1#/$defs/types"}}}},
-        {"if":{"properties":{"id":{"const":"exact-value-codecs"}}},"then":{"properties":{"payload":{"$ref":"urn:truthsrc:exact-values:v1#/$defs/codecs"}}}}
+      "allOf": [
+        {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/profile"
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "domain-dependencies"
+              },
+              "version": {
+                "const": "1"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:domain-dataflow:v1#/$defs/dependencies"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "domain-folds"
+              },
+              "version": {
+                "const": "1"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:domain-dataflow:v1#/$defs/folds"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "domain-dependencies"
+              },
+              "version": {
+                "const": "2"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/dependencies"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "domain-folds"
+              },
+              "version": {
+                "const": "2"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/folds"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "reference-layout"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:product-compilation:v1#/$defs/layout"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "domain-decision"
+              },
+              "version": {
+                "const": "1"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:product-compilation:v1#/$defs/decisions"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "domain-decision"
+              },
+              "version": {
+                "const": "2"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:product-compilation:v1#/$defs/decisionsV2"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "domain-decision"
+              },
+              "version": {
+                "const": "3"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:domain-guards:v3#/$defs/decisions"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "domain-dependencies"
+              },
+              "version": {
+                "const": "3"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:domain-guards:v3#/$defs/dependencies"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "domain-folds"
+              },
+              "version": {
+                "const": "3"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:domain-guards:v3#/$defs/folds"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "exact-value-types"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:exact-values:v1#/$defs/types"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "exact-value-codecs"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:exact-values:v1#/$defs/codecs"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "saga-contract"
+              },
+              "version": {
+                "const": "1"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_product"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "execution-contract"
+              },
+              "version": {
+                "const": "1"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_product"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "saga-runtime-contract"
+              },
+              "version": {
+                "const": "1"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/runtimePayload"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "domain-external-events"
+              },
+              "version": {
+                "const": "1"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:domain-external-events:v1#/$defs/externalEvents"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "domain-dependencies"
+              },
+              "version": {
+                "const": "4"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:domain-external-events:v1#/$defs/dependencies"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "domain-folds"
+              },
+              "version": {
+                "const": "4"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:domain-guards:v3#/$defs/folds"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "artifact-contract"
+              },
+              "version": {
+                "const": "1"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:artifact-contract:v1#/$defs/artifacts"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "saga-host-contract"
+              },
+              "version": {
+                "const": "1"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:saga-host-contract:v1#/$defs/hosts"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "artifact-contract"
+              },
+              "version": {
+                "const": "2"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:artifact-contract:v2#/$defs/artifacts"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "domain-external-events"
+              },
+              "version": {
+                "const": "2"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:domain-external-events:v2#/$defs/externalEvents"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "domain-dependencies"
+              },
+              "version": {
+                "const": "5"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:domain-external-events:v1#/$defs/dependencies"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "domain-folds"
+              },
+              "version": {
+                "const": "5"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/folds"
+              }
+            }
+          }
+        }
       ]
     }
   },
-  "$comment":"Shape validation is not compiler provenance, source consistency, runtime validity or generated code. Exact product payloads are the complete arrays at their declared binding pointers."
+  "$comment": "Shape validation is not compiler provenance, source consistency, runtime validity or generated code. Exact product payloads are the complete arrays at their declared binding pointers."
 }

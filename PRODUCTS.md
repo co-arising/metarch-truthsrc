@@ -1,14 +1,171 @@
 # Versioned product admission — canonical and static Saga contracts
 
-最后更新: 2026-10-28
+最后更新: 2026-10-29
+
+## Finite host contract and application profile
+
+`saga-host-contract@1` (`truthsrc.saga-host-contract/v1`, capability
+`finite-saga-host-contract@1`) consumes explicit canonical + hostBinding
+(`truthsrc.saga-host-binding/v1`). Ordered requirements: layout1, exactTypes1,
+Saga1, runtime1, execution1, externalEvents2, artifact2. Canonical `sagaHosts[]`
+contains id/version/saga/argsType/entry/association/participants/results/technicalPorts.
+The compiler and independent BC adapter reconstruct complete source, not digest flags.
+
+Each phase retains its complete typed command signature, original input lineage,
+confirmation outputs, seven-part identity and whole receipt payload, both codec pins
+and a read-only query. Five explicit result destinations retain complete event-slot
+lineage and a versioned original association before any phase effect. Entry payload
+and Saga args are different nominal records: never discard original request identity.
+The host persists original bytes, length-prefixed domain-separated association identity,
+observed authoritative runtime identity, result intent and delivery acknowledgment.
+No authority, installed module or delivery certificate is inferred.
+
+`artifact-contract@2` adds strict canonical type-spelling resolution;
+`domain-external-events@2` adds nominal identities whose final carrier is String.
+Legacy @1 remains strict. Explicit dependencies/folds@5 pins externalEvents@2,
+without upgrading @4 or changing decision3/production2 grammar.
+
+The shipped `generators/scala-cqrs-application` manifest targets
+`scala-cqrs-application@1`, reuses six domain producers and adds finite host sources.
+The same `generate-products` flags apply; options additionally require runtimeArtifact
+with coordinate/sha256/repository/symbolicTarget. Actual frozen P23 artifact bytes
+are checked before target writes, not downloaded or republished. BC opt-in is
+`codegen.productTargetProfile=scala-cqrs-application@1` with existing product/options
+file inputs. Both chains render independently. Pipeline start is statically modeled
+but this target currently rejects unsupported pipeline lowering rather than omitting it.
+
+Actual independent input: `test/fixtures/inventory-host-products/files.json`.
+Two Warehouse resources and a last AllocationOrder have real generated phase calls,
+receipt-field consumption, external result event persistence and same-identity host replay.
+Generated inventory test ports/cache are explicitly test-only; not banking policy,
+production receipt durability, TA/SIP qualification or different-JVM recovery.
+P24/P25 joint banking and full final acceptance remain open.
+
+## Formal typed source generation
+
+`scala-cqrs-domain@1` is the explicit domain-source target, using six registered
+producers (`aggregate`, `invariant`, `command`, `valueobject`, `proto`, `converter`)
+with `reference-layout@1`, `decision@3`, `dependencies/folds@4`, exact types/codecs@1
+and external ingress@1. It emits state, protocol, rules, pre-event handlers,
+event-sourced aggregate/factory, computation interfaces, external-event adapters,
+value objects, actual protobuf, converters, event/snapshot adapters, explicit
+protobuf serializers, build support and generated tests. It is **not** the
+complete P25 Saga/pipeline application target or bank business qualification.
+
+```sh
+node bin/truthsrc.js generate-products \
+  --request /absolute/path/to/files.json \
+  --generator /absolute/path/to/metarch-truthsrc/generators/scala-cqrs-domain \
+  --options-json /absolute/path/to/options.json \
+  --out /absolute/path/to/owned-target --plan
+```
+
+Options are exactly `{packages:[{context,package}],verificationCases:[...]}`.
+Verification cases are explicit typed target-test vectors, not production rules
+or authored bank policy. `--plan` captures/compiles/validates a complete source
+plan and never writes the target. Apply reuses the existing preflight/MANUAL/KEEP
+channel and `written-only` file anchors. Ledger rows retain product versions and
+`source:<document>#<pointer>` keys. All source entries are detached and separately
+validated on both producer calls; unregistered generator directories are refused.
+The shipped registry is trusted code, not a hostile same-process plugin sandbox.
+
+Reproducible independent inputs: `test/fixtures/domain-generation/files.json` and
+`domain-generation-corners/files.json` (unit Distance, 38-digit exact Ratio,
+nested optional presence, keyword fields). BC reads the same serialized products
+via the mutually exclusive `codegen.semanticProductsFile` and explicit
+`codegen.productOptionsFile`; its builder/model/templates do not invoke JS.
+Targets are new exclusive directories; all validation/rendering precedes writes.
+Current minimal actor tests are local typed messages with real journal protobuf
+serialization and same-JVM actor replay; they are not different-JVM recovery,
+three-participant Saga, remote-command wire or bank funds/TA/SIP certification.
+
+## Artifact and technical obligations
+
+`artifact-contract@1` has payload `truthsrc.artifact-contract/v1`, capability
+`artifact-static-contract@1`, roles canonical + artifactBinding
+(`truthsrc.artifact-binding/v1`) and requires reference-layout@1. The canonical
+`artifactContracts` array declares exact artifact identity/version, authored
+selected/proposal/historical status, resolvable provenance, qualified references,
+required typed port/version pins, symbolic deployment secret references and one
+explicit implementation obligation per port. The product rederives the whole
+row before comparing the binding; BC independently repeats these checks.
+
+No `approved` status, secret value, inferred implementation or installed/runtime
+certification is produced. An obligation id/version is not proof that its module
+exists. Actual file entry: `test/fixtures/artifact-products/files.json`; offline
+schema: `urn:truthsrc:artifact-contract:v1`.
+
+## Complete static Saga/execution/runtime products
+
+The same request/CLI explicitly supports:
+
+| Product | Payload | Capability | Roles | Ordered requires |
+|---|---|---|---|---|
+| `saga-contract@1` | `truthsrc.saga-ir/v1` | `saga-static-contract@1` | canonical + sagaBinding (`truthsrc.saga-binding/v1`) | `[]` |
+| `execution-contract@1` | `truthsrc.execution/v1` | `execution-static-contract@1` | canonical + executionBinding (`truthsrc.execution-binding/v1`) + sagaBinding | saga-contract@1 |
+| `saga-runtime-contract@1` | `truthsrc.saga-runtime-contract/v3` | `saga-runtime-lowering@3` | canonical + sagaBinding + runtimeBinding (`truthsrc.saga-runtime-binding/v2`) | saga-contract@1 |
+
+These dispatch the existing complete checkers, including full types, phases,
+confirmation/query/idempotency, stable identity, outcomes, sourceMap and exact pins.
+Execution/runtime must use the identical explicit canonical and Saga binding as
+the required Saga product. Execution's embedded `sagaBindings` must entirely equal
+that explicit role; omission or conflict is not a fallback. Runtime product version
+1 is not runtime-library version 1 or a verified implementation.
+
+`test/fixtures/product-contracts/files.json` is the actual complete file entry.
+Register `urn:truthsrc:formal-contracts:v1` along with the existing offline schemas.
+BC independently decodes immutable typed contracts and rederives the complete
+source projections; source hints remain hints, not actual file authentication.
+
+Assemblies have `{id,kind,sources}`; `execution-bindings-union` additionally requires
+`sagaBinding`. Sources are exact earlier document IDs, in declared row order:
+
+- saga-bindings-union: complete Saga binding documents, merging all sagas;
+- runtime-bindings-union: complete runtime v2 bindings, identical entire targets;
+- execution-bindings-union: complete execution bindings, merging all pipelines and
+  associating the explicitly named complete Saga union. An original embedded Saga
+  must equal that union or one complete source in its declared ancestry.
+
+No duplicate row identities, filtering, override precedence, forward/cyclic source,
+conflicting hint or unused output is accepted. Original documents are preserved;
+output adds derived documents and `provenance:[{targetPointer,source}]` on each
+assembly receipt. File capture retains the authored, unassembled request so it can
+be validated/compiled repeatedly without treating derived documents as new input.
+
+## Explicit external event ingress
+
+`domain-external-events@1` uses payload `truthsrc.domain-external-events/v1`,
+capability `external-event-producers@1`, roles canonical + externalEventBinding
+(`truthsrc.domain-external-event-binding/v1`), and requires reference-layout@1.
+Its complete binding is `{schemaVersion,externalEvents:{producers:[...]}}`.
+
+Canonical `externalEventProducers` records contain exactly
+`{id,version,kind,event,port,outputType,slotMappings,stableIdentityContract}`.
+Kind is authority-event, saga-completion or technical-bridge. A canonical port has
+an exact version and nominal output record; `slotMappings:[{slot,member}]` covers
+every event slot once, with identical nominal types. Stable identity keys are
+unique, consumed String output members. This is typed ingress, not an invented
+command, a trusted sender implementation or a guarantee of authorized delivery.
+
+`domain-dependencies@4` explicitly requires layout@1, decision@3, exact-types@1,
+external-events@1; its v4 binding/payload adds the complete `externalProducers`.
+Every event without a command producer must have exactly one external producer;
+external and command production cannot silently overlap. `domain-folds@4`
+requires layout@1, dependencies@4, exact-types@1; production expressions retain the
+v2 finite grammar. Old dependencies/folds@1/@2/@3 do not acquire external ingress.
+
+Actual file fixture: `test/fixtures/external-events/files.json`, with an independent
+measurement observation and event-only replay. Offline schema:
+`urn:truthsrc:domain-external-events:v1`.
 
 ## P24 static semantic compilation slice
 
 The additive `lib/products/compile.mjs` API now exports
 `compileProductSet(request)` → detached, deeply frozen `{result, diagnostics}`.
-Any input/semantic error returns `result: null` and a deterministic first-error
-diagnostic `{code, message, source: {document, pointer}, related}`. This is a
-**reference-layout/ordered-decision/exact-value/dataflow slice**, not the complete P24 capability set.
+Any input/semantic error returns `result: null` and stable diagnostics
+`{code, message, source: {document, pointer}, related}`. Domain profiles preserve
+first-error behavior; complete Saga/execution/runtime checkers retain their whole
+ordered diagnostic set. This remains static compilation, not complete P24/P25 generation.
 The legacy API described below is unchanged; it is a separate versioned contract.
 
 ```js
@@ -44,8 +201,9 @@ an adversarial JavaScript plugin sandbox.
   manifest path is absolute; the CLI resolves its explicit arguments.
 - Memory request: `truthsrc.product-compilation/v1`, same outer fields, document
   `{id, schemaVersion, value}` instead of `file`.
-- This slice requires `assemblies: []`, `options: {}`. No automatic unions,
-  document selection, schema guessing, missing bindings or capability defaults.
+- `options` remains `{}`. Assemblies are either `[]` or the explicit complete
+  unions documented below. No automatic union, document/schema selection,
+  missing binding or capability default is accepted.
 - Output: `truthsrc.semantic-product-set/v1`, compiler contract
   `{id: "truthsrc-semantic-products", version: "1"}`, envelopes
   `truthsrc.semantic-product/v1`. All original input documents remain in output.
@@ -101,8 +259,9 @@ Supported source grammar in this slice:
 - Raw expression bounds: 65,536 characters, 512 tokens, nesting 32, AST depth 64.
   The v1 decision profile does not gain numeric literals or member syntax; the
   additive explicit v2 profile below supports exact comparisons and members.
-  Numeric arithmetic, statusTransition, structured Money predicates and
-  collection-covered remain **not implemented**.
+  Numeric arithmetic, statusTransition, structured exact predicates and
+  collection-covered are available only in the explicit v3 profile below; v1/v2
+  source vocabularies do not acquire them.
 
 File input is strict UTF-8 JSON, non-symlink regular files, maximum 8 MiB per file
 and combined capture. Duplicate keys (including escaped aliases), non-safe or
@@ -206,6 +365,66 @@ additive profiles; their v1 decision branch remains restricted. JSON Schema only
 checks shape; source identity, cross-document coverage and representability are
 checked by the compiler and independent consumer.
 
+### Explicit finite guards v3
+
+`domain-decision@3` uses payload `truthsrc.domain-decision/v3`, capability
+`ordered-domain-decision@3`, semantic binding `truthsrc.domain-semantic-binding/v3`,
+and exact ordered dependencies `[reference-layout@1, exact-value-types@1]`.
+`domain-dependencies@3` and `domain-folds@3` have their corresponding v3 payload,
+capability and binding versions. Dependencies require `[layout@1, decision@3,
+exact-value-types@1]`; folds require `[layout@1, dependencies@3, exact-value-types@1]`.
+Their payload shapes and value-production language remain the v2 complete
+signature/slot/default/pre-event contract, not an expanded arbitrary expression API.
+
+New canonical structured `when` forms have closed fields:
+
+- `{form: "money-positive", amount: "param.value"}` checks a complete admitted
+  exact nominal value against zero, using its declared scale and units. The
+  historical form name does not require a financial type or supply Money/CNY.
+- `{form: "money-sufficient", amount: "param.value", in: "balance"}` checks the
+  declared direct state field: same exact nominal, or a String-keyed map of the
+  same unit-decimal nominal keyed by the request's explicit unit. Missing map key
+  is false; wrong nominal, unit, scale or precision is an error, not conversion.
+- `{form: "collection-covered", map: "items", collection: "param.batch"}` checks
+  every Sequence element against declared Map keys of the identical nominal type.
+  Empty sequence is true; no arbitrary callback/closure is executed.
+
+Structured operands are explicit declared param/state paths, optionally through
+nominal members; they are not expressions or literal escape hatches. Positivity
+and requested sufficiency values must retain the whole exact nominal type.
+
+Canonical `statusTransition` requires explicit `ruleId`, `errCode`, `onFail`, plus
+`from` (a nonempty String) and/or `notStatus` (a nonempty unique String array).
+Both present means AND, not first-wins. It checks a declared String `state.status`.
+Optional nonempty `toStatus` is retained in source but never mutates state; event
+folds alone determine state evolution. No-precondition, wrong-shape, unknown-field
+or missing identity/error/outcome declarations are refused. This explicit v3
+contract is not a universal legacy status spelling adapter.
+
+Finite invariant source adds left-associated `+`/`-`, before comparison. Integer
+literals are signed-64 text (`{op:"integer", value:"1"}`); decimal literals keep
+explicit fractional digits. Arithmetic uses identical signed-64 types, identical
+admitted exact nominal types, or a representable exact decimal literal. Bare
+Decimal, cross nominal, cross unit, overflow, rounding, multiply/divide, conversion
+and arbitrary calls fail closed. Unit identity also survives arithmetic over
+amount-member expressions. The original source/token/nesting/AST bounds remain;
+status conjunctions are bounded to 62 clauses.
+
+Typed IR adds `exact-positive` unary, `exact-sufficient`/`collection-covered` binary,
+`integer` literal and `add`/`subtract` binary nodes. Complete canonical predicates,
+ordered dependencies and on-false results are recomputed and compared to the
+whole binding. No v1/v2 grammar or requirements silently expand.
+
+Use `evaluateDecisions(command, values, layout, {types}, "3")` or BC
+`DomainDecision.evaluate(command, values, layout, exact, "3")` for the finite pure
+oracle. The v3 argument is explicit; the previous default remains v2. These do not
+execute hosts, mutate state, prove runtime binding or generate application code.
+The independent measurement example is
+[`test/fixtures/guards-v3/files.json`](test/fixtures/guards-v3/files.json).
+Register [`schema/domain-guards-v3.schema.json`](schema/domain-guards-v3.schema.json)
+as `urn:truthsrc:domain-guards:v3` alongside the five previous offline schema IDs.
+Schema is shape-only; the JS compiler and BC consumer enforce source/type closure.
+
 ### Complete dependency and pre-event fold profiles
 
 The same explicit API/CLI supports these target-neutral static products:
@@ -223,8 +442,8 @@ their whole payload objects are assertions compared against source derivation,
 not instructions trusted in place of canonical commands/events. The dependency
 v1 profile does not silently accept decision-v2; select the explicit v2 profiles
 and their v2 bindings above. Exact metadata is consumed by v2 event literals and
-arithmetic, not merely listed as a requirement. Guard numeric arithmetic remains
-unsupported; decision-v2 keeps its already declared vocabulary.
+arithmetic, not merely listed as a requirement. Guard numeric arithmetic is v3-only;
+decision-v2 keeps its already declared vocabulary.
 
 - Dependency payload: `{commands, events, hosts}`. Each command preserves
   `{command, source, declaredSignature, usedDependencies, events}`. A signature
@@ -316,9 +535,8 @@ pre-event value arithmetic. Its bindings are independently authored expectations
 not compiler output; the BC resource comes from the actual compile-products CLI.
 
 **Not yet delivered:** `planProductSet`/`generate-products`, six pure source
-producers, structured
-money/collection/status guards, assemblies, execution/runtime/artifact product
-families and new-product file anchors. `compile-products` is not a code-generation
+producers, external-event-producer contracts, assemblies, execution/runtime/artifact
+product families and new-product file anchors. `compile-products` is not a code-generation
 entry and cannot generate a bank application. These remain public P24/P25 work;
 consumers supply their own business bindings/ports and business acceptance, not a
 replacement compiler.

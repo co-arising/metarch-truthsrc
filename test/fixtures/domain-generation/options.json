@@ -1,0 +1,30 @@
+{
+  "packages": [
+    {
+      "context": "measurement",
+      "package": "net.imadz.measurement"
+    }
+  ],
+  "verificationCases": [
+    {
+      "id": "adjust-real-effect",
+      "aggregate": {"context": "measurement", "kind": "aggregate", "owner": [], "id": "Gauge"},
+      "command": {"context": "measurement", "kind": "command", "owner": ["Gauge"], "id": "Adjust"},
+      "state": {"level": "2.00", "previous": "0.00", "count": "10", "status": "ready", "stock": [{"key": "sample", "value": "present"}]},
+      "parameters": {"label": "real-measurement", "delta": "0.50", "steps": "2", "batch": ["sample"]},
+      "expected": {
+        "kind": "accepted",
+        "events": [{"event": {"context": "measurement", "kind": "event", "owner": ["Gauge"], "id": "Adjusted"}, "slots": {"change": "0.60", "steps": "1"}}],
+        "state": {"level": "2.60", "previous": "2.00", "count": "9", "status": "ready", "stock": [{"key": "sample", "value": "present"}]}
+      }
+    },
+    {
+      "id": "reject-before-effect",
+      "aggregate": {"context": "measurement", "kind": "aggregate", "owner": [], "id": "Gauge"},
+      "command": {"context": "measurement", "kind": "command", "owner": ["Gauge"], "id": "Adjust"},
+      "state": {"level": "2.00", "previous": "0.00", "count": "10", "status": "ready", "stock": []},
+      "parameters": {"label": "", "delta": "0.50", "steps": "2", "batch": []},
+      "expected": {"kind": "refused", "code": "empty-label", "state": {"level": "2.00", "previous": "0.00", "count": "10", "status": "ready", "stock": []}}
+    }
+  ]
+}

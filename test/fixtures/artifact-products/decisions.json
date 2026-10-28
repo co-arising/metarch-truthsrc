@@ -1,0 +1,397 @@
+{
+  "schemaVersion": "truthsrc.domain-semantic-binding/v3",
+  "decisions": {
+    "commands": [
+      {
+        "command": {
+          "context": "measurement",
+          "kind": "command",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "Adjust"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0"
+        },
+        "decisions": [
+          {
+            "sourceOrdinal": 0,
+            "ruleId": "label-required",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/guards/0"
+            },
+            "predicate": {
+              "op": "non-empty",
+              "argument": {
+                "op": "ref",
+                "ref": {
+                  "context": "measurement",
+                  "kind": "parameter",
+                  "owner": [
+                    "Gauge",
+                    "Adjust"
+                  ],
+                  "id": "label"
+                }
+              }
+            },
+            "onFalse": {
+              "kind": "reject",
+              "errCode": "empty-label"
+            },
+            "dependencies": [
+              {
+                "context": "measurement",
+                "kind": "parameter",
+                "owner": [
+                  "Gauge",
+                  "Adjust"
+                ],
+                "id": "label"
+              }
+            ]
+          },
+          {
+            "sourceOrdinal": 1,
+            "ruleId": "positive",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/guards/1"
+            },
+            "predicate": {
+              "op": "exact-positive",
+              "argument": {
+                "op": "ref",
+                "ref": {
+                  "context": "measurement",
+                  "kind": "parameter",
+                  "owner": [
+                    "Gauge",
+                    "Adjust"
+                  ],
+                  "id": "delta"
+                }
+              }
+            },
+            "onFalse": {
+              "kind": "reject",
+              "errCode": "not-positive"
+            },
+            "dependencies": [
+              {
+                "context": "measurement",
+                "kind": "parameter",
+                "owner": [
+                  "Gauge",
+                  "Adjust"
+                ],
+                "id": "delta"
+              }
+            ]
+          },
+          {
+            "sourceOrdinal": 2,
+            "ruleId": "covered",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/guards/2"
+            },
+            "predicate": {
+              "op": "collection-covered",
+              "left": {
+                "op": "ref",
+                "ref": {
+                  "context": "measurement",
+                  "kind": "state-field",
+                  "owner": [
+                    "Gauge"
+                  ],
+                  "id": "stock"
+                }
+              },
+              "right": {
+                "op": "ref",
+                "ref": {
+                  "context": "measurement",
+                  "kind": "parameter",
+                  "owner": [
+                    "Gauge",
+                    "Adjust"
+                  ],
+                  "id": "batch"
+                }
+              }
+            },
+            "onFalse": {
+              "kind": "reject",
+              "errCode": "uncovered"
+            },
+            "dependencies": [
+              {
+                "context": "measurement",
+                "kind": "state-field",
+                "owner": [
+                  "Gauge"
+                ],
+                "id": "stock"
+              },
+              {
+                "context": "measurement",
+                "kind": "parameter",
+                "owner": [
+                  "Gauge",
+                  "Adjust"
+                ],
+                "id": "batch"
+              }
+            ]
+          },
+          {
+            "sourceOrdinal": 3,
+            "ruleId": "sufficient",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/guards/3"
+            },
+            "predicate": {
+              "op": "exact-sufficient",
+              "left": {
+                "op": "ref",
+                "ref": {
+                  "context": "measurement",
+                  "kind": "state-field",
+                  "owner": [
+                    "Gauge"
+                  ],
+                  "id": "level"
+                }
+              },
+              "right": {
+                "op": "ref",
+                "ref": {
+                  "context": "measurement",
+                  "kind": "parameter",
+                  "owner": [
+                    "Gauge",
+                    "Adjust"
+                  ],
+                  "id": "delta"
+                }
+              }
+            },
+            "onFalse": {
+              "kind": "reject",
+              "errCode": "insufficient"
+            },
+            "dependencies": [
+              {
+                "context": "measurement",
+                "kind": "state-field",
+                "owner": [
+                  "Gauge"
+                ],
+                "id": "level"
+              },
+              {
+                "context": "measurement",
+                "kind": "parameter",
+                "owner": [
+                  "Gauge",
+                  "Adjust"
+                ],
+                "id": "delta"
+              }
+            ]
+          },
+          {
+            "sourceOrdinal": 4,
+            "ruleId": "status-ready",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/guards/4"
+            },
+            "predicate": {
+              "op": "and",
+              "left": {
+                "op": "equal",
+                "left": {
+                  "op": "ref",
+                  "ref": {
+                    "context": "measurement",
+                    "kind": "state-field",
+                    "owner": [
+                      "Gauge"
+                    ],
+                    "id": "status"
+                  }
+                },
+                "right": {
+                  "op": "string",
+                  "value": "ready"
+                }
+              },
+              "right": {
+                "op": "not",
+                "argument": {
+                  "op": "equal",
+                  "left": {
+                    "op": "ref",
+                    "ref": {
+                      "context": "measurement",
+                      "kind": "state-field",
+                      "owner": [
+                        "Gauge"
+                      ],
+                      "id": "status"
+                    }
+                  },
+                  "right": {
+                    "op": "string",
+                    "value": "retired"
+                  }
+                }
+              }
+            },
+            "onFalse": {
+              "kind": "reject",
+              "errCode": "not-ready"
+            },
+            "dependencies": [
+              {
+                "context": "measurement",
+                "kind": "state-field",
+                "owner": [
+                  "Gauge"
+                ],
+                "id": "status"
+              }
+            ]
+          },
+          {
+            "sourceOrdinal": 5,
+            "ruleId": "bounded-sum",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/guards/5"
+            },
+            "predicate": {
+              "op": "greater-equal",
+              "left": {
+                "op": "add",
+                "left": {
+                  "op": "subtract",
+                  "left": {
+                    "op": "ref",
+                    "ref": {
+                      "context": "measurement",
+                      "kind": "state-field",
+                      "owner": [
+                        "Gauge"
+                      ],
+                      "id": "level"
+                    }
+                  },
+                  "right": {
+                    "op": "ref",
+                    "ref": {
+                      "context": "measurement",
+                      "kind": "parameter",
+                      "owner": [
+                        "Gauge",
+                        "Adjust"
+                      ],
+                      "id": "delta"
+                    }
+                  }
+                },
+                "right": {
+                  "op": "decimal",
+                  "value": "0.10"
+                }
+              },
+              "right": {
+                "op": "decimal",
+                "value": "0.00"
+              }
+            },
+            "onFalse": {
+              "kind": "reject",
+              "errCode": "limit"
+            },
+            "dependencies": [
+              {
+                "context": "measurement",
+                "kind": "state-field",
+                "owner": [
+                  "Gauge"
+                ],
+                "id": "level"
+              },
+              {
+                "context": "measurement",
+                "kind": "parameter",
+                "owner": [
+                  "Gauge",
+                  "Adjust"
+                ],
+                "id": "delta"
+              }
+            ]
+          },
+          {
+            "sourceOrdinal": 6,
+            "ruleId": "positive-steps",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/guards/6"
+            },
+            "predicate": {
+              "op": "greater",
+              "left": {
+                "op": "subtract",
+                "left": {
+                  "op": "ref",
+                  "ref": {
+                    "context": "measurement",
+                    "kind": "parameter",
+                    "owner": [
+                      "Gauge",
+                      "Adjust"
+                    ],
+                    "id": "steps"
+                  }
+                },
+                "right": {
+                  "op": "integer",
+                  "value": "1"
+                }
+              },
+              "right": {
+                "op": "integer",
+                "value": "0"
+              }
+            },
+            "onFalse": {
+              "kind": "reject",
+              "errCode": "steps"
+            },
+            "dependencies": [
+              {
+                "context": "measurement",
+                "kind": "parameter",
+                "owner": [
+                  "Gauge",
+                  "Adjust"
+                ],
+                "id": "steps"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

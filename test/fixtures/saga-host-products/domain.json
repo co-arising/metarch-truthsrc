@@ -1,0 +1,6024 @@
+{
+  "schemaVersion": "truthsrc/v1",
+  "workshop": "money-transfer-design",
+  "sessions": [
+    {
+      "session": "eventStorming",
+      "scopes": []
+    },
+    {
+      "session": "commandStorming",
+      "scopes": []
+    },
+    {
+      "session": "aggregateDiscovery",
+      "scopes": []
+    },
+    {
+      "session": "subdomainExploration",
+      "scopes": []
+    },
+    {
+      "session": "contextMapping",
+      "scopes": []
+    },
+    {
+      "session": "refining",
+      "scopes": []
+    },
+    {
+      "session": "storyMapping",
+      "scopes": []
+    }
+  ],
+  "aggregates": [
+    {
+      "name": "CreditBalance",
+      "identifier": {
+        "name": "id",
+        "dataType": "AccountId",
+        "origin": "BUSINESS_INPUT"
+      },
+      "entity": "CreditBalanceEntity",
+      "description": "Designed strict TCC example; not a statement that the current application implements its receipt contract.",
+      "stateFields": [
+        {
+          "name": "phase",
+          "dataType": "String",
+          "description": "Saga phase bookkeeping; the truth source declares no write semantics for it (no fold assignments \u2014 passes through)."
+        },
+        {
+          "name": "accountBalance",
+          "dataType": "Map[String, Money]",
+          "description": "Available balance keyed by currency code (golden master: Map[String, Money]).",
+          "writtenBy": [
+            "ReserveFundsConfirmed.amount",
+            "ReleaseReservedFundsConfirmed.txid",
+            "CommitIncomingCreditsConfirmed.txid"
+          ],
+          "role": "State"
+        },
+        {
+          "name": "reservedAmount",
+          "dataType": "Map[TxId, Money]",
+          "description": "Prepared reservations keyed by transaction identity (golden master keys reservations by transferId).",
+          "writtenBy": [
+            "ReserveFundsConfirmed.txid",
+            "DeductFundsConfirmed.txid",
+            "ReleaseReservedFundsConfirmed.txid"
+          ],
+          "role": "State"
+        },
+        {
+          "name": "incomingCredits",
+          "dataType": "Map[TxId, Money]",
+          "description": "Recorded incoming credits keyed by transaction identity (golden master: Map[Id, Money]).",
+          "writtenBy": [
+            "RecordIncomingCreditsConfirmed.txid",
+            "CommitIncomingCreditsConfirmed.txid",
+            "CancelIncomingCreditConfirmed.txid"
+          ],
+          "role": "State"
+        },
+        {
+          "name": "committed",
+          "dataType": "Map[TxId, Money]",
+          "description": "Durable commit-phase marker keyed by transaction identity: every commit confirmation puts the txid with the exact committed amount (phase-marker convention, SCHEMA.md P5); the evidence carrier for commit idempotency queries.",
+          "writtenBy": [
+            "DeductFundsConfirmed.txid",
+            "CommitIncomingCreditsConfirmed.txid"
+          ],
+          "role": "State"
+        },
+        {
+          "name": "compensated",
+          "dataType": "Map[TxId, Money]",
+          "description": "Durable compensate-phase marker keyed by transaction identity: every compensate confirmation puts the txid with the exact released amount (phase-marker convention, SCHEMA.md P5); the evidence carrier for compensate idempotency queries.",
+          "writtenBy": [
+            "ReleaseReservedFundsConfirmed.txid",
+            "CancelIncomingCreditConfirmed.txid"
+          ],
+          "role": "State"
+        },
+        {
+          "name": "sagaResults",
+          "dataType": "Map[TxId, String]",
+          "description": "Saga outcome ledger keyed by transaction identity: the idempotent RecordResult* publication commands put the terminal kind here (result-publication convention, SCHEMA.md P5); map-absent guard makes republication an empty success.",
+          "writtenBy": [
+            "result-succeeded.txid",
+            "result-rejected-before-effects.txid",
+            "result-compensated.txid",
+            "result-recovery-required.txid",
+            "result-outcome-unknown.txid"
+          ],
+          "role": "State"
+        }
+      ],
+      "aggregateRuleRefs": [
+        {
+          "ruleId": "IR-CB-RESERVE-001",
+          "errCode": "60008",
+          "desc": "Already reserved for this transaction: idempotent success, no events (golden master validateTransfer 60008 \u2192 Right(Nil))."
+        },
+        {
+          "ruleId": "IR-CB-RESERVE-002",
+          "errCode": "60003",
+          "desc": "Insufficient balance for transfer (golden master 60003)."
+        },
+        {
+          "ruleId": "IR-CB-RESERVE-003",
+          "errCode": "60004",
+          "desc": "Transfer amount must be positive (golden master 60004)."
+        },
+        {
+          "ruleId": "IR-CB-DEDUCT-001",
+          "errCode": "60006",
+          "desc": "No reserved funds found for this transaction (golden master 60006)."
+        },
+        {
+          "ruleId": "IR-CB-RELEASE-001",
+          "errCode": "60006",
+          "desc": "No reserved funds found for this transaction (golden master 60006)."
+        },
+        {
+          "ruleId": "IR-CB-RECORD-001",
+          "errCode": "60007",
+          "desc": "Incoming credits already registered for this transaction (golden master 60007)."
+        },
+        {
+          "ruleId": "IR-CB-COMMIT-001",
+          "errCode": "60008",
+          "desc": "Incoming credits cannot be found or already committed (golden master 60008)."
+        },
+        {
+          "ruleId": "IR-CB-CANCEL-001",
+          "errCode": "60009",
+          "desc": "Incoming credits cannot be found or already canceled (golden master 60009)."
+        },
+        {
+          "ruleId": "IR-CB-RESULT-001",
+          "errCode": "60010",
+          "desc": "Result already recorded for this transaction: idempotent republication success, no events (designed strict TCC outcome ledger; shared by the five RecordResult* publication commands)."
+        },
+        {
+          "ruleId": "IR-CB-PREPARE-NOT-COMMITTED",
+          "errCode": "60011",
+          "desc": "Transaction already committed: Prepare must not reopen the durable terminal marker."
+        },
+        {
+          "ruleId": "IR-CB-PREPARE-NOT-COMPENSATED",
+          "errCode": "60012",
+          "desc": "Transaction already compensated: Prepare must not reopen the durable terminal marker."
+        }
+      ],
+      "commands": [
+        {
+          "name": "ReserveFunds",
+          "parameters": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "resource",
+              "dataType": "AccountId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "amount",
+              "dataType": "Money",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "produces": [
+            "ReserveFundsConfirmed"
+          ],
+          "guards": [
+            {
+              "ruleId": "IR-CB-PREPARE-NOT-COMMITTED",
+              "errCode": "60011",
+              "onFail": "reject",
+              "when": {
+                "form": "map-absent",
+                "map": "committed",
+                "key": "param.txid"
+              },
+              "desc": "Transaction already committed: Prepare must not reopen the durable terminal marker."
+            },
+            {
+              "ruleId": "IR-CB-PREPARE-NOT-COMPENSATED",
+              "errCode": "60012",
+              "onFail": "reject",
+              "when": {
+                "form": "map-absent",
+                "map": "compensated",
+                "key": "param.txid"
+              },
+              "desc": "Transaction already compensated: Prepare must not reopen the durable terminal marker."
+            },
+            {
+              "ruleId": "IR-CB-RESERVE-001",
+              "errCode": "60008",
+              "onFail": "succeed-empty",
+              "when": {
+                "form": "map-absent",
+                "map": "reservedAmount",
+                "key": "param.txid"
+              },
+              "desc": "Already reserved for this transaction: idempotent success, no events (golden master 60008)."
+            },
+            {
+              "ruleId": "IR-CB-RESERVE-002",
+              "errCode": "60003",
+              "onFail": "reject",
+              "when": {
+                "form": "money-sufficient",
+                "amount": "param.amount",
+                "in": "accountBalance"
+              },
+              "desc": "Insufficient balance for transfer (golden master 60003)."
+            },
+            {
+              "ruleId": "IR-CB-RESERVE-003",
+              "errCode": "60004",
+              "onFail": "reject",
+              "when": {
+                "form": "money-positive",
+                "amount": "param.amount"
+              },
+              "desc": "Transfer amount must be positive (golden master 60004)."
+            }
+          ],
+          "description": "Stable operation identity, exact payload compatibility and durable participant receipt required."
+        },
+        {
+          "name": "DeductFunds",
+          "parameters": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "resource",
+              "dataType": "AccountId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "produces": [
+            "DeductFundsConfirmed"
+          ],
+          "guards": [
+            {
+              "ruleId": "IR-CB-DEDUCT-001",
+              "errCode": "60006",
+              "onFail": "reject",
+              "when": {
+                "form": "map-contains",
+                "map": "reservedAmount",
+                "key": "param.txid"
+              },
+              "desc": "No reserved funds found for this transaction (golden master 60006)."
+            }
+          ],
+          "description": "Stable operation identity, exact payload compatibility and durable participant receipt required."
+        },
+        {
+          "name": "ReleaseReservedFunds",
+          "parameters": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "resource",
+              "dataType": "AccountId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "produces": [
+            "ReleaseReservedFundsConfirmed"
+          ],
+          "guards": [
+            {
+              "ruleId": "IR-CB-RELEASE-001",
+              "errCode": "60006",
+              "onFail": "reject",
+              "when": {
+                "form": "map-contains",
+                "map": "reservedAmount",
+                "key": "param.txid"
+              },
+              "desc": "No reserved funds found for this transaction (golden master 60006)."
+            }
+          ],
+          "description": "Stable operation identity, exact payload compatibility and durable participant receipt required."
+        },
+        {
+          "name": "RecordIncomingCredits",
+          "parameters": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "resource",
+              "dataType": "AccountId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "amount",
+              "dataType": "Money",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "produces": [
+            "RecordIncomingCreditsConfirmed"
+          ],
+          "guards": [
+            {
+              "ruleId": "IR-CB-PREPARE-NOT-COMMITTED",
+              "errCode": "60011",
+              "onFail": "reject",
+              "when": {
+                "form": "map-absent",
+                "map": "committed",
+                "key": "param.txid"
+              },
+              "desc": "Transaction already committed: Prepare must not reopen the durable terminal marker."
+            },
+            {
+              "ruleId": "IR-CB-PREPARE-NOT-COMPENSATED",
+              "errCode": "60012",
+              "onFail": "reject",
+              "when": {
+                "form": "map-absent",
+                "map": "compensated",
+                "key": "param.txid"
+              },
+              "desc": "Transaction already compensated: Prepare must not reopen the durable terminal marker."
+            },
+            {
+              "ruleId": "IR-CB-RECORD-001",
+              "errCode": "60007",
+              "onFail": "reject",
+              "when": {
+                "form": "map-absent",
+                "map": "incomingCredits",
+                "key": "param.txid"
+              },
+              "desc": "Incoming credits already registered for this transaction (golden master 60007)."
+            },
+            {
+              "ruleId": "IR-CB-RESERVE-003",
+              "errCode": "60004",
+              "onFail": "reject",
+              "when": {
+                "form": "money-positive",
+                "amount": "param.amount"
+              },
+              "desc": "Transfer amount must be positive (golden master 60004)."
+            }
+          ],
+          "description": "Stable operation identity, exact payload compatibility and durable participant receipt required."
+        },
+        {
+          "name": "CommitIncomingCredits",
+          "parameters": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "resource",
+              "dataType": "AccountId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "produces": [
+            "CommitIncomingCreditsConfirmed"
+          ],
+          "guards": [
+            {
+              "ruleId": "IR-CB-COMMIT-001",
+              "errCode": "60008",
+              "onFail": "reject",
+              "when": {
+                "form": "map-contains",
+                "map": "incomingCredits",
+                "key": "param.txid"
+              },
+              "desc": "Incoming credits cannot be found or already committed (golden master 60008)."
+            }
+          ],
+          "description": "Stable operation identity, exact payload compatibility and durable participant receipt required."
+        },
+        {
+          "name": "CancelIncomingCredit",
+          "parameters": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "resource",
+              "dataType": "AccountId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "produces": [
+            "CancelIncomingCreditConfirmed"
+          ],
+          "guards": [
+            {
+              "ruleId": "IR-CB-CANCEL-001",
+              "errCode": "60009",
+              "onFail": "reject",
+              "when": {
+                "form": "map-contains",
+                "map": "incomingCredits",
+                "key": "param.txid"
+              },
+              "desc": "Incoming credits cannot be found or already canceled (golden master 60009)."
+            }
+          ],
+          "description": "Stable operation identity, exact payload compatibility and durable participant receipt required."
+        },
+        {
+          "name": "StartTransfer",
+          "parameters": [
+            {
+              "name": "operationId",
+              "dataType": "OperationId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "from",
+              "dataType": "AccountId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "to",
+              "dataType": "AccountId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "amount",
+              "dataType": "Money",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "produces": [
+            "TransferRequested"
+          ],
+          "description": "Stable operation identity, exact payload compatibility and durable participant receipt required."
+        },
+        {
+          "name": "GetBalance",
+          "parameters": [],
+          "produces": [],
+          "description": "Read-only state view for durable evidence queries (golden master GetBalance). Declares no guards and produces no events: the query-command convention (SCHEMA.md) has generators emit the whole-state reply GetCreditBalanceStateReply(state), whose keyed reservedAmount/incomingCredits maps carry the transaction identity needed for exact prepared-evidence determination (contains(txid)); the golden master's flattened confirmation lists are a display view.",
+          "events": {}
+        },
+        {
+          "name": "RecordResultSucceeded",
+          "parameters": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "produces": [
+            "result-succeeded"
+          ],
+          "guards": [
+            {
+              "ruleId": "IR-CB-RESULT-001",
+              "errCode": "60010",
+              "onFail": "succeed-empty",
+              "when": {
+                "form": "map-absent",
+                "map": "sagaResults",
+                "key": "param.txid"
+              },
+              "desc": "Result already recorded for this transaction: idempotent republication success, no events (designed strict TCC outcome ledger 60010)."
+            }
+          ],
+          "description": "Idempotent publication of the saga terminal outcome (kind succeeded) onto the aggregate journal; the host completion flow asks this command (result-publication convention, SCHEMA.md P5)."
+        },
+        {
+          "name": "RecordResultRejectedBeforeEffects",
+          "parameters": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "produces": [
+            "result-rejected-before-effects"
+          ],
+          "guards": [
+            {
+              "ruleId": "IR-CB-RESULT-001",
+              "errCode": "60010",
+              "onFail": "succeed-empty",
+              "when": {
+                "form": "map-absent",
+                "map": "sagaResults",
+                "key": "param.txid"
+              },
+              "desc": "Result already recorded for this transaction: idempotent republication success, no events (designed strict TCC outcome ledger 60010)."
+            }
+          ],
+          "description": "Idempotent publication of the saga terminal outcome (kind rejected-before-effects) onto the aggregate journal; the host completion flow asks this command (result-publication convention, SCHEMA.md P5)."
+        },
+        {
+          "name": "RecordResultCompensated",
+          "parameters": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "produces": [
+            "result-compensated"
+          ],
+          "guards": [
+            {
+              "ruleId": "IR-CB-RESULT-001",
+              "errCode": "60010",
+              "onFail": "succeed-empty",
+              "when": {
+                "form": "map-absent",
+                "map": "sagaResults",
+                "key": "param.txid"
+              },
+              "desc": "Result already recorded for this transaction: idempotent republication success, no events (designed strict TCC outcome ledger 60010)."
+            }
+          ],
+          "description": "Idempotent publication of the saga terminal outcome (kind compensated) onto the aggregate journal; the host completion flow asks this command (result-publication convention, SCHEMA.md P5)."
+        },
+        {
+          "name": "RecordResultRecoveryRequired",
+          "parameters": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "produces": [
+            "result-recovery-required"
+          ],
+          "guards": [
+            {
+              "ruleId": "IR-CB-RESULT-001",
+              "errCode": "60010",
+              "onFail": "succeed-empty",
+              "when": {
+                "form": "map-absent",
+                "map": "sagaResults",
+                "key": "param.txid"
+              },
+              "desc": "Result already recorded for this transaction: idempotent republication success, no events (designed strict TCC outcome ledger 60010)."
+            }
+          ],
+          "description": "Idempotent publication of the saga terminal outcome (kind recovery-required) onto the aggregate journal; the host completion flow asks this command (result-publication convention, SCHEMA.md P5)."
+        },
+        {
+          "name": "RecordResultOutcomeUnknown",
+          "parameters": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "produces": [
+            "result-outcome-unknown"
+          ],
+          "guards": [
+            {
+              "ruleId": "IR-CB-RESULT-001",
+              "errCode": "60010",
+              "onFail": "succeed-empty",
+              "when": {
+                "form": "map-absent",
+                "map": "sagaResults",
+                "key": "param.txid"
+              },
+              "desc": "Result already recorded for this transaction: idempotent republication success, no events (designed strict TCC outcome ledger 60010)."
+            }
+          ],
+          "description": "Idempotent publication of the saga terminal outcome (kind outcome-unknown) onto the aggregate journal; the host completion flow asks this command (result-publication convention, SCHEMA.md P5)."
+        }
+      ],
+      "events": [
+        {
+          "name": "ReserveFundsConfirmed",
+          "payloads": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "amount",
+              "dataType": "Money",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "description": "Designed durable fact: funds of the exact amount were reserved under the transaction identity (golden master FundsReserved(transferId, amount)); the state fold keys the reservation by txid.",
+          "bindings": [
+            {
+              "slot": "txid",
+              "expr": "param.txid"
+            },
+            {
+              "slot": "amount",
+              "expr": "param.amount"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "accountBalance",
+              "op": "money-apply",
+              "delta": "event.amount",
+              "sign": -1
+            },
+            {
+              "slot": "reservedAmount",
+              "op": "put",
+              "key": "event.txid",
+              "value": "event.amount"
+            }
+          ]
+        },
+        {
+          "name": "DeductFundsConfirmed",
+          "payloads": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "description": "Designed durable fact: the reserved funds under this transaction identity were deducted; the fold clears the entry the txid names.",
+          "bindings": [
+            {
+              "slot": "txid",
+              "expr": "param.txid"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "committed",
+              "op": "put",
+              "key": "event.txid",
+              "value": "state.reservedAmount[event.txid]"
+            },
+            {
+              "slot": "reservedAmount",
+              "op": "remove",
+              "key": "event.txid"
+            }
+          ]
+        },
+        {
+          "name": "ReleaseReservedFundsConfirmed",
+          "payloads": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "description": "Designed durable fact: the reservation under this transaction identity was released; the fold refunds the reserved amount it names back to the balance.",
+          "bindings": [
+            {
+              "slot": "txid",
+              "expr": "param.txid"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "compensated",
+              "op": "put",
+              "key": "event.txid",
+              "value": "state.reservedAmount[event.txid]"
+            },
+            {
+              "slot": "accountBalance",
+              "op": "money-apply",
+              "delta": "state.reservedAmount[event.txid]",
+              "sign": 1
+            },
+            {
+              "slot": "reservedAmount",
+              "op": "remove",
+              "key": "event.txid"
+            }
+          ]
+        },
+        {
+          "name": "RecordIncomingCreditsConfirmed",
+          "payloads": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "amount",
+              "dataType": "Money",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "description": "Designed durable fact: incoming credits of the exact amount were recorded under the transaction identity; the state fold keys the entry by txid.",
+          "bindings": [
+            {
+              "slot": "txid",
+              "expr": "param.txid"
+            },
+            {
+              "slot": "amount",
+              "expr": "param.amount"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "incomingCredits",
+              "op": "put",
+              "key": "event.txid",
+              "value": "event.amount"
+            }
+          ]
+        },
+        {
+          "name": "CommitIncomingCreditsConfirmed",
+          "payloads": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "description": "Designed durable fact: the recorded incoming credits under this transaction identity were committed; the fold books the recorded amount into the balance and clears the entry.",
+          "bindings": [
+            {
+              "slot": "txid",
+              "expr": "param.txid"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "committed",
+              "op": "put",
+              "key": "event.txid",
+              "value": "state.incomingCredits[event.txid]"
+            },
+            {
+              "slot": "accountBalance",
+              "op": "money-apply",
+              "delta": "state.incomingCredits[event.txid]",
+              "sign": 1
+            },
+            {
+              "slot": "incomingCredits",
+              "op": "remove",
+              "key": "event.txid"
+            }
+          ]
+        },
+        {
+          "name": "CancelIncomingCreditConfirmed",
+          "payloads": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "description": "Designed durable fact: the incoming credits under this transaction identity were canceled; the fold clears the entry the txid names.",
+          "bindings": [
+            {
+              "slot": "txid",
+              "expr": "param.txid"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "compensated",
+              "op": "put",
+              "key": "event.txid",
+              "value": "state.incomingCredits[event.txid]"
+            },
+            {
+              "slot": "incomingCredits",
+              "op": "remove",
+              "key": "event.txid"
+            }
+          ]
+        },
+        {
+          "name": "TransferRequested",
+          "payloads": [
+            {
+              "name": "operationId",
+              "dataType": "OperationId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "from",
+              "dataType": "AccountId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "to",
+              "dataType": "AccountId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "amount",
+              "dataType": "Money",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "description": "Designed durable fact; runtime and serializer evidence must be supplied separately.",
+          "bindings": [
+            {
+              "slot": "operationId",
+              "expr": "param.operationId"
+            },
+            {
+              "slot": "from",
+              "expr": "param.from"
+            },
+            {
+              "slot": "to",
+              "expr": "param.to"
+            },
+            {
+              "slot": "amount",
+              "expr": "param.amount"
+            }
+          ],
+          "foldAssignments": []
+        },
+        {
+          "name": "result-succeeded",
+          "payloads": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "description": "Designed durable fact: the saga terminated with outcome succeeded for this transaction identity; the fold records the kind in the sagaResults ledger.",
+          "bindings": [
+            {
+              "slot": "txid",
+              "expr": "param.txid"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "sagaResults",
+              "op": "put",
+              "key": "event.txid",
+              "value": "literal:succeeded"
+            }
+          ]
+        },
+        {
+          "name": "result-rejected-before-effects",
+          "payloads": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "description": "Designed durable fact: the saga was rejected before any participant effect for this transaction identity; the fold records the kind in the sagaResults ledger.",
+          "bindings": [
+            {
+              "slot": "txid",
+              "expr": "param.txid"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "sagaResults",
+              "op": "put",
+              "key": "event.txid",
+              "value": "literal:rejected-before-effects"
+            }
+          ]
+        },
+        {
+          "name": "result-compensated",
+          "payloads": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "description": "Designed durable fact: the saga compensated all prepared effects for this transaction identity; the fold records the kind in the sagaResults ledger.",
+          "bindings": [
+            {
+              "slot": "txid",
+              "expr": "param.txid"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "sagaResults",
+              "op": "put",
+              "key": "event.txid",
+              "value": "literal:compensated"
+            }
+          ]
+        },
+        {
+          "name": "result-recovery-required",
+          "payloads": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "description": "Designed durable fact: the saga ended in RecoveryRequired (unknown outcome) for this transaction identity and awaits authorized reconciliation; the fold records the kind in the sagaResults ledger.",
+          "bindings": [
+            {
+              "slot": "txid",
+              "expr": "param.txid"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "sagaResults",
+              "op": "put",
+              "key": "event.txid",
+              "value": "literal:recovery-required"
+            }
+          ]
+        },
+        {
+          "name": "result-outcome-unknown",
+          "payloads": [
+            {
+              "name": "txid",
+              "dataType": "TxId",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "description": "Designed durable fact: the saga outcome could not be classified for this transaction identity and awaits authorized manual evidence; the fold records the kind in the sagaResults ledger.",
+          "bindings": [
+            {
+              "slot": "txid",
+              "expr": "param.txid"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "sagaResults",
+              "op": "put",
+              "key": "event.txid",
+              "value": "literal:outcome-unknown"
+            }
+          ]
+        }
+      ],
+      "context": "accounts"
+    }
+  ],
+  "valueObjects": [],
+  "readModels": [],
+  "stories": [],
+  "domainServices": [],
+  "pipelines": [
+    {
+      "id": "formal-source-plan",
+      "name": "Explicit independent invocation contract test",
+      "execution": {
+        "schemaVersion": "truthsrc.execution/v1",
+        "inputs": [
+          {
+            "id": "operation",
+            "type": "TxId",
+            "durability": "start-record"
+          },
+          {
+            "id": "occurrence",
+            "type": "TxId",
+            "durability": "start-record"
+          },
+          {
+            "id": "from",
+            "type": "AccountId",
+            "durability": "start-record"
+          },
+          {
+            "id": "to",
+            "type": "AccountId",
+            "durability": "start-record"
+          },
+          {
+            "id": "amount",
+            "type": "Money",
+            "durability": "start-record"
+          }
+        ],
+        "outputs": [],
+        "recovery": {
+          "inputResponsibility": "host",
+          "inputs": [
+            "input:operation",
+            "input:occurrence",
+            "input:from",
+            "input:to",
+            "input:amount"
+          ],
+          "planVersion": "test-plan-v1",
+          "planCompatibility": "exact",
+          "checkpoint": "confirmed-prefix",
+          "unknownEffect": "reconcile-before-resume",
+          "ownership": "single-writer"
+        },
+        "admission": {
+          "maxConcurrentRuns": 1,
+          "maxInFlightSteps": 1,
+          "maxItemsPerChunk": 64,
+          "maxInFlightChunks": 1
+        }
+      },
+      "steps": [
+        {
+          "id": "invoke",
+          "name": "Invoke the exact declared Saga",
+          "execution": {
+            "invokeSaga": {
+              "ref": {
+                "sagaId": "money-transfer",
+                "version": "v2"
+              },
+              "args": [
+                {
+                  "slot": "from",
+                  "type": "AccountId",
+                  "ref": "input:from"
+                },
+                {
+                  "slot": "to",
+                  "type": "AccountId",
+                  "ref": "input:to"
+                },
+                {
+                  "slot": "amount",
+                  "type": "Money",
+                  "ref": "input:amount"
+                }
+              ],
+              "transactionIdentity": {
+                "type": "TxId",
+                "derivation": "durable-source-stage",
+                "source": {
+                  "ref": "input:operation",
+                  "type": "TxId"
+                },
+                "stageId": "invoke",
+                "stageOccurrence": {
+                  "ref": "input:occurrence",
+                  "type": "TxId"
+                },
+                "scope": "saga-version",
+                "conflict": "reject-different-args"
+              },
+              "start": "durable-intent-before-start",
+              "completionMode": "await-terminal",
+              "results": [
+                {
+                  "resultKind": "succeeded",
+                  "code": "Succeeded",
+                  "outputs": []
+                },
+                {
+                  "resultKind": "rejected-before-effects",
+                  "code": "Rejected",
+                  "outputs": []
+                },
+                {
+                  "resultKind": "compensated",
+                  "code": "Compensated",
+                  "outputs": []
+                },
+                {
+                  "resultKind": "recovery-required",
+                  "code": "RecoveryRequired",
+                  "outputs": []
+                },
+                {
+                  "resultKind": "outcome-unknown",
+                  "code": "Unknown",
+                  "outputs": []
+                }
+              ]
+            },
+            "reads": [
+              {
+                "slot": "operation",
+                "type": "TxId",
+                "ref": "input:operation"
+              },
+              {
+                "slot": "occurrence",
+                "type": "TxId",
+                "ref": "input:occurrence"
+              },
+              {
+                "slot": "from",
+                "type": "AccountId",
+                "ref": "input:from"
+              },
+              {
+                "slot": "to",
+                "type": "AccountId",
+                "ref": "input:to"
+              },
+              {
+                "slot": "amount",
+                "type": "Money",
+                "ref": "input:amount"
+              }
+            ],
+            "writes": [],
+            "outcomes": [
+              {
+                "code": "Succeeded",
+                "kind": "success",
+                "action": "continue"
+              },
+              {
+                "code": "Rejected",
+                "kind": "business-rejection",
+                "action": "stop"
+              },
+              {
+                "code": "Compensated",
+                "kind": "business-rejection",
+                "action": "stop"
+              },
+              {
+                "code": "RecoveryRequired",
+                "kind": "infrastructure-failure",
+                "action": "manual-recovery"
+              },
+              {
+                "code": "Unknown",
+                "kind": "unknown-effect",
+                "action": "manual-recovery"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "sagas": [
+    {
+      "id": "money-transfer",
+      "name": "Transfer exact money between two accounts",
+      "seq": 0,
+      "version": "v2",
+      "payload": {
+        "schemaVersion": "truthsrc.saga/v1",
+        "purpose": "Designed 2026-10-22 under approved #197, derived from the independent saga-money-transfer v1 tree: exact two-account transfer with explicit singleton serial barriers. New design, not a historical note or observed runtime payload. v2 intentionally limits admission to one in-flight step, one attempt, no backoff and equal phase/query timeouts; v1 concurrency and retries are unchanged.",
+        "invariants": [
+          "Currency and exact minor units are conserved"
+        ],
+        "transactionIdType": "TxId",
+        "args": [
+          {
+            "slot": "from",
+            "type": "AccountId"
+          },
+          {
+            "slot": "to",
+            "type": "AccountId"
+          },
+          {
+            "slot": "amount",
+            "type": "Money"
+          }
+        ],
+        "participants": [
+          {
+            "id": "source",
+            "aggregate": "CreditBalance",
+            "resourceRef": {
+              "ref": "args:from",
+              "type": "AccountId"
+            }
+          },
+          {
+            "id": "target",
+            "aggregate": "CreditBalance",
+            "resourceRef": {
+              "ref": "args:to",
+              "type": "AccountId"
+            }
+          }
+        ],
+        "groups": [
+          {
+            "id": 1,
+            "dependsOn": []
+          },
+          {
+            "id": 2,
+            "dependsOn": [
+              1
+            ]
+          }
+        ],
+        "steps": [
+          {
+            "id": "reserve-source",
+            "participant": "source",
+            "group": 1,
+            "phases": {
+              "prepare": {
+                "kind": "command",
+                "commandRef": {
+                  "aggregate": "CreditBalance",
+                  "name": "ReserveFunds"
+                },
+                "bindings": [
+                  {
+                    "slot": "txid",
+                    "ref": "txid",
+                    "type": "TxId"
+                  },
+                  {
+                    "slot": "resource",
+                    "ref": "args:from",
+                    "type": "AccountId"
+                  },
+                  {
+                    "slot": "amount",
+                    "ref": "args:amount",
+                    "type": "Money"
+                  }
+                ],
+                "outputs": [
+                  {
+                    "slot": "txid",
+                    "type": "TxId"
+                  },
+                  {
+                    "slot": "amount",
+                    "type": "Money"
+                  }
+                ]
+              },
+              "commit": {
+                "kind": "command",
+                "commandRef": {
+                  "aggregate": "CreditBalance",
+                  "name": "DeductFunds"
+                },
+                "bindings": [
+                  {
+                    "slot": "txid",
+                    "ref": "txid",
+                    "type": "TxId"
+                  },
+                  {
+                    "slot": "resource",
+                    "ref": "args:from",
+                    "type": "AccountId"
+                  }
+                ],
+                "outputs": [
+                  {
+                    "slot": "txid",
+                    "type": "TxId"
+                  }
+                ]
+              },
+              "compensate": {
+                "kind": "command",
+                "commandRef": {
+                  "aggregate": "CreditBalance",
+                  "name": "ReleaseReservedFunds"
+                },
+                "bindings": [
+                  {
+                    "slot": "txid",
+                    "ref": "txid",
+                    "type": "TxId"
+                  },
+                  {
+                    "slot": "resource",
+                    "ref": "args:from",
+                    "type": "AccountId"
+                  }
+                ],
+                "outputs": [
+                  {
+                    "slot": "txid",
+                    "type": "TxId"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "id": "reserve-target",
+            "participant": "target",
+            "group": 2,
+            "phases": {
+              "prepare": {
+                "kind": "command",
+                "commandRef": {
+                  "aggregate": "CreditBalance",
+                  "name": "RecordIncomingCredits"
+                },
+                "bindings": [
+                  {
+                    "slot": "txid",
+                    "ref": "txid",
+                    "type": "TxId"
+                  },
+                  {
+                    "slot": "resource",
+                    "ref": "args:to",
+                    "type": "AccountId"
+                  },
+                  {
+                    "slot": "amount",
+                    "ref": "args:amount",
+                    "type": "Money"
+                  }
+                ],
+                "outputs": [
+                  {
+                    "slot": "txid",
+                    "type": "TxId"
+                  },
+                  {
+                    "slot": "amount",
+                    "type": "Money"
+                  }
+                ]
+              },
+              "commit": {
+                "kind": "command",
+                "commandRef": {
+                  "aggregate": "CreditBalance",
+                  "name": "CommitIncomingCredits"
+                },
+                "bindings": [
+                  {
+                    "slot": "txid",
+                    "ref": "txid",
+                    "type": "TxId"
+                  },
+                  {
+                    "slot": "resource",
+                    "ref": "args:to",
+                    "type": "AccountId"
+                  }
+                ],
+                "outputs": [
+                  {
+                    "slot": "txid",
+                    "type": "TxId"
+                  }
+                ]
+              },
+              "compensate": {
+                "kind": "command",
+                "commandRef": {
+                  "aggregate": "CreditBalance",
+                  "name": "CancelIncomingCredit"
+                },
+                "bindings": [
+                  {
+                    "slot": "txid",
+                    "ref": "txid",
+                    "type": "TxId"
+                  },
+                  {
+                    "slot": "resource",
+                    "ref": "args:to",
+                    "type": "AccountId"
+                  }
+                ],
+                "outputs": [
+                  {
+                    "slot": "txid",
+                    "type": "TxId"
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "resilience": {
+          "maxAttempts": 1,
+          "phaseTimeoutMs": 1000,
+          "queryTimeoutMs": 1000,
+          "backoffMs": 0,
+          "totalTimeoutMs": 10000
+        },
+        "safety": {
+          "commitDecision": "durable-before-commit",
+          "abortDecision": "durable-before-compensate",
+          "afterCommit": "forward-recovery",
+          "unknown": "reconcile-before-resume",
+          "compensation": "confirmed-reservations",
+          "cancelBeforePrepare": "empty-release-and-fence",
+          "retryIdentity": "stable-operation",
+          "manualRecovery": "authorized-reconciliation-evidence"
+        },
+        "admission": {
+          "maxParticipants": 2,
+          "maxInFlight": 1,
+          "maxItemsPerChunk": 64,
+          "manifest": {
+            "mode": "static",
+            "durable": true
+          }
+        },
+        "triggers": [
+          {
+            "id": "from-command",
+            "kind": "command",
+            "sourceRef": {
+              "aggregate": "CreditBalance",
+              "name": "StartTransfer"
+            },
+            "argsMapping": [
+              {
+                "slot": "from",
+                "ref": "source:from",
+                "type": "AccountId"
+              },
+              {
+                "slot": "to",
+                "ref": "source:to",
+                "type": "AccountId"
+              },
+              {
+                "slot": "amount",
+                "ref": "source:amount",
+                "type": "Money"
+              }
+            ],
+            "idempotency": {
+              "ref": "source:operationId",
+              "type": "OperationId",
+              "scope": "saga-version",
+              "conflict": "reject-different-args"
+            }
+          },
+          {
+            "id": "from-event",
+            "kind": "event",
+            "sourceRef": {
+              "aggregate": "CreditBalance",
+              "name": "TransferRequested"
+            },
+            "argsMapping": [
+              {
+                "slot": "from",
+                "ref": "source:from",
+                "type": "AccountId"
+              },
+              {
+                "slot": "to",
+                "ref": "source:to",
+                "type": "AccountId"
+              },
+              {
+                "slot": "amount",
+                "ref": "source:amount",
+                "type": "Money"
+              }
+            ],
+            "idempotency": {
+              "ref": "source:operationId",
+              "type": "OperationId",
+              "scope": "saga-version",
+              "conflict": "reject-different-args"
+            }
+          }
+        ],
+        "resultKinds": [
+          "succeeded",
+          "rejected-before-effects",
+          "compensated",
+          "recovery-required",
+          "outcome-unknown"
+        ],
+        "completions": [
+          {
+            "kind": "succeeded",
+            "eventRef": {
+              "aggregate": "CreditBalance",
+              "name": "result-succeeded"
+            },
+            "bindings": [
+              {
+                "slot": "txid",
+                "ref": "txid",
+                "type": "TxId"
+              }
+            ]
+          },
+          {
+            "kind": "rejected-before-effects",
+            "eventRef": {
+              "aggregate": "CreditBalance",
+              "name": "result-rejected-before-effects"
+            },
+            "bindings": [
+              {
+                "slot": "txid",
+                "ref": "txid",
+                "type": "TxId"
+              }
+            ]
+          },
+          {
+            "kind": "compensated",
+            "eventRef": {
+              "aggregate": "CreditBalance",
+              "name": "result-compensated"
+            },
+            "bindings": [
+              {
+                "slot": "txid",
+                "ref": "txid",
+                "type": "TxId"
+              }
+            ]
+          },
+          {
+            "kind": "recovery-required",
+            "eventRef": {
+              "aggregate": "CreditBalance",
+              "name": "result-recovery-required"
+            },
+            "bindings": [
+              {
+                "slot": "txid",
+                "ref": "txid",
+                "type": "TxId"
+              }
+            ]
+          },
+          {
+            "kind": "outcome-unknown",
+            "eventRef": {
+              "aggregate": "CreditBalance",
+              "name": "result-outcome-unknown"
+            },
+            "bindings": [
+              {
+                "slot": "txid",
+                "ref": "txid",
+                "type": "TxId"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "TxId",
+      "context": "accounts",
+      "dataType": "String"
+    },
+    {
+      "name": "OperationId",
+      "context": "accounts",
+      "dataType": "String"
+    },
+    {
+      "name": "AccountId",
+      "context": "accounts",
+      "dataType": "String"
+    },
+    {
+      "name": "Money",
+      "context": "accounts",
+      "version": "money-v1",
+      "fields": [
+        {
+          "name": "amount",
+          "dataType": "Decimal"
+        },
+        {
+          "name": "currency",
+          "dataType": "String"
+        }
+      ]
+    },
+    {
+      "name": "OriginalTransfer",
+      "context": "accounts",
+      "fields": [
+        {
+          "name": "operationId",
+          "dataType": "OperationId"
+        },
+        {
+          "name": "from",
+          "dataType": "AccountId"
+        },
+        {
+          "name": "to",
+          "dataType": "AccountId"
+        },
+        {
+          "name": "amount",
+          "dataType": "Money"
+        }
+      ]
+    },
+    {
+      "name": "sourceprepareInput",
+      "context": "accounts",
+      "fields": [
+        {
+          "name": "txid",
+          "dataType": "TxId"
+        },
+        {
+          "name": "resource",
+          "dataType": "AccountId"
+        },
+        {
+          "name": "amount",
+          "dataType": "Money"
+        }
+      ]
+    },
+    {
+      "name": "sourceprepareReceipt",
+      "context": "accounts",
+      "fields": [
+        {
+          "name": "txid",
+          "dataType": "TxId"
+        },
+        {
+          "name": "definition-version",
+          "dataType": "String"
+        },
+        {
+          "name": "args-digest",
+          "dataType": "String"
+        },
+        {
+          "name": "participant",
+          "dataType": "String"
+        },
+        {
+          "name": "resource",
+          "dataType": "AccountId"
+        },
+        {
+          "name": "step",
+          "dataType": "String"
+        },
+        {
+          "name": "phase",
+          "dataType": "String"
+        },
+        {
+          "name": "output-txid",
+          "dataType": "TxId"
+        },
+        {
+          "name": "output-amount",
+          "dataType": "Money"
+        }
+      ]
+    },
+    {
+      "name": "sourceprepareQuery",
+      "context": "accounts",
+      "fields": [
+        {
+          "name": "txid",
+          "dataType": "TxId"
+        },
+        {
+          "name": "definition-version",
+          "dataType": "String"
+        },
+        {
+          "name": "args-digest",
+          "dataType": "String"
+        },
+        {
+          "name": "participant",
+          "dataType": "String"
+        },
+        {
+          "name": "resource",
+          "dataType": "AccountId"
+        },
+        {
+          "name": "step",
+          "dataType": "String"
+        },
+        {
+          "name": "phase",
+          "dataType": "String"
+        }
+      ]
+    },
+    {
+      "name": "sourcecommitInput",
+      "context": "accounts",
+      "fields": [
+        {
+          "name": "txid",
+          "dataType": "TxId"
+        },
+        {
+          "name": "resource",
+          "dataType": "AccountId"
+        }
+      ]
+    },
+    {
+      "name": "sourcecommitReceipt",
+      "context": "accounts",
+      "fields": [
+        {
+          "name": "txid",
+          "dataType": "TxId"
+        },
+        {
+          "name": "definition-version",
+          "dataType": "String"
+        },
+        {
+          "name": "args-digest",
+          "dataType": "String"
+        },
+        {
+          "name": "participant",
+          "dataType": "String"
+        },
+        {
+          "name": "resource",
+          "dataType": "AccountId"
+        },
+        {
+          "name": "step",
+          "dataType": "String"
+        },
+        {
+          "name": "phase",
+          "dataType": "String"
+        },
+        {
+          "name": "output-txid",
+          "dataType": "TxId"
+        }
+      ]
+    },
+    {
+      "name": "sourcecommitQuery",
+      "context": "accounts",
+      "fields": [
+        {
+          "name": "txid",
+          "dataType": "TxId"
+        },
+        {
+          "name": "definition-version",
+          "dataType": "String"
+        },
+        {
+          "name": "args-digest",
+          "dataType": "String"
+        },
+        {
+          "name": "participant",
+          "dataType": "String"
+        },
+        {
+          "name": "resource",
+          "dataType": "AccountId"
+        },
+        {
+          "name": "step",
+          "dataType": "String"
+        },
+        {
+          "name": "phase",
+          "dataType": "String"
+        }
+      ]
+    },
+    {
+      "name": "sourcecompensateInput",
+      "context": "accounts",
+      "fields": [
+        {
+          "name": "txid",
+          "dataType": "TxId"
+        },
+        {
+          "name": "resource",
+          "dataType": "AccountId"
+        }
+      ]
+    },
+    {
+      "name": "sourcecompensateReceipt",
+      "context": "accounts",
+      "fields": [
+        {
+          "name": "txid",
+          "dataType": "TxId"
+        },
+        {
+          "name": "definition-version",
+          "dataType": "String"
+        },
+        {
+          "name": "args-digest",
+          "dataType": "String"
+        },
+        {
+          "name": "participant",
+          "dataType": "String"
+        },
+        {
+          "name": "resource",
+          "dataType": "AccountId"
+        },
+        {
+          "name": "step",
+          "dataType": "String"
+        },
+        {
+          "name": "phase",
+          "dataType": "String"
+        },
+        {
+          "name": "output-txid",
+          "dataType": "TxId"
+        }
+      ]
+    },
+    {
+      "name": "sourcecompensateQuery",
+      "context": "accounts",
+      "fields": [
+        {
+          "name": "txid",
+          "dataType": "TxId"
+        },
+        {
+          "name": "definition-version",
+          "dataType": "String"
+        },
+        {
+          "name": "args-digest",
+          "dataType": "String"
+        },
+        {
+          "name": "participant",
+          "dataType": "String"
+        },
+        {
+          "name": "resource",
+          "dataType": "AccountId"
+        },
+        {
+          "name": "step",
+          "dataType": "String"
+        },
+        {
+          "name": "phase",
+          "dataType": "String"
+        }
+      ]
+    },
+    {
+      "name": "targetprepareInput",
+      "context": "accounts",
+      "fields": [
+        {
+          "name": "txid",
+          "dataType": "TxId"
+        },
+        {
+          "name": "resource",
+          "dataType": "AccountId"
+        },
+        {
+          "name": "amount",
+          "dataType": "Money"
+        }
+      ]
+    },
+    {
+      "name": "targetprepareReceipt",
+      "context": "accounts",
+      "fields": [
+        {
+          "name": "txid",
+          "dataType": "TxId"
+        },
+        {
+          "name": "definition-version",
+          "dataType": "String"
+        },
+        {
+          "name": "args-digest",
+          "dataType": "String"
+        },
+        {
+          "name": "participant",
+          "dataType": "String"
+        },
+        {
+          "name": "resource",
+          "dataType": "AccountId"
+        },
+        {
+          "name": "step",
+          "dataType": "String"
+        },
+        {
+          "name": "phase",
+          "dataType": "String"
+        },
+        {
+          "name": "output-txid",
+          "dataType": "TxId"
+        },
+        {
+          "name": "output-amount",
+          "dataType": "Money"
+        }
+      ]
+    },
+    {
+      "name": "targetprepareQuery",
+      "context": "accounts",
+      "fields": [
+        {
+          "name": "txid",
+          "dataType": "TxId"
+        },
+        {
+          "name": "definition-version",
+          "dataType": "String"
+        },
+        {
+          "name": "args-digest",
+          "dataType": "String"
+        },
+        {
+          "name": "participant",
+          "dataType": "String"
+        },
+        {
+          "name": "resource",
+          "dataType": "AccountId"
+        },
+        {
+          "name": "step",
+          "dataType": "String"
+        },
+        {
+          "name": "phase",
+          "dataType": "String"
+        }
+      ]
+    },
+    {
+      "name": "targetcommitInput",
+      "context": "accounts",
+      "fields": [
+        {
+          "name": "txid",
+          "dataType": "TxId"
+        },
+        {
+          "name": "resource",
+          "dataType": "AccountId"
+        }
+      ]
+    },
+    {
+      "name": "targetcommitReceipt",
+      "context": "accounts",
+      "fields": [
+        {
+          "name": "txid",
+          "dataType": "TxId"
+        },
+        {
+          "name": "definition-version",
+          "dataType": "String"
+        },
+        {
+          "name": "args-digest",
+          "dataType": "String"
+        },
+        {
+          "name": "participant",
+          "dataType": "String"
+        },
+        {
+          "name": "resource",
+          "dataType": "AccountId"
+        },
+        {
+          "name": "step",
+          "dataType": "String"
+        },
+        {
+          "name": "phase",
+          "dataType": "String"
+        },
+        {
+          "name": "output-txid",
+          "dataType": "TxId"
+        }
+      ]
+    },
+    {
+      "name": "targetcommitQuery",
+      "context": "accounts",
+      "fields": [
+        {
+          "name": "txid",
+          "dataType": "TxId"
+        },
+        {
+          "name": "definition-version",
+          "dataType": "String"
+        },
+        {
+          "name": "args-digest",
+          "dataType": "String"
+        },
+        {
+          "name": "participant",
+          "dataType": "String"
+        },
+        {
+          "name": "resource",
+          "dataType": "AccountId"
+        },
+        {
+          "name": "step",
+          "dataType": "String"
+        },
+        {
+          "name": "phase",
+          "dataType": "String"
+        }
+      ]
+    },
+    {
+      "name": "targetcompensateInput",
+      "context": "accounts",
+      "fields": [
+        {
+          "name": "txid",
+          "dataType": "TxId"
+        },
+        {
+          "name": "resource",
+          "dataType": "AccountId"
+        }
+      ]
+    },
+    {
+      "name": "targetcompensateReceipt",
+      "context": "accounts",
+      "fields": [
+        {
+          "name": "txid",
+          "dataType": "TxId"
+        },
+        {
+          "name": "definition-version",
+          "dataType": "String"
+        },
+        {
+          "name": "args-digest",
+          "dataType": "String"
+        },
+        {
+          "name": "participant",
+          "dataType": "String"
+        },
+        {
+          "name": "resource",
+          "dataType": "AccountId"
+        },
+        {
+          "name": "step",
+          "dataType": "String"
+        },
+        {
+          "name": "phase",
+          "dataType": "String"
+        },
+        {
+          "name": "output-txid",
+          "dataType": "TxId"
+        }
+      ]
+    },
+    {
+      "name": "targetcompensateQuery",
+      "context": "accounts",
+      "fields": [
+        {
+          "name": "txid",
+          "dataType": "TxId"
+        },
+        {
+          "name": "definition-version",
+          "dataType": "String"
+        },
+        {
+          "name": "args-digest",
+          "dataType": "String"
+        },
+        {
+          "name": "participant",
+          "dataType": "String"
+        },
+        {
+          "name": "resource",
+          "dataType": "AccountId"
+        },
+        {
+          "name": "step",
+          "dataType": "String"
+        },
+        {
+          "name": "phase",
+          "dataType": "String"
+        }
+      ]
+    },
+    {
+      "name": "Completionsucceeded",
+      "context": "accounts",
+      "fields": [
+        {
+          "name": "txid",
+          "dataType": "TxId"
+        }
+      ]
+    },
+    {
+      "name": "Completionrejectedbeforeeffects",
+      "context": "accounts",
+      "fields": [
+        {
+          "name": "txid",
+          "dataType": "TxId"
+        }
+      ]
+    },
+    {
+      "name": "Completioncompensated",
+      "context": "accounts",
+      "fields": [
+        {
+          "name": "txid",
+          "dataType": "TxId"
+        }
+      ]
+    },
+    {
+      "name": "Completionrecoveryrequired",
+      "context": "accounts",
+      "fields": [
+        {
+          "name": "txid",
+          "dataType": "TxId"
+        }
+      ]
+    },
+    {
+      "name": "Completionoutcomeunknown",
+      "context": "accounts",
+      "fields": [
+        {
+          "name": "txid",
+          "dataType": "TxId"
+        }
+      ]
+    },
+    {
+      "name": "RetainedSagaArgs",
+      "context": "accounts",
+      "fields": [
+        {
+          "name": "from",
+          "dataType": "AccountId"
+        },
+        {
+          "name": "to",
+          "dataType": "AccountId"
+        },
+        {
+          "name": "amount",
+          "dataType": "Money"
+        }
+      ]
+    }
+  ],
+  "ports": [
+    {
+      "name": "Entry",
+      "version": "port-v1",
+      "inputType": "OriginalTransfer",
+      "outputType": "Boolean"
+    },
+    {
+      "name": "Association",
+      "version": "port-v1",
+      "inputType": "OriginalTransfer",
+      "outputType": "Boolean"
+    },
+    {
+      "name": "sourceprepareExecute",
+      "version": "port-v1",
+      "inputType": "sourceprepareInput",
+      "outputType": "sourceprepareReceipt"
+    },
+    {
+      "name": "sourceprepareQueryPort",
+      "version": "port-v1",
+      "inputType": "sourceprepareQuery",
+      "outputType": "Option[sourceprepareReceipt]"
+    },
+    {
+      "name": "sourcecommitExecute",
+      "version": "port-v1",
+      "inputType": "sourcecommitInput",
+      "outputType": "sourcecommitReceipt"
+    },
+    {
+      "name": "sourcecommitQueryPort",
+      "version": "port-v1",
+      "inputType": "sourcecommitQuery",
+      "outputType": "Option[sourcecommitReceipt]"
+    },
+    {
+      "name": "sourcecompensateExecute",
+      "version": "port-v1",
+      "inputType": "sourcecompensateInput",
+      "outputType": "sourcecompensateReceipt"
+    },
+    {
+      "name": "sourcecompensateQueryPort",
+      "version": "port-v1",
+      "inputType": "sourcecompensateQuery",
+      "outputType": "Option[sourcecompensateReceipt]"
+    },
+    {
+      "name": "targetprepareExecute",
+      "version": "port-v1",
+      "inputType": "targetprepareInput",
+      "outputType": "targetprepareReceipt"
+    },
+    {
+      "name": "targetprepareQueryPort",
+      "version": "port-v1",
+      "inputType": "targetprepareQuery",
+      "outputType": "Option[targetprepareReceipt]"
+    },
+    {
+      "name": "targetcommitExecute",
+      "version": "port-v1",
+      "inputType": "targetcommitInput",
+      "outputType": "targetcommitReceipt"
+    },
+    {
+      "name": "targetcommitQueryPort",
+      "version": "port-v1",
+      "inputType": "targetcommitQuery",
+      "outputType": "Option[targetcommitReceipt]"
+    },
+    {
+      "name": "targetcompensateExecute",
+      "version": "port-v1",
+      "inputType": "targetcompensateInput",
+      "outputType": "targetcompensateReceipt"
+    },
+    {
+      "name": "targetcompensateQueryPort",
+      "version": "port-v1",
+      "inputType": "targetcompensateQuery",
+      "outputType": "Option[targetcompensateReceipt]"
+    },
+    {
+      "name": "Authoritysucceeded",
+      "version": "port-v1",
+      "inputType": "OriginalTransfer",
+      "outputType": "Completionsucceeded"
+    },
+    {
+      "name": "Deliverysucceeded",
+      "version": "port-v1",
+      "inputType": "Completionsucceeded",
+      "outputType": "Boolean"
+    },
+    {
+      "name": "Authorityrejected-before-effects",
+      "version": "port-v1",
+      "inputType": "OriginalTransfer",
+      "outputType": "Completionrejectedbeforeeffects"
+    },
+    {
+      "name": "Deliveryrejected-before-effects",
+      "version": "port-v1",
+      "inputType": "Completionrejectedbeforeeffects",
+      "outputType": "Boolean"
+    },
+    {
+      "name": "Authoritycompensated",
+      "version": "port-v1",
+      "inputType": "OriginalTransfer",
+      "outputType": "Completioncompensated"
+    },
+    {
+      "name": "Deliverycompensated",
+      "version": "port-v1",
+      "inputType": "Completioncompensated",
+      "outputType": "Boolean"
+    },
+    {
+      "name": "Authorityrecovery-required",
+      "version": "port-v1",
+      "inputType": "OriginalTransfer",
+      "outputType": "Completionrecoveryrequired"
+    },
+    {
+      "name": "Deliveryrecovery-required",
+      "version": "port-v1",
+      "inputType": "Completionrecoveryrequired",
+      "outputType": "Boolean"
+    },
+    {
+      "name": "Authorityoutcome-unknown",
+      "version": "port-v1",
+      "inputType": "OriginalTransfer",
+      "outputType": "Completionoutcomeunknown"
+    },
+    {
+      "name": "Deliveryoutcome-unknown",
+      "version": "port-v1",
+      "inputType": "Completionoutcomeunknown",
+      "outputType": "Boolean"
+    }
+  ],
+  "externalEventProducers": [
+    {
+      "id": "complete-succeeded",
+      "version": "port-v1",
+      "kind": "saga-completion",
+      "event": {
+        "context": "accounts",
+        "kind": "event",
+        "owner": [
+          "CreditBalance"
+        ],
+        "id": "result-succeeded"
+      },
+      "port": {
+        "context": "accounts",
+        "kind": "port",
+        "owner": [],
+        "id": "Authoritysucceeded"
+      },
+      "outputType": {
+        "form": "nominal",
+        "ref": {
+          "context": "accounts",
+          "kind": "type",
+          "owner": [],
+          "id": "Completionsucceeded"
+        }
+      },
+      "slotMappings": [
+        {
+          "slot": {
+            "context": "accounts",
+            "kind": "event-slot",
+            "owner": [
+              "CreditBalance",
+              "result-succeeded"
+            ],
+            "id": "txid"
+          },
+          "member": {
+            "context": "accounts",
+            "kind": "member",
+            "owner": [
+              "Completionsucceeded"
+            ],
+            "id": "txid"
+          }
+        }
+      ],
+      "stableIdentityContract": {
+        "id": "completion-succeeded",
+        "version": "identity-v1",
+        "keys": [
+          {
+            "context": "accounts",
+            "kind": "member",
+            "owner": [
+              "Completionsucceeded"
+            ],
+            "id": "txid"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complete-rejected-before-effects",
+      "version": "port-v1",
+      "kind": "saga-completion",
+      "event": {
+        "context": "accounts",
+        "kind": "event",
+        "owner": [
+          "CreditBalance"
+        ],
+        "id": "result-rejected-before-effects"
+      },
+      "port": {
+        "context": "accounts",
+        "kind": "port",
+        "owner": [],
+        "id": "Authorityrejected-before-effects"
+      },
+      "outputType": {
+        "form": "nominal",
+        "ref": {
+          "context": "accounts",
+          "kind": "type",
+          "owner": [],
+          "id": "Completionrejectedbeforeeffects"
+        }
+      },
+      "slotMappings": [
+        {
+          "slot": {
+            "context": "accounts",
+            "kind": "event-slot",
+            "owner": [
+              "CreditBalance",
+              "result-rejected-before-effects"
+            ],
+            "id": "txid"
+          },
+          "member": {
+            "context": "accounts",
+            "kind": "member",
+            "owner": [
+              "Completionrejectedbeforeeffects"
+            ],
+            "id": "txid"
+          }
+        }
+      ],
+      "stableIdentityContract": {
+        "id": "completion-rejected-before-effects",
+        "version": "identity-v1",
+        "keys": [
+          {
+            "context": "accounts",
+            "kind": "member",
+            "owner": [
+              "Completionrejectedbeforeeffects"
+            ],
+            "id": "txid"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complete-compensated",
+      "version": "port-v1",
+      "kind": "saga-completion",
+      "event": {
+        "context": "accounts",
+        "kind": "event",
+        "owner": [
+          "CreditBalance"
+        ],
+        "id": "result-compensated"
+      },
+      "port": {
+        "context": "accounts",
+        "kind": "port",
+        "owner": [],
+        "id": "Authoritycompensated"
+      },
+      "outputType": {
+        "form": "nominal",
+        "ref": {
+          "context": "accounts",
+          "kind": "type",
+          "owner": [],
+          "id": "Completioncompensated"
+        }
+      },
+      "slotMappings": [
+        {
+          "slot": {
+            "context": "accounts",
+            "kind": "event-slot",
+            "owner": [
+              "CreditBalance",
+              "result-compensated"
+            ],
+            "id": "txid"
+          },
+          "member": {
+            "context": "accounts",
+            "kind": "member",
+            "owner": [
+              "Completioncompensated"
+            ],
+            "id": "txid"
+          }
+        }
+      ],
+      "stableIdentityContract": {
+        "id": "completion-compensated",
+        "version": "identity-v1",
+        "keys": [
+          {
+            "context": "accounts",
+            "kind": "member",
+            "owner": [
+              "Completioncompensated"
+            ],
+            "id": "txid"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complete-recovery-required",
+      "version": "port-v1",
+      "kind": "saga-completion",
+      "event": {
+        "context": "accounts",
+        "kind": "event",
+        "owner": [
+          "CreditBalance"
+        ],
+        "id": "result-recovery-required"
+      },
+      "port": {
+        "context": "accounts",
+        "kind": "port",
+        "owner": [],
+        "id": "Authorityrecovery-required"
+      },
+      "outputType": {
+        "form": "nominal",
+        "ref": {
+          "context": "accounts",
+          "kind": "type",
+          "owner": [],
+          "id": "Completionrecoveryrequired"
+        }
+      },
+      "slotMappings": [
+        {
+          "slot": {
+            "context": "accounts",
+            "kind": "event-slot",
+            "owner": [
+              "CreditBalance",
+              "result-recovery-required"
+            ],
+            "id": "txid"
+          },
+          "member": {
+            "context": "accounts",
+            "kind": "member",
+            "owner": [
+              "Completionrecoveryrequired"
+            ],
+            "id": "txid"
+          }
+        }
+      ],
+      "stableIdentityContract": {
+        "id": "completion-recovery-required",
+        "version": "identity-v1",
+        "keys": [
+          {
+            "context": "accounts",
+            "kind": "member",
+            "owner": [
+              "Completionrecoveryrequired"
+            ],
+            "id": "txid"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complete-outcome-unknown",
+      "version": "port-v1",
+      "kind": "saga-completion",
+      "event": {
+        "context": "accounts",
+        "kind": "event",
+        "owner": [
+          "CreditBalance"
+        ],
+        "id": "result-outcome-unknown"
+      },
+      "port": {
+        "context": "accounts",
+        "kind": "port",
+        "owner": [],
+        "id": "Authorityoutcome-unknown"
+      },
+      "outputType": {
+        "form": "nominal",
+        "ref": {
+          "context": "accounts",
+          "kind": "type",
+          "owner": [],
+          "id": "Completionoutcomeunknown"
+        }
+      },
+      "slotMappings": [
+        {
+          "slot": {
+            "context": "accounts",
+            "kind": "event-slot",
+            "owner": [
+              "CreditBalance",
+              "result-outcome-unknown"
+            ],
+            "id": "txid"
+          },
+          "member": {
+            "context": "accounts",
+            "kind": "member",
+            "owner": [
+              "Completionoutcomeunknown"
+            ],
+            "id": "txid"
+          }
+        }
+      ],
+      "stableIdentityContract": {
+        "id": "completion-outcome-unknown",
+        "version": "identity-v1",
+        "keys": [
+          {
+            "context": "accounts",
+            "kind": "member",
+            "owner": [
+              "Completionoutcomeunknown"
+            ],
+            "id": "txid"
+          }
+        ]
+      }
+    }
+  ],
+  "artifactContracts": [
+    {
+      "id": "host-technical",
+      "version": "artifact-v1",
+      "artifact": {
+        "context": "accounts",
+        "kind": "artifact",
+        "owner": [],
+        "id": "HostTechnicalAssembly"
+      },
+      "status": "selected",
+      "provenance": [
+        {
+          "document": "domain",
+          "pointer": "/sagas/0"
+        }
+      ],
+      "references": [
+        {
+          "context": "accounts",
+          "kind": "saga",
+          "owner": [],
+          "id": "money-transfer"
+        }
+      ],
+      "ports": [
+        {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Entry"
+          },
+          "version": "port-v1",
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "OriginalTransfer"
+            }
+          },
+          "outputType": {
+            "form": "primitive",
+            "name": "boolean"
+          },
+          "required": true
+        },
+        {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Association"
+          },
+          "version": "port-v1",
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "OriginalTransfer"
+            }
+          },
+          "outputType": {
+            "form": "primitive",
+            "name": "boolean"
+          },
+          "required": true
+        },
+        {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "sourceprepareExecute"
+          },
+          "version": "port-v1",
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "sourceprepareInput"
+            }
+          },
+          "outputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "sourceprepareReceipt"
+            }
+          },
+          "required": true
+        },
+        {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "sourceprepareQueryPort"
+          },
+          "version": "port-v1",
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "sourceprepareQuery"
+            }
+          },
+          "outputType": {
+            "form": "optional",
+            "element": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "sourceprepareReceipt"
+              }
+            }
+          },
+          "required": true
+        },
+        {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "sourcecommitExecute"
+          },
+          "version": "port-v1",
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "sourcecommitInput"
+            }
+          },
+          "outputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "sourcecommitReceipt"
+            }
+          },
+          "required": true
+        },
+        {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "sourcecommitQueryPort"
+          },
+          "version": "port-v1",
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "sourcecommitQuery"
+            }
+          },
+          "outputType": {
+            "form": "optional",
+            "element": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "sourcecommitReceipt"
+              }
+            }
+          },
+          "required": true
+        },
+        {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "sourcecompensateExecute"
+          },
+          "version": "port-v1",
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "sourcecompensateInput"
+            }
+          },
+          "outputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "sourcecompensateReceipt"
+            }
+          },
+          "required": true
+        },
+        {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "sourcecompensateQueryPort"
+          },
+          "version": "port-v1",
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "sourcecompensateQuery"
+            }
+          },
+          "outputType": {
+            "form": "optional",
+            "element": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "sourcecompensateReceipt"
+              }
+            }
+          },
+          "required": true
+        },
+        {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "targetprepareExecute"
+          },
+          "version": "port-v1",
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "targetprepareInput"
+            }
+          },
+          "outputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "targetprepareReceipt"
+            }
+          },
+          "required": true
+        },
+        {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "targetprepareQueryPort"
+          },
+          "version": "port-v1",
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "targetprepareQuery"
+            }
+          },
+          "outputType": {
+            "form": "optional",
+            "element": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "targetprepareReceipt"
+              }
+            }
+          },
+          "required": true
+        },
+        {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "targetcommitExecute"
+          },
+          "version": "port-v1",
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "targetcommitInput"
+            }
+          },
+          "outputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "targetcommitReceipt"
+            }
+          },
+          "required": true
+        },
+        {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "targetcommitQueryPort"
+          },
+          "version": "port-v1",
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "targetcommitQuery"
+            }
+          },
+          "outputType": {
+            "form": "optional",
+            "element": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "targetcommitReceipt"
+              }
+            }
+          },
+          "required": true
+        },
+        {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "targetcompensateExecute"
+          },
+          "version": "port-v1",
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "targetcompensateInput"
+            }
+          },
+          "outputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "targetcompensateReceipt"
+            }
+          },
+          "required": true
+        },
+        {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "targetcompensateQueryPort"
+          },
+          "version": "port-v1",
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "targetcompensateQuery"
+            }
+          },
+          "outputType": {
+            "form": "optional",
+            "element": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "targetcompensateReceipt"
+              }
+            }
+          },
+          "required": true
+        },
+        {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Authoritysucceeded"
+          },
+          "version": "port-v1",
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "OriginalTransfer"
+            }
+          },
+          "outputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "Completionsucceeded"
+            }
+          },
+          "required": true
+        },
+        {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Deliverysucceeded"
+          },
+          "version": "port-v1",
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "Completionsucceeded"
+            }
+          },
+          "outputType": {
+            "form": "primitive",
+            "name": "boolean"
+          },
+          "required": true
+        },
+        {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Authorityrejected-before-effects"
+          },
+          "version": "port-v1",
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "OriginalTransfer"
+            }
+          },
+          "outputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "Completionrejectedbeforeeffects"
+            }
+          },
+          "required": true
+        },
+        {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Deliveryrejected-before-effects"
+          },
+          "version": "port-v1",
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "Completionrejectedbeforeeffects"
+            }
+          },
+          "outputType": {
+            "form": "primitive",
+            "name": "boolean"
+          },
+          "required": true
+        },
+        {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Authoritycompensated"
+          },
+          "version": "port-v1",
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "OriginalTransfer"
+            }
+          },
+          "outputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "Completioncompensated"
+            }
+          },
+          "required": true
+        },
+        {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Deliverycompensated"
+          },
+          "version": "port-v1",
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "Completioncompensated"
+            }
+          },
+          "outputType": {
+            "form": "primitive",
+            "name": "boolean"
+          },
+          "required": true
+        },
+        {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Authorityrecovery-required"
+          },
+          "version": "port-v1",
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "OriginalTransfer"
+            }
+          },
+          "outputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "Completionrecoveryrequired"
+            }
+          },
+          "required": true
+        },
+        {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Deliveryrecovery-required"
+          },
+          "version": "port-v1",
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "Completionrecoveryrequired"
+            }
+          },
+          "outputType": {
+            "form": "primitive",
+            "name": "boolean"
+          },
+          "required": true
+        },
+        {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Authorityoutcome-unknown"
+          },
+          "version": "port-v1",
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "OriginalTransfer"
+            }
+          },
+          "outputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "Completionoutcomeunknown"
+            }
+          },
+          "required": true
+        },
+        {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Deliveryoutcome-unknown"
+          },
+          "version": "port-v1",
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "Completionoutcomeunknown"
+            }
+          },
+          "outputType": {
+            "form": "primitive",
+            "name": "boolean"
+          },
+          "required": true
+        }
+      ],
+      "deployment": {
+        "id": "local-test",
+        "version": "deployment-v1",
+        "secretRefs": []
+      },
+      "implementations": [
+        {
+          "port": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Entry"
+          },
+          "id": "fixture.Entry",
+          "version": "impl-v1"
+        },
+        {
+          "port": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Association"
+          },
+          "id": "fixture.Association",
+          "version": "impl-v1"
+        },
+        {
+          "port": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "sourceprepareExecute"
+          },
+          "id": "fixture.sourceprepareExecute",
+          "version": "impl-v1"
+        },
+        {
+          "port": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "sourceprepareQueryPort"
+          },
+          "id": "fixture.sourceprepareQueryPort",
+          "version": "impl-v1"
+        },
+        {
+          "port": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "sourcecommitExecute"
+          },
+          "id": "fixture.sourcecommitExecute",
+          "version": "impl-v1"
+        },
+        {
+          "port": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "sourcecommitQueryPort"
+          },
+          "id": "fixture.sourcecommitQueryPort",
+          "version": "impl-v1"
+        },
+        {
+          "port": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "sourcecompensateExecute"
+          },
+          "id": "fixture.sourcecompensateExecute",
+          "version": "impl-v1"
+        },
+        {
+          "port": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "sourcecompensateQueryPort"
+          },
+          "id": "fixture.sourcecompensateQueryPort",
+          "version": "impl-v1"
+        },
+        {
+          "port": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "targetprepareExecute"
+          },
+          "id": "fixture.targetprepareExecute",
+          "version": "impl-v1"
+        },
+        {
+          "port": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "targetprepareQueryPort"
+          },
+          "id": "fixture.targetprepareQueryPort",
+          "version": "impl-v1"
+        },
+        {
+          "port": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "targetcommitExecute"
+          },
+          "id": "fixture.targetcommitExecute",
+          "version": "impl-v1"
+        },
+        {
+          "port": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "targetcommitQueryPort"
+          },
+          "id": "fixture.targetcommitQueryPort",
+          "version": "impl-v1"
+        },
+        {
+          "port": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "targetcompensateExecute"
+          },
+          "id": "fixture.targetcompensateExecute",
+          "version": "impl-v1"
+        },
+        {
+          "port": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "targetcompensateQueryPort"
+          },
+          "id": "fixture.targetcompensateQueryPort",
+          "version": "impl-v1"
+        },
+        {
+          "port": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Authoritysucceeded"
+          },
+          "id": "fixture.Authoritysucceeded",
+          "version": "impl-v1"
+        },
+        {
+          "port": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Deliverysucceeded"
+          },
+          "id": "fixture.Deliverysucceeded",
+          "version": "impl-v1"
+        },
+        {
+          "port": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Authorityrejected-before-effects"
+          },
+          "id": "fixture.Authorityrejected-before-effects",
+          "version": "impl-v1"
+        },
+        {
+          "port": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Deliveryrejected-before-effects"
+          },
+          "id": "fixture.Deliveryrejected-before-effects",
+          "version": "impl-v1"
+        },
+        {
+          "port": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Authoritycompensated"
+          },
+          "id": "fixture.Authoritycompensated",
+          "version": "impl-v1"
+        },
+        {
+          "port": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Deliverycompensated"
+          },
+          "id": "fixture.Deliverycompensated",
+          "version": "impl-v1"
+        },
+        {
+          "port": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Authorityrecovery-required"
+          },
+          "id": "fixture.Authorityrecovery-required",
+          "version": "impl-v1"
+        },
+        {
+          "port": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Deliveryrecovery-required"
+          },
+          "id": "fixture.Deliveryrecovery-required",
+          "version": "impl-v1"
+        },
+        {
+          "port": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Authorityoutcome-unknown"
+          },
+          "id": "fixture.Authorityoutcome-unknown",
+          "version": "impl-v1"
+        },
+        {
+          "port": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Deliveryoutcome-unknown"
+          },
+          "id": "fixture.Deliveryoutcome-unknown",
+          "version": "impl-v1"
+        }
+      ]
+    }
+  ],
+  "sagaHosts": [
+    {
+      "id": "account-transfer-host",
+      "version": "host-v1",
+      "saga": {
+        "ref": {
+          "context": "accounts",
+          "kind": "saga",
+          "owner": [],
+          "id": "money-transfer"
+        },
+        "version": "v2"
+      },
+      "entry": {
+        "triggerId": "from-event",
+        "kind": "event",
+        "source": {
+          "context": "accounts",
+          "kind": "event",
+          "owner": [
+            "CreditBalance"
+          ],
+          "id": "TransferRequested"
+        },
+        "inputType": {
+          "form": "nominal",
+          "ref": {
+            "context": "accounts",
+            "kind": "type",
+            "owner": [],
+            "id": "OriginalTransfer"
+          }
+        },
+        "port": {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Entry"
+          },
+          "version": "port-v1"
+        },
+        "startOwner": {
+          "kind": "direct",
+          "ref": null,
+          "stepId": null
+        }
+      },
+      "association": {
+        "id": "original-association",
+        "version": "association-v1",
+        "port": {
+          "ref": {
+            "context": "accounts",
+            "kind": "port",
+            "owner": [],
+            "id": "Association"
+          },
+          "version": "port-v1"
+        },
+        "inputKeys": [
+          {
+            "context": "accounts",
+            "kind": "event-slot",
+            "owner": [
+              "CreditBalance",
+              "TransferRequested"
+            ],
+            "id": "operationId"
+          }
+        ],
+        "originalInputs": [
+          {
+            "context": "accounts",
+            "kind": "event-slot",
+            "owner": [
+              "CreditBalance",
+              "TransferRequested"
+            ],
+            "id": "operationId"
+          },
+          {
+            "context": "accounts",
+            "kind": "event-slot",
+            "owner": [
+              "CreditBalance",
+              "TransferRequested"
+            ],
+            "id": "from"
+          },
+          {
+            "context": "accounts",
+            "kind": "event-slot",
+            "owner": [
+              "CreditBalance",
+              "TransferRequested"
+            ],
+            "id": "to"
+          },
+          {
+            "context": "accounts",
+            "kind": "event-slot",
+            "owner": [
+              "CreditBalance",
+              "TransferRequested"
+            ],
+            "id": "amount"
+          }
+        ],
+        "encoding": "length-prefixed-utf8",
+        "before": "phase-effects",
+        "conflict": "reject-different-input"
+      },
+      "participants": [
+        {
+          "stepId": "reserve-source",
+          "participantId": "source",
+          "aggregate": {
+            "context": "accounts",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "CreditBalance"
+          },
+          "resourceInput": {
+            "context": "accounts",
+            "kind": "event-slot",
+            "owner": [
+              "CreditBalance",
+              "TransferRequested"
+            ],
+            "id": "from"
+          },
+          "phases": [
+            {
+              "phase": "prepare",
+              "command": {
+                "context": "accounts",
+                "kind": "command",
+                "owner": [
+                  "CreditBalance"
+                ],
+                "id": "ReserveFunds"
+              },
+              "parameters": [
+                {
+                  "parameter": {
+                    "context": "accounts",
+                    "kind": "parameter",
+                    "owner": [
+                      "CreditBalance",
+                      "ReserveFunds"
+                    ],
+                    "id": "txid"
+                  },
+                  "input": {
+                    "kind": "transaction-id"
+                  }
+                },
+                {
+                  "parameter": {
+                    "context": "accounts",
+                    "kind": "parameter",
+                    "owner": [
+                      "CreditBalance",
+                      "ReserveFunds"
+                    ],
+                    "id": "resource"
+                  },
+                  "input": {
+                    "kind": "args",
+                    "slot": "from"
+                  }
+                },
+                {
+                  "parameter": {
+                    "context": "accounts",
+                    "kind": "parameter",
+                    "owner": [
+                      "CreditBalance",
+                      "ReserveFunds"
+                    ],
+                    "id": "amount"
+                  },
+                  "input": {
+                    "kind": "args",
+                    "slot": "amount"
+                  }
+                }
+              ],
+              "inputType": {
+                "form": "nominal",
+                "ref": {
+                  "context": "accounts",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "sourceprepareInput"
+                }
+              },
+              "executePort": {
+                "ref": {
+                  "context": "accounts",
+                  "kind": "port",
+                  "owner": [],
+                  "id": "sourceprepareExecute"
+                },
+                "version": "port-v1"
+              },
+              "confirmation": {
+                "event": {
+                  "context": "accounts",
+                  "kind": "event",
+                  "owner": [
+                    "CreditBalance"
+                  ],
+                  "id": "ReserveFundsConfirmed"
+                },
+                "outputs": [
+                  {
+                    "slot": {
+                      "context": "accounts",
+                      "kind": "event-slot",
+                      "owner": [
+                        "CreditBalance",
+                        "ReserveFundsConfirmed"
+                      ],
+                      "id": "txid"
+                    },
+                    "output": "txid"
+                  },
+                  {
+                    "slot": {
+                      "context": "accounts",
+                      "kind": "event-slot",
+                      "owner": [
+                        "CreditBalance",
+                        "ReserveFundsConfirmed"
+                      ],
+                      "id": "amount"
+                    },
+                    "output": "amount"
+                  }
+                ]
+              },
+              "query": {
+                "port": {
+                  "ref": {
+                    "context": "accounts",
+                    "kind": "port",
+                    "owner": [],
+                    "id": "sourceprepareQueryPort"
+                  },
+                  "version": "port-v1"
+                },
+                "inputType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "accounts",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "sourceprepareQuery"
+                  }
+                },
+                "mode": "read-only",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ]
+              },
+              "evidence": {
+                "kind": "typed-record",
+                "receiptType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "accounts",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "sourceprepareReceipt"
+                  }
+                },
+                "identity": [
+                  {
+                    "key": "txid",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "sourceprepareReceipt"
+                      ],
+                      "id": "txid"
+                    }
+                  },
+                  {
+                    "key": "definition-version",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "sourceprepareReceipt"
+                      ],
+                      "id": "definition-version"
+                    }
+                  },
+                  {
+                    "key": "args-digest",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "sourceprepareReceipt"
+                      ],
+                      "id": "args-digest"
+                    }
+                  },
+                  {
+                    "key": "participant",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "sourceprepareReceipt"
+                      ],
+                      "id": "participant"
+                    }
+                  },
+                  {
+                    "key": "resource",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "sourceprepareReceipt"
+                      ],
+                      "id": "resource"
+                    }
+                  },
+                  {
+                    "key": "step",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "sourceprepareReceipt"
+                      ],
+                      "id": "step"
+                    }
+                  },
+                  {
+                    "key": "phase",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "sourceprepareReceipt"
+                      ],
+                      "id": "phase"
+                    }
+                  }
+                ],
+                "payload": [
+                  {
+                    "output": "txid",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "sourceprepareReceipt"
+                      ],
+                      "id": "output-txid"
+                    }
+                  },
+                  {
+                    "output": "amount",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "sourceprepareReceipt"
+                      ],
+                      "id": "output-amount"
+                    }
+                  }
+                ],
+                "codec": {
+                  "contract": {
+                    "id": "reserve-source-prepare-receipt",
+                    "version": "receipt-v1"
+                  },
+                  "runtime": {
+                    "id": "reserve-source-prepare-receipt",
+                    "version": 1
+                  }
+                },
+                "payloadCompatibility": "exact"
+              }
+            },
+            {
+              "phase": "commit",
+              "command": {
+                "context": "accounts",
+                "kind": "command",
+                "owner": [
+                  "CreditBalance"
+                ],
+                "id": "DeductFunds"
+              },
+              "parameters": [
+                {
+                  "parameter": {
+                    "context": "accounts",
+                    "kind": "parameter",
+                    "owner": [
+                      "CreditBalance",
+                      "DeductFunds"
+                    ],
+                    "id": "txid"
+                  },
+                  "input": {
+                    "kind": "transaction-id"
+                  }
+                },
+                {
+                  "parameter": {
+                    "context": "accounts",
+                    "kind": "parameter",
+                    "owner": [
+                      "CreditBalance",
+                      "DeductFunds"
+                    ],
+                    "id": "resource"
+                  },
+                  "input": {
+                    "kind": "args",
+                    "slot": "from"
+                  }
+                }
+              ],
+              "inputType": {
+                "form": "nominal",
+                "ref": {
+                  "context": "accounts",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "sourcecommitInput"
+                }
+              },
+              "executePort": {
+                "ref": {
+                  "context": "accounts",
+                  "kind": "port",
+                  "owner": [],
+                  "id": "sourcecommitExecute"
+                },
+                "version": "port-v1"
+              },
+              "confirmation": {
+                "event": {
+                  "context": "accounts",
+                  "kind": "event",
+                  "owner": [
+                    "CreditBalance"
+                  ],
+                  "id": "DeductFundsConfirmed"
+                },
+                "outputs": [
+                  {
+                    "slot": {
+                      "context": "accounts",
+                      "kind": "event-slot",
+                      "owner": [
+                        "CreditBalance",
+                        "DeductFundsConfirmed"
+                      ],
+                      "id": "txid"
+                    },
+                    "output": "txid"
+                  }
+                ]
+              },
+              "query": {
+                "port": {
+                  "ref": {
+                    "context": "accounts",
+                    "kind": "port",
+                    "owner": [],
+                    "id": "sourcecommitQueryPort"
+                  },
+                  "version": "port-v1"
+                },
+                "inputType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "accounts",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "sourcecommitQuery"
+                  }
+                },
+                "mode": "read-only",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ]
+              },
+              "evidence": {
+                "kind": "typed-record",
+                "receiptType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "accounts",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "sourcecommitReceipt"
+                  }
+                },
+                "identity": [
+                  {
+                    "key": "txid",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "sourcecommitReceipt"
+                      ],
+                      "id": "txid"
+                    }
+                  },
+                  {
+                    "key": "definition-version",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "sourcecommitReceipt"
+                      ],
+                      "id": "definition-version"
+                    }
+                  },
+                  {
+                    "key": "args-digest",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "sourcecommitReceipt"
+                      ],
+                      "id": "args-digest"
+                    }
+                  },
+                  {
+                    "key": "participant",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "sourcecommitReceipt"
+                      ],
+                      "id": "participant"
+                    }
+                  },
+                  {
+                    "key": "resource",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "sourcecommitReceipt"
+                      ],
+                      "id": "resource"
+                    }
+                  },
+                  {
+                    "key": "step",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "sourcecommitReceipt"
+                      ],
+                      "id": "step"
+                    }
+                  },
+                  {
+                    "key": "phase",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "sourcecommitReceipt"
+                      ],
+                      "id": "phase"
+                    }
+                  }
+                ],
+                "payload": [
+                  {
+                    "output": "txid",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "sourcecommitReceipt"
+                      ],
+                      "id": "output-txid"
+                    }
+                  }
+                ],
+                "codec": {
+                  "contract": {
+                    "id": "reserve-source-commit-receipt",
+                    "version": "receipt-v1"
+                  },
+                  "runtime": {
+                    "id": "reserve-source-commit-receipt",
+                    "version": 1
+                  }
+                },
+                "payloadCompatibility": "exact"
+              }
+            },
+            {
+              "phase": "compensate",
+              "command": {
+                "context": "accounts",
+                "kind": "command",
+                "owner": [
+                  "CreditBalance"
+                ],
+                "id": "ReleaseReservedFunds"
+              },
+              "parameters": [
+                {
+                  "parameter": {
+                    "context": "accounts",
+                    "kind": "parameter",
+                    "owner": [
+                      "CreditBalance",
+                      "ReleaseReservedFunds"
+                    ],
+                    "id": "txid"
+                  },
+                  "input": {
+                    "kind": "transaction-id"
+                  }
+                },
+                {
+                  "parameter": {
+                    "context": "accounts",
+                    "kind": "parameter",
+                    "owner": [
+                      "CreditBalance",
+                      "ReleaseReservedFunds"
+                    ],
+                    "id": "resource"
+                  },
+                  "input": {
+                    "kind": "args",
+                    "slot": "from"
+                  }
+                }
+              ],
+              "inputType": {
+                "form": "nominal",
+                "ref": {
+                  "context": "accounts",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "sourcecompensateInput"
+                }
+              },
+              "executePort": {
+                "ref": {
+                  "context": "accounts",
+                  "kind": "port",
+                  "owner": [],
+                  "id": "sourcecompensateExecute"
+                },
+                "version": "port-v1"
+              },
+              "confirmation": {
+                "event": {
+                  "context": "accounts",
+                  "kind": "event",
+                  "owner": [
+                    "CreditBalance"
+                  ],
+                  "id": "ReleaseReservedFundsConfirmed"
+                },
+                "outputs": [
+                  {
+                    "slot": {
+                      "context": "accounts",
+                      "kind": "event-slot",
+                      "owner": [
+                        "CreditBalance",
+                        "ReleaseReservedFundsConfirmed"
+                      ],
+                      "id": "txid"
+                    },
+                    "output": "txid"
+                  }
+                ]
+              },
+              "query": {
+                "port": {
+                  "ref": {
+                    "context": "accounts",
+                    "kind": "port",
+                    "owner": [],
+                    "id": "sourcecompensateQueryPort"
+                  },
+                  "version": "port-v1"
+                },
+                "inputType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "accounts",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "sourcecompensateQuery"
+                  }
+                },
+                "mode": "read-only",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ]
+              },
+              "evidence": {
+                "kind": "typed-record",
+                "receiptType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "accounts",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "sourcecompensateReceipt"
+                  }
+                },
+                "identity": [
+                  {
+                    "key": "txid",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "sourcecompensateReceipt"
+                      ],
+                      "id": "txid"
+                    }
+                  },
+                  {
+                    "key": "definition-version",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "sourcecompensateReceipt"
+                      ],
+                      "id": "definition-version"
+                    }
+                  },
+                  {
+                    "key": "args-digest",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "sourcecompensateReceipt"
+                      ],
+                      "id": "args-digest"
+                    }
+                  },
+                  {
+                    "key": "participant",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "sourcecompensateReceipt"
+                      ],
+                      "id": "participant"
+                    }
+                  },
+                  {
+                    "key": "resource",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "sourcecompensateReceipt"
+                      ],
+                      "id": "resource"
+                    }
+                  },
+                  {
+                    "key": "step",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "sourcecompensateReceipt"
+                      ],
+                      "id": "step"
+                    }
+                  },
+                  {
+                    "key": "phase",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "sourcecompensateReceipt"
+                      ],
+                      "id": "phase"
+                    }
+                  }
+                ],
+                "payload": [
+                  {
+                    "output": "txid",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "sourcecompensateReceipt"
+                      ],
+                      "id": "output-txid"
+                    }
+                  }
+                ],
+                "codec": {
+                  "contract": {
+                    "id": "reserve-source-compensate-receipt",
+                    "version": "receipt-v1"
+                  },
+                  "runtime": {
+                    "id": "reserve-source-compensate-receipt",
+                    "version": 1
+                  }
+                },
+                "payloadCompatibility": "exact"
+              }
+            }
+          ]
+        },
+        {
+          "stepId": "reserve-target",
+          "participantId": "target",
+          "aggregate": {
+            "context": "accounts",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "CreditBalance"
+          },
+          "resourceInput": {
+            "context": "accounts",
+            "kind": "event-slot",
+            "owner": [
+              "CreditBalance",
+              "TransferRequested"
+            ],
+            "id": "to"
+          },
+          "phases": [
+            {
+              "phase": "prepare",
+              "command": {
+                "context": "accounts",
+                "kind": "command",
+                "owner": [
+                  "CreditBalance"
+                ],
+                "id": "RecordIncomingCredits"
+              },
+              "parameters": [
+                {
+                  "parameter": {
+                    "context": "accounts",
+                    "kind": "parameter",
+                    "owner": [
+                      "CreditBalance",
+                      "RecordIncomingCredits"
+                    ],
+                    "id": "txid"
+                  },
+                  "input": {
+                    "kind": "transaction-id"
+                  }
+                },
+                {
+                  "parameter": {
+                    "context": "accounts",
+                    "kind": "parameter",
+                    "owner": [
+                      "CreditBalance",
+                      "RecordIncomingCredits"
+                    ],
+                    "id": "resource"
+                  },
+                  "input": {
+                    "kind": "args",
+                    "slot": "to"
+                  }
+                },
+                {
+                  "parameter": {
+                    "context": "accounts",
+                    "kind": "parameter",
+                    "owner": [
+                      "CreditBalance",
+                      "RecordIncomingCredits"
+                    ],
+                    "id": "amount"
+                  },
+                  "input": {
+                    "kind": "args",
+                    "slot": "amount"
+                  }
+                }
+              ],
+              "inputType": {
+                "form": "nominal",
+                "ref": {
+                  "context": "accounts",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "targetprepareInput"
+                }
+              },
+              "executePort": {
+                "ref": {
+                  "context": "accounts",
+                  "kind": "port",
+                  "owner": [],
+                  "id": "targetprepareExecute"
+                },
+                "version": "port-v1"
+              },
+              "confirmation": {
+                "event": {
+                  "context": "accounts",
+                  "kind": "event",
+                  "owner": [
+                    "CreditBalance"
+                  ],
+                  "id": "RecordIncomingCreditsConfirmed"
+                },
+                "outputs": [
+                  {
+                    "slot": {
+                      "context": "accounts",
+                      "kind": "event-slot",
+                      "owner": [
+                        "CreditBalance",
+                        "RecordIncomingCreditsConfirmed"
+                      ],
+                      "id": "txid"
+                    },
+                    "output": "txid"
+                  },
+                  {
+                    "slot": {
+                      "context": "accounts",
+                      "kind": "event-slot",
+                      "owner": [
+                        "CreditBalance",
+                        "RecordIncomingCreditsConfirmed"
+                      ],
+                      "id": "amount"
+                    },
+                    "output": "amount"
+                  }
+                ]
+              },
+              "query": {
+                "port": {
+                  "ref": {
+                    "context": "accounts",
+                    "kind": "port",
+                    "owner": [],
+                    "id": "targetprepareQueryPort"
+                  },
+                  "version": "port-v1"
+                },
+                "inputType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "accounts",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "targetprepareQuery"
+                  }
+                },
+                "mode": "read-only",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ]
+              },
+              "evidence": {
+                "kind": "typed-record",
+                "receiptType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "accounts",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "targetprepareReceipt"
+                  }
+                },
+                "identity": [
+                  {
+                    "key": "txid",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "targetprepareReceipt"
+                      ],
+                      "id": "txid"
+                    }
+                  },
+                  {
+                    "key": "definition-version",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "targetprepareReceipt"
+                      ],
+                      "id": "definition-version"
+                    }
+                  },
+                  {
+                    "key": "args-digest",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "targetprepareReceipt"
+                      ],
+                      "id": "args-digest"
+                    }
+                  },
+                  {
+                    "key": "participant",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "targetprepareReceipt"
+                      ],
+                      "id": "participant"
+                    }
+                  },
+                  {
+                    "key": "resource",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "targetprepareReceipt"
+                      ],
+                      "id": "resource"
+                    }
+                  },
+                  {
+                    "key": "step",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "targetprepareReceipt"
+                      ],
+                      "id": "step"
+                    }
+                  },
+                  {
+                    "key": "phase",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "targetprepareReceipt"
+                      ],
+                      "id": "phase"
+                    }
+                  }
+                ],
+                "payload": [
+                  {
+                    "output": "txid",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "targetprepareReceipt"
+                      ],
+                      "id": "output-txid"
+                    }
+                  },
+                  {
+                    "output": "amount",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "targetprepareReceipt"
+                      ],
+                      "id": "output-amount"
+                    }
+                  }
+                ],
+                "codec": {
+                  "contract": {
+                    "id": "reserve-target-prepare-receipt",
+                    "version": "receipt-v1"
+                  },
+                  "runtime": {
+                    "id": "reserve-target-prepare-receipt",
+                    "version": 1
+                  }
+                },
+                "payloadCompatibility": "exact"
+              }
+            },
+            {
+              "phase": "commit",
+              "command": {
+                "context": "accounts",
+                "kind": "command",
+                "owner": [
+                  "CreditBalance"
+                ],
+                "id": "CommitIncomingCredits"
+              },
+              "parameters": [
+                {
+                  "parameter": {
+                    "context": "accounts",
+                    "kind": "parameter",
+                    "owner": [
+                      "CreditBalance",
+                      "CommitIncomingCredits"
+                    ],
+                    "id": "txid"
+                  },
+                  "input": {
+                    "kind": "transaction-id"
+                  }
+                },
+                {
+                  "parameter": {
+                    "context": "accounts",
+                    "kind": "parameter",
+                    "owner": [
+                      "CreditBalance",
+                      "CommitIncomingCredits"
+                    ],
+                    "id": "resource"
+                  },
+                  "input": {
+                    "kind": "args",
+                    "slot": "to"
+                  }
+                }
+              ],
+              "inputType": {
+                "form": "nominal",
+                "ref": {
+                  "context": "accounts",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "targetcommitInput"
+                }
+              },
+              "executePort": {
+                "ref": {
+                  "context": "accounts",
+                  "kind": "port",
+                  "owner": [],
+                  "id": "targetcommitExecute"
+                },
+                "version": "port-v1"
+              },
+              "confirmation": {
+                "event": {
+                  "context": "accounts",
+                  "kind": "event",
+                  "owner": [
+                    "CreditBalance"
+                  ],
+                  "id": "CommitIncomingCreditsConfirmed"
+                },
+                "outputs": [
+                  {
+                    "slot": {
+                      "context": "accounts",
+                      "kind": "event-slot",
+                      "owner": [
+                        "CreditBalance",
+                        "CommitIncomingCreditsConfirmed"
+                      ],
+                      "id": "txid"
+                    },
+                    "output": "txid"
+                  }
+                ]
+              },
+              "query": {
+                "port": {
+                  "ref": {
+                    "context": "accounts",
+                    "kind": "port",
+                    "owner": [],
+                    "id": "targetcommitQueryPort"
+                  },
+                  "version": "port-v1"
+                },
+                "inputType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "accounts",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "targetcommitQuery"
+                  }
+                },
+                "mode": "read-only",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ]
+              },
+              "evidence": {
+                "kind": "typed-record",
+                "receiptType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "accounts",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "targetcommitReceipt"
+                  }
+                },
+                "identity": [
+                  {
+                    "key": "txid",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "targetcommitReceipt"
+                      ],
+                      "id": "txid"
+                    }
+                  },
+                  {
+                    "key": "definition-version",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "targetcommitReceipt"
+                      ],
+                      "id": "definition-version"
+                    }
+                  },
+                  {
+                    "key": "args-digest",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "targetcommitReceipt"
+                      ],
+                      "id": "args-digest"
+                    }
+                  },
+                  {
+                    "key": "participant",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "targetcommitReceipt"
+                      ],
+                      "id": "participant"
+                    }
+                  },
+                  {
+                    "key": "resource",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "targetcommitReceipt"
+                      ],
+                      "id": "resource"
+                    }
+                  },
+                  {
+                    "key": "step",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "targetcommitReceipt"
+                      ],
+                      "id": "step"
+                    }
+                  },
+                  {
+                    "key": "phase",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "targetcommitReceipt"
+                      ],
+                      "id": "phase"
+                    }
+                  }
+                ],
+                "payload": [
+                  {
+                    "output": "txid",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "targetcommitReceipt"
+                      ],
+                      "id": "output-txid"
+                    }
+                  }
+                ],
+                "codec": {
+                  "contract": {
+                    "id": "reserve-target-commit-receipt",
+                    "version": "receipt-v1"
+                  },
+                  "runtime": {
+                    "id": "reserve-target-commit-receipt",
+                    "version": 1
+                  }
+                },
+                "payloadCompatibility": "exact"
+              }
+            },
+            {
+              "phase": "compensate",
+              "command": {
+                "context": "accounts",
+                "kind": "command",
+                "owner": [
+                  "CreditBalance"
+                ],
+                "id": "CancelIncomingCredit"
+              },
+              "parameters": [
+                {
+                  "parameter": {
+                    "context": "accounts",
+                    "kind": "parameter",
+                    "owner": [
+                      "CreditBalance",
+                      "CancelIncomingCredit"
+                    ],
+                    "id": "txid"
+                  },
+                  "input": {
+                    "kind": "transaction-id"
+                  }
+                },
+                {
+                  "parameter": {
+                    "context": "accounts",
+                    "kind": "parameter",
+                    "owner": [
+                      "CreditBalance",
+                      "CancelIncomingCredit"
+                    ],
+                    "id": "resource"
+                  },
+                  "input": {
+                    "kind": "args",
+                    "slot": "to"
+                  }
+                }
+              ],
+              "inputType": {
+                "form": "nominal",
+                "ref": {
+                  "context": "accounts",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "targetcompensateInput"
+                }
+              },
+              "executePort": {
+                "ref": {
+                  "context": "accounts",
+                  "kind": "port",
+                  "owner": [],
+                  "id": "targetcompensateExecute"
+                },
+                "version": "port-v1"
+              },
+              "confirmation": {
+                "event": {
+                  "context": "accounts",
+                  "kind": "event",
+                  "owner": [
+                    "CreditBalance"
+                  ],
+                  "id": "CancelIncomingCreditConfirmed"
+                },
+                "outputs": [
+                  {
+                    "slot": {
+                      "context": "accounts",
+                      "kind": "event-slot",
+                      "owner": [
+                        "CreditBalance",
+                        "CancelIncomingCreditConfirmed"
+                      ],
+                      "id": "txid"
+                    },
+                    "output": "txid"
+                  }
+                ]
+              },
+              "query": {
+                "port": {
+                  "ref": {
+                    "context": "accounts",
+                    "kind": "port",
+                    "owner": [],
+                    "id": "targetcompensateQueryPort"
+                  },
+                  "version": "port-v1"
+                },
+                "inputType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "accounts",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "targetcompensateQuery"
+                  }
+                },
+                "mode": "read-only",
+                "identity": [
+                  "txid",
+                  "definition-version",
+                  "args-digest",
+                  "participant",
+                  "resource",
+                  "step",
+                  "phase"
+                ]
+              },
+              "evidence": {
+                "kind": "typed-record",
+                "receiptType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "accounts",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "targetcompensateReceipt"
+                  }
+                },
+                "identity": [
+                  {
+                    "key": "txid",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "targetcompensateReceipt"
+                      ],
+                      "id": "txid"
+                    }
+                  },
+                  {
+                    "key": "definition-version",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "targetcompensateReceipt"
+                      ],
+                      "id": "definition-version"
+                    }
+                  },
+                  {
+                    "key": "args-digest",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "targetcompensateReceipt"
+                      ],
+                      "id": "args-digest"
+                    }
+                  },
+                  {
+                    "key": "participant",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "targetcompensateReceipt"
+                      ],
+                      "id": "participant"
+                    }
+                  },
+                  {
+                    "key": "resource",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "targetcompensateReceipt"
+                      ],
+                      "id": "resource"
+                    }
+                  },
+                  {
+                    "key": "step",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "targetcompensateReceipt"
+                      ],
+                      "id": "step"
+                    }
+                  },
+                  {
+                    "key": "phase",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "targetcompensateReceipt"
+                      ],
+                      "id": "phase"
+                    }
+                  }
+                ],
+                "payload": [
+                  {
+                    "output": "txid",
+                    "member": {
+                      "context": "accounts",
+                      "kind": "member",
+                      "owner": [
+                        "targetcompensateReceipt"
+                      ],
+                      "id": "output-txid"
+                    }
+                  }
+                ],
+                "codec": {
+                  "contract": {
+                    "id": "reserve-target-compensate-receipt",
+                    "version": "receipt-v1"
+                  },
+                  "runtime": {
+                    "id": "reserve-target-compensate-receipt",
+                    "version": 1
+                  }
+                },
+                "payloadCompatibility": "exact"
+              }
+            }
+          ]
+        }
+      ],
+      "results": [
+        {
+          "kind": "succeeded",
+          "event": {
+            "context": "accounts",
+            "kind": "event",
+            "owner": [
+              "CreditBalance"
+            ],
+            "id": "result-succeeded"
+          },
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "Completionsucceeded"
+            }
+          },
+          "destination": {
+            "aggregate": {
+              "context": "accounts",
+              "kind": "aggregate",
+              "owner": [],
+              "id": "CreditBalance"
+            },
+            "resourceInput": {
+              "context": "accounts",
+              "kind": "event-slot",
+              "owner": [
+                "CreditBalance",
+                "TransferRequested"
+              ],
+              "id": "to"
+            }
+          },
+          "authorityPort": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Authoritysucceeded"
+            },
+            "version": "port-v1"
+          },
+          "deliveryPort": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Deliverysucceeded"
+            },
+            "version": "port-v1"
+          },
+          "associationVersion": "association-v1",
+          "inputs": [
+            {
+              "slot": {
+                "context": "accounts",
+                "kind": "event-slot",
+                "owner": [
+                  "CreditBalance",
+                  "result-succeeded"
+                ],
+                "id": "txid"
+              },
+              "input": {
+                "kind": "transaction-id"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "rejected-before-effects",
+          "event": {
+            "context": "accounts",
+            "kind": "event",
+            "owner": [
+              "CreditBalance"
+            ],
+            "id": "result-rejected-before-effects"
+          },
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "Completionrejectedbeforeeffects"
+            }
+          },
+          "destination": {
+            "aggregate": {
+              "context": "accounts",
+              "kind": "aggregate",
+              "owner": [],
+              "id": "CreditBalance"
+            },
+            "resourceInput": {
+              "context": "accounts",
+              "kind": "event-slot",
+              "owner": [
+                "CreditBalance",
+                "TransferRequested"
+              ],
+              "id": "to"
+            }
+          },
+          "authorityPort": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Authorityrejected-before-effects"
+            },
+            "version": "port-v1"
+          },
+          "deliveryPort": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Deliveryrejected-before-effects"
+            },
+            "version": "port-v1"
+          },
+          "associationVersion": "association-v1",
+          "inputs": [
+            {
+              "slot": {
+                "context": "accounts",
+                "kind": "event-slot",
+                "owner": [
+                  "CreditBalance",
+                  "result-rejected-before-effects"
+                ],
+                "id": "txid"
+              },
+              "input": {
+                "kind": "transaction-id"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "compensated",
+          "event": {
+            "context": "accounts",
+            "kind": "event",
+            "owner": [
+              "CreditBalance"
+            ],
+            "id": "result-compensated"
+          },
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "Completioncompensated"
+            }
+          },
+          "destination": {
+            "aggregate": {
+              "context": "accounts",
+              "kind": "aggregate",
+              "owner": [],
+              "id": "CreditBalance"
+            },
+            "resourceInput": {
+              "context": "accounts",
+              "kind": "event-slot",
+              "owner": [
+                "CreditBalance",
+                "TransferRequested"
+              ],
+              "id": "to"
+            }
+          },
+          "authorityPort": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Authoritycompensated"
+            },
+            "version": "port-v1"
+          },
+          "deliveryPort": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Deliverycompensated"
+            },
+            "version": "port-v1"
+          },
+          "associationVersion": "association-v1",
+          "inputs": [
+            {
+              "slot": {
+                "context": "accounts",
+                "kind": "event-slot",
+                "owner": [
+                  "CreditBalance",
+                  "result-compensated"
+                ],
+                "id": "txid"
+              },
+              "input": {
+                "kind": "transaction-id"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "recovery-required",
+          "event": {
+            "context": "accounts",
+            "kind": "event",
+            "owner": [
+              "CreditBalance"
+            ],
+            "id": "result-recovery-required"
+          },
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "Completionrecoveryrequired"
+            }
+          },
+          "destination": {
+            "aggregate": {
+              "context": "accounts",
+              "kind": "aggregate",
+              "owner": [],
+              "id": "CreditBalance"
+            },
+            "resourceInput": {
+              "context": "accounts",
+              "kind": "event-slot",
+              "owner": [
+                "CreditBalance",
+                "TransferRequested"
+              ],
+              "id": "to"
+            }
+          },
+          "authorityPort": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Authorityrecovery-required"
+            },
+            "version": "port-v1"
+          },
+          "deliveryPort": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Deliveryrecovery-required"
+            },
+            "version": "port-v1"
+          },
+          "associationVersion": "association-v1",
+          "inputs": [
+            {
+              "slot": {
+                "context": "accounts",
+                "kind": "event-slot",
+                "owner": [
+                  "CreditBalance",
+                  "result-recovery-required"
+                ],
+                "id": "txid"
+              },
+              "input": {
+                "kind": "transaction-id"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "outcome-unknown",
+          "event": {
+            "context": "accounts",
+            "kind": "event",
+            "owner": [
+              "CreditBalance"
+            ],
+            "id": "result-outcome-unknown"
+          },
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "accounts",
+              "kind": "type",
+              "owner": [],
+              "id": "Completionoutcomeunknown"
+            }
+          },
+          "destination": {
+            "aggregate": {
+              "context": "accounts",
+              "kind": "aggregate",
+              "owner": [],
+              "id": "CreditBalance"
+            },
+            "resourceInput": {
+              "context": "accounts",
+              "kind": "event-slot",
+              "owner": [
+                "CreditBalance",
+                "TransferRequested"
+              ],
+              "id": "to"
+            }
+          },
+          "authorityPort": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Authorityoutcome-unknown"
+            },
+            "version": "port-v1"
+          },
+          "deliveryPort": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Deliveryoutcome-unknown"
+            },
+            "version": "port-v1"
+          },
+          "associationVersion": "association-v1",
+          "inputs": [
+            {
+              "slot": {
+                "context": "accounts",
+                "kind": "event-slot",
+                "owner": [
+                  "CreditBalance",
+                  "result-outcome-unknown"
+                ],
+                "id": "txid"
+              },
+              "input": {
+                "kind": "transaction-id"
+              }
+            }
+          ]
+        }
+      ],
+      "technicalPorts": [
+        {
+          "role": "entry",
+          "port": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Entry"
+            },
+            "version": "port-v1"
+          },
+          "implementation": {
+            "id": "fixture.Entry",
+            "version": "impl-v1"
+          }
+        },
+        {
+          "role": "association",
+          "port": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Association"
+            },
+            "version": "port-v1"
+          },
+          "implementation": {
+            "id": "fixture.Association",
+            "version": "impl-v1"
+          }
+        },
+        {
+          "role": "phase-execute",
+          "port": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "sourceprepareExecute"
+            },
+            "version": "port-v1"
+          },
+          "implementation": {
+            "id": "fixture.sourceprepareExecute",
+            "version": "impl-v1"
+          }
+        },
+        {
+          "role": "phase-query",
+          "port": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "sourceprepareQueryPort"
+            },
+            "version": "port-v1"
+          },
+          "implementation": {
+            "id": "fixture.sourceprepareQueryPort",
+            "version": "impl-v1"
+          }
+        },
+        {
+          "role": "phase-execute",
+          "port": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "sourcecommitExecute"
+            },
+            "version": "port-v1"
+          },
+          "implementation": {
+            "id": "fixture.sourcecommitExecute",
+            "version": "impl-v1"
+          }
+        },
+        {
+          "role": "phase-query",
+          "port": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "sourcecommitQueryPort"
+            },
+            "version": "port-v1"
+          },
+          "implementation": {
+            "id": "fixture.sourcecommitQueryPort",
+            "version": "impl-v1"
+          }
+        },
+        {
+          "role": "phase-execute",
+          "port": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "sourcecompensateExecute"
+            },
+            "version": "port-v1"
+          },
+          "implementation": {
+            "id": "fixture.sourcecompensateExecute",
+            "version": "impl-v1"
+          }
+        },
+        {
+          "role": "phase-query",
+          "port": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "sourcecompensateQueryPort"
+            },
+            "version": "port-v1"
+          },
+          "implementation": {
+            "id": "fixture.sourcecompensateQueryPort",
+            "version": "impl-v1"
+          }
+        },
+        {
+          "role": "phase-execute",
+          "port": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "targetprepareExecute"
+            },
+            "version": "port-v1"
+          },
+          "implementation": {
+            "id": "fixture.targetprepareExecute",
+            "version": "impl-v1"
+          }
+        },
+        {
+          "role": "phase-query",
+          "port": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "targetprepareQueryPort"
+            },
+            "version": "port-v1"
+          },
+          "implementation": {
+            "id": "fixture.targetprepareQueryPort",
+            "version": "impl-v1"
+          }
+        },
+        {
+          "role": "phase-execute",
+          "port": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "targetcommitExecute"
+            },
+            "version": "port-v1"
+          },
+          "implementation": {
+            "id": "fixture.targetcommitExecute",
+            "version": "impl-v1"
+          }
+        },
+        {
+          "role": "phase-query",
+          "port": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "targetcommitQueryPort"
+            },
+            "version": "port-v1"
+          },
+          "implementation": {
+            "id": "fixture.targetcommitQueryPort",
+            "version": "impl-v1"
+          }
+        },
+        {
+          "role": "phase-execute",
+          "port": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "targetcompensateExecute"
+            },
+            "version": "port-v1"
+          },
+          "implementation": {
+            "id": "fixture.targetcompensateExecute",
+            "version": "impl-v1"
+          }
+        },
+        {
+          "role": "phase-query",
+          "port": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "targetcompensateQueryPort"
+            },
+            "version": "port-v1"
+          },
+          "implementation": {
+            "id": "fixture.targetcompensateQueryPort",
+            "version": "impl-v1"
+          }
+        },
+        {
+          "role": "authority",
+          "port": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Authoritysucceeded"
+            },
+            "version": "port-v1"
+          },
+          "implementation": {
+            "id": "fixture.Authoritysucceeded",
+            "version": "impl-v1"
+          }
+        },
+        {
+          "role": "result-delivery",
+          "port": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Deliverysucceeded"
+            },
+            "version": "port-v1"
+          },
+          "implementation": {
+            "id": "fixture.Deliverysucceeded",
+            "version": "impl-v1"
+          }
+        },
+        {
+          "role": "authority",
+          "port": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Authorityrejected-before-effects"
+            },
+            "version": "port-v1"
+          },
+          "implementation": {
+            "id": "fixture.Authorityrejected-before-effects",
+            "version": "impl-v1"
+          }
+        },
+        {
+          "role": "result-delivery",
+          "port": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Deliveryrejected-before-effects"
+            },
+            "version": "port-v1"
+          },
+          "implementation": {
+            "id": "fixture.Deliveryrejected-before-effects",
+            "version": "impl-v1"
+          }
+        },
+        {
+          "role": "authority",
+          "port": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Authoritycompensated"
+            },
+            "version": "port-v1"
+          },
+          "implementation": {
+            "id": "fixture.Authoritycompensated",
+            "version": "impl-v1"
+          }
+        },
+        {
+          "role": "result-delivery",
+          "port": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Deliverycompensated"
+            },
+            "version": "port-v1"
+          },
+          "implementation": {
+            "id": "fixture.Deliverycompensated",
+            "version": "impl-v1"
+          }
+        },
+        {
+          "role": "authority",
+          "port": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Authorityrecovery-required"
+            },
+            "version": "port-v1"
+          },
+          "implementation": {
+            "id": "fixture.Authorityrecovery-required",
+            "version": "impl-v1"
+          }
+        },
+        {
+          "role": "result-delivery",
+          "port": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Deliveryrecovery-required"
+            },
+            "version": "port-v1"
+          },
+          "implementation": {
+            "id": "fixture.Deliveryrecovery-required",
+            "version": "impl-v1"
+          }
+        },
+        {
+          "role": "authority",
+          "port": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Authorityoutcome-unknown"
+            },
+            "version": "port-v1"
+          },
+          "implementation": {
+            "id": "fixture.Authorityoutcome-unknown",
+            "version": "impl-v1"
+          }
+        },
+        {
+          "role": "result-delivery",
+          "port": {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Deliveryoutcome-unknown"
+            },
+            "version": "port-v1"
+          },
+          "implementation": {
+            "id": "fixture.Deliveryoutcome-unknown",
+            "version": "impl-v1"
+          }
+        }
+      ],
+      "argsType": {
+        "form": "nominal",
+        "ref": {
+          "context": "accounts",
+          "kind": "type",
+          "owner": [],
+          "id": "RetainedSagaArgs"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "schemaVersion": "truthsrc.exact-codec-binding/v1",
+  "codecs": [
+    {
+      "domain": {
+        "context": "measurement",
+        "kind": "type",
+        "owner": [],
+        "id": "Ratio"
+      },
+      "domainVersion": "1",
+      "id": "ratio-text",
+      "version": "1",
+      "format": "fixed-decimal-text",
+      "wire": {
+        "ref": {
+          "context": "measurement",
+          "kind": "type",
+          "owner": [],
+          "id": "WireRatio"
+        },
+        "version": "1",
+        "amountMember": null,
+        "unitMember": null
+      },
+      "po": {
+        "ref": {
+          "context": "measurement",
+          "kind": "type",
+          "owner": [],
+          "id": "PoRatio"
+        },
+        "version": "1",
+        "amountMember": null,
+        "unitMember": null
+      },
+      "source": {
+        "document": "codecs",
+        "pointer": "/codecs/0"
+      }
+    },
+    {
+      "domain": {
+        "context": "logistics",
+        "kind": "type",
+        "owner": [],
+        "id": "Distance"
+      },
+      "domainVersion": "1",
+      "id": "distance-fixed-text",
+      "version": "1",
+      "format": "fixed-decimal-text",
+      "wire": {
+        "ref": {
+          "context": "logistics",
+          "kind": "type",
+          "owner": [],
+          "id": "WireDistance"
+        },
+        "version": "1",
+        "amountMember": {
+          "context": "logistics",
+          "kind": "member",
+          "owner": [
+            "WireDistance"
+          ],
+          "id": "wAmount"
+        },
+        "unitMember": {
+          "context": "logistics",
+          "kind": "member",
+          "owner": [
+            "WireDistance"
+          ],
+          "id": "wUnit"
+        }
+      },
+      "po": {
+        "ref": {
+          "context": "logistics",
+          "kind": "type",
+          "owner": [],
+          "id": "PoDistance"
+        },
+        "version": "1",
+        "amountMember": {
+          "context": "logistics",
+          "kind": "member",
+          "owner": [
+            "PoDistance"
+          ],
+          "id": "pAmount"
+        },
+        "unitMember": {
+          "context": "logistics",
+          "kind": "member",
+          "owner": [
+            "PoDistance"
+          ],
+          "id": "pUnit"
+        }
+      },
+      "source": {
+        "document": "codecs",
+        "pointer": "/codecs/1"
+      }
+    }
+  ]
+}

@@ -1,0 +1,146 @@
+{
+  "schemaVersion": "truthsrc.domain-external-event-binding/v1",
+  "externalEvents": {
+    "producers": [
+      {
+        "id": "observation-ingress",
+        "version": "observation-v1",
+        "kind": "authority-event",
+        "event": {
+          "context": "measurement",
+          "kind": "event",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "Observed"
+        },
+        "port": {
+          "context": "measurement",
+          "kind": "port",
+          "owner": [],
+          "id": "ObservationSource"
+        },
+        "outputType": {
+          "form": "nominal",
+          "ref": {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Observation"
+          }
+        },
+        "slots": [
+          {
+            "slot": {
+              "context": "measurement",
+              "kind": "event-slot",
+              "owner": [
+                "Gauge",
+                "Observed"
+              ],
+              "id": "observationId"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/externalEventProducers/0/slotMappings/0"
+            },
+            "member": {
+              "context": "measurement",
+              "kind": "member",
+              "owner": [
+                "Observation"
+              ],
+              "id": "observationId"
+            },
+            "dependencies": [
+              {
+                "context": "measurement",
+                "kind": "port",
+                "owner": [],
+                "id": "ObservationSource"
+              },
+              {
+                "context": "measurement",
+                "kind": "member",
+                "owner": [
+                  "Observation"
+                ],
+                "id": "observationId"
+              }
+            ]
+          },
+          {
+            "slot": {
+              "context": "measurement",
+              "kind": "event-slot",
+              "owner": [
+                "Gauge",
+                "Observed"
+              ],
+              "id": "level"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "measurement",
+                "kind": "type",
+                "owner": [],
+                "id": "Ratio"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/externalEventProducers/0/slotMappings/1"
+            },
+            "member": {
+              "context": "measurement",
+              "kind": "member",
+              "owner": [
+                "Observation"
+              ],
+              "id": "level"
+            },
+            "dependencies": [
+              {
+                "context": "measurement",
+                "kind": "port",
+                "owner": [],
+                "id": "ObservationSource"
+              },
+              {
+                "context": "measurement",
+                "kind": "member",
+                "owner": [
+                  "Observation"
+                ],
+                "id": "level"
+              }
+            ]
+          }
+        ],
+        "stableIdentityContract": {
+          "id": "observation-identity",
+          "version": "1",
+          "keys": [
+            {
+              "context": "measurement",
+              "kind": "member",
+              "owner": [
+                "Observation"
+              ],
+              "id": "observationId"
+            }
+          ]
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/externalEventProducers/0"
+        }
+      }
+    ]
+  }
+}

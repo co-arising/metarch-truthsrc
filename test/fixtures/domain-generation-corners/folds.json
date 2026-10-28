@@ -1,0 +1,440 @@
+{
+  "schemaVersion": "truthsrc.domain-fold-binding/v4",
+  "folds": {
+    "defaults": [
+      {
+        "target": {
+          "context": "measurement",
+          "kind": "state-field",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "level"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Ratio"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/0/default"
+        },
+        "value": "99999999999999999999999999999999999.00"
+      },
+      {
+        "target": {
+          "context": "measurement",
+          "kind": "state-field",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "previous"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Ratio"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/1/default"
+        },
+        "value": "0.00"
+      },
+      {
+        "target": {
+          "context": "measurement",
+          "kind": "state-field",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "count"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/2/default"
+        },
+        "value": "0"
+      },
+      {
+        "target": {
+          "context": "measurement",
+          "kind": "state-field",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "status"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/3/default"
+        },
+        "value": "ready"
+      },
+      {
+        "target": {
+          "context": "measurement",
+          "kind": "state-field",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "stock"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "primitive",
+            "name": "string"
+          },
+          "value": {
+            "form": "primitive",
+            "name": "string"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/4/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "measurement",
+          "kind": "state-field",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "nested"
+        },
+        "valueType": {
+          "form": "optional",
+          "element": {
+            "form": "optional",
+            "element": {
+              "form": "primitive",
+              "name": "string"
+            }
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/5/default"
+        },
+        "value": {
+          "present": true,
+          "value": {
+            "present": false,
+            "value": null
+          }
+        }
+      },
+      {
+        "target": {
+          "context": "measurement",
+          "kind": "state-field",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "type"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/6/default"
+        },
+        "value": "keyword-value"
+      }
+    ],
+    "events": [
+      {
+        "event": {
+          "context": "measurement",
+          "kind": "event",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "Adjusted"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/0"
+        },
+        "assignments": [
+          {
+            "target": {
+              "context": "measurement",
+              "kind": "state-field",
+              "owner": [
+                "Gauge"
+              ],
+              "id": "level"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "measurement",
+                "kind": "type",
+                "owner": [],
+                "id": "Ratio"
+              }
+            },
+            "sourceOrdinal": 0,
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/0/foldAssignments/0"
+            },
+            "update": {
+              "op": "set",
+              "value": {
+                "op": "add",
+                "left": {
+                  "op": "ref",
+                  "ref": {
+                    "context": "measurement",
+                    "kind": "state-field",
+                    "owner": [
+                      "Gauge"
+                    ],
+                    "id": "level"
+                  }
+                },
+                "right": {
+                  "op": "ref",
+                  "ref": {
+                    "context": "measurement",
+                    "kind": "event-slot",
+                    "owner": [
+                      "Gauge",
+                      "Adjusted"
+                    ],
+                    "id": "change"
+                  }
+                }
+              }
+            },
+            "dependencies": [
+              {
+                "context": "measurement",
+                "kind": "state-field",
+                "owner": [
+                  "Gauge"
+                ],
+                "id": "level"
+              },
+              {
+                "context": "measurement",
+                "kind": "event-slot",
+                "owner": [
+                  "Gauge",
+                  "Adjusted"
+                ],
+                "id": "change"
+              }
+            ]
+          },
+          {
+            "target": {
+              "context": "measurement",
+              "kind": "state-field",
+              "owner": [
+                "Gauge"
+              ],
+              "id": "previous"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "measurement",
+                "kind": "type",
+                "owner": [],
+                "id": "Ratio"
+              }
+            },
+            "sourceOrdinal": 1,
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/0/foldAssignments/1"
+            },
+            "update": {
+              "op": "set",
+              "value": {
+                "op": "ref",
+                "ref": {
+                  "context": "measurement",
+                  "kind": "state-field",
+                  "owner": [
+                    "Gauge"
+                  ],
+                  "id": "level"
+                }
+              }
+            },
+            "dependencies": [
+              {
+                "context": "measurement",
+                "kind": "state-field",
+                "owner": [
+                  "Gauge"
+                ],
+                "id": "level"
+              }
+            ]
+          },
+          {
+            "target": {
+              "context": "measurement",
+              "kind": "state-field",
+              "owner": [
+                "Gauge"
+              ],
+              "id": "count"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "integer"
+            },
+            "sourceOrdinal": 2,
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/0/foldAssignments/2"
+            },
+            "update": {
+              "op": "set",
+              "value": {
+                "op": "subtract",
+                "left": {
+                  "op": "ref",
+                  "ref": {
+                    "context": "measurement",
+                    "kind": "state-field",
+                    "owner": [
+                      "Gauge"
+                    ],
+                    "id": "count"
+                  }
+                },
+                "right": {
+                  "op": "ref",
+                  "ref": {
+                    "context": "measurement",
+                    "kind": "event-slot",
+                    "owner": [
+                      "Gauge",
+                      "Adjusted"
+                    ],
+                    "id": "steps"
+                  }
+                }
+              }
+            },
+            "dependencies": [
+              {
+                "context": "measurement",
+                "kind": "state-field",
+                "owner": [
+                  "Gauge"
+                ],
+                "id": "count"
+              },
+              {
+                "context": "measurement",
+                "kind": "event-slot",
+                "owner": [
+                  "Gauge",
+                  "Adjusted"
+                ],
+                "id": "steps"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "event": {
+          "context": "measurement",
+          "kind": "event",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "Observed"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/1"
+        },
+        "assignments": [
+          {
+            "target": {
+              "context": "measurement",
+              "kind": "state-field",
+              "owner": [
+                "Gauge"
+              ],
+              "id": "level"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "measurement",
+                "kind": "type",
+                "owner": [],
+                "id": "Ratio"
+              }
+            },
+            "sourceOrdinal": 0,
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/1/foldAssignments/0"
+            },
+            "update": {
+              "op": "set",
+              "value": {
+                "op": "ref",
+                "ref": {
+                  "context": "measurement",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Gauge",
+                    "Observed"
+                  ],
+                  "id": "level"
+                }
+              }
+            },
+            "dependencies": [
+              {
+                "context": "measurement",
+                "kind": "event-slot",
+                "owner": [
+                  "Gauge",
+                  "Observed"
+                ],
+                "id": "level"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

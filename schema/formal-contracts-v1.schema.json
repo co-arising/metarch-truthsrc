@@ -1,0 +1,5001 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:truthsrc:formal-contracts:v1",
+  "title": "Explicit complete Saga/execution/runtime products and binding assemblies",
+  "$defs": {
+    "assembly": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "kind",
+            "sources"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+            },
+            "kind": {
+              "enum": [
+                "saga-bindings-union",
+                "runtime-bindings-union"
+              ]
+            },
+            "sources": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 256,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "kind",
+            "sources",
+            "sagaBinding"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+            },
+            "kind": {
+              "const": "execution-bindings-union"
+            },
+            "sources": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 256,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+              }
+            },
+            "sagaBinding": {
+              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+            }
+          }
+        }
+      ]
+    },
+    "assemblyReceipt": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "kind",
+            "sources",
+            "provenance"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+            },
+            "kind": {
+              "enum": [
+                "saga-bindings-union",
+                "runtime-bindings-union"
+              ]
+            },
+            "sources": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 256,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+              }
+            },
+            "provenance": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "targetPointer",
+                  "source"
+                ],
+                "properties": {
+                  "targetPointer": {
+                    "type": "string",
+                    "pattern": "^(?:/(?:[^~]|~[01])*)?$"
+                  },
+                  "source": {
+                    "$ref": "urn:truthsrc:product-compilation:v1#/$defs/source"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "kind",
+            "sources",
+            "sagaBinding",
+            "provenance"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+            },
+            "kind": {
+              "const": "execution-bindings-union"
+            },
+            "sources": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 256,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+              }
+            },
+            "sagaBinding": {
+              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+            },
+            "provenance": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "targetPointer",
+                  "source"
+                ],
+                "properties": {
+                  "targetPointer": {
+                    "type": "string",
+                    "pattern": "^(?:/(?:[^~]|~[01])*)?$"
+                  },
+                  "source": {
+                    "$ref": "urn:truthsrc:product-compilation:v1#/$defs/source"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "saga_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z][A-Za-z0-9_-]*(?![\\s\\S])"
+    },
+    "saga_symbol": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)*(?![\\s\\S])"
+    },
+    "saga_text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096,
+      "pattern": "\\S"
+    },
+    "saga_limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "saga_pointer": {
+      "type": "string",
+      "pattern": "^(?:/(?:[^~/]|~0|~1)*)*(?![\\s\\S])"
+    },
+    "saga_slot": {
+      "type": "object",
+      "required": [
+        "slot",
+        "type"
+      ],
+      "properties": {
+        "slot": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+        },
+        "type": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_slots": {
+      "type": "array",
+      "maxItems": 1024,
+      "items": {
+        "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_slot"
+      }
+    },
+    "saga_ref": {
+      "type": "string",
+      "pattern": "^(?:txid|args:[A-Za-z][A-Za-z0-9_-]*|step:[A-Za-z][A-Za-z0-9_-]*:(?:prepare|commit|compensate):[A-Za-z][A-Za-z0-9_-]*)(?![\\s\\S])"
+    },
+    "saga_typedRef": {
+      "type": "object",
+      "required": [
+        "ref",
+        "type"
+      ],
+      "properties": {
+        "ref": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_ref"
+        },
+        "type": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_argRef": {
+      "type": "object",
+      "required": [
+        "ref",
+        "type"
+      ],
+      "properties": {
+        "ref": {
+          "type": "string",
+          "pattern": "^args:[A-Za-z][A-Za-z0-9_-]*(?![\\s\\S])"
+        },
+        "type": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_mapping": {
+      "type": "object",
+      "required": [
+        "slot",
+        "ref",
+        "type"
+      ],
+      "properties": {
+        "slot": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+        },
+        "ref": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_ref"
+        },
+        "type": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_mappings": {
+      "type": "array",
+      "maxItems": 1024,
+      "items": {
+        "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_mapping"
+      }
+    },
+    "saga_ownedRef": {
+      "type": "object",
+      "required": [
+        "aggregate",
+        "name"
+      ],
+      "properties": {
+        "aggregate": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_text"
+        },
+        "name": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_text"
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_none": {
+      "type": "object",
+      "required": [
+        "kind",
+        "reason"
+      ],
+      "properties": {
+        "kind": {
+          "const": "none"
+        },
+        "reason": {
+          "const": "read-only"
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_phase": {
+      "description": "v1 resource-typed command bindings must use the step participant's exact resource arg. No guessing address from first field, and no unsupported cross-resource parameter semantics.",
+      "oneOf": [
+        {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_none"
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "commandRef",
+            "bindings",
+            "outputs"
+          ],
+          "properties": {
+            "kind": {
+              "const": "command"
+            },
+            "commandRef": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_ownedRef"
+            },
+            "bindings": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_mappings"
+            },
+            "outputs": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_slots"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "saga_phases": {
+      "type": "object",
+      "required": [
+        "prepare",
+        "commit",
+        "compensate"
+      ],
+      "properties": {
+        "prepare": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_phase"
+        },
+        "commit": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_phase"
+        },
+        "compensate": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_phase"
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_participant": {
+      "type": "object",
+      "required": [
+        "id",
+        "aggregate",
+        "resourceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+        },
+        "aggregate": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_text"
+        },
+        "resourceRef": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_argRef"
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_step": {
+      "type": "object",
+      "required": [
+        "id",
+        "participant",
+        "group",
+        "phases"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+        },
+        "participant": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+        },
+        "group": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_limit"
+        },
+        "phases": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_phases"
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_group": {
+      "description": "v1 groups are explicit serial numeric barriers: each group depends transitively on the previous numeric group. Steps within one group are concurrent and cannot reuse a participant. No implicit array-order join or dynamic DAG scheduler.",
+      "type": "object",
+      "required": [
+        "id",
+        "dependsOn"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_limit"
+        },
+        "dependsOn": {
+          "type": "array",
+          "maxItems": 1024,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_limit"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_resultKind": {
+      "enum": [
+        "succeeded",
+        "rejected-before-effects",
+        "compensated",
+        "recovery-required",
+        "outcome-unknown"
+      ]
+    },
+    "saga_resultKinds": {
+      "const": [
+        "succeeded",
+        "rejected-before-effects",
+        "compensated",
+        "recovery-required",
+        "outcome-unknown"
+      ]
+    },
+    "saga_triggerMapping": {
+      "type": "object",
+      "required": [
+        "slot",
+        "ref",
+        "type"
+      ],
+      "properties": {
+        "slot": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+        },
+        "ref": {
+          "type": "string",
+          "pattern": "^source:[A-Za-z][A-Za-z0-9_-]*(?![\\s\\S])"
+        },
+        "type": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_trigger": {
+      "description": "Each trigger is an independent start mapping, not an inferred OR/AND/join. sourceRef resolves the owned command/event; source:<field> refs map every declared arg exactly. The named idempotency mapper derives stable transaction identity under Saga ID/version from durable business operation ID and rejects different args; no clock/random/generation/attempt identity.",
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "sourceRef",
+        "argsMapping",
+        "idempotency"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+        },
+        "kind": {
+          "enum": [
+            "event",
+            "command"
+          ]
+        },
+        "sourceRef": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_ownedRef"
+        },
+        "argsMapping": {
+          "type": "array",
+          "maxItems": 1024,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_triggerMapping"
+          }
+        },
+        "idempotency": {
+          "type": "object",
+          "required": [
+            "ref",
+            "type",
+            "scope",
+            "conflict"
+          ],
+          "properties": {
+            "ref": {
+              "type": "string",
+              "pattern": "^source:[A-Za-z][A-Za-z0-9_-]*(?![\\s\\S])"
+            },
+            "type": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+            },
+            "scope": {
+              "const": "saga-version"
+            },
+            "conflict": {
+              "const": "reject-different-args"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_completion": {
+      "type": "object",
+      "required": [
+        "kind",
+        "eventRef",
+        "bindings"
+      ],
+      "properties": {
+        "kind": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_resultKind"
+        },
+        "eventRef": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_ownedRef"
+        },
+        "bindings": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_mappings"
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_resilience": {
+      "description": "Bounded retry budgets retain the original operation identity. Retries require idempotency or reconciled nonexecution. totalTimeoutMs covers maxAttempts*(phaseTimeoutMs+queryTimeoutMs)+(maxAttempts-1)*backoffMs; expiry yields controlled recovery/unknown, not business rejection or automatic compensation.",
+      "type": "object",
+      "required": [
+        "maxAttempts",
+        "phaseTimeoutMs",
+        "queryTimeoutMs",
+        "backoffMs",
+        "totalTimeoutMs"
+      ],
+      "properties": {
+        "maxAttempts": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_limit"
+        },
+        "phaseTimeoutMs": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_limit"
+        },
+        "queryTimeoutMs": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_limit"
+        },
+        "backoffMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "totalTimeoutMs": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_limit"
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_safety": {
+      "description": "All Prepare receipts must be confirmed before durably recording CommitDecision; only then Commit. AbortDecision is valid only before CommitDecision; reconcile unknown Prepare before compensating confirmed reservations. After CommitDecision never auto-compensate. Success requires every Commit confirmation. These are required host semantics, not observed runtime facts.",
+      "type": "object",
+      "required": [
+        "commitDecision",
+        "abortDecision",
+        "afterCommit",
+        "unknown",
+        "compensation",
+        "cancelBeforePrepare",
+        "retryIdentity",
+        "manualRecovery"
+      ],
+      "properties": {
+        "commitDecision": {
+          "const": "durable-before-commit"
+        },
+        "abortDecision": {
+          "const": "durable-before-compensate"
+        },
+        "afterCommit": {
+          "const": "forward-recovery"
+        },
+        "unknown": {
+          "const": "reconcile-before-resume"
+        },
+        "compensation": {
+          "const": "confirmed-reservations"
+        },
+        "cancelBeforePrepare": {
+          "const": "empty-release-and-fence"
+        },
+        "retryIdentity": {
+          "const": "stable-operation"
+        },
+        "manualRecovery": {
+          "const": "authorized-reconciliation-evidence"
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_manifest": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "mode",
+            "durable"
+          ],
+          "properties": {
+            "mode": {
+              "const": "static"
+            },
+            "durable": {
+              "const": true
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "mode",
+            "durable",
+            "ref",
+            "version",
+            "selection"
+          ],
+          "properties": {
+            "mode": {
+              "const": "durable-reference"
+            },
+            "durable": {
+              "const": true
+            },
+            "ref": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_argRef"
+            },
+            "version": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+            },
+            "selection": {
+              "const": "frozen-before-prepare"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "saga_admission": {
+      "description": "Static logical participant count and each concurrent barrier must fit the declared bounds. maxItemsPerChunk bounds each collection arg including nested collection cardinality; such args require durable-reference manifest. Runtime value conservation, arg inequality and manifest contents require host validation and are never certified here.",
+      "type": "object",
+      "required": [
+        "maxParticipants",
+        "maxInFlight",
+        "maxItemsPerChunk",
+        "manifest"
+      ],
+      "properties": {
+        "maxParticipants": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_limit"
+        },
+        "maxInFlight": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_limit"
+        },
+        "maxItemsPerChunk": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_limit"
+        },
+        "manifest": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_manifest"
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_payload": {
+      "type": "object",
+      "required": [
+        "schemaVersion",
+        "purpose",
+        "invariants",
+        "transactionIdType",
+        "args",
+        "participants",
+        "groups",
+        "steps",
+        "resilience",
+        "safety",
+        "admission",
+        "triggers",
+        "resultKinds",
+        "completions"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "truthsrc.saga/v1"
+        },
+        "purpose": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_text"
+        },
+        "invariants": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1024,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_text"
+          }
+        },
+        "transactionIdType": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+        },
+        "args": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1024,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_slot"
+          }
+        },
+        "participants": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1024,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_participant"
+          }
+        },
+        "groups": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1024,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_group"
+          }
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1024,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_step"
+          }
+        },
+        "resilience": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_resilience"
+        },
+        "safety": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_safety"
+        },
+        "admission": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_admission"
+        },
+        "triggers": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1024,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_trigger"
+          }
+        },
+        "resultKinds": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_resultKinds"
+        },
+        "completions": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_completion"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_saga": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "seq",
+        "version",
+        "payload"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+        },
+        "name": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_text"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "version": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+        },
+        "payload": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_payload"
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_canonical": {
+      "type": "object",
+      "required": [
+        "schemaVersion",
+        "workshop"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "truthsrc/v1"
+        },
+        "workshop": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_text"
+        },
+        "aggregates": {
+          "type": "array"
+        },
+        "sessions": {
+          "type": "array"
+        },
+        "sagas": {
+          "type": "array",
+          "maxItems": 1024,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_saga"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "saga_typeBinding": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "canonicalType",
+            "implementation",
+            "kind",
+            "minLength",
+            "maxLength"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+            },
+            "canonicalType": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_text"
+            },
+            "implementation": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+            },
+            "kind": {
+              "enum": [
+                "id",
+                "string"
+              ]
+            },
+            "minLength": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_limit"
+            },
+            "maxLength": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_limit"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "canonicalType",
+            "implementation",
+            "kind"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+            },
+            "canonicalType": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_text"
+            },
+            "implementation": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+            },
+            "kind": {
+              "const": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "canonicalType",
+            "implementation",
+            "kind",
+            "minimum",
+            "maximum"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+            },
+            "canonicalType": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_text"
+            },
+            "implementation": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+            },
+            "kind": {
+              "const": "integer"
+            },
+            "minimum": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "maximum": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "canonicalType",
+            "implementation",
+            "kind",
+            "values"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+            },
+            "canonicalType": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_text"
+            },
+            "implementation": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+            },
+            "kind": {
+              "const": "enum"
+            },
+            "values": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 1024,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "canonicalType",
+            "implementation",
+            "kind",
+            "elementType",
+            "minItems",
+            "maxItems"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+            },
+            "canonicalType": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_text"
+            },
+            "implementation": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+            },
+            "kind": {
+              "const": "collection"
+            },
+            "elementType": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+            },
+            "minItems": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            },
+            "maxItems": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_limit"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "canonicalType",
+            "implementation",
+            "kind",
+            "fields"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+            },
+            "canonicalType": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_text"
+            },
+            "implementation": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+            },
+            "kind": {
+              "const": "value-object"
+            },
+            "fields": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 1024,
+              "items": {
+                "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_slot"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "canonicalType",
+            "implementation",
+            "kind",
+            "currency",
+            "amountEncoding",
+            "scale",
+            "precision",
+            "codec"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+            },
+            "canonicalType": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_text"
+            },
+            "implementation": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+            },
+            "kind": {
+              "const": "money"
+            },
+            "currency": {
+              "const": "ISO-4217"
+            },
+            "amountEncoding": {
+              "enum": [
+                "minor-unit-string",
+                "decimal-string"
+              ]
+            },
+            "scale": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 18
+            },
+            "precision": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 38
+            },
+            "codec": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "canonicalType",
+            "implementation",
+            "kind",
+            "readable",
+            "version"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+            },
+            "canonicalType": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_text"
+            },
+            "implementation": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+            },
+            "kind": {
+              "const": "manifest-reference"
+            },
+            "readable": {
+              "const": true
+            },
+            "version": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "saga_operationIdentity": {
+      "const": [
+        "txid",
+        "definition-version",
+        "participant",
+        "resource",
+        "step",
+        "phase"
+      ]
+    },
+    "saga_receiptIdentity": {
+      "const": [
+        "txid",
+        "definition-version",
+        "args-digest",
+        "participant",
+        "resource",
+        "step",
+        "phase"
+      ]
+    },
+    "saga_receiptMapping": {
+      "type": "object",
+      "required": [
+        "slot",
+        "ref",
+        "type"
+      ],
+      "properties": {
+        "slot": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+        },
+        "ref": {
+          "type": "string",
+          "pattern": "^receipt:[A-Za-z][A-Za-z0-9_-]*(?![\\s\\S])"
+        },
+        "type": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_phaseBinding": {
+      "oneOf": [
+        {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_none"
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "port",
+            "commandMapper",
+            "confirmation",
+            "query",
+            "receipt",
+            "idempotency"
+          ],
+          "properties": {
+            "kind": {
+              "const": "command"
+            },
+            "port": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+            },
+            "commandMapper": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+            },
+            "confirmation": {
+              "type": "object",
+              "required": [
+                "kind",
+                "eventRef",
+                "mapper",
+                "outputs"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "durable-receipt"
+                },
+                "eventRef": {
+                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_ownedRef"
+                },
+                "mapper": {
+                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+                },
+                "outputs": {
+                  "type": "array",
+                  "maxItems": 1024,
+                  "items": {
+                    "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_receiptMapping"
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "query": {
+              "type": "object",
+              "required": [
+                "mapper",
+                "mode",
+                "identity",
+                "resultKinds"
+              ],
+              "properties": {
+                "mapper": {
+                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+                },
+                "mode": {
+                  "const": "read-only"
+                },
+                "identity": {
+                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_receiptIdentity"
+                },
+                "resultKinds": {
+                  "const": [
+                    "confirmed",
+                    "not-executed",
+                    "unknown"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            },
+            "receipt": {
+              "type": "object",
+              "required": [
+                "mapper",
+                "version",
+                "durable",
+                "identity",
+                "payloadCompatibility",
+                "evidence"
+              ],
+              "properties": {
+                "mapper": {
+                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+                },
+                "version": {
+                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+                },
+                "durable": {
+                  "const": true
+                },
+                "identity": {
+                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_receiptIdentity"
+                },
+                "payloadCompatibility": {
+                  "const": "exact"
+                },
+                "evidence": {
+                  "const": "reservation-decision-effect-reconciliation"
+                }
+              },
+              "additionalProperties": false
+            },
+            "idempotency": {
+              "type": "object",
+              "required": [
+                "mapper",
+                "identity",
+                "payloadConflict",
+                "attemptIdentity"
+              ],
+              "properties": {
+                "mapper": {
+                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+                },
+                "identity": {
+                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_operationIdentity"
+                },
+                "payloadConflict": {
+                  "const": "reject"
+                },
+                "attemptIdentity": {
+                  "const": "excluded"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "saga_stepBinding": {
+      "type": "object",
+      "required": [
+        "stepId",
+        "phases"
+      ],
+      "properties": {
+        "stepId": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+        },
+        "phases": {
+          "type": "object",
+          "required": [
+            "prepare",
+            "commit",
+            "compensate"
+          ],
+          "properties": {
+            "prepare": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_phaseBinding"
+            },
+            "commit": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_phaseBinding"
+            },
+            "compensate": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_phaseBinding"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_participantBinding": {
+      "type": "object",
+      "required": [
+        "participantId",
+        "addressing"
+      ],
+      "properties": {
+        "participantId": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+        },
+        "addressing": {
+          "type": "object",
+          "required": [
+            "resolver",
+            "aggregate",
+            "resourceType",
+            "mode"
+          ],
+          "properties": {
+            "resolver": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+            },
+            "aggregate": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_text"
+            },
+            "resourceType": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+            },
+            "mode": {
+              "const": "exact-resource"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_capabilities": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "durable-commit-decision",
+          "durable-abort-decision",
+          "typed-nonterminal-unknown",
+          "safe-status-reattach",
+          "receipt-reconciliation",
+          "participant-idempotency-query",
+          "pinned-definition-codec",
+          "manual-evidence-authorization",
+          "cancel-before-prepare-fencing",
+          "durable-manifest"
+        ]
+      }
+    },
+    "saga_sagaBinding": {
+      "type": "object",
+      "required": [
+        "sagaId",
+        "version",
+        "module",
+        "engine",
+        "codec",
+        "types",
+        "participants",
+        "steps",
+        "triggerMappers",
+        "completionMappers"
+      ],
+      "properties": {
+        "sagaId": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+        },
+        "version": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+        },
+        "module": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+        },
+        "engine": {
+          "type": "object",
+          "required": [
+            "artifact",
+            "apiMode",
+            "entrypoint",
+            "capabilities"
+          ],
+          "properties": {
+            "artifact": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+(?![\\s\\S])"
+            },
+            "apiMode": {
+              "const": "strict"
+            },
+            "entrypoint": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+            },
+            "capabilities": {
+              "type": "object",
+              "required": [
+                "required"
+              ],
+              "properties": {
+                "required": {
+                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_capabilities"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "codec": {
+          "type": "object",
+          "required": [
+            "id",
+            "version",
+            "compatibleVersions",
+            "mapper"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+            },
+            "version": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+            },
+            "compatibleVersions": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 1024,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+              }
+            },
+            "mapper": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+            }
+          },
+          "additionalProperties": false
+        },
+        "types": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1024,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_typeBinding"
+          }
+        },
+        "participants": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1024,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_participantBinding"
+          }
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1024,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_stepBinding"
+          }
+        },
+        "triggerMappers": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1024,
+          "items": {
+            "type": "object",
+            "required": [
+              "triggerId",
+              "argsMapper",
+              "idempotencyMapper"
+            ],
+            "properties": {
+              "triggerId": {
+                "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+              },
+              "argsMapper": {
+                "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+              },
+              "idempotencyMapper": {
+                "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "completionMappers": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "required": [
+              "kind",
+              "mapper"
+            ],
+            "properties": {
+              "kind": {
+                "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_resultKind"
+              },
+              "mapper": {
+                "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_location": {
+      "type": "object",
+      "required": [
+        "line",
+        "column"
+      ],
+      "properties": {
+        "line": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_limit"
+        },
+        "column": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_limit"
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_sourceHint": {
+      "type": "object",
+      "required": [
+        "file"
+      ],
+      "properties": {
+        "file": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_text"
+        },
+        "atom": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_text"
+        },
+        "path": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_pointer"
+        },
+        "location": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_location"
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_sourceHints": {
+      "type": "object",
+      "properties": {
+        "canonical": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_pointer"
+          },
+          "additionalProperties": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_sourceHint"
+          }
+        },
+        "binding": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_pointer"
+          },
+          "additionalProperties": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_sourceHint"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_bindingDocument": {
+      "type": "object",
+      "required": [
+        "schemaVersion",
+        "sagas"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "truthsrc.saga-binding/v1"
+        },
+        "sagas": {
+          "type": "array",
+          "maxItems": 1024,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_sagaBinding"
+          }
+        },
+        "sourceMap": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_sourceHints"
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_source": {
+      "type": "object",
+      "required": [
+        "document",
+        "pointer",
+        "file",
+        "atom",
+        "path",
+        "location"
+      ],
+      "properties": {
+        "document": {
+          "enum": [
+            "canonical",
+            "binding"
+          ]
+        },
+        "pointer": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_pointer"
+        },
+        "file": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "atom": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "path": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_pointer"
+        },
+        "location": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_location"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_compiledSaga": {
+      "type": "object",
+      "required": [
+        "definition",
+        "binding",
+        "readiness"
+      ],
+      "properties": {
+        "definition": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_saga"
+        },
+        "binding": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_sagaBinding"
+        },
+        "readiness": {
+          "const": "contract-only"
+        }
+      },
+      "additionalProperties": false
+    },
+    "saga_product": {
+      "title": "Saga v1 contract-only IR, business declarations and technical bindings",
+      "description": "Only aggregate-owned commands (the public slice projection) and events resolve. Sessions are narrative, not proof of ownership. No runtime certification, code evaluation, implicit joins, dynamic participant expansion, numeric money or literal dataflow in v1. All-none steps are explicitly read-only. Step output refs are phase-qualified durable receipts; compensation may read only its own Prepare outputs. Digest is SHA-256 of stable JSON {schemaVersion,workshop,readiness,sagas}, excluding provenance/anchors.",
+      "type": "object",
+      "required": [
+        "schemaVersion",
+        "workshop",
+        "readiness",
+        "sagas",
+        "digest",
+        "sourceMap"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "truthsrc.saga-ir/v1"
+        },
+        "workshop": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_text"
+        },
+        "readiness": {
+          "const": "contract-only"
+        },
+        "sagas": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_compiledSaga"
+          }
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
+        },
+        "sourceMap": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_pointer"
+          },
+          "additionalProperties": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_source"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "execution_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._-]*$"
+    },
+    "execution_text": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "execution_pointer": {
+      "type": "string",
+      "pattern": "^(?:/(?:[^~]|~[01])*)?$"
+    },
+    "execution_ref": {
+      "type": "string",
+      "pattern": "^(?:input:[A-Za-z][A-Za-z0-9._-]*|step:[A-Za-z][A-Za-z0-9._-]*:[A-Za-z][A-Za-z0-9._-]*)$"
+    },
+    "execution_location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "line",
+        "column"
+      ],
+      "properties": {
+        "line": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "column": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "execution_sourceHint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "file"
+      ],
+      "properties": {
+        "file": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_text"
+        },
+        "atom": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_text"
+        },
+        "path": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_pointer"
+        },
+        "location": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_location"
+        }
+      }
+    },
+    "execution_sourceHints": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "canonical": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_pointer"
+          },
+          "additionalProperties": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_sourceHint"
+          }
+        },
+        "binding": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_pointer"
+          },
+          "additionalProperties": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_sourceHint"
+          }
+        }
+      }
+    },
+    "execution_source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "document",
+        "pointer",
+        "file",
+        "atom",
+        "path",
+        "location"
+      ],
+      "properties": {
+        "document": {
+          "enum": [
+            "canonical",
+            "binding"
+          ]
+        },
+        "pointer": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_pointer"
+        },
+        "file": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "atom": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "path": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_pointer"
+        },
+        "location": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "required": [
+            "line",
+            "column"
+          ],
+          "properties": {
+            "line": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "column": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        }
+      }
+    },
+    "execution_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "durability"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "type": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "durability": {
+          "enum": [
+            "start-record",
+            "durable-reference"
+          ]
+        }
+      }
+    },
+    "execution_read": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "slot",
+        "ref",
+        "type"
+      ],
+      "properties": {
+        "slot": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "ref": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_ref"
+        },
+        "type": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        }
+      }
+    },
+    "execution_write": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "slot",
+        "type",
+        "durability"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "slot": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "type": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "durability": {
+          "enum": [
+            "checkpoint",
+            "durable-reference"
+          ]
+        }
+      }
+    },
+    "execution_output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "ref",
+        "type"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "ref": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_ref"
+        },
+        "type": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        }
+      }
+    },
+    "execution_outcomeKind": {
+      "enum": [
+        "success",
+        "business-rejection",
+        "resolved",
+        "unknown-effect",
+        "infrastructure-failure"
+      ]
+    },
+    "execution_portOutcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "kind"
+      ],
+      "properties": {
+        "code": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "kind": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_outcomeKind"
+        }
+      }
+    },
+    "execution_outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "kind",
+        "action"
+      ],
+      "properties": {
+        "code": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "kind": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_outcomeKind"
+        },
+        "action": {
+          "enum": [
+            "continue",
+            "stop",
+            "manual-recovery"
+          ]
+        }
+      },
+      "description": "success/resolved must continue; business-rejection must stop or enter manual recovery; unknown-effect/infrastructure-failure must enter manual recovery. No retry, compensation, implicit default or arbitrary policy evaluation in v1. Writes must be returned on every continuing outcome, including resolved."
+    },
+    "execution_recovery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "inputResponsibility",
+        "inputs",
+        "planVersion",
+        "planCompatibility",
+        "checkpoint",
+        "unknownEffect",
+        "ownership"
+      ],
+      "properties": {
+        "inputResponsibility": {
+          "const": "host"
+        },
+        "inputs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^input:[A-Za-z][A-Za-z0-9._-]*$"
+          }
+        },
+        "planVersion": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "planCompatibility": {
+          "const": "exact"
+        },
+        "checkpoint": {
+          "const": "confirmed-prefix"
+        },
+        "unknownEffect": {
+          "const": "reconcile-before-resume"
+        },
+        "ownership": {
+          "const": "single-writer"
+        }
+      },
+      "description": "The host must durably save every initial input before accepting a run. Recovery references must cover all initial inputs, not outputs produced later. Exact plan and codec compatibility are declarations, not a JVM ownership or journal verification."
+    },
+    "execution_bound": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "execution_admission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "maxConcurrentRuns",
+        "maxInFlightSteps",
+        "maxItemsPerChunk",
+        "maxInFlightChunks"
+      ],
+      "properties": {
+        "maxConcurrentRuns": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_bound"
+        },
+        "maxInFlightSteps": {
+          "const": 1
+        },
+        "maxItemsPerChunk": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_bound"
+        },
+        "maxInFlightChunks": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_bound"
+        }
+      },
+      "description": "Finite host admission/chunk limits; an emitter must wire them or reject generation. The ordered checkpoint window is exactly one. No unbounded streams or durable dynamic insertion in v1."
+    },
+    "execution_execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "inputs",
+        "outputs",
+        "recovery",
+        "admission"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "truthsrc.execution/v1"
+        },
+        "inputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_input"
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_output"
+          }
+        },
+        "recovery": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_recovery"
+        },
+        "admission": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_admission"
+        }
+      }
+    },
+    "execution_stepExecution": {
+      "oneOf": [
+        {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_portStepExecution"
+        },
+        {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_sagaStepExecution"
+        },
+        {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_awaitChildRunStepExecution"
+        }
+      ],
+      "description": "Exactly one discriminator property: port, invokeSaga or awaitChildRun. An invocation is never a pure port, arbitrary expression, or runtime certificate; an awaited child run is never a pure port, implicit success, or dynamic insertion."
+    },
+    "execution_portStepExecution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "port",
+        "reads",
+        "writes",
+        "outcomes"
+      ],
+      "properties": {
+        "port": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "reads": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_read"
+          }
+        },
+        "writes": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_write"
+          }
+        },
+        "outcomes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_outcome"
+          }
+        }
+      }
+    },
+    "execution_sagaRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sagaId",
+        "version"
+      ],
+      "properties": {
+        "sagaId": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+        },
+        "version": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+        }
+      }
+    },
+    "execution_identityRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref",
+        "type"
+      ],
+      "properties": {
+        "ref": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_ref"
+        },
+        "type": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        }
+      }
+    },
+    "execution_transactionIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "derivation",
+        "source",
+        "stageId",
+        "stageOccurrence",
+        "scope",
+        "conflict"
+      ],
+      "properties": {
+        "type": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "derivation": {
+          "const": "durable-source-stage"
+        },
+        "source": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_identityRef"
+        },
+        "stageId": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "stageOccurrence": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_identityRef"
+        },
+        "iteration": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_identityRef"
+        },
+        "chunk": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_identityRef"
+        },
+        "scope": {
+          "const": "saga-version"
+        },
+        "conflict": {
+          "const": "reject-different-args"
+        }
+      },
+      "description": "Host derives transaction identity from Saga ID/version, pipeline ID (the enclosing pipeline.id), durable source token, exact stage ID, durable stage occurrence and each declared iteration/chunk token. All tokens must be typed reads of durable initial inputs; source is an ID, other tokens are IDs or bounded nonnegative integers in the Saga binding. No expressions, FQNs, clock, random, attempt or JVM generation. Missing optional tokens mean a single occurrence dimension, not inferred dynamic iteration."
+    },
+    "execution_sagaResultOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "slot",
+        "ref",
+        "type"
+      ],
+      "properties": {
+        "slot": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "ref": {
+          "type": "string",
+          "pattern": "^result:[A-Za-z][A-Za-z0-9_-]*(?![\\s\\S])"
+        },
+        "type": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        }
+      }
+    },
+    "execution_sagaResultMapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resultKind",
+        "code",
+        "outputs"
+      ],
+      "properties": {
+        "resultKind": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_resultKind"
+        },
+        "code": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_sagaResultOutput"
+          }
+        }
+      },
+      "description": "Exact coverage of the five Saga results and step outcomes. Only succeeded maps to success/continue; rejected-before-effects and compensated map to business-rejection with stop/manual-recovery. recovery-required maps to infrastructure-failure/manual-recovery; outcome-unknown to unknown-effect/manual-recovery. Only continuing results publish writes, mapped from typed completion event payload fields. v1 has no resolved-policy-ref; compensation is never implicitly success or resolved."
+    },
+    "execution_invokeSaga": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref",
+        "args",
+        "transactionIdentity",
+        "start",
+        "completionMode",
+        "results"
+      ],
+      "properties": {
+        "ref": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_sagaRef"
+        },
+        "args": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_read"
+          }
+        },
+        "transactionIdentity": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_transactionIdentity"
+        },
+        "start": {
+          "const": "durable-intent-before-start"
+        },
+        "completionMode": {
+          "const": "await-terminal"
+        },
+        "results": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_sagaResultMapping"
+          }
+        }
+      },
+      "description": "Persist pinned ref, exact args/codec and derived identity as durable intent before requesting Saga start; replay reattaches using the same identity. Await a terminal confirmation before checkpointing success. RecoveryRequired and Unknown are controlled manual outcomes, never successful terminal completion. Contract declaration only."
+    },
+    "execution_sagaStepExecution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "invokeSaga",
+        "reads",
+        "writes",
+        "outcomes"
+      ],
+      "properties": {
+        "invokeSaga": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_invokeSaga"
+        },
+        "reads": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_read"
+          }
+        },
+        "writes": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_write"
+          }
+        },
+        "outcomes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_outcome"
+          }
+        }
+      }
+    },
+    "execution_childResultKind": {
+      "enum": [
+        "succeeded",
+        "child-rejected",
+        "child-failed",
+        "recovery-required",
+        "outcome-unknown"
+      ]
+    },
+    "execution_childResultMapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resultKind",
+        "code",
+        "outputs"
+      ],
+      "properties": {
+        "resultKind": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_childResultKind"
+        },
+        "code": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_sagaResultOutput"
+          }
+        }
+      },
+      "description": "Exact coverage of the five child-run results. Only succeeded maps to success/continue and publishes writes from the child's durable completed-manifest fields. child-rejected (StartRun refused with a reason other than already-in-state) maps to business-rejection/stop; child-failed (RunFailedEvt) maps to business-rejection/stop. recovery-required maps to infrastructure-failure/manual-recovery; outcome-unknown to unknown-effect/manual-recovery. A rejected re-attach (already in state) is not a result kind — the host treats it as already-attached and keeps observing. Compensation is never stage recovery."
+    },
+    "execution_childRunIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "derivation",
+        "source",
+        "stepId",
+        "stageOccurrence",
+        "conflict"
+      ],
+      "properties": {
+        "derivation": {
+          "const": "durable-parent-step"
+        },
+        "source": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_identityRef"
+        },
+        "stepId": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "stageOccurrence": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_identityRef"
+        },
+        "chunk": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_identityRef"
+        },
+        "conflict": {
+          "const": "reject-different-args"
+        }
+      },
+      "description": "Host derives the child run identity from the parent operation key (a durable source token), the exact await step ID and a durable stage occurrence token, plus an optional chunk token. All tokens must be typed reads of durable initial inputs. No expressions, FQNs, clock, random, attempt or JVM generation. Re-attaching with the same identity is the only legal re-entry; different payload with the same identity is a conflict."
+    },
+    "execution_awaitChildRun": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "childRun",
+        "start",
+        "completionMode",
+        "results"
+      ],
+      "properties": {
+        "childRun": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "planRef",
+            "identity",
+            "payload",
+            "payloadCompatibility"
+          ],
+          "properties": {
+            "planRef": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "pipelineId"
+              ],
+              "properties": {
+                "pipelineId": {
+                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+                }
+              }
+            },
+            "identity": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_childRunIdentity"
+            },
+            "payload": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_read"
+              }
+            },
+            "payloadCompatibility": {
+              "const": "exact"
+            }
+          }
+        },
+        "start": {
+          "const": "durable-intent-before-start"
+        },
+        "completionMode": {
+          "const": "await-terminal"
+        },
+        "results": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_childResultMapping"
+          }
+        }
+      },
+      "description": "Persist the derived child identity and exact payload as durable intent before requesting StartRun; replay reattaches using the same identity (a refusal saying the run is already in state means attached, not conflict). Observe the child's terminal state on its durable journal; a mirrored progress record is derived and never authoritative. RunFailedEvt pauses with recovery-required; it never auto-compensates the parent. Contract declaration only."
+    },
+    "execution_awaitChildRunStepExecution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "awaitChildRun",
+        "reads",
+        "writes",
+        "outcomes"
+      ],
+      "properties": {
+        "awaitChildRun": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_awaitChildRun"
+        },
+        "reads": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_read"
+          }
+        },
+        "writes": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_write"
+          }
+        },
+        "outcomes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_outcome"
+          }
+        }
+      }
+    },
+    "execution_invocationCodec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "mapper"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+        },
+        "version": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+        },
+        "mapper": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+        }
+      }
+    },
+    "execution_invocationBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stepId",
+        "ref",
+        "adapter",
+        "runtime",
+        "argsCodec",
+        "resultCodec",
+        "transactionIdentity"
+      ],
+      "properties": {
+        "stepId": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "ref": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_sagaRef"
+        },
+        "adapter": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+        },
+        "runtime": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "artifact",
+            "apiMode",
+            "entrypoint"
+          ],
+          "properties": {
+            "artifact": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+(?![\\s\\S])"
+            },
+            "apiMode": {
+              "const": "strict"
+            },
+            "entrypoint": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+            }
+          }
+        },
+        "argsCodec": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_invocationCodec"
+        },
+        "resultCodec": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_invocationCodec"
+        },
+        "transactionIdentity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "mapper",
+            "derivation",
+            "payloadCompatibility"
+          ],
+          "properties": {
+            "mapper": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+            },
+            "derivation": {
+              "const": "durable-source-stage"
+            },
+            "payloadCompatibility": {
+              "const": "exact"
+            }
+          }
+        }
+      },
+      "description": "One adapter binding per invoked step; exact ref/runtime and args codec equality with the independently compiled Saga binding. Result codec version equals pinned args codec version. Type implementations agree exactly with Saga bindings; invoked Sagas in one pipeline must agree on shared nominal type contracts including referenced element/field bindings. Participant-resource mappings remain statically non-aliasing after args substitution. Runtime capabilities, participants, phase ports and completion mappers stay in sagaBindings, not duplicated here. Named adapters/mappers are never loaded or certified."
+    },
+    "execution_slot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "slot",
+        "type"
+      ],
+      "properties": {
+        "slot": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "type": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        }
+      }
+    },
+    "execution_childRunBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stepId",
+        "planRef",
+        "runtime",
+        "journal"
+      ],
+      "properties": {
+        "stepId": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "planRef": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "pipelineId"
+          ],
+          "properties": {
+            "pipelineId": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+            }
+          }
+        },
+        "runtime": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "artifact",
+            "apiMode"
+          ],
+          "properties": {
+            "artifact": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+(?![\\s\\S])"
+            },
+            "apiMode": {
+              "const": "strict"
+            }
+          }
+        },
+        "stateCodec": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "mapper"
+          ],
+          "properties": {
+            "mapper": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+            }
+          }
+        },
+        "journal": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "pidPrefix"
+          ],
+          "properties": {
+            "pidPrefix": {
+              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_text"
+            }
+          }
+        }
+      },
+      "description": "One child run binding per awaitChildRun step. The child plan is a separately compiled stages pipeline bound to monarch-persistence; the host derives the child persistence id from pidPrefix plus the derived run identity. The child's durable journal is the authoritative terminal-state source. Named mappers are never loaded or certified."
+    },
+    "execution_typeBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "implementation"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "implementation": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_text"
+        }
+      }
+    },
+    "execution_idempotency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "none",
+            "keyed"
+          ]
+        },
+        "key": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        }
+      },
+      "description": "key is the name of an input slot (never source code). An external port requires keyed idempotency and a key whose reference is an initial input, stable across replay."
+    },
+    "execution_port": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "implementation",
+        "effect",
+        "confirmation",
+        "idempotency",
+        "inputs",
+        "outputs",
+        "outcomes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "implementation": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_text"
+        },
+        "effect": {
+          "enum": [
+            "pure",
+            "external"
+          ]
+        },
+        "confirmation": {
+          "enum": [
+            "checkpoint",
+            "durable-ack"
+          ]
+        },
+        "idempotency": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_idempotency"
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_slot"
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_slot"
+          }
+        },
+        "outcomes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_portOutcome"
+          }
+        }
+      },
+      "description": "External effects require durable-ack, stable keyed idempotency, and an explicit unknown-effect outcome. Every port must declare success and infrastructure-failure. The compiler checks coverage/equality, not behavior of the implementation."
+    },
+    "execution_codec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "compatibleVersions"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "version": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "compatibleVersions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+          }
+        }
+      },
+      "description": "compatibleVersions must include version. These are host codec declarations; they do not certify byte compatibility."
+    },
+    "execution_pipelineBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pipelineId",
+        "engine",
+        "module",
+        "codec",
+        "types",
+        "ports"
+      ],
+      "oneOf": [
+        {
+          "properties": {
+            "ports": {
+              "minItems": 1
+            },
+            "invocations": {
+              "maxItems": 0
+            }
+          }
+        },
+        {
+          "required": [
+            "invocations"
+          ]
+        }
+      ],
+      "properties": {
+        "pipelineId": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "engine": {
+          "const": "monarch-persistence/0.2.1"
+        },
+        "module": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_text"
+        },
+        "codec": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_codec"
+        },
+        "types": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_typeBinding"
+          }
+        },
+        "ports": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_port"
+          }
+        },
+        "invocations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_invocationBinding"
+          }
+        },
+        "childRuns": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_childRunBinding"
+          }
+        }
+      }
+    },
+    "execution_bindingDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "pipelines"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "truthsrc.execution-binding/v1"
+        },
+        "pipelines": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_pipelineBinding"
+          }
+        },
+        "sourceMap": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_sourceHints"
+        },
+        "sagaBindings": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_bindingDocument"
+        }
+      }
+    },
+    "execution_canonicalEnvelope": {
+      "type": "object",
+      "required": [
+        "schemaVersion",
+        "workshop"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "truthsrc/v1"
+        },
+        "workshop": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_text"
+        },
+        "pipelines": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "name",
+              "steps"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_text"
+              },
+              "name": {
+                "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_text"
+              },
+              "steps": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "name"
+                  ],
+                  "properties": {
+                    "id": {
+                      "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_text"
+                    },
+                    "name": {
+                      "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_text"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "description": "Only the canonical envelope and pipeline identities are checked here. This does not replace validateTree or validate the rest of canonical. An execution property opts in, including a malformed/null declaration. Steps without a pipeline declaration may not carry execution."
+    },
+    "execution_stepIr": {
+      "oneOf": [
+        {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_portStepIr"
+        },
+        {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_sagaStepIr"
+        },
+        {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_awaitChildRunStepIr"
+        }
+      ]
+    },
+    "execution_sagaStepIr": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "ordinal",
+        "invokeSaga",
+        "reads",
+        "writes",
+        "outcomes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "name": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_text"
+        },
+        "ordinal": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "invokeSaga": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_invokeSaga"
+        },
+        "reads": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_read"
+          }
+        },
+        "writes": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_write"
+          }
+        },
+        "outcomes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_outcome"
+          }
+        }
+      }
+    },
+    "execution_portStepIr": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "ordinal",
+        "port",
+        "reads",
+        "writes",
+        "outcomes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "name": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_text"
+        },
+        "ordinal": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "port": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "reads": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_read"
+          }
+        },
+        "writes": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_write"
+          }
+        },
+        "outcomes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_outcome"
+          }
+        }
+      }
+    },
+    "execution_awaitChildRunStepIr": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "ordinal",
+        "awaitChildRun",
+        "reads",
+        "writes",
+        "outcomes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "name": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_text"
+        },
+        "ordinal": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "awaitChildRun": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_awaitChildRun"
+        },
+        "reads": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_read"
+          }
+        },
+        "writes": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_write"
+          }
+        },
+        "outcomes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_outcome"
+          }
+        }
+      }
+    },
+    "execution_bindingIr": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "engine",
+        "module",
+        "codec",
+        "types",
+        "ports"
+      ],
+      "oneOf": [
+        {
+          "properties": {
+            "ports": {
+              "minItems": 1
+            },
+            "invocations": {
+              "maxItems": 0
+            }
+          }
+        },
+        {
+          "required": [
+            "invocations"
+          ]
+        }
+      ],
+      "properties": {
+        "engine": {
+          "const": "monarch-persistence/0.2.1"
+        },
+        "module": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_text"
+        },
+        "codec": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_codec"
+        },
+        "types": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_typeBinding"
+          }
+        },
+        "ports": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_port"
+          }
+        },
+        "invocations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_invocationBinding"
+          }
+        },
+        "childRuns": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_childRunBinding"
+          }
+        }
+      }
+    },
+    "execution_pipelineIr": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "readiness",
+        "inputs",
+        "outputs",
+        "steps",
+        "recovery",
+        "admission",
+        "binding"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_id"
+        },
+        "name": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_text"
+        },
+        "readiness": {
+          "const": "contract-only"
+        },
+        "inputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_input"
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_output"
+          }
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_stepIr"
+          }
+        },
+        "recovery": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_recovery"
+        },
+        "admission": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_admission"
+        },
+        "binding": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_bindingIr"
+        }
+      }
+    },
+    "execution_documentOnly": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "reason",
+        "source"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_text"
+        },
+        "reason": {
+          "const": "execution-not-declared"
+        },
+        "source": {
+          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_source"
+        }
+      }
+    },
+    "execution_product": {
+      "title": "Truthsrc execution IR v1",
+      "description": "A compiled, contract-only execution model; not proof of runtime support. Input contracts are in $defs.execution, $defs.stepExecution and $defs.bindingDocument. Canonical narrative fields remain outside the execution contract. Reference grammar: input:<id> or step:<step-id>:<write-id>. Types are nominal IDs resolved by binding.types; no language expressions are accepted on the business surface. Optional binding.sagaBindings is an independently strict truthsrc.saga-binding/v1 document, required for invokeSaga; compileSagas validates all canonical.sagas when opted in. IR sagas contains each compiled definition/binding once, while pipeline binding.invocations declares adapters. No dynamic iteration, runtime execution, code generation or artifact certification.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "workshop",
+        "pipelines",
+        "documentOnly",
+        "sourceMap"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "truthsrc.execution/v1"
+        },
+        "workshop": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pipelines": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_pipelineIr"
+          }
+        },
+        "documentOnly": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_documentOnly"
+          }
+        },
+        "sourceMap": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_pointer"
+          },
+          "additionalProperties": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/execution_source"
+          }
+        },
+        "sagas": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_compiledSaga"
+          }
+        }
+      }
+    },
+    "runtimeBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "target",
+        "sagas"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "truthsrc.saga-runtime-binding/v2"
+        },
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "artifact",
+            "artifactStatus",
+            "apiMode",
+            "definitionApi",
+            "coordinatorApi",
+            "executionMode",
+            "capabilities"
+          ],
+          "properties": {
+            "artifact": {
+              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+            },
+            "artifactStatus": {
+              "const": "unpublished-candidate"
+            },
+            "apiMode": {
+              "const": "strict"
+            },
+            "definitionApi": {
+              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+            },
+            "coordinatorApi": {
+              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+            },
+            "executionMode": {
+              "const": "static-serial-allTCC"
+            },
+            "capabilities": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+              }
+            }
+          }
+        },
+        "sagas": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1024,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "sagaId",
+              "definitionVersion",
+              "runtimeVersion",
+              "argsCodec",
+              "receiptCodecs"
+            ],
+            "properties": {
+              "sagaId": {
+                "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+              },
+              "definitionVersion": {
+                "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+              },
+              "runtimeVersion": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 2147483647
+              },
+              "argsCodec": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "version",
+                  "runtimeVersion"
+                ],
+                "properties": {
+                  "id": {
+                    "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                  },
+                  "version": {
+                    "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                  },
+                  "runtimeVersion": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 2147483647
+                  }
+                }
+              },
+              "receiptCodecs": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 3072,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "stepId",
+                    "phase",
+                    "id",
+                    "version",
+                    "runtimeVersion"
+                  ],
+                  "properties": {
+                    "stepId": {
+                      "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                    },
+                    "phase": {
+                      "enum": [
+                        "prepare",
+                        "commit",
+                        "compensate"
+                      ]
+                    },
+                    "id": {
+                      "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                    },
+                    "version": {
+                      "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                    },
+                    "runtimeVersion": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 2147483647
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "runtimePayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "target",
+        "readiness",
+        "runtimeBindingVerified",
+        "runnable",
+        "sagas"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "truthsrc.saga-runtime-contract/v3"
+        },
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "artifact",
+            "artifactStatus",
+            "apiMode",
+            "definitionApi",
+            "coordinatorApi",
+            "executionMode",
+            "capabilities"
+          ],
+          "properties": {
+            "artifact": {
+              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+            },
+            "artifactStatus": {
+              "const": "unpublished-candidate"
+            },
+            "apiMode": {
+              "const": "strict"
+            },
+            "definitionApi": {
+              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+            },
+            "coordinatorApi": {
+              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+            },
+            "executionMode": {
+              "const": "static-serial-allTCC"
+            },
+            "capabilities": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+              }
+            }
+          }
+        },
+        "readiness": {
+          "const": "lowered-contract-only"
+        },
+        "runtimeBindingVerified": {
+          "const": false
+        },
+        "runnable": {
+          "const": false
+        },
+        "sagas": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1024,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "sagaId",
+              "definitionVersion",
+              "runtimeIdentity",
+              "definitionDigest",
+              "runtimeBinding",
+              "contract",
+              "args",
+              "participants",
+              "schedule",
+              "triggers",
+              "completions",
+              "coordinatorSettings",
+              "hostRequirements",
+              "blocked",
+              "readiness",
+              "runtimeBindingVerified",
+              "runnable"
+            ],
+            "properties": {
+              "sagaId": {
+                "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+              },
+              "definitionVersion": {
+                "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+              },
+              "runtimeIdentity": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "version"
+                ],
+                "properties": {
+                  "name": {
+                    "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                  },
+                  "version": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 2147483647
+                  }
+                }
+              },
+              "definitionDigest": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              },
+              "runtimeBinding": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "target",
+                  "saga"
+                ],
+                "properties": {
+                  "target": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "artifact",
+                      "artifactStatus",
+                      "apiMode",
+                      "definitionApi",
+                      "coordinatorApi",
+                      "executionMode",
+                      "capabilities"
+                    ],
+                    "properties": {
+                      "artifact": {
+                        "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                      },
+                      "artifactStatus": {
+                        "const": "unpublished-candidate"
+                      },
+                      "apiMode": {
+                        "const": "strict"
+                      },
+                      "definitionApi": {
+                        "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                      },
+                      "coordinatorApi": {
+                        "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                      },
+                      "executionMode": {
+                        "const": "static-serial-allTCC"
+                      },
+                      "capabilities": {
+                        "type": "array",
+                        "uniqueItems": true,
+                        "items": {
+                          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                        }
+                      }
+                    }
+                  },
+                  "saga": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "sagaId",
+                      "definitionVersion",
+                      "runtimeVersion",
+                      "argsCodec",
+                      "receiptCodecs"
+                    ],
+                    "properties": {
+                      "sagaId": {
+                        "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                      },
+                      "definitionVersion": {
+                        "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                      },
+                      "runtimeVersion": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 2147483647
+                      },
+                      "argsCodec": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "id",
+                          "version",
+                          "runtimeVersion"
+                        ],
+                        "properties": {
+                          "id": {
+                            "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                          },
+                          "version": {
+                            "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                          },
+                          "runtimeVersion": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 2147483647
+                          }
+                        }
+                      },
+                      "receiptCodecs": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 3072,
+                        "items": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "stepId",
+                            "phase",
+                            "id",
+                            "version",
+                            "runtimeVersion"
+                          ],
+                          "properties": {
+                            "stepId": {
+                              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                            },
+                            "phase": {
+                              "enum": [
+                                "prepare",
+                                "commit",
+                                "compensate"
+                              ]
+                            },
+                            "id": {
+                              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                            },
+                            "version": {
+                              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                            },
+                            "runtimeVersion": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 2147483647
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "contract": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "definition",
+                  "binding"
+                ],
+                "properties": {
+                  "definition": {
+                    "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_saga"
+                  },
+                  "binding": {
+                    "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_sagaBinding"
+                  }
+                }
+              },
+              "args": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "contractCodec",
+                  "runtimeCodec",
+                  "codec",
+                  "slots",
+                  "types"
+                ],
+                "properties": {
+                  "contractCodec": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "id",
+                      "version"
+                    ],
+                    "properties": {
+                      "id": {
+                        "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                      },
+                      "version": {
+                        "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                      }
+                    }
+                  },
+                  "runtimeCodec": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "id",
+                      "version"
+                    ],
+                    "properties": {
+                      "id": {
+                        "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                      },
+                      "version": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 2147483647
+                      }
+                    }
+                  },
+                  "codec": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "version",
+                      "compatibleVersions",
+                      "mapper"
+                    ],
+                    "properties": {
+                      "id": {
+                        "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+                      },
+                      "version": {
+                        "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+                      },
+                      "compatibleVersions": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 1024,
+                        "uniqueItems": true,
+                        "items": {
+                          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+                        }
+                      },
+                      "mapper": {
+                        "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "slots": {
+                    "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_slots"
+                  },
+                  "types": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 1024,
+                    "items": {
+                      "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_typeBinding"
+                    }
+                  }
+                }
+              },
+              "participants": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 1024,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "stepId",
+                    "participantId",
+                    "resource",
+                    "phases"
+                  ],
+                  "properties": {
+                    "stepId": {
+                      "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                    },
+                    "participantId": {
+                      "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                    },
+                    "resource": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "ref",
+                        "type",
+                        "addressing"
+                      ],
+                      "properties": {
+                        "ref": {
+                          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                        },
+                        "type": {
+                          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                        },
+                        "addressing": {
+                          "type": "object",
+                          "required": [
+                            "resolver",
+                            "aggregate",
+                            "resourceType",
+                            "mode"
+                          ],
+                          "properties": {
+                            "resolver": {
+                              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+                            },
+                            "aggregate": {
+                              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_text"
+                            },
+                            "resourceType": {
+                              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+                            },
+                            "mode": {
+                              "const": "exact-resource"
+                            }
+                          },
+                          "additionalProperties": false
+                        }
+                      }
+                    },
+                    "phases": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "prepare",
+                        "commit",
+                        "compensate"
+                      ],
+                      "properties": {
+                        "prepare": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "runtimePhase",
+                            "port",
+                            "commandMapper",
+                            "commandRef",
+                            "inputs",
+                            "outputs",
+                            "confirmation",
+                            "query",
+                            "receipt",
+                            "contractCodec",
+                            "runtimeCodec",
+                            "idempotency"
+                          ],
+                          "properties": {
+                            "runtimePhase": {
+                              "enum": [
+                                "Prepare",
+                                "Commit",
+                                "Compensate"
+                              ]
+                            },
+                            "port": {
+                              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                            },
+                            "commandMapper": {
+                              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                            },
+                            "commandRef": {
+                              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_ownedRef"
+                            },
+                            "inputs": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "required": [
+                                  "slot",
+                                  "type",
+                                  "source"
+                                ],
+                                "properties": {
+                                  "slot": {
+                                    "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                  },
+                                  "type": {
+                                    "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                  },
+                                  "source": {
+                                    "oneOf": [
+                                      {
+                                        "type": "object",
+                                        "additionalProperties": false,
+                                        "required": [
+                                          "kind"
+                                        ],
+                                        "properties": {
+                                          "kind": {
+                                            "const": "transaction-id"
+                                          }
+                                        }
+                                      },
+                                      {
+                                        "type": "object",
+                                        "additionalProperties": false,
+                                        "required": [
+                                          "kind",
+                                          "slot"
+                                        ],
+                                        "properties": {
+                                          "kind": {
+                                            "const": "args"
+                                          },
+                                          "slot": {
+                                            "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                          }
+                                        }
+                                      },
+                                      {
+                                        "type": "object",
+                                        "additionalProperties": false,
+                                        "required": [
+                                          "kind",
+                                          "stepId",
+                                          "phase",
+                                          "slot"
+                                        ],
+                                        "properties": {
+                                          "kind": {
+                                            "const": "receipt-field"
+                                          },
+                                          "stepId": {
+                                            "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                          },
+                                          "phase": {
+                                            "enum": [
+                                              "prepare",
+                                              "commit",
+                                              "compensate"
+                                            ]
+                                          },
+                                          "slot": {
+                                            "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                          }
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            },
+                            "outputs": {
+                              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_slots"
+                            },
+                            "confirmation": {
+                              "type": "object",
+                              "required": [
+                                "kind",
+                                "eventRef",
+                                "mapper",
+                                "outputs"
+                              ],
+                              "properties": {
+                                "kind": {
+                                  "const": "durable-receipt"
+                                },
+                                "eventRef": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_ownedRef"
+                                },
+                                "mapper": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+                                },
+                                "outputs": {
+                                  "type": "array",
+                                  "maxItems": 1024,
+                                  "items": {
+                                    "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_receiptMapping"
+                                  }
+                                }
+                              },
+                              "additionalProperties": false
+                            },
+                            "query": {
+                              "type": "object",
+                              "required": [
+                                "mapper",
+                                "mode",
+                                "identity",
+                                "resultKinds"
+                              ],
+                              "properties": {
+                                "mapper": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+                                },
+                                "mode": {
+                                  "const": "read-only"
+                                },
+                                "identity": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_receiptIdentity"
+                                },
+                                "resultKinds": {
+                                  "const": [
+                                    "confirmed",
+                                    "not-executed",
+                                    "unknown"
+                                  ]
+                                }
+                              },
+                              "additionalProperties": false
+                            },
+                            "receipt": {
+                              "type": "object",
+                              "required": [
+                                "mapper",
+                                "version",
+                                "durable",
+                                "identity",
+                                "payloadCompatibility",
+                                "evidence"
+                              ],
+                              "properties": {
+                                "mapper": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+                                },
+                                "version": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+                                },
+                                "durable": {
+                                  "const": true
+                                },
+                                "identity": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_receiptIdentity"
+                                },
+                                "payloadCompatibility": {
+                                  "const": "exact"
+                                },
+                                "evidence": {
+                                  "const": "reservation-decision-effect-reconciliation"
+                                }
+                              },
+                              "additionalProperties": false
+                            },
+                            "contractCodec": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "id",
+                                "version"
+                              ],
+                              "properties": {
+                                "id": {
+                                  "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                },
+                                "version": {
+                                  "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                }
+                              }
+                            },
+                            "runtimeCodec": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "id",
+                                "version"
+                              ],
+                              "properties": {
+                                "id": {
+                                  "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                },
+                                "version": {
+                                  "type": "integer",
+                                  "minimum": 1,
+                                  "maximum": 2147483647
+                                }
+                              }
+                            },
+                            "idempotency": {
+                              "type": "object",
+                              "required": [
+                                "mapper",
+                                "identity",
+                                "payloadConflict",
+                                "attemptIdentity"
+                              ],
+                              "properties": {
+                                "mapper": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+                                },
+                                "identity": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_operationIdentity"
+                                },
+                                "payloadConflict": {
+                                  "const": "reject"
+                                },
+                                "attemptIdentity": {
+                                  "const": "excluded"
+                                }
+                              },
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "commit": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "runtimePhase",
+                            "port",
+                            "commandMapper",
+                            "commandRef",
+                            "inputs",
+                            "outputs",
+                            "confirmation",
+                            "query",
+                            "receipt",
+                            "contractCodec",
+                            "runtimeCodec",
+                            "idempotency"
+                          ],
+                          "properties": {
+                            "runtimePhase": {
+                              "enum": [
+                                "Prepare",
+                                "Commit",
+                                "Compensate"
+                              ]
+                            },
+                            "port": {
+                              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                            },
+                            "commandMapper": {
+                              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                            },
+                            "commandRef": {
+                              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_ownedRef"
+                            },
+                            "inputs": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "required": [
+                                  "slot",
+                                  "type",
+                                  "source"
+                                ],
+                                "properties": {
+                                  "slot": {
+                                    "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                  },
+                                  "type": {
+                                    "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                  },
+                                  "source": {
+                                    "oneOf": [
+                                      {
+                                        "type": "object",
+                                        "additionalProperties": false,
+                                        "required": [
+                                          "kind"
+                                        ],
+                                        "properties": {
+                                          "kind": {
+                                            "const": "transaction-id"
+                                          }
+                                        }
+                                      },
+                                      {
+                                        "type": "object",
+                                        "additionalProperties": false,
+                                        "required": [
+                                          "kind",
+                                          "slot"
+                                        ],
+                                        "properties": {
+                                          "kind": {
+                                            "const": "args"
+                                          },
+                                          "slot": {
+                                            "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                          }
+                                        }
+                                      },
+                                      {
+                                        "type": "object",
+                                        "additionalProperties": false,
+                                        "required": [
+                                          "kind",
+                                          "stepId",
+                                          "phase",
+                                          "slot"
+                                        ],
+                                        "properties": {
+                                          "kind": {
+                                            "const": "receipt-field"
+                                          },
+                                          "stepId": {
+                                            "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                          },
+                                          "phase": {
+                                            "enum": [
+                                              "prepare",
+                                              "commit",
+                                              "compensate"
+                                            ]
+                                          },
+                                          "slot": {
+                                            "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                          }
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            },
+                            "outputs": {
+                              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_slots"
+                            },
+                            "confirmation": {
+                              "type": "object",
+                              "required": [
+                                "kind",
+                                "eventRef",
+                                "mapper",
+                                "outputs"
+                              ],
+                              "properties": {
+                                "kind": {
+                                  "const": "durable-receipt"
+                                },
+                                "eventRef": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_ownedRef"
+                                },
+                                "mapper": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+                                },
+                                "outputs": {
+                                  "type": "array",
+                                  "maxItems": 1024,
+                                  "items": {
+                                    "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_receiptMapping"
+                                  }
+                                }
+                              },
+                              "additionalProperties": false
+                            },
+                            "query": {
+                              "type": "object",
+                              "required": [
+                                "mapper",
+                                "mode",
+                                "identity",
+                                "resultKinds"
+                              ],
+                              "properties": {
+                                "mapper": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+                                },
+                                "mode": {
+                                  "const": "read-only"
+                                },
+                                "identity": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_receiptIdentity"
+                                },
+                                "resultKinds": {
+                                  "const": [
+                                    "confirmed",
+                                    "not-executed",
+                                    "unknown"
+                                  ]
+                                }
+                              },
+                              "additionalProperties": false
+                            },
+                            "receipt": {
+                              "type": "object",
+                              "required": [
+                                "mapper",
+                                "version",
+                                "durable",
+                                "identity",
+                                "payloadCompatibility",
+                                "evidence"
+                              ],
+                              "properties": {
+                                "mapper": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+                                },
+                                "version": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+                                },
+                                "durable": {
+                                  "const": true
+                                },
+                                "identity": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_receiptIdentity"
+                                },
+                                "payloadCompatibility": {
+                                  "const": "exact"
+                                },
+                                "evidence": {
+                                  "const": "reservation-decision-effect-reconciliation"
+                                }
+                              },
+                              "additionalProperties": false
+                            },
+                            "contractCodec": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "id",
+                                "version"
+                              ],
+                              "properties": {
+                                "id": {
+                                  "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                },
+                                "version": {
+                                  "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                }
+                              }
+                            },
+                            "runtimeCodec": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "id",
+                                "version"
+                              ],
+                              "properties": {
+                                "id": {
+                                  "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                },
+                                "version": {
+                                  "type": "integer",
+                                  "minimum": 1,
+                                  "maximum": 2147483647
+                                }
+                              }
+                            },
+                            "idempotency": {
+                              "type": "object",
+                              "required": [
+                                "mapper",
+                                "identity",
+                                "payloadConflict",
+                                "attemptIdentity"
+                              ],
+                              "properties": {
+                                "mapper": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+                                },
+                                "identity": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_operationIdentity"
+                                },
+                                "payloadConflict": {
+                                  "const": "reject"
+                                },
+                                "attemptIdentity": {
+                                  "const": "excluded"
+                                }
+                              },
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "compensate": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "runtimePhase",
+                            "port",
+                            "commandMapper",
+                            "commandRef",
+                            "inputs",
+                            "outputs",
+                            "confirmation",
+                            "query",
+                            "receipt",
+                            "contractCodec",
+                            "runtimeCodec",
+                            "idempotency"
+                          ],
+                          "properties": {
+                            "runtimePhase": {
+                              "enum": [
+                                "Prepare",
+                                "Commit",
+                                "Compensate"
+                              ]
+                            },
+                            "port": {
+                              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                            },
+                            "commandMapper": {
+                              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                            },
+                            "commandRef": {
+                              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_ownedRef"
+                            },
+                            "inputs": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "required": [
+                                  "slot",
+                                  "type",
+                                  "source"
+                                ],
+                                "properties": {
+                                  "slot": {
+                                    "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                  },
+                                  "type": {
+                                    "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                  },
+                                  "source": {
+                                    "oneOf": [
+                                      {
+                                        "type": "object",
+                                        "additionalProperties": false,
+                                        "required": [
+                                          "kind"
+                                        ],
+                                        "properties": {
+                                          "kind": {
+                                            "const": "transaction-id"
+                                          }
+                                        }
+                                      },
+                                      {
+                                        "type": "object",
+                                        "additionalProperties": false,
+                                        "required": [
+                                          "kind",
+                                          "slot"
+                                        ],
+                                        "properties": {
+                                          "kind": {
+                                            "const": "args"
+                                          },
+                                          "slot": {
+                                            "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                          }
+                                        }
+                                      },
+                                      {
+                                        "type": "object",
+                                        "additionalProperties": false,
+                                        "required": [
+                                          "kind",
+                                          "stepId",
+                                          "phase",
+                                          "slot"
+                                        ],
+                                        "properties": {
+                                          "kind": {
+                                            "const": "receipt-field"
+                                          },
+                                          "stepId": {
+                                            "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                          },
+                                          "phase": {
+                                            "enum": [
+                                              "prepare",
+                                              "commit",
+                                              "compensate"
+                                            ]
+                                          },
+                                          "slot": {
+                                            "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                          }
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            },
+                            "outputs": {
+                              "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_slots"
+                            },
+                            "confirmation": {
+                              "type": "object",
+                              "required": [
+                                "kind",
+                                "eventRef",
+                                "mapper",
+                                "outputs"
+                              ],
+                              "properties": {
+                                "kind": {
+                                  "const": "durable-receipt"
+                                },
+                                "eventRef": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_ownedRef"
+                                },
+                                "mapper": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+                                },
+                                "outputs": {
+                                  "type": "array",
+                                  "maxItems": 1024,
+                                  "items": {
+                                    "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_receiptMapping"
+                                  }
+                                }
+                              },
+                              "additionalProperties": false
+                            },
+                            "query": {
+                              "type": "object",
+                              "required": [
+                                "mapper",
+                                "mode",
+                                "identity",
+                                "resultKinds"
+                              ],
+                              "properties": {
+                                "mapper": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+                                },
+                                "mode": {
+                                  "const": "read-only"
+                                },
+                                "identity": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_receiptIdentity"
+                                },
+                                "resultKinds": {
+                                  "const": [
+                                    "confirmed",
+                                    "not-executed",
+                                    "unknown"
+                                  ]
+                                }
+                              },
+                              "additionalProperties": false
+                            },
+                            "receipt": {
+                              "type": "object",
+                              "required": [
+                                "mapper",
+                                "version",
+                                "durable",
+                                "identity",
+                                "payloadCompatibility",
+                                "evidence"
+                              ],
+                              "properties": {
+                                "mapper": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+                                },
+                                "version": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+                                },
+                                "durable": {
+                                  "const": true
+                                },
+                                "identity": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_receiptIdentity"
+                                },
+                                "payloadCompatibility": {
+                                  "const": "exact"
+                                },
+                                "evidence": {
+                                  "const": "reservation-decision-effect-reconciliation"
+                                }
+                              },
+                              "additionalProperties": false
+                            },
+                            "contractCodec": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "id",
+                                "version"
+                              ],
+                              "properties": {
+                                "id": {
+                                  "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                },
+                                "version": {
+                                  "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                }
+                              }
+                            },
+                            "runtimeCodec": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "id",
+                                "version"
+                              ],
+                              "properties": {
+                                "id": {
+                                  "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                },
+                                "version": {
+                                  "type": "integer",
+                                  "minimum": 1,
+                                  "maximum": 2147483647
+                                }
+                              }
+                            },
+                            "idempotency": {
+                              "type": "object",
+                              "required": [
+                                "mapper",
+                                "identity",
+                                "payloadConflict",
+                                "attemptIdentity"
+                              ],
+                              "properties": {
+                                "mapper": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+                                },
+                                "identity": {
+                                  "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_operationIdentity"
+                                },
+                                "payloadConflict": {
+                                  "const": "reject"
+                                },
+                                "attemptIdentity": {
+                                  "const": "excluded"
+                                }
+                              },
+                              "additionalProperties": false
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "schedule": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "prepare",
+                  "commit",
+                  "compensate"
+                ],
+                "properties": {
+                  "prepare": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                      "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                    }
+                  },
+                  "commit": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                      "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                    }
+                  },
+                  "compensate": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                      "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                    }
+                  }
+                }
+              },
+              "triggers": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "declaration",
+                    "binding"
+                  ],
+                  "properties": {
+                    "declaration": {
+                      "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_trigger"
+                    },
+                    "binding": {
+                      "type": "object",
+                      "required": [
+                        "triggerId",
+                        "argsMapper",
+                        "idempotencyMapper"
+                      ],
+                      "properties": {
+                        "triggerId": {
+                          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_id"
+                        },
+                        "argsMapper": {
+                          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+                        },
+                        "idempotencyMapper": {
+                          "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_symbol"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  }
+                }
+              },
+              "completions": {
+                "type": "array",
+                "minItems": 5,
+                "maxItems": 5,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "kind",
+                    "eventRef",
+                    "inputs",
+                    "mapper"
+                  ],
+                  "properties": {
+                    "kind": {
+                      "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_resultKind"
+                    },
+                    "eventRef": {
+                      "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_ownedRef"
+                    },
+                    "inputs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "slot",
+                          "type",
+                          "source"
+                        ],
+                        "properties": {
+                          "slot": {
+                            "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                          },
+                          "type": {
+                            "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                          },
+                          "source": {
+                            "oneOf": [
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "required": [
+                                  "kind"
+                                ],
+                                "properties": {
+                                  "kind": {
+                                    "const": "transaction-id"
+                                  }
+                                }
+                              },
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "required": [
+                                  "kind",
+                                  "slot"
+                                ],
+                                "properties": {
+                                  "kind": {
+                                    "const": "args"
+                                  },
+                                  "slot": {
+                                    "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                  }
+                                }
+                              },
+                              {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "required": [
+                                  "kind",
+                                  "stepId",
+                                  "phase",
+                                  "slot"
+                                ],
+                                "properties": {
+                                  "kind": {
+                                    "const": "receipt-field"
+                                  },
+                                  "stepId": {
+                                    "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                  },
+                                  "phase": {
+                                    "enum": [
+                                      "prepare",
+                                      "commit",
+                                      "compensate"
+                                    ]
+                                  },
+                                  "slot": {
+                                    "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    "mapper": {
+                      "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                    }
+                  }
+                }
+              },
+              "coordinatorSettings": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "interactionTimeoutMs"
+                ],
+                "properties": {
+                  "interactionTimeoutMs": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 2147483647
+                  }
+                }
+              },
+              "hostRequirements": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "capabilities",
+                  "totalDeadline",
+                  "admission",
+                  "safety",
+                  "businessInvariants"
+                ],
+                "properties": {
+                  "capabilities": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "capability",
+                        "verified"
+                      ],
+                      "properties": {
+                        "capability": {
+                          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                        },
+                        "verified": {
+                          "const": false
+                        }
+                      }
+                    }
+                  },
+                  "totalDeadline": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "totalTimeoutMs",
+                      "enforcement"
+                    ],
+                    "properties": {
+                      "totalTimeoutMs": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 2147483647
+                      },
+                      "enforcement": {
+                        "const": "unverified-host-obligation"
+                      }
+                    }
+                  },
+                  "admission": {
+                    "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_admission"
+                  },
+                  "safety": {
+                    "$ref": "urn:truthsrc:formal-contracts:v1#/$defs/saga_safety"
+                  },
+                  "businessInvariants": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                    }
+                  }
+                }
+              },
+              "blocked": {
+                "type": "array",
+                "items": {
+                  "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                }
+              },
+              "readiness": {
+                "const": "lowered-contract-only"
+              },
+              "runtimeBindingVerified": {
+                "const": false
+              },
+              "runnable": {
+                "const": false
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$comment": "Complete shape only; source reconstruction, runtime capability/pin and nominal dataflow checks remain mandatory."
+}

@@ -1,0 +1,727 @@
+{
+  "schemaVersion": "truthsrc.reference-binding/v1",
+  "layout": {
+    "contexts": [
+      "measurement"
+    ],
+    "declarations": [
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "type",
+          "owner": [],
+          "id": "Ratio"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "decimal"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/valueObjects/0"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "aggregate",
+          "owner": [],
+          "id": "Gauge"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "command",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "Adjust"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Gauge"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "event",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "Adjusted"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/0"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Gauge"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "state-field",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "level"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Ratio"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/0"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Gauge"
+          },
+          {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Ratio"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "state-field",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "previous"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Ratio"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/1"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Gauge"
+          },
+          {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Ratio"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "state-field",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "count"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/2"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Gauge"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "parameter",
+          "owner": [
+            "Gauge",
+            "Adjust"
+          ],
+          "id": "label"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0/parameters/0"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "command",
+            "owner": [
+              "Gauge"
+            ],
+            "id": "Adjust"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "parameter",
+          "owner": [
+            "Gauge",
+            "Adjust"
+          ],
+          "id": "delta"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Ratio"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0/parameters/1"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "command",
+            "owner": [
+              "Gauge"
+            ],
+            "id": "Adjust"
+          },
+          {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Ratio"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "parameter",
+          "owner": [
+            "Gauge",
+            "Adjust"
+          ],
+          "id": "steps"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0/parameters/2"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "command",
+            "owner": [
+              "Gauge"
+            ],
+            "id": "Adjust"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "event-slot",
+          "owner": [
+            "Gauge",
+            "Adjusted"
+          ],
+          "id": "change"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Ratio"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/0/payloads/0"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "event",
+            "owner": [
+              "Gauge"
+            ],
+            "id": "Adjusted"
+          },
+          {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Ratio"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "event-slot",
+          "owner": [
+            "Gauge",
+            "Adjusted"
+          ],
+          "id": "steps"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/0/payloads/1"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "event",
+            "owner": [
+              "Gauge"
+            ],
+            "id": "Adjusted"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "state-field",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "status"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/3"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Gauge"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "state-field",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "stock"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "primitive",
+            "name": "string"
+          },
+          "value": {
+            "form": "primitive",
+            "name": "string"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/4"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Gauge"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "parameter",
+          "owner": [
+            "Gauge",
+            "Adjust"
+          ],
+          "id": "batch"
+        },
+        "valueType": {
+          "form": "sequence",
+          "element": {
+            "form": "primitive",
+            "name": "string"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0/parameters/3"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "command",
+            "owner": [
+              "Gauge"
+            ],
+            "id": "Adjust"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "type",
+          "owner": [],
+          "id": "Observation"
+        },
+        "valueType": {
+          "form": "record",
+          "members": [
+            {
+              "context": "measurement",
+              "kind": "member",
+              "owner": [
+                "Observation"
+              ],
+              "id": "observationId"
+            },
+            {
+              "context": "measurement",
+              "kind": "member",
+              "owner": [
+                "Observation"
+              ],
+              "id": "level"
+            }
+          ]
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/valueObjects/1"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "member",
+            "owner": [
+              "Observation"
+            ],
+            "id": "observationId"
+          },
+          {
+            "context": "measurement",
+            "kind": "member",
+            "owner": [
+              "Observation"
+            ],
+            "id": "level"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "member",
+          "owner": [
+            "Observation"
+          ],
+          "id": "observationId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/valueObjects/1/fields/0"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Observation"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "member",
+          "owner": [
+            "Observation"
+          ],
+          "id": "level"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Ratio"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/valueObjects/1/fields/1"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Observation"
+          },
+          {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Ratio"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "port",
+          "owner": [],
+          "id": "ObservationSource"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/ports/0"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "event",
+          "owner": [
+            "Gauge"
+          ],
+          "id": "Observed"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/1"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Gauge"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "event-slot",
+          "owner": [
+            "Gauge",
+            "Observed"
+          ],
+          "id": "observationId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/1/payloads/0"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "event",
+            "owner": [
+              "Gauge"
+            ],
+            "id": "Observed"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "event-slot",
+          "owner": [
+            "Gauge",
+            "Observed"
+          ],
+          "id": "level"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Ratio"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/1/payloads/1"
+        },
+        "dependencies": [
+          {
+            "context": "measurement",
+            "kind": "event",
+            "owner": [
+              "Gauge"
+            ],
+            "id": "Observed"
+          },
+          {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Ratio"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "type",
+          "owner": [],
+          "id": "WireRatio"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/valueObjects/2"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "type",
+          "owner": [],
+          "id": "PoRatio"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/valueObjects/3"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "port",
+          "owner": [],
+          "id": "ObservationTransport"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/ports/1"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "measurement",
+          "kind": "artifact",
+          "owner": [],
+          "id": "MeasurementAdapter"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/artifactContracts/0"
+        },
+        "dependencies": []
+      }
+    ]
+  }
+}

@@ -51,6 +51,8 @@ const rowOf = (e) => ({
   deps: e.deps ?? [],
   ...(e.noteIds ? { noteIds: e.noteIds } : {}),
   ...(e.causedBy ? { causedBy: e.causedBy } : {}), // event→event causal ledger face (S7 #3, live event-handlers rows)
+  ...(e.productFootprint ? { productFootprint: e.productFootprint } : {}),
+  ...(e.knowledgeIds ? { knowledgeIds: e.knowledgeIds } : {}),
 });
 
 // (exported for --plan concern previews — read-only)

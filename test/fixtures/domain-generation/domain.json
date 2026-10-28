@@ -1,0 +1,331 @@
+{
+  "schemaVersion": "truthsrc/v1",
+  "workshop": "Independent measurement structured guards v3",
+  "sessions": [],
+  "valueObjects": [
+    {
+      "name": "Ratio",
+      "version": "1",
+      "dataType": "Decimal"
+    },
+    {
+      "context": "measurement",
+      "name": "Observation",
+      "fields": [
+        {
+          "name": "observationId",
+          "dataType": "String"
+        },
+        {
+          "name": "level",
+          "dataType": "Ratio"
+        }
+      ]
+    },
+    {
+      "context": "measurement",
+      "name": "WireRatio",
+      "version": "1",
+      "dataType": "String"
+    },
+    {
+      "context": "measurement",
+      "name": "PoRatio",
+      "version": "1",
+      "dataType": "String"
+    }
+  ],
+  "readModels": [],
+  "stories": [],
+  "domainServices": [],
+  "hostComputations": [],
+  "aggregates": [
+    {
+      "name": "Gauge",
+      "context": "measurement",
+      "stateFields": [
+        {
+          "name": "level",
+          "type": "Ratio",
+          "default": "0.00"
+        },
+        {
+          "name": "previous",
+          "type": "Ratio",
+          "default": "0.00"
+        },
+        {
+          "name": "count",
+          "type": "Long",
+          "default": "0"
+        },
+        {
+          "name": "status",
+          "type": "String",
+          "default": "ready"
+        },
+        {
+          "name": "stock",
+          "type": "Map[String,String]",
+          "default": []
+        }
+      ],
+      "commands": [
+        {
+          "name": "Adjust",
+          "parameters": [
+            {
+              "name": "label",
+              "type": "String",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "delta",
+              "type": "Ratio",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "steps",
+              "type": "Long",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "batch",
+              "type": "List[String]",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "guards": [
+            {
+              "kind": "invariantRef",
+              "ref": "label-required",
+              "errCode": "empty-label",
+              "cond": "param.label.nonEmpty"
+            },
+            {
+              "ruleId": "positive",
+              "errCode": "not-positive",
+              "onFail": "reject",
+              "when": {
+                "form": "money-positive",
+                "amount": "param.delta"
+              }
+            },
+            {
+              "ruleId": "covered",
+              "errCode": "uncovered",
+              "onFail": "reject",
+              "when": {
+                "form": "collection-covered",
+                "map": "stock",
+                "collection": "param.batch"
+              }
+            },
+            {
+              "ruleId": "sufficient",
+              "errCode": "insufficient",
+              "onFail": "reject",
+              "when": {
+                "form": "money-sufficient",
+                "amount": "param.delta",
+                "in": "level"
+              }
+            },
+            {
+              "kind": "statusTransition",
+              "ruleId": "status-ready",
+              "errCode": "not-ready",
+              "onFail": "reject",
+              "from": "ready",
+              "notStatus": [
+                "retired"
+              ],
+              "toStatus": "changed"
+            },
+            {
+              "kind": "invariantRef",
+              "ref": "bounded-sum",
+              "errCode": "limit",
+              "cond": "state.level - param.delta + 0.10 >= 0.00"
+            },
+            {
+              "kind": "invariantRef",
+              "ref": "positive-steps",
+              "errCode": "steps",
+              "cond": "param.steps - 1 > 0"
+            }
+          ],
+          "produces": [
+            "Adjusted"
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "Adjusted",
+          "payloads": [
+            {
+              "name": "change",
+              "type": "Ratio"
+            },
+            {
+              "name": "steps",
+              "type": "Long"
+            }
+          ],
+          "bindings": [
+            {
+              "slot": "change",
+              "expr": {
+                "form": "add",
+                "left": "param.delta",
+                "right": "literal:0.10"
+              }
+            },
+            {
+              "slot": "steps",
+              "expr": {
+                "form": "subtract",
+                "left": "param.steps",
+                "right": "literal:1"
+              }
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "level",
+              "expr": {
+                "form": "add",
+                "left": "state.level",
+                "right": "event.change"
+              }
+            },
+            {
+              "slot": "previous",
+              "expr": "state.level"
+            },
+            {
+              "slot": "count",
+              "expr": {
+                "form": "subtract",
+                "left": "state.count",
+                "right": "event.steps"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Observed",
+          "payloads": [
+            {
+              "name": "observationId",
+              "dataType": "String"
+            },
+            {
+              "name": "level",
+              "dataType": "Ratio"
+            }
+          ],
+          "bindings": [],
+          "foldAssignments": [
+            {
+              "slot": "level",
+              "expr": "event.level"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "ports": [
+    {
+      "name": "ObservationSource",
+      "version": "observation-v1",
+      "outputType": "Observation"
+    }
+  ],
+  "externalEventProducers": [
+    {
+      "id": "observation-ingress",
+      "version": "observation-v1",
+      "kind": "authority-event",
+      "event": {
+        "context": "measurement",
+        "kind": "event",
+        "owner": [
+          "Gauge"
+        ],
+        "id": "Observed"
+      },
+      "port": {
+        "context": "measurement",
+        "kind": "port",
+        "owner": [],
+        "id": "ObservationSource"
+      },
+      "outputType": {
+        "form": "nominal",
+        "ref": {
+          "context": "measurement",
+          "kind": "type",
+          "owner": [],
+          "id": "Observation"
+        }
+      },
+      "slotMappings": [
+        {
+          "slot": {
+            "context": "measurement",
+            "kind": "event-slot",
+            "owner": [
+              "Gauge",
+              "Observed"
+            ],
+            "id": "observationId"
+          },
+          "member": {
+            "context": "measurement",
+            "kind": "member",
+            "owner": [
+              "Observation"
+            ],
+            "id": "observationId"
+          }
+        },
+        {
+          "slot": {
+            "context": "measurement",
+            "kind": "event-slot",
+            "owner": [
+              "Gauge",
+              "Observed"
+            ],
+            "id": "level"
+          },
+          "member": {
+            "context": "measurement",
+            "kind": "member",
+            "owner": [
+              "Observation"
+            ],
+            "id": "level"
+          }
+        }
+      ],
+      "stableIdentityContract": {
+        "id": "observation-identity",
+        "version": "1",
+        "keys": [
+          {
+            "context": "measurement",
+            "kind": "member",
+            "owner": [
+              "Observation"
+            ],
+            "id": "observationId"
+          }
+        ]
+      }
+    }
+  ]
+}

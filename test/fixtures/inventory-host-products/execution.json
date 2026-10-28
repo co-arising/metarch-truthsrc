@@ -1,0 +1,777 @@
+{
+  "schemaVersion": "truthsrc.execution-binding/v1",
+  "sagaBindings": {
+    "schemaVersion": "truthsrc.saga-binding/v1",
+    "sagas": [
+      {
+        "sagaId": "reserve-warehouse-sku",
+        "version": "inventory-v3",
+        "module": "inventory.ReservationModule",
+        "engine": {
+          "artifact": "net.imadz:saga-core:strict-runtime-binding-v1-SNAPSHOT",
+          "apiMode": "strict",
+          "entrypoint": "inventory.StrictEntry",
+          "capabilities": {
+            "required": [
+              "durable-commit-decision",
+              "durable-abort-decision",
+              "typed-nonterminal-unknown",
+              "safe-status-reattach",
+              "receipt-reconciliation",
+              "participant-idempotency-query",
+              "pinned-definition-codec",
+              "manual-evidence-authorization",
+              "cancel-before-prepare-fencing",
+              "durable-manifest"
+            ]
+          }
+        },
+        "codec": {
+          "id": "ReservationArgs",
+          "version": "args-v1",
+          "compatibleVersions": [
+            "args-v1"
+          ],
+          "mapper": "inventory.ReservationArgsCodec"
+        },
+        "types": [
+          {
+            "id": "TxId",
+            "canonicalType": "TxId",
+            "implementation": "inventory.types.TxId",
+            "kind": "id",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          {
+            "id": "ReservationRequestId",
+            "canonicalType": "ReservationRequestId",
+            "implementation": "inventory.types.ReservationRequestId",
+            "kind": "id",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          {
+            "id": "WarehouseId",
+            "canonicalType": "WarehouseId",
+            "implementation": "inventory.types.WarehouseId",
+            "kind": "id",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          {
+            "id": "SkuId",
+            "canonicalType": "SkuId",
+            "implementation": "inventory.types.SkuId",
+            "kind": "id",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          {
+            "id": "ReservationId",
+            "canonicalType": "ReservationId",
+            "implementation": "inventory.types.ReservationId",
+            "kind": "id",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          {
+            "id": "Quantity",
+            "canonicalType": "Int",
+            "implementation": "inventory.types.Quantity",
+            "kind": "integer",
+            "minimum": 1,
+            "maximum": 10000
+          },
+          {
+            "id": "AllocationId",
+            "canonicalType": "AllocationId",
+            "implementation": "inventory.types.AllocationId",
+            "kind": "id",
+            "minLength": 1,
+            "maxLength": 80
+          }
+        ],
+        "participants": [
+          {
+            "participantId": "warehouse",
+            "addressing": {
+              "resolver": "inventory.WarehouseResolver",
+              "aggregate": "Warehouse",
+              "resourceType": "WarehouseId",
+              "mode": "exact-resource"
+            }
+          },
+          {
+            "participantId": "destination",
+            "addressing": {
+              "resolver": "inventory.WarehouseResolver",
+              "aggregate": "Warehouse",
+              "resourceType": "WarehouseId",
+              "mode": "exact-resource"
+            }
+          },
+          {
+            "participantId": "allocation",
+            "addressing": {
+              "resolver": "inventory.AllocationResolver",
+              "aggregate": "AllocationOrder",
+              "resourceType": "AllocationId",
+              "mode": "exact-resource"
+            }
+          }
+        ],
+        "steps": [
+          {
+            "stepId": "reserve-sku",
+            "phases": {
+              "prepare": {
+                "kind": "command",
+                "port": "inventory.WarehousePort",
+                "commandMapper": "inventory.ReserveSkuQuantityMapper",
+                "confirmation": {
+                  "kind": "durable-receipt",
+                  "eventRef": {
+                    "aggregate": "Warehouse",
+                    "name": "SkuQuantityReserved"
+                  },
+                  "mapper": "inventory.ConfirmationMapper",
+                  "outputs": [
+                    {
+                      "slot": "reservation",
+                      "ref": "receipt:reservation",
+                      "type": "ReservationId"
+                    }
+                  ]
+                },
+                "query": {
+                  "mapper": "inventory.ReservationQuery",
+                  "mode": "read-only",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "resultKinds": [
+                    "confirmed",
+                    "not-executed",
+                    "unknown"
+                  ]
+                },
+                "receipt": {
+                  "mapper": "inventory.ReservationReceipt",
+                  "version": "receipt-v1",
+                  "durable": true,
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadCompatibility": "exact",
+                  "evidence": "reservation-decision-effect-reconciliation"
+                },
+                "idempotency": {
+                  "mapper": "inventory.ReservationIdentity",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadConflict": "reject",
+                  "attemptIdentity": "excluded"
+                }
+              },
+              "commit": {
+                "kind": "command",
+                "port": "inventory.WarehousePort",
+                "commandMapper": "inventory.CommitSkuReservationMapper",
+                "confirmation": {
+                  "kind": "durable-receipt",
+                  "eventRef": {
+                    "aggregate": "Warehouse",
+                    "name": "SkuReservationCommitted"
+                  },
+                  "mapper": "inventory.ConfirmationMapper",
+                  "outputs": [
+                    {
+                      "slot": "txid",
+                      "ref": "receipt:txid",
+                      "type": "TxId"
+                    }
+                  ]
+                },
+                "query": {
+                  "mapper": "inventory.ReservationQuery",
+                  "mode": "read-only",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "resultKinds": [
+                    "confirmed",
+                    "not-executed",
+                    "unknown"
+                  ]
+                },
+                "receipt": {
+                  "mapper": "inventory.ReservationReceipt",
+                  "version": "receipt-v1",
+                  "durable": true,
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadCompatibility": "exact",
+                  "evidence": "reservation-decision-effect-reconciliation"
+                },
+                "idempotency": {
+                  "mapper": "inventory.ReservationIdentity",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadConflict": "reject",
+                  "attemptIdentity": "excluded"
+                }
+              },
+              "compensate": {
+                "kind": "command",
+                "port": "inventory.WarehousePort",
+                "commandMapper": "inventory.ReleaseSkuReservationMapper",
+                "confirmation": {
+                  "kind": "durable-receipt",
+                  "eventRef": {
+                    "aggregate": "Warehouse",
+                    "name": "SkuReservationReleased"
+                  },
+                  "mapper": "inventory.ConfirmationMapper",
+                  "outputs": [
+                    {
+                      "slot": "txid",
+                      "ref": "receipt:txid",
+                      "type": "TxId"
+                    }
+                  ]
+                },
+                "query": {
+                  "mapper": "inventory.ReservationQuery",
+                  "mode": "read-only",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "resultKinds": [
+                    "confirmed",
+                    "not-executed",
+                    "unknown"
+                  ]
+                },
+                "receipt": {
+                  "mapper": "inventory.ReservationReceipt",
+                  "version": "receipt-v1",
+                  "durable": true,
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadCompatibility": "exact",
+                  "evidence": "reservation-decision-effect-reconciliation"
+                },
+                "idempotency": {
+                  "mapper": "inventory.ReservationIdentity",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadConflict": "reject",
+                  "attemptIdentity": "excluded"
+                }
+              }
+            }
+          },
+          {
+            "stepId": "reserve-destination",
+            "phases": {
+              "prepare": {
+                "kind": "command",
+                "port": "inventory.WarehousePort",
+                "commandMapper": "inventory.ReserveSkuQuantityMapper",
+                "confirmation": {
+                  "kind": "durable-receipt",
+                  "eventRef": {
+                    "aggregate": "Warehouse",
+                    "name": "SkuQuantityReserved"
+                  },
+                  "mapper": "inventory.ConfirmationMapper",
+                  "outputs": [
+                    {
+                      "slot": "reservation",
+                      "ref": "receipt:reservation",
+                      "type": "ReservationId"
+                    }
+                  ]
+                },
+                "query": {
+                  "mapper": "inventory.ReservationQuery",
+                  "mode": "read-only",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "resultKinds": [
+                    "confirmed",
+                    "not-executed",
+                    "unknown"
+                  ]
+                },
+                "receipt": {
+                  "mapper": "inventory.ReservationReceipt",
+                  "version": "receipt-v1",
+                  "durable": true,
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadCompatibility": "exact",
+                  "evidence": "reservation-decision-effect-reconciliation"
+                },
+                "idempotency": {
+                  "mapper": "inventory.ReservationIdentity",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadConflict": "reject",
+                  "attemptIdentity": "excluded"
+                }
+              },
+              "commit": {
+                "kind": "command",
+                "port": "inventory.WarehousePort",
+                "commandMapper": "inventory.CommitSkuReservationMapper",
+                "confirmation": {
+                  "kind": "durable-receipt",
+                  "eventRef": {
+                    "aggregate": "Warehouse",
+                    "name": "SkuReservationCommitted"
+                  },
+                  "mapper": "inventory.ConfirmationMapper",
+                  "outputs": [
+                    {
+                      "slot": "txid",
+                      "ref": "receipt:txid",
+                      "type": "TxId"
+                    }
+                  ]
+                },
+                "query": {
+                  "mapper": "inventory.ReservationQuery",
+                  "mode": "read-only",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "resultKinds": [
+                    "confirmed",
+                    "not-executed",
+                    "unknown"
+                  ]
+                },
+                "receipt": {
+                  "mapper": "inventory.ReservationReceipt",
+                  "version": "receipt-v1",
+                  "durable": true,
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadCompatibility": "exact",
+                  "evidence": "reservation-decision-effect-reconciliation"
+                },
+                "idempotency": {
+                  "mapper": "inventory.ReservationIdentity",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadConflict": "reject",
+                  "attemptIdentity": "excluded"
+                }
+              },
+              "compensate": {
+                "kind": "command",
+                "port": "inventory.WarehousePort",
+                "commandMapper": "inventory.ReleaseSkuReservationMapper",
+                "confirmation": {
+                  "kind": "durable-receipt",
+                  "eventRef": {
+                    "aggregate": "Warehouse",
+                    "name": "SkuReservationReleased"
+                  },
+                  "mapper": "inventory.ConfirmationMapper",
+                  "outputs": [
+                    {
+                      "slot": "txid",
+                      "ref": "receipt:txid",
+                      "type": "TxId"
+                    }
+                  ]
+                },
+                "query": {
+                  "mapper": "inventory.ReservationQuery",
+                  "mode": "read-only",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "resultKinds": [
+                    "confirmed",
+                    "not-executed",
+                    "unknown"
+                  ]
+                },
+                "receipt": {
+                  "mapper": "inventory.ReservationReceipt",
+                  "version": "receipt-v1",
+                  "durable": true,
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadCompatibility": "exact",
+                  "evidence": "reservation-decision-effect-reconciliation"
+                },
+                "idempotency": {
+                  "mapper": "inventory.ReservationIdentity",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadConflict": "reject",
+                  "attemptIdentity": "excluded"
+                }
+              }
+            }
+          },
+          {
+            "stepId": "allocate-order",
+            "phases": {
+              "prepare": {
+                "kind": "command",
+                "port": "inventory.WarehousePort",
+                "commandMapper": "inventory.ReserveSkuQuantityMapper",
+                "confirmation": {
+                  "kind": "durable-receipt",
+                  "eventRef": {
+                    "aggregate": "AllocationOrder",
+                    "name": "AllocationPrepared"
+                  },
+                  "mapper": "inventory.ConfirmationMapper",
+                  "outputs": [
+                    {
+                      "slot": "txid",
+                      "ref": "receipt:txid",
+                      "type": "TxId"
+                    }
+                  ]
+                },
+                "query": {
+                  "mapper": "inventory.ReservationQuery",
+                  "mode": "read-only",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "resultKinds": [
+                    "confirmed",
+                    "not-executed",
+                    "unknown"
+                  ]
+                },
+                "receipt": {
+                  "mapper": "inventory.ReservationReceipt",
+                  "version": "receipt-v1",
+                  "durable": true,
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadCompatibility": "exact",
+                  "evidence": "reservation-decision-effect-reconciliation"
+                },
+                "idempotency": {
+                  "mapper": "inventory.ReservationIdentity",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadConflict": "reject",
+                  "attemptIdentity": "excluded"
+                }
+              },
+              "commit": {
+                "kind": "command",
+                "port": "inventory.WarehousePort",
+                "commandMapper": "inventory.CommitSkuReservationMapper",
+                "confirmation": {
+                  "kind": "durable-receipt",
+                  "eventRef": {
+                    "aggregate": "AllocationOrder",
+                    "name": "AllocationCommitted"
+                  },
+                  "mapper": "inventory.ConfirmationMapper",
+                  "outputs": [
+                    {
+                      "slot": "txid",
+                      "ref": "receipt:txid",
+                      "type": "TxId"
+                    }
+                  ]
+                },
+                "query": {
+                  "mapper": "inventory.ReservationQuery",
+                  "mode": "read-only",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "resultKinds": [
+                    "confirmed",
+                    "not-executed",
+                    "unknown"
+                  ]
+                },
+                "receipt": {
+                  "mapper": "inventory.ReservationReceipt",
+                  "version": "receipt-v1",
+                  "durable": true,
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadCompatibility": "exact",
+                  "evidence": "reservation-decision-effect-reconciliation"
+                },
+                "idempotency": {
+                  "mapper": "inventory.ReservationIdentity",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadConflict": "reject",
+                  "attemptIdentity": "excluded"
+                }
+              },
+              "compensate": {
+                "kind": "command",
+                "port": "inventory.WarehousePort",
+                "commandMapper": "inventory.ReleaseSkuReservationMapper",
+                "confirmation": {
+                  "kind": "durable-receipt",
+                  "eventRef": {
+                    "aggregate": "AllocationOrder",
+                    "name": "AllocationCancelled"
+                  },
+                  "mapper": "inventory.ConfirmationMapper",
+                  "outputs": [
+                    {
+                      "slot": "txid",
+                      "ref": "receipt:txid",
+                      "type": "TxId"
+                    }
+                  ]
+                },
+                "query": {
+                  "mapper": "inventory.ReservationQuery",
+                  "mode": "read-only",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "resultKinds": [
+                    "confirmed",
+                    "not-executed",
+                    "unknown"
+                  ]
+                },
+                "receipt": {
+                  "mapper": "inventory.ReservationReceipt",
+                  "version": "receipt-v1",
+                  "durable": true,
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadCompatibility": "exact",
+                  "evidence": "reservation-decision-effect-reconciliation"
+                },
+                "idempotency": {
+                  "mapper": "inventory.ReservationIdentity",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadConflict": "reject",
+                  "attemptIdentity": "excluded"
+                }
+              }
+            }
+          }
+        ],
+        "triggerMappers": [
+          {
+            "triggerId": "reservation-request",
+            "argsMapper": "inventory.RequestMapper",
+            "idempotencyMapper": "inventory.RequestIdentity"
+          }
+        ],
+        "completionMappers": [
+          {
+            "kind": "succeeded",
+            "mapper": "inventory.ReservationOutcome"
+          },
+          {
+            "kind": "rejected-before-effects",
+            "mapper": "inventory.ReservationOutcome"
+          },
+          {
+            "kind": "compensated",
+            "mapper": "inventory.ReservationOutcome"
+          },
+          {
+            "kind": "recovery-required",
+            "mapper": "inventory.ReservationOutcome"
+          },
+          {
+            "kind": "outcome-unknown",
+            "mapper": "inventory.ReservationOutcome"
+          }
+        ]
+      }
+    ]
+  },
+  "pipelines": []
+}

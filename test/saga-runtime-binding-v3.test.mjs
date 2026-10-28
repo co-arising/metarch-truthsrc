@@ -403,8 +403,8 @@ for (const [name, mutate] of [
 
 // White-box independent admission recheck: use the actual private v3 feature
 // function in isolation so compiler diagnostics/flags cannot mask its checks.
-const runtimeSource = readFileSync(new URL('../lib/saga/runtime-binding.mjs', import.meta.url), 'utf8');
-const featureSource = runtimeSource.slice(runtimeSource.indexOf('function featureCheckV3('), runtimeSource.indexOf('\nfunction receiptInput('));
+const runtimeSource = readFileSync(new URL('../lib/saga/runtime-binding-pure.mjs', import.meta.url), 'utf8');
+const featureSource = runtimeSource.slice(runtimeSource.indexOf('function featureCheckV3('), runtimeSource.indexOf('\n  function receiptInput('));
 const independentFeature = runInNewContext('(' + featureSource + ')', { PHASES });
 function recheck(input, mutate, expected) {
   const compiled = compileSagas(input.canonical, input.binding); assert.deepEqual(compiled.diagnostics, []);

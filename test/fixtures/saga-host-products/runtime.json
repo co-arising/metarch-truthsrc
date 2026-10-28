@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "truthsrc.saga-runtime-binding/v2",
+  "target": {
+    "artifact": "net.imadz:saga-core:strict-runtime-binding-v1-SNAPSHOT",
+    "artifactStatus": "unpublished-candidate",
+    "apiMode": "strict",
+    "definitionApi": "net.imadz.infra.saga.strict.StrictSagaDefinition",
+    "coordinatorApi": "net.imadz.infra.saga.strict.StrictSagaCoordinator",
+    "executionMode": "static-serial-allTCC",
+    "capabilities": [
+      "positive-int-definition-version",
+      "static-participants",
+      "serial-all-tcc",
+      "fresh-canonical-args",
+      "pinned-args-codec",
+      "pinned-phase-receipt-codecs",
+      "minor-unit-string-money",
+      "singleton-serial-barriers",
+      "confirmed-receipt-context",
+      "fresh-receipt-decode"
+    ]
+  },
+  "sagas": [
+    {
+      "sagaId": "money-transfer",
+      "definitionVersion": "v2",
+      "runtimeVersion": 2,
+      "argsCodec": {
+        "id": "ArgsCodec",
+        "version": "codec-v1",
+        "runtimeVersion": 1
+      },
+      "receiptCodecs": [
+        {
+          "stepId": "reserve-source",
+          "phase": "prepare",
+          "id": "reserve-source-prepare-receipt",
+          "version": "receipt-v1",
+          "runtimeVersion": 1
+        },
+        {
+          "stepId": "reserve-source",
+          "phase": "commit",
+          "id": "reserve-source-commit-receipt",
+          "version": "receipt-v1",
+          "runtimeVersion": 1
+        },
+        {
+          "stepId": "reserve-source",
+          "phase": "compensate",
+          "id": "reserve-source-compensate-receipt",
+          "version": "receipt-v1",
+          "runtimeVersion": 1
+        },
+        {
+          "stepId": "reserve-target",
+          "phase": "prepare",
+          "id": "reserve-target-prepare-receipt",
+          "version": "receipt-v1",
+          "runtimeVersion": 1
+        },
+        {
+          "stepId": "reserve-target",
+          "phase": "commit",
+          "id": "reserve-target-commit-receipt",
+          "version": "receipt-v1",
+          "runtimeVersion": 1
+        },
+        {
+          "stepId": "reserve-target",
+          "phase": "compensate",
+          "id": "reserve-target-compensate-receipt",
+          "version": "receipt-v1",
+          "runtimeVersion": 1
+        }
+      ]
+    }
+  ]
+}

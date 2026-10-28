@@ -1,0 +1,487 @@
+{
+  "schemaVersion": "truthsrc.domain-external-event-binding/v2",
+  "externalEvents": {
+    "producers": [
+      {
+        "id": "complete-succeeded",
+        "version": "port-v1",
+        "kind": "saga-completion",
+        "event": {
+          "context": "accounts",
+          "kind": "event",
+          "owner": [
+            "CreditBalance"
+          ],
+          "id": "result-succeeded"
+        },
+        "port": {
+          "context": "accounts",
+          "kind": "port",
+          "owner": [],
+          "id": "Authoritysucceeded"
+        },
+        "outputType": {
+          "form": "nominal",
+          "ref": {
+            "context": "accounts",
+            "kind": "type",
+            "owner": [],
+            "id": "Completionsucceeded"
+          }
+        },
+        "stableIdentityContract": {
+          "id": "completion-succeeded",
+          "version": "identity-v1",
+          "keys": [
+            {
+              "context": "accounts",
+              "kind": "member",
+              "owner": [
+                "Completionsucceeded"
+              ],
+              "id": "txid"
+            }
+          ]
+        },
+        "slots": [
+          {
+            "slot": {
+              "context": "accounts",
+              "kind": "event-slot",
+              "owner": [
+                "CreditBalance",
+                "result-succeeded"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/externalEventProducers/0/slotMappings/0"
+            },
+            "member": {
+              "context": "accounts",
+              "kind": "member",
+              "owner": [
+                "Completionsucceeded"
+              ],
+              "id": "txid"
+            },
+            "dependencies": [
+              {
+                "context": "accounts",
+                "kind": "port",
+                "owner": [],
+                "id": "Authoritysucceeded"
+              },
+              {
+                "context": "accounts",
+                "kind": "member",
+                "owner": [
+                  "Completionsucceeded"
+                ],
+                "id": "txid"
+              }
+            ]
+          }
+        ],
+        "source": {
+          "document": "domain",
+          "pointer": "/externalEventProducers/0"
+        }
+      },
+      {
+        "id": "complete-rejected-before-effects",
+        "version": "port-v1",
+        "kind": "saga-completion",
+        "event": {
+          "context": "accounts",
+          "kind": "event",
+          "owner": [
+            "CreditBalance"
+          ],
+          "id": "result-rejected-before-effects"
+        },
+        "port": {
+          "context": "accounts",
+          "kind": "port",
+          "owner": [],
+          "id": "Authorityrejected-before-effects"
+        },
+        "outputType": {
+          "form": "nominal",
+          "ref": {
+            "context": "accounts",
+            "kind": "type",
+            "owner": [],
+            "id": "Completionrejectedbeforeeffects"
+          }
+        },
+        "stableIdentityContract": {
+          "id": "completion-rejected-before-effects",
+          "version": "identity-v1",
+          "keys": [
+            {
+              "context": "accounts",
+              "kind": "member",
+              "owner": [
+                "Completionrejectedbeforeeffects"
+              ],
+              "id": "txid"
+            }
+          ]
+        },
+        "slots": [
+          {
+            "slot": {
+              "context": "accounts",
+              "kind": "event-slot",
+              "owner": [
+                "CreditBalance",
+                "result-rejected-before-effects"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/externalEventProducers/1/slotMappings/0"
+            },
+            "member": {
+              "context": "accounts",
+              "kind": "member",
+              "owner": [
+                "Completionrejectedbeforeeffects"
+              ],
+              "id": "txid"
+            },
+            "dependencies": [
+              {
+                "context": "accounts",
+                "kind": "port",
+                "owner": [],
+                "id": "Authorityrejected-before-effects"
+              },
+              {
+                "context": "accounts",
+                "kind": "member",
+                "owner": [
+                  "Completionrejectedbeforeeffects"
+                ],
+                "id": "txid"
+              }
+            ]
+          }
+        ],
+        "source": {
+          "document": "domain",
+          "pointer": "/externalEventProducers/1"
+        }
+      },
+      {
+        "id": "complete-compensated",
+        "version": "port-v1",
+        "kind": "saga-completion",
+        "event": {
+          "context": "accounts",
+          "kind": "event",
+          "owner": [
+            "CreditBalance"
+          ],
+          "id": "result-compensated"
+        },
+        "port": {
+          "context": "accounts",
+          "kind": "port",
+          "owner": [],
+          "id": "Authoritycompensated"
+        },
+        "outputType": {
+          "form": "nominal",
+          "ref": {
+            "context": "accounts",
+            "kind": "type",
+            "owner": [],
+            "id": "Completioncompensated"
+          }
+        },
+        "stableIdentityContract": {
+          "id": "completion-compensated",
+          "version": "identity-v1",
+          "keys": [
+            {
+              "context": "accounts",
+              "kind": "member",
+              "owner": [
+                "Completioncompensated"
+              ],
+              "id": "txid"
+            }
+          ]
+        },
+        "slots": [
+          {
+            "slot": {
+              "context": "accounts",
+              "kind": "event-slot",
+              "owner": [
+                "CreditBalance",
+                "result-compensated"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/externalEventProducers/2/slotMappings/0"
+            },
+            "member": {
+              "context": "accounts",
+              "kind": "member",
+              "owner": [
+                "Completioncompensated"
+              ],
+              "id": "txid"
+            },
+            "dependencies": [
+              {
+                "context": "accounts",
+                "kind": "port",
+                "owner": [],
+                "id": "Authoritycompensated"
+              },
+              {
+                "context": "accounts",
+                "kind": "member",
+                "owner": [
+                  "Completioncompensated"
+                ],
+                "id": "txid"
+              }
+            ]
+          }
+        ],
+        "source": {
+          "document": "domain",
+          "pointer": "/externalEventProducers/2"
+        }
+      },
+      {
+        "id": "complete-recovery-required",
+        "version": "port-v1",
+        "kind": "saga-completion",
+        "event": {
+          "context": "accounts",
+          "kind": "event",
+          "owner": [
+            "CreditBalance"
+          ],
+          "id": "result-recovery-required"
+        },
+        "port": {
+          "context": "accounts",
+          "kind": "port",
+          "owner": [],
+          "id": "Authorityrecovery-required"
+        },
+        "outputType": {
+          "form": "nominal",
+          "ref": {
+            "context": "accounts",
+            "kind": "type",
+            "owner": [],
+            "id": "Completionrecoveryrequired"
+          }
+        },
+        "stableIdentityContract": {
+          "id": "completion-recovery-required",
+          "version": "identity-v1",
+          "keys": [
+            {
+              "context": "accounts",
+              "kind": "member",
+              "owner": [
+                "Completionrecoveryrequired"
+              ],
+              "id": "txid"
+            }
+          ]
+        },
+        "slots": [
+          {
+            "slot": {
+              "context": "accounts",
+              "kind": "event-slot",
+              "owner": [
+                "CreditBalance",
+                "result-recovery-required"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/externalEventProducers/3/slotMappings/0"
+            },
+            "member": {
+              "context": "accounts",
+              "kind": "member",
+              "owner": [
+                "Completionrecoveryrequired"
+              ],
+              "id": "txid"
+            },
+            "dependencies": [
+              {
+                "context": "accounts",
+                "kind": "port",
+                "owner": [],
+                "id": "Authorityrecovery-required"
+              },
+              {
+                "context": "accounts",
+                "kind": "member",
+                "owner": [
+                  "Completionrecoveryrequired"
+                ],
+                "id": "txid"
+              }
+            ]
+          }
+        ],
+        "source": {
+          "document": "domain",
+          "pointer": "/externalEventProducers/3"
+        }
+      },
+      {
+        "id": "complete-outcome-unknown",
+        "version": "port-v1",
+        "kind": "saga-completion",
+        "event": {
+          "context": "accounts",
+          "kind": "event",
+          "owner": [
+            "CreditBalance"
+          ],
+          "id": "result-outcome-unknown"
+        },
+        "port": {
+          "context": "accounts",
+          "kind": "port",
+          "owner": [],
+          "id": "Authorityoutcome-unknown"
+        },
+        "outputType": {
+          "form": "nominal",
+          "ref": {
+            "context": "accounts",
+            "kind": "type",
+            "owner": [],
+            "id": "Completionoutcomeunknown"
+          }
+        },
+        "stableIdentityContract": {
+          "id": "completion-outcome-unknown",
+          "version": "identity-v1",
+          "keys": [
+            {
+              "context": "accounts",
+              "kind": "member",
+              "owner": [
+                "Completionoutcomeunknown"
+              ],
+              "id": "txid"
+            }
+          ]
+        },
+        "slots": [
+          {
+            "slot": {
+              "context": "accounts",
+              "kind": "event-slot",
+              "owner": [
+                "CreditBalance",
+                "result-outcome-unknown"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/externalEventProducers/4/slotMappings/0"
+            },
+            "member": {
+              "context": "accounts",
+              "kind": "member",
+              "owner": [
+                "Completionoutcomeunknown"
+              ],
+              "id": "txid"
+            },
+            "dependencies": [
+              {
+                "context": "accounts",
+                "kind": "port",
+                "owner": [],
+                "id": "Authorityoutcome-unknown"
+              },
+              {
+                "context": "accounts",
+                "kind": "member",
+                "owner": [
+                  "Completionoutcomeunknown"
+                ],
+                "id": "txid"
+              }
+            ]
+          }
+        ],
+        "source": {
+          "document": "domain",
+          "pointer": "/externalEventProducers/4"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:truthsrc:domain-external-events:v2",
+  "title": "Explicit typed external event producers, dependencies v4 and unchanged finite folds",
+  "$defs": {
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "kind",
+        "event",
+        "port",
+        "outputType",
+        "slots",
+        "stableIdentityContract",
+        "source"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+        },
+        "version": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+        },
+        "kind": {
+          "enum": [
+            "authority-event",
+            "saga-completion",
+            "technical-bridge"
+          ]
+        },
+        "event": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference"
+        },
+        "port": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference"
+        },
+        "outputType": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/valueType"
+        },
+        "slots": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "slot",
+              "valueType",
+              "source",
+              "member",
+              "dependencies"
+            ],
+            "properties": {
+              "slot": {
+                "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference"
+              },
+              "valueType": {
+                "$ref": "urn:truthsrc:product-compilation:v1#/$defs/valueType"
+              },
+              "source": {
+                "$ref": "urn:truthsrc:product-compilation:v1#/$defs/source"
+              },
+              "member": {
+                "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference"
+              },
+              "dependencies": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference"
+                }
+              }
+            }
+          }
+        },
+        "stableIdentityContract": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "version",
+            "keys"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+            },
+            "version": {
+              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+            },
+            "keys": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference"
+              }
+            }
+          }
+        },
+        "source": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/source"
+        }
+      }
+    },
+    "externalEvents": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "producers"
+      ],
+      "properties": {
+        "producers": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:domain-external-events:v2#/$defs/producer"
+          }
+        }
+      }
+    },
+    "externalBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "externalEvents"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "truthsrc.domain-external-event-binding/v2"
+        },
+        "externalEvents": {
+          "$ref": "urn:truthsrc:domain-external-events:v2#/$defs/externalEvents"
+        }
+      }
+    }
+  }
+}

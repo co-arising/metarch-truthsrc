@@ -13,7 +13,7 @@ const arg = (name, dflt) => {
   return i > 0 ? resolve(process.argv[i + 1]) : dflt;
 };
 const [cmd] = process.argv.slice(2);
-const strictCompilation = cmd === 'compile-products' || cmd === 'compile-execution' || cmd === 'compile-sagas' || cmd === 'generate';
+const strictCompilation = cmd === 'generate-products' || cmd === 'compile-products' || cmd === 'compile-execution' || cmd === 'compile-sagas' || cmd === 'generate';
 const TREE = strictCompilation ? undefined : arg('--tree', resolve('tree'));
 const OUT = strictCompilation ? undefined : arg('--out', resolve('canonical.json'));
 
@@ -22,6 +22,9 @@ const USAGE = `truthsrc v0.5 — git-native Event Storming truth source
   truthsrc compile   --tree <dir> [--out canonical.json]   tree → canonical projection
   truthsrc compile-products --request <files-manifest> --out <new-product-set>
                                                            static reference/decision products; no code generation
+  truthsrc generate-products --request <files-manifest> --generator <shipped-dir> --out <owned-dir>
+                             --options-json <file> [--plan]
+                                                           typed source plan; --plan never writes the target
   truthsrc compile-execution --tree <dir> | --in <canonical> [--binding <file>] --out <ir>
   truthsrc compile-sagas     --tree <dir> | --in <canonical> [--binding <file>] --out <ir>
                                                            strict contract compilation; never runtime certification
@@ -50,6 +53,13 @@ const USAGE = `truthsrc v0.5 — git-native Event Storming truth source
 const die = (msg) => { console.error(msg); process.exit(2); };
 
 switch (cmd) {
+  case 'generate-products': {
+    try {
+      const { generateProductCli } = await import('../lib/products/generate-cli.mjs');
+      console.log(JSON.stringify(await generateProductCli(process.argv.slice(3))));
+    } catch (error) { die(`[FAIL] ${error.message}`); }
+    break;
+  }
   case 'compile-products': {
     try {
       const { compileProductCli } = await import('../lib/products/cli.mjs');

@@ -1,0 +1,100 @@
+{
+  "schemaVersion": "truthsrc.saga-runtime-binding/v2",
+  "target": {
+    "artifact": "net.imadz:saga-core:strict-runtime-binding-v1-SNAPSHOT",
+    "artifactStatus": "unpublished-candidate",
+    "apiMode": "strict",
+    "definitionApi": "net.imadz.infra.saga.strict.StrictSagaDefinition",
+    "coordinatorApi": "net.imadz.infra.saga.strict.StrictSagaCoordinator",
+    "executionMode": "static-serial-allTCC",
+    "capabilities": [
+      "positive-int-definition-version",
+      "static-participants",
+      "serial-all-tcc",
+      "fresh-canonical-args",
+      "pinned-args-codec",
+      "pinned-phase-receipt-codecs",
+      "minor-unit-string-money",
+      "singleton-serial-barriers",
+      "confirmed-receipt-context",
+      "fresh-receipt-decode"
+    ]
+  },
+  "sagas": [
+    {
+      "sagaId": "reserve-warehouse-sku",
+      "definitionVersion": "inventory-v3",
+      "runtimeVersion": 1,
+      "argsCodec": {
+        "id": "ReservationArgs",
+        "version": "args-v1",
+        "runtimeVersion": 1
+      },
+      "receiptCodecs": [
+        {
+          "stepId": "reserve-sku",
+          "phase": "prepare",
+          "id": "reserve-sku-prepare",
+          "version": "receipt-v1",
+          "runtimeVersion": 1
+        },
+        {
+          "stepId": "reserve-sku",
+          "phase": "commit",
+          "id": "reserve-sku-commit",
+          "version": "receipt-v1",
+          "runtimeVersion": 1
+        },
+        {
+          "stepId": "reserve-sku",
+          "phase": "compensate",
+          "id": "reserve-sku-compensate",
+          "version": "receipt-v1",
+          "runtimeVersion": 1
+        },
+        {
+          "stepId": "reserve-destination",
+          "phase": "prepare",
+          "id": "reserve-destination-prepare",
+          "version": "receipt-v1",
+          "runtimeVersion": 1
+        },
+        {
+          "stepId": "reserve-destination",
+          "phase": "commit",
+          "id": "reserve-destination-commit",
+          "version": "receipt-v1",
+          "runtimeVersion": 1
+        },
+        {
+          "stepId": "reserve-destination",
+          "phase": "compensate",
+          "id": "reserve-destination-compensate",
+          "version": "receipt-v1",
+          "runtimeVersion": 1
+        },
+        {
+          "stepId": "allocate-order",
+          "phase": "prepare",
+          "id": "allocate-order-prepare",
+          "version": "receipt-v1",
+          "runtimeVersion": 1
+        },
+        {
+          "stepId": "allocate-order",
+          "phase": "commit",
+          "id": "allocate-order-commit",
+          "version": "receipt-v1",
+          "runtimeVersion": 1
+        },
+        {
+          "stepId": "allocate-order",
+          "phase": "compensate",
+          "id": "allocate-order-compensate",
+          "version": "receipt-v1",
+          "runtimeVersion": 1
+        }
+      ]
+    }
+  ]
+}

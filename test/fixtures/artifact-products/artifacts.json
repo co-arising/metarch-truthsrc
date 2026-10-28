@@ -1,0 +1,83 @@
+{
+  "schemaVersion": "truthsrc.artifact-binding/v1",
+  "artifacts": {
+    "artifacts": [
+      {
+        "id": "measurement-adapter",
+        "version": "1",
+        "artifact": {
+          "context": "measurement",
+          "kind": "artifact",
+          "owner": [],
+          "id": "MeasurementAdapter"
+        },
+        "status": "proposal",
+        "provenance": [
+          {
+            "document": "domain",
+            "pointer": "/valueObjects/1"
+          }
+        ],
+        "references": [
+          {
+            "context": "measurement",
+            "kind": "type",
+            "owner": [],
+            "id": "Observation"
+          }
+        ],
+        "ports": [
+          {
+            "ref": {
+              "context": "measurement",
+              "kind": "port",
+              "owner": [],
+              "id": "ObservationTransport"
+            },
+            "version": "1",
+            "inputType": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "measurement",
+                "kind": "type",
+                "owner": [],
+                "id": "Observation"
+              }
+            },
+            "required": true
+          }
+        ],
+        "deployment": {
+          "id": "local-measurement",
+          "version": "1",
+          "secretRefs": [
+            {
+              "id": "observation-token",
+              "provider": "environment"
+            }
+          ]
+        },
+        "implementations": [
+          {
+            "port": {
+              "context": "measurement",
+              "kind": "port",
+              "owner": [],
+              "id": "ObservationTransport"
+            },
+            "id": "observation-transport",
+            "version": "1"
+          }
+        ],
+        "source": {
+          "document": "domain",
+          "pointer": "/artifactContracts/0"
+        }
+      }
+    ]
+  }
+}

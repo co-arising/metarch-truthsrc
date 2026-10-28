@@ -1,0 +1,2663 @@
+{
+  "schemaVersion": "truthsrc.domain-dependency-binding/v5",
+  "dependencies": {
+    "commands": [
+      {
+        "command": {
+          "context": "inventory",
+          "kind": "command",
+          "owner": [
+            "Warehouse"
+          ],
+          "id": "ReserveSkuQuantity"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0"
+        },
+        "declaredSignature": [
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "ReserveSkuQuantity"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/parameters/0"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "ReserveSkuQuantity"
+              ],
+              "id": "warehouse"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "WarehouseId"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/parameters/1"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "ReserveSkuQuantity"
+              ],
+              "id": "sku"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "SkuId"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/parameters/2"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "ReserveSkuQuantity"
+              ],
+              "id": "quantity"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "integer"
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/parameters/3"
+            }
+          }
+        ],
+        "usedDependencies": [
+          {
+            "context": "inventory",
+            "kind": "parameter",
+            "owner": [
+              "Warehouse",
+              "ReserveSkuQuantity"
+            ],
+            "id": "quantity"
+          },
+          {
+            "context": "inventory",
+            "kind": "port",
+            "owner": [],
+            "id": "ReservationIdentity"
+          },
+          {
+            "context": "inventory",
+            "kind": "parameter",
+            "owner": [
+              "Warehouse",
+              "ReserveSkuQuantity"
+            ],
+            "id": "txid"
+          }
+        ],
+        "events": [
+          {
+            "event": {
+              "context": "inventory",
+              "kind": "event",
+              "owner": [
+                "Warehouse"
+              ],
+              "id": "SkuQuantityReserved"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/0/bindings"
+            },
+            "slots": [
+              {
+                "slot": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Warehouse",
+                    "SkuQuantityReserved"
+                  ],
+                  "id": "reservation"
+                },
+                "valueType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "ReservationId"
+                  }
+                },
+                "source": {
+                  "document": "domain",
+                  "pointer": "/aggregates/0/events/0/bindings/0"
+                },
+                "producer": {
+                  "op": "host",
+                  "id": {
+                    "context": "inventory",
+                    "kind": "port",
+                    "owner": [],
+                    "id": "ReservationIdentity"
+                  },
+                  "version": "identity-v1"
+                },
+                "dependencies": [
+                  {
+                    "context": "inventory",
+                    "kind": "port",
+                    "owner": [],
+                    "id": "ReservationIdentity"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "command": {
+          "context": "inventory",
+          "kind": "command",
+          "owner": [
+            "Warehouse"
+          ],
+          "id": "CommitSkuReservation"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/1"
+        },
+        "declaredSignature": [
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "CommitSkuReservation"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/1/parameters/0"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "CommitSkuReservation"
+              ],
+              "id": "warehouse"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "WarehouseId"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/1/parameters/1"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "CommitSkuReservation"
+              ],
+              "id": "sku"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "SkuId"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/1/parameters/2"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "CommitSkuReservation"
+              ],
+              "id": "reservation"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "ReservationId"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/1/parameters/3"
+            }
+          }
+        ],
+        "usedDependencies": [
+          {
+            "context": "inventory",
+            "kind": "parameter",
+            "owner": [
+              "Warehouse",
+              "CommitSkuReservation"
+            ],
+            "id": "txid"
+          }
+        ],
+        "events": [
+          {
+            "event": {
+              "context": "inventory",
+              "kind": "event",
+              "owner": [
+                "Warehouse"
+              ],
+              "id": "SkuReservationCommitted"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/1/bindings"
+            },
+            "slots": [
+              {
+                "slot": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Warehouse",
+                    "SkuReservationCommitted"
+                  ],
+                  "id": "txid"
+                },
+                "valueType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "TxId"
+                  }
+                },
+                "source": {
+                  "document": "domain",
+                  "pointer": "/aggregates/0/events/1/bindings/0"
+                },
+                "producer": {
+                  "op": "ref",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Warehouse",
+                      "CommitSkuReservation"
+                    ],
+                    "id": "txid"
+                  }
+                },
+                "dependencies": [
+                  {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Warehouse",
+                      "CommitSkuReservation"
+                    ],
+                    "id": "txid"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "command": {
+          "context": "inventory",
+          "kind": "command",
+          "owner": [
+            "Warehouse"
+          ],
+          "id": "ReleaseSkuReservation"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/2"
+        },
+        "declaredSignature": [
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "ReleaseSkuReservation"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/2/parameters/0"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "ReleaseSkuReservation"
+              ],
+              "id": "warehouse"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "WarehouseId"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/2/parameters/1"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "ReleaseSkuReservation"
+              ],
+              "id": "sku"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "SkuId"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/2/parameters/2"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "ReleaseSkuReservation"
+              ],
+              "id": "reservation"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "ReservationId"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/2/parameters/3"
+            }
+          }
+        ],
+        "usedDependencies": [
+          {
+            "context": "inventory",
+            "kind": "parameter",
+            "owner": [
+              "Warehouse",
+              "ReleaseSkuReservation"
+            ],
+            "id": "txid"
+          }
+        ],
+        "events": [
+          {
+            "event": {
+              "context": "inventory",
+              "kind": "event",
+              "owner": [
+                "Warehouse"
+              ],
+              "id": "SkuReservationReleased"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/2/bindings"
+            },
+            "slots": [
+              {
+                "slot": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Warehouse",
+                    "SkuReservationReleased"
+                  ],
+                  "id": "txid"
+                },
+                "valueType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "TxId"
+                  }
+                },
+                "source": {
+                  "document": "domain",
+                  "pointer": "/aggregates/0/events/2/bindings/0"
+                },
+                "producer": {
+                  "op": "ref",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Warehouse",
+                      "ReleaseSkuReservation"
+                    ],
+                    "id": "txid"
+                  }
+                },
+                "dependencies": [
+                  {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Warehouse",
+                      "ReleaseSkuReservation"
+                    ],
+                    "id": "txid"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "command": {
+          "context": "inventory",
+          "kind": "command",
+          "owner": [
+            "Warehouse"
+          ],
+          "id": "RequestSkuReservation"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/3"
+        },
+        "declaredSignature": [
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "RequestSkuReservation"
+              ],
+              "id": "requestId"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "ReservationRequestId"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/3/parameters/0"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "RequestSkuReservation"
+              ],
+              "id": "warehouse"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "WarehouseId"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/3/parameters/1"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "RequestSkuReservation"
+              ],
+              "id": "sku"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "SkuId"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/3/parameters/2"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "RequestSkuReservation"
+              ],
+              "id": "quantity"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "integer"
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/3/parameters/3"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "RequestSkuReservation"
+              ],
+              "id": "allocation"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "AllocationId"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/3/parameters/4"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "RequestSkuReservation"
+              ],
+              "id": "destination"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "WarehouseId"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/3/parameters/5"
+            }
+          }
+        ],
+        "usedDependencies": [
+          {
+            "context": "inventory",
+            "kind": "parameter",
+            "owner": [
+              "Warehouse",
+              "RequestSkuReservation"
+            ],
+            "id": "requestId"
+          },
+          {
+            "context": "inventory",
+            "kind": "parameter",
+            "owner": [
+              "Warehouse",
+              "RequestSkuReservation"
+            ],
+            "id": "warehouse"
+          },
+          {
+            "context": "inventory",
+            "kind": "parameter",
+            "owner": [
+              "Warehouse",
+              "RequestSkuReservation"
+            ],
+            "id": "sku"
+          },
+          {
+            "context": "inventory",
+            "kind": "parameter",
+            "owner": [
+              "Warehouse",
+              "RequestSkuReservation"
+            ],
+            "id": "quantity"
+          },
+          {
+            "context": "inventory",
+            "kind": "parameter",
+            "owner": [
+              "Warehouse",
+              "RequestSkuReservation"
+            ],
+            "id": "allocation"
+          },
+          {
+            "context": "inventory",
+            "kind": "parameter",
+            "owner": [
+              "Warehouse",
+              "RequestSkuReservation"
+            ],
+            "id": "destination"
+          }
+        ],
+        "events": [
+          {
+            "event": {
+              "context": "inventory",
+              "kind": "event",
+              "owner": [
+                "Warehouse"
+              ],
+              "id": "SkuReservationRequested"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/3/bindings"
+            },
+            "slots": [
+              {
+                "slot": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Warehouse",
+                    "SkuReservationRequested"
+                  ],
+                  "id": "requestId"
+                },
+                "valueType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "ReservationRequestId"
+                  }
+                },
+                "source": {
+                  "document": "domain",
+                  "pointer": "/aggregates/0/events/3/bindings/0"
+                },
+                "producer": {
+                  "op": "ref",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Warehouse",
+                      "RequestSkuReservation"
+                    ],
+                    "id": "requestId"
+                  }
+                },
+                "dependencies": [
+                  {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Warehouse",
+                      "RequestSkuReservation"
+                    ],
+                    "id": "requestId"
+                  }
+                ]
+              },
+              {
+                "slot": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Warehouse",
+                    "SkuReservationRequested"
+                  ],
+                  "id": "warehouse"
+                },
+                "valueType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "WarehouseId"
+                  }
+                },
+                "source": {
+                  "document": "domain",
+                  "pointer": "/aggregates/0/events/3/bindings/1"
+                },
+                "producer": {
+                  "op": "ref",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Warehouse",
+                      "RequestSkuReservation"
+                    ],
+                    "id": "warehouse"
+                  }
+                },
+                "dependencies": [
+                  {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Warehouse",
+                      "RequestSkuReservation"
+                    ],
+                    "id": "warehouse"
+                  }
+                ]
+              },
+              {
+                "slot": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Warehouse",
+                    "SkuReservationRequested"
+                  ],
+                  "id": "sku"
+                },
+                "valueType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "SkuId"
+                  }
+                },
+                "source": {
+                  "document": "domain",
+                  "pointer": "/aggregates/0/events/3/bindings/2"
+                },
+                "producer": {
+                  "op": "ref",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Warehouse",
+                      "RequestSkuReservation"
+                    ],
+                    "id": "sku"
+                  }
+                },
+                "dependencies": [
+                  {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Warehouse",
+                      "RequestSkuReservation"
+                    ],
+                    "id": "sku"
+                  }
+                ]
+              },
+              {
+                "slot": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Warehouse",
+                    "SkuReservationRequested"
+                  ],
+                  "id": "quantity"
+                },
+                "valueType": {
+                  "form": "primitive",
+                  "name": "integer"
+                },
+                "source": {
+                  "document": "domain",
+                  "pointer": "/aggregates/0/events/3/bindings/3"
+                },
+                "producer": {
+                  "op": "ref",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Warehouse",
+                      "RequestSkuReservation"
+                    ],
+                    "id": "quantity"
+                  }
+                },
+                "dependencies": [
+                  {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Warehouse",
+                      "RequestSkuReservation"
+                    ],
+                    "id": "quantity"
+                  }
+                ]
+              },
+              {
+                "slot": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Warehouse",
+                    "SkuReservationRequested"
+                  ],
+                  "id": "allocation"
+                },
+                "valueType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "AllocationId"
+                  }
+                },
+                "source": {
+                  "document": "domain",
+                  "pointer": "/aggregates/0/events/3/bindings/4"
+                },
+                "producer": {
+                  "op": "ref",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Warehouse",
+                      "RequestSkuReservation"
+                    ],
+                    "id": "allocation"
+                  }
+                },
+                "dependencies": [
+                  {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Warehouse",
+                      "RequestSkuReservation"
+                    ],
+                    "id": "allocation"
+                  }
+                ]
+              },
+              {
+                "slot": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Warehouse",
+                    "SkuReservationRequested"
+                  ],
+                  "id": "destination"
+                },
+                "valueType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "WarehouseId"
+                  }
+                },
+                "source": {
+                  "document": "domain",
+                  "pointer": "/aggregates/0/events/3/bindings/5"
+                },
+                "producer": {
+                  "op": "ref",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Warehouse",
+                      "RequestSkuReservation"
+                    ],
+                    "id": "destination"
+                  }
+                },
+                "dependencies": [
+                  {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Warehouse",
+                      "RequestSkuReservation"
+                    ],
+                    "id": "destination"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "command": {
+          "context": "inventory",
+          "kind": "command",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "PrepareAllocation"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/1/commands/0"
+        },
+        "declaredSignature": [
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "AllocationOrder",
+                "PrepareAllocation"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/1/commands/0/parameters/0"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "AllocationOrder",
+                "PrepareAllocation"
+              ],
+              "id": "allocation"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "AllocationId"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/1/commands/0/parameters/1"
+            }
+          }
+        ],
+        "usedDependencies": [
+          {
+            "context": "inventory",
+            "kind": "parameter",
+            "owner": [
+              "AllocationOrder",
+              "PrepareAllocation"
+            ],
+            "id": "txid"
+          }
+        ],
+        "events": [
+          {
+            "event": {
+              "context": "inventory",
+              "kind": "event",
+              "owner": [
+                "AllocationOrder"
+              ],
+              "id": "AllocationPrepared"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/1/events/0/bindings"
+            },
+            "slots": [
+              {
+                "slot": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "AllocationOrder",
+                    "AllocationPrepared"
+                  ],
+                  "id": "txid"
+                },
+                "valueType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "TxId"
+                  }
+                },
+                "source": {
+                  "document": "domain",
+                  "pointer": "/aggregates/1/events/0/bindings/0"
+                },
+                "producer": {
+                  "op": "ref",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "AllocationOrder",
+                      "PrepareAllocation"
+                    ],
+                    "id": "txid"
+                  }
+                },
+                "dependencies": [
+                  {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "AllocationOrder",
+                      "PrepareAllocation"
+                    ],
+                    "id": "txid"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "command": {
+          "context": "inventory",
+          "kind": "command",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "CommitAllocation"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/1/commands/1"
+        },
+        "declaredSignature": [
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "AllocationOrder",
+                "CommitAllocation"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/1/commands/1/parameters/0"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "AllocationOrder",
+                "CommitAllocation"
+              ],
+              "id": "allocation"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "AllocationId"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/1/commands/1/parameters/1"
+            }
+          }
+        ],
+        "usedDependencies": [
+          {
+            "context": "inventory",
+            "kind": "parameter",
+            "owner": [
+              "AllocationOrder",
+              "CommitAllocation"
+            ],
+            "id": "txid"
+          }
+        ],
+        "events": [
+          {
+            "event": {
+              "context": "inventory",
+              "kind": "event",
+              "owner": [
+                "AllocationOrder"
+              ],
+              "id": "AllocationCommitted"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/1/events/1/bindings"
+            },
+            "slots": [
+              {
+                "slot": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "AllocationOrder",
+                    "AllocationCommitted"
+                  ],
+                  "id": "txid"
+                },
+                "valueType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "TxId"
+                  }
+                },
+                "source": {
+                  "document": "domain",
+                  "pointer": "/aggregates/1/events/1/bindings/0"
+                },
+                "producer": {
+                  "op": "ref",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "AllocationOrder",
+                      "CommitAllocation"
+                    ],
+                    "id": "txid"
+                  }
+                },
+                "dependencies": [
+                  {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "AllocationOrder",
+                      "CommitAllocation"
+                    ],
+                    "id": "txid"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "command": {
+          "context": "inventory",
+          "kind": "command",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "CancelAllocation"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/1/commands/2"
+        },
+        "declaredSignature": [
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "AllocationOrder",
+                "CancelAllocation"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/1/commands/2/parameters/0"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "AllocationOrder",
+                "CancelAllocation"
+              ],
+              "id": "allocation"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "AllocationId"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/1/commands/2/parameters/1"
+            }
+          }
+        ],
+        "usedDependencies": [
+          {
+            "context": "inventory",
+            "kind": "parameter",
+            "owner": [
+              "AllocationOrder",
+              "CancelAllocation"
+            ],
+            "id": "txid"
+          }
+        ],
+        "events": [
+          {
+            "event": {
+              "context": "inventory",
+              "kind": "event",
+              "owner": [
+                "AllocationOrder"
+              ],
+              "id": "AllocationCancelled"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/1/events/2/bindings"
+            },
+            "slots": [
+              {
+                "slot": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "AllocationOrder",
+                    "AllocationCancelled"
+                  ],
+                  "id": "txid"
+                },
+                "valueType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "TxId"
+                  }
+                },
+                "source": {
+                  "document": "domain",
+                  "pointer": "/aggregates/1/events/2/bindings/0"
+                },
+                "producer": {
+                  "op": "ref",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "AllocationOrder",
+                      "CancelAllocation"
+                    ],
+                    "id": "txid"
+                  }
+                },
+                "dependencies": [
+                  {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "AllocationOrder",
+                      "CancelAllocation"
+                    ],
+                    "id": "txid"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "events": [
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "Warehouse"
+          ],
+          "id": "SkuQuantityReserved"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/0"
+        },
+        "declaredSlots": [
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "Warehouse",
+                "SkuQuantityReserved"
+              ],
+              "id": "reservation"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "ReservationId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/0/payloads/0"
+            }
+          }
+        ]
+      },
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "Warehouse"
+          ],
+          "id": "SkuReservationCommitted"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/1"
+        },
+        "declaredSlots": [
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "Warehouse",
+                "SkuReservationCommitted"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/1/payloads/0"
+            }
+          }
+        ]
+      },
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "Warehouse"
+          ],
+          "id": "SkuReservationReleased"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/2"
+        },
+        "declaredSlots": [
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "Warehouse",
+                "SkuReservationReleased"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/2/payloads/0"
+            }
+          }
+        ]
+      },
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "Warehouse"
+          ],
+          "id": "SkuReservationRequested"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/3"
+        },
+        "declaredSlots": [
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "Warehouse",
+                "SkuReservationRequested"
+              ],
+              "id": "requestId"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "ReservationRequestId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/3/payloads/0"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "Warehouse",
+                "SkuReservationRequested"
+              ],
+              "id": "warehouse"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "WarehouseId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/3/payloads/1"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "Warehouse",
+                "SkuReservationRequested"
+              ],
+              "id": "sku"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "SkuId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/3/payloads/2"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "Warehouse",
+                "SkuReservationRequested"
+              ],
+              "id": "quantity"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "integer"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/3/payloads/3"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "Warehouse",
+                "SkuReservationRequested"
+              ],
+              "id": "allocation"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "AllocationId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/3/payloads/4"
+            }
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "Warehouse",
+                "SkuReservationRequested"
+              ],
+              "id": "destination"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "WarehouseId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/3/payloads/5"
+            }
+          }
+        ]
+      },
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "AllocationPrepared"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/1/events/0"
+        },
+        "declaredSlots": [
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "AllocationOrder",
+                "AllocationPrepared"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/1/events/0/payloads/0"
+            }
+          }
+        ]
+      },
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "AllocationCommitted"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/1/events/1"
+        },
+        "declaredSlots": [
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "AllocationOrder",
+                "AllocationCommitted"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/1/events/1/payloads/0"
+            }
+          }
+        ]
+      },
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "AllocationCancelled"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/1/events/2"
+        },
+        "declaredSlots": [
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "AllocationOrder",
+                "AllocationCancelled"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/1/events/2/payloads/0"
+            }
+          }
+        ]
+      },
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "ReservationSucceeded"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/1/events/3"
+        },
+        "declaredSlots": [
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "AllocationOrder",
+                "ReservationSucceeded"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/1/events/3/payloads/0"
+            }
+          }
+        ]
+      },
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "ReservationRejected"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/1/events/4"
+        },
+        "declaredSlots": [
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "AllocationOrder",
+                "ReservationRejected"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/1/events/4/payloads/0"
+            }
+          }
+        ]
+      },
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "ReservationCompensated"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/1/events/5"
+        },
+        "declaredSlots": [
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "AllocationOrder",
+                "ReservationCompensated"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/1/events/5/payloads/0"
+            }
+          }
+        ]
+      },
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "ReservationRecoveryRequired"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/1/events/6"
+        },
+        "declaredSlots": [
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "AllocationOrder",
+                "ReservationRecoveryRequired"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/1/events/6/payloads/0"
+            }
+          }
+        ]
+      },
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "ReservationOutcomeUnknown"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/1/events/7"
+        },
+        "declaredSlots": [
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "AllocationOrder",
+                "ReservationOutcomeUnknown"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/1/events/7/payloads/0"
+            }
+          }
+        ]
+      }
+    ],
+    "hosts": [
+      {
+        "id": {
+          "context": "inventory",
+          "kind": "port",
+          "owner": [],
+          "id": "ReservationIdentity"
+        },
+        "version": "identity-v1",
+        "command": {
+          "context": "inventory",
+          "kind": "command",
+          "owner": [
+            "Warehouse"
+          ],
+          "id": "ReserveSkuQuantity"
+        },
+        "outputType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "ReservationId"
+          }
+        },
+        "inputDependencies": [
+          {
+            "context": "inventory",
+            "kind": "parameter",
+            "owner": [
+              "Warehouse",
+              "ReserveSkuQuantity"
+            ],
+            "id": "txid"
+          }
+        ],
+        "stableIdentityContract": {
+          "id": "reservation-per-original-transaction",
+          "version": "identity-v1",
+          "keys": [
+            {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "ReserveSkuQuantity"
+              ],
+              "id": "txid"
+            }
+          ]
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/hostComputations/0"
+        }
+      }
+    ],
+    "externalProducers": [
+      {
+        "id": "reservationCompletion0",
+        "version": "port-v1",
+        "kind": "saga-completion",
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "ReservationSucceeded"
+        },
+        "port": {
+          "context": "inventory",
+          "kind": "port",
+          "owner": [],
+          "id": "ResultAuthority0"
+        },
+        "outputType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "CompletionRecord0"
+          }
+        },
+        "stableIdentityContract": {
+          "id": "completion-original-0",
+          "version": "identity-v1",
+          "keys": [
+            {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "CompletionRecord0"
+              ],
+              "id": "txid"
+            }
+          ]
+        },
+        "slots": [
+          {
+            "slot": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "AllocationOrder",
+                "ReservationSucceeded"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/externalEventProducers/0/slotMappings/0"
+            },
+            "member": {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "CompletionRecord0"
+              ],
+              "id": "txid"
+            },
+            "dependencies": [
+              {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultAuthority0"
+              },
+              {
+                "context": "inventory",
+                "kind": "member",
+                "owner": [
+                  "CompletionRecord0"
+                ],
+                "id": "txid"
+              }
+            ]
+          }
+        ],
+        "source": {
+          "document": "domain",
+          "pointer": "/externalEventProducers/0"
+        }
+      },
+      {
+        "id": "reservationCompletion1",
+        "version": "port-v1",
+        "kind": "saga-completion",
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "ReservationRejected"
+        },
+        "port": {
+          "context": "inventory",
+          "kind": "port",
+          "owner": [],
+          "id": "ResultAuthority1"
+        },
+        "outputType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "CompletionRecord1"
+          }
+        },
+        "stableIdentityContract": {
+          "id": "completion-original-1",
+          "version": "identity-v1",
+          "keys": [
+            {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "CompletionRecord1"
+              ],
+              "id": "txid"
+            }
+          ]
+        },
+        "slots": [
+          {
+            "slot": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "AllocationOrder",
+                "ReservationRejected"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/externalEventProducers/1/slotMappings/0"
+            },
+            "member": {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "CompletionRecord1"
+              ],
+              "id": "txid"
+            },
+            "dependencies": [
+              {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultAuthority1"
+              },
+              {
+                "context": "inventory",
+                "kind": "member",
+                "owner": [
+                  "CompletionRecord1"
+                ],
+                "id": "txid"
+              }
+            ]
+          }
+        ],
+        "source": {
+          "document": "domain",
+          "pointer": "/externalEventProducers/1"
+        }
+      },
+      {
+        "id": "reservationCompletion2",
+        "version": "port-v1",
+        "kind": "saga-completion",
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "ReservationCompensated"
+        },
+        "port": {
+          "context": "inventory",
+          "kind": "port",
+          "owner": [],
+          "id": "ResultAuthority2"
+        },
+        "outputType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "CompletionRecord2"
+          }
+        },
+        "stableIdentityContract": {
+          "id": "completion-original-2",
+          "version": "identity-v1",
+          "keys": [
+            {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "CompletionRecord2"
+              ],
+              "id": "txid"
+            }
+          ]
+        },
+        "slots": [
+          {
+            "slot": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "AllocationOrder",
+                "ReservationCompensated"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/externalEventProducers/2/slotMappings/0"
+            },
+            "member": {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "CompletionRecord2"
+              ],
+              "id": "txid"
+            },
+            "dependencies": [
+              {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultAuthority2"
+              },
+              {
+                "context": "inventory",
+                "kind": "member",
+                "owner": [
+                  "CompletionRecord2"
+                ],
+                "id": "txid"
+              }
+            ]
+          }
+        ],
+        "source": {
+          "document": "domain",
+          "pointer": "/externalEventProducers/2"
+        }
+      },
+      {
+        "id": "reservationCompletion3",
+        "version": "port-v1",
+        "kind": "saga-completion",
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "ReservationRecoveryRequired"
+        },
+        "port": {
+          "context": "inventory",
+          "kind": "port",
+          "owner": [],
+          "id": "ResultAuthority3"
+        },
+        "outputType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "CompletionRecord3"
+          }
+        },
+        "stableIdentityContract": {
+          "id": "completion-original-3",
+          "version": "identity-v1",
+          "keys": [
+            {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "CompletionRecord3"
+              ],
+              "id": "txid"
+            }
+          ]
+        },
+        "slots": [
+          {
+            "slot": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "AllocationOrder",
+                "ReservationRecoveryRequired"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/externalEventProducers/3/slotMappings/0"
+            },
+            "member": {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "CompletionRecord3"
+              ],
+              "id": "txid"
+            },
+            "dependencies": [
+              {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultAuthority3"
+              },
+              {
+                "context": "inventory",
+                "kind": "member",
+                "owner": [
+                  "CompletionRecord3"
+                ],
+                "id": "txid"
+              }
+            ]
+          }
+        ],
+        "source": {
+          "document": "domain",
+          "pointer": "/externalEventProducers/3"
+        }
+      },
+      {
+        "id": "reservationCompletion4",
+        "version": "port-v1",
+        "kind": "saga-completion",
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "ReservationOutcomeUnknown"
+        },
+        "port": {
+          "context": "inventory",
+          "kind": "port",
+          "owner": [],
+          "id": "ResultAuthority4"
+        },
+        "outputType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "CompletionRecord4"
+          }
+        },
+        "stableIdentityContract": {
+          "id": "completion-original-4",
+          "version": "identity-v1",
+          "keys": [
+            {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "CompletionRecord4"
+              ],
+              "id": "txid"
+            }
+          ]
+        },
+        "slots": [
+          {
+            "slot": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "AllocationOrder",
+                "ReservationOutcomeUnknown"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/externalEventProducers/4/slotMappings/0"
+            },
+            "member": {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "CompletionRecord4"
+              ],
+              "id": "txid"
+            },
+            "dependencies": [
+              {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultAuthority4"
+              },
+              {
+                "context": "inventory",
+                "kind": "member",
+                "owner": [
+                  "CompletionRecord4"
+                ],
+                "id": "txid"
+              }
+            ]
+          }
+        ],
+        "source": {
+          "document": "domain",
+          "pointer": "/externalEventProducers/4"
+        }
+      }
+    ]
+  }
+}

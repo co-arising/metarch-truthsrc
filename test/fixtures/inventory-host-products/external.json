@@ -1,0 +1,487 @@
+{
+  "schemaVersion": "truthsrc.domain-external-event-binding/v2",
+  "externalEvents": {
+    "producers": [
+      {
+        "id": "reservationCompletion0",
+        "version": "port-v1",
+        "kind": "saga-completion",
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "ReservationSucceeded"
+        },
+        "port": {
+          "context": "inventory",
+          "kind": "port",
+          "owner": [],
+          "id": "ResultAuthority0"
+        },
+        "outputType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "CompletionRecord0"
+          }
+        },
+        "stableIdentityContract": {
+          "id": "completion-original-0",
+          "version": "identity-v1",
+          "keys": [
+            {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "CompletionRecord0"
+              ],
+              "id": "txid"
+            }
+          ]
+        },
+        "slots": [
+          {
+            "slot": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "AllocationOrder",
+                "ReservationSucceeded"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/externalEventProducers/0/slotMappings/0"
+            },
+            "member": {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "CompletionRecord0"
+              ],
+              "id": "txid"
+            },
+            "dependencies": [
+              {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultAuthority0"
+              },
+              {
+                "context": "inventory",
+                "kind": "member",
+                "owner": [
+                  "CompletionRecord0"
+                ],
+                "id": "txid"
+              }
+            ]
+          }
+        ],
+        "source": {
+          "document": "domain",
+          "pointer": "/externalEventProducers/0"
+        }
+      },
+      {
+        "id": "reservationCompletion1",
+        "version": "port-v1",
+        "kind": "saga-completion",
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "ReservationRejected"
+        },
+        "port": {
+          "context": "inventory",
+          "kind": "port",
+          "owner": [],
+          "id": "ResultAuthority1"
+        },
+        "outputType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "CompletionRecord1"
+          }
+        },
+        "stableIdentityContract": {
+          "id": "completion-original-1",
+          "version": "identity-v1",
+          "keys": [
+            {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "CompletionRecord1"
+              ],
+              "id": "txid"
+            }
+          ]
+        },
+        "slots": [
+          {
+            "slot": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "AllocationOrder",
+                "ReservationRejected"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/externalEventProducers/1/slotMappings/0"
+            },
+            "member": {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "CompletionRecord1"
+              ],
+              "id": "txid"
+            },
+            "dependencies": [
+              {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultAuthority1"
+              },
+              {
+                "context": "inventory",
+                "kind": "member",
+                "owner": [
+                  "CompletionRecord1"
+                ],
+                "id": "txid"
+              }
+            ]
+          }
+        ],
+        "source": {
+          "document": "domain",
+          "pointer": "/externalEventProducers/1"
+        }
+      },
+      {
+        "id": "reservationCompletion2",
+        "version": "port-v1",
+        "kind": "saga-completion",
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "ReservationCompensated"
+        },
+        "port": {
+          "context": "inventory",
+          "kind": "port",
+          "owner": [],
+          "id": "ResultAuthority2"
+        },
+        "outputType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "CompletionRecord2"
+          }
+        },
+        "stableIdentityContract": {
+          "id": "completion-original-2",
+          "version": "identity-v1",
+          "keys": [
+            {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "CompletionRecord2"
+              ],
+              "id": "txid"
+            }
+          ]
+        },
+        "slots": [
+          {
+            "slot": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "AllocationOrder",
+                "ReservationCompensated"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/externalEventProducers/2/slotMappings/0"
+            },
+            "member": {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "CompletionRecord2"
+              ],
+              "id": "txid"
+            },
+            "dependencies": [
+              {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultAuthority2"
+              },
+              {
+                "context": "inventory",
+                "kind": "member",
+                "owner": [
+                  "CompletionRecord2"
+                ],
+                "id": "txid"
+              }
+            ]
+          }
+        ],
+        "source": {
+          "document": "domain",
+          "pointer": "/externalEventProducers/2"
+        }
+      },
+      {
+        "id": "reservationCompletion3",
+        "version": "port-v1",
+        "kind": "saga-completion",
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "ReservationRecoveryRequired"
+        },
+        "port": {
+          "context": "inventory",
+          "kind": "port",
+          "owner": [],
+          "id": "ResultAuthority3"
+        },
+        "outputType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "CompletionRecord3"
+          }
+        },
+        "stableIdentityContract": {
+          "id": "completion-original-3",
+          "version": "identity-v1",
+          "keys": [
+            {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "CompletionRecord3"
+              ],
+              "id": "txid"
+            }
+          ]
+        },
+        "slots": [
+          {
+            "slot": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "AllocationOrder",
+                "ReservationRecoveryRequired"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/externalEventProducers/3/slotMappings/0"
+            },
+            "member": {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "CompletionRecord3"
+              ],
+              "id": "txid"
+            },
+            "dependencies": [
+              {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultAuthority3"
+              },
+              {
+                "context": "inventory",
+                "kind": "member",
+                "owner": [
+                  "CompletionRecord3"
+                ],
+                "id": "txid"
+              }
+            ]
+          }
+        ],
+        "source": {
+          "document": "domain",
+          "pointer": "/externalEventProducers/3"
+        }
+      },
+      {
+        "id": "reservationCompletion4",
+        "version": "port-v1",
+        "kind": "saga-completion",
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "ReservationOutcomeUnknown"
+        },
+        "port": {
+          "context": "inventory",
+          "kind": "port",
+          "owner": [],
+          "id": "ResultAuthority4"
+        },
+        "outputType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "CompletionRecord4"
+          }
+        },
+        "stableIdentityContract": {
+          "id": "completion-original-4",
+          "version": "identity-v1",
+          "keys": [
+            {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "CompletionRecord4"
+              ],
+              "id": "txid"
+            }
+          ]
+        },
+        "slots": [
+          {
+            "slot": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "AllocationOrder",
+                "ReservationOutcomeUnknown"
+              ],
+              "id": "txid"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TxId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/externalEventProducers/4/slotMappings/0"
+            },
+            "member": {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "CompletionRecord4"
+              ],
+              "id": "txid"
+            },
+            "dependencies": [
+              {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultAuthority4"
+              },
+              {
+                "context": "inventory",
+                "kind": "member",
+                "owner": [
+                  "CompletionRecord4"
+                ],
+                "id": "txid"
+              }
+            ]
+          }
+        ],
+        "source": {
+          "document": "domain",
+          "pointer": "/externalEventProducers/4"
+        }
+      }
+    ]
+  }
+}

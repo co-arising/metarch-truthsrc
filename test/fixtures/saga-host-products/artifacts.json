@@ -1,0 +1,940 @@
+{
+  "schemaVersion": "truthsrc.artifact-binding/v2",
+  "artifacts": {
+    "artifacts": [
+      {
+        "id": "host-technical",
+        "version": "artifact-v1",
+        "artifact": {
+          "context": "accounts",
+          "kind": "artifact",
+          "owner": [],
+          "id": "HostTechnicalAssembly"
+        },
+        "status": "selected",
+        "provenance": [
+          {
+            "document": "domain",
+            "pointer": "/sagas/0"
+          }
+        ],
+        "references": [
+          {
+            "context": "accounts",
+            "kind": "saga",
+            "owner": [],
+            "id": "money-transfer"
+          }
+        ],
+        "ports": [
+          {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Entry"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "OriginalTransfer"
+              }
+            },
+            "outputType": {
+              "form": "primitive",
+              "name": "boolean"
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Association"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "OriginalTransfer"
+              }
+            },
+            "outputType": {
+              "form": "primitive",
+              "name": "boolean"
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "sourceprepareExecute"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "sourceprepareInput"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "sourceprepareReceipt"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "sourceprepareQueryPort"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "sourceprepareQuery"
+              }
+            },
+            "outputType": {
+              "form": "optional",
+              "element": {
+                "form": "nominal",
+                "ref": {
+                  "context": "accounts",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "sourceprepareReceipt"
+                }
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "sourcecommitExecute"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "sourcecommitInput"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "sourcecommitReceipt"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "sourcecommitQueryPort"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "sourcecommitQuery"
+              }
+            },
+            "outputType": {
+              "form": "optional",
+              "element": {
+                "form": "nominal",
+                "ref": {
+                  "context": "accounts",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "sourcecommitReceipt"
+                }
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "sourcecompensateExecute"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "sourcecompensateInput"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "sourcecompensateReceipt"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "sourcecompensateQueryPort"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "sourcecompensateQuery"
+              }
+            },
+            "outputType": {
+              "form": "optional",
+              "element": {
+                "form": "nominal",
+                "ref": {
+                  "context": "accounts",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "sourcecompensateReceipt"
+                }
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "targetprepareExecute"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "targetprepareInput"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "targetprepareReceipt"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "targetprepareQueryPort"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "targetprepareQuery"
+              }
+            },
+            "outputType": {
+              "form": "optional",
+              "element": {
+                "form": "nominal",
+                "ref": {
+                  "context": "accounts",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "targetprepareReceipt"
+                }
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "targetcommitExecute"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "targetcommitInput"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "targetcommitReceipt"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "targetcommitQueryPort"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "targetcommitQuery"
+              }
+            },
+            "outputType": {
+              "form": "optional",
+              "element": {
+                "form": "nominal",
+                "ref": {
+                  "context": "accounts",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "targetcommitReceipt"
+                }
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "targetcompensateExecute"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "targetcompensateInput"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "targetcompensateReceipt"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "targetcompensateQueryPort"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "targetcompensateQuery"
+              }
+            },
+            "outputType": {
+              "form": "optional",
+              "element": {
+                "form": "nominal",
+                "ref": {
+                  "context": "accounts",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "targetcompensateReceipt"
+                }
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Authoritysucceeded"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "OriginalTransfer"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "Completionsucceeded"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Deliverysucceeded"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "Completionsucceeded"
+              }
+            },
+            "outputType": {
+              "form": "primitive",
+              "name": "boolean"
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Authorityrejected-before-effects"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "OriginalTransfer"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "Completionrejectedbeforeeffects"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Deliveryrejected-before-effects"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "Completionrejectedbeforeeffects"
+              }
+            },
+            "outputType": {
+              "form": "primitive",
+              "name": "boolean"
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Authoritycompensated"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "OriginalTransfer"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "Completioncompensated"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Deliverycompensated"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "Completioncompensated"
+              }
+            },
+            "outputType": {
+              "form": "primitive",
+              "name": "boolean"
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Authorityrecovery-required"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "OriginalTransfer"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "Completionrecoveryrequired"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Deliveryrecovery-required"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "Completionrecoveryrequired"
+              }
+            },
+            "outputType": {
+              "form": "primitive",
+              "name": "boolean"
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Authorityoutcome-unknown"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "OriginalTransfer"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "Completionoutcomeunknown"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Deliveryoutcome-unknown"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "accounts",
+                "kind": "type",
+                "owner": [],
+                "id": "Completionoutcomeunknown"
+              }
+            },
+            "outputType": {
+              "form": "primitive",
+              "name": "boolean"
+            },
+            "required": true
+          }
+        ],
+        "deployment": {
+          "id": "local-test",
+          "version": "deployment-v1",
+          "secretRefs": []
+        },
+        "implementations": [
+          {
+            "port": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Entry"
+            },
+            "id": "fixture.Entry",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Association"
+            },
+            "id": "fixture.Association",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "sourceprepareExecute"
+            },
+            "id": "fixture.sourceprepareExecute",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "sourceprepareQueryPort"
+            },
+            "id": "fixture.sourceprepareQueryPort",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "sourcecommitExecute"
+            },
+            "id": "fixture.sourcecommitExecute",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "sourcecommitQueryPort"
+            },
+            "id": "fixture.sourcecommitQueryPort",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "sourcecompensateExecute"
+            },
+            "id": "fixture.sourcecompensateExecute",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "sourcecompensateQueryPort"
+            },
+            "id": "fixture.sourcecompensateQueryPort",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "targetprepareExecute"
+            },
+            "id": "fixture.targetprepareExecute",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "targetprepareQueryPort"
+            },
+            "id": "fixture.targetprepareQueryPort",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "targetcommitExecute"
+            },
+            "id": "fixture.targetcommitExecute",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "targetcommitQueryPort"
+            },
+            "id": "fixture.targetcommitQueryPort",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "targetcompensateExecute"
+            },
+            "id": "fixture.targetcompensateExecute",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "targetcompensateQueryPort"
+            },
+            "id": "fixture.targetcompensateQueryPort",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Authoritysucceeded"
+            },
+            "id": "fixture.Authoritysucceeded",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Deliverysucceeded"
+            },
+            "id": "fixture.Deliverysucceeded",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Authorityrejected-before-effects"
+            },
+            "id": "fixture.Authorityrejected-before-effects",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Deliveryrejected-before-effects"
+            },
+            "id": "fixture.Deliveryrejected-before-effects",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Authoritycompensated"
+            },
+            "id": "fixture.Authoritycompensated",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Deliverycompensated"
+            },
+            "id": "fixture.Deliverycompensated",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Authorityrecovery-required"
+            },
+            "id": "fixture.Authorityrecovery-required",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Deliveryrecovery-required"
+            },
+            "id": "fixture.Deliveryrecovery-required",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Authorityoutcome-unknown"
+            },
+            "id": "fixture.Authorityoutcome-unknown",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "accounts",
+              "kind": "port",
+              "owner": [],
+              "id": "Deliveryoutcome-unknown"
+            },
+            "id": "fixture.Deliveryoutcome-unknown",
+            "version": "impl-v1"
+          }
+        ],
+        "source": {
+          "document": "domain",
+          "pointer": "/artifactContracts/0"
+        }
+      }
+    ]
+  }
+}

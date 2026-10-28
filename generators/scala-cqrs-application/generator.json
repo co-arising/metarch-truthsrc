@@ -1,0 +1,249 @@
+{
+  "schemaVersion": "truthsrc.product-generator/v1",
+  "name": "scala-cqrs-application",
+  "version": "1",
+  "targetProfile": "scala-cqrs-application@1",
+  "products": [
+    {
+      "id": "reference-layout",
+      "version": "1",
+      "payloadSchemaVersion": "truthsrc.reference-layout/v1",
+      "capabilities": [
+        {
+          "id": "qualified-reference-layout",
+          "version": "1"
+        }
+      ]
+    },
+    {
+      "id": "exact-value-types",
+      "version": "1",
+      "payloadSchemaVersion": "truthsrc.exact-value-types/v1",
+      "capabilities": [
+        {
+          "id": "exact-value-types",
+          "version": "1"
+        }
+      ]
+    },
+    {
+      "id": "domain-decision",
+      "version": "3",
+      "payloadSchemaVersion": "truthsrc.domain-decision/v3",
+      "capabilities": [
+        {
+          "id": "ordered-domain-decision",
+          "version": "3"
+        }
+      ]
+    },
+    {
+      "id": "domain-dependencies",
+      "version": "5",
+      "payloadSchemaVersion": "truthsrc.domain-dependencies/v5",
+      "capabilities": [
+        {
+          "id": "domain-dependencies",
+          "version": "5"
+        }
+      ]
+    },
+    {
+      "id": "domain-folds",
+      "version": "5",
+      "payloadSchemaVersion": "truthsrc.domain-folds/v5",
+      "capabilities": [
+        {
+          "id": "domain-folds",
+          "version": "5"
+        }
+      ]
+    },
+    {
+      "id": "domain-external-events",
+      "version": "2",
+      "payloadSchemaVersion": "truthsrc.domain-external-events/v2",
+      "capabilities": [
+        {
+          "id": "external-event-producers",
+          "version": "2"
+        }
+      ]
+    },
+    {
+      "id": "exact-value-codecs",
+      "version": "1",
+      "payloadSchemaVersion": "truthsrc.exact-value-codecs/v1",
+      "capabilities": [
+        {
+          "id": "exact-value-codecs",
+          "version": "1"
+        }
+      ]
+    },
+    {
+      "id": "saga-host-contract",
+      "version": "1",
+      "payloadSchemaVersion": "truthsrc.saga-host-contract/v1",
+      "capabilities": [
+        {
+          "id": "finite-saga-host-contract",
+          "version": "1"
+        }
+      ]
+    },
+    {
+      "id": "saga-runtime-contract",
+      "version": "1",
+      "payloadSchemaVersion": "truthsrc.saga-runtime-contract/v3",
+      "capabilities": [
+        {
+          "id": "saga-runtime-lowering",
+          "version": "3"
+        }
+      ]
+    },
+    {
+      "id": "artifact-contract",
+      "version": "2",
+      "payloadSchemaVersion": "truthsrc.artifact-contract/v2",
+      "capabilities": [
+        {
+          "id": "artifact-static-contract",
+          "version": "2"
+        }
+      ]
+    }
+  ],
+  "producers": [
+    {
+      "id": "aggregate-dsl",
+      "version": "1",
+      "products": [
+        "reference-layout",
+        "domain-folds",
+        "exact-value-types",
+        "domain-dependencies"
+      ],
+      "artifactKinds": [
+        "state",
+        "aggregate"
+      ]
+    },
+    {
+      "id": "command-dsl",
+      "version": "1",
+      "products": [
+        "reference-layout",
+        "domain-dependencies",
+        "exact-value-types"
+      ],
+      "artifactKinds": [
+        "protocol",
+        "command-helpers",
+        "external-event-bridge"
+      ]
+    },
+    {
+      "id": "invariant-dsl",
+      "version": "1",
+      "products": [
+        "reference-layout",
+        "domain-decision",
+        "domain-folds",
+        "exact-value-types"
+      ],
+      "artifactKinds": [
+        "rules",
+        "event-handler"
+      ]
+    },
+    {
+      "id": "valueobject-dsl",
+      "version": "1",
+      "products": [
+        "reference-layout",
+        "exact-value-types"
+      ],
+      "artifactKinds": [
+        "value-object"
+      ]
+    },
+    {
+      "id": "proto-dsl",
+      "version": "1",
+      "products": [
+        "reference-layout",
+        "domain-dependencies",
+        "domain-folds",
+        "exact-value-types",
+        "exact-value-codecs",
+        "saga-host-contract"
+      ],
+      "artifactKinds": [
+        "proto",
+        "build",
+        "generated-test"
+      ]
+    },
+    {
+      "id": "converter-dsl",
+      "version": "1",
+      "products": [
+        "reference-layout",
+        "domain-dependencies",
+        "domain-folds",
+        "exact-value-types",
+        "exact-value-codecs"
+      ],
+      "artifactKinds": [
+        "converter",
+        "serialization-adapter"
+      ]
+    },
+    {
+      "id": "finite-host-dsl",
+      "version": "1",
+      "products": [
+        "reference-layout",
+        "saga-host-contract",
+        "saga-runtime-contract",
+        "artifact-contract",
+        "domain-external-events"
+      ],
+      "artifactKinds": [
+        "saga-definition",
+        "invocation-host",
+        "host-proto",
+        "host-serialization",
+        "technical-port",
+        "generated-test"
+      ]
+    }
+  ],
+  "artifactKinds": [
+    "state",
+    "aggregate",
+    "protocol",
+    "command-helpers",
+    "external-event-bridge",
+    "rules",
+    "event-handler",
+    "value-object",
+    "proto",
+    "converter",
+    "serialization-adapter",
+    "build",
+    "generated-test",
+    "saga-definition",
+    "invocation-host",
+    "host-proto",
+    "host-serialization",
+    "technical-port"
+  ],
+  "options": [
+    "packages",
+    "verificationCases",
+    "runtimeArtifact"
+  ]
+}
