@@ -715,7 +715,8 @@
             "truthsrc.artifact-binding/v2",
             "truthsrc.domain-external-event-binding/v2",
             "truthsrc.domain-dependency-binding/v5",
-            "truthsrc.domain-fold-binding/v5"
+            "truthsrc.domain-fold-binding/v5",
+            "truthsrc.child-plan-binding/v1"
           ]
         },
         "value": {
@@ -1188,6 +1189,22 @@
                     "$ref": "urn:truthsrc:domain-dataflow:v2#/$defs/folds"
                   }
                 }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "schemaVersion": {
+                "const": "truthsrc.child-plan-binding/v1"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "$ref": "urn:truthsrc:child-plan-contract:v1#/$defs/binding"
               }
             }
           }
@@ -2167,6 +2184,46 @@
               "required": [
                 "canonical",
                 "foldBinding"
+              ],
+              "maxProperties": 2
+            }
+          }
+        },
+        {
+          "properties": {
+            "id": {
+              "const": "child-plan-contract"
+            },
+            "version": {
+              "const": "1"
+            },
+            "payloadSchemaVersion": {
+              "const": "truthsrc.child-plan-contract/v1"
+            },
+            "capabilities": {
+              "const": [
+                {
+                  "id": "finite-typed-child-plan",
+                  "version": "1"
+                }
+              ]
+            },
+            "requires": {
+              "const": [
+                {
+                  "id": "reference-layout",
+                  "version": "1"
+                },
+                {
+                  "id": "execution-contract",
+                  "version": "1"
+                }
+              ]
+            },
+            "inputRoles": {
+              "required": [
+                "canonical",
+                "childPlanBinding"
               ],
               "maxProperties": 2
             }

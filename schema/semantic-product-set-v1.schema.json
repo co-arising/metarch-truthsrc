@@ -564,6 +564,25 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "child-plan-contract"
+              },
+              "version": {
+                "const": "1"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:child-plan-contract:v1#/$defs/plans"
+              }
+            }
+          }
         }
       ]
     }

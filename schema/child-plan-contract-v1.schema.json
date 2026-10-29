@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:truthsrc:child-plan-contract:v1",
+  "title": "Explicit full finite typed child plans, not runtime certificates",
+  "$defs": {
+    "plan": {
+      "type": "object", "additionalProperties": false,
+      "required": ["ref", "version", "source", "bindingSource", "pipeline"],
+      "properties": {
+        "ref": { "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference" },
+        "version": { "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text" },
+        "source": { "$ref": "urn:truthsrc:product-compilation:v1#/$defs/source" },
+        "bindingSource": { "$ref": "urn:truthsrc:product-compilation:v1#/$defs/source" },
+        "pipeline": { "$ref": "https://madpolaris.dev/truthsrc/schema/execution-ir-v1.schema.json#/$defs/pipelineIr" }
+      }
+    },
+    "plans": {
+      "type": "object", "additionalProperties": false, "required": ["plans"],
+      "properties": { "plans": { "type": "array", "minItems": 1, "items": { "$ref": "urn:truthsrc:child-plan-contract:v1#/$defs/plan" } } }
+    },
+    "binding": {
+      "type": "object", "additionalProperties": false, "required": ["schemaVersion", "plans"],
+      "properties": {
+        "schemaVersion": { "const": "truthsrc.child-plan-binding/v1" },
+        "plans": { "type": "array", "minItems": 1, "items": {
+          "type": "object", "additionalProperties": false, "required": ["ref", "version", "binding"],
+          "properties": {
+            "ref": { "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference" },
+            "version": { "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text" },
+            "binding": { "$ref": "https://madpolaris.dev/truthsrc/schema/execution-ir-v1.schema.json#/$defs/pipelineBinding" }
+          }
+        } }
+      }
+    }
+  }
+}

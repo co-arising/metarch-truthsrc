@@ -8,8 +8,11 @@ import { renderDefinitions } from './render-host.mjs';
 import { renderInvocationHosts } from './render-invocation-host.mjs';
 import { renderHostAdapters } from './render-host-adapters.mjs';
 import { renderTechnicalPorts } from './render-technical-ports.mjs';
+import { renderHostIO } from './render-host-io.mjs';
 import { applicationBuild } from './render-build.mjs';
 import { renderHostVerification } from './render-host-verification.mjs';
+import { renderExecutionPlans } from './render-execution.mjs';
+import { renderExecutionVerification } from './render-execution-verification.mjs';
 
 const footprint = ids => ids.map(id=>({id,version:id==='domain-dependencies'||id==='domain-folds'?'5':id==='domain-external-events'||id==='artifact-contract'?'2':id==='domain-decision'?'3':'1'}));
 const producer=(ids,render)=>Object.freeze({version:'1',produce:context=>render(context,footprint(ids))});
@@ -18,7 +21,8 @@ export const registry=Object.freeze({
  'command-dsl':producer(['reference-layout','domain-dependencies','exact-value-types'],renderCommand),
  'invariant-dsl':producer(['reference-layout','domain-decision','domain-folds','exact-value-types'],renderInvariant),
  'valueobject-dsl':producer(['reference-layout','exact-value-types'],renderValues),
- 'proto-dsl':producer(['reference-layout','domain-dependencies','domain-folds','exact-value-types','exact-value-codecs','saga-host-contract'],(c,f)=>[...renderProto(c,f),...applicationBuild(c,f,renderScaffold(c,f,true))]),
+ 'proto-dsl':producer(['reference-layout','domain-dependencies','domain-folds','exact-value-types','exact-value-codecs','saga-host-contract','execution-contract'],(c,f)=>[...renderProto(c,f),...applicationBuild(c,f,renderScaffold(c,f,true))]),
  'converter-dsl':producer(['reference-layout','domain-dependencies','domain-folds','exact-value-types','exact-value-codecs'],(c,f)=>[...renderConverters(c,f),...renderAdapters(c,f)]),
- 'finite-host-dsl':producer(['reference-layout','saga-host-contract','saga-runtime-contract','artifact-contract','domain-external-events'],(c,f)=>[...renderDefinitions(c,f),...renderInvocationHosts(c,f),...renderHostAdapters(c,f),...renderTechnicalPorts(c,f),...renderHostVerification(c,f)]),
+ 'finite-execution-dsl':producer(['reference-layout','execution-contract','saga-host-contract','saga-runtime-contract'],(c,f)=>[...renderExecutionPlans(c,f),...renderExecutionVerification(c,f)]),
+ 'finite-host-dsl':producer(['reference-layout','saga-host-contract','saga-runtime-contract','artifact-contract','domain-external-events','execution-contract'],(c,f)=>[...renderDefinitions(c,f),...renderInvocationHosts(c,f),...renderHostAdapters(c,f),...renderTechnicalPorts(c,f),...renderHostIO(c,f),...renderHostVerification(c,f)]),
 });

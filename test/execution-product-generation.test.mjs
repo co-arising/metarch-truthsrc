@@ -1,0 +1,30 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { readProductRequest } from '../lib/products/cli.mjs';
+import { compileProductSet } from '../lib/products/compile.mjs';
+import { generate } from '../generators/scala-cqrs-application/generate.mjs';
+const root=new URL('./fixtures/inventory-execution-products/',import.meta.url);
+const request=()=>readProductRequest(fileURLToPath(new URL('files.json',root)));
+const options=()=>JSON.parse(readFileSync(new URL('options.json',root)));
+const manifest=JSON.parse(readFileSync(new URL('../generators/scala-cqrs-application/generator.json',import.meta.url)));
+test('finite execution consumes the complete typed contract and emits actual Monarch plan proto and journal oracle',()=>{
+ const compilation=compileProductSet(request());assert.deepEqual(compilation.diagnostics,[]);
+ const a=generate({compilation,manifest,options:options()}),b=generate({compilation,manifest,options:options()});
+ assert.deepEqual(a.diagnostics,[]);assert.deepEqual(a,b);assert.equal(a.plan.entries.length,77);
+ const plan=a.plan.entries.find(e=>e.kind==='execution-plan').content;
+ assert.ok(plan.includes('PersistentMonarch.behavior[String, State]'));
+ assert.ok(plan.includes('state.inspect_allocation.getOrElse'));
+ assert.ok(plan.includes('case allocation_inspectionExecution.verify_Unavailable'));
+ assert.ok(a.plan.entries.some(e=>e.path==='src/test/scala/GeneratedExecutionSpec.scala'&&e.content.includes('journal.persistedInStorage')));
+});
+test('external effects are not silently lowered as pure recovered stages',()=>{
+ const input=structuredClone(request());
+ const port=input.documents.find(d=>d.id==='execution').value.pipelines[0].ports[0];
+ port.effect='external';port.confirmation='durable-ack';port.idempotency={mode:'keyed',key:'allocation'};
+ port.outcomes.push({code:'Unknown',kind:'unknown-effect'});
+ input.documents.find(d=>d.id==='domain').value.pipelines[0].steps[0].execution.outcomes.push({code:'Unknown',kind:'unknown-effect',action:'manual-recovery'});
+ const compilation=compileProductSet(input);assert.deepEqual(compilation.diagnostics,[]);
+ const result=generate({compilation,manifest,options:options()});assert.equal(result.plan,null);assert.equal(result.diagnostics[0].code,'APPLICATION_EXECUTION');
+});

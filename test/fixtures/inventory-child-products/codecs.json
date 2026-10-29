@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "truthsrc.exact-codec-binding/v1",
+  "codecs": [
+    {
+      "domain": {
+        "context": "inventory",
+        "kind": "type",
+        "owner": [],
+        "id": "Distance"
+      },
+      "domainVersion": "1",
+      "id": "distance-codec",
+      "version": "codec-v1",
+      "format": "fixed-decimal-text",
+      "wire": {
+        "ref": {
+          "context": "inventory",
+          "kind": "type",
+          "owner": [],
+          "id": "DistanceWire"
+        },
+        "version": "wire-v1",
+        "amountMember": {
+          "context": "inventory",
+          "kind": "member",
+          "owner": [
+            "DistanceWire"
+          ],
+          "id": "amount"
+        },
+        "unitMember": {
+          "context": "inventory",
+          "kind": "member",
+          "owner": [
+            "DistanceWire"
+          ],
+          "id": "unit"
+        }
+      },
+      "po": {
+        "ref": {
+          "context": "inventory",
+          "kind": "type",
+          "owner": [],
+          "id": "DistancePO"
+        },
+        "version": "wire-v1",
+        "amountMember": {
+          "context": "inventory",
+          "kind": "member",
+          "owner": [
+            "DistancePO"
+          ],
+          "id": "amount"
+        },
+        "unitMember": {
+          "context": "inventory",
+          "kind": "member",
+          "owner": [
+            "DistancePO"
+          ],
+          "id": "unit"
+        }
+      },
+      "source": {
+        "document": "codecs",
+        "pointer": "/codecs/0"
+      }
+    }
+  ]
+}

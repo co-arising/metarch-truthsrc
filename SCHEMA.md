@@ -38,7 +38,56 @@ tree/
   pipelines/<slug>.pipeline.yaml    # v0.4: ordered business-step queues
   scenarios/<slug>.scenario.yaml    # v0.4: narrative scripts / demo runbooks
   sagas/<slug(id)>.saga.yaml         # cross-aggregate transaction products (optional)
+  formal-products/<family>/<slug(id)>.formal.yaml # explicit formal semantic roots (optional)
 ```
+
+## Formal product residence (additive v1)
+
+`kind: formal-product` is an explicit authored surface for existing public
+semantic contracts. It does not lift arbitrary workshop notes or infer approval.
+The declared families project to these canonical roots:
+
+| `family` | canonical root |
+|---|---|
+| `artifact-contract` | `artifactContracts[]` |
+| `technical-port` | `ports[]` |
+| `saga-host` | `sagaHosts[]` |
+| `host-computation` | `hostComputations[]` |
+| `external-event-producer` | `externalEventProducers[]` |
+
+Each atom has ordered scalar headers `kind`, `schemaVersion` (exactly
+`truthsrc.formal-product/v1`), `family`, `id`, `version`, optional
+scalar author/provenance headers, and one complete verbatim `payload` object.
+The payload is the existing formal contract body, **not** a new bank-specific
+conversion format. Header version must equal `payload.version`. Header identity
+is `payload.id`, except technical ports use `payload.name`; host computations use
+`JSON.stringify([payload.id.context, payload.id.id])` for their qualified port
+identity. Derive the filename with `formalProductFile()` in
+`lib/formal-products-pure.mjs`, which uses the shared `slug()` implementation.
+Filename aliases and header/payload disagreement fail closed.
+
+```yaml
+kind: formal-product
+schemaVersion: truthsrc.formal-product/v1
+family: artifact-contract
+id: inventory-read
+version: artifact-v1
+author: domain-author
+payload:
+  { "id": "inventory-read", "version": "artifact-v1", "artifact": { "context": "inventory", "kind": "artifact", "owner": [], "id": "InventoryRead" }, "status": "proposal", "provenance": [{ "document": "domain", "pointer": "/artifactContracts/0" }], "references": [], "ports": [], "deployment": { "id": "read-deployment", "version": "v1", "secretRefs": [] }, "implementations": [] }
+```
+
+The compiler orders atoms by filename and projects their **whole payloads**.
+`formalProductSurface` retains authored headers for inverse projection; it is a
+compiler-reserved transport sibling, not semantic approval. No atoms means no
+new root or surface key: legacy tree bytes remain unchanged. `decompose` restores
+these atoms and validates the same identities. `validate`/`roundtrip` certify
+residence and byte identity only; `compile-products` still performs complete
+schema/type/source/port/status admission. A historical note containing
+`info.artifact` remains that note; its author must explicitly declare a full
+formal artifact atom before `/artifactContracts/...` can be cited. A
+`demo-proposal` label is not silently converted to `selected` or to formal
+`proposal` status.
 
 ## Atom file
 

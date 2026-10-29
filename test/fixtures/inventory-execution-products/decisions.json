@@ -1,0 +1,155 @@
+{
+  "schemaVersion": "truthsrc.domain-semantic-binding/v3",
+  "decisions": {
+    "commands": [
+      {
+        "command": {
+          "context": "inventory",
+          "kind": "command",
+          "owner": [
+            "Warehouse"
+          ],
+          "id": "ReserveSkuQuantity"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0"
+        },
+        "decisions": [
+          {
+            "sourceOrdinal": 0,
+            "ruleId": "positive-integer-quantity",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/guards/0"
+            },
+            "predicate": {
+              "op": "greater",
+              "left": {
+                "op": "ref",
+                "ref": {
+                  "context": "inventory",
+                  "kind": "parameter",
+                  "owner": [
+                    "Warehouse",
+                    "ReserveSkuQuantity"
+                  ],
+                  "id": "quantity"
+                }
+              },
+              "right": {
+                "op": "integer",
+                "value": "0"
+              }
+            },
+            "onFalse": {
+              "kind": "reject",
+              "errCode": "quantity-positive"
+            },
+            "dependencies": [
+              {
+                "context": "inventory",
+                "kind": "parameter",
+                "owner": [
+                  "Warehouse",
+                  "ReserveSkuQuantity"
+                ],
+                "id": "quantity"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "command": {
+          "context": "inventory",
+          "kind": "command",
+          "owner": [
+            "Warehouse"
+          ],
+          "id": "CommitSkuReservation"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/1"
+        },
+        "decisions": []
+      },
+      {
+        "command": {
+          "context": "inventory",
+          "kind": "command",
+          "owner": [
+            "Warehouse"
+          ],
+          "id": "ReleaseSkuReservation"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/2"
+        },
+        "decisions": []
+      },
+      {
+        "command": {
+          "context": "inventory",
+          "kind": "command",
+          "owner": [
+            "Warehouse"
+          ],
+          "id": "RequestSkuReservation"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/3"
+        },
+        "decisions": []
+      },
+      {
+        "command": {
+          "context": "inventory",
+          "kind": "command",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "PrepareAllocation"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/1/commands/0"
+        },
+        "decisions": []
+      },
+      {
+        "command": {
+          "context": "inventory",
+          "kind": "command",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "CommitAllocation"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/1/commands/1"
+        },
+        "decisions": []
+      },
+      {
+        "command": {
+          "context": "inventory",
+          "kind": "command",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "CancelAllocation"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/1/commands/2"
+        },
+        "decisions": []
+      }
+    ]
+  }
+}

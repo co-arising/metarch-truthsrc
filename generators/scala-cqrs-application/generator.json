@@ -104,6 +104,14 @@
       ]
     },
     {
+      "id": "execution-contract",
+      "version": "1",
+      "payloadSchemaVersion": "truthsrc.execution/v1",
+      "capabilities": [
+        { "id": "execution-static-contract", "version": "1" }
+      ]
+    },
+    {
       "id": "artifact-contract",
       "version": "2",
       "payloadSchemaVersion": "truthsrc.artifact-contract/v2",
@@ -178,7 +186,8 @@
         "domain-folds",
         "exact-value-types",
         "exact-value-codecs",
-        "saga-host-contract"
+        "saga-host-contract",
+        "execution-contract"
       ],
       "artifactKinds": [
         "proto",
@@ -202,6 +211,12 @@
       ]
     },
     {
+      "id": "finite-execution-dsl",
+      "version": "1",
+      "products": ["reference-layout", "execution-contract", "saga-host-contract", "saga-runtime-contract"],
+      "artifactKinds": ["execution-plan", "proto", "generated-test"]
+    },
+    {
       "id": "finite-host-dsl",
       "version": "1",
       "products": [
@@ -209,7 +224,8 @@
         "saga-host-contract",
         "saga-runtime-contract",
         "artifact-contract",
-        "domain-external-events"
+        "domain-external-events",
+        "execution-contract"
       ],
       "artifactKinds": [
         "saga-definition",
@@ -239,7 +255,8 @@
     "invocation-host",
     "host-proto",
     "host-serialization",
-    "technical-port"
+    "technical-port",
+    "execution-plan"
   ],
   "options": [
     "packages",

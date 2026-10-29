@@ -1,0 +1,96 @@
+{
+  "schemaVersion": "truthsrc.child-plan-binding/v1",
+  "plans": [
+    {
+      "ref": {
+        "context": "inventory",
+        "kind": "pipeline",
+        "owner": [],
+        "id": "allocation-child"
+      },
+      "version": "child-v1",
+      "binding": {
+        "pipelineId": "allocation-child",
+        "engine": "monarch-persistence/0.2.1",
+        "module": "inventory.ChildInspection",
+        "codec": {
+          "id": "ChildInspectionState",
+          "version": "child-v1",
+          "compatibleVersions": [
+            "child-v1"
+          ]
+        },
+        "types": [
+          {
+            "id": "AllocationId",
+            "implementation": "inventory.types.AllocationId"
+          }
+        ],
+        "ports": [
+          {
+            "id": "InspectAllocation",
+            "implementation": "inventory.InspectAllocation",
+            "effect": "pure",
+            "confirmation": "checkpoint",
+            "idempotency": {
+              "mode": "none"
+            },
+            "inputs": [
+              {
+                "slot": "allocation",
+                "type": "AllocationId"
+              }
+            ],
+            "outputs": [
+              {
+                "slot": "allocation",
+                "type": "AllocationId"
+              }
+            ],
+            "outcomes": [
+              {
+                "code": "Confirmed",
+                "kind": "success"
+              },
+              {
+                "code": "Unavailable",
+                "kind": "infrastructure-failure"
+              }
+            ]
+          },
+          {
+            "id": "VerifyAllocation",
+            "implementation": "inventory.VerifyAllocation",
+            "effect": "pure",
+            "confirmation": "checkpoint",
+            "idempotency": {
+              "mode": "none"
+            },
+            "inputs": [
+              {
+                "slot": "allocation",
+                "type": "AllocationId"
+              }
+            ],
+            "outputs": [
+              {
+                "slot": "allocation",
+                "type": "AllocationId"
+              }
+            ],
+            "outcomes": [
+              {
+                "code": "Confirmed",
+                "kind": "success"
+              },
+              {
+                "code": "Unavailable",
+                "kind": "infrastructure-failure"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

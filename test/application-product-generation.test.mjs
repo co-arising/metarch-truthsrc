@@ -13,11 +13,23 @@ const manifest=JSON.parse(readFileSync(new URL('../generators/scala-cqrs-applica
 test('formal complete application plan consumes explicit new products and emits every actual host and domain source',()=>{
  const c=compileProductSet(request());assert.deepEqual(c.diagnostics,[]);
  const first=generate({compilation:c,manifest,options:options()}),second=generate({compilation:c,manifest,options:options()});
- assert.deepEqual(first.diagnostics,[]);assert.deepEqual(first,second);assert.equal(first.plan.entries.length,73);
+ assert.deepEqual(first.diagnostics,[]);assert.deepEqual(first,second);assert.equal(first.plan.entries.length,74);
  assert.ok(first.plan.entries.some(e=>e.kind==='invocation-host'&&e.content.includes('Associated(originalBytes, argsBytes, operation)')));
  assert.ok(first.plan.entries.some(e=>e.kind==='saga-definition'&&e.content.includes('request.receipt(')));
  assert.ok(first.plan.entries.some(e=>e.kind==='aggregate'&&e.content.includes('external-authority-denied')));
  assert.ok(first.plan.entries.some(e=>e.kind==='technical-port'&&e.content.includes('requireInstalled')));
+ const verification=first.plan.entries.find(e=>e.path==='src/test/scala/GeneratedFiniteHostSpec.scala').content;
+ assert.ok(verification.includes('val observedKinds'));
+ assert.ok(verification.includes('reply lost after actual event persistence'));
+ assert.ok(verification.includes('StrictSagaCoordinator.Reconcile'));
+ assert.ok(verification.includes('assert(deliveryCounts("outcome-unknown") == 2)'));
+ assert.ok(verification.includes('definition(missingObjects)'));
+ const definition=first.plan.entries.find(e=>e.kind==='saga-definition').content;
+ assert.ok(definition.includes('val installed_reserve_sku_prepare = bindreserve_sku_prepare(ports.reserve_sku_prepare)'));
+ assert.ok(definition.includes('Phase.Prepare -> installed_reserve_sku_prepare'));
+ assert.ok(definition.includes('def fromTechnical(objects:'));
+ assert.ok(definition.includes('warehouseprepareExecuteOperation('));
+ assert.ok(verification.includes('val delegated ='));
 });
 test('formal application plan rejects wrong frozen artifacts and missing complete product profile',()=>{
  const c=compileProductSet(request());const o=options();o.runtimeArtifact.sha256='0'.repeat(64);

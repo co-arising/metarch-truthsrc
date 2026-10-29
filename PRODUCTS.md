@@ -31,15 +31,76 @@ The same `generate-products` flags apply; options additionally require runtimeAr
 with coordinate/sha256/repository/symbolicTarget. Actual frozen P23 artifact bytes
 are checked before target writes, not downloaded or republished. BC opt-in is
 `codegen.productTargetProfile=scala-cqrs-application@1` with existing product/options
-file inputs. Both chains render independently. Pipeline start is statically modeled
-but this target currently rejects unsupported pipeline lowering rather than omitting it.
+file inputs. Both chains render independently. Pipeline-owned finite invocations are
+now explicit: the generated host retains the complete parent checkpoint and args
+before Start, persists the runtime's authoritative identity before Attach, and returns
+its typed result only after result-delivery acknowledgment. The parent checkpoints
+success only. Direct and pipeline host request surfaces remain distinct.
 
 Actual independent input: `test/fixtures/inventory-host-products/files.json`.
 Two Warehouse resources and a last AllocationOrder have real generated phase calls,
 receipt-field consumption, external result event persistence and same-identity host replay.
 Generated inventory test ports/cache are explicitly test-only; not banking policy,
 production receipt durability, TA/SIP qualification or different-JVM recovery.
-P24/P25 joint banking and full final acceptance remain open.
+The generated test now exercises all five result kinds against real generated recipient
+events, UNKNOWN-after-persist confirmation via authorized reconciliation, safe-absence
+retry, lost delivery acknowledgment and same-identity host/coordinator replay. These are
+bounded local technical tests, not production exactly-once delivery or bank acceptance.
+
+Technical ports additionally expose `Implementation[I,O]`, closed typed `Bindings` and
+privately constructed `Installed` objects. Installation checks every required function
+object and implementation id/version; declarations derive from those actual objects.
+Definition creation requires `Ports.technical`, matching declarations and every real
+phase port/codec/read-only query before coordinator startup. `fromTechnical` now lowers
+complete command-input and seven-part identity query records into the installed
+operation-context functions; the independent generated tests actually reach aggregate
+actors through this path. A query returning None remains UNKNOWN, never safe absence.
+This does not certify function behavior, production receipt durability, or claim all
+authority/TA/occurrence/read-side adapters are connected.
+
+`execution-contract@1` is an explicit application producer input. The current finite
+execution producer emits complete nominal inputs/outputs, stage requests/results,
+version-pinned protobuf checkpoint state and a real frozen PersistentMonarch behavior
+for single-run, single-step, single-chunk **pure port** plans. Input
+`test/fixtures/inventory-execution-products/files.json` exercises actual journal prefix
+and tail replay without using observer mirrors as authority. The same application
+profile now also supports explicitly pipeline-owned `invokeSaga` adapters; input
+`test/fixtures/inventory-invocation-products/files.json` verifies real three-participant
+effects, host recovery before parent checkpoint, lost result acknowledgment and all
+five mapped outcomes. External effects still require a separate complete adapter.
+
+`child-plan-contract@1` (`truthsrc.child-plan-contract/v1`, capability
+`finite-typed-child-plan@1`) consumes canonical + childPlanBinding
+(`truthsrc.child-plan-binding/v1`) and requires layout1 + execution1. Each explicit
+binding row pins a qualified child pipeline, its version and complete execution
+binding. The canonical `monarch.typedPlan` carries `truthsrc.child-plan/v1`, exact
+version, inputs/outputs/steps/recovery/admission. Child stages remain finite pure
+ports, checked by the complete execution checker; payload, result fields and type
+implementations must exactly match the parent's declared await contract. The old
+execution@1 document-only rows are unchanged and never become whole child plans.
+
+The shipped opt-in `generators/scala-cqrs-child-application` targets
+`scala-cqrs-child-application@1`; BC uses the same explicit target-profile value.
+`test/fixtures/inventory-child-products/files.json` exercises actual child checkpoint
+prefix and replay, durable parent/child intent, typed result checkpoint and rejection
+of conflicting payload or terminal records missing the confirmed prefix. Generated
+`ChildJournal.CurrentJournal` queries a supplied Akka current-events read journal;
+`ChildJournal.observe` validates actual RunStarted bytes, exact plan, contiguous
+StageDone rows and RunCompleted identity before returning success. The generated
+oracle uses actual PersistenceTestKit storage, not a synthetic mirrored progress record.
+These are finite local technical proofs, not different-JVM fencing, production journal
+operation, external effects, complete TA/SIP policy, or P24/P25 whole acceptance.
+
+## Formal roots carried by the tree
+
+The explicit `formal-product` atom residence in [SCHEMA.md](SCHEMA.md#formal-product-residence-additive-v1)
+projects whole authored bodies into artifactContracts, ports, sagaHosts, hostComputations
+and externalEventProducers. Compile/decompose preserve payloads and authored scalar
+headers with a `formalProductSurface` transport sibling. Old `info.artifact` notes are
+not lifted; status is not promoted. `validate` and `roundtrip` check residence/identity,
+then existing `compile-products` performs full semantic admission. This is the public
+source entry, not a bank-side normalizer or a statement that bank application requests
+are complete. New declarations and bindings remain the domain owner's responsibility.
 
 ## Formal typed source generation
 

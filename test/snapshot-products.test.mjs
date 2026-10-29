@@ -217,20 +217,25 @@ test('worker imports only its pure shared module and the no-I/O proxy predicate'
   const worker = readFileSync(join(ROOT, 'lib/compile-snapshot.mjs'), 'utf8');
   const pure = readFileSync(join(ROOT, 'lib/shared-pure.mjs'), 'utf8');
   const helper = readFileSync(join(ROOT, 'lib/immutable-data.mjs'), 'utf8');
+  const formal = readFileSync(join(ROOT, 'lib/formal-products-pure.mjs'), 'utf8');
   const imports = source => [...source.matchAll(/from\s+['"]([^'"]+)['"]/g)].map(m => m[1]);
-  assert.deepEqual(imports(worker), ['./immutable-data.mjs', './shared-pure.mjs']);
+  assert.deepEqual(imports(worker), ['./immutable-data.mjs', './shared-pure.mjs', './formal-products-pure.mjs']);
+  assert.deepEqual(imports(formal), ['./shared-pure.mjs']);
   assert.deepEqual(imports(helper), ['node:util']);
   assert.equal(/\bimport\b/.test(pure), false);
-  assert.equal(/\b(?:process|Date|fetch|require|readFileSync|readdirSync|writeFileSync|existsSync|setTimeout)\b/.test(worker + helper), false);
+  assert.equal(/\b(?:process|Date|fetch|require|readFileSync|readdirSync|writeFileSync|existsSync|setTimeout)\b/.test(worker + helper + formal), false);
 });
 
 test('preloaded pure module initialization and call succeed with effect APIs disabled', () => {
   // Preload code as the test harness; module source loading is not worker I/O.
   const shared = `data:text/javascript;base64,${Buffer.from(readFileSync(join(ROOT, 'lib/shared-pure.mjs'), 'utf8')).toString('base64')}`;
   const helper = `data:text/javascript;base64,${Buffer.from(readFileSync(join(ROOT, 'lib/immutable-data.mjs'), 'utf8')).toString('base64')}`;
+  const formalSource = readFileSync(join(ROOT, 'lib/formal-products-pure.mjs'), 'utf8').replace("'./shared-pure.mjs'", JSON.stringify(shared));
+  const formal = `data:text/javascript;base64,${Buffer.from(formalSource).toString('base64')}`;
   const source = readFileSync(join(ROOT, 'lib/compile-snapshot.mjs'), 'utf8')
     .replace("'./shared-pure.mjs'", JSON.stringify(shared))
-    .replace("'./immutable-data.mjs'", JSON.stringify(helper));
+    .replace("'./immutable-data.mjs'", JSON.stringify(helper))
+    .replace("'./formal-products-pure.mjs'", JSON.stringify(formal));
   const entry = `data:text/javascript;base64,${Buffer.from(source).toString('base64')}`;
   const script = `
     const fs = (await import('node:fs')).default;
