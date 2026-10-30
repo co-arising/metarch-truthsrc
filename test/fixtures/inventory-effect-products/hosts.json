@@ -1,0 +1,3309 @@
+{
+  "schemaVersion": "truthsrc.saga-host-binding/v1",
+  "hosts": {
+    "hosts": [
+      {
+        "id": "inventory-allocation-host",
+        "version": "host-v1",
+        "saga": {
+          "ref": {
+            "context": "inventory",
+            "kind": "saga",
+            "owner": [],
+            "id": "reserve-warehouse-sku"
+          },
+          "version": "inventory-v3"
+        },
+        "argsType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "ReservationArgsRecord"
+          }
+        },
+        "entry": {
+          "triggerId": "reservation-request",
+          "kind": "event",
+          "source": {
+            "context": "inventory",
+            "kind": "event",
+            "owner": [
+              "Warehouse"
+            ],
+            "id": "SkuReservationRequested"
+          },
+          "inputType": {
+            "form": "nominal",
+            "ref": {
+              "context": "inventory",
+              "kind": "type",
+              "owner": [],
+              "id": "OriginalReservation"
+            }
+          },
+          "port": {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ReservationEntry"
+            },
+            "version": "port-v1"
+          },
+          "startOwner": {
+            "kind": "direct",
+            "ref": null,
+            "stepId": null
+          }
+        },
+        "association": {
+          "id": "original-reservation-association",
+          "version": "association-v1",
+          "port": {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ReservationAssociation"
+            },
+            "version": "port-v1"
+          },
+          "inputKeys": [
+            {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "Warehouse",
+                "SkuReservationRequested"
+              ],
+              "id": "requestId"
+            }
+          ],
+          "originalInputs": [
+            {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "Warehouse",
+                "SkuReservationRequested"
+              ],
+              "id": "requestId"
+            },
+            {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "Warehouse",
+                "SkuReservationRequested"
+              ],
+              "id": "warehouse"
+            },
+            {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "Warehouse",
+                "SkuReservationRequested"
+              ],
+              "id": "sku"
+            },
+            {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "Warehouse",
+                "SkuReservationRequested"
+              ],
+              "id": "quantity"
+            },
+            {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "Warehouse",
+                "SkuReservationRequested"
+              ],
+              "id": "allocation"
+            },
+            {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "Warehouse",
+                "SkuReservationRequested"
+              ],
+              "id": "destination"
+            }
+          ],
+          "encoding": "length-prefixed-utf8",
+          "before": "phase-effects",
+          "conflict": "reject-different-input"
+        },
+        "participants": [
+          {
+            "stepId": "reserve-sku",
+            "participantId": "warehouse",
+            "aggregate": {
+              "context": "inventory",
+              "kind": "aggregate",
+              "owner": [],
+              "id": "Warehouse"
+            },
+            "resourceInput": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "Warehouse",
+                "SkuReservationRequested"
+              ],
+              "id": "warehouse"
+            },
+            "phases": [
+              {
+                "phase": "prepare",
+                "command": {
+                  "context": "inventory",
+                  "kind": "command",
+                  "owner": [
+                    "Warehouse"
+                  ],
+                  "id": "ReserveSkuQuantity"
+                },
+                "parameters": [
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "Warehouse",
+                        "ReserveSkuQuantity"
+                      ],
+                      "id": "txid"
+                    },
+                    "input": {
+                      "kind": "transaction-id"
+                    }
+                  },
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "Warehouse",
+                        "ReserveSkuQuantity"
+                      ],
+                      "id": "warehouse"
+                    },
+                    "input": {
+                      "kind": "args",
+                      "slot": "warehouse"
+                    }
+                  },
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "Warehouse",
+                        "ReserveSkuQuantity"
+                      ],
+                      "id": "sku"
+                    },
+                    "input": {
+                      "kind": "args",
+                      "slot": "sku"
+                    }
+                  },
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "Warehouse",
+                        "ReserveSkuQuantity"
+                      ],
+                      "id": "quantity"
+                    },
+                    "input": {
+                      "kind": "args",
+                      "slot": "quantity"
+                    }
+                  }
+                ],
+                "inputType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "warehouseprepareInput"
+                  }
+                },
+                "executePort": {
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "port",
+                    "owner": [],
+                    "id": "warehouseprepareExecute"
+                  },
+                  "version": "port-v1"
+                },
+                "confirmation": {
+                  "event": {
+                    "context": "inventory",
+                    "kind": "event",
+                    "owner": [
+                      "Warehouse"
+                    ],
+                    "id": "SkuQuantityReserved"
+                  },
+                  "outputs": [
+                    {
+                      "slot": {
+                        "context": "inventory",
+                        "kind": "event-slot",
+                        "owner": [
+                          "Warehouse",
+                          "SkuQuantityReserved"
+                        ],
+                        "id": "reservation"
+                      },
+                      "output": "reservation"
+                    }
+                  ]
+                },
+                "query": {
+                  "port": {
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "port",
+                      "owner": [],
+                      "id": "warehouseprepareQueryPort"
+                    },
+                    "version": "port-v1"
+                  },
+                  "inputType": {
+                    "form": "nominal",
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "type",
+                      "owner": [],
+                      "id": "warehouseprepareQuery"
+                    }
+                  },
+                  "mode": "read-only",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ]
+                },
+                "evidence": {
+                  "kind": "typed-record",
+                  "receiptType": {
+                    "form": "nominal",
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "type",
+                      "owner": [],
+                      "id": "warehouseprepareReceipt"
+                    }
+                  },
+                  "identity": [
+                    {
+                      "key": "txid",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "warehouseprepareReceipt"
+                        ],
+                        "id": "transaction"
+                      }
+                    },
+                    {
+                      "key": "definition-version",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "warehouseprepareReceipt"
+                        ],
+                        "id": "definitionVersion"
+                      }
+                    },
+                    {
+                      "key": "args-digest",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "warehouseprepareReceipt"
+                        ],
+                        "id": "argsDigest"
+                      }
+                    },
+                    {
+                      "key": "participant",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "warehouseprepareReceipt"
+                        ],
+                        "id": "participant"
+                      }
+                    },
+                    {
+                      "key": "resource",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "warehouseprepareReceipt"
+                        ],
+                        "id": "resource"
+                      }
+                    },
+                    {
+                      "key": "step",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "warehouseprepareReceipt"
+                        ],
+                        "id": "step"
+                      }
+                    },
+                    {
+                      "key": "phase",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "warehouseprepareReceipt"
+                        ],
+                        "id": "phase"
+                      }
+                    }
+                  ],
+                  "payload": [
+                    {
+                      "output": "reservation",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "warehouseprepareReceipt"
+                        ],
+                        "id": "payloadReservation"
+                      }
+                    }
+                  ],
+                  "codec": {
+                    "contract": {
+                      "id": "reserve-sku-prepare",
+                      "version": "receipt-v1"
+                    },
+                    "runtime": {
+                      "id": "reserve-sku-prepare",
+                      "version": 1
+                    }
+                  },
+                  "payloadCompatibility": "exact"
+                }
+              },
+              {
+                "phase": "commit",
+                "command": {
+                  "context": "inventory",
+                  "kind": "command",
+                  "owner": [
+                    "Warehouse"
+                  ],
+                  "id": "CommitSkuReservation"
+                },
+                "parameters": [
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "Warehouse",
+                        "CommitSkuReservation"
+                      ],
+                      "id": "txid"
+                    },
+                    "input": {
+                      "kind": "transaction-id"
+                    }
+                  },
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "Warehouse",
+                        "CommitSkuReservation"
+                      ],
+                      "id": "warehouse"
+                    },
+                    "input": {
+                      "kind": "args",
+                      "slot": "warehouse"
+                    }
+                  },
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "Warehouse",
+                        "CommitSkuReservation"
+                      ],
+                      "id": "sku"
+                    },
+                    "input": {
+                      "kind": "args",
+                      "slot": "sku"
+                    }
+                  },
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "Warehouse",
+                        "CommitSkuReservation"
+                      ],
+                      "id": "reservation"
+                    },
+                    "input": {
+                      "kind": "receipt-field",
+                      "phase": "prepare",
+                      "slot": "reservation",
+                      "stepId": "reserve-sku"
+                    }
+                  }
+                ],
+                "inputType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "warehousecommitInput"
+                  }
+                },
+                "executePort": {
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "port",
+                    "owner": [],
+                    "id": "warehousecommitExecute"
+                  },
+                  "version": "port-v1"
+                },
+                "confirmation": {
+                  "event": {
+                    "context": "inventory",
+                    "kind": "event",
+                    "owner": [
+                      "Warehouse"
+                    ],
+                    "id": "SkuReservationCommitted"
+                  },
+                  "outputs": [
+                    {
+                      "slot": {
+                        "context": "inventory",
+                        "kind": "event-slot",
+                        "owner": [
+                          "Warehouse",
+                          "SkuReservationCommitted"
+                        ],
+                        "id": "txid"
+                      },
+                      "output": "txid"
+                    }
+                  ]
+                },
+                "query": {
+                  "port": {
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "port",
+                      "owner": [],
+                      "id": "warehousecommitQueryPort"
+                    },
+                    "version": "port-v1"
+                  },
+                  "inputType": {
+                    "form": "nominal",
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "type",
+                      "owner": [],
+                      "id": "warehousecommitQuery"
+                    }
+                  },
+                  "mode": "read-only",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ]
+                },
+                "evidence": {
+                  "kind": "typed-record",
+                  "receiptType": {
+                    "form": "nominal",
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "type",
+                      "owner": [],
+                      "id": "warehousecommitReceipt"
+                    }
+                  },
+                  "identity": [
+                    {
+                      "key": "txid",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "warehousecommitReceipt"
+                        ],
+                        "id": "transaction"
+                      }
+                    },
+                    {
+                      "key": "definition-version",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "warehousecommitReceipt"
+                        ],
+                        "id": "definitionVersion"
+                      }
+                    },
+                    {
+                      "key": "args-digest",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "warehousecommitReceipt"
+                        ],
+                        "id": "argsDigest"
+                      }
+                    },
+                    {
+                      "key": "participant",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "warehousecommitReceipt"
+                        ],
+                        "id": "participant"
+                      }
+                    },
+                    {
+                      "key": "resource",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "warehousecommitReceipt"
+                        ],
+                        "id": "resource"
+                      }
+                    },
+                    {
+                      "key": "step",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "warehousecommitReceipt"
+                        ],
+                        "id": "step"
+                      }
+                    },
+                    {
+                      "key": "phase",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "warehousecommitReceipt"
+                        ],
+                        "id": "phase"
+                      }
+                    }
+                  ],
+                  "payload": [
+                    {
+                      "output": "txid",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "warehousecommitReceipt"
+                        ],
+                        "id": "payloadTxid"
+                      }
+                    }
+                  ],
+                  "codec": {
+                    "contract": {
+                      "id": "reserve-sku-commit",
+                      "version": "receipt-v1"
+                    },
+                    "runtime": {
+                      "id": "reserve-sku-commit",
+                      "version": 1
+                    }
+                  },
+                  "payloadCompatibility": "exact"
+                }
+              },
+              {
+                "phase": "compensate",
+                "command": {
+                  "context": "inventory",
+                  "kind": "command",
+                  "owner": [
+                    "Warehouse"
+                  ],
+                  "id": "ReleaseSkuReservation"
+                },
+                "parameters": [
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "Warehouse",
+                        "ReleaseSkuReservation"
+                      ],
+                      "id": "txid"
+                    },
+                    "input": {
+                      "kind": "transaction-id"
+                    }
+                  },
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "Warehouse",
+                        "ReleaseSkuReservation"
+                      ],
+                      "id": "warehouse"
+                    },
+                    "input": {
+                      "kind": "args",
+                      "slot": "warehouse"
+                    }
+                  },
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "Warehouse",
+                        "ReleaseSkuReservation"
+                      ],
+                      "id": "sku"
+                    },
+                    "input": {
+                      "kind": "args",
+                      "slot": "sku"
+                    }
+                  },
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "Warehouse",
+                        "ReleaseSkuReservation"
+                      ],
+                      "id": "reservation"
+                    },
+                    "input": {
+                      "kind": "receipt-field",
+                      "phase": "prepare",
+                      "slot": "reservation",
+                      "stepId": "reserve-sku"
+                    }
+                  }
+                ],
+                "inputType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "warehousecompensateInput"
+                  }
+                },
+                "executePort": {
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "port",
+                    "owner": [],
+                    "id": "warehousecompensateExecute"
+                  },
+                  "version": "port-v1"
+                },
+                "confirmation": {
+                  "event": {
+                    "context": "inventory",
+                    "kind": "event",
+                    "owner": [
+                      "Warehouse"
+                    ],
+                    "id": "SkuReservationReleased"
+                  },
+                  "outputs": [
+                    {
+                      "slot": {
+                        "context": "inventory",
+                        "kind": "event-slot",
+                        "owner": [
+                          "Warehouse",
+                          "SkuReservationReleased"
+                        ],
+                        "id": "txid"
+                      },
+                      "output": "txid"
+                    }
+                  ]
+                },
+                "query": {
+                  "port": {
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "port",
+                      "owner": [],
+                      "id": "warehousecompensateQueryPort"
+                    },
+                    "version": "port-v1"
+                  },
+                  "inputType": {
+                    "form": "nominal",
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "type",
+                      "owner": [],
+                      "id": "warehousecompensateQuery"
+                    }
+                  },
+                  "mode": "read-only",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ]
+                },
+                "evidence": {
+                  "kind": "typed-record",
+                  "receiptType": {
+                    "form": "nominal",
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "type",
+                      "owner": [],
+                      "id": "warehousecompensateReceipt"
+                    }
+                  },
+                  "identity": [
+                    {
+                      "key": "txid",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "warehousecompensateReceipt"
+                        ],
+                        "id": "transaction"
+                      }
+                    },
+                    {
+                      "key": "definition-version",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "warehousecompensateReceipt"
+                        ],
+                        "id": "definitionVersion"
+                      }
+                    },
+                    {
+                      "key": "args-digest",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "warehousecompensateReceipt"
+                        ],
+                        "id": "argsDigest"
+                      }
+                    },
+                    {
+                      "key": "participant",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "warehousecompensateReceipt"
+                        ],
+                        "id": "participant"
+                      }
+                    },
+                    {
+                      "key": "resource",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "warehousecompensateReceipt"
+                        ],
+                        "id": "resource"
+                      }
+                    },
+                    {
+                      "key": "step",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "warehousecompensateReceipt"
+                        ],
+                        "id": "step"
+                      }
+                    },
+                    {
+                      "key": "phase",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "warehousecompensateReceipt"
+                        ],
+                        "id": "phase"
+                      }
+                    }
+                  ],
+                  "payload": [
+                    {
+                      "output": "txid",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "warehousecompensateReceipt"
+                        ],
+                        "id": "payloadTxid"
+                      }
+                    }
+                  ],
+                  "codec": {
+                    "contract": {
+                      "id": "reserve-sku-compensate",
+                      "version": "receipt-v1"
+                    },
+                    "runtime": {
+                      "id": "reserve-sku-compensate",
+                      "version": 1
+                    }
+                  },
+                  "payloadCompatibility": "exact"
+                }
+              }
+            ]
+          },
+          {
+            "stepId": "reserve-destination",
+            "participantId": "destination",
+            "aggregate": {
+              "context": "inventory",
+              "kind": "aggregate",
+              "owner": [],
+              "id": "Warehouse"
+            },
+            "resourceInput": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "Warehouse",
+                "SkuReservationRequested"
+              ],
+              "id": "destination"
+            },
+            "phases": [
+              {
+                "phase": "prepare",
+                "command": {
+                  "context": "inventory",
+                  "kind": "command",
+                  "owner": [
+                    "Warehouse"
+                  ],
+                  "id": "ReserveSkuQuantity"
+                },
+                "parameters": [
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "Warehouse",
+                        "ReserveSkuQuantity"
+                      ],
+                      "id": "txid"
+                    },
+                    "input": {
+                      "kind": "transaction-id"
+                    }
+                  },
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "Warehouse",
+                        "ReserveSkuQuantity"
+                      ],
+                      "id": "warehouse"
+                    },
+                    "input": {
+                      "kind": "args",
+                      "slot": "destination"
+                    }
+                  },
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "Warehouse",
+                        "ReserveSkuQuantity"
+                      ],
+                      "id": "sku"
+                    },
+                    "input": {
+                      "kind": "args",
+                      "slot": "sku"
+                    }
+                  },
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "Warehouse",
+                        "ReserveSkuQuantity"
+                      ],
+                      "id": "quantity"
+                    },
+                    "input": {
+                      "kind": "args",
+                      "slot": "quantity"
+                    }
+                  }
+                ],
+                "inputType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "destinationprepareInput"
+                  }
+                },
+                "executePort": {
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "port",
+                    "owner": [],
+                    "id": "destinationprepareExecute"
+                  },
+                  "version": "port-v1"
+                },
+                "confirmation": {
+                  "event": {
+                    "context": "inventory",
+                    "kind": "event",
+                    "owner": [
+                      "Warehouse"
+                    ],
+                    "id": "SkuQuantityReserved"
+                  },
+                  "outputs": [
+                    {
+                      "slot": {
+                        "context": "inventory",
+                        "kind": "event-slot",
+                        "owner": [
+                          "Warehouse",
+                          "SkuQuantityReserved"
+                        ],
+                        "id": "reservation"
+                      },
+                      "output": "reservation"
+                    }
+                  ]
+                },
+                "query": {
+                  "port": {
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "port",
+                      "owner": [],
+                      "id": "destinationprepareQueryPort"
+                    },
+                    "version": "port-v1"
+                  },
+                  "inputType": {
+                    "form": "nominal",
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "type",
+                      "owner": [],
+                      "id": "destinationprepareQuery"
+                    }
+                  },
+                  "mode": "read-only",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ]
+                },
+                "evidence": {
+                  "kind": "typed-record",
+                  "receiptType": {
+                    "form": "nominal",
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "type",
+                      "owner": [],
+                      "id": "destinationprepareReceipt"
+                    }
+                  },
+                  "identity": [
+                    {
+                      "key": "txid",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "destinationprepareReceipt"
+                        ],
+                        "id": "transaction"
+                      }
+                    },
+                    {
+                      "key": "definition-version",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "destinationprepareReceipt"
+                        ],
+                        "id": "definitionVersion"
+                      }
+                    },
+                    {
+                      "key": "args-digest",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "destinationprepareReceipt"
+                        ],
+                        "id": "argsDigest"
+                      }
+                    },
+                    {
+                      "key": "participant",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "destinationprepareReceipt"
+                        ],
+                        "id": "participant"
+                      }
+                    },
+                    {
+                      "key": "resource",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "destinationprepareReceipt"
+                        ],
+                        "id": "resource"
+                      }
+                    },
+                    {
+                      "key": "step",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "destinationprepareReceipt"
+                        ],
+                        "id": "step"
+                      }
+                    },
+                    {
+                      "key": "phase",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "destinationprepareReceipt"
+                        ],
+                        "id": "phase"
+                      }
+                    }
+                  ],
+                  "payload": [
+                    {
+                      "output": "reservation",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "destinationprepareReceipt"
+                        ],
+                        "id": "payloadReservation"
+                      }
+                    }
+                  ],
+                  "codec": {
+                    "contract": {
+                      "id": "reserve-destination-prepare",
+                      "version": "receipt-v1"
+                    },
+                    "runtime": {
+                      "id": "reserve-destination-prepare",
+                      "version": 1
+                    }
+                  },
+                  "payloadCompatibility": "exact"
+                }
+              },
+              {
+                "phase": "commit",
+                "command": {
+                  "context": "inventory",
+                  "kind": "command",
+                  "owner": [
+                    "Warehouse"
+                  ],
+                  "id": "CommitSkuReservation"
+                },
+                "parameters": [
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "Warehouse",
+                        "CommitSkuReservation"
+                      ],
+                      "id": "txid"
+                    },
+                    "input": {
+                      "kind": "transaction-id"
+                    }
+                  },
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "Warehouse",
+                        "CommitSkuReservation"
+                      ],
+                      "id": "warehouse"
+                    },
+                    "input": {
+                      "kind": "args",
+                      "slot": "destination"
+                    }
+                  },
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "Warehouse",
+                        "CommitSkuReservation"
+                      ],
+                      "id": "sku"
+                    },
+                    "input": {
+                      "kind": "args",
+                      "slot": "sku"
+                    }
+                  },
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "Warehouse",
+                        "CommitSkuReservation"
+                      ],
+                      "id": "reservation"
+                    },
+                    "input": {
+                      "kind": "receipt-field",
+                      "phase": "prepare",
+                      "slot": "reservation",
+                      "stepId": "reserve-destination"
+                    }
+                  }
+                ],
+                "inputType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "destinationcommitInput"
+                  }
+                },
+                "executePort": {
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "port",
+                    "owner": [],
+                    "id": "destinationcommitExecute"
+                  },
+                  "version": "port-v1"
+                },
+                "confirmation": {
+                  "event": {
+                    "context": "inventory",
+                    "kind": "event",
+                    "owner": [
+                      "Warehouse"
+                    ],
+                    "id": "SkuReservationCommitted"
+                  },
+                  "outputs": [
+                    {
+                      "slot": {
+                        "context": "inventory",
+                        "kind": "event-slot",
+                        "owner": [
+                          "Warehouse",
+                          "SkuReservationCommitted"
+                        ],
+                        "id": "txid"
+                      },
+                      "output": "txid"
+                    }
+                  ]
+                },
+                "query": {
+                  "port": {
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "port",
+                      "owner": [],
+                      "id": "destinationcommitQueryPort"
+                    },
+                    "version": "port-v1"
+                  },
+                  "inputType": {
+                    "form": "nominal",
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "type",
+                      "owner": [],
+                      "id": "destinationcommitQuery"
+                    }
+                  },
+                  "mode": "read-only",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ]
+                },
+                "evidence": {
+                  "kind": "typed-record",
+                  "receiptType": {
+                    "form": "nominal",
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "type",
+                      "owner": [],
+                      "id": "destinationcommitReceipt"
+                    }
+                  },
+                  "identity": [
+                    {
+                      "key": "txid",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "destinationcommitReceipt"
+                        ],
+                        "id": "transaction"
+                      }
+                    },
+                    {
+                      "key": "definition-version",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "destinationcommitReceipt"
+                        ],
+                        "id": "definitionVersion"
+                      }
+                    },
+                    {
+                      "key": "args-digest",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "destinationcommitReceipt"
+                        ],
+                        "id": "argsDigest"
+                      }
+                    },
+                    {
+                      "key": "participant",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "destinationcommitReceipt"
+                        ],
+                        "id": "participant"
+                      }
+                    },
+                    {
+                      "key": "resource",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "destinationcommitReceipt"
+                        ],
+                        "id": "resource"
+                      }
+                    },
+                    {
+                      "key": "step",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "destinationcommitReceipt"
+                        ],
+                        "id": "step"
+                      }
+                    },
+                    {
+                      "key": "phase",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "destinationcommitReceipt"
+                        ],
+                        "id": "phase"
+                      }
+                    }
+                  ],
+                  "payload": [
+                    {
+                      "output": "txid",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "destinationcommitReceipt"
+                        ],
+                        "id": "payloadTxid"
+                      }
+                    }
+                  ],
+                  "codec": {
+                    "contract": {
+                      "id": "reserve-destination-commit",
+                      "version": "receipt-v1"
+                    },
+                    "runtime": {
+                      "id": "reserve-destination-commit",
+                      "version": 1
+                    }
+                  },
+                  "payloadCompatibility": "exact"
+                }
+              },
+              {
+                "phase": "compensate",
+                "command": {
+                  "context": "inventory",
+                  "kind": "command",
+                  "owner": [
+                    "Warehouse"
+                  ],
+                  "id": "ReleaseSkuReservation"
+                },
+                "parameters": [
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "Warehouse",
+                        "ReleaseSkuReservation"
+                      ],
+                      "id": "txid"
+                    },
+                    "input": {
+                      "kind": "transaction-id"
+                    }
+                  },
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "Warehouse",
+                        "ReleaseSkuReservation"
+                      ],
+                      "id": "warehouse"
+                    },
+                    "input": {
+                      "kind": "args",
+                      "slot": "destination"
+                    }
+                  },
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "Warehouse",
+                        "ReleaseSkuReservation"
+                      ],
+                      "id": "sku"
+                    },
+                    "input": {
+                      "kind": "args",
+                      "slot": "sku"
+                    }
+                  },
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "Warehouse",
+                        "ReleaseSkuReservation"
+                      ],
+                      "id": "reservation"
+                    },
+                    "input": {
+                      "kind": "receipt-field",
+                      "phase": "prepare",
+                      "slot": "reservation",
+                      "stepId": "reserve-destination"
+                    }
+                  }
+                ],
+                "inputType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "destinationcompensateInput"
+                  }
+                },
+                "executePort": {
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "port",
+                    "owner": [],
+                    "id": "destinationcompensateExecute"
+                  },
+                  "version": "port-v1"
+                },
+                "confirmation": {
+                  "event": {
+                    "context": "inventory",
+                    "kind": "event",
+                    "owner": [
+                      "Warehouse"
+                    ],
+                    "id": "SkuReservationReleased"
+                  },
+                  "outputs": [
+                    {
+                      "slot": {
+                        "context": "inventory",
+                        "kind": "event-slot",
+                        "owner": [
+                          "Warehouse",
+                          "SkuReservationReleased"
+                        ],
+                        "id": "txid"
+                      },
+                      "output": "txid"
+                    }
+                  ]
+                },
+                "query": {
+                  "port": {
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "port",
+                      "owner": [],
+                      "id": "destinationcompensateQueryPort"
+                    },
+                    "version": "port-v1"
+                  },
+                  "inputType": {
+                    "form": "nominal",
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "type",
+                      "owner": [],
+                      "id": "destinationcompensateQuery"
+                    }
+                  },
+                  "mode": "read-only",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ]
+                },
+                "evidence": {
+                  "kind": "typed-record",
+                  "receiptType": {
+                    "form": "nominal",
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "type",
+                      "owner": [],
+                      "id": "destinationcompensateReceipt"
+                    }
+                  },
+                  "identity": [
+                    {
+                      "key": "txid",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "destinationcompensateReceipt"
+                        ],
+                        "id": "transaction"
+                      }
+                    },
+                    {
+                      "key": "definition-version",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "destinationcompensateReceipt"
+                        ],
+                        "id": "definitionVersion"
+                      }
+                    },
+                    {
+                      "key": "args-digest",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "destinationcompensateReceipt"
+                        ],
+                        "id": "argsDigest"
+                      }
+                    },
+                    {
+                      "key": "participant",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "destinationcompensateReceipt"
+                        ],
+                        "id": "participant"
+                      }
+                    },
+                    {
+                      "key": "resource",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "destinationcompensateReceipt"
+                        ],
+                        "id": "resource"
+                      }
+                    },
+                    {
+                      "key": "step",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "destinationcompensateReceipt"
+                        ],
+                        "id": "step"
+                      }
+                    },
+                    {
+                      "key": "phase",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "destinationcompensateReceipt"
+                        ],
+                        "id": "phase"
+                      }
+                    }
+                  ],
+                  "payload": [
+                    {
+                      "output": "txid",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "destinationcompensateReceipt"
+                        ],
+                        "id": "payloadTxid"
+                      }
+                    }
+                  ],
+                  "codec": {
+                    "contract": {
+                      "id": "reserve-destination-compensate",
+                      "version": "receipt-v1"
+                    },
+                    "runtime": {
+                      "id": "reserve-destination-compensate",
+                      "version": 1
+                    }
+                  },
+                  "payloadCompatibility": "exact"
+                }
+              }
+            ]
+          },
+          {
+            "stepId": "allocate-order",
+            "participantId": "allocation",
+            "aggregate": {
+              "context": "inventory",
+              "kind": "aggregate",
+              "owner": [],
+              "id": "AllocationOrder"
+            },
+            "resourceInput": {
+              "context": "inventory",
+              "kind": "event-slot",
+              "owner": [
+                "Warehouse",
+                "SkuReservationRequested"
+              ],
+              "id": "allocation"
+            },
+            "phases": [
+              {
+                "phase": "prepare",
+                "command": {
+                  "context": "inventory",
+                  "kind": "command",
+                  "owner": [
+                    "AllocationOrder"
+                  ],
+                  "id": "PrepareAllocation"
+                },
+                "parameters": [
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "AllocationOrder",
+                        "PrepareAllocation"
+                      ],
+                      "id": "txid"
+                    },
+                    "input": {
+                      "kind": "transaction-id"
+                    }
+                  },
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "AllocationOrder",
+                        "PrepareAllocation"
+                      ],
+                      "id": "allocation"
+                    },
+                    "input": {
+                      "kind": "args",
+                      "slot": "allocation"
+                    }
+                  }
+                ],
+                "inputType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "allocationprepareInput"
+                  }
+                },
+                "executePort": {
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "port",
+                    "owner": [],
+                    "id": "allocationprepareExecute"
+                  },
+                  "version": "port-v1"
+                },
+                "confirmation": {
+                  "event": {
+                    "context": "inventory",
+                    "kind": "event",
+                    "owner": [
+                      "AllocationOrder"
+                    ],
+                    "id": "AllocationPrepared"
+                  },
+                  "outputs": [
+                    {
+                      "slot": {
+                        "context": "inventory",
+                        "kind": "event-slot",
+                        "owner": [
+                          "AllocationOrder",
+                          "AllocationPrepared"
+                        ],
+                        "id": "txid"
+                      },
+                      "output": "txid"
+                    }
+                  ]
+                },
+                "query": {
+                  "port": {
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "port",
+                      "owner": [],
+                      "id": "allocationprepareQueryPort"
+                    },
+                    "version": "port-v1"
+                  },
+                  "inputType": {
+                    "form": "nominal",
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "type",
+                      "owner": [],
+                      "id": "allocationprepareQuery"
+                    }
+                  },
+                  "mode": "read-only",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ]
+                },
+                "evidence": {
+                  "kind": "typed-record",
+                  "receiptType": {
+                    "form": "nominal",
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "type",
+                      "owner": [],
+                      "id": "allocationprepareReceipt"
+                    }
+                  },
+                  "identity": [
+                    {
+                      "key": "txid",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "allocationprepareReceipt"
+                        ],
+                        "id": "transaction"
+                      }
+                    },
+                    {
+                      "key": "definition-version",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "allocationprepareReceipt"
+                        ],
+                        "id": "definitionVersion"
+                      }
+                    },
+                    {
+                      "key": "args-digest",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "allocationprepareReceipt"
+                        ],
+                        "id": "argsDigest"
+                      }
+                    },
+                    {
+                      "key": "participant",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "allocationprepareReceipt"
+                        ],
+                        "id": "participant"
+                      }
+                    },
+                    {
+                      "key": "resource",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "allocationprepareReceipt"
+                        ],
+                        "id": "resource"
+                      }
+                    },
+                    {
+                      "key": "step",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "allocationprepareReceipt"
+                        ],
+                        "id": "step"
+                      }
+                    },
+                    {
+                      "key": "phase",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "allocationprepareReceipt"
+                        ],
+                        "id": "phase"
+                      }
+                    }
+                  ],
+                  "payload": [
+                    {
+                      "output": "txid",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "allocationprepareReceipt"
+                        ],
+                        "id": "payloadTxid"
+                      }
+                    }
+                  ],
+                  "codec": {
+                    "contract": {
+                      "id": "allocate-order-prepare",
+                      "version": "receipt-v1"
+                    },
+                    "runtime": {
+                      "id": "allocate-order-prepare",
+                      "version": 1
+                    }
+                  },
+                  "payloadCompatibility": "exact"
+                }
+              },
+              {
+                "phase": "commit",
+                "command": {
+                  "context": "inventory",
+                  "kind": "command",
+                  "owner": [
+                    "AllocationOrder"
+                  ],
+                  "id": "CommitAllocation"
+                },
+                "parameters": [
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "AllocationOrder",
+                        "CommitAllocation"
+                      ],
+                      "id": "txid"
+                    },
+                    "input": {
+                      "kind": "transaction-id"
+                    }
+                  },
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "AllocationOrder",
+                        "CommitAllocation"
+                      ],
+                      "id": "allocation"
+                    },
+                    "input": {
+                      "kind": "args",
+                      "slot": "allocation"
+                    }
+                  }
+                ],
+                "inputType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "allocationcommitInput"
+                  }
+                },
+                "executePort": {
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "port",
+                    "owner": [],
+                    "id": "allocationcommitExecute"
+                  },
+                  "version": "port-v1"
+                },
+                "confirmation": {
+                  "event": {
+                    "context": "inventory",
+                    "kind": "event",
+                    "owner": [
+                      "AllocationOrder"
+                    ],
+                    "id": "AllocationCommitted"
+                  },
+                  "outputs": [
+                    {
+                      "slot": {
+                        "context": "inventory",
+                        "kind": "event-slot",
+                        "owner": [
+                          "AllocationOrder",
+                          "AllocationCommitted"
+                        ],
+                        "id": "txid"
+                      },
+                      "output": "txid"
+                    }
+                  ]
+                },
+                "query": {
+                  "port": {
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "port",
+                      "owner": [],
+                      "id": "allocationcommitQueryPort"
+                    },
+                    "version": "port-v1"
+                  },
+                  "inputType": {
+                    "form": "nominal",
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "type",
+                      "owner": [],
+                      "id": "allocationcommitQuery"
+                    }
+                  },
+                  "mode": "read-only",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ]
+                },
+                "evidence": {
+                  "kind": "typed-record",
+                  "receiptType": {
+                    "form": "nominal",
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "type",
+                      "owner": [],
+                      "id": "allocationcommitReceipt"
+                    }
+                  },
+                  "identity": [
+                    {
+                      "key": "txid",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "allocationcommitReceipt"
+                        ],
+                        "id": "transaction"
+                      }
+                    },
+                    {
+                      "key": "definition-version",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "allocationcommitReceipt"
+                        ],
+                        "id": "definitionVersion"
+                      }
+                    },
+                    {
+                      "key": "args-digest",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "allocationcommitReceipt"
+                        ],
+                        "id": "argsDigest"
+                      }
+                    },
+                    {
+                      "key": "participant",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "allocationcommitReceipt"
+                        ],
+                        "id": "participant"
+                      }
+                    },
+                    {
+                      "key": "resource",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "allocationcommitReceipt"
+                        ],
+                        "id": "resource"
+                      }
+                    },
+                    {
+                      "key": "step",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "allocationcommitReceipt"
+                        ],
+                        "id": "step"
+                      }
+                    },
+                    {
+                      "key": "phase",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "allocationcommitReceipt"
+                        ],
+                        "id": "phase"
+                      }
+                    }
+                  ],
+                  "payload": [
+                    {
+                      "output": "txid",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "allocationcommitReceipt"
+                        ],
+                        "id": "payloadTxid"
+                      }
+                    }
+                  ],
+                  "codec": {
+                    "contract": {
+                      "id": "allocate-order-commit",
+                      "version": "receipt-v1"
+                    },
+                    "runtime": {
+                      "id": "allocate-order-commit",
+                      "version": 1
+                    }
+                  },
+                  "payloadCompatibility": "exact"
+                }
+              },
+              {
+                "phase": "compensate",
+                "command": {
+                  "context": "inventory",
+                  "kind": "command",
+                  "owner": [
+                    "AllocationOrder"
+                  ],
+                  "id": "CancelAllocation"
+                },
+                "parameters": [
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "AllocationOrder",
+                        "CancelAllocation"
+                      ],
+                      "id": "txid"
+                    },
+                    "input": {
+                      "kind": "transaction-id"
+                    }
+                  },
+                  {
+                    "parameter": {
+                      "context": "inventory",
+                      "kind": "parameter",
+                      "owner": [
+                        "AllocationOrder",
+                        "CancelAllocation"
+                      ],
+                      "id": "allocation"
+                    },
+                    "input": {
+                      "kind": "args",
+                      "slot": "allocation"
+                    }
+                  }
+                ],
+                "inputType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "allocationcompensateInput"
+                  }
+                },
+                "executePort": {
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "port",
+                    "owner": [],
+                    "id": "allocationcompensateExecute"
+                  },
+                  "version": "port-v1"
+                },
+                "confirmation": {
+                  "event": {
+                    "context": "inventory",
+                    "kind": "event",
+                    "owner": [
+                      "AllocationOrder"
+                    ],
+                    "id": "AllocationCancelled"
+                  },
+                  "outputs": [
+                    {
+                      "slot": {
+                        "context": "inventory",
+                        "kind": "event-slot",
+                        "owner": [
+                          "AllocationOrder",
+                          "AllocationCancelled"
+                        ],
+                        "id": "txid"
+                      },
+                      "output": "txid"
+                    }
+                  ]
+                },
+                "query": {
+                  "port": {
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "port",
+                      "owner": [],
+                      "id": "allocationcompensateQueryPort"
+                    },
+                    "version": "port-v1"
+                  },
+                  "inputType": {
+                    "form": "nominal",
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "type",
+                      "owner": [],
+                      "id": "allocationcompensateQuery"
+                    }
+                  },
+                  "mode": "read-only",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ]
+                },
+                "evidence": {
+                  "kind": "typed-record",
+                  "receiptType": {
+                    "form": "nominal",
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "type",
+                      "owner": [],
+                      "id": "allocationcompensateReceipt"
+                    }
+                  },
+                  "identity": [
+                    {
+                      "key": "txid",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "allocationcompensateReceipt"
+                        ],
+                        "id": "transaction"
+                      }
+                    },
+                    {
+                      "key": "definition-version",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "allocationcompensateReceipt"
+                        ],
+                        "id": "definitionVersion"
+                      }
+                    },
+                    {
+                      "key": "args-digest",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "allocationcompensateReceipt"
+                        ],
+                        "id": "argsDigest"
+                      }
+                    },
+                    {
+                      "key": "participant",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "allocationcompensateReceipt"
+                        ],
+                        "id": "participant"
+                      }
+                    },
+                    {
+                      "key": "resource",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "allocationcompensateReceipt"
+                        ],
+                        "id": "resource"
+                      }
+                    },
+                    {
+                      "key": "step",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "allocationcompensateReceipt"
+                        ],
+                        "id": "step"
+                      }
+                    },
+                    {
+                      "key": "phase",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "allocationcompensateReceipt"
+                        ],
+                        "id": "phase"
+                      }
+                    }
+                  ],
+                  "payload": [
+                    {
+                      "output": "txid",
+                      "member": {
+                        "context": "inventory",
+                        "kind": "member",
+                        "owner": [
+                          "allocationcompensateReceipt"
+                        ],
+                        "id": "payloadTxid"
+                      }
+                    }
+                  ],
+                  "codec": {
+                    "contract": {
+                      "id": "allocate-order-compensate",
+                      "version": "receipt-v1"
+                    },
+                    "runtime": {
+                      "id": "allocate-order-compensate",
+                      "version": 1
+                    }
+                  },
+                  "payloadCompatibility": "exact"
+                }
+              }
+            ]
+          }
+        ],
+        "results": [
+          {
+            "kind": "succeeded",
+            "event": {
+              "context": "inventory",
+              "kind": "event",
+              "owner": [
+                "AllocationOrder"
+              ],
+              "id": "ReservationSucceeded"
+            },
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "CompletionRecord0"
+              }
+            },
+            "inputs": [
+              {
+                "slot": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "AllocationOrder",
+                    "ReservationSucceeded"
+                  ],
+                  "id": "txid"
+                },
+                "input": {
+                  "kind": "transaction-id"
+                }
+              }
+            ],
+            "destination": {
+              "aggregate": {
+                "context": "inventory",
+                "kind": "aggregate",
+                "owner": [],
+                "id": "AllocationOrder"
+              },
+              "resourceInput": {
+                "context": "inventory",
+                "kind": "event-slot",
+                "owner": [
+                  "Warehouse",
+                  "SkuReservationRequested"
+                ],
+                "id": "allocation"
+              }
+            },
+            "authorityPort": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultAuthority0"
+              },
+              "version": "port-v1"
+            },
+            "deliveryPort": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultDelivery0"
+              },
+              "version": "port-v1"
+            },
+            "associationVersion": "association-v1"
+          },
+          {
+            "kind": "rejected-before-effects",
+            "event": {
+              "context": "inventory",
+              "kind": "event",
+              "owner": [
+                "AllocationOrder"
+              ],
+              "id": "ReservationRejected"
+            },
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "CompletionRecord1"
+              }
+            },
+            "inputs": [
+              {
+                "slot": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "AllocationOrder",
+                    "ReservationRejected"
+                  ],
+                  "id": "txid"
+                },
+                "input": {
+                  "kind": "transaction-id"
+                }
+              }
+            ],
+            "destination": {
+              "aggregate": {
+                "context": "inventory",
+                "kind": "aggregate",
+                "owner": [],
+                "id": "AllocationOrder"
+              },
+              "resourceInput": {
+                "context": "inventory",
+                "kind": "event-slot",
+                "owner": [
+                  "Warehouse",
+                  "SkuReservationRequested"
+                ],
+                "id": "allocation"
+              }
+            },
+            "authorityPort": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultAuthority1"
+              },
+              "version": "port-v1"
+            },
+            "deliveryPort": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultDelivery1"
+              },
+              "version": "port-v1"
+            },
+            "associationVersion": "association-v1"
+          },
+          {
+            "kind": "compensated",
+            "event": {
+              "context": "inventory",
+              "kind": "event",
+              "owner": [
+                "AllocationOrder"
+              ],
+              "id": "ReservationCompensated"
+            },
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "CompletionRecord2"
+              }
+            },
+            "inputs": [
+              {
+                "slot": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "AllocationOrder",
+                    "ReservationCompensated"
+                  ],
+                  "id": "txid"
+                },
+                "input": {
+                  "kind": "transaction-id"
+                }
+              }
+            ],
+            "destination": {
+              "aggregate": {
+                "context": "inventory",
+                "kind": "aggregate",
+                "owner": [],
+                "id": "AllocationOrder"
+              },
+              "resourceInput": {
+                "context": "inventory",
+                "kind": "event-slot",
+                "owner": [
+                  "Warehouse",
+                  "SkuReservationRequested"
+                ],
+                "id": "allocation"
+              }
+            },
+            "authorityPort": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultAuthority2"
+              },
+              "version": "port-v1"
+            },
+            "deliveryPort": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultDelivery2"
+              },
+              "version": "port-v1"
+            },
+            "associationVersion": "association-v1"
+          },
+          {
+            "kind": "recovery-required",
+            "event": {
+              "context": "inventory",
+              "kind": "event",
+              "owner": [
+                "AllocationOrder"
+              ],
+              "id": "ReservationRecoveryRequired"
+            },
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "CompletionRecord3"
+              }
+            },
+            "inputs": [
+              {
+                "slot": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "AllocationOrder",
+                    "ReservationRecoveryRequired"
+                  ],
+                  "id": "txid"
+                },
+                "input": {
+                  "kind": "transaction-id"
+                }
+              }
+            ],
+            "destination": {
+              "aggregate": {
+                "context": "inventory",
+                "kind": "aggregate",
+                "owner": [],
+                "id": "AllocationOrder"
+              },
+              "resourceInput": {
+                "context": "inventory",
+                "kind": "event-slot",
+                "owner": [
+                  "Warehouse",
+                  "SkuReservationRequested"
+                ],
+                "id": "allocation"
+              }
+            },
+            "authorityPort": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultAuthority3"
+              },
+              "version": "port-v1"
+            },
+            "deliveryPort": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultDelivery3"
+              },
+              "version": "port-v1"
+            },
+            "associationVersion": "association-v1"
+          },
+          {
+            "kind": "outcome-unknown",
+            "event": {
+              "context": "inventory",
+              "kind": "event",
+              "owner": [
+                "AllocationOrder"
+              ],
+              "id": "ReservationOutcomeUnknown"
+            },
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "CompletionRecord4"
+              }
+            },
+            "inputs": [
+              {
+                "slot": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "AllocationOrder",
+                    "ReservationOutcomeUnknown"
+                  ],
+                  "id": "txid"
+                },
+                "input": {
+                  "kind": "transaction-id"
+                }
+              }
+            ],
+            "destination": {
+              "aggregate": {
+                "context": "inventory",
+                "kind": "aggregate",
+                "owner": [],
+                "id": "AllocationOrder"
+              },
+              "resourceInput": {
+                "context": "inventory",
+                "kind": "event-slot",
+                "owner": [
+                  "Warehouse",
+                  "SkuReservationRequested"
+                ],
+                "id": "allocation"
+              }
+            },
+            "authorityPort": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultAuthority4"
+              },
+              "version": "port-v1"
+            },
+            "deliveryPort": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultDelivery4"
+              },
+              "version": "port-v1"
+            },
+            "associationVersion": "association-v1"
+          }
+        ],
+        "technicalPorts": [
+          {
+            "role": "entry",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ReservationEntry"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.ReservationEntry",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "association",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ReservationAssociation"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.ReservationAssociation",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "phase-execute",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "warehouseprepareExecute"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.warehouseprepareExecute",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "phase-query",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "warehouseprepareQueryPort"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.warehouseprepareQueryPort",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "phase-execute",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "warehousecommitExecute"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.warehousecommitExecute",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "phase-query",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "warehousecommitQueryPort"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.warehousecommitQueryPort",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "phase-execute",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "warehousecompensateExecute"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.warehousecompensateExecute",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "phase-query",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "warehousecompensateQueryPort"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.warehousecompensateQueryPort",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "phase-execute",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "destinationprepareExecute"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.destinationprepareExecute",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "phase-query",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "destinationprepareQueryPort"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.destinationprepareQueryPort",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "phase-execute",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "destinationcommitExecute"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.destinationcommitExecute",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "phase-query",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "destinationcommitQueryPort"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.destinationcommitQueryPort",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "phase-execute",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "destinationcompensateExecute"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.destinationcompensateExecute",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "phase-query",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "destinationcompensateQueryPort"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.destinationcompensateQueryPort",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "phase-execute",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "allocationprepareExecute"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.allocationprepareExecute",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "phase-query",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "allocationprepareQueryPort"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.allocationprepareQueryPort",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "phase-execute",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "allocationcommitExecute"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.allocationcommitExecute",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "phase-query",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "allocationcommitQueryPort"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.allocationcommitQueryPort",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "phase-execute",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "allocationcompensateExecute"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.allocationcompensateExecute",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "phase-query",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "allocationcompensateQueryPort"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.allocationcompensateQueryPort",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "authority",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultAuthority0"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.ResultAuthority0",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "result-delivery",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultDelivery0"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.ResultDelivery0",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "authority",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultAuthority1"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.ResultAuthority1",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "result-delivery",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultDelivery1"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.ResultDelivery1",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "authority",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultAuthority2"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.ResultAuthority2",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "result-delivery",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultDelivery2"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.ResultDelivery2",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "authority",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultAuthority3"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.ResultAuthority3",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "result-delivery",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultDelivery3"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.ResultDelivery3",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "authority",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultAuthority4"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.ResultAuthority4",
+              "version": "impl-v1"
+            }
+          },
+          {
+            "role": "result-delivery",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "ResultDelivery4"
+              },
+              "version": "port-v1"
+            },
+            "implementation": {
+              "id": "inventory.ResultDelivery4",
+              "version": "impl-v1"
+            }
+          }
+        ],
+        "source": {
+          "document": "domain",
+          "pointer": "/sagaHosts/0"
+        }
+      }
+    ]
+  }
+}

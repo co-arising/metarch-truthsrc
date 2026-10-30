@@ -12,7 +12,7 @@ const manifest=JSON.parse(readFileSync(new URL('../generators/scala-cqrs-applica
 test('finite execution consumes the complete typed contract and emits actual Monarch plan proto and journal oracle',()=>{
  const compilation=compileProductSet(request());assert.deepEqual(compilation.diagnostics,[]);
  const a=generate({compilation,manifest,options:options()}),b=generate({compilation,manifest,options:options()});
- assert.deepEqual(a.diagnostics,[]);assert.deepEqual(a,b);assert.equal(a.plan.entries.length,77);
+ assert.deepEqual(a.diagnostics,[]);assert.deepEqual(a,b);assert.equal(a.plan.entries.length,79);
  const plan=a.plan.entries.find(e=>e.kind==='execution-plan').content;
  assert.ok(plan.includes('PersistentMonarch.behavior[String, State]'));
  assert.ok(plan.includes('state.inspect_allocation.getOrElse'));

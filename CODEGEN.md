@@ -60,6 +60,29 @@ enforced by the manifest, not convention:
 Validation is fail-fast: missing required field, unknown `products` entry, or
 duplicate `name` → error before any file is written.
 
+## Design-review source product (P24-6, 2026-10-30)
+
+The formal `generate-products` entry additionally ships the fixed
+`generators/product-design-review` producer, targeting `product-design-review@1`.
+This is distinct from legacy generic generator manifests and from the Scala domain
+or full application profiles. Its manifest requires reference-layout@1 and the
+explicit product-design@1 contract; it does not inspect aggregate order to invent
+screens or event names to invent feedback.
+
+Its restricted typed inputs render a complete model JSON, five explicit-plane
+Mermaid files and a source index, seven entries total. Input origins, provisional/
+terminal evidence, resource keys, watermark declarations, authored status/provenance
+and source closure remain visible. Options are exactly `{}`. Both producer calls
+are independently detached and fully validated before determinism comparison.
+`--plan` writes no target; actual application uses the same existing preflight,
+MANUAL/KEEP, ledger and written-only file-anchor functions. The corresponding BC
+model/builder/template is independent, not a call into the JS renderer.
+
+All outputs state `design-review-only` and `runnable=false`. A source-index link is
+file evidence only, not an observed CQRS projection, UI implementation, deployable
+service, business-policy approval or bank qualification. Explicit formal design
+atoms do not migrate old design notes or promote proposal into accepted.
+
 ## Money Prepare evidence (P19, 2026-10-26)
 
 For the static serial money profile, the two Prepare ports require a unique

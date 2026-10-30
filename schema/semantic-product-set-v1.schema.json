@@ -583,6 +583,44 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "product-design"
+              },
+              "version": {
+                "const": "1"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:product-design:v1#/$defs/designs"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "effect-host-contract"
+              },
+              "version": {
+                "const": "1"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:effect-host-contract:v1#/$defs/effects"
+              }
+            }
+          }
         }
       ]
     }

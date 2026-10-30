@@ -1,0 +1,566 @@
+{
+  "schemaVersion": "truthsrc.reference-binding/v1",
+  "layout": {
+    "contexts": [
+      "appointment"
+    ],
+    "declarations": [
+      {
+        "ref": {
+          "context": "appointment",
+          "kind": "type",
+          "owner": [],
+          "id": "AppointmentId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/0"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "appointment",
+          "kind": "type",
+          "owner": [],
+          "id": "CustomerId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/1"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "appointment",
+          "kind": "type",
+          "owner": [],
+          "id": "RoomId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/2"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "appointment",
+          "kind": "aggregate",
+          "owner": [],
+          "id": "Appointment"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "appointment",
+          "kind": "command",
+          "owner": [
+            "Appointment"
+          ],
+          "id": "BookAppointment"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0"
+        },
+        "dependencies": [
+          {
+            "context": "appointment",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Appointment"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "appointment",
+          "kind": "parameter",
+          "owner": [
+            "Appointment",
+            "BookAppointment"
+          ],
+          "id": "appointmentId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "appointment",
+            "kind": "type",
+            "owner": [],
+            "id": "AppointmentId"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0/parameters/0"
+        },
+        "dependencies": [
+          {
+            "context": "appointment",
+            "kind": "command",
+            "owner": [
+              "Appointment"
+            ],
+            "id": "BookAppointment"
+          },
+          {
+            "context": "appointment",
+            "kind": "type",
+            "owner": [],
+            "id": "AppointmentId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "appointment",
+          "kind": "parameter",
+          "owner": [
+            "Appointment",
+            "BookAppointment"
+          ],
+          "id": "customer"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "appointment",
+            "kind": "type",
+            "owner": [],
+            "id": "CustomerId"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0/parameters/1"
+        },
+        "dependencies": [
+          {
+            "context": "appointment",
+            "kind": "command",
+            "owner": [
+              "Appointment"
+            ],
+            "id": "BookAppointment"
+          },
+          {
+            "context": "appointment",
+            "kind": "type",
+            "owner": [],
+            "id": "CustomerId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "appointment",
+          "kind": "parameter",
+          "owner": [
+            "Appointment",
+            "BookAppointment"
+          ],
+          "id": "room"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "appointment",
+            "kind": "type",
+            "owner": [],
+            "id": "RoomId"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0/parameters/2"
+        },
+        "dependencies": [
+          {
+            "context": "appointment",
+            "kind": "command",
+            "owner": [
+              "Appointment"
+            ],
+            "id": "BookAppointment"
+          },
+          {
+            "context": "appointment",
+            "kind": "type",
+            "owner": [],
+            "id": "RoomId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "appointment",
+          "kind": "parameter",
+          "owner": [
+            "Appointment",
+            "BookAppointment"
+          ],
+          "id": "startSlot"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0/parameters/3"
+        },
+        "dependencies": [
+          {
+            "context": "appointment",
+            "kind": "command",
+            "owner": [
+              "Appointment"
+            ],
+            "id": "BookAppointment"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "appointment",
+          "kind": "parameter",
+          "owner": [
+            "Appointment",
+            "BookAppointment"
+          ],
+          "id": "durationMinutes"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0/parameters/4"
+        },
+        "dependencies": [
+          {
+            "context": "appointment",
+            "kind": "command",
+            "owner": [
+              "Appointment"
+            ],
+            "id": "BookAppointment"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "appointment",
+          "kind": "command",
+          "owner": [
+            "Appointment"
+          ],
+          "id": "ConfirmAppointment"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/1"
+        },
+        "dependencies": [
+          {
+            "context": "appointment",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Appointment"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "appointment",
+          "kind": "parameter",
+          "owner": [
+            "Appointment",
+            "ConfirmAppointment"
+          ],
+          "id": "appointmentId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "appointment",
+            "kind": "type",
+            "owner": [],
+            "id": "AppointmentId"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/1/parameters/0"
+        },
+        "dependencies": [
+          {
+            "context": "appointment",
+            "kind": "command",
+            "owner": [
+              "Appointment"
+            ],
+            "id": "ConfirmAppointment"
+          },
+          {
+            "context": "appointment",
+            "kind": "type",
+            "owner": [],
+            "id": "AppointmentId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "appointment",
+          "kind": "parameter",
+          "owner": [
+            "Appointment",
+            "ConfirmAppointment"
+          ],
+          "id": "revision"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/1/parameters/1"
+        },
+        "dependencies": [
+          {
+            "context": "appointment",
+            "kind": "command",
+            "owner": [
+              "Appointment"
+            ],
+            "id": "ConfirmAppointment"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "appointment",
+          "kind": "event",
+          "owner": [
+            "Appointment"
+          ],
+          "id": "AppointmentRequested"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/0"
+        },
+        "dependencies": [
+          {
+            "context": "appointment",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Appointment"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "appointment",
+          "kind": "event-slot",
+          "owner": [
+            "Appointment",
+            "AppointmentRequested"
+          ],
+          "id": "appointmentId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "appointment",
+            "kind": "type",
+            "owner": [],
+            "id": "AppointmentId"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/0/payloads/0"
+        },
+        "dependencies": [
+          {
+            "context": "appointment",
+            "kind": "event",
+            "owner": [
+              "Appointment"
+            ],
+            "id": "AppointmentRequested"
+          },
+          {
+            "context": "appointment",
+            "kind": "type",
+            "owner": [],
+            "id": "AppointmentId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "appointment",
+          "kind": "event-slot",
+          "owner": [
+            "Appointment",
+            "AppointmentRequested"
+          ],
+          "id": "revision"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/0/payloads/1"
+        },
+        "dependencies": [
+          {
+            "context": "appointment",
+            "kind": "event",
+            "owner": [
+              "Appointment"
+            ],
+            "id": "AppointmentRequested"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "appointment",
+          "kind": "event",
+          "owner": [
+            "Appointment"
+          ],
+          "id": "AppointmentConfirmed"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/1"
+        },
+        "dependencies": [
+          {
+            "context": "appointment",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Appointment"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "appointment",
+          "kind": "event-slot",
+          "owner": [
+            "Appointment",
+            "AppointmentConfirmed"
+          ],
+          "id": "appointmentId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "appointment",
+            "kind": "type",
+            "owner": [],
+            "id": "AppointmentId"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/1/payloads/0"
+        },
+        "dependencies": [
+          {
+            "context": "appointment",
+            "kind": "event",
+            "owner": [
+              "Appointment"
+            ],
+            "id": "AppointmentConfirmed"
+          },
+          {
+            "context": "appointment",
+            "kind": "type",
+            "owner": [],
+            "id": "AppointmentId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "appointment",
+          "kind": "event-slot",
+          "owner": [
+            "Appointment",
+            "AppointmentConfirmed"
+          ],
+          "id": "revision"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/1/payloads/1"
+        },
+        "dependencies": [
+          {
+            "context": "appointment",
+            "kind": "event",
+            "owner": [
+              "Appointment"
+            ],
+            "id": "AppointmentConfirmed"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "appointment",
+          "kind": "artifact",
+          "owner": [],
+          "id": "appointment-booking-review"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/productDesigns/0"
+        },
+        "dependencies": []
+      }
+    ]
+  }
+}

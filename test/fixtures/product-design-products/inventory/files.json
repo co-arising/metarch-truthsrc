@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "truthsrc.product-input-files/v1",
+  "documents": [
+    {
+      "id": "domain",
+      "schemaVersion": "truthsrc/v1",
+      "file": "domain.json"
+    },
+    {
+      "id": "references",
+      "schemaVersion": "truthsrc.reference-binding/v1",
+      "file": "references.json"
+    },
+    {
+      "id": "designs",
+      "schemaVersion": "truthsrc.product-design-binding/v1",
+      "file": "designs.json"
+    }
+  ],
+  "assemblies": [],
+  "requirements": [
+    {
+      "id": "reference-layout",
+      "version": "1",
+      "payloadSchemaVersion": "truthsrc.reference-layout/v1",
+      "capabilities": [
+        {
+          "id": "qualified-reference-layout",
+          "version": "1"
+        }
+      ],
+      "inputRoles": {
+        "canonical": "domain",
+        "referenceBinding": "references"
+      },
+      "requires": []
+    },
+    {
+      "id": "product-design",
+      "version": "1",
+      "payloadSchemaVersion": "truthsrc.product-design/v1",
+      "capabilities": [
+        {
+          "id": "five-plane-product-design",
+          "version": "1"
+        }
+      ],
+      "inputRoles": {
+        "canonical": "domain",
+        "designBinding": "designs"
+      },
+      "requires": [
+        {
+          "id": "reference-layout",
+          "version": "1"
+        }
+      ]
+    }
+  ],
+  "options": {}
+}

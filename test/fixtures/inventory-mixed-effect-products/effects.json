@@ -1,0 +1,190 @@
+{
+  "schemaVersion": "truthsrc.effect-host-binding/v1",
+  "effects": {
+    "hosts": [
+      {
+        "id": "allocation-workflow-audit",
+        "version": "effect-v1",
+        "pipeline": {
+          "ref": {
+            "context": "inventory",
+            "kind": "pipeline",
+            "owner": [],
+            "id": "allocation-workflow"
+          },
+          "version": "allocate-v1"
+        },
+        "stepId": "audit",
+        "port": "RecordAllocationAssociation",
+        "requestType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "WorkflowEffectRequest"
+          }
+        },
+        "resultType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "AllocationEffectResult"
+          }
+        },
+        "operationType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "WorkflowEffectOperation"
+          }
+        },
+        "observationType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "WorkflowEffectObservation"
+          }
+        },
+        "reconcileType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "WorkflowEffectReconcile"
+          }
+        },
+        "identity": {
+          "input": "requestId",
+          "slot": "requestId",
+          "valueType": {
+            "form": "nominal",
+            "ref": {
+              "context": "inventory",
+              "kind": "type",
+              "owner": [],
+              "id": "ReservationRequestId"
+            }
+          },
+          "encoding": "length-prefixed-utf8"
+        },
+        "outcomes": [
+          {
+            "status": "confirmed",
+            "code": "Recorded",
+            "kind": "success"
+          },
+          {
+            "status": "rejected",
+            "code": "Refused",
+            "kind": "business-rejection"
+          },
+          {
+            "status": "failed",
+            "code": "Unavailable",
+            "kind": "infrastructure-failure"
+          },
+          {
+            "status": "unknown",
+            "code": "Unknown",
+            "kind": "unknown-effect"
+          }
+        ],
+        "technicalPorts": [
+          {
+            "role": "execute",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "WorkflowEffectExecute"
+              },
+              "version": "effect-port-v1"
+            },
+            "implementation": {
+              "id": "WorkflowEffectExecuteImpl",
+              "version": "effect-impl-v1"
+            },
+            "owner": {
+              "ref": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "InventoryTechnical"
+              },
+              "version": "artifact-v1"
+            }
+          },
+          {
+            "role": "query",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "WorkflowEffectQuery"
+              },
+              "version": "effect-port-v1"
+            },
+            "implementation": {
+              "id": "WorkflowEffectQueryImpl",
+              "version": "effect-impl-v1"
+            },
+            "owner": {
+              "ref": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "InventoryTechnical"
+              },
+              "version": "artifact-v1"
+            }
+          },
+          {
+            "role": "reconcile",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "WorkflowEffectAuthorize"
+              },
+              "version": "effect-port-v1"
+            },
+            "implementation": {
+              "id": "WorkflowEffectAuthorizeImpl",
+              "version": "effect-impl-v1"
+            },
+            "owner": {
+              "ref": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "InventoryTechnical"
+              },
+              "version": "artifact-v1"
+            }
+          }
+        ],
+        "provenance": [
+          {
+            "document": "domain",
+            "pointer": "/pipelines/0"
+          }
+        ],
+        "source": {
+          "document": "domain",
+          "pointer": "/effectHosts/0"
+        }
+      }
+    ]
+  }
+}

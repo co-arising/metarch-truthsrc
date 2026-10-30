@@ -858,12 +858,204 @@
               "name": "boolean"
             },
             "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ResourcePolicy0"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "OriginalReservation"
+              }
+            },
+            "outputType": {
+              "form": "primitive",
+              "name": "boolean"
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "TaSubmission0"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "OriginalReservation"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TaSubmissionRecord"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "TaQuery0"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "TaSubmissionRecord"
+              }
+            },
+            "outputType": {
+              "form": "optional",
+              "element": {
+                "form": "nominal",
+                "ref": {
+                  "context": "inventory",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "TaReceiptRecord"
+                }
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ExternalEvent0"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "OccurrenceEnvelope"
+              }
+            },
+            "outputType": {
+              "form": "primitive",
+              "name": "boolean"
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "OccurrenceSource0"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "OccurrenceEnvelope"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "OriginalReservation"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "Readside0"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "ReservationQuery"
+              }
+            },
+            "outputType": {
+              "form": "optional",
+              "element": {
+                "form": "nominal",
+                "ref": {
+                  "context": "inventory",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "ReservationView"
+                }
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "Deployment0"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "DeploymentTarget"
+              }
+            },
+            "outputType": {
+              "form": "primitive",
+              "name": "boolean"
+            },
+            "required": true
           }
         ],
         "deployment": {
           "id": "owned-local",
           "version": "deployment-v1",
-          "secretRefs": []
+          "secretRefs": [
+            {
+              "id": "secret-refs/inventory-hmac",
+              "provider": "keystore"
+            }
+          ]
         },
         "implementations": [
           {
@@ -1164,6 +1356,76 @@
               "id": "ResultDelivery4"
             },
             "id": "inventory.ResultDelivery4",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ResourcePolicy0"
+            },
+            "id": "inventory.ResourcePolicy0",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "TaSubmission0"
+            },
+            "id": "inventory.TaSubmission0",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "TaQuery0"
+            },
+            "id": "inventory.TaQuery0",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ExternalEvent0"
+            },
+            "id": "inventory.ExternalEvent0",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "OccurrenceSource0"
+            },
+            "id": "inventory.OccurrenceSource0",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "Readside0"
+            },
+            "id": "inventory.Readside0",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "Deployment0"
+            },
+            "id": "inventory.Deployment0",
             "version": "impl-v1"
           }
         ],

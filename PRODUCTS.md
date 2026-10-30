@@ -1,6 +1,48 @@
 # Versioned product admission — canonical and static Saga contracts
 
-最后更新: 2026-10-29
+最后更新: 2026-10-30
+
+## Explicit five-plane design and deterministic review projection
+
+`product-design@1` (`truthsrc.product-design/v1`, capability
+`five-plane-product-design@1`) consumes canonical + designBinding
+(`truthsrc.product-design-binding/v1`) and requires `reference-layout@1` only.
+It independently reconstructs the whole canonical `productDesigns[]` collection:
+qualified design artifacts, proposal/accepted/historical status, provenance and
+same-version author-decision sources, five-plane nodes, exact design-node endpoints,
+restricted relationships, complete command parameter origins, and typed feedback
+resource/watermark evidence. It never infers pages, toast, business authorization,
+terminal success or deployment from domain structure or a display label.
+
+Nodes are strategy/scope/structure/skeleton/surface; action/feedback contracts are
+explicit and source-complete. Machine action cannot use public intent. Pending or
+unknown feedback cannot claim terminal evidence; terminal requires its exact event,
+resource keys and typed watermark. See [SCHEMA.md](SCHEMA.md#five-plane-product-design-explicit-opt-in-2026-10-30)
+and `schema/product-design-v1.schema.json`. Formal product-design and optional
+product-design-decision atoms carry whole bodies, not historical-note conversions.
+Accepted is an authored design status, not runtime or authorized reviewer certification.
+
+The shipped `generators/product-design-review` target `product-design-review@1`
+uses the existing two-render/full-plan/apply/ledger/actual-file-anchor channel. It
+reads declared typed products, not raw canonical. Options are explicitly `{}`.
+Output is exactly `design/product-designs.json`, five `design/<plane>.mmd` files and
+`design/source-index.json`. Each is **design-review-only / runnable=false**; file
+anchors are not symbol/span, CQRS read-side, replay, UI or deployment evidence.
+
+```sh
+node bin/truthsrc.js generate-products \
+  --request /absolute/path/to/product-design-products/inventory/files.json \
+  --generator /absolute/path/to/metarch-truthsrc/generators/product-design-review \
+  --options-json /absolute/path/to/product-design-products/inventory/options.json \
+  --out /absolute/path/to/new-owned-review --plan
+```
+
+Independent fixtures are `test/fixtures/product-design-products/{inventory,appointment}/files.json`.
+BC consumes the same serialized product contract with explicit
+`codegen.productTargetProfile=product-design-review@1`, `codegen.semanticProductsFile`,
+`codegen.productOptionsFile` containing `{}`, and new absolute `codegen.targetDir`.
+BC typed model/builder/template reconstruct independently; neither chain calls the
+other renderer. No bank source or historical design migration is performed.
 
 ## Finite host contract and application profile
 

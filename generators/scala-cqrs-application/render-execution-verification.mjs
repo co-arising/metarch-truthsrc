@@ -3,7 +3,7 @@ import { entry, key, packageFor, symbol } from '../scala-cqrs-domain/naming.mjs'
 export function renderExecutionVerification({products,options},footprint) {
   const result=[];
   for(const p of products['execution-contract'].pipelines){
-    if(p.id!=='allocation-inspection')continue;
+    if(p.id!=='allocation-inspection'||Object.hasOwn(products,'effect-host-contract')&&products['effect-host-contract'].hosts.some(h=>h.pipeline.ref.id===p.id))continue;
     const d=products['reference-layout'].declarations.find(d=>d.ref.kind==='pipeline'&&d.ref.id===p.id),pkg=packageFor(d.ref.context,options),plan=pkg+'.application.'+symbol(p.id.replaceAll('-','_'))+'Execution';
     const text=`import akka.actor.testkit.typed.scaladsl.ActorTestKit
 import akka.persistence.testkit.PersistenceTestKitPlugin

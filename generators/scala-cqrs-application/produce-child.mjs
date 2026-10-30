@@ -11,7 +11,7 @@ const footprint=ids=>ids.map(id=>({id,version:id==='domain-dependencies'||id==='
 const ids=['reference-layout','execution-contract','saga-host-contract','saga-runtime-contract','child-plan-contract'];
 const buildIds=['reference-layout','domain-dependencies','domain-folds','exact-value-types','exact-value-codecs','saga-host-contract','execution-contract','child-plan-contract'];
 export const childRegistry=Object.freeze({...base,
- 'finite-host-dsl':Object.freeze({version:'1',produce:c=>[...base['finite-host-dsl'].produce(c).filter(e=>e.path!=='src/test/scala/GeneratedFiniteHostSpec.scala').map(e=>({...e,productFootprint:[...e.productFootprint,{id:'child-plan-contract',version:'1'}]})),...renderHostVerification(c,footprint(['reference-layout','saga-host-contract','saga-runtime-contract','artifact-contract','domain-external-events','execution-contract','child-plan-contract']),true)]}),
+ 'finite-host-dsl':Object.freeze({version:'1',produce:c=>[...base['finite-host-dsl'].produce(c).filter(e=>e.kind!=='generated-test').map(e=>({...e,productFootprint:[...e.productFootprint,{id:'child-plan-contract',version:'1'}]})),...renderHostVerification(c,footprint(['reference-layout','saga-host-contract','saga-runtime-contract','artifact-contract','domain-external-events','execution-contract','child-plan-contract']),true)]}),
  'finite-execution-dsl':Object.freeze({version:'1',produce:c=>[...renderExecutionPlans(c,footprint(ids)),...renderChildPlans(c,footprint(ids)),...renderChildHosts(c,footprint(ids))]}),
  'proto-dsl':Object.freeze({version:'1',produce:c=>[...renderProto(c,footprint(buildIds)),...applicationBuild(c,footprint(buildIds),renderScaffold(c,footprint(buildIds),true)).map(e=>{
   if(e.path!=='src/main/resources/application.conf')return e;

@@ -1,0 +1,662 @@
+{
+  "schemaVersion": "truthsrc.domain-fold-binding/v5",
+  "folds": {
+    "defaults": [
+      {
+        "target": {
+          "context": "inventory",
+          "kind": "state-field",
+          "owner": [
+            "Warehouse"
+          ],
+          "id": "receipts"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "nominal",
+            "ref": {
+              "context": "inventory",
+              "kind": "type",
+              "owner": [],
+              "id": "TxId"
+            }
+          },
+          "value": {
+            "form": "primitive",
+            "name": "string"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/0/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "inventory",
+          "kind": "state-field",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "status"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/1/stateFields/0/default"
+        },
+        "value": "new"
+      },
+      {
+        "target": {
+          "context": "inventory",
+          "kind": "state-field",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "result"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/1/stateFields/1/default"
+        },
+        "value": ""
+      }
+    ],
+    "events": [
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "Warehouse"
+          ],
+          "id": "SkuQuantityReserved"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/0"
+        },
+        "assignments": []
+      },
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "Warehouse"
+          ],
+          "id": "SkuReservationCommitted"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/1"
+        },
+        "assignments": [
+          {
+            "target": {
+              "context": "inventory",
+              "kind": "state-field",
+              "owner": [
+                "Warehouse"
+              ],
+              "id": "receipts"
+            },
+            "valueType": {
+              "form": "map",
+              "key": {
+                "form": "nominal",
+                "ref": {
+                  "context": "inventory",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "TxId"
+                }
+              },
+              "value": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            "sourceOrdinal": 0,
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/1/foldAssignments/0"
+            },
+            "update": {
+              "op": "put",
+              "key": {
+                "op": "ref",
+                "ref": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Warehouse",
+                    "SkuReservationCommitted"
+                  ],
+                  "id": "txid"
+                }
+              },
+              "value": {
+                "op": "literal",
+                "valueType": {
+                  "form": "primitive",
+                  "name": "string"
+                },
+                "value": "SkuReservationCommitted"
+              }
+            },
+            "dependencies": [
+              {
+                "context": "inventory",
+                "kind": "state-field",
+                "owner": [
+                  "Warehouse"
+                ],
+                "id": "receipts"
+              },
+              {
+                "context": "inventory",
+                "kind": "event-slot",
+                "owner": [
+                  "Warehouse",
+                  "SkuReservationCommitted"
+                ],
+                "id": "txid"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "Warehouse"
+          ],
+          "id": "SkuReservationReleased"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/2"
+        },
+        "assignments": [
+          {
+            "target": {
+              "context": "inventory",
+              "kind": "state-field",
+              "owner": [
+                "Warehouse"
+              ],
+              "id": "receipts"
+            },
+            "valueType": {
+              "form": "map",
+              "key": {
+                "form": "nominal",
+                "ref": {
+                  "context": "inventory",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "TxId"
+                }
+              },
+              "value": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            "sourceOrdinal": 0,
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/2/foldAssignments/0"
+            },
+            "update": {
+              "op": "put",
+              "key": {
+                "op": "ref",
+                "ref": {
+                  "context": "inventory",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Warehouse",
+                    "SkuReservationReleased"
+                  ],
+                  "id": "txid"
+                }
+              },
+              "value": {
+                "op": "literal",
+                "valueType": {
+                  "form": "primitive",
+                  "name": "string"
+                },
+                "value": "SkuReservationReleased"
+              }
+            },
+            "dependencies": [
+              {
+                "context": "inventory",
+                "kind": "state-field",
+                "owner": [
+                  "Warehouse"
+                ],
+                "id": "receipts"
+              },
+              {
+                "context": "inventory",
+                "kind": "event-slot",
+                "owner": [
+                  "Warehouse",
+                  "SkuReservationReleased"
+                ],
+                "id": "txid"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "Warehouse"
+          ],
+          "id": "SkuReservationRequested"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/3"
+        },
+        "assignments": []
+      },
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "AllocationPrepared"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/1/events/0"
+        },
+        "assignments": [
+          {
+            "target": {
+              "context": "inventory",
+              "kind": "state-field",
+              "owner": [
+                "AllocationOrder"
+              ],
+              "id": "status"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "sourceOrdinal": 0,
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/1/events/0/foldAssignments/0"
+            },
+            "update": {
+              "op": "set",
+              "value": {
+                "op": "literal",
+                "valueType": {
+                  "form": "primitive",
+                  "name": "string"
+                },
+                "value": "prepared"
+              }
+            },
+            "dependencies": []
+          }
+        ]
+      },
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "AllocationCommitted"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/1/events/1"
+        },
+        "assignments": [
+          {
+            "target": {
+              "context": "inventory",
+              "kind": "state-field",
+              "owner": [
+                "AllocationOrder"
+              ],
+              "id": "status"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "sourceOrdinal": 0,
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/1/events/1/foldAssignments/0"
+            },
+            "update": {
+              "op": "set",
+              "value": {
+                "op": "literal",
+                "valueType": {
+                  "form": "primitive",
+                  "name": "string"
+                },
+                "value": "allocated"
+              }
+            },
+            "dependencies": []
+          }
+        ]
+      },
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "AllocationCancelled"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/1/events/2"
+        },
+        "assignments": [
+          {
+            "target": {
+              "context": "inventory",
+              "kind": "state-field",
+              "owner": [
+                "AllocationOrder"
+              ],
+              "id": "status"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "sourceOrdinal": 0,
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/1/events/2/foldAssignments/0"
+            },
+            "update": {
+              "op": "set",
+              "value": {
+                "op": "literal",
+                "valueType": {
+                  "form": "primitive",
+                  "name": "string"
+                },
+                "value": "cancelled"
+              }
+            },
+            "dependencies": []
+          }
+        ]
+      },
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "ReservationSucceeded"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/1/events/3"
+        },
+        "assignments": [
+          {
+            "target": {
+              "context": "inventory",
+              "kind": "state-field",
+              "owner": [
+                "AllocationOrder"
+              ],
+              "id": "result"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "sourceOrdinal": 0,
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/1/events/3/foldAssignments/0"
+            },
+            "update": {
+              "op": "set",
+              "value": {
+                "op": "literal",
+                "valueType": {
+                  "form": "primitive",
+                  "name": "string"
+                },
+                "value": "ReservationSucceeded"
+              }
+            },
+            "dependencies": []
+          }
+        ]
+      },
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "ReservationRejected"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/1/events/4"
+        },
+        "assignments": [
+          {
+            "target": {
+              "context": "inventory",
+              "kind": "state-field",
+              "owner": [
+                "AllocationOrder"
+              ],
+              "id": "result"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "sourceOrdinal": 0,
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/1/events/4/foldAssignments/0"
+            },
+            "update": {
+              "op": "set",
+              "value": {
+                "op": "literal",
+                "valueType": {
+                  "form": "primitive",
+                  "name": "string"
+                },
+                "value": "ReservationRejected"
+              }
+            },
+            "dependencies": []
+          }
+        ]
+      },
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "ReservationCompensated"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/1/events/5"
+        },
+        "assignments": [
+          {
+            "target": {
+              "context": "inventory",
+              "kind": "state-field",
+              "owner": [
+                "AllocationOrder"
+              ],
+              "id": "result"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "sourceOrdinal": 0,
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/1/events/5/foldAssignments/0"
+            },
+            "update": {
+              "op": "set",
+              "value": {
+                "op": "literal",
+                "valueType": {
+                  "form": "primitive",
+                  "name": "string"
+                },
+                "value": "ReservationCompensated"
+              }
+            },
+            "dependencies": []
+          }
+        ]
+      },
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "ReservationRecoveryRequired"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/1/events/6"
+        },
+        "assignments": [
+          {
+            "target": {
+              "context": "inventory",
+              "kind": "state-field",
+              "owner": [
+                "AllocationOrder"
+              ],
+              "id": "result"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "sourceOrdinal": 0,
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/1/events/6/foldAssignments/0"
+            },
+            "update": {
+              "op": "set",
+              "value": {
+                "op": "literal",
+                "valueType": {
+                  "form": "primitive",
+                  "name": "string"
+                },
+                "value": "ReservationRecoveryRequired"
+              }
+            },
+            "dependencies": []
+          }
+        ]
+      },
+      {
+        "event": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "AllocationOrder"
+          ],
+          "id": "ReservationOutcomeUnknown"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/1/events/7"
+        },
+        "assignments": [
+          {
+            "target": {
+              "context": "inventory",
+              "kind": "state-field",
+              "owner": [
+                "AllocationOrder"
+              ],
+              "id": "result"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "sourceOrdinal": 0,
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/1/events/7/foldAssignments/0"
+            },
+            "update": {
+              "op": "set",
+              "value": {
+                "op": "literal",
+                "valueType": {
+                  "form": "primitive",
+                  "name": "string"
+                },
+                "value": "ReservationOutcomeUnknown"
+              }
+            },
+            "dependencies": []
+          }
+        ]
+      }
+    ]
+  }
+}

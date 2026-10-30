@@ -1,0 +1,190 @@
+{
+  "schemaVersion": "truthsrc.effect-host-binding/v1",
+  "effects": {
+    "hosts": [
+      {
+        "id": "allocation-external-inspect",
+        "version": "effect-v1",
+        "pipeline": {
+          "ref": {
+            "context": "inventory",
+            "kind": "pipeline",
+            "owner": [],
+            "id": "allocation-inspection"
+          },
+          "version": "inspect-v1"
+        },
+        "stepId": "inspect",
+        "port": "InspectAssociation",
+        "requestType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "AllocationEffectRequest"
+          }
+        },
+        "resultType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "AllocationEffectResult"
+          }
+        },
+        "operationType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "AllocationEffectOperation"
+          }
+        },
+        "observationType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "AllocationEffectObservation"
+          }
+        },
+        "reconcileType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "AllocationEffectReconcile"
+          }
+        },
+        "identity": {
+          "input": "allocation",
+          "slot": "allocation",
+          "valueType": {
+            "form": "nominal",
+            "ref": {
+              "context": "inventory",
+              "kind": "type",
+              "owner": [],
+              "id": "AllocationId"
+            }
+          },
+          "encoding": "length-prefixed-utf8"
+        },
+        "outcomes": [
+          {
+            "status": "confirmed",
+            "code": "Inspected",
+            "kind": "success"
+          },
+          {
+            "status": "rejected",
+            "code": "Refused",
+            "kind": "business-rejection"
+          },
+          {
+            "status": "failed",
+            "code": "Unavailable",
+            "kind": "infrastructure-failure"
+          },
+          {
+            "status": "unknown",
+            "code": "Unknown",
+            "kind": "unknown-effect"
+          }
+        ],
+        "technicalPorts": [
+          {
+            "role": "execute",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "AllocationEffectExecute"
+              },
+              "version": "effect-port-v1"
+            },
+            "implementation": {
+              "id": "AllocationEffectExecuteImpl",
+              "version": "effect-impl-v1"
+            },
+            "owner": {
+              "ref": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "InventoryTechnical"
+              },
+              "version": "artifact-v1"
+            }
+          },
+          {
+            "role": "query",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "AllocationEffectQuery"
+              },
+              "version": "effect-port-v1"
+            },
+            "implementation": {
+              "id": "AllocationEffectQueryImpl",
+              "version": "effect-impl-v1"
+            },
+            "owner": {
+              "ref": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "InventoryTechnical"
+              },
+              "version": "artifact-v1"
+            }
+          },
+          {
+            "role": "reconcile",
+            "port": {
+              "ref": {
+                "context": "inventory",
+                "kind": "port",
+                "owner": [],
+                "id": "AllocationEffectAuthorize"
+              },
+              "version": "effect-port-v1"
+            },
+            "implementation": {
+              "id": "AllocationEffectAuthorizeImpl",
+              "version": "effect-impl-v1"
+            },
+            "owner": {
+              "ref": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "InventoryTechnical"
+              },
+              "version": "artifact-v1"
+            }
+          }
+        ],
+        "provenance": [
+          {
+            "document": "domain",
+            "pointer": "/pipelines/0"
+          }
+        ],
+        "source": {
+          "document": "domain",
+          "pointer": "/effectHosts/0"
+        }
+      }
+    ]
+  }
+}

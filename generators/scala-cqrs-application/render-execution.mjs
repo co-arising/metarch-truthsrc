@@ -6,7 +6,7 @@ import { renderInvocationExecution } from './render-invocation-execution.mjs';
 export function renderExecutionPlans({products, options}, footprint) {
   const layout=products['reference-layout'];
   return products['execution-contract'].pipelines.flatMap(p => {
-    if(p.steps.some(s=>s.invokeSaga))return renderInvocationExecution({products,options},p,footprint);
+    if(p.steps.some(s=>s.invokeSaga)||Object.hasOwn(products,'effect-host-contract')&&products['effect-host-contract'].hosts.some(h=>h.pipeline.ref.id===p.id))return renderInvocationExecution({products,options},p,footprint);
     const contexts=[...new Set(layout.declarations.filter(d=>d.ref.kind==='pipeline'&&d.ref.id===p.id).map(d=>d.ref.context))];
     if(contexts.length!==1)fail('APPLICATION_EXECUTION','pipeline requires an exact qualified layout declaration');
     const context=contexts[0],pkg=packageFor(context,options),name=symbol(p.id.replaceAll('-','_'))+'Execution';

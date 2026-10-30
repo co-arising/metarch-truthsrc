@@ -1,0 +1,1289 @@
+{
+  "schemaVersion": "truthsrc.artifact-binding/v2",
+  "artifacts": {
+    "artifacts": [
+      {
+        "id": "inventory-technical",
+        "version": "artifact-v1",
+        "artifact": {
+          "context": "inventory",
+          "kind": "artifact",
+          "owner": [],
+          "id": "InventoryTechnical"
+        },
+        "status": "selected",
+        "provenance": [
+          {
+            "document": "domain",
+            "pointer": "/sagas/0"
+          }
+        ],
+        "references": [
+          {
+            "context": "inventory",
+            "kind": "saga",
+            "owner": [],
+            "id": "reserve-warehouse-sku"
+          }
+        ],
+        "ports": [
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ReservationEntry"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "OriginalReservation"
+              }
+            },
+            "outputType": {
+              "form": "primitive",
+              "name": "boolean"
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ReservationAssociation"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "OriginalReservation"
+              }
+            },
+            "outputType": {
+              "form": "primitive",
+              "name": "boolean"
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "warehouseprepareExecute"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "warehouseprepareInput"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "warehouseprepareReceipt"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "warehouseprepareQueryPort"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "warehouseprepareQuery"
+              }
+            },
+            "outputType": {
+              "form": "optional",
+              "element": {
+                "form": "nominal",
+                "ref": {
+                  "context": "inventory",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "warehouseprepareReceipt"
+                }
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "warehousecommitExecute"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "warehousecommitInput"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "warehousecommitReceipt"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "warehousecommitQueryPort"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "warehousecommitQuery"
+              }
+            },
+            "outputType": {
+              "form": "optional",
+              "element": {
+                "form": "nominal",
+                "ref": {
+                  "context": "inventory",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "warehousecommitReceipt"
+                }
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "warehousecompensateExecute"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "warehousecompensateInput"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "warehousecompensateReceipt"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "warehousecompensateQueryPort"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "warehousecompensateQuery"
+              }
+            },
+            "outputType": {
+              "form": "optional",
+              "element": {
+                "form": "nominal",
+                "ref": {
+                  "context": "inventory",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "warehousecompensateReceipt"
+                }
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "destinationprepareExecute"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "destinationprepareInput"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "destinationprepareReceipt"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "destinationprepareQueryPort"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "destinationprepareQuery"
+              }
+            },
+            "outputType": {
+              "form": "optional",
+              "element": {
+                "form": "nominal",
+                "ref": {
+                  "context": "inventory",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "destinationprepareReceipt"
+                }
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "destinationcommitExecute"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "destinationcommitInput"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "destinationcommitReceipt"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "destinationcommitQueryPort"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "destinationcommitQuery"
+              }
+            },
+            "outputType": {
+              "form": "optional",
+              "element": {
+                "form": "nominal",
+                "ref": {
+                  "context": "inventory",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "destinationcommitReceipt"
+                }
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "destinationcompensateExecute"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "destinationcompensateInput"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "destinationcompensateReceipt"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "destinationcompensateQueryPort"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "destinationcompensateQuery"
+              }
+            },
+            "outputType": {
+              "form": "optional",
+              "element": {
+                "form": "nominal",
+                "ref": {
+                  "context": "inventory",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "destinationcompensateReceipt"
+                }
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "allocationprepareExecute"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "allocationprepareInput"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "allocationprepareReceipt"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "allocationprepareQueryPort"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "allocationprepareQuery"
+              }
+            },
+            "outputType": {
+              "form": "optional",
+              "element": {
+                "form": "nominal",
+                "ref": {
+                  "context": "inventory",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "allocationprepareReceipt"
+                }
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "allocationcommitExecute"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "allocationcommitInput"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "allocationcommitReceipt"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "allocationcommitQueryPort"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "allocationcommitQuery"
+              }
+            },
+            "outputType": {
+              "form": "optional",
+              "element": {
+                "form": "nominal",
+                "ref": {
+                  "context": "inventory",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "allocationcommitReceipt"
+                }
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "allocationcompensateExecute"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "allocationcompensateInput"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "allocationcompensateReceipt"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "allocationcompensateQueryPort"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "allocationcompensateQuery"
+              }
+            },
+            "outputType": {
+              "form": "optional",
+              "element": {
+                "form": "nominal",
+                "ref": {
+                  "context": "inventory",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "allocationcompensateReceipt"
+                }
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ResultAuthority0"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "OriginalReservation"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "CompletionRecord0"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ResultDelivery0"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "CompletionRecord0"
+              }
+            },
+            "outputType": {
+              "form": "primitive",
+              "name": "boolean"
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ResultAuthority1"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "OriginalReservation"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "CompletionRecord1"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ResultDelivery1"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "CompletionRecord1"
+              }
+            },
+            "outputType": {
+              "form": "primitive",
+              "name": "boolean"
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ResultAuthority2"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "OriginalReservation"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "CompletionRecord2"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ResultDelivery2"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "CompletionRecord2"
+              }
+            },
+            "outputType": {
+              "form": "primitive",
+              "name": "boolean"
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ResultAuthority3"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "OriginalReservation"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "CompletionRecord3"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ResultDelivery3"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "CompletionRecord3"
+              }
+            },
+            "outputType": {
+              "form": "primitive",
+              "name": "boolean"
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ResultAuthority4"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "OriginalReservation"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "CompletionRecord4"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ResultDelivery4"
+            },
+            "version": "port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "CompletionRecord4"
+              }
+            },
+            "outputType": {
+              "form": "primitive",
+              "name": "boolean"
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "WorkflowEffectExecute"
+            },
+            "version": "effect-port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "WorkflowEffectOperation"
+              }
+            },
+            "outputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "WorkflowEffectObservation"
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "WorkflowEffectQuery"
+            },
+            "version": "effect-port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "WorkflowEffectOperation"
+              }
+            },
+            "outputType": {
+              "form": "optional",
+              "element": {
+                "form": "nominal",
+                "ref": {
+                  "context": "inventory",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "WorkflowEffectObservation"
+                }
+              }
+            },
+            "required": true
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "WorkflowEffectAuthorize"
+            },
+            "version": "effect-port-v1",
+            "inputType": {
+              "form": "nominal",
+              "ref": {
+                "context": "inventory",
+                "kind": "type",
+                "owner": [],
+                "id": "WorkflowEffectReconcile"
+              }
+            },
+            "outputType": {
+              "form": "primitive",
+              "name": "boolean"
+            },
+            "required": true
+          }
+        ],
+        "deployment": {
+          "id": "owned-local",
+          "version": "deployment-v1",
+          "secretRefs": []
+        },
+        "implementations": [
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ReservationEntry"
+            },
+            "id": "inventory.ReservationEntry",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ReservationAssociation"
+            },
+            "id": "inventory.ReservationAssociation",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "warehouseprepareExecute"
+            },
+            "id": "inventory.warehouseprepareExecute",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "warehouseprepareQueryPort"
+            },
+            "id": "inventory.warehouseprepareQueryPort",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "warehousecommitExecute"
+            },
+            "id": "inventory.warehousecommitExecute",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "warehousecommitQueryPort"
+            },
+            "id": "inventory.warehousecommitQueryPort",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "warehousecompensateExecute"
+            },
+            "id": "inventory.warehousecompensateExecute",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "warehousecompensateQueryPort"
+            },
+            "id": "inventory.warehousecompensateQueryPort",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "destinationprepareExecute"
+            },
+            "id": "inventory.destinationprepareExecute",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "destinationprepareQueryPort"
+            },
+            "id": "inventory.destinationprepareQueryPort",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "destinationcommitExecute"
+            },
+            "id": "inventory.destinationcommitExecute",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "destinationcommitQueryPort"
+            },
+            "id": "inventory.destinationcommitQueryPort",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "destinationcompensateExecute"
+            },
+            "id": "inventory.destinationcompensateExecute",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "destinationcompensateQueryPort"
+            },
+            "id": "inventory.destinationcompensateQueryPort",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "allocationprepareExecute"
+            },
+            "id": "inventory.allocationprepareExecute",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "allocationprepareQueryPort"
+            },
+            "id": "inventory.allocationprepareQueryPort",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "allocationcommitExecute"
+            },
+            "id": "inventory.allocationcommitExecute",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "allocationcommitQueryPort"
+            },
+            "id": "inventory.allocationcommitQueryPort",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "allocationcompensateExecute"
+            },
+            "id": "inventory.allocationcompensateExecute",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "allocationcompensateQueryPort"
+            },
+            "id": "inventory.allocationcompensateQueryPort",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ResultAuthority0"
+            },
+            "id": "inventory.ResultAuthority0",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ResultDelivery0"
+            },
+            "id": "inventory.ResultDelivery0",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ResultAuthority1"
+            },
+            "id": "inventory.ResultAuthority1",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ResultDelivery1"
+            },
+            "id": "inventory.ResultDelivery1",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ResultAuthority2"
+            },
+            "id": "inventory.ResultAuthority2",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ResultDelivery2"
+            },
+            "id": "inventory.ResultDelivery2",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ResultAuthority3"
+            },
+            "id": "inventory.ResultAuthority3",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ResultDelivery3"
+            },
+            "id": "inventory.ResultDelivery3",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ResultAuthority4"
+            },
+            "id": "inventory.ResultAuthority4",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ResultDelivery4"
+            },
+            "id": "inventory.ResultDelivery4",
+            "version": "impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "WorkflowEffectExecute"
+            },
+            "id": "WorkflowEffectExecuteImpl",
+            "version": "effect-impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "WorkflowEffectQuery"
+            },
+            "id": "WorkflowEffectQueryImpl",
+            "version": "effect-impl-v1"
+          },
+          {
+            "port": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "WorkflowEffectAuthorize"
+            },
+            "id": "WorkflowEffectAuthorizeImpl",
+            "version": "effect-impl-v1"
+          }
+        ],
+        "source": {
+          "document": "domain",
+          "pointer": "/artifactContracts/0"
+        }
+      }
+    ]
+  }
+}

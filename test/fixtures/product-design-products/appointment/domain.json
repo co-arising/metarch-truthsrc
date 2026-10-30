@@ -1,0 +1,1219 @@
+{
+  "schemaVersion": "truthsrc/v1",
+  "workshop": {
+    "id": "appointment-design-fixture",
+    "status": "proposal"
+  },
+  "sessions": [],
+  "types": [
+    {
+      "name": "AppointmentId",
+      "context": "appointment",
+      "dataType": "String"
+    },
+    {
+      "name": "CustomerId",
+      "context": "appointment",
+      "dataType": "String"
+    },
+    {
+      "name": "RoomId",
+      "context": "appointment",
+      "dataType": "String"
+    }
+  ],
+  "aggregates": [
+    {
+      "name": "Appointment",
+      "context": "appointment",
+      "identifier": {
+        "name": "appointmentId",
+        "dataType": "AppointmentId",
+        "origin": "BUSINESS_INPUT"
+      },
+      "stateFields": [],
+      "commands": [
+        {
+          "name": "BookAppointment",
+          "parameters": [
+            {
+              "name": "appointmentId",
+              "dataType": "AppointmentId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "customer",
+              "dataType": "CustomerId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "room",
+              "dataType": "RoomId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "startSlot",
+              "dataType": "Long",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "durationMinutes",
+              "dataType": "Int",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "produces": [
+            "AppointmentRequested"
+          ],
+          "guards": []
+        },
+        {
+          "name": "ConfirmAppointment",
+          "parameters": [
+            {
+              "name": "appointmentId",
+              "dataType": "AppointmentId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "revision",
+              "dataType": "Long",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "produces": [
+            "AppointmentConfirmed"
+          ],
+          "guards": []
+        }
+      ],
+      "events": [
+        {
+          "name": "AppointmentRequested",
+          "payloads": [
+            {
+              "name": "appointmentId",
+              "dataType": "AppointmentId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "revision",
+              "dataType": "Long",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "bindings": [],
+          "foldAssignments": []
+        },
+        {
+          "name": "AppointmentConfirmed",
+          "payloads": [
+            {
+              "name": "appointmentId",
+              "dataType": "AppointmentId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "revision",
+              "dataType": "Long",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "bindings": [],
+          "foldAssignments": []
+        }
+      ]
+    }
+  ],
+  "valueObjects": [],
+  "readModels": [],
+  "stories": [],
+  "domainServices": [],
+  "sagas": [],
+  "productDesigns": [
+    {
+      "id": "appointment-booking-review",
+      "version": "1",
+      "artifact": {
+        "context": "appointment",
+        "kind": "artifact",
+        "owner": [],
+        "id": "appointment-booking-review"
+      },
+      "status": "accepted",
+      "provenance": [
+        {
+          "document": "domain",
+          "pointer": "/designNotes/0"
+        }
+      ],
+      "approvalSource": {
+        "document": "domain",
+        "pointer": "/designDecisions/0"
+      },
+      "references": [
+        {
+          "context": "appointment",
+          "kind": "aggregate",
+          "owner": [],
+          "id": "Appointment"
+        },
+        {
+          "context": "appointment",
+          "kind": "command",
+          "owner": [
+            "Appointment"
+          ],
+          "id": "BookAppointment"
+        },
+        {
+          "context": "appointment",
+          "kind": "parameter",
+          "owner": [
+            "Appointment",
+            "BookAppointment"
+          ],
+          "id": "appointmentId"
+        },
+        {
+          "context": "appointment",
+          "kind": "parameter",
+          "owner": [
+            "Appointment",
+            "BookAppointment"
+          ],
+          "id": "customer"
+        },
+        {
+          "context": "appointment",
+          "kind": "parameter",
+          "owner": [
+            "Appointment",
+            "BookAppointment"
+          ],
+          "id": "room"
+        },
+        {
+          "context": "appointment",
+          "kind": "parameter",
+          "owner": [
+            "Appointment",
+            "BookAppointment"
+          ],
+          "id": "startSlot"
+        },
+        {
+          "context": "appointment",
+          "kind": "parameter",
+          "owner": [
+            "Appointment",
+            "BookAppointment"
+          ],
+          "id": "durationMinutes"
+        },
+        {
+          "context": "appointment",
+          "kind": "event",
+          "owner": [
+            "Appointment"
+          ],
+          "id": "AppointmentRequested"
+        },
+        {
+          "context": "appointment",
+          "kind": "event-slot",
+          "owner": [
+            "Appointment",
+            "AppointmentRequested"
+          ],
+          "id": "appointmentId"
+        },
+        {
+          "context": "appointment",
+          "kind": "event",
+          "owner": [
+            "Appointment"
+          ],
+          "id": "AppointmentConfirmed"
+        },
+        {
+          "context": "appointment",
+          "kind": "event-slot",
+          "owner": [
+            "Appointment",
+            "AppointmentConfirmed"
+          ],
+          "id": "appointmentId"
+        },
+        {
+          "context": "appointment",
+          "kind": "event-slot",
+          "owner": [
+            "Appointment",
+            "AppointmentConfirmed"
+          ],
+          "id": "revision"
+        },
+        {
+          "context": "appointment",
+          "kind": "command",
+          "owner": [
+            "Appointment"
+          ],
+          "id": "ConfirmAppointment"
+        },
+        {
+          "context": "appointment",
+          "kind": "parameter",
+          "owner": [
+            "Appointment",
+            "ConfirmAppointment"
+          ],
+          "id": "appointmentId"
+        },
+        {
+          "context": "appointment",
+          "kind": "parameter",
+          "owner": [
+            "Appointment",
+            "ConfirmAppointment"
+          ],
+          "id": "revision"
+        },
+        {
+          "context": "appointment",
+          "kind": "event-slot",
+          "owner": [
+            "Appointment",
+            "AppointmentRequested"
+          ],
+          "id": "revision"
+        }
+      ],
+      "nodes": [
+        {
+          "id": "persona",
+          "plane": "strategy",
+          "kind": "persona",
+          "label": "Meeting participant",
+          "references": [],
+          "action": null,
+          "feedback": null
+        },
+        {
+          "id": "need",
+          "plane": "strategy",
+          "kind": "need",
+          "label": "See an explicitly evidenced outcome",
+          "references": [],
+          "action": null,
+          "feedback": null
+        },
+        {
+          "id": "goal",
+          "plane": "strategy",
+          "kind": "goal",
+          "label": "Keep pending distinct from terminal",
+          "references": [],
+          "action": null,
+          "feedback": null
+        },
+        {
+          "id": "release",
+          "plane": "scope",
+          "kind": "release",
+          "label": "Reviewable V1 proposal",
+          "references": [],
+          "action": null,
+          "feedback": null
+        },
+        {
+          "id": "story",
+          "plane": "scope",
+          "kind": "story",
+          "label": "Request a resource without inventing success",
+          "references": [],
+          "action": null,
+          "feedback": null
+        },
+        {
+          "id": "feature",
+          "plane": "scope",
+          "kind": "feature",
+          "label": "Explicit action input contract",
+          "references": [],
+          "action": null,
+          "feedback": null
+        },
+        {
+          "id": "journey",
+          "plane": "structure",
+          "kind": "journey",
+          "label": "Request and review evidence",
+          "references": [],
+          "action": null,
+          "feedback": null
+        },
+        {
+          "id": "stage",
+          "plane": "structure",
+          "kind": "stage",
+          "label": "Submit request",
+          "references": [],
+          "action": null,
+          "feedback": null
+        },
+        {
+          "id": "target",
+          "plane": "structure",
+          "kind": "target",
+          "label": "Declared aggregate target",
+          "references": [
+            {
+              "context": "appointment",
+              "kind": "aggregate",
+              "owner": [],
+              "id": "Appointment"
+            }
+          ],
+          "action": null,
+          "feedback": null
+        },
+        {
+          "id": "screen",
+          "plane": "skeleton",
+          "kind": "screen",
+          "label": "Authored screen intent, not a generated page",
+          "references": [],
+          "action": null,
+          "feedback": null
+        },
+        {
+          "id": "request-action",
+          "plane": "skeleton",
+          "kind": "action",
+          "label": "Request \"resource\"\n设计审查 & <not-runtime>",
+          "references": [
+            {
+              "context": "appointment",
+              "kind": "command",
+              "owner": [
+                "Appointment"
+              ],
+              "id": "BookAppointment"
+            },
+            {
+              "context": "appointment",
+              "kind": "parameter",
+              "owner": [
+                "Appointment",
+                "BookAppointment"
+              ],
+              "id": "appointmentId"
+            },
+            {
+              "context": "appointment",
+              "kind": "parameter",
+              "owner": [
+                "Appointment",
+                "BookAppointment"
+              ],
+              "id": "customer"
+            },
+            {
+              "context": "appointment",
+              "kind": "parameter",
+              "owner": [
+                "Appointment",
+                "BookAppointment"
+              ],
+              "id": "room"
+            },
+            {
+              "context": "appointment",
+              "kind": "parameter",
+              "owner": [
+                "Appointment",
+                "BookAppointment"
+              ],
+              "id": "startSlot"
+            },
+            {
+              "context": "appointment",
+              "kind": "parameter",
+              "owner": [
+                "Appointment",
+                "BookAppointment"
+              ],
+              "id": "durationMinutes"
+            }
+          ],
+          "action": {
+            "command": {
+              "context": "appointment",
+              "kind": "command",
+              "owner": [
+                "Appointment"
+              ],
+              "id": "BookAppointment"
+            },
+            "actor": "human",
+            "intent": "public",
+            "parameters": [
+              {
+                "parameter": {
+                  "context": "appointment",
+                  "kind": "parameter",
+                  "owner": [
+                    "Appointment",
+                    "BookAppointment"
+                  ],
+                  "id": "appointmentId"
+                },
+                "origin": "host-generated",
+                "slot": "request.appointmentId",
+                "from": null
+              },
+              {
+                "parameter": {
+                  "context": "appointment",
+                  "kind": "parameter",
+                  "owner": [
+                    "Appointment",
+                    "BookAppointment"
+                  ],
+                  "id": "customer"
+                },
+                "origin": "trusted-context",
+                "slot": "request.customer",
+                "from": null
+              },
+              {
+                "parameter": {
+                  "context": "appointment",
+                  "kind": "parameter",
+                  "owner": [
+                    "Appointment",
+                    "BookAppointment"
+                  ],
+                  "id": "room"
+                },
+                "origin": "user",
+                "slot": "request.room",
+                "from": null
+              },
+              {
+                "parameter": {
+                  "context": "appointment",
+                  "kind": "parameter",
+                  "owner": [
+                    "Appointment",
+                    "BookAppointment"
+                  ],
+                  "id": "startSlot"
+                },
+                "origin": "user",
+                "slot": "request.startSlot",
+                "from": null
+              },
+              {
+                "parameter": {
+                  "context": "appointment",
+                  "kind": "parameter",
+                  "owner": [
+                    "Appointment",
+                    "BookAppointment"
+                  ],
+                  "id": "durationMinutes"
+                },
+                "origin": "user",
+                "slot": "request.durationMinutes",
+                "from": null
+              }
+            ]
+          },
+          "feedback": null
+        },
+        {
+          "id": "input-component",
+          "plane": "surface",
+          "kind": "component",
+          "label": "Authored input grouping",
+          "references": [],
+          "action": null,
+          "feedback": null
+        },
+        {
+          "id": "label-content",
+          "plane": "surface",
+          "kind": "content",
+          "label": "Quotes: \" \\ [ ] { } <script> — never executable",
+          "references": [],
+          "action": null,
+          "feedback": null
+        },
+        {
+          "id": "unknown-feedback",
+          "plane": "skeleton",
+          "kind": "feedback",
+          "label": "Explicit unknown evidence",
+          "references": [
+            {
+              "context": "appointment",
+              "kind": "event",
+              "owner": [
+                "Appointment"
+              ],
+              "id": "AppointmentRequested"
+            },
+            {
+              "context": "appointment",
+              "kind": "event-slot",
+              "owner": [
+                "Appointment",
+                "AppointmentRequested"
+              ],
+              "id": "appointmentId"
+            }
+          ],
+          "action": null,
+          "feedback": {
+            "event": {
+              "context": "appointment",
+              "kind": "event",
+              "owner": [
+                "Appointment"
+              ],
+              "id": "AppointmentRequested"
+            },
+            "state": "unknown",
+            "evidence": "provisional",
+            "resourceKeys": [
+              {
+                "context": "appointment",
+                "kind": "event-slot",
+                "owner": [
+                  "Appointment",
+                  "AppointmentRequested"
+                ],
+                "id": "appointmentId"
+              }
+            ],
+            "watermark": null
+          }
+        },
+        {
+          "id": "confirmed-feedback",
+          "plane": "skeleton",
+          "kind": "feedback",
+          "label": "Explicit succeeded evidence",
+          "references": [
+            {
+              "context": "appointment",
+              "kind": "event",
+              "owner": [
+                "Appointment"
+              ],
+              "id": "AppointmentConfirmed"
+            },
+            {
+              "context": "appointment",
+              "kind": "event-slot",
+              "owner": [
+                "Appointment",
+                "AppointmentConfirmed"
+              ],
+              "id": "appointmentId"
+            },
+            {
+              "context": "appointment",
+              "kind": "event-slot",
+              "owner": [
+                "Appointment",
+                "AppointmentConfirmed"
+              ],
+              "id": "revision"
+            }
+          ],
+          "action": null,
+          "feedback": {
+            "event": {
+              "context": "appointment",
+              "kind": "event",
+              "owner": [
+                "Appointment"
+              ],
+              "id": "AppointmentConfirmed"
+            },
+            "state": "succeeded",
+            "evidence": "terminal",
+            "resourceKeys": [
+              {
+                "context": "appointment",
+                "kind": "event-slot",
+                "owner": [
+                  "Appointment",
+                  "AppointmentConfirmed"
+                ],
+                "id": "appointmentId"
+              }
+            ],
+            "watermark": {
+              "slot": {
+                "context": "appointment",
+                "kind": "event-slot",
+                "owner": [
+                  "Appointment",
+                  "AppointmentConfirmed"
+                ],
+                "id": "revision"
+              },
+              "semantics": "business-revision"
+            }
+          }
+        },
+        {
+          "id": "machine-action",
+          "plane": "skeleton",
+          "kind": "action",
+          "label": "Machine continuation, never public",
+          "references": [
+            {
+              "context": "appointment",
+              "kind": "command",
+              "owner": [
+                "Appointment"
+              ],
+              "id": "ConfirmAppointment"
+            },
+            {
+              "context": "appointment",
+              "kind": "parameter",
+              "owner": [
+                "Appointment",
+                "ConfirmAppointment"
+              ],
+              "id": "appointmentId"
+            },
+            {
+              "context": "appointment",
+              "kind": "parameter",
+              "owner": [
+                "Appointment",
+                "ConfirmAppointment"
+              ],
+              "id": "revision"
+            },
+            {
+              "context": "appointment",
+              "kind": "event-slot",
+              "owner": [
+                "Appointment",
+                "AppointmentRequested"
+              ],
+              "id": "appointmentId"
+            },
+            {
+              "context": "appointment",
+              "kind": "event-slot",
+              "owner": [
+                "Appointment",
+                "AppointmentRequested"
+              ],
+              "id": "revision"
+            }
+          ],
+          "action": {
+            "command": {
+              "context": "appointment",
+              "kind": "command",
+              "owner": [
+                "Appointment"
+              ],
+              "id": "ConfirmAppointment"
+            },
+            "actor": "machine",
+            "intent": "machine",
+            "parameters": [
+              {
+                "parameter": {
+                  "context": "appointment",
+                  "kind": "parameter",
+                  "owner": [
+                    "Appointment",
+                    "ConfirmAppointment"
+                  ],
+                  "id": "appointmentId"
+                },
+                "origin": "propagated",
+                "slot": "observed.appointmentId",
+                "from": {
+                  "context": "appointment",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Appointment",
+                    "AppointmentRequested"
+                  ],
+                  "id": "appointmentId"
+                }
+              },
+              {
+                "parameter": {
+                  "context": "appointment",
+                  "kind": "parameter",
+                  "owner": [
+                    "Appointment",
+                    "ConfirmAppointment"
+                  ],
+                  "id": "revision"
+                },
+                "origin": "propagated",
+                "slot": "observed.revision",
+                "from": {
+                  "context": "appointment",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Appointment",
+                    "AppointmentRequested"
+                  ],
+                  "id": "revision"
+                }
+              }
+            ]
+          },
+          "feedback": null
+        }
+      ],
+      "relations": [
+        {
+          "id": "need-persona",
+          "kind": "supports",
+          "from": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "need",
+            "id": "need"
+          },
+          "to": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "persona",
+            "id": "persona"
+          }
+        },
+        {
+          "id": "goal-need",
+          "kind": "supports",
+          "from": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "goal",
+            "id": "goal"
+          },
+          "to": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "need",
+            "id": "need"
+          }
+        },
+        {
+          "id": "story-goal",
+          "kind": "supports",
+          "from": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "story",
+            "id": "story"
+          },
+          "to": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "goal",
+            "id": "goal"
+          }
+        },
+        {
+          "id": "feature-story",
+          "kind": "supports",
+          "from": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "feature",
+            "id": "feature"
+          },
+          "to": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "story",
+            "id": "story"
+          }
+        },
+        {
+          "id": "story-release",
+          "kind": "story-release",
+          "from": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "story",
+            "id": "story"
+          },
+          "to": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "release",
+            "id": "release"
+          }
+        },
+        {
+          "id": "journey-story",
+          "kind": "journey-story",
+          "from": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "journey",
+            "id": "journey"
+          },
+          "to": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "story",
+            "id": "story"
+          }
+        },
+        {
+          "id": "journey-stage",
+          "kind": "contains",
+          "from": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "journey",
+            "id": "journey"
+          },
+          "to": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "stage",
+            "id": "stage"
+          }
+        },
+        {
+          "id": "stage-screen",
+          "kind": "stage-screen",
+          "from": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "stage",
+            "id": "stage"
+          },
+          "to": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "screen",
+            "id": "screen"
+          }
+        },
+        {
+          "id": "stage-action",
+          "kind": "stage-action",
+          "from": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "stage",
+            "id": "stage"
+          },
+          "to": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "action",
+            "id": "request-action"
+          }
+        },
+        {
+          "id": "screen-action",
+          "kind": "screen-action",
+          "from": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "screen",
+            "id": "screen"
+          },
+          "to": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "action",
+            "id": "request-action"
+          }
+        },
+        {
+          "id": "request-target",
+          "kind": "action-target",
+          "from": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "action",
+            "id": "request-action"
+          },
+          "to": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "target",
+            "id": "target"
+          }
+        },
+        {
+          "id": "screen-component",
+          "kind": "uses",
+          "from": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "screen",
+            "id": "screen"
+          },
+          "to": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "component",
+            "id": "input-component"
+          }
+        },
+        {
+          "id": "component-content",
+          "kind": "contains",
+          "from": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "component",
+            "id": "input-component"
+          },
+          "to": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "content",
+            "id": "label-content"
+          }
+        },
+        {
+          "id": "unknown-feedback-action",
+          "kind": "supports",
+          "from": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "feedback",
+            "id": "unknown-feedback"
+          },
+          "to": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "action",
+            "id": "request-action"
+          }
+        },
+        {
+          "id": "confirmed-feedback-action",
+          "kind": "supports",
+          "from": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "feedback",
+            "id": "confirmed-feedback"
+          },
+          "to": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "action",
+            "id": "request-action"
+          }
+        },
+        {
+          "id": "machine-target",
+          "kind": "action-target",
+          "from": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "action",
+            "id": "machine-action"
+          },
+          "to": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "target",
+            "id": "target"
+          }
+        },
+        {
+          "id": "request-machine",
+          "kind": "precedes",
+          "from": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "action",
+            "id": "request-action"
+          },
+          "to": {
+            "artifact": {
+              "context": "appointment",
+              "kind": "artifact",
+              "owner": [],
+              "id": "appointment-booking-review"
+            },
+            "kind": "action",
+            "id": "machine-action"
+          }
+        }
+      ]
+    }
+  ],
+  "designNotes": [
+    {
+      "author": "appointment-fixture-owner",
+      "statement": "Independent explicit five-plane design fixture; design review only, not runtime approval."
+    }
+  ],
+  "designDecisions": [
+    {
+      "id": "appointment-booking-review",
+      "version": "1",
+      "artifact": {
+        "context": "appointment",
+        "kind": "artifact",
+        "owner": [],
+        "id": "appointment-booking-review"
+      },
+      "decision": "accept",
+      "author": "appointment-fixture-owner"
+    }
+  ]
+}

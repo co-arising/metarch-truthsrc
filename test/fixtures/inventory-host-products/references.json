@@ -12250,6 +12250,808 @@
             "id": "AllocationOrder"
           }
         ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "type",
+          "owner": [],
+          "id": "TaSubmissionRecord"
+        },
+        "valueType": {
+          "form": "record",
+          "members": [
+            {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "TaSubmissionRecord"
+              ],
+              "id": "requestId"
+            },
+            {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "TaSubmissionRecord"
+              ],
+              "id": "quantity"
+            }
+          ]
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/43"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "member",
+            "owner": [
+              "TaSubmissionRecord"
+            ],
+            "id": "requestId"
+          },
+          {
+            "context": "inventory",
+            "kind": "member",
+            "owner": [
+              "TaSubmissionRecord"
+            ],
+            "id": "quantity"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "member",
+          "owner": [
+            "TaSubmissionRecord"
+          ],
+          "id": "requestId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "ReservationRequestId"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/43/fields/0"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "TaSubmissionRecord"
+          },
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "ReservationRequestId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "member",
+          "owner": [
+            "TaSubmissionRecord"
+          ],
+          "id": "quantity"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/43/fields/1"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "TaSubmissionRecord"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "type",
+          "owner": [],
+          "id": "TaReceiptRecord"
+        },
+        "valueType": {
+          "form": "record",
+          "members": [
+            {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "TaReceiptRecord"
+              ],
+              "id": "requestId"
+            },
+            {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "TaReceiptRecord"
+              ],
+              "id": "status"
+            }
+          ]
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/44"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "member",
+            "owner": [
+              "TaReceiptRecord"
+            ],
+            "id": "requestId"
+          },
+          {
+            "context": "inventory",
+            "kind": "member",
+            "owner": [
+              "TaReceiptRecord"
+            ],
+            "id": "status"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "member",
+          "owner": [
+            "TaReceiptRecord"
+          ],
+          "id": "requestId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "ReservationRequestId"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/44/fields/0"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "TaReceiptRecord"
+          },
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "ReservationRequestId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "member",
+          "owner": [
+            "TaReceiptRecord"
+          ],
+          "id": "status"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/44/fields/1"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "TaReceiptRecord"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "type",
+          "owner": [],
+          "id": "OccurrenceEnvelope"
+        },
+        "valueType": {
+          "form": "record",
+          "members": [
+            {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "OccurrenceEnvelope"
+              ],
+              "id": "producer"
+            },
+            {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "OccurrenceEnvelope"
+              ],
+              "id": "authorization"
+            },
+            {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "OccurrenceEnvelope"
+              ],
+              "id": "identity"
+            }
+          ]
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/45"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "member",
+            "owner": [
+              "OccurrenceEnvelope"
+            ],
+            "id": "producer"
+          },
+          {
+            "context": "inventory",
+            "kind": "member",
+            "owner": [
+              "OccurrenceEnvelope"
+            ],
+            "id": "authorization"
+          },
+          {
+            "context": "inventory",
+            "kind": "member",
+            "owner": [
+              "OccurrenceEnvelope"
+            ],
+            "id": "identity"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "member",
+          "owner": [
+            "OccurrenceEnvelope"
+          ],
+          "id": "producer"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/45/fields/0"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "OccurrenceEnvelope"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "member",
+          "owner": [
+            "OccurrenceEnvelope"
+          ],
+          "id": "authorization"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/45/fields/1"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "OccurrenceEnvelope"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "member",
+          "owner": [
+            "OccurrenceEnvelope"
+          ],
+          "id": "identity"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/45/fields/2"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "OccurrenceEnvelope"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "type",
+          "owner": [],
+          "id": "ReservationQuery"
+        },
+        "valueType": {
+          "form": "record",
+          "members": [
+            {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "ReservationQuery"
+              ],
+              "id": "requestId"
+            }
+          ]
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/46"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "member",
+            "owner": [
+              "ReservationQuery"
+            ],
+            "id": "requestId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "member",
+          "owner": [
+            "ReservationQuery"
+          ],
+          "id": "requestId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "ReservationRequestId"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/46/fields/0"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "ReservationQuery"
+          },
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "ReservationRequestId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "type",
+          "owner": [],
+          "id": "ReservationView"
+        },
+        "valueType": {
+          "form": "record",
+          "members": [
+            {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "ReservationView"
+              ],
+              "id": "requestId"
+            },
+            {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "ReservationView"
+              ],
+              "id": "status"
+            }
+          ]
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/47"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "member",
+            "owner": [
+              "ReservationView"
+            ],
+            "id": "requestId"
+          },
+          {
+            "context": "inventory",
+            "kind": "member",
+            "owner": [
+              "ReservationView"
+            ],
+            "id": "status"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "member",
+          "owner": [
+            "ReservationView"
+          ],
+          "id": "requestId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "ReservationRequestId"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/47/fields/0"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "ReservationView"
+          },
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "ReservationRequestId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "member",
+          "owner": [
+            "ReservationView"
+          ],
+          "id": "status"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/47/fields/1"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "ReservationView"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "type",
+          "owner": [],
+          "id": "DeploymentTarget"
+        },
+        "valueType": {
+          "form": "record",
+          "members": [
+            {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "DeploymentTarget"
+              ],
+              "id": "endpoint"
+            },
+            {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "DeploymentTarget"
+              ],
+              "id": "route"
+            },
+            {
+              "context": "inventory",
+              "kind": "member",
+              "owner": [
+                "DeploymentTarget"
+              ],
+              "id": "secretRef"
+            }
+          ]
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/48"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "member",
+            "owner": [
+              "DeploymentTarget"
+            ],
+            "id": "endpoint"
+          },
+          {
+            "context": "inventory",
+            "kind": "member",
+            "owner": [
+              "DeploymentTarget"
+            ],
+            "id": "route"
+          },
+          {
+            "context": "inventory",
+            "kind": "member",
+            "owner": [
+              "DeploymentTarget"
+            ],
+            "id": "secretRef"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "member",
+          "owner": [
+            "DeploymentTarget"
+          ],
+          "id": "endpoint"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/48/fields/0"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "DeploymentTarget"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "member",
+          "owner": [
+            "DeploymentTarget"
+          ],
+          "id": "route"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/48/fields/1"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "DeploymentTarget"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "member",
+          "owner": [
+            "DeploymentTarget"
+          ],
+          "id": "secretRef"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/48/fields/2"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "DeploymentTarget"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "port",
+          "owner": [],
+          "id": "ResourcePolicy0"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/ports/31"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "port",
+          "owner": [],
+          "id": "TaSubmission0"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/ports/32"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "port",
+          "owner": [],
+          "id": "TaQuery0"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/ports/33"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "port",
+          "owner": [],
+          "id": "ExternalEvent0"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/ports/34"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "port",
+          "owner": [],
+          "id": "OccurrenceSource0"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/ports/35"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "port",
+          "owner": [],
+          "id": "Readside0"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/ports/36"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "port",
+          "owner": [],
+          "id": "Deployment0"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/ports/37"
+        },
+        "dependencies": []
       }
     ]
   }

@@ -1,0 +1,1062 @@
+{
+  "schemaVersion": "truthsrc.product-design-binding/v1",
+  "designs": {
+    "designs": [
+      {
+        "id": "inventory-reservation-review",
+        "version": "1",
+        "artifact": {
+          "context": "inventory",
+          "kind": "artifact",
+          "owner": [],
+          "id": "inventory-reservation-review"
+        },
+        "status": "proposal",
+        "provenance": [
+          {
+            "document": "domain",
+            "pointer": "/designNotes/0"
+          }
+        ],
+        "approvalSource": null,
+        "references": [
+          {
+            "context": "inventory",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Warehouse"
+          },
+          {
+            "context": "inventory",
+            "kind": "command",
+            "owner": [
+              "Warehouse"
+            ],
+            "id": "ReserveSkuQuantity"
+          },
+          {
+            "context": "inventory",
+            "kind": "parameter",
+            "owner": [
+              "Warehouse",
+              "ReserveSkuQuantity"
+            ],
+            "id": "txid"
+          },
+          {
+            "context": "inventory",
+            "kind": "parameter",
+            "owner": [
+              "Warehouse",
+              "ReserveSkuQuantity"
+            ],
+            "id": "warehouse"
+          },
+          {
+            "context": "inventory",
+            "kind": "parameter",
+            "owner": [
+              "Warehouse",
+              "ReserveSkuQuantity"
+            ],
+            "id": "sku"
+          },
+          {
+            "context": "inventory",
+            "kind": "parameter",
+            "owner": [
+              "Warehouse",
+              "ReserveSkuQuantity"
+            ],
+            "id": "quantity"
+          },
+          {
+            "context": "inventory",
+            "kind": "event-slot",
+            "owner": [
+              "Warehouse",
+              "SkuReservationRequested"
+            ],
+            "id": "sku"
+          },
+          {
+            "context": "inventory",
+            "kind": "event",
+            "owner": [
+              "Warehouse"
+            ],
+            "id": "SkuQuantityReserved"
+          },
+          {
+            "context": "inventory",
+            "kind": "event-slot",
+            "owner": [
+              "Warehouse",
+              "SkuQuantityReserved"
+            ],
+            "id": "reservation"
+          }
+        ],
+        "nodes": [
+          {
+            "ref": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "persona",
+              "id": "persona"
+            },
+            "plane": "strategy",
+            "label": "Reservation operator",
+            "references": [],
+            "action": null,
+            "feedback": null,
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/nodes/0"
+            }
+          },
+          {
+            "ref": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "need",
+              "id": "need"
+            },
+            "plane": "strategy",
+            "label": "See an explicitly evidenced outcome",
+            "references": [],
+            "action": null,
+            "feedback": null,
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/nodes/1"
+            }
+          },
+          {
+            "ref": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "goal",
+              "id": "goal"
+            },
+            "plane": "strategy",
+            "label": "Keep pending distinct from terminal",
+            "references": [],
+            "action": null,
+            "feedback": null,
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/nodes/2"
+            }
+          },
+          {
+            "ref": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "release",
+              "id": "release"
+            },
+            "plane": "scope",
+            "label": "Reviewable V1 proposal",
+            "references": [],
+            "action": null,
+            "feedback": null,
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/nodes/3"
+            }
+          },
+          {
+            "ref": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "story",
+              "id": "story"
+            },
+            "plane": "scope",
+            "label": "Request a resource without inventing success",
+            "references": [],
+            "action": null,
+            "feedback": null,
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/nodes/4"
+            }
+          },
+          {
+            "ref": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "feature",
+              "id": "feature"
+            },
+            "plane": "scope",
+            "label": "Explicit action input contract",
+            "references": [],
+            "action": null,
+            "feedback": null,
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/nodes/5"
+            }
+          },
+          {
+            "ref": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "journey",
+              "id": "journey"
+            },
+            "plane": "structure",
+            "label": "Request and review evidence",
+            "references": [],
+            "action": null,
+            "feedback": null,
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/nodes/6"
+            }
+          },
+          {
+            "ref": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "stage",
+              "id": "stage"
+            },
+            "plane": "structure",
+            "label": "Submit request",
+            "references": [],
+            "action": null,
+            "feedback": null,
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/nodes/7"
+            }
+          },
+          {
+            "ref": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "target",
+              "id": "target"
+            },
+            "plane": "structure",
+            "label": "Declared aggregate target",
+            "references": [
+              {
+                "context": "inventory",
+                "kind": "aggregate",
+                "owner": [],
+                "id": "Warehouse"
+              }
+            ],
+            "action": null,
+            "feedback": null,
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/nodes/8"
+            }
+          },
+          {
+            "ref": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "screen",
+              "id": "screen"
+            },
+            "plane": "skeleton",
+            "label": "Authored screen intent, not a generated page",
+            "references": [],
+            "action": null,
+            "feedback": null,
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/nodes/9"
+            }
+          },
+          {
+            "ref": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "action",
+              "id": "request-action"
+            },
+            "plane": "skeleton",
+            "label": "Request \"resource\"\n设计审查 & <not-runtime>",
+            "references": [
+              {
+                "context": "inventory",
+                "kind": "command",
+                "owner": [
+                  "Warehouse"
+                ],
+                "id": "ReserveSkuQuantity"
+              },
+              {
+                "context": "inventory",
+                "kind": "parameter",
+                "owner": [
+                  "Warehouse",
+                  "ReserveSkuQuantity"
+                ],
+                "id": "txid"
+              },
+              {
+                "context": "inventory",
+                "kind": "parameter",
+                "owner": [
+                  "Warehouse",
+                  "ReserveSkuQuantity"
+                ],
+                "id": "warehouse"
+              },
+              {
+                "context": "inventory",
+                "kind": "parameter",
+                "owner": [
+                  "Warehouse",
+                  "ReserveSkuQuantity"
+                ],
+                "id": "sku"
+              },
+              {
+                "context": "inventory",
+                "kind": "parameter",
+                "owner": [
+                  "Warehouse",
+                  "ReserveSkuQuantity"
+                ],
+                "id": "quantity"
+              },
+              {
+                "context": "inventory",
+                "kind": "event-slot",
+                "owner": [
+                  "Warehouse",
+                  "SkuReservationRequested"
+                ],
+                "id": "sku"
+              }
+            ],
+            "action": {
+              "command": {
+                "context": "inventory",
+                "kind": "command",
+                "owner": [
+                  "Warehouse"
+                ],
+                "id": "ReserveSkuQuantity"
+              },
+              "actor": "human",
+              "intent": "operator",
+              "parameters": [
+                {
+                  "parameter": {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Warehouse",
+                      "ReserveSkuQuantity"
+                    ],
+                    "id": "txid"
+                  },
+                  "valueType": {
+                    "form": "nominal",
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "type",
+                      "owner": [],
+                      "id": "TxId"
+                    }
+                  },
+                  "origin": "host-generated",
+                  "slot": "reservation.operation",
+                  "from": null,
+                  "source": {
+                    "document": "domain",
+                    "pointer": "/productDesigns/0/nodes/10/action/parameters/0"
+                  },
+                  "parameterSource": {
+                    "document": "domain",
+                    "pointer": "/aggregates/0/commands/0/parameters/0"
+                  }
+                },
+                {
+                  "parameter": {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Warehouse",
+                      "ReserveSkuQuantity"
+                    ],
+                    "id": "warehouse"
+                  },
+                  "valueType": {
+                    "form": "nominal",
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "type",
+                      "owner": [],
+                      "id": "WarehouseId"
+                    }
+                  },
+                  "origin": "trusted-context",
+                  "slot": "operator.warehouse",
+                  "from": null,
+                  "source": {
+                    "document": "domain",
+                    "pointer": "/productDesigns/0/nodes/10/action/parameters/1"
+                  },
+                  "parameterSource": {
+                    "document": "domain",
+                    "pointer": "/aggregates/0/commands/0/parameters/1"
+                  }
+                },
+                {
+                  "parameter": {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Warehouse",
+                      "ReserveSkuQuantity"
+                    ],
+                    "id": "sku"
+                  },
+                  "valueType": {
+                    "form": "nominal",
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "type",
+                      "owner": [],
+                      "id": "SkuId"
+                    }
+                  },
+                  "origin": "propagated",
+                  "slot": "request.sku",
+                  "from": {
+                    "context": "inventory",
+                    "kind": "event-slot",
+                    "owner": [
+                      "Warehouse",
+                      "SkuReservationRequested"
+                    ],
+                    "id": "sku"
+                  },
+                  "source": {
+                    "document": "domain",
+                    "pointer": "/productDesigns/0/nodes/10/action/parameters/2"
+                  },
+                  "parameterSource": {
+                    "document": "domain",
+                    "pointer": "/aggregates/0/commands/0/parameters/2"
+                  }
+                },
+                {
+                  "parameter": {
+                    "context": "inventory",
+                    "kind": "parameter",
+                    "owner": [
+                      "Warehouse",
+                      "ReserveSkuQuantity"
+                    ],
+                    "id": "quantity"
+                  },
+                  "valueType": {
+                    "form": "primitive",
+                    "name": "integer"
+                  },
+                  "origin": "user",
+                  "slot": "requested.quantity",
+                  "from": null,
+                  "source": {
+                    "document": "domain",
+                    "pointer": "/productDesigns/0/nodes/10/action/parameters/3"
+                  },
+                  "parameterSource": {
+                    "document": "domain",
+                    "pointer": "/aggregates/0/commands/0/parameters/3"
+                  }
+                }
+              ],
+              "source": {
+                "document": "domain",
+                "pointer": "/productDesigns/0/nodes/10/action"
+              }
+            },
+            "feedback": null,
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/nodes/10"
+            }
+          },
+          {
+            "ref": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "component",
+              "id": "input-component"
+            },
+            "plane": "surface",
+            "label": "Authored input grouping",
+            "references": [],
+            "action": null,
+            "feedback": null,
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/nodes/11"
+            }
+          },
+          {
+            "ref": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "content",
+              "id": "label-content"
+            },
+            "plane": "surface",
+            "label": "Quotes: \" \\ [ ] { } <script> — never executable",
+            "references": [],
+            "action": null,
+            "feedback": null,
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/nodes/12"
+            }
+          },
+          {
+            "ref": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "feedback",
+              "id": "pending-feedback"
+            },
+            "plane": "skeleton",
+            "label": "Explicit pending evidence",
+            "references": [
+              {
+                "context": "inventory",
+                "kind": "event",
+                "owner": [
+                  "Warehouse"
+                ],
+                "id": "SkuQuantityReserved"
+              },
+              {
+                "context": "inventory",
+                "kind": "event-slot",
+                "owner": [
+                  "Warehouse",
+                  "SkuQuantityReserved"
+                ],
+                "id": "reservation"
+              }
+            ],
+            "action": null,
+            "feedback": {
+              "event": {
+                "context": "inventory",
+                "kind": "event",
+                "owner": [
+                  "Warehouse"
+                ],
+                "id": "SkuQuantityReserved"
+              },
+              "state": "pending",
+              "evidence": "provisional",
+              "resourceKeys": [
+                {
+                  "ref": {
+                    "context": "inventory",
+                    "kind": "event-slot",
+                    "owner": [
+                      "Warehouse",
+                      "SkuQuantityReserved"
+                    ],
+                    "id": "reservation"
+                  },
+                  "valueType": {
+                    "form": "nominal",
+                    "ref": {
+                      "context": "inventory",
+                      "kind": "type",
+                      "owner": [],
+                      "id": "ReservationId"
+                    }
+                  },
+                  "source": {
+                    "document": "domain",
+                    "pointer": "/aggregates/0/events/0/payloads/0"
+                  }
+                }
+              ],
+              "watermark": null,
+              "source": {
+                "document": "domain",
+                "pointer": "/productDesigns/0/nodes/13/feedback"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/nodes/13"
+            }
+          }
+        ],
+        "relations": [
+          {
+            "id": "need-persona",
+            "kind": "supports",
+            "from": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "need",
+              "id": "need"
+            },
+            "to": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "persona",
+              "id": "persona"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/relations/0"
+            }
+          },
+          {
+            "id": "goal-need",
+            "kind": "supports",
+            "from": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "goal",
+              "id": "goal"
+            },
+            "to": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "need",
+              "id": "need"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/relations/1"
+            }
+          },
+          {
+            "id": "story-goal",
+            "kind": "supports",
+            "from": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "story",
+              "id": "story"
+            },
+            "to": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "goal",
+              "id": "goal"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/relations/2"
+            }
+          },
+          {
+            "id": "feature-story",
+            "kind": "supports",
+            "from": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "feature",
+              "id": "feature"
+            },
+            "to": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "story",
+              "id": "story"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/relations/3"
+            }
+          },
+          {
+            "id": "story-release",
+            "kind": "story-release",
+            "from": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "story",
+              "id": "story"
+            },
+            "to": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "release",
+              "id": "release"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/relations/4"
+            }
+          },
+          {
+            "id": "journey-story",
+            "kind": "journey-story",
+            "from": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "journey",
+              "id": "journey"
+            },
+            "to": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "story",
+              "id": "story"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/relations/5"
+            }
+          },
+          {
+            "id": "journey-stage",
+            "kind": "contains",
+            "from": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "journey",
+              "id": "journey"
+            },
+            "to": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "stage",
+              "id": "stage"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/relations/6"
+            }
+          },
+          {
+            "id": "stage-screen",
+            "kind": "stage-screen",
+            "from": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "stage",
+              "id": "stage"
+            },
+            "to": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "screen",
+              "id": "screen"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/relations/7"
+            }
+          },
+          {
+            "id": "stage-action",
+            "kind": "stage-action",
+            "from": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "stage",
+              "id": "stage"
+            },
+            "to": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "action",
+              "id": "request-action"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/relations/8"
+            }
+          },
+          {
+            "id": "screen-action",
+            "kind": "screen-action",
+            "from": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "screen",
+              "id": "screen"
+            },
+            "to": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "action",
+              "id": "request-action"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/relations/9"
+            }
+          },
+          {
+            "id": "request-target",
+            "kind": "action-target",
+            "from": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "action",
+              "id": "request-action"
+            },
+            "to": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "target",
+              "id": "target"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/relations/10"
+            }
+          },
+          {
+            "id": "screen-component",
+            "kind": "uses",
+            "from": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "screen",
+              "id": "screen"
+            },
+            "to": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "component",
+              "id": "input-component"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/relations/11"
+            }
+          },
+          {
+            "id": "component-content",
+            "kind": "contains",
+            "from": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "component",
+              "id": "input-component"
+            },
+            "to": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "content",
+              "id": "label-content"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/relations/12"
+            }
+          },
+          {
+            "id": "pending-feedback-action",
+            "kind": "supports",
+            "from": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "feedback",
+              "id": "pending-feedback"
+            },
+            "to": {
+              "artifact": {
+                "context": "inventory",
+                "kind": "artifact",
+                "owner": [],
+                "id": "inventory-reservation-review"
+              },
+              "kind": "action",
+              "id": "request-action"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/productDesigns/0/relations/13"
+            }
+          }
+        ],
+        "source": {
+          "document": "domain",
+          "pointer": "/productDesigns/0"
+        }
+      }
+    ]
+  }
+}

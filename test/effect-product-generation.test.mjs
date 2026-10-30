@@ -1,0 +1,30 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { readProductRequest } from '../lib/products/cli.mjs';
+import { compileProductSet } from '../lib/products/compile.mjs';
+import { generate } from '../generators/scala-cqrs-effect-application/generate.mjs';
+import { generate as legacy } from '../generators/scala-cqrs-application/generate.mjs';
+const base=new URL('./fixtures/inventory-effect-products/',import.meta.url);
+const compilation=()=>compileProductSet(readProductRequest(fileURLToPath(new URL('files.json',base))));
+const manifest=JSON.parse(readFileSync(new URL('../generators/scala-cqrs-effect-application/generator.json',import.meta.url)));
+const options=()=>JSON.parse(readFileSync(new URL('options.json',base)));
+test('effect profile emits full deterministic independent app and durable host source without implicit external stages',()=>{
+ const input={compilation:compilation(),manifest,options:options()},before=structuredClone(input),first=generate(input);assert.deepEqual(first.diagnostics,[]);assert.deepEqual(generate(input),first);assert.deepEqual(input,before);
+ const entries=first.plan.entries,host=entries.find(e=>e.kind==='effect-host').content,execution=entries.find(e=>e.kind==='execution-plan').content;
+ assert.ok(host.includes('Effect.persist(Intent(original, op))')&&host.includes('Effect.persist(RetryAuthorized(authorization, proof))'));
+ assert.ok(host.includes('terminal(state).isEmpty => query(state)'));
+ assert.ok(!execution.includes('def inspect(request: inspectRequest)'));
+ assert.ok(execution.includes('inspectHost')&&execution.includes('invokeinspect(state)'));
+ assert.ok(entries.some(e=>e.kind==='effect-proto')&&entries.some(e=>e.kind==='effect-serialization'));
+ assert.ok(entries.some(e=>e.path==='src/test/scala/GeneratedEffectHostSpec.scala'));
+ assert.ok(!entries.some(e=>e.path==='src/test/scala/GeneratedExecutionSpec.scala'));
+ assert.ok(entries.every(e=>e.content.length<=65536));
+ assert.ok(entries.find(e=>e.path==='src/main/resources/application.conf').content.includes('EffectHost$Event'));
+});
+test('unselected old application target does not silently execute external steps or turn a missing product into a runnable claim',()=>{
+ const compilationResult=compilation(),oldManifest=JSON.parse(readFileSync(new URL('../generators/scala-cqrs-application/generator.json',import.meta.url)));
+ const old=legacy({compilation:compilationResult,manifest:oldManifest,options:options()});assert.equal(old.plan,null);assert.ok(old.diagnostics.some(d=>d.code==='APPLICATION_EXECUTION'));
+ assert.throws(()=>generate({compilation:compilationResult,manifest:oldManifest,options:options()}),e=>e.diagnostic.code==='APPLICATION_EFFECT');
+});

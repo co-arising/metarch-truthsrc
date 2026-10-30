@@ -13,23 +13,61 @@ const manifest=JSON.parse(readFileSync(new URL('../generators/scala-cqrs-applica
 test('formal complete application plan consumes explicit new products and emits every actual host and domain source',()=>{
  const c=compileProductSet(request());assert.deepEqual(c.diagnostics,[]);
  const first=generate({compilation:c,manifest,options:options()}),second=generate({compilation:c,manifest,options:options()});
- assert.deepEqual(first.diagnostics,[]);assert.deepEqual(first,second);assert.equal(first.plan.entries.length,74);
+ assert.deepEqual(first.diagnostics,[]);assert.deepEqual(first,second);assert.equal(first.plan.entries.length,83);
  assert.ok(first.plan.entries.some(e=>e.kind==='invocation-host'&&e.content.includes('Associated(originalBytes, argsBytes, operation)')));
  assert.ok(first.plan.entries.some(e=>e.kind==='saga-definition'&&e.content.includes('request.receipt(')));
  assert.ok(first.plan.entries.some(e=>e.kind==='aggregate'&&e.content.includes('external-authority-denied')));
  assert.ok(first.plan.entries.some(e=>e.kind==='technical-port'&&e.content.includes('requireInstalled')));
  const verification=first.plan.entries.find(e=>e.path==='src/test/scala/GeneratedFiniteHostSpec.scala').content;
- assert.ok(verification.includes('val observedKinds'));
- assert.ok(verification.includes('reply lost after actual event persistence'));
- assert.ok(verification.includes('StrictSagaCoordinator.Reconcile'));
- assert.ok(verification.includes('assert(deliveryCounts("outcome-unknown") == 2)'));
+ const recovery=first.plan.entries.find(e=>e.path==='src/test/scala/GeneratedHostRecoverySpec.scala').content;
+ const extended=first.plan.entries.find(e=>e.path==='src/test/scala/GeneratedExtendedPortsSpec.scala').content;
+ assert.ok(recovery.includes('val observedKinds'));
+ assert.ok(recovery.includes('reply lost after actual event persistence'));
+ assert.ok(recovery.includes('StrictSagaCoordinator.Reconcile'));
+ assert.ok(recovery.includes('assert(deliveryCounts("outcome-unknown") == 2)'));
  assert.ok(verification.includes('definition(missingObjects)'));
+ assert.ok(extended.includes('Waiting("resource policy denied")'));
+ assert.ok(extended.includes('Waiting("occurrence source denied")'));
+ assert.ok(extended.includes('TaQuery0'));
+ assert.ok(extended.includes('notReady'));
+ assert.ok(extended.includes('oldAdmissionGate.success(true)'));
+ assert.ok(extended.includes('admissionIdentity1 == admissionIdentity2'));
+ assert.ok(extended.includes('durable admission must not invoke policy again'));
+ const bindings=first.plan.entries.find(e=>e.path==='src/test/scala/GeneratedRequiredBindingsSpec.scala').content;
+ const technical=first.plan.entries.find(e=>e.path.endsWith('TechnicalPorts.scala')).content;
+ assert.ok(bindings.includes('Deployment0/run'));
+ assert.ok(bindings.includes('ResultAuthority0/completion'));
+ assert.ok(technical.includes('handwritten-composition-root'));
+ assert.ok(technical.includes('secretReferences.exists'));
+ assert.ok(technical.includes('technical port changed original association'));
+ assert.ok(extended.includes('wrong-original-association'));
+ assert.ok(extended.includes('beforeSecretCallback'));
+ const generatedHost=first.plan.entries.find(e=>e.kind==='invocation-host').content;
+ assert.ok(generatedHost.includes('if (!admissionPending)'));
+ assert.ok(generatedHost.includes('state.operation == operation && !state.admitted'));
+ assert.ok(verification.includes('ResourcePolicy0'));
  const definition=first.plan.entries.find(e=>e.kind==='saga-definition').content;
  assert.ok(definition.includes('val installed_reserve_sku_prepare = bindreserve_sku_prepare(ports.reserve_sku_prepare)'));
  assert.ok(definition.includes('Phase.Prepare -> installed_reserve_sku_prepare'));
  assert.ok(definition.includes('def fromTechnical(objects:'));
  assert.ok(definition.includes('warehouseprepareExecuteOperation('));
  assert.ok(verification.includes('val delegated ='));
+});
+test('single extended role source plans expose only declared objects and no invented occurrence or parent entry',()=>{
+ const extendedRoles=['resource-policy','external-submission','external-query','external-event','occurrence-source','readside','deployment'];
+ for(const role of extendedRoles){
+  const r=structuredClone(request()),canonical=r.documents.find(d=>d.id==='domain').value;
+  canonical.sagaHosts[0].technicalPorts=canonical.sagaHosts[0].technicalPorts.filter(p=>!extendedRoles.includes(p.role)||p.role===role);
+  r.documents.find(d=>d.id==='hosts').value.hosts.hosts=canonical.sagaHosts.map((h,i)=>({...structuredClone(h),source:{document:'domain',pointer:'/sagaHosts/'+i}}));
+  const c=compileProductSet(r);assert.deepEqual(c.diagnostics,[]);
+  const out=generate({compilation:c,manifest,options:options()});assert.deepEqual(out.diagnostics,[],role);
+  const technical=out.plan.entries.find(e=>e.path.endsWith('TechnicalPorts.scala')).content;
+  const host=out.plan.entries.find(e=>e.kind==='invocation-host').content;
+  const verification=out.plan.entries.find(e=>e.path==='src/test/scala/GeneratedExtendedPortsSpec.scala').content;
+  assert.ok(technical.includes('handwritten-composition-root'));
+  assert.ok(verification.includes('installedTechnical.'+canonical.sagaHosts[0].technicalPorts.find(p=>p.role===role).port.ref.id+'('),role);
+  assert.equal(host.includes('SubmitOccurrence'),false,role);
+ }
 });
 test('formal application plan rejects wrong frozen artifacts and missing complete product profile',()=>{
  const c=compileProductSet(request());const o=options();o.runtimeArtifact.sha256='0'.repeat(64);

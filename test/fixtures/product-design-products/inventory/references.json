@@ -1,0 +1,879 @@
+{
+  "schemaVersion": "truthsrc.reference-binding/v1",
+  "layout": {
+    "contexts": [
+      "inventory"
+    ],
+    "declarations": [
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "type",
+          "owner": [],
+          "id": "TxId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/0"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "type",
+          "owner": [],
+          "id": "ReservationRequestId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/1"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "type",
+          "owner": [],
+          "id": "WarehouseId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/2"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "type",
+          "owner": [],
+          "id": "SkuId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/3"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "type",
+          "owner": [],
+          "id": "ReservationId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/4"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "type",
+          "owner": [],
+          "id": "AllocationId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/types/5"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "aggregate",
+          "owner": [],
+          "id": "Warehouse"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "command",
+          "owner": [
+            "Warehouse"
+          ],
+          "id": "ReserveSkuQuantity"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Warehouse"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "parameter",
+          "owner": [
+            "Warehouse",
+            "ReserveSkuQuantity"
+          ],
+          "id": "txid"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "TxId"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0/parameters/0"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "command",
+            "owner": [
+              "Warehouse"
+            ],
+            "id": "ReserveSkuQuantity"
+          },
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "TxId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "parameter",
+          "owner": [
+            "Warehouse",
+            "ReserveSkuQuantity"
+          ],
+          "id": "warehouse"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "WarehouseId"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0/parameters/1"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "command",
+            "owner": [
+              "Warehouse"
+            ],
+            "id": "ReserveSkuQuantity"
+          },
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "WarehouseId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "parameter",
+          "owner": [
+            "Warehouse",
+            "ReserveSkuQuantity"
+          ],
+          "id": "sku"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "SkuId"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0/parameters/2"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "command",
+            "owner": [
+              "Warehouse"
+            ],
+            "id": "ReserveSkuQuantity"
+          },
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "SkuId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "parameter",
+          "owner": [
+            "Warehouse",
+            "ReserveSkuQuantity"
+          ],
+          "id": "quantity"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0/parameters/3"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "command",
+            "owner": [
+              "Warehouse"
+            ],
+            "id": "ReserveSkuQuantity"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "command",
+          "owner": [
+            "Warehouse"
+          ],
+          "id": "RequestSkuReservation"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/1"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Warehouse"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "parameter",
+          "owner": [
+            "Warehouse",
+            "RequestSkuReservation"
+          ],
+          "id": "requestId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "ReservationRequestId"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/1/parameters/0"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "command",
+            "owner": [
+              "Warehouse"
+            ],
+            "id": "RequestSkuReservation"
+          },
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "ReservationRequestId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "parameter",
+          "owner": [
+            "Warehouse",
+            "RequestSkuReservation"
+          ],
+          "id": "warehouse"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "WarehouseId"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/1/parameters/1"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "command",
+            "owner": [
+              "Warehouse"
+            ],
+            "id": "RequestSkuReservation"
+          },
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "WarehouseId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "parameter",
+          "owner": [
+            "Warehouse",
+            "RequestSkuReservation"
+          ],
+          "id": "sku"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "SkuId"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/1/parameters/2"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "command",
+            "owner": [
+              "Warehouse"
+            ],
+            "id": "RequestSkuReservation"
+          },
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "SkuId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "parameter",
+          "owner": [
+            "Warehouse",
+            "RequestSkuReservation"
+          ],
+          "id": "quantity"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/1/parameters/3"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "command",
+            "owner": [
+              "Warehouse"
+            ],
+            "id": "RequestSkuReservation"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "parameter",
+          "owner": [
+            "Warehouse",
+            "RequestSkuReservation"
+          ],
+          "id": "allocation"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "AllocationId"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/1/parameters/4"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "command",
+            "owner": [
+              "Warehouse"
+            ],
+            "id": "RequestSkuReservation"
+          },
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "AllocationId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "parameter",
+          "owner": [
+            "Warehouse",
+            "RequestSkuReservation"
+          ],
+          "id": "destination"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "WarehouseId"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/1/parameters/5"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "command",
+            "owner": [
+              "Warehouse"
+            ],
+            "id": "RequestSkuReservation"
+          },
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "WarehouseId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "Warehouse"
+          ],
+          "id": "SkuQuantityReserved"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/0"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Warehouse"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "event-slot",
+          "owner": [
+            "Warehouse",
+            "SkuQuantityReserved"
+          ],
+          "id": "reservation"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "ReservationId"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/0/payloads/0"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "event",
+            "owner": [
+              "Warehouse"
+            ],
+            "id": "SkuQuantityReserved"
+          },
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "ReservationId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "event",
+          "owner": [
+            "Warehouse"
+          ],
+          "id": "SkuReservationRequested"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/1"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Warehouse"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "event-slot",
+          "owner": [
+            "Warehouse",
+            "SkuReservationRequested"
+          ],
+          "id": "requestId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "ReservationRequestId"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/1/payloads/0"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "event",
+            "owner": [
+              "Warehouse"
+            ],
+            "id": "SkuReservationRequested"
+          },
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "ReservationRequestId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "event-slot",
+          "owner": [
+            "Warehouse",
+            "SkuReservationRequested"
+          ],
+          "id": "warehouse"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "WarehouseId"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/1/payloads/1"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "event",
+            "owner": [
+              "Warehouse"
+            ],
+            "id": "SkuReservationRequested"
+          },
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "WarehouseId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "event-slot",
+          "owner": [
+            "Warehouse",
+            "SkuReservationRequested"
+          ],
+          "id": "sku"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "SkuId"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/1/payloads/2"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "event",
+            "owner": [
+              "Warehouse"
+            ],
+            "id": "SkuReservationRequested"
+          },
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "SkuId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "event-slot",
+          "owner": [
+            "Warehouse",
+            "SkuReservationRequested"
+          ],
+          "id": "quantity"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/1/payloads/3"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "event",
+            "owner": [
+              "Warehouse"
+            ],
+            "id": "SkuReservationRequested"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "event-slot",
+          "owner": [
+            "Warehouse",
+            "SkuReservationRequested"
+          ],
+          "id": "allocation"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "AllocationId"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/1/payloads/4"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "event",
+            "owner": [
+              "Warehouse"
+            ],
+            "id": "SkuReservationRequested"
+          },
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "AllocationId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "event-slot",
+          "owner": [
+            "Warehouse",
+            "SkuReservationRequested"
+          ],
+          "id": "destination"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "WarehouseId"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/1/payloads/5"
+        },
+        "dependencies": [
+          {
+            "context": "inventory",
+            "kind": "event",
+            "owner": [
+              "Warehouse"
+            ],
+            "id": "SkuReservationRequested"
+          },
+          {
+            "context": "inventory",
+            "kind": "type",
+            "owner": [],
+            "id": "WarehouseId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "inventory",
+          "kind": "artifact",
+          "owner": [],
+          "id": "inventory-reservation-review"
+        },
+        "valueType": null,
+        "source": {
+          "document": "domain",
+          "pointer": "/productDesigns/0"
+        },
+        "dependencies": []
+      }
+    ]
+  }
+}

@@ -1,7 +1,7 @@
 /** Explicit independent inventory oracle; all effects call generated actors and journal rows certify durability. */
-export function invocationOracle(h,pkg) {
+export function invocationOracle(h,pkg,effect=null) {
  const stem=h.id.replaceAll('-','_'),host=pkg+'.application.'+stem+'Host',definition=pkg+'.application.'+stem+'Definition',plan=pkg+'.application.allocation_workflowExecution';
- return `      val journal = akka.persistence.testkit.scaladsl.PersistenceTestKit(kit.system)
+ const content = `      val journal = akka.persistence.testkit.scaladsl.PersistenceTestKit(kit.system)
       val original = ${plan}.State(${plan}.Inputs(${pkg}.domain.values.ReservationRequestId("request-A"), ${pkg}.domain.values.ReservationRequestId("occurrence-A"), ${pkg}.domain.values.WarehouseId("warehouse-A"), ${pkg}.domain.values.SkuId("sku-A"), 3L, ${pkg}.domain.values.AllocationId("allocation-last"), ${pkg}.domain.values.WarehouseId("warehouse-B")))
       assert(${plan}.codec.decode(${plan}.codec.encode(original)) == original)
       assert(${host}.operationIdentity(original) != ${host}.operationIdentity(original.copy(inputs = original.inputs.copy(occurrence = ${pkg}.domain.values.ReservationRequestId("occurrence-B")))))
@@ -72,4 +72,31 @@ export function invocationOracle(h,pkg) {
     } finally kit.shutdownTestKit()
   }
 `;
+ if(!effect)return content;
+ const effectHost=effect.id.replaceAll('-','_')+'EffectHost',operation=effect.operationType.ref.id,observation=effect.observationType.ref.id,reconcile=effect.reconcileType.ref.id,result=effect.resultType.ref.id,quote=JSON.stringify;
+ const [execute,query,authority]=effect.technicalPorts.map(p=>p.implementation);
+ const setup=`      val auditEffects = new java.util.concurrent.atomic.AtomicInteger()
+      val auditReceipts = scala.collection.concurrent.TrieMap.empty[String, ${observation}]
+      val auditBindings = ${effectHost}.install(${effectHost}.Bindings(
+        ${effectHost}.Implementation[${operation}, ${observation}](${quote(execute.id)}, ${quote(execute.version)}, input => {
+          auditEffects.incrementAndGet()
+          actor_allocation.ask[${pkg}.domain.AllocationOrderAggregate.Reply](reply => ${pkg}.domain.AllocationOrderAggregate.Execute(${pkg}.domain.AllocationOrderProtocol.CommitAllocation(input.request.txid, input.request.allocation), reply)).map {
+            case ${pkg}.domain.AllocationOrderAggregate.Accepted(events) =>
+              assert(events.collect { case e: ${pkg}.domain.AllocationOrderProtocol.AllocationCommitted => e.txid } == Vector(input.request.txid))
+              val observation = ${observation}(input.operation, input.request, "confirmed", "actual-allocation-committed", Some(${result}(input.request.allocation)))
+              auditReceipts.put(input.operation, observation); observation
+            case other => throw new IllegalStateException(other.toString)
+          }
+        }),
+        ${effectHost}.Implementation[${operation}, Option[${observation}]](${quote(query.id)}, ${quote(query.version)}, input => Future.successful(auditReceipts.get(input.operation))),
+        ${effectHost}.Implementation[${reconcile}, Boolean](${quote(authority.id)}, ${quote(authority.version)}, _ => Future.successful(false))
+      ))
+      val auditHost = kit.spawn(${effectHost}("owned-workflow-effect", auditBindings))
+`;
+ return content.replace('      val journal =',setup+'      val journal =')
+  .replace(`def installed = ${plan}.install(new ${plan}.PureStages {}, hostActor)`,`def installed = ${plan}.install(new ${plan}.PureStages {}, hostActor, auditHost)`)
+  .replace('completed.expectMessage("allocate#0")','completed.expectMessage("allocate#0"); completed.expectMessage("audit#1"); assert(auditEffects.get() == 1)')
+  .replace('assert(checkpoints.size == 1)','assert(checkpoints.size == 2 && checkpoints.map(_.cursor) == Seq("allocate#0", "audit#1"))')
+  .replace(`${plan}.outputs(${plan}.codec.decode(checkpoints.head.snapshot))`,`${plan}.outputs(${plan}.codec.decode(checkpoints.last.snapshot))`)
+  .replace(`val stages = ${plan}.install(new ${plan}.PureStages {}, hostForMode)`,`val stages = ${plan}.install(new ${plan}.PureStages {}, hostForMode, auditHost)`);
 }

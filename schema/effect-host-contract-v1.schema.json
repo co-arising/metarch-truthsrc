@@ -1,0 +1,300 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:truthsrc:effect-host-contract:v1",
+  "title": "Explicit finite durable external effect host contract",
+  "$defs": {
+    "pin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref",
+        "version"
+      ],
+      "properties": {
+        "ref": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference"
+        },
+        "version": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+        }
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "code",
+        "kind"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "confirmed",
+            "rejected",
+            "failed",
+            "unknown"
+          ]
+        },
+        "code": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+        },
+        "kind": {
+          "enum": [
+            "success",
+            "business-rejection",
+            "infrastructure-failure",
+            "unknown-effect"
+          ]
+        }
+      }
+    },
+    "technical": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "port",
+        "implementation",
+        "owner"
+      ],
+      "properties": {
+        "role": {
+          "enum": [
+            "execute",
+            "query",
+            "reconcile"
+          ]
+        },
+        "port": {
+          "$ref": "urn:truthsrc:effect-host-contract:v1#/$defs/pin"
+        },
+        "implementation": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/identity"
+        },
+        "owner": {
+          "$ref": "urn:truthsrc:effect-host-contract:v1#/$defs/pin"
+        }
+      }
+    },
+    "host": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "pipeline",
+        "stepId",
+        "port",
+        "requestType",
+        "resultType",
+        "operationType",
+        "observationType",
+        "reconcileType",
+        "identity",
+        "outcomes",
+        "technicalPorts",
+        "provenance",
+        "source"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+        },
+        "version": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+        },
+        "pipeline": {
+          "$ref": "urn:truthsrc:effect-host-contract:v1#/$defs/pin"
+        },
+        "stepId": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+        },
+        "port": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+        },
+        "requestType": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/valueType"
+        },
+        "resultType": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/valueType"
+        },
+        "operationType": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/valueType"
+        },
+        "observationType": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/valueType"
+        },
+        "reconcileType": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/valueType"
+        },
+        "identity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "input",
+            "slot",
+            "valueType",
+            "encoding"
+          ],
+          "properties": {
+            "input": {
+              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+            },
+            "slot": {
+              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+            },
+            "valueType": {
+              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/valueType"
+            },
+            "encoding": {
+              "const": "length-prefixed-utf8"
+            }
+          }
+        },
+        "outcomes": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "$ref": "urn:truthsrc:effect-host-contract:v1#/$defs/outcome"
+          }
+        },
+        "technicalPorts": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "$ref": "urn:truthsrc:effect-host-contract:v1#/$defs/technical"
+          }
+        },
+        "provenance": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "urn:truthsrc:product-compilation:v1#/$defs/source"
+          }
+        },
+        "source": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/source"
+        }
+      },
+      "allOf": [
+        {
+          "properties": {
+            "outcomes": {
+              "prefixItems": [
+                {
+                  "properties": {
+                    "status": {
+                      "const": "confirmed"
+                    },
+                    "kind": {
+                      "const": "success"
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "status": {
+                      "const": "rejected"
+                    },
+                    "kind": {
+                      "const": "business-rejection"
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "status": {
+                      "const": "failed"
+                    },
+                    "kind": {
+                      "const": "infrastructure-failure"
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "status": {
+                      "const": "unknown"
+                    },
+                    "kind": {
+                      "const": "unknown-effect"
+                    }
+                  }
+                }
+              ],
+              "items": false
+            }
+          }
+        },
+        {
+          "properties": {
+            "technicalPorts": {
+              "prefixItems": [
+                {
+                  "properties": {
+                    "role": {
+                      "const": "execute"
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "role": {
+                      "const": "query"
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "role": {
+                      "const": "reconcile"
+                    }
+                  }
+                }
+              ],
+              "items": false
+            }
+          }
+        }
+      ]
+    },
+    "effects": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hosts"
+      ],
+      "properties": {
+        "hosts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "urn:truthsrc:effect-host-contract:v1#/$defs/host"
+          }
+        }
+      }
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "effects"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "truthsrc.effect-host-binding/v1"
+        },
+        "effects": {
+          "$ref": "urn:truthsrc:effect-host-contract:v1#/$defs/effects"
+        }
+      }
+    }
+  },
+  "$ref": "urn:truthsrc:effect-host-contract:v1#/$defs/effects",
+  "$comment": "Static source and shape only. Status strings do not certify evidence, implementation, authorization, deployment or runtime effects."
+}

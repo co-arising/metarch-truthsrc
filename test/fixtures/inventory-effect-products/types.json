@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "truthsrc.exact-type-binding/v1",
+  "types": [
+    {
+      "domain": {
+        "context": "inventory",
+        "kind": "type",
+        "owner": [],
+        "id": "Distance"
+      },
+      "version": "1",
+      "source": {
+        "document": "domain",
+        "pointer": "/types/6"
+      },
+      "form": "unit-decimal",
+      "precision": 9,
+      "scale": 3,
+      "amountMember": {
+        "context": "inventory",
+        "kind": "member",
+        "owner": [
+          "Distance"
+        ],
+        "id": "amount"
+      },
+      "unitMember": {
+        "context": "inventory",
+        "kind": "member",
+        "owner": [
+          "Distance"
+        ],
+        "id": "unit"
+      },
+      "units": [
+        "km",
+        "mi"
+      ]
+    }
+  ]
+}

@@ -54,6 +54,8 @@ The declared families project to these canonical roots:
 | `saga-host` | `sagaHosts[]` |
 | `host-computation` | `hostComputations[]` |
 | `external-event-producer` | `externalEventProducers[]` |
+| `product-design` | `productDesigns[]` |
+| `product-design-decision` | `designDecisions[]` |
 
 Each atom has ordered scalar headers `kind`, `schemaVersion` (exactly
 `truthsrc.formal-product/v1`), `family`, `id`, `version`, optional
@@ -88,6 +90,59 @@ schema/type/source/port/status admission. A historical note containing
 formal artifact atom before `/artifactContracts/...` can be cited. A
 `demo-proposal` label is not silently converted to `selected` or to formal
 `proposal` status.
+
+## Five-plane product design (explicit opt-in, 2026-10-30)
+
+`product-design@1` uses `truthsrc.product-design/v1`, capability
+`five-plane-product-design@1`, roles canonical + designBinding
+(`truthsrc.product-design-binding/v1`), and requires `reference-layout@1`.
+The canonical root `productDesigns[]` is separate from technical `artifactContracts[]`.
+Its qualified artifact declaration must point to the whole design row. Nodes use
+independent `{artifact,kind,id}` references, never domain command/type identities.
+
+Each design declares id/version/artifact, proposal/accepted/historical status,
+resolvable provenance, explicit approvalSource or null, qualified domain references,
+all five planes of nodes, and explicit relations. Accepted requires a same-version
+`designDecisions[]` row with id/version/artifact, `decision: accept`, and an authored
+nonempty `author`. This is source evidence of an author's declaration, **not**
+authorization, a review service, runtime approval or a verified author identity.
+The optional `product-design-decision` formal family carries that whole row without
+inventing old decisions. Numeric-string formal id/version headers are emitted quoted
+and retain their string type; other atom parsing and unquoted numeric headers retain
+legacy behavior.
+
+- strategy: persona / need / goal; scope: release / story / feature;
+- structure: journey / stage / target; skeleton: screen / action / feedback;
+- surface: component / content. Kinds must belong to their declared plane.
+- Relations are explicitly authored: story-release, journey-story, stage-action,
+  stage-screen, screen-action, action-target, uses, contains, precedes, supports.
+  Endpoints resolve exact same-owner nodes and allowed kind pairs; contains/precedes
+  are acyclic. Each action has exactly one action-target whose aggregate reference
+  is its canonical command owner. A screen cannot silently become a business target.
+- Actions declare a command, human/machine actor and public/operator/machine intent.
+  Every canonical command parameter has exactly one ordered origin contract with
+  `parameter/origin/slot/from`. Origins are user, trusted-context, host-generated,
+  propagated; only propagated has a qualified same-nominal-type source. Machine
+  actions cannot claim public intent or user-origin input. These slots express intent,
+  not policy enforcement or a trusted runtime implementation.
+- Feedback declares event or null, pending/unknown/succeeded/rejected/compensated/
+  failed/manual-required state, provisional/terminal evidence, exact event resource
+  keys and optional watermark slot/semantics. Terminal only admits the four explicit
+  terminal states and requires event + nonempty keys + watermark. Position semantics
+  are projection-position or business-revision. Unknown/pending never become
+  terminal by label, and a watermark declaration is not an observed read-side fact.
+
+Both compilers reconstruct all rows, sources, nominal types and relationship order
+before complete binding comparison. Unknown fields, unresolvable or cross-owner refs,
+missing/extra parameters, invalid endpoints or fabricated acceptance sources refuse.
+No pages derive from aggregates, no toast derives from events, and historical
+`info.artifact` notes remain inert. `validate`/`roundtrip` certify formal residence;
+full semantic admission remains the explicit `compile-products` gate.
+
+The fixed `product-design-review@1` producer emits seven review files only: complete
+model JSON, five plane Mermaid files, and source-index JSON with qualified declaration
+and nominal dependency sources. Every projection is `design-review-only/runnable=false`.
+It is neither runnable UI nor CQRS read-side/replay/deployment completion.
 
 ## Atom file
 

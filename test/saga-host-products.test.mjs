@@ -75,3 +75,42 @@ test('null and malformed nested host fields produce stable product diagnostics r
   const r=fixture();change(r);reassert(r);reject(r);
  }
 });
+
+const extendedCaptured = readProductRequest(fileURLToPath(new URL('./fixtures/inventory-host-products/files.json', import.meta.url)));
+const extFixture = () => clone(extendedCaptured);
+const extHost = r => document(r, 'domain').sagaHosts[0];
+const extRole = (r, role) => extHost(r).technicalPorts.find(p => p.role === role);
+const swapPorts = (r, first, second) => { const a = extRole(r, first), b = extRole(r, second); const port = a.port, impl = a.implementation; a.port = clone(b.port); a.implementation = clone(b.implementation); b.port = port; b.implementation = impl; };
+test('extended technical port roles require exact typed shapes, one declaration per host and cross-role agreement',()=>{
+ // The inventory fixture declares all seven extended roles with legal shapes; repointing a row to another
+ // declared port keeps the artifact obligation satisfied so only the typed shape gates can reject.
+ const mutations=[
+  r=>swapPorts(r,'resource-policy','external-submission'),   // record output instead of boolean admission
+  r=>swapPorts(r,'external-query','external-event'),         // non-optional receipt output
+  r=>swapPorts(r,'occurrence-source','readside'),            // envelope without producer/authorization members
+  r=>swapPorts(r,'deployment','occurrence-source'),          // target record without endpoint/route/secretRef
+  r=>swapPorts(r,'external-query','readside'),               // query consumes a different record than submission
+  r=>{extRole(r,'readside').role='deployment';},              // duplicate extended role declaration
+ ];
+ for(const change of mutations){const r=extFixture();change(r);reassert(r);reject(r,'HOST_PORT');}
+});
+const extendedRoles=['resource-policy','external-submission','external-query','external-event','occurrence-source','readside','deployment'];
+function optIn(r,role){extHost(r).technicalPorts=extHost(r).technicalPorts.filter(p=>!extendedRoles.includes(p.role)||p.role===role);reassert(r);return r;}
+function reassertArtifacts(r){document(r,'artifacts').artifacts.artifacts=document(r,'domain').artifactContracts.map((a,i)=>({...clone(a),source:{document:'domain',pointer:'/artifactContracts/'+i}}));}
+test('all seven extended roles opt in alone without requiring unrelated declarations',()=>{
+ for(const role of extendedRoles){const r=optIn(extFixture(),role),o=succeed(r),h=o.products.find(p=>p.id==='saga-host-contract').payload.hosts[0];assert.equal(h.technicalPorts.length,31);assert.deepEqual(h.technicalPorts.filter(p=>extendedRoles.includes(p.role)).map(p=>p.role),[role]);}
+});
+test('core roles cannot be relabelled to evade required completion and operation callbacks',()=>{
+ for(const role of ['authority','result-delivery','phase-execute','phase-query']){const r=extFixture();extRole(r,role).role='entry';reassert(r);reject(r,'HOST_PORT');}
+});
+test('deployment uses only its unique selected owner and declared symbolic secret references',()=>{
+ for(const change of [
+  a=>{a.deployment.secretRefs=[];},
+  a=>{a.deployment.secretRefs=[{id:'inline=not-a-real-secret',provider:'environment'}];},
+  a=>{a.deployment.secretRefs=[{id:'../inline-token',provider:'keystore'}];},
+ ]){const r=optIn(extFixture(),'deployment');change(document(r,'domain').artifactContracts[0]);reassertArtifacts(r);reject(r,'HOST_SECRET');}
+ const r=optIn(extFixture(),'deployment');document(r,'domain').artifactContracts[0].deployment.secretRefs[0].value='not-a-real-secret';reassertArtifacts(r);reject(r,'PRODUCT_FIELD_UNKNOWN');
+});
+test('all declared extended implementations must remain in the selected artifact',()=>{
+ for(const role of extendedRoles){const r=optIn(extFixture(),role),p=extRole(r,role).port.ref,a=document(r,'domain').artifactContracts[0];a.implementations=a.implementations.filter(i=>JSON.stringify(i.port)!==JSON.stringify(p));reassertArtifacts(r);reject(r,'ARTIFACT_IMPLEMENTATION');}
+});
