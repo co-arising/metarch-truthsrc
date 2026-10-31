@@ -721,7 +721,8 @@
             "truthsrc.effect-host-binding/v1",
             "truthsrc.domain-semantic-binding/v4",
             "truthsrc.domain-dependency-binding/v6",
-            "truthsrc.domain-fold-binding/v6"
+            "truthsrc.domain-fold-binding/v6",
+            "truthsrc.artifact-binding/v3"
           ]
         },
         "value": {
@@ -1290,6 +1291,22 @@
             "properties": {
               "value": {
                 "$ref": "urn:truthsrc:domain-guards:v4#/$defs/foldBinding"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "schemaVersion": {
+                "const": "truthsrc.artifact-binding/v3"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "$ref": "urn:truthsrc:artifact-contract:v3#/$defs/binding"
               }
             }
           }
@@ -2521,6 +2538,146 @@
               "required": [
                 "canonical",
                 "foldBinding"
+              ],
+              "maxProperties": 2
+            }
+          }
+        },
+        {
+          "properties": {
+            "id": {
+              "const": "artifact-contract"
+            },
+            "version": {
+              "const": "3"
+            },
+            "payloadSchemaVersion": {
+              "const": "truthsrc.artifact-contract/v3"
+            },
+            "capabilities": {
+              "const": [
+                {
+                  "id": "artifact-static-contract",
+                  "version": "3"
+                }
+              ]
+            },
+            "requires": {
+              "const": [
+                {
+                  "id": "reference-layout",
+                  "version": "1"
+                }
+              ]
+            },
+            "inputRoles": {
+              "required": [
+                "canonical",
+                "artifactBinding"
+              ],
+              "maxProperties": 2
+            }
+          }
+        },
+        {
+          "properties": {
+            "id": {
+              "const": "saga-host-contract"
+            },
+            "version": {
+              "const": "2"
+            },
+            "payloadSchemaVersion": {
+              "const": "truthsrc.saga-host-contract/v1"
+            },
+            "capabilities": {
+              "const": [
+                {
+                  "id": "finite-saga-host-contract",
+                  "version": "2"
+                }
+              ]
+            },
+            "requires": {
+              "const": [
+                {
+                  "id": "reference-layout",
+                  "version": "1"
+                },
+                {
+                  "id": "exact-value-types",
+                  "version": "1"
+                },
+                {
+                  "id": "saga-contract",
+                  "version": "1"
+                },
+                {
+                  "id": "saga-runtime-contract",
+                  "version": "1"
+                },
+                {
+                  "id": "execution-contract",
+                  "version": "1"
+                },
+                {
+                  "id": "domain-external-events",
+                  "version": "2"
+                },
+                {
+                  "id": "artifact-contract",
+                  "version": "3"
+                }
+              ]
+            },
+            "inputRoles": {
+              "required": [
+                "canonical",
+                "hostBinding"
+              ],
+              "maxProperties": 2
+            }
+          }
+        },
+        {
+          "properties": {
+            "id": {
+              "const": "effect-host-contract"
+            },
+            "version": {
+              "const": "2"
+            },
+            "payloadSchemaVersion": {
+              "const": "truthsrc.effect-host-contract/v1"
+            },
+            "capabilities": {
+              "const": [
+                {
+                  "id": "finite-durable-effect-host",
+                  "version": "2"
+                }
+              ]
+            },
+            "requires": {
+              "const": [
+                {
+                  "id": "reference-layout",
+                  "version": "1"
+                },
+                {
+                  "id": "execution-contract",
+                  "version": "1"
+                },
+                {
+                  "id": "artifact-contract",
+                  "version": "3"
+                }
+              ]
+            },
+            "inputRoles": {
+              "required": [
+                "canonical",
+                "effectBinding"
               ],
               "maxProperties": 2
             }

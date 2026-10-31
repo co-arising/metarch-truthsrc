@@ -678,6 +678,63 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "artifact-contract"
+              },
+              "version": {
+                "const": "3"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:artifact-contract:v3#/$defs/artifacts"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "saga-host-contract"
+              },
+              "version": {
+                "const": "2"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:saga-host-contract:v1#/$defs/hosts"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "effect-host-contract"
+              },
+              "version": {
+                "const": "2"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:effect-host-contract:v1#/$defs/effects"
+              }
+            }
+          }
         }
       ]
     }

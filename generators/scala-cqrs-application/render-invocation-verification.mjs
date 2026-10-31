@@ -1,5 +1,5 @@
 /** Explicit independent inventory oracle; all effects call generated actors and journal rows certify durability. */
-export function invocationOracle(h,pkg,effect=null,products) {
+export function invocationOracle(h,pkg,effect=null,products,isolatedEffectCases=false) {
  const pipeline=products['execution-contract'].pipelines.find(p=>p.id===h.entry.startOwner.ref.id);
  const literals={requestId:`${pkg}.domain.values.ReservationRequestId("request-A")`,occurrence:`${pkg}.domain.values.ReservationRequestId("occurrence-A")`,warehouse:`${pkg}.domain.values.WarehouseId("warehouse-A")`,sku:`${pkg}.domain.values.SkuId("sku-A")`,quantity:'3L',allocation:`${pkg}.domain.values.AllocationId("allocation-last")`,destination:`${pkg}.domain.values.WarehouseId("warehouse-B")`};
  const inputs=pipeline.inputs.map(i=>{
@@ -121,5 +121,5 @@ export function invocationOracle(h,pkg,effect=null,products) {
   .replace('completed.expectMessage("allocate#0")','completed.expectMessage("allocate#0"); completed.expectMessage("audit#1"); assert(auditEffects.get() == 1)')
   .replace('assert(checkpoints.size == 1)','assert(checkpoints.size == 2 && checkpoints.map(_.cursor) == Seq("allocate#0", "audit#1"))')
   .replace(`${plan}.outputs(${plan}.codec.decode(checkpoints.head.snapshot))`,`${plan}.outputs(${plan}.codec.decode(checkpoints.last.snapshot))`)
-  .replace(`val stages = ${plan}.install(new ${plan}.PureStages {}, hostForMode)`,`val stages = ${plan}.install(new ${plan}.PureStages {}, hostForMode, auditHost)`);
+  .replace(`val stages = ${plan}.install(new ${plan}.PureStages {}, hostForMode)`,isolatedEffectCases ? `val modeAudit = kit.spawn(${effectHost}("workflow-effect-" + mode, auditBindings))\n        val stages = ${plan}.install(new ${plan}.PureStages {}, hostForMode, modeAudit)` : `val stages = ${plan}.install(new ${plan}.PureStages {}, hostForMode, auditHost)`);
 }

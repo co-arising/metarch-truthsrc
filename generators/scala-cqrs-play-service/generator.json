@@ -1,0 +1,332 @@
+{
+  "schemaVersion": "truthsrc.product-generator/v1",
+  "name": "scala-cqrs-play-service",
+  "version": "1",
+  "targetProfile": "scala-cqrs-play-service@1",
+  "products": [
+    {
+      "id": "reference-layout",
+      "version": "1",
+      "payloadSchemaVersion": "truthsrc.reference-layout/v1",
+      "capabilities": [
+        {
+          "id": "qualified-reference-layout",
+          "version": "1"
+        }
+      ]
+    },
+    {
+      "id": "exact-value-types",
+      "version": "1",
+      "payloadSchemaVersion": "truthsrc.exact-value-types/v1",
+      "capabilities": [
+        {
+          "id": "exact-value-types",
+          "version": "1"
+        }
+      ]
+    },
+    {
+      "id": "domain-decision",
+      "version": "4",
+      "payloadSchemaVersion": "truthsrc.domain-decision/v4",
+      "capabilities": [
+        {
+          "id": "ordered-domain-decision",
+          "version": "4"
+        }
+      ]
+    },
+    {
+      "id": "domain-dependencies",
+      "version": "6",
+      "payloadSchemaVersion": "truthsrc.domain-dependencies/v6",
+      "capabilities": [
+        {
+          "id": "domain-dependencies",
+          "version": "6"
+        }
+      ]
+    },
+    {
+      "id": "domain-folds",
+      "version": "6",
+      "payloadSchemaVersion": "truthsrc.domain-folds/v6",
+      "capabilities": [
+        {
+          "id": "domain-folds",
+          "version": "6"
+        }
+      ]
+    },
+    {
+      "id": "domain-external-events",
+      "version": "2",
+      "payloadSchemaVersion": "truthsrc.domain-external-events/v2",
+      "capabilities": [
+        {
+          "id": "external-event-producers",
+          "version": "2"
+        }
+      ]
+    },
+    {
+      "id": "exact-value-codecs",
+      "version": "1",
+      "payloadSchemaVersion": "truthsrc.exact-value-codecs/v1",
+      "capabilities": [
+        {
+          "id": "exact-value-codecs",
+          "version": "1"
+        }
+      ]
+    },
+    {
+      "id": "saga-host-contract",
+      "version": "2",
+      "payloadSchemaVersion": "truthsrc.saga-host-contract/v1",
+      "capabilities": [
+        {
+          "id": "finite-saga-host-contract",
+          "version": "2"
+        }
+      ]
+    },
+    {
+      "id": "saga-runtime-contract",
+      "version": "1",
+      "payloadSchemaVersion": "truthsrc.saga-runtime-contract/v3",
+      "capabilities": [
+        {
+          "id": "saga-runtime-lowering",
+          "version": "3"
+        }
+      ]
+    },
+    {
+      "id": "execution-contract",
+      "version": "1",
+      "payloadSchemaVersion": "truthsrc.execution/v1",
+      "capabilities": [
+        {
+          "id": "execution-static-contract",
+          "version": "1"
+        }
+      ]
+    },
+    {
+      "id": "artifact-contract",
+      "version": "3",
+      "payloadSchemaVersion": "truthsrc.artifact-contract/v3",
+      "capabilities": [
+        {
+          "id": "artifact-static-contract",
+          "version": "3"
+        }
+      ]
+    },
+    {
+      "id": "effect-host-contract",
+      "version": "2",
+      "payloadSchemaVersion": "truthsrc.effect-host-contract/v1",
+      "capabilities": [
+        {
+          "id": "finite-durable-effect-host",
+          "version": "2"
+        }
+      ]
+    }
+  ],
+  "producers": [
+    {
+      "id": "aggregate-dsl",
+      "version": "service-1",
+      "products": [
+        "reference-layout",
+        "domain-folds",
+        "exact-value-types",
+        "domain-dependencies"
+      ],
+      "artifactKinds": [
+        "state",
+        "aggregate"
+      ]
+    },
+    {
+      "id": "command-dsl",
+      "version": "service-1",
+      "products": [
+        "reference-layout",
+        "domain-dependencies",
+        "exact-value-types"
+      ],
+      "artifactKinds": [
+        "protocol",
+        "command-helpers",
+        "external-event-bridge"
+      ]
+    },
+    {
+      "id": "invariant-dsl",
+      "version": "service-1",
+      "products": [
+        "reference-layout",
+        "domain-decision",
+        "domain-folds",
+        "exact-value-types"
+      ],
+      "artifactKinds": [
+        "rules",
+        "event-handler"
+      ]
+    },
+    {
+      "id": "valueobject-dsl",
+      "version": "service-1",
+      "products": [
+        "reference-layout",
+        "exact-value-types"
+      ],
+      "artifactKinds": [
+        "value-object"
+      ]
+    },
+    {
+      "id": "proto-dsl",
+      "version": "service-1",
+      "products": [
+        "reference-layout",
+        "domain-dependencies",
+        "domain-folds",
+        "exact-value-types",
+        "exact-value-codecs",
+        "saga-host-contract",
+        "execution-contract",
+        "effect-host-contract",
+        "artifact-contract"
+      ],
+      "artifactKinds": [
+        "proto",
+        "build",
+        "generated-test"
+      ]
+    },
+    {
+      "id": "converter-dsl",
+      "version": "service-1",
+      "products": [
+        "reference-layout",
+        "domain-dependencies",
+        "domain-folds",
+        "exact-value-types",
+        "exact-value-codecs"
+      ],
+      "artifactKinds": [
+        "converter",
+        "serialization-adapter"
+      ]
+    },
+    {
+      "id": "finite-execution-dsl",
+      "version": "service-1",
+      "products": [
+        "reference-layout",
+        "execution-contract",
+        "saga-host-contract",
+        "saga-runtime-contract",
+        "effect-host-contract"
+      ],
+      "artifactKinds": [
+        "execution-plan",
+        "proto",
+        "generated-test"
+      ]
+    },
+    {
+      "id": "finite-host-dsl",
+      "version": "service-1",
+      "products": [
+        "reference-layout",
+        "saga-host-contract",
+        "saga-runtime-contract",
+        "artifact-contract",
+        "domain-external-events",
+        "execution-contract",
+        "effect-host-contract"
+      ],
+      "artifactKinds": [
+        "saga-definition",
+        "invocation-host",
+        "host-proto",
+        "host-serialization",
+        "technical-port",
+        "generated-test"
+      ]
+    },
+    {
+      "id": "durable-effect-host-dsl",
+      "version": "service-1",
+      "products": [
+        "reference-layout",
+        "effect-host-contract",
+        "execution-contract"
+      ],
+      "artifactKinds": [
+        "effect-host",
+        "effect-proto",
+        "effect-serialization",
+        "generated-test"
+      ]
+    },
+    {
+      "id": "play-service-dsl",
+      "version": "1",
+      "products": [
+        "reference-layout",
+        "artifact-contract",
+        "exact-value-types",
+        "exact-value-codecs"
+      ],
+      "artifactKinds": [
+        "service-port",
+        "service-runtime",
+        "service-config",
+        "service-test"
+      ]
+    }
+  ],
+  "artifactKinds": [
+    "state",
+    "aggregate",
+    "protocol",
+    "command-helpers",
+    "external-event-bridge",
+    "rules",
+    "event-handler",
+    "value-object",
+    "proto",
+    "converter",
+    "serialization-adapter",
+    "build",
+    "generated-test",
+    "saga-definition",
+    "invocation-host",
+    "host-proto",
+    "host-serialization",
+    "technical-port",
+    "execution-plan",
+    "effect-host",
+    "effect-proto",
+    "effect-serialization",
+    "service-port",
+    "service-runtime",
+    "service-config",
+    "service-test"
+  ],
+  "options": [
+    "packages",
+    "verificationCases",
+    "runtimeArtifact",
+    "service"
+  ]
+}

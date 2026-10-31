@@ -1,0 +1,528 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:truthsrc:play-service:v1",
+  "$defs": {
+    "service": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "profile",
+        "bootstrap",
+        "namespaceConfig",
+        "journal",
+        "readSide",
+        "endpoints",
+        "projections"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "truthsrc.play-service/v1"
+        },
+        "profile": {
+          "const": "scala-cqrs-play-service@1"
+        },
+        "bootstrap": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "ref",
+            "version"
+          ],
+          "properties": {
+            "ref": {
+              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference"
+            },
+            "version": {
+              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+            }
+          }
+        },
+        "namespaceConfig": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "maxLength": 128
+        },
+        "journal": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "provider",
+            "version",
+            "connectionRef"
+          ],
+          "properties": {
+            "provider": {
+              "const": "mongodb-rxmongo"
+            },
+            "version": {
+              "const": "3.0.8"
+            },
+            "connectionRef": {
+              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+            }
+          }
+        },
+        "readSide": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "provider",
+            "driverVersion",
+            "projectionVersion",
+            "connectionRef"
+          ],
+          "properties": {
+            "provider": {
+              "const": "mysql-jdbc"
+            },
+            "driverVersion": {
+              "const": "8.0.33"
+            },
+            "projectionVersion": {
+              "const": "1.2.5"
+            },
+            "connectionRef": {
+              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+            }
+          }
+        },
+        "endpoints": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "method",
+              "path",
+              "audience",
+              "operation",
+              "port",
+              "inputType",
+              "outputType",
+              "csrf"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+                "maxLength": 128
+              },
+              "method": {
+                "enum": [
+                  "GET",
+                  "POST"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "maxLength": 1024,
+                "pattern": "^/api/v1(?:/(?:[A-Za-z][A-Za-z0-9_-]*|:[A-Za-z][A-Za-z0-9_]*))+$"
+              },
+              "audience": {
+                "enum": [
+                  "customer",
+                  "operator"
+                ]
+              },
+              "operation": {
+                "enum": [
+                  "query",
+                  "command",
+                  "reconcile",
+                  "tick"
+                ]
+              },
+              "port": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "ref",
+                  "version"
+                ],
+                "properties": {
+                  "ref": {
+                    "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference"
+                  },
+                  "version": {
+                    "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+                  }
+                }
+              },
+              "inputType": {
+                "$ref": "urn:truthsrc:product-compilation:v1#/$defs/valueType"
+              },
+              "outputType": {
+                "$ref": "urn:truthsrc:product-compilation:v1#/$defs/valueType"
+              },
+              "csrf": {
+                "type": "boolean"
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "method": {
+                      "const": "GET"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "operation": {
+                      "const": "query"
+                    },
+                    "csrf": {
+                      "const": false
+                    }
+                  }
+                },
+                "else": {
+                  "properties": {
+                    "operation": {
+                      "enum": [
+                        "command",
+                        "reconcile",
+                        "tick"
+                      ]
+                    },
+                    "csrf": {
+                      "const": true
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "operation": {
+                      "enum": [
+                        "reconcile",
+                        "tick"
+                      ]
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "audience": {
+                      "const": "operator"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 1024
+        },
+        "projections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "version",
+              "aggregate",
+              "viewType",
+              "keyFields",
+              "events"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+                "maxLength": 128
+              },
+              "version": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+                "maxLength": 128
+              },
+              "aggregate": {
+                "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference"
+              },
+              "viewType": {
+                "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference"
+              },
+              "keyFields": {
+                "type": "array",
+                "items": {
+                  "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference"
+                },
+                "minItems": 1,
+                "maxItems": 1024,
+                "uniqueItems": true
+              },
+              "events": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "event",
+                    "fields"
+                  ],
+                  "properties": {
+                    "event": {
+                      "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference"
+                    },
+                    "fields": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "target",
+                          "source"
+                        ],
+                        "properties": {
+                          "target": {
+                            "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference"
+                          },
+                          "source": {
+                            "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference"
+                          }
+                        }
+                      },
+                      "minItems": 1,
+                      "maxItems": 1024
+                    }
+                  }
+                },
+                "minItems": 1,
+                "maxItems": 1024
+              }
+            }
+          },
+          "minItems": 0,
+          "maxItems": 1024
+        }
+      }
+    },
+    "portPin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref",
+        "version"
+      ],
+      "properties": {
+        "ref": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference"
+        },
+        "version": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+        }
+      }
+    },
+    "endpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "method",
+        "path",
+        "audience",
+        "operation",
+        "port",
+        "inputType",
+        "outputType",
+        "csrf"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "maxLength": 128
+        },
+        "method": {
+          "enum": [
+            "GET",
+            "POST"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "maxLength": 1024,
+          "pattern": "^/api/v1(?:/(?:[A-Za-z][A-Za-z0-9_-]*|:[A-Za-z][A-Za-z0-9_]*))+$"
+        },
+        "audience": {
+          "enum": [
+            "customer",
+            "operator"
+          ]
+        },
+        "operation": {
+          "enum": [
+            "query",
+            "command",
+            "reconcile",
+            "tick"
+          ]
+        },
+        "port": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "ref",
+            "version"
+          ],
+          "properties": {
+            "ref": {
+              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference"
+            },
+            "version": {
+              "$ref": "urn:truthsrc:product-compilation:v1#/$defs/text"
+            }
+          }
+        },
+        "inputType": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/valueType"
+        },
+        "outputType": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/valueType"
+        },
+        "csrf": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "GET"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "operation": {
+                "const": "query"
+              },
+              "csrf": {
+                "const": false
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "operation": {
+                "enum": [
+                  "command",
+                  "reconcile",
+                  "tick"
+                ]
+              },
+              "csrf": {
+                "const": true
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "enum": [
+                  "reconcile",
+                  "tick"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "audience": {
+                "const": "operator"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "projection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "aggregate",
+        "viewType",
+        "keyFields",
+        "events"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "maxLength": 128
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "maxLength": 128
+        },
+        "aggregate": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference"
+        },
+        "viewType": {
+          "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference"
+        },
+        "keyFields": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference"
+          },
+          "minItems": 1,
+          "maxItems": 1024,
+          "uniqueItems": true
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "event",
+              "fields"
+            ],
+            "properties": {
+              "event": {
+                "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference"
+              },
+              "fields": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "target",
+                    "source"
+                  ],
+                  "properties": {
+                    "target": {
+                      "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference"
+                    },
+                    "source": {
+                      "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference"
+                    }
+                  }
+                },
+                "minItems": 1,
+                "maxItems": 1024
+              }
+            }
+          },
+          "minItems": 1,
+          "maxItems": 1024
+        }
+      }
+    }
+  },
+  "$comment": "Structural schema only; source pins, ownership, route overlap and field types require the public typed compiler."
+}
