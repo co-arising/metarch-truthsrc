@@ -57,7 +57,8 @@ export function produce({ products, options }) {
   const entry = (path, content, kind) => ({ path, content, kind, deps: [], knowledgeIds, productFootprint: footprint, merge: null });
   const model = { schemaVersion: 'truthsrc.product-design-review/v1', purpose: 'design-review-only', runnable: false, product: { id: 'product-design', version: '1' }, designs };
   const index = { schemaVersion: 'truthsrc.product-design-source-index/v1', purpose: 'design-review-only', runnable: false, sources };
-  return [entry('design/product-designs.json', JSON.stringify(model, null, 2) + '\n', 'design-model'),
+  const json = value => { const pretty = JSON.stringify(value, null, 2) + '\n'; return pretty.length <= 65536 ? pretty : JSON.stringify(value) + '\n'; };
+  return [entry('design/product-designs.json', json(model), 'design-model'),
     ...planes.map(p => entry('design/' + p + '.mmd', diagram(designs, p), 'design-plane')),
-    entry('design/source-index.json', JSON.stringify(index, null, 2) + '\n', 'design-source-index')];
+    entry('design/source-index.json', json(index), 'design-source-index')];
 }

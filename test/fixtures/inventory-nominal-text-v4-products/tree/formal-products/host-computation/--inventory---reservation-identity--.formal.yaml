@@ -1,0 +1,60 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: formal-product
+schemaVersion: "truthsrc.formal-product/v1"
+family: host-computation
+id: "[\"inventory\",\"ReservationIdentity\"]"
+version: identity-v1
+payload:
+  {
+    "id": {
+      "context": "inventory",
+      "kind": "port",
+      "owner": [],
+      "id": "ReservationIdentity"
+    },
+    "version": "identity-v1",
+    "command": {
+      "context": "inventory",
+      "kind": "command",
+      "owner": [
+        "Warehouse"
+      ],
+      "id": "ReserveSkuQuantity"
+    },
+    "outputType": {
+      "form": "nominal",
+      "ref": {
+        "context": "inventory",
+        "kind": "type",
+        "owner": [],
+        "id": "ReservationId"
+      }
+    },
+    "inputDependencies": [
+      {
+        "context": "inventory",
+        "kind": "parameter",
+        "owner": [
+          "Warehouse",
+          "ReserveSkuQuantity"
+        ],
+        "id": "txid"
+      }
+    ],
+    "stableIdentityContract": {
+      "id": "reservation-per-original-transaction",
+      "version": "identity-v1",
+      "keys": [
+        {
+          "context": "inventory",
+          "kind": "parameter",
+          "owner": [
+            "Warehouse",
+            "ReserveSkuQuantity"
+          ],
+          "id": "txid"
+        }
+      ]
+    }
+  }

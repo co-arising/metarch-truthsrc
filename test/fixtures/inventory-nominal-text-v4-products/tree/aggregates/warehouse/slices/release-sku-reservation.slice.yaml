@@ -1,0 +1,35 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: slice
+aggregate: Warehouse
+command: ReleaseSkuReservation
+payload:
+  {
+    "name": "ReleaseSkuReservation",
+    "parameters": [
+      {
+        "name": "txid",
+        "dataType": "TxId",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "warehouse",
+        "dataType": "WarehouseId",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "sku",
+        "dataType": "SkuId",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "reservation",
+        "dataType": "ReservationId",
+        "origin": "BUSINESS_INPUT"
+      }
+    ],
+    "produces": [
+      "SkuReservationReleased"
+    ],
+    "guards": []
+  }

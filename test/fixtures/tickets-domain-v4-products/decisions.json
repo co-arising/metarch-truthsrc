@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "truthsrc.domain-semantic-binding/v4",
+  "decisions": {
+    "commands": [
+      {
+        "command": {
+          "context": "tickets",
+          "kind": "command",
+          "owner": [
+            "Booking"
+          ],
+          "id": "Reserve"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0"
+        },
+        "decisions": [
+          {
+            "sourceOrdinal": 0,
+            "ruleId": "nonempty-ticket",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/guards/0"
+            },
+            "predicate": {
+              "op": "non-empty",
+              "argument": {
+                "op": "text-value",
+                "argument": {
+                  "op": "ref",
+                  "ref": {
+                    "context": "tickets",
+                    "kind": "parameter",
+                    "owner": [
+                      "Booking",
+                      "Reserve"
+                    ],
+                    "id": "type"
+                  }
+                }
+              }
+            },
+            "onFalse": {
+              "kind": "reject",
+              "errCode": "EMPTY_TICKET"
+            },
+            "dependencies": [
+              {
+                "context": "tickets",
+                "kind": "parameter",
+                "owner": [
+                  "Booking",
+                  "Reserve"
+                ],
+                "id": "type"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

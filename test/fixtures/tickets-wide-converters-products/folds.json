@@ -1,0 +1,2569 @@
+{
+  "schemaVersion": "truthsrc.domain-fold-binding/v6",
+  "folds": {
+    "defaults": [
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "type"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "TicketId"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/0/default"
+        },
+        "value": ""
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "reserved"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "boolean"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/1/default"
+        },
+        "value": false
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "distance"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "Distance"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/2/default"
+        },
+        "value": "0.000"
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger0"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord0"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/3/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger1"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord1"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/4/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger2"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord2"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/5/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger3"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord3"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/6/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger4"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord4"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/7/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger5"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord5"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/8/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger6"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord6"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/9/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger7"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord7"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/10/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger8"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord8"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/11/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger9"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord9"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/12/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger10"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord10"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/13/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger11"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord11"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/14/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger12"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord12"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/15/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger13"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord13"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/16/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger14"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord14"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/17/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger15"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord15"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/18/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger16"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord16"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/19/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger17"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord17"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/20/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger18"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord18"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/21/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger19"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord19"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/22/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger20"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord20"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/23/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger21"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord21"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/24/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger22"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord22"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/25/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger23"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord23"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/26/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger24"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord24"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/27/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger25"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord25"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/28/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger26"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord26"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/29/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger27"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord27"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/30/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger28"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord28"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/31/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger29"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord29"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/32/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger30"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord30"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/33/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger31"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord31"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/34/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger32"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord32"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/35/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger33"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord33"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/36/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger34"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord34"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/37/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger35"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord35"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/38/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger36"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord36"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/39/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger37"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord37"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/40/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger38"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord38"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/41/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      },
+      {
+        "target": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "passenger39"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "PassengerRecord39"
+          }
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/42/default"
+        },
+        "value": {
+          "passengerAttribute0": "",
+          "passengerAttribute1": "",
+          "passengerAttribute2": "",
+          "passengerAttribute3": "",
+          "passengerAttribute4": "",
+          "passengerAttribute5": "",
+          "passengerAttribute6": "",
+          "passengerAttribute7": "",
+          "passengerAttribute8": "",
+          "passengerAttribute9": "",
+          "passengerAttribute10": "",
+          "passengerAttribute11": "",
+          "passengerAttribute12": "",
+          "passengerAttribute13": "",
+          "passengerAttribute14": "",
+          "passengerAttribute15": "",
+          "passengerAttribute16": "",
+          "passengerAttribute17": "",
+          "passengerAttribute18": "",
+          "passengerAttribute19": "",
+          "passengerAttribute20": "",
+          "passengerAttribute21": "",
+          "passengerAttribute22": "",
+          "passengerAttribute23": "",
+          "passengerAttribute24": "",
+          "passengerAttribute25": "",
+          "passengerAttribute26": "",
+          "passengerAttribute27": "",
+          "passengerAttribute28": "",
+          "passengerAttribute29": "",
+          "passengerAttribute30": "",
+          "type": ""
+        }
+      }
+    ],
+    "events": [
+      {
+        "event": {
+          "context": "tickets",
+          "kind": "event",
+          "owner": [
+            "Booking"
+          ],
+          "id": "Reserved"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/0"
+        },
+        "assignments": [
+          {
+            "target": {
+              "context": "tickets",
+              "kind": "state-field",
+              "owner": [
+                "Booking"
+              ],
+              "id": "type"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "tickets",
+                "kind": "type",
+                "owner": [],
+                "id": "TicketId"
+              }
+            },
+            "sourceOrdinal": 0,
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/0/foldAssignments/0"
+            },
+            "update": {
+              "op": "set",
+              "value": {
+                "op": "ref",
+                "ref": {
+                  "context": "tickets",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Booking",
+                    "Reserved"
+                  ],
+                  "id": "type"
+                }
+              }
+            },
+            "dependencies": [
+              {
+                "context": "tickets",
+                "kind": "event-slot",
+                "owner": [
+                  "Booking",
+                  "Reserved"
+                ],
+                "id": "type"
+              }
+            ]
+          },
+          {
+            "target": {
+              "context": "tickets",
+              "kind": "state-field",
+              "owner": [
+                "Booking"
+              ],
+              "id": "reserved"
+            },
+            "valueType": {
+              "form": "primitive",
+              "name": "boolean"
+            },
+            "sourceOrdinal": 1,
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/0/foldAssignments/1"
+            },
+            "update": {
+              "op": "set",
+              "value": {
+                "op": "literal",
+                "valueType": {
+                  "form": "primitive",
+                  "name": "boolean"
+                },
+                "value": true
+              }
+            },
+            "dependencies": []
+          },
+          {
+            "target": {
+              "context": "tickets",
+              "kind": "state-field",
+              "owner": [
+                "Booking"
+              ],
+              "id": "distance"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "tickets",
+                "kind": "type",
+                "owner": [],
+                "id": "Distance"
+              }
+            },
+            "sourceOrdinal": 2,
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/0/foldAssignments/2"
+            },
+            "update": {
+              "op": "set",
+              "value": {
+                "op": "ref",
+                "ref": {
+                  "context": "tickets",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Booking",
+                    "Reserved"
+                  ],
+                  "id": "distance"
+                }
+              }
+            },
+            "dependencies": [
+              {
+                "context": "tickets",
+                "kind": "event-slot",
+                "owner": [
+                  "Booking",
+                  "Reserved"
+                ],
+                "id": "distance"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "event": {
+          "context": "tickets",
+          "kind": "event",
+          "owner": [
+            "Booking"
+          ],
+          "id": "Imported"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/1"
+        },
+        "assignments": [
+          {
+            "target": {
+              "context": "tickets",
+              "kind": "state-field",
+              "owner": [
+                "Booking"
+              ],
+              "id": "type"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "tickets",
+                "kind": "type",
+                "owner": [],
+                "id": "TicketId"
+              }
+            },
+            "sourceOrdinal": 0,
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/1/foldAssignments/0"
+            },
+            "update": {
+              "op": "set",
+              "value": {
+                "op": "ref",
+                "ref": {
+                  "context": "tickets",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Booking",
+                    "Imported"
+                  ],
+                  "id": "type"
+                }
+              }
+            },
+            "dependencies": [
+              {
+                "context": "tickets",
+                "kind": "event-slot",
+                "owner": [
+                  "Booking",
+                  "Imported"
+                ],
+                "id": "type"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

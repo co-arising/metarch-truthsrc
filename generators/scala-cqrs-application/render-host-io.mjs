@@ -1,5 +1,5 @@
 import { entry, key, packageFor, pathFor, symbol, typeName } from '../scala-cqrs-domain/naming.mjs';
-import { fail } from '../../lib/products/request.mjs';
+import { equal, fail } from '../../lib/products/request.mjs';
 
 /** All host I/O goes through the exact installed objects; authority results retain full lineage. */
 export function wireHostIO(text, stem, original, readOriginal, pending, policy = false, occurrence = null) {
@@ -28,6 +28,10 @@ export function renderHostIO({products,options},footprint){
  return products['saga-host-contract'].hosts.map(h=>{
   const pkg=packageFor(h.saga.ref.context,options),stem=h.id.replaceAll('-','_'),original=typeName(h.entry.inputType,options),technical=stem+'TechnicalPorts';
   const runtime=products['saga-runtime-contract'].sagas.find(s=>s.sagaId===h.saga.ref.id&&s.definitionVersion===h.saga.version),trigger=runtime.triggers.find(t=>t.declaration.id===h.entry.triggerId).declaration;
+  for(const r of h.results){
+   const authority=pins.find(p=>key(p.ref)===key(r.authorityPort.ref)&&p.version===r.authorityPort.version);
+   if(!authority||!equal(authority.inputType,h.entry.inputType)||!equal(authority.outputType,r.inputType))fail('APPLICATION_HOST','authority must consume the complete original and return the exact result record');
+  }
   const values=r=>r.inputs.map(m=>{
    if(m.input.kind==='args')return 'original.'+symbol(trigger.argsMapping.find(a=>a.slot===m.input.slot).ref.slice(7));
    if(m.input.kind==='transaction-id')return field(m.slot).valueType.form==='nominal'?typeName(field(m.slot).valueType,options)+'(identity.transactionId)':'identity.transactionId';

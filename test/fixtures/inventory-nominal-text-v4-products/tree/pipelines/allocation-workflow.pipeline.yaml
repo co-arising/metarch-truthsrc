@@ -1,0 +1,294 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: pipeline
+id: allocation-workflow
+name: "Independent durable allocation invocation workflow"
+steps:
+  [
+    {
+      "id": "allocate",
+      "name": "Allocate through the declared three participant Saga",
+      "execution": {
+        "invokeSaga": {
+          "ref": {
+            "sagaId": "reserve-warehouse-sku",
+            "version": "inventory-v3"
+          },
+          "args": [
+            {
+              "slot": "warehouse",
+              "type": "WarehouseId",
+              "ref": "input:warehouse"
+            },
+            {
+              "slot": "sku",
+              "type": "SkuId",
+              "ref": "input:sku"
+            },
+            {
+              "slot": "quantity",
+              "type": "Quantity",
+              "ref": "input:quantity"
+            },
+            {
+              "slot": "allocation",
+              "type": "AllocationId",
+              "ref": "input:allocation"
+            },
+            {
+              "slot": "destination",
+              "type": "WarehouseId",
+              "ref": "input:destination"
+            }
+          ],
+          "transactionIdentity": {
+            "type": "TxId",
+            "derivation": "durable-source-stage",
+            "source": {
+              "ref": "input:requestId",
+              "type": "ReservationRequestId"
+            },
+            "stageId": "allocate",
+            "stageOccurrence": {
+              "ref": "input:occurrence",
+              "type": "ReservationRequestId"
+            },
+            "scope": "saga-version",
+            "conflict": "reject-different-args"
+          },
+          "start": "durable-intent-before-start",
+          "completionMode": "await-terminal",
+          "results": [
+            {
+              "resultKind": "succeeded",
+              "code": "Succeeded",
+              "outputs": [
+                {
+                  "slot": "txid",
+                  "ref": "result:txid",
+                  "type": "TxId"
+                }
+              ]
+            },
+            {
+              "resultKind": "rejected-before-effects",
+              "code": "Rejected",
+              "outputs": []
+            },
+            {
+              "resultKind": "compensated",
+              "code": "Compensated",
+              "outputs": []
+            },
+            {
+              "resultKind": "recovery-required",
+              "code": "RecoveryRequired",
+              "outputs": []
+            },
+            {
+              "resultKind": "outcome-unknown",
+              "code": "Unknown",
+              "outputs": []
+            }
+          ]
+        },
+        "reads": [
+          {
+            "slot": "requestId",
+            "type": "ReservationRequestId",
+            "ref": "input:requestId"
+          },
+          {
+            "slot": "occurrence",
+            "type": "ReservationRequestId",
+            "ref": "input:occurrence"
+          },
+          {
+            "slot": "warehouse",
+            "type": "WarehouseId",
+            "ref": "input:warehouse"
+          },
+          {
+            "slot": "sku",
+            "type": "SkuId",
+            "ref": "input:sku"
+          },
+          {
+            "slot": "quantity",
+            "type": "Quantity",
+            "ref": "input:quantity"
+          },
+          {
+            "slot": "allocation",
+            "type": "AllocationId",
+            "ref": "input:allocation"
+          },
+          {
+            "slot": "destination",
+            "type": "WarehouseId",
+            "ref": "input:destination"
+          }
+        ],
+        "writes": [
+          {
+            "id": "txid",
+            "slot": "txid",
+            "type": "TxId",
+            "durability": "checkpoint"
+          }
+        ],
+        "outcomes": [
+          {
+            "code": "Succeeded",
+            "kind": "success",
+            "action": "continue"
+          },
+          {
+            "code": "Rejected",
+            "kind": "business-rejection",
+            "action": "stop"
+          },
+          {
+            "code": "Compensated",
+            "kind": "business-rejection",
+            "action": "stop"
+          },
+          {
+            "code": "RecoveryRequired",
+            "kind": "infrastructure-failure",
+            "action": "manual-recovery"
+          },
+          {
+            "code": "Unknown",
+            "kind": "unknown-effect",
+            "action": "manual-recovery"
+          }
+        ]
+      }
+    },
+    {
+      "id": "audit",
+      "name": "Record allocation association after authoritative Saga result",
+      "execution": {
+        "port": "RecordAllocationAssociation",
+        "reads": [
+          {
+            "slot": "requestId",
+            "type": "ReservationRequestId",
+            "ref": "input:requestId"
+          },
+          {
+            "slot": "txid",
+            "type": "TxId",
+            "ref": "step:allocate:txid"
+          },
+          {
+            "slot": "allocation",
+            "type": "AllocationId",
+            "ref": "input:allocation"
+          }
+        ],
+        "writes": [
+          {
+            "id": "allocation",
+            "slot": "allocation",
+            "type": "AllocationId",
+            "durability": "checkpoint"
+          }
+        ],
+        "outcomes": [
+          {
+            "code": "Recorded",
+            "kind": "success",
+            "action": "continue"
+          },
+          {
+            "code": "Refused",
+            "kind": "business-rejection",
+            "action": "stop"
+          },
+          {
+            "code": "Unavailable",
+            "kind": "infrastructure-failure",
+            "action": "manual-recovery"
+          },
+          {
+            "code": "Unknown",
+            "kind": "unknown-effect",
+            "action": "manual-recovery"
+          }
+        ]
+      }
+    }
+  ]
+execution:
+  {
+    "schemaVersion": "truthsrc.execution/v1",
+    "inputs": [
+      {
+        "id": "requestId",
+        "type": "ReservationRequestId",
+        "durability": "start-record"
+      },
+      {
+        "id": "occurrence",
+        "type": "ReservationRequestId",
+        "durability": "start-record"
+      },
+      {
+        "id": "warehouse",
+        "type": "WarehouseId",
+        "durability": "start-record"
+      },
+      {
+        "id": "sku",
+        "type": "SkuId",
+        "durability": "start-record"
+      },
+      {
+        "id": "quantity",
+        "type": "Quantity",
+        "durability": "start-record"
+      },
+      {
+        "id": "allocation",
+        "type": "AllocationId",
+        "durability": "start-record"
+      },
+      {
+        "id": "destination",
+        "type": "WarehouseId",
+        "durability": "start-record"
+      }
+    ],
+    "outputs": [
+      {
+        "id": "txid",
+        "type": "TxId",
+        "ref": "step:allocate:txid"
+      }
+    ],
+    "recovery": {
+      "inputResponsibility": "host",
+      "inputs": [
+        "input:requestId",
+        "input:occurrence",
+        "input:warehouse",
+        "input:sku",
+        "input:quantity",
+        "input:allocation",
+        "input:destination"
+      ],
+      "planVersion": "allocate-v1",
+      "planCompatibility": "exact",
+      "checkpoint": "confirmed-prefix",
+      "unknownEffect": "reconcile-before-resume",
+      "ownership": "single-writer"
+    },
+    "admission": {
+      "maxConcurrentRuns": 1,
+      "maxInFlightSteps": 1,
+      "maxItemsPerChunk": 1,
+      "maxInFlightChunks": 1
+    }
+  }

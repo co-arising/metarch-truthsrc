@@ -1,0 +1,117 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: aggregate
+name: AllocationOrder
+context: inventory
+order:
+  commands: ["PrepareAllocation","CommitAllocation","CancelAllocation"]
+  events: ["AllocationPrepared","AllocationCommitted","AllocationCancelled","ReservationSucceeded","ReservationRejected","ReservationCompensated","ReservationRecoveryRequired","ReservationOutcomeUnknown"]
+payload:
+  {
+    "name": "AllocationOrder",
+    "identifier": {
+      "name": "id",
+      "dataType": "AllocationId",
+      "origin": "BUSINESS_INPUT"
+    },
+    "stateFields": [
+      {
+        "name": "status",
+        "dataType": "String",
+        "default": "new"
+      },
+      {
+        "name": "result",
+        "dataType": "String",
+        "default": ""
+      }
+    ]
+  }
+extraEvents:
+  [
+    {
+      "name": "ReservationSucceeded",
+      "payloads": [
+        {
+          "name": "txid",
+          "dataType": "TxId",
+          "origin": "BUSINESS_INPUT"
+        }
+      ],
+      "bindings": [],
+      "foldAssignments": [
+        {
+          "slot": "result",
+          "expr": "literal:ReservationSucceeded"
+        }
+      ]
+    },
+    {
+      "name": "ReservationRejected",
+      "payloads": [
+        {
+          "name": "txid",
+          "dataType": "TxId",
+          "origin": "BUSINESS_INPUT"
+        }
+      ],
+      "bindings": [],
+      "foldAssignments": [
+        {
+          "slot": "result",
+          "expr": "literal:ReservationRejected"
+        }
+      ]
+    },
+    {
+      "name": "ReservationCompensated",
+      "payloads": [
+        {
+          "name": "txid",
+          "dataType": "TxId",
+          "origin": "BUSINESS_INPUT"
+        }
+      ],
+      "bindings": [],
+      "foldAssignments": [
+        {
+          "slot": "result",
+          "expr": "literal:ReservationCompensated"
+        }
+      ]
+    },
+    {
+      "name": "ReservationRecoveryRequired",
+      "payloads": [
+        {
+          "name": "txid",
+          "dataType": "TxId",
+          "origin": "BUSINESS_INPUT"
+        }
+      ],
+      "bindings": [],
+      "foldAssignments": [
+        {
+          "slot": "result",
+          "expr": "literal:ReservationRecoveryRequired"
+        }
+      ]
+    },
+    {
+      "name": "ReservationOutcomeUnknown",
+      "payloads": [
+        {
+          "name": "txid",
+          "dataType": "TxId",
+          "origin": "BUSINESS_INPUT"
+        }
+      ],
+      "bindings": [],
+      "foldAssignments": [
+        {
+          "slot": "result",
+          "expr": "literal:ReservationOutcomeUnknown"
+        }
+      ]
+    }
+  ]

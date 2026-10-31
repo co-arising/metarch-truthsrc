@@ -1,0 +1,163 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: aggregate
+name: Warehouse
+context: inventory
+order:
+  commands: ["ReserveSkuQuantity","CommitSkuReservation","ReleaseSkuReservation","RequestSkuReservation"]
+  events: ["SkuQuantityReserved","SkuReservationCommitted","SkuReservationReleased","SkuReservationRequested"]
+payload:
+  {
+    "name": "Warehouse",
+    "identifier": {
+      "name": "id",
+      "dataType": "WarehouseId",
+      "origin": "BUSINESS_INPUT"
+    },
+    "stateFields": [
+      {
+        "name": "receipts",
+        "dataType": "Map[TxId, String]",
+        "default": []
+      }
+    ]
+  }
+extraEvents:
+  [
+    {
+      "name": "SkuQuantityReserved",
+      "payloads": [
+        {
+          "name": "reservation",
+          "dataType": "ReservationId",
+          "origin": "BUSINESS_INPUT"
+        }
+      ],
+      "bindings": [
+        {
+          "slot": "reservation",
+          "expr": {
+            "form": "host",
+            "id": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ReservationIdentity"
+            },
+            "version": "identity-v1"
+          }
+        }
+      ],
+      "foldAssignments": []
+    },
+    {
+      "name": "SkuReservationCommitted",
+      "payloads": [
+        {
+          "name": "txid",
+          "dataType": "TxId",
+          "origin": "BUSINESS_INPUT"
+        }
+      ],
+      "bindings": [
+        {
+          "slot": "txid",
+          "expr": "param.txid"
+        }
+      ],
+      "foldAssignments": [
+        {
+          "slot": "receipts",
+          "op": "put",
+          "key": "event.txid",
+          "value": "literal:SkuReservationCommitted"
+        }
+      ]
+    },
+    {
+      "name": "SkuReservationReleased",
+      "payloads": [
+        {
+          "name": "txid",
+          "dataType": "TxId",
+          "origin": "BUSINESS_INPUT"
+        }
+      ],
+      "bindings": [
+        {
+          "slot": "txid",
+          "expr": "param.txid"
+        }
+      ],
+      "foldAssignments": [
+        {
+          "slot": "receipts",
+          "op": "put",
+          "key": "event.txid",
+          "value": "literal:SkuReservationReleased"
+        }
+      ]
+    },
+    {
+      "name": "SkuReservationRequested",
+      "payloads": [
+        {
+          "name": "requestId",
+          "dataType": "ReservationRequestId",
+          "origin": "BUSINESS_INPUT"
+        },
+        {
+          "name": "warehouse",
+          "dataType": "WarehouseId",
+          "origin": "BUSINESS_INPUT"
+        },
+        {
+          "name": "sku",
+          "dataType": "SkuId",
+          "origin": "BUSINESS_INPUT"
+        },
+        {
+          "name": "quantity",
+          "dataType": "Int",
+          "origin": "BUSINESS_INPUT"
+        },
+        {
+          "name": "allocation",
+          "dataType": "AllocationId",
+          "origin": "BUSINESS_INPUT"
+        },
+        {
+          "name": "destination",
+          "dataType": "WarehouseId",
+          "origin": "BUSINESS_INPUT"
+        }
+      ],
+      "bindings": [
+        {
+          "slot": "requestId",
+          "expr": "param.requestId"
+        },
+        {
+          "slot": "warehouse",
+          "expr": "param.warehouse"
+        },
+        {
+          "slot": "sku",
+          "expr": "param.sku"
+        },
+        {
+          "slot": "quantity",
+          "expr": "param.quantity"
+        },
+        {
+          "slot": "allocation",
+          "expr": "param.allocation"
+        },
+        {
+          "slot": "destination",
+          "expr": "param.destination"
+        }
+      ],
+      "foldAssignments": []
+    }
+  ]

@@ -1,0 +1,103 @@
+{
+  "schemaVersion": "truthsrc.domain-external-event-binding/v2",
+  "externalEvents": {
+    "producers": [
+      {
+        "id": "ticketImported",
+        "version": "tickets-v1",
+        "kind": "technical-bridge",
+        "event": {
+          "context": "tickets",
+          "kind": "event",
+          "owner": [
+            "Booking"
+          ],
+          "id": "Imported"
+        },
+        "port": {
+          "context": "tickets",
+          "kind": "port",
+          "owner": [],
+          "id": "TicketReceiptPort"
+        },
+        "outputType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "TicketReceipt"
+          }
+        },
+        "slots": [
+          {
+            "slot": {
+              "context": "tickets",
+              "kind": "event-slot",
+              "owner": [
+                "Booking",
+                "Imported"
+              ],
+              "id": "type"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "tickets",
+                "kind": "type",
+                "owner": [],
+                "id": "TicketId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/externalEventProducers/0/slotMappings/0"
+            },
+            "member": {
+              "context": "tickets",
+              "kind": "member",
+              "owner": [
+                "TicketReceipt"
+              ],
+              "id": "type"
+            },
+            "dependencies": [
+              {
+                "context": "tickets",
+                "kind": "port",
+                "owner": [],
+                "id": "TicketReceiptPort"
+              },
+              {
+                "context": "tickets",
+                "kind": "member",
+                "owner": [
+                  "TicketReceipt"
+                ],
+                "id": "type"
+              }
+            ]
+          }
+        ],
+        "stableIdentityContract": {
+          "id": "ticket-import",
+          "version": "tickets-v1",
+          "keys": [
+            {
+              "context": "tickets",
+              "kind": "member",
+              "owner": [
+                "TicketReceipt"
+              ],
+              "id": "type"
+            }
+          ]
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/externalEventProducers/0"
+        }
+      }
+    ]
+  }
+}

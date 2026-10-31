@@ -1,0 +1,45 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: slice
+aggregate: Warehouse
+command: RequestSkuReservation
+payload:
+  {
+    "name": "RequestSkuReservation",
+    "parameters": [
+      {
+        "name": "requestId",
+        "dataType": "ReservationRequestId",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "warehouse",
+        "dataType": "WarehouseId",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "sku",
+        "dataType": "SkuId",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "quantity",
+        "dataType": "Int",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "allocation",
+        "dataType": "AllocationId",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "destination",
+        "dataType": "WarehouseId",
+        "origin": "BUSINESS_INPUT"
+      }
+    ],
+    "produces": [
+      "SkuReservationRequested"
+    ],
+    "guards": []
+  }

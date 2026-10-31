@@ -1,0 +1,60 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: formal-product
+schemaVersion: "truthsrc.formal-product/v1"
+family: host-computation
+id: "[\"tickets\",\"TicketIdentity\"]"
+version: tickets-v1
+payload:
+  {
+    "id": {
+      "context": "tickets",
+      "kind": "port",
+      "owner": [],
+      "id": "TicketIdentity"
+    },
+    "version": "tickets-v1",
+    "command": {
+      "context": "tickets",
+      "kind": "command",
+      "owner": [
+        "Booking"
+      ],
+      "id": "Reserve"
+    },
+    "outputType": {
+      "form": "nominal",
+      "ref": {
+        "context": "tickets",
+        "kind": "type",
+        "owner": [],
+        "id": "TicketId"
+      }
+    },
+    "inputDependencies": [
+      {
+        "context": "tickets",
+        "kind": "parameter",
+        "owner": [
+          "Booking",
+          "Reserve"
+        ],
+        "id": "type"
+      }
+    ],
+    "stableIdentityContract": {
+      "id": "ticket-identity",
+      "version": "tickets-v1",
+      "keys": [
+        {
+          "context": "tickets",
+          "kind": "parameter",
+          "owner": [
+            "Booking",
+            "Reserve"
+          ],
+          "id": "type"
+        }
+      ]
+    }
+  }

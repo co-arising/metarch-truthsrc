@@ -1,0 +1,44 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: slice
+aggregate: Warehouse
+command: ReserveSkuQuantity
+payload:
+  {
+    "name": "ReserveSkuQuantity",
+    "parameters": [
+      {
+        "name": "txid",
+        "dataType": "TxId",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "warehouse",
+        "dataType": "WarehouseId",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "sku",
+        "dataType": "SkuId",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "quantity",
+        "dataType": "Int",
+        "origin": "BUSINESS_INPUT"
+      }
+    ],
+    "produces": [
+      "SkuQuantityReserved"
+    ],
+    "guards": [
+      {
+        "kind": "invariantRef",
+        "ref": "positive-integer-quantity",
+        "errCode": "quantity-positive",
+        "cond": "param.quantity > 0",
+        "desc": "Original positive integer quantity contract",
+        "onFail": "reject"
+      }
+    ]
+  }

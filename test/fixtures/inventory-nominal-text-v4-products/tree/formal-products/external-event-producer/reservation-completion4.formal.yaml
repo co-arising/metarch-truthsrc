@@ -1,0 +1,71 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: formal-product
+schemaVersion: "truthsrc.formal-product/v1"
+family: external-event-producer
+id: reservationCompletion4
+version: port-v1
+payload:
+  {
+    "id": "reservationCompletion4",
+    "version": "port-v1",
+    "kind": "saga-completion",
+    "event": {
+      "context": "inventory",
+      "kind": "event",
+      "owner": [
+        "AllocationOrder"
+      ],
+      "id": "ReservationOutcomeUnknown"
+    },
+    "port": {
+      "context": "inventory",
+      "kind": "port",
+      "owner": [],
+      "id": "ResultAuthority4"
+    },
+    "outputType": {
+      "form": "nominal",
+      "ref": {
+        "context": "inventory",
+        "kind": "type",
+        "owner": [],
+        "id": "CompletionRecord4"
+      }
+    },
+    "slotMappings": [
+      {
+        "slot": {
+          "context": "inventory",
+          "kind": "event-slot",
+          "owner": [
+            "AllocationOrder",
+            "ReservationOutcomeUnknown"
+          ],
+          "id": "txid"
+        },
+        "member": {
+          "context": "inventory",
+          "kind": "member",
+          "owner": [
+            "CompletionRecord4"
+          ],
+          "id": "txid"
+        }
+      }
+    ],
+    "stableIdentityContract": {
+      "id": "completion-original-4",
+      "version": "identity-v1",
+      "keys": [
+        {
+          "context": "inventory",
+          "kind": "member",
+          "owner": [
+            "CompletionRecord4"
+          ],
+          "id": "txid"
+        }
+      ]
+    }
+  }

@@ -621,6 +621,63 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "domain-decision"
+              },
+              "version": {
+                "const": "4"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:domain-guards:v4#/$defs/decisions"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "domain-dependencies"
+              },
+              "version": {
+                "const": "6"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:domain-guards:v4#/$defs/dependencies"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "const": "domain-folds"
+              },
+              "version": {
+                "const": "6"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payload": {
+                "$ref": "urn:truthsrc:domain-guards:v4#/$defs/folds"
+              }
+            }
+          }
         }
       ]
     }

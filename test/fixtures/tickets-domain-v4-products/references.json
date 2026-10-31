@@ -1,0 +1,561 @@
+{
+  "schemaVersion": "truthsrc.reference-binding/v1",
+  "layout": {
+    "contexts": [
+      "tickets"
+    ],
+    "declarations": [
+      {
+        "ref": {
+          "context": "tickets",
+          "kind": "type",
+          "owner": [],
+          "id": "TicketId"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/valueObjects/0"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "tickets",
+          "kind": "type",
+          "owner": [],
+          "id": "TicketReceipt"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/valueObjects/1"
+        },
+        "valueType": {
+          "form": "record",
+          "members": [
+            {
+              "context": "tickets",
+              "kind": "member",
+              "owner": [
+                "TicketReceipt"
+              ],
+              "id": "type"
+            }
+          ]
+        },
+        "dependencies": [
+          {
+            "context": "tickets",
+            "kind": "member",
+            "owner": [
+              "TicketReceipt"
+            ],
+            "id": "type"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "tickets",
+          "kind": "member",
+          "owner": [
+            "TicketReceipt"
+          ],
+          "id": "type"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/valueObjects/1/fields/0"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "TicketId"
+          }
+        },
+        "dependencies": [
+          {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "TicketReceipt"
+          },
+          {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "TicketId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "tickets",
+          "kind": "type",
+          "owner": [],
+          "id": "Distance"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/valueObjects/2"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "decimal"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "tickets",
+          "kind": "type",
+          "owner": [],
+          "id": "DistanceWire"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/valueObjects/3"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "tickets",
+          "kind": "type",
+          "owner": [],
+          "id": "DistancePO"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/valueObjects/4"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "tickets",
+          "kind": "port",
+          "owner": [],
+          "id": "TicketIdentity"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/ports/0"
+        },
+        "valueType": null,
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "tickets",
+          "kind": "port",
+          "owner": [],
+          "id": "TicketReceiptPort"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/ports/1"
+        },
+        "valueType": null,
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "tickets",
+          "kind": "aggregate",
+          "owner": [],
+          "id": "Booking"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0"
+        },
+        "valueType": null,
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "type"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/0"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "TicketId"
+          }
+        },
+        "dependencies": [
+          {
+            "context": "tickets",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Booking"
+          },
+          {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "TicketId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "reserved"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/1"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "boolean"
+        },
+        "dependencies": [
+          {
+            "context": "tickets",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Booking"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "tickets",
+          "kind": "state-field",
+          "owner": [
+            "Booking"
+          ],
+          "id": "distance"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/stateFields/2"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "Distance"
+          }
+        },
+        "dependencies": [
+          {
+            "context": "tickets",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Booking"
+          },
+          {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "Distance"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "tickets",
+          "kind": "command",
+          "owner": [
+            "Booking"
+          ],
+          "id": "Reserve"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0"
+        },
+        "valueType": null,
+        "dependencies": [
+          {
+            "context": "tickets",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Booking"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "tickets",
+          "kind": "parameter",
+          "owner": [
+            "Booking",
+            "Reserve"
+          ],
+          "id": "type"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0/parameters/0"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "TicketId"
+          }
+        },
+        "dependencies": [
+          {
+            "context": "tickets",
+            "kind": "command",
+            "owner": [
+              "Booking"
+            ],
+            "id": "Reserve"
+          },
+          {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "TicketId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "tickets",
+          "kind": "parameter",
+          "owner": [
+            "Booking",
+            "Reserve"
+          ],
+          "id": "distance"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0/parameters/1"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "Distance"
+          }
+        },
+        "dependencies": [
+          {
+            "context": "tickets",
+            "kind": "command",
+            "owner": [
+              "Booking"
+            ],
+            "id": "Reserve"
+          },
+          {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "Distance"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "tickets",
+          "kind": "event",
+          "owner": [
+            "Booking"
+          ],
+          "id": "Reserved"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/0"
+        },
+        "valueType": null,
+        "dependencies": [
+          {
+            "context": "tickets",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Booking"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "tickets",
+          "kind": "event-slot",
+          "owner": [
+            "Booking",
+            "Reserved"
+          ],
+          "id": "type"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/0/payloads/0"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "TicketId"
+          }
+        },
+        "dependencies": [
+          {
+            "context": "tickets",
+            "kind": "event",
+            "owner": [
+              "Booking"
+            ],
+            "id": "Reserved"
+          },
+          {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "TicketId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "tickets",
+          "kind": "event-slot",
+          "owner": [
+            "Booking",
+            "Reserved"
+          ],
+          "id": "distance"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/0/payloads/1"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "Distance"
+          }
+        },
+        "dependencies": [
+          {
+            "context": "tickets",
+            "kind": "event",
+            "owner": [
+              "Booking"
+            ],
+            "id": "Reserved"
+          },
+          {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "Distance"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "tickets",
+          "kind": "event",
+          "owner": [
+            "Booking"
+          ],
+          "id": "Imported"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/1"
+        },
+        "valueType": null,
+        "dependencies": [
+          {
+            "context": "tickets",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "Booking"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "tickets",
+          "kind": "event-slot",
+          "owner": [
+            "Booking",
+            "Imported"
+          ],
+          "id": "type"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/1/payloads/0"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "TicketId"
+          }
+        },
+        "dependencies": [
+          {
+            "context": "tickets",
+            "kind": "event",
+            "owner": [
+              "Booking"
+            ],
+            "id": "Imported"
+          },
+          {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "TicketId"
+          }
+        ]
+      }
+    ]
+  }
+}

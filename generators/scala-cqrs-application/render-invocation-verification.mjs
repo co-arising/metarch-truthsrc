@@ -1,8 +1,16 @@
 /** Explicit independent inventory oracle; all effects call generated actors and journal rows certify durability. */
-export function invocationOracle(h,pkg,effect=null) {
+export function invocationOracle(h,pkg,effect=null,products) {
+ const pipeline=products['execution-contract'].pipelines.find(p=>p.id===h.entry.startOwner.ref.id);
+ const literals={requestId:`${pkg}.domain.values.ReservationRequestId("request-A")`,occurrence:`${pkg}.domain.values.ReservationRequestId("occurrence-A")`,warehouse:`${pkg}.domain.values.WarehouseId("warehouse-A")`,sku:`${pkg}.domain.values.SkuId("sku-A")`,quantity:'3L',allocation:`${pkg}.domain.values.AllocationId("allocation-last")`,destination:`${pkg}.domain.values.WarehouseId("warehouse-B")`};
+ const inputs=pipeline.inputs.map(i=>{
+  if(Object.hasOwn(literals,i.id))return literals[i.id];
+  const pin=pipeline.binding.types.find(t=>t.id===i.type),types=products['saga-runtime-contract'].sagas.flatMap(s=>s.args.types).filter(t=>t.id===i.type);
+  if(!pin||!types.length||!types.every(t=>t.kind==='string'&&t.canonicalType==='String'&&t.implementation===pin.implementation))throw new Error('unsupported independent oracle input '+i.id);
+  return JSON.stringify(i.id+'-original');
+ }).join(', ');
  const stem=h.id.replaceAll('-','_'),host=pkg+'.application.'+stem+'Host',definition=pkg+'.application.'+stem+'Definition',plan=pkg+'.application.allocation_workflowExecution';
  const content = `      val journal = akka.persistence.testkit.scaladsl.PersistenceTestKit(kit.system)
-      val original = ${plan}.State(${plan}.Inputs(${pkg}.domain.values.ReservationRequestId("request-A"), ${pkg}.domain.values.ReservationRequestId("occurrence-A"), ${pkg}.domain.values.WarehouseId("warehouse-A"), ${pkg}.domain.values.SkuId("sku-A"), 3L, ${pkg}.domain.values.AllocationId("allocation-last"), ${pkg}.domain.values.WarehouseId("warehouse-B")))
+      val original = ${plan}.State(${plan}.Inputs(${inputs}))
       assert(${plan}.codec.decode(${plan}.codec.encode(original)) == original)
       assert(${host}.operationIdentity(original) != ${host}.operationIdentity(original.copy(inputs = original.inputs.copy(occurrence = ${pkg}.domain.values.ReservationRequestId("occurrence-B")))))
       intercept[IllegalArgumentException] { ${plan}.outputs(original) }
@@ -66,8 +74,23 @@ export function invocationOracle(h,pkg,effect=null) {
         val parentForMode = kit.spawn(${plan}.behavior("workflow-parent-" + mode, stages, observer))
         parentForMode ! net.imadz.monarch.persistence.PersistentMonarch.StartRun("workflow-" + mode, input, runReply.ref)
         runReply.expectMessageType[net.imadz.monarch.persistence.PersistentMonarch.Accepted]
-        runReply.awaitAssert { assert(journal.persistedInStorage("workflow-parent-" + mode).exists { case e: net.imadz.monarch.persistence.PersistentMonarch.RunFailedEvt => e.reason.contains(code); case _ => false }) }
-        assert(!journal.persistedInStorage("workflow-parent-" + mode).exists(_.isInstanceOf[net.imadz.monarch.persistence.PersistentMonarch.StageDone]))
+        if (mode == "zero" || mode == "compensated") {
+          runReply.awaitAssert { assert(journal.persistedInStorage("workflow-parent-" + mode).exists { case e: net.imadz.monarch.persistence.PersistentMonarch.RunFailedEvt => e.reason.contains(code); case _ => false }) }
+          assert(!journal.persistedInStorage("workflow-parent-" + mode).exists(_.isInstanceOf[net.imadz.monarch.persistence.PersistentMonarch.StageDone]))
+        } else {
+          val status = kit.createTestProbe[StrictSagaCoordinator.Reply]()
+          var retained: StrictState = null
+          status.awaitAssert { c ! StrictSagaCoordinator.GetStatus(status.ref); retained = status.expectMessageType[StrictSagaCoordinator.Status].state; assert(retained.status == StrictStatus.RecoveryRequired) }
+          assert(!journal.persistedInStorage("workflow-parent-" + mode).exists(_.isInstanceOf[net.imadz.monarch.persistence.PersistentMonarch.RunFailedEvt]))
+          assert(!journal.persistedInStorage("workflow-parent-" + mode).exists(_.isInstanceOf[net.imadz.monarch.persistence.PersistentMonarch.StageDone]))
+          c ! StrictSagaCoordinator.Reconcile(retained.identity.get, "denied", 32, status.ref)
+          status.expectMessageType[StrictSagaCoordinator.Denied]
+          c ! StrictSagaCoordinator.Reconcile(retained.identity.get, "owned-test-reconcile", 32, status.ref)
+          status.expectMessageType[StrictSagaCoordinator.Status]
+          status.awaitAssert { c ! StrictSagaCoordinator.GetStatus(status.ref); val recovered = status.expectMessageType[StrictSagaCoordinator.Status].state; assert(recovered.status == StrictStatus.Succeeded && recovered.identity == retained.identity) }
+          runReply.awaitAssert { assert(journal.persistedInStorage("workflow-parent-" + mode).count(_.isInstanceOf[net.imadz.monarch.persistence.PersistentMonarch.RunCompleted]) == 1) }
+          assert(!journal.persistedInStorage("workflow-parent-" + mode).exists(_.isInstanceOf[net.imadz.monarch.persistence.PersistentMonarch.RunFailedEvt]))
+        }
       }
     } finally kit.shutdownTestKit()
   }

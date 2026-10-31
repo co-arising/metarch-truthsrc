@@ -41,6 +41,23 @@ tree/
   formal-products/<family>/<slug(id)>.formal.yaml # explicit formal semantic roots (optional)
 ```
 
+## Domain value source residence (explicit v2 opt-in, 2026-10-30)
+
+An aggregate payload may declare `valueExpressionProfile: "truthsrc.domain-values/v2"`
+to carry the member paths and signed-64 folds already supported by formal domain
+value/dataflow products. The marker is retained verbatim in canonical and inverse
+projection. It does not select a generator or silently upgrade product versions.
+Unknown marker versions fail; unmarked aggregates keep the previous tree grammar.
+
+The opted-in tree check accepts `param.<field>.<member>`, `state.<field>.<member>`
+and fold-only `event.<slot>.<member>` (including nested members), with a declared
+root and no calls or empty path segments. It also accepts the exact fold row
+`{slot, op: "integer-apply", delta, sign}` on a declared Int/Integer/Long state
+field, with sign +1 or -1. Replay host calls remain forbidden. `V13V` notices
+explicitly defer full nominal member/delta typing, pre-event semantics and
+signed-64 overflow validation to the formal product compiler and generated code;
+source validation alone is neither complete typed admission nor runtime proof.
+
 ## Formal product residence (additive v1)
 
 `kind: formal-product` is an explicit authored surface for existing public
@@ -52,6 +69,7 @@ The declared families project to these canonical roots:
 | `artifact-contract` | `artifactContracts[]` |
 | `technical-port` | `ports[]` |
 | `saga-host` | `sagaHosts[]` |
+| `effect-host` | `effectHosts[]` |
 | `host-computation` | `hostComputations[]` |
 | `external-event-producer` | `externalEventProducers[]` |
 | `product-design` | `productDesigns[]` |

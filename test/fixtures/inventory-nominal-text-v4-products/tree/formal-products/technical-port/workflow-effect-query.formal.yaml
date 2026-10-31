@@ -1,0 +1,33 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: formal-product
+schemaVersion: "truthsrc.formal-product/v1"
+family: technical-port
+id: WorkflowEffectQuery
+version: effect-port-v1
+payload:
+  {
+    "name": "WorkflowEffectQuery",
+    "version": "effect-port-v1",
+    "inputType": {
+      "form": "nominal",
+      "ref": {
+        "context": "inventory",
+        "kind": "type",
+        "owner": [],
+        "id": "WorkflowEffectOperation"
+      }
+    },
+    "outputType": {
+      "form": "optional",
+      "element": {
+        "form": "nominal",
+        "ref": {
+          "context": "inventory",
+          "kind": "type",
+          "owner": [],
+          "id": "WorkflowEffectObservation"
+        }
+      }
+    }
+  }

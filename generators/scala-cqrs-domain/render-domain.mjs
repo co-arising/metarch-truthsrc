@@ -53,7 +53,7 @@ export function renderCommand({ products, options }, footprint) {
         bridge += '  def ' + symbol(p.id.replaceAll('-', '_') + '_identity') + '(output: ' + typeName(p.outputType, options) + '): Vector[String] = Vector(' + p.stableIdentityContract.keys.map(r => textual('output.' + symbol(r.id), layout.declarations.find(d => key(d.ref) === key(r)).valueType)).join(', ') + ')\n';
       }
       bridge += '}\n';
-      results.push(entry(pathFor(pkg, 'domain/' + a.ref.id + 'ExternalEvents.scala'), bridge, 'external-event-bridge', external.map(p => p.source), footprint, [protocol, ...external.flatMap(p => valuesPath(p.outputType, options))]));
+      results.push(entry(pathFor(pkg, 'domain/' + a.ref.id + 'ExternalEvents.scala'), bridge, 'external-event-bridge', external.map(p => p.source), footprint, [protocol, ...new Set(external.flatMap(p => valuesPath(p.outputType, options)))]));
     }
     return results;
   });

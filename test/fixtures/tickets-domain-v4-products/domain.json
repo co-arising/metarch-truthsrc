@@ -1,0 +1,342 @@
+{
+  "schemaVersion": "truthsrc/v1",
+  "workshop": "tickets-nominal-v4",
+  "sessions": [
+    {
+      "session": "refining",
+      "scopes": []
+    }
+  ],
+  "aggregates": [
+    {
+      "name": "Booking",
+      "stateFields": [
+        {
+          "name": "type",
+          "dataType": "TicketId",
+          "default": ""
+        },
+        {
+          "name": "reserved",
+          "dataType": "Boolean",
+          "default": false
+        },
+        {
+          "name": "distance",
+          "dataType": "Distance",
+          "default": "0.000"
+        }
+      ],
+      "entity": "BookingEntity",
+      "identifier": {
+        "name": "type",
+        "dataType": "TicketId",
+        "origin": "BUSINESS_INPUT"
+      },
+      "commands": [
+        {
+          "name": "Reserve",
+          "parameters": [
+            {
+              "name": "type",
+              "dataType": "TicketId",
+              "origin": "BUSINESS_INPUT"
+            },
+            {
+              "name": "distance",
+              "dataType": "Distance",
+              "origin": "BUSINESS_INPUT"
+            }
+          ],
+          "guards": [
+            {
+              "kind": "invariantRef",
+              "ref": "nonempty-ticket",
+              "errCode": "EMPTY_TICKET",
+              "cond": "param.type.value.nonEmpty",
+              "onFail": "reject"
+            }
+          ],
+          "produces": [
+            "Reserved"
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "Reserved",
+          "payloads": [
+            {
+              "name": "type",
+              "dataType": "TicketId",
+              "origin": "PROPAGATED"
+            },
+            {
+              "name": "distance",
+              "dataType": "Distance",
+              "origin": "PROPAGATED"
+            }
+          ],
+          "bindings": [
+            {
+              "slot": "type",
+              "expr": {
+                "form": "host",
+                "id": {
+                  "context": "tickets",
+                  "kind": "port",
+                  "owner": [],
+                  "id": "TicketIdentity"
+                },
+                "version": "tickets-v1"
+              }
+            },
+            {
+              "slot": "distance",
+              "expr": "param.distance"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "type",
+              "expr": "event.type"
+            },
+            {
+              "slot": "reserved",
+              "expr": "literal:true"
+            },
+            {
+              "slot": "distance",
+              "expr": "event.distance"
+            }
+          ]
+        },
+        {
+          "name": "Imported",
+          "payloads": [
+            {
+              "name": "type",
+              "dataType": "TicketId",
+              "origin": "PROPAGATED"
+            }
+          ],
+          "foldAssignments": [
+            {
+              "slot": "type",
+              "expr": "event.type"
+            }
+          ]
+        }
+      ],
+      "context": "tickets"
+    }
+  ],
+  "valueObjects": [
+    {
+      "name": "TicketId",
+      "context": "tickets",
+      "version": "tickets-v1",
+      "dataType": "String",
+      "fields": [],
+      "seq": 0
+    },
+    {
+      "name": "TicketReceipt",
+      "context": "tickets",
+      "version": "tickets-v1",
+      "fields": [
+        {
+          "name": "type",
+          "dataType": "TicketId"
+        }
+      ],
+      "seq": 1
+    },
+    {
+      "name": "Distance",
+      "context": "tickets",
+      "version": "1",
+      "dataType": "Decimal",
+      "fields": [],
+      "seq": 2
+    },
+    {
+      "name": "DistanceWire",
+      "context": "tickets",
+      "version": "1",
+      "dataType": "String",
+      "fields": [],
+      "seq": 3
+    },
+    {
+      "name": "DistancePO",
+      "context": "tickets",
+      "version": "1",
+      "dataType": "String",
+      "fields": [],
+      "seq": 4
+    }
+  ],
+  "readModels": [],
+  "stories": [],
+  "domainServices": [],
+  "ports": [
+    {
+      "name": "TicketIdentity",
+      "version": "tickets-v1",
+      "inputType": "TicketId",
+      "outputType": "TicketId"
+    },
+    {
+      "name": "TicketReceiptPort",
+      "version": "tickets-v1",
+      "inputType": "TicketId",
+      "outputType": "TicketReceipt"
+    }
+  ],
+  "hostComputations": [
+    {
+      "id": {
+        "context": "tickets",
+        "kind": "port",
+        "owner": [],
+        "id": "TicketIdentity"
+      },
+      "version": "tickets-v1",
+      "command": {
+        "context": "tickets",
+        "kind": "command",
+        "owner": [
+          "Booking"
+        ],
+        "id": "Reserve"
+      },
+      "outputType": {
+        "form": "nominal",
+        "ref": {
+          "context": "tickets",
+          "kind": "type",
+          "owner": [],
+          "id": "TicketId"
+        }
+      },
+      "inputDependencies": [
+        {
+          "context": "tickets",
+          "kind": "parameter",
+          "owner": [
+            "Booking",
+            "Reserve"
+          ],
+          "id": "type"
+        }
+      ],
+      "stableIdentityContract": {
+        "id": "ticket-identity",
+        "version": "tickets-v1",
+        "keys": [
+          {
+            "context": "tickets",
+            "kind": "parameter",
+            "owner": [
+              "Booking",
+              "Reserve"
+            ],
+            "id": "type"
+          }
+        ]
+      }
+    }
+  ],
+  "externalEventProducers": [
+    {
+      "id": "ticketImported",
+      "version": "tickets-v1",
+      "kind": "technical-bridge",
+      "event": {
+        "context": "tickets",
+        "kind": "event",
+        "owner": [
+          "Booking"
+        ],
+        "id": "Imported"
+      },
+      "port": {
+        "context": "tickets",
+        "kind": "port",
+        "owner": [],
+        "id": "TicketReceiptPort"
+      },
+      "outputType": {
+        "form": "nominal",
+        "ref": {
+          "context": "tickets",
+          "kind": "type",
+          "owner": [],
+          "id": "TicketReceipt"
+        }
+      },
+      "slotMappings": [
+        {
+          "slot": {
+            "context": "tickets",
+            "kind": "event-slot",
+            "owner": [
+              "Booking",
+              "Imported"
+            ],
+            "id": "type"
+          },
+          "member": {
+            "context": "tickets",
+            "kind": "member",
+            "owner": [
+              "TicketReceipt"
+            ],
+            "id": "type"
+          }
+        }
+      ],
+      "stableIdentityContract": {
+        "id": "ticket-import",
+        "version": "tickets-v1",
+        "keys": [
+          {
+            "context": "tickets",
+            "kind": "member",
+            "owner": [
+              "TicketReceipt"
+            ],
+            "id": "type"
+          }
+        ]
+      }
+    }
+  ],
+  "formalProductSurface": {
+    "ports/0": {
+      "schemaVersion": "truthsrc.formal-product/v1",
+      "family": "technical-port",
+      "id": "TicketIdentity",
+      "version": "tickets-v1"
+    },
+    "ports/1": {
+      "schemaVersion": "truthsrc.formal-product/v1",
+      "family": "technical-port",
+      "id": "TicketReceiptPort",
+      "version": "tickets-v1"
+    },
+    "hostComputations/0": {
+      "schemaVersion": "truthsrc.formal-product/v1",
+      "family": "host-computation",
+      "id": "[\"tickets\",\"TicketIdentity\"]",
+      "version": "tickets-v1"
+    },
+    "externalEventProducers/0": {
+      "schemaVersion": "truthsrc.formal-product/v1",
+      "family": "external-event-producer",
+      "id": "ticketImported",
+      "version": "tickets-v1"
+    }
+  }
+}

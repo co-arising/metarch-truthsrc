@@ -31,6 +31,7 @@ test('file capture reports real bytes separately; CLI product equals pure memory
     const bytes = readFileSync(output);
     assert.equal(receipt.sha256, createHash('sha256').update(bytes).digest('hex'));
     assert.deepEqual(JSON.parse(bytes), compileProductSet(readProductRequest(fixture)).result);
+    assert.equal(bytes.toString('utf8'), JSON.stringify(compileProductSet(readProductRequest(fixture)).result, null, 2) + '\n');
     const captured = captureProductRequest(fixture);
     assert.deepEqual(receipt.sources, captured.sources);
     for (const row of receipt.sources) assert.equal(row.sha256, createHash('sha256').update(readFileSync(row.file)).digest('hex'));

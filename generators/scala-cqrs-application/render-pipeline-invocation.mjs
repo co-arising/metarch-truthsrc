@@ -38,7 +38,7 @@ export function renderPipelineInvocation({products,options},h,footprint) {
  text+='  private def parent(state: State): '+execution+'.State = '+execution+'.codec.decode(state.original.toByteArray)\n  private def completed(state: State, kind: String): Reply = {\n    val identity = state.identity.get\n    val original = originalInput(parent(state))\n    kind match {\n';
  for(const r of h.results){const mapping=op.results.find(m=>m.resultKind===r.kind),outcome=step.outcomes.find(o=>o.code===mapping.code),ctor=execution+'.'+n+'_'+mapping.code.replaceAll('-','_');
   const values=outcome.action==='continue'?step.writes.map(w=>{const m=mapping.outputs.find(m=>m.slot===w.slot),source=r.inputs.find(i=>i.slot.id===m?.ref.slice(7));if(!source)fail('APPLICATION_HOST','result writes require the full declared event payload lineage');return rv(source);}):[];
-  text+='      case '+q(r.kind)+' => Completed('+ctor+(outcome.action==='continue'?'('+values.join(', ')+')':'')+')\n';
+  text+='      case '+q(r.kind)+' => '+(['recovery-required','outcome-unknown'].includes(r.kind)?'Pending('+q(r.kind)+')':'Completed('+ctor+(outcome.action==='continue'?'('+values.join(', ')+')':'')+')')+'\n';
  }
  text+='      case _ => Conflict("unmapped result kind")\n    }\n  }\n  trait Delivery {\n';
  for(const r of h.results)text+='    def '+symbol(r.kind.replaceAll('-','_'))+'(destination: '+typeName(field(r.destination.resourceInput).valueType,options)+', event: '+pkg+'.domain.'+symbol(r.event.owner[0])+'Protocol.'+symbol(r.event.id)+', identity: TransactionIdentity): Future[Boolean]\n';

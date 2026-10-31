@@ -1,0 +1,468 @@
+{
+  "schemaVersion": "truthsrc.domain-dependency-binding/v6",
+  "dependencies": {
+    "commands": [
+      {
+        "command": {
+          "context": "tickets",
+          "kind": "command",
+          "owner": [
+            "Booking"
+          ],
+          "id": "Reserve"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/commands/0"
+        },
+        "declaredSignature": [
+          {
+            "ref": {
+              "context": "tickets",
+              "kind": "parameter",
+              "owner": [
+                "Booking",
+                "Reserve"
+              ],
+              "id": "type"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "tickets",
+                "kind": "type",
+                "owner": [],
+                "id": "TicketId"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/parameters/0"
+            }
+          },
+          {
+            "ref": {
+              "context": "tickets",
+              "kind": "parameter",
+              "owner": [
+                "Booking",
+                "Reserve"
+              ],
+              "id": "distance"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "tickets",
+                "kind": "type",
+                "owner": [],
+                "id": "Distance"
+              }
+            },
+            "origin": "BUSINESS_INPUT",
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/commands/0/parameters/1"
+            }
+          }
+        ],
+        "usedDependencies": [
+          {
+            "context": "tickets",
+            "kind": "parameter",
+            "owner": [
+              "Booking",
+              "Reserve"
+            ],
+            "id": "type"
+          },
+          {
+            "context": "tickets",
+            "kind": "port",
+            "owner": [],
+            "id": "TicketIdentity"
+          },
+          {
+            "context": "tickets",
+            "kind": "parameter",
+            "owner": [
+              "Booking",
+              "Reserve"
+            ],
+            "id": "distance"
+          }
+        ],
+        "events": [
+          {
+            "event": {
+              "context": "tickets",
+              "kind": "event",
+              "owner": [
+                "Booking"
+              ],
+              "id": "Reserved"
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/0/bindings"
+            },
+            "slots": [
+              {
+                "slot": {
+                  "context": "tickets",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Booking",
+                    "Reserved"
+                  ],
+                  "id": "type"
+                },
+                "valueType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "tickets",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "TicketId"
+                  }
+                },
+                "source": {
+                  "document": "domain",
+                  "pointer": "/aggregates/0/events/0/bindings/0"
+                },
+                "producer": {
+                  "op": "host",
+                  "id": {
+                    "context": "tickets",
+                    "kind": "port",
+                    "owner": [],
+                    "id": "TicketIdentity"
+                  },
+                  "version": "tickets-v1"
+                },
+                "dependencies": [
+                  {
+                    "context": "tickets",
+                    "kind": "port",
+                    "owner": [],
+                    "id": "TicketIdentity"
+                  }
+                ]
+              },
+              {
+                "slot": {
+                  "context": "tickets",
+                  "kind": "event-slot",
+                  "owner": [
+                    "Booking",
+                    "Reserved"
+                  ],
+                  "id": "distance"
+                },
+                "valueType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "tickets",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "Distance"
+                  }
+                },
+                "source": {
+                  "document": "domain",
+                  "pointer": "/aggregates/0/events/0/bindings/1"
+                },
+                "producer": {
+                  "op": "ref",
+                  "ref": {
+                    "context": "tickets",
+                    "kind": "parameter",
+                    "owner": [
+                      "Booking",
+                      "Reserve"
+                    ],
+                    "id": "distance"
+                  }
+                },
+                "dependencies": [
+                  {
+                    "context": "tickets",
+                    "kind": "parameter",
+                    "owner": [
+                      "Booking",
+                      "Reserve"
+                    ],
+                    "id": "distance"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "events": [
+      {
+        "event": {
+          "context": "tickets",
+          "kind": "event",
+          "owner": [
+            "Booking"
+          ],
+          "id": "Reserved"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/0"
+        },
+        "declaredSlots": [
+          {
+            "ref": {
+              "context": "tickets",
+              "kind": "event-slot",
+              "owner": [
+                "Booking",
+                "Reserved"
+              ],
+              "id": "type"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "tickets",
+                "kind": "type",
+                "owner": [],
+                "id": "TicketId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/0/payloads/0"
+            }
+          },
+          {
+            "ref": {
+              "context": "tickets",
+              "kind": "event-slot",
+              "owner": [
+                "Booking",
+                "Reserved"
+              ],
+              "id": "distance"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "tickets",
+                "kind": "type",
+                "owner": [],
+                "id": "Distance"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/0/payloads/1"
+            }
+          }
+        ]
+      },
+      {
+        "event": {
+          "context": "tickets",
+          "kind": "event",
+          "owner": [
+            "Booking"
+          ],
+          "id": "Imported"
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/aggregates/0/events/1"
+        },
+        "declaredSlots": [
+          {
+            "ref": {
+              "context": "tickets",
+              "kind": "event-slot",
+              "owner": [
+                "Booking",
+                "Imported"
+              ],
+              "id": "type"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "tickets",
+                "kind": "type",
+                "owner": [],
+                "id": "TicketId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/aggregates/0/events/1/payloads/0"
+            }
+          }
+        ]
+      }
+    ],
+    "hosts": [
+      {
+        "id": {
+          "context": "tickets",
+          "kind": "port",
+          "owner": [],
+          "id": "TicketIdentity"
+        },
+        "version": "tickets-v1",
+        "command": {
+          "context": "tickets",
+          "kind": "command",
+          "owner": [
+            "Booking"
+          ],
+          "id": "Reserve"
+        },
+        "outputType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "TicketId"
+          }
+        },
+        "inputDependencies": [
+          {
+            "context": "tickets",
+            "kind": "parameter",
+            "owner": [
+              "Booking",
+              "Reserve"
+            ],
+            "id": "type"
+          }
+        ],
+        "stableIdentityContract": {
+          "id": "ticket-identity",
+          "version": "tickets-v1",
+          "keys": [
+            {
+              "context": "tickets",
+              "kind": "parameter",
+              "owner": [
+                "Booking",
+                "Reserve"
+              ],
+              "id": "type"
+            }
+          ]
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/hostComputations/0"
+        }
+      }
+    ],
+    "externalProducers": [
+      {
+        "id": "ticketImported",
+        "version": "tickets-v1",
+        "kind": "technical-bridge",
+        "event": {
+          "context": "tickets",
+          "kind": "event",
+          "owner": [
+            "Booking"
+          ],
+          "id": "Imported"
+        },
+        "port": {
+          "context": "tickets",
+          "kind": "port",
+          "owner": [],
+          "id": "TicketReceiptPort"
+        },
+        "outputType": {
+          "form": "nominal",
+          "ref": {
+            "context": "tickets",
+            "kind": "type",
+            "owner": [],
+            "id": "TicketReceipt"
+          }
+        },
+        "slots": [
+          {
+            "slot": {
+              "context": "tickets",
+              "kind": "event-slot",
+              "owner": [
+                "Booking",
+                "Imported"
+              ],
+              "id": "type"
+            },
+            "valueType": {
+              "form": "nominal",
+              "ref": {
+                "context": "tickets",
+                "kind": "type",
+                "owner": [],
+                "id": "TicketId"
+              }
+            },
+            "source": {
+              "document": "domain",
+              "pointer": "/externalEventProducers/0/slotMappings/0"
+            },
+            "member": {
+              "context": "tickets",
+              "kind": "member",
+              "owner": [
+                "TicketReceipt"
+              ],
+              "id": "type"
+            },
+            "dependencies": [
+              {
+                "context": "tickets",
+                "kind": "port",
+                "owner": [],
+                "id": "TicketReceiptPort"
+              },
+              {
+                "context": "tickets",
+                "kind": "member",
+                "owner": [
+                  "TicketReceipt"
+                ],
+                "id": "type"
+              }
+            ]
+          }
+        ],
+        "stableIdentityContract": {
+          "id": "ticket-import",
+          "version": "tickets-v1",
+          "keys": [
+            {
+              "context": "tickets",
+              "kind": "member",
+              "owner": [
+                "TicketReceipt"
+              ],
+              "id": "type"
+            }
+          ]
+        },
+        "source": {
+          "document": "domain",
+          "pointer": "/externalEventProducers/0"
+        }
+      }
+    ]
+  }
+}

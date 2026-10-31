@@ -1,0 +1,24 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: aggregate
+name: Booking
+context: tickets
+order:
+  commands: ["Reserve"]
+  events: ["Reserved"]
+payload:
+  {
+    "name": "Booking",
+    "stateFields": [
+      {
+        "name": "type",
+        "dataType": "TicketId",
+        "defaultValue": ""
+      },
+      {
+        "name": "reserved",
+        "dataType": "Boolean",
+        "defaultValue": false
+      }
+    ]
+  }

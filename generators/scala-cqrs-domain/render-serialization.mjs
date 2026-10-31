@@ -22,7 +22,7 @@ export function renderProto(context, footprint) {
 }
 export function renderConverters(context, footprint) {
   const { products, options } = context, nodes = serializationModel(products, options);
-  return [...new Set(nodes.map(n => n.pkg))].map(pkg => {
+  return [...new Set(nodes.map(n => n.pkg))].flatMap(pkg => {
     const local = nodes.filter(n => n.pkg === pkg), pb = pkg + '.infrastructure.proto.';
     const carrierType = c => c.form === 'node' ? c.node.kind === 'map-entry' ? '(' + carrierType(c.node.fields[0].carrier) + ', ' + carrierType(c.node.fields[1].carrier) + ')' : c.type ? typeName(c.type, options) : typeName(c.node.type, options) : { string: 'String', boolean: 'Boolean', integer: 'Long', decimal: 'BigDecimal' }[c.form];
     const actualType = n => ['nominal', 'exact', 'state', 'event'].includes(n.kind) ? domainType(n) : n.kind === 'map-entry' ? '(' + carrierType(n.fields[0].carrier) + ', ' + carrierType(n.fields[1].carrier) + ')' : typeName(n.type, options);
@@ -37,7 +37,9 @@ export function renderConverters(context, footprint) {
       '    val pattern = if (minor || scale == 0) "-?(0|[1-9][0-9]*)" else "-?(0|[1-9][0-9]*)\\\\.[0-9]{" + scale + "}"\n' +
       '    require(value.matches(pattern) && !(value.startsWith("-") && BigDecimal(value) == 0), "noncanonical exact text")\n' +
       '    if (minor) BigDecimal(new java.math.BigDecimal(new java.math.BigInteger(value), scale)) else BigDecimal(value)\n  }\n';
+    const header = text, groups = [];
     for (const n of local) {
+      const start = text.length;
       const t = actualType(n), target = pb + n.name;
       let encoded, decoded;
       if (n.kind === 'exact') {
@@ -71,11 +73,24 @@ export function renderConverters(context, footprint) {
       }
       text += '  def encode' + n.name + '(value: ' + t + '): ' + target + ' = ' + encoded + '\n';
       text += '  def decode' + n.name + '(value: ' + target + '): ' + t + ' = ' + decoded + '\n';
+      groups.push({ node: n, content: text.slice(start) });
     }
     text += '}\n';
     const dependencies = [protoPath(pkg), ...products['reference-layout'].declarations.filter(d => d.ref.context === options.packages.find(p => p.package === pkg)?.context && d.ref.kind === 'type').map(d => pathFor(pkg, 'domain/values/' + d.ref.id + '.scala')),
       ...local.filter(n => n.kind === 'state').map(n => pathFor(pkg, 'domain/' + n.aggregate.id + 'State.scala')),
       ...new Set(local.filter(n => n.kind === 'event').map(n => pathFor(pkg, 'domain/' + n.event.owner[0] + 'Protocol.scala')))];
-    return entry(converterPath(pkg), text, 'converter', local.flatMap(n => n.sources), footprint, [...new Set(dependencies)]);
+    if (text.length <= 60000) return [entry(converterPath(pkg), text, 'converter', local.flatMap(n => n.sources), footprint, [...new Set(dependencies)])];
+    const parts = [];
+    for (const group of groups) {
+      if (!parts.length || parts.at(-1).content.length + group.content.length > 48000) parts.push({ content: '', nodes: [] });
+      parts.at(-1).content += group.content;
+      parts.at(-1).nodes.push(group.node);
+    }
+    const names = parts.map((_, i) => 'DomainConvertersPart' + i);
+    const paths = names.map(name => pathFor(pkg, 'infrastructure/serialization/' + name + '.scala'));
+    const facade = header.replace('object DomainConverters {', 'object DomainConverters extends ' + names.join(' with ') + ' {') + '}\n';
+    return [entry(converterPath(pkg), facade, 'converter', local.flatMap(n => n.sources), footprint, [...new Set([...dependencies, ...paths])]),
+      ...parts.map((part, i) => entry(paths[i], 'package ' + pkg + '.infrastructure.serialization\n\ntrait ' + names[i] + ' { self: DomainConverters.type =>\n' +
+        header.slice(header.indexOf('  private def fixed')) + part.content + '}\n', 'converter', part.nodes.flatMap(n => n.sources), footprint, [...new Set(dependencies)]))];
   });
 }

@@ -52,6 +52,7 @@ export function decision(node, layout, exact, options) {
   if (node.op === 'member') return '(' + child(node.argument) + ').' + symbol(node.member.id);
   if (node.argument) {
     const a = child(node.argument);
+    if (node.op === 'text-value') return '(' + a + ').value';
     if (node.op === 'not') return '!(' + a + ')';
     if (node.op === 'exact-positive') return '(' + a + ').isPositive';
     const op = { 'is-empty': 'isEmpty', 'non-empty': 'nonEmpty', 'map-keys': 'keys' }[node.op];

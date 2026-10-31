@@ -1,0 +1,538 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: saga
+id: reserve-warehouse-sku
+name: "Reserve integer SKU quantity in one warehouse"
+seq: 7
+version: inventory-v3
+payload:
+  {
+    "schemaVersion": "truthsrc.saga/v1",
+    "purpose": "Reserve a requested SKU quantity, commit allocation or release the reservation",
+    "invariants": [
+      "The reservation retains its warehouse, SKU and exact positive integer quantity"
+    ],
+    "transactionIdType": "TxId",
+    "args": [
+      {
+        "slot": "warehouse",
+        "type": "WarehouseId"
+      },
+      {
+        "slot": "sku",
+        "type": "SkuId"
+      },
+      {
+        "slot": "quantity",
+        "type": "Quantity"
+      },
+      {
+        "slot": "allocation",
+        "type": "AllocationId"
+      },
+      {
+        "slot": "destination",
+        "type": "WarehouseId"
+      }
+    ],
+    "participants": [
+      {
+        "id": "warehouse",
+        "aggregate": "Warehouse",
+        "resourceRef": {
+          "ref": "args:warehouse",
+          "type": "WarehouseId"
+        }
+      },
+      {
+        "id": "destination",
+        "aggregate": "Warehouse",
+        "resourceRef": {
+          "ref": "args:destination",
+          "type": "WarehouseId"
+        }
+      },
+      {
+        "id": "allocation",
+        "aggregate": "AllocationOrder",
+        "resourceRef": {
+          "ref": "args:allocation",
+          "type": "AllocationId"
+        }
+      }
+    ],
+    "groups": [
+      {
+        "id": 1,
+        "dependsOn": []
+      },
+      {
+        "id": 2,
+        "dependsOn": [
+          1
+        ]
+      },
+      {
+        "id": 3,
+        "dependsOn": [
+          2
+        ]
+      }
+    ],
+    "steps": [
+      {
+        "id": "reserve-sku",
+        "participant": "warehouse",
+        "group": 1,
+        "phases": {
+          "prepare": {
+            "kind": "command",
+            "commandRef": {
+              "aggregate": "Warehouse",
+              "name": "ReserveSkuQuantity"
+            },
+            "bindings": [
+              {
+                "slot": "txid",
+                "ref": "txid",
+                "type": "TxId"
+              },
+              {
+                "slot": "warehouse",
+                "ref": "args:warehouse",
+                "type": "WarehouseId"
+              },
+              {
+                "slot": "sku",
+                "ref": "args:sku",
+                "type": "SkuId"
+              },
+              {
+                "slot": "quantity",
+                "ref": "args:quantity",
+                "type": "Quantity"
+              }
+            ],
+            "outputs": [
+              {
+                "slot": "reservation",
+                "type": "ReservationId"
+              }
+            ]
+          },
+          "commit": {
+            "kind": "command",
+            "commandRef": {
+              "aggregate": "Warehouse",
+              "name": "CommitSkuReservation"
+            },
+            "bindings": [
+              {
+                "slot": "txid",
+                "ref": "txid",
+                "type": "TxId"
+              },
+              {
+                "slot": "warehouse",
+                "ref": "args:warehouse",
+                "type": "WarehouseId"
+              },
+              {
+                "slot": "sku",
+                "ref": "args:sku",
+                "type": "SkuId"
+              },
+              {
+                "slot": "reservation",
+                "ref": "step:reserve-sku:prepare:reservation",
+                "type": "ReservationId"
+              }
+            ],
+            "outputs": [
+              {
+                "slot": "txid",
+                "type": "TxId"
+              }
+            ]
+          },
+          "compensate": {
+            "kind": "command",
+            "commandRef": {
+              "aggregate": "Warehouse",
+              "name": "ReleaseSkuReservation"
+            },
+            "bindings": [
+              {
+                "slot": "txid",
+                "ref": "txid",
+                "type": "TxId"
+              },
+              {
+                "slot": "warehouse",
+                "ref": "args:warehouse",
+                "type": "WarehouseId"
+              },
+              {
+                "slot": "sku",
+                "ref": "args:sku",
+                "type": "SkuId"
+              },
+              {
+                "slot": "reservation",
+                "ref": "step:reserve-sku:prepare:reservation",
+                "type": "ReservationId"
+              }
+            ],
+            "outputs": [
+              {
+                "slot": "txid",
+                "type": "TxId"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "reserve-destination",
+        "participant": "destination",
+        "group": 2,
+        "phases": {
+          "prepare": {
+            "kind": "command",
+            "commandRef": {
+              "aggregate": "Warehouse",
+              "name": "ReserveSkuQuantity"
+            },
+            "bindings": [
+              {
+                "slot": "txid",
+                "ref": "txid",
+                "type": "TxId"
+              },
+              {
+                "slot": "warehouse",
+                "ref": "args:destination",
+                "type": "WarehouseId"
+              },
+              {
+                "slot": "sku",
+                "ref": "args:sku",
+                "type": "SkuId"
+              },
+              {
+                "slot": "quantity",
+                "ref": "args:quantity",
+                "type": "Quantity"
+              }
+            ],
+            "outputs": [
+              {
+                "slot": "reservation",
+                "type": "ReservationId"
+              }
+            ]
+          },
+          "commit": {
+            "kind": "command",
+            "commandRef": {
+              "aggregate": "Warehouse",
+              "name": "CommitSkuReservation"
+            },
+            "bindings": [
+              {
+                "slot": "txid",
+                "ref": "txid",
+                "type": "TxId"
+              },
+              {
+                "slot": "warehouse",
+                "ref": "args:destination",
+                "type": "WarehouseId"
+              },
+              {
+                "slot": "sku",
+                "ref": "args:sku",
+                "type": "SkuId"
+              },
+              {
+                "slot": "reservation",
+                "ref": "step:reserve-destination:prepare:reservation",
+                "type": "ReservationId"
+              }
+            ],
+            "outputs": [
+              {
+                "slot": "txid",
+                "type": "TxId"
+              }
+            ]
+          },
+          "compensate": {
+            "kind": "command",
+            "commandRef": {
+              "aggregate": "Warehouse",
+              "name": "ReleaseSkuReservation"
+            },
+            "bindings": [
+              {
+                "slot": "txid",
+                "ref": "txid",
+                "type": "TxId"
+              },
+              {
+                "slot": "warehouse",
+                "ref": "args:destination",
+                "type": "WarehouseId"
+              },
+              {
+                "slot": "sku",
+                "ref": "args:sku",
+                "type": "SkuId"
+              },
+              {
+                "slot": "reservation",
+                "ref": "step:reserve-destination:prepare:reservation",
+                "type": "ReservationId"
+              }
+            ],
+            "outputs": [
+              {
+                "slot": "txid",
+                "type": "TxId"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "allocate-order",
+        "participant": "allocation",
+        "group": 3,
+        "phases": {
+          "prepare": {
+            "kind": "command",
+            "commandRef": {
+              "aggregate": "AllocationOrder",
+              "name": "PrepareAllocation"
+            },
+            "bindings": [
+              {
+                "slot": "txid",
+                "ref": "txid",
+                "type": "TxId"
+              },
+              {
+                "slot": "allocation",
+                "ref": "args:allocation",
+                "type": "AllocationId"
+              }
+            ],
+            "outputs": [
+              {
+                "slot": "txid",
+                "type": "TxId"
+              }
+            ]
+          },
+          "commit": {
+            "kind": "command",
+            "commandRef": {
+              "aggregate": "AllocationOrder",
+              "name": "CommitAllocation"
+            },
+            "bindings": [
+              {
+                "slot": "txid",
+                "ref": "txid",
+                "type": "TxId"
+              },
+              {
+                "slot": "allocation",
+                "ref": "args:allocation",
+                "type": "AllocationId"
+              }
+            ],
+            "outputs": [
+              {
+                "slot": "txid",
+                "type": "TxId"
+              }
+            ]
+          },
+          "compensate": {
+            "kind": "command",
+            "commandRef": {
+              "aggregate": "AllocationOrder",
+              "name": "CancelAllocation"
+            },
+            "bindings": [
+              {
+                "slot": "txid",
+                "ref": "txid",
+                "type": "TxId"
+              },
+              {
+                "slot": "allocation",
+                "ref": "args:allocation",
+                "type": "AllocationId"
+              }
+            ],
+            "outputs": [
+              {
+                "slot": "txid",
+                "type": "TxId"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "resilience": {
+      "maxAttempts": 1,
+      "phaseTimeoutMs": 500,
+      "queryTimeoutMs": 500,
+      "backoffMs": 0,
+      "totalTimeoutMs": 2000
+    },
+    "safety": {
+      "commitDecision": "durable-before-commit",
+      "abortDecision": "durable-before-compensate",
+      "afterCommit": "forward-recovery",
+      "unknown": "reconcile-before-resume",
+      "compensation": "confirmed-reservations",
+      "cancelBeforePrepare": "empty-release-and-fence",
+      "retryIdentity": "stable-operation",
+      "manualRecovery": "authorized-reconciliation-evidence"
+    },
+    "admission": {
+      "maxParticipants": 3,
+      "maxInFlight": 1,
+      "maxItemsPerChunk": 1,
+      "manifest": {
+        "mode": "static",
+        "durable": true
+      }
+    },
+    "triggers": [
+      {
+        "id": "reservation-request",
+        "kind": "event",
+        "sourceRef": {
+          "aggregate": "Warehouse",
+          "name": "SkuReservationRequested"
+        },
+        "argsMapping": [
+          {
+            "slot": "warehouse",
+            "ref": "source:warehouse",
+            "type": "WarehouseId"
+          },
+          {
+            "slot": "sku",
+            "ref": "source:sku",
+            "type": "SkuId"
+          },
+          {
+            "slot": "quantity",
+            "ref": "source:quantity",
+            "type": "Quantity"
+          },
+          {
+            "slot": "allocation",
+            "ref": "source:allocation",
+            "type": "AllocationId"
+          },
+          {
+            "slot": "destination",
+            "ref": "source:destination",
+            "type": "WarehouseId"
+          }
+        ],
+        "idempotency": {
+          "ref": "source:requestId",
+          "type": "ReservationRequestId",
+          "scope": "saga-version",
+          "conflict": "reject-different-args"
+        }
+      }
+    ],
+    "resultKinds": [
+      "succeeded",
+      "rejected-before-effects",
+      "compensated",
+      "recovery-required",
+      "outcome-unknown"
+    ],
+    "completions": [
+      {
+        "kind": "succeeded",
+        "eventRef": {
+          "aggregate": "AllocationOrder",
+          "name": "ReservationSucceeded"
+        },
+        "bindings": [
+          {
+            "slot": "txid",
+            "ref": "txid",
+            "type": "TxId"
+          }
+        ]
+      },
+      {
+        "kind": "rejected-before-effects",
+        "eventRef": {
+          "aggregate": "AllocationOrder",
+          "name": "ReservationRejected"
+        },
+        "bindings": [
+          {
+            "slot": "txid",
+            "ref": "txid",
+            "type": "TxId"
+          }
+        ]
+      },
+      {
+        "kind": "compensated",
+        "eventRef": {
+          "aggregate": "AllocationOrder",
+          "name": "ReservationCompensated"
+        },
+        "bindings": [
+          {
+            "slot": "txid",
+            "ref": "txid",
+            "type": "TxId"
+          }
+        ]
+      },
+      {
+        "kind": "recovery-required",
+        "eventRef": {
+          "aggregate": "AllocationOrder",
+          "name": "ReservationRecoveryRequired"
+        },
+        "bindings": [
+          {
+            "slot": "txid",
+            "ref": "txid",
+            "type": "TxId"
+          }
+        ]
+      },
+      {
+        "kind": "outcome-unknown",
+        "eventRef": {
+          "aggregate": "AllocationOrder",
+          "name": "ReservationOutcomeUnknown"
+        },
+        "bindings": [
+          {
+            "slot": "txid",
+            "ref": "txid",
+            "type": "TxId"
+          }
+        ]
+      }
+    ]
+  }

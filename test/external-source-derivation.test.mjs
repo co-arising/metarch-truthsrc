@@ -1,0 +1,22 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readProductRequest } from '../lib/products/cli.mjs';
+import { compileProductSet } from '../lib/products/compile.mjs';
+import { compileExternalEvents, deriveExternalEvents } from '../lib/domain-products/external-events.mjs';
+const request = () => readProductRequest(new URL('./fixtures/tickets-domain-v4-products/files.json', import.meta.url).pathname);
+test('public external source derivation retains the entire checked product and strict binding comparison', () => {
+  const input = request(), before = structuredClone(input), compilation = compileProductSet(input);
+  assert.deepEqual(compilation.diagnostics, []);
+  const canonical = input.documents.find(d => d.id === 'domain');
+  const binding = input.documents.find(d => d.id === 'external');
+  const layout = compilation.result.products.find(p => p.id === 'reference-layout').payload;
+  const expected = compilation.result.products.find(p => p.id === 'domain-external-events').payload;
+  assert.deepEqual(deriveExternalEvents(canonical, layout, binding.schemaVersion), expected);
+  assert.deepEqual(compileExternalEvents(binding, canonical, layout), expected);
+  const bad = structuredClone(binding); bad.value.externalEvents.producers.pop();
+  assert.throws(() => compileExternalEvents(bad, canonical, layout), e => e.diagnostic?.code === 'PRODUCT_PAYLOAD_MISMATCH');
+  const badSource = structuredClone(canonical); badSource.value.externalEventProducers[0].slotMappings.pop();
+  assert.throws(() => deriveExternalEvents(badSource, layout, binding.schemaVersion), e => e.diagnostic?.code === 'EXTERNAL_SLOT');
+  assert.throws(() => deriveExternalEvents(canonical, layout, 'unknown'), e => e.diagnostic?.code === 'PRODUCT_VERSION');
+  assert.deepEqual(input, before);
+});

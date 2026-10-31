@@ -1,0 +1,49 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: slice
+aggregate: AllocationOrder
+command: CancelAllocation
+payload:
+  {
+    "name": "CancelAllocation",
+    "parameters": [
+      {
+        "name": "txid",
+        "dataType": "TxId",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "allocation",
+        "dataType": "AllocationId",
+        "origin": "BUSINESS_INPUT"
+      }
+    ],
+    "produces": [
+      "AllocationCancelled"
+    ],
+    "guards": []
+  }
+events:
+  {
+    "AllocationCancelled": {
+      "name": "AllocationCancelled",
+      "payloads": [
+        {
+          "name": "txid",
+          "dataType": "TxId"
+        }
+      ],
+      "bindings": [
+        {
+          "slot": "txid",
+          "expr": "param.txid"
+        }
+      ],
+      "foldAssignments": [
+        {
+          "slot": "status",
+          "expr": "literal:cancelled"
+        }
+      ]
+    }
+  }

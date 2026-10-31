@@ -1,0 +1,84 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: slice
+aggregate: Booking
+command: Reserve
+payload:
+  {
+    "name": "Reserve",
+    "parameters": [
+      {
+        "name": "type",
+        "dataType": "TicketId",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "distance",
+        "dataType": "Distance",
+        "origin": "BUSINESS_INPUT"
+      }
+    ],
+    "guards": [
+      {
+        "kind": "invariantRef",
+        "ref": "nonempty-ticket",
+        "errCode": "EMPTY_TICKET",
+        "cond": "param.type.value.nonEmpty",
+        "onFail": "reject"
+      }
+    ],
+    "produces": [
+      "Reserved"
+    ]
+  }
+events:
+  {
+    "Reserved": {
+      "name": "Reserved",
+      "payloads": [
+        {
+          "name": "type",
+          "dataType": "TicketId",
+          "origin": "PROPAGATED"
+        },
+        {
+          "name": "distance",
+          "dataType": "Distance",
+          "origin": "PROPAGATED"
+        }
+      ],
+      "bindings": [
+        {
+          "slot": "type",
+          "expr": {
+            "form": "host",
+            "id": {
+              "context": "tickets",
+              "kind": "port",
+              "owner": [],
+              "id": "TicketIdentity"
+            },
+            "version": "tickets-v1"
+          }
+        },
+        {
+          "slot": "distance",
+          "expr": "param.distance"
+        }
+      ],
+      "foldAssignments": [
+        {
+          "slot": "type",
+          "expr": "event.type"
+        },
+        {
+          "slot": "reserved",
+          "expr": "literal:true"
+        },
+        {
+          "slot": "distance",
+          "expr": "event.distance"
+        }
+      ]
+    }
+  }

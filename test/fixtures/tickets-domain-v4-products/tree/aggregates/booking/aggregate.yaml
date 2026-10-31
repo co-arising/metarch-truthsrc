@@ -1,0 +1,54 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: aggregate
+name: Booking
+context: tickets
+order:
+  commands: ["Reserve"]
+  events: ["Reserved","Imported"]
+payload:
+  {
+    "name": "Booking",
+    "stateFields": [
+      {
+        "name": "type",
+        "dataType": "TicketId",
+        "default": ""
+      },
+      {
+        "name": "reserved",
+        "dataType": "Boolean",
+        "default": false
+      },
+      {
+        "name": "distance",
+        "dataType": "Distance",
+        "default": "0.000"
+      }
+    ],
+    "entity": "BookingEntity",
+    "identifier": {
+      "name": "type",
+      "dataType": "TicketId",
+      "origin": "BUSINESS_INPUT"
+    }
+  }
+extraEvents:
+  [
+    {
+      "name": "Imported",
+      "payloads": [
+        {
+          "name": "type",
+          "dataType": "TicketId",
+          "origin": "PROPAGATED"
+        }
+      ],
+      "foldAssignments": [
+        {
+          "slot": "type",
+          "expr": "event.type"
+        }
+      ]
+    }
+  ]
