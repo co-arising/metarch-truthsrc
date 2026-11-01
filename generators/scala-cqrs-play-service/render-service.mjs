@@ -1,5 +1,6 @@
 import { entry, key, packageFor, pathFor, symbol, typeName } from '../scala-cqrs-domain/naming.mjs';
 import { fail } from '../../lib/products/request.mjs';
+import { pageRendererContract, pageRendererRequirement, renderPageLoader } from './render-service-pages.mjs';
 
 export function serviceSelection(products, options) {
   const mapping = options.service;
@@ -18,6 +19,7 @@ export function serviceSelection(products, options) {
 
 export function renderService({ products, options }, footprint) {
   const artifact = serviceSelection(products, options), service = artifact.deployment.service;
+  const hasPages = Object.hasOwn(service, 'pages');
   const pkg = packageFor(artifact.artifact.context, options), name = symbol(artifact.artifact.id);
   const q = JSON.stringify;
   const bootstrap = artifact.implementations.find(i => key(i.port) === key(service.bootstrap.ref));
@@ -73,11 +75,11 @@ object ${name}Service {
   final case class Bindings(
 ${endpoints.map(e => `    ${e.name}: Endpoint[${typeName(e.inputType, options)}, ${typeName(e.outputType, options)}]`).join(',\n')}
   )
-  trait Composition extends AutoCloseable {
+${hasPages ? pageRendererContract() : ''}  trait Composition extends AutoCloseable {
     def authority: Authority
     def bindings: Bindings
     def ready: Future[Unit]
-  }
+${hasPages ? '    def pages: Option[PageRenderer] = None\n' : ''}  }
   trait Factory {
     def implementation: String
     def version: String
@@ -86,7 +88,7 @@ ${endpoints.map(e => `    ${e.name}: Endpoint[${typeName(e.inputType, options)},
   def requireInstalled(value: Composition): Unit = {
     require(value != null && value.authority != null && value.bindings != null, "complete service composition required")
 ${endpoints.map(e => `    require(value.bindings.${e.name} != null && value.bindings.${e.name}.implementation == ${q(e.implementation.id)} && value.bindings.${e.name}.version == ${q(e.implementation.version)} && value.bindings.${e.name}.reads != null && value.bindings.${e.name}.writes != null && value.bindings.${e.name}.run != null, ${q('missing service endpoint ' + e.id)})`).join('\n')}
-  }
+${hasPages ? pageRendererRequirement(service.pages) : ''}  }
 }
 `;
   const routeRows = endpoints.map(e => {
@@ -95,7 +97,7 @@ ${endpoints.map(e => `    require(value.bindings.${e.name} != null && value.bind
     const parameters = parts.filter(x => x.startsWith(':')).map(x => x.slice(1));
     return `    (${q(e.method)}, ${q(regex)}.r, Vector(${parameters.map(q).join(', ')}), ${q(e.audience)}, ${e.csrf}, (principal: Principal, input: JsValue) => invoke(composition.bindings.${e.name}, principal, input))`;
   });
-  const loader = `package ${pkg}.service
+  const loader = hasPages ? renderPageLoader({ pkg, name, bootstrap, endpoints, pages: service.pages }) : `package ${pkg}.service
 
 import play.api.{Application, ApplicationLoader, BuiltInComponentsFromContext}
 import play.api.libs.json._

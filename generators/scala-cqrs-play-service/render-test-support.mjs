@@ -74,7 +74,7 @@ import akka.actor.testkit.typed.scaladsl.ActorTestKit
 import akka.persistence.typed.PersistenceId
 import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior, RetentionCriteria}
 import akka.actor.typed.ActorRef
-import com.typesafe.config.{ConfigFactory, ConfigResolveOptions}
+import com.typesafe.config.{ConfigFactory, ConfigResolveOptions, ConfigUtil}
 import org.scalatest.funsuite.AnyFunSuite
 import scala.concurrent.duration._
 
@@ -103,8 +103,8 @@ MYSQL_PASSWORD = "test-only-not-a-secret"
       }
     }
     val resolved = production.withFallback(references).resolve(isolated)
-    assert(resolved.getString("akka.contrib.persistence.mongodb.mongo.mongouri") == resolved.getString("service.connections." + ${JSON.stringify(artifact.deployment.service.journal.connectionRef)}))
-    assert(resolved.getString("db.default.url") == resolved.getString("service.connections." + ${JSON.stringify(artifact.deployment.service.readSide.connectionRef)}))
+    assert(resolved.getString("akka.contrib.persistence.mongodb.mongo.mongouri") == resolved.getString(ConfigUtil.joinPath("service", "connections", ${JSON.stringify(artifact.deployment.service.journal.connectionRef)})))
+    assert(resolved.getString("db.default.url") == resolved.getString(ConfigUtil.joinPath("service", "connections", ${JSON.stringify(artifact.deployment.service.readSide.connectionRef)})))
   }
   test("unit configuration denies production stores and socket access before actors start") {
     val config = ConfigFactory.load()

@@ -218,6 +218,9 @@
           "minItems": 1,
           "maxItems": 1024
         },
+        "pages": {
+          "$ref": "#/$defs/pages"
+        },
         "projections": {
           "type": "array",
           "items": {
@@ -302,6 +305,67 @@
           "maxItems": 1024
         }
       }
+    },
+    "pages": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "shellPath", "scriptPath", "renderer", "aliases"],
+      "properties": {
+        "schemaVersion": {
+          "const": "truthsrc.service-pages/v1"
+        },
+        "shellPath": {
+          "$ref": "#/$defs/staticPagePath"
+        },
+        "scriptPath": {
+          "$ref": "#/$defs/staticPagePath"
+        },
+        "renderer": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "version"],
+          "properties": {
+            "id": {
+              "type": "string",
+              "maxLength": 512,
+              "pattern": "^[A-Za-z][A-Za-z0-9_]*(?:\\.[A-Za-z][A-Za-z0-9_]*)+$(?![\\s\\S])"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "aliases": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 256,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["endpointId", "path"],
+            "properties": {
+              "endpointId": {
+                "type": "string",
+                "maxLength": 128,
+                "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$"
+              },
+              "path": {
+                "type": "string",
+                "maxLength": 1024,
+                "pattern": "^/(?:[A-Za-z][A-Za-z0-9_-]*|:[A-Za-z][A-Za-z0-9_]*)(?:/(?:[A-Za-z][A-Za-z0-9_-]*|:[A-Za-z][A-Za-z0-9_]*))*$(?![\\s\\S])"
+              }
+            }
+          }
+        }
+      }
+    },
+    "staticPagePath": {
+      "type": "string",
+      "maxLength": 1024,
+      "pattern": "^/(?:[A-Za-z][A-Za-z0-9_-]*)(?:/[A-Za-z][A-Za-z0-9_-]*)*$(?![\\s\\S])"
     },
     "portPin": {
       "type": "object",

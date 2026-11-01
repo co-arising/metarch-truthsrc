@@ -26,6 +26,9 @@ test('complete explicit service profile retains finite execution and emits Play 
   const build = entries.find(e => e.path === 'build.sbt').content;
   assert.ok(build.includes('Test / fork := true') && build.includes('-Dconfig.resource=service-unit.conf'));
   assert.ok(build.includes('UnitTestMain') && build.includes('definedTests'));
+  assert.ok(build.includes('d.organization == "net.imadz" && d.name == "saga-core"'));
+  assert.ok(build.includes('.exclude("com.github.scullxbones", "akka-persistence-mongo-scala_2.13")'));
+  assert.ok(build.includes('.exclude("org.reactivemongo", "reactivemongo_2.13")'));
   const guard = entries.find(e => e.path === 'src/test/scala/UnitConfigurationCheck.scala').content;
   assert.ok(guard.includes('checkConnect') && guard.includes('checkListen'));
   const service = entries.find(e => e.path === 'conf/service.conf').content;
@@ -36,4 +39,56 @@ test('complete explicit service profile retains finite execution and emits Play 
     if (pin.id === 'artifact-contract') assert.equal(pin.version, '3');
     if (['saga-host-contract', 'effect-host-contract'].includes(pin.id)) assert.equal(pin.version, '2');
   }
+});
+
+for (const hosted of [true, false]) test(`service test isolation declares artifact input for ${hosted ? 'hosted' : 'unhosted'} inspection`, () => {
+  const { request, options } = serviceApplicationFixture('inventory-effect-products');
+  if (!hosted) {
+    request.documents.find(d => d.id === 'domain').value.effectHosts = [];
+    request.documents.find(d => d.id === 'effects').value.effects.hosts = [];
+    const inspection = request.documents.find(d => d.id === 'execution').value.pipelines[0].ports.find(p => p.id === 'InspectAssociation');
+    Object.assign(inspection, { effect: 'pure', confirmation: 'checkpoint', idempotency: { mode: 'none' } });
+    for (const document of request.documents) {
+      const replaceProvenance = value => {
+        if (!value || typeof value !== 'object') return;
+        if (value.document === 'domain' && value.pointer === '/effectHosts/0') value.pointer = '/pipelines/0';
+        for (const child of Object.values(value)) replaceProvenance(child);
+      };
+      replaceProvenance(document.value);
+    }
+  }
+  const compilation = compileProductSet(request);
+  assert.deepEqual(compilation.diagnostics, []);
+  const incomplete = structuredClone(manifest);
+  const producer = incomplete.producers.find(p => p.id === (hosted ? 'durable-effect-host-dsl' : 'finite-execution-dsl'));
+  producer.products = producer.products.filter(p => p !== 'artifact-contract');
+  const rejected = generate({ compilation, manifest: incomplete, options });
+  assert.equal(rejected.plan, null);
+  assert.ok(rejected.diagnostics.some(d => d.code === 'PRODUCT_UNDECLARED'));
+  const result = generate({ compilation, manifest, options });
+  assert.deepEqual(result.diagnostics, []);
+  const name = hosted ? 'GeneratedEffectHostSpec.scala' : 'GeneratedExecutionSpec.scala';
+  const spec = result.plan.entries.find(e => e.path.endsWith(name));
+  assert.ok(spec, name);
+  assert.ok(spec.content.includes('UnitConfigurationCheck.main(Array.empty)'));
+  assert.ok(spec.productFootprint.some(p => p.id === 'artifact-contract' && p.version === '3'));
+});
+
+test('service configuration test uses literal dotted connection references', () => {
+  const { request, options } = serviceApplicationFixture();
+  const domain = request.documents.find(d => d.id === 'domain').value;
+  const artifact = domain.artifactContracts.find(a => a.id === options.service.artifact);
+  const journal = artifact.deployment.service.journal;
+  const readSide = artifact.deployment.service.readSide;
+  const names = { [journal.connectionRef]: 'journal.primary', [readSide.connectionRef]: 'read.primary' };
+  for (const ref of artifact.deployment.secretRefs) if (names[ref.id]) ref.id = names[ref.id];
+  journal.connectionRef = 'journal.primary';
+  readSide.connectionRef = 'read.primary';
+  request.documents.find(d => d.id === 'artifacts').value.artifacts.artifacts = domain.artifactContracts.map((a, i) => ({ ...structuredClone(a), source: { document: 'domain', pointer: '/artifactContracts/' + i } }));
+  const compilation = compileProductSet(request);
+  assert.deepEqual(compilation.diagnostics, []);
+  const result = generate({ compilation, manifest, options });
+  assert.deepEqual(result.diagnostics, []);
+  const spec = result.plan.entries.find(e => e.path.endsWith('GeneratedUnitStorageSpec.scala')).content;
+  for (const ref of ['journal.primary', 'read.primary']) assert.ok(spec.includes('ConfigUtil.joinPath("service", "connections", "' + ref + '")'));
 });

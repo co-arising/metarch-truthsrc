@@ -15,7 +15,8 @@ const inherited = Object.fromEntries(Object.entries(createEffectRegistry('2')).m
   produce(context) {
     return implementation.produce(context).map(entry => {
       const pins = entry.productFootprint.map(p => ({ ...p, version: version(p.id) ?? p.version }));
-      if (id === 'proto-dsl') pins.push({ id: 'artifact-contract', version: '3' });
+      if (['proto-dsl', 'finite-execution-dsl', 'finite-host-dsl'].includes(id) && !pins.some(p => p.id === 'effect-host-contract')) pins.push({ id: 'effect-host-contract', version: '2' });
+      if (['proto-dsl', 'finite-execution-dsl', 'durable-effect-host-dsl'].includes(id)) pins.push({ id: 'artifact-contract', version: '3' });
       const next = { ...entry, productFootprint: pins };
       if (entry.path.startsWith('src/test/scala/') && entry.content.includes('extends AnyFunSuite {')) {
         const artifact = serviceSelection(context.products, context.options);
@@ -34,6 +35,7 @@ const inherited = Object.fromEntries(Object.entries(createEffectRegistry('2')).m
           'Test / test := (Test / runMain).toTask(' + JSON.stringify(' ' + testMain) + ').value\n' +
           'Test / testOnly := { val ignored = complete.DefaultParsers.spaceDelimited("suite").parsed; sys.error("Use test for isolated unit suites; integration tests require their explicit runner") }\n' +
           'libraryDependencies ++= Seq(guice, jdbc, "com.github.scullxbones" %% "akka-persistence-mongo-rxmongo" % "3.0.8", "com.lightbend.akka" %% "akka-projection-jdbc" % "1.2.5", "com.mysql" % "mysql-connector-j" % "8.0.33")\n' +
+          'libraryDependencies ~= (_.map { case d if d.organization == "net.imadz" && d.name == "saga-core" => d.exclude("com.github.scullxbones", "akka-persistence-mongo-scala_2.13").exclude("org.reactivemongo", "reactivemongo_2.13"); case d => d })\n' +
           'dependencyOverrides ++= Seq("akka-actor", "akka-actor-typed", "akka-stream", "akka-stream-typed", "akka-persistence", "akka-persistence-typed", "akka-persistence-query", "akka-protobuf-v3", "akka-slf4j", "akka-testkit", "akka-serialization-jackson", "akka-remote", "akka-cluster", "akka-cluster-typed", "akka-cluster-tools", "akka-coordination", "akka-distributed-data", "akka-cluster-sharding", "akka-cluster-sharding-typed").map("com.typesafe.akka" %% _ % "2.6.20")\n';
       }
       if (entry.path === 'project/build.properties') next.content = 'sbt.version=1.4.9\n';

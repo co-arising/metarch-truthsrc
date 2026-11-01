@@ -3,8 +3,9 @@ import { readProductRequest } from '../lib/products/cli.mjs';
 import { profileFor } from '../lib/products/registry.mjs';
 import { serviceArtifactFixture } from './service-artifact-fixture.mjs';
 
-export function serviceApplicationFixture() {
-  const root = new URL('./fixtures/inventory-mixed-effect-products/', import.meta.url);
+export function serviceApplicationFixture(variant = 'inventory-mixed-effect-products') {
+  if (!['inventory-mixed-effect-products', 'inventory-effect-products'].includes(variant)) throw new Error('unknown service fixture variant');
+  const root = new URL('./fixtures/' + variant + '/', import.meta.url);
   const request = structuredClone(readProductRequest(new URL('files.json', root).pathname));
   const options = JSON.parse(readFileSync(new URL('options.json', root), 'utf8'));
   for (const [id, version, doc, schema] of [
