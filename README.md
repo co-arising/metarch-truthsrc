@@ -30,7 +30,7 @@ roundtrip guarantee**, guarded by stage-vocabulary lint rules.
 - **Agent-readable** — the repo ships an [AGENTS.md](AGENTS.md) contract so LLM
   agents can edit the truth source autonomously, with mechanical gates to keep
   them honest.
-- **Zero dependencies** — the whole toolchain is plain Node ≥ 18.
+- **Zero dependencies** — the whole toolchain is plain Node ≥ 22.5 (including SQLite graph queries).
 
 ## The three guarantees
 
@@ -43,17 +43,35 @@ roundtrip guarantee**, guarded by stage-vocabulary lint rules.
 
 `truthsrc roundtrip` enforces I1+I2 on every run — that's the gate your CI runs.
 
-## Quickstart (humans)
+## Quickstart (local project, no download)
+
+From this source checkout, with Node ≥ 22.5:
 
 ```bash
-npx truthsrc init my-workshop        # scaffold tree/ + one example atom
-cd my-workshop
-# …capture or edit atoms under tree/inbox/eventStorming/ …
-npx truthsrc validate                # ES/CS/AG/RF/SM + structural rules
-npx truthsrc roundtrip               # compile∘decompose∘compile identity gate
-npx truthsrc compile --out canonical.json
-git add tree/ && git commit -m "workshop: capture LoanApproved decision"
+TOOL="$PWD/bin/truthsrc.js"
+node "$TOOL" init ../my-workshop      # destination must not exist
+node "$TOOL" validate --tree ../my-workshop/tree
+node "$TOOL" roundtrip --tree ../my-workshop/tree
+node "$TOOL" compile-project --project ../my-workshop/truthsrc.project.json
+node "$TOOL" generate-project --project ../my-workshop/truthsrc.project.json --out ../my-workshop/generated --plan
+node "$TOOL" generate-project --project ../my-workshop/truthsrc.project.json --out ../my-workshop/generated
 ```
+
+The Counter example's author inputs are `tree/` and `truthsrc.project.json`.
+The output contains source files, derived `.truthsrc/` evidence,
+`truthsrc.ledger.json` and actual-file `anchors.json`. Do not edit the canonical
+projection or derived requests. See [PROJECT.md](PROJECT.md) for configuration,
+explicit technical bindings, read/write boundaries and result shapes.
+
+`--plan` does not write the target. The roundtrip gate uses a disposable OS-temp
+directory, not a project cache. Identical generation can be repeated. After a
+source/options change, inspect a new plan and generate to a fresh owned directory:
+the existing apply policy refuses changed unmarked files; incremental replacement
+and ongoing synchronization are not delivered by this first project-entry batch.
+No BC service is required to generate source. This does not certify a runnable
+application or remove the separate JDK/sbt/runtime build prerequisites. Formal
+application producers retain their frozen local artifact checks; retry/backoff/
+deadline completion remains OPEN.
 
 A PR that adds an event looks like this — reviewable by any domain expert:
 
@@ -87,10 +105,13 @@ in [AGENTS.md](AGENTS.md) — point your agent at it. The short version:
    canonical output before claiming absence.
 
 ```bash
-git clone https://github.com/truthsrc/truthsrc && cd truthsrc
-cat AGENTS.md          # the contract
-npm test               # roundtrip + rule-fire regression, ~1s, no network
+# From this checkout; no package installation or service is required.
+node --test test/project-init.test.mjs test/project-cli.test.mjs
+node --test test/semantic-product-files.test.mjs test/product-generation-cli.test.mjs
 ```
+
+Use explicit test files for a scoped change rather than assuming global discovery
+is a one-second, side-effect-free check.
 
 ## The format in 30 seconds
 

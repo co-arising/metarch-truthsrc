@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// truthsrc — CLI dispatcher. Zero dependencies; Node >= 18.
+// truthsrc — CLI dispatcher. Zero dependencies; Node >= 22.5.
 import { writeFileSync, mkdirSync, copyFileSync, existsSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { compileTree } from '../lib/compile.mjs';
@@ -13,7 +13,7 @@ const arg = (name, dflt) => {
   return i > 0 ? resolve(process.argv[i + 1]) : dflt;
 };
 const [cmd] = process.argv.slice(2);
-const strictCompilation = cmd === 'generate-products' || cmd === 'compile-products' || cmd === 'compile-execution' || cmd === 'compile-sagas' || cmd === 'generate';
+const strictCompilation = ['init', 'compile-project', 'generate-project', 'generate-products', 'compile-products', 'compile-execution', 'compile-sagas', 'generate'].includes(cmd);
 const TREE = strictCompilation ? undefined : arg('--tree', resolve('tree'));
 const OUT = strictCompilation ? undefined : arg('--out', resolve('canonical.json'));
 
@@ -36,7 +36,10 @@ const USAGE = `truthsrc v0.5 — git-native Event Storming truth source
                                                            (node:sqlite single file; Node >= 22.5; pure
                                                            cache — delete and rebuild any time; all
                                                            query verbs apply)
-  truthsrc init      <dir>                                 scaffold a minimal workshop tree
+  truthsrc init      <new-project-dir>                     scaffold tree + truthsrc.project.json; refuses existing directory
+  truthsrc compile-project --project <config>                derive and compile locally; JSON result, no writes
+  truthsrc generate-project --project <config> --out <owned-dir> [--plan]
+                                                           formal source generation + evidence + ledger + anchors
   truthsrc generate  --in <canonical> --generator <dir> --out <dir> [--option k=v]
                                                            run a generator (ledger + anchors emitted)
                      [--options-json <file>]                explicit producer options, including nested bindings/IR
@@ -53,6 +56,14 @@ const USAGE = `truthsrc v0.5 — git-native Event Storming truth source
 const die = (msg) => { console.error(msg); process.exit(2); };
 
 switch (cmd) {
+  case 'compile-project':
+  case 'generate-project': {
+    try {
+      const { projectCli } = await import('../lib/project/cli.mjs');
+      console.log(JSON.stringify(await projectCli(cmd, process.argv.slice(3))));
+    } catch (error) { die(`[FAIL] ${error.message}`); }
+    break;
+  }
   case 'generate-products': {
     try {
       const { generateProductCli } = await import('../lib/products/generate-cli.mjs');
@@ -124,14 +135,10 @@ switch (cmd) {
     break;
   }
   case 'init': {
-    const dir = process.argv[3];
-    if (!dir) die('usage: truthsrc init <dir>');
-    const root = resolve(dir);
-    mkdirSync(join(root, 'inbox', 'eventStorming'), { recursive: true });
-    writeFileSync(join(root, 'workshop.yaml'), 'schemaVersion: truthsrc/v0\nname: my-workshop\n');
-    copyFileSync(new URL('../example/tree/inbox/eventStorming/event-es-loanrequested-0.yaml', import.meta.url),
-      join(root, 'inbox', 'eventStorming', 'event-es-loanrequested-0.yaml'));
-    console.log(`✅ scaffolded ${root} — edit atoms, then: truthsrc validate && truthsrc roundtrip`);
+    try {
+      const { initProject } = await import('../lib/project/init.mjs');
+      console.log(JSON.stringify(initProject(process.argv.slice(3))));
+    } catch (error) { die(`[FAIL] ${error.message}`); }
     break;
   }
   case 'generate': {
