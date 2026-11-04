@@ -1,0 +1,30 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: aggregate
+name: Counter
+context: example
+order:
+  commands: ["SetCount"]
+  events: ["CountSet"]
+payload:
+  {
+    "name": "Counter",
+    "entity": "CounterEntity",
+    "identifier": {
+      "name": "id",
+      "dataType": "String",
+      "origin": "BUSINESS_INPUT"
+    },
+    "stateFields": [
+      {
+        "name": "id",
+        "dataType": "String",
+        "default": ""
+      },
+      {
+        "name": "count",
+        "dataType": "Long",
+        "default": "0"
+      }
+    ]
+  }

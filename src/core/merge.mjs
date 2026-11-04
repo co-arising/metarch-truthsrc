@@ -42,6 +42,13 @@ const anchorOf = (src, blockStart) => {
 
 export const hasManualBlocks = (src) => countOf(src, MANUAL_BEGIN) > 0 && countOf(src, MANUAL_BEGIN) === countOf(src, MANUAL_END);
 
+/** Mask only the interiors of validated MANUAL blocks; markers and all outside bytes remain.
+ * Callers hashing bytes can pass a latin1 string and encode the result as latin1 (no UTF-8 loss). */
+export function maskManualBlocks(src, label = '') {
+  mergeManualBlocks(src, src, label);
+  return src.replace(manualBlockRegex, MANUAL_BEGIN + MANUAL_END);
+}
+
 /** Merge the target's MANUAL blocks into the generated base. `target` must contain ≥1 paired
  *  block (the caller gates on hasManualBlocks). Throws on malformed markers and orphan blocks. */
 export function mergeManualBlocks(generated, target, label = '') {

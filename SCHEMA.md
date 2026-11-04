@@ -1,4 +1,13 @@
-# SCHEMA — truthsrc v0.5
+# SCHEMA — truthsrc v0.5 atom semantics
+
+Recommended author layout (2026-11-04): [AUTHORING.md](AUTHORING.md),
+`truth/<system>/system.yaml` (`truthsrc.author/v1`) with declared contexts.
+The atom vocabulary below remains the compatible semantic contract; `tree/` and
+`workshop.yaml` examples describe the legacy residence. New contexts contain those
+families under `contexts/<id>/`, with only numbered system inbox categories.
+The new boundary rejects duplicate keys, ignored structural headers, overwritten
+payload fields and unknown files; legacy canonical byte projection is unchanged.
+Business versions, author format, project config and product profiles are separate.
 
 The truth source is a **tree** of small YAML atom files. `compile` projects the
 tree to `canonical.json`; `decompose` is its byte-identical inverse. The tree is

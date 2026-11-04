@@ -6,7 +6,7 @@
  workshop board (Miro / FigJam / wall)          LLM agent / human editor
         │  capture                                        │  edit
         ▼                                                 ▼
- ┌───────────────────────────────── tree/ ─────────────────────────┐
+ ┌───────────────────────── truth/<system>/ ────────────────────────┐
  │  one YAML atom per sticky note — hand-editable, reviewable,    │
  │  mergeable, and the ONLY place anyone ever writes to           │
  └────────────────────────────────────────────────────────────────┘
@@ -32,7 +32,7 @@ roundtrip guarantee**, guarded by stage-vocabulary lint rules.
   them honest.
 - **Zero dependencies** — the whole toolchain is plain Node ≥ 22.5 (including SQLite graph queries).
 
-## The three guarantees
+## The four guarantees
 
 | # | Invariant | What it means |
 |---|---|---|
@@ -50,24 +50,31 @@ From this source checkout, with Node ≥ 22.5:
 ```bash
 TOOL="$PWD/bin/truthsrc.js"
 node "$TOOL" init ../my-workshop      # destination must not exist
-node "$TOOL" validate --tree ../my-workshop/tree
-node "$TOOL" roundtrip --tree ../my-workshop/tree
+node "$TOOL" validate --tree ../my-workshop/truth/example
+node "$TOOL" roundtrip --tree ../my-workshop/truth/example
 node "$TOOL" compile-project --project ../my-workshop/truthsrc.project.json
 node "$TOOL" generate-project --project ../my-workshop/truthsrc.project.json --out ../my-workshop/generated --plan
 node "$TOOL" generate-project --project ../my-workshop/truthsrc.project.json --out ../my-workshop/generated
 ```
 
-The Counter example's author inputs are `tree/` and `truthsrc.project.json`.
-The output contains source files, derived `.truthsrc/` evidence,
+The Counter example's author inputs are `truth/example/` and `truthsrc.project.json`.
+Start with [AUTHORING.md](AUTHORING.md): `system.yaml` names the system and
+`contexts/example/context.yaml` declares the context responsibility. Old
+`workshop.yaml` trees are explicit compatibility inputs, not a second current
+model to edit. The output contains source files, derived `.truthsrc/` evidence,
 `truthsrc.ledger.json` and actual-file `anchors.json`. Do not edit the canonical
 projection or derived requests. See [PROJECT.md](PROJECT.md) for configuration,
 explicit technical bindings, read/write boundaries and result shapes.
 
 `--plan` does not write the target. The roundtrip gate uses a disposable OS-temp
-directory, not a project cache. Identical generation can be repeated. After a
-source/options change, inspect a new plan and generate to a fresh owned directory:
-the existing apply policy refuses changed unmarked files; incremental replacement
-and ongoing synchronization are not delivered by this first project-entry batch.
+directory, not a project cache. After a supported knowledge/options change, run
+`status-project`, inspect `generate-project --update --plan`, then apply
+`generate-project --update`. Update only replaces the same owner's unmodified
+generated files; valid MANUAL blocks are preserved, conflicting edits refuse,
+and no-longer-generated files remain explicitly retained. Default generation
+without `--update` keeps the original refusal policy. Use `query-project` for
+snapshot-bound knowledge↔file provenance; a line or `nextN` query returns candidates,
+not symbol-level certification. See [TUTORIAL.md](TUTORIAL.md) for a runnable loop.
 No BC service is required to generate source. This does not certify a runnable
 application or remove the separate JDK/sbt/runtime build prerequisites. Formal
 application producers retain their frozen local artifact checks; retry/backoff/
@@ -124,7 +131,7 @@ name: "LoanRequested"
 origin:
   stage: eventStorming          # the workshop stage that owns this note
   board: board1
-  seq: 0                        # frozen board order (contiguous 0..n-1)
+  seq: 0                        # frozen board order; gaps need not be renumbered
 payload:                        # verbatim note JSON — compiler never touches it
   {
     "type": "event",

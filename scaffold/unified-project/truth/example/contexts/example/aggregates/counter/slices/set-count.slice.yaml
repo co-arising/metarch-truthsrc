@@ -1,0 +1,78 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: slice
+aggregate: Counter
+command: SetCount
+payload:
+  {
+    "name": "SetCount",
+    "parameters": [
+      {
+        "name": "id",
+        "dataType": "String",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "count",
+        "dataType": "Long",
+        "origin": "BUSINESS_INPUT"
+      }
+    ],
+    "guards": [
+      {
+        "kind": "invariantRef",
+        "ref": "nonempty-id",
+        "errCode": "EMPTY_ID",
+        "cond": "param.id.nonEmpty",
+        "onFail": "reject"
+      },
+      {
+        "kind": "invariantRef",
+        "ref": "nonnegative-count",
+        "errCode": "NEGATIVE_COUNT",
+        "cond": "param.count >= 0",
+        "onFail": "reject"
+      }
+    ],
+    "produces": [
+      "CountSet"
+    ]
+  }
+events:
+  {
+    "CountSet": {
+      "name": "CountSet",
+      "payloads": [
+        {
+          "name": "id",
+          "dataType": "String",
+          "origin": "PROPAGATED"
+        },
+        {
+          "name": "count",
+          "dataType": "Long",
+          "origin": "PROPAGATED"
+        }
+      ],
+      "bindings": [
+        {
+          "slot": "id",
+          "expr": "param.id"
+        },
+        {
+          "slot": "count",
+          "expr": "param.count"
+        }
+      ],
+      "foldAssignments": [
+        {
+          "slot": "id",
+          "expr": "event.id"
+        },
+        {
+          "slot": "count",
+          "expr": "event.count"
+        }
+      ]
+    }
+  }

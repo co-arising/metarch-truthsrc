@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "truthsrc.author-system/v1",
+  "title": "Recommended single-context author system declaration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kind", "schemaVersion", "id", "name", "workshop", "sessionOrder", "contexts"],
+  "properties": {
+    "kind": { "const": "system" },
+    "schemaVersion": { "const": "truthsrc.author/v1" },
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+    "name": { "type": "string", "minLength": 1 },
+    "workshop": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "sessionOrder": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": { "enum": ["eventStorming", "commandStorming", "aggregateDiscovery", "subdomainExploration", "contextMapping", "refining", "storyMapping"] }
+    },
+    "contexts": { "type": "array", "minItems": 1, "maxItems": 1, "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" } },
+    "relationships": { "type": "array", "maxItems": 0 },
+    "compatibility": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "workshopKey": { "enum": ["name", "workshop"] },
+        "metarch": { "type": "object", "description": "Explicit truthsrc.compat.metarch/v1 envelope validated by the compatibility adapter; not a domain snapshot." }
+      }
+    }
+  }
+}

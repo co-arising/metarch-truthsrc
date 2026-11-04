@@ -71,7 +71,7 @@ test('source and options change derived products and plan; existing output is ne
   assert.deepEqual(snapshot(f.out), existing);
   await assert.rejects(projectCli('generate-project', args(f)), /refusing to overwrite/);
   assert.deepEqual(snapshot(f.out), existing);
-  const atom = join(f.tree, 'aggregates/counter/aggregate.yaml');
+  const atom = join(f.tree, 'contexts/example/aggregates/counter/aggregate.yaml');
   const text = readFileSync(atom, 'utf8');
   assert.ok(text.includes('"default": "0"'));
   writeFileSync(atom, text.replace('"default": "0"', '"default": "1"'));

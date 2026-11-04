@@ -33,11 +33,10 @@ Source headers on Protocol/Entity identify `CodegenMain:225ed28b` and
 `rules_domain_gen:2026-08-23`. This supports BC-chain provenance for these samples,
 not a verified claim about all files or their current fingerprint integrity.
 
-Unverified lead: the user noticed `backkend-codegen/reference_project/app/semantic-products*`
-and suggested these may be golden samples associated with divergence. Their test
-role, origin, and relation to this output were not inspected in this batch. Do not
-turn that hypothesis into a historical cause without reading the owning tests and
-relevant generation history in a separately authorized scope.
+Follow-up inspection confirmed `semantic-products*` as separate profile/fixture
+golden outputs, not a replacement golden for all of `ingested-app`. Their presence
+does not establish the historical cause of style divergence. The unification work
+preserves that distinction and does not change templates to resemble BC output.
 
 ## OPEN — inline knowledge anchors / source identity continuity
 
@@ -74,13 +73,19 @@ It is not an accepted finite-profile exemption. No runtime repair, rebuild,
 publication, journal modification or re-certification was performed. P23 artifacts
 and the bank's 1134 bounded release evidence remain frozen.
 
-## Deferred by the agreed first-batch boundary
+## Delivered by the authorized unification implementation
 
-- Unified bidirectional query commands, stale-input/code detection and incremental
-  regeneration contract are subsequent work, not implemented by project entry.
-- Existing apply refuses changed unmarked files. This batch preserves that policy;
-  use a fresh owned target for changed-source generation, not an overwrite bypass.
-- A full bank application/service walkthrough and two-author manual-area workflow
-  are not covered by the domain-generation adaptation test.
-- Current project layout is single-context and explicit-profile only; it does not
-  infer multi-context identity or external implementations from prose.
+The first-batch deferral is superseded by [PROJECT.md](PROJECT.md): recommended
+system/context authoring, compatibility import, snapshot source indexing,
+`query-project`, `status-project` and opt-in baseline-checked `--update` are now
+implemented. Default overwrite refusal remains; update is not a force bypass.
+The bank root entry and teaching coverage are described in its `TRUTH.md`; actual
+verification is recorded in [PROJECT-UNIFICATION-ACCEPTANCE.md](PROJECT-UNIFICATION-ACCEPTANCE.md).
+
+Still outside the delivered capability: arbitrary multi-context generation,
+automatic identity continuity for name-only renames, symbol/span mapping, BC full
+generator parity and coordinated BC active-source cutover. Actual BC migration
+now reports seven historical origin/payload stage conflicts; see [COMPATIBILITY.md](COMPATIBILITY.md).
+They require an author-meaning decision, not automatic normalization. No server ID allocator
+is required for existing qualified declarations. Retry and output-style debts
+above remain independent OPEN items.

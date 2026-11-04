@@ -10,5 +10,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
       - run: npm test
+      - run: node bin/truthsrc.js validate --tree scaffold/unified-project/truth/example
+      - run: node bin/truthsrc.js roundtrip --tree scaffold/unified-project/truth/example
       - run: node bin/truthsrc.js validate --tree example/tree
       - run: node bin/truthsrc.js roundtrip --tree example/tree

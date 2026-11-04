@@ -13,7 +13,7 @@ import { deriveProjectRequest } from '../lib/project/derive.mjs';
 import { compileProductSet } from '../lib/products/compile.mjs';
 import { generate } from '../generators/scala-cqrs-domain-v2/generate.mjs';
 
-const scaffold = fileURLToPath(new URL('../scaffold/local-project/', import.meta.url));
+const scaffold = fileURLToPath(new URL('../scaffold/unified-project/', import.meta.url));
 const initUrl = new URL('../lib/project/init.mjs', import.meta.url).href;
 const sharedUrl = new URL('../lib/shared.mjs', import.meta.url).href;
 const json = path => JSON.parse(readFileSync(path, 'utf8'));
@@ -43,13 +43,13 @@ test('fresh init copies only the local scaffold and passes both gates without re
   const result = initProject([root]);
   assert.deepEqual(Object.keys(result).sort(), ['project', 'root', 'tree', 'validation']);
   assert.equal(result.root, root);
-  assert.equal(result.tree, join(root, 'tree'));
+  assert.equal(result.tree, join(root, 'truth', 'example'));
   assert.equal(result.project, join(root, 'truthsrc.project.json'));
-  assert.deepEqual(result.validation, { hard: [], notices: [], roundtrip: { ok: true, atoms: 3 } });
+  assert.deepEqual(result.validation, { hard: [], notices: [], roundtrip: { ok: true, atoms: 4 } });
   assert.deepEqual(snapshot(root), before);
   const initialized = snapshot(root), canonical = compileTree(result.tree);
   assert.deepEqual(validateTree(result.tree), { hard: [], notices: [] });
-  assert.deepEqual(roundtrip(result.tree), { ok: true, atoms: 3 });
+  assert.deepEqual(roundtrip(result.tree), { ok: true, atoms: 4 });
   assert.equal(compileTree(result.tree), canonical);
   assert.deepEqual(snapshot(root), initialized);
   assert.deepEqual(snapshot(scaffold), before);
@@ -63,7 +63,7 @@ test('fresh init copies only the local scaffold and passes both gates without re
 
 test('scaffold config pins every required project field and all seven product versions', () => {
   assert.deepEqual(json(join(scaffold, 'truthsrc.project.json')), {
-    schemaVersion: 'truthsrc.project/v1', tree: 'tree', canonicalId: 'example-domain', context: 'example',
+    schemaVersion: 'truthsrc.project/v1', tree: 'truth/example', canonicalId: 'example-domain', context: 'example',
     products: [
       { id: 'reference-layout', version: '1' },
       { id: 'exact-value-types', version: '1' },
@@ -177,8 +177,16 @@ for (const mode of ['copy', 'validation', 'roundtrip']) {
             nested: { order: doc.order }, blocks: { payload: doc.payload },
           }));
         }
-        if (mode === 'roundtrip' && target.endsWith('/workshop.yaml'))
-          fs.appendFileSync(target, '# keep this edit after the failed gate\\n');
+        if (mode === 'roundtrip' && target.endsWith('/system.yaml')) {
+          const read = fs.readFileSync;
+          let reads = 0;
+          fs.readFileSync = (path, ...options) => {
+            const bytes = read(path, ...options);
+            if (String(path) === target && ++reads >= 3) return typeof bytes === 'string' ? bytes.replace('Counter workshop', 'Changed during roundtrip') : Buffer.from(bytes.toString().replace('Counter workshop', 'Changed during roundtrip'));
+            return bytes;
+          };
+          syncBuiltinESMExports();
+        }
       };
       syncBuiltinESMExports();
       const { initProject } = await import(${JSON.stringify(initUrl)});

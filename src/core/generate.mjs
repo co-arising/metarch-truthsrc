@@ -10,7 +10,10 @@ import { pathToFileURL } from 'node:url';
 import { loadManifest } from './manifest.mjs';
 import { loadCanonical } from './canonical.mjs';
 import { loadConcernRegistry, resolveConcernFilter, expandScope, compileClosure } from './concerns.mjs';
-import { preflightPaths, preflightApply } from './apply-preflight.mjs';
+import {
+  preflightPaths, preflightApply, captureFiles, checkCapturedFiles, validateExpectedFiles,
+  checkExpectedFiles, fingerprint, generatedFingerprint,
+} from './apply-preflight.mjs';
 import { ANCHORS_VERSION, readAnchorsIndex, planAnchors, writeAnchorsIndex } from './anchors.mjs';
 
 const LEDGER = 'truthsrc.ledger.json';
@@ -59,13 +62,17 @@ const rowOf = (e) => ({
 const readPriorRows = (outDir) =>
   existsSync(join(outDir, LEDGER)) ? (JSON.parse(readFileSync(join(outDir, LEDGER), 'utf8')).entries ?? []) : [];
 
-export function mergedRows(outDir, entries) {
-  const rows = new Map(readPriorRows(outDir).map((r) => [r.path, r]));
+function mergeRows(priorRows, entries) {
+  const rows = new Map(priorRows.map((r) => [r.path, r]));
   for (const e of entries) {
     if (e.noLedger) continue; // shared-territory entries (conf/routes) carry no ledger row — live C6
     rows.set(e.path, rowOf(e));
   }
   return [...rows.values()];
+}
+
+export function mergedRows(outDir, entries) {
+  return mergeRows(readPriorRows(outDir), entries);
 }
 
 // Concern scope over merged ledger rows (exported for --plan previews): registry → filter →
@@ -78,7 +85,7 @@ export function scopeOf(ledgerRows, concern) {
   return { registry, filter, base, set: compileClosure(base, ledgerRows) };
 }
 
-const fingerprint = bytes => `sha256:${createHash('sha256').update(bytes).digest('hex')}`;
+const accepted = new Set(['ADD', 'COVER', 'MERGE', 'IDENTICAL']);
 
 function anchorInputs(entries, repo) {
   return entries.flatMap(entry => {
@@ -100,10 +107,28 @@ export function apply({ canonicalFile, generatorDir, outDir, options = {}, conce
     } }));
 }
 
-/** Apply already-produced source entries through the same preflight, merge and evidence boundary.
- * written-only is for producers whose ownership claim requires an actual accepted write;
- * the ordinary core retains its existing KEEP file-evidence contract. No manifest admission is inferred. */
-export async function applyEntries({ entries, outDir, generator, concern, anchorPolicy = 'final-bytes' }) {
+function ownershipRows(priorRows, actions, ownership, generator, finalBytes) {
+  const rows = new Map(priorRows.map(row => [row.path, row]));
+  for (const { entry, outcome } of actions) {
+    // noLedger remains shared territory; neither KEEP nor MISSING is an ownership claim.
+    if (entry.noLedger || !accepted.has(outcome)) continue;
+    const prior = rows.get(entry.path);
+    // Opt-in must not silently reclassify another kind/owner's row, even on IDENTICAL.
+    // update preflight refuses these paths; ordinary apply keeps its legacy write policy.
+    if (prior && (prior.kind !== entry.kind || (prior.ownership &&
+        (prior.ownership.id !== ownership.id || prior.ownership.generator !== generator.id)))) continue;
+    const bytes = finalBytes.get(entry.path);
+    rows.set(entry.path, { ...rowOf(entry), ownership: {
+      id: ownership.id, generator: generator.id,
+      fingerprint: fingerprint(bytes), generatedFingerprint: generatedFingerprint(bytes, entry.path),
+    } });
+  }
+  return [...rows.values()];
+}
+
+/** Shared synchronous, read-only preparation for both preview and the only apply channel. */
+function prepareEntries({ entries, outDir, generator, concern, anchorPolicy = 'final-bytes',
+  ownership, update = false, expectedFiles = [] }) {
   if (!Array.isArray(entries) || entries.some(entry => !entry || typeof entry !== 'object' ||
     typeof entry.path !== 'string' || typeof entry.content !== 'string' ||
     typeof entry.kind !== 'string' || !entry.kind.trim() ||
@@ -113,16 +138,28 @@ export async function applyEntries({ entries, outDir, generator, concern, anchor
   if (!generator || typeof generator.id !== 'string' || !generator.id.trim() ||
     typeof generator.version !== 'string' || !generator.version.trim()) throw new Error('source generator id/version required');
   if (!['final-bytes', 'written-only'].includes(anchorPolicy)) throw new Error('unknown anchor policy');
+  if (ownership !== undefined && (!ownership || Array.isArray(ownership) || typeof ownership !== 'object' ||
+      typeof ownership.id !== 'string' || !ownership.id.trim() || ownership.id.includes('\0'))) {
+    throw new Error('ownership requires a non-empty id');
+  }
+  if (typeof update !== 'boolean') throw new Error('update must be a boolean');
+  if (update && !ownership) throw new Error('update requires ownership');
+  validateExpectedFiles(expectedFiles);
   const receipts = [LEDGER, ANCHORS];
-  preflightPaths(outDir, [...entries.map(e => e.path), ...receipts], {
-    entryPaths: entries.map(e => e.path), reservedFiles: receipts,
-  });
-  const priorByPath = new Map(readPriorRows(outDir).map(r => [r.path, r]));
-  const ledgerRows = mergedRows(outDir, entries);
-  const scope = concern ? scopeOf(ledgerRows, concern) : null;
+  const entryPaths = entries.map(e => e.path);
+  const pathOptions = { entryPaths, reservedFiles: receipts };
+  const initialFiles = [...entryPaths, ...receipts, ...expectedFiles.map(item => item.path)];
+  const initial = preflightPaths(outDir, initialFiles, pathOptions);
+  const captured = captureFiles(initial.targets);
+  checkExpectedFiles(expectedFiles, captured);
+  const priorRows = captured.get(LEDGER) === null ? [] : JSON.parse(captured.get(LEDGER).toString('utf8')).entries ?? [];
+  const priorByPath = new Map(priorRows.map(r => [r.path, r]));
+  if (ownership && priorByPath.size !== priorRows.length) throw new Error('duplicate ownership ledger path');
+  const plannedRows = mergeRows(priorRows, entries);
+  const scope = concern ? scopeOf(plannedRows, concern) : null;
   const repo = resolve(outDir);
-  const priorIndex = existsSync(join(outDir, ANCHORS))
-    ? readAnchorsIndex(readFileSync(join(outDir, ANCHORS), 'utf8'), {
+  const priorIndex = captured.get(ANCHORS) !== null
+    ? readAnchorsIndex(captured.get(ANCHORS).toString('utf8'), {
       legacy: 'planned', legacyDefaults: { repo, generator: 'legacy', generatorVersion: 'unknown' },
     }) : { version: ANCHORS_VERSION, anchors: {} };
   const plannedKnowledgeKeys = anchorInputs(entries, repo);
@@ -133,51 +170,95 @@ export async function applyEntries({ entries, outDir, generator, concern, anchor
       if (location.repo !== repo) throw new Error(`prior generator anchor outside owned outDir: ${location.repo}`);
       return location.file;
     });
-  const { root, targets } = preflightPaths(outDir,
-    [...entries.map(e => e.path), ...ledgerRows.map(r => r.path), ...priorPaths, ...receipts],
-    { entryPaths: entries.map(e => e.path), reservedFiles: receipts });
-  const actions = preflightApply({ entries, targets, priorByPath, scope });
+  const files = [...initialFiles, ...plannedRows.map(r => r.path), ...priorPaths];
+  const { root, targets } = preflightPaths(outDir, files, pathOptions);
+  if (root !== initial.root) throw new Error('apply precondition changed: outDir resolution');
+  captureFiles(targets, captured);
+  const actions = preflightApply({ entries, targets, priorByPath, scope, captured, ownership, generator, update });
+  const finalBytes = new Map(actions.map(action => [action.entry.path,
+    action.changed ? Buffer.from(action.content) : captured.get(action.entry.path)]));
+  const ledgerRows = ownership ? ownershipRows(priorRows, actions, ownership, generator, finalBytes) : plannedRows;
+  const plannedPaths = new Set(entryPaths);
+  const retained = ownership ? priorRows.filter(row => row.ownership?.id === ownership.id &&
+    row.ownership.generator === generator.id && !plannedPaths.has(row.path)).map(row => ({
+    path: row.path, kind: row.kind, outcome: 'RETAINED', changed: false, exists: captured.get(row.path) !== null,
+  })) : [];
   let written = 0, identical = 0, kept = 0, globalFlowed = 0, merged = 0, routesNoTarget = 0;
+  for (const action of actions) {
+    if (action.changed) {
+      written++;
+      if (action.manualMerged) merged++;
+      if (action.isGlobal && (scope || action.outcome !== 'ADD') && action.entry.merge !== 'markers') globalFlowed++;
+    } else if (action.outcome === 'KEEP') kept++;
+    else if (action.outcome === 'MISSING') routesNoTarget++;
+    else identical++;
+  }
+  const outcomes = actions.map(({ entry, outcome }) => ({ repo, file: entry.path, outcome,
+    ...(outcome !== 'MISSING' ? { fingerprint: fingerprint(finalBytes.get(entry.path)) } : {}),
+  }));
   const ledger = { generator: generator.id, entries: ledgerRows };
   if (concern) ledger.concern = {
     name: concern.name, families: concern.families ?? 'all', scopeFile: concern.registryFile,
     scopeFileHash: createHash('sha256').update(readFileSync(concern.registryFile)).digest('hex').slice(0, 16),
     inScope: scope.set.size, closureAdded: scope.set.size - scope.base.size,
+    written, identical, kept, globalFlowed,
   };
-  const outcomes = [];
-  // Same mkdir/writeFile application channel as before, using prechecked final merge contents.
-  // Exclusive outDir ownership is required: this is not a cross-file transaction or rollback.
-  for (const action of actions) {
-    const { entry, target, outcome, content, isGlobal } = action;
-    if (action.changed) {
-      mkdirSync(dirname(target), { recursive: true });
-      writeFileSync(target, content);
-      written++;
-      if (action.manualMerged) merged++;
-      if (isGlobal && (scope || outcome !== 'ADD') && entry.merge !== 'markers') globalFlowed++;
-    } else if (outcome === 'KEEP') kept++;
-    else if (outcome === 'MISSING') routesNoTarget++;
-    else identical++;
-    // Capture evidence only after the actual policy outcome, including KEEP/IDENTICAL bytes.
-    outcomes.push({ repo, file: entry.path, outcome,
-      ...(outcome !== 'MISSING' ? { fingerprint: fingerprint(readFileSync(target)) } : {}) });
-  }
-  mkdirSync(root, { recursive: true });
-  if (concern) Object.assign(ledger.concern, { written, identical, kept, globalFlowed });
-  writeFileSync(targets.get(LEDGER), JSON.stringify(ledger, null, 2) + '\n');
-  // No successful index/receipt is returned if any application/ledger write failed above.
-  const anchorEntries = anchorPolicy === 'written-only'
-    ? entries.filter(entry => actions.some(action => action.entry === entry &&
-      ['ADD', 'COVER', 'MERGE', 'IDENTICAL'].includes(action.outcome))) : entries;
-  await writeAnchorsIndex(planAnchors({ priorIndex: anchorPlan.priorIndex, generator,
-    plannedKnowledgeKeys: anchorInputs(anchorEntries, repo), finalApplyOutcomes: outcomes, derivedFiles }), {
-    repoRoots: { [repo]: root }, indexLocation: { repo, file: ANCHORS },
-  });
-  return {
+  const ledgerContent = JSON.stringify(ledger, null, 2) + '\n';
+  const anchorEntries = anchorPolicy === 'written-only' || ownership
+    ? entries.filter(entry => actions.some(action => action.entry === entry && accepted.has(action.outcome))) : entries;
+  const finalAnchorPlan = planAnchors({ priorIndex: anchorPlan.priorIndex, generator,
+    plannedKnowledgeKeys: anchorInputs(anchorEntries, repo), finalApplyOutcomes: outcomes, derivedFiles });
+  const result = {
     name: generator.id, written, identical, total: entries.length,
     kept, globalFlowed, merged, routesNoTarget, outcomes,
+    actions: actions.map((action, i) => ({ path: action.entry.path, kind: action.entry.kind,
+      outcome: action.outcome, changed: action.changed,
+      ...(outcomes[i].fingerprint ? { fingerprint: outcomes[i].fingerprint } : {}),
+    })),
+    retained,
+    // A caller can pass these back as expectedFiles to pin a separately approved preview.
+    expectedFiles: [...captured].map(([path, bytes]) => ({ path, fingerprint: bytes === null ? null : fingerprint(bytes) })),
     inScope: scope ? scope.set.size : null,
     closureAdded: scope ? scope.set.size - scope.base.size : null,
     ledger: targets.get(LEDGER), anchors: targets.get(ANCHORS),
   };
+  return { root, repo, targets, actions, finalBytes, ledgerContent, finalAnchorPlan, result,
+    assertFresh: () => checkCapturedFiles({ outDir, root, files, pathOptions, captured }),
+  };
+}
+
+/** Same decisions/preconditions as apply, without mkdir, source writes or receipt writes.
+ * Preview fingerprints describe prospective final bytes, not a published source certificate. */
+export function previewEntries(args) {
+  const prepared = prepareEntries(args);
+  prepared.assertFresh();
+  return prepared.result;
+}
+
+/** Apply already-produced entries. Ownership is opt-in; update additionally requires each
+ * preexisting planned path's matching owner/generator/kind and trusted byte baseline.
+ * Exclusive outDir coordination is still required: rechecks are not locking or rollback. */
+export async function applyEntries(args) {
+  const prepared = prepareEntries(args);
+  const { root, repo, targets, actions, finalBytes, ledgerContent, finalAnchorPlan, result } = prepared;
+  // All validation, policy/merge decisions and receipt preparation precede this last recheck.
+  prepared.assertFresh();
+  for (const { entry, target, changed, content, outcome } of actions) {
+    if (changed) {
+      mkdirSync(dirname(target), { recursive: true });
+      writeFileSync(target, content);
+    }
+    if (outcome !== 'MISSING') {
+      const actual = readFileSync(target);
+      if (!actual.equals(finalBytes.get(entry.path))) throw new Error(`apply bytes changed: ${entry.path}`);
+      // The prepared ownership receipt describes these actual bytes, including MANUAL merges.
+    }
+  }
+  mkdirSync(root, { recursive: true });
+  writeFileSync(targets.get(LEDGER), ledgerContent);
+  // No successful index/receipt is returned if any application/ledger write failed above.
+  await writeAnchorsIndex(finalAnchorPlan, {
+    repoRoots: { [repo]: root }, indexLocation: { repo, file: ANCHORS },
+  });
+  return result;
 }

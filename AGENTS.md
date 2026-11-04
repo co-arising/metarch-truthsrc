@@ -6,17 +6,27 @@ command, and "it looked fine" is not a defense.
 
 ## The one rule
 
-**The tree (`tree/`) is the only edit surface. `canonical.json` is generated.**
+**The configured author tree is the only knowledge edit surface. `canonical.json` is generated.**
+New projects use `truth/<system>/system.yaml` and `contexts/<context>/context.yaml`;
+see [AUTHORING.md](AUTHORING.md). Paths below are relative to the declared context
+except the system inbox. Legacy `tree/` layouts remain compatibility inputs;
+never maintain both as current business models. Project technical bindings are
+explicit separate inputs, not a second editable request/canonical.
 If your diff touches `canonical.json` by hand, the change is void.
 
-## Commands (all local, zero deps, ~1s)
+## Commands (local, zero dependencies)
 
 ```bash
-node bin/truthsrc.js validate --tree tree    # structure V* + stage rules ES/CS/AG/RF/SM
-node bin/truthsrc.js roundtrip --tree tree   # compile∘decompose∘compile byte identity
-node bin/truthsrc.js compile --tree tree --out canonical.json
-node bin/truthsrc.js decompose --canonical canonical.json --tree tree
+node bin/truthsrc.js validate --tree truth/example
+node bin/truthsrc.js roundtrip --tree truth/example
+node bin/truthsrc.js compile-project --project truthsrc.project.json
+node bin/truthsrc.js generate-project --project truthsrc.project.json --out generated --plan
 ```
+
+Use the configured system root instead of `truth/example` for an existing project.
+Legacy explicit tree commands are still available. New-author `decompose` requires
+an absent destination whose basename matches `system.id`; it never overwrites the
+current author tree. Large product/bank validation is not a one-second operation.
 
 Every batch of edits — one note or fifty — ends with **validate AND roundtrip,
 both green**, or the batch didn't happen. This is not bureaucracy: the
@@ -48,8 +58,10 @@ roundtrip gate is what makes thousands of autonomous agent edits reconcilable.
 5. **One definition per event.** A full event definition (`payloads`,
    `bindings`, `foldAssignments`) lives in exactly one slice — the first
    command in `order.commands` that produces it; events no command produces go
-   to the aggregate's `extraEvents`. Decisions and folds are never stored —
-   they are derived (formulas in SCHEMA.md §The slice atom).
+   to the aggregate's `extraEvents`. Current domain decisions and folds derive
+   from these definitions. Legacy stored `decision`/`fold` surfaces must be
+   preserved during compatibility migration: they are not always derivable from
+   payload (SCHEMA.md §Surface carry). Do not delete them as cleanup.
 
 ## Assertion discipline (for agents doing analysis)
 

@@ -49,6 +49,14 @@ const T = (name, description, properties, required, fn) => ({ name, description,
 
 // ── tool table ───────────────────────────────────────────────────────────────
 const TOOLS = [
+  T('project_status',
+    'Read-only current project/input/code freshness. Does not claim runtime or symbol verification.',
+    { project: { type: 'string' }, out: { type: 'string' } }, ['project', 'out'],
+    async (_g, a) => (await import('../lib/project/query.mjs')).statusProject(a)),
+  T('project_sources',
+    'Read-only project knowledge ↔ file provenance with snapshot-bound atom pointers. Exactly one knowledge or file selector; symbol/line return candidates only.',
+    { project: { type: 'string' }, out: { type: 'string' }, knowledge: { type: 'string' }, file: { type: 'string' }, symbol: { type: 'string' }, line: { type: 'integer' } }, ['project', 'out'],
+    async (_g, a) => (await import('../lib/project/query.mjs')).queryProject(a)),
   T('describe',
     'Describe one knowledge node: one-line summary plus its relation fan-out. Use full=true for the whole atom.',
     { ...SOURCE_PROPS, kind: { type: 'string', description: 'Node kind: event, command, slice, aggregate, policy, role, read-model, pipeline, step, field, story, scenario, use-case, value-object.' }, id: { type: 'string', description: 'Node id (kebab-case), e.g. "exception-replayed".' }, full: { type: 'boolean', description: 'Return the full atom instead of the summary.' } },
@@ -177,8 +185,8 @@ async function handle(req) {
           return err(-32602, `missing required argument: ${r}`);
       }
       let graph = null;
-      if (tool.name !== 'diff') graph = await graphFor(args);
-      const envelope = tool.fn(graph, args);
+      if (!['diff', 'project_status', 'project_sources'].includes(tool.name)) graph = await graphFor(args);
+      const envelope = await tool.fn(graph, args);
       return ok({ content: [{ type: 'text', text: JSON.stringify(envelope, null, 2) }] });
     }
     return err(-32601, `method not found: ${method}`);

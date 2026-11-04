@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "truthsrc.author-context/v1",
+  "title": "Explicit bounded-context declaration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kind", "schemaVersion", "id", "name", "responsibility"],
+  "properties": {
+    "kind": { "const": "context" },
+    "schemaVersion": { "const": "truthsrc.context/v1" },
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+    "name": { "type": "string", "minLength": 1 },
+    "responsibility": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "relationships": { "type": "array", "maxItems": 0 }
+  }
+}

@@ -13,7 +13,7 @@ const arg = (name, dflt) => {
   return i > 0 ? resolve(process.argv[i + 1]) : dflt;
 };
 const [cmd] = process.argv.slice(2);
-const strictCompilation = ['init', 'compile-project', 'generate-project', 'generate-products', 'compile-products', 'compile-execution', 'compile-sagas', 'generate'].includes(cmd);
+const strictCompilation = ['init', 'migrate-author', 'query-project', 'status-project', 'compile-project', 'generate-project', 'generate-products', 'compile-products', 'compile-execution', 'compile-sagas', 'generate'].includes(cmd);
 const TREE = strictCompilation ? undefined : arg('--tree', resolve('tree'));
 const OUT = strictCompilation ? undefined : arg('--out', resolve('canonical.json'));
 
@@ -38,8 +38,17 @@ const USAGE = `truthsrc v0.5 — git-native Event Storming truth source
                                                            query verbs apply)
   truthsrc init      <new-project-dir>                     scaffold tree + truthsrc.project.json; refuses existing directory
   truthsrc compile-project --project <config>                derive and compile locally; JSON result, no writes
-  truthsrc generate-project --project <config> --out <owned-dir> [--plan]
-                                                           formal source generation + evidence + ledger + anchors
+  truthsrc generate-project --project <config> --out <owned-dir> [--plan] [--update]
+                                                           formal source generation; update admits unchanged owned files
+  truthsrc status-project --project <config> --out <owned-dir>
+                                                           separate current inputs, code edits and missing evidence
+  truthsrc query-project --project <config> --out <owned-dir> --knowledge <identity-or-source>
+  truthsrc query-project --project <config> --out <owned-dir> --file <relative-file> [--symbol <name> | --line <n>]
+                                                           knowledge ↔ file provenance; positions return candidates only
+  truthsrc migrate-author --tree <legacy-tree> --format <truthsrc/v1|metarch.truth.v1>
+                          --out <new-system-root> --system <id> --context <id>
+                          --name <name> --responsibility <text> [--plan] [--ignore-os-metadata]
+                                                           explicit lossless author migration; existing targets refuse
   truthsrc generate  --in <canonical> --generator <dir> --out <dir> [--option k=v]
                                                            run a generator (ledger + anchors emitted)
                      [--options-json <file>]                explicit producer options, including nested bindings/IR
@@ -56,6 +65,21 @@ const USAGE = `truthsrc v0.5 — git-native Event Storming truth source
 const die = (msg) => { console.error(msg); process.exit(2); };
 
 switch (cmd) {
+  case 'migrate-author': {
+    try {
+      const { migrateAuthorCli } = await import('../lib/author-migrate.mjs');
+      console.log(JSON.stringify(await migrateAuthorCli(process.argv.slice(3))));
+    } catch (error) { die(`[FAIL] ${error.message}`); }
+    break;
+  }
+  case 'query-project':
+  case 'status-project': {
+    try {
+      const { projectQueryCli } = await import('../lib/project/query.mjs');
+      console.log(JSON.stringify(projectQueryCli(cmd, process.argv.slice(3))));
+    } catch (error) { die(`[FAIL] ${error.message}`); }
+    break;
+  }
   case 'compile-project':
   case 'generate-project': {
     try {

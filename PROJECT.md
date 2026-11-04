@@ -1,44 +1,61 @@
-# Local project entry contract — first batch (2026-11-04)
+# Local project contract
 
-This batch implements the continuation §5 only. It does not certify a running
-application, close the OPEN retry/backoff/deadline debt, or change frozen runtimes.
-No service, download, shared generated application, or historical runner is used.
+The project config is the one current entry. Author knowledge lives in its tree;
+canonical, complete product requests, compiled products, source indices, ledger
+and anchors are derived. [AUTHORING.md](AUTHORING.md) defines the recommended
+system/context format; [TUTORIAL.md](TUTORIAL.md) walks through an actual change.
+The original first-batch results remain in [PROJECT-VALIDATION.md](PROJECT-VALIDATION.md).
 
-## Commands and author inputs
+## Commands
 
-- `truthsrc init <new-project-dir>` creates `tree/` and `truthsrc.project.json`.
-  The destination must not exist (even an empty directory or dangling symlink).
-  It creates a small non-bank domain example, then validates and roundtrips it.
-- `truthsrc compile-project --project <config>` is read-only and prints one JSON
-  result with canonical, derived complete request, compilation and source evidence.
-  The existing roundtrip gate creates and removes its own OS-temp directory; it
-  does not write author inputs or retain a project cache.
-- `truthsrc generate-project --project <config> --out <owned-dir> [--plan]`
-  derives and compiles afresh, admits the shipped producer through the existing
-  formal product generation path, and prints one JSON result. `--plan` writes no
-  target or retained intermediates/cache (the roundtrip gate uses OS temp). Actual generation
-  uses only `applyEntries`, with ledger and anchors based on accepted file bytes.
+```text
+truthsrc init <new-project-dir>
+truthsrc compile-project --project <config>
+truthsrc generate-project --project <config> --out <owned-dir> [--plan] [--update]
+truthsrc status-project --project <config> --out <owned-dir>
+truthsrc query-project --project <config> --out <owned-dir> --knowledge <identity-or-alias>
+truthsrc query-project --project <config> --out <owned-dir> --file <relative-file> [--symbol <name> | --line <n>]
+```
 
-Config schema: `truthsrc.project/v1`. All keys are mandatory; unknown keys fail.
-Config `tree` and technical-document paths are relative to the config, not the
-current working directory. CLI `--project` and `--out` paths use the caller's
-working directory; generated source options retain each producer's documented path
-contract (e.g. service external source roots must be absolute).
+- `init` creates `truth/example/system.yaml`, a declared `example` context and a
+  small Counter model. Existing files/directories/symlinks refuse; failure leaves
+  newly created partial data instead of deleting it. Validate and roundtrip run.
+- `compile-project` captures one tree and explicit technical documents, derives
+  the complete request and compiles all selected products; no source output.
+- `generate-project --plan` runs formal producer admission without writing the
+  target. Roundtrip creates/removes its own OS-temp tree, not retained cache.
+- Actual generation uses only core `applyEntries` with ownership, ledger and
+  anchors based on accepted actual file bytes. Repeating unchanged input produces
+  zero source/evidence writes. Receipts remain deterministic.
+- `--update --plan` runs the same overwrite/merge preflight as apply and returns
+  prospective actions. `--update` admits only same-project/generator/kind files
+  whose recorded baseline matches current bytes or whose edits are confined to
+  valid MANUAL blocks. No `--force`, automatic deletion, cross-process lock,
+  rollback or cross-file transaction is provided. Omitted outputs are retained.
+- Without `--update`, the original changed-unmarked-file refusal remains.
+- Status/query are read-only, including no roundtrip temp tree. They distinguish
+  code edits, changed inputs/tool, missing/invalid receipts and historical outputs.
+  A position/`nextN` query returns file-associated candidates, not symbol precision.
+
+## Config
+
+Schema is `truthsrc.project/v1`. All keys below are required, unknown keys fail.
+Product versions are explicit; no automatic dependency selection or latest profile.
 
 ```json
 {
   "schemaVersion": "truthsrc.project/v1",
-  "tree": "tree",
+  "tree": "truth/example",
   "canonicalId": "example-domain",
   "context": "example",
   "products": [
-    { "id": "reference-layout", "version": "1" },
-    { "id": "exact-value-types", "version": "1" },
-    { "id": "exact-value-codecs", "version": "1" },
-    { "id": "domain-decision", "version": "4" },
-    { "id": "domain-dependencies", "version": "6" },
-    { "id": "domain-folds", "version": "6" },
-    { "id": "domain-external-events", "version": "2" }
+    {"id":"reference-layout","version":"1"},
+    {"id":"exact-value-types","version":"1"},
+    {"id":"exact-value-codecs","version":"1"},
+    {"id":"domain-decision","version":"4"},
+    {"id":"domain-dependencies","version":"6"},
+    {"id":"domain-folds","version":"6"},
+    {"id":"domain-external-events","version":"2"}
   ],
   "exactTypes": [],
   "exactCodecs": [],
@@ -46,85 +63,78 @@ contract (e.g. service external source roots must be absolute).
   "assemblies": [],
   "roles": {},
   "generator": "scala-cqrs-domain-v2",
-  "options": { "packages": [{ "context": "example", "package": "example.domain" }], "verificationCases": [] }
+  "options": {"packages":[{"context":"example","package":"example.domain"}],"verificationCases":[]}
 }
 ```
 
-`generator` is a shipped directory name, not arbitrary executable code or plugin
-registration. Ordinary custom generators retain `init-generator` + `generate`.
-Product versions are explicit; requirements/capabilities/role schemas come from
-`profileFor`, never from a second authored request. All dependencies must be
-selected explicitly. Unsupported derivations or profiles fail; no implicit latest.
+`tree`, `documents[].file`, and explicitly relative `./`/`../` runtime repository
+or service external-source roots resolve from the config file. The repository
+path becomes a local `file:` URL and external roots become absolute before formal
+producer validation. Other producer options retain their own explicit contracts.
+CLI paths resolve from the caller's working directory.
 
-This first layout derivation supports one explicitly named context; conflicting
-context declarations fail, rather than guessing cross-context references. `context`
-is a reference-layout choice, not a default injected into canonical: semantic domain
-products require explicit `context` on aggregate declarations, and nominal text/
-external-record products require it on the corresponding value-object declarations.
-Nominal types, aggregate/member/command/event references, ports, sagas, pipelines, formal
-artifacts and product designs derive from canonical identities and source pointers.
-Rules, dependencies, folds and formal product payloads derive from the tree.
+The generator is a **shipped registered producer name**, not dynamic code loaded
+from config. Ordinary custom generators use `init-generator` + `generate`; that
+is not formal producer registration. Compile checks config/option names and product
+semantics. Generation additionally validates producer-specific option values,
+frozen runtime artifact bytes, external roots and the full source plan.
 
-`exactTypes` and `exactCodecs` retain the existing public exact binding row shapes
-except `source`, which is derived and must not be authored. Precision, scale,
-units, versions and representation identities remain explicit choices.
-`documents` contains `{id,file}` for technical bindings only; `assemblies` and
-`roles` use the existing public union and role-to-document contracts. No canonical,
-reference, decision, dependency, fold, host, artifact, design or external-event
-snapshot may be supplied as a technical document. External implementation/mapping
-choices remain explicit and are not invented from narrative knowledge.
+This profile supports a single explicit context. System declarations, physical
+context directory, project context and required aggregate context must agree.
+The compiler does not inject missing domain contexts. Layout references and
+semantic bindings are derived from canonical identities and sources.
 
-## Read/write and result boundaries
+`exactTypes`/`exactCodecs` are existing explicit binding row shapes without `source`;
+source is derived. Precision, scale, units, versions and encoding choices stay
+explicit. Business policy versus technical capacity is explained by the model,
+not guessed from a number. `documents` has only `{id,file}` technical binding
+inputs for selected Saga/runtime/execution/child-plan roles. Canonical, decision,
+fold, host, artifact and design snapshots are not accepted as technical inputs.
+Public union assemblies remove the need to author embedded Saga copies.
 
-All inputs must be regular local files/directories without symlink components.
-The tree must contain workshop.yaml, pass validate and roundtrip, and stay byte
-unchanged. Input/config/source paths must be disjoint from the generated target
-in both directions; the target cannot be an ancestor of the project or bindings.
-Missing/invalid input, unknown options/profile or producer failure occurs before
-any target write. No cross-process lock or cross-file transaction is promised.
-The caller owns the output directory exclusively; existing MANUAL/KEEP policies
-remain those of the core writer, not a new overwrite policy.
+## Evidence, path and ownership boundary
 
-Actual generation also emits `.truthsrc/canonical.json`, `request.json`,
-`compiled.json`, and `inputs.json` under the output through the same apply call.
-They are derived evidence, not author inputs. Inputs evidence records source
-paths and byte hashes, with no timestamps; no secrets should be put in config.
-Ledger/anchors remain at the output root. Source/plan bytes are deterministic for
-fixed source bytes, tool and options; different absolute source/output locations
-may change input evidence and anchor repo paths. Runtime readiness remains the
-compiler's static-only claim, never an application certification.
+All project inputs are regular local files without symlink components; path
+case/NFC aliases and input/output overlap refuse. Tree/config/documents are
+bounded and must not change during capture or before apply. The owner must
+coordinate exclusive writes to the output directory.
 
-Compilation results include `schemaVersion`, `applied:false`, `canonical`,
-`request`, `compilation`, `sources`, `validation`. Generation results include
-`schemaVersion`, `applied`, `sources`, `validation`, and either `plan` or the core
-apply `result`. The combined project plan uses `truthsrc.project-plan/v1`: admitted
-producer entries plus four tool-owned evidence entries. The latter have no
-knowledge ownership and do not masquerade as formally admitted source products.
-Compilation checks config/option names and product semantics; generation additionally
-checks producer-specific option values, local artifacts and the complete source plan.
-Errors go to stderr and exit nonzero; no successful receipt on
-failure. Formal application producers retain their existing frozen local artifact
-and external-source checks even in plan mode. Source generation needs no BC
-service; Scala build/run still needs its own JDK/sbt/runtime dependencies.
+Generation emits these through the same apply call:
 
-## Tests fixed before implementation
+```text
+.truthsrc/canonical.json
+.truthsrc/request.json
+.truthsrc/compiled.json
+.truthsrc/inputs.json
+truthsrc.ledger.json
+anchors.json
+```
 
-1. Fresh init: validate, roundtrip, compile and source-byte preservation; refuse
-   existing directories/files/symlinks and malformed flags before writing.
-2. Non-bank example: compile, plan without writes, apply, real file anchors,
-   byte-identical repeat, source/option changes reflected in derived plan.
-3. Refuse unknown fields/profiles/roles, missing technical input, invalid tree,
-   output/input overlap and symlink aliases without damaging an existing target.
-4. Reuse existing formal CLI and anchor regressions (explicit file list, never
-   global test discovery or the paused bank domain-runner).
-5. Read-only bank adaptation: consume current v1 tree and explicitly selected
-   existing technical bindings; derive the complete 14-product request without
-   using a historical complete request. Verify domain generation through the same
-   entry. No bank/runtime source changes, no runtime publication, no Scala claim.
+`inputs.json` records input/tool hashes, snapshot-bound canonical→atom source
+index and last-generated files. These four tool-evidence entries have no invented
+knowledge ownership. Ledger rows record actual per-file ownership baselines;
+anchors record associations and actual fingerprints. Evidence is not a secret
+store or a tamper-proof signature: callers own these files, and changes/inconsistent
+receipts are rejected. A copied output under another project/root does not silently
+transfer ownership; generate it afresh.
 
-Node baseline for this delivery: >=22.5 (including the optional SQLite graph
-cache); tests run locally on Node 22.23.4. Package/CI/README are aligned in this batch.
+`truthsrc.project-result/v1` wraps compilation or generation. Plans use
+`truthsrc.project-plan/v1` because they combine admitted producer entries and
+tool-owned evidence. Status/query use their explicit project schemas. Errors exit
+nonzero without a successful receipt; late I/O failure can leave partial output.
 
-See [PROJECT-OPEN-ITEMS.md](PROJECT-OPEN-ITEMS.md) for the unchanged retry debt,
-recorded BC/JS code-style and inline-anchor gaps, and deferred synchronization work.
-See [PROJECT-VALIDATION.md](PROJECT-VALIDATION.md) for this batch's commands and outcomes.
+## Verification and remaining boundaries
+
+Run `npm run test:unification` for the explicit public suite. BC and full bank
+integration require opt-in roots; normal tool tests do not require sibling repos.
+Bank current configuration compiles all 14 products and selects the full Play
+service producer; non-bank Counter tests independently prevent bank-only logic.
+
+The tool does not require a server/graph for generation or source IDs. Building
+Scala applications still requires the declared local JDK/sbt/runtime dependencies.
+File provenance is not semantic execution certification. Multi-context generation,
+BC full profile/operational cutover, symbol/span anchors, generated-code style
+alignment and full five-layer author completeness are not implicitly delivered.
+Retry/backoff/deadline remains OPEN; no frozen runtime or 1134 sign-out is changed.
+See [PROJECT-UNIFICATION-ACCEPTANCE.md](PROJECT-UNIFICATION-ACCEPTANCE.md) for actual
+rounds/results and [PROJECT-OPEN-ITEMS.md](PROJECT-OPEN-ITEMS.md) for independent debts.

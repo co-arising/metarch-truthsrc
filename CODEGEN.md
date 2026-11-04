@@ -4,6 +4,19 @@
 > this project. Custom third-party generators are first-class: any tool that
 > implements the contract below is a generator, whatever language it's written in.
 
+## Current local project entry (2026-11-04)
+
+New users start with [PROJECT.md](PROJECT.md) and [AUTHORING.md](AUTHORING.md):
+`truth/<system>/contexts/<context>/` plus explicit technical bindings feeds the
+registered formal producer, the one core apply, and **derived file-level anchors**.
+Anchors do not write hash/index artifacts into the author tree. `source:<doc>#<ptr>`
+is snapshot-bound, not a permanent identity or inline `@knowledge` annotation.
+Project `--update` is opt-in same-owner/baseline admission; prior standalone
+`generate` and concern/MANUAL behavior below remain compatible. Ordinary custom
+generator plugins and the shipped formal product registry are separate contracts.
+The diagram below records the older conceptual route, not a promise that the new
+file-anchor workflow mutates tree atoms or emits BC-style inline annotations.
+
 ## Position in the pipeline
 
 ```text
