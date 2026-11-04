@@ -26,7 +26,7 @@
 
 ## 当前交付状态与剩余门
 
-本轮执行已结束，所有自有进程已回收；下面记录的未完成项不自动进入下一轮。公共文件闭环和银行当前作者/生成/查询/安全再生/离线编译已交付，但**不宣称整份设计的BC现役切换和运行级窗口全部完成**。
+首轮执行已结束，所有自有进程已回收；2026-11-05用户再次要求继续未完成任务后，推进了独立生成单元测试门。公共文件闭环和银行当前作者/生成/查询/安全再生/离线编译已交付，但**不宣称整份设计的BC现役切换和四流运行级窗口全部完成**。
 
 | 能力/目标 | 状态 | 证据或限制 |
 |---|---|---|
@@ -37,9 +37,11 @@
 | 自定义生成器/两agent手写协作 | 已验证 | 普通CLI自定义生成、实际Counter产品驱动接口、两个独立手写模块再生后字节保持。 |
 | BC五产物兼容 | 已验证 | 1917原子完整输入，73测试，五产物严格对象/顺序一致。 |
 | BC新作者全量迁移与现役切换 | 阻塞 | 七项历史stage含义冲突需BC owner裁定；原输入保留，不自动改或兜底；这部分仍是整体设计未完成项。 |
-| 新候选Scala/Test compile | 已通过 | 尝试3在OS禁止网络/源写入下完成499应用Scala＋6测试源码编译，exit0；35手写/冻结依赖/输入/沙箱前后均未变。没有执行测试或服务。 |
-| 全四流HTTP/数据库/浏览器/恢复窗口重签 | 未进行 | 保持1134原有签收，不用源码/文件锚通过冒充新运行认证；需独立资源窗口。 |
-| 提交/发布 | 用户已授权本地提交（2026-11-05） | 仅纳入本轮成果，提交号以Git记录为准；不推送/发布。JS原`.gitignore`与银行README、continuation等他人dirty排除。 |
+| 新候选Scala/Test compile | 已通过 | 尝试3完成499应用Scala＋6测试源码编译，exit0；续接unit02在空缓存重新编译并执行生成单元测试，见下一行。 |
+| 当前生成单元测试 | 已通过（续接窗口） | 新候选unit02真实执行23测试／5Suite，零失败/取消/忽略/pending/abort；实际sbt装载副本199输入机器对账，全部11项保护检查true，build71.053秒。finite host Suite为零测试，不算四流业务覆盖。 |
+| 当前四流actor业务回归 | 已通过（续接窗口） | actor01新候选499main／14test冷编译、41业务＋23生成测试全部成功；实际测试闭包/源码、15TA journal、16正常worker退出和全部15保护检查通过。无HTTP/真实数据库/跨JVM认证。 |
+| 全四流HTTP/数据库/浏览器/恢复窗口重签 | 未进行 | 保持1134原有签收，不用源码/文件锚、生成单元或actor回归通过冒充完整新运行认证；具体边界见银行[运行验收说明](../bank-wealth-demo/docs/TRUTH-RUNTIME-ACCEPTANCE.md)。 |
+| 提交/发布 | 用户已授权续接验收成果本地提交 | 前轮基线为工具`7853e4f`、银行`675a936`；2026-11-05用户再次授权提交第四/五轮成果，实际提交号以Git记录为准。不推送/发布，不纳入JS `.gitignore`和银行README/continuation等他人dirty。 |
 | retry、源码风格/inline anchors | 独立OPEN | 本轮不修复/重发runtime，不借统一入口关闭旧账。 |
 
 ## 受保护面和停止条件
@@ -93,6 +95,28 @@
 - 启动诊断两probe：原setting exit2/2.079s；fixed forcestart=true的about/exit0/7.058s。实际sbt在Unix boot socket被拒绝后，非交互false选择Exit2；true选择无socket继续，autostart仍false，网络/写入profile不改。当前`generated/current`再次生成197entry、repeat0、synchronized=true后进入全新尝试3。
 - 第三次实际离线构建 **passed / exit0**：`generated/current`，回执`bank-wealth-demo/target/truthsrc-build-20261105-03/result.json`。9protobuf、499应用Scala源（含35手写以及派生源）和6生成测试Scala编译完成，build59.665秒。13条弃用/外部引用warning及dependency eviction提示保留；没有执行Scala测试/HTTP/数据库服务。199输入文件、35手写、7runtime、1065供给、current inputs及OS canary/control检查全部true，所有阶段process已回收。
 - 独立银行叙事复核发现2条将execution-port字符串当technical-port的引用，已改为真实`BankTaEffectExecute`/`BankSipDispatchExecute`；新查询报告缺失/歧义叙事引用，新银行用例引用测试和公共引用反例通过。无资金规则/执行产品变更。
+
+### 第四轮：独立生成单元执行（2026-11-05续接）
+
+- 用户要求继续未完成任务后，只推进无网络/无服务/容器的生成单元窗口。BC七项未获新裁定，现役源/缓存/共享应用不写；HTTP/真实数据库/浏览器/跨JVM恢复未执行。无需重审全仓或重新做文件闭环。
+- 银行`verify-truthsrc-build.mjs`增加默认关闭的`--run-generated-tests`，隐含测试源码编译，只调用生成build固定`Test / test`。仅执行模式固定五Suite/23个名字；compile-only保持原适用范围。不会追加历史测试或手改生成build。`npm run test:build-verifier`运行41项定向保护反例，全部通过。
+- 独立审阅修正了末尾取消、symlink CLI静默成功、测试子回执过早封存、compile-only过度收紧、进程结果合成测试缺口、日志不可用事实unknown及初始hash错误留证问题。真实Node监督反例另发现EPERM不能当进程组已退出，修复后复测通过；失败证据保留。
+- unit01新候选冷编译并实际执行23测试通过，build71.624秒。日志揭示sbt使用本轮`global/staging`副本；199源实测逐项相同。未改旧回执，新增正式装载根及副本字节门，重新生成unit02复验。
+- **最终unit02 passed/exit0：**银行`target/truthsrc-unit-20261105-02/result.json`、`generated-tests.json`、`actual-build-sources.json`。9protobuf、499应用Scala及6测试Scala冷编译，独立fork23成功/五Suite完成/零失败取消忽略pending或abort；build71.053秒，ScalaTest1.735秒。全部11项checks=true；实际staging199输入、原candidate199输入、35手写、7runtime、1065供给、当前输入及沙箱控制/canary验证通过，进程全部归还，无timeout/残留group。
+- `GeneratedFiniteHostSpec`零测试明确保留，其他生成测试仅为状态查询、转换、配置/JSON和内存testkit恢复。**这不是付款/TA/退款/SIP业务或四流运行门通过。**更高层适配/资源及TA旧snapshot消费阻点见银行[运行验收说明](../bank-wealth-demo/docs/TRUTH-RUNTIME-ACCEPTANCE.md)。
+- 银行源合同再次5通过/1完整生成集成显式跳过，包含validate/roundtrip、冻结V1字节和14产品保真；不是重复实跑旧5/5完整生成变更闭环。公共JS执行源码与作者树本轮未改，不重新运行前轮381套件冒作新成果。
+- 本轮不提交/推送；前次两笔提交仍为基线，JS `.gitignore`及银行README/continuation他人dirty原字节保留。1134与runtime不重发/重签，retry/backoff/deadline仍OPEN。
+
+### 第五轮：固定四流actor业务回归（2026-11-05再次续接）
+
+- 用户再次要求继续后，未启动服务/容器，只推进可独立的testkit业务窗口。八个冻结`v1/test`文件只读挂载，配当前六生成测试文件；13Suite共64测试，包括41业务（付款6/TA8/退款7/SIP20）和23生成。原生成`Test / test`、fork及UnitNoNetwork不替换，固定manifest拒绝多/少来源，不整目录发现。
+- 新增显式配置TA core/worker及七场景冻结测试fixture。原状态机机械迁移到唯一core，旧snapshot入口兼容委托，默认行为保留；新worker无旧loader/工具Git依赖。fixture保存实际历史文件/pointer/SHA，标historical-frozen-test-fixture，不冒称新作者知识。Journal原路径/锁/持久化实现不改，仅使用新`.local/mock-ta/truthsrc-actors-*`独占目录。
+- OS无条件禁网，原23次拒绝probe保留；额外拒读旧两树、`.scratch`、`dist/v1`及旧loader，config禁止写，只允许本轮TA根。原源码/手写/runtime/旧测试/发行不改。独立审阅查出重开文件为UUID而非数字，已只修校验器和测试fixture再复验。
+- `npm run test:actor-verifier`实际135/135通过、0跳过：原执行器41、新actor闭包8、TA core/worker86。当前源合同5pass/1显式完整生成集成skip，含validate/roundtrip及14产品保真。没有调用旧mock-ta测试、暂停runner或全仓discovery。
+- **实际新候选actor01 passed/exit0：**银行`target/truthsrc-actor-20261105-01/result.json`、`actor-tests.json`、`actor-workers.json`。9protobuf、499应用Scala、14测试源冷编译；64测试/13Suite全部完成，零失败/取消/忽略/pending/abort。build89.037秒，ScalaTest16.172秒。15TA journal、16worker启动正常close/exit0/wait；实际staging199输入及14测试闭包、17actor相关输入和全部15checks通过，无残留group/timeout/取消，进程归还。
+- 付款本金1000/0→900/100、订单last commit、结果五kind，TA相关性/非终态，独立退款全本金与三phase自动恢复，有限SIP前缀/修订/暂停/派发/首terminal等原断言通过；不更改业务期望。SIP部分TA终态仍是测试命令，部分恢复是显式Reconcile，testkit恢复不是跨JVM；**不能关闭全部25项矩阵或HTTP/数据库/浏览器/恢复窗口**。
+- 本轮无公共JS生成器源码/作者改动，BC七项/现役切换仍待owner；验证结束时没有提交推送，runtime不重发、1134不重签，retry/backoff/deadline继续OPEN。原两轮生成-only回执保留，新actor模式结果单列，不改写历史证据。
+- 用户随后明确“提交，然后给压缩上下文”，已授权第四/五轮成果的本地提交；仅纳入上述验收工具、显式模拟器核心/worker/fixture、对应测试及验收文档，不纳入派生应用/本机journal/供给或他人dirty。提交号以两仓Git记录为准，不推送。
 
 ### 失败与修正记录
 
