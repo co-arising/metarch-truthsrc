@@ -161,10 +161,76 @@ independent signature of authorship. Node and Scala read the same five-product
 wire format, but their validation capabilities are explicitly different. No API
 fetches source-site URIs or writes back to Miro.
 
-**BC-wide default cutover is not complete.** The old default loader, cache writers,
-bridge/decompose and other historical mixed readers require a separate coordinated
-migration. This increment does not point them at the new author tree, overwrite
-an active cache, or generate a shared application. A successful explicit bundle
-is not another current author tree to edit in parallel and not a full-toolchain
-unification claim. Product structure/skeleton/surface definitions and automatic
-external-source editing remain unimplemented product design work.
+## Selecting the normal BC readers
+
+A `truthsrc.bc-input/v1` file selects the compatibility bundle for ordinary BC
+readers. It is technical input configuration, not a second domain model or a
+replacement for `truthsrc.project/v1` generation profiles:
+
+```json
+{
+  "schemaVersion": "truthsrc.bc-input/v1",
+  "mode": "bundle",
+  "manifest": "/absolute/new/products/metarch-bundle.json",
+  "reader": "file:///absolute/metarch-truthsrc/lib/compat/metarch-bundle.mjs"
+}
+```
+
+Pass `TRUTHSRC_METARCH_INPUT=/absolute/selection.json` to the consuming process.
+Without that variable, Node can discover `truthsrc.input.json` at the BC tool
+repository root; Scala uses the current working repository root. Use the explicit
+absolute file for embedded/cross-directory calls so both select the same input.
+This increment does not install a repository default file. Invalid or empty
+selection never means legacy fallback. The exact four keys, version, normalized
+local paths, ordinary single-link files and canonical reader file URL are required.
+
+Existing synchronous `loadMetarch/loadProducts/loadTemplate/loadReadmodels/`
+`loadStories/loadConcerns/metarchBytes` read the selected five-product set. Each
+call revalidates the source and product bytes and returns its own mutable copy,
+so a legacy caller cannot poison a later result. Selection, manifest or reader
+changes require a new process. The declared reader is trusted local executable
+code, not a sandbox for untrusted plugins. Scala verifies its declaration and
+bundle; it does not execute the JavaScript compiler.
+
+`StateFileStore.load("metarch")` and `IngestedSystem.systemMetadata` use the same
+selected input. Their selected errors do not turn into an empty success. Direct
+`statePath` access and legacy `save` reject for that selected slot.
+
+With a selection, `node tools/truthsrc/compile.mjs --check` verifies the selected
+bundle and its source. It does **not** certify old-cache freshness. Writing cache,
+legacy path overrides, and direct legacy `compileTree()` refuse. Historical
+bridge/decompose, mixed cache readers, service/writeback and generation workflows
+that have not been ported refuse before their effects; refusal is not completed
+feature support. The BC [input-selection execution plan](../backkend-codegen/knowledge_base/exec_plans/active/EP_Truthsrc_Input_Selection.md)
+lists this bounded coverage. Other standalone cache consumers, historical surgery
+scripts and a relocated external collector are not covered by a whole-repository
+cutover claim.
+
+The preserved general JS diagnostics have distinct causes: V13 unknown-expression
+syntax 180 (134 `system:now`, 46 other forms), V3 historical stage pairs 7, V11
+read-model source requirements 17, and ES2 timeline requirements 54. They are
+258 occurrences, not 258 unique defects or exclusively syntax mismatches. None
+permits inventing missing facts; compatibility reading does not certify the
+unsupported expression semantics. The 657 notices remain visible as well.
+
+A selected-reader regression is available in the tool repository:
+
+```bash
+TRUTHSRC_BC_ROOT=/absolute/backkend-codegen \
+  node --test --test-concurrency=1 test/metarch-input-selection.test.mjs
+```
+
+BC's `npm run test:truthsrc-input` exercises the selector, the bounded refusal
+inventory and legacy service-sync fixture with a mocked HTTP boundary. Its static
+placement checks are reported separately from executed CLI/adapter tests; neither
+requires a running service. Real default-slot Scala consumption has a separate
+source-bound oracle in `test/fixtures/MetarchSelectedInputOracle.scala`, compiled
+against an explicitly captured BC classpath; the acceptance ledger records that
+run rather than pretending it is included in the Node suite.
+
+**BC-wide default cutover is not complete.** Supported readers and rejected
+legacy operations now recognize an explicit selection, but the active author
+location and complete historical consumer set have not been switched. A successful
+bundle is not another current author tree to edit in parallel and not a
+full-toolchain unification claim. Product structure/skeleton/surface definitions
+and automatic external-source editing remain unimplemented product design work.

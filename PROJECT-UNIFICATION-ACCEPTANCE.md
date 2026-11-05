@@ -12,7 +12,7 @@
 - `generate-project --update` 是显式受控再生；默认拒绝覆盖策略保留。更新必须有同项目/生成器/文件类别的上次成功基线，代码未偏离或仅修改合法 MANUAL 区域。停止生成的文件保留并报告，不自动删除。所有写入仍经唯一 apply，不保证跨进程锁或跨文件事务。
 - `query-project` 与 `status-project` 区分代码字节、输入/配置/工具新鲜度、历史来源和缺失来源；当前语义编译失败也不能把上次成功证据报为当前。
 - 银行当前语义身份保留 `bankwealth`，系统存放名为 `bank-wealth`。新增根 `truthsrc.project.json` 指向新作者树；旧根树及 V1 冻结树不删除、不覆盖。切换前在新建输出/临时副本验完整四流保真与技术绑定，不运行暂停 runner。
-- BC旧真源/现役缓存与共享应用只读。兼容验收保留真实树所有作者内容；第八轮按用户接受的分离方向仅新增显式只读消费接口，不改变默认入口。支持不了的生成面明确不支持，不回落旧树；整体BC现役作者切换仍须覆盖旧读写消费者，不能冒称完成。
+- BC旧真源/现役缓存与共享应用只读。兼容验收保留真实树所有作者内容；第八轮新增显式只读消费接口，第九轮将普通读取槽接入显式bundle选择，并使未适配旧读写入口提前拒绝。无选择仍保留旧入口，不安装全仓默认配置。支持不了的生成面明确不支持，不回落旧树；整体BC现役作者切换仍须覆盖完整消费者集合，不能冒称完成。
 
 ## 轮次与验收门
 
@@ -26,7 +26,7 @@
 
 ## 当前交付状态与剩余门
 
-2026-11-05续接已完成银行作者/文件与原运行窗口。用户随后接受“知识正文、现场来源、演进规则分离”，第八轮已解除七项历史stage语义决策阻塞，完成显式兼容迁移与Node/Scala只读消费。**整体默认切换尚未完成，但不再等待用户解释两stage含义**：实际BC在JS通用领域门有258hard/657notice的既有差异，旧读写/缓存链亦未切换。当前完成项是有界的作者表示与显式消费，不关闭独立retry账、不重签1134，也不冒称五层产品定义完整。
+2026-11-05续接已完成银行作者/文件与原运行窗口。用户随后接受“知识正文、现场来源、演进规则分离”，第八轮解除七项历史stage语义决策阻塞并完成保真迁移；第九轮又将普通Node/Scala读取槽接入同一显式bundle，旧混合读写入口提前拒绝，真实默认槽消费通过。**整体默认切换尚未完成，但不再等待用户解释两stage含义**：实际BC在JS通用领域门有258hard/657notice，全部历史缓存消费者/写回尚未迁移，不安装现役默认配置。当前成果不关闭独立retry账、不重签1134，也不冒称五层产品定义完整。
 
 | 能力/目标 | 状态 | 证据或限制 |
 |---|---|---|
@@ -39,14 +39,15 @@
 | BC真实Scala兼容消费 | 已通过，非现役切换 | 最终fixture编译及Node7/7真实通过；1592notes/1114merged/27aggregates，完整WorkshopState、三个MergeEngine投影和AssemblyResult相等；差异/双解析失败负例有效，无active cache fallback。 |
 | BC协调记录提交技术门 | 已解除，获本次本地提交授权 | 原证据文档已找到并改固定引用；提交前再跑KB lint413文档0error/1warning、真实本仓compile及专属Scala11/11通过。只纳入本人四行，不捎带peer板/EP/metrics修改。 |
 | BC新作者表示迁移 | 显式兼容迁移已验 | 用户接受分离原则；七项以固定legacy-carrier政策保留，不立双领域stage。1918作者文件/完整roundtrip及五产品字节保真，显式Node/Scala消费者同结果。 |
-| BC全仓默认作者与消费者切换 | 未实施，技术范围另列 | JS通用领域校验258hard/657notice与迁移前相同，BC旧bridge/decompose/cache写链尚未统一；不只改指针制造双写。不再以“用户尚未决定stage”描述阻塞，见[BC-STAGE-DECISION.md](BC-STAGE-DECISION.md)。 |
+| BC普通读取槽的单源选择 | 第九轮已接线，独立验收见下 | `truthsrc.bc-input/v1`由同一显式本地配置选bundle；Node保持同步、Scala默认metarch槽不吞错。旧混合读写入口拒绝，拒绝不冒称功能迁移。无现役默认文件。 |
+| BC全仓默认作者与消费者切换 | 未完成，普通读取接线不等于全仓切换 | JS通用领域校验258hard/657notice与迁移前相同，历史直读缓存/独立手术脚本及外部collector仍未全覆盖。不只改指针制造双写，不再等待用户决定stage；见[BC-STAGE-DECISION.md](BC-STAGE-DECISION.md)。 |
 | 新候选Scala/Test compile | 已通过 | 尝试3完成499应用Scala＋6测试源码编译，exit0；续接unit02在空缓存重新编译并执行生成单元测试，见下一行。 |
 | 当前生成单元测试 | 已通过（续接窗口） | 新候选unit02真实执行23测试／5Suite，零失败/取消/忽略/pending/abort；实际sbt装载副本199输入机器对账，全部11项保护检查true，build71.053秒。finite host Suite为零测试，不算四流业务覆盖。 |
 | 当前四流actor业务回归 | 已通过（续接窗口） | actor01新候选499main／14test冷编译、41业务＋23生成测试全部成功；实际测试闭包/源码、15TA journal、16正常worker退出和全部15保护检查通过。无HTTP/真实数据库/跨JVM认证。 |
 | 当前运行测试源码/classpath交接 | 已通过 | 新候选冷02：9PB/499main/11test（六生成+五冻结main），194实际classpath、189JAR及隐式引用检查、14保护门通过；实际运行消费者准入通过，未把编译算运行。 |
 | 新候选24个跨JVM指定恢复窗 | 已通过 | runtime-crash02：24/24case、72独立JVM和72worker、509.445秒/exit0。原barrier/资金/PB/身份/TA/SIP断言全部通过，来源/制品前后不变；进程退出、无timeout/锁。不是Mongo故障注入或retry策略验收。 |
 | 新候选HTTP/数据库/浏览器运行 | 最终database11通过 | final工具重新实跑initial/restart/refund/replay，21鉴权拒绝/5MySQL负例/三个Chromium流程53+35+14观察通过；32额外API GET、restart/replay Mongo全库摘要不变。sourceBound/inputsUnchanged全true；2容器/2relay/8051exec及主进程归还。09成功/10失败保留，未改业务/重签1134。 |
-| 提交/发布 | 用户另行授权第七/八轮本人成果本地提交 | 最新“提交，然后给压缩上下文”覆盖工具仓24文件、BC8文件（协调板仅本人四行）；提交号以Git记录为准，不推送/发布。银行8f139b9为外部文档提交，不认领；JS `.gitignore`、BC peer EP/metrics/94金样文件及其余板修改继续排除。 |
+| 提交/发布 | 第七/八轮已本地提交；当前第九轮未提交 | 前次授权已完成工具6320623、BC26ef103e，未推送。第九轮“继续”不新增Git授权；银行8f139b9为外部文档提交不认领，peer .gitignore/EP/metrics/94金样及其余板修改继续保护。 |
 | retry、源码风格/inline anchors | 独立OPEN | 本轮不修复/重发runtime，不借统一入口关闭旧账。 |
 
 ## 受保护面和停止条件
@@ -180,6 +181,30 @@
 提交前重新实际执行 `TRUTHSRC_BC_ROOT=... npm run test:provenance`，322/322、0skip、exit0，57.991秒；KB lint413文档0error/1warning、exit0；真实BC离线`compile`及`testOnly ...MetarchProductBundleSpec`为11/11、exit0、12.266秒，550源码/构建输入前后匹配。记录PID9305已wait/reap、无本轮process group残留。另一个JVM88853的cwd位于工作区外的独立演示应用，与BC目标不交叉；未读取其args/env、未停该进程。没有再生银行/重跑历史运行窗口。
 
 提交证据位于 `.rounds/provenance-commit-20261105-Jt12VT/`。以前各轮“未提交”是执行时点记录，不覆盖这次新授权；旧回执不改字段，实际新提交号以Git为准。不push，不夹带派生bundle/作者候选/缓存/私有数据、他人.gitignore/EP/metrics/金样或银行文档。
+
+### 第九轮：BC普通读取槽与旧写链隔离（2026-11-05继续）
+
+用户在6320623/26ef103e提交和压缩后要求继续。本轮按#23推进显式来源选择；不改原真源/cache、peer EP、冻结runtime或银行运行窗口，不安装现役默认输入配置。独立计划为BC `EP_Truthsrc_Input_Selection.md`，证据根 `.rounds/bc-input-selection-20261105-84d03bc5f5ef/`。
+
+- `truthsrc.bc-input/v1`四字段技术配置由`TRUTHSRC_METARCH_INPUT`指定；无变量时可发现本地默认文件但本轮不创建。严格拒绝未知/重复/空值及路径别名；Node同步五产品接口每次重验并返回副本，进程中选择、manifest或reader变化须重启。不是新的领域真源或业务生成profile。
+- Scala metarch默认槽和`IngestedSystem.systemMetadata`接同一选择，选中后加载/组装错误不能变成空系统；旧save/path拒绝。其他历史workshop行为按原接口保留，不将选择扩成任意多上下文。
+- 旧bridge/decompose/validate/roundtrip、land/service-sync、full-load/full-cycle、gen/kn pipeline、code-FQN写回、S77缓存/apply与混合index/provenance/relations/snapshot及对应MCP入口前置拒绝。拒绝不是完成这些功能的迁移；18处JS入口受本轮窄改，另含Scala入口。独立历史cache手术脚本和工作区外旧路径collector未纳完整切换认证。
+- 258hard分类为V13未知表达式180（134system:now、46其他）、V3历史stage7、V11读模型source17、ES2timeline54；657notice为V2 316/ES3 51/ES4 46/CS3 27/CS4 1/CS6 7/CS8 209。数量是诊断次数，不全是语法差异，不补造字段、不修改七原值、也不由未知表达式推断语义合法。
+- 实际Node普通读取验证 `actual-iC65dG/results.json`：新bundle从原已迁移验证树导出，原BC编译为独立oracle，五产品键序/数组序/序列化字节完全一致。传不存在的旧tree/root仍正常消费；selected compile-check退出0，默认compile及直接compileTree按预期退出1，原1920真源/5缓存/1918旧作者/6旧bundle文件前后不变。首个`actual-OGKgca`仅因macOS注入`__CF_USER_TEXT_ENCODING`被harness拒绝，失败保留。
+- 定向BC选择/拒绝首门66，新增别名和KN门后70；服务夹具缺selector依赖已补最小copy，最终BC三文件90/90。独立拒绝测试中26为静态检查、12为隔离执行（含两项stubbed loader缓存热读）；不把静态检查或stub当全部实际服务入口已执行。
+- Scala首轮`scala-zmp9hm2v`启动在私有TMP路径过长的Unixsocket限制退出2，0编译/0测试；package测试脚本变更未及时列入保护allowlist又挡住后继启动。均保留。新短私有`/private/tmp/bci-qmwthkzs`及明确本人package差异后，`scala-retry-g4nko4_i`真实repo断言/compile/91tests全部exit0，80新选择+11旧bundle；554源码/构建输入含元数据完全不变，62766wait/reap且无组残留，外部demo未操作。
+- 扩展Node首轮`node-final-aa4840949e8c`315pass/7fail，是TMPDIR错误放在工具仓内导致PROJECT_OUTPUT保护拒绝，不改validator消红。使用仓外私有临时目录的`node-retry-5b475a6b2422`实际来源322/322、选择10/10、BC90/90，422passed/0failed/0skip/0timeout；源码SHA前后一致，全部进程wait/reap。
+
+- 真实Scala默认槽 `consumer-DLMnirGk/result.json`：fixture编译0、实际输入0、坏version/缺manifest两拒绝模式各0；在OS禁止读取旧BC真源和cache的同一策略下，1592notes/1114merged/27aggregates完整解析、三个MergeEngine投影、整个AssemblyResult和两次默认IngestedSystem结果相等，旧save/path拒绝，九检查全true。空cwd保持空，编译和三个运行JVM stderr空，全部wait/reap，无进程组残留；554源、classpath、bundle和源清单保持。不是应用生成或服务认证。
+- KB索引通过`kb_lint --fix`只添加一个新EP条目；414docs/0error/1既有warning，两次exit0，418其他文档保持。证据`kb-83be3c451c7b9f41-result.json`。独立代理的总审阅只返回“无额外发现”而未交付完整前序列表，不计完整独立审核；另一定向静态依赖复核确实找到并修复service-sync夹具缺copy问题。
+
+- 最终只读预签出`final-check-1aa383fb8405.json`核2537保护文件：2535原样，两例外精确为本人package新测试script与本人协调两行；剥除本人行后peer整板等基线。三HEAD/index保持、staged为空、银行clean；源码/实际bundle/旧作者保持，193教学源码和197ledger artifact不变，current/verified/synchronized=true，tool指纹仍`e7969730333a4788ba4888d13eeb4e3ffbc013031c58059ba833b3729cbe588d`，没有必要再生。允许提交候选为本人39文件（BC35/TOOL4）；全工作树136文件中97项peer不认领，不能把该全清单用作git add。预检查26个本人PID已无，外部88853仍在且未动；随后普通全Scala回归单独记账，不把该预检查当其签出。
+
+- 普通全Scala首跑`scala-full-8ginngwz`实际1157pass/1fail，全部1158执行、无排除。唯一失败为KnGraphSystemSpec写固定`out/kn-system-metadata-v99999.json`被OS拒绝，文件未创建；全测试JVM的onFailure导出后exit0不作为通过。先验扫描漏掉这一固定写点的事实保留，不将其称安全预检完成。原554source/2537保护保持，74330wait/reap；后继只抽原loadExport文件读体为包内私有重载，测试迁独占tmp并断言原精确错误，default发现/AB语义不改、不开放out写入。
+
+- **最终全Scala通过**：`full-final-2e5q6zg4/result.json`真实repo preflight/compile/test/export全部exit0，1158/1158（ScalaTest1145/125suites＋mUnit/JUnit13），无fail/error/abort/排除；新2文件重编，旧固定out临时文件仍不存在。sbt84846退出后对最终classpath重新编译并执行实际默认槽oracle，九正检查及坏version/缺manifest两拒绝全部通过。2748classes/resources摘要绑定，554source/2537保护/三HEAD-index保持；全部自有组空/wait-reaped，无信号/timeout，外部JVM未动。两文件隔离修复另有完成的独立静态review无发现，不扩为全工具链独立审计。
+
+本轮未提交/推送；输入选择读取子批验收完成，整体BC现役切换仍保留。
 
 ### 失败与修正记录
 
