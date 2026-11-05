@@ -1,6 +1,6 @@
-# BC 七项阶段差异：待 owner 裁决的精确合同
+# BC 七项阶段差异：来源与兼容规则分离合同
 
-日期：2026-11-05。用户要求解决阻塞后，对既有编译、拆分、摄入和合并消费进行定点核查。本记录提供能落到代码的裁决材料，**不是代替 owner 批准，也不修改旧真源**。
+日期：2026-11-05。**用户已接受“知识内容、现场来源、演进规则分开表达”的推荐，并授权推进本轮收口。** 该决定不将两个旧stage字段定为两个领域阶段。原调查记录如下；本页末尾的已接受合同与实际结果覆盖早期“待裁决”状态。
 
 ## 结论
 
@@ -71,3 +71,25 @@ e270ccfbc3f02f0a8b6a3b324f3ed04daef2eb076d5bdf64a590ad5741824770
 - 裁决后先在全新自有目录生成五产品，独立跑 `WorkshopStateJson.read → AssemblyEngine.assemble`，不写 BC 现役缓存、不运行可能刷新共享 journal/索引的旧 pipeline。
 
 本次未改 BC 源/缓存、未生成共享应用；上述调查不是图验证、切流完成或新运行认证。银行运行门不依赖此裁决，可独立推进。
+
+## 2026-11-05 续接：裁决前置工具，不代替裁决
+
+用户要求继续解决阻塞后，现有 `migrate-author --plan` 增加可机读的阻塞预检；没有新增阶段白名单或修改新作者相等约束。真实文件读取与SHA来自同一份字节捕获，包含空目录和显式忽略的OS文件；七项诊断分别保留物理路径、header id、payload noteId、完整origin、原payload及字段pointer。同noteId的全部出现单独列出，不能按别名选首项。
+
+预检列出全部文件的目标位置与root/governance承载，而不创建新作者树。`status=blocked`时退出2，作者准入/作者语义保真未通过，不可把该报告交给writer。兼容五产品、作者迁移、Scala消费和现役切换仍是不同门。报告和计划都不能靠更换源摘要或改写compatibility内容重新获得当前效力；写前重新检查完整源捕获及完整计划。
+
+新增测试专用 `test/fixtures/MetarchConsumerOracle.scala` 直接调用实际BC的 `WorkshopStateJson.read`、三个 `MergeEngine` 投影和完整 `AssemblyResult` 比较。它不经过 `StateFileStore` / `IngestedSystem` 的空系统fallback，不生成应用，也不把两个解析失败当成功。最终真实opt-in7/7（六子case）通过：1592notes/1114merged/27aggregates，各完整结果相等，五产品字节另验；合成的stage强制对齐和ID-only去重均检出真实差异。证据 `metarch-truthsrc/.rounds/bc-migration-preflight-20261105-OkwyVg/consumer-recovery-wlfhmk5f/result.json`；初始Java启动失败单列保留，具体来源和资源范围见 `PROJECT-UNIFICATION-ACCEPTANCE.md` 的续接记录。
+
+**以上是第七轮结束时的历史状态。** 随后用户解释现场定位需求、澄清五层产品成熟度，并接受下述分离方案；不再要求用户猜哪一个旧stage值正确。
+
+## 已接受并实施：正文、来源、兼容合并分别表达
+
+1. **正文**仍是原便签完整payload，不当作一次字段增量。迁移不改其字段、值、顺序或旧号。
+2. **现场来源**使用独立 `truthsrc.provenance/v1` 声明：system的provenance.sessions记录具体session及已知site，原子sourceRefs引用它。stage是活动类别，不是session身份，不表示概念首次出现。URI仅作已声明的定位信息，不自动访问、修改Miro或决定合并优先级。旧BC没有真实session ID/URI的部分保持缺失，不把board1补造成Miro地址。
+3. **旧合并输入**由显式 `bc-seven-legacy-carrier/v1` 兼容政策承接。system.compatibility.metarch.noteStageSemantics选择政策，七个精确作者位置带legacyStageAnnotation标记。原始SHA只在迁移准入/派生证据中，不进作者树；首次导入仍核七文件SHA、全部身份、origin及stage对。后续正文编辑不需要旧BC目录；缺标记、第八项、换号/位置/阶段及未知政策拒绝。没有批准两个领域stage，也没有设计新的通用合并算法。
+
+公开迁移需显式 `--legacy-stage-policy bc-seven-legacy-carrier/v1`；不提供该选项仍严格拒绝旧冲突。实际新目录 `.rounds/provenance-separation-20261105-y16x8vtt/author/metarch` 已创建1918作者文件，结构准入与完整roundtrip通过；五产品逐字节相等，原BC树不改。原有通用领域诊断 **258hard/657notice** 前后多重集相等（仅物理路径映射/列举顺序改变），仍非JS完整业务生成语言通过，不改规则消红。
+
+`export-metarch`从新作者根生成带完整source/products摘要的只读bundle；Node `loadProductBundle(manifest, readerModule)` 与Scala `StateFileStore.loadBundle` / `IngestedSystem.systemMetadataFromBundle` 显式消费，不走旧cache/空系统fallback。真实Scala验收通过1592notes/1114merged/27aggregates的解析、三个合并视图和完整装配结果。
+
+**本轮关闭的是七项语义决策阻塞、表示迁移和显式消费接线。BC全仓默认切换没有实施。** 现有旧写回链及混合缓存消费者不能只改指针，且上述258hard/657notice尚不构成JS现役生成准入。默认作者、旧缓存、共享应用/服务保持不变；不把显式bundle当第二套同时编辑的现役模型。产品战略层相对细致，范围层主要由AI推进，结构/框架/表现层仍没有完成有效定义，本轮不补造五层完整性。

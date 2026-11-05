@@ -1,10 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, symlinkSync, readdirSync } from 'node:fs';
+import fs, { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, symlinkSync, linkSync, readdirSync, realpathSync, existsSync } from 'node:fs';
+import { syncBuiltinESMExports } from 'node:module';
+import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
-import { pathToFileURL } from 'node:url';
-import { loadMetarchSnapshot, projectMetarchProducts, METARCH_COMPAT_VERSION } from '../lib/compat/metarch.mjs';
+import { pathToFileURL, fileURLToPath } from 'node:url';
+import { loadMetarchSnapshot, verifyMetarchCapture, projectMetarchProducts, METARCH_COMPAT_VERSION } from '../lib/compat/metarch.mjs';
+import { planAuthorMigration, writeAuthorMigration, assessMetarchMigration, verifyAuthorMigrationAssessment, migrateAuthorCli } from '../lib/author-migrate.mjs';
 import { compileSnapshot, createSnapshot } from '../lib/compile-snapshot.mjs';
 import { parseDoc, emitDoc, INBOX_PRODUCTS } from '../lib/shared.mjs';
 import { AUTHOR_VERSION, CONTEXT_VERSION, compileAuthorEntries, emitAuthorDoc } from '../lib/author-surface.mjs';
@@ -26,7 +30,7 @@ function bcDoc(headers, nested = {}, blocks = {}) {
   return lines.join('\n') + '\n';
 }
 function fixture(t) {
-  const dir = mkdtempSync(join(tmpdir(), 'metarch-compat-'));
+  const dir = mkdtempSync(join(realpathSync(tmpdir()), 'metarch-compat-'));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   const files = new Map();
   const write = (file, body) => {
@@ -135,6 +139,8 @@ function assertProductsEqual(actual, expected) {
     assert.deepEqual(actual[name], expected[name], name);
     assertKeyOrder(actual[name], expected[name], name);
     assert.equal(JSON.stringify(actual[name]), JSON.stringify(expected[name]), `${name} serialized key/array order`);
+    assert.equal(JSON.stringify(actual[name], null, 2) + (name === 'METARCH' ? '' : '\n'),
+      JSON.stringify(expected[name], null, 2) + (name === 'METARCH' ? '' : '\n'), `${name} BC file serialization`);
   }
 }
 function unifiedFixture(t) {
@@ -432,6 +438,291 @@ test('projection rejects unsupported common canonical families and absent stored
   assert.throws(() => projectMetarchProducts(missing, legacy), /missing stored decision Reserve/);
 });
 
+const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
+const migrationOptions = f => ({ treeDir: f.dir, format: 'metarch.truth.v1', system: 'synthetic', context: 'main', name: 'Synthetic', responsibility: 'Own stock and audit.' });
+const migrationArgs = (f, out) => ['--tree', f.dir, '--format', 'metarch.truth.v1', '--out', out, '--system', 'synthetic', '--context', 'main', '--name', 'Synthetic', '--responsibility', 'Own stock and audit.'];
+function coherentFixture(t) {
+  const f = fixture(t);
+  f.replace(`${PREFIX}aggregates/audit/aggregate.yaml`, 'name: Audit\n', 'name: Audit\ncontext: main\n');
+  return f;
+}
+function stageConflict(f, file = f.noteFile, stage = 'storyMapping') {
+  f.replace(file, '"noteId":', `"stage": "${stage}",\n    "noteId":`);
+}
+
+test('source capture hashes the original bytes including ignored metadata, is immutable, and cannot be forged', t => {
+  const f = fixture(t);
+  f.write('.DS_Store', Buffer.from([0, 255, 254]));
+  const loaded = loadMetarchSnapshot(f.dir, { ignoreOSMetadata: true });
+  assert.equal(loaded.capture.root, f.dir);
+  assert.deepEqual(loaded.capture.files.map(row => row.file), [...f.files.keys()].sort());
+  for (const row of loaded.capture.files) {
+    assert.equal(row.sha256, sha256(readFileSync(join(f.dir, row.file))));
+    assert.equal(row.bytes, Buffer.byteLength(f.files.get(row.file)));
+  }
+  assert.ok(Object.isFrozen(loaded.capture.files[0]));
+  assert.strictEqual(verifyMetarchCapture(loaded), loaded.capture);
+  assert.throws(() => verifyMetarchCapture(structuredClone(loaded)), /live adapter capture/);
+});
+
+test('every stage blocker carries complete physical identity, distinct aliases and unchanged payload', t => {
+  const f = fixture(t); stageConflict(f);
+  const loaded = loadMetarchSnapshot(f.dir), conflict = loaded.report.authorConflicts[0];
+  const atom = loaded.snapshot.atoms.find(a => a.file === conflict.snapshotFile);
+  assert.equal(conflict.file, f.noteFile);
+  assert.equal(conflict.fileSha256, sha256(f.files.get(f.noteFile)));
+  assert.equal(conflict.headerId, 'shared-header-id');
+  assert.equal(conflict.payloadNoteId, 'command-id');
+  assert.deepEqual(conflict.origin, atom.doc.origin);
+  assert.deepEqual(conflict.payload, atom.doc.payload);
+  assert.equal(conflict.pointers.originStage, '/origin/stage');
+  assert.equal(conflict.pointers.payloadStage, '/payload/stage');
+  assert.equal(conflict.originStage, 'refining');
+  assert.equal(conflict.payloadStage, 'storyMapping');
+  const aliases = loaded.report.duplicateNoteIdOccurrences;
+  assert.equal(aliases.length, 1);
+  assert.equal(aliases[0].noteId, 'duplicate');
+  assert.equal(aliases[0].disposition, 'ambiguous-legacy-alias');
+  assert.equal(aliases[0].occurrences.length, 3);
+  assert.equal(new Set(aliases[0].occurrences.map(row => row.file)).size, 3);
+  assert.deepEqual(aliases[0].occurrences.map(row => row.origin.seq), [7, 4, 5]);
+  assert.ok(Object.isFrozen(conflict.payload.info));
+});
+
+test('blocked assessment covers every file and both semantic blockers without making an executable plan', t => {
+  const f = fixture(t); stageConflict(f);
+  const options = migrationOptions(f), loaded = loadMetarchSnapshot(f.dir);
+  const assessment = assessMetarchMigration(options, loaded);
+  assert.equal(assessment.status, 'blocked');
+  assert.equal(assessment.applied, false);
+  assert.equal(assessment.writable, false);
+  assert.equal(Object.hasOwn(assessment, 'files'), false);
+  assert.deepEqual(assessment.blockers.map(row => row.code), ['AUTHOR_STAGE_CONFLICT', 'AUTHOR_CONTEXT_REQUIRED']);
+  assert.deepEqual(assessment.mappings.map(row => row.from), [...f.files.keys()].sort());
+  assert.equal(assessment.mappings.find(row => row.from === 'governance/concerns.json').pointer, '/compatibility/metarch/governance/concerns');
+  assert.equal(assessment.mappings.find(row => row.from === f.noteFile).to, f.noteFile);
+  assert.equal(assessment.checks.newAuthorAdmission, 'blocked');
+  assert.equal(assessment.checks.newAuthorSemanticEquality, 'not-run');
+  assert.equal(assessment.checks.newAuthorFiveProductEquality, 'not-run');
+  assert.equal(assessment.checks.scalaConsumer, 'not-run');
+  assert.equal(assessment.checks.independentBCOracle, 'not-run');
+  assert.equal(assessment.proposedDeclarations.context.id, 'main');
+  assert.equal(Object.hasOwn(loaded.snapshot.atoms.find(a => a.doc.name === 'Audit').doc, 'context'), false);
+  assert.throws(() => writeAuthorMigration(assessment, join(f.dir, 'new/synthetic')), /not an assessment/);
+  assert.equal(existsSync(join(f.dir, 'new')), false);
+  assert.strictEqual(verifyAuthorMigrationAssessment(assessment), assessment);
+  assert.throws(() => verifyAuthorMigrationAssessment(structuredClone(assessment)), /historical evidence/);
+  const products = projectMetarchProducts(compileSnapshot(loaded.snapshot).canonical, loaded.legacy);
+  for (const row of assessment.products) {
+    const bytes = JSON.stringify(products[row.product], null, 2) + (row.product === 'METARCH' ? '' : '\n');
+    assert.equal(row.bytes, Buffer.byteLength(bytes));
+    assert.equal(row.sha256, sha256(bytes));
+  }
+});
+
+for (const mutation of ['comment', 'payload', 'add', 'remove', 'empty-directory', 'ignored-metadata']) test('stale capture cannot acquire newer source evidence: ' + mutation, t => {
+  const f = coherentFixture(t);
+  f.write('.DS_Store', Buffer.from([0, 255]));
+  const loaded = loadMetarchSnapshot(f.dir, { ignoreOSMetadata: true });
+  const options = { ...migrationOptions(f), legacySnapshot: loaded.snapshot, legacyMetadata: loaded.legacy };
+  const plan = planAuthorMigration(options);
+  const assessment = assessMetarchMigration({ ...migrationOptions(f), ignoreOSMetadata: true }, loaded);
+  if (mutation === 'comment') f.write(f.noteFile, f.files.get(f.noteFile) + '# changed bytes only\n');
+  if (mutation === 'payload') f.replace(f.noteFile, 'payload author differs', 'changed author');
+  if (mutation === 'add') f.write('unknown.yaml', 'kind: question\n');
+  if (mutation === 'remove') rmSync(join(f.dir, f.noteFile));
+  if (mutation === 'empty-directory') mkdirSync(join(f.dir, 'inbox/contextMapping'));
+  if (mutation === 'ignored-metadata') f.write('.DS_Store', Buffer.from([0, 254]));
+  assert.throws(() => verifyMetarchCapture(loaded), /changed|unrecognized/);
+  assert.throws(() => verifyAuthorMigrationAssessment(assessment), /changed|unrecognized/);
+  assert.throws(() => planAuthorMigration(options), /changed|unrecognized/);
+  assert.throws(() => writeAuthorMigration(plan, join(f.dir, 'new/synthetic')), /changed|unrecognized/);
+  assert.equal(existsSync(join(f.dir, 'new')), false);
+});
+
+test('snapshots, governance and saved plans cannot be spliced across source captures', t => {
+  const a = coherentFixture(t), b = coherentFixture(t), first = loadMetarchSnapshot(a.dir), second = loadMetarchSnapshot(b.dir);
+  const input = { ...migrationOptions(a), legacySnapshot: first.snapshot, legacyMetadata: first.legacy };
+  assert.throws(() => planAuthorMigration({ ...input, legacySnapshot: structuredClone(first.snapshot) }), /original snapshot/);
+  assert.throws(() => planAuthorMigration({ ...input, legacyMetadata: second.legacy }), /original snapshot/);
+  assert.throws(() => planAuthorMigration({ ...input, treeDir: b.dir }), /another source root/);
+  assert.throws(() => assessMetarchMigration(migrationOptions(b), first), /differs from its capture/);
+  const plan = planAuthorMigration(input), out = join(a.dir, 'new/synthetic');
+  assert.throws(() => writeAuthorMigration(structuredClone(plan), out), /replanned from a live capture/);
+  assert.equal(existsSync(join(a.dir, 'new')), false);
+});
+
+test('source-bound output edits to compatibility, provenance or binding cannot retain admission', t => {
+  const f = coherentFixture(t), loaded = loadMetarchSnapshot(f.dir);
+  const input = { ...migrationOptions(f), legacySnapshot: loaded.snapshot, legacyMetadata: loaded.legacy };
+  for (const mutate of [
+    plan => { const entry = plan.files.find(row => row.file === 'system.yaml'), doc = parseDoc(entry.content); doc.compatibility.metarch.governance.artifactMeta.readmodels.stats.readModels++; entry.content = emitAuthorDoc(doc); },
+    plan => { const entry = plan.files.find(row => row.file === f.noteFile), doc = parseDoc(entry.content); doc.origin.author = 'rewritten'; entry.content = emitAuthorDoc(doc); },
+    plan => { delete plan.sourceRoot; plan.format = 'truthsrc/v1'; },
+  ]) {
+    const plan = planAuthorMigration(input);
+    mutate(plan);
+    assert.throws(() => writeAuthorMigration(plan, join(f.dir, 'new/synthetic')), /plan changed after admission/);
+    assert.equal(existsSync(join(f.dir, 'new')), false);
+  }
+});
+
+test('copied BC capture cannot bypass binding by relabeling the plan format', t => {
+  const f = coherentFixture(t), loaded = loadMetarchSnapshot(f.dir);
+  const plan = structuredClone(planAuthorMigration({ ...migrationOptions(f), legacySnapshot: loaded.snapshot, legacyMetadata: loaded.legacy }));
+  plan.format = 'truthsrc/v1';
+  mkdirSync(join(f.dir, 'inbox/contextMapping'));
+  assert.throws(() => writeAuthorMigration(plan, join(f.dir, 'new/synthetic')), /replanned from a live capture/);
+  assert.equal(existsSync(join(f.dir, 'new')), false);
+});
+
+test('BC capture is rechecked after parent creation and before root creation', t => {
+  const f = coherentFixture(t), loaded = loadMetarchSnapshot(f.dir);
+  const plan = planAuthorMigration({ ...migrationOptions(f), legacySnapshot: loaded.snapshot, legacyMetadata: loaded.legacy });
+  const outer = mkdtempSync(join(realpathSync(tmpdir()), 'metarch-boundary-'));
+  t.after(() => rmSync(outer, { recursive: true, force: true }));
+  const parent = join(outer, 'new'), out = join(parent, plan.system), realMkdir = fs.mkdirSync;
+  let injected = 0, rootAttempts = 0;
+  const mocked = t.mock.method(fs, 'mkdirSync', (...args) => {
+    if (args[0] === out) rootAttempts++;
+    const result = realMkdir(...args);
+    if (args[0] === parent && args[1]?.recursive === true) {
+      injected++;
+      realMkdir(join(f.dir, 'inbox/contextMapping'));
+    }
+    return result;
+  });
+  try {
+    syncBuiltinESMExports();
+    assert.throws(() => writeAuthorMigration(plan, out), /source changed since parsing/);
+    assert.equal(injected, 1);
+    assert.equal(rootAttempts, 0);
+    assert.equal(existsSync(out), false);
+    assert.deepEqual(readdirSync(parent), []);
+  } finally {
+    mocked.mock.restore();
+    syncBuiltinESMExports();
+  }
+});
+
+test('source-dependent declaration failure remains a structured blocked assessment', async t => {
+  const f = coherentFixture(t); f.meta.readmodels.stats = null;
+  f.write('governance/artifact-meta.json', JSON.stringify(f.meta));
+  const assessment = await migrateAuthorCli([...migrationArgs(f, join(f.dir, 'new/synthetic')), '--plan']);
+  assert.equal(assessment.status, 'blocked');
+  assert.equal(assessment.blockers[0].code, 'AUTHOR_DECLARATION_CONTRACT');
+  assert.match(assessment.blockers[0].message, /stats/);
+  assert.equal(assessment.checks.sourceBound, true);
+  assert.equal(assessment.checks.newAuthorSemanticEquality, 'not-run');
+  assert.equal(assessment.source.files.length, f.files.size);
+  assert.equal(existsSync(join(f.dir, 'new')), false);
+});
+
+test('unsupported legacy destinations stay visible in the blocked assessment without rewriting stage values', async t => {
+  const f = coherentFixture(t);
+  f.write('metarch.yaml', f.files.get('metarch.yaml') + '  - customStage\n');
+  const file = 'inbox/customStage/question-custom-0.yaml';
+  const payload = { type: 'question', name: 'Custom', noteId: 'custom', stage: 'refining' };
+  f.write(file, bcDoc({ kind: 'note', type: 'question', name: 'Custom', id: 'custom' }, {
+    origin: { stage: 'customStage', board: 'board1', seq: 0 },
+  }, { payload }));
+  const loaded = loadMetarchSnapshot(f.dir), canonical = compileSnapshot(loaded.snapshot).canonical;
+  assert.deepEqual(canonical.sessions.find(s => s.session === 'customStage').scopes[0].notes[0], payload);
+  assert.ok(loaded.report.sources.some(row => row.source === file));
+  const assessment = await migrateAuthorCli([...migrationArgs(f, join(f.dir, 'new/synthetic')), '--plan']);
+  assert.equal(assessment.status, 'blocked');
+  assert.equal(assessment.applied, false);
+  assert.equal(assessment.writable, false);
+  assert.equal(assessment.checks.completeFileMapping, false);
+  assert.equal(assessment.mappings.length, f.files.size);
+  assert.deepEqual(assessment.mappings.find(row => row.from === file), { from: file, snapshotFile: file, to: null, relation: 'unmapped' });
+  assert.deepEqual(assessment.blockers.map(row => row.code), ['AUTHOR_DESTINATION_UNSUPPORTED', 'AUTHOR_STAGE_CONFLICT', 'AUTHOR_DECLARATION_CONTRACT']);
+  assert.equal(assessment.blockers[1].originStage, 'customStage');
+  assert.equal(assessment.blockers[1].payloadStage, 'refining');
+  assert.match(assessment.blockers[2].message, /invalid sessionOrder/);
+  assert.ok(assessment.proposedDeclarations.system.sessionOrder.includes('customStage'));
+  assert.equal(assessment.checks.compatibilityProjection, 'passed');
+  assert.equal(assessment.checks.newAuthorSemanticEquality, 'not-run');
+  assert.throws(() => planAuthorMigration({ ...migrationOptions(f), legacySnapshot: loaded.snapshot, legacyMetadata: loaded.legacy }), /invalid sessionOrder/);
+  assert.equal(existsSync(join(f.dir, 'new')), false);
+});
+
+test('the eighth conflict and same-count replacement remain blocked and are never selected by alias', t => {
+  const f = coherentFixture(t);
+  for (let i = 0; i < 8; i++) f.write(`inbox/refining/question-rf-conflict-${100 + i}.yaml`, bcDoc({ kind: 'note', type: 'question', name: `Question${i}`, id: 'shared-id' }, {
+    origin: { stage: 'refining', board: 'board1', seq: 100 + i },
+  }, { payload: { type: 'question', name: `Question${i}`, noteId: 'shared-id', stage: 'storyMapping' } }));
+  const first = assessMetarchMigration(migrationOptions(f));
+  assert.equal(first.blockers.length, 8);
+  assert.equal(first.status, 'blocked');
+  const duplicate = first.compatibility.duplicateNoteIdOccurrences.find(row => row.noteId === 'shared-id');
+  assert.equal(duplicate.occurrences.length, 8);
+  const old = 'inbox/refining/question-rf-conflict-100.yaml';
+  rmSync(join(f.dir, old));
+  const seventh = assessMetarchMigration(migrationOptions(f));
+  assert.equal(seventh.blockers.length, 7);
+  f.write(old, f.files.get(old).replaceAll('Question0', 'Replacement'));
+  rmSync(join(f.dir, 'inbox/refining/question-rf-conflict-101.yaml'));
+  const replaced = assessMetarchMigration(migrationOptions(f));
+  assert.equal(replaced.blockers.length, 7);
+  assert.equal(replaced.status, 'blocked');
+  assert.notDeepEqual(replaced.blockers, seventh.blockers);
+  assert.notEqual(replaced.source.sha256, seventh.source.sha256);
+});
+
+test('symlink roots, parent aliases and hardlinked source bytes are not admitted captures', t => {
+  const f = fixture(t), outer = mkdtempSync(join(realpathSync(tmpdir()), 'metarch-alias-'));
+  t.after(() => rmSync(outer, { recursive: true, force: true }));
+  symlinkSync(f.dir, join(outer, 'alias'));
+  assert.throws(() => loadMetarchSnapshot(join(outer, 'alias')), /symlink/);
+  symlinkSync(dirname(f.dir), join(outer, 'parent'));
+  assert.throws(() => loadMetarchSnapshot(join(outer, 'parent', f.dir.split('/').at(-1))), /symlink/);
+  linkSync(join(f.dir, f.noteFile), join(outer, 'hardlink'));
+  assert.throws(() => loadMetarchSnapshot(f.dir), /single-link/);
+});
+
+test('public blocked plan is JSON with exit 2, no parent creation, and no implicit write mode', async t => {
+  const f = coherentFixture(t); stageConflict(f);
+  const parent = join(dirname(f.dir), f.dir.split('/').at(-1) + '-output'), out = join(parent, 'synthetic');
+  t.after(() => rmSync(parent, { recursive: true, force: true }));
+  const args = migrationArgs(f, out), cli = fileURLToPath(new URL('../bin/truthsrc.js', import.meta.url));
+  const before = loadMetarchSnapshot(f.dir).capture;
+  const result = spawnSync(process.execPath, [cli, 'migrate-author', ...args, '--plan'], { encoding: 'utf8', timeout: 30000 });
+  assert.equal(result.error, undefined);
+  assert.equal(result.status, 2);
+  const report = JSON.parse(result.stdout);
+  assert.equal(report.status, 'blocked');
+  assert.equal(report.blockers[0].file, f.noteFile);
+  assert.equal(result.stderr, '');
+  assert.equal(existsSync(parent), false);
+  await assert.rejects(migrateAuthorCli(args), /MIGRATION_AUTHOR_CONFLICTS/);
+  for (const suffix of [['--stage-policy', 'preserve'], ['--plan', '--plan'], ['--ignore-os-metadata', '--ignore-os-metadata']])
+    await assert.rejects(migrateAuthorCli([...args, ...suffix]), /unknown\/duplicate\/incomplete/);
+  assert.deepEqual(loadMetarchSnapshot(f.dir).capture, before);
+  assert.equal(existsSync(parent), false);
+});
+
+test('coherent public BC plan retains admitted semantics and can be freshly applied and roundtripped', async t => {
+  const f = coherentFixture(t), outer = mkdtempSync(join(realpathSync(tmpdir()), 'metarch-apply-'));
+  t.after(() => rmSync(outer, { recursive: true, force: true }));
+  const out = join(outer, 'synthetic'), args = migrationArgs(f, out);
+  const result = await migrateAuthorCli([...args, '--plan']);
+  assert.equal(result.assessment.status, 'ready');
+  assert.equal(result.assessment.writable, false);
+  assert.equal(result.assessment.checks.newAuthorFiveProductEquality, 'passed');
+  assert.equal(existsSync(out), false);
+  const applied = await migrateAuthorCli(args);
+  assert.equal(applied.applied, true);
+  const { validateTree, validateSnapshot } = await import('../lib/validate.mjs');
+  const { roundtrip } = await import('../lib/roundtrip.mjs');
+  const original = validateSnapshot(loadMetarchSnapshot(f.dir).snapshot);
+  const mapPaths = messages => messages.map(message => result.assessment.mappings.reduce((text, row) =>
+    row.snapshotFile?.startsWith('inbox/') ? text.replaceAll(row.snapshotFile, row.to) : text, message));
+  assert.deepEqual(validateTree(out), { hard: mapPaths(original.hard), notices: mapPaths(original.notices) });
+  assert.equal(original.hard.length, 10, 'the preservation fixture intentionally includes unresolved modeling diagnostics');
+  assert.equal(roundtrip(out).ok, true);
+});
+
 // Explicit external oracle, TEST ONLY. No automatic sibling lookup, no cache
 // writes, no skip-on-incompatibility. Only the explicit OS metadata exception is
 // enabled; every ignored file is independently inventoried and asserted below.
@@ -469,7 +760,26 @@ test('opt-in actual BC tree: all five objects equal external compileTree', { ski
     foldDefinitions, projectedFolds, redundantFolds: report.redundantFolds, missingContexts: report.missingContexts,
     valueObjects: kindCount('value-object'), readModels: kindCount('read-model'), stories: kindCount('story'),
     policies: kindCount('policy'), redundantPolicyFaces: report.redundantPolicyFaces, authorConflicts: report.authorConflicts, unsupported: report.unsupported }));
-  assert.deepEqual(report.authorConflicts.map(row => row.name).sort(), ['AI Agent', 'DoRFindingsSubmitted', 'KnowledgePatch', 'OrganizationMember', 'SubmitDoRFindings', 'System', 'SystemOperator']);
+  const expectedConflicts = [
+    ['contexts/main/aggregates/do-r/notes/command-rf-submit-do-r-findings-288.yaml', 'SubmitDoRFindings', 288, 'storyMapping', 'b3e10d41-34cb-4046-8550-9cff46ea3c1e', 'd805fbb77a790f8e713b9d94750fe7332468e64b6b7de61f031dc562ca70dd4c'],
+    ['contexts/main/aggregates/do-r/notes/event-rf-do-r-findings-submitted-289.yaml', 'DoRFindingsSubmitted', 289, 'storyMapping', '889692b6-9138-4e18-8ee0-40af2178be55', 'ea2653051d1066f816879d7574cff9d07a7dc55820aa0d5d1e6b567242ac700a'],
+    ['inbox/refining/aggregate-rf-knowledge-patch-247.yaml', 'KnowledgePatch', 247, 'aggregateDiscovery', '21d57ca3-9d00-44d2-bf31-c59aa67c8822', '242114cea27bbfdb1e78b33c9bcb4d5893a088b2b7649cb3e3380aa8f747b938'],
+    ['inbox/refining/aggregate-rf-organization-member-266.yaml', 'OrganizationMember', 266, 'aggregateDiscovery', '8d51c927-11de-41ba-9723-d9997c66c084', 'eccefbc60f9d5a59f4030983354894db86df3f0691a0f4a0ca981e052a1f4169'],
+    ['inbox/refining/role-rf-ai-agent-94.yaml', 'AI Agent', 94, 'commandStorming', 'f3859a0e-9ede-41a0-b58f-93ae620a7cfc', 'e270ccfbc3f02f0a8b6a3b324f3ed04daef2eb076d5bdf64a590ad5741824770'],
+    ['inbox/refining/role-rf-system-271.yaml', 'System', 271, 'storyMapping', '3135f150-cce8-41f7-866d-6330632b3275', '2cfa05796e74a1d8454a55921de855a28c14843f1a2622f36f8c2a9c8b4cb14f'],
+    ['inbox/refining/role-rf-system-operator-263.yaml', 'SystemOperator', 263, 'storyMapping', '5e61e0bb-136c-4070-8f58-aa9ddd034a3c', '07613450e1356bbf0da4791c73d91e1a2fdb06c0afd5a1c91fe950bda5f02180'],
+  ];
+  assert.deepEqual(report.authorConflicts.map(row => [row.file, row.name, row.origin.seq, row.payloadStage, row.payloadNoteId, row.fileSha256]), expectedConflicts);
+  for (const row of report.authorConflicts) {
+    assert.equal(row.headerId, row.payloadNoteId);
+    assert.equal(row.originStage, 'refining');
+    assert.deepEqual(row.origin, { stage: 'refining', board: 'board1', seq: row.origin.seq, author: '', createdAt: '' });
+    assert.equal(row.fileSha256, sha256(readFileSync(join(tree, row.file))));
+    assert.deepEqual(row.payload, snapshot.atoms.find(atom => atom.file === row.snapshotFile).doc.payload);
+  }
+  const ai = report.duplicateNoteIdOccurrences.find(row => row.noteId === 'f3859a0e-9ede-41a0-b58f-93ae620a7cfc');
+  assert.ok(ai.occurrences.some(row => row.file === 'inbox/commandStorming/role-cs-ai-agent-8.yaml'));
+  assert.ok(ai.occurrences.some(row => row.file === 'inbox/refining/role-rf-ai-agent-94.yaml'));
   const { planAuthorMigration } = await import('../lib/author-migrate.mjs');
   assert.throws(() => planAuthorMigration({ treeDir: tree, format: 'metarch.truth.v1', legacySnapshot: snapshot, legacyMetadata: legacy,
     system: 'metarch', context: 'main', name: 'Metarch', responsibility: 'Own the self-hosting model.' }), /payload.stage: conflicting structural surface/);

@@ -82,6 +82,43 @@ not a claim that the narrative directly generated executable code. A request for
 a line or `nextN` returns candidates,
 not fabricated symbol/span certification.
 
+## Content, source sites and legacy evolution
+
+`payload` is the complete knowledge body, not an incremental revision. An old
+`origin` records that occurrence's source-session position; it is neither the
+concept's first appearance nor a reliable Miro identifier. Stage names classify
+activities, while distinct session IDs identify specific activities.
+
+Optional system provenance declares known sessions separately:
+
+```yaml
+provenance:
+  {"schemaVersion":"truthsrc.provenance/v1","sessions":[{"id":"review-a","stage":"refining","sites":[{"provider":"miro","uri":"https://boards.example.invalid/review-a"}]}]}
+```
+
+The URI above is a synthetic example, not a real Miro endpoint. Any supported atom
+may add `sourceRefs: [{"sessionId":"review-a","itemId":"known-item"}]` as a JSON
+block. Multiple sessions at the same stage and multiple references are allowed.
+Only explicit, known source data should be supplied. Missing real session IDs or
+URIs remain absent; the compiler never manufactures them from stage, board1, path
+or hashes. HTTP/HTTPS/URN references are validated as metadata, never fetched or
+used to write back. Credentials and executable/file URI schemes are rejected.
+
+These author-only references roundtrip in the author surface and appear as
+`sourceLocations` on source-index/query origins, without entering business
+products. A board URL plus item ID still reports board-level navigation, not an
+invented item URL. A board ID without a URI reports navigation unavailable.
+Neither references nor their order select merge precedence.
+
+The seven known BC stage disagreements have an explicit optional compatibility
+profile, **not two domain stage semantics**. `--legacy-stage-policy
+bc-seven-legacy-carrier/v1` verifies the original seven source hashes and identities,
+then carries unchanged old stage fields under exact occurrence markers and
+`system.compatibility.metarch.noteStageSemantics`. Without the profile the strict
+stage-equality rule remains. This is representation compatibility with BC's old
+merge behavior, not approval of a new evolution algorithm; see
+[BC-STAGE-DECISION.md](BC-STAGE-DECISION.md).
+
 ## Migration
 
 ```bash
@@ -99,8 +136,9 @@ stored decision/fold blocks. A business change is not a format conversion.
 BC import uses an explicit `metarch.truth.v1` adapter, not the BC compiler at run
 time. Five-object projection parity is distinct from BC full generator parity.
 Unsupported structure refuses rather than falling back to the original tree.
-See [COMPATIBILITY.md](COMPATIBILITY.md) for actual BC five-product parity and the
-seven unresolved author-stage conflicts that block its strict new-author migration.
+See [COMPATIBILITY.md](COMPATIBILITY.md) for actual BC five-product parity, the
+explicit seven-occurrence legacy policy, and the distinction between representation
+migration and unresolved full-domain/default-consumer cutover.
 
 ## Ongoing development
 

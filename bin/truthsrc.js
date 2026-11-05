@@ -13,7 +13,7 @@ const arg = (name, dflt) => {
   return i > 0 ? resolve(process.argv[i + 1]) : dflt;
 };
 const [cmd] = process.argv.slice(2);
-const strictCompilation = ['init', 'migrate-author', 'query-project', 'status-project', 'compile-project', 'generate-project', 'generate-products', 'compile-products', 'compile-execution', 'compile-sagas', 'generate'].includes(cmd);
+const strictCompilation = ['init', 'migrate-author', 'export-metarch', 'query-project', 'status-project', 'compile-project', 'generate-project', 'generate-products', 'compile-products', 'compile-execution', 'compile-sagas', 'generate'].includes(cmd);
 const TREE = strictCompilation ? undefined : arg('--tree', resolve('tree'));
 const OUT = strictCompilation ? undefined : arg('--out', resolve('canonical.json'));
 
@@ -48,7 +48,10 @@ const USAGE = `truthsrc v0.5 — git-native Event Storming truth source
   truthsrc migrate-author --tree <legacy-tree> --format <truthsrc/v1|metarch.truth.v1>
                           --out <new-system-root> --system <id> --context <id>
                           --name <name> --responsibility <text> [--plan] [--ignore-os-metadata]
-                                                           explicit lossless author migration; existing targets refuse
+                          [--legacy-stage-policy bc-seven-legacy-carrier/v1]
+                                                           explicit lossless author migration; blocked BC plan reports JSON/exit 2
+  truthsrc export-metarch --tree <new-author-root> --out <new-product-bundle>
+                                                           five source-bound BC products; no active-source switch
   truthsrc generate  --in <canonical> --generator <dir> --out <dir> [--option k=v]
                                                            run a generator (ledger + anchors emitted)
                      [--options-json <file>]                explicit producer options, including nested bindings/IR
@@ -65,10 +68,25 @@ const USAGE = `truthsrc v0.5 — git-native Event Storming truth source
 const die = (msg) => { console.error(msg); process.exit(2); };
 
 switch (cmd) {
+  case 'export-metarch': {
+    try {
+      const flags = new Map(), args = process.argv.slice(3);
+      for (let i = 0; i < args.length; i += 2) {
+        if (!['--tree', '--out'].includes(args[i]) || flags.has(args[i]) || !args[i + 1] || args[i + 1].startsWith('--')) throw new Error('explicit unique --tree and --out required');
+        flags.set(args[i], args[i + 1]);
+      }
+      if (flags.size !== 2) throw new Error('explicit --tree and --out required');
+      const { writeMetarchBundle } = await import('../lib/compat/metarch-bundle.mjs');
+      console.log(JSON.stringify(writeMetarchBundle({ treeDir: flags.get('--tree'), outDir: flags.get('--out') })));
+    } catch (error) { die(`[FAIL] ${error.message}`); }
+    break;
+  }
   case 'migrate-author': {
     try {
       const { migrateAuthorCli } = await import('../lib/author-migrate.mjs');
-      console.log(JSON.stringify(await migrateAuthorCli(process.argv.slice(3))));
+      const result = await migrateAuthorCli(process.argv.slice(3));
+      console.log(JSON.stringify(result));
+      if (result.status === 'blocked') process.exitCode = 2;
     } catch (error) { die(`[FAIL] ${error.message}`); }
     break;
   }

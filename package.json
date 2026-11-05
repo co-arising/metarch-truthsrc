@@ -9,6 +9,7 @@
   "scripts": {
     "test": "node --test",
     "test:unification": "node --test --test-concurrency=1 test/author-tree.test.mjs test/author-contract-negative.test.mjs test/author-migration-safety.test.mjs test/metarch-compat.test.mjs test/project-init.test.mjs test/project-cli.test.mjs test/project-query.test.mjs test/project-mcp.test.mjs test/project-provenance-negative.test.mjs test/generate-update.test.mjs test/teaching-loop.test.mjs test/narrative-links.test.mjs test/snapshot-products.test.mjs test/roundtrip.test.mjs test/anchor-query.test.mjs test/generate-anchors.test.mjs test/saga-mcp.test.mjs",
+    "test:provenance": "node --test --test-concurrency=1 test/author-provenance.test.mjs test/author-provenance-integration.test.mjs test/metarch-stage-policy.test.mjs test/metarch-bundle.test.mjs test/metarch-separated-migration.test.mjs test/metarch-compat.test.mjs test/author-tree.test.mjs test/author-contract-negative.test.mjs test/author-migration-safety.test.mjs test/project-query.test.mjs",
     "example:compile": "node bin/truthsrc.js compile --tree example/tree --out example/canonical.json",
     "example:roundtrip": "node bin/truthsrc.js roundtrip --tree example/tree"
   },

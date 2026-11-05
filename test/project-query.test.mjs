@@ -87,6 +87,27 @@ test('new author knowledge is visible as not-generated without reusing a prior p
   assert.equal(query.currentSelection[0].interpretation, 'current-author-not-generation-evidence');
 });
 
+test('source-site references travel from current author atoms into bidirectional code queries', async t => {
+  const f = await fixture(t), systemFile = join(f.tree, 'system.yaml');
+  const system = parseDoc(readFileSync(systemFile, 'utf8'));
+  system.provenance = { schemaVersion: 'truthsrc.provenance/v1', sessions: [
+    { id: 'review-a', stage: 'refining', sites: [{ provider: 'miro', uri: 'https://boards.example.invalid/review-a' }] },
+    { id: 'review-b', stage: 'refining', sites: [{ provider: 'miro', boardId: 'known-board-b' }] },
+  ] };
+  writeFileSync(systemFile, emitAuthorDoc(system));
+  const slice = join(f.tree, 'contexts/example/aggregates/counter/slices/set-count.slice.yaml');
+  const doc = parseDoc(readFileSync(slice, 'utf8'));
+  doc.sourceRefs = [{ sessionId: 'review-a', itemId: 'known-item' }, { sessionId: 'review-b' }];
+  writeFileSync(slice, emitAuthorDoc(doc));
+  assert.equal(statusProject(f).inputs.state, 'changed');
+  await projectCli('generate-project', [...f.args, '--update']);
+  const query = queryProject({ ...f, knowledge: 'SetCount' });
+  assert.equal(query.status.synchronized, true);
+  const origins = query.result.flatMap(row => row.origins);
+  assert.ok(origins.some(row => row.sourceLocations?.some(source => source.sessionId === 'review-a' && source.specificity === 'board')));
+  assert.ok(origins.some(row => row.sourceLocations?.some(source => source.sessionId === 'review-b' && source.navigation === 'unavailable')));
+});
+
 test('missing and edited source evidence refuses trusted interpretation', async t => {
   const f = await fixture(t), evidence = join(f.out, '.truthsrc/inputs.json');
   writeFileSync(evidence, readFileSync(evidence, 'utf8') + ' ');
