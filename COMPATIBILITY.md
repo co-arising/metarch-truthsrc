@@ -65,7 +65,15 @@ rewrite existing knowledge. A source-meaning conflict is not fixed by letting th
 new reader silently select one side; the legacy adapter preserves both and reports
 all seven. Consequently **full BC physical author migration and operational cutover
 are not complete**. Synthetic coherent BC input migrates;
-actual five-product projection parity still passes without discarding these facts.
+Actual five-product projection parity still passes without discarding these facts.
+
+The 2026-11-05 scoped investigation is recorded in [BC-STAGE-DECISION.md](BC-STAGE-DECISION.md).
+BC's Note contract calls the payload stage informational, while its ingest guidance
+requires equality and MergeEngine actually uses that stage for precedence. Therefore
+neither automatic normalization nor an unqualified dual-stage exception is safe.
+The decision document pins all seven source identities/hashes and recommends an
+explicit dual-stage contract without changing their current values; owner approval
+and real consumer-result comparison remain required.
 
 BC owner cutover remains a separately coordinated operation: all active BC
 consumers must read machine-derived products of the new author model, pass the
