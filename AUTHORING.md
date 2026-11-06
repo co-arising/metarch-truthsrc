@@ -4,6 +4,10 @@
 (`truthsrc/v1`) and BC `metarch.yaml` (`metarch.truth.v1`) are compatibility inputs,
 not alternate current models to edit alongside the new one. Project config remains
 `truthsrc.project/v1`; the semantic projection and product versions are separate.
+For your first project, follow the two-step [Counter tutorial](TUTORIAL.md), not a
+legacy tree example. CLI installation and the Node >=22.13.0 version gate are
+specified in [README.md](README.md#install-the-local-cli), including separately
+executed 22.13.0/22.23.4 checks and their scope. The format itself is not runtime certification.
 
 ## Root and context
 
@@ -141,9 +145,12 @@ Generated sources continue to carry `source:<document>#<pointer>` in file anchor
 `query-project` resolves these against the recorded snapshot, then compares scoped
 identities with current source. Explicit story/use-case/read-model reference carriers
 can lead to related generated files; the result labels those links as traceability,
-not a claim that the narrative directly generated executable code. A request for
-a line or `nextN` returns candidates,
-not fabricated symbol/span certification.
+not a claim that the narrative directly generated executable code. A line query
+matching verified final source bytes returns `precision: span`; unsupported positions
+and symbol-only `nextN` queries remain `file` / `candidates-only`. A precise span is
+not unique-symbol or runtime certification. `span.start/end` are half-open UTF-8
+byte offsets, not line numbers. Source `current` and code freshness are separate;
+see [PROJECT.md](PROJECT.md#precision-and-freshness) for the result contract.
 
 ## Content, source sites and legacy evolution
 
@@ -205,12 +212,18 @@ migration and unresolved full-domain/default-consumer cutover.
 
 ## Ongoing development
 
+From your own `counter-lab` created in the tutorial, using the installed CLI:
+
 ```bash
-node bin/truthsrc.js status-project --project /project/truthsrc.project.json --out /project/generated
-node bin/truthsrc.js query-project --project /project/truthsrc.project.json --out /project/generated --knowledge SetCount
-node bin/truthsrc.js generate-project --project /project/truthsrc.project.json --out /project/generated --update --plan
-node bin/truthsrc.js generate-project --project /project/truthsrc.project.json --out /project/generated --update
+truthsrc status-project --project truthsrc.project.json --out generated --format human
+truthsrc query-project --project truthsrc.project.json --out generated --knowledge SetCount --format human
+truthsrc generate-project --project truthsrc.project.json --out generated --update --plan --format human
+truthsrc generate-project --project truthsrc.project.json --out generated --update --format human
 ```
+
+Inspect the plan before applying; errors do not authorize deleting existing output.
+The default output remains JSON. Only project commands use `--format human|json`;
+`migrate-author --format` above still selects the input grammar, not presentation.
 
 The default non-update policy is unchanged. Explicit update requires the same
 project/generator/kind and a successful per-file baseline. Only unchanged generated

@@ -5,6 +5,10 @@ canonical, complete product requests, compiled products, source indices, ledger
 and anchors are derived. [AUTHORING.md](AUTHORING.md) defines the recommended
 system/context format; [TUTORIAL.md](TUTORIAL.md) walks through an actual change.
 The original first-batch results remain in [PROJECT-VALIDATION.md](PROJECT-VALIDATION.md).
+Installation has one home: [README.md](README.md#install-the-local-cli).
+Node >=22.13.0 is checked before SQLite imports; help/version work without loading
+application modules. Both 22.13.0 and 22.23.4 have been exercised with the local
+Counter/installation/anchor/view suites; this does not certify every platform or banking service.
 
 ## Commands
 
@@ -15,7 +19,25 @@ truthsrc generate-project --project <config> --out <owned-dir> [--plan] [--updat
 truthsrc status-project --project <config> --out <owned-dir>
 truthsrc query-project --project <config> --out <owned-dir> --knowledge <identity-or-alias>
 truthsrc query-project --project <config> --out <owned-dir> --file <relative-file> [--symbol <name> | --line <n>]
+truthsrc verify-project --project <config> --out <owned-dir> [--requirements <json>]
+truthsrc view-project --project <config> --out <owned-dir> --html <new-file> [--tour <json>] [--knowledge <selector>]
+truthsrc --help | help <command> | <command> --help
+truthsrc --version
 ```
+
+Every project command above, including `init`, accepts **one** `--format human|json`.
+The default is still the original JSON result/schema; no extra prose is added to stdout.
+The dispatcher removes only this presentation option before calling the original parser.
+Unknown, duplicate and incomplete project flags refuse; format is not inferred from a TTY.
+Help is used by itself and never creates an init destination or loads SQLite.
+`generate` remains the separate ordinary-generator command, not a project shortcut.
+`migrate-author --format` retains its grammar-selection meaning.
+
+Human output summarizes actual sources, state, precision and next steps without dumping
+plan content. Omitted successful details are counted and available via JSON; errors are
+not abbreviated. A human formatter does not perform hidden compile/apply/graph repair.
+Choose the output format before generation or export: rerunning a writing command is
+not a read-only replay of its receipt.
 
 - `init` creates `truth/example/system.yaml`, a declared `example` context and a
   small Counter model. Existing files/directories/symlinks refuse; failure leaves
@@ -40,6 +62,53 @@ truthsrc query-project --project <config> --out <owned-dir> --file <relative-fil
   code edits, changed inputs/tool, missing/invalid receipts and historical outputs.
   Supported line queries match verified final source spans. Unmapped lines and
   symbol-only queries remain candidates; no name-based semantic certification.
+
+## Precision and freshness
+
+- `inputs.state=current` means the captured project inputs/tool agree with the last
+  generation; `changed`, `invalid` and `unknown` must not be presented as current.
+- `evidence.state=verified` means the recorded graph/ledger/anchors agree. Missing or
+  invalid evidence is not repaired by status/query/verify/view.
+- Code file states (`unchanged`, `modified`, `manual-edited`, `missing`, `retained`)
+  are separate from author changes. `synchronized` is a status predicate, not service health.
+- Query-level `precision=span` means the requested line overlaps verified final-byte
+  spans. Forward/file queries may have query-level `file` while individual locations
+  carry verified spans. Inspect `locations[].verification`, `freshness`, `truthFreshness`
+  and `origins[].current` together. A stale author cannot be called current merely
+  because old generated code bytes still match.
+- `span.start/end` are half-open UTF-8 byte offsets. Use actual bytes to calculate
+  line numbers as in the tutorial. `nextN` is not a stable identity or type-resolved symbol.
+- `candidates-only`, `ambiguous`, `unmapped`, `not-generated` and
+  `source-evidence-unavailable` retain their meanings. `currentSelection` is current
+  author knowledge, not evidence that code was generated. Narrative reference links
+  are traceability, not a direct generation or execution claim.
+- `runtimeVerified=false`: no project inspection/generation command certifies Scala
+  execution, external dependencies at runtime or banking behavior.
+
+## Read-only verification and view
+
+`verify-project` calls the public `verifyProjectCli` adapter and returns
+`truthsrc.project-verification/v1`, including `passed`, checks/diagnostics, source and
+knowledge/generation snapshots, code digest, files and coverage. `--requirements <json>`
+is an explicit input to that adapter for required knowledge coverage; the dispatcher
+forwards it unchanged and does not invent a second requirements schema. `passed=false`
+exits **2**, with the complete result still available in JSON. This is anchor verification,
+not a code-build or runtime test. Invalid CLI inputs also exit 2 rather than printing success.
+
+`view-project` calls the public `viewProjectCli` adapter. `--html` is required and must
+name a new file; `--tour` supplies explicit presentation configuration and `--knowledge`
+selects knowledge using the project's real selector contract. Neither option creates
+business rules or guessed graph edges. The result identifies `file` and `snapshot`.
+The only output write is the requested HTML; source, code, graph and anchors are not
+rebuilt or overwritten. The self-contained page shows an **export-time static snapshot**,
+not live disk synchronization. Input changes require fresh verification and a new export.
+The HTML includes captured author/code excerpts: review them before sharing.
+
+Keep the old export and use a new filename if the target already exists. On missing/stale
+sources, inspect `status-project` and the full diagnostics first; if an explicit update
+is appropriate, preview it before applying. Never hand-edit ledger/anchors or delete a
+conflicting generated directory to make checks pass. Late I/O failure can leave partial
+new output; a nonzero exit does not promise rollback.
 
 ## Config
 

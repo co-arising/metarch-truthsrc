@@ -1,23 +1,26 @@
 #!/usr/bin/env node
-// truthsrc — CLI dispatcher. Zero dependencies; Node >= 22.5.
+// truthsrc — CLI dispatcher. No application imports before help/runtime preflight.
 import { writeFileSync, mkdirSync, copyFileSync, existsSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import { compileTree } from '../lib/compile.mjs';
-import { decomposeCanonical } from '../lib/decompose.mjs';
-import { validateTree } from '../lib/validate.mjs';
-import { roundtrip } from '../lib/roundtrip.mjs';
-import { apply } from '../src/core/generate.mjs';
+import { assertNodeRuntime, MIN_NODE_VERSION } from '../lib/node-runtime.mjs';
+
+const version = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version;
 
 const arg = (name, dflt) => {
   const i = process.argv.indexOf(name);
   return i > 0 ? resolve(process.argv[i + 1]) : dflt;
 };
-const [cmd] = process.argv.slice(2);
-const strictCompilation = ['compact-yaml', 'compact-author', 'init', 'migrate-author', 'export-metarch', 'query-project', 'status-project', 'compile-project', 'generate-project', 'generate-products', 'compile-products', 'compile-execution', 'compile-sagas', 'generate'].includes(cmd);
-const TREE = strictCompilation ? undefined : arg('--tree', resolve('tree'));
-const OUT = strictCompilation ? undefined : arg('--out', resolve('canonical.json'));
+const [cmd, ...args] = process.argv.slice(2);
+const projectCommands = ['init', 'compile-project', 'generate-project', 'status-project', 'query-project', 'verify-project', 'view-project'];
 
-const USAGE = `truthsrc v0.5 — git-native Event Storming truth source
+const USAGE = `truthsrc ${version} — git-native knowledge → code → source
+Requires Node >=${MIN_NODE_VERSION}. Start with: truthsrc init counter-lab --format human
+
+  truthsrc --help | help [command] | <command> --help
+  truthsrc --version
+  Project commands accept --format human|json (default: existing JSON).
+  Help and version do not import SQLite or write project files.
+
 
   truthsrc compile   --tree <dir> [--out canonical.json]   tree → canonical projection
   truthsrc compile-products --request <files-manifest> --out <new-product-set>
@@ -33,7 +36,7 @@ const USAGE = `truthsrc v0.5 — git-native Event Storming truth source
   truthsrc roundtrip [--tree <dir>]                        compile∘decompose∘compile identity gate
   truthsrc graph     --tree <dir> | --canonical <file> --out <db>
                                                            build the local SQLite-class graph store
-                                                           (node:sqlite single file; Node >= 22.5; pure
+                                                           (node:sqlite single file; Node >= ${MIN_NODE_VERSION}; pure
                                                            cache — delete and rebuild any time; all
                                                            query verbs apply)
   truthsrc compact-yaml --tree <author-tree> [--plan | --out <new-tree> | --in-place]
@@ -49,6 +52,11 @@ const USAGE = `truthsrc v0.5 — git-native Event Storming truth source
   truthsrc query-project --project <config> --out <owned-dir> --knowledge <identity-or-source>
   truthsrc query-project --project <config> --out <owned-dir> --file <relative-file> [--symbol <name> | --line <n>]
                                                            knowledge ↔ source provenance; verified lines return exact spans
+  truthsrc verify-project --project <config> --out <owned-dir> [--requirements <json>]
+                                                           read-only anchor verification; passed=false exits 2
+  truthsrc view-project --project <config> --out <owned-dir> --html <new-file>
+                       [--tour <json>] [--knowledge <selector>]
+                                                           export a local read-only snapshot view; not a live service
   truthsrc migrate-author --tree <legacy-tree> --format <truthsrc/v1|metarch.truth.v1>
                           --out <new-system-root> --system <id> --context <id>
                           --name <name> --responsibility <text> [--plan] [--ignore-os-metadata]
@@ -70,6 +78,43 @@ const USAGE = `truthsrc v0.5 — git-native Event Storming truth source
 `;
 
 const die = (msg) => { console.error(msg); process.exit(2); };
+const commands = new Set([...USAGE.matchAll(/^  truthsrc ([a-z][a-z-]*)/gm)].map(match => match[1]));
+commands.delete('help');
+function help(command) {
+  if (!command) return USAGE;
+  if (!commands.has(command)) die(`Unknown command: ${command}. Run truthsrc --help.`);
+  const lines = USAGE.split('\n'), selected = [];
+  let include = false;
+  for (const line of lines) {
+    if (line.startsWith('  truthsrc ')) include = line.startsWith(`  truthsrc ${command} `);
+    if (include) selected.push(line);
+  }
+  return `truthsrc ${version}\n\n${selected.join('\n')}\n`
+    + (projectCommands.includes(command) ? '\n  --format human|json    Presentation only; default JSON stays unchanged.\n' : '')
+    + (command === 'init' ? '\nCreates and validates a Counter author project; does not generate code.\nUse an absent destination. Next: generate-project --project <dir>/truthsrc.project.json --out <dir>/generated --plan\n' : '');
+}
+if (!cmd || (['--help', '-h', 'help'].includes(cmd) && args.length === 0)) {
+  process.stdout.write(help()); process.exit(0);
+}
+if (cmd === 'help') {
+  if (args.length !== 1) die('usage: truthsrc help [command]');
+  process.stdout.write(help(args[0])); process.exit(0);
+}
+if (['--version', '-v'].includes(cmd)) {
+  if (args.length) die('usage: truthsrc --version');
+  console.log(version); process.exit(0);
+}
+if (!commands.has(cmd)) die(`Unknown command: ${cmd}. Run truthsrc --help.`);
+if (args.includes('--help') || args.includes('-h')) {
+  if (args.length !== 1) die('Use <command> --help by itself; other arguments were not executed.');
+  process.stdout.write(help(cmd)); process.exit(0);
+}
+try { assertNodeRuntime(); } catch (error) { die(`[FAIL] ${error.message}`); }
+
+// Legacy tree defaults are intentionally retained, but evaluated only after preflight.
+const strictCompilation = [...projectCommands, 'compact-yaml', 'compact-author', 'migrate-author', 'export-metarch', 'generate-products', 'compile-products', 'compile-execution', 'compile-sagas', 'generate'].includes(cmd);
+const TREE = strictCompilation ? undefined : arg('--tree', resolve('tree'));
+const OUT = strictCompilation ? undefined : arg('--out', resolve('canonical.json'));
 
 switch (cmd) {
   case 'compact-yaml':
@@ -102,20 +147,38 @@ switch (cmd) {
     } catch (error) { die(`[FAIL] ${error.message}`); }
     break;
   }
+  case 'init':
   case 'query-project':
-  case 'status-project': {
-    try {
-      const { projectQueryCli } = await import('../lib/project/query.mjs');
-      console.log(JSON.stringify(projectQueryCli(cmd, process.argv.slice(3))));
-    } catch (error) { die(`[FAIL] ${error.message}`); }
-    break;
-  }
+  case 'status-project':
   case 'compile-project':
-  case 'generate-project': {
+  case 'generate-project':
+  case 'verify-project':
+  case 'view-project': {
+    const { projectFormatArgs, renderProjectResult, renderProjectError } = await import('../lib/cli-presentation.mjs');
+    let format = 'json';
     try {
-      const { projectCli } = await import('../lib/project/cli.mjs');
-      console.log(JSON.stringify(await projectCli(cmd, process.argv.slice(3))));
-    } catch (error) { die(`[FAIL] ${error.message}`); }
+      const parsed = projectFormatArgs(args);
+      format = parsed.format;
+      let result;
+      if (cmd === 'init') {
+        const { initProject } = await import('../lib/project/init.mjs');
+        result = initProject(parsed.args);
+      } else if (cmd === 'verify-project') {
+        const { verifyProjectCli } = await import('../lib/project/verify.mjs');
+        result = await verifyProjectCli(parsed.args);
+      } else if (cmd === 'view-project') {
+        const { viewProjectCli } = await import('../lib/project/view.mjs');
+        result = await viewProjectCli(parsed.args);
+      } else if (cmd === 'query-project' || cmd === 'status-project') {
+        const { projectQueryCli } = await import('../lib/project/query.mjs');
+        result = await projectQueryCli(cmd, parsed.args);
+      } else {
+        const { projectCli } = await import('../lib/project/cli.mjs');
+        result = await projectCli(cmd, parsed.args);
+      }
+      console.log(format === 'json' ? JSON.stringify(result) : renderProjectResult(cmd, result, parsed.args));
+      if (cmd === 'verify-project' && result.passed === false) process.exitCode = 2;
+    } catch (error) { die(format === 'human' ? renderProjectError(cmd, error) : `[FAIL] ${error.message}`); }
     break;
   }
   case 'generate-products': {
@@ -144,11 +207,13 @@ switch (cmd) {
     break;
   }
   case 'compile': {
+    const { compileTree } = await import('../lib/compile.mjs');
     writeFileSync(OUT, compileTree(TREE));
     console.log(`✅ ${TREE} → ${OUT}`);
     break;
   }
   case 'decompose': {
+    const { decomposeCanonical } = await import('../lib/decompose.mjs');
     const c = arg('--canonical', OUT);
     if (!existsSync(c)) die(`canonical not found: ${c}`);
     const n = decomposeCanonical(readFileSync(c, 'utf8'), TREE);
@@ -156,6 +221,7 @@ switch (cmd) {
     break;
   }
   case 'validate': {
+    const { validateTree } = await import('../lib/validate.mjs');
     const { hard, notices } = validateTree(TREE);
     for (const h of hard) console.error('🔴 ' + h);
     for (const n of notices) console.warn('🟡 ' + n);
@@ -164,6 +230,7 @@ switch (cmd) {
     break;
   }
   case 'roundtrip': {
+    const { roundtrip } = await import('../lib/roundtrip.mjs');
     const r = roundtrip(TREE);
     if (!r.ok) die(`❌ roundtrip red (${r.stage}): ${r.msg}`);
     console.log(`✅ roundtrip identity — ${r.atoms} atoms, canonical byte-stable`);
@@ -177,6 +244,7 @@ switch (cmd) {
     if (!source) die('usage: truthsrc graph --tree <dir> | --canonical <file> --out <db>');
     if (!out) die('truthsrc graph requires an explicit --out <db> (never write canonical.json by accident)');
     try {
+      const { compileTree } = await import('../lib/compile.mjs');
       const canonical = process.argv.includes('--canonical')
         ? JSON.parse(readFileSync(source, 'utf8'))
         : JSON.parse(compileTree(source));
@@ -186,13 +254,6 @@ switch (cmd) {
     } catch (error) {
       die(`[FAIL] ${error.message}`);
     }
-    break;
-  }
-  case 'init': {
-    try {
-      const { initProject } = await import('../lib/project/init.mjs');
-      console.log(JSON.stringify(initProject(process.argv.slice(3))));
-    } catch (error) { die(`[FAIL] ${error.message}`); }
     break;
   }
   case 'generate': {
@@ -228,6 +289,7 @@ switch (cmd) {
     }
     let r;
     try {
+      const { apply } = await import('../src/core/generate.mjs');
       r = await apply({ canonicalFile: c, generatorDir: gen, outDir: o, options, concern });
     } catch (e) {
       die(`[FAIL] ${e.message}`);
