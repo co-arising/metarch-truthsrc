@@ -13,7 +13,7 @@ const arg = (name, dflt) => {
   return i > 0 ? resolve(process.argv[i + 1]) : dflt;
 };
 const [cmd] = process.argv.slice(2);
-const strictCompilation = ['init', 'migrate-author', 'export-metarch', 'query-project', 'status-project', 'compile-project', 'generate-project', 'generate-products', 'compile-products', 'compile-execution', 'compile-sagas', 'generate'].includes(cmd);
+const strictCompilation = ['compact-yaml', 'compact-author', 'init', 'migrate-author', 'export-metarch', 'query-project', 'status-project', 'compile-project', 'generate-project', 'generate-products', 'compile-products', 'compile-execution', 'compile-sagas', 'generate'].includes(cmd);
 const TREE = strictCompilation ? undefined : arg('--tree', resolve('tree'));
 const OUT = strictCompilation ? undefined : arg('--out', resolve('canonical.json'));
 
@@ -36,6 +36,10 @@ const USAGE = `truthsrc v0.5 — git-native Event Storming truth source
                                                            (node:sqlite single file; Node >= 22.5; pure
                                                            cache — delete and rebuild any time; all
                                                            query verbs apply)
+  truthsrc compact-yaml --tree <author-tree> [--plan | --out <new-tree> | --in-place]
+                                                           opt-in lossless micro-grammar author migration
+  truthsrc compact-author --tree <author-tree> --groups <selection.json> [--plan | --out <new-tree> | --in-place]
+                                                           source-bound finite structural compression
   truthsrc init      <new-project-dir>                     scaffold tree + truthsrc.project.json; refuses existing directory
   truthsrc compile-project --project <config>                derive and compile locally; JSON result, no writes
   truthsrc generate-project --project <config> --out <owned-dir> [--plan] [--update]
@@ -44,7 +48,7 @@ const USAGE = `truthsrc v0.5 — git-native Event Storming truth source
                                                            separate current inputs, code edits and missing evidence
   truthsrc query-project --project <config> --out <owned-dir> --knowledge <identity-or-source>
   truthsrc query-project --project <config> --out <owned-dir> --file <relative-file> [--symbol <name> | --line <n>]
-                                                           knowledge ↔ file provenance; positions return candidates only
+                                                           knowledge ↔ source provenance; verified lines return exact spans
   truthsrc migrate-author --tree <legacy-tree> --format <truthsrc/v1|metarch.truth.v1>
                           --out <new-system-root> --system <id> --context <id>
                           --name <name> --responsibility <text> [--plan] [--ignore-os-metadata]
@@ -68,6 +72,14 @@ const USAGE = `truthsrc v0.5 — git-native Event Storming truth source
 const die = (msg) => { console.error(msg); process.exit(2); };
 
 switch (cmd) {
+  case 'compact-yaml':
+  case 'compact-author': {
+    try {
+      const { compactAuthorCli } = await import('../lib/author-compact-cli.mjs');
+      console.log(JSON.stringify(compactAuthorCli(process.argv.slice(3), { micro: cmd === 'compact-yaml' })));
+    } catch (error) { die(`[FAIL] ${error.message}`); }
+    break;
+  }
   case 'export-metarch': {
     try {
       const flags = new Map(), args = process.argv.slice(3);

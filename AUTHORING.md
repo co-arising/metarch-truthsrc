@@ -51,6 +51,69 @@ are closed; compiler-overwritten payload fields and unconsumed definitions rejec
 Policy and note origins both require an explicit session stage and collision-free
 frozen seq. Legacy parsing remains unchanged for byte compatibility.
 
+## Finite structural sharing
+
+An explicit system `authoring` block can select `structures: "truthsrc.structure/v1"`.
+Only then may a context contain `structures/<id>.structure.yaml`. Each structure
+has `kind: structure`, the selected `schemaVersion`, an `id`, and a `payload` with
+`constants`, `templates`, and `atoms`. These are author inputs, not compiled caches.
+
+Templates have ordered `parameters` and a JSON `body`. `$arg` substitutes an exact
+row cell, `$value` copies a named constant, `$literal` quotes arbitrary JSON, and
+`$object` constructs ordered key/value pairs with duplicate rejection. `$rows`
+selects a template and explicit rows; it splices when used as an array element.
+Templates cannot call templates. Constants and row arguments are opaque data,
+not executable scripts. Definitions may be shared using `structure-id/name`.
+All versions, business policies, array order, codecs and implementation choices
+remain explicit. Unknown instructions, unused definitions, missing arguments,
+collisions and budget excess refuse before generation.
+
+`atoms` expands into standard `{file, doc}` declarations. Those virtual paths
+preserve canonical ordering but are not additional files for authors to edit.
+The source-index/v2 associates expanded knowledge with real template/row/scalar
+locations, allowing many knowledge nodes to share one author declaration.
+`decompose` retains the original compact bytes only after re-expansion agrees
+with canonical semantics.
+
+`truthsrc compact-author --tree <tree> --groups <selection.json> --plan` previews
+an explicit list of `{id, files}` groups. `--out <new-system-root>` writes a new
+candidate; `--in-place` applies a freshly checked plan to its source. This is an
+explicit source migration, not the generated-code writer. It refuses semantic
+changes and stale inputs; filesystem changes are not a multi-file transaction.
+
+## Scoped micro syntax
+
+The system may also select `authoring.micro: "truthsrc.micro/v1"`. Only declared
+signature, rule, binding, fold and formal schema positions interpret this syntax;
+notes, descriptions, examples and literal default values remain ordinary data.
+Structural expansion occurs first, then micro syntax lowers to the unchanged
+semantic AST. Source mappings compose the two layers.
+
+Use `truthsrc compact-yaml --tree <tree> --plan` to preview, or `--out <new-tree>`
+for an independent candidate. `--in-place` applies a fresh source-bound plan.
+The migration edits identified JSON values without reformatting unrelated text.
+Original compact text is retained by `canonical.authoring.files`; decompose
+re-expands and checks semantics before restoring exact bytes.
+
+Examples of JSON string values in their respective supported fields:
+
+```json
+"amount: Money @BUSINESS_INPUT"
+"@ref(bankwealth:event-slot/CreditBalance/ReserveFundsConfirmed#txid)"
+"@pin(bankwealth:port#BalanceAfterReserveFunds@bank-v1-1)"
+"@type(optional:nominal:bankwealth:type#Money)"
+"reservedAmount := @fold[put](key=\"event.txid\", value=\"event.amount\")"
+"memo := @fold[set](value=\"literal:hello, world\")"
+```
+
+Reference segments are percent-encoded; quoted JSON strings preserve punctuation,
+Unicode and delimiters in expressions. Duplicate/unknown/missing arguments and
+unsupported operations fail with file/pointer context. Expressions are data, never
+JavaScript evaluation. An object whose optional fields or key order cannot be
+represented exactly remains explicit; authors do not need two alternative spellings
+just to remember historical JSON key order. Schema/product semantic checks remain
+mandatory after expansion. Compact syntax is not supported in arbitrary JSON slots.
+
 ## Meaning and identity
 
 - Strategic DDD records boundaries and responsibilities, not JVM/DB deployment.

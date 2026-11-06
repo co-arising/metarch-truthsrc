@@ -15,6 +15,7 @@ import {
   checkExpectedFiles, fingerprint, generatedFingerprint,
 } from './apply-preflight.mjs';
 import { ANCHORS_VERSION, readAnchorsIndex, planAnchors, writeAnchorsIndex } from './anchors.mjs';
+import { validateCodeMappings, finalMappingSpan } from './code-mappings.mjs';
 
 const LEDGER = 'truthsrc.ledger.json';
 const ANCHORS = 'anchors.json';
@@ -87,16 +88,20 @@ export function scopeOf(ledgerRows, concern) {
 
 const accepted = new Set(['ADD', 'COVER', 'MERGE', 'IDENTICAL']);
 
-function anchorInputs(entries, repo) {
+function anchorInputs(entries, repo, finalBytes) {
   return entries.flatMap(entry => {
     if (entry.noteIds != null && !Array.isArray(entry.noteIds)) throw new Error('entry.noteIds must be an array');
     if (entry.knowledgeIds != null && !Array.isArray(entry.knowledgeIds)) throw new Error('entry.knowledgeIds must be an array');
+    const mappings = validateCodeMappings(entry);
     const keys = new Set([...(entry.knowledgeId != null ? [entry.knowledgeId] : []),
       ...(entry.knowledgeIds ?? []), ...(entry.noteIds ?? [])]);
-    // Core has no source-language parser: never infer module/symbol/span or certify template text.
-    return [...keys].map(knowledgeKey => ({ knowledgeKey, locations: [{ repo, file: entry.path,
-      ...(entry.definitionDigest != null ? { definitionDigest: entry.definitionDigest } : {}),
-    }] }));
+    return [...keys].map(knowledgeKey => {
+      const matched = mappings.filter(m => m.knowledgeKey === knowledgeKey);
+      const spans = matched.map(m => finalBytes?.get(entry.path)
+        ? finalMappingSpan(m, entry.content, finalBytes.get(entry.path)) : m.span).filter(Boolean);
+      return { knowledgeKey, locations: (spans.length ? spans : [null]).map(span => ({ repo, file: entry.path,
+        ...(span ? { span } : {}), ...(entry.definitionDigest != null ? { definitionDigest: entry.definitionDigest } : {}) })) };
+    });
   });
 }
 
@@ -207,7 +212,7 @@ function prepareEntries({ entries, outDir, generator, concern, anchorPolicy = 'f
   const anchorEntries = anchorPolicy === 'written-only' || ownership
     ? entries.filter(entry => actions.some(action => action.entry === entry && accepted.has(action.outcome))) : entries;
   const finalAnchorPlan = planAnchors({ priorIndex: anchorPlan.priorIndex, generator,
-    plannedKnowledgeKeys: anchorInputs(anchorEntries, repo), finalApplyOutcomes: outcomes, derivedFiles });
+    plannedKnowledgeKeys: anchorInputs(anchorEntries, repo, finalBytes), finalApplyOutcomes: outcomes, derivedFiles });
   const result = {
     name: generator.id, written, identical, total: entries.length,
     kept, globalFlowed, merged, routesNoTarget, outcomes,

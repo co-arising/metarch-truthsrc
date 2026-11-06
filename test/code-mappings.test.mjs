@@ -1,0 +1,37 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { mkdtempSync, realpathSync, rmSync, readFileSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { initProject } from '../lib/project/init.mjs';
+import { projectCli } from '../lib/project/cli.mjs';
+import { queryProject } from '../lib/project/query.mjs';
+import { applyEntries } from '../src/core/generate.mjs';
+import { validateCodeMappings } from '../src/core/code-mappings.mjs';
+const temp=t=>{const root=mkdtempSync(join(realpathSync(tmpdir()),'code-mapping-'));t.after(()=>rmSync(root,{recursive:true,force:true}));return root;};
+test('rendered command and adjacent folds have exact verified spans and reverse line lookup',async t=>{
+ const root=temp(t),f=initProject([join(root,'project')]),out=join(root,'output');
+ await projectCli('generate-project',['--project',f.project,'--out',out]);
+ const forward=queryProject({project:f.project,out,knowledge:'SetCount'});
+ const rule=forward.result.flatMap(r=>r.locations).find(l=>l.file.endsWith('CounterRules.scala')&&l.span?.text.startsWith('  def SetCount('));
+ assert.ok(rule);assert.equal(rule.verification.level,'span');
+ const bytes=readFileSync(join(out,rule.file));assert.equal(bytes.subarray(rule.span.start,rule.span.end).toString(),rule.span.text);
+ const line=bytes.subarray(0,rule.span.start).toString().split('\n').length;
+ const reverse=queryProject({project:f.project,out,file:rule.file,line});assert.equal(reverse.precision,'span');assert.equal(reverse.state,'mapped');assert.ok(reverse.result.some(r=>r.origins.some(o=>o.name==='SetCount')));
+ const index=JSON.parse(readFileSync(join(out,'anchors.json'))),folds=Object.entries(index.anchors).filter(([k])=>k.includes('/foldAssignments/'));
+ assert.equal(folds.length,2);assert.notEqual(folds[0][1][0].span.text,folds[1][1][0].span.text);
+ writeFileSync(join(out,rule.file),Buffer.concat([Buffer.from('// manual tamper\n'),bytes]));
+ assert.equal(queryProject({project:f.project,out,file:rule.file,line}).precision,'file');
+});
+test('MANUAL insertion relocates exact scopes in final bytes; unknown or malformed mapping refuses',async t=>{
+ const root=temp(t),generator={id:'mapped',version:'1'},out=join(root,'output');
+ const prefix='// ==== BEGIN MANUAL ====\n// empty\n// ==== END MANUAL ====\n',scope='def sameName(value: Long): Long = value + 1\n',content=prefix+scope;
+ const entry={path:'Example.scala',content,kind:'code',knowledgeIds:['rule'],codeMappings:[{knowledgeKey:'rule',span:{start:Buffer.byteLength(prefix),end:Buffer.byteLength(content),text:scope},scope:{start:Buffer.byteLength(prefix),end:Buffer.byteLength(content),text:scope}}]};
+ await applyEntries({entries:[entry],outDir:out,generator,ownership:{id:'example'}});
+ const file=join(out,'Example.scala');writeFileSync(file,content.replace('// empty','// user\n// extra\n// detail'));
+ await applyEntries({entries:[entry],outDir:out,generator,ownership:{id:'example'},update:true});
+ const loc=JSON.parse(readFileSync(join(out,'anchors.json'))).anchors.rule[0];assert.equal(loc.verification.level,'span');assert.ok(loc.span.start>entry.codeMappings[0].span.start);
+ assert.equal(readFileSync(file).subarray(loc.span.start,loc.span.end).toString(),scope);
+ assert.throws(()=>validateCodeMappings({...entry,knowledgeIds:['other']}),/unknown/);
+ assert.throws(()=>validateCodeMappings({...entry,codeMappings:[{...entry.codeMappings[0],span:{start:0,end:2,text:'no'}}]}),/span/);
+});

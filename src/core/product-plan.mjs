@@ -2,9 +2,10 @@ import { copyImmutableData } from '../../lib/immutable-data.mjs';
 import { compileProductSet } from '../../lib/products/compile.mjs';
 import { at, detach, equal, fail, object, ProductError, text, unique } from '../../lib/products/request.mjs';
 import { PRODUCT_SET, COMPILER, profileFor } from '../../lib/products/registry.mjs';
+import { validateCodeMappings } from './code-mappings.mjs';
 
 const VERSION = 'truthsrc.product-generator/v1';
-const entryKeys = ['path', 'content', 'kind', 'deps', 'knowledgeIds', 'productFootprint', 'merge'];
+const entryKeys = ['path', 'content', 'kind', 'deps', 'knowledgeIds', 'productFootprint', 'merge', 'codeMappings'];
 function manifest(raw) {
   const value = detach(raw);
   object(value, ['schemaVersion', 'name', 'version', 'targetProfile', 'products', 'producers', 'artifactKinds', 'options'], at('manifest'));
@@ -40,12 +41,14 @@ function validateEntries(raw, producer, products) {
   const entries = detach(raw);
   if (!Array.isArray(entries)) fail('PRODUCT_ENTRY', 'producer must return source entries', at('entries'));
   for (const entry of entries) {
-    object(entry, entryKeys, at('entries'));
+    object(entry, entryKeys.filter(key => key !== 'codeMappings' || Object.hasOwn(entry, key)), at('entries'));
     path(entry.path); text(entry.content, at('entries'), true); text(entry.kind, at('entries'));
     if (!producer.artifactKinds.includes(entry.kind)) fail('PRODUCT_ENTRY', 'entry kind not declared by producer', at('entries'));
     for (const name of ['deps', 'knowledgeIds', 'productFootprint']) if (!Array.isArray(entry[name])) fail('PRODUCT_ENTRY', 'entry evidence/dependency arrays required', at('entries'));
     entry.deps.forEach(path); unique(entry.deps, 'PRODUCT_ENTRY', at('entries'));
     entry.knowledgeIds.forEach(id => text(id, at('entries'))); unique(entry.knowledgeIds, 'PRODUCT_ENTRY', at('entries'));
+    try { validateCodeMappings(entry); }
+    catch (error) { fail('PRODUCT_ENTRY_MAPPING', error.message, at('entries')); }
     if (!entry.knowledgeIds.length || entry.merge !== null) fail('PRODUCT_ENTRY', 'source ownership and explicit default MANUAL merge policy required', at('entries'));
     if (!equal(entry.productFootprint, producer.products.map(id => ({ id, version: products.find(p => p.id === id).version })))) fail('PRODUCT_ENTRY', 'entire declared product footprint required', at('entries'));
     if (/\?\?\?/u.test(entry.content)) fail('PRODUCT_ENTRY', 'declared source profile cannot contain unimplemented placeholders', at('entries'));

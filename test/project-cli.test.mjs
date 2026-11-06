@@ -47,7 +47,8 @@ test('public CLI init, compile, plan, apply and repeat leave inputs unchanged an
   assert.ok(Object.keys(anchors.anchors).length);
   for (const location of Object.values(anchors.anchors).flat()) {
     assert.equal(location.status, 'source-verified');
-    assert.equal(location.verification.level, 'file');
+    assert.equal(location.verification.level, location.span ? 'span' : 'file');
+    if (location.span) assert.equal(readFileSync(join(f.out, location.file)).subarray(location.span.start, location.span.end).toString('utf8'), location.span.text);
     assert.equal(location.fingerprint, 'sha256:' + createHash('sha256').update(readFileSync(join(f.out, location.file))).digest('hex'));
     assert.ok(!location.file.startsWith('.truthsrc/'));
   }
@@ -55,7 +56,8 @@ test('public CLI init, compile, plan, apply and repeat leave inputs unchanged an
   const repeat = await projectCli('generate-project', args(f));
   assert.equal(repeat.result.written, 0);
   assert.deepEqual(snapshot(f.out), generated);
-  assert.deepEqual(snapshot(f.root), before);
+  assert.deepEqual(snapshot(f.root).filter(([file]) => file !== '.truthsrc/knowledge.sqlite'), before);
+  assert.ok(existsSync(join(f.root, '.truthsrc/knowledge.sqlite')));
   const initAgain = spawnSync(process.execPath, [bin, 'init', f.root], { encoding: 'utf8' });
   assert.equal(initAgain.status, 2);
   assert.match(initAgain.stderr, /already exists/);

@@ -1,7 +1,9 @@
 # 从一条命令到生成文件，再查回真源
 
-本教程只用本地 Node ≥22.5，不需要服务端发号、知识图或 BC 服务。
-它验证编译/生成/文件级来源，不把 Scala 文本生成说成应用运行成功。
+本教程只用本地 Node ≥22.5，不需要服务端发号、独立知识图服务或 BC 服务。
+项目生成内置SQLite单文件知识仓库，通过图导出的AST生成，并将代码映射回同图。
+支持的method/guard/fold位置按最终UTF-8字节验证；文本生成不等于应用运行成功。
+本地CLI安装见 [README](README.md#install-the-local-cli)。
 
 ## 1. 唯一编辑入口
 
@@ -43,6 +45,11 @@ node "$TOOL" status-project --project "$PROJECT" --out "$OUT"
 `not-generated`，不套用旧快照中同位置的来源。`next0` 是生成局部位置，
 不是永久知识 ID；符号查询明确返回
 `candidates-only`，不能把整个文件的知识集合说成某一行的唯一来源。
+
+从返回位置的 `span.start` 对应代码行使用 `--file ... --line <行号>`，会得到
+已核最终字节的 `precision: span`。相邻fold分别关联自己的知识身份；没有可验证
+span时仍返回候选。项目旁 `.truthsrc/knowledge.sqlite` 保存完整知识快照和回锚；
+不要手改它，缺库/过期或不完整会明确诊断。生成/受控update是重建派生图的显式入口。
 
 ## 3. 做一次真实知识变更
 
@@ -92,7 +99,7 @@ node "$TOOL" generate --in "$OUT/.truthsrc/canonical.json" \
 将 MCP 服务配置为 `node /absolute/path/bin/truthsrc.js mcp`。调用
 `project_status` 或 `project_sources`，传相同的 `project` 和 `out`。
 `project_sources` 再传 `knowledge` 或 `file`，二选一。这两工具只读，与 CLI
-共用实现，不需要预建图缓存。其他历史图查询仍可使用，但其名称节点不
+共用实现，读取生成时建立的同一知识图。其他历史图查询仍可使用，但其名称节点不
 替代有快照的精确来源关系。
 
 ## 银行进阶

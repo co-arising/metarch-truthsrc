@@ -18,6 +18,13 @@
     },
     "contexts": { "type": "array", "minItems": 1, "maxItems": 1, "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" } },
     "relationships": { "type": "array", "maxItems": 0 },
+    "authoring": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "structures": { "const": "truthsrc.structure/v1" },
+        "micro": { "const": "truthsrc.micro/v1" }
+      }
+    },
     "compatibility": {
       "type": "object", "additionalProperties": false,
       "properties": {

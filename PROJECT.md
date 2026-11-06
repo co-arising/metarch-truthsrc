@@ -24,9 +24,12 @@ truthsrc query-project --project <config> --out <owned-dir> --file <relative-fil
   the complete request and compiles all selected products; no source output.
 - `generate-project --plan` runs formal producer admission without writing the
   target. Roundtrip creates/removes its own OS-temp tree, not retained cache.
-- Actual generation uses only core `applyEntries` with ownership, ledger and
-  anchors based on accepted actual file bytes. Repeating unchanged input produces
-  zero source/evidence writes. Receipts remain deterministic.
+- Actual generation publishes an immutable complete snapshot to the project's
+  `.truthsrc/knowledge.sqlite`, reads it through `KnowledgeGraphStore`, and exports
+  an integrity-checked AST before producer planning. The same store receives code
+  anchors after core `applyEntries` verifies final source bytes. Preview uses an
+  isolated in-memory store and does not create the output or project database.
+  Repeating unchanged input produces zero source/evidence writes.
 - `--update --plan` runs the same overwrite/merge preflight as apply and returns
   prospective actions. `--update` admits only same-project/generator/kind files
   whose recorded baseline matches current bytes or whose edits are confined to
@@ -35,7 +38,8 @@ truthsrc query-project --project <config> --out <owned-dir> --file <relative-fil
 - Without `--update`, the original changed-unmarked-file refusal remains.
 - Status/query are read-only, including no roundtrip temp tree. They distinguish
   code edits, changed inputs/tool, missing/invalid receipts and historical outputs.
-  A position/`nextN` query returns file-associated candidates, not symbol precision.
+  Supported line queries match verified final source spans. Unmapped lines and
+  symbol-only queries remain candidates; no name-based semantic certification.
 
 ## Config
 
@@ -130,11 +134,12 @@ integration require opt-in roots; normal tool tests do not require sibling repos
 Bank current configuration compiles all 14 products and selects the full Play
 service producer; non-bank Counter tests independently prevent bank-only logic.
 
-The tool does not require a server/graph for generation or source IDs. Building
-Scala applications still requires the declared local JDK/sbt/runtime dependencies.
-File provenance is not semantic execution certification. Multi-context generation,
-BC full profile/operational cutover, symbol/span anchors, generated-code style
-alignment and full five-layer author completeness are not implicitly delivered.
+The tool requires no knowledge server. Project generation uses its embedded,
+replaceable knowledge store; the legacy standalone `graph` display cache is not
+that project contract. Building Scala applications still requires declared local
+JDK/sbt/runtime dependencies. Source spans certify location, not business execution.
+Multi-context generation, complete BC mixed-pipeline template parity and full
+five-layer author completeness are not implicitly delivered; see [TEMPLATE-PARITY.md](TEMPLATE-PARITY.md).
 Retry/backoff/deadline remains OPEN; no frozen runtime or 1134 sign-out is changed.
 See [PROJECT-UNIFICATION-ACCEPTANCE.md](PROJECT-UNIFICATION-ACCEPTANCE.md) for actual
 rounds/results and [PROJECT-OPEN-ITEMS.md](PROJECT-OPEN-ITEMS.md) for independent debts.

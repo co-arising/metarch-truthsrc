@@ -9,6 +9,27 @@ The new boundary rejects duplicate keys, ignored structural headers, overwritten
 payload fields and unknown files; legacy canonical byte projection is unchanged.
 Business versions, author format, project config and product profiles are separate.
 
+## Compact author frontends (2026-11-06)
+
+An explicit system `authoring` option selects `structures: "truthsrc.structure/v1"`
+and/or `micro: "truthsrc.micro/v1"`; see [AUTHORING.md](AUTHORING.md) for their
+closed syntax and migration commands. Legacy unmarked atoms retain the vocabulary
+below. Only selected author positions are lowered; the semantic canonical schema
+and strict product schemas remain unchanged.
+
+The compact source text is retained in `canonical.authoring.files`, so I2 restores
+the author's actual paths and bytes after semantic re-expansion checks. I3 means
+no business content is silently edited: representation sugar expands, while notes,
+literal values, order, versions and business rules are preserved. It does not mean
+a compact scalar must be copied unexpanded into a strict semantic object slot.
+Full old/new canonical byte equality is not a migration criterion because source
+text changes; the independent expanded semantic and product baseline is.
+
+The original prototype's current-bank corpus roundtrip was reproduced, but its
+universal bijection claim is not the language contract. Production parsing rejects
+unknown/duplicate arguments, preserves escaped identifiers and literal delimiters,
+and never treats arbitrary description text as a reference instruction.
+
 The truth source is a **tree** of small YAML atom files. `compile` projects the
 tree to `canonical.json`; `decompose` is its byte-identical inverse. The tree is
 the only edit surface.

@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { compileProductSet } from '../lib/products/compile.mjs';
 import { generate } from '../generators/scala-cqrs-play-service/generate.mjs';
 import { serviceApplicationFixture } from './service-application-fixture.mjs';
+import { renderService } from '../generators/scala-cqrs-play-service/render-service.mjs';
 const manifest = JSON.parse(readFileSync(new URL('../generators/scala-cqrs-play-service/generator.json', import.meta.url), 'utf8'));
 
 test('complete explicit service profile retains finite execution and emits Play source without target writes', () => {
@@ -13,6 +14,11 @@ test('complete explicit service profile retains finite execution and emits Play 
   assert.deepEqual(first.diagnostics, []);
   assert.deepEqual(first, generate({ compilation, manifest, options }));
   const entries = first.plan.entries;
+  const coreRules = entries.filter(e => /\/domain\/invariant\/[^/]+Rules\.scala$/.test(e.path));
+  assert.ok(coreRules.length > 0);
+  assert.ok(coreRules.every(e => e.content.includes('val state = input.state') && e.codeMappings?.length));
+  assert.ok(entries.some(e => /\/domain\/invariant\/params\/[^/]+RuleParams\.scala$/.test(e.path)));
+  assert.ok(entries.some(e => /\/domain\/[^/]+Rules\.scala$/.test(e.path) && e.content.includes('.domain.invariant.')));
   assert.ok(entries.find(e => e.path === 'build.sbt').content.includes('enablePlugins(PlayScala)'));
   assert.ok(entries.find(e => e.path === 'conf/application.conf').content.includes('include "service.conf"'));
   assert.ok(entries.some(e => e.kind === 'service-port' && e.content.includes('trait Factory')));
@@ -39,6 +45,14 @@ test('complete explicit service profile retains finite execution and emits Play 
     if (pin.id === 'artifact-contract') assert.equal(pin.version, '3');
     if (['saga-host-contract', 'effect-host-contract'].includes(pin.id)) assert.equal(pin.version, '2');
   }
+});
+
+test('a declared projection cannot silently disappear from service generation', () => {
+  const { request, options } = serviceApplicationFixture(), compilation = compileProductSet(request);
+  assert.deepEqual(compilation.diagnostics, []);
+  const products = Object.fromEntries(compilation.result.products.map(p=>[p.id,structuredClone(p.payload)]));
+  products['artifact-contract'].artifacts.find(a=>a.id===options.service.artifact).deployment.service.projections=[{id:'ExplicitButUnsupported'}];
+  assert.throws(()=>renderService({products,options},[]), /does not implement declared JDBC projections/);
 });
 
 for (const hosted of [true, false]) test(`service test isolation declares artifact input for ${hosted ? 'hosted' : 'unhosted'} inspection`, () => {

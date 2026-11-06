@@ -58,20 +58,45 @@ export function renderCommand({ products, options }, footprint) {
     return results;
   });
 }
-export function renderInvariant({ products, options }, footprint) {
+export function renderInvariant({ products, options }, footprint, layered = false) {
   const layout = products['reference-layout'], decisions = products['domain-decision'], folds = products['domain-folds'], exact = products['exact-value-types'];
   return aggregateRows(products).flatMap(a => {
     const pkg = packageFor(a.ref.context, options), name = symbol(a.ref.id), commands = decisions.commands.filter(c => owner(c.command, a.ref)), events = folds.events.filter(e => owner(e.event, a.ref));
     const protocol = pathFor(pkg, 'domain/' + a.ref.id + 'Protocol.scala'), statePath = pathFor(pkg, 'domain/' + a.ref.id + 'State.scala'), helperPath = pathFor(pkg, 'domain/' + a.ref.id + 'CommandHelpers.scala');
-    let rules = 'package ' + pkg + '.domain\n\nimport ' + name + 'Protocol._\n\nobject ' + name + 'Rules {\n';
+    const rulePackage = layered ? pkg + '.domain.invariant' : pkg + '.domain';
+    const paramsPath = pathFor(pkg, 'domain/invariant/params/' + a.ref.id + 'RuleParams.scala');
+    const coreRulesPath = pathFor(pkg, 'domain/invariant/' + a.ref.id + 'Rules.scala');
+    let params = 'package ' + pkg + '.domain.invariant.params\n\nimport ' + pkg + '.domain._\n\nobject ' + name + 'RuleParams {\n';
+    let rules = 'package ' + rulePackage + '\n\nimport ' + (layered ? pkg + '.domain._\nimport ' + pkg + '.domain.invariant.params.' + name + 'RuleParams._\nimport ' : '') + (layered ? pkg + '.domain.' : '') + name + 'Protocol._\n\nobject ' + name + 'Rules {\n';
+    const ruleMappings = [], foldMappings = [], wrapperMappings = [];
+    let wrapper = 'package ' + pkg + '.domain\n\nimport ' + name + 'Protocol._\n\nobject ' + name + 'Rules {\n';
     for (const c of commands) {
-      rules += '  def ' + symbol(c.command.id) + '(state: ' + name + 'State, p: ' + symbol(c.command.id) + ', hosts: ' + name + 'Computations): Either[String, Vector[Event]] = {\n';
-      for (const d of c.decisions) rules += '    if (!(' + decision(d.predicate, layout, exact, options) + ')) return ' + (d.onFalse.kind === 'reject' ? 'Left(' + JSON.stringify(d.onFalse.errCode) + ')' : 'Right(Vector.empty)') + '\n';
+      const start = rules.length, guards = [];
+      const signature = '(state: ' + name + 'State, p: ' + symbol(c.command.id) + ', hosts: ' + name + 'Computations)';
+      if (layered) {
+        const parameterName = symbol(c.command.id + 'Params');
+        params += '  final case class ' + parameterName + '(state: ' + name + 'State, command: ' + name + 'Protocol.' + symbol(c.command.id) + ', hosts: ' + name + 'Computations)\n';
+        rules += '  def ' + symbol(c.command.id) + '(input: ' + parameterName + '): Either[String, Vector[Event]] = {\n' +
+          '    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n';
+        const wrapperStart = wrapper.length;
+        wrapper += '  def ' + symbol(c.command.id) + signature + ': Either[String, Vector[Event]] =\n' +
+          '    ' + pkg + '.domain.invariant.' + name + 'Rules.' + symbol(c.command.id) + '(' + pkg + '.domain.invariant.params.' + name + 'RuleParams.' + parameterName + '(state, p, hosts))\n';
+        const span = { start: wrapperStart, end: wrapper.length };
+        wrapperMappings.push({ source: c.source, span, scope: span });
+      } else rules += '  def ' + symbol(c.command.id) + signature + ': Either[String, Vector[Event]] = {\n';
+      for (const d of c.decisions) {
+        const guardStart = rules.length;
+        rules += '    if (!(' + decision(d.predicate, layout, exact, options) + ')) return ' + (d.onFalse.kind === 'reject' ? 'Left(' + JSON.stringify(d.onFalse.errCode) + ')' : 'Right(Vector.empty)') + '\n';
+        guards.push({ source: d.source, span: { start: guardStart, end: rules.length } });
+      }
       rules += '    Right(' + name + 'CommandHelpers.emit' + c.command.id + '(state, p, hosts))\n  }\n';
+      const scope = { start, end: rules.length };
+      ruleMappings.push({ source: c.source, span: scope, scope }, ...guards.map(m => ({ ...m, scope })));
     }
     rules += '}\n';
     let replay = 'package ' + pkg + '.domain\n\nimport ' + name + 'Protocol._\n\nobject ' + name + 'EventHandler {\n  def apply(state: ' + name + 'State, input: Event): ' + name + 'State = input match {\n';
     for (const e of events) {
+      const eventStart = replay.length, assignments = [];
       replay += '    case event: ' + symbol(e.event.id) + ' =>\n';
       e.assignments.forEach((a, i) => {
         const u = a.update, base = 'state.' + symbol(a.target.id), render = n => valueExpression(n, layout, exact, options);
@@ -84,12 +109,23 @@ export function renderInvariant({ products, options }, footprint) {
         else if (u.op === 'integer-apply') value = 'java.lang.Math.' + (u.sign === 1 ? 'addExact' : 'subtractExact') + '(' + base + ', ' + render(u.delta) + ')';
         else if (u.op === 'money-apply') value = base + '.' + (u.sign === 1 ? 'plus' : 'minus') + '(' + render(u.delta) + ')';
         else throw new TypeError('unsupported admitted fold target operation');
+        const start = replay.length;
         replay += '      val next' + i + ': ' + typeName(a.valueType, options) + ' = ' + value + '\n';
+        assignments.push({ source: a.source, span: { start, end: replay.length } });
       });
       replay += e.assignments.length ? '      state.copy(' + e.assignments.map((a, i) => symbol(a.target.id) + ' = next' + i).join(', ') + ')\n' : '      state\n';
+      const scope = { start: eventStart, end: replay.length };
+      foldMappings.push({ source: e.source, span: scope, scope }, ...assignments.map(m => ({ ...m, scope })));
     }
     replay += '  }\n}\n';
-    return [entry(pathFor(pkg, 'domain/' + a.ref.id + 'Rules.scala'), rules, 'rules', [a.source, ...commands.flatMap(c => [c.source, ...c.decisions.map(d => d.source)])], footprint, [protocol, statePath, helperPath]),
-      entry(pathFor(pkg, 'domain/' + a.ref.id + 'EventHandler.scala'), replay, 'event-handler', [a.source, ...events.flatMap(e => [e.source, ...e.assignments.map(a => a.source)])], footprint, [protocol, statePath])];
+    params += '}\n'; wrapper += '}\n';
+    const ruleSources = [a.source, ...commands.flatMap(c => [c.source, ...c.decisions.map(d => d.source)])];
+    const ruleEntries = layered ? [
+      entry(coreRulesPath, rules, 'rules', ruleSources, footprint, [protocol, statePath, helperPath, paramsPath], ruleMappings),
+      entry(paramsPath, params, 'rules', [a.source, ...commands.map(c=>c.source)], footprint, [protocol, statePath, helperPath]),
+      entry(pathFor(pkg, 'domain/' + a.ref.id + 'Rules.scala'), wrapper, 'rules', [a.source, ...commands.map(c=>c.source)], footprint, [protocol, statePath, helperPath, coreRulesPath, paramsPath], wrapperMappings),
+    ] : [entry(pathFor(pkg, 'domain/' + a.ref.id + 'Rules.scala'), rules, 'rules', ruleSources, footprint, [protocol, statePath, helperPath], ruleMappings)];
+    return [...ruleEntries,
+      entry(pathFor(pkg, 'domain/' + a.ref.id + 'EventHandler.scala'), replay, 'event-handler', [a.source, ...events.flatMap(e => [e.source, ...e.assignments.map(a => a.source)])], footprint, [protocol, statePath], foldMappings)];
   });
 }

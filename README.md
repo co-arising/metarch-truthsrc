@@ -43,6 +43,40 @@ roundtrip guarantee**, guarded by stage-vocabulary lint rules.
 
 `truthsrc roundtrip` enforces I1+I2 on every run — that's the gate your CI runs.
 
+## Local knowledge-to-code loop
+
+Author systems can opt into finite structural sharing and scoped micro syntax.
+The editable files stay compact; canonical and the knowledge graph retain the
+expanded commands, guards, event fields and folds. See [AUTHORING.md](AUTHORING.md).
+
+Project generation now publishes a complete knowledge snapshot to
+`.truthsrc/knowledge.sqlite` next to the project configuration, exports the validated
+AST through `KnowledgeGraphStore`, and feeds that AST to the registered generator.
+The SQLite adapter is replaceable. Code anchors are published back to the same
+logical graph; `anchors.json` is a checked exchange artifact, not another truth source.
+No knowledge service, Neo4j, or inline `@knowledge` comment is required.
+
+`query-project --file <path> --line <n>` returns exact verified spans where the
+renderer provides them. Other positions and symbol-only requests remain labelled
+candidates; a matching name is not semantic evidence. Source edits are reported as
+stale until explicit generation/update refreshes graph, code and mappings.
+
+## Install the local CLI
+
+With Node ≥22.5, install this checkout into a chosen local prefix; no registry
+publication is required:
+
+```bash
+npm install --prefix "$HOME/.local/truthsrc-cli" --offline --ignore-scripts --no-audit --no-fund /absolute/path/to/metarch-truthsrc
+export PATH="$HOME/.local/truthsrc-cli/node_modules/.bin:$PATH"
+truthsrc init ./my-workshop
+truthsrc generate-project --project ./my-workshop/truthsrc.project.json --out ./my-workshop/generated
+```
+
+Use an absent `my-workshop` directory. The installed CLI and project example were
+also exercised from an independent temporary prefix. The package does not include
+bank runtime JARs; full banking generation has separate pinned-supply prerequisites.
+
 ## Quickstart (local project, no download)
 
 From this source checkout, with Node ≥ 22.5:
@@ -73,8 +107,9 @@ directory, not a project cache. After a supported knowledge/options change, run
 generated files; valid MANUAL blocks are preserved, conflicting edits refuse,
 and no-longer-generated files remain explicitly retained. Default generation
 without `--update` keeps the original refusal policy. Use `query-project` for
-snapshot-bound knowledge↔file provenance; a line or `nextN` query returns candidates,
-not symbol-level certification. See [TUTORIAL.md](TUTORIAL.md) for a runnable loop.
+snapshot-bound knowledge/code provenance. Supported generated line ranges have
+verified span precision; unsupported positions and `nextN` symbol queries remain
+candidates, not symbol-level certification. See [TUTORIAL.md](TUTORIAL.md) for a runnable loop.
 No BC service is required to generate source. This does not certify a runnable
 application or remove the separate JDK/sbt/runtime build prerequisites. Formal
 application producers retain their frozen local artifact checks; retry/backoff/

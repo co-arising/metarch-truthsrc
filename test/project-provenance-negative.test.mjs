@@ -43,6 +43,11 @@ function withReads(hook, action) {
   finally { fs.readFileSync = original; syncBuiltinESMExports(); }
 }
 function receipt(f, name) { return join(f.out, '.truthsrc/' + name + '.json'); }
+function legacyReceipts(f) {
+  const inputs = readJson(receipt(f, 'inputs'));
+  delete inputs.graph;
+  replaceEvidence(f, 'inputs', inputs);
+}
 function replaceEvidence(f, name, value) {
   const file = receipt(f, name);
   writeJson(file, value);
@@ -67,6 +72,7 @@ function projectSnapshot(atoms, metadata = {}) {
   return { canonical, sourceIndex: buildSourceIndex(snapshot, canonical, { system: 'example', context: 'example' }) };
 }
 function replaceProjection(f, projection) {
+  legacyReceipts(f);
   replaceEvidence(f, 'canonical', projection.canonical);
   const inputs = readJson(receipt(f, 'inputs')); inputs.sourceIndex = projection.sourceIndex;
   replaceEvidence(f, 'inputs', inputs);
@@ -181,6 +187,7 @@ test('anchor reconciliation checks missing and extra associations, owners, gener
 
 test('one anchor key partitions retained and last-generated location provenance', async t => {
   const f = await fixture(t), key = 'source:example-domain#/aggregates/0/commands/0';
+  legacyReceipts(f);
   const location = associate(f, key), retainedFile = 'retained-rules.scala';
   fs.copyFileSync(join(f.out, location.file), join(f.out, retainedFile));
   const ledgerFile = join(f.out, 'truthsrc.ledger.json'), ledger = readJson(ledgerFile);
@@ -244,6 +251,7 @@ test('current comparison preserves descendant default suffixes, including older 
   const f = await fixture(t), knowledge = 'source:example-domain#/aggregates/0/stateFields/0/default';
   for (const legacy of [false, true]) {
     if (legacy) {
+      legacyReceipts(f);
       const inputs = readJson(receipt(f, 'inputs')); inputs.sourceIndex.records.forEach(row => { delete row.surface; });
       replaceEvidence(f, 'inputs', inputs);
     }
@@ -316,7 +324,9 @@ test('duplicate qualified identities remain ambiguous even when one matches an o
 });
 
 test('assembly receipts map only the contributing row and preserve descendant suffixes', async t => {
-  const f = await fixture(t), inputs = readJson(receipt(f, 'inputs'));
+  const f = await fixture(t);
+  legacyReceipts(f);
+  const inputs = readJson(receipt(f, 'inputs'));
   const schemaVersion = 'truthsrc.saga-binding/v1';
   const documents = [{ id: inputs.canonicalId, schemaVersion: 'truthsrc/v1', value: readJson(receipt(f, 'canonical')) },
     { id: 'left', schemaVersion, value: { schemaVersion, sagas: [{ sagaId: 'One', label: 'left-one' }, { sagaId: 'Two', label: 'left-two' }] } },
@@ -347,6 +357,7 @@ test('assembly receipts map only the contributing row and preserve descendant su
 
 test('raw node keys and arbitrary business document/pointer objects do not manufacture origins', async t => {
   const f = await fixture(t), request = readJson(receipt(f, 'request'));
+  legacyReceipts(f);
   request.documents.find(doc => doc.id === 'references').value.layout.businessRecord = {
     document: 'example-domain', pointer: '/aggregates/0/commands/0',
   };

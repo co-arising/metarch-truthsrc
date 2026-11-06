@@ -19,6 +19,7 @@ export function serviceSelection(products, options) {
 
 export function renderService({ products, options }, footprint) {
   const artifact = serviceSelection(products, options), service = artifact.deployment.service;
+  if (service.projections.length) fail('SERVICE_PROJECTION_GENERATION', 'this producer does not implement declared JDBC projections; use an explicitly implemented projection producer');
   const hasPages = Object.hasOwn(service, 'pages');
   const pkg = packageFor(artifact.artifact.context, options), name = symbol(artifact.artifact.id);
   const q = JSON.stringify;
