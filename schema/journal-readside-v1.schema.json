@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:truthsrc:journal-readside:v1",
+  "$ref": "#/$defs/store",
+  "$comment": "Structural declaration only. The typed compiler checks current-context ownership, nominal text carriers, distinct names and references, generated API collisions, full SQL table length, nonnullable non-bytes keys and complete deterministic query order. This does not certify a running projection.",
+  "$defs": {
+    "scalaStem": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[A-Za-z][A-Za-z0-9_]{0,63}$(?![\\s\\S])",
+      "not": {
+        "enum": ["abstract", "case", "catch", "class", "def", "do", "else", "extends", "false", "final", "finally", "for", "forSome", "if", "implicit", "import", "lazy", "match", "new", "null", "object", "override", "package", "private", "protected", "return", "sealed", "super", "this", "throw", "trait", "try", "true", "type", "val", "var", "while", "with", "yield"]
+      }
+    },
+    "sqlName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 63,
+      "pattern": "^[a-z][a-z0-9_]{0,62}$(?![\\s\\S])",
+      "not": {
+        "enum": ["all", "alter", "and", "as", "asc", "between", "by", "case", "check", "column", "constraint", "create", "database", "default", "delete", "desc", "distinct", "drop", "else", "end", "exists", "false", "fetch", "for", "foreign", "from", "group", "having", "in", "index", "insert", "into", "is", "join", "key", "limit", "not", "null", "offset", "on", "or", "order", "primary", "references", "select", "set", "table", "then", "true", "union", "unique", "update", "user", "using", "values", "when", "where", "abstract", "catch", "class", "def", "do", "extends", "final", "finally", "forSome", "if", "implicit", "import", "lazy", "match", "new", "object", "override", "package", "private", "protected", "return", "sealed", "super", "this", "throw", "trait", "try", "type", "val", "var", "while", "with", "yield"]
+      }
+    },
+    "kind": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 32,
+      "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,31}$(?![\\s\\S])"
+    },
+    "aggregateReference": {
+      "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference",
+      "properties": {
+        "kind": { "const": "aggregate" },
+        "owner": { "minItems": 0, "maxItems": 0 }
+      }
+    },
+    "identityReference": {
+      "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference",
+      "properties": {
+        "kind": { "const": "state-field" },
+        "owner": { "minItems": 1, "maxItems": 1 }
+      }
+    },
+    "eventReference": {
+      "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference",
+      "properties": {
+        "kind": { "const": "event" },
+        "owner": { "minItems": 1, "maxItems": 1 }
+      }
+    },
+    "eventSlotReference": {
+      "$ref": "urn:truthsrc:product-compilation:v1#/$defs/reference",
+      "properties": {
+        "kind": { "const": "event-slot" },
+        "owner": { "minItems": 2, "maxItems": 2 }
+      }
+    },
+    "eventIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["event", "field"],
+      "properties": {
+        "event": { "$ref": "#/$defs/eventReference" },
+        "field": { "$ref": "#/$defs/eventSlotReference" }
+      }
+    },
+    "stream": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "aggregate", "identity", "allowEmptyIdentity", "eventIdentities"],
+      "properties": {
+        "kind": { "$ref": "#/$defs/kind" },
+        "aggregate": { "$ref": "#/$defs/aggregateReference" },
+        "identity": { "$ref": "#/$defs/identityReference" },
+        "allowEmptyIdentity": { "type": "boolean" },
+        "eventIdentities": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 1024,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/eventIdentity" }
+        }
+      }
+    },
+    "column": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "type", "size", "nullable"],
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/sqlName",
+          "not": {
+            "enum": ["namespace", "apply", "unapply", "copy", "equals", "hashcode", "tostring", "getclass", "wait", "notify", "notifyall", "clone", "finalize", "productarity", "productelement", "productelementname", "productelementnames", "productiterator", "productprefix", "canequal"]
+          }
+        },
+        "type": { "enum": ["text", "digest", "long", "boolean", "bytes"] },
+        "size": { "type": ["integer", "null"] },
+        "nullable": { "type": "boolean" }
+      },
+      "if": { "properties": { "type": { "const": "text" } } },
+      "then": { "properties": { "size": { "type": "integer", "minimum": 1, "maximum": 2048 } } },
+      "else": { "properties": { "size": { "type": "null" } } }
+    },
+    "query": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "where", "orderBy"],
+      "properties": {
+        "id": { "$ref": "#/$defs/sqlName" },
+        "where": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/sqlName" }
+        },
+        "orderBy": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/sqlName" }
+        }
+      }
+    },
+    "index": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "table", "columns", "key", "queries"],
+      "properties": {
+        "id": { "$ref": "#/$defs/scalaStem" },
+        "table": { "$ref": "#/$defs/sqlName", "not": { "enum": ["namespace", "stream", "event"] } },
+        "columns": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/column" }
+        },
+        "key": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/sqlName" }
+        },
+        "queries": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/query" }
+        }
+      }
+    },
+    "store": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "id", "version", "tablePrefix", "pollIntervalMillis", "closeTimeoutMillis", "streams", "technicalKinds", "indexes"],
+      "properties": {
+        "schemaVersion": { "const": "truthsrc.journal-readside/v1" },
+        "id": { "$ref": "#/$defs/scalaStem" },
+        "version": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "\\S" },
+        "tablePrefix": { "$ref": "#/$defs/sqlName" },
+        "pollIntervalMillis": { "type": "integer", "minimum": 10, "maximum": 60000 },
+        "closeTimeoutMillis": { "type": "integer", "minimum": 1, "maximum": 60000 },
+        "streams": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/stream" }
+        },
+        "technicalKinds": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/kind" }
+        },
+        "indexes": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/index" }
+        }
+      }
+    }
+  }
+}

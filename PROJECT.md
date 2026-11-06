@@ -138,8 +138,16 @@ The tool requires no knowledge server. Project generation uses its embedded,
 replaceable knowledge store; the legacy standalone `graph` display cache is not
 that project contract. Building Scala applications still requires declared local
 JDK/sbt/runtime dependencies. Source spans certify location, not business execution.
-Multi-context generation, complete BC mixed-pipeline template parity and full
-five-layer author completeness are not implicitly delivered; see [TEMPLATE-PARITY.md](TEMPLATE-PARITY.md).
+Multi-context generation and full five-layer author completeness are not implicitly
+delivered. The Play service profile now has compatible Entity/Behaviors/Factory/
+Bootstrap/local Actor repository layering plus optional explicit
+`truthsrc.journal-readside/v1` `projectionStore` generation. SQL transactions,
+checkpointing and typed PB replay are generated; application ownership, index
+selection and view assembly remain explicit ports. Existing `service.projections`
+is a different unsupported profile and still refuses nonempty declarations.
+BC structural compatibility and its concrete exceptions—not byte-identical full
+BC output or cluster sharding—are documented in [TEMPLATE-PARITY.md](TEMPLATE-PARITY.md)
+and [COMPATIBLE-COMPOSITION.md](COMPATIBLE-COMPOSITION.md).
 Retry/backoff/deadline remains OPEN; no frozen runtime or 1134 sign-out is changed.
 See [PROJECT-UNIFICATION-ACCEPTANCE.md](PROJECT-UNIFICATION-ACCEPTANCE.md) for actual
 rounds/results and [PROJECT-OPEN-ITEMS.md](PROJECT-OPEN-ITEMS.md) for independent debts.

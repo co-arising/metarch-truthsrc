@@ -17,7 +17,7 @@ export function pageRendererRequirement(pages) {
 `;
 }
 
-export function renderPageLoader({ pkg, name, bootstrap, endpoints, pages }) {
+export function renderPageLoader({ pkg, name, endpoints, pages }) {
   const q = JSON.stringify;
   const pattern = path => '^/' + path.split('/').slice(1).map(p => p.startsWith(':') ? '([^/]+)' : p).join('/') + '$';
   const rows = endpoints.map(e => {
@@ -38,20 +38,8 @@ import scala.util.control.NonFatal
 import ${name}Service._
 
 final class ${name}Loader extends ApplicationLoader {
-  def load(context: ApplicationLoader.Context): Application = {
-    ${name}Configuration.validate(context.initialConfiguration)
-    val factory = context.environment.classLoader.loadClass(${q(bootstrap.id)}).getDeclaredConstructor().newInstance().asInstanceOf[Factory]
-    require(factory.implementation == ${q(bootstrap.id)} && factory.version == ${q(bootstrap.version)}, "composition factory pin mismatch")
-    val composition = factory.create(context)
-    try {
-      requireInstalled(composition)
-      new ${name}Components(context, composition).application
-    } catch { case NonFatal(error) =>
-      context.lifecycle.stop()
-      composition.close()
-      throw error
-    }
-  }
+  def load(context: ApplicationLoader.Context): Application =
+    ${pkg}.infrastructure.bootstrap.ApplicationBootstrap.load(context)
 }
 final class ${name}Components(context: ApplicationLoader.Context, composition: Composition)
   extends BuiltInComponentsFromContext(context) {

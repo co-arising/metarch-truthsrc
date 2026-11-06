@@ -48,7 +48,11 @@ for (const variant of ['inventory-mixed-effect-products', 'inventory-effect-prod
   const runtime = source(first, 'service-runtime');
   assert.ok(runtime.includes('private val pageRenderer: PageRenderer = {\n    requireInstalled(composition)\n    composition.pages.get'));
   assert.ok(!runtime.includes('loadClass("example.inventory.InventoryPages")'));
-  assert.equal(occurrences(runtime, '.loadClass('), 1, 'only the existing composition factory is reflectively loaded');
+  const bootstrap = first.plan.entries.find(e => e.path.endsWith('/bootstrap/ApplicationBootstrap.scala')).content;
+  assert.ok(runtime.includes('infrastructure.bootstrap.ApplicationBootstrap.load(context)'));
+  assert.equal(occurrences(runtime, '.loadClass('), 0);
+  assert.equal(occurrences(bootstrap, '.loadClass('), 1, 'only the existing composition factory is reflectively loaded');
+  assert.ok(!bootstrap.includes('loadClass("example.inventory.InventoryPages")'));
 });
 
 test('API and aliases copy one typed action and retain endpoint identity and path parameters', () => {

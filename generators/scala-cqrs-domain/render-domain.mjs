@@ -12,13 +12,30 @@ const valuesPath = (type, options) => {
 function aggregateRows(products) {
   return products['reference-layout'].declarations.filter(d => d.ref.kind === 'aggregate');
 }
-export function renderAggregate({ products, options }, footprint) {
+export function renderAggregate({ products, options }, footprint, layered = false) {
   const layout = products['reference-layout'], folds = products['domain-folds'], exact = products['exact-value-types'];
-  return aggregateRows(products).map(a => {
+  return aggregateRows(products).flatMap(a => {
     const pkg = packageFor(a.ref.context, options), name = symbol(a.ref.id), defaults = folds.defaults.filter(d => owner(d.target, a.ref));
     const parameters = fields(defaults, options), initial = defaults.map(d => literal(d.value, d.valueType, layout, exact, options)).join(', ');
-    return entry(pathFor(pkg, 'domain/' + a.ref.id + 'State.scala'), 'package ' + pkg + '.domain\n\nfinal case class ' + name + 'State(' + parameters + ')\nobject ' + name + 'State {\n  def empty: ' + name + 'State = ' + name + 'State(' + initial + ')\n}\n',
-      'state', [a.source, ...defaults.map(d => d.source)], footprint, [...new Set(defaults.flatMap(d => valuesPath(d.valueType, options)))]);
+    const statePath = pathFor(pkg, 'domain/' + a.ref.id + 'State.scala'), entityPath = pathFor(pkg, 'domain/entities/' + a.ref.id + 'Entity.scala');
+    const sources = [a.source, ...defaults.map(d => d.source)], deps = [...new Set(defaults.flatMap(d => valuesPath(d.valueType, options)))];
+    const state = entry(statePath, 'package ' + pkg + '.domain\n\nfinal case class ' + name + 'State(' + parameters + ')\nobject ' + name + 'State {\n  def empty: ' + name + 'State = ' +
+      (layered ? pkg + '.domain.entities.' + name + 'Entity.empty' : name + 'State(' + initial + ')') + '\n}\n', 'state', sources, footprint, [...deps, ...(layered ? [entityPath] : [])]);
+    if (!layered) return [state];
+    const events = layout.declarations.filter(d => d.ref.kind === 'event' && owner(d.ref, a.ref));
+    let entity = 'package ' + pkg + '.domain.entities\n\nobject ' + name + 'Entity {\n' +
+      '  type State = ' + pkg + '.domain.' + name + 'State\n' +
+      '  val State: ' + pkg + '.domain.' + name + 'State.type = ' + pkg + '.domain.' + name + 'State\n' +
+      '  type Event = ' + pkg + '.domain.' + name + 'Protocol.Event\n  object Events {\n';
+    for (const e of events) entity += '    type ' + symbol(e.ref.id) + ' = ' + pkg + '.domain.' + name + 'Protocol.' + symbol(e.ref.id) + '\n' +
+      '    val ' + symbol(e.ref.id) + ': ' + pkg + '.domain.' + name + 'Protocol.' + symbol(e.ref.id) + '.type = ' + pkg + '.domain.' + name + 'Protocol.' + symbol(e.ref.id) + '\n';
+    entity += '  }\n';
+    const start = entity.length;
+    entity += '  def empty: State = State(' + initial + ')\n';
+    const span = { start, end: entity.length };
+    entity += '}\n';
+    return [state, entry(entityPath, entity, 'entity', [...sources, ...events.map(e => e.source)], footprint,
+      [statePath, pathFor(pkg, 'domain/' + a.ref.id + 'Protocol.scala'), ...deps], [{ source: a.source, span, scope: span }])];
   });
 }
 export function renderCommand({ products, options }, footprint) {
@@ -94,7 +111,8 @@ export function renderInvariant({ products, options }, footprint, layered = fals
       ruleMappings.push({ source: c.source, span: scope, scope }, ...guards.map(m => ({ ...m, scope })));
     }
     rules += '}\n';
-    let replay = 'package ' + pkg + '.domain\n\nimport ' + name + 'Protocol._\n\nobject ' + name + 'EventHandler {\n  def apply(state: ' + name + 'State, input: Event): ' + name + 'State = input match {\n';
+    const eventPackage = layered ? pkg + '.domain.entities.behaviors' : pkg + '.domain';
+    let replay = 'package ' + eventPackage + '\n\n' + (layered ? 'import ' + pkg + '.domain._\nimport ' + pkg + '.domain.' : 'import ') + name + 'Protocol._\n\nobject ' + name + 'EventHandler {\n  def apply(state: ' + name + 'State, input: Event): ' + name + 'State = input match {\n';
     for (const e of events) {
       const eventStart = replay.length, assignments = [];
       replay += '    case event: ' + symbol(e.event.id) + ' =>\n';
@@ -125,7 +143,12 @@ export function renderInvariant({ products, options }, footprint, layered = fals
       entry(paramsPath, params, 'rules', [a.source, ...commands.map(c=>c.source)], footprint, [protocol, statePath, helperPath]),
       entry(pathFor(pkg, 'domain/' + a.ref.id + 'Rules.scala'), wrapper, 'rules', [a.source, ...commands.map(c=>c.source)], footprint, [protocol, statePath, helperPath, coreRulesPath, paramsPath], wrapperMappings),
     ] : [entry(pathFor(pkg, 'domain/' + a.ref.id + 'Rules.scala'), rules, 'rules', ruleSources, footprint, [protocol, statePath, helperPath], ruleMappings)];
-    return [...ruleEntries,
-      entry(pathFor(pkg, 'domain/' + a.ref.id + 'EventHandler.scala'), replay, 'event-handler', [a.source, ...events.flatMap(e => [e.source, ...e.assignments.map(a => a.source)])], footprint, [protocol, statePath], foldMappings)];
+    const eventPath = pathFor(pkg, (layered ? 'domain/entities/behaviors/' : 'domain/') + a.ref.id + 'EventHandler.scala');
+    const eventEntries = [entry(eventPath, replay, 'event-handler', [a.source, ...events.flatMap(e => [e.source, ...e.assignments.map(a => a.source)])], footprint, [protocol, statePath], foldMappings)];
+    if (layered) eventEntries.push(entry(pathFor(pkg, 'domain/' + a.ref.id + 'EventHandler.scala'),
+      'package ' + pkg + '.domain\n\nimport ' + name + 'Protocol._\n\nobject ' + name + 'EventHandler {\n' +
+      '  def apply(state: ' + name + 'State, input: Event): ' + name + 'State =\n' +
+      '    ' + eventPackage + '.' + name + 'EventHandler(state, input)\n}\n', 'event-handler', [a.source, ...events.map(e => e.source)], footprint, [protocol, statePath, eventPath]));
+    return [...ruleEntries, ...eventEntries];
   });
 }

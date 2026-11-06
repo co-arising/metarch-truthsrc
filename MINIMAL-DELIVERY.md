@@ -1,7 +1,7 @@
 # 两仓最小交付合同
 
 最后更新: 2026-11-06
-状态: 宏压缩、YAML受控微语法、唯一作者树、可替换图/AST、精确外置回锚和双向查询已实施并完成对应验收；新候选505份main/14份测试源码编译、64项actor测试通过。**完整BC混合管线的读侧及应用装配模板仍未对齐，整体最小交付不能标为完成。** 详见[TEMPLATE-PARITY.md](TEMPLATE-PARITY.md)和文末本轮验收。
+状态: **两仓主线已按任务108用户选定的兼容迁移范围实施并验收。** 紧凑真源、唯一树、可替换图/AST、精确同图回锚和互查保留；实际Entity/Behaviors/Factory/Bootstrap、本地Actor仓储与显式JDBC读侧已接入。新候选534份main源码编译，四流64测试与读侧47测试分别通过，当前233项生成计划同步。BC逐家族参照及具名兼容差异见[TEMPLATE-PARITY.md](TEMPLATE-PARITY.md)，不冒称原样BC字节输出或集群sharding；最终证据见文末。
 
 ## 1. 范围与最新优先级
 
@@ -189,7 +189,7 @@ Codegen 实际消费图导出的 AST，不验证图后又绕回原树组装另�
 
 读者只需知道编辑哪里、运行哪个入口、代码在哪里、如何互查。README 当前开发不再推荐旧作者树、编号请求或作者机器绝对路径；运行银行与编辑真源分成明确路线。安装/复制命令须在独立目录实测，不将 npm bin 声明当作安装验收。
 
-完成须同时满足A–E，不用文件减少百分比、测试总数、能存图或局部profile相等替代。**A/B/D/E已取得下列具体成果；C仅完成规则参数/核心分层和外置映射，完整BC装配及读侧模板仍有实质差距。** 不通过改名、加空壳或把手写投影标成不适用来关闭该项。
+完成须同时满足A–E，不用文件减少百分比、测试总数、能存图或局部profile相等替代。**A/B/D/E的既有成果已保持，C在任务108明确兼容裁定后已落实真实分层与JDBC生成消费，并通过独立测试。** BC必要差异逐项列明；不以改名、空壳或把关系型读侧标不适用关闭该项。此前“C仅完成规则分层”的验收是下节原捕获时点，后续成果单独列于第6节。
 
 ## 5. 2026-11-06实施与验收
 
@@ -203,6 +203,22 @@ Codegen 实际消费图导出的 AST，不验证图后又绕回原树组装另�
 - 当前教学输出`bank-wealth-demo/generated/current`已核原197文件全部无人工改动，再以公共`--update`预览/应用13项变更（6新增规则核心/参数、3兼容入口、4证据），没有retained文件。更新后203计划文件状态同步，inputs current，知识查询仍有真实span；历史候选/失败回执不清理。
 - 本地tarball离线安装到独立prefix、从空目录init/生成成功；源码checkout安装的status/query也实测。工具银行现役适配测试重跑1/1通过；首轮因运行中CLI源码改变被`tool changed before apply`拒绝，原失败日志保留。最后代码映射准入6/6通过。验收回执中的未提交状态属于其捕获时点，随后本地提交由Git历史记录；没有npm发布或push。
 
-### 尚需用户裁定的完整模板边界
+### 2026-11-06兼容迁移裁定（任务108已解除）
 
-当前银行显式将6读模型保留为说明，`service.projections=[]`；已有`BankReadside`/Schema和服务Factory在受保护手写区。完整BC普通文件管线还要求另一套Entity/CommandReply/Behaviors/Repository/Bootstrap及投影生成结构。继续迁移须明确是否允许调整这些手写接线/公开协议，或接受具名技术扩展承接相应家族；不能同时声称“所有手写/协议均冻结”与“完整模板已原样迁移”。非空projection但无生成实现现在明确拒绝，不静默丢弃。见[TEMPLATE-PARITY.md](TEMPLATE-PARITY.md)。
+用户明确选择“兼容迁移”：允许必要的`BankRuntime`、`BankServiceFactory`手写接线调整或新的Factory，使生成仓储与读侧真实被消费；保留公开接口、protobuf、PID、金融行为和冻结runtime，旧发行、journal及独立业务测试不动。允许逐项声明并验证BC必要兼容差异；本地Actor仓储不冒称集群sharding，原JVM消息/状态载体可以保留兼容入口。该裁定不等于验收已完成，也不包括旁支挂账或旧数据迁移。
+
+实施继续沿当前严格service producer：真实Entity初始化/事件fold、application Behaviors/Factory、持久化与服务Bootstrap、本地Actor仓储，以及有显式技术合同的JDBC Schema/Repository/投影生命周期。业务读模型说明不自动翻译为SQL或金融政策；需要业务判断的开放端口明确列出，不能用旧读侧整体包一层冒生成。先固定独立字节/产品/行为基线，再在新候选验收，最后通过公共update同步教学输出。完整家族与兼容差异见[TEMPLATE-PARITY.md](TEMPLATE-PARITY.md)。
+
+## 6. 2026-11-06兼容迁移最终验收
+
+- 生成Entity实际初始化、application命令行为、旧入口兼容、聚合/服务Bootstrap、本地Actor仓储；BANK Runtime真实消费仓储，不新增无人调用的Repository。原State/Event/Request/Reply载体及所有Protocol、VO、PB、serializer/converter/adapter字节保持。
+- 显式`projectionStore`选定`truthsrc.journal-readside/v1`，生成Schema、同Connection事务Repository、typed PB回放、checkpoint、订阅/关闭排空和SQL。银行owner、索引业务选择及DTO/跨PID查询组装保留为显式端口，不猜说明性read-model。仅3份授权手写接线改变，32份其余手写及冻结测试/runtime不变。
+- 最终作者157 YAML、594,713字节、13,921物理行。较前一压缩验收增加4,529字节/74行是显式读侧技术合同，不改写此前压缩百分比。14产品仅artifact-contract新增这一精确槽，其余金融语义及Saga摘要核等旧独立基线。
+- 候选03经`bank-wealth-demo/target/truthsrc-compatible-readside-20261106-03/result.json`签出：534main/11Test编译、47测试/10Suite、14保护checks全部通过。候选04经`target/truthsrc-compatible-actor-20261106-01/result.json`签出：534main/14Test编译、64测试/13Suite、15checks全部通过；两者229份源码/配置逐字节相同。23生成测试在两窗重叠，不相加冒覆盖。
+- 工具基础最终重跑400通过/1跳过；最终选定生成/合同/映射139通过；构建/读侧准入55通过；银行当前8通过/1集成项另已独立6/6通过，现役适配1/1通过。当前0.5.0本地tarball离线安装、独立Counter init/generate/status再次通过。没有修改冻结业务预期消红；首次锚量具拒绝及一次错误文本失败均保留原回执，修复后用新窗口复验。
+- 当前`generated/current`已通过公共update同步233项计划（229源码/配置＋4证据），30新增、10源码替换、4证据刷新，189不变，无孤儿保留；重复update零写。新fold核心`domain/entities/behaviors/CreditBalanceEventHandler.scala:14`精确反查为span，作者仍映到原结构声明。
+- 读侧窗口为独占内存H2/testkit，页面为直接Action/renderer；不冒真实MySQL/HTTP server/browser/跨JVM或1134重签。BC没有运行全BANK普通管线或写共享应用；采用任务108批准的兼容家族对照，不宣称字节完全一致。无runtime发布、旧数据迁移、Git提交/推送或新增inline注释/hooks。
+
+验收与本地证据SHA索引：[银行最终记录](../bank-wealth-demo/docs/TRUTH-COMPATIBLE-COMPOSITION.md)、
+[验收JSON](../bank-wealth-demo/docs/TRUTH-COMPATIBLE-COMPOSITION-ACCEPTANCE.json)。
+信息密度替代方案的三个候选继续挂账，retry/backoff/deadline继续OPEN，不混入已完成主线。

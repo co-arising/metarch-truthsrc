@@ -98,7 +98,7 @@ ${hasPages ? pageRendererRequirement(service.pages) : ''}  }
     const parameters = parts.filter(x => x.startsWith(':')).map(x => x.slice(1));
     return `    (${q(e.method)}, ${q(regex)}.r, Vector(${parameters.map(q).join(', ')}), ${q(e.audience)}, ${e.csrf}, (principal: Principal, input: JsValue) => invoke(composition.bindings.${e.name}, principal, input))`;
   });
-  const loader = hasPages ? renderPageLoader({ pkg, name, bootstrap, endpoints, pages: service.pages }) : `package ${pkg}.service
+  const loader = hasPages ? renderPageLoader({ pkg, name, endpoints, pages: service.pages }) : `package ${pkg}.service
 
 import play.api.{Application, ApplicationLoader, BuiltInComponentsFromContext}
 import play.api.libs.json._
@@ -109,20 +109,8 @@ import scala.util.control.NonFatal
 import ${name}Service._
 
 final class ${name}Loader extends ApplicationLoader {
-  def load(context: ApplicationLoader.Context): Application = {
-    ${name}Configuration.validate(context.initialConfiguration)
-    val factory = context.environment.classLoader.loadClass(${q(bootstrap.id)}).getDeclaredConstructor().newInstance().asInstanceOf[Factory]
-    require(factory.implementation == ${q(bootstrap.id)} && factory.version == ${q(bootstrap.version)}, "composition factory pin mismatch")
-    val composition = factory.create(context)
-    try {
-      requireInstalled(composition)
-      new ${name}Components(context, composition).application
-    } catch { case NonFatal(error) =>
-      context.lifecycle.stop()
-      composition.close()
-      throw error
-    }
-  }
+  def load(context: ApplicationLoader.Context): Application =
+    ${pkg}.infrastructure.bootstrap.ApplicationBootstrap.load(context)
 }
 final class ${name}Components(context: ApplicationLoader.Context, composition: Composition)
   extends BuiltInComponentsFromContext(context) {
@@ -173,6 +161,31 @@ ${routeRows.join(',\n')}
   }
 }
 `;
+  const startup = `package ${pkg}.infrastructure.bootstrap
+
+import play.api.{Application, ApplicationLoader}
+import scala.util.control.NonFatal
+import ${pkg}.service.{${name}Configuration, ${name}Components}
+import ${pkg}.service.${name}Service._
+
+object ApplicationBootstrap {
+  def load(context: ApplicationLoader.Context): Application = {
+    ${name}Configuration.validate(context.initialConfiguration)
+    val factory = context.environment.classLoader.loadClass(${q(bootstrap.id)}).getDeclaredConstructor().newInstance().asInstanceOf[Factory]
+    require(factory.implementation == ${q(bootstrap.id)} && factory.version == ${q(bootstrap.version)}, "composition factory pin mismatch")
+    val composition = factory.create(context)
+    try {
+      requireInstalled(composition)
+      new ${name}Components(context, composition).application
+    } catch { case NonFatal(error) =>
+      context.lifecycle.stop()
+      composition.close()
+      throw error
+    }
+  }
+}
+`;
+  const startupPath = pathFor(pkg, 'infrastructure/bootstrap/ApplicationBootstrap.scala');
   const config = 'play.application.loader = ' + q(pkg + '.service.' + artifact.artifact.id + 'Loader') + '\n' +
     'play.http.secret.key = ${PLAY_SECRET}\n' +
     'service.connections.' + q(service.journal.connectionRef) + ' = ${MONGO_URI}\n' +
@@ -184,7 +197,9 @@ ${routeRows.join(',\n')}
     'db.default.url = ${service.connections.' + q(service.readSide.connectionRef) + '}\n' +
     'db.default.username = ${MYSQL_USER}\ndb.default.password = ${MYSQL_PASSWORD}\n';
   return [entry(pathFor(pkg, 'service/' + artifact.artifact.id + 'Service.scala'), contract, 'service-port', [artifact.source], footprint),
-    entry(pathFor(pkg, 'service/' + artifact.artifact.id + 'Loader.scala'), loader, 'service-runtime', [artifact.source], footprint),
+    entry(pathFor(pkg, 'service/' + artifact.artifact.id + 'Loader.scala'), loader, 'service-runtime', [artifact.source], footprint, [startupPath]),
+    entry(startupPath, startup, 'service-runtime', [artifact.source], footprint,
+      [pathFor(pkg, 'service/' + artifact.artifact.id + 'Service.scala'), pathFor(pkg, 'service/' + artifact.artifact.id + 'Loader.scala'), pathFor(pkg, 'service/' + artifact.artifact.id + 'Configuration.scala')]),
     { ...entry('conf/service.conf', config, 'service-config', [artifact.source], footprint), content: config },
     { ...entry('conf/application.conf', 'include "serialization.conf"\ninclude "service.conf"\n', 'service-config', [artifact.source], footprint), content: 'include "serialization.conf"\ninclude "service.conf"\n' }];
 }

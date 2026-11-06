@@ -7,6 +7,8 @@ import { renderTestSupport } from './render-test-support.mjs';
 import { renderConfiguration } from './render-configuration.mjs';
 import { packageFor } from '../scala-cqrs-domain/naming.mjs';
 import { renderInvariant } from '../scala-cqrs-domain/render-domain.mjs';
+import { renderAggregateLayers } from './render-aggregate-layers.mjs';
+import { renderJournalReadside } from './render-journal-readside.mjs';
 
 const version = id => id === 'artifact-contract' ? '3' : ['saga-host-contract', 'effect-host-contract'].includes(id) ? '2' : null;
 const serviceProducts = ['reference-layout', 'artifact-contract', 'exact-value-types', 'exact-value-codecs'];
@@ -14,9 +16,11 @@ const serviceFootprint = serviceProducts.map(id => ({ id, version: version(id) ?
 const inherited = Object.fromEntries(Object.entries(createEffectRegistry('2')).map(([id, implementation]) => [id, {
   version: 'service-1',
   produce(context) {
-    const produced = id === 'invariant-dsl'
-      ? renderInvariant(context, ['reference-layout','domain-decision','domain-folds','exact-value-types'].map(id=>({id,version:id==='domain-decision'?'4':id==='domain-folds'?'6':'1'})), true)
-      : implementation.produce(context);
+    const produced = id === 'aggregate-dsl'
+      ? renderAggregateLayers(context, ['reference-layout','domain-folds','exact-value-types','domain-dependencies'].map(id=>({id,version:['domain-folds','domain-dependencies'].includes(id)?'6':'1'})))
+      : id === 'invariant-dsl'
+        ? renderInvariant(context, ['reference-layout','domain-decision','domain-folds','exact-value-types'].map(id=>({id,version:id==='domain-decision'?'4':id==='domain-folds'?'6':'1'})), true)
+        : implementation.produce(context);
     return produced.map(entry => {
       const pins = entry.productFootprint.map(p => ({ ...p, version: version(p.id) ?? p.version }));
       if (['proto-dsl', 'finite-execution-dsl', 'finite-host-dsl'].includes(id) && !pins.some(p => p.id === 'effect-host-contract')) pins.push({ id: 'effect-host-contract', version: '2' });
@@ -55,6 +59,7 @@ const inherited = Object.fromEntries(Object.entries(createEffectRegistry('2')).m
 export const registry = Object.freeze({ ...inherited,
   'play-service-dsl': { version: '1', produce: context => [
     ...renderService(context, serviceFootprint),
+    ...renderJournalReadside(context, serviceFootprint),
     ...renderTestSupport(serviceSelection(context.products, context.options), context.options, serviceFootprint),
     ...renderConfiguration(serviceSelection(context.products, context.options), context.options, serviceFootprint)
   ] }
