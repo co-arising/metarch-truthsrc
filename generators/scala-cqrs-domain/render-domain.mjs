@@ -1,5 +1,7 @@
 import { entry, key, packageFor, pathFor, symbol, typeName } from './naming.mjs';
-import { decision, literal, valueExpression } from './render-expressions.mjs';
+import { decision, valueExpression } from './render-expressions.mjs';
+import { buildStateModels } from './build-state-models.mjs';
+import { stateEntries } from './templates/aggregate-state.mjs';
 
 const owner = (ref, aggregate) => ref.context === aggregate.context && ref.owner[0] === aggregate.id;
 const fields = (rows, options) => rows.map(r => symbol((r.ref ?? r.target).id) + ': ' + typeName(r.valueType, options)).join(', ');
@@ -12,31 +14,8 @@ const valuesPath = (type, options) => {
 function aggregateRows(products) {
   return products['reference-layout'].declarations.filter(d => d.ref.kind === 'aggregate');
 }
-export function renderAggregate({ products, options }, footprint, layered = false) {
-  const layout = products['reference-layout'], folds = products['domain-folds'], exact = products['exact-value-types'];
-  return aggregateRows(products).flatMap(a => {
-    const pkg = packageFor(a.ref.context, options), name = symbol(a.ref.id), defaults = folds.defaults.filter(d => owner(d.target, a.ref));
-    const parameters = fields(defaults, options), initial = defaults.map(d => literal(d.value, d.valueType, layout, exact, options)).join(', ');
-    const statePath = pathFor(pkg, 'domain/' + a.ref.id + 'State.scala'), entityPath = pathFor(pkg, 'domain/entities/' + a.ref.id + 'Entity.scala');
-    const sources = [a.source, ...defaults.map(d => d.source)], deps = [...new Set(defaults.flatMap(d => valuesPath(d.valueType, options)))];
-    const state = entry(statePath, 'package ' + pkg + '.domain\n\nfinal case class ' + name + 'State(' + parameters + ')\nobject ' + name + 'State {\n  def empty: ' + name + 'State = ' +
-      (layered ? pkg + '.domain.entities.' + name + 'Entity.empty' : name + 'State(' + initial + ')') + '\n}\n', 'state', sources, footprint, [...deps, ...(layered ? [entityPath] : [])]);
-    if (!layered) return [state];
-    const events = layout.declarations.filter(d => d.ref.kind === 'event' && owner(d.ref, a.ref));
-    let entity = 'package ' + pkg + '.domain.entities\n\nobject ' + name + 'Entity {\n' +
-      '  type State = ' + pkg + '.domain.' + name + 'State\n' +
-      '  val State: ' + pkg + '.domain.' + name + 'State.type = ' + pkg + '.domain.' + name + 'State\n' +
-      '  type Event = ' + pkg + '.domain.' + name + 'Protocol.Event\n  object Events {\n';
-    for (const e of events) entity += '    type ' + symbol(e.ref.id) + ' = ' + pkg + '.domain.' + name + 'Protocol.' + symbol(e.ref.id) + '\n' +
-      '    val ' + symbol(e.ref.id) + ': ' + pkg + '.domain.' + name + 'Protocol.' + symbol(e.ref.id) + '.type = ' + pkg + '.domain.' + name + 'Protocol.' + symbol(e.ref.id) + '\n';
-    entity += '  }\n';
-    const start = entity.length;
-    entity += '  def empty: State = State(' + initial + ')\n';
-    const span = { start, end: entity.length };
-    entity += '}\n';
-    return [state, entry(entityPath, entity, 'entity', [...sources, ...events.map(e => e.source)], footprint,
-      [statePath, pathFor(pkg, 'domain/' + a.ref.id + 'Protocol.scala'), ...deps], [{ source: a.source, span, scope: span }])];
-  });
+export function renderAggregate(context, footprint, layered = false) {
+  return buildStateModels(context, layered).flatMap(model => stateEntries(model, context.options, footprint));
 }
 export function renderCommand({ products, options }, footprint) {
   const dependencies = products['domain-dependencies'], layout = products['reference-layout'], exact = products['exact-value-types'];

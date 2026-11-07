@@ -2,6 +2,8 @@
 
 本页说明目标约定和具名实现差异，不声称所有当前代码已经满足目标。完整类别以本目录索引为准；语义产品版本、generator profile、runtime artifact版本分开选择。
 
+[参考实现与开发范式](REFERENCE-DEVELOPMENT.md)区分成熟Scala设计、兼容参考候选与现状回归快照。BC mjs产物未经打磨检验，不在用户认可的金样范围；检查完整写入链是为了防止后处理破坏结构，不授予其设计权威。`implemented`和文档覆盖通过均不等于金样批准。
+
 ## 层次与模块
 
 - 领域：值、状态、事件、纯规则和事件fold，状态只在event application演进。

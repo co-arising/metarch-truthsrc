@@ -6,6 +6,16 @@ and anchors are derived. [AUTHORING.md](AUTHORING.md) defines the recommended
 system/context format; [TUTORIAL.md](TUTORIAL.md) walks through an actual change.
 The original first-batch results remain in [PROJECT-VALIDATION.md](PROJECT-VALIDATION.md).
 Installation has one home: [README.md](README.md#install-the-local-cli).
+
+For independently maintained code, `lib/handwritten-provenance.mjs` provides the
+optional `verifyHandwrittenSources(root, request, entries, { generator,
+allowedRelations })` API. The caller supplies explicit knowledge pointers,
+per-file relations and rationale, plus its own generator identity and relation
+policy. It verifies complete file membership, actual bytes and source pointers
+through the existing anchor verifier without writing source or anchor files.
+It does not infer semantic correctness, symbols, spans or runtime success.
+Bank-specific counts, snapshots, schemas and financial policy stay in the bank
+adapter; using this API requires neither a sibling bank checkout nor a JVM.
 Node >=22.13.0 is checked before SQLite imports; help/version work without loading
 application modules. Both 22.13.0 and 22.23.4 have been exercised with the local
 Counter/installation/anchor/view suites; this does not certify every platform or banking service.

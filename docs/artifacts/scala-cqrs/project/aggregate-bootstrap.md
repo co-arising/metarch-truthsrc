@@ -41,7 +41,7 @@ Factory到实际Behavior的消费、PID/adapter、崩溃恢复与Actor testkit�
 适用：bc-single / bc-multi / js-formal。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
 
 - `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/bootstsrap/BootstrapTemplate.scala` — `BootstrapTemplate`。
-- `js:generators/scala-cqrs-play-service/render-aggregate-layers.mjs` — `EventSourcedBehavior`。
+- `js:generators/scala-cqrs-play-service/templates/aggregate-bootstrap.mjs` — `bootstrapTemplate`。结构输入来自`buildAggregateModels`，不在builder拼装Scala语法。
 
 来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
 

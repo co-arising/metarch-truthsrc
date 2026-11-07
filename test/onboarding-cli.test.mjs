@@ -240,6 +240,21 @@ test('local tarball allowlist installs offline and runs without the source check
   assert.equal(artifactReport.externalSourcesReverified, false);
   const artifactIndex = join(moved, 'node_modules/@madpolaris/truthsrc/docs/artifacts/scala-cqrs/README.md');
   assert.ok(readFileSync(artifactIndex, 'utf8').includes('端口'));
+  const provenance = join(moved, 'node_modules/@madpolaris/truthsrc/lib/handwritten-provenance.mjs');
+  const handRoot = join(root, 'independent-handwritten');
+  mkdirSync(handRoot);
+  writeFileSync(join(handRoot, 'Policy.scala'), 'object Policy { def allowed = true }\n');
+  const verifyHandwritten = `
+    import { verifyHandwrittenSources } from ${JSON.stringify(pathToFileURL(provenance).href)};
+    const result = await verifyHandwrittenSources(${JSON.stringify(handRoot)}, {
+      documents: [{ id: 'sample', schemaVersion: 'example/v1', value: { rule: { version: '1', name: 'Eligibility' } } }]
+    }, [{ file: 'Policy.scala', relation: 'implements', rationale: 'Independent sample policy', sources: ['source:sample#/rule'] }],
+      { generator: { id: 'independent-source-map', version: '1' }, allowedRelations: ['implements'] });
+    console.log(JSON.stringify({ files: Object.keys(result.inventory).length,
+      relation: result.semanticMapping, symbolSpanVerified: result.symbolSpanVerified }));`;
+  const handwritten = JSON.parse(command(process.execPath, ['--input-type=module', '-e', verifyHandwritten], root).stdout);
+  assert.deepEqual(handwritten, { files: 1, relation: 'explicit-owner-declared-not-inferred', symbolSpanVerified: false });
+  assert.deepEqual(readdirSync(handRoot), ['Policy.scala']);
   const created = json(root, ['init', 'packed-counter'], entry);
   const args = ['--project', created.project, '--out', join(created.root, 'generated')];
   assert.equal(json(root, ['generate-project', ...args], entry).applied, true);

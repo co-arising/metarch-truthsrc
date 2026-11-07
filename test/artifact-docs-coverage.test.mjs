@@ -67,6 +67,14 @@ test('ordinary emitters and BC output kinds remain checked without artifactKinds
   for (const id of ['application-protocol', 'aggregate-behavior', 'aggregate-factory', 'event-handler']) assert.ok(aggregate.categories.includes(id), id);
 });
 
+test('domain discriminants do not inherit writer status from adjacent or nested objects', () => {
+  const source = "const entry = { kind, path: output }; const groups = [{ kind: 'external' }]; " +
+    "const nested = { kind: 'query', nested: { path: input } }; " +
+    "return [{ kind: 'state', path: output, content }];";
+  assert.deepEqual(emittedKinds('fixture.mjs', source), { kinds: ['state'], dynamic: [] });
+  assert.deepEqual(emittedKinds('ledger.mjs', "ledgerRow(file, { kind: 'port', schemaCategory: 'domain.service' });"), { kinds: ['port'], dynamic: [] });
+});
+
 test('port and module roles are not swallowed by a generic platform bucket', () => {
   for (const [repo, path, expected] of [
     ['dipoc', 'modules/kernel/src/main/scala/net/imadz/metarch/domain/service/ConceptDeltaAdjudicator.scala', 'computation-port'],

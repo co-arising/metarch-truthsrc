@@ -52,9 +52,9 @@ test('both legacy actor constructors lead to the real generated bootstrap and ap
     assert.ok(bootstrap.includes('.snapshotAdapter(' + name + 'SnapshotAdapter)'));
     assert.ok(!bootstrap.includes('ClusterSharding') && !bootstrap.includes('withTagger'));
     const behavior = source('/behaviors/' + name + 'Behaviors.scala').content;
-    assert.ok(behavior.includes('case GetState(reply) => Effect.none.thenRun'));
-    assert.ok(behavior.includes('case Right(events) => Effect.persist(events).thenRun'));
-    assert.ok(behavior.includes('case Left(code) => Effect.none.thenRun'));
+    assert.ok(behavior.includes('case GetState(reply) =>\n      Effect.none.thenRun'));
+    assert.ok(behavior.includes('case Right(events) =>\n          Effect.persist(events).thenRun'));
+    assert.ok(behavior.includes('case Left(code) =>\n          Effect.none.thenRun'));
     const protocol = source('/application/aggregates/' + name + 'Protocol.scala').content;
     assert.ok(protocol.includes('type Command = ') && protocol.includes('Aggregate.Request'));
     assert.ok(protocol.includes('type Execute = ') && protocol.includes('val Execute: '));

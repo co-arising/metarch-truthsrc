@@ -45,7 +45,8 @@
             "lib/knowledge-sqlite.mjs",
             "lib/source-index.mjs",
             "lib/immutable-data.mjs",
-            "lib/strict-json.mjs"
+            "lib/strict-json.mjs",
+            "lib/handwritten-provenance.mjs"
           ],
           "extensions": [
             ".mjs"
@@ -108,6 +109,20 @@
             ".md"
           ],
           "packaged": true,
+          "files": false
+        },
+        {
+          "id": "aggregate-reference",
+          "paths": [
+            "test/reference/aggregate-layers"
+          ],
+          "extensions": [
+            ".scala",
+            ".mjs",
+            ".md",
+            ".sbt"
+          ],
+          "packaged": false,
           "files": false
         }
       ],
@@ -8749,6 +8764,29 @@
           }
         },
         {
+          "path": "generators/scala-cqrs-domain/build-state-models.mjs",
+          "bytes": 2717,
+          "sha256": "1f7990c3eef57b657ed3a7b42f61041129ad85b062ec9eb6bc74d359154f88b0",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "generators",
+          "categories": [
+            "domain-entity",
+            "domain-state"
+          ],
+          "disposition": "producer-support",
+          "reason": "Parser, builder, template, validator or writer supporting these documented output responsibilities.",
+          "symbols": [
+            "buildStateModels",
+            "include",
+            "valuePaths"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
           "path": "generators/scala-cqrs-domain/generate.mjs",
           "bytes": 979,
           "sha256": "0fefb49f992bb7a519fd48261b8e742ce5df583adf7a0039783fb85579c91535",
@@ -9076,11 +9114,11 @@
         },
         {
           "path": "generators/scala-cqrs-domain/render-domain.mjs",
-          "bytes": 14610,
-          "sha256": "04895d0bd313e29ee1b82e2c8a30ad3337b1c6174e473c4c4b4c2765893114de",
+          "bytes": 12461,
+          "sha256": "98181f044826dd2e45ec4179f030a2de2a47326601f3af9a153df2d96dc09e43",
           "mode": "100644",
           "baselineBlob": "0ad191c44e4d7d420001d9321941e284bab34a5d",
-          "evidence": "committed-baseline",
+          "evidence": "local-derived-or-new-source",
           "scope": "generators",
           "categories": [
             "aggregate-root",
@@ -9107,7 +9145,6 @@
           "symbols": [
             "Command",
             "Event",
-            "Events",
             "aggregateRows",
             "renderAggregate",
             "renderCommand",
@@ -9115,69 +9152,57 @@
           ],
           "outputSites": [
             {
-              "line": 22,
-              "sha256": "b9e4753acf87ddbba2e019ef68fd5628ce3d5af4f0e8ac6306f8463912e17000",
-              "excerpt": "const state = entry(statePath, 'package ' + pkg + '.domain\\n\\nfinal case class ' + name + 'State(' + parameters + ')\\nobject ' + name + 'State {\\n  def empty: ' + name + 'State = '"
-            },
-            {
-              "line": 37,
-              "sha256": "f65c1c9dc911c7f9c0cc757941fee1c94d6a55f704048987a80ca9f40ff9c67c",
-              "excerpt": "return [state, entry(entityPath, entity, 'entity', [...sources, ...events.map(e => e.source)], footprint,"
-            },
-            {
-              "line": 51,
+              "line": 30,
               "sha256": "58f87ff219c76986df4fc24b3f18df344bb55f8408b3e075c88eb8f69310a23b",
               "excerpt": "const results = [entry(protocol, body, 'protocol', [a.source, ...commands.map(c => c.source), ...events.map(e => e.source)], footprint, [...new Set(types.flatMap(r => valuesPath(r."
             },
             {
-              "line": 63,
+              "line": 42,
               "sha256": "51e8c16105d8baacc1362f9f9201bba3a2b4b4e317cd9426914967327dfce907",
               "excerpt": "results.push(entry(pathFor(pkg, 'domain/' + a.ref.id + 'CommandHelpers.scala'), helper, 'command-helpers', [a.source, ...commands.map(c => c.source), ...hosts.map(h => h.source)], "
             },
             {
-              "line": 73,
+              "line": 52,
               "sha256": "34c3c051f46d5fea5c976b373941f27192c1be096d635c0ff24d438573f4ffb8",
               "excerpt": "results.push(entry(pathFor(pkg, 'domain/' + a.ref.id + 'ExternalEvents.scala'), bridge, 'external-event-bridge', external.map(p => p.source), footprint, [protocol, ...new Set(exter"
             },
             {
-              "line": 142,
+              "line": 121,
               "sha256": "fed95c7298db140232ccb0dd366d5a4b3e0c3280542edcd5af65775bdcfc0e00",
               "excerpt": "entry(coreRulesPath, rules, 'rules', ruleSources, footprint, [protocol, statePath, helperPath, paramsPath], ruleMappings),"
             },
             {
-              "line": 143,
+              "line": 122,
               "sha256": "310508903d5f12e9f41a12e3e5e08c75d7c4432ad24af449bb4ff89415c66fc1",
               "excerpt": "entry(paramsPath, params, 'rules', [a.source, ...commands.map(c=>c.source)], footprint, [protocol, statePath, helperPath]),"
             },
             {
-              "line": 144,
+              "line": 123,
               "sha256": "d133af5d7cf25c0adaaa7b36b4e357dfa065445d088b9814c19d11254a1ff600",
               "excerpt": "entry(pathFor(pkg, 'domain/' + a.ref.id + 'Rules.scala'), wrapper, 'rules', [a.source, ...commands.map(c=>c.source)], footprint, [protocol, statePath, helperPath, coreRulesPath, pa"
             },
             {
-              "line": 145,
+              "line": 124,
               "sha256": "78c85ed80d21d2629eeb76665fb6a829c45cf5962d0afa6082ae63ed4b18de8f",
               "excerpt": "] : [entry(pathFor(pkg, 'domain/' + a.ref.id + 'Rules.scala'), rules, 'rules', ruleSources, footprint, [protocol, statePath, helperPath], ruleMappings)];"
             },
             {
-              "line": 147,
+              "line": 126,
               "sha256": "0a3e2f529eae5bf51322a96d3e46a91c14fb90aa40f1ab283f2c04445649e6be",
               "excerpt": "const eventEntries = [entry(eventPath, replay, 'event-handler', [a.source, ...events.flatMap(e => [e.source, ...e.assignments.map(a => a.source)])], footprint, [protocol, statePath"
             },
             {
-              "line": 148,
+              "line": 127,
               "sha256": "f41d7977e2b4264a644e0d54238b8c18eb1180e3ec0b1ef5855097094d463138",
               "excerpt": "if (layered) eventEntries.push(entry(pathFor(pkg, 'domain/' + a.ref.id + 'EventHandler.scala'),"
             }
           ],
           "emittedKinds": [
             "command-helpers",
-            "entity",
             "event-handler",
             "external-event-bridge",
             "protocol",
-            "rules",
-            "state"
+            "rules"
           ],
           "dynamicKinds": []
         },
@@ -9432,6 +9457,42 @@
             }
           ],
           "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "generators/scala-cqrs-domain/templates/aggregate-state.mjs",
+          "bytes": 2168,
+          "sha256": "735bdb99b5b90323f4f9da776d311f6a532b5654de22a868444910f893e4c412",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "generators",
+          "categories": [
+            "domain-entity",
+            "domain-state"
+          ],
+          "disposition": "producer-support",
+          "reason": "Parser, builder, template, validator or writer supporting these documented output responsibilities.",
+          "symbols": [
+            "Events",
+            "stateEntries"
+          ],
+          "outputSites": [
+            {
+              "line": 8,
+              "sha256": "8b728366e725a828ecb8aab08aed4e6032cd5b46ebfdded216c5d08f6d2955ab",
+              "excerpt": "const state = entry(model.paths.state, 'package ' + pkg + '.domain\\n\\nfinal case class ' + name + 'State(' + parameters + ')' + (model.layered ? '\\n\\n' : '\\n') + 'object ' + name +"
+            },
+            {
+              "line": 23,
+              "sha256": "48f162d7063672b11050cb3bf152397f78d11321c32182b30b8179ffe4a25cb3",
+              "excerpt": "return [state, entry(model.paths.entity, entity, 'entity', [...model.sources, ...model.events.map(e => e.source)], footprint,"
+            }
+          ],
+          "emittedKinds": [
+            "entity",
+            "state"
+          ],
           "dynamicKinds": []
         },
         {
@@ -9861,6 +9922,68 @@
           }
         },
         {
+          "path": "generators/scala-cqrs-play-service/aggregate-names.mjs",
+          "bytes": 1636,
+          "sha256": "c383aeaf0f6e0750882fcf867b9e8da49e303778a2ab5223e80a62d17eb8e498",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "generators",
+          "categories": [
+            "artifact-generator"
+          ],
+          "disposition": "producer-support",
+          "reason": "Parser, builder, template, validator or writer supporting these documented output responsibilities.",
+          "symbols": [
+            "aggregateNames",
+            "externalNames"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "generators/scala-cqrs-play-service/build-aggregate-models.mjs",
+          "bytes": 3000,
+          "sha256": "c8635d726883a673801ab4d053005de8a3462913ba79c617813bc130270538c3",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "generators",
+          "categories": [
+            "aggregate-behavior",
+            "aggregate-bootstrap",
+            "aggregate-factory",
+            "aggregate-repository-implementation",
+            "aggregate-root",
+            "application-protocol"
+          ],
+          "disposition": "producer-support",
+          "reason": "Parser, builder, template, validator or writer supporting these documented output responsibilities.",
+          "symbols": [
+            "buildAggregateModels"
+          ],
+          "outputSites": [
+            {
+              "line": 16,
+              "sha256": "110bcd4bbe8fc04a67d259025f713b78f8e0e1b4da7223af5e6247c7608cf5c0",
+              "excerpt": "...(external.length ? [{ kind: 'external', producers: external.map(p => ({"
+            },
+            {
+              "line": 19,
+              "sha256": "8b4be7c42b91b5276b576e75bc3f0f681d327069a099b9608340c0010d5f3943",
+              "excerpt": "{ kind: 'query' },"
+            },
+            {
+              "line": 20,
+              "sha256": "9262ff9260df587fa298ae0b812a772413ca772a023c39b0fa771fd9026f8e29",
+              "excerpt": "{ kind: 'execution', commands: commands.map(c => ({ ref: c.ref, source: c.source })) }"
+            }
+          ],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
           "path": "generators/scala-cqrs-play-service/generate.mjs",
           "bytes": 6076,
           "sha256": "2586f04d28833e9acd413a59bec9b559a02b0139470a1f48051d48f4e0882df7",
@@ -10139,11 +10262,11 @@
         },
         {
           "path": "generators/scala-cqrs-play-service/render-aggregate-layers.mjs",
-          "bytes": 11550,
-          "sha256": "625d25083ef1e80bba2d8ec0d4c974a495d02f101d9a5d6941e821d8df24fd73",
+          "bytes": 1460,
+          "sha256": "5ed6d9c4fe9dfdb5edc8d67ce67c04aa8bb1c8ecdd413080d4bcfb6e1e5d3dc2",
           "mode": "100644",
           "baselineBlob": "47d1dd60dac7c6bed54719a05ad2d6bd7f3d6122",
-          "evidence": "committed-baseline",
+          "evidence": "local-derived-or-new-source",
           "scope": "generators",
           "categories": [
             "aggregate-behavior",
@@ -10159,64 +10282,34 @@
           "disposition": "producer-support",
           "reason": "Parser, builder, template, validator or writer supporting these documented output responsibilities.",
           "symbols": [
-            "$",
-            "Accepted",
-            "EventSourcedBehavior",
-            "Execute",
-            "ExternalAuthority",
-            "GetState",
-            "Handle",
-            "Refused",
-            "Reply",
-            "Request",
             "renderAggregateLayers"
           ],
           "outputSites": [
             {
-              "line": 41,
-              "sha256": "0e3f4f500fd68a982b0a03f7b8689be66863abfc350124a50aa73ae2b2ade9d3",
-              "excerpt": "results.push(entry(paths.legacy, legacy, 'aggregate', [a.source, ...commands.map(c => c.source)], footprint, [paths.state, paths.domainProtocol, paths.helpers, paths.bootstrap]));"
-            },
-            {
-              "line": 48,
-              "sha256": "9974304a4bbc03a7804f395a646fe9f3437cc48f21c11722ea3a8adb9a6f01f7",
-              "excerpt": "results.push(entry(paths.protocol, api, 'application-protocol', [a.source, ...commands.map(c => c.source)], footprint, [paths.legacy, paths.entity]));"
-            },
-            {
-              "line": 69,
-              "sha256": "590c5e48363efefe3d403a122497344e2941d4a5290b610c6e249d1be02565af",
-              "excerpt": "results.push(entry(paths.behaviors, behavior, 'aggregate-behavior', [a.source, ...commands.map(c => c.source), ...external.map(p => p.source)], footprint,"
-            },
-            {
-              "line": 73,
-              "sha256": "043fe0f6203a41cf37f805a5a9623ffef592fd26a6e516d3aebe9525bb3ebc3c",
-              "excerpt": "results.push(entry(paths.aggregate, aggregate, 'aggregate-behavior', [a.source], footprint, [paths.protocol, paths.behaviors, paths.helpers]));"
-            },
-            {
-              "line": 76,
-              "sha256": "6e7e7bea93c915a39e55d1710ba70a8662af457cce3bbeb74c2e7c6f6806c3cc",
-              "excerpt": "results.push(entry(paths.factory, factory, 'aggregate-factory', [a.source], footprint, [paths.protocol, paths.entity, paths.helpers]));"
-            },
-            {
-              "line": 86,
-              "sha256": "8e6eaa41c6bb258034fb6f1f688743b139a435d08f0dcaf3998d5acdcf749203",
-              "excerpt": "results.push(entry(paths.bootstrap, boot, 'aggregate-bootstrap', [a.source], footprint, [paths.factory, paths.aggregate, paths.entity, paths.fold, paths.adapter]));"
-            },
-            {
-              "line": 117,
-              "sha256": "ec3f87ef9a80ec2449abd464e8f2ae40eb52b29cf886f1ff16512a700b170e2d",
-              "excerpt": "results.push(entry(paths.repository, repository, 'aggregate-repository', [a.source], footprint, [paths.protocol]));"
+              "line": 26,
+              "sha256": "aafbecdaceea0204d3df8825e667655ae961713ff25a001e486a75e32955e5e9",
+              "excerpt": "return entry(path, typeof output === 'string' ? output : output.content, kind, sources, footprint,"
             }
           ],
-          "emittedKinds": [
-            "aggregate",
-            "aggregate-behavior",
-            "aggregate-bootstrap",
-            "aggregate-factory",
-            "aggregate-repository",
-            "application-protocol"
+          "emittedKinds": [],
+          "dynamicKinds": [
+            "entry:kind"
           ],
-          "dynamicKinds": []
+          "outputContract": {
+            "categories": [
+              "aggregate-behavior",
+              "aggregate-bootstrap",
+              "aggregate-factory",
+              "aggregate-repository-implementation",
+              "aggregate-repository-port",
+              "aggregate-root",
+              "application-protocol",
+              "domain-entity",
+              "external-event-bridge"
+            ],
+            "sourceSha256": "5ed6d9c4fe9dfdb5edc8d67ce67c04aa8bb1c8ecdd413080d4bcfb6e1e5d3dc2",
+            "review": "Aggregate structural-model/template refactor reviewed against compatible independent references and complete source plans; runtime declarations remain unchanged. Dynamic kinds are selected from the explicit artifact model roles, not external input."
+          }
         },
         {
           "path": "generators/scala-cqrs-play-service/render-configuration.mjs",
@@ -10503,6 +10596,123 @@
           "emittedKinds": [
             "service-test"
           ],
+          "dynamicKinds": []
+        },
+        {
+          "path": "generators/scala-cqrs-play-service/templates/aggregate-behavior.mjs",
+          "bytes": 3251,
+          "sha256": "67258519bda190fe1deee08dd66357a6800bd8c2723960361b767db4fdeb86d5",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "generators",
+          "categories": [
+            "aggregate-behavior"
+          ],
+          "disposition": "producer-support",
+          "reason": "Parser, builder, template, validator or writer supporting these documented output responsibilities.",
+          "symbols": [
+            "$",
+            "behaviorTemplate"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "generators/scala-cqrs-play-service/templates/aggregate-bootstrap.mjs",
+          "bytes": 1700,
+          "sha256": "7c3b647b303d490bde72df7075b8b2395baa5565a8dda23fc30d81e7f6fa1d8b",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "generators",
+          "categories": [
+            "aggregate-bootstrap"
+          ],
+          "disposition": "producer-support",
+          "reason": "Parser, builder, template, validator or writer supporting these documented output responsibilities.",
+          "symbols": [
+            "$",
+            "bootstrapTemplate"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "generators/scala-cqrs-play-service/templates/aggregate-factory.mjs",
+          "bytes": 1165,
+          "sha256": "f2e631d5de231d53f313a228c5321410e4e625767467931bf4fa9ff6dad881f4",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "generators",
+          "categories": [
+            "aggregate-factory",
+            "aggregate-root"
+          ],
+          "disposition": "producer-support",
+          "reason": "Parser, builder, template, validator or writer supporting these documented output responsibilities.",
+          "symbols": [
+            "$",
+            "aggregateTemplate",
+            "factoryTemplate"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "generators/scala-cqrs-play-service/templates/aggregate-protocol.mjs",
+          "bytes": 2577,
+          "sha256": "a1f2475858d54db53f35cfdf09308ff545616b821d473852ce3e05c787e56eeb",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "generators",
+          "categories": [
+            "aggregate-root",
+            "application-protocol"
+          ],
+          "disposition": "producer-support",
+          "reason": "Parser, builder, template, validator or writer supporting these documented output responsibilities.",
+          "symbols": [
+            "$",
+            "Accepted",
+            "Execute",
+            "ExternalAuthority",
+            "GetState",
+            "Refused",
+            "Reply",
+            "Request",
+            "legacyTemplate",
+            "protocolTemplate"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "generators/scala-cqrs-play-service/templates/aggregate-repository.mjs",
+          "bytes": 1513,
+          "sha256": "2da01826f5232f9ea263f3a128de46b1fb5f0cbc67fede5500125f52c0c85c2d",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "generators",
+          "categories": [
+            "aggregate-repository-implementation"
+          ],
+          "disposition": "producer-support",
+          "reason": "Parser, builder, template, validator or writer supporting these documented output responsibilities.",
+          "symbols": [
+            "$",
+            "Handle",
+            "repositoryTemplate"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
           "dynamicKinds": []
         },
         {
@@ -13990,6 +14200,43 @@
             "RebatchPolicy"
           ],
           "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "lib/handwritten-provenance.mjs",
+          "bytes": 9833,
+          "sha256": "83f68ba4082a0c7677de3aff8552e01f0f191aa64a64062b6b2067df6fbf57d0",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "graph",
+          "categories": [
+            "code-anchor",
+            "code-provenance",
+            "verification-runner"
+          ],
+          "disposition": "producer-support",
+          "reason": "Parser, builder, template, validator or writer supporting these documented output responsibilities.",
+          "symbols": [
+            "canonicalRoot",
+            "captureData",
+            "documentIndex",
+            "fileSha",
+            "referenceFrom",
+            "sourceInventory",
+            "sourceReference",
+            "verifyHandwrittenSources",
+            "versionAt",
+            "walk"
+          ],
+          "outputSites": [
+            {
+              "line": 110,
+              "sha256": "c92e20bcd1c99a4d88f4eaa748f5231b5400e5b12a3517ecf3eaa258c0624045",
+              "excerpt": "sourceVersion: { kind: 'document-content-sha256', value: documentSha } };"
+            }
+          ],
           "emittedKinds": [],
           "dynamicKinds": []
         },
@@ -21544,10 +21791,329 @@
           "outputSites": [],
           "emittedKinds": [],
           "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/aggregate-layers/README.md",
+          "bytes": 6802,
+          "sha256": "b2c078340988fb539e8bdb6f489cba3b438439aac188a2bd075e37b161779cd8",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "aggregate-reference",
+          "categories": [
+            "generated-test",
+            "independent-business-oracle"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independently authored compatible aggregate reference and focused verification; candidate status is not human golden approval.",
+          "symbols": [],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/aggregate-layers/build.sbt",
+          "bytes": 509,
+          "sha256": "b13b0b6a679b69f839bea1fa5ade20a1395e4ca14f5c14d0f1c593b8533789a4",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "aggregate-reference",
+          "categories": [
+            "generated-test",
+            "independent-business-oracle"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independently authored compatible aggregate reference and focused verification; candidate status is not human golden approval.",
+          "symbols": [],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/aggregate-layers/runtime/AggregateRuntimeSpec.scala",
+          "bytes": 15788,
+          "sha256": "436265067bd5fb839f392e2a764f863d2fdcf76ec649baa4f7282165744b4cce",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "aggregate-reference",
+          "categories": [
+            "generated-test",
+            "independent-business-oracle"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independently authored compatible aggregate reference and focused verification; candidate status is not human golden approval.",
+          "symbols": [
+            "AggregateRuntimeSpec",
+            "ExternalIngress"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/aggregate-layers/runtime/IdentityAdapters.scala",
+          "bytes": 1612,
+          "sha256": "740a860256c0e16b9b5f17ff8e5121f47778a1bffba9972b74276e158b9732e9",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "aggregate-reference",
+          "categories": [
+            "generated-test",
+            "independent-business-oracle"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independently authored compatible aggregate reference and focused verification; candidate status is not human golden approval.",
+          "symbols": [
+            "AllocationOrderEventAdapter",
+            "AllocationOrderSnapshotAdapter",
+            "WarehouseEventAdapter",
+            "WarehouseSnapshotAdapter"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/aggregate-layers/runtime/PersistenceReplySpec.scala",
+          "bytes": 3895,
+          "sha256": "b3f0b0d889ff173df6e34721e488ae46261545b64c57f32371daea30baf3e9cb",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "aggregate-reference",
+          "categories": [
+            "generated-test",
+            "independent-business-oracle"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independently authored compatible aggregate reference and focused verification; candidate status is not human golden approval.",
+          "symbols": [
+            "ControlledReferenceJournal",
+            "Pending",
+            "PersistenceReplySpec"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/aggregate-layers/runtime/WarehouseDecisionSpec.scala",
+          "bytes": 3052,
+          "sha256": "1e7bb0c8b60c09894c73131ef190f8aa8e8677e18515755051b61bea72943bba",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "aggregate-reference",
+          "categories": [
+            "generated-test",
+            "independent-business-oracle"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independently authored compatible aggregate reference and focused verification; candidate status is not human golden approval.",
+          "symbols": [
+            "WarehouseDecisionSpec"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/aggregate-layers/stage.mjs",
+          "bytes": 4012,
+          "sha256": "91af54ccf031bd8389323f48ba5a105765fd3e8d46d1bcbba20fec25faaca929",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "aggregate-reference",
+          "categories": [
+            "generated-test",
+            "independent-business-oracle"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independently authored compatible aggregate reference and focused verification; candidate status is not human golden approval.",
+          "symbols": [
+            "referenceSources",
+            "stageReference"
+          ],
+          "outputSites": [
+            {
+              "line": 52,
+              "sha256": "d1043756c41cabf6e335d5186fe360dfa8c4d72b400a850f30d8d0f73b643f18",
+              "excerpt": "writeFileSync(file, entry.content, { flag: 'wx' });"
+            },
+            {
+              "line": 54,
+              "sha256": "9cd4b2eb48fa3fadfee7d8da62dfb4678d432861c85f9e18a42a3faa1c696b23",
+              "excerpt": "writeFileSync(join(root, variant, 'build.sbt'), readFileSync(new URL('./build.sbt', import.meta.url)), { flag: 'wx' });"
+            },
+            {
+              "line": 56,
+              "sha256": "9f1cd943e6c23529a9d5ea4388357f39d20beaab62e3a89dc5da95938a3e5e30",
+              "excerpt": "writeFileSync(join(root, variant, 'project/build.properties'), 'sbt.version=1.11.7\\n', { flag: 'wx' });"
+            },
+            {
+              "line": 58,
+              "sha256": "5b458670a48620a850c96c74ec28e219df94018e8f62928ec8d9897b1cb6dd90",
+              "excerpt": "writeFileSync(join(root, 'sources.json'), JSON.stringify(Object.fromEntries(Object.entries(sources)"
+            }
+          ],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/aggregate-layers/warehouse/app/example/inventory/application/aggregates/WarehouseAggregate.scala",
+          "bytes": 326,
+          "sha256": "1378a4d7dd6edfee38b4877ac0739ba216d0e4f3e295979b8c7b4b45a99ab6ef",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "aggregate-reference",
+          "categories": [
+            "generated-test",
+            "independent-business-oracle"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independently authored compatible aggregate reference and focused verification; candidate status is not human golden approval.",
+          "symbols": [
+            "WarehouseAggregate"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/aggregate-layers/warehouse/app/example/inventory/application/aggregates/WarehouseAggregateFactory.scala",
+          "bytes": 413,
+          "sha256": "aaeb7721c659538fc55838993ab9f37e50ecf2a4e596654917245f92c860b900",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "aggregate-reference",
+          "categories": [
+            "generated-test",
+            "independent-business-oracle"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independently authored compatible aggregate reference and focused verification; candidate status is not human golden approval.",
+          "symbols": [
+            "WarehouseAggregateFactory"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/aggregate-layers/warehouse/app/example/inventory/application/aggregates/WarehouseProtocol.scala",
+          "bytes": 1283,
+          "sha256": "16c988b2e45b987f6dc45d60834cdf5cdb37d2c145ffceb75f05d510e16a14a3",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "aggregate-reference",
+          "categories": [
+            "generated-test",
+            "independent-business-oracle"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independently authored compatible aggregate reference and focused verification; candidate status is not human golden approval.",
+          "symbols": [
+            "WarehouseProtocol"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/aggregate-layers/warehouse/app/example/inventory/application/aggregates/behaviors/WarehouseBehaviors.scala",
+          "bytes": 1606,
+          "sha256": "f818364ced86a5c1acf7792273cb3dcb6a06e0057e834d6a76fa60a580e14334",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "aggregate-reference",
+          "categories": [
+            "generated-test",
+            "independent-business-oracle"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independently authored compatible aggregate reference and focused verification; candidate status is not human golden approval.",
+          "symbols": [
+            "WarehouseBehaviors"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/aggregate-layers/warehouse/app/example/inventory/domain/WarehouseState.scala",
+          "bytes": 240,
+          "sha256": "c4597c2a449fff44a86c4515ed9d2fe137770ca877af78cb849f796fd482c940",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "aggregate-reference",
+          "categories": [
+            "generated-test",
+            "independent-business-oracle"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independently authored compatible aggregate reference and focused verification; candidate status is not human golden approval.",
+          "symbols": [
+            "WarehouseState"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/aggregate-layers/warehouse/app/example/inventory/domain/entities/WarehouseEntity.scala",
+          "bytes": 1454,
+          "sha256": "28f1e232abda0cf20a0887c68b09b963484f501b1e9e30cf7b0172ef39bc55b2",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "aggregate-reference",
+          "categories": [
+            "generated-test",
+            "independent-business-oracle"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independently authored compatible aggregate reference and focused verification; candidate status is not human golden approval.",
+          "symbols": [
+            "Events",
+            "WarehouseEntity"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/aggregate-layers/warehouse/app/example/inventory/infrastructure/bootstrap/WarehouseBootstrap.scala",
+          "bytes": 1339,
+          "sha256": "c096d0566d3e2103c1ea4f96d0a6c87e8c031329603c1566a4b590b5520f51f2",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "aggregate-reference",
+          "categories": [
+            "generated-test",
+            "independent-business-oracle"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independently authored compatible aggregate reference and focused verification; candidate status is not human golden approval.",
+          "symbols": [
+            "WarehouseBootstrap"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
         }
       ],
       "originalRevision": "fb58d31622350bb1b7dd7576062999990b11fd24",
-      "evidenceState": "working-tree snapshot at the recorded revision; documentary overlay is explicit"
+      "evidenceState": "captured ancestor baseline plus explicitly reviewed working-tree changes; current byte hashes, not HEAD equality, define this source snapshot"
     },
     "bc": {
       "revision": "13c151b8e5e9a707b23a5e678229b5d8b9219e8c",
@@ -26088,11 +26654,11 @@
         },
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/aggregate_bootstrap.md",
-          "bytes": 3191,
-          "sha256": "72ece0b947b6893df1987b3842b9faed138d4c6f43c981d22f1d20863dc066e6",
+          "bytes": 3270,
+          "sha256": "8ee7378a6f2aeae621b2007c149033c02b5516356718a27770fa7622fa5920e8",
           "mode": "100644",
           "baselineBlob": "3343dbc829308aed6e78c98c7a683b9da9e60632",
-          "evidence": "documentary-working-overlay",
+          "evidence": "local-derived-or-new-source",
           "scope": "legacy-docs",
           "categories": [
             "aggregate-bootstrap"
@@ -26287,7 +26853,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/catalog-index.json",
           "bytes": 13584,
-          "sha256": "6e86801f07e6fe140bc85af1ba2ccad8205fd2e9eb87d43831527f4017db984d",
+          "sha256": "8f6d3b1f1b2024527b7eacd7047600c6c02a2288644c22795d844f3339147265",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "local-derived-or-new-source",
@@ -33774,7 +34340,7 @@
         }
       ],
       "originalRevision": "13c151b8e5e9a707b23a5e678229b5d8b9219e8c",
-      "evidenceState": "working-tree snapshot at the recorded revision; documentary overlay is explicit"
+      "evidenceState": "captured ancestor baseline plus explicitly reviewed working-tree changes; current byte hashes, not HEAD equality, define this source snapshot"
     },
     "play": {
       "revision": "8ab0fb1eef1c0437328f2fc3eba41a0b0aa563af",
@@ -37051,11 +37617,11 @@
         },
         {
           "path": "knowledge_base/artifacts/aggregate_bootstrap.md",
-          "bytes": 3191,
-          "sha256": "72ece0b947b6893df1987b3842b9faed138d4c6f43c981d22f1d20863dc066e6",
+          "bytes": 3270,
+          "sha256": "8ee7378a6f2aeae621b2007c149033c02b5516356718a27770fa7622fa5920e8",
           "mode": "100644",
           "baselineBlob": "9419371ea78be50c61b84b5ba1e35327ac53e66d",
-          "evidence": "documentary-working-overlay",
+          "evidence": "local-derived-or-new-source",
           "scope": "legacy-docs",
           "categories": [
             "aggregate-bootstrap"
@@ -37178,7 +37744,7 @@
         {
           "path": "knowledge_base/artifacts/catalog-index.json",
           "bytes": 5604,
-          "sha256": "b2a98078d8967ccc70f33a00aadbacfce8d8e7032525847d36c675c5d2f79fe0",
+          "sha256": "5e9768eaa38a5cb9195da14e27b9dd405c8923ac111982c3f12fea6267ce2a86",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "local-derived-or-new-source",
@@ -37610,7 +38176,7 @@
         }
       ],
       "originalRevision": "8ab0fb1eef1c0437328f2fc3eba41a0b0aa563af",
-      "evidenceState": "working-tree snapshot at the recorded revision; documentary overlay is explicit"
+      "evidenceState": "captured ancestor baseline plus explicitly reviewed working-tree changes; current byte hashes, not HEAD equality, define this source snapshot"
     },
     "dipoc": {
       "revision": "7d6feacda153fdf3bca243e0258cf6873c151c0f",
@@ -64470,8 +65036,8 @@
       "files": [
         {
           "path": "generated/current/app/example/bankwealth/application/aggregates/CreditBalanceAggregate.scala",
-          "bytes": 339,
-          "sha256": "08526ff8048a6d775f786a44a47aac89b21638c91f2cc9df980af8be6a812900",
+          "bytes": 395,
+          "sha256": "cde28c5c8d026e756b54bb37cf5fc8bd3f559f50644864b29a53b3647a222360",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "local-derived-or-new-source",
@@ -64490,8 +65056,8 @@
         },
         {
           "path": "generated/current/app/example/bankwealth/application/aggregates/CreditBalanceAggregateFactory.scala",
-          "bytes": 434,
-          "sha256": "df6961f4b9b6728152fc74418e92701433cebf0957316b4d0d450d378ad6ceab",
+          "bytes": 483,
+          "sha256": "670db6f6e0d19690e640e2b6940c95cd623c08ccbb205a9c045b9a09001f74d0",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "local-derived-or-new-source",
@@ -64510,8 +65076,8 @@
         },
         {
           "path": "generated/current/app/example/bankwealth/application/aggregates/CreditBalanceProtocol.scala",
-          "bytes": 1393,
-          "sha256": "1a149f092c75a4b82a612761909b365581c3fe47a1794d7b8a21d77ad1e47440",
+          "bytes": 1414,
+          "sha256": "32cd47bb368899f04a33b3496d15bf5be332a52e81d04a598eb6a2fc69768f18",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "local-derived-or-new-source",
@@ -64551,8 +65117,8 @@
         },
         {
           "path": "generated/current/app/example/bankwealth/application/aggregates/FundOrderAggregate.scala",
-          "bytes": 360,
-          "sha256": "4a2305578d0453575ca8d2cfe05720e8f1e5614156a21607e92a55bfa114c224",
+          "bytes": 403,
+          "sha256": "c973daab22159d3244626fa8a8e39bf3d75ef07d388f242a2bdfeed32f7cc557",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "local-derived-or-new-source",
@@ -64571,8 +65137,8 @@
         },
         {
           "path": "generated/current/app/example/bankwealth/application/aggregates/FundOrderAggregateFactory.scala",
-          "bytes": 444,
-          "sha256": "d789f09826d2b5f6c08ec9d3398276f0914dfa545c606a54ca921c5907dbac5a",
+          "bytes": 487,
+          "sha256": "4385e9eaa346184e5001c35e82f9279f126607afc3d4f6b42e9f500a8af9fd96",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "local-derived-or-new-source",
@@ -64591,8 +65157,8 @@
         },
         {
           "path": "generated/current/app/example/bankwealth/application/aggregates/FundOrderProtocol.scala",
-          "bytes": 5398,
-          "sha256": "8eeeb9835e3889fc8a13bb9bc97ba37729d1a1129f79a91c6356cd296569c579",
+          "bytes": 5475,
+          "sha256": "c7e7c7da356b9221083a67ed1603385ccff7cf87482d4de9570b1c6712f37d7c",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "local-derived-or-new-source",
@@ -64632,8 +65198,8 @@
         },
         {
           "path": "generated/current/app/example/bankwealth/application/aggregates/SipPlanAggregate.scala",
-          "bytes": 309,
-          "sha256": "c33912598d2c6f485d193f2b44c91125cd7c17edede195488b38f32ee0ef8c33",
+          "bytes": 365,
+          "sha256": "7667ed84907c2fac4b9574f4f88e586acf8605c7924fc02759b89063afe02734",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "local-derived-or-new-source",
@@ -64652,8 +65218,8 @@
         },
         {
           "path": "generated/current/app/example/bankwealth/application/aggregates/SipPlanAggregateFactory.scala",
-          "bytes": 404,
-          "sha256": "3ea379bfcafb873c907867918ba4779ba5275c9fdad9677bcc58b7c8a14317b3",
+          "bytes": 453,
+          "sha256": "5cb872ef32f140e2c5db83518ccfdc1fcf25f1df3772ee158bbf6d2601ac0145",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "local-derived-or-new-source",
@@ -64672,8 +65238,8 @@
         },
         {
           "path": "generated/current/app/example/bankwealth/application/aggregates/SipPlanProtocol.scala",
-          "bytes": 1291,
-          "sha256": "23d82f72b203ed031642383b06bf4d91deec7d9d7bbe027d150c1573276e4148",
+          "bytes": 1312,
+          "sha256": "e660d556a08f3184957227a274cfb7d0d6a4c4702e56496073518e4f6e4a1d7b",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "local-derived-or-new-source",
@@ -64713,8 +65279,8 @@
         },
         {
           "path": "generated/current/app/example/bankwealth/application/aggregates/behaviors/CreditBalanceBehaviors.scala",
-          "bytes": 1826,
-          "sha256": "e43b609e482369c425955463e94c1c7e1bc1ce642abaf44a3729dad5e8a83526",
+          "bytes": 2013,
+          "sha256": "deceb1bdca765d235a69c4f8d5a701a9c7275443cb4c95492887267a1caa2722",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "local-derived-or-new-source",
@@ -64733,8 +65299,8 @@
         },
         {
           "path": "generated/current/app/example/bankwealth/application/aggregates/behaviors/FundOrderBehaviors.scala",
-          "bytes": 9947,
-          "sha256": "b50f325727c8075f102fb7af4de26b6adc841b61880876537d138c36a13905d5",
+          "bytes": 10144,
+          "sha256": "ace178ff3d8334f4c24ed7991fa2ab8e123667a7a44156296168713aaf214450",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "local-derived-or-new-source",
@@ -64753,8 +65319,8 @@
         },
         {
           "path": "generated/current/app/example/bankwealth/application/aggregates/behaviors/SipPlanBehaviors.scala",
-          "bytes": 3267,
-          "sha256": "bc46fcd7a8b08c65c3b71c5e6b658b3e4d13ebe8800fdff9417197c76f438afb",
+          "bytes": 3208,
+          "sha256": "6202376ae985f7dcbf6a14c6a22d3be74d3d56a466e5b1b0eb6b402cfec124f0",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "local-derived-or-new-source",
@@ -65445,8 +66011,8 @@
         },
         {
           "path": "generated/current/app/example/bankwealth/domain/CreditBalanceState.scala",
-          "bytes": 998,
-          "sha256": "0794e61db35d984e74a352cfecc33158d7c49b5f2ce7be83edff4f7df064e8f9",
+          "bytes": 999,
+          "sha256": "f01d3f8b6494b9ffba29c4d9afd0cadaddc583cfc71453ebde12925c953e74e6",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "local-derived-or-new-source",
@@ -65660,8 +66226,8 @@
         },
         {
           "path": "generated/current/app/example/bankwealth/domain/FundOrderState.scala",
-          "bytes": 1927,
-          "sha256": "0f19837abf98951bdf57f07e38c9bcb27ba876629d5a26cf47d921a5741c721d",
+          "bytes": 1928,
+          "sha256": "ac95ca8b385bce8ec4d19c4a5267e08c5e9f059c73b57b09f23731cbd66e1777",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "local-derived-or-new-source",
@@ -65826,8 +66392,8 @@
         },
         {
           "path": "generated/current/app/example/bankwealth/domain/SipPlanState.scala",
-          "bytes": 1356,
-          "sha256": "3c02f1a44ce7c9fc027b9323bcc48c3de8a8b384461ac6b23d950f9cf79eada1",
+          "bytes": 1357,
+          "sha256": "6cc5275310077b3d2e1bfe4cf24053e80460347c9bd21d414d4df929ccd41659",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "local-derived-or-new-source",
@@ -65846,8 +66412,8 @@
         },
         {
           "path": "generated/current/app/example/bankwealth/domain/entities/CreditBalanceEntity.scala",
-          "bytes": 2630,
-          "sha256": "bdf2e29a5eb1e69d6dcabddf671c6ebe5c94b2d6298dd382300c3bed577e5a73",
+          "bytes": 2681,
+          "sha256": "120d4ad451b5d942e62dc4850a4cda04d3dac9560e4510498715fe28a29e25ba",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "local-derived-or-new-source",
@@ -65867,8 +66433,8 @@
         },
         {
           "path": "generated/current/app/example/bankwealth/domain/entities/FundOrderEntity.scala",
-          "bytes": 10609,
-          "sha256": "3d4d96847ac50add06d860a9b7b5be539310da213ff4150bec7b0045442a507a",
+          "bytes": 10835,
+          "sha256": "5feb8e594f2b4a50d8fca3cf47a99441fe17fbf1a2713a443a34e606c60c2c4f",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "local-derived-or-new-source",
@@ -65888,8 +66454,8 @@
         },
         {
           "path": "generated/current/app/example/bankwealth/domain/entities/SipPlanEntity.scala",
-          "bytes": 5549,
-          "sha256": "606671614c023add931379be79e5be5801c698b8fc7d7668918242103fd59412",
+          "bytes": 5677,
+          "sha256": "5e1ede93d2d546cc365c715d000a6e17c3abde85b4bd7f1f941bdf9ae1ce8a0a",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "local-derived-or-new-source",
@@ -68515,8 +69081,8 @@
         },
         {
           "path": "generated/current/app/example/bankwealth/infrastructure/bootstrap/CreditBalanceBootstrap.scala",
-          "bytes": 1350,
-          "sha256": "b04d2a4dcb16b1a1062b6cab6fc7d828e88e30a65b0b8ce104856344d830d9bf",
+          "bytes": 1452,
+          "sha256": "0a9dc87cc320e752c2470a19b195996b515334f92f89339e744c8287731b8d87",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "local-derived-or-new-source",
@@ -68535,8 +69101,8 @@
         },
         {
           "path": "generated/current/app/example/bankwealth/infrastructure/bootstrap/FundOrderBootstrap.scala",
-          "bytes": 1352,
-          "sha256": "92c604e8bfcc3a9d68b42e64d952e97296bcdd60aab77d532d6a0d9626a0c147",
+          "bytes": 1448,
+          "sha256": "7e9c460edb64883eda74c3fc007a3eb34ec8b3015203ddb1820449aa3ac41d32",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "local-derived-or-new-source",
@@ -68555,8 +69121,8 @@
         },
         {
           "path": "generated/current/app/example/bankwealth/infrastructure/bootstrap/SipPlanBootstrap.scala",
-          "bytes": 1260,
-          "sha256": "e197e6808a32d2c1705b180c9b19f80f9bd120436630fc293012f6cd7ab774c9",
+          "bytes": 1362,
+          "sha256": "f754a09416c1978e25d074dcfebf031a4777920c0a676fff77e3986d7b531b97",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "local-derived-or-new-source",
@@ -72957,11 +73523,11 @@
         },
         {
           "path": "tools/verify-handwritten-map.mjs",
-          "bytes": 3144,
-          "sha256": "b9bc7e596998def79d7c65f13a86107f3ab58747963ffe73e1cb9acb030cd6bd",
+          "bytes": 3537,
+          "sha256": "e3a205724cd87d9eccbc87765ece24bd93f8c3f9f7e6ca0cccbfddeb6fca2fef",
           "mode": "100644",
           "baselineBlob": "370d620c4ee27bdf6607e6a650de7fc0d1cb8781",
-          "evidence": "committed-baseline",
+          "evidence": "local-derived-or-new-source",
           "scope": "tools",
           "categories": [
             "verification-runner"
@@ -73121,7 +73687,7 @@
         }
       ],
       "originalRevision": "5d6217f5caf9121ea0043193f5b2896fcfe51386",
-      "evidenceState": "working-tree snapshot at the recorded revision; documentary overlay is explicit"
+      "evidenceState": "captured ancestor baseline plus explicitly reviewed working-tree changes; current byte hashes, not HEAD equality, define this source snapshot"
     },
     "saga": {
       "revision": "4352a3173ee4e812762dcaa9c1aad58ff1551417",
@@ -75458,7 +76024,7 @@
     "scala-cqrs/application/legacy-flow-orchestration.md": "497dbd58f14d62db1e3b347f54afe146e112ca0878ca835c95136a19db8b097f",
     "scala-cqrs/application/query-service.md": "128a72bc03915a71810f843554d94282c2a53a63ae94e7c8ccedba8b44a3dace",
     "scala-cqrs/BUILD-ORDER.md": "2678cd6811f44624fd6da0e5c31a634f14639ccf72159aaf78b911a1413b3387",
-    "scala-cqrs/CONVENTIONS.md": "489eb6762dd29fcfd79295ed63986ef676ecdad9cca83f96524ea5f22f6a0c8f",
+    "scala-cqrs/CONVENTIONS.md": "f35b41493ad138e0d160820502fd208525cd2c4ef4e505f3a93a33a8438618ee",
     "scala-cqrs/domain/domain-entity.md": "111d021e71a7df576a818320b49ea7ce78044e84bf39004ac2422ccb11529c44",
     "scala-cqrs/domain/domain-protocol.md": "53aec7131c3b705fd81a48f1125b73493a63adbaac1a72193517c3f48cf517f3",
     "scala-cqrs/domain/domain-service.md": "3814dbdaedcea19f8f6aab59b3a4672a24cb239c0231cc94ec50bc09234751a7",
@@ -75503,7 +76069,7 @@
     "scala-cqrs/ports/port-binding-module.md": "0522c8f9d44fb92ed635e71ee744f136ef08b518a8c7c2fc89da38c9700bb48b",
     "scala-cqrs/ports/port-bridge.md": "68adf89b950881e07533992b27e71110e69fa617872342a146201a6c76ad371b",
     "scala-cqrs/ports/signature-value-closure.md": "8ddd25aa6f5d2dd2a6ac2919817bf717af42334d8fd7606c16a2bf6c2c4f46a0",
-    "scala-cqrs/project/aggregate-bootstrap.md": "582d0bfc0cdc027379093ddd9328077225c45a80c7747ef7a5c3af00b32aaf2f",
+    "scala-cqrs/project/aggregate-bootstrap.md": "5055815fb5e12bf3149d390afc8420384ac26da902b572cba8de661ce354f288",
     "scala-cqrs/project/application-bootstrap.md": "093a423630f2e98f8a62aafa34f6ab1f7cc032d263ffe50ca10a0bc5df8a8f2f",
     "scala-cqrs/project/application-configuration.md": "542e1813838e245a09a70c202252fa40d521e4d657470e760c47934665801f43",
     "scala-cqrs/project/business-clock-seed.md": "113782422b568d5bd3aef8cd2477ca23c1b2a4763f042b384db2ca986ac41a9c",
@@ -75526,7 +76092,7 @@
     "scala-cqrs/projection/read-model.md": "04710c44128a2e4a3d67efc361de90c23c6176bc35827a0c28f1d622070ccc0e",
     "scala-cqrs/projection/readside-watchdog.md": "f51193a9f02315554faac9faab80ae3a1208f710b158d922c4161526ea6ba006",
     "scala-cqrs/projection/vector-projection.md": "80a713b211db28db340f7bff260472778122c47663372ed39b453632d87c9966",
-    "scala-cqrs/README.md": "7e3b2d19a81028920719794aa4dd93350c7b71dca33bdad1bfbc9d404cd02df8",
+    "scala-cqrs/README.md": "c3f2abe572d33ec66b184801689356c483ffe2345d804bcfa3e63de417db8079",
     "scala-cqrs/saga/child-run-host.md": "62b690bcce9c83a7e1c0e50cfe10aee5856b63e050e9622fc81aa9199425ae9b",
     "scala-cqrs/saga/effect-host.md": "41323895376d9229ccc21258e0fd2d45859ca167c5af009645890f8517aed5b9",
     "scala-cqrs/saga/saga-bootstrap.md": "4b9ecd5c74c967c17eb98d08f33ae853c745137446f7da6caf98978a49f94ce0",
@@ -75564,7 +76130,8 @@
     "tooling/teaching-summary.md": "7fda035de2372bbf2d0365e913ff2270018bce1893e15c434e4f5f4c374cce8c",
     "tooling/truth-rebuild-adapter.md": "84a4f1afba1cebcd12954bba08a61c8f5daba1422df9e8ca7afd74eac6befa40",
     "tooling/verification-runner.md": "825b0aa2e9be8d8ee3bffd9c95373fac3b48be61632fc7a6703ed95271f13b7f",
-    "typescript/typescript-types.md": "fd88296fde5b7ad45658108a411b2c9fe7cc5fd41cb2562a4374a1016ee06041"
+    "typescript/typescript-types.md": "fd88296fde5b7ad45658108a411b2c9fe7cc5fd41cb2562a4374a1016ee06041",
+    "scala-cqrs/REFERENCE-DEVELOPMENT.md": "f4eb9f19c5eec6af034d550b6aab0f9c3a1eb143247509bdc553507e772366fc"
   },
   "instances": {
     "dipoc": {
