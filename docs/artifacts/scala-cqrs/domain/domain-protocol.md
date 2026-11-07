@@ -36,6 +36,14 @@ JS domain/<Name>Protocol保留Command/Event case classes；BC命令/回复通常
 
 检查载荷、事件字段、消息边界与生成反查；不可因protocol文件存在就宣称序列化/路由已接通。 文档覆盖、代码编译与业务运行是不同证据；只有实际执行对应检查才可以报告通过。
 
+### 第三批有限 domain-kernel 候选
+
+`js-domain-kernel-candidate-v1`（实际入口 `scala-cqrs-domain-kernel-v1`，manifest `scala-cqrs-domain-kernel:1`）为显式选择的有限实现；不切换旧入口或银行消费。Pure declared command/event payloads only; no Actor request protocol or helpers.
+
+实际来源为 `generators/scala-cqrs-domain-kernel-v1/templates/protocol.mjs#protocolTemplate`；结构经 `buildModels`／`serializationModel`、有限 `render` 与逐职责模板，`sourceEntry` 记录来源，最终写入仍由 `src/core/generate.mjs#applyEntries` 承担。共享输出不重复算文件；完整范围见[有限合同](../DOMAIN-KERNEL.md)。
+
+`implemented` 只表示上述代码确实存在。此登记阶段没有刷新观察或 source lock／coverage／矩阵，也没有编译、独立行为或最终审定通过声明；`approval:null`。真实证据必须绑定同一输入、全套最终产物字节及冻结工具指纹。 既有第二批14项 reference-only 资格不变；稳定外置 source 映射不恢复 inline `@knowledge`。
+
 ## 版本与实例
 
 机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。

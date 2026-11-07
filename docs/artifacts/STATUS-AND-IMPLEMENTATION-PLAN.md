@@ -114,6 +114,8 @@
 
 ### 第三批起：按依赖家族收敛生成器，而不是逐文件刷绿
 
+**第三批family1实施：** 新增显式 `scala-cqrs-domain-kernel-v1`，合同见[领域kernel](scala-cqrs/DOMAIN-KERNEL.md)。它只推进值、纯Command/Event、State、RuleParams及必要计算签名／真实PB转换支撑，原九个Scala入口与银行P23选择不变。当前验收事实分项记录，不能把已编译的独立参考或单一样例等同全profile批准；inline技术配置物理字段回锚、完整modular应用和银行消费仍分开。
+
 第一批校准结果决定每个家族的准确类别集合。以下是实施顺序，不是预先认定每个职责都需新生成器，也不是把所有profile绑成一次大迁移。
 
 | 顺序 | 家族与交付 | 必需的独立验证 |

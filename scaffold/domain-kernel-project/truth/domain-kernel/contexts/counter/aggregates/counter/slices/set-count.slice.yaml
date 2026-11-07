@@ -1,0 +1,29 @@
+kind: slice
+aggregate: Counter
+command: SetCount
+payload:
+  {
+    "name":"SetCount",
+    "parameters":["id: String @BUSINESS_INPUT","count: Long @BUSINESS_INPUT","reading: Reading @BUSINESS_INPUT"],
+    "guards":[{"kind":"invariantRef","ref":"nonempty-id","errCode":"EMPTY_ID","cond":"param.id.nonEmpty","onFail":"reject"}],
+    "produces":["CountSet"]
+  }
+events:
+  {
+    "CountSet":{
+      "name":"CountSet",
+      "payloads":["id: String @PROPAGATED","count: Long @PROPAGATED","reading: Reading @PROPAGATED","accepted: Ratio @COMPUTED"],
+      "bindings":[
+        {"slot":"id","expr":"param.id"},
+        {"slot":"count","expr":"param.count"},
+        {"slot":"reading","expr":"param.reading"},
+        {"slot":"accepted","expr":{"form":"host","id":{"context":"counter","kind":"port","owner":[],"id":"AcceptedRatio"},"version":"1"}}
+      ],
+      "foldAssignments":[
+        {"slot":"id","expr":"event.id"},
+        {"slot":"count","expr":"event.count"},
+        {"slot":"reading","expr":"event.reading"},
+        {"slot":"accepted","expr":"event.accepted"}
+      ]
+    }
+  }

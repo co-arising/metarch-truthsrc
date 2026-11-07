@@ -195,6 +195,51 @@
           ],
           "packaged": false,
           "files": false
+        },
+        {
+          "id": "domain-kernel-reference",
+          "paths": [
+            "test/reference/domain-kernel"
+          ],
+          "extensions": [
+            ".scala",
+            ".proto",
+            ".mjs",
+            ".md",
+            ".sbt",
+            ".properties"
+          ],
+          "packaged": false,
+          "files": false
+        },
+        {
+          "id": "domain-kernel-tests",
+          "paths": [
+            "test/domain-kernel-fixture.mjs",
+            "test/reference/compiler-tools.mjs",
+            "test/domain-kernel-entry.test.mjs",
+            "test/domain-kernel-generation.test.mjs",
+            "test/domain-kernel-literals.test.mjs",
+            "test/domain-kernel-model.test.mjs",
+            "test/domain-kernel-project.test.mjs",
+            "test/domain-kernel-verifier.test.mjs"
+          ],
+          "extensions": [
+            ".mjs"
+          ],
+          "packaged": false,
+          "files": true
+        },
+        {
+          "id": "package-registration",
+          "paths": [
+            "package.json"
+          ],
+          "extensions": [
+            ".json"
+          ],
+          "packaged": true,
+          "files": true
         }
       ],
       "files": [
@@ -11159,6 +11204,644 @@
           }
         },
         {
+          "path": "generators/scala-cqrs-domain-kernel-v1/build-models.mjs",
+          "bytes": 31729,
+          "sha256": "add67bc6fae2755544df6154bcc71a1d00c9e4dcae8163abb73bfd6812eb604d",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "generators",
+          "categories": [
+            "artifact-generator",
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "generated-test",
+            "multi-module-layout",
+            "project-build",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "signature-value-closure",
+            "value-object"
+          ],
+          "disposition": "producer-support",
+          "reason": "Explicit generator family scala-cqrs-domain-kernel-v1; manifest/entry contract and all source branches are inventoried, not only the bank profile.",
+          "symbols": [
+            "artifact",
+            "buildModels",
+            "checkDeclaration",
+            "closure",
+            "field",
+            "finishFields",
+            "name",
+            "namedType",
+            "nested",
+            "nestedDependencies",
+            "reserve",
+            "resolveType",
+            "rowsByRef",
+            "shadows",
+            "signature",
+            "source",
+            "typePaths",
+            "typeReferences"
+          ],
+          "outputSites": [
+            {
+              "line": 329,
+              "sha256": "580ee004455f6ab297c39d660f97b67ce3f73fd47fadd37be4ac5e4db0ab7eec",
+              "excerpt": "return { role: 'exact-codec', kind: 'exact-value-codec', module: 'glue', ref: c.domain, name, identifier: name, package: pkg,"
+            },
+            {
+              "line": 359,
+              "sha256": "a4af4a4f14b1e8c351a51d78fff23d9e96d2ba54853a118d72f82e026cc398bc",
+              "excerpt": "const proto = { role: 'protobuf', kind: 'proto', module: 'glue', ref: null, name: null, identifier: null, package: pb.package, fqn: null,"
+            }
+          ],
+          "emittedKinds": [
+            "exact-value-codec",
+            "proto"
+          ],
+          "dynamicKinds": []
+        },
+        {
+          "path": "generators/scala-cqrs-domain-kernel-v1/entry.mjs",
+          "bytes": 2137,
+          "sha256": "8ed18c3e0debf3d2752f19673b08c44609a25946385e196acf04cf0234f0d7e3",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "generators",
+          "categories": [
+            "artifact-generator",
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "generated-test",
+            "multi-module-layout",
+            "project-build",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "signature-value-closure",
+            "value-object"
+          ],
+          "disposition": "producer-support",
+          "reason": "Explicit generator family scala-cqrs-domain-kernel-v1; manifest/entry contract and all source branches are inventoried, not only the bank profile.",
+          "symbols": [
+            "knowledge",
+            "sourceEntry"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "generators/scala-cqrs-domain-kernel-v1/generate.mjs",
+          "bytes": 1325,
+          "sha256": "59b392ee7e8e71f714cb77180d3bb7aad0907986eed63e3bf230952c44d74f5e",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "generators",
+          "categories": [
+            "artifact-generator",
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "generated-test",
+            "multi-module-layout",
+            "project-build",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "signature-value-closure",
+            "value-object"
+          ],
+          "disposition": "producer-support",
+          "reason": "Explicit generator family scala-cqrs-domain-kernel-v1; manifest/entry contract and all source branches are inventoried, not only the bank profile.",
+          "symbols": [
+            "generate"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "generators/scala-cqrs-domain-kernel-v1/generator.json",
+          "bytes": 2030,
+          "sha256": "16f66be0f56118ab6b654159e68728f37272d0b629424dff18e67cd860d3275d",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "generators",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "generated-test",
+            "project-build",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "signature-value-closure",
+            "value-object"
+          ],
+          "disposition": "producer-input",
+          "reason": "Explicit generator family scala-cqrs-domain-kernel-v1; manifest/entry contract and all source branches are inventoried, not only the bank profile.",
+          "symbols": [],
+          "outputSites": [],
+          "manifest": {
+            "name": "scala-cqrs-domain-kernel",
+            "schemaVersion": "truthsrc.product-generator/v1",
+            "targetProfile": "scala-cqrs-domain-kernel@1",
+            "entrypoint": null,
+            "producers": [
+              {
+                "id": "domain-kernel",
+                "version": "1",
+                "products": [
+                  "reference-layout",
+                  "exact-value-types",
+                  "domain-decision",
+                  "domain-dependencies",
+                  "domain-folds",
+                  "domain-external-events",
+                  "exact-value-codecs"
+                ],
+                "artifactKinds": [
+                  "value-object",
+                  "protocol",
+                  "state",
+                  "rule-parameters",
+                  "computation-port",
+                  "exact-value-codec",
+                  "proto",
+                  "converter",
+                  "build",
+                  "generated-test"
+                ]
+              }
+            ],
+            "artifactKinds": [
+              "value-object",
+              "protocol",
+              "state",
+              "rule-parameters",
+              "computation-port",
+              "exact-value-codec",
+              "proto",
+              "converter",
+              "build",
+              "generated-test"
+            ]
+          }
+        },
+        {
+          "path": "generators/scala-cqrs-domain-kernel-v1/render.mjs",
+          "bytes": 4666,
+          "sha256": "8031b7cce0b69c298085219e3982e2b4ee05a9336f338c75ba6fd08060404a13",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "generators",
+          "categories": [
+            "artifact-generator",
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "generated-test",
+            "multi-module-layout",
+            "project-build",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "signature-value-closure",
+            "value-object"
+          ],
+          "disposition": "producer-support",
+          "reason": "Explicit generator family scala-cqrs-domain-kernel-v1; manifest/entry contract and all source branches are inventoried, not only the bank profile.",
+          "symbols": [
+            "add",
+            "dependencies",
+            "render"
+          ],
+          "outputSites": [
+            {
+              "line": 48,
+              "sha256": "0504da6904b6bf23ed241ca9051fe568ecc8644f3d0936b60f9877ffc22ab77b",
+              "excerpt": "for (const artifact of generatedTestArtifacts(model, serialization)) add({ ...artifact, kind: 'generated-test' }, out => generatedTestsTemplate(artifact, out));"
+            },
+            {
+              "line": 53,
+              "sha256": "340d69cb6af909b1370d5469782f34aa1b47b21fc251bc15e7bc9d02fb1c861b",
+              "excerpt": "if (portable.has(normalized)) throw new TypeError('duplicate portable rendered artifact path: ' + path);"
+            }
+          ],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "generators/scala-cqrs-domain-kernel-v1/serialization-model.mjs",
+          "bytes": 9801,
+          "sha256": "8542380f6d5a4e6eb3194fc2afcb5c5c6cfd23cd571d64dffb0143ac050cbb2e",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "generators",
+          "categories": [
+            "artifact-generator",
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "generated-test",
+            "multi-module-layout",
+            "project-build",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "signature-value-closure",
+            "value-object"
+          ],
+          "disposition": "producer-support",
+          "reason": "Explicit generator family scala-cqrs-domain-kernel-v1; manifest/entry contract and all source branches are inventoried, not only the bank profile.",
+          "symbols": [
+            "ensureRoot",
+            "ensureType",
+            "fieldFor",
+            "finish",
+            "newNode",
+            "pbField",
+            "safeName",
+            "serializationModel"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "generators/scala-cqrs-domain-kernel-v1/templates/build.mjs",
+          "bytes": 1857,
+          "sha256": "9d4caa06dd175177711de2e396f79eec10cb9ac314cd40e263cb54a97544d463",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "generators",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "generated-test",
+            "multi-module-layout",
+            "project-build",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "signature-value-closure",
+            "value-object"
+          ],
+          "disposition": "producer-support",
+          "reason": "Explicit generator family scala-cqrs-domain-kernel-v1; manifest/entry contract and all source branches are inventoried, not only the bank profile.",
+          "symbols": [
+            "buildArtifacts",
+            "buildTemplate"
+          ],
+          "outputSites": [
+            {
+              "line": 7,
+              "sha256": "fb898bef221c0dca7aa7f05730c710000db03d18b2e8dd744626ff6a8b875dcd",
+              "excerpt": "{ path: 'build.sbt', kind: 'build', sources, directDeps: ['project/build.properties', 'project/plugins.sbt'], body:"
+            },
+            {
+              "line": 20,
+              "sha256": "b9fb312566c18401c1540a55884896e7b914648d056fc0861ae1fc701c6fa339",
+              "excerpt": "{ path: 'project/build.properties', kind: 'build', sources, directDeps: [], body: 'sbt.version=1.4.9\\n' },"
+            },
+            {
+              "line": 21,
+              "sha256": "2fcbe39ec6957bec7b643a86be35c14bfb5d591f6f331573a6dbb35141ce05c4",
+              "excerpt": "{ path: 'project/plugins.sbt', kind: 'build', sources, directDeps: [], body:"
+            }
+          ],
+          "emittedKinds": [
+            "build"
+          ],
+          "dynamicKinds": []
+        },
+        {
+          "path": "generators/scala-cqrs-domain-kernel-v1/templates/converters.mjs",
+          "bytes": 13725,
+          "sha256": "e2f4ba5806dd931c16ee03369d587d778b7afb48fff14d239dad71341aca1514",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "generators",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "generated-test",
+            "project-build",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "signature-value-closure",
+            "value-object"
+          ],
+          "disposition": "producer-support",
+          "reason": "Explicit generator family scala-cqrs-domain-kernel-v1; manifest/entry contract and all source branches are inventoried, not only the bank profile.",
+          "symbols": [
+            "DomainConverters",
+            "convertersTemplate",
+            "exact",
+            "helpers",
+            "map",
+            "mapEntry",
+            "optional",
+            "pair",
+            "record",
+            "sequence"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "generators/scala-cqrs-domain-kernel-v1/templates/exact-codecs.mjs",
+          "bytes": 4272,
+          "sha256": "188cceae981f0d39240a1389680703db45466278caa085992863cd154e1e7eee",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "generators",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "generated-test",
+            "project-build",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "signature-value-closure",
+            "value-object"
+          ],
+          "disposition": "producer-support",
+          "reason": "Explicit generator family scala-cqrs-domain-kernel-v1; manifest/entry contract and all source branches are inventoried, not only the bank profile.",
+          "symbols": [
+            "ExactValueCodecs",
+            "exactCodecsTemplate",
+            "representationFields"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "generators/scala-cqrs-domain-kernel-v1/templates/generated-tests.mjs",
+          "bytes": 2321,
+          "sha256": "e12d8eb110d8fdfa48e39fcb0847fce89170663a1ee4535793a2668e146ebfe8",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "generators",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "generated-test",
+            "project-build",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "signature-value-closure",
+            "value-object"
+          ],
+          "disposition": "producer-support",
+          "reason": "Explicit generator family scala-cqrs-domain-kernel-v1; manifest/entry contract and all source branches are inventoried, not only the bank profile.",
+          "symbols": [
+            "generatedTestArtifacts",
+            "generatedTestsTemplate"
+          ],
+          "outputSites": [
+            {
+              "line": 15,
+              "sha256": "dd1ee74b91da606c69699a055729982bf1aacf6db9d0155c64efd6e05b77f0df",
+              "excerpt": "path: 'modules/glue/src/test/scala/' + context.package.replaceAll('.', '/') + '/infrastructure/serialization/' + name + '.scala',"
+            },
+            {
+              "line": 16,
+              "sha256": "f0f826768ad154cdbba10f8990798091fb2db7b902ba6d653097bbc9cc671e10",
+              "excerpt": "kind: 'generated-test', sources: [...new Map([...aggregate.state.sources, ...node.sources].map(source => [JSON.stringify(source), source])).values()],"
+            }
+          ],
+          "emittedKinds": [
+            "generated-test"
+          ],
+          "dynamicKinds": []
+        },
+        {
+          "path": "generators/scala-cqrs-domain-kernel-v1/templates/params.mjs",
+          "bytes": 2075,
+          "sha256": "24699f49680c3e02cb4116909adfdad5fbce48df80932554916508aba6da2d65",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "generators",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "generated-test",
+            "project-build",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "signature-value-closure",
+            "value-object"
+          ],
+          "disposition": "producer-support",
+          "reason": "Explicit generator family scala-cqrs-domain-kernel-v1; manifest/entry contract and all source branches are inventoried, not only the bank profile.",
+          "symbols": [
+            "computationsTemplate",
+            "paramsTemplate"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "generators/scala-cqrs-domain-kernel-v1/templates/protobuf.mjs",
+          "bytes": 2322,
+          "sha256": "c308afacbf56dda0b456b6a227fbfe55f7478d68bb1a5ce58d24fc63ded909b7",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "generators",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "generated-test",
+            "project-build",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "signature-value-closure",
+            "value-object"
+          ],
+          "disposition": "producer-support",
+          "reason": "Explicit generator family scala-cqrs-domain-kernel-v1; manifest/entry contract and all source branches are inventoried, not only the bank profile.",
+          "symbols": [
+            "add",
+            "protoNodes",
+            "protobufTemplate",
+            "wireFields"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "generators/scala-cqrs-domain-kernel-v1/templates/protocol.mjs",
+          "bytes": 916,
+          "sha256": "524888a60c2f20a05351781973889ed5171588fa46bd5152114edaa72b414082",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "generators",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "generated-test",
+            "project-build",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "signature-value-closure",
+            "value-object"
+          ],
+          "disposition": "producer-support",
+          "reason": "Explicit generator family scala-cqrs-domain-kernel-v1; manifest/entry contract and all source branches are inventoried, not only the bank profile.",
+          "symbols": [
+            "Command",
+            "Event",
+            "protocolTemplate"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "generators/scala-cqrs-domain-kernel-v1/templates/state.mjs",
+          "bytes": 2983,
+          "sha256": "691e6aec724d1772b4772dbdf633b3660aa0e51f5e035678e36aed5f1ca5352c",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "generators",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "generated-test",
+            "project-build",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "signature-value-closure",
+            "value-object"
+          ],
+          "disposition": "producer-support",
+          "reason": "Explicit generator family scala-cqrs-domain-kernel-v1; manifest/entry contract and all source branches are inventoried, not only the bank profile.",
+          "symbols": [
+            "prettyLiteral",
+            "stateTemplate"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "generators/scala-cqrs-domain-kernel-v1/templates/types.mjs",
+          "bytes": 2536,
+          "sha256": "48876b28fa7032f1025589995023d46e66a3dc021e97eadbd2ceb27f4e1b590e",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "generators",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "generated-test",
+            "project-build",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "signature-value-closure",
+            "value-object"
+          ],
+          "disposition": "producer-support",
+          "reason": "Explicit generator family scala-cqrs-domain-kernel-v1; manifest/entry contract and all source branches are inventoried, not only the bank profile.",
+          "symbols": [
+            "scalaLiteral",
+            "scalaType"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "generators/scala-cqrs-domain-kernel-v1/templates/values.mjs",
+          "bytes": 4256,
+          "sha256": "0aa4f83e462e2c299de89aab254e6d56050ab1a0c73b17aecf2fc84af45a749c",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "generators",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "generated-test",
+            "project-build",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "signature-value-closure",
+            "value-object"
+          ],
+          "disposition": "producer-support",
+          "reason": "Explicit generator family scala-cqrs-domain-kernel-v1; manifest/entry contract and all source branches are inventoried, not only the bank profile.",
+          "symbols": [
+            "imported",
+            "localType",
+            "valueTemplate"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
           "path": "generators/scala-cqrs-domain-v2/generate.mjs",
           "bytes": 421,
           "sha256": "e807a663a6e4084a80663bab01b22b233fd54b73223c4983a5fe32cd4720a47b",
@@ -18893,8 +19576,8 @@
         },
         {
           "path": "lib/artifact-docs/classify.mjs",
-          "bytes": 33987,
-          "sha256": "804b0a4aab78d18865febcfce8eb52869d6be613bcf3789bcb3210e93d418f46",
+          "bytes": 35831,
+          "sha256": "3304c3628ca094b09ac9c5fb41c4a48d58394fd0d39d355cccebd147a83dbfbf",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "inspected-working-tree",
@@ -19444,32 +20127,23 @@
         },
         {
           "path": "lib/products/generate-cli.mjs",
-          "bytes": 8514,
-          "sha256": "84cda57e08b77a4011dbc544bf0b441fee2e5ebb8729d828a7a00efb90376240",
+          "bytes": 8762,
+          "sha256": "86916e4fa72881a6a04ceaac80fe525cc4b5844fe1376a9df5a94d102639f41e",
           "mode": "100644",
           "baselineBlob": "0afbb3c6e236317191838e71bf19708b510bc25f",
-          "evidence": "committed-baseline",
+          "evidence": "inspected-working-tree",
           "scope": "profiles",
           "categories": [
             "aggregate-behavior",
-            "aggregate-bootstrap",
             "aggregate-factory",
             "aggregate-repository-implementation",
             "aggregate-repository-port",
             "aggregate-root",
-            "application-bootstrap",
-            "application-configuration",
-            "application-flow-port",
             "application-protocol",
             "artifact-generator",
-            "authorization-policy",
             "child-run-host",
-            "code-anchor",
-            "code-provenance",
-            "command-endpoint-dsl",
             "command-helper",
             "computation-port",
-            "design-review-artifact",
             "domain-entity",
             "domain-protocol",
             "domain-state",
@@ -19480,27 +20154,15 @@
             "external-connector-port",
             "external-event-bridge",
             "generated-test",
-            "generation-ledger",
-            "http-controller",
             "invariant-rule",
-            "journal-port-adapter",
             "monarch-checkpoint-host",
             "monarch-execution-plan",
             "monarch-state-codec",
-            "page-renderer",
+            "multi-module-layout",
             "project-build",
-            "projection-apply-event",
-            "projection-bootstrap",
-            "projection-handler",
-            "projection-repository-implementation",
-            "projection-runtime-mechanism",
-            "projection-schema",
             "proto-converter",
             "protobuf-schema",
             "protobuf-serializer",
-            "read-model",
-            "readside-watchdog",
-            "route-definition",
             "rule-parameters",
             "saga-bootstrap",
             "saga-invocation-host",
@@ -19509,10 +20171,7 @@
             "saga-serializer",
             "saga-transactor",
             "saga-wire",
-            "serialization-registration",
-            "service-contract",
-            "service-runtime",
-            "service-test-configuration",
+            "signature-value-closure",
             "snapshot-adapter",
             "strict-saga-definition",
             "value-object"
@@ -20629,6 +21288,23 @@
           "dynamicKinds": []
         },
         {
+          "path": "package.json",
+          "bytes": 4146,
+          "sha256": "ff625c52aa9d6728ffeca6885bda33f6195c5c37df06c9ea0e53ca9becdc4240",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "package-registration",
+          "categories": [
+            "artifact-generator",
+            "code-provenance"
+          ],
+          "disposition": "producer-input",
+          "reason": "Shipped package registration and distributable tool fingerprint contract.",
+          "symbols": [],
+          "outputSites": []
+        },
+        {
           "path": "scaffold/README.md",
           "bytes": 1972,
           "sha256": "6b6d2a76dde090ad975e5afb5aa9d6af98c4e3c1d6f49f0e08402b1fbdf006f2",
@@ -20664,6 +21340,244 @@
           "outputSites": [],
           "emittedKinds": [],
           "dynamicKinds": []
+        },
+        {
+          "path": "scaffold/domain-kernel-project/truth/domain-kernel/contexts/counter/aggregates/counter/aggregate.yaml",
+          "bytes": 1219,
+          "sha256": "f69a660af23c84dd73b6de1024c310939db2de69369bb01a2e016b3791a35905",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "scaffold",
+          "categories": [
+            "artifact-generator",
+            "project-build"
+          ],
+          "disposition": "scaffold-input",
+          "reason": "Shipped starter project source/configuration, not a generated bank-specific implementation.",
+          "symbols": [],
+          "outputSites": []
+        },
+        {
+          "path": "scaffold/domain-kernel-project/truth/domain-kernel/contexts/counter/aggregates/counter/slices/set-count.slice.yaml",
+          "bytes": 1081,
+          "sha256": "3867d04936b1795163aca034909f6b2f47133a5cc3b33d873f3db4c5a28a4f7c",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "scaffold",
+          "categories": [
+            "artifact-generator",
+            "project-build"
+          ],
+          "disposition": "scaffold-input",
+          "reason": "Shipped starter project source/configuration, not a generated bank-specific implementation.",
+          "symbols": [],
+          "outputSites": []
+        },
+        {
+          "path": "scaffold/domain-kernel-project/truth/domain-kernel/contexts/counter/context.yaml",
+          "bytes": 182,
+          "sha256": "d9a1b5bd87aab87abff679ee051a5284295994e59dfc4678857f6f1e32804527",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "scaffold",
+          "categories": [
+            "artifact-generator",
+            "project-build"
+          ],
+          "disposition": "scaffold-input",
+          "reason": "Shipped starter project source/configuration, not a generated bank-specific implementation.",
+          "symbols": [],
+          "outputSites": []
+        },
+        {
+          "path": "scaffold/domain-kernel-project/truth/domain-kernel/contexts/counter/formal-products/host-computation/--counter---accepted-ratio--.formal.yaml",
+          "bytes": 940,
+          "sha256": "a18dc15c0e76d04aab76e84493b4e2c04cc74e07ee2b88977a82c2168b588c82",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "scaffold",
+          "categories": [
+            "artifact-generator",
+            "project-build"
+          ],
+          "disposition": "scaffold-input",
+          "reason": "Shipped starter project source/configuration, not a generated bank-specific implementation.",
+          "symbols": [],
+          "outputSites": []
+        },
+        {
+          "path": "scaffold/domain-kernel-project/truth/domain-kernel/contexts/counter/formal-products/technical-port/accepted-ratio.formal.yaml",
+          "bytes": 212,
+          "sha256": "2fbdbbbe86edbab9063554ee77d19d32467cdaa6d39b946d3abd0c9e32071cf8",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "scaffold",
+          "categories": [
+            "artifact-generator",
+            "project-build"
+          ],
+          "disposition": "scaffold-input",
+          "reason": "Shipped starter project source/configuration, not a generated bank-specific implementation.",
+          "symbols": [],
+          "outputSites": []
+        },
+        {
+          "path": "scaffold/domain-kernel-project/truth/domain-kernel/contexts/counter/value-objects/distance.vo.yaml",
+          "bytes": 130,
+          "sha256": "dd2994823ce12e6b1068b4277a0b0b79e1e66d891d5394a0b3939fc59838fd12",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "scaffold",
+          "categories": [
+            "artifact-generator",
+            "project-build"
+          ],
+          "disposition": "scaffold-input",
+          "reason": "Shipped starter project source/configuration, not a generated bank-specific implementation.",
+          "symbols": [],
+          "outputSites": []
+        },
+        {
+          "path": "scaffold/domain-kernel-project/truth/domain-kernel/contexts/counter/value-objects/po-distance.vo.yaml",
+          "bytes": 135,
+          "sha256": "b3292a412e7021e085910b6c8b1cc96d27a09387c0905220e0243fcb9be9cb31",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "scaffold",
+          "categories": [
+            "artifact-generator",
+            "project-build"
+          ],
+          "disposition": "scaffold-input",
+          "reason": "Shipped starter project source/configuration, not a generated bank-specific implementation.",
+          "symbols": [],
+          "outputSites": []
+        },
+        {
+          "path": "scaffold/domain-kernel-project/truth/domain-kernel/contexts/counter/value-objects/po-ratio.vo.yaml",
+          "bytes": 116,
+          "sha256": "c1acba52b29fbc385c631c546139c3bdd9dc05ff521c827c9ea5d5aebb4593ae",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "scaffold",
+          "categories": [
+            "artifact-generator",
+            "project-build"
+          ],
+          "disposition": "scaffold-input",
+          "reason": "Shipped starter project source/configuration, not a generated bank-specific implementation.",
+          "symbols": [],
+          "outputSites": []
+        },
+        {
+          "path": "scaffold/domain-kernel-project/truth/domain-kernel/contexts/counter/value-objects/ratio.vo.yaml",
+          "bytes": 113,
+          "sha256": "492edb927b5e3c9e7687994604d41365c42c1db76f0ece331ea15de73e9a2835",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "scaffold",
+          "categories": [
+            "artifact-generator",
+            "project-build"
+          ],
+          "disposition": "scaffold-input",
+          "reason": "Shipped starter project source/configuration, not a generated bank-specific implementation.",
+          "symbols": [],
+          "outputSites": []
+        },
+        {
+          "path": "scaffold/domain-kernel-project/truth/domain-kernel/contexts/counter/value-objects/reading.vo.yaml",
+          "bytes": 339,
+          "sha256": "9715d8a7bfae352e6a2e53d5fa87dd9fa4f8cc7ce3294b27de75d41b5bdb8c8d",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "scaffold",
+          "categories": [
+            "artifact-generator",
+            "project-build"
+          ],
+          "disposition": "scaffold-input",
+          "reason": "Shipped starter project source/configuration, not a generated bank-specific implementation.",
+          "symbols": [],
+          "outputSites": []
+        },
+        {
+          "path": "scaffold/domain-kernel-project/truth/domain-kernel/contexts/counter/value-objects/wire-distance.vo.yaml",
+          "bytes": 139,
+          "sha256": "aa1e181cb9ebc3be11eb63173e52b7b85a2b22aab63201a68e1e56169e2f19e7",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "scaffold",
+          "categories": [
+            "artifact-generator",
+            "project-build"
+          ],
+          "disposition": "scaffold-input",
+          "reason": "Shipped starter project source/configuration, not a generated bank-specific implementation.",
+          "symbols": [],
+          "outputSites": []
+        },
+        {
+          "path": "scaffold/domain-kernel-project/truth/domain-kernel/contexts/counter/value-objects/wire-ratio.vo.yaml",
+          "bytes": 120,
+          "sha256": "7df4a83fe2b431d2cd183be32cb539a86688feeaba4dac9d04a5597d2e431bb1",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "scaffold",
+          "categories": [
+            "artifact-generator",
+            "project-build"
+          ],
+          "disposition": "scaffold-input",
+          "reason": "Shipped starter project source/configuration, not a generated bank-specific implementation.",
+          "symbols": [],
+          "outputSites": []
+        },
+        {
+          "path": "scaffold/domain-kernel-project/truth/domain-kernel/system.yaml",
+          "bytes": 231,
+          "sha256": "46667041f9dbc02047ef812d8aa07252e8aae19031c452ef423df7307dc8f136",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "scaffold",
+          "categories": [
+            "artifact-generator",
+            "project-build"
+          ],
+          "disposition": "scaffold-input",
+          "reason": "Shipped starter project source/configuration, not a generated bank-specific implementation.",
+          "symbols": [],
+          "outputSites": []
+        },
+        {
+          "path": "scaffold/domain-kernel-project/truthsrc.project.json",
+          "bytes": 3779,
+          "sha256": "503dffb1e87bbe8dba72ba6092afcb453aaa891d1518c622636b8cd4d7d688dc",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "scaffold",
+          "categories": [
+            "artifact-generator",
+            "project-build"
+          ],
+          "disposition": "scaffold-input",
+          "reason": "Shipped starter project source/configuration, not a generated bank-specific implementation.",
+          "symbols": [],
+          "outputSites": []
         },
         {
           "path": "scaffold/local-project/tree/aggregates/counter/aggregate.yaml",
@@ -21745,6 +22659,347 @@
             "surface"
           ],
           "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/domain-kernel-entry.test.mjs",
+          "bytes": 3463,
+          "sha256": "2d67f98e1d646ce1656970e050ec0619ec33dd647bf9b5fe834fd0ec348f5d96",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-tests",
+          "categories": [
+            "artifact-generator",
+            "code-anchor",
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "generated-test",
+            "independent-business-oracle",
+            "project-build",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "signature-value-closure",
+            "value-object",
+            "verification-runner"
+          ],
+          "disposition": "test-support",
+          "reason": "Explicit finite family1 compilation, rendering, provenance and verifier tests; test source is not execution evidence.",
+          "symbols": [
+            "Value"
+          ],
+          "outputSites": [
+            {
+              "line": 8,
+              "sha256": "790b3f21424e1a940aec8fff7a9e4cef9d682b36a2dae5ed24c70082441b7a36",
+              "excerpt": "const spec = { path: 'modules/kernel/src/main/scala/example/Value.scala', kind: 'value-object',"
+            },
+            {
+              "line": 47,
+              "sha256": "b03437915963aa230fbddc2a3a05e29aecd9fcd2de777eb6b08203648be5791b",
+              "excerpt": "const entry = sourceEntry({ ...spec, path: 'project/build.properties', kind: 'build' }, out => out.append('sbt.version=1.4.9\\n', [source]));"
+            }
+          ],
+          "emittedKinds": [
+            "build",
+            "value-object"
+          ],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/domain-kernel-fixture.mjs",
+          "bytes": 1959,
+          "sha256": "f1bb75bae87e2ae1933f51e884408e66ca9702ebdc692673ed386863c4f84994",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-tests",
+          "categories": [
+            "artifact-generator",
+            "code-anchor",
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "generated-test",
+            "independent-business-oracle",
+            "project-build",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "signature-value-closure",
+            "value-object",
+            "verification-runner"
+          ],
+          "disposition": "test-support",
+          "reason": "Explicit finite family1 compilation, rendering, provenance and verifier tests; test source is not execution evidence.",
+          "symbols": [
+            "domainKernelFixture"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/domain-kernel-generation.test.mjs",
+          "bytes": 20035,
+          "sha256": "ae3b73098b05968f309fd2be91fbd5709778331036b78e7a2ebb2be835aca720",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-tests",
+          "categories": [
+            "artifact-generator",
+            "code-anchor",
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "generated-test",
+            "independent-business-oracle",
+            "project-build",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "signature-value-closure",
+            "value-object",
+            "verification-runner"
+          ],
+          "disposition": "test-support",
+          "reason": "Explicit finite family1 compilation, rendering, provenance and verifier tests; test source is not execution evidence.",
+          "symbols": [
+            "bind",
+            "body",
+            "findDeclaration",
+            "inputFixture",
+            "referenceFiles",
+            "renderInput",
+            "rendered"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/domain-kernel-literals.test.mjs",
+          "bytes": 3240,
+          "sha256": "bc20c556899cf467fd9699ed22b0a111eff6eb75a2da9d8476e7baf251fe7d10",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-tests",
+          "categories": [
+            "artifact-generator",
+            "code-anchor",
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "generated-test",
+            "independent-business-oracle",
+            "project-build",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "signature-value-closure",
+            "value-object",
+            "verification-runner"
+          ],
+          "disposition": "test-support",
+          "reason": "Explicit finite family1 compilation, rendering, provenance and verifier tests; test source is not execution evidence.",
+          "symbols": [],
+          "outputSites": [
+            {
+              "line": 6,
+              "sha256": "54218521db4e813e106d34a1db41d5b28edd346afa359aacc82fea8c6c15ef60",
+              "excerpt": "const ref = id => ({ context: 'counter', kind: 'type', owner: [], id });"
+            }
+          ],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/domain-kernel-model.test.mjs",
+          "bytes": 26493,
+          "sha256": "6d665ff72e390836ba3dd11132d1fa1444a30d99930e9949e0de5a3a3d22c652",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-tests",
+          "categories": [
+            "artifact-generator",
+            "code-anchor",
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "generated-test",
+            "independent-business-oracle",
+            "project-build",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "signature-value-closure",
+            "value-object",
+            "verification-runner"
+          ],
+          "disposition": "test-support",
+          "reason": "Explicit finite family1 compilation, rendering, provenance and verifier tests; test source is not execution evidence.",
+          "symbols": [
+            "accessor",
+            "collisions",
+            "fixture",
+            "frozen",
+            "rename",
+            "shadow",
+            "walk"
+          ],
+          "outputSites": [
+            {
+              "line": 346,
+              "sha256": "afb7fa29ca7ad3e38ab1b040ede38ced621e14aaf1fe801e582a6752630c1d45",
+              "excerpt": "ref: { context: 'counter', kind: 'member', owner: ['Reading'], id: `field${i}` },"
+            }
+          ],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/domain-kernel-project.test.mjs",
+          "bytes": 7241,
+          "sha256": "972c1265152cce87273122e81fd79f7ff8d33cb15ef8694ad76782d78233712e",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-tests",
+          "categories": [
+            "artifact-generator",
+            "code-anchor",
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "generated-test",
+            "independent-business-oracle",
+            "project-build",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "signature-value-closure",
+            "value-object",
+            "verification-runner"
+          ],
+          "disposition": "test-support",
+          "reason": "Explicit finite family1 compilation, rendering, provenance and verifier tests; test source is not execution evidence.",
+          "symbols": [
+            "fixture",
+            "snapshot"
+          ],
+          "outputSites": [
+            {
+              "line": 92,
+              "sha256": "4c7b730bc6c390eedf7150b4a5ebafbe4edf5ce940cc441ac34cee8b7568bb06",
+              "excerpt": "writeFileSync(aggregate, original.replace('\"-7\"', '\"-8\"'));"
+            },
+            {
+              "line": 110,
+              "sha256": "eef3b5655d51a118ccffa2cbf28da98613b778ddeb0ecb039170b2a1711286d8",
+              "excerpt": "writeFileSync(file, readFileSync(file, 'utf8') + '\\n// unsolicited generated-region edit\\n');"
+            },
+            {
+              "line": 117,
+              "sha256": "c62d8d6bd29a112a1a3c8aab7a01f0753018df2263b9ace77685383489778eed",
+              "excerpt": "writeFileSync(f.project, JSON.stringify(config, null, 2) + '\\n');"
+            }
+          ],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/domain-kernel-verifier.test.mjs",
+          "bytes": 17648,
+          "sha256": "690944a7020809548d0063546014d039e7afb8f9375eff84bb1fb3b7d1a97bc2",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-tests",
+          "categories": [
+            "artifact-generator",
+            "code-anchor",
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "generated-test",
+            "independent-business-oracle",
+            "project-build",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "signature-value-closure",
+            "value-object",
+            "verification-runner"
+          ],
+          "disposition": "test-support",
+          "reason": "Explicit finite family1 compilation, rendering, provenance and verifier tests; test source is not execution evidence.",
+          "symbols": [
+            "DomainKernelSpec",
+            "MissingMethod",
+            "syntheticInputs",
+            "syntheticWriter",
+            "zip"
+          ],
+          "outputSites": [
+            {
+              "line": 23,
+              "sha256": "70ae58e645054839cbb4034b625f46a5253fd30acb2843b148d6a2e8081b8db4",
+              "excerpt": "writeFileSync(path, text, { flag: 'wx' });"
+            },
+            {
+              "line": 135,
+              "sha256": "39be9672f94e8e7995f05f85fff02ad7e06bc538e058b232ec1fa29daf1a6fdb",
+              "excerpt": "writeFileSync(path, readFileSync(path, 'utf8').replace(oracleTests[0], 'substituted assertion'));"
+            },
+            {
+              "line": 147,
+              "sha256": "4b588abcda25925596c7847cf399556eff8c88a5ac0fb5a94ee61b4a9fc0861c",
+              "excerpt": "const before = snapshot([input]); writeFileSync(input, 'after');"
+            },
+            {
+              "line": 173,
+              "sha256": "468c1cd0d8f4f4cbf58fe4f7e388679f129ef9674abc4cdf60b507adb8f91dab",
+              "excerpt": "writeFileSync(join(fixture.source, sourceInventory.kernel[0]), '// tampered final bytes');"
+            },
+            {
+              "line": 175,
+              "sha256": "cbf923a4b79702ec44568afb6400c6464add5aa47a2ae6d49d671023e787cd62",
+              "excerpt": "const other = syntheticWriter(); writeFileSync(other.input, '{\"changed\":true}');"
+            },
+            {
+              "line": 177,
+              "sha256": "d2d516e7ddce93769502601fcf10062731e9ed2ec17d784685588f997c991a6f",
+              "excerpt": "const changedTool = syntheticWriter(); writeFileSync(join(changedTool.producerRoot, 'generators/stub'), 'new producer');"
+            },
+            {
+              "line": 190,
+              "sha256": "1c056fd11350a6d64d6f2fe699815ea6efbf208693d0914cf37d1d3100960c72",
+              "excerpt": "change(receipt); writeFileSync(fixture.receipt, JSON.stringify(receipt));"
+            },
+            {
+              "line": 198,
+              "sha256": "a27d71aea7f6916fce384ff84322d1068a785e449a36fe21955e53d6bd306b97",
+              "excerpt": "const rejection = { kind: 'compiler-rejection', file: 'MissingMethod.scala', symbol: 'acceptedRatio', diagnostics: [/needs to be abstract/, /acceptedRatio/] };"
+            },
+            {
+              "line": 215,
+              "sha256": "3eb30a845f949009ad69d90fec70a1e3c97faae4c1687443fe546de7dc529556",
+              "excerpt": "const expected = { kind: 'suites', suites: ['example.counter.oracle.DomainKernelSpec'], tests: 22 };"
+            }
+          ],
           "emittedKinds": [],
           "dynamicKinds": []
         },
@@ -28196,6 +29451,722 @@
           "dynamicKinds": []
         },
         {
+          "path": "test/reference/compiler-tools.mjs",
+          "bytes": 20365,
+          "sha256": "3e8d8c02d16314e1aa5be6db7f19f432c374e1e3c012b5b58c343e0f9b9037a9",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-tests",
+          "categories": [
+            "independent-business-oracle",
+            "verification-runner"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Test-only offline compiler/toolchain mechanics; no basic CLI JVM dependency or application generator.",
+          "symbols": [
+            "absolutePath",
+            "acceptance",
+            "compilerSession",
+            "execute",
+            "files",
+            "launch",
+            "manifestClassPath",
+            "offlineToolchain",
+            "present",
+            "privateOutput",
+            "regular",
+            "scala",
+            "scalactic",
+            "scalatest",
+            "within",
+            "xml",
+            "zipMembers"
+          ],
+          "outputSites": [
+            {
+              "line": 172,
+              "sha256": "c31e89b4cc8ed6ca89ce9cbc7fa3a792f287f74e294fdec32cba49ba66e5a2a0",
+              "excerpt": "writeFileSync(path, bytes, { flag: 'wx', mode });"
+            },
+            {
+              "line": 245,
+              "sha256": "b74727b58f4a68b40c0dd7a1ef94f66b676d3dd04debabef7bb4ae58d8bcbdcf",
+              "excerpt": "export function acceptance(result, expected = { kind: 'success' }) {"
+            },
+            {
+              "line": 288,
+              "sha256": "c688722b8cdc75e59545149bf7f247bf866866d104e3eb9e890b0b38f803cc82",
+              "excerpt": "function launch(label, executable, args, expected = { kind: 'success' }, details = {}) {"
+            },
+            {
+              "line": 334,
+              "sha256": "23a426b30d1e0c97c0ee5692735fe1e2478f4a94eff99b3a67f65596e3369e0b",
+              "excerpt": "const protocVersion = () => launch('protoc-version', tools.protoc, ['--version'], { kind: 'success', pattern: /^libprotoc 3\\.21\\.9\\s*$/m });"
+            }
+          ],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/domain-kernel/README.md",
+          "bytes": 3816,
+          "sha256": "e6e50c6e39b4887b8a9b3fd956a4fbcbffe542da6f13e751abaed2a07fe15e59",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-reference",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "independent-business-oracle",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "value-object"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independent family1 reference, real protobuf value/state/event roundtrip and explicit compiler lane; not bank runtime or architecture-owner approval.",
+          "symbols": [],
+          "outputSites": []
+        },
+        {
+          "path": "test/reference/domain-kernel/oracle/DomainKernelSpec.scala",
+          "bytes": 26419,
+          "sha256": "555531bb3515e73950b23686ed4fadb5fac54d7a72ca6eb4cdb2b51bd8c20f3f",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-reference",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "independent-business-oracle",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "value-object"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independent family1 reference, real protobuf value/state/event roundtrip and explicit compiler lane; not bank runtime or architecture-owner approval.",
+          "symbols": [
+            "DomainKernelSpec",
+            "FakeHost",
+            "or"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/domain-kernel/oracle/negative/MissingMethod.scala",
+          "bytes": 226,
+          "sha256": "81ddb334b7befb190b0e7ce5361aac5d25bc72749c7d63e18e4e7c507880c509",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-reference",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "independent-business-oracle",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "value-object"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independent family1 reference, real protobuf value/state/event roundtrip and explicit compiler lane; not bank runtime or architecture-owner approval.",
+          "symbols": [
+            "MissingMethod"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/domain-kernel/oracle/negative/WrongOutputType.scala",
+          "bytes": 385,
+          "sha256": "9378710965462b79c97ae88b8046f9d3766cf360a6e30a9609900b62a84c7527",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-reference",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "independent-business-oracle",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "value-object"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independent family1 reference, real protobuf value/state/event roundtrip and explicit compiler lane; not bank runtime or architecture-owner approval.",
+          "symbols": [
+            "WrongOutputType"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/domain-kernel/oracle/positive/ValidHost.scala",
+          "bytes": 726,
+          "sha256": "fa18b394614336f792ed1b3f65b60bcb8e7b4a2d7afeeed41abc9026a3b853f4",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-reference",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "independent-business-oracle",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "value-object"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independent family1 reference, real protobuf value/state/event roundtrip and explicit compiler lane; not bank runtime or architecture-owner approval.",
+          "symbols": [
+            "ValidHost",
+            "ValidHostUse"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/domain-kernel/project/build.sbt",
+          "bytes": 742,
+          "sha256": "c468511c7f1a57b3287d34c549ac65f71ce5349d1218b0eb1ca0562aa7116dbf",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-reference",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "independent-business-oracle",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "value-object"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independent family1 reference, real protobuf value/state/event roundtrip and explicit compiler lane; not bank runtime or architecture-owner approval.",
+          "symbols": [],
+          "outputSites": []
+        },
+        {
+          "path": "test/reference/domain-kernel/project/modules/glue/src/main/protobuf/counter_domain.proto",
+          "bytes": 1417,
+          "sha256": "15c19dc014d468a8f42eeb24f0f06dfd2c66e0143b0bc9e18b2e369736f4f233",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-reference",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "independent-business-oracle",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "value-object"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independent family1 reference, real protobuf value/state/event roundtrip and explicit compiler lane; not bank runtime or architecture-owner approval.",
+          "symbols": [],
+          "outputSites": []
+        },
+        {
+          "path": "test/reference/domain-kernel/project/modules/glue/src/main/scala/example/counter/infrastructure/serialization/DomainConverters.scala",
+          "bytes": 6909,
+          "sha256": "5dcc7732b99d76deedf33546e66c4be5159adb66c9113a7cd21887043346c9cf",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-reference",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "independent-business-oracle",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "value-object"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independent family1 reference, real protobuf value/state/event roundtrip and explicit compiler lane; not bank runtime or architecture-owner approval.",
+          "symbols": [
+            "DomainConverters"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/domain-kernel/project/modules/glue/src/main/scala/example/counter/infrastructure/serialization/ExactValueCodecs.scala",
+          "bytes": 1987,
+          "sha256": "7b48480906be99e889a1b57f286627922e57f11d75068782dcd2459200f392e0",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-reference",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "independent-business-oracle",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "value-object"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independent family1 reference, real protobuf value/state/event roundtrip and explicit compiler lane; not bank runtime or architecture-owner approval.",
+          "symbols": [
+            "DistanceCodec",
+            "ExactValueCodecs",
+            "RatioCodec"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/domain-kernel/project/modules/kernel/src/main/scala/example/counter/domain/CounterProtocol.scala",
+          "bytes": 334,
+          "sha256": "d688442b671188a9496e2f90b956f570b8b4e8b234d1b75039a64cf3eb4f632d",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-reference",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "independent-business-oracle",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "value-object"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independent family1 reference, real protobuf value/state/event roundtrip and explicit compiler lane; not bank runtime or architecture-owner approval.",
+          "symbols": [
+            "Command",
+            "CountSet",
+            "CounterProtocol",
+            "Event",
+            "SetCount"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/domain-kernel/project/modules/kernel/src/main/scala/example/counter/domain/CounterState.scala",
+          "bytes": 805,
+          "sha256": "6591baf8cececc5a58fe11504ad00d09893c19d834a9db1ed7aac82e1e9007b8",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-reference",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "independent-business-oracle",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "value-object"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independent family1 reference, real protobuf value/state/event roundtrip and explicit compiler lane; not bank runtime or architecture-owner approval.",
+          "symbols": [
+            "CounterState"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/domain-kernel/project/modules/kernel/src/main/scala/example/counter/domain/invariant/params/CounterRuleParams.scala",
+          "bytes": 358,
+          "sha256": "74d7444a13bba5fed5848700155ed587ea1a1f61cfc33c40c2e64c31ae7ed311",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-reference",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "independent-business-oracle",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "value-object"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independent family1 reference, real protobuf value/state/event roundtrip and explicit compiler lane; not bank runtime or architecture-owner approval.",
+          "symbols": [
+            "CounterRuleParams",
+            "SetCountParams"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/domain-kernel/project/modules/kernel/src/main/scala/example/counter/domain/ports/CounterComputations.scala",
+          "bytes": 181,
+          "sha256": "0c1e0fb8344a601c4ea9ca843c874e1b577a62ecafce9b718cc4d8d1acf1f942",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-reference",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "independent-business-oracle",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "value-object"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independent family1 reference, real protobuf value/state/event roundtrip and explicit compiler lane; not bank runtime or architecture-owner approval.",
+          "symbols": [
+            "CounterComputations"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/domain-kernel/project/modules/kernel/src/main/scala/example/counter/domain/values/Distance.scala",
+          "bytes": 1118,
+          "sha256": "a62e62fa6fef76e1f99bc06ed2fbf0efdae0546d9fc0af6a5464faa91f24e856",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-reference",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "independent-business-oracle",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "value-object"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independent family1 reference, real protobuf value/state/event roundtrip and explicit compiler lane; not bank runtime or architecture-owner approval.",
+          "symbols": [
+            "Distance"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/domain-kernel/project/modules/kernel/src/main/scala/example/counter/domain/values/PoDistance.scala",
+          "bytes": 99,
+          "sha256": "b76f3c586dfb30144df0d95643e8723e598b9a2341d000848f6646db7f107ad7",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-reference",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "independent-business-oracle",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "value-object"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independent family1 reference, real protobuf value/state/event roundtrip and explicit compiler lane; not bank runtime or architecture-owner approval.",
+          "symbols": [
+            "PoDistance"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/domain-kernel/project/modules/kernel/src/main/scala/example/counter/domain/values/PoRatio.scala",
+          "bytes": 79,
+          "sha256": "15202ff4487acfea8f6d638bcfdd7f348859381292986b15fd6e5ab82a986318",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-reference",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "independent-business-oracle",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "value-object"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independent family1 reference, real protobuf value/state/event roundtrip and explicit compiler lane; not bank runtime or architecture-owner approval.",
+          "symbols": [
+            "PoRatio"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/domain-kernel/project/modules/kernel/src/main/scala/example/counter/domain/values/Ratio.scala",
+          "bytes": 791,
+          "sha256": "7da733f3b18f7c2d246bf6c7ee600c373f659a736fc0aab8a7938d62dea28082",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-reference",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "independent-business-oracle",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "value-object"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independent family1 reference, real protobuf value/state/event roundtrip and explicit compiler lane; not bank runtime or architecture-owner approval.",
+          "symbols": [
+            "Ratio"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/domain-kernel/project/modules/kernel/src/main/scala/example/counter/domain/values/Reading.scala",
+          "bytes": 233,
+          "sha256": "d5100e40762e6db4edd83070193d6dabb97de7a41bf72d4134f1a78c2408edf4",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-reference",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "independent-business-oracle",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "value-object"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independent family1 reference, real protobuf value/state/event roundtrip and explicit compiler lane; not bank runtime or architecture-owner approval.",
+          "symbols": [
+            "Reading"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/domain-kernel/project/modules/kernel/src/main/scala/example/counter/domain/values/WireDistance.scala",
+          "bytes": 101,
+          "sha256": "3888ef6e8e10199b84f8459ef15c5fe1a28d0e75d9526f83e70c80c9547cbcff",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-reference",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "independent-business-oracle",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "value-object"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independent family1 reference, real protobuf value/state/event roundtrip and explicit compiler lane; not bank runtime or architecture-owner approval.",
+          "symbols": [
+            "WireDistance"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/domain-kernel/project/modules/kernel/src/main/scala/example/counter/domain/values/WireRatio.scala",
+          "bytes": 81,
+          "sha256": "33e5e4b1402465cdef21d768424738d34215fca1fe1f6a43aef193d4a4d9de88",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-reference",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "independent-business-oracle",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "value-object"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independent family1 reference, real protobuf value/state/event roundtrip and explicit compiler lane; not bank runtime or architecture-owner approval.",
+          "symbols": [
+            "WireRatio"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "test/reference/domain-kernel/project/project/build.properties",
+          "bytes": 18,
+          "sha256": "ef0027fa322ca439f465803fdfa777a1216a4ed32e8fcaea3e7b038b4510e632",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-reference",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "independent-business-oracle",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "value-object"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independent family1 reference, real protobuf value/state/event roundtrip and explicit compiler lane; not bank runtime or architecture-owner approval.",
+          "symbols": [],
+          "outputSites": []
+        },
+        {
+          "path": "test/reference/domain-kernel/project/project/plugins.sbt",
+          "bytes": 132,
+          "sha256": "1d355e32d2d2d43df11c5a65b21f2b879d2c60cbc9c09fa9f361ea3eaa6076d9",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-reference",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "independent-business-oracle",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "value-object"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independent family1 reference, real protobuf value/state/event roundtrip and explicit compiler lane; not bank runtime or architecture-owner approval.",
+          "symbols": [],
+          "outputSites": []
+        },
+        {
+          "path": "test/reference/domain-kernel/verify.mjs",
+          "bytes": 22222,
+          "sha256": "5acad520079796596465f418604e9b5889aa9bcc88731db1e679d51c39342d05",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "domain-kernel-reference",
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "independent-business-oracle",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "value-object"
+          ],
+          "disposition": "reference-candidate",
+          "reason": "Independent family1 reference, real protobuf value/state/event roundtrip and explicit compiler lane; not bank runtime or architecture-owner approval.",
+          "symbols": [
+            "DomainKernelSpec",
+            "MissingMethod",
+            "collectInputs",
+            "generatedEvidence",
+            "inventoryPaths",
+            "main",
+            "options",
+            "realDirectory",
+            "walk"
+          ],
+          "outputSites": [
+            {
+              "line": 250,
+              "sha256": "2f977467ec01e0b548ca85614285fe766f27a0ec87a3d47788e3ddcdd62842ca",
+              "excerpt": "{ kind: 'compiler-rejection', file, symbol, diagnostics });"
+            },
+            {
+              "line": 256,
+              "sha256": "c1743e84813b687eefd44aeac14ed2eafc71c8a2af4354f970f5a875040e19f1",
+              "excerpt": "'-R', classes.oracle, '-oW', '-s', suites.oracle], { kind: 'suites', suites: [suites.oracle], tests: oracleTests.length, testNames: [...oracleTests] });"
+            },
+            {
+              "line": 261,
+              "sha256": "8df18d608e0b2c30390e7886aac2fc1359af20e24db61b751108452165b6a024",
+              "excerpt": "'-R', classes['generated-test'], '-oW', '-s', suites.generated], { kind: 'suites', suites: [suites.generated], tests: 1 });"
+            }
+          ],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
           "path": "test/reference/module-seams/README.md",
           "bytes": 7674,
           "sha256": "3d8ef096b6df28fd5a8ef0577c318e19a0190604a96227078f53354685d74175",
@@ -28532,8 +30503,8 @@
         },
         {
           "path": "test/reference/module-seams/verify.mjs",
-          "bytes": 22251,
-          "sha256": "3d750528aff74c9d6600f33d2faae6b7faed21236f1b0cb1a802292773382d96",
+          "bytes": 19022,
+          "sha256": "5755429b156aabc4ab70fe5f5cb3a42bffa0b42064c5338064b19d2b2d80d4ae",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "inspected-working-tree",
@@ -28554,48 +30525,44 @@
             "TestDependencyControl",
             "WrongResultType",
             "compile",
-            "files",
             "launch",
             "main",
-            "manifestClassPath",
             "options",
             "pair",
             "present",
-            "regular",
             "scala",
             "scalactic",
             "scalatest",
-            "within",
             "xml"
           ],
           "outputSites": [
             {
-              "line": 178,
+              "line": 110,
               "sha256": "dbc9c6ba77c91f990cdad8dbb69a5fec947fdfe46ceeba93d4b9588b019118ee",
               "excerpt": "writeFileSync(path, bytes, { flag: 'wx', mode: 0o600 });"
             },
             {
-              "line": 303,
+              "line": 235,
               "sha256": "5a39d6d3ad2e3f8ce732f8683e2b48aa6bd750f267cf258f1522662832ed4155",
               "excerpt": "function launch(label, args, expectation = { kind: 'success' }, details = {}) {"
             },
             {
-              "line": 365,
+              "line": 297,
               "sha256": "e97df28f527643072cb6c4057ea6fdc80e4a06353ea89c7de4f9449172dcc3d8",
               "excerpt": "kind: 'compiler-rejection', file: 'CapacityRuleSpec.scala',"
             },
             {
-              "line": 371,
+              "line": 303,
               "sha256": "83e72de6a3f488356512bd1da78bec93251f6997289a4e491c4c790de4f3a823",
               "excerpt": "kind: 'compiler-rejection', file: entry.filename, diagnostics: entry.diagnostics,"
             },
             {
-              "line": 380,
+              "line": 312,
               "sha256": "d9b470e6a989d526e601132b24a91fdbd3200f885fe9ca35b28e5174c966ad9a",
               "excerpt": "], { kind: 'suites', tests: 20 });"
             },
             {
-              "line": 385,
+              "line": 317,
               "sha256": "940e24b909d0b8f013a52571d310cb09bbb31c69b048fe081be88ddb5caabf50",
               "excerpt": "], { kind: 'suites', tests: 14 });"
             }
@@ -33269,7 +35236,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/aggregate_behavior.md",
           "bytes": 4079,
-          "sha256": "3582e0014b10e1b7928946cfd425af5ece29bf1d1051cdcc2c76c9a7a1103ec8",
+          "sha256": "942d0381a7fa0a67701bb60ae5d16d406a3d2b21f4b78ade14da0ee4259b309b",
           "mode": "100644",
           "baselineBlob": "4ac314176e45dc8f209cf838d0a58648a2a7cd7b",
           "evidence": "inspected-working-tree",
@@ -33287,7 +35254,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/aggregate_bootstrap.md",
           "bytes": 3150,
-          "sha256": "019464c8efbda256f50628b4a3a49cb2eaf1d8d6e363e56260afc514c9c875fb",
+          "sha256": "8b1ae6657914128395448cb360c483e62852d2bc0d6fffbe79c034091132d090",
           "mode": "100644",
           "baselineBlob": "3343dbc829308aed6e78c98c7a683b9da9e60632",
           "evidence": "inspected-working-tree",
@@ -33305,7 +35272,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/aggregate_factory.md",
           "bytes": 4246,
-          "sha256": "ee3592720605e1b1faada1845221be8de394c413af3444e80dee91b7a0f04a62",
+          "sha256": "6dacd689ade5f4e67623e5b6f7121a47fe94dffd859f3aba02be1234abdde567",
           "mode": "100644",
           "baselineBlob": "62c6dca48dd81f9a5cb40e0f5141f520269e1f92",
           "evidence": "inspected-working-tree",
@@ -33322,8 +35289,8 @@
         },
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/aggregate_proto.md",
-          "bytes": 3682,
-          "sha256": "f5fb6731274d637a329022fbbaf61897ddbb89bf675c34bc6525ea6194eafc3d",
+          "bytes": 4841,
+          "sha256": "0867475a77b233a9a2d98009f8fac10b703491cbe751eb97ac2b6240a0ebc5e8",
           "mode": "100644",
           "baselineBlob": "9a890b7eaf61e60f75fe80c04b6470cf70a1f424",
           "evidence": "inspected-working-tree",
@@ -33341,7 +35308,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/aggregate_protocol.md",
           "bytes": 3708,
-          "sha256": "1fe51dfaf224d9f848eb62c8630eff971ca0f85b24cda8ad8f45ab09c36de0f6",
+          "sha256": "4df7200bd5e7e9ee86aa4deca2d0a32844071a88089d9bc027910b29d7f3afc8",
           "mode": "100644",
           "baselineBlob": "2af464cdace9e29b4ce5368f9ed9453b58aa5547",
           "evidence": "inspected-working-tree",
@@ -33359,7 +35326,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/aggregate_repo_impl.md",
           "bytes": 3647,
-          "sha256": "9c0eb6ff5c6d25887c416a0e944c851d7e0a7ffd09873a84e3e7ca2ff9b9dcef",
+          "sha256": "7e0292bf0864eda406330ec6658e10a9667a2b71cd5423049ce00be326d9dbd0",
           "mode": "100644",
           "baselineBlob": "98ceafc8e83bf0ac388ad852344b89f10f4a2d2e",
           "evidence": "inspected-working-tree",
@@ -33377,7 +35344,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/aggregate_repo_trait.md",
           "bytes": 4473,
-          "sha256": "701acf80c9c8116df06eff19ff1a753e48c264355f2ae285d52ccc76e6c5be13",
+          "sha256": "40d739867d97297ca7726cab6573eda72143116b3a3ebe561b5e453a8e77f008",
           "mode": "100644",
           "baselineBlob": "60d24379455fd42e9e4441aeed997122ffa1f422",
           "evidence": "inspected-working-tree",
@@ -33395,7 +35362,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/aggregate_root.md",
           "bytes": 3823,
-          "sha256": "51123bd668c27adc8add3fbd28d641ba2c570bf7eac4ed32ad4ca5eca711e086",
+          "sha256": "9e9b01a64941f8a27b2bb1cb43bc22ef55c5f02e94086f3bc6c42f11d2142ce0",
           "mode": "100644",
           "baselineBlob": "9f79a4a5e92334e8896f5e0b7cd3f250911980a7",
           "evidence": "inspected-working-tree",
@@ -33413,7 +35380,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/api-command-combinator.md",
           "bytes": 3167,
-          "sha256": "28413c7c3b4f46dc4a64f5a0c89e6d12bb1e38cb9a83f564e18f1262f027e8ea",
+          "sha256": "47fdfe875dd31e10c4f01c3c64549f3611cc8bab11477b6265f4adf38f1fe727",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "inspected-working-tree",
@@ -33431,7 +35398,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/application_bootstrap.md",
           "bytes": 3031,
-          "sha256": "6bda3be9022c8b179e8813dd526b263270e9012ada0953b5ec5c35854b624220",
+          "sha256": "51c80887e4f42aadc68cf56f8ecd7570e6d608000a1feeedccb54a1cf4628cd7",
           "mode": "100644",
           "baselineBlob": "2e1656c7e7877230c68aa841e22aba325636a434",
           "evidence": "inspected-working-tree",
@@ -33449,7 +35416,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/application_service.md",
           "bytes": 3701,
-          "sha256": "410e909bf942485a8c4ca40a20885972639a42f333abab7788d2d8a3a49b02a5",
+          "sha256": "418946433fb22792d8be97f1312d273e1021c8c27075eb103afd29c55b836c33",
           "mode": "100644",
           "baselineBlob": "1cc5822d6bc5b6fa30148936664fa5cec6f12857",
           "evidence": "inspected-working-tree",
@@ -33466,8 +35433,8 @@
         },
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/artifact_generator.md",
-          "bytes": 4362,
-          "sha256": "0371cbb86a8a94440ec1b88df0fec95659a43a77121759ad4164deed487a2e5c",
+          "bytes": 5575,
+          "sha256": "e9e284f38b30d8e63e384d5ead435b91ce5e7fccbaabad1e8fde851e60751fc1",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "inspected-working-tree",
@@ -33485,7 +35452,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/catalog-index.json",
           "bytes": 13584,
-          "sha256": "5c1ad73c416cc2b6bc99b537e9972f5001774d51430034f7f130f508ebc38e5f",
+          "sha256": "5ceba3845bf410efa942ef42b9500270cdc773885d35a37c1019efa88222db2f",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "inspected-working-tree",
@@ -33523,7 +35490,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/command_helpers.md",
           "bytes": 3989,
-          "sha256": "5fe0c0e7e0b799b34a388f9572d38508cda43c499dbbaf795962dcc89dec834d",
+          "sha256": "af426b20750890b5d072496cd242558c2e32f640c524ef1c11a792c363696715",
           "mode": "100644",
           "baselineBlob": "965bdb862301d40ea687a01a26b31a8e6bfd48f1",
           "evidence": "inspected-working-tree",
@@ -33541,7 +35508,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/connector_impl.md",
           "bytes": 3483,
-          "sha256": "f8110c5a1676a5f4d50d0f43421cd108e9d112a03f8bd3ec45e46ed3a57181a7",
+          "sha256": "a41a6fa548c85af1a8d19e2d5786763546674e8a5660283e9cd18e4929739f16",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "inspected-working-tree",
@@ -33559,7 +35526,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/connector_port.md",
           "bytes": 3746,
-          "sha256": "b3c4554a6543d5c966685bc8b49f10638b0e78431bb55c202f606cb0d3a2ff02",
+          "sha256": "ee9cc8ecd7c96c88708d1b86ef26b31b399a9a039b8dfd0357b344f604fb5faa",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "inspected-working-tree",
@@ -33577,7 +35544,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/controller.md",
           "bytes": 3212,
-          "sha256": "fbf17a6a00fae41676531383011e090b01f4f4e19a4b4d3416b04b18e130ba87",
+          "sha256": "38c5d49dfe64b2525744fb3a4b6c6f98acbe8f3ed64deeebccc0bd69c86e7e40",
           "mode": "100644",
           "baselineBlob": "7367cc56158bc11640b2004772358718a63e9042",
           "evidence": "inspected-working-tree",
@@ -33595,7 +35562,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/design_review.md",
           "bytes": 3230,
-          "sha256": "d8e31e343d3cf1eb6dd5848fb2492636b1354f3746b7cd72fc58e85a79aeaaef",
+          "sha256": "f48367e6371d75100b5c852822ba83a3155be10ea25edb32f931a33caef7c84d",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "inspected-working-tree",
@@ -33613,7 +35580,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/domain_behavior.md",
           "bytes": 3995,
-          "sha256": "2f0b4ee1a9e72aa5f4e1bdd33ec47b709ae14fcef216884702a5ac38df989846",
+          "sha256": "af3d856a0693e2948570133016bb8e5fb65448450f9c0cca2885338cf217163e",
           "mode": "100644",
           "baselineBlob": "2280ba22d189d67d555a81e5eefbcef056a2b73f",
           "evidence": "inspected-working-tree",
@@ -33631,7 +35598,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/domain_entity.md",
           "bytes": 4016,
-          "sha256": "a158b799716dab47aaf6ff10c6c63b3f8b1e12cd9a3e5f92f754adcfd4a9ca0a",
+          "sha256": "d1478b94bee432f32f3d0b502168490b1ff61a8ba6eff594442ded523d2a35d7",
           "mode": "100644",
           "baselineBlob": "c4abec0d24701e1d971eba1df1af18fc342d1fca",
           "evidence": "inspected-working-tree",
@@ -33649,7 +35616,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/domain_invariant.md",
           "bytes": 4215,
-          "sha256": "2eb847b3af70e6694409cdcbd93e024657af42abab39d028f1102251d8718858",
+          "sha256": "7ae95eaa735704b4ffef7acba2c6ac53e388f283d5559fbf891fb86d2e7b79bb",
           "mode": "100644",
           "baselineBlob": "35885814cda7e190bbf6d656d2f3c8141d3e37aa",
           "evidence": "inspected-working-tree",
@@ -33667,7 +35634,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/domain_policy.md",
           "bytes": 3297,
-          "sha256": "ad56a9c52b84435cd8e7fc40b384effde9915768cc48566c08bce5fc03b497e7",
+          "sha256": "570c7c13b3c9b3956d7ce344b52a8ec0808097e807ed1033f1ff4b6a35750b1a",
           "mode": "100644",
           "baselineBlob": "35b26e8ed2981176324ff1d482ec9881d03af112",
           "evidence": "inspected-working-tree",
@@ -33685,7 +35652,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/domain_service.md",
           "bytes": 4374,
-          "sha256": "eb6991bb9dffbe6683f6b227737ed20c39cdcdecf18097773473d16fb4507a73",
+          "sha256": "03beae42a9749a6ee4e88badc09321e5a1314fbad1334323801198a150103274",
           "mode": "100644",
           "baselineBlob": "78d55b17fe6ce52215fa4a48ac430cce895d9740",
           "evidence": "inspected-working-tree",
@@ -33703,7 +35670,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/entity_behavior.md",
           "bytes": 3995,
-          "sha256": "2f0b4ee1a9e72aa5f4e1bdd33ec47b709ae14fcef216884702a5ac38df989846",
+          "sha256": "af3d856a0693e2948570133016bb8e5fb65448450f9c0cca2885338cf217163e",
           "mode": "100644",
           "baselineBlob": "ab2a5318dc10c834d396ef1f6d07148bdebf6848",
           "evidence": "inspected-working-tree",
@@ -33721,7 +35688,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/persistence_adapter.md",
           "bytes": 3286,
-          "sha256": "10b0a4c89dac19007f391ca182f03acb0b503fee0907f8711a15a8c9aa46c9df",
+          "sha256": "1d99b1a6657a5635eb3473e8adc041fb9cfe7e8fdc8070e6536d91cb044bd592",
           "mode": "100644",
           "baselineBlob": "a17ed96069f96caacc48dbd0900774cfa7fb649e",
           "evidence": "inspected-working-tree",
@@ -33739,7 +35706,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/projection_bootstrap.md",
           "bytes": 3028,
-          "sha256": "eb272ca86ff76a9626150f9ce80eeaa9e6daa8ffdc0a70467f4b026798936260",
+          "sha256": "85d8553ae1f446fde2bf79d260f782af080ce7f3228e72845ff18aac378ccf2a",
           "mode": "100644",
           "baselineBlob": "4728751f10ff7064e82c6eca16748c0fa637a674",
           "evidence": "inspected-working-tree",
@@ -33757,7 +35724,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/projection_definition.md",
           "bytes": 3112,
-          "sha256": "3a7a07a17ef71780b5cdcd0d2d96902c712a537aaefee545cb178d0c0f491a8c",
+          "sha256": "955c1089914adde02cbb7365e3ceca713620cbca7857683705d0e80a76de51be",
           "mode": "100644",
           "baselineBlob": "d766b761c1efc9e239151a8b251452d1f0261c2e",
           "evidence": "inspected-working-tree",
@@ -33775,7 +35742,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/projection_handler.md",
           "bytes": 3316,
-          "sha256": "cb1509112418b52a5d50bded7801af84b060ca638c9077c30cfb0f24ec9bafdc",
+          "sha256": "df8a96862aeb084009fae18b6799188240b5f778d7200cc7ef86d71ab3c121b2",
           "mode": "100644",
           "baselineBlob": "d496eb80badc97bc3ab39d13590760348f99fb0e",
           "evidence": "inspected-working-tree",
@@ -33793,7 +35760,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/projection_repo_impl.md",
           "bytes": 3716,
-          "sha256": "ff80445e73f3accd8151075e99005552c9589dbfe6e2062779c1700be57ef89a",
+          "sha256": "1c6e37873693cb9c03d759c81a6ce5792b4273e764431c398a384a89c612af17",
           "mode": "100644",
           "baselineBlob": "d7bb64ed8b428abf59f505c9bcada0563fa46b92",
           "evidence": "inspected-working-tree",
@@ -33811,7 +35778,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/projection_repo_trait.md",
           "bytes": 3641,
-          "sha256": "aa2684e52620aca21e3c76910bbadd475805b4156851eed5303490dcde367e0c",
+          "sha256": "e07b5e655272021586f5c58993383e4df0e2890683a734ec922eac7058e31443",
           "mode": "100644",
           "baselineBlob": "e0cb69e7a8a6e69d36ce5f5dfa5a0fa99384343a",
           "evidence": "inspected-working-tree",
@@ -33828,8 +35795,8 @@
         },
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/proto_converters.md",
-          "bytes": 3575,
-          "sha256": "68c25a340cf560e0730c800ade095fee7b5d94b78c86f8ec0cc8fcbcb149f4e4",
+          "bytes": 4682,
+          "sha256": "e94ae9e247f4d573ccfdf530192b1ed265c726c6f996974804a66007ae8a22c9",
           "mode": "100644",
           "baselineBlob": "cbdecb7b6d034d9f296b8ccebe09ea89d3918d6b",
           "evidence": "inspected-working-tree",
@@ -33847,7 +35814,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/query_service.md",
           "bytes": 3652,
-          "sha256": "45db8ce4d3fc83c4e6ad3e0303f65822b6729b4b4195fbc02b70307a8690b84f",
+          "sha256": "ca2024e4cc4106db1b9f20000826f624d175fd4933000d696d9e279a514759f2",
           "mode": "100644",
           "baselineBlob": "b2ea039ff4773bf1331bcb2970bfc35e2b1f73d2",
           "evidence": "inspected-working-tree",
@@ -33865,7 +35832,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/routes.md",
           "bytes": 3089,
-          "sha256": "690f1b05ff02fd3d0da2c8304e8181e9c62d7b0233291e2000871aaf7c7f9483",
+          "sha256": "9f65076052d924d76b203378cda1b3a16d347988225f801141b6cd1adb227c29",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "inspected-working-tree",
@@ -33883,7 +35850,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/saga_behavior.md",
           "bytes": 3191,
-          "sha256": "3378d2f735dcfe66c77b2ce39659796120c71683465148b37ad909dbbecf3e4b",
+          "sha256": "e8186c965a5da0a23a8a4b224e85ce0623ac0b69fc3c97725d88a9a8b9059a1e",
           "mode": "100644",
           "baselineBlob": "445b45ebb60d454f9d956c9f158fb199449a78aa",
           "evidence": "inspected-working-tree",
@@ -33901,7 +35868,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/saga_bootstrap.md",
           "bytes": 4005,
-          "sha256": "7326ae3953f845b961a28f4f57c952c6f727413b3b9354dc41dfef58d79d8a6c",
+          "sha256": "25e371f9551dbe86338da0cdd4f3c22054f5ded0a285256e1963c24587482621",
           "mode": "100644",
           "baselineBlob": "dc7e71a650af80c8f9526150cc65277eb2ee0c04",
           "evidence": "inspected-working-tree",
@@ -33919,7 +35886,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/saga_context.md",
           "bytes": 3372,
-          "sha256": "3499aef89e7a09f6c57a58930816024576e8bf8bbd030241dd6d05ce33cb6640",
+          "sha256": "d0e1952e8db3abf7430414b123ac4b6361092654ec0f8dc0b22112829dec14de",
           "mode": "100644",
           "baselineBlob": "586434407cc37b52101389d5a0a247faf33083e2",
           "evidence": "inspected-working-tree",
@@ -33937,7 +35904,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/saga_entity.md",
           "bytes": 2815,
-          "sha256": "0ac0a2e1fcb539aa7a1d02b7d697d7a79aeec0143f91baf533b8a223e2ec275d",
+          "sha256": "1da1cd463b84263afa9a3246ddae73642e17ee723be70804bfed74ba52ba6af2",
           "mode": "100644",
           "baselineBlob": "e151f3b72a3575af0a11de141541eef1d1e48e81",
           "evidence": "inspected-working-tree",
@@ -33955,7 +35922,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/saga_invocation_host.md",
           "bytes": 3960,
-          "sha256": "883beef5ab66efef4778efb4024ab5b9b07648fcad87805d5738ee4a84cd79f6",
+          "sha256": "ab08f6776bb6caaf656f1a9b6236d23dfefa24787104e3d748d8c737fe388b98",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "inspected-working-tree",
@@ -33973,7 +35940,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/saga_participant.md",
           "bytes": 3637,
-          "sha256": "eadb952bd0bbb5abf16972af46fde6032133280a48b010bcb7e6454d83ff1407",
+          "sha256": "e96bcc815c1938f2881f0312531ced1bea9753ce05ed50e989f04e629a120594",
           "mode": "100644",
           "baselineBlob": "3500235fa0ae6e050cedcfdaca738f169dbcf770",
           "evidence": "inspected-working-tree",
@@ -33991,7 +35958,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/saga_participant_proto.md",
           "bytes": 3251,
-          "sha256": "0fed6aba7868b17f80e99938b470a262fc6a3e49ea887c582926c992a9bc3dd0",
+          "sha256": "b10e53efa1bcc7ce8f4ee5c84743d27dc82a255c5d7cfc47b29070151bf03093",
           "mode": "100644",
           "baselineBlob": "4cded423b16bd74b19cc21a3c226d32f3369399b",
           "evidence": "inspected-working-tree",
@@ -34009,7 +35976,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/saga_serializer.md",
           "bytes": 3937,
-          "sha256": "bbfead9b48dd4053429c8272382365459a03d3626016a5f5befdb41c27ff0fba",
+          "sha256": "3cd3cffbf34b91b47994a1e2c69fbba3e8d534da25ad58b9402a2fbe7b4234b1",
           "mode": "100644",
           "baselineBlob": "9b2a65b879c36744bba60b1285f2432a24b3257a",
           "evidence": "inspected-working-tree",
@@ -34027,7 +35994,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/saga_transaction_proto.md",
           "bytes": 3251,
-          "sha256": "0fed6aba7868b17f80e99938b470a262fc6a3e49ea887c582926c992a9bc3dd0",
+          "sha256": "b10e53efa1bcc7ce8f4ee5c84743d27dc82a255c5d7cfc47b29070151bf03093",
           "mode": "100644",
           "baselineBlob": "916021f36b281681060697dc15ae0399f1c82e3b",
           "evidence": "inspected-working-tree",
@@ -34045,7 +36012,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/saga_transaction_repo_impl.md",
           "bytes": 2991,
-          "sha256": "d119452f8c30d1144f33bb4994d234fe619892703c7e18964a701791a4a109b5",
+          "sha256": "09e579fbbcd70393d12f1cd0470d708cce0207bfb831b0ca0d1fcc65f22f54f4",
           "mode": "100644",
           "baselineBlob": "9e21c6e3ec92ef02d74cc5f6a4231aefe5851a56",
           "evidence": "inspected-working-tree",
@@ -34063,7 +36030,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/saga_transaction_repo_trait.md",
           "bytes": 3032,
-          "sha256": "47940903010ff9614f1cdab503bc5bf0fd8e7a61b8770d2cc7f08a50261dfc2a",
+          "sha256": "7440e6e7cdfcc36c9e88124950c7f796f17d9912cffd8f85047276ff5c178426",
           "mode": "100644",
           "baselineBlob": "c22c5d5a4d9dd0865c031441a7a234152a25c453",
           "evidence": "inspected-working-tree",
@@ -34081,7 +36048,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/saga_transactor.md",
           "bytes": 3946,
-          "sha256": "cd1515eb1cbc56cbb1e83823e4fb02be2db7d165b10f3981302c333359dba0ae",
+          "sha256": "b8f63f965cfdccdc81f38e0a6952c791eea7ca07fdcfa1860466372e2501ad7d",
           "mode": "100644",
           "baselineBlob": "1ca28d23833064a49f26273dec17b91e851b462e",
           "evidence": "inspected-working-tree",
@@ -34099,7 +36066,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/saga_transactor_protocol.md",
           "bytes": 3651,
-          "sha256": "3e2253a947ac4ac5d70b9cc14200716a1ba7ccfe99802c4901535f447de00ceb",
+          "sha256": "f40a2a3639ec11dee9f5309dafdcbdca86eb1db016c70211cc74bde3c8d42326",
           "mode": "100644",
           "baselineBlob": "0fc204307cfe86fe7856cc0a9861eda03ebeac87",
           "evidence": "inspected-working-tree",
@@ -34117,7 +36084,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/service_runtime.md",
           "bytes": 3054,
-          "sha256": "cd11becb611264eff0455012e9d376a02d75f2f25c4bc33212f0889904099569",
+          "sha256": "63388bf587fb8fcc31079fa2bb0f12b2d8b122327c89712ccf23cec53401c336",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "inspected-working-tree",
@@ -34135,7 +36102,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/snapshot_adapter.md",
           "bytes": 3394,
-          "sha256": "e8c4bef4c400b07bb4ad414a2f3e5560d98166486458c1ae3742bcfeef32b1f6",
+          "sha256": "f37185be45ffa15737a0e7be12b4c96b1445c98756b35d6bcdc9af7b4da6ce87",
           "mode": "100644",
           "baselineBlob": "3c7b3c3001d9ede0da1506306f78b18000b09476",
           "evidence": "inspected-working-tree",
@@ -34153,7 +36120,7 @@
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/strict_saga_definition.md",
           "bytes": 4026,
-          "sha256": "a4d63293ebb2628f1009ad025d34816dc339c348521c51acf6788089d49248ef",
+          "sha256": "6d914329efcbb727374dec73f79da74ef96e947bda216379b07ffdcaa9d67650",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "inspected-working-tree",
@@ -34170,8 +36137,8 @@
         },
         {
           "path": "skills/codegenerator/knowledge_base/artifacts/value_object.md",
-          "bytes": 4326,
-          "sha256": "44bf01bee73109fd7113b7cb68568c9fc723d12882d5d0630c732bf26b03b1c9",
+          "bytes": 5449,
+          "sha256": "22be4c0b670b5693030d265351cf22d158071dc19a5094e80f2d63f657b1c450",
           "mode": "100644",
           "baselineBlob": "d580e3b112cbfc122fe88da0ad48fa6137c14526",
           "evidence": "inspected-working-tree",
@@ -44948,7 +46915,7 @@
         {
           "path": "knowledge_base/artifacts/aggregate_behavior.md",
           "bytes": 4079,
-          "sha256": "3582e0014b10e1b7928946cfd425af5ece29bf1d1051cdcc2c76c9a7a1103ec8",
+          "sha256": "942d0381a7fa0a67701bb60ae5d16d406a3d2b21f4b78ade14da0ee4259b309b",
           "mode": "100644",
           "baselineBlob": "584a89dda632e2963c5b88a0239c553c5a6aafc5",
           "evidence": "inspected-working-tree",
@@ -44966,7 +46933,7 @@
         {
           "path": "knowledge_base/artifacts/aggregate_bootstrap.md",
           "bytes": 3150,
-          "sha256": "019464c8efbda256f50628b4a3a49cb2eaf1d8d6e363e56260afc514c9c875fb",
+          "sha256": "8b1ae6657914128395448cb360c483e62852d2bc0d6fffbe79c034091132d090",
           "mode": "100644",
           "baselineBlob": "9419371ea78be50c61b84b5ba1e35327ac53e66d",
           "evidence": "inspected-working-tree",
@@ -44984,7 +46951,7 @@
         {
           "path": "knowledge_base/artifacts/aggregate_factory.md",
           "bytes": 4246,
-          "sha256": "ee3592720605e1b1faada1845221be8de394c413af3444e80dee91b7a0f04a62",
+          "sha256": "6dacd689ade5f4e67623e5b6f7121a47fe94dffd859f3aba02be1234abdde567",
           "mode": "100644",
           "baselineBlob": "1c633bc9902249929b2d0a4761390d11fc91a1e3",
           "evidence": "inspected-working-tree",
@@ -45001,8 +46968,8 @@
         },
         {
           "path": "knowledge_base/artifacts/aggregate_proto.md",
-          "bytes": 3682,
-          "sha256": "f5fb6731274d637a329022fbbaf61897ddbb89bf675c34bc6525ea6194eafc3d",
+          "bytes": 4841,
+          "sha256": "0867475a77b233a9a2d98009f8fac10b703491cbe751eb97ac2b6240a0ebc5e8",
           "mode": "100644",
           "baselineBlob": "9a890b7eaf61e60f75fe80c04b6470cf70a1f424",
           "evidence": "inspected-working-tree",
@@ -45020,7 +46987,7 @@
         {
           "path": "knowledge_base/artifacts/aggregate_protocol.md",
           "bytes": 3708,
-          "sha256": "1fe51dfaf224d9f848eb62c8630eff971ca0f85b24cda8ad8f45ab09c36de0f6",
+          "sha256": "4df7200bd5e7e9ee86aa4deca2d0a32844071a88089d9bc027910b29d7f3afc8",
           "mode": "100644",
           "baselineBlob": "2878cabb8246437010c34534c8ea216311b685dc",
           "evidence": "inspected-working-tree",
@@ -45038,7 +47005,7 @@
         {
           "path": "knowledge_base/artifacts/aggregate_repo_impl.md",
           "bytes": 3647,
-          "sha256": "9c0eb6ff5c6d25887c416a0e944c851d7e0a7ffd09873a84e3e7ca2ff9b9dcef",
+          "sha256": "7e0292bf0864eda406330ec6658e10a9667a2b71cd5423049ce00be326d9dbd0",
           "mode": "100644",
           "baselineBlob": "f983b18388037a991365c3ca99b6c2accd433573",
           "evidence": "inspected-working-tree",
@@ -45056,7 +47023,7 @@
         {
           "path": "knowledge_base/artifacts/aggregate_repo_trait.md",
           "bytes": 4473,
-          "sha256": "701acf80c9c8116df06eff19ff1a753e48c264355f2ae285d52ccc76e6c5be13",
+          "sha256": "40d739867d97297ca7726cab6573eda72143116b3a3ebe561b5e453a8e77f008",
           "mode": "100644",
           "baselineBlob": "60d24379455fd42e9e4441aeed997122ffa1f422",
           "evidence": "inspected-working-tree",
@@ -45074,7 +47041,7 @@
         {
           "path": "knowledge_base/artifacts/application_service.md",
           "bytes": 3701,
-          "sha256": "410e909bf942485a8c4ca40a20885972639a42f333abab7788d2d8a3a49b02a5",
+          "sha256": "418946433fb22792d8be97f1312d273e1021c8c27075eb103afd29c55b836c33",
           "mode": "100644",
           "baselineBlob": "1cc5822d6bc5b6fa30148936664fa5cec6f12857",
           "evidence": "inspected-working-tree",
@@ -45092,7 +47059,7 @@
         {
           "path": "knowledge_base/artifacts/catalog-index.json",
           "bytes": 5604,
-          "sha256": "f8625cf600f8c897a646b2a338939bbcfd1e34a6916256f83417dc5ba9313091",
+          "sha256": "52a678f273f11a67654add10dee79f432838418069b4b544826f80e6296cb565",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "inspected-working-tree",
@@ -45111,7 +47078,7 @@
         {
           "path": "knowledge_base/artifacts/controller.md",
           "bytes": 3212,
-          "sha256": "fbf17a6a00fae41676531383011e090b01f4f4e19a4b4d3416b04b18e130ba87",
+          "sha256": "38c5d49dfe64b2525744fb3a4b6c6f98acbe8f3ed64deeebccc0bd69c86e7e40",
           "mode": "100644",
           "baselineBlob": "a3864b649cdd0c53a905b334451df83c84379251",
           "evidence": "inspected-working-tree",
@@ -45129,7 +47096,7 @@
         {
           "path": "knowledge_base/artifacts/domain_behavior.md",
           "bytes": 3995,
-          "sha256": "2f0b4ee1a9e72aa5f4e1bdd33ec47b709ae14fcef216884702a5ac38df989846",
+          "sha256": "af3d856a0693e2948570133016bb8e5fb65448450f9c0cca2885338cf217163e",
           "mode": "100644",
           "baselineBlob": "2280ba22d189d67d555a81e5eefbcef056a2b73f",
           "evidence": "inspected-working-tree",
@@ -45147,7 +47114,7 @@
         {
           "path": "knowledge_base/artifacts/domain_entity.md",
           "bytes": 4016,
-          "sha256": "a158b799716dab47aaf6ff10c6c63b3f8b1e12cd9a3e5f92f754adcfd4a9ca0a",
+          "sha256": "d1478b94bee432f32f3d0b502168490b1ff61a8ba6eff594442ded523d2a35d7",
           "mode": "100644",
           "baselineBlob": "c4abec0d24701e1d971eba1df1af18fc342d1fca",
           "evidence": "inspected-working-tree",
@@ -45165,7 +47132,7 @@
         {
           "path": "knowledge_base/artifacts/domain_invariant.md",
           "bytes": 4215,
-          "sha256": "2eb847b3af70e6694409cdcbd93e024657af42abab39d028f1102251d8718858",
+          "sha256": "7ae95eaa735704b4ffef7acba2c6ac53e388f283d5559fbf891fb86d2e7b79bb",
           "mode": "100644",
           "baselineBlob": "ca27b7f6ed86027229a63f85dbfaab1877dbe44b",
           "evidence": "inspected-working-tree",
@@ -45183,7 +47150,7 @@
         {
           "path": "knowledge_base/artifacts/domain_service.md",
           "bytes": 4374,
-          "sha256": "eb6991bb9dffbe6683f6b227737ed20c39cdcdecf18097773473d16fb4507a73",
+          "sha256": "03beae42a9749a6ee4e88badc09321e5a1314fbad1334323801198a150103274",
           "mode": "100644",
           "baselineBlob": "2671331d8f24ec51dcdd298268232463141296b1",
           "evidence": "inspected-working-tree",
@@ -45201,7 +47168,7 @@
         {
           "path": "knowledge_base/artifacts/persistence_adapter.md",
           "bytes": 3286,
-          "sha256": "10b0a4c89dac19007f391ca182f03acb0b503fee0907f8711a15a8c9aa46c9df",
+          "sha256": "1d99b1a6657a5635eb3473e8adc041fb9cfe7e8fdc8070e6536d91cb044bd592",
           "mode": "100644",
           "baselineBlob": "001efdaa1da584c551e045f4f3170a886ea0f43b",
           "evidence": "inspected-working-tree",
@@ -45219,7 +47186,7 @@
         {
           "path": "knowledge_base/artifacts/projection_bootstrap.md",
           "bytes": 3028,
-          "sha256": "eb272ca86ff76a9626150f9ce80eeaa9e6daa8ffdc0a70467f4b026798936260",
+          "sha256": "85d8553ae1f446fde2bf79d260f782af080ce7f3228e72845ff18aac378ccf2a",
           "mode": "100644",
           "baselineBlob": "4728751f10ff7064e82c6eca16748c0fa637a674",
           "evidence": "inspected-working-tree",
@@ -45237,7 +47204,7 @@
         {
           "path": "knowledge_base/artifacts/projection_definition.md",
           "bytes": 3112,
-          "sha256": "3a7a07a17ef71780b5cdcd0d2d96902c712a537aaefee545cb178d0c0f491a8c",
+          "sha256": "955c1089914adde02cbb7365e3ceca713620cbca7857683705d0e80a76de51be",
           "mode": "100644",
           "baselineBlob": "d766b761c1efc9e239151a8b251452d1f0261c2e",
           "evidence": "inspected-working-tree",
@@ -45255,7 +47222,7 @@
         {
           "path": "knowledge_base/artifacts/projection_handler.md",
           "bytes": 3316,
-          "sha256": "cb1509112418b52a5d50bded7801af84b060ca638c9077c30cfb0f24ec9bafdc",
+          "sha256": "df8a96862aeb084009fae18b6799188240b5f778d7200cc7ef86d71ab3c121b2",
           "mode": "100644",
           "baselineBlob": "ed5374fced9ba1e520a572b73063bc42a8966b81",
           "evidence": "inspected-working-tree",
@@ -45273,7 +47240,7 @@
         {
           "path": "knowledge_base/artifacts/projection_repo_impl.md",
           "bytes": 3716,
-          "sha256": "ff80445e73f3accd8151075e99005552c9589dbfe6e2062779c1700be57ef89a",
+          "sha256": "1c6e37873693cb9c03d759c81a6ce5792b4273e764431c398a384a89c612af17",
           "mode": "100644",
           "baselineBlob": "425b85e7caf3bb1fd455615c80c755d525cbeb90",
           "evidence": "inspected-working-tree",
@@ -45291,7 +47258,7 @@
         {
           "path": "knowledge_base/artifacts/projection_repo_trait.md",
           "bytes": 3641,
-          "sha256": "aa2684e52620aca21e3c76910bbadd475805b4156851eed5303490dcde367e0c",
+          "sha256": "e07b5e655272021586f5c58993383e4df0e2890683a734ec922eac7058e31443",
           "mode": "100644",
           "baselineBlob": "e0cb69e7a8a6e69d36ce5f5dfa5a0fa99384343a",
           "evidence": "inspected-working-tree",
@@ -45309,7 +47276,7 @@
         {
           "path": "knowledge_base/artifacts/query_service.md",
           "bytes": 3652,
-          "sha256": "45db8ce4d3fc83c4e6ad3e0303f65822b6729b4b4195fbc02b70307a8690b84f",
+          "sha256": "ca2024e4cc4106db1b9f20000826f624d175fd4933000d696d9e279a514759f2",
           "mode": "100644",
           "baselineBlob": "067ac8f13c8316b78cbaf4b2275428588bfb44aa",
           "evidence": "inspected-working-tree",
@@ -45327,7 +47294,7 @@
         {
           "path": "knowledge_base/artifacts/saga_behavior.md",
           "bytes": 3191,
-          "sha256": "3378d2f735dcfe66c77b2ce39659796120c71683465148b37ad909dbbecf3e4b",
+          "sha256": "e8186c965a5da0a23a8a4b224e85ce0623ac0b69fc3c97725d88a9a8b9059a1e",
           "mode": "100644",
           "baselineBlob": "80a1653460b7c09d402868242e6ddf0a75b825e8",
           "evidence": "inspected-working-tree",
@@ -45345,7 +47312,7 @@
         {
           "path": "knowledge_base/artifacts/saga_bootstrap.md",
           "bytes": 4005,
-          "sha256": "7326ae3953f845b961a28f4f57c952c6f727413b3b9354dc41dfef58d79d8a6c",
+          "sha256": "25e371f9551dbe86338da0cdd4f3c22054f5ded0a285256e1963c24587482621",
           "mode": "100644",
           "baselineBlob": "0ffbbae22e4cbb3a1d85531b71630c333987000d",
           "evidence": "inspected-working-tree",
@@ -45363,7 +47330,7 @@
         {
           "path": "knowledge_base/artifacts/saga_participant.md",
           "bytes": 3637,
-          "sha256": "eadb952bd0bbb5abf16972af46fde6032133280a48b010bcb7e6454d83ff1407",
+          "sha256": "e96bcc815c1938f2881f0312531ced1bea9753ce05ed50e989f04e629a120594",
           "mode": "100644",
           "baselineBlob": "3500235fa0ae6e050cedcfdaca738f169dbcf770",
           "evidence": "inspected-working-tree",
@@ -45381,7 +47348,7 @@
         {
           "path": "knowledge_base/artifacts/saga_participant_proto.md",
           "bytes": 3251,
-          "sha256": "0fed6aba7868b17f80e99938b470a262fc6a3e49ea887c582926c992a9bc3dd0",
+          "sha256": "b10e53efa1bcc7ce8f4ee5c84743d27dc82a255c5d7cfc47b29070151bf03093",
           "mode": "100644",
           "baselineBlob": "531ab1b09c3f3f6c659fafb147053c8fca02f2c8",
           "evidence": "inspected-working-tree",
@@ -45399,7 +47366,7 @@
         {
           "path": "knowledge_base/artifacts/saga_serializer.md",
           "bytes": 3937,
-          "sha256": "bbfead9b48dd4053429c8272382365459a03d3626016a5f5befdb41c27ff0fba",
+          "sha256": "3cd3cffbf34b91b47994a1e2c69fbba3e8d534da25ad58b9402a2fbe7b4234b1",
           "mode": "100644",
           "baselineBlob": "8e5442d67bf340ee275f7ca3365c796fd1846469",
           "evidence": "inspected-working-tree",
@@ -45417,7 +47384,7 @@
         {
           "path": "knowledge_base/artifacts/saga_transaction_proto.md",
           "bytes": 3251,
-          "sha256": "0fed6aba7868b17f80e99938b470a262fc6a3e49ea887c582926c992a9bc3dd0",
+          "sha256": "b10e53efa1bcc7ce8f4ee5c84743d27dc82a255c5d7cfc47b29070151bf03093",
           "mode": "100644",
           "baselineBlob": "85356f4b06353aa8bd010b2f32d7c967bd9db911",
           "evidence": "inspected-working-tree",
@@ -45435,7 +47402,7 @@
         {
           "path": "knowledge_base/artifacts/saga_transaction_repo_impl.md",
           "bytes": 2991,
-          "sha256": "d119452f8c30d1144f33bb4994d234fe619892703c7e18964a701791a4a109b5",
+          "sha256": "09e579fbbcd70393d12f1cd0470d708cce0207bfb831b0ca0d1fcc65f22f54f4",
           "mode": "100644",
           "baselineBlob": "260132a0774aab004feb0da3cb18d292f146a67b",
           "evidence": "inspected-working-tree",
@@ -45453,7 +47420,7 @@
         {
           "path": "knowledge_base/artifacts/saga_transaction_repo_trait.md",
           "bytes": 3032,
-          "sha256": "47940903010ff9614f1cdab503bc5bf0fd8e7a61b8770d2cc7f08a50261dfc2a",
+          "sha256": "7440e6e7cdfcc36c9e88124950c7f796f17d9912cffd8f85047276ff5c178426",
           "mode": "100644",
           "baselineBlob": "c22c5d5a4d9dd0865c031441a7a234152a25c453",
           "evidence": "inspected-working-tree",
@@ -45471,7 +47438,7 @@
         {
           "path": "knowledge_base/artifacts/saga_transactor.md",
           "bytes": 3946,
-          "sha256": "cd1515eb1cbc56cbb1e83823e4fb02be2db7d165b10f3981302c333359dba0ae",
+          "sha256": "b8f63f965cfdccdc81f38e0a6952c791eea7ca07fdcfa1860466372e2501ad7d",
           "mode": "100644",
           "baselineBlob": "c382c8d8c3026dfb5ad0aea438ba15c82d009339",
           "evidence": "inspected-working-tree",
@@ -45489,7 +47456,7 @@
         {
           "path": "knowledge_base/artifacts/snapshot_adapter.md",
           "bytes": 3394,
-          "sha256": "e8c4bef4c400b07bb4ad414a2f3e5560d98166486458c1ae3742bcfeef32b1f6",
+          "sha256": "f37185be45ffa15737a0e7be12b4c96b1445c98756b35d6bcdc9af7b4da6ce87",
           "mode": "100644",
           "baselineBlob": "3c7b3c3001d9ede0da1506306f78b18000b09476",
           "evidence": "inspected-working-tree",
@@ -45506,8 +47473,8 @@
         },
         {
           "path": "knowledge_base/artifacts/value_object.md",
-          "bytes": 4326,
-          "sha256": "44bf01bee73109fd7113b7cb68568c9fc723d12882d5d0630c732bf26b03b1c9",
+          "bytes": 5449,
+          "sha256": "22be4c0b670b5693030d265351cf22d158071dc19a5094e80f2d63f657b1c450",
           "mode": "100644",
           "baselineBlob": "ee3b7b355ca1205d664290ba2109c3fea4db4768",
           "evidence": "inspected-working-tree",
@@ -83691,7 +85658,7 @@
     "ACCEPTANCE.md": "83aff9e632db0ed03c638a77d78ea3ce7a750b0c515bfdd970c892c355583b00",
     "DRIFT.md": "7b49264f44c47c773f70c03267e9bca2620ca46b35244422d9888f2358f48b27",
     "MAINTENANCE.md": "8d6a56f739b64404d1a2d79d2bd92745cb2d68e3374e1c918f5764b244156f3c",
-    "README.md": "120ebe57c817ded771b27162259c2987925574da119109c093f19b4a8997c81a",
+    "README.md": "94ce6a87a53d6c4f190fda9c174e6f5b3d7dd54942efa5921564614416487694",
     "scala-cqrs/api/authorization-policy.md": "a2d30152873099c2ad91bf52db3f45a19f42ef09146e31a782e84a2b77cb95e7",
     "scala-cqrs/api/command-endpoint-dsl.md": "385ab59282c87005d70020b25fe9d34927c7ad60ab45e25174061d23c8017fa0",
     "scala-cqrs/api/http-controller.md": "35e5ab6532a27393c06d9da37e2bc0c19f5e4119446790b543224d12a2483dff",
@@ -83716,14 +85683,14 @@
     "scala-cqrs/BUILD-ORDER.md": "2678cd6811f44624fd6da0e5c31a634f14639ccf72159aaf78b911a1413b3387",
     "scala-cqrs/CONVENTIONS.md": "719e1c5db2a4bd817e59da67d1a34e6de56a97d1f0fb1e704ebba4870ea5f92a",
     "scala-cqrs/domain/domain-entity.md": "2038486e7bfd84be84849663a1cf5128859aa63a41c02a84f901ff4d11b83550",
-    "scala-cqrs/domain/domain-protocol.md": "5e1bf109e971c51ed2ecc7f91f5851d62bcb076f4c79f8455e26e064b39f44d8",
+    "scala-cqrs/domain/domain-protocol.md": "e5426708c3baf57a5ddf131fe7adabacfeb1b49d975387ee1652e1a49e888ee3",
     "scala-cqrs/domain/domain-service.md": "ab516ad2a2e671d5c55cef4e1404967004182650f5833c8d09e6537a801cd0b5",
-    "scala-cqrs/domain/domain-state.md": "00332dbee1a46b7eb21c675a99eeda37f6c8b5a922efd54f28c3b5cf7e74dd47",
+    "scala-cqrs/domain/domain-state.md": "986552baff3004b1a2d82c2828f82d21392915ac5e014688830b6702570f9d62",
     "scala-cqrs/domain/event-handler.md": "7bc2c310abe24e667e09f751ac78415ff9824b6a2e9b36520f5b209e77425cd0",
-    "scala-cqrs/domain/exact-value-codec.md": "0769fbf6fb7fdfbbe37ea5c9fcd707be538c8c8bb95f952394556dd4d063e23b",
+    "scala-cqrs/domain/exact-value-codec.md": "3f58fbb1fabd0cfbd1e9563a17ed0fcb9dfce1a5e93b1efa43b1bc66891fcb62",
     "scala-cqrs/domain/invariant-rule.md": "0bcb98fe0d01d9a67af4fdef6d8b7bc8d8b976c10530b19635260f2544cd9a1d",
-    "scala-cqrs/domain/rule-parameters.md": "b76703e73aa470ada7ddd16f100b414c3f03f4600e9781c0314551563fe9e9be",
-    "scala-cqrs/domain/value-object.md": "09ffd2a0e631f040189d7ec458c624c53345c263b7ad615c586c549f12dc6cb2",
+    "scala-cqrs/domain/rule-parameters.md": "8447fa71092acf37e3bd882aab17dc6b3f4a1b7670c5079fcb6dfb58aa78bf9b",
+    "scala-cqrs/domain/value-object.md": "0f17addb18f64aea943a53dd90159cf046979b28cb728acbe2b71531110d9a0f",
     "scala-cqrs/monarch/batch-coordinator.md": "46de6171c88ff15060b9f22b81e3da3e811c4faf84e3baefb8a2312e972e4cfc",
     "scala-cqrs/monarch/batch-definition.md": "f6daa18f2846f97e3e30cfea8e0daac3607a29f34357ea7a0b6ffb366745b827",
     "scala-cqrs/monarch/durable-inbox.md": "c5c9d265e004c8c9a17912e697a711c9c11600f8fd9730f45a4857c9e794880a",
@@ -83744,13 +85711,13 @@
     "scala-cqrs/persistence/database-driver-adapter.md": "0af4fc5af1b325a54cadfb54191f4bdf3f1a682d57beb9b186f581794406ea24",
     "scala-cqrs/persistence/event-adapter.md": "f21fa09d5532b49b784c622ed8ec6b561f1e97186751dc13837cc1398cdc712d",
     "scala-cqrs/persistence/journal-port-adapter.md": "7ad5d4712ee6356e02dcadb35c98379342e8577d8c05820f4530f4cee4c22b71",
-    "scala-cqrs/persistence/proto-converter.md": "561143548bf634ce2301003e464872c448cd95f51c47475ff8ac57e7cd463c56",
-    "scala-cqrs/persistence/protobuf-schema.md": "cfea32101a86f61d1b6abea62fd32d2705d91ad542081b4e43a86c4cadbc30d6",
+    "scala-cqrs/persistence/proto-converter.md": "99e657bbf1512faa9cabc0ba8d4193784dd91fad9adc3e9fcf5d50a814bea695",
+    "scala-cqrs/persistence/protobuf-schema.md": "21a7e0afd95d1c8ac7b4b03b67e50ed7803721f97fd7c521e5538b152dfee2e9",
     "scala-cqrs/persistence/protobuf-serializer.md": "0dbe2814e6cd164aa0f64f23c705ba5d60490b2d3bce71f4f8cc234f9673063e",
     "scala-cqrs/persistence/serialization-registration.md": "9762899a0a64855b0bfc248983fba203ee0740f9acc84341754125843c80f298",
     "scala-cqrs/persistence/snapshot-adapter.md": "dee01ebf5384739992781a14724f812e91d887c347859a74c3ff2d1bf9c672f0",
     "scala-cqrs/ports/application-flow-port.md": "deff01c655f2bb99140d1c841b20327e4e637475bbde763973bbf459dc6d8745",
-    "scala-cqrs/ports/computation-port.md": "79b7411e51a004402289c37d255aecfa325d864fc96183e9ac84b450b29f92a5",
+    "scala-cqrs/ports/computation-port.md": "3c2f2e7583a7cce55153abadd4961c53e6091cc0c2d898ffcde93c5c92f712b5",
     "scala-cqrs/ports/connector-implementation.md": "6d09857e33916ebe0d8bd9cb9552940d1d3472179c37886c196858ffcb91e07c",
     "scala-cqrs/ports/extension-implementation.md": "73960ec6498002f274ee0b33733d744a04ffd39f9a9e3a8752f6ccad84c19f80",
     "scala-cqrs/ports/external-connector-port.md": "6d4974021e4ff5c1fe1e19a8f3dd0187ef9ec96ecd67245460b8ff4fb6ae7f11",
@@ -83758,13 +85725,13 @@
     "scala-cqrs/ports/identity-store-port.md": "64b9f9447323be3e3c31caca28afa8dbc9fe4069643f9f57d7e8d46f2bae52ed",
     "scala-cqrs/ports/port-binding-module.md": "8af20b45a4b3104cb88e1d779a649fcbf9623f7cfa0bc3cc0e1b6a610e491b06",
     "scala-cqrs/ports/port-bridge.md": "af8c9f0200c74774c08afba3d7a57f3c611d5f55f9db5263d7e36882f307f17c",
-    "scala-cqrs/ports/signature-value-closure.md": "05b9e66807dd1dc7cc707d755031aae9a8e4aaab00e821a8c2fe341b2f8415bf",
+    "scala-cqrs/ports/signature-value-closure.md": "92826223a84c3ed64f9f618c3c2b6f106a36bd75fc187047570ff6e73cacfc19",
     "scala-cqrs/project/aggregate-bootstrap.md": "55ea9fdc7dde1a2d1c74a171c4fa81eb5241c76b4c5d7db5215eabdea67576c0",
     "scala-cqrs/project/application-bootstrap.md": "4bdfcfe3186887a4d644598eeecfdc12c5158b056db61009e7776606ed656001",
     "scala-cqrs/project/application-configuration.md": "8d6a5318aeabf1bd2dba3582d8934bee732c3469b6f73b5a012bcea4e01a7c8e",
     "scala-cqrs/project/business-clock-seed.md": "41045dadc4b2e3aa76993f542f5d3ed64ca049f9d1ecd394da19cd6f16c8769d",
-    "scala-cqrs/project/multi-module-layout.md": "c304a142d63563359eb746f3f65a0e97e1ac8079903c1fe476a18e8f6550b45b",
-    "scala-cqrs/project/project-build.md": "4ef93a980a83638dc0c635dba493d232b958382b45b7a429667bb91b22e42642",
+    "scala-cqrs/project/multi-module-layout.md": "a0c9bed820245f7d2bd9dd03e27e932920fda7836543342be9fbc2113c417281",
+    "scala-cqrs/project/project-build.md": "e00257bb0272c2e1366b69ed76e188495655067d037b8cfc5639f0b1e3c85c52",
     "scala-cqrs/project/runtime-owner.md": "e970996b9aa0976a1026842719f133191a490d60fc42d31e3f8d923e07b55131",
     "scala-cqrs/projection/graph-projection.md": "a5c554837438a41d87fda2c7eb796f895253b451def31ed0a57414acb7a1f1c4",
     "scala-cqrs/projection/policy-bootstrap.md": "de902579789e943750fdcb9d6559ebbfa820d3f71c90e7508857bf64ee06ebaf",
@@ -83782,7 +85749,7 @@
     "scala-cqrs/projection/read-model.md": "e4ef753f68bce5a92845033784b4e7fcca3869e451ca3733ab353bac4d74b532",
     "scala-cqrs/projection/readside-watchdog.md": "73df20f762556cf874dc29e20ed13bd78b5ef1bc6cabee6058c95aae9f9c7dbd",
     "scala-cqrs/projection/vector-projection.md": "8449ecdb8dfbbe18f038c5e8c0167e9b38e60acbe13af98924e9d40d2bab34b9",
-    "scala-cqrs/README.md": "5e836428aa0cb48c4ae932fb28fa01677b78bffc44cd78ffa5d241689a41f2d7",
+    "scala-cqrs/README.md": "8469b1d0f006d75b35bedda940daa5468dec2cecaa26245f886b3c30b503cdf7",
     "scala-cqrs/saga/child-run-host.md": "16406196f2020a9538e8687fda4a7126687b2a865f90ab1eff195156168c9f21",
     "scala-cqrs/saga/effect-host.md": "97462a8342b70fd35715b9e8230c7003e01cb405c037a525b25f6226f4a331c0",
     "scala-cqrs/saga/saga-bootstrap.md": "14c89fc1b3e1ba03b8b32e5c8885914644d707295524a61bc5a4630df8465298",
@@ -83803,13 +85770,13 @@
     "scala-cqrs/saga/strict-saga-coordinator.md": "ce2a4ec5092389f87031e719ba9cc5476d120ca783fae4d67393874ba25a7018",
     "scala-cqrs/saga/strict-saga-definition.md": "a939a5347323bc8edd3ed8dc3c7e9f45093664f7c530dbc496b7f77ff184ac11",
     "scala-cqrs/verification/function-contract-test.md": "383938db0fc2d3ddb4489e05c16eafa183c0e2b8ca8708535f9f87197e98c0ca",
-    "scala-cqrs/verification/generated-test.md": "f73ccdb9fc7873e98c303b4e484d7b5bcffe3867cea3d511359a09c271b79ac2",
+    "scala-cqrs/verification/generated-test.md": "f99cf4a001f0a28459913fa1fa2c4eac4c4d8a39ae6159f5c426f09f2042566b",
     "scala-cqrs/verification/independent-business-oracle.md": "647dafc6a3284ff1ff1d0d7535084486f8a9259ad223f5d82b1f65e7979416b4",
     "scala-cqrs/verification/service-test-configuration.md": "2fc2a7c3deaa80a6d01ec2cb8a4e1fed69e1506bdddd5d4c121d69d17d5fceff",
     "scala-cqrs/verification/simulation-actor.md": "163a5eea129a6a47cf8c2c2c1dbf45e579607c1ca523f512d284e52b3101c29d",
     "scala-cqrs/verification/simulator-fixture.md": "297a32dbe39b68594561dc2436f4dc1637cb43425e4b510e3536befca123508f",
     "SOURCES.md": "6a2216ad2c6df3c10815e6ad4409e6c32f73a090c88f1b555f01b87926a9beb7",
-    "tooling/artifact-generator.md": "41801ba79e7e2327190db49ae3fd40cfcb5ec58c24baf59a829adb823c4438fe",
+    "tooling/artifact-generator.md": "26fe1f98b19dd23b4858fab123801a7ba1f6e3af7f822c1446815707238e79be",
     "tooling/artifact-manifest.md": "1139ebde9438f3c4423919af9c3281757a2568d55aff4eb8224542a6e8806644",
     "tooling/code-anchor.md": "fbcd067e58168a954db5c93f85b58cac9ad0b72a30fc9edec9b15c9d864698b7",
     "tooling/code-provenance.md": "134532ef97c347c3417289d958dc71b8cf590e4d88fc898d3c9e2fbee3b9c972",
@@ -83822,12 +85789,14 @@
     "tooling/verification-runner.md": "9554af482f51c2cd990a40018e644dae2a0ba309ffdd1223d9d9a95c01d87b48",
     "typescript/typescript-types.md": "7b6bf4a81359a5f325b4f6de39bd459fe371bd110271315cd530a055e5361a5a",
     "scala-cqrs/REFERENCE-DEVELOPMENT.md": "6dd07f3bf9fbea0469682eea166db176aed37f00caa49aa64060142579ca0321",
-    "STATUS-AND-IMPLEMENTATION-PLAN.md": "9cea6138d2b4a0209b469b4d1f187ae83bfe46ebce887e1db7733c8a4b975a58",
+    "STATUS-AND-IMPLEMENTATION-PLAN.md": "f0991bb6a33e8397c706e47ebd654497c01e29058dfd5cb35fcd141d5e8d68f3",
     "CAPABILITY-CONTRACT.md": "fded5f2525d88e60ab59fd1af32a6cf3cacde829a67084bcbac7d039d7d55f32",
-    "CAPABILITY-MATRIX.md": "5ddfd003631825714db72853cb3746ac98a22cd05d622641645d767e3299fd1f",
+    "CAPABILITY-MATRIX.md": "89eefe84935c2de9306c6f84bdc3506731a33e7f014208394757450c8612658b",
     "CAPABILITY-ACCEPTANCE.md": "fb0f664b6a617c6c0e22f5a4234d8508f4313f3049c478ce84867eaf6df4f2f8",
-    "scala-cqrs/TARGET-PROFILES.md": "38e09eccf16775321c29c761f7ec13614e9ae592353f874bbb85de3cbef426a4",
-    "TARGET-PROFILE-ACCEPTANCE.md": "3a1506e7fa496c74b9d6bedcb2a5a5d5cc31d7b4d69d4b88f51e03e70e322b18"
+    "scala-cqrs/TARGET-PROFILES.md": "52993ed74c2c50f32adf57c61d065e3342f69054e8e96b3847e5b16e4ba6973f",
+    "TARGET-PROFILE-ACCEPTANCE.md": "3a1506e7fa496c74b9d6bedcb2a5a5d5cc31d7b4d69d4b88f51e03e70e322b18",
+    "scala-cqrs/DOMAIN-KERNEL.md": "7f8d0e519fa225b01391d226a8dd8ba75a09b37e5d7aa9807ca30e71c04f7f4b",
+    "DOMAIN-KERNEL-ACCEPTANCE.md": "6eb75676eb7f4f4b37153dad3495148eb175b5288f0ea03dea99b8d09fbf00ab"
   },
   "instances": {
     "dipoc": {
@@ -90633,5 +92602,5 @@
       "guarantee": "Package-preserving root relocations only; same filename never implies identity. Ledger-only entries remain historical evidence and are not rewritten."
     }
   },
-  "productionToolSha256": "64f3a73e91ba5314e88847c7dcc0c8eb7137c487bce3d98bc3b0237e32f551c7"
+  "productionToolSha256": "d200ff715bdbb9ec14e453b398de0d181d78afa343c8e6b8b0771703585d5f63"
 }

@@ -1,0 +1,108 @@
+{
+  "schemaVersion": "truthsrc.artifact-capability-observation/v1",
+  "producer": "product-design-review",
+  "channel": "manifest",
+  "level": "generated",
+  "status": "passed",
+  "sourceFingerprint": "3ffa0577352fe568adff4f0f845c893dd6582a8e26ba7870dd020ac59ae22ef5",
+  "command": "node .rounds/domain-kernel-gak37aji/record-observations.mjs (case=product-design-review)",
+  "inputs": [
+    {
+      "name": "request",
+      "sha256": "0ef99297291f739778db711c3c1ac0ce2363e4fdf48e9eb7c9b36259a9d25993"
+    },
+    {
+      "name": "options",
+      "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "design/product-designs.json",
+      "kind": "design-model",
+      "bytes": 29699,
+      "sha256": "e133ee59c4ab38e030bfda6430488ddb0c0d14143ac34cc641891f594ead0f24",
+      "contracts": [
+        "design-model"
+      ]
+    },
+    {
+      "path": "design/scope.mmd",
+      "kind": "design-plane",
+      "bytes": 537,
+      "sha256": "c7c43e189ee6ccb0eb7265b9718fa4bf6eed1d0e3b16fc1910ae561b4fc98d73",
+      "contracts": [
+        "design-plane"
+      ]
+    },
+    {
+      "path": "design/skeleton.mmd",
+      "kind": "design-plane",
+      "bytes": 691,
+      "sha256": "ddd02d7a969cd4a53e2774063619ab98b4da120700c6adc4cbf3007cde544fe5",
+      "contracts": [
+        "design-plane"
+      ]
+    },
+    {
+      "path": "design/source-index.json",
+      "kind": "design-source-index",
+      "bytes": 32886,
+      "sha256": "575f9ef946000c9729cdc32b8b2c663a603b24bff6a802edf440f121f88c56ac",
+      "contracts": [
+        "design-source-index"
+      ]
+    },
+    {
+      "path": "design/strategy.mmd",
+      "kind": "design-plane",
+      "bytes": 446,
+      "sha256": "c5f4aa173b9b19d3ee974e698b01c93a9609448b9b159676949517ea681d9497",
+      "contracts": [
+        "design-plane"
+      ]
+    },
+    {
+      "path": "design/structure.mmd",
+      "kind": "design-plane",
+      "bytes": 680,
+      "sha256": "3d430afe0df0528cf50e7c1c66ca3bd7206fbc82ee5fb82c865bf6dfdc94ba38",
+      "contracts": [
+        "design-plane"
+      ]
+    },
+    {
+      "path": "design/surface.mmd",
+      "kind": "design-plane",
+      "bytes": 413,
+      "sha256": "d030dc584067c64faf8908f21f80f0f72cdd85dba47d34a773721ff557c82358",
+      "contracts": [
+        "design-plane"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "product-compilation-has-no-diagnostics",
+      "passed": true
+    },
+    {
+      "name": "pure-producer-has-no-diagnostics",
+      "passed": true
+    },
+    {
+      "name": "repeat-plan-is-identical",
+      "passed": true
+    },
+    {
+      "name": "request-and-options-unchanged",
+      "passed": true
+    },
+    {
+      "name": "actual-path-kind-channel-and-conditional-contracts",
+      "passed": true
+    }
+  ],
+  "independent": false,
+  "approval": null
+}

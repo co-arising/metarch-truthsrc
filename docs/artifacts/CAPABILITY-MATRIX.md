@@ -2,14 +2,14 @@
 
 > 由 catalog.json、sources.lock.json 与显式验证回执派生；请勿独立编辑。来源匹配不等于语义或运行认证。
 
-类别 125；变体 487；生成入口 39。
+类别 125；变体 500；生成入口 40。
 
 计数按类别去重，同时保留变体数。现役代码与装配、派生证据、旧式及退役入口分别统计；library/手写不计模板完成率。
 一个完整生产路径的样例通过只证明该样例，不保证该profile全部输入。编译、行为和最终审定必须逐级具有有效回执。
 
 | 范围 | 应生成类别/变体 | producer已定位 | 样例已生成 | 已编译 | 行为已验证 | 最终审定 |
 |---|---:|---:|---:|---:|---:|---:|
-| 现役JS代码/装配 | 61/61 | 61/61 | 60/60 | 0/0 | 0/0 | 0/0 |
+| 现役JS代码/装配 | 63/73 | 63/73 | 62/72 | 10/10 | 10/10 | 0/0 |
 | 现役JS派生证据 | 3/3 | 3/3 | 2/2 | 0/0 | 0/0 | 0/0 |
 | 旧式JS代码/装配 | 65/71 | 65/71 | 0/0 | 0/0 | 0/0 | 0/0 |
 | 旧式JS派生证据 | 1/1 | 1/1 | 0/0 | 0/0 | 0/0 | 0/0 |
@@ -279,6 +279,10 @@
   - 生产路径：无JS产出声明。有效证据：不作JS生成证明。
   - 边界：Pure target naming/structure contracts only; generator:null and no new manifest.
   - 未满足项：Current generator integration and architecture-owner approval are not established by this reference.
+- **js-domain-kernel-candidate-v1**：current；handwritten；owner=handwritten。
+  - 生产路径：无JS产出声明。有效证据：不作JS生成证明。
+  - 边界：Handwritten finite producer/model/template/entry machinery; the route emits application artifacts, not a copy of its generator. This tooling variant is excluded from generated-code completion counts.
+  - 未满足项：No fresh candidate generation/compile/behavior receipt registered at this stage; final architecture approval:null.；No bank candidate consumption or complete later-family validation; supplied execution must bind identical inputs and the whole generated artifact inventory.
 
 ### [artifact-manifest — 生成Manifest与产物计划](tooling/artifact-manifest.md)
 
@@ -460,6 +464,10 @@
   - 生产路径：无JS产出声明。有效证据：不作JS生成证明。
   - 边界：Typed pure capacity computation port over kernel-owned values.
   - 未满足项：Current generator integration and architecture-owner approval are not established by this reference.
+- **js-domain-kernel-candidate-v1**：current；generate-code；owner=generated。
+  - 生产路径：`scala-cqrs-domain-kernel-v1:computation-port`。有效证据：generated、compiled、behavior-verified。
+  - 边界：Minimal host signature only; real ordered inputs and outputs, no synthesized business implementation or root binding.
+  - 未满足项：No fresh candidate generation/compile/behavior receipt registered at this stage; final architecture approval:null.；No bank candidate consumption or complete later-family validation; supplied execution must bind identical inputs and the whole generated artifact inventory.
 
 ### [connector-implementation — 外部连接器实现](scala-cqrs/ports/connector-implementation.md)
 
@@ -545,6 +553,10 @@
   - 生产路径：`event-dsl:domain-protocol`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Standalone event final case class extends CborSerializable; basic scalar type mapping, unknown types become String. Route manifest-entrypoint;
   - 未满足项：This profile has source-backed output contracts, not independent compilation, behavior or final approval.
+- **js-domain-kernel-candidate-v1**：current；generate-code；owner=generated。
+  - 生产路径：`scala-cqrs-domain-kernel-v1:domain-protocol`。有效证据：generated、compiled、behavior-verified。
+  - 边界：Pure declared command/event payloads only; no Actor request protocol or helpers.
+  - 未满足项：No fresh candidate generation/compile/behavior receipt registered at this stage; final architecture approval:null.；No bank candidate consumption or complete later-family validation; supplied execution must bind identical inputs and the whole generated artifact inventory.
 
 ### [domain-service — 纯领域服务与计算实现](scala-cqrs/domain/domain-service.md)
 
@@ -587,6 +599,10 @@
   - 生产路径：`aggregate-dsl:state`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Typed aggregate state and empty initializer. Route formal-subproducer-not-this-manifest; layout aggregate declarations with admitted fold defaults
   - 未满足项：This profile has source-backed output contracts, not independent compilation, behavior or final approval.
+- **js-domain-kernel-candidate-v1**：current；generate-code；owner=generated。
+  - 生产路径：`scala-cqrs-domain-kernel-v1:domain-state`。有效证据：generated、compiled、behavior-verified。
+  - 边界：Explicit authored defaults in pure state; no fold, snapshot compatibility or recovery claim.
+  - 未满足项：No fresh candidate generation/compile/behavior receipt registered at this stage; final architecture approval:null.；No bank candidate consumption or complete later-family validation; supplied execution must bind identical inputs and the whole generated artifact inventory.
 
 ### [durable-inbox — 耐久交接Inbox与Delivery](scala-cqrs/monarch/durable-inbox.md)
 
@@ -680,6 +696,10 @@
   - 生产路径：`saga-dsl:run-all-strict-source-5`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Money codec for selected contract shape. Route run-all-auxiliary; model.moneyCodecName
   - 未满足项：This profile has source-backed output contracts, not independent compilation, behavior or final approval.
+- **js-domain-kernel-candidate-v1**：current；generate-code；owner=generated。
+  - 生产路径：`scala-cqrs-domain-kernel-v1:exact-value-codec`。有效证据：generated、compiled、behavior-verified。
+  - 边界：Combined exact codec file, conditional on real descriptors; no banking-policy algorithm or bank receipt claim.
+  - 未满足项：No fresh candidate generation/compile/behavior receipt registered at this stage; final architecture approval:null.；No bank candidate consumption or complete later-family validation; supplied execution must bind identical inputs and the whole generated artifact inventory.
 
 ### [extension-implementation — 手写扩展实现](scala-cqrs/ports/extension-implementation.md)
 
@@ -791,6 +811,10 @@
   - 生产路径：`saga-dsl:run-all-strict-source-11,run-all-strict-source-8`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Generated safety and deployment-node evidence fixtures; templates conditionally interpolated, not executed in audit. Route run-all-auxiliary; strict branch; money templates selected by model predicates
   - 未满足项：This profile has source-backed output contracts, not independent compilation, behavior or final approval.
+- **js-domain-kernel-candidate-v1**：current；generate-code；owner=generated。
+  - 生产路径：`scala-cqrs-domain-kernel-v1:generated-test`。有效证据：generated、compiled、behavior-verified。
+  - 边界：Generated empty-state protobuf-byte roundtrip test source; shared-model assertions are not the independent external oracle or an execution receipt.
+  - 未满足项：No fresh candidate generation/compile/behavior receipt registered at this stage; final architecture approval:null.；No bank candidate consumption or complete later-family validation; supplied execution must bind identical inputs and the whole generated artifact inventory.
 
 ### [generation-ledger — 最终产物台账](tooling/generation-ledger.md)
 
@@ -1121,6 +1145,10 @@
   - 生产路径：无JS产出声明。有效证据：不作JS生成证明。
   - 边界：Explicit kernel/glue/ext/root dependency graph and separate source roots; no generator integration.
   - 未满足项：Current generator integration and architecture-owner approval are not established by this reference.
+- **js-domain-kernel-candidate-v1**：current；generate-wiring；owner=generated。
+  - 生产路径：`scala-cqrs-domain-kernel-v1:project-build`。有效证据：generated。
+  - 边界：Finite two-module kernel/glue source roots and root build aggregation, not the full kernel/glue/ext/root application or its composition root.
+  - 未满足项：No fresh candidate generation/compile/behavior receipt registered at this stage; final architecture approval:null.；No bank candidate consumption or complete later-family validation; supplied execution must bind identical inputs and the whole generated artifact inventory.；Direct compiler validation is not execution of the emitted sbt build; never infer build behavior-verified from domain tests.
 
 ### [page-renderer — 页面renderer与客户操作视图](scala-cqrs/api/page-renderer.md)
 
@@ -1312,6 +1340,10 @@
   - 生产路径：无JS产出声明。有效证据：不作JS生成证明。
   - 边界：Independent Scala 2.13.14 reference build and explicit offline direct-compiler runner.
   - 未满足项：Current generator integration and architecture-owner approval are not established by this reference.
+- **js-domain-kernel-candidate-v1**：current；generate-wiring；owner=generated。
+  - 生产路径：`scala-cqrs-domain-kernel-v1:project-build,build-properties,build-plugins`。有效证据：generated。
+  - 边界：Three distinct generated build shapes; direct Scala compilation and actual sbt execution must remain separate; no automatic build behavior evidence.
+  - 未满足项：No fresh candidate generation/compile/behavior receipt registered at this stage; final architecture approval:null.；No bank candidate consumption or complete later-family validation; supplied execution must bind identical inputs and the whole generated artifact inventory.；Direct compiler validation is not execution of the emitted sbt build; never infer build behavior-verified from domain tests.
 
 ### [projection-apply-event — 读侧纯状态变换](scala-cqrs/projection/projection-apply-event.md)
 
@@ -1494,6 +1526,10 @@
   - 生产路径：`converter-dsl:converter`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Domain/PB conversion and optional bounded partitions. Route formal-subproducer-not-this-manifest; nodes present; partitions when text.length > 60000, grouped around 48000 characters
   - 未满足项：This profile has source-backed output contracts, not independent compilation, behavior or final approval.
+- **js-domain-kernel-candidate-v1**：current；generate-code；owner=generated。
+  - 生产路径：`scala-cqrs-domain-kernel-v1:proto-converter`。有效证据：generated、compiled、behavior-verified。
+  - 边界：Actual PB converter only, not serializer/registration/storage/recovery.
+  - 未满足项：No fresh candidate generation/compile/behavior receipt registered at this stage; final architecture approval:null.；No bank candidate consumption or complete later-family validation; supplied execution must bind identical inputs and the whole generated artifact inventory.
 
 ### [protobuf-schema — Protobuf线格式定义](scala-cqrs/persistence/protobuf-schema.md)
 
@@ -1519,6 +1555,10 @@
   - 生产路径：`proto-dsl:proto`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Per-package schema for states/events/exact/nominal/optional/sequence/map wrapper nodes. Route formal-subproducer-not-this-manifest; serializationModel nodes for package
   - 未满足项：This profile has source-backed output contracts, not independent compilation, behavior or final approval.
+- **js-domain-kernel-candidate-v1**：current；generate-code；owner=generated。
+  - 生产路径：`scala-cqrs-domain-kernel-v1:protobuf-schema`。有效证据：generated、compiled、behavior-verified。
+  - 边界：Actual .proto source; explicit message identity/presence. Managed ScalaPB source and byte roundtrip require separate execution.
+  - 未满足项：No fresh candidate generation/compile/behavior receipt registered at this stage; final architecture approval:null.；No bank candidate consumption or complete later-family validation; supplied execution must bind identical inputs and the whole generated artifact inventory.
 
 ### [protobuf-serializer — 消息序列化器与manifest](scala-cqrs/persistence/protobuf-serializer.md)
 
@@ -1680,6 +1720,10 @@
   - 生产路径：`invariant-dsl:rule-parameters`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Per-command Params classes grouped in companion. Route manifest-entrypoint; paramDefs renders nonempty paramObjects
   - 未满足项：This profile has source-backed output contracts, not independent compilation, behavior or final approval.
+- **js-domain-kernel-candidate-v1**：current；generate-code；owner=generated。
+  - 生产路径：`scala-cqrs-domain-kernel-v1:rule-parameters`。有效证据：generated、compiled、behavior-verified。
+  - 边界：Per-command (state, command, hosts), with typed declarations retained; no decision implementation.
+  - 未满足项：No fresh candidate generation/compile/behavior receipt registered at this stage; final architecture approval:null.；No bank candidate consumption or complete later-family validation; supplied execution must bind identical inputs and the whole generated artifact inventory.
 
 ### [run-definition-submission — 版本化Run定义与提交信封](scala-cqrs/monarch/run-definition-submission.md)
 
@@ -2113,6 +2157,10 @@
   - 生产路径：无JS产出声明。有效证据：不作JS生成证明。
   - 边界：Recursive value/sum/container signature closure and explicit module ownership for this finite candidate.
   - 未满足项：Current generator integration and architecture-owner approval are not established by this reference.
+- **js-domain-kernel-candidate-v1**：current；generate-wiring；owner=generated。
+  - 生产路径：`scala-cqrs-domain-kernel-v1:value-object,domain-protocol,computation-port,rule-parameters`。有效证据：generated、compiled、behavior-verified。
+  - 边界：Finite resolved signature value placement/dependencies share existing kernel definitions. No duplicate closure artifact and no complete modular port/bridge family.
+  - 未满足项：No fresh candidate generation/compile/behavior receipt registered at this stage; final architecture approval:null.；No bank candidate consumption or complete later-family validation; supplied execution must bind identical inputs and the whole generated artifact inventory.
 
 ### [simulation-actor — 设备与场景模拟Actor](scala-cqrs/verification/simulation-actor.md)
 
@@ -2248,6 +2296,10 @@
   - 生产路径：无JS产出声明。有效证据：不作JS生成证明。
   - 边界：Seven record values and an explicit closed error sum; ten production files in the whole reference, not one file per value.
   - 未满足项：Current generator integration and architecture-owner approval are not established by this reference.
+- **js-domain-kernel-candidate-v1**：current；generate-code；owner=generated。
+  - 生产路径：`scala-cqrs-domain-kernel-v1:value-object`。有效证据：generated、compiled、behavior-verified。
+  - 边界：One definition per declared nominal/record/exact domain/wire/PO value; kernel-only dependencies.
+  - 未满足项：No fresh candidate generation/compile/behavior receipt registered at this stage; final architecture approval:null.；No bank candidate consumption or complete later-family validation; supplied execution must bind identical inputs and the whole generated artifact inventory.
 
 ### [vector-projection — 向量检索与嵌入适配](scala-cqrs/projection/vector-projection.md)
 
@@ -3350,3 +3402,32 @@
 - Formal valueobject-dsl uses renderValues, not this legacy render.
 - Legacy parser discards field metadata beyond name/dataType; default-aware output requires richer explicit Spec.
 - Directory name is reused as a formal subproducer id; do not equate legacy emit/render output with formal produce output or count as another registered formal profile.
+
+### scala-cqrs-domain-kernel-v1
+
+- Manifest：`generators/scala-cqrs-domain-kernel-v1/generator.json`；版本 1；current/product-profile。
+- 输入：Explicit scala-cqrs-domain-kernel@1; complete compiled product set: reference-layout@1, exact-value-types@1, exact-value-codecs@1, domain-decision@4, domain-dependencies@6, domain-folds@6, domain-external-events@2. Finite options packages/names/protobuf; no editable alternate request or inferred methods.
+- 生产链：entrypoint=`js:generators/scala-cqrs-domain-kernel-v1/generate.mjs#generate`；entrypoint=`js:lib/products/generate-cli.mjs#generateProductCli`；implementation=`js:lib/products/generate-cli.mjs#registeredProductProducer`；input=`js:lib/products/compile.mjs#compileProductSet`；input=`js:src/core/product-plan.mjs#planProductSet`；model=`js:generators/scala-cqrs-domain-kernel-v1/build-models.mjs#buildModels`；model=`js:generators/scala-cqrs-domain-kernel-v1/serialization-model.mjs#serializationModel`；implementation=`js:generators/scala-cqrs-domain-kernel-v1/render.mjs#render`；implementation=`js:generators/scala-cqrs-domain-kernel-v1/entry.mjs#sourceEntry`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/values.mjs#valueTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/protocol.mjs#protocolTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/state.mjs#stateTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/params.mjs#paramsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/params.mjs#computationsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/exact-codecs.mjs#exactCodecsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/protobuf.mjs#protobufTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/converters.mjs#convertersTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/build.mjs#buildTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/generated-tests.mjs#generatedTestsTemplate`；writer=`js:src/core/generate.mjs#applyEntries`
+
+| 输出合同 | kind | 路径 | 类别/profile |
+|---|---|---|---|
+| value-object | value-object | modules/kernel/src/main/scala/**/domain/values/*.scala | signature-value-closure/js-domain-kernel-candidate-v1<br>value-object/js-domain-kernel-candidate-v1 |
+| domain-protocol | protocol | modules/kernel/src/main/scala/**/domain/*.scala | domain-protocol/js-domain-kernel-candidate-v1<br>signature-value-closure/js-domain-kernel-candidate-v1 |
+| domain-state | state | modules/kernel/src/main/scala/**/domain/*.scala | domain-state/js-domain-kernel-candidate-v1 |
+| rule-parameters | rule-parameters | modules/kernel/src/main/scala/**/domain/invariant/params/*.scala | rule-parameters/js-domain-kernel-candidate-v1<br>signature-value-closure/js-domain-kernel-candidate-v1 |
+| computation-port | computation-port | modules/kernel/src/main/scala/**/domain/ports/*.scala | computation-port/js-domain-kernel-candidate-v1<br>signature-value-closure/js-domain-kernel-candidate-v1 |
+| exact-value-codec | exact-value-codec | modules/glue/src/main/scala/**/infrastructure/serialization/ExactValueCodecs.scala | exact-value-codec/js-domain-kernel-candidate-v1 |
+| protobuf-schema | proto | modules/glue/src/main/protobuf/*_domain.proto | protobuf-schema/js-domain-kernel-candidate-v1 |
+| proto-converter | converter | modules/glue/src/main/scala/**/infrastructure/serialization/DomainConverters.scala | proto-converter/js-domain-kernel-candidate-v1 |
+| project-build | build | build.sbt | multi-module-layout/js-domain-kernel-candidate-v1<br>project-build/js-domain-kernel-candidate-v1 |
+| build-properties | build | project/build.properties | project-build/js-domain-kernel-candidate-v1 |
+| build-plugins | build | project/plugins.sbt | project-build/js-domain-kernel-candidate-v1 |
+| generated-test | generated-test | modules/glue/src/test/scala/**/infrastructure/serialization/*RoundTripSpec.scala | generated-test/js-domain-kernel-candidate-v1 |
+
+- Explicit finite family-1 candidate route only. approval:null; registration and actual code existence grant no generated/compiled/behavior/final-approved evidence.
+- Core: value-object, exact-value-codec, domain-protocol, domain-state, rule-parameters. Computation signatures, signature-value placement, protobuf/converter, build/test and kernel/glue layout are bounded support, not complete later families.
+- No bank consumption, no legacy default selection switch, no BC/Play generation, no Actor/decide/fold/CommandHelpers/Repository/serializer/adapter/storage/service/root binding or ext implementation.
+- buildModels and serializationModel establish finite structural models; named templates and render establish actual output shapes; sourceEntry records source mappings; applyEntries is the final writer. Code existence is not independent model/template conformance or execution proof.
+- Real ScalaPB managed-source and compiler/oracle executions belong to separately supplied matching candidate evidence. Direct compilation does not prove sbt tasks ran; build files receive no implicit behavior promotion.
+- Stable source:<canonicalId>#<actual pointer> mappings, no inline @knowledge. Inline codec/naming technical configuration has project/product hashes, not invented author-field navigation.
+- Existing 12 target-profile observations are deliberately unchanged pending the integrator freeze and scoped fresh replay; the source lock/matrix/coverage are not refreshed by this registration.

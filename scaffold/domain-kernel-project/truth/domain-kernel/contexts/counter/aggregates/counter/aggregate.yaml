@@ -1,0 +1,32 @@
+kind: aggregate
+name: Counter
+context: counter
+order:
+  commands: ["SetCount"]
+  events: ["CountSet"]
+payload:
+  {
+    "name": "Counter",
+    "entity": "CounterEntity",
+    "identifier": "id: String @BUSINESS_INPUT",
+    "stateFields": [
+      {"name":"id","dataType":"String","default":"counter-default"},
+      {"name":"count","dataType":"Long","default":"-7"},
+      {"name":"minimum","dataType":"Long","default":"-9223372036854775808"},
+      {"name":"maximum","dataType":"Long","default":"9223372036854775807"},
+      {
+        "name":"reading",
+        "dataType":"Reading",
+        "default":{
+          "label":"left-default",
+          "note":"right-default",
+          "ratio":"0.12500000000000000000000000000000000000",
+          "distance":{"amount":"-12","unit":"m"},
+          "maybe":{"present":true,"value":{"present":false,"value":null}},
+          "samples":[{"present":true,"value":"-9223372036854775808"},{"present":false,"value":null},{"present":true,"value":"9223372036854775807"}],
+          "ratios":[{"key":"base","value":"0.50000000000000000000000000000000000000"}]
+        }
+      },
+      {"name":"accepted","dataType":"Ratio","default":"0.25000000000000000000000000000000000000"}
+    ]
+  }

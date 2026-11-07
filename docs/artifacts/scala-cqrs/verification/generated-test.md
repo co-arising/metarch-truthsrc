@@ -39,6 +39,14 @@ Generated*Spec、RulesSpec、ExecutableSpec及辅助runner；不是应用main产
 
 既验证正确生成也测试缺前提/篡改反例、测试发现清单、退出状态和执行数；跳过不算通过。 文档覆盖、代码编译与业务运行是不同证据；只有实际执行对应检查才可以报告通过。
 
+### 第三批有限 domain-kernel 候选
+
+`js-domain-kernel-candidate-v1`（实际入口 `scala-cqrs-domain-kernel-v1`，manifest `scala-cqrs-domain-kernel:1`）为显式选择的有限实现；不切换旧入口或银行消费。Generated empty-state protobuf-byte roundtrip test source; shared-model assertions are not the independent external oracle or an execution receipt.
+
+实际来源为 `generators/scala-cqrs-domain-kernel-v1/templates/generated-tests.mjs#generatedTestArtifacts`；结构经 `buildModels`／`serializationModel`、有限 `render` 与逐职责模板，`sourceEntry` 记录来源，最终写入仍由 `src/core/generate.mjs#applyEntries` 承担。共享输出不重复算文件；完整范围见[有限合同](../DOMAIN-KERNEL.md)。
+
+`implemented` 只表示上述代码确实存在。此登记阶段没有刷新观察或 source lock／coverage／矩阵，也没有编译、独立行为或最终审定通过声明；`approval:null`。真实证据必须绑定同一输入、全套最终产物字节及冻结工具指纹。 既有第二批14项 reference-only 资格不变；稳定外置 source 映射不恢复 inline `@knowledge`。
+
 ## 版本与实例
 
 本页按上述 profile 区分当前原生、保留/退役路径与手写参考；不跨 profile 传播实现或验收结论。完整来源 revision、摘要和生产链由目录、派生矩阵及 `sources.lock.json` 记录，本页不另抄暂定统计。

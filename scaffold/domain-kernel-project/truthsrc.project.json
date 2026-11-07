@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "truthsrc.project/v1",
+  "tree": "truth/domain-kernel",
+  "canonicalId": "counter-domain",
+  "context": "counter",
+  "products": [
+    {"id":"reference-layout","version":"1"},
+    {"id":"exact-value-types","version":"1"},
+    {"id":"exact-value-codecs","version":"1"},
+    {"id":"domain-decision","version":"4"},
+    {"id":"domain-dependencies","version":"6"},
+    {"id":"domain-folds","version":"6"},
+    {"id":"domain-external-events","version":"2"}
+  ],
+  "exactTypes": [
+    {
+      "domain":{"context":"counter","kind":"type","owner":[],"id":"Ratio"},
+      "version":"1","form":"decimal","precision":38,"scale":38,
+      "amountMember":null,"unitMember":null,"units":[]
+    },
+    {
+      "domain":{"context":"counter","kind":"type","owner":[],"id":"Distance"},
+      "version":"1","form":"unit-decimal","precision":38,"scale":0,
+      "amountMember":{"context":"counter","kind":"member","owner":["Distance"],"id":"amount"},
+      "unitMember":{"context":"counter","kind":"member","owner":["Distance"],"id":"unit"},
+      "units":["m","km"]
+    }
+  ],
+  "exactCodecs": [
+    {
+      "domain":{"context":"counter","kind":"type","owner":[],"id":"Ratio"},
+      "domainVersion":"1","id":"ratio-minor-units","version":"1","format":"minor-units-text",
+      "wire":{"ref":{"context":"counter","kind":"type","owner":[],"id":"WireRatio"},"version":"1","amountMember":null,"unitMember":null},
+      "po":{"ref":{"context":"counter","kind":"type","owner":[],"id":"PoRatio"},"version":"1","amountMember":null,"unitMember":null}
+    },
+    {
+      "domain":{"context":"counter","kind":"type","owner":[],"id":"Distance"},
+      "domainVersion":"1","id":"distance-fixed-text","version":"1","format":"fixed-decimal-text",
+      "wire":{
+        "ref":{"context":"counter","kind":"type","owner":[],"id":"WireDistance"},"version":"1",
+        "amountMember":{"context":"counter","kind":"member","owner":["WireDistance"],"id":"wAmount"},
+        "unitMember":{"context":"counter","kind":"member","owner":["WireDistance"],"id":"wUnit"}
+      },
+      "po":{
+        "ref":{"context":"counter","kind":"type","owner":[],"id":"PoDistance"},"version":"1",
+        "amountMember":{"context":"counter","kind":"member","owner":["PoDistance"],"id":"pAmount"},
+        "unitMember":{"context":"counter","kind":"member","owner":["PoDistance"],"id":"pUnit"}
+      }
+    }
+  ],
+  "documents": [],
+  "assemblies": [],
+  "roles": {},
+  "generator": "scala-cqrs-domain-kernel-v1",
+  "options": {
+    "packages":[{"context":"counter","package":"example.counter"}],
+    "names":[],
+    "protobuf":[{
+      "context":"counter","package":"example.counter.protobuf",
+      "messages":[
+        {"ref":{"context":"counter","kind":"type","owner":[],"id":"Ratio"},"role":"value","name":"RatioValue"},
+        {"ref":{"context":"counter","kind":"type","owner":[],"id":"Distance"},"role":"value","name":"DistanceValue"},
+        {"ref":{"context":"counter","kind":"type","owner":[],"id":"WireRatio"},"role":"value","name":"WireRatioValue"},
+        {"ref":{"context":"counter","kind":"type","owner":[],"id":"PoRatio"},"role":"value","name":"PoRatioValue"},
+        {"ref":{"context":"counter","kind":"type","owner":[],"id":"WireDistance"},"role":"value","name":"WireDistanceValue"},
+        {"ref":{"context":"counter","kind":"type","owner":[],"id":"PoDistance"},"role":"value","name":"PoDistanceValue"},
+        {"ref":{"context":"counter","kind":"type","owner":[],"id":"Reading"},"role":"value","name":"ReadingValue"},
+        {"ref":{"context":"counter","kind":"aggregate","owner":[],"id":"Counter"},"role":"state","name":"CounterSnapshot"},
+        {"ref":{"context":"counter","kind":"event","owner":["Counter"],"id":"CountSet"},"role":"event","name":"CounterCountSet"}
+      ]
+    }]
+  }
+}

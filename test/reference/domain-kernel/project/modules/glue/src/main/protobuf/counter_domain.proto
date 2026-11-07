@@ -1,0 +1,93 @@
+syntax = "proto3";
+
+package example.counter.protobuf;
+
+import "scalapb/scalapb.proto";
+
+option (scalapb.options) = {
+  flat_package: true
+  single_file: true
+};
+
+message RatioValue {
+  string f0 = 1;
+}
+
+message DistanceValue {
+  string f0 = 1;
+  string f1 = 2;
+}
+
+message WireRatioValue {
+  string f0 = 1;
+}
+
+message PoRatioValue {
+  string f0 = 1;
+}
+
+message WireDistanceValue {
+  string f0 = 1;
+  string f1 = 2;
+}
+
+message PoDistanceValue {
+  string f0 = 1;
+  string f1 = 2;
+}
+
+message ReadingValue {
+  string f0 = 1;
+  string f1 = 2;
+  RatioValue f2 = 3;
+  DistanceValue f3 = 4;
+  ReadingValueField4 f4 = 5;
+  ReadingValueField5 f5 = 6;
+  ReadingValueField6 f6 = 7;
+}
+
+message ReadingValueField4 {
+  bool present = 1;
+  ReadingValueField4Value f0 = 2;
+}
+
+message ReadingValueField4Value {
+  bool present = 1;
+  string f0 = 2;
+}
+
+message ReadingValueField5 {
+  bool present = 1;
+  repeated ReadingValueField5Element f0 = 2;
+}
+
+message ReadingValueField5Element {
+  bool present = 1;
+  int64 f0 = 2;
+}
+
+message ReadingValueField6 {
+  bool present = 1;
+  repeated ReadingValueField6Entry f0 = 2;
+}
+
+message ReadingValueField6Entry {
+  string f0 = 1;
+  RatioValue f1 = 2;
+}
+
+message CounterSnapshot {
+  string f0 = 1;
+  int64 f1 = 2;
+  int64 f2 = 3;
+  int64 f3 = 4;
+  ReadingValue f4 = 5;
+  RatioValue f5 = 6;
+}
+
+message CounterCountSet {
+  string f0 = 1;
+  int64 f1 = 2;
+  ReadingValue f2 = 3;
+  RatioValue f3 = 4;
+}

@@ -1,15 +1,15 @@
 # Scala目标profile、命名与参考质量合同
 
-版本：`truthsrc.scala-target/v1`。本合同落实[第二批](../STATUS-AND-IMPLEMENTATION-PLAN.md#第二批固定目标profile命名规则和独立参考)，不是新增generator manifest或现役生成开关。实现是公共纯模块`lib/scala-target/`；所有现有生成入口、项目作者schema、银行代码及冻结身份保持原样。调用者必须显式选择合同，不按领域、文件名或银行名字推断。
+版本：`truthsrc.scala-target/v1`。本合同落实[第二批](../STATUS-AND-IMPLEMENTATION-PLAN.md#第二批固定目标profile命名规则和独立参考)，目标描述本身不是generator manifest或默认生成开关。实现是公共纯模块`lib/scala-target/`；第三批增加独立显式[family1入口](DOMAIN-KERNEL.md)，原有生成入口、项目作者schema、银行代码及冻结身份保持原样。调用者必须显式选择合同，不按领域、文件名或银行名字推断。
 
 ## 两种目标，不能混为一次迁移
 
 | 合同ID | 用途 | 当前资格 | 自动生成入口 |
 |---|---|---|---|
 | `scala-cqrs-legacy-compatible-v1` | 描述现有公开载体与完整Scala名字的保护边界 | compatibility-contract；不是推荐新结构 | 无新入口，仍使用原生成器 |
-| `scala-cqrs-modular-candidate-v1` | 新项目四模块、纯领域和显式端口的推荐设计候选 | candidate；`approval:null` | `generator:null`，未接入生成器 |
+| `scala-cqrs-modular-candidate-v1` | 新项目四模块、纯领域和显式端口的推荐设计候选 | candidate；`approval:null` | 完整目标仍`generator:null`；第三批新增显式family1子集入口，见[领域kernel合同](DOMAIN-KERNEL.md) |
 
-`targetProfile(id)`返回不可变描述。未知/省略ID失败；语义product版本、运行库版本、ArtifactType目录变体与这些目标合同不是同一身份。`buildTargetModel`仅接受modular candidate，不能用它重新解释旧银行结构。当前catalog给新参考登记`reference-only`变体，未增加现役JS应生成分母或最终批准数量。
+`targetProfile(id)`返回不可变描述。未知/省略ID失败；语义product版本、运行库版本、ArtifactType目录变体与这些目标合同不是同一身份。`buildTargetModel`仅接受modular candidate，不能用它重新解释旧银行结构。第二批的参考保留`reference-only`变体；第三批另登记实际JS family1生成变体，不覆盖参考资格，批准数量仍独立。
 
 兼容合同保留domain Actor入口/facade、旧Entity/Protocol载体别名、具体本地Repository及显式完整名字。命名API要求传入既有完整绑定，例如`bank_cash_payment_v1Execution`，不模仿每个旧renderer算法，也不暗中改名。它不是对所有旧代码的架构豁免或迁移器。银行State/Event/Request/Reply、PB字段与号码、PID、serializer ID/manifest、codec pin、操作身份及金融规则继续冻结。
 

@@ -1,0 +1,22 @@
+kind: formal-product
+schemaVersion: "truthsrc.formal-product/v1"
+family: host-computation
+id: "[\"counter\",\"AcceptedRatio\"]"
+version: "1"
+payload:
+  {
+    "id":{"context":"counter","kind":"port","owner":[],"id":"AcceptedRatio"},
+    "version":"1",
+    "command":{"context":"counter","kind":"command","owner":["Counter"],"id":"SetCount"},
+    "outputType":{"form":"nominal","ref":{"context":"counter","kind":"type","owner":[],"id":"Ratio"}},
+    "inputDependencies":[
+      {"context":"counter","kind":"parameter","owner":["Counter","SetCount"],"id":"reading"},
+      {"context":"counter","kind":"parameter","owner":["Counter","SetCount"],"id":"count"},
+      {"context":"counter","kind":"state-field","owner":["Counter"],"id":"minimum"}
+    ],
+    "stableIdentityContract":{
+      "id":"accepted-ratio",
+      "version":"1",
+      "keys":[{"context":"counter","kind":"parameter","owner":["Counter","SetCount"],"id":"reading"}]
+    }
+  }

@@ -1,0 +1,17 @@
+kind: value-object
+name: Reading
+seq: 7
+payload:
+  {
+    "name":"Reading",
+    "version":"1",
+    "fields":[
+      "label: String",
+      "note: String",
+      "ratio: Ratio",
+      "distance: Distance",
+      "maybe: \"Option[Option[String]]\"",
+      "samples: \"Vector[Option[Long]]\"",
+      "ratios: \"Map[String, Ratio]\""
+    ]
+  }

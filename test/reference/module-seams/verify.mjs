@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import {
-  accessSync, constants, lstatSync, mkdirSync, readFileSync, readdirSync,
+  accessSync, constants, lstatSync, mkdirSync, readFileSync,
   realpathSync, writeFileSync,
 } from 'node:fs';
-import { basename, delimiter, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
+import { basename, delimiter, dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { inflateRawSync } from 'node:zlib';
+import { regular, within, files, hash, snapshot, manifestClassPath } from '../compiler-tools.mjs';
 
 const reference = realpathSync(dirname(fileURLToPath(import.meta.url)));
+const compilerHelper = regular(fileURLToPath(new URL('../compiler-tools.mjs', import.meta.url)));
 const flags = new Set(['--java', '--maven-cache', '--out']);
 
 function options(args) {
@@ -33,74 +33,6 @@ function present(path) {
     if (error.code === 'ENOENT') return false;
     throw error;
   }
-}
-
-function regular(path) {
-  const stat = lstatSync(path);
-  assert(stat.isFile() && !stat.isSymbolicLink() && stat.nlink === 1, `Not a private regular file: ${path}`);
-  assert.equal(realpathSync(path), path, `Symlink in file path: ${path}`);
-  return path;
-}
-
-function within(path, parent) {
-  return path === parent || path.startsWith(parent + sep);
-}
-
-function files(directory) {
-  return readdirSync(directory, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name, 'en'))
-    .flatMap(entry => {
-      const path = join(directory, entry.name);
-      assert(!entry.isSymbolicLink(), `Symlink in input tree: ${path}`);
-      if (entry.isDirectory()) return files(path);
-      return [regular(path)];
-    });
-}
-
-const hash = path => createHash('sha256').update(readFileSync(regular(path))).digest('hex');
-const snapshot = paths => paths.map(path => ({ path, sha256: hash(path) }));
-
-// Read ZIP metadata directly; no jar tool, shell, downloads or helper interpreter.
-function manifestClassPath(path) {
-  const zip = readFileSync(path);
-  let end = -1;
-  for (let i = zip.length - 22; i >= Math.max(0, zip.length - 65557); i--) {
-    if (zip.readUInt32LE(i) === 0x06054b50 && i + 22 + zip.readUInt16LE(i + 20) === zip.length) {
-      end = i;
-      break;
-    }
-  }
-  assert(end >= 0, `Missing ZIP directory: ${path}`);
-  assert.equal(zip.readUInt16LE(end + 4), 0, 'Multi-disk ZIP is unsupported');
-  assert.equal(zip.readUInt16LE(end + 6), 0, 'Multi-disk ZIP is unsupported');
-  const count = zip.readUInt16LE(end + 10);
-  assert(count !== 0xffff && count === zip.readUInt16LE(end + 8), 'ZIP64 is unsupported');
-  let cursor = zip.readUInt32LE(end + 16);
-  let manifest;
-  for (let index = 0; index < count; index++) {
-    assert.equal(zip.readUInt32LE(cursor), 0x02014b50, `Invalid ZIP entry: ${path}`);
-    const nameLength = zip.readUInt16LE(cursor + 28);
-    const name = zip.subarray(cursor + 46, cursor + 46 + nameLength).toString('utf8');
-    if (name.toUpperCase() === 'META-INF/MANIFEST.MF') {
-      assert.equal(manifest, undefined, `Duplicate manifest: ${path}`);
-      assert.equal(zip.readUInt16LE(cursor + 8) & 1, 0, 'Encrypted ZIP is unsupported');
-      const method = zip.readUInt16LE(cursor + 10);
-      const size = zip.readUInt32LE(cursor + 20);
-      const expanded = zip.readUInt32LE(cursor + 24);
-      const local = zip.readUInt32LE(cursor + 42);
-      assert.equal(zip.readUInt32LE(local), 0x04034b50, 'Invalid local ZIP header');
-      const start = local + 30 + zip.readUInt16LE(local + 26) + zip.readUInt16LE(local + 28);
-      assert(start + size <= zip.length && expanded <= 1024 * 1024, 'Invalid manifest size');
-      const packed = zip.subarray(start, start + size);
-      assert(method === 0 || method === 8, 'Unsupported ZIP compression');
-      const bytes = method === 0 ? packed : inflateRawSync(packed, { maxOutputLength: 1024 * 1024 });
-      assert.equal(bytes.length, expanded, 'Manifest length mismatch');
-      manifest = bytes.toString('utf8').replaceAll('\r\n', '\n').replace(/\n /g, '');
-    }
-    cursor += 46 + nameLength + zip.readUInt16LE(cursor + 30) + zip.readUInt16LE(cursor + 32);
-  }
-  return (manifest ?? '').split('\n\n')[0].split('\n')
-    .filter(line => /^class-path:/i.test(line))
-    .flatMap(line => line.slice(line.indexOf(':') + 1).trim().split(/\s+/).filter(Boolean));
 }
 
 function main() {
@@ -143,7 +75,7 @@ function main() {
   ];
   const jars = [...new Set([...compiler, ...testLibraries])];
   const inputFiles = files(reference);
-  const before = { inputs: snapshot(inputFiles), toolchain: snapshot([java, release, ...jars]) };
+  const before = { inputs: snapshot(inputFiles), toolchain: snapshot([java, release, ...jars, compilerHelper]) };
   const manifests = jars.map(path => ({ path, classPath: manifestClassPath(path) }));
   for (const row of manifests) {
     for (const token of row.classPath) {
@@ -388,7 +320,7 @@ final class WrongResultType extends QuoteFlow {
     failure = error.stack ?? String(error);
   } finally {
     try {
-      after = { inputs: snapshot(files(reference)), toolchain: snapshot([java, release, ...jars]) };
+      after = { inputs: snapshot(files(reference)), toolchain: snapshot([java, release, ...jars, compilerHelper]) };
       json('hashes-after.json', after);
       assert.deepEqual(after, before, 'Reference inputs or toolchain bytes changed');
       if (stagedBefore) {
