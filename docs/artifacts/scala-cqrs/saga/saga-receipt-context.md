@@ -12,9 +12,10 @@ producer/consumer phase、operation identity、expected codec及参数映射由�
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `saga-strict`消费运行库的StrictReceiptContext：只有库提供的耐久前置回执查询上下文具备相应身份/阶段/codec检查，caller自造上下文仍不可用。
+- `js-run-all-strict`生成的是args/receipt/context数据载体与消费接线，不是生成或替代运行时StrictReceiptContext。正式Definition中的`request.receipt`参数血缘也只是消费库能力的应用接线。
 
-目录状态：`implemented`；所有权：`mixed`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐profile的库机制与生成receipt-data责任见[CAPABILITY-MATRIX.md](../../CAPABILITY-MATRIX.md)。不能把生成carrier、普通map或内存结果当作已耐久回执；本次不迁移P23或批准业务运行。
 
 ## 结构与命名
 
@@ -36,14 +37,13 @@ OperationRequest.receipt和StrictReceiptContext；caller自造上下文默认不
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
-
-适用：saga-strict。当前saga-core基线4352a317的strict API与银行P23消费有明确合同，Monarch R2不自动升级Saga政策或retry/backoff/deadline。
+运行库StrictReceiptContext与run-all生成receipt-data/carrier按profile分别解释。测试源码不等耐久回执行为验证；银行P23冻结，最终批准未授予。
 
 - `saga:src/main/scala/net/imadz/infra/saga/strict/StrictReceiptContext.scala` — `StrictReceiptContext`。
-- `saga:src/main/scala/net/imadz/infra/saga/strict/StrictSagaDefinition.scala` — `StrictSagaDefinition`。
+- `saga:src/main/scala/net/imadz/infra/saga/strict/StrictSagaDefinition.scala` — `OperationRequest`。
+- `js:generators/saga-dsl/emit-strict.mjs` — `emitStrictFiles`（数据载体，不是runtime context）。
 
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../../sources.lock.json)；不将生成receipt接线升级为运行库实现。
 
 ### 类别依赖
 

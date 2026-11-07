@@ -12,9 +12,11 @@ Factory限定名、pin、完整配置、HTTP绑定及owner策略显式提供。
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `js-formal`：`renderService` 生成 Loader/Components，并将启动过程拆到 `ApplicationBootstrap`；配置代码由独立 `renderConfiguration` 阶段提供，公共 `applyEntries` 负责落盘。
+- `bc-semantic-products`：独立 Scala `ProductServiceBuilder/ProductServiceTemplate` 把 Factory 启动放在 Loader 中；配置由 `ProductServiceConfigurationTemplate` 提供，不照抄 JS 文件拆分。
+- 两者生成的是安装、路由和生命周期接线。实际 Factory/Composition 与资源 owner 由应用提供，不能由 pin/ready/close 代码的存在推定业务或资源行为已验收。
 
-目录状态：`implemented`；所有权：`generated`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐 profile 的生命周期、生产链与证据层级见[派生能力矩阵](../../CAPABILITY-MATRIX.md)。可用源码、生成接线、目标编译、行为验证和最终批准不是同一声明。
 
 ## 结构与命名
 
@@ -36,14 +38,7 @@ factory生成或手写实现按profile安装，startup/shutdown需完整清理�
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
-
-适用：js-formal / bc-semantic-products。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
-
-- `js:generators/scala-cqrs-play-service/render-service.mjs` — `renderService`。
-- `js:generators/scala-cqrs-play-service/render-configuration.mjs` — `renderConfiguration`。
-
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+本页按上述 profile 区分当前原生、保留/退役路径与手写参考；不跨 profile 传播实现或验收结论。完整来源 revision、摘要和生产链由目录、派生矩阵及 `sources.lock.json` 记录，本页不另抄暂定统计。
 
 ### 类别依赖
 

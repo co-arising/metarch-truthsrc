@@ -4,7 +4,7 @@
 
 ## 职责
 
-定义图领域操作与身份/租户边界，不是executeSQL/driver包装，也不是从同名节点自动推论关联。
+目标是隔离图操作与身份/租户边界，不能从同名节点自动推论关联。现存di-poc接口同时含领域操作和通用Cypher queryList，并非只暴露领域语义；tooling API则面向知识快照与代码回锚，不是应用Neo4j端口的同一实现。
 
 ## 输入与人工信息
 
@@ -12,9 +12,11 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+di-poc的GraphProjectionRepository是kernel内维护的trait，除节点/边操作外还暴露通用Cypher queryList；不能把它说成已生成的纯领域图门面。接口、ext实现和glue driver机制是不同所有权。
 
-目录状态：`implemented`；所有权：`mixed`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+tooling的lib/knowledge-graph.mjs#KnowledgeGraphStore是手写API基类，未实现方法抛出adapter-not-implemented，由具体SqliteKnowledgeGraphStore适配器提供操作；它属于工具知识图，不是从业务作者树生成的Scala应用接口。
+
+各profile分别记录接口可用性、具体实现与参考生命周期，见[能力矩阵](../../CAPABILITY-MATRIX.md)。源码扫描没有运行图数据库、重开测试、目标生成或最终批准。
 
 ## 结构与命名
 
@@ -38,7 +40,7 @@ GraphProjectionRepository接口在kernel，纯助手留伴生对象；实现ext�
 
 机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
 
-适用：di-poc / tooling。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+主要实例：di-poc维护的Scala接口与tooling手写知识图API。前者为POC参考，后者为当前工具库；两者不是同一业务图，也不是生成Scala应用图接口的证据。
 
 - `dipoc:modules/kernel/src/main/scala/net/imadz/metarch/infrastructure/graph/GraphProjectionRepository.scala` — `trait GraphProjectionRepository`。
 - `js:lib/knowledge-graph.mjs` — `KnowledgeGraphStore`。

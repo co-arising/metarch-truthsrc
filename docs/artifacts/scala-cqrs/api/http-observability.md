@@ -12,9 +12,11 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `bc-multi`：这里只登记已检查应用的参考实例，不是 BC 生成器的健康端点承诺。
+- `di-poc`：过滤器是手写实现参考，`HealthController` 有现存具体源码。其旧生成头不足以确立原始 producer；历史归属仍未建立，按 source-copy/reference-only 边界解释，不能说没有代码。
+- `js-legacy`：退役 API 的 `options.retiredControllers` 可把调用方提供的源码原样返回为 support-controller，再由通用写入器落盘。这是源码复制/参考路径，不是原生 observability 行为生成。
 
-目录状态：`implemented`；所有权：`handwritten`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐 profile 的生命周期、生产链与证据层级见[派生能力矩阵](../../CAPABILITY-MATRIX.md)。可用源码、生成接线、目标编译、行为验证和最终批准不是同一声明。
 
 ## 结构与命名
 
@@ -36,11 +38,4 @@ LoggingFilter/CommandAuditFilter/HealthController位于root；correlation信息�
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
-
-适用：bc-multi / di-poc。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
-
-- `dipoc:app/controllers/filter/CommandAuditFilter.scala` — `CommandAuditFilter`。
-- `dipoc:app/controllers/HealthController.scala` — `HealthController`。
-
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+本页按上述 profile 区分当前原生、保留/退役路径与手写参考；不跨 profile 传播实现或验收结论。完整来源 revision、摘要和生产链由目录、派生矩阵及 `sources.lock.json` 记录，本页不另抄暂定统计。

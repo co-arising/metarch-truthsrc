@@ -12,9 +12,11 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `tooling`：手写公共writer/图适配器派生`anchors.json`及同图代码关联，链路包括`applyEntries`、`finalMappingSpan`、`writeAnchorsIndex`、`publishProjectAnchors`与`publishCodeAnchors`；索引不是业务源码producer。
+- `js-retired`保留旧生成入口的锚记录来源，不使已退役入口重新成为现役producer。当前核心仍可提供锚机制，入口生命周期与机制生命周期分开。
+- 展开节点到宏作者位置允许N:1；精确最终字节关联也不自动证明业务语义、编译或最终批准。
 
-目录状态：`implemented`；所有权：`derived`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+各profile及派生证据级别见[CAPABILITY-MATRIX.md](../CAPABILITY-MATRIX.md)，不以锚数量代替逐项来源核验。
 
 ## 结构与命名
 
@@ -36,15 +38,14 @@ UTF8 span、重名/歧义、跨快照、手改冲突与重开图正反查；文�
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
+当前tooling机制和retired入口关联分别记录在派生矩阵中。测试源码不等执行证据；锚一致性不自动批准模板、业务语义或完整服务。
 
-适用：tooling。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+- `js:src/core/anchors.mjs` — `planAnchors`、`writeAnchorsIndex`。
+- `js:src/core/code-mappings.mjs` — `validateCodeMappings`、`finalMappingSpan`。
+- `js:lib/project/graph.mjs` — `publishProjectAnchors`。
+- `js:lib/knowledge-sqlite.mjs` — `publishCodeAnchors`。
 
-- `js:src/core/anchors.mjs` — `planAnchors`。
-- `js:src/core/code-mappings.mjs` — `validateCodeMappings`。
-- `js:lib/knowledge-graph.mjs` — `KnowledgeGraphStore`。
-
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../sources.lock.json)；本页摘录不是生产认证。
 
 ### 类别依赖
 

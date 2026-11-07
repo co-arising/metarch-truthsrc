@@ -12,9 +12,11 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `tooling`：JS `applyEntries`及BC实际writer维护派生台账；实现本身手写，台账记录不能反向充当源代码生产者。
+- BC legacy `appendRows`按path upsert `.codegen-ledger.json`；独立semantic `generateProducts`写`truthsrc.ledger.json`，两套格式/通道不能混同。
+- `js-retired`保留旧入口经核心writer形成的台账关联，不复活该入口。`saga-contract-ledger`是静态合同消费报告，归[saga-contract-report](../scala-cqrs/saga/saga-contract-report.md)，不是本页输出台账，更不是journal。
 
-目录状态：`implemented`；所有权：`derived`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+各profile的writer与证据边界见[CAPABILITY-MATRIX.md](../CAPABILITY-MATRIX.md)。台账存在不自动证明实际生成、编译或最终验收。
 
 ## 结构与命名
 
@@ -36,11 +38,10 @@ truthsrc.ledger.json/.codegen-ledger.json，实例级path与类型目录的类�
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
+tooling现役writer与retired入口关联分别保留。测试源码不是执行证据，旧台账也不自动证明今日字节或最终批准；不重签历史失败来获得通过。
 
-适用：tooling。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
-
-- `js:src/core/generate.mjs` — `applyEntries`。
+- `js:src/core/generate.mjs` — `applyEntries`、`ownershipRows`。
 - `bc:knowledge_base/design_docs/field_template/tools/ledger_append.mjs` — `appendRows`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala` — `generateProducts`。
 
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../sources.lock.json)；不同writer的台账格式保持各自合同。

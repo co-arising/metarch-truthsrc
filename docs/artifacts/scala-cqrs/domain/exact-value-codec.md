@@ -12,9 +12,11 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+JS正式链以exact-value-types/exact-value-codecs等typed产品为输入，由serialization.mjs#serializationModel与render-serialization.mjs#renderConverters形成Domain/Wire/PO转换，render-values.mjs#renderValues提供精确值类型。naming.mjs#typeName只是类型命名，不是codec生产者。
 
-目录状态：`implemented`；所有权：`generated`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+bank-p23的truthsrc.project.json#exactCodecs是输入绑定；DomainConverters.scala与domain/values/Money.scala才是被观察的产物实例，不能把配置列为实现。legacy run-all的strict Saga辅助路径可在model.moneyCodecName选中时输出Money codec，但不等于当前正式域codec或完整金融语义自动生成。
+
+按profile分别记录输入、内容生成、兼容实例和证据，见[能力矩阵](../../CAPABILITY-MATRIX.md)。源码及现存快照未在本轮重新生成、编译、执行金额oracle或最终批准。
 
 ## 结构与命名
 
@@ -38,9 +40,12 @@ AmountDecimal/Money与Wire/PO分别命名；数值通过明确的整数最小单
 
 机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
 
-适用：js-formal / bank-p23。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+主要实例：js-formal / bank-p23；legacy run-all strict辅助codec见上文。领域codec、Saga专用codec与静态算术不是相互替代的合同；银行冻结oracle及既有bytes不因目录校准改变。
 
-- `js:generators/scala-cqrs-domain/naming.mjs` — `typeName`。
-- `bank:truthsrc.project.json` — `exactCodecs`。
+- `js:generators/scala-cqrs-domain/serialization.mjs` — `serializationModel`。
+- `js:generators/scala-cqrs-domain/render-serialization.mjs` — `renderConverters`。
+- `js:generators/scala-cqrs-domain/render-values.mjs` — `renderValues`。
+- `bank:truthsrc.project.json` — `exactCodecs`，输入而非生产者。
+- `bank:generated/current/app/example/bankwealth/infrastructure/serialization/DomainConverters.scala` — 现有转换产物实例。
 
 来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。

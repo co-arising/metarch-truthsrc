@@ -12,9 +12,12 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `tooling`：JS/BC维护者手写实现loader、planner、builder、renderer和writer；这些工具不由业务真源生成，也不是每个应用的私有引擎。
+- 普通JS `generate(ctx)`同步返回entries数组，每项含`path`、`content`、`kind`及可选来源/依赖信息；不是调用`ctx.emit`。`src/core/generate.mjs`的`plan`加载manifest、检查kind并比较两次返回值，`applyEntries`负责最终写入。
+- 正式语义产品使用`planProductSet`及声明产品准入；`run-all` strict source分支和legacy直接emitter有各自输入/写入合同，不能因目录注册就视为同一种producer。
+- `js-starter-copy`只指复制教学starter源码的reference用途，不证明业务生成能力。BC还须追到`writeArtifact`及pipeline实际apply/最后写者。
 
-目录状态：`implemented`；所有权：`handwritten`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐profile的生命周期、生产链和证据级别见派生的[CAPABILITY-MATRIX.md](../CAPABILITY-MATRIX.md)；注册、定位producer、观察生成、编译、行为验证和最终批准分别判定。
 
 ## 结构与命名
 
@@ -36,16 +39,22 @@ Builder只建结构，Template渲染文本，公共writer处理文件/锚/ledger
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
+机器目录按profile区分手写工具、派生输出及reference starter；完整变体见本页生产说明和派生矩阵。测试源码或注册入口存在不是生成、编译、行为验证证据，最终模板批准仍未授予，BC JavaScript输出不充当独立golden。
 
-适用：tooling。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
-
+- `js:src/core/generate.mjs` — `plan`、`applyEntries`。
 - `js:src/core/product-plan.mjs` — `planProductSet`。
 - `js:src/core/manifest.mjs` — `loadManifest`。
+- `js:generators/_template/generate.mjs` — `generate`。
+- `js:generators/run-all.mjs` — `strictSourceEntries`。
+- `js:generators/monarch-dsl/emit.mjs` — `writeFileSync(outPath, out)`。
 - `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala` — `writeArtifact`。
 
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../sources.lock.json)；源码定位不是执行认证。
 
 ### 类别依赖
 
 `artifact-manifest`。这些是职责依赖，不代替真实Scala import或执行顺序验证。
+
+### 第二批独立模块候选
+
+`scala-cqrs-modular-candidate-v1`新增独立Parcel参考及纯目标合同，属于reference-only，不是现役生成入口。Pure target naming/structure contracts only; generator:null and no new manifest. 结构、兼容差异及资格见[目标合同](../scala-cqrs/TARGET-PROFILES.md)；真实编译/行为结果单独记录，不把参考升级为生成器或最终金样。

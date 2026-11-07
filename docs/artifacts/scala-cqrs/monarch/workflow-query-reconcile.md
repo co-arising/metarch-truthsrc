@@ -4,17 +4,19 @@
 
 ## 职责
 
-查询已提交作业/批/资源状态，并提供一次显式有限查证；页面轮询不得自动触发reconcile。
+R1查询已提交Run/Operation状态，R2再扩展作业/批/资源观察和WorkflowHost有限恢复入口。显式查证是受控动作，页面轮询不得自动触发reconcile。
 
 ## 输入与人工信息
 
-可信job/batch身份、操作权限、分页和有限恢复预算；缺状态/超时报告不可用。
+R1需要可信Run/Operation身份与明确Reconcile权限；R2还需job/batch身份、分页和相应有限恢复预算。缺状态或超时报告不可用，不从页面显示制造业务终态。
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `monarch-r1`的查询/查证入口是RunProtocol.GetRun及OperationProtocol.Get/Reconcile，不包含WorkflowHost或Batch查询。
+- `monarch-r2`在上述基础上提供WorkflowHost/Batch等查询与有限reconcile；应用仍手写身份路由、授权和观察接口，未建立原生生成能力。
+- 查询只观察已提交事实，显式授权的reconcile是受控动作；两者都不等业务完成，也不授权页面自动重试。
 
-目录状态：`not-generated`；所有权：`handwritten`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐profile的API、应用义务及证据级别见[CAPABILITY-MATRIX.md](../../CAPABILITY-MATRIX.md)。银行P23查询/恢复不能改称R2采用，失败服务与OPEN retry政策保持原结论。
 
 ## 结构与命名
 
@@ -24,7 +26,7 @@ Get/GetRun/Operation Get与host.reconcile分别是观察和受控动作；恢复
 
 ## 依赖与装配
 
-维持原Operation/Delivery/Run身份及不可变请求，预算不会因重启/配置变化重置。
+R1维持原Run/Operation身份与不可变请求；R2交接还须维持Delivery身份。预算不会因重启/配置变化重置，查询不自动触发恢复授权。
 
 ## 回锚与更新
 
@@ -36,15 +38,15 @@ Get/GetRun/Operation Get与host.reconcile分别是观察和受控动作；恢复
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
+R1仅在Run/Operation层提供对应查询/查证；R2才扩展WorkflowHost/Batch。测试源码不等恢复动作已执行，查询成功也不等业务完成或最终批准。银行继续冻结P23、未采用R2。
 
-适用：monarch-r1 / monarch-r2。R1/R2公开运行库有对应实现；当前银行生成仍锁P23，不宣称JS原生R2生成、兼容旧journal或生产认证。
+- `monarch:src/main/scala/net/imadz/monarch/persistence/RunProtocol.scala` — `GetRun`（R1起）。
+- `monarch:src/main/scala/net/imadz/monarch/persistence/operation/OperationProtocol.scala` — `Get`、`Reconcile`（R1起）。
+- `monarch:src/main/scala/net/imadz/monarch/persistence/batch/WorkflowHost.scala` — `WorkflowHost`（R2）。
+- `monarch:src/main/scala/net/imadz/monarch/persistence/batch/BatchProtocol.scala` — `Get`（R2）。
 
-- `monarch:src/main/scala/net/imadz/monarch/persistence/batch/WorkflowHost.scala` — `WorkflowProgram`。
-- `monarch:src/main/scala/net/imadz/monarch/persistence/batch/BatchProtocol.scala` — `Get`。
-
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../../sources.lock.json)；不从R2引用反推R1接口。
 
 ### 类别依赖
 
-`workflow-host-bootstrap`。这些是职责依赖，不代替真实Scala import或执行顺序验证。
+R2装配关联`workflow-host-bootstrap`；R1只依赖对应Run/Operation查询和查证接口。类别关联不代替真实Scala import或执行顺序验证，也不把R2宿主变成R1依赖。

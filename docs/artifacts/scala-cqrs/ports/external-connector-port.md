@@ -12,9 +12,11 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+BC由ConnectorBuilder/Template读取application.connectors，生成application/connectors/<Name>.scala。connector-iface未列入targetModuleOf的kernel分支，多模块当前回落root/app；模板还无条件生成@ImplementedBy。接口内层化、外层绑定是目标，不是这条原始生产路径已达成的事实。
 
-目录状态：`implemented`；所有权：`generated`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+JS正式render-technical-ports.mjs#renderTechnicalPorts消费reference-layout、saga-host-contract及artifact-contract，输出<host>TechnicalPorts.scala中的trait、Bindings、Installed和install；Installed校验身份/版本并委托已提供callback，不生成外部I/O或权限oracle。legacy connector-dsl另生成Future返回的Connector trait及实现骨架，不能与正式严格端口互认语义。
+
+各profile的接口生成、装配和实现责任见[能力矩阵](../../CAPABILITY-MATRIX.md)。源码识别不等于本轮编译、外部集成或最终批准。
 
 ## 结构与命名
 
@@ -24,7 +26,7 @@ Connector trait、TechnicalPorts及Installed组合器；strict PhasePort和Monar
 
 ## 依赖与装配
 
-实现adapter在ext/glue，公共生成器负责声明/严格准入，不能提供默认成功实现。
+目标是实现adapter在外层ext/glue、接口不依赖实现；BC当前root输出与@ImplementedBy债如上。JS正式路径负责声明/严格准入和callback委托，不提供默认成功I/O；此保证不能直接套到legacy接口骨架。
 
 ## 回锚与更新
 
@@ -38,10 +40,11 @@ Connector trait、TechnicalPorts及Installed组合器；strict PhasePort和Monar
 
 机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
 
-适用：bc-single / bc-multi / js-formal。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+主要实例：bc-single / bc-multi / js-formal及JS legacy connector-dsl。BC当前root放置与注解债、JS正式严格准入和legacy Future接口不能互相代替。
 
 - `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ConnectorTemplate.scala` — `ConnectorTemplate`。
 - `js:generators/scala-cqrs-application/render-technical-ports.mjs` — `renderTechnicalPorts`。
+- `js:generators/connector-dsl/emit.mjs` — legacy Connector trait输出。
 
 来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
 

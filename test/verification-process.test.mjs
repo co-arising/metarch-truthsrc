@@ -172,6 +172,38 @@ test('real non-bank Node run seals evidence; inspector is static after completio
   assert.equal(sealed(await runVerifiedProcess({ ...customized, receiptSchemaVersion: 'consumer.process/v1' })).schemaVersion, 'consumer.process/v1');
 });
 
+test('generator callback declarations are rejected before any process is dispatched', options, async t => {
+  for (const onStarted of [function* () { assert.fail('must not run'); }, async function* () { assert.fail('must not run'); }]) {
+    const f = fixture(t);
+    await assert.rejects(runVerifiedProcess({ ...f, onStarted }), /callback/);
+    assert.equal(existsSync(f.base + '.json'), false);
+  }
+});
+
+test('returned iterators and thenables cannot fulfill a required callback barrier', options, async t => {
+  let called = 0;
+  for (const value of [(function* () {})(), { get then() { called++; return done => done(); } }]) {
+    const f = fixture(t, 'setTimeout(() => {}, 2000)');
+    const receipt = await runVerifiedProcess({ ...f, onStarted: () => value });
+    assert.equal(receipt.passed, false); assert.equal(receipt.barrier.status, 'failed');
+  }
+  assert.equal(called, 0);
+});
+
+test('event timestamps follow the monotonic invocation timeline across a wall-clock adjustment', options, async t => {
+  const ActualDate = Date, start = ActualDate.now();
+  class AdjustedDate extends ActualDate {
+    constructor(...args) { super(...(args.length ? args : [start - 5000])); }
+    static now() { return start; }
+  }
+  t.mock.method(globalThis, 'Date', AdjustedDate);
+  const f = fixture(t);
+  const receipt = await runVerifiedProcess(f);
+  assert.equal(receipt.passed, true); assert.ok(receipt.elapsedMs >= 0);
+  assert.ok(ActualDate.parse(receipt.endedAt) >= ActualDate.parse(receipt.startedAt));
+  assert.equal(inspectProcessEvidence(f.base).receipt.passed, true);
+});
+
 test('Seatbelt actually denies writes outside its owned root and network access', options, async t => {
   const outside = join(directory(), 'forbidden');
   const f = fixture(t, `import { createConnection } from 'node:net';

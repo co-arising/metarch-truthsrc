@@ -12,9 +12,11 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+BC由AggregateRootBuilder/Template消费application.aggregates；多模块入口放kernel。旧SagaTransactor、inline-state、stepsFactory分支仍可有???，不能因Aggregate文件存在就称为strict Saga引擎实现。
 
-目录状态：`implemented`；所有权：`generated`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+JS正式Play service由templates/aggregate-factory.mjs#aggregateTemplate生成应用入口，aggregate-protocol.mjs#legacyTemplate保留domain兼容载体；非layered目标使用render-actor.mjs#renderActors。应用Aggregate的emitted kind可为aggregate-behavior，旧domain载体为aggregate，分类须结合model.role、路径和模板，不能只匹配kind。legacy aggregate-dsl和retired scala-cqrs-es另行记录。
+
+各profile的入口、兼容载体和能力边界见[能力矩阵](../../CAPABILITY-MATRIX.md)。这些是源码级生产合同，不是本轮目标生成、运行或最终批准。
 
 ## 结构与命名
 
@@ -38,10 +40,12 @@ application/aggregates/<Name>Aggregate。JS额外保留domain/<Name>Aggregate的
 
 机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
 
-适用：bc-single / bc-multi / js-formal。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+主要实例：bc-single / bc-multi / js-formal；legacy/retired另见上文。保持BANK P23旧JVM载体的兼容债，不把它误写成纯domain目标或R2支持。
 
 - `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRootTemplate.scala` — `AggregateRootTemplate`。
-- `js:generators/scala-cqrs-play-service/render-aggregate-layers.mjs` — `renderAggregateLayers`。
+- `js:generators/scala-cqrs-play-service/templates/aggregate-factory.mjs` — `aggregateTemplate`。
+- `js:generators/scala-cqrs-play-service/templates/aggregate-protocol.mjs` — `legacyTemplate`。
+- `js:generators/scala-cqrs-domain/render-actor.mjs` — `renderActors`。
 
 来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
 

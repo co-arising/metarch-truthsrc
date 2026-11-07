@@ -12,9 +12,11 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+JS正式载荷桥由render-domain.mjs#renderCommand读取domain-dependencies中外部producer及稳定身份声明，生成<Name>ExternalEvents.scala的结果到事件转换与身份提取。renderAggregate不写此转换；Ingest请求和authority行为是render-actor.mjs#renderActors或Play service behaviorTemplate的另一个产出面，不能把载荷桥当权限认证。
 
-目录状态：`implemented`；所有权：`generated`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+BC的对应能力属于codegen.semanticProductsFile选择的ProductDomainBuilder → ProductDomainTemplate路径，消费显式external producers/stableIdentityContract；不是旧SystemMetadata输入槽位自动获得的能力，也不能据此声称全部actor ingress已实现。
+
+各profile的载荷生成、actor装配和宿主责任见[能力矩阵](../../CAPABILITY-MATRIX.md)。本轮源码核对不等于生成目标、执行安全测试或最终批准。
 
 ## 结构与命名
 
@@ -38,10 +40,12 @@
 
 机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
 
-适用：js-formal / bc-semantic-products。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+主要实例：js-formal / bc-semantic-products。两者均需明确产品目标；不能将payload转换等同actor ingress/authority完整接线，也不将BC语义产品能力扩展到旧输入槽位。
 
-- `js:generators/scala-cqrs-domain/render-domain.mjs` — `renderAggregate`。
-- `js:generators/scala-cqrs-play-service/render-aggregate-layers.mjs` — `renderAggregateLayers`。
+- `js:generators/scala-cqrs-domain/render-domain.mjs` — `renderCommand`，ExternalEvents载荷转换。
+- `js:generators/scala-cqrs-domain/render-actor.mjs` — `renderActors`，非layered Ingest面。
+- `js:generators/scala-cqrs-play-service/templates/aggregate-behavior.mjs` — `behaviorTemplate`，layered authority行为。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/products/ProductDomainTemplate.scala` — `external`，BC语义产品桥。
 
 来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
 

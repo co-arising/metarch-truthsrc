@@ -12,9 +12,11 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+JS正式注册配置由scala-cqrs-domain/scaffold.mjs#renderScaffold、applicationBuild及所选child/effect配置增补共同生成。非Play目标输出src/main/resources/application.conf；Play service重映射到conf/serialization.conf并由application.conf包含。输入为serializationModel、所选host/child/effect合同及显式runtimeArtifact，不是凭空生成运行库。
 
-目录状态：`implemented`；所有权：`mixed`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+saga-strict的reference.conf由saga-core库提供，应用合并配置并补应用类型；库源码资源存在不证明发布jar或实际消费配置。di-poc SerializationExtension是按participant类/manifest维护ConcurrentHashMap的旧策略注册机制，不是strict运行库的新注册方式；legacy run-all复制的静态serialization.conf又是独立支持路径。
+
+按profile区分生成接线、运行库提供和历史维护机制，见[能力矩阵](../../CAPABILITY-MATRIX.md)。本轮未编译、加载实际序列化系统或最终批准。
 
 ## 结构与命名
 
@@ -38,10 +40,13 @@ SerializationExtension/策略注册与reference.conf/serialization.conf；基础
 
 机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
 
-适用：di-poc / saga-strict / js-formal。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+主要实例：di-poc旧participant策略注册、saga-strict库配置、JS正式应用配置生成及legacy静态复制。strict库不把旧participant注册机制恢复为应用生成要求；发布制品与消费配置需另有证据。
 
-- `dipoc:modules/glue/src/main/scala/net/imadz/common/serialization/SerializationExtension.scala` — `SerializationExtension`。
-- `saga:src/main/resources/reference.conf` — `serialization`。
+- `dipoc:modules/glue/src/main/scala/net/imadz/common/serialization/SerializationExtension.scala` — `SerializationExtension`，legacy注册。
+- `saga:src/main/resources/reference.conf` — strict库提供的序列化配置。
+- `js:generators/scala-cqrs-domain/scaffold.mjs` — `renderScaffold`。
+- `js:generators/scala-cqrs-application/render-build.mjs` — `applicationBuild`，结合选定child/effect增补。
+- `js:generators/scala-cqrs-play-service/generate.mjs` — `inherited`，Play配置重映射。
 
 来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
 

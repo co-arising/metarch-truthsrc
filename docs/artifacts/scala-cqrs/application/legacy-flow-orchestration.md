@@ -12,9 +12,9 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+play-legacy记录Play仓库已维护的RouteDefinition/OcapRuleDefinition、OcapEngine与FabPipelineExecutionActor等源码，以及显式编排接线；这是手写历史参考，不是BC/JS当前正式生成器的输出合同。事件溯源actor的存在本身不证明完整JVM重启恢复，也不等于银行流程或Monarch R2能力。
 
-目录状态：`reference-only`；所有权：`handwritten`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+按profile分别记录参考生命周期和手写责任，见[能力矩阵](../../CAPABILITY-MATRIX.md)。更新应遵守该应用自己的边界，不能以重新生成公共骨架覆盖这些实现；本轮未生成、编译、启动历史应用或授予最终批准。
 
 ## 结构与命名
 
@@ -38,7 +38,7 @@ RouteDefinition/Compiler/Validator、DynamicFlowAssembler、FabPipelineProcessor
 
 机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
 
-适用：play-legacy。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+主要实例：play-legacy，历史手写参考。该profile不承诺BC/JS生成、银行端到端贯通或Monarch R2支持；恢复边界按该应用的独立证据判断。
 
 - `play:app/net/imadz/application/chain/FabPipelineExecutionActor.scala` — `FabPipelineExecutionActor`。
 - `play:app/net/imadz/domain/routing/RouteDefinition.scala` — `RouteDefinition`。

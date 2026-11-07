@@ -12,9 +12,10 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `bank-p23`：`BankRuntime`、目录与清理组件属于银行手写宿主。即使其消费生成的本地 Repository/Bootstrap，实际 spawn、资源归属及释放责任仍不转给生成器。
+- 成功 spawn 的内存缓存不是持久业务真源，也不证明跨 JVM 恢复。R2 库的有限宿主能力不能直接记为银行当前 owner 实现。
 
-目录状态：`implemented`；所有权：`handwritten`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐 profile 的生命周期、生产链与证据层级见[派生能力矩阵](../../CAPABILITY-MATRIX.md)。可用源码、生成接线、目标编译、行为验证和最终批准不是同一声明。
 
 ## 结构与命名
 
@@ -36,14 +37,7 @@ BankRuntime/BankRuntimeDirectory及ResourceCleanup；R2 WorkflowHost是库提供
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
-
-适用：bank-p23。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
-
-- `bank:handwritten/scala/example/bankwealth/integration/BankRuntime.scala` — `BankRuntime`。
-- `bank:handwritten/scala/example/bankwealth/integration/BankResourceCleanup.scala` — `BankResourceCleanup`。
-
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+本页按上述 profile 区分当前原生、保留/退役路径与手写参考；不跨 profile 传播实现或验收结论。完整来源 revision、摘要和生产链由目录、派生矩阵及 `sources.lock.json` 记录，本页不另抄暂定统计。
 
 ### 类别依赖
 

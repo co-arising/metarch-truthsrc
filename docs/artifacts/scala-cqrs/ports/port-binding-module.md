@@ -12,9 +12,11 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+BC tools/multi_project_repo_bind_patch.mjs是独立补丁写入者：读取已有kernel projection Repository、glue实现及root RepositoryBindingModule，在GraphProjectionRepository绑定锚点处补入view repository绑定。它不创建完整模块，跳过带@ImplementedBy的接口，缺实现或锚点会失败；当前gen_pipeline没有自动调用这一步的已定位链路。
 
-目录状态：`partial`；所有权：`mixed`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+di-poc的BootstrapModule/RepositoryBindingModule是已有维护源码，混合来源应精确到文件区域；不能由补丁存在推断所有接口均自动绑定，延时/配置注释也不证明启动就绪。
+
+各profile只记录已支持的部分装配责任，见[能力矩阵](../../CAPABILITY-MATRIX.md)。这不是完整原生binding-module生成器，也不是本轮运行、编译或最终批准。
 
 ## 结构与命名
 
@@ -24,7 +26,7 @@ root BootstrapModule/RepositoryBindingModule，部分现由手写脚本或补丁
 
 ## 依赖与装配
 
-root依赖kernel/glue/ext；生成接口不含反向@ImplementedBy。允许纯同层Bridge的toInstance，外部实现to绑定。
+目标依赖方向为root依赖kernel/glue/ext，接口不反向@ImplementedBy；raw BC Repository/Connector模板的现存注解债另行保留，不由本补丁自动消除。允许纯同层Bridge的toInstance，外部实现to绑定。
 
 ## 回锚与更新
 
@@ -38,7 +40,7 @@ root依赖kernel/glue/ext；生成接口不含反向@ImplementedBy。允许纯�
 
 机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
 
-适用：bc-multi / di-poc。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+主要实例：bc-multi的独立补丁与di-poc已有root模块。完整模块生产和自动pipeline集成仍未由当前来源建立，不能以部分bind写入证明整套装配完备。
 
 - `dipoc:app/net/imadz/modules/BootstrapModule.scala` — `bindings`。
 - `dipoc:app/net/imadz/modules/RepositoryBindingModule.scala` — `RepositoryBindingModule`。
@@ -46,7 +48,7 @@ root依赖kernel/glue/ext；生成接口不含反向@ImplementedBy。允许纯�
 
 来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
 
-## 装配示例
+### 装配示例
 
 ```scala
 bind[ConceptDeltaAdjudicator].to(classOf[ConceptDeltaResolver])
@@ -58,3 +60,7 @@ bind[ContentFingerprintPort].toInstance(ContentFingerprintBridge)
 ### 类别依赖
 
 `extension-implementation`、`port-bridge`。这些是职责依赖，不代替真实Scala import或执行顺序验证。
+
+### 第二批独立模块候选
+
+`scala-cqrs-modular-candidate-v1`新增独立Parcel参考及纯目标合同，属于reference-only，不是现役生成入口。Root constructor composition selects the repository, bridge and flow. 结构、兼容差异及资格见[目标合同](../TARGET-PROFILES.md)；真实编译/行为结果单独记录，不把参考升级为生成器或最终金样。

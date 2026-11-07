@@ -12,9 +12,11 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `js-formal`：`compileProductDesigns`编译设计，`product-design-review`的producer派生模型JSON、Mermaid平面图和source index，由公共writer写入。
+- `bc-semantic-products`：独立的`ProductDesignBuilder`/`ProductDesignModel`/`ProductDesignTemplate`经`generateProducts`写出审阅产物；不能用JS源码冒作BC生产链。
+- 两者都是`derive-evidence`，不是可运行页面或业务服务。作者的approval状态原样保留，输出图不授予最终批准。
 
-目录状态：`implemented`；所有权：`derived`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐profile的生产链和证据级别见[CAPABILITY-MATRIX.md](../CAPABILITY-MATRIX.md)。
 
 ## 结构与命名
 
@@ -36,10 +38,12 @@ model JSON、Mermaid plane图和source-index，文档产物标design-review-only
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
-
-适用：js-formal / bc-semantic-products。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+`js-formal`与`bc-semantic-products`分别有独立生产链，不能用其中一方的implemented或测试源码证明另一方生成/编译。审阅状态与最终批准由显式流程决定，不由writer升级。
 
 - `js:generators/product-design-review/generate.mjs` — `generate`。
+- `js:generators/product-design-review/produce.mjs` — `produce`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/products/ProductDesignBuilder.scala` — `build`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/products/ProductDesignModel.scala` — `ProductDesignModel`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/products/ProductDesignTemplate.scala` — `generate`。
 
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../sources.lock.json)；设计产物不作运行认证。

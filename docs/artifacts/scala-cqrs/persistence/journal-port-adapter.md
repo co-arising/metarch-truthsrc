@@ -12,13 +12,15 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+bank-p23的BankJournal/BankJournalEnvelope与BankPersistenceJournal是外置手写合同和实现；后者包装PersistenceQuery及namespace限定的轮询流。生成器不拥有该银行日志适配体。
 
-目录状态：`implemented`；所有权：`handwritten`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+JS正式Play service的render-journal-readside.mjs#renderProjection按显式service.projectionStore及流/存储元数据，真实生成infrastructure/projection/<Store>Projection.scala中的Journal trait和Envelope。它提供读侧所需端口与载体，不生成PersistenceQuery实现；BankReadside负责把手写BankJournal适配进去。
+
+各profile的接口生成、手写实现和接缝见[能力矩阵](../../CAPABILITY-MATRIX.md)。接口可生成不等于日志读取、恢复订阅、目标编译或最终批准已在本轮执行。
 
 ## 结构与命名
 
-BankJournal/BankPersistenceJournal/BankJournalEnvelope等分别是端口、实现和载体；银行当前是手写与生成读侧的接缝。
+BankJournal/BankPersistenceJournal/BankJournalEnvelope分别是手写端口、实现和载体；生成读侧<Store>Projection对象另含Journal与Envelope，经BankReadside适配。两组合同不能因同样叫Journal就当成一个生成器拥有的文件。
 
 类型使用UpperCamelCase，成员使用lowerCamelCase；数据库、protobuf和稳定业务ID分别遵循各自合同。描述目标命名不授权改写现有wire名称、PID或冻结载体。
 
@@ -38,9 +40,10 @@ PID隔离、顺序/offset、恢复读取/订阅、错误不可用与停止行为
 
 机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
 
-适用：bank-p23。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+主要实例：bank-p23手写日志适配及js-formal生成Journal/Envelope。生成的端口/载体与PersistenceQuery实现分别拥有来源，不能将二者合称全部生成。
 
-- `bank:handwritten/scala/example/bankwealth/integration/BankJournal.scala` — `BankJournal`。
+- `bank:handwritten/scala/example/bankwealth/integration/BankJournal.scala` — `BankJournal / BankJournalEnvelope`。
 - `bank:handwritten/scala/example/bankwealth/integration/BankPersistenceJournal.scala` — `BankPersistenceJournal`。
+- `js:generators/scala-cqrs-play-service/render-journal-readside.mjs` — `renderProjection / renderJournalReadside`。
 
 来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。

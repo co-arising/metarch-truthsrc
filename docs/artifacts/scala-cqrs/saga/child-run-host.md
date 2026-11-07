@@ -12,13 +12,15 @@ child计划、输入输出、fanout上限/顺序、confirmed-prefix与持久结�
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `js-formal`须显式选择child产品profile，由`scala-cqrs-child-application`入口及child renderers生成ChildHost、ChildJournal和host proto；仅注册基础application generator不会激活child产品。
+- `bc-semantic-products`由独立ProductChildHostTemplate/ProductChildPlanTemplate经`generateProducts`写出；`bc-strict`的旧composition与`js-run-all-strict`的fixture composition则生成各自Invocation Host/Monarch child Plan。
+- 这些有限应用wrapper消费旧StartRun/journal合同，不是R2 PersistentInbox，也不复制Monarch协调内核。
 
-目录状态：`implemented`；所有权：`generated`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐profile的生产链和生命周期见[CAPABILITY-MATRIX.md](../../CAPABILITY-MATRIX.md)。P23冻结及银行未采用R2的边界不变。
 
 ## 结构与命名
 
-ChildHost/ChildPlan与父Execution的awaitChildRun桥；R2 PersistentInbox是另一版本库能力，不能按名字合并保证。
+正式child profile输出`ChildHost.scala`（invocation-host）、`ChildJournal.scala`（execution-plan）及child host proto；旧composition另有Child Plan。父Execution消费旧StartRun/等待桥，R2 PersistentInbox是另一库能力，不能按名字合并保证。
 
 类型使用UpperCamelCase，成员使用lowerCamelCase；数据库、protobuf和稳定业务ID分别遵循各自合同。描述目标命名不授权改写现有wire名称、PID或冻结载体。
 
@@ -36,11 +38,12 @@ ChildHost/ChildPlan与父Execution的awaitChildRun桥；R2 PersistentInbox是另
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
+formal child、独立BC semantic及旧strict/run-all composition按各自入口解释。测试源码不等父子恢复行为证据，生成wrapper不授予最终模板批准或R2保证。
 
-适用：js-formal。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
-
+- `js:generators/scala-cqrs-child-application/generate.mjs` — `generate`。
 - `js:generators/scala-cqrs-application/render-child-hosts.mjs` — `renderChildHosts`。
 - `js:generators/scala-cqrs-application/render-child-plans.mjs` — `renderChildPlans`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/products/ProductChildHostTemplate.scala` — `generate`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/products/ProductChildPlanTemplate.scala` — `generate`。
 
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../../sources.lock.json)；银行P23冻结不变。

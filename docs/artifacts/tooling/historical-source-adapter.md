@@ -12,9 +12,11 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `bank-p23`及本类别的`tooling`标签均指银行手写历史兼容工具，不是公共JS生成器。现役的是读取器，不是它读取的已退役作者树/资产。
+- `historical-source.mjs`的`readHistoricalFile`/`historicalSnapshot`读取固定作者revision `675a9366`；`historical-assets.mjs`的`readHistoricalAsset`/`assertHistoricalCheckout`约束资产revision `4515b6b9`。两类来源不能互换或成为当前生成输入。
+- P23冻结、旧失败journal与证据保持不动；历史读取不授权迁移运行库或重建第二作者真源。
 
-目录状态：`implemented`；所有权：`handwritten`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+来源与逐profile责任见[CAPABILITY-MATRIX.md](../CAPABILITY-MATRIX.md)，历史可读性不等当前业务通过。
 
 ## 结构与命名
 
@@ -36,11 +38,9 @@
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
+`bank-p23`与本类别`tooling`均是银行所有的读取器，不是公共生成能力。测试源码不等历史重放已执行；读取固定版本不能改变现役输入、冻结P23或最终验收结论。
 
-适用：bank-p23 / tooling。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+- `bank:tools/historical-assets.mjs` — `readHistoricalAsset`、`assertHistoricalCheckout`。
+- `bank:tools/historical-source.mjs` — `readHistoricalFile`、`historicalSnapshot`。
 
-- `bank:tools/historical-assets.mjs` — `HISTORICAL_ASSET_REVISION`。
-- `bank:tools/historical-source.mjs` — `historical`。
-
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../sources.lock.json)；作者与资产的固定revision分别解释。

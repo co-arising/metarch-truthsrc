@@ -12,9 +12,9 @@ area capacities/需求、carried claims、owner、证明类型与校验逻辑必
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+`monarch-r2`的具体释放/carry证明、纯分类和路由安全政策由应用手写实现，当前为`not-generated`。运行库提供ResourceEvidenceValidator接口及默认拒绝行为，但不能据此宣称领域安全策略已经实现。
 
-目录状态：`not-generated`；所有权：`handwritten`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+尚未定位JS/BC原生R2业务政策producer或银行R2采用；P23手写金融证明不自动等同本接口。逐profile及接口/实现证据边界见[CAPABILITY-MATRIX.md](../../CAPABILITY-MATRIX.md)，库测试和生成模板检查都不能替代独立业务oracle。
 
 ## 结构与命名
 
@@ -36,11 +36,9 @@ ResourceEvidenceValidator纯同步校验，默认拒绝；AreaDefinition/BatchCo
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
-
-适用：monarch-r2。R1/R2公开运行库有对应实现；当前银行生成仍锁P23，不宣称JS原生R2生成、兼容旧journal或生产认证。
+R2资源证据接口与应用具体政策分开；R1不含本组资源域API，银行P23未采用R2。测试源码不是执行证据，默认拒绝不代表业务安全已获最终批准。
 
 - `monarch:src/main/scala/net/imadz/monarch/persistence/resource/ResourceEvidenceValidator.scala` — `ResourceEvidenceValidator`。
 - `monarch:src/main/scala/net/imadz/monarch/persistence/workflow/BatchModel.scala` — `AreaDefinition`。
 
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../../sources.lock.json)；本页摘录不是生产认证。

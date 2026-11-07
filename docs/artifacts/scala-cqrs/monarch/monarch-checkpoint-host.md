@@ -12,9 +12,12 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `monarch-legacy`、`monarch-r1`、`monarch-r2`消费共享PersistentMonarch库；旧behavior/StartRun与versioned/managed API的保证分别判定。
+- `js-formal`和`bc-semantic-products`确实生成有限业务Execution wrapper、StateCodec及execution proto，是`generate-wiring`，不是复制库内核。BC对应ProductExecution/ProductInvocationExecution模板链。
+- `bank-p23`是生成wrapper加手写`BankRuntime`/directory actor owner的混合装配；实际仍调用旧`PersistentMonarch.behavior`，不能仅标为runtime-library或冒称R2。
+- `js-legacy`的`monarch-dsl/emit.mjs`及`js-run-all-strict`的composition child-plan分别提供旧式应用wrapper，不能抹去已有生成能力，也不能向它们传播managed API保证。
 
-目录状态：`implemented`；所有权：`library`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐profile的生产链、生命周期与证据级别见[CAPABILITY-MATRIX.md](../../CAPABILITY-MATRIX.md)。P23冻结不因本次归属校准改变。
 
 ## 结构与命名
 
@@ -36,14 +39,15 @@ checkpoint ACK、恢复游标、旧代回调/重复执行窗口与真实幂等�
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
+各库profile、JS/BC生成wrapper及bank手写actor owner分别按生产说明与矩阵解释。测试源码不是跨JVM恢复证据；P23仍用旧behavior，银行未采用R2，最终批准未由本页授予。
 
-适用：monarch-legacy / monarch-r1 / monarch-r2 / bank-p23。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+- `monarch:src/main/scala/net/imadz/monarch/persistence/PersistentMonarch.scala` — `behavior`、`versionedBehavior`、`managedBehavior`（按profile区分）。
+- `js:generators/scala-cqrs-application/render-invocation-execution.mjs` — `renderInvocationExecution`。
+- `js:generators/scala-cqrs-application/render-execution.mjs` — `renderExecutionPlans`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/products/ProductExecutionTemplate.scala` — `generate`。
+- `bank:handwritten/scala/example/bankwealth/integration/BankRuntime.scala` — `ensureCash`、`ensureRefund`。
 
-- `monarch:src/main/scala/net/imadz/monarch/persistence/PersistentMonarch.scala` — `PersistentMonarch`。
-- `js:generators/scala-cqrs-application/render-invocation-execution.mjs` — `PersistentMonarch.behavior`。
-
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../../sources.lock.json)；库实现不算每业务生成。
 
 ### 类别依赖
 

@@ -12,9 +12,11 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+BC由ConnectorImplBuilder → ConnectorImplTemplate消费SystemMetadata.infrastructure.connectors，输出infrastructure/connectors/<Name>Impl.scala骨架，实际包名由selfType控制；多模块当前落root，并非已提供glue里的完整外部实现。
 
-目录状态：`implemented`；所有权：`mixed`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+JS legacy connector-dsl/emit.mjs按显式name/package/method signatures真正生成<name>Connector.scala和<name>ConnectorImpl.scala；实现方法仍为MANUAL ???，不是正式typed-product外部连接器。bank-p23的MockTAClient由手写集成提供并连接本地mock worker，不能冒充真实TA集成。
+
+按profile区分骨架生成、手写模拟与真实I/O责任，见[能力矩阵](../../CAPABILITY-MATRIX.md)。本轮未运行worker、外部调用、编译或最终批准；源码产出合同不认证对方耐久性。
 
 ## 结构与命名
 
@@ -38,9 +40,10 @@
 
 机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
 
-适用：bc-single / bc-multi / bank-p23。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+主要实例：BC单/多模块骨架、JS legacy connector-dsl与bank-p23手写mock。它们都不构成真实TA幂等性或耐久性认证，不能以生成能力名称替代外部证据。
 
 - `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/connector/ConnectorImplTemplate.scala` — `ConnectorImplTemplate`。
+- `js:generators/connector-dsl/emit.mjs` — `implMethods`及文件写入。
 - `bank:handwritten/scala/example/bankwealth/bindings/MockTAClient.scala` — `MockTAClient`。
 
 来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。

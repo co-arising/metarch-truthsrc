@@ -18,6 +18,14 @@ sources.lock的revision是捕获基线，不要求HEAD永远等于该值，否�
 
 本地包检查没有外部Git/仓库前置，只能报告包内source与文档一致，以及外部锁中是否已知有未分类项。`externalSourcesReverified:false`不可省略；跨仓缺源则不能通过。
 
+## 能力台账v2
+
+[能力合同](CAPABILITY-CONTRACT.md)规定生命周期、职责、生产入口/输出通道和证据层级。[能力矩阵](CAPABILITY-MATRIX.md)是派生视图，不能独立手改。v1只兼容读取原文档登记，不从旧implemented推导能力统计。v2新增producer或输出时必须同时更新相关变体routes；删除映射、未解释的新manifest、无来源的entry/writer、错误的library归属都会拒绝。
+
+生成观察用实际输入与输出摘要，只有执行后才登记generated；目标编译、独立行为及最终owner批准分别有自己的证据，不能借Node源码测试或现有golden晋升。来源锁的`productionToolSha256`与现有project freshness覆盖相同工具根，使schema、作者展开库及package变化也能使旧证据过期。`*`定位表示整文件，不假装符号精度。
+
+维护后用`renderCapabilityMatrix(catalog, lock, verifiedObservations)`派生矩阵，再刷新documents摘要和coverage。回执必须先经`validateObservation`或`inspectCapabilityObservations`核验；普通对象上的passed字段不能成为统计依据。改变工具后创建新的真实观察，不重签旧运行材料。
+
 ## 不做的事
 
 - 不把校验器变成可执行任意外部代码的文档生成平台。

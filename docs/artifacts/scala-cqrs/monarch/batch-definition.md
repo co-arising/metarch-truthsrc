@@ -12,13 +12,15 @@ ItemId/sequence、payload、area/compatibilityKey、policyVersion、retry/route�
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+`monarch-r2`中的具体BatchDefinition、AreaDefinition和BatchPolicy是应用拥有的业务数据/手写装配，当前没有对应原生生成能力。库提供类型和执行约束，不替应用选择批量、路由、资源或EOF政策。
 
-目录状态：`not-generated`；所有权：`handwritten`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+`BatchDefinition`声明在`batch/BatchProtocol.scala`，策略类型在`workflow/BatchModel.scala`。引用这些API不是提供了具体业务定义；`not-generated`不等库接口不存在。
+
+逐profile及接口/实现证据区别见[CAPABILITY-MATRIX.md](../../CAPABILITY-MATRIX.md)。银行仍锁P23，不据R2库类型存在推定银行已迁移。
 
 ## 结构与命名
 
-BatchDefinition/AreaDefinition/BatchPolicy.single/countOrWait/compatible、BatchManifest；硬minItems不会因EOF或timeout绕过。
+BatchDefinition/AreaDefinition/BatchPolicy.single/countOrWait/compatible与BatchManifest分别描述业务批合同。`compatible`且`allowPartialOnClose=false`时，硬`minItems`不因EOF或timeout绕过；不能把这一限制无差别套在所有CountOrWait策略上。
 
 类型使用UpperCamelCase，成员使用lowerCamelCase；数据库、protobuf和稳定业务ID分别遵循各自合同。描述目标命名不授权改写现有wire名称、PID或冻结载体。
 
@@ -36,11 +38,9 @@ manifest封定后不能重组顺序/identity/payload，source adapter恢复重�
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
+`monarch-r2`引用的是库API与应用义务，不是已有完整业务生成实现；R1不含这组批定义。银行仍锁P23，未采用R2。测试源码或接口存在不能提升为生成/行为证据或最终批准。
 
-适用：monarch-r2。R1/R2公开运行库有对应实现；当前银行生成仍锁P23，不宣称JS原生R2生成、兼容旧journal或生产认证。
-
+- `monarch:src/main/scala/net/imadz/monarch/persistence/batch/BatchProtocol.scala` — `BatchDefinition`。
 - `monarch:src/main/scala/net/imadz/monarch/persistence/workflow/BatchModel.scala` — `BatchPolicy`。
-- `monarch:src/main/scala/net/imadz/monarch/persistence/batch/WorkflowHost.scala` — `WorkflowProgram`。
 
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../../sources.lock.json)；本页摘录不是生产认证。

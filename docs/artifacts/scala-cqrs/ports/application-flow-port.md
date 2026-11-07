@@ -12,19 +12,21 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+di-poc的FlowPorts与bank-p23的BankApplicationPorts是分别维护的手写接口，不能把它们算成BC或JS已生成的具名FlowPorts。
 
-目录状态：`implemented`；所有权：`handwritten`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+JS正式Play service另有真实的应用流程调用合同：render-service.mjs#renderService消费artifact-contract中的service.endpoints及明确port/input/output/implementation ID，输出<Artifact>Service.scala中的Endpoint[I,O].run、Bindings、Composition与Factory。这属于本类别的生成能力，但不是上述具名trait的生成器，也不是端点背后的业务实现。
+
+按profile区分手写接口、生成调用边界和实现责任，见[能力矩阵](../../CAPABILITY-MATRIX.md)。源码定位不证明本轮生成、端点装配执行、业务验收或最终批准。
 
 ## 结构与命名
 
-FlowPorts含NoteParamEnricherPort/RegisterUserFlowPort/RequestDoRFlowPort，当前di-poc为手写接口；与签名VO可在同一文件。
+di-poc FlowPorts含NoteParamEnricherPort/RegisterUserFlowPort/RequestDoRFlowPort，手写接口可与签名VO同文件。JS正式合同位于service/<Artifact>Service.scala，Endpoint的run为(Principal, I) => Future[Outcome[O]]，Bindings持有各端点；这不是生成一个名为FlowPorts的trait族。
 
 类型使用UpperCamelCase，成员使用lowerCamelCase；数据库、protobuf和稳定业务ID分别遵循各自合同。描述目标命名不授权改写现有wire名称、PID或冻结载体。
 
 ## 依赖与装配
 
-接口放kernel，实现放ext，root绑定。ext可依赖glue的I/O机制但glue不能反向依赖ext。
+di-poc接口放kernel、实现放ext、root绑定；ext可依赖glue I/O而glue不反向依赖ext。JS正式单项目由显式Composition/Factory提供Authority、Bindings及生命周期，Endpoint.run的业务体由实现方提供，不能据此推定同样的kernel/ext模块布局。
 
 ## 回锚与更新
 
@@ -38,13 +40,18 @@ FlowPorts含NoteParamEnricherPort/RegisterUserFlowPort/RequestDoRFlowPort，当�
 
 机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
 
-适用：di-poc / bank-p23。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+主要实例：di-poc / bank-p23的手写接口与js-formal的Endpoint.run/Bindings合同。生成调用边界属于本类别，但不改变具名FlowPorts及其业务实现的手写所有权。
 
 - `dipoc:modules/kernel/src/main/scala/net/imadz/metarch/application/FlowPorts.scala` — `RegisterUserFlowPort`。
 - `bank:handwritten/scala/example/bankwealth/integration/BankApplicationPorts.scala` — `BankReadQueries`。
+- `js:generators/scala-cqrs-play-service/render-service.mjs` — `renderService`。
 
 来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
 
 ### 类别依赖
 
 `signature-value-closure`。这些是职责依赖，不代替真实Scala import或执行顺序验证。
+
+### 第二批独立模块候选
+
+`scala-cqrs-modular-candidate-v1`新增独立Parcel参考及纯目标合同，属于reference-only，不是现役生成入口。Future-returning quote application port; failure and absence are distinct. 结构、兼容差异及资格见[目标合同](../TARGET-PROFILES.md)；真实编译/行为结果单独记录，不把参考升级为生成器或最终金样。

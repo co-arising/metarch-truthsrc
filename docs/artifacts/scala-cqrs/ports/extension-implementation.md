@@ -12,19 +12,19 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+di-poc以ext中的ConceptDeltaResolver、RegisterUserFlow为维护实现；bank-p23则以handwritten/scala中的BankSipApplication、MockTAClient为外置手写实现。两者各有业务合同与依赖，不能把di-poc路径作为银行profile的来源，也不能将银行单项目结构说成已采用ext模块。
 
-目录状态：`implemented`；所有权：`handwritten`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+生成器可生成所需端口或载体，不拥有这些算法/适配体；独立手写文件不是生成文件的可编辑副本。各profile的手写责任与参考/当前生命周期见[能力矩阵](../../CAPABILITY-MATRIX.md)。源码关联不表示本轮业务测试、目标编译或最终批准。
 
 ## 结构与命名
 
-ext实现kernel port，可消费glue机制，root仅注入；文件包名可保持旧值，不以物理迁移强制改公开FQN。
+di-poc的ext实现kernel port，可消费glue机制，root仅注入；银行当前以外置handwritten/scala维护实现，不假定同名ext模块。文件包名可保持旧值，不以物理迁移强制改公开FQN。
 
 类型使用UpperCamelCase，成员使用lowerCamelCase；数据库、protobuf和稳定业务ID分别遵循各自合同。描述目标命名不授权改写现有wire名称、PID或冻结载体。
 
 ## 依赖与装配
 
-只依赖kernel/glue且不形成glue到ext循环；手写与生成写入领地严格隔离。
+多模块目标只允许ext依赖kernel/glue，不形成glue到ext循环；银行外置源码则按实际依赖与组合根核对。各profile的手写与生成写入领地都须严格隔离。
 
 ## 回锚与更新
 
@@ -38,13 +38,19 @@ ext实现kernel port，可消费glue机制，root仅注入；文件包名可保�
 
 机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
 
-适用：di-poc / bank-p23。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+主要实例：di-poc参考实现与bank-p23当前外置手写实现。两者的来源和物理模块分别解释，不以POC的ext位置推定银行已采用同样布局。
 
 - `dipoc:modules/ext/src/main/scala/net/imadz/metarch/domain/service/ConceptDeltaResolver.scala` — `ConceptDeltaResolver`。
 - `dipoc:modules/ext/src/main/scala/net/imadz/metarch/application/RegisterUserFlow.scala` — `RegisterUserFlow`。
+- `bank:handwritten/scala/example/bankwealth/sip/BankSipApplication.scala` — `BankSipApplication`。
+- `bank:handwritten/scala/example/bankwealth/bindings/MockTAClient.scala` — `MockTAClient`。
 
 来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
 
 ### 类别依赖
 
 `computation-port`、`application-flow-port`。这些是职责依赖，不代替真实Scala import或执行顺序验证。
+
+### 第二批独立模块候选
+
+`scala-cqrs-modular-candidate-v1`新增独立Parcel参考及纯目标合同，属于reference-only，不是现役生成入口。Handwritten application implementation using injected route repository and capacity policy. 结构、兼容差异及资格见[目标合同](../TARGET-PROFILES.md)；真实编译/行为结果单独记录，不把参考升级为生成器或最终金样。

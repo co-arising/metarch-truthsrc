@@ -238,6 +238,11 @@ test('local tarball allowlist installs offline and runs without the source check
   const artifactReport = JSON.parse(command(process.execPath, [artifactCheck, '--local'], root).stdout);
   assert.equal(artifactReport.passed, true);
   assert.equal(artifactReport.externalSourcesReverified, false);
+  assert.equal(artifactReport.capabilities.calibrated, true);
+  assert.equal(artifactReport.capabilities.producers.total, artifactReport.generators);
+  assert.equal(artifactReport.capabilities.js.code.finalApproved.categories, 0);
+  const capabilityMatrix = join(moved, 'node_modules/@madpolaris/truthsrc/docs/artifacts/CAPABILITY-MATRIX.md');
+  assert.match(readFileSync(capabilityMatrix, 'utf8'), /生成入口反向覆盖/);
   const artifactIndex = join(moved, 'node_modules/@madpolaris/truthsrc/docs/artifacts/scala-cqrs/README.md');
   assert.ok(readFileSync(artifactIndex, 'utf8').includes('端口'));
   const provenance = join(moved, 'node_modules/@madpolaris/truthsrc/lib/handwritten-provenance.mjs');
@@ -318,6 +323,88 @@ test('local tarball allowlist installs offline and runs without the source check
     0, { PATH: '/usr/bin:/bin', NODE_V8_COVERAGE: '' }).stdout);
   assert.deepEqual(verificationResult, { captured: true, workerValidated: true, ownershipValidated: true,
     processExecuted: process.platform === 'darwin' && existsSync('/usr/bin/sandbox-exec'), bankCheckoutRequired: false });
+  const lifecycleEntry = join(moved, 'node_modules/@madpolaris/truthsrc/lib/verification/runner.mjs');
+  const lifecycleExample = join(moved, 'node_modules/@madpolaris/truthsrc/scaffold/verification-project/verification.mjs');
+  const lifecycle = `
+    import assert from 'node:assert/strict';
+    import { chmodSync, cpSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+    import { register } from 'node:module';
+    import { dirname, join } from 'node:path';
+    import { pathToFileURL } from 'node:url';
+    const root = ${JSON.stringify(root)}, installed = ${JSON.stringify(join(moved, 'node_modules/@madpolaris/truthsrc'))};
+    const example = join(root, 'standalone-catalog');
+    cpSync(join(installed, 'scaffold/verification-project'), example, { recursive: true, errorOnExist: true });
+    const allow = [installed, example].map(path => pathToFileURL(path + '/').href);
+    const loader = 'export async function resolve(specifier, context, next) { const result = await next(specifier, context); ' +
+      'if (result.url.startsWith("file:") && !' + JSON.stringify(allow) + '.some(root => result.url.startsWith(root))) ' +
+      'throw new Error("source checkout fallback forbidden"); return result; }';
+    register('data:text/javascript,' + encodeURIComponent(loader), import.meta.url);
+    const { runVerification, inspectVerificationRun } = await import(${JSON.stringify(pathToFileURL(lifecycleEntry).href)});
+    const { catalogVerification } = await import(pathToFileURL(join(example, 'verification.mjs')));
+    const runs = join(root, 'catalog-runs'); mkdirSync(runs);
+    const options = catalogVerification(join(runs, 'first'));
+    const report = await runVerification(options); assert.equal(report.passed, true);
+    const inspect = () => inspectVerificationRun({ directory: options.directory, plan: options.plan, verify: options.verify });
+    assert.equal((await inspect()).passed, true); assert.equal((await inspect()).passed, true);
+    assert.equal(readdirSync(options.lease.registry).filter(name => name.endsWith('.lock')).length, 0);
+    await assert.rejects(runVerification(options));
+    const output = join(options.directory, 'artifacts/catalog.mjs');
+    writeFileSync(output, 'export const labels = Object.freeze([]); export const count = 0;\\n');
+    assert.equal((await inspect()).passed, false);
+    const second = catalogVerification(join(runs, 'second'));
+    assert.equal((await runVerification(second)).passed, true);
+    writeFileSync(join(example, 'new-input.json'), '{}');
+    assert.equal((await inspectVerificationRun({ directory: second.directory, plan: second.plan, verify: second.verify })).passed, false);
+    console.log(JSON.stringify({ built: true, independentlyVerified: true, leaseReleased: true,
+      staleArtifactRejected: true, addedInputRejected: true, sourceCheckoutRequired: false }));
+  `;
+  assert.ok(paths.includes('lib/verification/runner.mjs'));
+  assert.ok(paths.includes('scaffold/verification-project/verification.mjs'));
+  assert.deepEqual(JSON.parse(command(process.execPath, ['--input-type=module', '-e', lifecycle], root,
+    0, { PATH: '/usr/bin:/bin', NODE_V8_COVERAGE: '' }).stdout), {
+    built: true, independentlyVerified: true, leaseReleased: true, staleArtifactRejected: true,
+    addedInputRejected: true, sourceCheckoutRequired: false,
+  });
+  const targetRoot = join(moved, 'node_modules/@madpolaris/truthsrc');
+  const targetContracts = `
+    import assert from 'node:assert/strict';
+    import { register } from 'node:module';
+    import { pathToFileURL } from 'node:url';
+    const installed = ${JSON.stringify(targetRoot)};
+    const allowed = pathToFileURL(installed + '/').href;
+    register('data:text/javascript,' + encodeURIComponent('export async function resolve(s,c,n) { const r = await n(s,c); ' +
+      'if(r.url.startsWith("file:") && !r.url.startsWith(' + JSON.stringify(allowed) + ')) throw Error("checkout fallback"); return r; }'), import.meta.url);
+    const { MODULAR_CANDIDATE, targetProfile } = await import(pathToFileURL(installed + '/lib/scala-target/profiles.mjs'));
+    const { resolveName, resolveNameSet, resolveArtifactPath } = await import(pathToFileURL(installed + '/lib/scala-target/naming.mjs'));
+    const { buildTargetModel } = await import(pathToFileURL(installed + '/lib/scala-target/model.mjs'));
+    const entry = { knowledgeId: 'source:catalog#/item', scope: 'example.catalog', space: 'scala-type',
+      spelling: 'HTTP-item', binding: null, prefix: [], suffix: [] };
+    assert.equal(resolveName({ profile: MODULAR_CANDIDATE, ...entry }).name, 'HttpItem');
+    assert.equal(resolveName({ profile: MODULAR_CANDIDATE, ...entry, space: 'wire' }).name, 'HTTP-item');
+    assert.throws(() => resolveNameSet({ profile: MODULAR_CANDIDATE, names: [entry, { ...entry,
+      knowledgeId: 'source:catalog#/other', spelling: 'Http_item' }], reserved: [] }), error => error.diagnostic.code === 'TARGET_NAME_COLLISION');
+    assert.equal(resolveArtifactPath({ profile: MODULAR_CANDIDATE, module: 'kernel', packageName: 'example.catalog', typeName: 'HttpItem' }),
+      'modules/kernel/src/main/scala/example/catalog/HttpItem.scala');
+    const model = buildTargetModel({ schemaVersion: 'truthsrc.scala-target-model/v1', profile: MODULAR_CANDIDATE,
+      contexts: [{ id: 'Catalog', packageName: 'example.catalog' }], values: [{
+        ref: { context: 'Catalog', kind: 'type', owner: [], id: 'item-id' }, spelling: 'HTTP-item', binding: null,
+        module: 'kernel', shape: 'record', fileStem: null, variants: [], fields: [{
+          id: 'wire-value', spelling: 'wire-value', binding: null, valueType: { form: 'primitive', name: 'string' }
+        }]
+      }], ports: [], components: [], bindings: [] });
+    assert.equal(model.status, 'candidate');
+    assert.equal(model.values[0].ref.id, 'item-id');
+    assert.equal(model.values[0].name, 'HttpItem');
+    assert.equal(model.values[0].fields[0].name, 'wireValue');
+    assert.deepEqual(model.files, ['modules/kernel/src/main/scala/example/catalog/domain/values/HttpItem.scala']);
+    assert.equal(targetProfile(MODULAR_CANDIDATE).generator, null);
+    assert.equal(targetProfile(MODULAR_CANDIDATE).approval, null);
+    console.log(JSON.stringify({ installed: true, collisionRejected: true, stableWire: true, candidateOnly: true }));
+  `;
+  assert.deepEqual(JSON.parse(command(process.execPath, ['--input-type=module', '-e', targetContracts], root,
+    0, { PATH: '/usr/bin:/bin', NODE_V8_COVERAGE: '' }).stdout), {
+    installed: true, collisionRejected: true, stableWire: true, candidateOnly: true,
+  });
   const created = json(root, ['init', 'packed-counter'], entry);
   const args = ['--project', created.project, '--out', join(created.root, 'generated')];
   assert.equal(json(root, ['generate-project', ...args], entry).applied, true);

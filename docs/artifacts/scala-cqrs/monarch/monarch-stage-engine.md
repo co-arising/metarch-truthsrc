@@ -12,9 +12,9 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+`monarch-legacy`、`monarch-r1`和`monarch-r2`在本类别均消费`monarch-core`的共享执行机制；库实现不是每条业务流水线生成的源码。`MonarchTypes.scala`中的`StageInterpreter`和`LifecycleHooks`是接口依据，泛型参数`Stage`不能当作独立类型声明引用。
 
-目录状态：`implemented`；所有权：`library`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+具体业务stage ADT、顺序及解释器实现归[monarch-execution-plan](monarch-execution-plan.md)或应用手写代码。库能力、应用生成与实际行为证据分别记录在[CAPABILITY-MATRIX.md](../../CAPABILITY-MATRIX.md)，不以R2库存在推断银行采用或跨JVM fencing。
 
 ## 结构与命名
 
@@ -36,11 +36,9 @@ core无Akka依赖；持久化由外层wrapper提供。本地generation guard不�
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
-
-适用：monarch-legacy / monarch-r1 / monarch-r2。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+monarch-legacy/R1/R2均在此引用库执行机制，业务stage定义另列。测试源码不等执行证据，generation guard不升级为跨JVM保证；本页不授予最终批准。
 
 - `monarch-core:src/main/scala/net/imadz/monarch/Monarch.scala` — `Monarch`。
-- `monarch-core:src/main/scala/net/imadz/monarch/MonarchTypes.scala` — `Stage`。
+- `monarch-core:src/main/scala/net/imadz/monarch/MonarchTypes.scala` — `StageInterpreter`、`LifecycleHooks`。
 
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../../sources.lock.json)；银行仍P23，未采用R2。

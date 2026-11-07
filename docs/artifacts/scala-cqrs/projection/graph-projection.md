@@ -12,9 +12,12 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `bc-single` / `bc-multi`：BC 仓储 builder 的 graph 分支、实现模板及 handler 后处理生成每视图代码/委托，依赖外部手写存储和 driver；不是只有 multi 才有 graph 源码。
+- `di-poc`：`GraphProjectionRepository` 是手写 kernel port/纯助手，`GraphMutationExecutor` 是手写 glue。它们是实现参考，不是 BC 每视图生成器本身。
+- `js-legacy`：`viewrepo`、`smviews` 对 `storage.kind=graph` 有实际代码生成；退役 `scala-cqrs-es-projection` 也保留存储分支。两者不能归为原生服务 graph producer。
+- legacy `mergeLinkTolerant` 仍为 `???`，相关行为需手写；BC 通用 ViewApi 明确排除 graph 查询。生成委托、图查询面和完整可运行图服务必须分开，当前没有确立原生通用 graph 生产能力。
 
-目录状态：`implemented`；所有权：`mixed`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐 profile 的生命周期、生产链与证据层级见[派生能力矩阵](../../CAPABILITY-MATRIX.md)。可用源码、生成接线、目标编译、行为验证和最终批准不是同一声明。
 
 ## 结构与命名
 
@@ -36,11 +39,4 @@ GraphProjectionRepository为kernel port；GraphProjectionRepositoryImpl可在ext
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
-
-适用：bc-multi / di-poc。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
-
-- `dipoc:modules/glue/src/main/scala/net/imadz/metarch/infrastructure/graph/GraphMutationExecutor.scala` — `GraphMutationExecutor`。
-- `dipoc:modules/kernel/src/main/scala/net/imadz/metarch/infrastructure/graph/GraphProjectionRepository.scala` — `GraphProjectionRepository`。
-
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+本页按上述 profile 区分当前原生、保留/退役路径与手写参考；不跨 profile 传播实现或验收结论。完整来源 revision、摘要和生产链由目录、派生矩阵及 `sources.lock.json` 记录，本页不另抄暂定统计。

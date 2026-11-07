@@ -4,7 +4,7 @@
 
 ## 职责
 
-选择稳定serializer ID/manifest并转换消息bytes。不是业务事件生成器；反序列化不能静默接受未知版本。
+按serializer ID/manifest路由消息并转换bytes。稳定身份和未知版本拒绝是协议要求，不是任意模板已达成的保证；它也不是业务事件生成器。JS当前按context位置派生ID的限制必须纳入演进检查。
 
 ## 输入与人工信息
 
@@ -12,9 +12,11 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+BC单/多模块在CodegenMain复制静态scaffold/conf/serialization.conf，绑定Akka库的akka.remote.serialization.ProtobufSerializer与PB类型。这是库消费和配置复制，不是生成ScalaPbSerializer源码；di-poc glue中的自定义ScalaPbSerializer只是独立维护参考，不能用其GeneratedOneof/旧协议能力证明raw BC支持。
 
-目录状态：`implemented`；所有权：`generated`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+JS正式DomainProtoSerializer及可选PartN由render-adapters.mjs#renderAdapters基于serializationModel直接生成，不是renderConverters。其identifier按741000 + context位置派生，跨版本稳定性尚未证明；host/child/effect专用serializer是所选应用profile的另一路生成，不能与域serializer或runtime库混称同一产物。
+
+各profile的代码生成、外部库责任和配置见[能力矩阵](../../CAPABILITY-MATRIX.md)。本轮没有执行Akka序列化、目标编译或最终批准，源码来源也不证明配置已在消费进程生效。
 
 ## 结构与命名
 
@@ -38,10 +40,12 @@ DomainProtoSerializer、HostSerializer、ScalaPbSerializer与分片PartN；具�
 
 机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
 
-适用：bc-single / bc-multi / js-formal。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+主要实例：BC单/多模块消费Akka库，JS正式生成DomainProtoSerializer；di-poc自定义ScalaPbSerializer仅作独立维护参考。它不属于BC生成器的输出，也不能证明BC已具有相同oneof兼容行为。
 
-- `js:generators/scala-cqrs-domain/render-serialization.mjs` — `renderConverters`。
-- `dipoc:modules/glue/src/main/scala/net/imadz/common/serialization/ScalaPbSerializer.scala` — `ScalaPbSerializer`。
+- `bc:scaffold/conf/serialization.conf` — `akka.actor.serializers.proto / serialization-bindings`，静态库绑定。
+- `bc:src/main/scala/net/imadz/codegen/CodegenMain.scala` — scaffold复制接线。
+- `js:generators/scala-cqrs-domain/render-adapters.mjs` — `renderAdapters`，DomainProtoSerializer实际生产者。
+- `dipoc:modules/glue/src/main/scala/net/imadz/common/serialization/ScalaPbSerializer.scala` — 自定义参考实现，不归BC生成。
 
 来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
 

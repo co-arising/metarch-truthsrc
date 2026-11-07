@@ -47,6 +47,12 @@
 
 首个P1回流是`lib/handwritten-provenance.mjs`：公共工具验证明确手写关联的完整文件/来源指纹，银行保留schema、35文件/54引用、关系政策与snapshot约束。公共验证不读取银行历史模块、不写代码或索引，不要求JDK/Docker，也不把声明关联当语义正确。其他运行/租约/工作坊机制尚未迁移。
 
+## 第二批：独立目标合同与模块参考
+
+[目标合同](TARGET-PROFILES.md)把现有兼容名字/载体与新推荐四模块candidate分开。`lib/scala-target/`提供纯命名、符号冲突、结构/签名闭包/绑定校验；没有导入任何现役renderer，也没有新增generator manifest。新`test/reference/module-seams/`的Parcel参考含10生产Scala文件和3个独立suite，覆盖只读Repository、纯计算port、应用flow、同层Bridge、外置实现和root构造绑定。它从明确小业务预期手写，不从BC mjs或当前JS生成输出复制作为oracle。
+
+原Warehouse七源码保持原字节；新参考的实际模块编译、34项行为和独立编译拒绝结果见[第二批验收](../TARGET-PROFILE-ACCEPTANCE.md)。结构模型与参考的路径/声明/签名对照只验证这个有限语法，不能冒任意Scala AST或生产银行验收。推荐profile仍为candidate、approval为空；真实机械通过不代替用户最终审定。
+
 ## 后续仍未关闭
 
-全量 renderer 的命名与结构、多模块 port/implementation/root binding、strict Saga 和 Monarch R2 新参考分别需要自己的证据。本切片不扩展运行库、业务政策或 BC 全仓切换。P1 公共工具归属、P3 银行目录和 P4 全服务/人工验收继续保持原成果目标；本页不是它们完成的回执。
+全量renderer接入集中命名、推荐profile真正生成、strict Saga和Monarch R2新参考仍需后续家族批及消费证据。多模块port/implementation/root binding已有本批独立参考，不代表当前生成器已支持完整四模块项目。本切片不扩展运行库、业务政策或BC全仓切换；P1剩余公共工具、P3银行目录和P4全服务/真人验收仍未完成。

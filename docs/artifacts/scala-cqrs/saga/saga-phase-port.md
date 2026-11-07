@@ -12,9 +12,11 @@ OperationIdentity、receiptCodec、querySafety及参与者的真实耐久证据�
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `saga-strict`由库提供PhasePort/PhaseOutcome等接口和结果语义；接口存在不表示应用I/O已实现。
+- `js-formal`通过`renderDefinitions`/TechnicalPorts生成typed桥；`bc-strict`由StrictSagaModuleTemplate生成Module内桥，`bc-semantic-products`由ProductApplicationTemplate独立生成，不能共用JS来源认领能力。
+- `bank-p23`将生成桥与手写权威执行/查证绑定组合；`js-run-all-strict`是单独的旧strict source入口。实际金融证据政策由应用拥有。
 
-目录状态：`implemented`；所有权：`mixed`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐profile和证据级别见[CAPABILITY-MATRIX.md](../../CAPABILITY-MATRIX.md)。query返回None仍是Unknown，不是safe-to-retry；P23业务retry/backoff/deadline保持OPEN。
 
 ## 结构与命名
 
@@ -36,16 +38,16 @@ ACK丢失先query、身份错配、假安全重试、不可用与codec替换拒�
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
+库接口、JS/BC生成桥与bank手写执行实现按profile分开。测试源码不等权威回执行为证据；P23冻结，OPEN业务政策不被技术查证关闭，最终批准未授予。
 
-适用：saga-strict / bc-strict / js-formal / bank-p23。当前saga-core基线4352a317的strict API与银行P23消费有明确合同，Monarch R2不自动升级Saga政策或retry/backoff/deadline。
-
-- `saga:src/main/scala/net/imadz/infra/saga/strict/StrictSagaDefinition.scala` — `StrictSagaDefinition`。
+- `saga:src/main/scala/net/imadz/infra/saga/strict/StrictSagaDefinition.scala` — `PhasePort`、`PhaseBinding`。
 - `js:generators/scala-cqrs-application/render-host.mjs` — `renderDefinitions`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/StrictSagaModuleTemplate.scala` — `generate`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/products/ProductApplicationTemplate.scala` — `generate`。
 
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../../sources.lock.json)；以下签名是接口，不是默认正确的银行实现。
 
-## 真实端口形状
+### 真实端口形状
 
 ```scala
 trait PhasePort[A, R] {

@@ -4,7 +4,7 @@ import { mkdtempSync, mkdirSync, readFileSync, rmSync, symlinkSync, writeFileSyn
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileRecord, readJson, DOC_ROOT } from '../lib/artifact-docs/io.mjs';
-import { discoverSources, inspectRepository, sourceFacts, generatedKinds, verifySourceReferences } from '../lib/artifact-docs/sources.mjs';
+import { discoverSources, inspectRepository, sourceFacts, generatedKinds, verifySourceReferences, productionToolFingerprint } from '../lib/artifact-docs/sources.mjs';
 import { classifySource } from '../lib/artifact-docs/classify.mjs';
 import { checkCrossRepository, loadCatalogue } from '../lib/artifact-docs/catalog.mjs';
 import { reconcileInstance } from '../lib/artifact-docs/instances.mjs';
@@ -20,6 +20,54 @@ function fixture(t) {
   const spec = { scopes, files: [{ ...fileRecord(root, file), scope: 'source', categories: ['domain-entity'], disposition: 'artifact-source', reason: 'synthetic fixture', symbols: ['Entity'], outputSites: [] }] };
   return { root, file, spec };
 }
+
+test('target contracts and independent module references are not classified as active generators', () => {
+  const contract = classifySource('js', 'lib/scala-target/model.mjs', '', data.catalog.categories);
+  const reference = classifySource('js', 'test/reference/module-seams/build.sbt', '', data.catalog.categories);
+  assert.equal(contract.disposition, 'target-contract');
+  assert.equal(reference.disposition, 'reference-candidate');
+  const variants = data.catalog.categories.flatMap(category => category.variants)
+    .filter(variant => variant.profile === 'scala-cqrs-modular-candidate-v1');
+  assert.equal(variants.length, 14);
+  for (const variant of variants) {
+    assert.equal(variant.availability, 'reference-only');
+    assert.equal(variant.capability.lifecycle, 'reference');
+    assert.deepEqual(variant.capability.routes, []);
+    assert.deepEqual(variant.capability.evidence, []);
+  }
+});
+
+test('complete producer tool fingerprint agrees with project freshness, not just selected catalog sources', async () => {
+  const { toolEvidence } = await import('../lib/project/cli.mjs');
+  const current = toolEvidence();
+  assert.equal(productionToolFingerprint(current.root, { distributable: false }), current.sha256);
+});
+
+test('schema, package and formerly unlisted library inputs invalidate production evidence', t => {
+  const root = mkdtempSync(join(tmpdir(), 'artifact-tool-input-'));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  for (const dir of ['lib', 'src', 'generators', 'schema', 'scaffold', 'bin']) mkdirSync(join(root, dir));
+  writeFileSync(join(root, 'bin/truthsrc.js'), 'entry');
+  writeFileSync(join(root, 'package.json'), '{}');
+  for (const file of ['schema/domain.json', 'lib/author-micro.mjs', 'package.json']) {
+    const before = productionToolFingerprint(root);
+    writeFileSync(join(root, file), file === 'package.json' ? '{"changed":true}' : 'changed input');
+    assert.notEqual(productionToolFingerprint(root), before, file);
+  }
+});
+
+test('package-excluded backups do not create checkout versus tarball fingerprint drift', t => {
+  const root = mkdtempSync(join(tmpdir(), 'artifact-package-input-'));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  for (const dir of ['lib', 'src', 'generators', 'schema', 'scaffold', 'bin']) mkdirSync(join(root, dir));
+  writeFileSync(join(root, 'bin/truthsrc.js'), 'entry');
+  writeFileSync(join(root, 'package.json'), JSON.stringify({ files: ['lib/', 'generators/', '!**/*.bak'] }));
+  const before = productionToolFingerprint(root);
+  writeFileSync(join(root, 'generators/emitter.mjs.v1.bak'), 'unshipped history');
+  assert.equal(productionToolFingerprint(root), before);
+  writeFileSync(join(root, 'generators/emitter.mjs'), 'actual production input');
+  assert.notEqual(productionToolFingerprint(root), before);
+});
 
 test('new source, removed source and source byte changes cannot inherit covered status', t => {
   const { root, file, spec } = fixture(t);

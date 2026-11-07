@@ -12,9 +12,12 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `bc-single` / `bc-multi`：BC 行 DTO 来自 `ProjectionRepositoryTemplate`；`ProjectionTemplate` 主要生成 Akka 投影运行接线，不能混记为同一个纯行 producer。
+- `js-formal`：`renderJournalRepository` 生成 row/index 记录；`renderJournalReadside` 负责投影机制，不能独占行类型来源。
+- `js-legacy`：`readmodel-dsl` 只生成记录和未实现说明，`projection-dsl` 生成 Akka view，`viewrepo` 生成仓储 DTO；`js-retired` 另有退役 projection emitter。
+- 说明性读模型不等于可执行 SQL 声明；声明字段、生成结构、补齐 handler 和查询行为需分别判断。
 
-目录状态：`implemented`；所有权：`generated`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐 profile 的生命周期、生产链与证据层级见[派生能力矩阵](../../CAPABILITY-MATRIX.md)。可用源码、生成接线、目标编译、行为验证和最终批准不是同一声明。
 
 ## 结构与命名
 
@@ -36,12 +39,4 @@ BC DecisionView及Projection通常位于application/projection，模块glue；�
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
-
-适用：bc-single / bc-multi / js-formal。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
-
-- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionTemplate.scala` — `ProjectionTemplate`。
-- `js:generators/readmodel-dsl/emit.mjs` — `writeFileSync`。
-- `js:generators/scala-cqrs-play-service/render-journal-readside.mjs` — `renderJournalReadside`。
-
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+本页按上述 profile 区分当前原生、保留/退役路径与手写参考；不跨 profile 传播实现或验收结论。完整来源 revision、摘要和生产链由目录、派生矩阵及 `sources.lock.json` 记录，本页不另抄暂定统计。

@@ -12,9 +12,11 @@ generator版本、产品/能力、完整输入来源及目标路径，overwrite/
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `tooling`有两层责任：`generator.json`是维护者编写的输入/能力声明；`planProductSet`产生的source-product plan以及BC `gen_manifest.mjs`形成的staging-to-target处置计划才是派生证据。
+- BC的ADD/COVER/MERGE/KEEP/DELETE计划不等于已apply，也不证明目标可编译；必须保留实际writer和最终处置。
+- `js-starter-copy`只是复制并替换名称的starter manifest，属reference用途，不把手工声明重新分类为业务生成结果。
 
-目录状态：`implemented`；所有权：`derived`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐profile的声明、派生计划和证据边界见[CAPABILITY-MATRIX.md](../CAPABILITY-MATRIX.md)。计划通过不自动批准模板或业务交付。
 
 ## 结构与命名
 
@@ -36,11 +38,10 @@ generator.json/source-product-plan、BC manifest；同kind可对应多职责，�
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
+适用profile按本页生产说明及派生矩阵解释，手写manifest、starter复制与派生计划不能合成一个状态。测试源码不等执行证据；计划/校验通过不自动授予最终模板批准。
 
-适用：tooling。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
-
+- `js:src/core/manifest.mjs` — `loadManifest`。
 - `js:src/core/product-plan.mjs` — `planProductSet`。
 - `bc:knowledge_base/design_docs/field_template/tools/gen_manifest.mjs` — `manifest`。
 
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../sources.lock.json)；本页不作生成或运行认证。

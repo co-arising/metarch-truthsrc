@@ -4,6 +4,8 @@
 
 [参考实现与开发范式](REFERENCE-DEVELOPMENT.md)区分成熟Scala设计、兼容参考候选与现状回归快照。BC mjs产物未经打磨检验，不在用户认可的金样范围；检查完整写入链是为了防止后处理破坏结构，不授予其设计权威。`implemented`和文档覆盖通过均不等于金样批准。
 
+第二批已固定[目标profile与命名合同](TARGET-PROFILES.md)：现有`legacy-compatible`只保留显式旧绑定，新`modular-candidate`提供纯命名/结构模型及独立四模块参考。二者不是新的生成开关，本批未切换银行或改变当前renderer。实际结果见[第二批验收](../TARGET-PROFILE-ACCEPTANCE.md)。
+
 ## 层次与模块
 
 - 领域：值、状态、事件、纯规则和事件fold，状态只在event application演进。

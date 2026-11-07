@@ -12,9 +12,11 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+BC独立RuleParams文件来自Metarch选定pipeline的BC-owned rules_domain_gen.mjs，输入包括编译真源、rules/functions与实际Protocol/Entity签名；不是raw Scala InvariantRuleTemplate自动提供的通用输出。单/多模块仅改变该路径的放置。
 
-目录状态：`implemented`；所有权：`generated`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+JS正式render-domain.mjs#renderInvariant仅在layered Play service生成domain/invariant/params/<Name>RuleParams.scala；非layered调用直接传state/command/hosts，没有独立参数文件。该文件的emitted kind可仍为rules，不能把类别名当作必有独立kind。legacy invariant-dsl按非空paramDefs生成Params，retired rules overlay另行记录。
+
+按profile和目标选择判断生成责任及文件形状，见[能力矩阵](../../CAPABILITY-MATRIX.md)。这是源码生产能力说明，不是本轮参数调用已编译、测试或最终批准的证据。
 
 ## 结构与命名
 
@@ -38,10 +40,11 @@ domain/invariant/params/<Name>RuleParams.scala中的各CommandParams；可嵌套
 
 机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
 
-适用：bc-single / bc-multi / js-formal。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+主要实例：BC单/多模块的条件rules路径与JS正式layered service；legacy/retired另见上文。独立Params文件取决于目标选择，不能由类别名推定所有profile都生成。
 
 - `bc:knowledge_base/design_docs/field_template/tools/rules_domain_gen.mjs` — `paramsFile`。
-- `js:generators/scala-cqrs-domain/render-domain.mjs` — `renderInvariant`。
+- `js:generators/scala-cqrs-domain/render-domain.mjs` — `renderInvariant`，layered参数分支。
+- `js:generators/invariant-dsl/render.mjs` — legacy `paramDefs`/Params输出。
 
 来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
 

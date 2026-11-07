@@ -12,9 +12,11 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `bc-single`的SagaContextTemplate实际生成带应用repository引用的Context；运行库只消费泛型上下文C。`saga-legacy`在本类别是历史角色参考，不是假定一个库内具体Context。
+- `bc-multi`保留真实路由缺口：`targetModuleOf`未映射`saga-context`，`writeArtifact`的None分支使用空prefix，落到`<target>/<package-path>/<name>.scala`，不是`modules/glue`；不能报告完整多模块接线。
+- `js-legacy`保留显式spec的参考用途，但`generate(mode=legacy)`确实输出Args/Context/definition/register Scala；它不归静态报告。`play-legacy`是已有手写应用上下文。
 
-目录状态：`implemented`；所有权：`mixed`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐profile的生命周期、产物与模块缺口见[CAPABILITY-MATRIX.md](../../CAPABILITY-MATRIX.md)。strict canonical args/receipt不沿用legacy上下文语义。
 
 ## 结构与命名
 
@@ -36,11 +38,11 @@
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
+BC单/多模块、JS参考生成入口和Play手写实例按profile区分；multi模式的未映射路径缺口保留。测试源码不等生成/恢复已执行，也不授予最终批准。
 
-适用：saga-legacy / bc-single。旧Saga DSL/TCC与当前strict API是并列合同；不能把strict证据和恢复保证套用旧StepExecutor。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaContextTemplate.scala` — `generate`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala` — `targetModuleOf`、`writeArtifact`。
+- `js:generators/saga-dsl/emit.mjs` — `emitLegacySagaSpec`。
+- `saga:src/main/scala/net/imadz/infra/saga/dsl/SagaDefinition.scala` — `SagaDefinition`（消费上下文的库合同）。
 
-- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaContextTemplate.scala` — `SagaContextTemplate`。
-- `saga:src/main/scala/net/imadz/infra/saga/dsl/SagaDefinition.scala` — `SagaDefinition`。
-
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../../sources.lock.json)；legacy上下文不升级为strict回执上下文。

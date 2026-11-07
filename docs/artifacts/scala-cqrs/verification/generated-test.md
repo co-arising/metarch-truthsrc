@@ -12,9 +12,14 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `bc-single`：BC Node `tdd_test_gen.mjs` 及相关脚本生成测试代码，可明确记录 SKIP 或产生部分 suite。
+- `bc-multi`：脚本仍使用 root `test/` 并解析既有源码路径，不能由共享类别推断多模块测试集成。
+- `js-formal`：原生服务及其 domain/application 生产链生成合同/结构测试；`js-formal-subproducer` 仅标识 domain scaffold/verification 的较窄来源，不是另一份独立验收。
+- `bc-semantic-products`：独立 Scala ProductVerification、host/execution/effect/service 测试模板生成相应测试代码。
+- `js-legacy` 保留兼容参考，`js-retired` 对应退役 rules/projection/repository 测试 emitter；`js-run-all-strict` 生成有条件的安全测试与证据夹具源码。
+- 所有上述生成输出都是代码（generate-code），包括名称含 evidence 的 fixture；未执行就不是证据。同模型推导出的实现与测试也不是相互独立的业务 oracle。
 
-目录状态：`implemented`；所有权：`derived`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐 profile 的生命周期、生产链与证据层级见[派生能力矩阵](../../CAPABILITY-MATRIX.md)。可用源码、生成接线、目标编译、行为验证和最终批准不是同一声明。
 
 ## 结构与命名
 
@@ -36,15 +41,7 @@ Generated*Spec、RulesSpec、ExecutableSpec及辅助runner；不是应用main产
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
-
-适用：bc-single / bc-multi / js-formal。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
-
-- `bc:knowledge_base/design_docs/field_template/tools/tdd_test_gen.mjs` — `ledgerRow`。
-- `js:generators/scala-cqrs-domain/render-verification.mjs` — `verificationTests`。
-- `js:generators/scala-cqrs-play-service/render-test-support.mjs` — `renderTestSupport`。
-
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+本页按上述 profile 区分当前原生、保留/退役路径与手写参考；不跨 profile 传播实现或验收结论。完整来源 revision、摘要和生产链由目录、派生矩阵及 `sources.lock.json` 记录，本页不另抄暂定统计。
 
 ### 类别依赖
 

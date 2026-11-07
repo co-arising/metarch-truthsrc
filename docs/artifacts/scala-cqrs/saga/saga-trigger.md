@@ -12,9 +12,11 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `bc-single`通过SagaTriggerProtocol/Entity/Root/Behaviors四个模板生成可调用的legacy SagaRunner门面。实现存在但生命周期仍为legacy，不是strict协调内核。
+- `bc-multi`四个`saga-trigger-*` kind都未被`targetModuleOf`映射；CodegenMain传project target为genRoot，writer的None分支以空prefix写`<target>/<package-path>/<name>.scala`。因此是`unmapped-project-root`的partial能力，不可写成已路由glue。
+- `js-run-all-strict`生成独立strict Entry/Host触发门面，和BC四构件不是同一生产合同，也不复制事务状态机。
 
-目录状态：`implemented`；所有权：`generated`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐profile的实际路径、生产链与证据见[CAPABILITY-MATRIX.md](../../CAPABILITY-MATRIX.md)。单/多模块放置缺口保留，不以文档校准修复运行时或批准模板。
 
 ## 结构与命名
 
@@ -36,11 +38,13 @@ SagaTrigger Protocol/Entity/Root/Behaviors是一组关联构件，按四种实�
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
+BC legacy四构件与JS run-all strict门面按profile分开；multi legacy的project-root fallback不是glue成功。测试源码不等触发/恢复行为证据，最终批准未授予。
 
-适用：bc-single / bc-multi。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerProtocolTemplate.scala` — `generate`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerEntityTemplate.scala` — `generate`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerRootTemplate.scala` — `generate`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerBehaviorsTemplate.scala` — `generate`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala` — `targetModuleOf`、`writeArtifact`。
+- `js:generators/saga-dsl/emit-strict-host.mjs` — `emitStrictHostFiles`。
 
-- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerProtocolTemplate.scala` — `SagaTriggerProtocolTemplate`。
-- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerBehaviorsTemplate.scala` — `SagaTriggerBehaviorsTemplate`。
-
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../../sources.lock.json)；本次不改模块路由或P23产物。

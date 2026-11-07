@@ -12,9 +12,9 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+`saga-strict`消费saga-core的StrictSagaCoordinator及StrictState/StrictEvent共享状态机，责任为`consume-library`。应用生成Definition/Module/Host是在装配该库，不是生成每笔业务私有的严格协调内核。
 
-目录状态：`implemented`；所有权：`library`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+库的interaction/查证机制与业务retry/backoff/deadline分别判定，银行对应政策保持OPEN；旧StepExecutor的重试能力也不能证明strict已追平。逐profile和证据级别见[CAPABILITY-MATRIX.md](../../CAPABILITY-MATRIX.md)。P23冻结及银行未采用Monarch R2的结论不变。
 
 ## 结构与命名
 
@@ -36,14 +36,12 @@ StrictSagaCoordinator的事件/状态/命令在库内，应用提供factory/boot
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
-
-适用：saga-strict。当前saga-core基线4352a317的strict API与银行P23消费有明确合同，Monarch R2不自动升级Saga政策或retry/backoff/deadline。
+本页`saga-strict`是运行库能力，银行P23消费合同仍冻结；Monarch R2不自动升级Saga或retry/backoff/deadline。测试源码不等协调行为证据，最终批准未授予。
 
 - `saga:src/main/scala/net/imadz/infra/saga/strict/StrictSagaCoordinator.scala` — `StrictSagaCoordinator`。
-- `saga:src/main/scala/net/imadz/infra/saga/strict/StrictSagaModel.scala` — `Strict`。
+- `saga:src/main/scala/net/imadz/infra/saga/strict/StrictSagaModel.scala` — `StrictState`、`StrictEvent`。
 
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../../sources.lock.json)；应用接线不算内核生成。
 
 ### 类别依赖
 

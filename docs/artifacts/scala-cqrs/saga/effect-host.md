@@ -12,13 +12,15 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `js-formal`的effect producer实际生成EffectHost、业务状态、EffectHostSerializer和effect proto，由`renderEffectHosts`/`renderEffectSupport`提供，不是只有手写壳。
+- `bc-semantic-products`使用独立ProductEffectHostTemplate/ProductEffectSupportTemplate及`generateProducts`；不能用JS或银行源码充作BC producer。
+- `bank-p23`混合消费生成host与手写BankTaEffectBindings的execute/query/reconcile/证据政策。真实外部adapter不是自动生成的领域正确性证明，P23 host也不是R1/R2 PersistentOperation。
 
-目录状态：`implemented`；所有权：`mixed`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐profile责任及证据级别见[CAPABILITY-MATRIX.md](../../CAPABILITY-MATRIX.md)。银行保持冻结，未采用R2；retry/backoff/deadline的OPEN项不因宿主存在而关闭。
 
 ## 结构与命名
 
-<Name>EffectHost及独立proto/serializer；当前P23自有host机制不是Monarch R2 PersistentOperation已消费证明。
+<Name>EffectHost及独立proto/serializer；当前P23自有host机制不是R1引入、R2保留的PersistentOperation，也不是银行原生R2消费证明。
 
 类型使用UpperCamelCase，成员使用lowerCamelCase；数据库、protobuf和稳定业务ID分别遵循各自合同。描述目标命名不授权改写现有wire名称、PID或冻结载体。
 
@@ -36,11 +38,12 @@
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
-
-适用：js-formal / bc-semantic-products / bank-p23。当前saga-core基线4352a317的strict API与银行P23消费有明确合同，Monarch R2不自动升级Saga政策或retry/backoff/deadline。
+JS/BC生成host与bank手写外部绑定按profile分别举证。测试源码不等效果查证或跨JVM行为验证；银行P23冻结、未采用R2，最终批准未授予。
 
 - `js:generators/scala-cqrs-application/render-effect-hosts.mjs` — `renderEffectHosts`。
+- `js:generators/scala-cqrs-application/render-effect-support.mjs` — `renderEffectSupport`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/products/ProductEffectHostTemplate.scala` — `generate`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/products/ProductEffectSupportTemplate.scala` — `generate`。
 - `bank:handwritten/scala/example/bankwealth/bindings/BankTaEffectBindings.scala` — `BankTaEffectBindings`。
 
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../../sources.lock.json)；宿主存在不关闭OPEN retry政策。

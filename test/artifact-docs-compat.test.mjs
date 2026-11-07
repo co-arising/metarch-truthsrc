@@ -29,6 +29,15 @@ test('compatibility output is deterministic and contains full text rather than l
   }
 });
 
+test('flat offline snapshots rewrite category links and retain package locators for support views', () => {
+  const entries = compatibilityPlan(catalog, DOC_ROOT, 'bc');
+  const serializer = entries.find(entry => entry.path.endsWith('/saga_serializer.md'));
+  assert.ok(serializer.content.includes('公共包 docs/artifacts/CAPABILITY-MATRIX.md'));
+  assert.ok(!serializer.content.includes('](../../CAPABILITY-MATRIX.md)'));
+  const report = entries.find(entry => entry.path.endsWith('/strict_saga_definition.md'));
+  assert.ok(report.content.includes('Strict'));
+});
+
 test('read-only snapshot checks reject mutation and missing files', t => {
   const f = fixture(t);
   assert.equal(checkCompatibility(f).passed, true);

@@ -12,9 +12,11 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+BC此职责跨两个产物：AggregateProtocolBuilder/Template消费application聚合的commandFamily/replyFamily，DomainEntityTemplate承载domain事件。前者含ActorRef/reply协议，不能称作与JS等价的独立纯领域协议文件。
 
-目录状态：`implemented`；所有权：`generated`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+JS正式链由render-domain.mjs#renderCommand消费reference-layout、domain-dependencies及exact-value-types，输出domain/<Name>Protocol.scala的Command/Event载荷。legacy event-dsl/emit.mjs另生成继承CborSerializable的独立事件case class，类型映射受限，未知类型退为String；它不是typed正式协议的等价生产者。
+
+能力和所有权按profile及具体输出判断，见[能力矩阵](../../CAPABILITY-MATRIX.md)。同一物理文件承担多项职责不应重复计为新产物；源码定位不是目标生成、编译、序列化验收或最终批准。
 
 ## 结构与命名
 
@@ -38,10 +40,12 @@ JS domain/<Name>Protocol保留Command/Event case classes；BC命令/回复通常
 
 机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
 
-适用：bc-single / bc-multi / js-formal。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+主要实例：bc-single / bc-multi / js-formal；legacy event-dsl另见上文。BC单/多模块是放置变体，不是另一个业务模型；正式链的共享subproducer也不是独立验收目标。
 
 - `js:generators/scala-cqrs-domain/render-domain.mjs` — `renderCommand`。
 - `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateProtocolTemplate.scala` — `AggregateProtocolTemplate`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainEntityTemplate.scala` — `DomainEntityTemplate`。
+- `js:generators/event-dsl/emit.mjs` — legacy独立事件输出。
 
 来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
 

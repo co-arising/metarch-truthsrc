@@ -2,7 +2,7 @@
 
 本目录按职责管理Scala领域/应用/投影/接口、单/多模块、Saga和Monarch。类型身份、生成器kind和文件数分开。所有类别的当前实现、开放人工输入、回锚与验证边界都在对应页，不把库能力误写为已生成银行应用。
 
-先读 [约定](CONVENTIONS.md)、[构建顺序](BUILD-ORDER.md)和[参考实现与开发范式](REFERENCE-DEVELOPMENT.md)，再按需要进入类别。跨目标总目录、来源锁和漂移记录在[上一级](../README.md)。来源覆盖与金样资格是两回事：未经打磨的BC mjs产物不是设计基准。
+先读 [约定](CONVENTIONS.md)、[目标profile与命名合同](TARGET-PROFILES.md)、[构建顺序](BUILD-ORDER.md)和[参考实现与开发范式](REFERENCE-DEVELOPMENT.md)，再按需要进入类别。跨目标总目录、来源锁和漂移记录在[上一级](../README.md)；[能力合同](../CAPABILITY-CONTRACT.md)与[派生矩阵](../CAPABILITY-MATRIX.md)区分现役/旧式/退役、真实producer、样例生成、编译和最终审定。[原始盘点与实施路线](../STATUS-AND-IMPLEMENTATION-PLAN.md)保留校准前数字及后续模板路线。来源覆盖与金样资格是两回事：未经打磨的BC mjs产物不是设计基准。
 
 ## 领域结构与纯行为
 

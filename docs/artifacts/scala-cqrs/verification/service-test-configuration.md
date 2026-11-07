@@ -12,9 +12,12 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `js-formal`：`renderTestSupport` 返回 unit 配置/支持源码，服务 `generate.mjs` 调整 build/test 任务，公共写入器落盘。
+- `bc-semantic-products`：独立 Scala `ProductServiceTestTemplate` 与 `ProductServiceTemplate.build/isolateTests` 提供其配置、runner 与任务，不由 JS 模板代产。
+- `js-retired`：退役 rules 的测试 builder 保留固定 shared test configuration，不能归作当前原生服务能力。
+- 配置、runner 和测试源均是生成代码/测试基础设施（generate-code），不是 derive-evidence。生成器侧门或源码检查通过也不是目标 Scala suite 的执行结果。
 
-目录状态：`implemented`；所有权：`derived`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐 profile 的生命周期、生产链与证据层级见[派生能力矩阵](../../CAPABILITY-MATRIX.md)。可用源码、生成接线、目标编译、行为验证和最终批准不是同一声明。
 
 ## 结构与命名
 
@@ -36,11 +39,4 @@ service-unit.conf、UnitConfigurationCheck、UnitTestMain、GeneratedUnitStorage
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
-
-适用：js-formal。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
-
-- `js:generators/scala-cqrs-play-service/render-test-support.mjs` — `renderTestSupport`。
-- `js:generators/scala-cqrs-play-service/generate.mjs` — `service-unit.conf`。
-
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+本页按上述 profile 区分当前原生、保留/退役路径与手写参考；不跨 profile 传播实现或验收结论。完整来源 revision、摘要和生产链由目录、派生矩阵及 `sources.lock.json` 记录，本页不另抄暂定统计。

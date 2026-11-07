@@ -4,7 +4,7 @@
 
 ## 职责
 
-提供连接池、JDBC session和数据库driver机制，不决定银行资金/权限规则。
+隔离DataSource、JDBC连接/session与数据库driver的提供和消费，不决定银行资金/权限规则。连接池是否存在取决于具体适配；本页银行实例不是连接池，生成Repository也不自动提供池。
 
 ## 输入与人工信息
 
@@ -12,9 +12,11 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+JS正式Play service的render-journal-repository.mjs消费projectionStore声明及调用方DataSource，生成的是JDBC Repository机制；build增强声明MySQL Connector/J依赖。它消费JDBC API/driver库，不生成DataSource、连接池或数据库driver实现。
 
-目录状态：`implemented`；所有权：`mixed`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+bank-p23的BankJdbcDataSource是handwritten/scala中的外置手写适配，通过DriverManager打开连接，不是生成连接池；URL、凭据及连接生命周期由部署/宿主提供。不能把生成Repository、库实现和手写DataSource合并成同一种所有权。
+
+各profile的库消费、装配与手写责任见[能力矩阵](../../CAPABILITY-MATRIX.md)。源码支持不等于本轮连接数据库、目标编译、资源测试或最终批准。
 
 ## 结构与命名
 
@@ -24,7 +26,7 @@ DataSource/ScalikeJdbcSession/Setup等位于glue或infrastructure；不能因多
 
 ## 依赖与装配
 
-Repository必须使用调用事务的同一Connection；共享池生命周期由owner统一管理。
+Repository中属于同一事务的操作必须使用同一Connection；连接与池（如有）的生命周期由实际owner统一管理。银行当前适配不提供池，不能从共享DataSource接口推定池关闭或排空语义。
 
 ## 回锚与更新
 
@@ -38,7 +40,7 @@ Repository必须使用调用事务的同一Connection；共享池生命周期由
 
 机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
 
-适用：js-formal / bank-p23。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+主要实例：js-formal的库消费/Repository机制与bank-p23手写DataSource。当前来源没有生成连接池的证明，也不由数据库依赖声明推定连接成功。
 
 - `bank:handwritten/scala/example/bankwealth/integration/BankJdbcDataSource.scala` — `BankJdbcDataSource`。
 - `js:generators/scala-cqrs-play-service/render-journal-repository.mjs` — `renderJournalRepository`。

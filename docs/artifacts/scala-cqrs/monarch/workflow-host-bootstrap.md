@@ -12,9 +12,9 @@ ActorSystem、namespace、WorkflowProgram、maxJobs/maxChildren和库配置由�
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+`monarch-r2`的`WorkflowHost`类由运行库提供；应用负责调用、namespace/配置及WorkflowProgram装配，不复制内部Coordinator。引用应定位`WorkflowHost`本身，不能以同文件的`WorkflowProgram`接口替代宿主实现。
 
-目录状态：`implemented`；所有权：`library`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+未建立JS原生R2 bootstrap producer；P23生成Execution.behavior及银行手写BankRuntime不是该宿主的采用证明。逐profile责任和证据级别见[CAPABILITY-MATRIX.md](../../CAPABILITY-MATRIX.md)，银行保持冻结且不升级R2。
 
 ## 结构与命名
 
@@ -36,13 +36,11 @@ bootstrap配置、身份冲突、容量、恢复激活与关闭边界，不能�
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
+WorkflowHost是R2库宿主，R1不含它；应用启动配置仍须显式装配。测试源码不等真实启动/恢复证据；银行仍冻结P23、未采用R2，本页不授予最终批准。
 
-适用：monarch-r2。R1/R2公开运行库有对应实现；当前银行生成仍锁P23，不宣称JS原生R2生成、兼容旧journal或生产认证。
+- `monarch:src/main/scala/net/imadz/monarch/persistence/batch/WorkflowHost.scala` — `WorkflowHost`。
 
-- `monarch:src/main/scala/net/imadz/monarch/persistence/batch/WorkflowHost.scala` — `WorkflowProgram`。
-
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../../sources.lock.json)；宿主实现与WorkflowProgram接口分开定位。
 
 ### 类别依赖
 

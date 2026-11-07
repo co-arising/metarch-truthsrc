@@ -9,7 +9,10 @@
 - [机器目录](catalog.json)、[来源锁](sources.lock.json)、[覆盖清单](coverage.json)：分别记录类别/变体、可复核输入和全部清点处置。
 - [来源与许可](SOURCES.md)：仓库别名、固定版本、证据精度和许可。
 - [维护与校验](MAINTENANCE.md)：目录更新、兼容导出、版本语义和防遗漏纪律。
-- [本次验收](ACCEPTANCE.md)：覆盖数字、真实测试、失败保留与未纳入范围。
+- [P0原验收](ACCEPTANCE.md)：该批覆盖数字、真实测试、失败保留与未纳入范围。
+- [能力合同](CAPABILITY-CONTRACT.md)、[派生能力矩阵](CAPABILITY-MATRIX.md)及[本批验收](CAPABILITY-ACCEPTANCE.md)：分别说明v2所有权/生命周期/证据层级、全部类别与生成入口的双向映射、真实执行与剩余边界；登记、样例生成、编译、行为验证和最终审定分开计数。
+- [目标profile与命名合同](scala-cqrs/TARGET-PROFILES.md)、[第二批验收](TARGET-PROFILE-ACCEPTANCE.md)：显式兼容保护、新推荐candidate、集中命名/类型闭包及独立四模块参考；未启用新生成入口，未自动批准金样。
+- [现状盘点与剩余落地计划](STATUS-AND-IMPLEMENTATION-PLAN.md)：保留校准前125类/66项登记的原始盘点，以及先校准能力台账再按依赖家族收敛的路线。
 
 ## 四种不同的计数
 

@@ -12,9 +12,9 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+`js-ordinary`是reference生命周期的教学producer：`generators/_template/generate.mjs`读取canonical并返回`aggregates/<name>.md`的`summary` entries数组，由核心writer写入。其实现是手写样例，输出责任是`derive-evidence`，不是应用`generate-code`，也不使用`ctx.emit`接口。
 
-目录状态：`implemented`；所有权：`generated`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+示例可实现最小合同而不产生可运行应用；新增第三方kind仍须声明，不能借此绕过正式产品准入。具体profile和证据级别见[CAPABILITY-MATRIX.md](../CAPABILITY-MATRIX.md)，教学输出不代表银行交付或最终模板批准。
 
 ## 结构与命名
 
@@ -36,10 +36,9 @@ _template/generate(ctx)返回summary entries，外部generator可按同合同定
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
-
-适用：js-ordinary。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+`js-ordinary`保持reference教学定位，不能把样例implemented推广到formal服务、P23或R2。测试源码不等执行证据；摘要一致性不授予最终模板批准。
 
 - `js:generators/_template/generate.mjs` — `generate`。
+- `js:src/core/generate.mjs` — `plan`、`applyEntries`。
 
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../sources.lock.json)；本页摘录不是生产认证。

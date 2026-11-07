@@ -4,17 +4,19 @@
 
 ## 职责
 
-确保端口输入输出及递归引用的领域值在接口可依赖模块中可见。kernel-vo指这种放置变体，不是新的复制业务类型。
+规定端口输入输出及递归引用的领域值必须在接口可依赖模块中可见的架构义务。kernel-vo指这种放置变体，不是新的复制业务类型；本类别名称不代表闭包已经被检查证明。
 
 ## 输入与人工信息
 
-从真实方法签名与字段引用递归构造闭包；外部框架类型和业务类型分别处置，不能靠首层字段检查结束。
+应以真实方法签名与字段引用递归构造待核对的类型集合，分别处置外部框架类型和业务类型，不能只检查首层字段。这是所需检查输入和义务，不是宣称现有portDecls已经执行了递归算法或输出闭包证明。
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+本类别是已有VO/port上的放置与装配义务，不是额外生成一套VO，也不是已经执行并产出结果的证据artifact。BC多模块的targetModuleOf负责VO放置，rules_domain_gen.mjs#portDecls负责签名和受限imports；两者都不能证明通用递归签名闭包已检查。原始Repository模板仍可带kernel到glue的@ImplementedBy，更不能由模块标签宣告闭包完成。
 
-目录状态：`implemented`；所有权：`mixed`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+di-poc的FlowPorts/IdentityStoreApi展示EnrichedCaptureNote、UserDoc等接口载体同置kernel，但TenantCtx、OkReceipt、ApiError、CaptureNoteReq等可达类型还需独立递归核查；几个文件实例不是全应用证明。
+
+各profile记录的是部分放置/接线责任与未证明的闭包缺口，见[能力矩阵](../../CAPABILITY-MATRIX.md)。本轮不新增或冒充闭包检查器，不把源码扫描说成生成、跨模块编译或最终批准。
 
 ## 结构与命名
 
@@ -38,13 +40,18 @@ kernel接口不能指向ext/glue具体类型；必要的boundary DTO需显式定
 
 机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
 
-适用：bc-multi / di-poc。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+主要实例：bc-multi的VO/port放置与di-poc维护的kernel签名载体。它们支撑部分放置/接线描述，不支撑已执行递归检查或独立闭包证据artifact的宣称。
 
 - `dipoc:modules/kernel/src/main/scala/net/imadz/metarch/application/FlowPorts.scala` — `EnrichedCaptureNote`。
-- `bc:knowledge_base/design_docs/field_template/tools/rules_domain_gen.mjs` — `portDecls`。
+- `dipoc:modules/kernel/src/main/scala/net/imadz/metarch/infrastructure/auth/IdentityStoreApi.scala` — `UserDoc / IdentityStoreApi`。
+- `bc:knowledge_base/design_docs/field_template/tools/rules_domain_gen.mjs` — `portDecls`，不是递归闭包证明器。
 
 来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
 
 ### 类别依赖
 
 `value-object`。这些是职责依赖，不代替真实Scala import或执行顺序验证。
+
+### 第二批独立模块候选
+
+`scala-cqrs-modular-candidate-v1`新增独立Parcel参考及纯目标合同，属于reference-only，不是现役生成入口。Recursive value/sum/container signature closure and explicit module ownership for this finite candidate. 结构、兼容差异及资格见[目标合同](../TARGET-PROFILES.md)；真实编译/行为结果单独记录，不把参考升级为生成器或最终金样。

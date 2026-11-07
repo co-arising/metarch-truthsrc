@@ -12,9 +12,11 @@ planVersion、stepID、输入输出来源、outcome分类和并发限制必须�
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `js-formal`由`renderExecutionPlans`/`renderInvocationExecution`生成业务stage、Request/Result/State、StateCodec及旧PersistentMonarch wrapper；`bank-p23`由银行作者树/绑定经该正式链消费，冻结边界不变。
+- `bc-semantic-products`有独立ProductApplicationBuilder/Model及ProductExecutionTemplate/ProductInvocationExecutionTemplate，经`generateProducts`写出；不是引用JS renderer就获得BC能力。
+- `js-legacy`的monarch-dsl直接emitter生成stage ADT/chain、业务state、JSON StateCodec和解释器；`js-run-all-strict`生成composition child Plan。它们保留旧入口/合同，不等正式R2支持。
 
-目录状态：`implemented`；所有权：`generated`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+这些是`generate-code`的应用产物，共享Monarch引擎仍由库提供。逐profile见[CAPABILITY-MATRIX.md](../../CAPABILITY-MATRIX.md)；未建立原生R2生成或银行R2采用证据。
 
 ## 结构与命名
 
@@ -36,14 +38,16 @@ planVersion、stepID、输入输出来源、outcome分类和并发限制必须�
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
-
-适用：js-formal / bank-p23。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+正式JS、bank-p23、独立BC semantic、legacy monarch-dsl及run-all composition按各自输入合同解释。测试源码不等生成/编译/行为证据；P23不升级R2，模板最终批准仍未授予。
 
 - `js:generators/scala-cqrs-application/render-execution.mjs` — `renderExecutionPlans`。
 - `js:generators/scala-cqrs-application/render-invocation-execution.mjs` — `renderInvocationExecution`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/products/ProductExecutionTemplate.scala` — `generate`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/products/ProductInvocationExecutionTemplate.scala` — `generate`。
+- `js:generators/monarch-dsl/emit.mjs` — `emitStageType`、`emitStateType`、`emitInterpreter`。
+- `js:generators/saga-dsl/emit-invocation-plan.mjs` — `emitMonarchPlan`。
 
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../../sources.lock.json)；应用plan不等共享引擎。
 
 ### 类别依赖
 

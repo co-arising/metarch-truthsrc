@@ -12,19 +12,21 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+BC多模块的portDecls由BC-owned rules_domain_gen.mjs读取functions/ports等声明，在Metarch选定pipeline生成kernel trait与可选桥；不是raw Scala CodegenMain单独完成。其受限import列表不证明递归签名闭包。di-poc的ConceptDeltaAdjudicator是该形状的参考实例。
 
-目录状态：`implemented`；所有权：`generated`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+JS正式render-domain.mjs#renderCommand根据domain-dependencies.hosts、归属命令及outputType生成<Aggregate>CommandHelpers.scala内的Computations trait；只提供接口，只有无host方法时才有.none。JS legacy service-dsl/emit.mjs#emitPort也按kind=port生成trait和可选桥，但不在正式typed-product注册链，签名解析/import推断受限；retired scala-cqrs-es-rules的portDeclarations是历史路径。
+
+各profile的接口生成、实例和缺口见[能力矩阵](../../CAPABILITY-MATRIX.md)。不能从生成接口推定算法实现、纯度检查、目标编译或最终批准；legacy文件头的rules_domain_gen字样也不改变JS实际写入者。
 
 ## 结构与命名
 
-kernel domain/service/ConceptDeltaAdjudicator等trait；BC JS已生成port，未表示所有端口族都有原生生成。
+BC/di-poc可见kernel domain/service/ConceptDeltaAdjudicator等trait；JS正式形为domain/<Aggregate>CommandHelpers.scala内的<Aggregate>Computations，legacy service-dsl按spec.name发独立trait。不能用“JS已生成port”泛指所有端口族都有原生typed生成。
 
 类型使用UpperCamelCase，成员使用lowerCamelCase；数据库、protobuf和稳定业务ID分别遵循各自合同。描述目标命名不授权改写现有wire名称、PID或冻结载体。
 
 ## 依赖与装配
 
-签名类型在kernel闭包，ext实现经root注入，Rules/Behaviors/EventHandler闭包传递；kernel不import ext。
+多模块目标要求签名可达类型在kernel闭合，ext实现经root注入并传入Rules/Behaviors/EventHandler，kernel不import ext。现有port生成/import列表不证明该递归义务已执行；JS正式单项目同样由调用方提供Computations实例。
 
 ## 回锚与更新
 
@@ -38,14 +40,16 @@ kernel domain/service/ConceptDeltaAdjudicator等trait；BC JS已生成port，未
 
 机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
 
-适用：bc-multi / di-poc。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+主要实例：bc-multi / di-poc / js-formal及JS legacy service-dsl；retired路径见上文。端口生成不等于实现生成，且JS正式嵌入Computations与legacy独立trait有不同输入合同。
 
 - `bc:knowledge_base/design_docs/field_template/tools/rules_domain_gen.mjs` — `portDecls`。
 - `dipoc:modules/kernel/src/main/scala/net/imadz/metarch/domain/service/ConceptDeltaAdjudicator.scala` — `ConceptDeltaAdjudicator`。
+- `js:generators/scala-cqrs-domain/render-domain.mjs` — `renderCommand`。
+- `js:generators/service-dsl/emit.mjs` — `emitPort`，legacy路径。
 
 来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
 
-## 签名示例
+### 签名示例
 
 ```scala
 trait ConceptDeltaAdjudicator {
@@ -59,3 +63,7 @@ trait ConceptDeltaAdjudicator {
 ### 类别依赖
 
 `signature-value-closure`。这些是职责依赖，不代替真实Scala import或执行顺序验证。
+
+### 第二批独立模块候选
+
+`scala-cqrs-modular-candidate-v1`新增独立Parcel参考及纯目标合同，属于reference-only，不是现役生成入口。Typed pure capacity computation port over kernel-owned values. 结构、兼容差异及资格见[目标合同](../TARGET-PROFILES.md)；真实编译/行为结果单独记录，不把参考升级为生成器或最终金样。

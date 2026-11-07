@@ -12,9 +12,11 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+`tooling`负责派生知识snapshot/AST，而`KnowledgeGraphStore`抽象和`SqliteKnowledgeGraphStore`适配器是手写实现。`captureProject`、`buildKnowledgeSnapshot`、`publishSnapshot`、`exportKnowledgeAst`与`projectKnowledgeAst`构成项目图消费链；抽象类的存在不是存储已工作或生成已发生的证据。
 
-目录状态：`implemented`；所有权：`derived`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+旧普通display graph与项目SQLite snapshot图的合同分别保留，不能传播同图一致性保证。图/AST派生不批准其承载的业务决策，代码锚发布也不是再次编辑作者树。
+
+逐profile的责任和证据级别见[CAPABILITY-MATRIX.md](../CAPABILITY-MATRIX.md)。
 
 ## 结构与命名
 
@@ -36,11 +38,10 @@ Codegen不能验图后又绕回旧树；同图加锚不改变知识AST，生成�
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
+本类别`tooling`的派生AST与手写存储实现分开。测试源码存在不证明关闭重开或同图生成已经执行，图/AST校验不授予最终模板批准。
 
-适用：tooling。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
-
-- `js:lib/knowledge-graph.mjs` — `KnowledgeGraphStore`。
+- `js:lib/knowledge-graph.mjs` — `KnowledgeGraphStore`、`buildKnowledgeSnapshot`、`exportKnowledgeAst`。
+- `js:lib/knowledge-sqlite.mjs` — `SqliteKnowledgeGraphStore`、`publishSnapshot`。
 - `js:lib/project/graph.mjs` — `projectKnowledgeAst`。
 
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../sources.lock.json)；本页摘录不是生产认证。

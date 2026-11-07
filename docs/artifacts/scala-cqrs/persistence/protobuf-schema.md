@@ -8,13 +8,15 @@
 
 ## 输入与人工信息
 
-显式字段号、消息变体、可选性、schema版本和兼容策略；删除/重用字段号不是命名整理。
+输入包括消息变体、有序字段、可选性、schema版本和兼容策略。稳定字段号是wire演进义务；JS正式路径按字段顺序派生fN及号码，不提供作者独立编号的普遍保证。删除、重用号码或重排字段都不是普通命名整理。
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+BC由AggregateRootProtoBuilder → ProtoTemplate消费聚合及共享可达VO，writeProto选择单项目app/protobuf或多模块glue/src/main/protobuf。
 
-目录状态：`implemented`；所有权：`generated`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+JS正式serializationModel → render-serialization.mjs#renderProto按包输出<package_underscored>_domain.proto，覆盖状态、事件及exact/nominal/集合包装。fN字段及号码由有序字段机械分配，可选存在标记影响偏移；并非读取作者逐个指定的稳定字段号。字段重排因此是兼容问题。legacy proto-dsl的聚合/共享消息与retired scala-cqrs-es为独立历史路径。
+
+各profile的schema生成能力见[能力矩阵](../../CAPABILITY-MATRIX.md)。ScalaPB managed sources是后续构建产物，不是该源码扫描观察到的生成或编译结果；本轮不宣称旧bytes验证或最终批准。
 
 ## 结构与命名
 
@@ -38,7 +40,7 @@ PB往返、旧bytes兼容、缺required业务字段拒绝与枚举分支。proto
 
 机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
 
-适用：bc-single / bc-multi / js-formal。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+主要实例：bc-single / bc-multi / js-formal；legacy/retired另见上文。字段顺序、wire号码与后续ScalaPB构建证据分别核对，不把目录中的schema能力当作旧bytes兼容或R2支持。
 
 - `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/proto/ProtoTemplate.scala` — `ProtoTemplate`。
 - `js:generators/scala-cqrs-domain/render-serialization.mjs` — `renderProto`。

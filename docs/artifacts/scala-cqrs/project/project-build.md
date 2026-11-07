@@ -12,9 +12,13 @@ JDK/Scala/Play版本、完整runtime artifact pin、源根、模块布局和隔�
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `bc-single`：`CodegenMain.run → FileSystem.copyDirectory` 复制 BC `scaffold/build.sbt` 等构建文件；di-poc 的 build 不是此生成器的模板。
+- `bc-multi`：源码可放入 kernel/glue，但复制的 build 仍只声明 root，属于不完整构建支持，不能称已生成 di-poc 四模块项目。
+- `js-formal`：应用 build renderer 与服务 `generate.mjs` 组合构建文件、外部源码根和测试任务，由公共写入器落盘。
+- `bc-semantic-products`：独立 Scala ProductBuild/ProductHostSupport 与 `ProductServiceTemplate.build` 负责其构建，不是 JS 产物复制。
+- `js-legacy` 是旧 run-all 构建路径的兼容参考，`js-legacy-scaffold` 是静态 build/plugin 复制；`js-formal-subproducer` 指 domain scaffold 的较窄构建来源，不等于完整服务 profile。
 
-目录状态：`implemented`；所有权：`generated`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐 profile 的生命周期、生产链与证据层级见[派生能力矩阵](../../CAPABILITY-MATRIX.md)。可用源码、生成接线、目标编译、行为验证和最终批准不是同一声明。
 
 ## 结构与命名
 
@@ -36,12 +40,8 @@ build.sbt、project/build.properties、plugins.sbt；单模块app与多模块mod
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
+本页按上述 profile 区分当前原生、保留/退役路径与手写参考；不跨 profile 传播实现或验收结论。完整来源 revision、摘要和生产链由目录、派生矩阵及 `sources.lock.json` 记录，本页不另抄暂定统计。
 
-适用：bc-single / bc-multi / js-formal。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+### 第二批独立模块候选
 
-- `dipoc:build.sbt` — `dependsOn(kernel, glue)`。
-- `js:generators/scala-cqrs-application/render-build.mjs` — `applicationBuild`。
-- `js:generators/scala-cqrs-play-service/generate.mjs` — `externalSourceRoots`。
-
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+`scala-cqrs-modular-candidate-v1`新增独立Parcel参考及纯目标合同，属于reference-only，不是现役生成入口。Independent Scala 2.13.14 reference build and explicit offline direct-compiler runner. 结构、兼容差异及资格见[目标合同](../TARGET-PROFILES.md)；真实编译/行为结果单独记录，不把参考升级为生成器或最终金样。

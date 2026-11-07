@@ -12,9 +12,11 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+JS正式域生产链由buildStateModels → templates/aggregate-state.mjs#stateEntries从reference-layout、domain-folds、exact-value-types构造<Name>State.scala。layered Play service把empty转发给Entity；非layered目标直接在State侧生成初始化，不能要求每个profile都有额外Entity文件。
 
-目录状态：`implemented`；所有权：`generated`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+bank-p23的FundOrderState是当前兼容产物实例，不是新的手写生产者；其存在只证明被检查的源码快照，不表示本轮重新生成或恢复测试通过。BC的嵌套State布局在domain-entity职责下解释，不能从JS独立文件推定BC输出。
+
+能力、生成责任与实例生命周期按profile分别记录，见[能力矩阵](../../CAPABILITY-MATRIX.md)。正式链中的共享subproducer不是一个独立验收目标，源码定位不构成编译或最终批准。
 
 ## 结构与命名
 
@@ -38,10 +40,12 @@ JS兼容形保留<Name>State.scala，empty转发Entity唯一初始化；BC通常
 
 机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
 
-适用：js-formal / bank-p23。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+主要实例：js-formal / bank-p23。layered与非layered的empty位置不同；银行快照保留兼容载体，不由此推定R2或JS多模块能力。共享subproducer引用不另算独立生成目标。
 
+- `js:generators/scala-cqrs-domain/build-state-models.mjs` — `buildStateModels`。
+- `js:generators/scala-cqrs-domain/templates/aggregate-state.mjs` — `stateEntries`。
 - `js:generators/scala-cqrs-domain/render-domain.mjs` — `renderAggregate`。
-- `bank:generated/current/app/example/bankwealth/domain/FundOrderState.scala` — `FundOrderState`。
+- `bank:generated/current/app/example/bankwealth/domain/FundOrderState.scala` — `FundOrderState`，现有产物实例。
 
 来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
 

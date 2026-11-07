@@ -12,13 +12,15 @@ bridge目标、module和方法签名必须声明；真实现位于ext时不能�
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+BC多模块的桥由Metarch选定pipeline中的rules_domain_gen.mjs#portDecls按functions/ports声明生成；MULTI && bridge.module成立时省略桥，绑定留给root，并不输出旧Access全局对象。它不是raw Scala CodegenMain自带的通用桥生产能力。di-poc的ContentFingerprintBridge是同kernel纯实现的参考实例。
 
-目录状态：`implemented`；所有权：`generated`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+JS legacy service-dsl/emit.mjs#emitPort也真实输出trait与可选桥，但只检查fq/target，不实现BC的bridge.module多模块抑制，签名/import推断亦受限。retired scala-cqrs-es-rules的声明桥是另一历史路径；都不应当作正式typed-product链已经保证跨模块安全。复制的BC式文件头不改变JS实际写入者。
+
+桥的生成/省略条件和所有权按profile分别记录，见[能力矩阵](../../CAPABILITY-MATRIX.md)。源码支持不等于已执行依赖闭包、编译或最终批准。
 
 ## 结构与命名
 
-ContentFingerprintBridge与trait同文件可合法；BC MULTI且bridge.module指定外部模块时跳过桥，由root直绑实现。
+ContentFingerprintBridge与trait同文件可合法。BC源码的实际省略条件是MULTI && bridge.module，由root承担对应绑定；JS legacy emitPort不执行该条件，不能照搬BC的模块安全保证。
 
 类型使用UpperCamelCase，成员使用lowerCamelCase；数据库、protobuf和稳定业务ID分别遵循各自合同。描述目标命名不授权改写现有wire名称、PID或冻结载体。
 
@@ -38,13 +40,18 @@ ContentFingerprintBridge与trait同文件可合法；BC MULTI且bridge.module指
 
 机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
 
-适用：bc-multi / di-poc。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+主要实例：bc-multi / di-poc及JS legacy service-dsl；retired路径见上文。BC的桥省略条件未由JS legacy实现，是否统一属于后续工具链裁决，本批只保留差异而不修改生成器。
 
-- `bc:knowledge_base/design_docs/field_template/tools/rules_domain_gen.mjs` — `portDecls`。
+- `bc:knowledge_base/design_docs/field_template/tools/rules_domain_gen.mjs` — `portDecls / bridgeSkip / bridgeBlock`。
 - `dipoc:modules/kernel/src/main/scala/net/imadz/metarch/domain/service/ContentFingerprintPort.scala` — `ContentFingerprintBridge`。
+- `js:generators/service-dsl/emit.mjs` — `emitPort`。
 
 来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
 
 ### 类别依赖
 
 `computation-port`、`domain-service`。这些是职责依赖，不代替真实Scala import或执行顺序验证。
+
+### 第二批独立模块候选
+
+`scala-cqrs-modular-candidate-v1`新增独立Parcel参考及纯目标合同，属于reference-only，不是现役生成入口。Same-layer pure bridge delegates to CapacityRule; no static external implementation reference. 结构、兼容差异及资格见[目标合同](../TARGET-PROFILES.md)；真实编译/行为结果单独记录，不把参考升级为生成器或最终金样。

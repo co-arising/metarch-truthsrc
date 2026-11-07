@@ -12,19 +12,21 @@ RunId、definition ID/version、codecVersion、stage IDs和canonical initial sta
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `monarch-r1`：库提供RunDefinition及RunProtocol.StartOrAttach/GetRun，应用拥有具体定义、初始状态和路由；此基线没有RunSubmission/RunSubmissionPort。
+- `monarch-r2`：保留R1合同并增加RunSubmission不可变信封和RunSubmissionPort.ensure/query。具体信封、稳定身份与resolver仍属应用手写装配，未建立原生生成能力。
+- P23的旧StartRun/Execution wrapper不是上述版本化提交API的采用证据，也不因R2源码存在自动迁移。
 
-目录状态：`not-generated`；所有权：`handwritten`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐profile、来源和证据级别见[CAPABILITY-MATRIX.md](../../CAPABILITY-MATRIX.md)。接口存在不等具体业务实现已生成。
 
 ## 结构与命名
 
-RunDefinition/RunSubmission与RunProtocol.StartOrAttach/GetRun；RunSubmissionPort提供ensure/query并由resolver稳定路由。
+R1使用RunDefinition与RunProtocol.StartOrAttach/GetRun；R2新增RunSubmission及RunSubmissionPort.ensure/query，并由resolver稳定路由。提交信封不是R1既有类型，旧StartRun也不是该版本化API的别名。
 
 类型使用UpperCamelCase，成员使用lowerCamelCase；数据库、protobuf和稳定业务ID分别遵循各自合同。描述目标命名不授权改写现有wire名称、PID或冻结载体。
 
 ## 依赖与装配
 
-提交方在发送前持久化不可变信封，恢复附着同一个Run；同ID不同fingerprint拒绝。
+R1由应用固定definition/初始状态并用StartOrAttach附着同Run；R2交接方还须在发送前持久化不可变RunSubmission信封。恢复不得换Run身份，同ID不同fingerprint须拒绝，不能把提交端责任误记为库已替应用完成。
 
 ## 回锚与更新
 
@@ -36,14 +38,12 @@ RunDefinition/RunSubmission与RunProtocol.StartOrAttach/GetRun；RunSubmissionPo
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
+R1与R2的提交表面分开，不从当前R2源码反推R1已有RunSubmission。测试源码不等提交/恢复行为验证；P23冻结、银行未采用R2及最终批准边界不变。
 
-适用：monarch-r1 / monarch-r2。R1/R2公开运行库有对应实现；当前银行生成仍锁P23，不宣称JS原生R2生成、兼容旧journal或生产认证。
+- `monarch:src/main/scala/net/imadz/monarch/persistence/RunProtocol.scala` — `RunDefinition`、`StartOrAttach`、`GetRun`（R1起）。
+- `monarch:src/main/scala/net/imadz/monarch/persistence/RunSubmission.scala` — `RunSubmission`、`RunSubmissionPort`（R2增加）。
 
-- `monarch:src/main/scala/net/imadz/monarch/persistence/RunSubmission.scala` — `RunSubmission`。
-- `monarch:src/main/scala/net/imadz/monarch/persistence/RunProtocol.scala` — `RunDefinition`。
-
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../../sources.lock.json)；库类型不是具体业务producer。
 
 ### 类别依赖
 

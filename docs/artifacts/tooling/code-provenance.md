@@ -12,13 +12,15 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `tooling`：手写JS/BC工具派生source index、provenance及project-evidence；`captureProject`/`projectPlan`经同图AST和公共writer输出`.truthsrc/`输入快照，不生成业务行为。
+- BC `gen_provenance.mjs`的名称/stem启发式不是精确作者pointer证明；staging provenance还需追到pipeline apply，不能省略最后写者。
+- `js-formal`的设计source index来自`product-design-review/produce.mjs`，不是代码锚；`js-legacy`的invariant emitter在`.scala`目标留下的单行生成标记也不是规则实现。
 
-目录状态：`implemented`；所有权：`derived`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐profile的产物、来源和证据限制见[CAPABILITY-MATRIX.md](../CAPABILITY-MATRIX.md)。手写关系、派生映射及运行验收不能相互替代。
 
 ## 结构与命名
 
-provenance/source-index及本目录sources.lock/coverage为派生证据。宏可N:1映到作者位置，不能虚构子pointer。
+provenance/source-index、project-evidence快照及本目录派生覆盖/矩阵提供来源证据；sources.lock固定被核对的源码revision/摘要。锁定记录不等执行日志，宏可N:1映到作者位置，不能虚构子pointer。
 
 类型使用UpperCamelCase，成员使用lowerCamelCase；数据库、protobuf和稳定业务ID分别遵循各自合同。描述目标命名不授权改写现有wire名称、PID或冻结载体。
 
@@ -36,11 +38,13 @@ provenance/source-index及本目录sources.lock/coverage为派生证据。宏可
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
+tooling、formal设计索引和legacy标记的产物意义按profile分别解释。测试源码不等执行证据，来源一致不自动批准目标模板或业务行为。
 
-适用：tooling。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
-
-- `bc:tools/gen_provenance.mjs` — `provenance`。
+- `bc:tools/gen_provenance.mjs` — `INPUTS`、`fs.writeFileSync(OUT`。
 - `js:lib/source-index.mjs` — `buildSourceIndex`。
+- `js:lib/project/cli.mjs` — `captureProject`、`projectPlan`。
+- `js:lib/project/graph.mjs` — `projectKnowledgeAst`。
+- `js:generators/product-design-review/produce.mjs` — `produce`。
+- `js:src/core/generate.mjs` — `applyEntries`。
 
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../sources.lock.json)；不以文档索引代替实际源码/最终字节。

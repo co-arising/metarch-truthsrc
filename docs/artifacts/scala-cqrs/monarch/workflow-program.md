@@ -12,9 +12,9 @@ definition、capacities、resourceEvidence、connector(area)、operation(manifes
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+`monarch-r2`的WorkflowProgram接口由库声明，具体业务映射由消费者应用手写，当前未建立原生JS/BC生成实现。这里的`handwritten`/`not-generated`描述应用义务，不表示已经有一个完整银行实现。
 
-目录状态：`not-generated`；所有权：`handwritten`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+`operation`/`complete`必须是纯映射，connector及资源证据各有独立实现；完成分类须恰好覆盖manifest，不能用默认拒绝冒充已实现业务安全。逐profile及证据边界见[CAPABILITY-MATRIX.md](../../CAPABILITY-MATRIX.md)。银行仍P23，不从R2接口存在推定迁移完成。
 
 ## 结构与命名
 
@@ -36,15 +36,13 @@ operation只构造原请求，complete只作纯分类；执行/查询在connecto
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
-
-适用：monarch-r2。R1/R2公开运行库有对应实现；当前银行生成仍锁P23，不宣称JS原生R2生成、兼容旧journal或生产认证。
+本页是R2应用义务，R1不含WorkflowProgram/WorkflowHost；不存在据此认领银行完整实现的授权。测试源码或接口存在不是生成/行为证据，最终批准未授予，P23冻结不变。
 
 - `monarch:src/main/scala/net/imadz/monarch/persistence/batch/WorkflowHost.scala` — `WorkflowProgram`。
 
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../../sources.lock.json)；下列签名是API，不是生成示例。
 
-## 真实接口形状
+### 真实接口形状
 
 ```scala
 trait WorkflowProgram {

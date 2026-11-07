@@ -4,7 +4,7 @@
 
 ## 职责
 
-输出Saga静态合同、阶段表、来源索引或保留legacy源码，供审阅/迁移；这些不是已执行的资金事务。
+输出Saga静态合同、阶段表和消费来源报告，供审阅/迁移。legacy模式的Scala确实存在，但属于应用context/definition/声明行为类别，不在本页算作报告，更不是已执行的资金事务。
 
 ## 输入与人工信息
 
@@ -12,13 +12,15 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `js-contract-only`明确指`saga-dsl/generate.mjs`的`strict-contract`模式，派生contract/phases/consumption JSON，固定`readiness=contract-only`、`runnable=false`、`runtimeBindingVerified=false`。本类别旧`saga-strict`标签保留这条报告关联，不表示saga-core库在生成JSON。
+- 旧`js-legacy` profile仅作reference-only历史关联，不在报告类别中计入Scala生成。legacy模式确实产生Args/Context/SagaDefinition/register源码，分别在[saga-legacy-context](saga-legacy-context.md)、[saga-transactor](saga-transactor.md)及[saga-legacy-behavior](saga-legacy-behavior.md)解释。
+- `strict-scala`只在这个`generate` API内受阻；独立正式application及run-all strict producer确有Scala输出，不能把局部阻断扩大为整个工具链无strict生成能力。
 
-目录状态：`implemented`；所有权：`derived`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐profile的兼容标签、真实产物和证据级别见[CAPABILITY-MATRIX.md](../../CAPABILITY-MATRIX.md)。报告通过不是运行验收或最终批准。
 
 ## 结构与命名
 
-Saga阶段表/contract ledger/legacy-source是文档或保真产物，不应与数据库journal混名。
+`contracts/sagas/<id>.contract.json`、`.phases.json`、`.consumption.json`分别承载合同、阶段表和静态消费报告，对应`saga-contract`、`saga-phase-table`、`saga-contract-ledger`。这些不是generation ledger或数据库journal；`saga-legacy-source`是另列的Scala产物。
 
 类型使用UpperCamelCase，成员使用lowerCamelCase；数据库、protobuf和稳定业务ID分别遵循各自合同。描述目标命名不授权改写现有wire名称、PID或冻结载体。
 
@@ -36,10 +38,10 @@ Saga阶段表/contract ledger/legacy-source是文档或保真产物，不应与�
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
+`js-contract-only`是显式JSON报告profile；旧`saga-strict`报告关联与`js-legacy` reference-only关联不扩展运行能力。测试源码不等报告生成已执行，更不能证明目标编译、业务行为或最终批准。
 
-适用：js-legacy / saga-strict。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+- `js:generators/saga-dsl/parse.mjs` — `compileSagaContract`。
+- `js:generators/saga-dsl/generate.mjs` — `generate`、`buildStrictPlan`。
+- `js:src/core/generate.mjs` — `applyEntries`。
 
-- `js:generators/saga-dsl/generate.mjs` — `generate`。
-
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../../sources.lock.json)；保留`runnable=false`，不重写为黄金批准。

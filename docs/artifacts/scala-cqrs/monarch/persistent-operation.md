@@ -12,9 +12,11 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+`monarch-r1`提供PersistentOperation协调器，`monarch-r2`保留并组合该机制；均由`monarch-persistence`运行库提供，不是生成的应用私有状态机。
 
-目录状态：`implemented`；所有权：`library`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+真实ExternalOperationPort、冻结请求及证据政策仍由应用提供，未建立原生JS/BC具体业务生成链。P23生成EffectHost是另一宿主合同，不等已消费PersistentOperation，更不证明银行采用R2。
+
+逐profile的库/应用边界见[CAPABILITY-MATRIX.md](../../CAPABILITY-MATRIX.md)。技术重传/预算不关闭银行业务retry/backoff/deadline的OPEN项。
 
 ## 结构与命名
 
@@ -36,14 +38,12 @@ Prepared和DispatchStarted提交后才调用外部；恢复先query同请求，�
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
-
-适用：monarch-r1 / monarch-r2。R1/R2公开运行库有对应实现；当前银行生成仍锁P23，不宣称JS原生R2生成、兼容旧journal或生产认证。
+R1机制在R2保留，P23 EffectHost不与其合并。测试源码不等跨进程/外部账本行为已验证；银行未采用R2，业务OPEN项和最终批准边界不变。
 
 - `monarch:src/main/scala/net/imadz/monarch/persistence/operation/PersistentOperation.scala` — `PersistentOperation`。
 - `monarch:src/main/scala/net/imadz/monarch/persistence/operation/OperationProtocol.scala` — `OperationProtocol`。
 
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../../sources.lock.json)；本页摘录不是生产认证。
 
 ### 类别依赖
 

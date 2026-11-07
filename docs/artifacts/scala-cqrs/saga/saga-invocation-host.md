@@ -12,9 +12,12 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `js-formal`由`renderInvocationHosts`及配套adapters生成Host/HostIO/serializer，真实I/O由消费者提供；`bank-p23`再由手写BankRuntime/directory拥有actor身份、缓存和生命周期。
+- `bc-semantic-products`有独立ProductInvocationHostTemplate生产链；`bc-strict`的fixture Host/Entry与composition InvocationHostTemplate是另一路合同，不能混同两类生成。
+- `js-run-all-strict`保留独立strict source/fixture composition入口；本类别`saga-strict`兼容标签没有唯一Host producer，只作reference-only，不代表库会生成应用host。
+- 生成的Host不是StrictSagaCoordinator内部状态机，后者始终由运行库提供。
 
-目录状态：`implemented`；所有权：`mixed`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐profile的生产链、模块与证据见[CAPABILITY-MATRIX.md](../../CAPABILITY-MATRIX.md)。P23冻结、银行未采用R2及OPEN retry政策保持不变。
 
 ## 结构与命名
 
@@ -36,14 +39,16 @@
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
-
-适用：saga-strict / bc-strict / js-formal / bank-p23。当前saga-core基线4352a317的strict API与银行P23消费有明确合同，Monarch R2不自动升级Saga政策或retry/backoff/deadline。
+完整profile及reference-only兼容标签见本页生产说明与矩阵；不能把库标签当作独立Host producer。测试源码不等actor/JVM恢复证据；P23冻结，最终模板批准未授予。
 
 - `js:generators/scala-cqrs-application/render-invocation-host.mjs` — `renderInvocationHosts`。
-- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/InvocationHostTemplate.scala` — `InvocationHostTemplate`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/products/ProductInvocationHostTemplate.scala` — `generate`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/products/ProductHostIOTemplate.scala` — `generate`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/FixtureHostTemplate.scala` — `generateFiles`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/InvocationHostTemplate.scala` — `generateFiles`。
+- `js:generators/saga-dsl/emit-strict-host.mjs` — `emitStrictHostFiles`。
 
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../../sources.lock.json)；真实I/O和actor owner仍须独立实现。
 
 ### 类别依赖
 

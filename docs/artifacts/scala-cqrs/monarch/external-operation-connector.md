@@ -12,9 +12,11 @@ connector ID/version、ledgerEpoch、OperationKey/EffectKey、request/evidence c
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+`monarch-r1`和`monarch-r2`均由应用拥有具体connector、request/evidence编码和安全证明实现，责任为`handwritten`、能力为`not-generated`；库只提供`ExternalOperationPort`接口和Typed helper。未定位JS/BC原生R1/R2具体connector producer。
 
-目录状态：`not-generated`；所有权：`handwritten`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+默认拒绝的validator是安全边界，不是已经实现领域查证。银行手写TA effect binding属于P23宿主合同，不能算作本接口的R2采用证据。
+
+逐profile责任与证据级别见[CAPABILITY-MATRIX.md](../../CAPABILITY-MATRIX.md)。NotFound/timeout不授权安全重发，业务retry/backoff/deadline仍需独立实现与验收。
 
 ## 结构与命名
 
@@ -36,15 +38,13 @@ ACK丢失无taskId仍query原请求、假/错epoch回执、查询为空、安全
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
-
-适用：monarch-r1 / monarch-r2。R1/R2公开运行库有对应实现；当前银行生成仍锁P23，不宣称JS原生R2生成、兼容旧journal或生产认证。
+R1/R2提供接口，不提供具体业务connector的默认正确实现。银行仍P23；测试源码存在不证明金融查证已执行，最终批准仍需独立证据。
 
 - `monarch:src/main/scala/net/imadz/monarch/persistence/operation/ExternalOperationPort.scala` — `ExternalOperationPort`。
 
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../../sources.lock.json)；接口签名不是银行R2采用证明。
 
-## 真实端口形状
+### 真实端口形状
 
 ```scala
 def submit(request: Request): Future[Observation]

@@ -12,9 +12,11 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+`di-poc`是reference范围的手写应用集成，实际仓库为`/Users/zhongdj/Workspaces/di-poc`。`TruthProjectionRebuilder`、`KnJournalService`等实现位于`modules/ext`，不是公共JS工具模块或自动生成的知识服务。
 
-目录状态：`implemented`；所有权：`handwritten`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+glue存储和root HTTP壳是独立依赖，不能把ext职责扩展为整个服务已就绪。本页只定位源码；没有读取知识journal、执行重放或验证部署，也不使服务成为本地文件优先闭环的前置条件。
+
+逐profile的责任、模块与证据级别见[CAPABILITY-MATRIX.md](../CAPABILITY-MATRIX.md)。
 
 ## 结构与命名
 
@@ -36,11 +38,9 @@ ext中的TruthCanonicalJson/ProjectionSource/Rebuilder/MetarchRebuild及KnJourna
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
-
-适用：di-poc。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+`di-poc`仅说明ext中的手写应用参考实现，不代表公共JS或银行已经消费。测试源码不等服务执行/重放证据，也不构成最终批准。
 
 - `dipoc:modules/ext/src/main/scala/net/imadz/metarch/truth/TruthProjectionRebuilder.scala` — `TruthProjectionRebuilder`。
 - `dipoc:modules/ext/src/main/scala/net/imadz/metarch/application/kb/KnJournalService.scala` — `KnJournalService`。
 
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../sources.lock.json)；本页不读取知识journal或认证当前部署。

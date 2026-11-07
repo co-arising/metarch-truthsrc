@@ -12,9 +12,12 @@ name/version/definitionDigest、canonical args、participant step/resource、每
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `saga-strict`由库提供不可变StrictSagaDefinition/participant API；具体业务definition与codec/port对象不由库猜测。
+- `js-formal`的`renderDefinitions`生成Definition内argsCodec/fromTechnical/definition/coordinator及typed参与者；`bank-p23`消费这些接线并注入手写真实I/O。
+- `bc-strict`使用StrictSagaModuleBuilder/Model/Template生成具体Module，`bc-semantic-products`使用ProductApplicationTemplate独立生成；`js-run-all-strict`另有旧run-all source链，不能混称一个producer。
+- `saga-contract` JSON属于[saga-contract-report](saga-contract-report.md)的`js-contract-only`派生报告，不是可运行Scala definition，也不替代以上真实生成链。
 
-目录状态：`implemented`；所有权：`mixed`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐profile的库/接线/证据边界见[CAPABILITY-MATRIX.md](../../CAPABILITY-MATRIX.md)。本次不批准模板，不迁移P23或改变OPEN retry政策。
 
 ## 结构与命名
 
@@ -36,14 +39,16 @@ StrictSagaDefinition[A]、StrictParticipant[A]及生成StrictSagaModule；当前
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
-
-适用：saga-strict / bc-strict / js-formal / bank-p23。当前saga-core基线4352a317的strict API与银行P23消费有明确合同，Monarch R2不自动升级Saga政策或retry/backoff/deadline。
+库定义接口、JS/BC生成接线及bank手写I/O按profile分开；合同JSON不计为可运行Scala。测试源码不等定义装配/恢复行为证据，最终批准未授予，P23冻结及OPEN业务政策不变。
 
 - `saga:src/main/scala/net/imadz/infra/saga/strict/StrictSagaDefinition.scala` — `StrictSagaDefinition`。
 - `js:generators/scala-cqrs-application/render-host.mjs` — `renderDefinitions`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/StrictSagaModuleBuilder.scala` — `build`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/StrictSagaModuleModel.scala` — `StrictSagaModuleModel`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/StrictSagaModuleTemplate.scala` — `generate`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/products/ProductApplicationTemplate.scala` — `generate`。
 
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../../sources.lock.json)；新旧namespace边界不因文档修改而迁移。
 
 ### 类别依赖
 

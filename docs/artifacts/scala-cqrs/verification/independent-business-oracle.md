@@ -12,9 +12,10 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `bank-p23`：固定的业务 oracle suite 与恢复 main 是银行手写/冻结验证资产，不是生成器产物、生成证明或生成器 golden master。
+- 源码可用只表示具备检查资产。真正执行、失败服务记录和跨 JVM 恢复证据另行保留，不能由存在断言文件升级为业务通过。
 
-目录状态：`implemented`；所有权：`handwritten`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐 profile 的生命周期、生产链与证据层级见[派生能力矩阵](../../CAPABILITY-MATRIX.md)。可用源码、生成接线、目标编译、行为验证和最终批准不是同一声明。
 
 ## 结构与命名
 
@@ -36,11 +37,8 @@ test/scala固定suite/HTTP/恢复mains，恢复场景参数与生产源分离；
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
+本页按上述 profile 区分当前原生、保留/退役路径与手写参考；不跨 profile 传播实现或验收结论。完整来源 revision、摘要和生产链由目录、派生矩阵及 `sources.lock.json` 记录，本页不另抄暂定统计。
 
-适用：bank-p23。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+### 第二批独立模块候选
 
-- `bank:test/scala/BankSinglePaymentOracleSpec.scala` — `BankSinglePaymentOracleSpec`。
-- `bank:test/scala/BankCrashRecoveryMain.scala` — `BankCrashRecoveryMain`。
-
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+`scala-cqrs-modular-candidate-v1`新增独立Parcel参考及纯目标合同，属于reference-only，不是现役生成入口。Independent pure-capacity, injected-flow and real-root-binding expectations; not bank or final architecture approval. 结构、兼容差异及资格见[目标合同](../TARGET-PROFILES.md)；真实编译/行为结果单独记录，不把参考升级为生成器或最终金样。

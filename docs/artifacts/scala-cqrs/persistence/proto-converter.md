@@ -12,9 +12,11 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+BC由AggregateConverterBuilder/Template消费application聚合及可达domain values，输出infrastructure/persistence/converters/<Name>ProtoConverters.scala，多模块放glue。
 
-目录状态：`implemented`；所有权：`generated`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+JS正式serialization.mjs#serializationModel → render-serialization.mjs#renderConverters消费domain字段、fold及exact-value-types/codecs，输出DomainConverters和按大小需要的PartN。legacy converter-dsl另生成ProtoConverters/Conv与List/Instant助手，run-all条件复制的PrimitiveConverter为静态支持；retired scala-cqrs-es是历史转换模板，不能与当前typed链互认能力。
+
+按profile区分直接生成、静态支持和生命周期，见[能力矩阵](../../CAPABILITY-MATRIX.md)。converter不是serializer；定位生产源码不表示本轮PB往返、目标编译或最终批准。
 
 ## 结构与命名
 
@@ -38,7 +40,7 @@ BC <Name>ProtoConverters与<Type>Conv；JS DomainConverters及PartN拆分。Part
 
 机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
 
-适用：bc-single / bc-multi / js-formal。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+主要实例：bc-single / bc-multi / js-formal；legacy/retired及静态支持见上文。BC放置变体不改变业务事实，JS PartN及共享subproducer也不代表额外独立功能或R2支持。
 
 - `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/persistence/AggregateConverterTemplate.scala` — `AggregateConverterTemplate`。
 - `js:generators/scala-cqrs-domain/render-serialization.mjs` — `renderConverters`。

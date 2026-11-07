@@ -12,19 +12,21 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+- `monarch-r1`/`monarch-r2`：库定义`StateCodec[S]`接口；具体应用编码与版本政策由消费者拥有，尚无对应原生生成实现。`not-generated`仅限定这些profile，不是全类别结论。
+- `js-formal`、`bank-p23`、`bc-semantic-products`已经生成有限业务Execution中的StateCodec及execution proto；JS来自execution renderers，BC来自ProductExecution/ProductInvocationExecution模板。
+- `js-legacy`的monarch-dsl emitter生成JSON StateCodec；`js-run-all-strict`的child Plan也有具体业务状态编码。两者是旧式应用生成，不是R2协议编码器。
 
-目录状态：`not-generated`；所有权：`handwritten`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+逐profile的接口、生成实现和证据级别见[CAPABILITY-MATRIX.md](../../CAPABILITY-MATRIX.md)。P23 codec、PB、PID及冻结载体不在本次修改范围。
 
 ## 结构与命名
 
-StateCodec[S]及计划/输入PB；库提供接口，应用实现具体类型编码。
+库提供`StateCodec[S]`接口；具体类型编码由应用拥有，可以由正式JS/BC有限Execution producer生成，也可以由消费者手写。P23生成codec不能据名称提升为R1/R2版本化Run的原生生成实现。
 
 类型使用UpperCamelCase，成员使用lowerCamelCase；数据库、protobuf和稳定业务ID分别遵循各自合同。描述目标命名不授权改写现有wire名称、PID或冻结载体。
 
 ## 依赖与装配
 
-与RunDefinition.codecVersion和journal绑定，存储路径存在不证明跨重启仍可读。
+R1/R2版本化Run将具体codec与RunDefinition.codecVersion及journal绑定；P23旧behavior wrapper按其已有StateCodec/持久化合同消费，不能替它补写版本化API保证。存储路径存在不证明跨重启仍可读。
 
 ## 回锚与更新
 
@@ -36,11 +38,14 @@ StateCodec[S]及计划/输入PB；库提供接口，应用实现具体类型编�
 
 ## 版本与实例
 
-机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
+R1/R2具体codec义务与P23/JS/BC已有生成codec分开记录。测试源码不等实际wire/recovery证据；银行冻结载体不变，未采用R2，最终批准仍未授予。
 
-适用：monarch-r1 / monarch-r2。R1/R2公开运行库有对应实现；当前银行生成仍锁P23，不宣称JS原生R2生成、兼容旧journal或生产认证。
+- `monarch:src/main/scala/net/imadz/monarch/persistence/StateCodec.scala` — `StateCodec`（库接口）。
+- `js:generators/scala-cqrs-application/render-execution.mjs` — `renderExecutionPlans`。
+- `js:generators/scala-cqrs-application/render-invocation-execution.mjs` — `renderInvocationExecution`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/products/ProductExecutionTemplate.scala` — `generate`。
+- `bc:src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/products/ProductInvocationExecutionTemplate.scala` — `generate`。
+- `js:generators/monarch-dsl/emit.mjs` — `emitStateType`。
+- `js:generators/saga-dsl/emit-invocation-plan.mjs` — `emitMonarchPlan`。
 
-- `monarch:src/main/scala/net/imadz/monarch/persistence/StateCodec.scala` — `StateCodec`。
-- `monarch:src/main/scala/net/imadz/monarch/persistence/RunSubmission.scala` — `RunSubmission`。
-
-来源的完整revision、文件摘要及清点处置在根目录的`sources.lock.json`；本页摘录不是生产认证。
+来源revision、摘要及处置见[sources.lock.json](../../sources.lock.json)；RunSubmission仅属R2提交接口，不是R1具体codec来源。

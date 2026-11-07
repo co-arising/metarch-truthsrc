@@ -12,9 +12,9 @@
 
 ## 生产与所有权
 
-由列出的生产者/实现提供。BC的Scala结构与JS最终写入者必须一起判断；同文件后续JS覆写时，最终台账行归最后写入者。当前银行兼容profile只按实际已有产物标识，不由旧文档推定能力。
+本页已定位的是di-poc的维护接口IdentityStoreApi及同文件UserDoc，物理位置为kernel，root实现/绑定另行提供。它是参考profile的手写接口能力，不是BC或JS由作者树自动生成身份存储实现的证据；接口存在也不表示存储、安全或完整签名闭包已验收。
 
-目录状态：`implemented`；所有权：`handwritten`。生成文件通过公共生成/更新通道维护；独立手写实现不是生成结果的可编辑副本。
+按profile解释接口、实现、放置和生命周期，见[能力矩阵](../../CAPABILITY-MATRIX.md)。当前实例遵守手写维护边界，不能经生成副本覆盖；本轮仅校准文档，不声明编译、认证流程运行或最终批准。
 
 ## 结构与命名
 
@@ -38,7 +38,7 @@ root通过BootstrapModule把接口绑定IdentityStore，签名不能反向依赖
 
 机器目录按各适用变体分别记录可用性/所有权，不能把一个变体的implemented传播到其他profile。
 
-适用：di-poc。单模块和多模块是放置/装配变体，不是两套业务事实。BANK P23兼容层与BC目标模板可能保留具名差异；没有把R2运行库能力写成当前银行生成支持。
+主要实例：di-poc的手写参考接口。kernel是此实例的实际物理位置，不表示所有profile自动具有身份存储端口或递归类型闭包。
 
 - `dipoc:modules/kernel/src/main/scala/net/imadz/metarch/infrastructure/auth/IdentityStoreApi.scala` — `IdentityStoreApi`。
 
