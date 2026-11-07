@@ -4,6 +4,12 @@
 > this project. Custom third-party generators are first-class: any tool that
 > implements the contract below is a generator, whatever language it's written in.
 
+## ArtifactType 说明与生成能力
+
+现行说明统一在 [docs/artifacts](docs/artifacts/README.md)，Scala及多模块内容在 [scala-cqrs](docs/artifacts/scala-cqrs/README.md)。目录保留普通/正式/retired producer及BC最终JS写者的不同职责，并明确legacy Saga、strict与Monarch R1/R2的库/宿主边界。语义产品不是代码类别，`kind`也不总是一种物理文件；请按适用profile而非一个全局总数理解覆盖。
+
+该目录不改变第三方generator的开放合同，也不自动迁移当前银行的P23依赖。[漂移说明](docs/artifacts/DRIFT.md)区分旧说明修正和仍存在的代码/生成债。
+
 ## Current local project entry (2026-11-04)
 
 New users start with [PROJECT.md](PROJECT.md) and [AUTHORING.md](AUTHORING.md):

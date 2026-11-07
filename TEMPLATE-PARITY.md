@@ -1,6 +1,8 @@
 # BC文件管线参照与兼容迁移对照
 
-最后更新: 2026-11-06
+最后更新: 2026-11-07
+
+完整产物职责说明现统一到 [artifactType目录](docs/artifacts/scala-cqrs/README.md)，包括本文原范围之外的多模块port/绑定、BC JS最终写者和Monarch R1/R2。这不扩大下文任务108的兼容验收结论；本表是特定profile对照，不是所有新产物均已被银行消费的认证。旧文档、模块放置和命名差异见[漂移记录](docs/artifacts/DRIFT.md)。
 
 用户在任务108明确选择**兼容迁移**：允许必要银行手写接线调整，使生成仓储、读侧和
 启动装配真正被使用；保留公开API、原State/Event/Request/Reply载体、protobuf、PID、

@@ -222,7 +222,7 @@ test('local tarball allowlist installs offline and runs without the source check
   const env = { ...process.env, npm_config_cache: join(root, 'npm-cache'), npm_config_update_notifier: 'false' };
   const packed = JSON.parse(command('npm', ['pack', tool, '--offline', '--ignore-scripts', '--json', '--pack-destination', packDir], root, 0, env).stdout)[0];
   const paths = packed.files.map(file => file.path);
-  for (const directory of ['lib/', 'src/', 'schema/', 'generators/', 'scaffold/', 'mcp/']) assert.ok(paths.some(path => path.startsWith(directory)), directory);
+  for (const directory of ['lib/', 'src/', 'schema/', 'generators/', 'scaffold/', 'mcp/', 'docs/artifacts/scala-cqrs/']) assert.ok(paths.some(path => path.startsWith(directory)), directory);
   for (const file of ['bin/truthsrc.js', 'lib/cli-presentation.mjs', 'lib/node-runtime.mjs', 'scaffold/unified-project/truthsrc.project.json', 'README.md', 'TUTORIAL.md']) assert.ok(paths.includes(file), file);
   for (const path of paths) assert.doesNotMatch(path, /(^|\/)(\.[^/]+|test|target|cache|__pycache__|node_modules)(\/|$)|\.(bak|tmp|pem|key|tgz|sqlite(?:-wal|-shm)?|db|log)$/);
   assert.ok(!paths.includes('canonical.json'));
@@ -234,6 +234,12 @@ test('local tarball allowlist installs offline and runs without the source check
   renameSync(prefix, moved);
   const entry = join(moved, 'node_modules/@madpolaris/truthsrc/bin/truthsrc.js');
   assert.equal(run(root, ['--version'], 0, entry).stdout.trim(), pkg.version);
+  const artifactCheck = join(moved, 'node_modules/@madpolaris/truthsrc/tools/artifact-docs-check.mjs');
+  const artifactReport = JSON.parse(command(process.execPath, [artifactCheck, '--local'], root).stdout);
+  assert.equal(artifactReport.passed, true);
+  assert.equal(artifactReport.externalSourcesReverified, false);
+  const artifactIndex = join(moved, 'node_modules/@madpolaris/truthsrc/docs/artifacts/scala-cqrs/README.md');
+  assert.ok(readFileSync(artifactIndex, 'utf8').includes('端口'));
   const created = json(root, ['init', 'packed-counter'], entry);
   const args = ['--project', created.project, '--out', join(created.root, 'generated')];
   assert.equal(json(root, ['generate-project', ...args], entry).applied, true);

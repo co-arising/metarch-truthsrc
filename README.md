@@ -14,6 +14,10 @@
      └──────── 同图查询来源与最终代码 span ────────┘
 ```
 
+## 代码产物与架构说明
+
+[统一 artifactType 目录](docs/artifacts/README.md)解释每类内容的输入、生成/手写/运行库归属、结构、装配和验证。[Scala CQRS 专册](docs/artifacts/scala-cqrs/README.md)覆盖 BC 的 Scala 与 JS 最终产物、多模块 port/binding，以及 Saga/Monarch 的版本差异；[构建顺序](docs/artifacts/scala-cqrs/BUILD-ORDER.md)区分公共工具加工与仍需人提供的信息。目录随本地包分发，不把文档覆盖称为银行服务或 R2 消费通过。
+
 ## Install the local CLI
 
 ### 环境与版本边界
