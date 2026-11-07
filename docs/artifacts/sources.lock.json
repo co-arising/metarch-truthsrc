@@ -124,6 +124,17 @@
           ],
           "packaged": false,
           "files": false
+        },
+        {
+          "id": "verification",
+          "paths": [
+            "lib/verification"
+          ],
+          "extensions": [
+            ".mjs"
+          ],
+          "packaged": true,
+          "files": false
         }
       ],
       "files": [
@@ -14983,6 +14994,140 @@
             "value"
           ],
           "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "lib/verification/files.mjs",
+          "bytes": 9183,
+          "sha256": "34e445e51cd3ff722eaa9cb9d4011c6facf134a34327694e0f49711317a38d95",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "verification",
+          "categories": [
+            "verification-runner"
+          ],
+          "disposition": "verification-support",
+          "reason": "Optional public evidence/lifecycle or tool-ownership mechanism; caller-owned policies remain outside the basic author CLI.",
+          "symbols": [
+            "assertCanonicalPath",
+            "captureEvidenceFile",
+            "is",
+            "options",
+            "pathParts",
+            "required",
+            "snapshot",
+            "synchronousCallback",
+            "synchronousResult",
+            "unchanged"
+          ],
+          "outputSites": [
+            {
+              "line": 82,
+              "sha256": "c88ee1ec0ce246b249d6c19909e0d628fe58e0e3dc9539304a5594f6d0df06e4",
+              "excerpt": "assert.equal(matches.length, 0, 'destination already exists or aliases another path: ' + file);"
+            },
+            {
+              "line": 83,
+              "sha256": "7618ae6c8050789ffdfe053a9c4b1a8b3c4d22ceb73b01551bb6feef01e40b29",
+              "excerpt": "assert.equal(fs.lstatSync(file, { throwIfNoEntry: false }), undefined, 'destination already exists or aliases another path: ' + file);"
+            }
+          ],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "lib/verification/process.mjs",
+          "bytes": 30355,
+          "sha256": "f3640c8447dc4eb9e0f575d6787035e3306bda6e80a7aaa1b8edab35643eb300",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "verification",
+          "categories": [
+            "verification-runner"
+          ],
+          "disposition": "verification-support",
+          "reason": "Optional public evidence/lifecycle or tool-ownership mechanism; caller-owned policies remain outside the basic author CLI.",
+          "symbols": [
+            "captureProcessInspectionOptions",
+            "captureProcessOptions",
+            "inspectProcessEvidence",
+            "processEvidencePaths",
+            "redactor",
+            "runVerifiedProcess",
+            "validateProcessReceipt"
+          ],
+          "outputSites": [
+            {
+              "line": 412,
+              "sha256": "3c17936c725c36f1c085f94ac67ac4f3234e87af8eac1fa1c61e94b4b0880dba",
+              "excerpt": "assertCanonicalPath(file, { kind: 'file' });"
+            }
+          ],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "lib/verification/tooling-ownership.mjs",
+          "bytes": 9384,
+          "sha256": "77f568db4ae64a2355e5a9e6971d17ba2533d61eec72cc493eefe96aa43324c7",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "verification",
+          "categories": [
+            "verification-runner"
+          ],
+          "disposition": "verification-support",
+          "reason": "Optional public evidence/lifecycle or tool-ownership mechanism; caller-owned policies remain outside the basic author CLI.",
+          "symbols": [
+            "capture",
+            "enumValue",
+            "evidence",
+            "local",
+            "object",
+            "relativeFile",
+            "required",
+            "text",
+            "uniqueStrings",
+            "verifyToolingOwnership"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "lib/verification/worker-evidence.mjs",
+          "bytes": 7582,
+          "sha256": "6fb18ae218d004071e6bbab3112d6343196f04a126f229c55c7a5a553c776651",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "verification",
+          "categories": [
+            "verification-runner"
+          ],
+          "disposition": "verification-support",
+          "reason": "Optional public evidence/lifecycle or tool-ownership mechanism; caller-owned policies remain outside the basic author CLI.",
+          "symbols": [
+            "parseWorkerTranscript",
+            "recordParser",
+            "validateWorkerLifecycle"
+          ],
+          "outputSites": [
+            {
+              "line": 50,
+              "sha256": "95518391b586f576b36eb6b0655f6402b16fe5f6418fd5001c34a1936d082237",
+              "excerpt": "*   {kind:'worker-started',pid}, {id,op,...}, {id,ok?,result?,error?},"
+            },
+            {
+              "line": 51,
+              "sha256": "4cac300a2f0647a80d3bba61f948df28572618997fa9c843924a5a2e086c4f9a",
+              "excerpt": "*   {kind:'worker-exited',pid,waited:true,exitCode:0}."
+            }
+          ],
           "emittedKinds": [],
           "dynamicKinds": []
         },
@@ -71577,8 +71722,8 @@
         },
         {
           "path": "tools/bank-workshop-session.mjs",
-          "bytes": 44491,
-          "sha256": "7854872b94cfa82fbd7d14044f3e0d2bd113f350c61e3c33f2cafa9277005a82",
+          "bytes": 45424,
+          "sha256": "44984c70bbca99638b8fcfaff107422df77288509b888b43157eecd7fc7b2b28",
           "mode": "100644",
           "baselineBlob": "731dced6b07b465fb388a5cee4e2737e7ecab6f5",
           "evidence": "committed-baseline",
@@ -71617,7 +71762,7 @@
           ],
           "outputSites": [
             {
-              "line": 30,
+              "line": 31,
               "sha256": "3b43f068befaf1f9c9295260f778d5b92d0a56e6340026434fb4182ea4f132d1",
               "excerpt": "const write = (file, text) => writeFileSync(file, text, { flag: 'wx', mode: 0o600 });"
             }
@@ -71627,8 +71772,8 @@
         },
         {
           "path": "tools/bank-workshop-supply.mjs",
-          "bytes": 14682,
-          "sha256": "8e5629868d7e0b0e5b7da4db4bdfa480806c327ee4a6b8efcc96b35cf6634bbc",
+          "bytes": 14877,
+          "sha256": "26d27a26b63dd3617897af7387e3d11745efb5d6423bf90bf0ba84cea79232d4",
           "mode": "100644",
           "baselineBlob": "c454bfd36016a286fb5bee7c5ddc62f013322ccd",
           "evidence": "committed-baseline",
@@ -71653,7 +71798,7 @@
           ],
           "outputSites": [
             {
-              "line": 215,
+              "line": 218,
               "sha256": "987eeb2e85b56d2c252c3d7b790e326c1d980792c9cd2c64c3af9c58db609a50",
               "excerpt": "} else checks.push({ id: 'resources', kind: 'explicit-resource-probe', status: 'not-run', detail: 'Ports/daemon/images not probed. Use doctor --probe-resources; runtime checks agai"
             }
@@ -71663,8 +71808,8 @@
         },
         {
           "path": "tools/bank-workshop-verification.mjs",
-          "bytes": 39998,
-          "sha256": "a4b2d5ee049f1c4ce35911a92129ea25993710ccbce9301340f6f36580ff88a9",
+          "bytes": 37320,
+          "sha256": "90ccb2f8a186b10490c200c469d55273ed8ee18808a51a1e9d7050addf1c905c",
           "mode": "100644",
           "baselineBlob": "9af9736e1a2388b99aa4cad59ee7216c82e41b80",
           "evidence": "committed-baseline",
@@ -71689,12 +71834,12 @@
           ],
           "outputSites": [
             {
-              "line": 19,
+              "line": 22,
               "sha256": "915292d702d8491cb7d4f4151e8b1a9beb680066f17a305e8ba913d3a1682bd5",
               "excerpt": "const save = (file, value) => writeFileSync(file, jsonText(value), { flag: 'wx', mode: 0o600 });"
             },
             {
-              "line": 488,
+              "line": 456,
               "sha256": "088ee98592a5ac777728ff71cd50ac93fd05dd707004631c1530ef0676f2e1c4",
               "excerpt": "writeFileSync(markdownFile, ["
             }
@@ -72108,8 +72253,8 @@
         },
         {
           "path": "tools/truthsrc-actor-tests.mjs",
-          "bytes": 10211,
-          "sha256": "a52104a8c51b64c3ad58942bef38205d0bd0c88c2f33f76cfd2e44a493e718b1",
+          "bytes": 9600,
+          "sha256": "84523d8199d0769086700d90e5db978a9a4029239e62075c804ff246fe05a39d",
           "mode": "100644",
           "baselineBlob": "1cfa3147d54e7c22112c6804f9e878fcbe375256",
           "evidence": "committed-baseline",
@@ -72126,8 +72271,28 @@
             "actorTestManifest",
             "combineActorManifest",
             "records",
-            "regular",
             "verifyActorWorkers"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "tools/truthsrc-evidence.mjs",
+          "bytes": 2011,
+          "sha256": "eaf01c996ca6a4b405c56014d91851dfef2d612708c84ea735b8fae6b5bed0bf",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "tools",
+          "categories": [
+            "verification-runner"
+          ],
+          "disposition": "producer-support",
+          "reason": "Parser, builder, template, validator or writer supporting these documented output responsibilities.",
+          "symbols": [
+            "captureRuntimeFile",
+            "safePath"
           ],
           "outputSites": [],
           "emittedKinds": [],
@@ -72178,8 +72343,8 @@
         },
         {
           "path": "tools/truthsrc-runtime-admission.mjs",
-          "bytes": 28501,
-          "sha256": "cc828dbb25b838f6c2c86a185bf6f962dde8a26513dadf02d8521ac1851376b4",
+          "bytes": 27446,
+          "sha256": "e95a3349c9058a65ab0524c3ba21eda2fb75852763f24be80cb74b6fc9d7dc94",
           "mode": "100644",
           "baselineBlob": "c7a24b10e8869a4c4aea4edc6d98338f1a1b9490",
           "evidence": "committed-baseline",
@@ -72245,8 +72410,8 @@
         },
         {
           "path": "tools/truthsrc-runtime-crash.mjs",
-          "bytes": 6418,
-          "sha256": "e2bba582c98374899c7e01b422e16a5f3ea7116c3388239ca21ff0d002081055",
+          "bytes": 4335,
+          "sha256": "e5bcc951ac2ae6f94308c5028ee9d87d81221a5d5b5aa678b73adc594718d172",
           "mode": "100644",
           "baselineBlob": "072ba766b533335f357503630d163ac8b425ddd2",
           "evidence": "committed-baseline",
@@ -72262,7 +72427,7 @@
           ],
           "outputSites": [
             {
-              "line": 10,
+              "line": 11,
               "sha256": "a631603fc5cdb96770f193edaa60709213c2b7a05a1b91c1489ffd3a970fa0f7",
               "excerpt": "const save = (file, value) => writeFileSync(file, JSON.stringify(value, null, 2) + '\\n', { flag: 'wx', mode: 0o600 });"
             }
@@ -72434,8 +72599,8 @@
         },
         {
           "path": "tools/truthsrc-runtime-lease.mjs",
-          "bytes": 8456,
-          "sha256": "bb5a4520ae1f68edc0b739952fdf20ecf2fcdd147243144102a011a679f53011",
+          "bytes": 8401,
+          "sha256": "bdd99053cf8fad891b954b693f2449d86c9f18e18d109f69df5a13022e5718fa",
           "mode": "100644",
           "baselineBlob": "b14f3e67499a785fbf86348d2119c0f7de50efd3",
           "evidence": "committed-baseline",
@@ -72455,12 +72620,12 @@
           ],
           "outputSites": [
             {
-              "line": 118,
+              "line": 117,
               "sha256": "760ae0af897903af9b29d9362ca916622f09a0f909bfcb9e36eb504d08a7845d",
               "excerpt": "writeFileSync(fd, text); fsyncSync(fd);"
             },
             {
-              "line": 130,
+              "line": 129,
               "sha256": "21fbdf408b471fe0ee380d14a875292aea55decda1a7f899974bdc23dbc5ef39",
               "excerpt": "try { writeFileSync(fd, text); fsyncSync(fd); } finally { closeSync(fd); }"
             }
@@ -72470,8 +72635,8 @@
         },
         {
           "path": "tools/truthsrc-runtime-process.mjs",
-          "bytes": 15253,
-          "sha256": "ebeb5b72aff1a137f8e3dd2d789780c239f488529bb4efc03de4c622806f5f5f",
+          "bytes": 887,
+          "sha256": "5bf3023f2571959fe3b7a71dee95e137c9d0d97ab82bb17d6438fba8f3f4b69f",
           "mode": "100644",
           "baselineBlob": "9173f65c63aee7bf2991d1b9dbab204267c1cc60",
           "evidence": "committed-baseline",
@@ -72482,7 +72647,7 @@
           "disposition": "producer-support",
           "reason": "Parser, builder, template, validator or writer supporting these documented output responsibilities.",
           "symbols": [
-            "redactor",
+            "inspectRuntimeProcessEvidence",
             "runRuntimeProcess"
           ],
           "outputSites": [],
@@ -72574,6 +72739,30 @@
               "excerpt": "return [file, { kind: 'file', bytes: stat.size, sha256: fileDigest(file) }];"
             }
           ],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "path": "tools/truthsrc-worker-evidence.mjs",
+          "bytes": 4502,
+          "sha256": "31e65f8fa714c7ebd19f5a8b58bdac8caf2841efbcc2cddb51ad8ec8cf27894c",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "local-derived-or-new-source",
+          "scope": "tools",
+          "categories": [
+            "verification-runner"
+          ],
+          "disposition": "producer-support",
+          "reason": "Parser, builder, template, validator or writer supporting these documented output responsibilities.",
+          "symbols": [
+            "captureTranscript",
+            "checkRuntimeWorker",
+            "inspectCaptured",
+            "inspectRuntimeWorker",
+            "options"
+          ],
+          "outputSites": [],
           "emittedKinds": [],
           "dynamicKinds": []
         },
@@ -73544,8 +73733,8 @@
         },
         {
           "path": "tools/verify-truthsrc-build.mjs",
-          "bytes": 76520,
-          "sha256": "042d31bbf6788d5906fe8dc1f74476ec8badaf76ae03fe7a0a6607698b46e735",
+          "bytes": 76009,
+          "sha256": "ace5b86822d7afafa05f1434492ef8a2f25308891a12d3e33d65bcd08eb8224a",
           "mode": "100644",
           "baselineBlob": "66eb7288e80ce63f536cc2d63945cc92a86990ac",
           "evidence": "committed-baseline",
@@ -73589,37 +73778,32 @@
           ],
           "outputSites": [
             {
-              "line": 74,
+              "line": 80,
               "sha256": "93abcbeefd0e01a2395c29ba7b7c0cb4c3a8507d9f3f6578c76d9b3552aa8dd0",
               "excerpt": "const save = (file, value) => writeFileSync(file, json(value), { flag: 'wx', mode: 0o600 });"
             },
             {
-              "line": 75,
+              "line": 81,
               "sha256": "3b43f068befaf1f9c9295260f778d5b92d0a56e6340026434fb4182ea4f132d1",
               "excerpt": "const write = (file, text) => writeFileSync(file, text, { flag: 'wx', mode: 0o600 });"
             },
             {
-              "line": 271,
-              "sha256": "c88ee1ec0ce246b249d6c19909e0d628fe58e0e3dc9539304a5594f6d0df06e4",
-              "excerpt": "assert.equal(matches.length, 0, 'destination already exists or aliases another path: ' + file);"
-            },
-            {
-              "line": 653,
+              "line": 637,
               "sha256": "35b4225b16614045a9b403d775f1e8f3e7678f7f85d61684fc2cbd227b2f8869",
               "excerpt": "denied(\"outside-write\", () -> Files.write(canaries.resolve(\"write-canary\"), unsafe, StandardOpenOption.APPEND));"
             },
             {
-              "line": 655,
+              "line": 639,
               "sha256": "a8964e215ba8b70e39d230f818355d42b4ff68ec4d2f1ef5401066168ec8fddf",
               "excerpt": "denied(\"symlink-write-escape\", () -> Files.write(escape.resolve(\"write-canary\"), unsafe, StandardOpenOption.APPEND));"
             },
             {
-              "line": 656,
+              "line": 640,
               "sha256": "c23fa18e544d99dd9c92eda5fcd85c1cf9fb524eb61c3cecf6a3216c07d42896",
               "excerpt": "Files.write(evidence.resolve(\"boundary/java-allowed\"), new byte[] {1}, StandardOpenOption.CREATE_NEW);"
             },
             {
-              "line": 814,
+              "line": 798,
               "sha256": "3347dae370c753eb1b7b7bd90777e024f7bf9c0cc8c1031ff761f71deb8f3496",
               "excerpt": "writeFileSync(descriptors[2], json(receipt));"
             }
@@ -73629,8 +73813,8 @@
         },
         {
           "path": "tools/verify-truthsrc-runtime.mjs",
-          "bytes": 25520,
-          "sha256": "b2110b5929059ed8c90db5fe450a41a6dfe35c067779bc0c2cc1aad439367d59",
+          "bytes": 26674,
+          "sha256": "f8378c16d8f491da239d81b31d916a5cfee842b664b3b0928992422fe7426e3f",
           "mode": "100644",
           "baselineBlob": "68aeb7b90dc5251f4745c9131d694f4aca2b9132",
           "evidence": "committed-baseline",
@@ -73650,12 +73834,12 @@
           ],
           "outputSites": [
             {
-              "line": 21,
+              "line": 22,
               "sha256": "a631603fc5cdb96770f193edaa60709213c2b7a05a1b91c1489ffd3a970fa0f7",
               "excerpt": "const save = (file, value) => writeFileSync(file, JSON.stringify(value, null, 2) + '\\n', { flag: 'wx', mode: 0o600 });"
             },
             {
-              "line": 22,
+              "line": 23,
               "sha256": "3b43f068befaf1f9c9295260f778d5b92d0a56e6340026434fb4182ea4f132d1",
               "excerpt": "const write = (file, text) => writeFileSync(file, text, { flag: 'wx', mode: 0o600 });"
             }
@@ -76129,7 +76313,7 @@
     "tooling/knowledge-graph-ast.md": "de93054bf4441771a9491cba1e49e02bf2680e9e45ec1aee940f5cc2516e2832",
     "tooling/teaching-summary.md": "7fda035de2372bbf2d0365e913ff2270018bce1893e15c434e4f5f4c374cce8c",
     "tooling/truth-rebuild-adapter.md": "84a4f1afba1cebcd12954bba08a61c8f5daba1422df9e8ca7afd74eac6befa40",
-    "tooling/verification-runner.md": "825b0aa2e9be8d8ee3bffd9c95373fac3b48be61632fc7a6703ed95271f13b7f",
+    "tooling/verification-runner.md": "08be483759dc3ee99796421790e036bbc49023d85c205f1c0915a372d1b5e427",
     "typescript/typescript-types.md": "fd88296fde5b7ad45658108a411b2c9fe7cc5fd41cb2562a4374a1016ee06041",
     "scala-cqrs/REFERENCE-DEVELOPMENT.md": "f4eb9f19c5eec6af034d550b6aab0f9c3a1eb143247509bdc553507e772366fc"
   },

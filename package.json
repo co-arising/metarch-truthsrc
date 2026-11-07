@@ -51,6 +51,7 @@
   ],
   "scripts": {
     "test": "node --test",
+    "test:verification": "node --test --test-concurrency=1 test/verification-files.test.mjs test/verification-process.test.mjs test/verification-worker.test.mjs test/tooling-ownership.test.mjs",
     "test:aggregate-reference": "node --test --test-concurrency=1 test/aggregate-models.test.mjs test/aggregate-template-conformance.test.mjs test/aggregate-reference-negative.test.mjs test/service-composition-layers.test.mjs",
     "test:artifact-docs": "node --test --test-concurrency=1 test/artifact-docs.test.mjs test/artifact-docs-coverage.test.mjs test/artifact-docs-compat.test.mjs test/artifact-docs-generation.test.mjs",
     "test:onboarding": "node --test --test-concurrency=1 test/onboarding-cli.test.mjs test/project-verify.test.mjs test/project-view.test.mjs test/workshop-render.test.mjs",

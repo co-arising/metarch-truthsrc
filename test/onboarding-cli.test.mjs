@@ -255,6 +255,69 @@ test('local tarball allowlist installs offline and runs without the source check
   const handwritten = JSON.parse(command(process.execPath, ['--input-type=module', '-e', verifyHandwritten], root).stdout);
   assert.deepEqual(handwritten, { files: 1, relation: 'explicit-owner-declared-not-inferred', symbolSpanVerified: false });
   assert.deepEqual(readdirSync(handRoot), ['Policy.scala']);
+  const verificationRoot = join(root, 'independent-verification');
+  mkdirSync(verificationRoot);
+  const verificationModule = name => pathToFileURL(join(moved, 'node_modules/@madpolaris/truthsrc/lib/verification', name + '.mjs')).href;
+  const verification = `
+    import assert from 'node:assert/strict';
+    import { createHash } from 'node:crypto';
+    import { existsSync, mkdirSync, realpathSync, writeFileSync } from 'node:fs';
+    import { dirname, join, relative } from 'node:path';
+    import { captureEvidenceFile } from ${JSON.stringify(verificationModule('files'))};
+    import { verifyToolingOwnership } from ${JSON.stringify(verificationModule('tooling-ownership'))};
+    import { parseWorkerTranscript, validateWorkerLifecycle } from ${JSON.stringify(verificationModule('worker-evidence'))};
+    import { runVerifiedProcess, inspectProcessEvidence } from ${JSON.stringify(verificationModule('process'))};
+    const root = ${JSON.stringify(verificationRoot)};
+    const hash = bytes => createHash('sha256').update(bytes).digest('hex');
+    const document = join(root, 'sample.json'), text = '{"price":1.25}\\n';
+    writeFileSync(document, text, { flag: 'wx' });
+    const captured = captureEvidenceFile(document, { parse: bytes => JSON.parse(bytes) });
+    assert.equal(captured.sha256, hash(text)); assert.equal(captured.value.price, 1.25);
+    const scripts = join(root, 'scripts'); mkdirSync(scripts);
+    const publicRoot = ${JSON.stringify(join(moved, 'node_modules/@madpolaris/truthsrc'))};
+    let specifier = relative(scripts, join(publicRoot, 'lib/verification/files.mjs')).split('\\\\').join('/');
+    if (!specifier.startsWith('.')) specifier = './' + specifier;
+    const literal = 'import ' + JSON.stringify(specifier) + ';';
+    writeFileSync(join(scripts, 'audit.mjs'), literal + '\\nthrow new Error("not executed");\\n', { flag: 'wx' });
+    const ownership = verifyToolingOwnership({ root, sourceRoots: { publicTool: publicRoot }, candidateFiles: ['scripts/audit.mjs'],
+      inventory: { schemaVersion: 'truthsrc.tooling-ownership/v1', toolRoots: ['scripts'], scope: 'Independent installed consumer', entries: [{
+        file: 'scripts/audit.mjs', lifecycle: 'current', provenance: { kind: 'engineering-authored', basis: 'Independent example tool' },
+        responsibility: { summary: 'Capture explicit files', owners: ['example maintainers'], nature: 'adapter',
+          mechanism: 'Public file evidence', policy: 'Example owner chooses paths' },
+        consumers: [{ file: 'scripts/audit.mjs', kind: 'entry', evidence: literal, note: 'Literal declaration only, not executed' }],
+        publicMechanism: { status: 'migrated', note: 'Installed package resolves independently', targets: [{
+          sourceRoot: 'publicTool', file: 'lib/verification/files.mjs', consumer: 'scripts/audit.mjs', specifier
+        }] }
+      }] } });
+    assert.equal(ownership.passed, true); assert.equal(ownership.toolCount, 1); assert.equal(ownership.executionVerified, false);
+    const rows = parseWorkerTranscript(Buffer.from([
+      { kind: 'worker-started', pid: 777 }, { id: 1, op: 'close' },
+      { id: 1, ok: true, result: { closed: true } },
+      { kind: 'worker-exited', pid: 777, exitCode: 0, waited: true }
+    ].map(row => JSON.stringify(row)).join('\\n') + '\\n'));
+    validateWorkerLifecycle({ rows, receipt: { schemaVersion: 'sample.worker/v1', pid: 777, closed: true, job: 'independent' },
+      expectedReceipt: { schemaVersion: 'sample.worker/v1', job: 'independent' }, requireSuccessfulCloseExchange: true });
+    let processExecuted = false;
+    if (process.platform === 'darwin' && existsSync('/usr/bin/sandbox-exec')) {
+      const profile = join(root, 'sandbox.sb');
+      const policy = '(version 1)\\n(allow default)\\n(deny network*)\\n(deny file-write*)\\n(allow file-write* (literal "/dev/null"))\\n';
+      writeFileSync(profile, policy, { flag: 'wx' });
+      const base = join(root, 'process');
+      const receipt = await runVerifiedProcess({ executable: realpathSync(process.execPath),
+        args: ['-e', 'process.stdout.write("independent-public-process\\\\n")'], cwd: root,
+        env: { HOME: root, TMPDIR: root, PATH: '/usr/bin:/bin', NODE_V8_COVERAGE: '' },
+        base, timeoutMs: 5000, sandbox: { executable: '/usr/bin/sandbox-exec', profile, profileSha256: hash(policy) } });
+      assert.equal(receipt.schemaVersion, 'truthsrc.verified-process/v1'); assert.equal(receipt.passed, true);
+      assert.deepEqual(inspectProcessEvidence(base).receipt, receipt); processExecuted = true;
+    } else {
+      await assert.rejects(runVerifiedProcess({}), /sandbox|Darwin|darwin|platform/);
+    }
+    console.log(JSON.stringify({ captured: true, workerValidated: true, ownershipValidated: true, processExecuted, bankCheckoutRequired: false }));
+  `;
+  const verificationResult = JSON.parse(command(process.execPath, ['--input-type=module', '-e', verification], root,
+    0, { PATH: '/usr/bin:/bin', NODE_V8_COVERAGE: '' }).stdout);
+  assert.deepEqual(verificationResult, { captured: true, workerValidated: true, ownershipValidated: true,
+    processExecuted: process.platform === 'darwin' && existsSync('/usr/bin/sandbox-exec'), bankCheckoutRequired: false });
   const created = json(root, ['init', 'packed-counter'], entry);
   const args = ['--project', created.project, '--out', join(created.root, 'generated')];
   assert.equal(json(root, ['generate-project', ...args], entry).applied, true);

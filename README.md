@@ -18,6 +18,8 @@
 
 [统一 artifactType 目录](docs/artifacts/README.md)解释每类内容的输入、生成/手写/运行库归属、结构、装配和验证。[Scala CQRS 专册](docs/artifacts/scala-cqrs/README.md)覆盖 BC 的 Scala 与 JS 最终产物、多模块 port/binding，以及 Saga/Monarch 的版本差异；[构建顺序](docs/artifacts/scala-cqrs/BUILD-ORDER.md)区分公共工具加工与仍需人提供的信息。目录随本地包分发，不把文档覆盖称为银行服务或 R2 消费通过。
 
+[可选验证工具](docs/artifacts/tooling/verification-runner.md)提供文件取证、受限进程及静态进程/工作线程证据、工具归属清单的库API。它们可由安装后的包独立消费，不要求复制银行脚本；进程执行目前限定Darwin Seatbelt，基础source CLI不新增JDK/Docker要求。银行的实际输入、人工实现、目录与工具来源见[构建配方](../bank-wealth-demo/docs/BUILD-RECIPE.md)（该链接需要相邻银行源码）。
+
 ## Install the local CLI
 
 ### 环境与版本边界

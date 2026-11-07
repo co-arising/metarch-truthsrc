@@ -9239,7 +9239,7 @@
             "tool"
           ],
           "outputs": [
-            "银行当前tools中的机制与银行硬编码混合，尚需P1归属拆分；此文档不把58个mjs写成已从truth生成。"
+            "银行现役wrapper消费公共文件/进程/工作线程机制；固定供给、TA/恢复/浏览器政策和总验收仍由银行维护，P1尚未整体完成。"
           ],
           "sourceRefs": [
             {
@@ -9256,6 +9256,16 @@
               "repo": "bank",
               "file": "tools/bank-workshop-verification.mjs",
               "symbol": "inspectService"
+            },
+            {
+              "repo": "bank",
+              "file": "tools/truthsrc-evidence.mjs",
+              "symbol": "captureRuntimeFile"
+            },
+            {
+              "repo": "bank",
+              "file": "tools/truthsrc-worker-evidence.mjs",
+              "symbol": "inspectRuntimeWorker"
             }
           ]
         },
@@ -9267,23 +9277,28 @@
             "tool"
           ],
           "outputs": [
-            "银行当前tools中的机制与银行硬编码混合，尚需P1归属拆分；此文档不把58个mjs写成已从truth生成。"
+            "可选公共文件取证、受限进程监督与静态进程/工作线程证据、工具归属清单校验；不复制银行政策或要求基础CLI安装JDK/Docker。"
           ],
           "sourceRefs": [
             {
-              "repo": "bank",
-              "file": "tools/verify-truthsrc-build.mjs",
-              "symbol": "admitCandidate"
+              "repo": "js",
+              "file": "lib/verification/files.mjs",
+              "symbol": "captureEvidenceFile"
             },
             {
-              "repo": "bank",
-              "file": "tools/truthsrc-runtime-process.mjs",
-              "symbol": "runRuntimeProcess"
+              "repo": "js",
+              "file": "lib/verification/process.mjs",
+              "symbol": "runVerifiedProcess"
             },
             {
-              "repo": "bank",
-              "file": "tools/bank-workshop-verification.mjs",
-              "symbol": "inspectService"
+              "repo": "js",
+              "file": "lib/verification/process.mjs",
+              "symbol": "inspectProcessEvidence"
+            },
+            {
+              "repo": "js",
+              "file": "lib/verification/worker-evidence.mjs",
+              "symbol": "validateWorkerLifecycle"
             }
           ]
         }
