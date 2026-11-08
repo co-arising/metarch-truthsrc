@@ -1,6 +1,6 @@
-# 第四批 family2 阶段检查点（未收口）
+# 第四批 family2 阶段检查点（阶段提交时历史快照）
 
-日期：2026-11-08。用户要求先提交再压缩，本页记录阶段成果与未通过门，**不是第四批最终验收或架构批准**。详细合同见[AGGREGATE-CORE](scala-cqrs/AGGREGATE-CORE.md)。
+日期：2026-11-08。用户要求先提交再压缩，本页记录阶段成果与未通过门，**不是第四批最终验收或架构批准**。详细合同见[AGGREGATE-CORE](scala-cqrs/AGGREGATE-CORE.md)。以下obs0、FAIL及待执行事项均描述阶段提交时状态；本页保留原阶段事实，不续写为后来运行回执。当前进度见[现行路线](STATUS-AND-IMPLEMENTATION-PLAN.md)。
 
 ## 已实现的有限交付
 

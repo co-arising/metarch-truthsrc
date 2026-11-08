@@ -19,7 +19,7 @@
 
 options仍仅 `packages/names/protobuf`；新增角色由本族模型分流，原family1白名单不扩权。所有实际名称/作用域/portable路径在同一完整plan核对。Factory包为 `application.factories`，物理目录仍是 `modules/glue/src/main/scala/...`。ActorProtocol/Factory/Repository留glue；显式typed PersistenceId、initial、hosts、event/snapshot adapters和spawn API不由知识ID或类名猜测，技术名选择不修改PB或持久化身份。
 
-两处external producer产品必须一致且为空，无本地command producer的事件也拒绝；没有伪造授权或静默丢外部事件。root仅聚合kernel/glue，无ext/业务root。主Warehouse完整源码24 entries含两份生成基线测试；最终双lane真实35／37案例通过，观察登记和完整Node重验尚未收口，见[阶段检查点](../AGGREGATE-CORE-CHECKPOINT.md)。[旧16声明历史](../evidence/capability-domain-kernel-final-history.json)保原receipt不重签，旧参考/初二三批验收不冒current。无银行或服务切换；完整范围以[aggregate-core合同](AGGREGATE-CORE.md)为准。
+两处external producer产品必须一致且为空，无本地command producer的事件也拒绝；没有伪造授权或静默丢外部事件。root仅聚合kernel/glue，无ext/业务root。主Warehouse完整源码24 entries含两份生成基线测试；最终双lane真实35／37案例通过；同样例观察及完整回归分项结果见[第四批有限验收](../AGGREGATE-CORE-ACCEPTANCE.md)，原obs0／FAIL保留在[阶段提交历史快照](../AGGREGATE-CORE-CHECKPOINT.md)。[旧16声明历史](../evidence/capability-domain-kernel-final-history.json)保原receipt不重签，旧参考/初二三批验收不冒current。无银行或服务切换；完整范围以[aggregate-core合同](AGGREGATE-CORE.md)为准。
 
 ## 名称不是业务身份
 

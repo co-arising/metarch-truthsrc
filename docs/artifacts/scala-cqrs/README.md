@@ -8,7 +8,7 @@
 
 第四批的显式 [有限aggregate-core合同](AGGREGATE-CORE.md) 对应 `scala-cqrs-aggregate-core-v1`／`scala-cqrs-aggregate-core@1`，catalog profile为 `js-aggregate-core-candidate-v1`。复用family1单份kernel值/协议与glue PB基础，加纯Rules/CommandHelpers/fold、独立ActorProtocol、真实Aggregate行为、Factory/Bootstrap及Actor-specific Repository接口/本地实现。kernel无Actor类型；root只聚合kernel/glue，未完成ext/业务root或外部结果桥。
 
-当前仅源码存在与producer定位：catalog 2.3.0为125类/523变体、41个producer/534条输出合同，active observations=0；[原16声明历史](../evidence/capability-domain-kernel-final-history.json)不重签、不计current。主Warehouse源码24 entries含22参考生产文件与2生成测试（PB空State往返、空历史replay基线），二者不当独立oracle。source尚活跃，strict生成比较、冻结后来源锁/coverage、真编译/行为与跨仓派生待主集成；无Bank、服务或最终批准。
+catalog 2.3.0仍为125类/523变体、41个producer/534条输出合同，active observations=20：原12份样例generated，family1/family2各complete-plan generated及同样例源码generated/compiled/behavior-verified。第四批19项source职责取得同一Warehouse样例的三层资格，2项build职责仅generated；exact-value-codec明确excluded，artifact-generator仍handwritten。[原16声明历史](../evidence/capability-domain-kernel-final-history.json)不重签、不计current。主Warehouse源码24 entries含22参考生产文件与2生成测试（PB空State往返、空历史replay基线），支持测试纳入真实源码资格，但不当独立oracle；不由直接compiler通过推定sbt已执行。第四批按有限候选合同收口，完整回归、离线安装与来源门的实际结果见[第四批验收](../AGGREGATE-CORE-ACCEPTANCE.md)；无Bank、完整服务或最终批准，final-approved=0。
 
 ## 领域结构与纯行为
 

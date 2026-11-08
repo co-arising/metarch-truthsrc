@@ -1,0 +1,236 @@
+{
+  "schemaVersion": "truthsrc.artifact-capability-observation/v1",
+  "producer": "scala-cqrs-domain",
+  "channel": "manifest",
+  "level": "generated",
+  "status": "passed",
+  "sourceFingerprint": "9d14de6a7efc68f8ba8e47c6748d7c8945d159d7b20d8a5250e2d74e2c7f67c2",
+  "command": "observeArtifactCapability(catalog, \"scala-cqrs-domain\") via record-current-observations.mjs record",
+  "inputs": [
+    {
+      "name": "request",
+      "sha256": "8625d27a1f6be7614eb7446b34f3db6df9418037ad019045566b93e6a35f1ea8"
+    },
+    {
+      "name": "options",
+      "sha256": "4f5dbca59bb782b065ef563701ef5adfe378df5aee00a86a51290744f231d1e4"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "app/net/imadz/measurement/domain/GaugeAggregate.scala",
+      "kind": "aggregate",
+      "bytes": 1945,
+      "sha256": "003595521c679df462e29a71e923996b267bf472f12234d292b08b693d78cfac",
+      "contracts": [
+        "aggregate",
+        "aggregate-2"
+      ]
+    },
+    {
+      "path": "app/net/imadz/measurement/domain/GaugeCommandHelpers.scala",
+      "kind": "command-helpers",
+      "bytes": 509,
+      "sha256": "4c89a3778f8cf7e4e3a341012120305b45d0300ef30fb243ec7b193821115d58",
+      "contracts": [
+        "command-helpers"
+      ]
+    },
+    {
+      "path": "app/net/imadz/measurement/domain/GaugeEventHandler.scala",
+      "kind": "event-handler",
+      "bytes": 686,
+      "sha256": "3fc59ad647775acdb32b1d06a8ef3a361b5b4174069d6c1ad118f772f5718e5a",
+      "contracts": [
+        "event-handler"
+      ]
+    },
+    {
+      "path": "app/net/imadz/measurement/domain/GaugeExternalEvents.scala",
+      "kind": "external-event-bridge",
+      "bytes": 418,
+      "sha256": "0fef53dbfc22ef60e99747b9aab38b430b1a27c96cd86c6aa61228214c0204e0",
+      "contracts": [
+        "external-event-bridge"
+      ]
+    },
+    {
+      "path": "app/net/imadz/measurement/domain/GaugeProtocol.scala",
+      "kind": "protocol",
+      "bytes": 517,
+      "sha256": "f66b76c3853e8ec56ac918c638943e018546c3a10080aaafa884847287c96030",
+      "contracts": [
+        "protocol"
+      ]
+    },
+    {
+      "path": "app/net/imadz/measurement/domain/GaugeRules.scala",
+      "kind": "rules",
+      "bytes": 1373,
+      "sha256": "8dc80bf36d09379c0c19b45645318146ba525d2dc762293d7f2feb2b73d3b754",
+      "contracts": [
+        "rules"
+      ]
+    },
+    {
+      "path": "app/net/imadz/measurement/domain/GaugeState.scala",
+      "kind": "state",
+      "bytes": 504,
+      "sha256": "8a7cad81641c153c1399ac1147858bde932f2241c260c1617c634470cec5a1c5",
+      "contracts": [
+        "state"
+      ]
+    },
+    {
+      "path": "app/net/imadz/measurement/domain/values/Observation.scala",
+      "kind": "value-object",
+      "bytes": 193,
+      "sha256": "d2790f7b3f9bf7ee50a31d07eeafac30658024321ce3b1bda4e84ada5a1e1570",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/net/imadz/measurement/domain/values/PoRatio.scala",
+      "kind": "value-object",
+      "bytes": 131,
+      "sha256": "10e76c00d8f96eebaf286d325cce59eb4d6e7b75d4c2a8c86d96d5b218d89055",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/net/imadz/measurement/domain/values/Ratio.scala",
+      "kind": "value-object",
+      "bytes": 882,
+      "sha256": "e57e0ca4268aea9dc2fe36c62fd9ab750a0eecb26569d7537bd32ef9cc719167",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/net/imadz/measurement/domain/values/WireRatio.scala",
+      "kind": "value-object",
+      "bytes": 133,
+      "sha256": "7e263d7597bd1eaad2587fb400c8331327b2c1958baf5d274035da1362bdf8b0",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/net/imadz/measurement/infrastructure/serialization/DomainConverters.scala",
+      "kind": "converter",
+      "bytes": 6345,
+      "sha256": "44b70efab3dbd7c0d16a355c637f8dd19e9061f490fe093d1f3b26472c33f0e7",
+      "contracts": [
+        "converter",
+        "converter-2"
+      ]
+    },
+    {
+      "path": "app/net/imadz/measurement/infrastructure/serialization/DomainProtoSerializer.scala",
+      "kind": "serialization-adapter",
+      "bytes": 2487,
+      "sha256": "a0a8ebb87d15ab60fed5a5b95c55e95efbfa9f5995310a6a8215d4121841a8e4",
+      "contracts": [
+        "serialization-adapter"
+      ]
+    },
+    {
+      "path": "app/net/imadz/measurement/infrastructure/serialization/GaugeAdapters.scala",
+      "kind": "serialization-adapter",
+      "bytes": 1700,
+      "sha256": "081822ee98772ea661a0f56ecb03eea980c50f2290d018c30481762a1d86978b",
+      "contracts": [
+        "serialization-adapter-2"
+      ]
+    },
+    {
+      "path": "app/protobuf/net_imadz_measurement_domain.proto",
+      "kind": "proto",
+      "bytes": 783,
+      "sha256": "483340703864250d915ce5de5c61d8c3c1a6d28e710595e6851c1a990e81f71e",
+      "contracts": [
+        "proto"
+      ]
+    },
+    {
+      "path": "build.sbt",
+      "kind": "build",
+      "bytes": 686,
+      "sha256": "b2f0bba0042e1614539f2bfc49fba2bcebc9dba7eb5965dd3f6c587842f4fbb3",
+      "contracts": [
+        "build"
+      ]
+    },
+    {
+      "path": "project/build.properties",
+      "kind": "build",
+      "bytes": 19,
+      "sha256": "bc2e83307ba4a40cb286711cee6f644d9bca62ab2d791053000c7c9ce7a82bb2",
+      "contracts": [
+        "build"
+      ]
+    },
+    {
+      "path": "project/plugins.sbt",
+      "kind": "build",
+      "bytes": 178,
+      "sha256": "b0b249c1421454db041a3a1e519d71e83ef5a4b5d46567c5a24371ba285f0e05",
+      "contracts": [
+        "build"
+      ]
+    },
+    {
+      "path": "src/main/resources/application.conf",
+      "kind": "build",
+      "bytes": 938,
+      "sha256": "89178f3b014516f736b42ff960a91f5f3c246944b58b044969c5a5ec030b7342",
+      "contracts": [
+        "build-2"
+      ]
+    },
+    {
+      "path": "src/test/scala/GeneratedActorStateSpec.scala",
+      "kind": "generated-test",
+      "bytes": 5330,
+      "sha256": "f6916b6cd56861451af1a2e92ef702ddbf29edd781253b2f2b6fabc406317b6b",
+      "contracts": [
+        "generated-test"
+      ]
+    },
+    {
+      "path": "src/test/scala/GeneratedDomainRoundtripSpec.scala",
+      "kind": "generated-test",
+      "bytes": 1213,
+      "sha256": "247b067cf4b70edd8a6315600e54a3baa07dbb0006892874349a3d8f8274a608",
+      "contracts": [
+        "generated-test"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "product-compilation-has-no-diagnostics",
+      "passed": true
+    },
+    {
+      "name": "pure-producer-has-no-diagnostics",
+      "passed": true
+    },
+    {
+      "name": "repeat-plan-is-identical",
+      "passed": true
+    },
+    {
+      "name": "request-and-options-unchanged",
+      "passed": true
+    },
+    {
+      "name": "actual-path-kind-channel-and-conditional-contracts",
+      "passed": true
+    }
+  ],
+  "independent": false,
+  "approval": null
+}

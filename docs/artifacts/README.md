@@ -13,17 +13,17 @@
 - [能力合同](CAPABILITY-CONTRACT.md)、[派生能力矩阵](CAPABILITY-MATRIX.md)及[本批验收](CAPABILITY-ACCEPTANCE.md)：分别说明v2所有权/生命周期/证据层级、全部类别与生成入口的双向映射、真实执行与剩余边界；登记、样例生成、编译、行为验证和最终审定分开计数。
 - [目标profile与命名合同](scala-cqrs/TARGET-PROFILES.md)、[第二批验收](TARGET-PROFILE-ACCEPTANCE.md)：显式兼容保护、新推荐candidate、集中命名/类型闭包及独立四模块参考；未启用新生成入口，未自动批准金样。
 - [领域kernel family1合同](scala-cqrs/DOMAIN-KERNEL.md)、[第三批验收](DOMAIN-KERNEL-ACCEPTANCE.md)：第三批显式候选入口；核心值/协议/State/RuleParams与必要真实PB转换支撑，不切银行或完整modular应用。
-- [有限聚合 family2合同](scala-cqrs/AGGREGATE-CORE.md)、[阶段检查点（未收口）](AGGREGATE-CORE-CHECKPOINT.md)：第四批显式no-external候选；纯decide/fold、Actor协议及本地生命周期已有实际验证，现役观察登记与完整回归仍待完成。
+- [有限聚合 family2合同](scala-cqrs/AGGREGATE-CORE.md)、[第四批验收进度](AGGREGATE-CORE-ACCEPTANCE.md)、[阶段提交历史快照](AGGREGATE-CORE-CHECKPOINT.md)：显式no-external候选；纯decide/fold、Actor协议、本地生命周期及同样例能力观察逐门验收，不代替完整四模块或最终批准。
 - [旧family1最终观察历史](evidence/capability-domain-kernel-final-history.json)：原16声明、74条变体引用和原receipt路径/字节保留，不重签、不计current。
 - [现状盘点与剩余落地计划](STATUS-AND-IMPLEMENTATION-PLAN.md)：保留校准前125类/66项登记的原始盘点，以及先校准能力台账再按依赖家族收敛的路线。
 
 ## 当前登记状态（2026-11-08，family2文档交接）
 
-catalog `2.3.0`：**125类、523变体、41个producer、534条输出合同；active observations为0**。本轮复用13个已有family1类别并增加10条纯行为/Actor职责变体，共23条新profile登记，不增加类别。`artifact-generator`是手写工具；其余22条是代码/装配登记，现役JS应生成及producer已定位为63类/95变体，派生证据为3类/3变体；当前生成、编译、行为和最终批准全部为0，不表示已有实现不可用。
+catalog `2.3.0`：**125类、523变体、41个producer、534条输出合同；active observations为20**。本轮复用13个family1类别并关联10条纯行为/Actor职责，共23条新profile变体，不增加类别。`artifact-generator`是手写工具；现役JS代码/装配应生成及producer已定位为63类/95变体，generated为62类/93变体，compiled及behavior-verified各20类/29变体，final-approved为0。派生证据应生成3类/3变体、generated2类/2变体，其余层级为0。资格限实际同样例，不推广至全profile。
 
 新profile为 `js-aggregate-core-candidate-v1`，实际入口 `scala-cqrs-aggregate-core-v1`、manifest `scala-cqrs-aggregate-core@1`。主Warehouse源码合同24 entries = 22份独立参考生产源码 + 2份生成测试；同一Aggregate文件跨root/behavior职责只计一次。exact/ops样例库存更大，不能将Warehouse无exact产物的样例当全输出合同覆盖。
 
-生产源码已冻结，主参考／生成双lane、Counter变体及旧入口回归已通过；八仓3370来源及BC50／Play32受控副本对账通过。完整Node首轮为3611通过／12因obs0缺少观察而失败／15跳过，**第四批未收口**。先保存阶段检查点，压缩后完成真实观察登记、派生刷新与完整回归，不通过改旧receipt续签。初／二／三批报告保留各自历史资格；无银行或服务切换、完整四模块交付或最终批准。
+生产源码已冻结，主参考／生成双lane、Counter变体及旧入口回归通过；原12及family1完整计划恒等。现役current02观察已真实重生成登记，artifact68/68、完整Node **3623通过／0失败／15既有opt-in跳过**、离线安装及上手33/33通过。原close01的1回执安装路径失败保留，未修改测试或旧receipt。**第四批有限候选按合同完成工程收口**；不等最终架构批准。旧失败和回执不覆写，构建仅generated；当前结果与来源／副本收尾见[第四批验收](AGGREGATE-CORE-ACCEPTANCE.md)。初／二／三批报告保留历史资格；无银行或服务切换、完整四模块交付或最终批准。
 
 ## 四种不同的计数
 

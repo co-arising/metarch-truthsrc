@@ -1,0 +1,234 @@
+{
+  "schemaVersion": "truthsrc.artifact-capability-observation/v1",
+  "producer": "scala-cqrs-aggregate-core-v1",
+  "channel": "manifest",
+  "status": "passed",
+  "sourceFingerprint": "ba01b76a805d08deffdd2e8b9d050a960e0237da65471ed90ef4b242301fffd2",
+  "inputs": [
+    {
+      "name": "request",
+      "sha256": "41fbff7027d31909148d8ab5b606137d069428063d23b8a3257f88adda144c40"
+    },
+    {
+      "name": "options",
+      "sha256": "f72388cde618dedf8a244826837f52483c5f27345a3897dbe019e9b4c2c142e3"
+    },
+    {
+      "name": "independent-oracle",
+      "sha256": "df5c8677d8cb69bd6502c4d2dc2b07c7b30d63af3c8413d89bd271c424d9d5c7"
+    },
+    {
+      "name": "passed-execution",
+      "sha256": "f93f13e353a64ed37fa7d62b0a6a0ff57f28ef2d5447ccfa196ff1ce5af98973"
+    }
+  ],
+  "independent": true,
+  "approval": null,
+  "level": "behavior-verified",
+  "artifacts": [
+    {
+      "path": "modules/glue/src/main/protobuf/inventory_domain.proto",
+      "kind": "proto",
+      "bytes": 780,
+      "sha256": "22811f3bc1186eaa8292cf8e437d8549ca6684a35d9885ff3679933dd9a1f487",
+      "contracts": [
+        "protobuf-schema"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/application/aggregates/WarehouseActorProtocol.scala",
+      "kind": "actor-protocol",
+      "bytes": 660,
+      "sha256": "2bb87c9fd2f8d8eaa76a5705cb08bdf7b8d2aeae3419c7723e9c83b208a6c7e8",
+      "contracts": [
+        "application-protocol"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/application/aggregates/WarehouseActorRepository.scala",
+      "kind": "actor-repository",
+      "bytes": 443,
+      "sha256": "0ce6dc86c209ef92fd410ecbc157c2a7c527d86e81d0e63ee3316e293d833038",
+      "contracts": [
+        "aggregate-repository-port"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/application/aggregates/WarehouseAggregate.scala",
+      "kind": "aggregate",
+      "bytes": 1411,
+      "sha256": "f33248b40022239c6f5df3eed7edadd08adf03ecffe862ad1fa37fafcdeb08ce",
+      "contracts": [
+        "aggregate-root"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/application/factories/WarehouseAggregateFactory.scala",
+      "kind": "aggregate-factory",
+      "bytes": 751,
+      "sha256": "fc6b3b26e4993eab76273f93fccd3c744be93f390c77544f45a3348b54a91580",
+      "contracts": [
+        "aggregate-factory"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/infrastructure/bootstrap/WarehouseBootstrap.scala",
+      "kind": "aggregate-bootstrap",
+      "bytes": 1773,
+      "sha256": "80e0d6d7da2205c331198dff35d39ffb8116c560626d30d5d37018e52d85b0d7",
+      "contracts": [
+        "aggregate-bootstrap"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/infrastructure/repositories/LocalWarehouseActorRepository.scala",
+      "kind": "actor-repository-implementation",
+      "bytes": 2636,
+      "sha256": "7cf3e04aa0084ab4acb952de531b3df7b04d7ab164a29327ccd54fc8e5798228",
+      "contracts": [
+        "aggregate-repository-implementation"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/infrastructure/serialization/DomainConverters.scala",
+      "kind": "converter",
+      "bytes": 4301,
+      "sha256": "2aabc9e18987e86690d0e241e78aa33cc48ff938c015617edc7cc185de49a945",
+      "contracts": [
+        "proto-converter"
+      ]
+    },
+    {
+      "path": "modules/glue/src/test/scala/example/inventory/domain/invariant/WarehouseAggregateReplaySpec.scala",
+      "kind": "generated-test",
+      "bytes": 661,
+      "sha256": "4cd88706622a4d6100e3c284d0754da559a5c872bb083bf30dc321f89eb67227",
+      "contracts": [
+        "generated-test"
+      ]
+    },
+    {
+      "path": "modules/glue/src/test/scala/example/inventory/infrastructure/serialization/WarehouseStateRoundTripSpec.scala",
+      "kind": "generated-test",
+      "bytes": 677,
+      "sha256": "e11d83f4cc96eb6807471cd8f31744d450d5316a541947c4ad84e21be9fbf133",
+      "contracts": [
+        "generated-test"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/inventory/domain/WarehouseProtocol.scala",
+      "kind": "protocol",
+      "bytes": 619,
+      "sha256": "20c682aae8422dccad1f1ff7fa294e3c055ef8116a487e023f887335b6fd7eb8",
+      "contracts": [
+        "domain-protocol"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/inventory/domain/WarehouseState.scala",
+      "kind": "state",
+      "bytes": 277,
+      "sha256": "748d754dd824e2c4ce1e376b967159282336e1c56e260c02a5211679f8391d15",
+      "contracts": [
+        "domain-state"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/inventory/domain/command/WarehouseCommandHelpers.scala",
+      "kind": "command-helpers",
+      "bytes": 847,
+      "sha256": "5dc368c1108d4e7d2bdedee0e120526180a5bbce286a520b0cfd79525db61235",
+      "contracts": [
+        "command-helper"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/inventory/domain/entities/behaviors/WarehouseEventHandler.scala",
+      "kind": "event-handler",
+      "bytes": 568,
+      "sha256": "5002e6552b07bd461fec1f3e5c1c681a22c956d7eb135e48104c8e55e32b805d",
+      "contracts": [
+        "event-handler"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/inventory/domain/invariant/WarehouseRules.scala",
+      "kind": "rules",
+      "bytes": 1560,
+      "sha256": "f589657cae09df4c3fd3d18a5338034b240e3696a0de9cc28d989f06e99ead31",
+      "contracts": [
+        "invariant-rule"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/inventory/domain/invariant/params/WarehouseRuleParams.scala",
+      "kind": "rule-parameters",
+      "bytes": 619,
+      "sha256": "d37c222795f38eefb6923553035a572773aa76d9c16a9c152347f32c8dd587af",
+      "contracts": [
+        "rule-parameters"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/inventory/domain/ports/WarehouseComputations.scala",
+      "kind": "computation-port",
+      "bytes": 277,
+      "sha256": "021c08602bea7c203d060cdc1c0f3eab0600ab1f3149d8c0d0bf29d298cd510d",
+      "contracts": [
+        "computation-port"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/inventory/domain/values/ReservationId.scala",
+      "kind": "value-object",
+      "bytes": 141,
+      "sha256": "ae985e984422de7b5045767c37552f38f7b86359827975aa95a947439c7fe21b",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/inventory/domain/values/SkuId.scala",
+      "kind": "value-object",
+      "bytes": 133,
+      "sha256": "7bcfe12554afa55b9c22de10ba3760e842dbaab032c5f4aea2d186a044ebea9a",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/inventory/domain/values/TxId.scala",
+      "kind": "value-object",
+      "bytes": 132,
+      "sha256": "772fa27a9ad637b47444a5f4dd402d1359c986cf9876f2aba170096db7a4e945",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/inventory/domain/values/WarehouseId.scala",
+      "kind": "value-object",
+      "bytes": 139,
+      "sha256": "2fb95b0313e7ccca2ecc2f4e0d3c1500b01886ec6a5c54292d2041f31e5f116e",
+      "contracts": [
+        "value-object"
+      ]
+    }
+  ],
+  "command": "Read-only qualification of actual generated execution /private/tmp/aggregate-core-8dxynixl-aggregate-release-build03/execution.json (all commands retained in snapshot; no JVM/sbt rerun)",
+  "checks": [
+    {
+      "name": "complete-final-writer-source-and-generated-test-byte-identity",
+      "passed": true
+    },
+    {
+      "name": "actual-passed-generated-execution-and-current-verifier-pins",
+      "passed": true
+    },
+    {
+      "name": "fixed-complete-phases-independent-oracle-and-generated-support",
+      "passed": true
+    }
+  ]
+}
