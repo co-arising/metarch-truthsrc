@@ -4,7 +4,11 @@
 
 本页沿用已完成P0和后续P1–P4成果路线，不重做类别清点工程、已实现公共验证闭环或聚合参考切片。数字对应本次捕获状态；后续实施必须从实际catalog及证据重新派生，不持续手工维护另一份类别真源。
 
-## 当前family2有限交付（2026-11-08）
+## 第五批启动后暂停（2026-11-08）
+
+家族3多模块接缝计划已获批准；用户随后要求先提交并压缩。当前只完成保护基线、14样例/942条完整计划双次对账，以及20条current02观察/510引用的[保真退休](evidence/capability-module-seams-prior-history.json)。**active observations=0**；应生成/已定位仍63类95变体，当前generated/compiled/behavior/final均为0。A代理已停止，三份草稿测试未纳入检查点提交；首次RED为产品模块缺失导致的加载失败，不是反例或新实现通过。新产品、scaffold与producer尚未实现，未进入模板/JVM/银行运行。实际停点及续接顺序见[第五批暂停检查点](MODULE-SEAMS-CHECKPOINT.md)。下文family2与类别页相关current叙述保留第四批收口历史，不冒暂停后的现役能力。
+
+## 第四批family2有限交付（历史，2026-11-08）
 
 catalog `2.3.0`登记125类、523变体、41个producer及534条输出合同。新增 `js-aggregate-core-candidate-v1` 对应实际 `scala-cqrs-aggregate-core-v1`／`scala-cqrs-aggregate-core@1`：复用已有13类family1基础，再关联10类纯decide/fold及有限Actor职责，共23条变体，不复制category或同一Aggregate文件；手写generator不计生成代码完成率。当前现役JS代码/装配应生成及定位为63类/95变体，派生证据为3类/3变体。
 

@@ -17,7 +17,11 @@
 - [旧family1最终观察历史](evidence/capability-domain-kernel-final-history.json)：原16声明、74条变体引用和原receipt路径/字节保留，不重签、不计current。
 - [现状盘点与剩余落地计划](STATUS-AND-IMPLEMENTATION-PLAN.md)：保留校准前125类/66项登记的原始盘点，以及先校准能力台账再按依赖家族收敛的路线。
 
-## 当前登记状态（2026-11-08，family2文档交接）
+## 当前暂停状态（2026-11-08，第五批检查点）
+
+第五批已批准但停在 A 阶段起点；详见[暂停检查点](MODULE-SEAMS-CHECKPOINT.md)。旧 current02 的20条观察及510处引用已[保真归档](evidence/capability-module-seams-prior-history.json)，当前 **active observations=0**。应生成及producer定位仍为63类/95变体；当前generated、compiled、behavior-verified、final-approved均为0。三个未提交草稿测试仅产生missing-import RED，新产品/模板尚未实现。以下第四批数字保留为当时历史事实，不代表暂停后的现役资格；相关类别页中的第四批current叙述亦按此边界理解。
+
+## 第四批收口时登记状态（历史，2026-11-08）
 
 catalog `2.3.0`：**125类、523变体、41个producer、534条输出合同；active observations为20**。本轮复用13个family1类别并关联10条纯行为/Actor职责，共23条新profile变体，不增加类别。`artifact-generator`是手写工具；现役JS代码/装配应生成及producer已定位为63类/95变体，generated为62类/93变体，compiled及behavior-verified各20类/29变体，final-approved为0。派生证据应生成3类/3变体、generated2类/2变体，其余层级为0。资格限实际同样例，不推广至全profile。
 
