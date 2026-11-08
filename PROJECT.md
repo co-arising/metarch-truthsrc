@@ -73,6 +73,27 @@ not a read-only replay of its receipt.
   Supported line queries match verified final source spans. Unmapped lines and
   symbol-only queries remain candidates; no name-based semantic certification.
 
+## Finite module-seams projects
+
+The explicit `scala-cqrs-module-seams-v1` profile uses a single Parcel author tree,
+two versioned products and an explicit composition binding. Copy
+`scaffold/module-seams-project` outside the tool installation root before using it.
+Its seven generated production Scala files consume three user-maintained external
+implementations; those implementations are never copied into the generated output.
+
+Capture checks each declared source root's full membership, paths and byte hashes.
+A serialized or cloned capture is display data, not permission to generate. Missing
+or additional members, aliases and overlapping roots fail closed. Raw
+`generate-products`, including `--plan`, cannot bypass this project admission.
+
+Use `query-project --project <config> --out <owned-dir> --implementation <id>`
+for external file-level provenance. `--file` remains limited to generated output.
+Handwritten symbols and spans are not certified; generated final-byte spans still
+navigate to the actual author or technical binding. Author, binding and handwritten
+changes all require an explicit update. Moving a project requires recapture and
+regeneration of its absolute build source roots; old receipts are not relocatable.
+See [the finite module-seams contract](docs/artifacts/scala-cqrs/MODULE-SEAMS.md).
+
 ## Precision and freshness
 
 - `inputs.state=current` means the captured project inputs/tool agree with the last

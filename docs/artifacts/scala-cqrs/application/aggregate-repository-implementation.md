@@ -59,3 +59,7 @@ BC infrastructure/repositories/aggregate/<Name>RepositoryImpl位于glue；银行
 ### 类别依赖
 
 `aggregate-repository-port`、`aggregate-factory`。这些是职责依赖，不代替真实Scala import或执行顺序验证。
+
+### 第五批有限module-seams候选
+
+InMemoryRouteRepository是外置glue内存模拟实现，不是生成数据库adapter或持久化恢复能力；ownership=handwritten、routes为空。 该显式产品链与旧BC/legacy/ref-only变体并存，不互相继承资格。生成源码经唯一writer回锚；外置实现仅独立file级来源，不能认证任意symbol/span。完整说明见[有限多模块接缝](../MODULE-SEAMS.md)。

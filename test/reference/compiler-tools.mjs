@@ -8,6 +8,7 @@ import {
 } from 'node:fs';
 import { basename, delimiter, dirname, isAbsolute, join, resolve, sep } from 'node:path';
 import { inflateRawSync } from 'node:zlib';
+export { offlineJvmToolchain } from './jvm-toolchain.mjs';
 
 export function present(path) {
   try { lstatSync(path); return true; } catch (error) {
@@ -269,12 +270,22 @@ export function acceptance(result, expected = { kind: 'success' }) {
   return { accepted, environmentError, diagnosticMatch, suiteMatch, textMatch };
 }
 
-export function compilerSession(io, tools, { suiteRejectionAcceptance } = {}) {
-  assert(suiteRejectionAcceptance === undefined || typeof suiteRejectionAcceptance === 'function', 'Invalid suite rejection handler');
-  // Test-only finite seam; all existing/default kinds retain the original predicate.
-  const accept = (result, expected) => expected.kind === 'suite-rejection'
+export function acceptCompilerResult(result, expected, suiteRejectionAcceptance) {
+  const verdict = expected.kind === 'suite-rejection'
     ? (assert(typeof suiteRejectionAcceptance === 'function', 'Missing suite rejection handler; fail closed'), suiteRejectionAcceptance(result, expected))
     : acceptance(result, expected);
+  return { ...verdict, accepted: !result.error && result.signal === null && verdict.accepted === true };
+}
+
+export function jvmCompilerSession(io, tools, options = {}) {
+  const { runs, jvm, compile } = sessionCore(io, tools, options, [tools.java]);
+  return { runs, jvm, compile };
+}
+
+function sessionCore(io, tools, { suiteRejectionAcceptance } = {}, executables) {
+  assert(suiteRejectionAcceptance === undefined || typeof suiteRejectionAcceptance === 'function', 'Invalid suite rejection handler');
+  // Test-only finite seam; all existing/default kinds retain the original predicate.
+  const accept = (result, expected) => acceptCompilerResult(result, expected, suiteRejectionAcceptance);
   const home = io.directory('home');
   const tmp = io.directory('tmp');
   const profile = io.write('sandbox.sb', `(version 1)
@@ -294,7 +305,7 @@ export function compilerSession(io, tools, { suiteRejectionAcceptance } = {}) {
     if (expected.kind === 'suite-rejection') assert(typeof suiteRejectionAcceptance === 'function', 'Missing suite rejection handler; fail closed');
     assert(!process.env.NODE_TEST_CONTEXT, 'NODE_TEST_CONTEXT forbids compiler/native execution');
     assert(/^[a-z0-9-]+$/.test(label) && !runs.some(run => run.label === label), 'Invalid or repeated phase label');
-    assert([tools.java, tools.protoc].includes(executable), 'Only explicit java/protoc are permitted');
+    assert(executables.includes(executable), 'Only explicit java/protoc are permitted');
     return execute(label, executable, args, expected, details);
   }
   async function execute(label, executable, args, expected, details) {
@@ -328,6 +339,11 @@ export function compilerSession(io, tools, { suiteRejectionAcceptance } = {}) {
     '-cp', tools.compiler.join(delimiter), 'scala.tools.nsc.Main', '-encoding', 'UTF-8', '-deprecation', '-feature', '-unchecked',
     '-classpath', targetClasspath.join(delimiter), '-d', target, ...sources,
   ], expected, { sources, targetClasspath, classOutput: target });
+  return { runs, jvm, compile, launch, javaArgs };
+}
+
+export function compilerSession(io, tools, options = {}) {
+  const { runs, jvm, compile, launch, javaArgs } = sessionCore(io, tools, options, [tools.java, tools.protoc]);
   // Fixed shell launcher only for protoc's native plugin protocol. No user command interpolation.
   const shellToken = value => "'" + value.replaceAll("'", "'\\''") + "'";
   const pluginArgs = [tools.java, ...javaArgs, '-cp', tools.plugin.join(delimiter), 'scalapb.ScalaPbCodeGenerator'];

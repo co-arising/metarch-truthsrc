@@ -12,7 +12,7 @@ import { options, disjoint, expectedSourcePaths, validateInventory, sourceInvent
   executionGates, assertExecutionReady, main } from './reference/aggregate-core/verify.mjs';
 import { actorArtifacts, actorParents, actorResources, artifactStem, declaredPom, admitPomClosure,
   actorToolchain, warehouseClasspaths } from './reference/aggregate-core/toolchain.mjs';
-import { acceptance, compilerSession, files, hash, snapshot } from './reference/compiler-tools.mjs';
+import { acceptance, acceptCompilerResult, compilerSession, files, hash, snapshot } from './reference/compiler-tools.mjs';
 import { captureProject, projectPlan } from '../lib/project/cli.mjs';
 import { buildModels } from '../generators/scala-cqrs-aggregate-core-v1/build-models.mjs';
 import { generatedTestArtifacts } from '../generators/scala-cqrs-domain-kernel-v1/templates/generated-tests.mjs';
@@ -441,7 +441,7 @@ test('shared compiler optional rejection seam dispatches only suite-rejection an
   const expression = text.match(/const accept = ([\s\S]*?);\n  const home/)[1];
   let calls = 0;
   const predicate = (result, expected) => { calls++; return runtimeMutationAcceptance(result, expected); };
-  const dispatch = runInNewContext('(' + expression + ')', { assert, acceptance, suiteRejectionAcceptance: predicate });
+  const dispatch = runInNewContext('(' + expression + ')', { assert, acceptance, acceptCompilerResult, suiteRejectionAcceptance: predicate });
   assert(dispatch(mutationRed, mutationExpected).accepted);
   assert.equal(calls, 1);
   for (const expected of [{ kind: 'success' }, compilerExpected, { kind: 'suites', suites: ['example.UnitSpec'], tests: 1 }, { kind: 'unknown' }]) {
@@ -449,7 +449,7 @@ test('shared compiler optional rejection seam dispatches only suite-rejection an
     assert.deepEqual(dispatch(result, expected), acceptance(result, expected));
   }
   assert.equal(calls, 1);
-  const absent = runInNewContext('(' + expression + ')', { assert, acceptance, suiteRejectionAcceptance: undefined });
+  const absent = runInNewContext('(' + expression + ')', { assert, acceptance, acceptCompilerResult, suiteRejectionAcceptance: undefined });
   assert.throws(() => absent(mutationRed, mutationExpected), /Missing suite rejection handler/);
   assert(!acceptance(mutationRed, mutationExpected).accepted, 'Default shared acceptance semantics must not start accepting rejection');
   assert.match(text, /\.\.\.accept\(result, expected\)/);

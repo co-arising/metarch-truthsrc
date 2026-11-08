@@ -67,3 +67,7 @@ port所有签名可达的自有值类型必须处于接口可依赖的模块；�
 ### 第二批独立模块候选
 
 `scala-cqrs-modular-candidate-v1`新增独立Parcel参考及纯目标合同，属于reference-only，不是现役生成入口。Seven record values and an explicit closed error sum; ten production files in the whole reference, not one file per value. 结构、兼容差异及资格见[目标合同](../TARGET-PROFILES.md)；真实编译/行为结果单独记录，不把参考升级为生成器或最终金样。
+
+### 第五批有限module-seams候选
+
+8个业务值只有作者value-objects一处定义，支持record与closed sum；主样例7records同文件、错误sum单文件。文件分组可形成合法文件互引，不把类型DAG错误当成文件DAG。 该显式产品链与旧BC/legacy/ref-only变体并存，不互相继承资格。生成源码经唯一writer回锚；外置实现仅独立file级来源，不能认证任意symbol/span。完整说明见[有限多模块接缝](../MODULE-SEAMS.md)。

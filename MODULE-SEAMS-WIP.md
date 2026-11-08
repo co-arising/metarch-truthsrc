@@ -1,58 +1,48 @@
-# 第五批 module-seams — A静态完成／B修复回归检查点
+# 第五批 module-seams — C/D已执行，E当前观察检查点
 
-日期：2026-11-08。按用户“先提交，然后给我一个压缩上下文的窗口”保存阶段成果。**这是A/B工作检查点，不是第五批整体验收、Scala编译证明、发布或架构最终批准。** C/D/E尚未完成，无银行运行切换。
+日期：2026-11-08。按用户“先提交，然后给我一个压缩上下文的窗口”停止新增实施，保存本地检查点，未推送。**第五批整体验收尚未完成，不能称完整CQRS生成器、发布或架构最终批准。**
 
-## A：已完成的有限静态门
+## 已完成的工程与执行
 
-- 单context Parcel作者树在 `scaffold/module-seams-project/truth/module-seams`；8 VO唯一定义、3 ports；两个版本化产品 `module-seams-contract@1`、`module-seams-composition@1`，明确名义类型、构造参数组、条件Bridge和root选择。
-- 作者validate无硬错误，roundtrip11个原子；lowering区分7份生成生产文件与3份外置手写声明。
-- 原五项静态问题已修：Int/Integer名义类型误解析、project context未对账、旧非字符串schemaVersion的TypeError、role数组绕过、继承/自动成员冲突。新增105回归曾真实RED28pass/77fail；修后105＋102＋229＝436pass，独立限五项105/105。
-- A结论不扩为Scala/JVM或任意完整CQRS应用能力。
+- A有限作者/合同门与B正式门通过。两版本化产品 `module-seams-contract@1`、`module-seams-composition@1`；单context Parcel，7份生成生产Scala、3份外置手写实现，另2build/2shape测试。独立参考和原oracle保持。
+- B的文件互引、support FQN和query捕获三项修复已在 `f631bc296682` 提交。修后64定向、724有界回归、旧14完整计划942entries全等；作者validate/roundtrip通过。历史摘要不能冒完整历史maps。
+- C新增test-only纯JVM供应和执行接缝。11个离线JAR、102份供应文件含75份JDK运行文件；原PB默认接口保留。POM读取与严格mutation谓词从旧helper提取，旧exports保留。
+- C主样例reference25＋generated-mixed27阶段通过：四模块分别编译，每lane原34业务测试、七组编译正负控制及无production反例；mixed另2个生成形状测试。三手写不计生成算法。
+- C扩展60阶段通过：构造参数顺序、显式/隐式EC、委托member/参数/结果、三模块缺实现、同模块shadow共10组编译配对；Bridge参数和root路由注入两项精确业务变异必须命中指定失败断言。
+- 五个真实作者变体35阶段通过：split Parcel、全部records分文件、业务sum/support同短名、root/support同短名、direct实现无Bridge。direct另有实际行为与未implements port的编译负控，不伪造Bridge以跑原34。
+- D离线pack/install、移址prefix和installed-only loader通过；回锚/query/view、重复零源码写、手写/合法装配输入名称/作者签名三类stale→显式update均通过。
+- installed mixed60阶段通过；之后生命周期硬门窄修，再次以新身份完成installed60阶段。旧family1/family2 reference/generated四lane93阶段真实回归通过。所有相应JVM均有生命周期回执，外层自然close、组空、租约归还。
+- 最终该窄修定向Node **82/82通过**；这是有限suite，不是完整公共Node通过。
 
-## B：实现、三项修复与实际回归
+## E：已登记，当前观察已重录
 
-显式入口 `generators/scala-cqrs-module-seams-v1/`，目标 `scala-cqrs-module-seams@1`。主样例11个producer entries＝7生产Scala＋2构建文件＋2形状测试；项目writer另加4份派生证据，ledger/anchors另列。
+- catalog **2.4.0：125类、536变体、42个producer**。新增module-seams的11个输出合同、10个类别生成变体和3个手写维护变体；原14个modular reference-only变体保持，最终批准仍0。
+- `docs/artifacts/scala-cqrs/MODULE-SEAMS.md`、13个相关类别页和PROJECT说明已补齐；package增加有限测试入口。
+- JS来源锁1112文件；当前生产指纹为 `9159c35c62faeb90e2712d9131e10510f27e6e25198af7066e9f69934b8a3374`。
+- 新current06实际重新执行旧12样例的条件化observer和三个候选家族的作者→最终writer→匹配编译/独立业务链。三个generated lane共109阶段通过；登记 **24份新的当前观察**，本地目录检查通过。build只具生成观察，不随direct compiler自动晋级。
+- 旧20观察及其receipt保持原路径/字节，不重新挂current。完整modular target仍 `generator:null`、`approval:null`，银行/R2未切换。
 
-三手写实现 CapacityRule、InMemoryRouteRepository、DefaultQuoteFlow留在外置源根，不复制进生成输出、不计生成算法覆盖。root保持 `ParcelModule.create(routes)(implicit executionContext): QuoteFlow`。共享链路包含live capture、完整membership和字节重验、snapshot/AST/inputs对账、手写变化过期检查、独立file级来源、`--implementation`查询与verify/view；不升级source-plan/v1或通用writer。
+## 失败历史与审阅处理
 
-### 本次三项修复
+- C第一份Node runner漏OS sandbox，启动前拒绝，不冒作RED；新接口真实RED8为2pass/6fail，修后47/71/74/75/81等中间回归分别记录。
+- D安装01/02失败：主新测试将固定version1改为2，公共入口正确报invalid。改为合法root输入名称变更，未放宽规则/断言，03通过。
+- 有限静态review发现suite-rejection回调可覆盖生命周期失败。共享helper新增不可覆盖的error/signal硬门；当前实际严格回调本身已拒绝这类失败。修后82中1失败来自旧VM表达式测试漏注入新helper，补接线后82/82通过。未伪称此硬门另跑过旧生产RED。
+- lock02只采声明符号，漏旧text-backed引用符号而失败；lock03按既有口径核实际源码文本，候选目录通过后写入。
+- current05三族109阶段通过，但最后观察ID重复被拒写；旧12条件化observer也需复用原实现。current06采用sample唯一ID与既有observer全新重录，未覆盖或重签05。
+- 多次代理上游拒绝/限流不计实施或review完成；结果按实际落盘和进程回执核定。有效review范围限baseline执行器、mixed输入准入、纯JVM/PB接口，不冒全量独立审计。
 
-1. **T1合法VO文件互引**：family3局部按起点计算DFS可达依赖闭包，排除自身、保持首次发现顺序；模板前校验完整路径、portable冲突、kind及依赖目标。仍复用同一final-byte mapper，不改旧family1 `renderJobs`、不删真实依赖。
-2. **T2支持测试FQN冲突**：两个suite迁到 `<context package>.verification`，集中名称解析器联合检查生产、手写声明和support，检查全部逻辑路径。业务sum名称与公开root API不变。
-3. **S1query早退漏重验**：prior非verified时先关闭捕获再重算status；发现当前源变化时清空旧`currentSelection`。正常legacy无generation仍保留unknown与当前作者选择的既有含义。
+## 此检查点未完成的门
 
-### 实际测试与失败记录
+- 完整公共Node、最终artifact专属suite与完整onboarding组合未执行；`e-full-node01.mjs`只是准备，未启动。
+- BC50/Play32兼容副本仅prepare与保护预检通过，**尚未apply**；八仓source/snapshots最终验证未执行。不要把本地目录通过冒八仓通过。
+- C/D正式最终裁定、E中央总状态/兼容同步、最终有界审阅与整批验收仍待续接。没有最终架构批准或发布。
 
-- 新反例17项：修前7pass/10fail。其中几项是更严格的预检诊断断言，**不是10个独立业务缺陷**。
-- 首次修后64项仅25pass/39fail：主新增路径检查误将 `target.files: string[]` 当成对象数组，正常生成被拒；query7项全过。保留失败日志，不改期望。
-- 修正上述路径循环后，**64/64通过**，无skip/fail/cancel；自然close，三生产/三测试文件前后SHA相同。
-- 两次有效的有界独立静态复核分别检查T1/T2与S1，未发现该范围阻断。不把异常结束、没有有效报告的其它代理算成审阅通过；静态审阅不冒称JVM执行。
-- 新B回归已自然完成：**724/724通过**，无skip/fail/cancel/todo；module-seams406、family1 107、family2 105、scala-target38、旧project/handwritten/provenance68。七个子进程与外层runner均自然close code0/signalnull；整个运行前后源码库存保持。
-- 同轮作者validate与roundtrip通过；从现行fixtures及真实generators重新构造旧14份完整request/options/manifest/compilation/result/plan，共**942 entries全等**。这是本次B后回归，不沿用A或缺失的旧B回归结果。
+## 保护、资源与续接
 
-### 新旧计划的准确对账
+提交前新preflight08核原102dirty、126protected、20历史receipt保持；2466个非本次修改watch无漂移，四仓HEAD/index一致。仅JS本会话文件及BC本人心跳/运行位两行列入提交；BC peer整板不混提交，银行与Play不提交。
 
-历史 `b-template-plan01` 仅存条目摘要，缺历史merge与完整codeMappings，不能宣称历史完整映射全等。本次7份生产摘要全部相符；另以同一新捕获输入及build roots运行WIP HEAD两模块与当前实现，**7生产＋2构建的9个完整entries全等**，仅2个support按批准改变包/路径。两次公共producer完整结果确定。
+current06外层PID76993自然close0/组空，提交预检只见核验自身Node，`shared-jvm-leases/jvm-slot`已释放。旧usedmarkers、失败目录与exclusive回执保留，所有已用配方不可重跑。capture不是FS锁，apply无全局回滚保证。
 
-该同输入对照是新的算法回归，不回填历史证据；不因byte摘要相同升级历史认证范围。
+最新压缩续接入口：`.rounds/module-seams-r_ya32kf/CD-E-COMMIT-HANDOFF.md`。旧B提交交接不再是当前工程停点。ignored rounds是本机证据，不是发布渠道。
 
-## 尚未完成／未验证
-
-- B正式主门裁定与后续C入口合同尚未单独收口；本停点保存修复及有效回归，不自动进入C。
-- C/D：四模块真实Scala编译、34独立业务案例、正负编译与mutation控制、安装后混合源码消费及适用旧JVM回归。
-- E：producer/category登记、source lock/coverage/matrix、当前能力观察及中央文档／兼容副本同步。active observations仍0。
-- 本停点没有完整Node全仓、完整artifact、onboarding或八仓source最终验收。新增producer及源码尚未同步catalog/source lock，现有artifact/freshness门可能因来源漂移失败；**不能用旧绿结果或重签旧receipt冒当前资格**。
-- 新功能公开帮助、安装入口和教学文档未收口；源码存在不等于已发布交付包。
-
-## 历史失败与资源边界
-
-所有RED和中间失败保持。早期capture曾120秒spawnSync超时，无PID/reap记录，不能用当前无进程补签其历史回收。8MiB capture预算是stat先验／后验，不是敌对无限并发下的原子累计读取限额；不宣称FS锁或全局回滚。
-
-此次B回归完成于2026-11-08T09:36:40Z，外层PID12170已自然关闭，提交前进程快照不见其它Node/Java/sbt。旧B-legacy01只留下初始化/runner、没有完成证据；新regression02不倒填该缺口。未启动服务、数据库、银行apply或R2。
-
-## 保护与提交边界
-
-- 本次仅三生产文件、两新增回归测试、本说明；BC协调板仅本人 `module-seams-20261108` 行，peer整板不混入提交。
-- 原102项dirty、126份保护文件、20份历史观察receipt保持，原Parcel参考与oracle、P23/PB/PID/codec/journal不变。BC JS产物仍不作为用户认可金样。
-- 本机当前进展：`.rounds/module-seams-r_ya32kf/B-FIXES-CURRENT.md`；提交后首读同目录 `B-FIXES-COMMIT-HANDOFF.md`。ignored round不是发布渠道。
-- 旧exclusive脚本／输出不可重跑或覆盖；失败临时目录不为消红而删除。无push/tag/publish；后续提交需相应授权。
+不动银行作者/binding/输出/graph/anchors、P23/PB/PID/codec/journal、共享apps、服务/DB、runtime或R2。银行fresh readside90秒失败和retry/backoff/deadline OPEN独立保留。后续commit/push需对应授权。

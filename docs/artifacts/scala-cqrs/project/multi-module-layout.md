@@ -59,3 +59,7 @@ kernel不依赖glue/ext，不含具体I/O；root唯一组合边界。BC targetMo
 ### 第二批独立模块候选
 
 `scala-cqrs-modular-candidate-v1`新增独立Parcel参考及纯目标合同，属于reference-only，不是现役生成入口。Explicit kernel/glue/ext/root dependency graph and separate source roots; no generator integration. 结构、兼容差异及资格见[目标合同](../TARGET-PROFILES.md)；真实编译/行为结果单独记录，不把参考升级为生成器或最终金样。
+
+### 第五批有限module-seams候选
+
+kernel只标准库、glue依kernel、ext依kernel/glue、root依三者。7份生成生产与3份外置手写分别归属，每模块联合编译但不一次混编所有模块。 该显式产品链与旧BC/legacy/ref-only变体并存，不互相继承资格。生成源码经唯一writer回锚；外置实现仅独立file级来源，不能认证任意symbol/span。完整说明见[有限多模块接缝](../MODULE-SEAMS.md)。

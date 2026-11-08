@@ -1,0 +1,168 @@
+{
+  "schemaVersion": "truthsrc.artifact-capability-observation/v1",
+  "producer": "scala-cqrs-domain-kernel-v1",
+  "channel": "manifest",
+  "level": "generated",
+  "status": "passed",
+  "sourceFingerprint": "fff91184a473e5a1c63eb495fcc30a9a97d6c924ed288e8fc5d0b009e2646af3",
+  "command": "Public producer/project writer using the recorded fresh source sample; see exclusive module-seams-current06 execution record.",
+  "inputs": [
+    {
+      "name": "author-request",
+      "sha256": "0f14e9fdef5ff8f17f650591a1d4df04fdc7a853acee18277bfc50442aeb8b0b"
+    },
+    {
+      "name": "options",
+      "sha256": "e32099f960459abbecbed9bc90f782f623204d768a9b1d4df4e7f205a7971bf8"
+    },
+    {
+      "name": "captured-project-inputs",
+      "sha256": "83e2562a1ab4fd214803479cbc30c59b2594b6d5675c8472927e46d2c12e276b"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "modules/glue/src/main/protobuf/counter_domain.proto",
+      "kind": "proto",
+      "bytes": 1470,
+      "sha256": "df79497f8c74eb7fa06e34e3f8e77e902dc16fc818677651e4c392509a0b3e81",
+      "contracts": [
+        "protobuf-schema"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/counter/infrastructure/serialization/DomainConverters.scala",
+      "kind": "converter",
+      "bytes": 6962,
+      "sha256": "bbc2b962b8fb3548e3c4e4942f182d56c7f84552bda441546af4f9f23b13a775",
+      "contracts": [
+        "proto-converter"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/counter/infrastructure/serialization/ExactValueCodecs.scala",
+      "kind": "exact-value-codec",
+      "bytes": 2040,
+      "sha256": "b3f2bdb3ad1e3608e19e93af6c7f3c70ebda28d912eab2eae5e2742f7ca03154",
+      "contracts": [
+        "exact-value-codec"
+      ]
+    },
+    {
+      "path": "modules/glue/src/test/scala/example/counter/infrastructure/serialization/CounterStateRoundTripSpec.scala",
+      "kind": "generated-test",
+      "bytes": 654,
+      "sha256": "d4a36d942c36918f851a999c67b5cd777622d5bd91fa06d812fdafddae8d1c40",
+      "contracts": [
+        "generated-test"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/counter/domain/CounterProtocol.scala",
+      "kind": "protocol",
+      "bytes": 387,
+      "sha256": "b958eba2f865550e4496b47d5f6e037b60c19e23b3b9c1265e0edb46a7d4ab05",
+      "contracts": [
+        "domain-protocol"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/counter/domain/CounterState.scala",
+      "kind": "state",
+      "bytes": 858,
+      "sha256": "d632d091515cd6f96b33f77ee6b064866c122554a70ef3fb802da9b3e6130e5e",
+      "contracts": [
+        "domain-state"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/counter/domain/invariant/params/CounterRuleParams.scala",
+      "kind": "rule-parameters",
+      "bytes": 411,
+      "sha256": "88bcc9c381de3072d4836dc5bdef1fdc9fbd0a36250ee91636229929d171970c",
+      "contracts": [
+        "rule-parameters"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/counter/domain/ports/CounterComputations.scala",
+      "kind": "computation-port",
+      "bytes": 234,
+      "sha256": "bcfc9b69880cad5f7c4ecde77d53d0976b770cca66160e089db1709ede77672e",
+      "contracts": [
+        "computation-port"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/counter/domain/values/Distance.scala",
+      "kind": "value-object",
+      "bytes": 1171,
+      "sha256": "49140ec7a186b8fa39e8babb0c4ce28ce45a2971b1902bc7a929266c44d92faa",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/counter/domain/values/PoDistance.scala",
+      "kind": "value-object",
+      "bytes": 152,
+      "sha256": "538134ce4ccb60dbf1ff2864addedbd4fcbeb684e30b6172c2ef1ab51d0be833",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/counter/domain/values/PoRatio.scala",
+      "kind": "value-object",
+      "bytes": 132,
+      "sha256": "7c6fbb62680e4c2d2402ccc2b4a45ea2d2d8f219bbb8530f5f1cf54c90e5f0c4",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/counter/domain/values/Ratio.scala",
+      "kind": "value-object",
+      "bytes": 844,
+      "sha256": "f9ca3cd9a38a63aa43c13a48126f93b0c807a173f58480ece0e917e1892e5e97",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/counter/domain/values/Reading.scala",
+      "kind": "value-object",
+      "bytes": 286,
+      "sha256": "2faa61c9824561095f09949c09ed22aae8ba0c4d6ce5461946677b5f3a2b349b",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/counter/domain/values/WireDistance.scala",
+      "kind": "value-object",
+      "bytes": 154,
+      "sha256": "ae120b41a0a619bdb90a5a56a2969e4aa44735e4bb1d1a2436787f9a394dfff2",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/counter/domain/values/WireRatio.scala",
+      "kind": "value-object",
+      "bytes": 134,
+      "sha256": "9c44540c5831542c1c4bc81cdf99c29cb32fce27398574f134a7482a9d005db4",
+      "contracts": [
+        "value-object"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "same generated source sample excluding unexecuted build tasks",
+      "passed": true
+    }
+  ],
+  "independent": false,
+  "approval": null
+}

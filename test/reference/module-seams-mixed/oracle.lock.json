@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "truthsrc.module-seams-oracle-lock/v1",
+  "origin": "independent Parcel reference; not renderer-generated",
+  "suites": [
+    {
+      "path": "modules/kernel/src/test/scala/example/parcel/domain/CapacityRuleSpec.scala",
+      "suite": "example.parcel.domain.CapacityRuleSpec",
+      "tests": 20,
+      "module": "kernel",
+      "testNames": [
+        "empty parcels are a distinct input refusal",
+        "zero and negative capacities are invalid even for a positive parcel",
+        "invalid capacity takes precedence over empty input",
+        "zero and negative weights identify the offending parcel",
+        "one positive gram fits a one gram capacity",
+        "a load below capacity succeeds with the exact sum",
+        "a load exactly at capacity succeeds",
+        "a load one gram above capacity is refused with its total",
+        "a single parcel above capacity is refused",
+        "repeated parcel IDs are refused even when their weights differ",
+        "duplicate identity is value based and need not be adjacent",
+        "different IDs may have equal weights",
+        "Long.MaxValue is a valid single weight and capacity",
+        "a sum exactly at Long.MaxValue does not overflow",
+        "Long.MaxValue plus one is an overflow rather than a wrapped success",
+        "overflow at a later addition is refused before comparing capacity",
+        "a representable large total over capacity is not an overflow",
+        "duplicate validation precedes adding that parcel's weight",
+        "calls do not retain previous IDs or totals",
+        "the bridge implements the port and preserves success and each refusal"
+      ],
+      "bytes": 5368,
+      "sha256": "de58314e20053cda69aa14b8eed24995dbce154a5ea77cbccf99dfae0adf817d"
+    },
+    {
+      "path": "src/test/scala/example/parcel/application/QuoteFlowSpec.scala",
+      "suite": "example.parcel.application.QuoteFlowSpec",
+      "tests": 9,
+      "module": "root",
+      "testNames": [
+        "forwards the requested ID, resolved route and original parcels exactly once",
+        "unknown route is a domain refusal and never invokes the policy",
+        "propagates the injected policy refusal without translating it",
+        "a failed repository future stays failed rather than becoming UnknownRoute",
+        "does not complete or invoke the policy before a controllable lookup completes",
+        "a delayed lookup failure is preserved without invoking capacity",
+        "a delayed absent route is refused only after lookup completion",
+        "different injected policies determine behavior without duplicated capacity rules",
+        "separate injected repositories are used rather than a hidden shared lookup"
+      ],
+      "bytes": 6850,
+      "sha256": "3aaaff03295ac6040efca08b519f57bbfd437a1b30c47d3335bbc28b60a3d0a1"
+    },
+    {
+      "path": "src/test/scala/example/parcel/composition/ParcelModuleSpec.scala",
+      "suite": "example.parcel.composition.ParcelModuleSpec",
+      "tests": 5,
+      "module": "root",
+      "testNames": [
+        "root binding returns a port backed by the explicit routes and capacity bridge",
+        "actual wiring applies duplicate and empty input rules",
+        "actual wiring does not manufacture missing routes",
+        "separately composed modules retain their own immutable route maps",
+        "the in-memory adapter returns already completed read-only lookup futures"
+      ],
+      "bytes": 2841,
+      "sha256": "f86796ef8daf7983bb3fc8994f0e5fb15efcb5eea2a8229b2e2021467389df6f"
+    }
+  ]
+}

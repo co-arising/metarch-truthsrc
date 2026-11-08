@@ -72,3 +72,7 @@ final class CreditBalanceRepository[K](
 ### 类别依赖
 
 `application-protocol`。这些是职责依赖，不代替真实Scala import或执行顺序验证。
+
+### 第五批有限module-seams候选
+
+本族RouteRepository是只读路由查询业务port，不是family2 Actor存储repository，也不提供真实数据库。 该显式产品链与旧BC/legacy/ref-only变体并存，不互相继承资格。生成源码经唯一writer回锚；外置实现仅独立file级来源，不能认证任意symbol/span。完整说明见[有限多模块接缝](../MODULE-SEAMS.md)。

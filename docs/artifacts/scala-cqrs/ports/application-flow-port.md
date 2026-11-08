@@ -55,3 +55,7 @@ di-poc接口放kernel、实现放ext、root绑定；ext可依赖glue I/O而glue�
 ### 第二批独立模块候选
 
 `scala-cqrs-modular-candidate-v1`新增独立Parcel参考及纯目标合同，属于reference-only，不是现役生成入口。Future-returning quote application port; failure and absence are distinct. 结构、兼容差异及资格见[目标合同](../TARGET-PROFILES.md)；真实编译/行为结果单独记录，不把参考升级为生成器或最终金样。
+
+### 第五批有限module-seams候选
+
+QuoteFlow生成Future返回接口；DefaultQuoteFlow为外置ext实现，不能把接口或root接线称为已生成流程算法。 该显式产品链与旧BC/legacy/ref-only变体并存，不互相继承资格。生成源码经唯一writer回锚；外置实现仅独立file级来源，不能认证任意symbol/span。完整说明见[有限多模块接缝](../MODULE-SEAMS.md)。

@@ -71,3 +71,7 @@ kernel接口不能指向ext/glue具体类型；必要的boundary DTO需显式定
 ### 第二批独立模块候选
 
 `scala-cqrs-modular-candidate-v1`新增独立Parcel参考及纯目标合同，属于reference-only，不是现役生成入口。Recursive value/sum/container signature closure and explicit module ownership for this finite candidate. 结构、兼容差异及资格见[目标合同](../TARGET-PROFILES.md)；真实编译/行为结果单独记录，不把参考升级为生成器或最终金样。
+
+### 第五批有限module-seams候选
+
+从真实作者port方法、参数、结果递归展开有限签名闭包，复用唯一值定义；不生成第二套VO，不把closure本身算额外物理文件。 该显式产品链与旧BC/legacy/ref-only变体并存，不互相继承资格。生成源码经唯一writer回锚；外置实现仅独立file级来源，不能认证任意symbol/span。完整说明见[有限多模块接缝](../MODULE-SEAMS.md)。

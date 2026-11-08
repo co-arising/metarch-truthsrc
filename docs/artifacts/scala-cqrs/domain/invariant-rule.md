@@ -60,3 +60,7 @@ BC有聚合Rules容器/内嵌Rule以及需port的class变体；JS生成Either[St
 ### 类别依赖
 
 `domain-state`、`domain-protocol`、`rule-parameters`、`computation-port`。这些是职责依赖，不代替真实Scala import或执行顺序验证。
+
+### 第五批有限module-seams候选
+
+CapacityRule原独立参考字节仅初始化scaffold一次，之后为用户维护的外置kernel算法；ownership=handwritten、routes为空，不计JS生成。 该显式产品链与旧BC/legacy/ref-only变体并存，不互相继承资格。生成源码经唯一writer回锚；外置实现仅独立file级来源，不能认证任意symbol/span。完整说明见[有限多模块接缝](../MODULE-SEAMS.md)。

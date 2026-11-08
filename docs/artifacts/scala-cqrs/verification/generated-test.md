@@ -62,3 +62,7 @@ Generated*Spec、RulesSpec、ExecutableSpec及辅助runner；不是应用main产
 ### 类别依赖
 
 `independent-business-oracle`。这些是职责依赖，不代替真实Scala import或执行顺序验证。
+
+### 第五批有限module-seams候选
+
+两形状suite放context.verification包，联合检查生产/手写/support名称和路径；业务同短名仍合法。形状测试不是原34例独立业务oracle，计数和资格分开。 该显式产品链与旧BC/legacy/ref-only变体并存，不互相继承资格。生成源码经唯一writer回锚；外置实现仅独立file级来源，不能认证任意symbol/span。完整说明见[有限多模块接缝](../MODULE-SEAMS.md)。
