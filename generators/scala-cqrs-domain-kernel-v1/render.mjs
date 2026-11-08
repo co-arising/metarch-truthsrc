@@ -15,7 +15,7 @@ const unique = rows => [...new Set(rows)];
 const sourcesOf = rows => [...new Map(rows.map(row => [JSON.stringify(row), row])).values()];
 
 /** Pure finite rendering. No author/reference reads, model mutation, writes or compiler calls. */
-export function render(model, serialization, footprint) {
+export function productionJobs(model, serialization) {
   const jobs = [];
   function add(artifact, template, directDeps = artifact.directDeps ?? []) {
     jobs.push({ artifact: { ...artifact, sources: sourcesOf(artifact.sources), directDeps: unique(directDeps) }, template });
@@ -44,8 +44,13 @@ export function render(model, serialization, footprint) {
     add({ ...context.converter, sources: serializationSources }, out => convertersTemplate(pbContext, serialization, model, out),
       [...context.converter.directDeps, ...(codecArtifact ? [codecArtifact.path] : [])]);
   }
-  for (const artifact of buildArtifacts(model)) add(artifact, out => buildTemplate(artifact, out));
-  for (const artifact of generatedTestArtifacts(model, serialization)) add({ ...artifact, kind: 'generated-test' }, out => generatedTestsTemplate(artifact, out));
+  return jobs;
+}
+
+/** Resolve all jobs together; no template runs until the complete graph is valid. */
+export function renderJobs(rawJobs, footprint, entry = sourceEntry) {
+  const jobs = rawJobs.map(job => ({ ...job, artifact: { ...job.artifact,
+    sources: sourcesOf(job.artifact.sources), directDeps: unique(job.artifact.directDeps ?? []) } }));
   const byPath = new Map(), portable = new Set();
   for (const job of jobs) {
     const path = job.artifact.path;
@@ -66,7 +71,16 @@ export function render(model, serialization, footprint) {
     }));
     pending.delete(path); complete.set(path, deps); return deps;
   }
-  return Object.freeze(jobs.map(job => sourceEntry({ path: job.artifact.path,
+  jobs.forEach(dependencies);
+  return Object.freeze(jobs.map(job => entry({ path: job.artifact.path,
     kind: kinds[job.artifact.role] ?? job.artifact.kind, sources: job.artifact.sources,
-    footprint, deps: dependencies(job) }, job.template)));
+    footprint, deps: complete.get(job.artifact.path) }, job.template)));
+}
+
+export function render(model, serialization, footprint) {
+  const jobs = productionJobs(model, serialization);
+  for (const artifact of buildArtifacts(model)) jobs.push({ artifact, template: out => buildTemplate(artifact, out) });
+  for (const artifact of generatedTestArtifacts(model, serialization))
+    jobs.push({ artifact: { ...artifact, kind: 'generated-test' }, template: out => generatedTestsTemplate(artifact, out) });
+  return renderJobs(jobs, footprint);
 }

@@ -269,7 +269,12 @@ export function acceptance(result, expected = { kind: 'success' }) {
   return { accepted, environmentError, diagnosticMatch, suiteMatch, textMatch };
 }
 
-export function compilerSession(io, tools) {
+export function compilerSession(io, tools, { suiteRejectionAcceptance } = {}) {
+  assert(suiteRejectionAcceptance === undefined || typeof suiteRejectionAcceptance === 'function', 'Invalid suite rejection handler');
+  // Test-only finite seam; all existing/default kinds retain the original predicate.
+  const accept = (result, expected) => expected.kind === 'suite-rejection'
+    ? (assert(typeof suiteRejectionAcceptance === 'function', 'Missing suite rejection handler; fail closed'), suiteRejectionAcceptance(result, expected))
+    : acceptance(result, expected);
   const home = io.directory('home');
   const tmp = io.directory('tmp');
   const profile = io.write('sandbox.sb', `(version 1)
@@ -286,6 +291,7 @@ export function compilerSession(io, tools) {
     `-Duser.home=${home}`, `-Djava.io.tmpdir=${tmp}`, `-XX:ErrorFile=${tmp}/hs_err_pid%p.log`, `-XX:HeapDumpPath=${tmp}`,
   ];
   function launch(label, executable, args, expected = { kind: 'success' }, details = {}) {
+    if (expected.kind === 'suite-rejection') assert(typeof suiteRejectionAcceptance === 'function', 'Missing suite rejection handler; fail closed');
     assert(!process.env.NODE_TEST_CONTEXT, 'NODE_TEST_CONTEXT forbids compiler/native execution');
     assert(/^[a-z0-9-]+$/.test(label) && !runs.some(run => run.label === label), 'Invalid or repeated phase label');
     assert([tools.java, tools.protoc].includes(executable), 'Only explicit java/protoc are permitted');
@@ -307,9 +313,10 @@ export function compilerSession(io, tools) {
     io.write(`${stem}.stdout.log`, result.stdout);
     io.write(`${stem}.stderr.log`, result.stderr);
     const phase = { label, command: lifecycle.command, lifecycle: lifecycle.paths.receipt, ...details,
-      expected: { ...expected, diagnostics: expected.diagnostics?.map(pattern => pattern.source), pattern: expected.pattern?.source },
+      expected: { ...expected, diagnostics: expected.diagnostics?.map(pattern => pattern.source), pattern: expected.pattern?.source,
+        ...(expected.kind === 'suite-rejection' ? { diagnostic: expected.diagnostic?.source } : {}) },
       exitCode: result.status, signal: result.signal, processError: result.error,
-      ...acceptance(result, expected), stdout: `${stem}.stdout.log`, stderr: `${stem}.stderr.log` };
+      ...accept(result, expected), stdout: `${stem}.stdout.log`, stderr: `${stem}.stderr.log` };
     runs.push(phase);
     io.json(`${stem}.json`, phase);
     console.log(`${label}: ${phase.accepted ? 'passed' : 'FAILED'}`);

@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package example.inventory.protobuf;
+
+import "scalapb/scalapb.proto";
+
+option (scalapb.options) = {
+  flat_package: true
+  single_file: true
+};
+
+message TxIdValue {
+  string f0 = 1;
+}
+
+message WarehouseIdValue {
+  string f0 = 1;
+}
+
+message SkuIdValue {
+  string f0 = 1;
+}
+
+message ReservationIdValue {
+  string f0 = 1;
+}
+
+message WarehouseSnapshot {
+  WarehouseSnapshotField0 f0 = 1;
+}
+
+message WarehouseSnapshotField0 {
+  bool present = 1;
+  repeated WarehouseSnapshotField0Entry f0 = 2;
+}
+
+message WarehouseSnapshotField0Entry {
+  TxIdValue f0 = 1;
+  string f1 = 2;
+}
+
+message WarehouseSkuQuantityReserved {
+  ReservationIdValue f0 = 1;
+}
+
+message WarehouseSkuReservationCommitted {
+  TxIdValue f0 = 1;
+}

@@ -6,6 +6,10 @@
 
 第三批的显式 [领域kernel生成合同](DOMAIN-KERNEL.md) 覆盖值、纯协议、State、RuleParams及真实PB转换支撑；它是candidate的有限子集，不代表完整四模块应用或银行迁移。
 
+第四批的显式 [有限aggregate-core合同](AGGREGATE-CORE.md) 对应 `scala-cqrs-aggregate-core-v1`／`scala-cqrs-aggregate-core@1`，catalog profile为 `js-aggregate-core-candidate-v1`。复用family1单份kernel值/协议与glue PB基础，加纯Rules/CommandHelpers/fold、独立ActorProtocol、真实Aggregate行为、Factory/Bootstrap及Actor-specific Repository接口/本地实现。kernel无Actor类型；root只聚合kernel/glue，未完成ext/业务root或外部结果桥。
+
+当前仅源码存在与producer定位：catalog 2.3.0为125类/523变体、41个producer/534条输出合同，active observations=0；[原16声明历史](../evidence/capability-domain-kernel-final-history.json)不重签、不计current。主Warehouse源码24 entries含22参考生产文件与2生成测试（PB空State往返、空历史replay基线），二者不当独立oracle。source尚活跃，strict生成比较、冻结后来源锁/coverage、真编译/行为与跨仓派生待主集成；无Bank、服务或最终批准。
+
 ## 领域结构与纯行为
 
 - [领域实体与状态初始化](domain/domain-entity.md) — `domain-entity`

@@ -7,11 +7,19 @@
 | 合同ID | 用途 | 当前资格 | 自动生成入口 |
 |---|---|---|---|
 | `scala-cqrs-legacy-compatible-v1` | 描述现有公开载体与完整Scala名字的保护边界 | compatibility-contract；不是推荐新结构 | 无新入口，仍使用原生成器 |
-| `scala-cqrs-modular-candidate-v1` | 新项目四模块、纯领域和显式端口的推荐设计候选 | candidate；`approval:null` | 完整目标仍`generator:null`；第三批新增显式family1子集入口，见[领域kernel合同](DOMAIN-KERNEL.md) |
+| `scala-cqrs-modular-candidate-v1` | 新项目四模块、纯领域和显式端口的推荐设计候选 | candidate；`approval:null` | 完整目标仍`generator:null`；第三/四批分别有显式family1/family2有限子集入口，见[领域kernel](DOMAIN-KERNEL.md)／[aggregate-core](AGGREGATE-CORE.md) |
 
 `targetProfile(id)`返回不可变描述。未知/省略ID失败；语义product版本、运行库版本、ArtifactType目录变体与这些目标合同不是同一身份。`buildTargetModel`仅接受modular candidate，不能用它重新解释旧银行结构。第二批的参考保留`reference-only`变体；第三批另登记实际JS family1生成变体，不覆盖参考资格，批准数量仍独立。
 
 兼容合同保留domain Actor入口/facade、旧Entity/Protocol载体别名、具体本地Repository及显式完整名字。命名API要求传入既有完整绑定，例如`bank_cash_payment_v1Execution`，不模仿每个旧renderer算法，也不暗中改名。它不是对所有旧代码的架构豁免或迁移器。银行State/Event/Request/Reply、PB字段与号码、PID、serializer ID/manifest、codec pin、操作身份及金融规则继续冻结。
+
+## 第四批显式有限入口，不是完整目标开关
+
+`scala-cqrs-aggregate-core-v1` 的manifest身份是 `scala-cqrs-aggregate-core@1`，catalog变体是 `js-aggregate-core-candidate-v1`；这三者与上表两种目标合同身份分开，不新增完整modular target或默认选择。复用family1七产品与单份值/协议/State/Params/Computations/PB基础，再生成有限纯decide/fold与glue Actor接缝；完整 `scala-cqrs-modular-candidate-v1` 仍 `generator:null`、`approval:null`。
+
+options仍仅 `packages/names/protobuf`；新增角色由本族模型分流，原family1白名单不扩权。所有实际名称/作用域/portable路径在同一完整plan核对。Factory包为 `application.factories`，物理目录仍是 `modules/glue/src/main/scala/...`。ActorProtocol/Factory/Repository留glue；显式typed PersistenceId、initial、hosts、event/snapshot adapters和spawn API不由知识ID或类名猜测，技术名选择不修改PB或持久化身份。
+
+两处external producer产品必须一致且为空，无本地command producer的事件也拒绝；没有伪造授权或静默丢外部事件。root仅聚合kernel/glue，无ext/业务root。主Warehouse完整源码24 entries含两份生成基线测试；最终双lane真实35／37案例通过，观察登记和完整Node重验尚未收口，见[阶段检查点](../AGGREGATE-CORE-CHECKPOINT.md)。[旧16声明历史](../evidence/capability-domain-kernel-final-history.json)保原receipt不重签，旧参考/初二三批验收不冒current。无银行或服务切换；完整范围以[aggregate-core合同](AGGREGATE-CORE.md)为准。
 
 ## 名称不是业务身份
 

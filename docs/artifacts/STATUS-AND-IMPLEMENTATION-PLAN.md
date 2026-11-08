@@ -4,7 +4,17 @@
 
 本页沿用已完成P0和后续P1–P4成果路线，不重做类别清点工程、已实现公共验证闭环或聚合参考切片。数字对应本次捕获状态；后续实施必须从实际catalog及证据重新派生，不持续手工维护另一份类别真源。
 
-**续接实施：** 下文保留校准前的125类/284变体/66项登记事实，不能当今天的完成率。第一批已形成v2[能力合同](CAPABILITY-CONTRACT.md)及[派生矩阵](CAPABILITY-MATRIX.md)：覆盖原全部记录并追加漏登/拆分通道，现125类、473变体、39manifest；类别未增加。现役JS代码/装配61类有明确producer，其中60类有本批纯生成样例，另有3类派生证据中的2类已观察。新台账下编译、独立行为及最终审定仍为0条有效晋升；旧局部Scala/银行验收保留在原报告中，不自动套到本次全部profile。批次执行事实见[校准验收](CAPABILITY-ACCEPTANCE.md)。
+## 当前family2登记与待执行门（2026-11-08）
+
+catalog `2.3.0`登记125类、523变体、41个producer及534条输出合同。新增 `js-aggregate-core-candidate-v1` 对应实际 `scala-cqrs-aggregate-core-v1`／`scala-cqrs-aggregate-core@1`：复用已有13类family1基础，再关联10类纯decide/fold及有限Actor职责，共23条变体，不复制category或同一Aggregate文件；手写generator不计生成代码完成率。当前现役JS代码/装配应生成及定位为63类/95变体，派生证据为3类/3变体。
+
+**active observations=0；当前generation/compiled/behavior/final-approved均为0。** 原16观察、74条引用及旧锁下正确资格已进入[historical-not-current索引](evidence/capability-domain-kernel-final-history.json)，receipt原路径/字节不变，不续签。初/二/三批原报告与历史通过事实不洗掉；公共全局生产闭包变更后不能继续算current。
+
+[本族合同](scala-cqrs/AGGREGATE-CORE.md)与[阶段检查点（未收口）](AGGREGATE-CORE-CHECKPOINT.md)分别记录技术约束和实际结果。主Warehouse完整源码合同24 entries = 22独立生产参考（18 Scala + 1 proto + 3 build）+ 2生成测试；最终reference/generated的35／37案例及控制通过，Counter七fold8项和谓词16项通过。生成测试只是基线，不替代独立oracle；availability=implemented不等最终批准。
+
+生产／注册／scaffold／package／classify已冻结；8仓3370来源和BC50／Play32副本通过，旧12＋family1完整计划恒等。family1真实22／23与旧Warehouse各24回归通过。当前尚需修复并实跑新观察登记配方、刷新派生材料，再重新执行完整Node：首轮3638项中3611通过、12因obs0缺观察失败、15跳过，不能标全绿。用户要求先提交阶段检查点并压缩，不重做前三批；build只取得generation资格，direct compiler不冒sbt执行，无银行／服务切换或架构批准。
+
+**第一批历史续接实施（保留原记录，非当前完成率）：** 下文保留校准前的125类/284变体/66项登记事实，不能当今天的完成率。第一批已形成v2[能力合同](CAPABILITY-CONTRACT.md)及[派生矩阵](CAPABILITY-MATRIX.md)：覆盖原全部记录并追加漏登/拆分通道，现125类、473变体、39manifest；类别未增加。现役JS代码/装配61类有明确producer，其中60类有本批纯生成样例，另有3类派生证据中的2类已观察。新台账下编译、独立行为及最终审定仍为0条有效晋升；旧局部Scala/银行验收保留在原报告中，不自动套到本次全部profile。批次执行事实见[校准验收](CAPABILITY-ACCEPTANCE.md)。
 
 ## 一、盘点结论
 

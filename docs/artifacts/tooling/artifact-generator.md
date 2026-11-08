@@ -45,6 +45,14 @@ Builder只建结构，Template渲染文本，公共writer处理文件/锚/ledger
 
 `implemented` 只表示上述代码确实存在。此登记阶段没有刷新观察或 source lock／coverage／矩阵，也没有编译、独立行为或最终审定通过声明；`approval:null`。真实证据必须绑定同一输入、全套最终产物字节及冻结工具指纹。 既有第二批14项 reference-only 资格不变；稳定外置 source 映射不恢复 inline `@knowledge`。
 
+### 第四批有限 aggregate-core 候选（当前登记，非验收）
+
+`js-aggregate-core-candidate-v1` 对应实际入口 `scala-cqrs-aggregate-core-v1`、manifest `scala-cqrs-aggregate-core@1`。本族generate/build-models/expression-model/render/逐职责模板是手写公共生产工具，不是generated-code产物，无生成自身的route，排除出模板完成率。基础值、协议、State、Params、PB与codec仍引用真实family1物理文件；组合统一jobs/deps后使用固定aggregate-core owner与公共writer。
+
+本页登记的物理输出为 `generators/scala-cqrs-aggregate-core-v1/generate.mjs`、`generators/scala-cqrs-aggregate-core-v1/build-models.mjs`、`generators/scala-cqrs-aggregate-core-v1/expression-model.mjs`、`generators/scala-cqrs-aggregate-core-v1/render.mjs`、`generators/scala-cqrs-aggregate-core-v1/templates/*.mjs`。实际来源为 `generators/scala-cqrs-aggregate-core-v1/generate.mjs#generate`；`generators/scala-cqrs-aggregate-core-v1/build-models.mjs#buildModels`；`generators/scala-cqrs-aggregate-core-v1/expression-model.mjs#expressionResolver`。新入口组合复用的family1生产jobs和本族jobs，经 `generators/scala-cqrs-domain-kernel-v1/render.mjs#renderJobs` 与固定 `entry.mjs#aggregateSourceEntry` owner，最后由 `src/core/generate.mjs#applyEntries` 写入；复用指向原物理模板，不存在新族VO/PB复制模板。这里的outputs是手写工具位置，不是生产计划输出。
+
+`implemented` 仅表示上述源码存在，source仍活跃，未声称最终核验。当前无generation/compiled/behavior/final-approved观察；全量strict比较、冻结后锁与真实双lane由主集成负责。原16条观察及74条变体引用已原样保入[历史索引](../evidence/capability-domain-kernel-final-history.json)，原receipt路径/字节不动、不续签，其旧锁下的资格不算current；初/二/三批原验收仍保留。构建只可取得generation资格。有限范围见[本族合同](../scala-cqrs/AGGREGATE-CORE.md)；无Bank、外部结果桥、完整四模块/服务或最终批准。
+
 ## 版本与实例
 
 机器目录按profile区分手写工具、派生输出及reference starter；完整变体见本页生产说明和派生矩阵。测试源码或注册入口存在不是生成、编译、行为验证证据，最终模板批准仍未授予，BC JavaScript输出不充当独立golden。

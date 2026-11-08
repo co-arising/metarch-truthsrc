@@ -448,6 +448,52 @@ test('local tarball allowlist installs offline and runs without the source check
     0, { PATH: '/usr/bin:/bin', NODE_V8_COVERAGE: '' }).stdout), {
     generated: true, sourceVerified: true, reverseMapped: true, runtimeVerified: false, checkoutFallback: false,
   });
+  const aggregateConsumer = `
+    import assert from 'node:assert/strict';
+    import { register } from 'node:module';
+    import { cpSync, readFileSync } from 'node:fs';
+    import { join } from 'node:path';
+    import { pathToFileURL } from 'node:url';
+    const installed = ${JSON.stringify(targetRoot)};
+    const allowed = pathToFileURL(installed + '/').href;
+    register('data:text/javascript,' + encodeURIComponent('export async function resolve(s,c,n) { const r = await n(s,c); ' +
+      'if(r.url.startsWith("file:") && !r.url.startsWith(' + JSON.stringify(allowed) + ')) throw Error("checkout fallback"); return r; }'), import.meta.url);
+    const { projectCli } = await import(pathToFileURL(join(installed, 'lib/project/cli.mjs')));
+    const { verifyProject } = await import(pathToFileURL(join(installed, 'lib/project/verify.mjs')));
+    const { queryProject } = await import(pathToFileURL(join(installed, 'lib/project/query.mjs')));
+    const sample = ${JSON.stringify(join(root, 'installed-aggregate-core'))};
+    cpSync(join(installed, 'scaffold/aggregate-core-project'), sample, { recursive: true, errorOnExist: true, force: false });
+    const project = join(sample, 'truthsrc.project.json'), out = join(sample, 'generated');
+    const args = ['--project', project, '--out', out];
+    const plan = await projectCli('generate-project', [...args, '--plan']);
+    assert.equal(plan.applied, false);
+    assert.equal(plan.plan.generator.id, 'scala-cqrs-aggregate-core');
+    assert.equal((await projectCli('generate-project', args)).applied, true);
+    for (const source of plan.plan.entries) assert.equal(readFileSync(join(out, source.path), 'utf8'), source.content);
+    const verified = verifyProject({ project, out });
+    assert.equal(verified.passed, true, JSON.stringify(verified.diagnostics));
+    assert.equal(verified.runtimeVerified, false);
+    const anchors = JSON.parse(readFileSync(join(out, 'anchors.json'))).anchors;
+    for (const filename of ['WarehouseRules.scala', 'WarehouseEventHandler.scala', 'WarehouseAggregate.scala']) {
+      const pair = Object.entries(anchors).flatMap(([knowledge, locations]) => locations.map(location => ({ knowledge, location })))
+        .find(row => row.location.span && row.location.file.endsWith('/' + filename));
+      assert.ok(pair, filename);
+      const bytes = readFileSync(join(out, pair.location.file));
+      const line = bytes.subarray(0, pair.location.span.start).toString('utf8').split('\\n').length;
+      const reverse = queryProject({ project, out, file: pair.location.file, line });
+      assert.equal(reverse.precision, 'span');
+      assert.ok(reverse.result.some(row => row.knowledge === pair.knowledge && row.origins.some(origin => origin.file && origin.relation !== 'unresolved')));
+    }
+    assert.equal((await projectCli('generate-project', [...args, '--update'])).result.written, 0);
+    console.log(JSON.stringify({ generated: true, sourceVerified: true, pureAndActorMapped: true, runtimeVerified: false, checkoutFallback: false }));
+  `;
+  assert.ok(paths.includes('generators/scala-cqrs-aggregate-core-v1/generator.json'));
+  assert.ok(paths.includes('scaffold/aggregate-core-project/truthsrc.project.json'));
+  assert.ok(!paths.some(path => path.startsWith('test/reference/aggregate-core/')));
+  assert.deepEqual(JSON.parse(command(process.execPath, ['--input-type=module', '-e', aggregateConsumer], root,
+    0, { PATH: '/usr/bin:/bin', NODE_V8_COVERAGE: '' }).stdout), {
+    generated: true, sourceVerified: true, pureAndActorMapped: true, runtimeVerified: false, checkoutFallback: false,
+  });
   const created = json(root, ['init', 'packed-counter'], entry);
   const args = ['--project', created.project, '--out', join(created.root, 'generated')];
   assert.equal(json(root, ['generate-project', ...args], entry).applied, true);
