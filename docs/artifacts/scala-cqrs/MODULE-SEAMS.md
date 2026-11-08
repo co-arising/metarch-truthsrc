@@ -2,7 +2,7 @@
 
 目标：`scala-cqrs-module-seams@1`。生成入口：`generators/scala-cqrs-module-seams-v1/`。
 
-本页描述单context Parcel候选，不是完整CQRS应用生成器，也不是架构owner的最终批准。完整modular profile仍保持 `generator:null`、`approval:null`；能力目录当前观察需在第五批最后阶段重新采集，不能从本页推断已登记资格。
+本页描述单context Parcel候选，不是完整CQRS应用生成器，也不是架构owner的最终批准。完整modular profile仍保持 `generator:null`、`approval:null`。catalog 2.4.0已登记本族当前generation/compiled/behavior观察，资格限实际Parcel样例；当前各类别计数见[能力矩阵](../CAPABILITY-MATRIX.md)，整批收口与最终批准分别裁定。
 
 ## 输入只有两种维护面
 
@@ -55,7 +55,9 @@ truthsrc query-project --project /absolute/project/truthsrc.project.json --out /
 
 2026-11-08主样例reference和generated-mixed均真实通过四模块direct Scala编译、原34独立业务案例、原七组编译控制；生成lane另跑两个形状测试。扩展控制验证constructor/EC/delegate/缺实现/同名类与两项固定业务变异。五种作者变体验证分组文件互引、sum/root与支持suite同短名、direct实现无Bridge。
 
-这些是已执行的本机工程结果，不自动成为当前capability观察或发布资格。安装后的混合编译、共享PB/Actor回归、最终Node与目录验收仍由第五批收口记录裁定；失败回执保留。
+离线tarball安装、prefix移址、仅installed来源的新项目、三输入stale/update以及installed混合源码编译和12项扩展控制均已执行；共享helper修后，旧family1/family2的reference/generated四lane共93阶段通过。冻结后current06对三个family重新执行109阶段并登记24条当前观察，本族代码的generation/compiled/behavior使用同一输入及相同artifact集合。build只登记generation，不冒sbt执行或产品全输入认证。
+
+这些有限工程结果不等发布或架构批准。完整公共Node full17为4084通过/15既有opt-in跳过/0失败，artifact68/68、onboarding34/34及BC文档门通过；BC50/Play32派生同步及八仓3424来源核验通过。详细逐门结果、full12预算FAIL保留及最后文档保护边界见[第五批有限验收](../MODULE-SEAMS-ACCEPTANCE.md)。失败回执和原独立oracle保持，不从本页声明推导未执行门通过。
 
 ## 明确不支持
 

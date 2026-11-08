@@ -2,6 +2,55 @@
 
 最后更新: 2026-10-30
 
+## Finite persistence/readside product
+
+`persistence-readside-contract@1` (`truthsrc.persistence-readside-contract/v1`)
+uses the explicit `truthsrc.persistence-readside-binding/v1` technical document.
+It requires reference-layout@1, exact-value-types@1, exact-value-codecs@1,
+domain-decision@4, domain-dependencies@6, domain-folds@6 and
+domain-external-events@2. The shipped producer is
+`scala-cqrs-persistence-readside-v1`, target `scala-cqrs-persistence-readside@1`.
+
+The finite contract covers one context/aggregate, every local event and state wire
+registration, and one existing String-carried state-map index. Wire versions and
+transitive-layout SHA pins, serializer ID, source/store identity and H2 capacities
+are explicit technical choices. They do not duplicate event folds, invent payload
+identity fields or authorize arbitrary Scala/SQL expressions. Unknown capabilities
+and mismatched wire pins fail closed. Legacy journal-readside/v1 is unchanged.
+
+Product readiness remains `static-contract-only`, `runnable=false` and
+`runtimeBindingVerified=false`. The Warehouse candidate's compiler, serializer and
+JDBC evidence is separate; JDBC file replay is not production Actor journal
+qualification. This batch is still in acceptance, not a complete CQRS application
+or architecture approval. See [the bounded contract](docs/artifacts/scala-cqrs/PERSISTENCE-READSIDE.md)
+and [project use](PROJECT.md#finite-persistencereadside-projects).
+
+## Finite module-seams products
+
+The explicit `scala-cqrs-module-seams-v1` producer targets
+`scala-cqrs-module-seams@1`. It consumes two strict versioned products:
+
+- `module-seams-contract@1` (`truthsrc.module-seams-contract/v1`, capability
+  `finite-module-seams-signature@1`) reconstructs the single-context nominal value
+  closure and pure/future port signatures from the author tree.
+- `module-seams-composition@1` (`truthsrc.module-seams-composition/v1`, capability
+  `finite-module-seams-composition@1`) requires the contract above and the explicit
+  `truthsrc.module-seams-composition-binding/v1` technical input: implementation
+  identity/module/FQN, constructor parameter groups, delegate and root selection.
+  It does not accept arbitrary Scala expressions or a second copy of the signatures.
+
+Readiness remains `static-contract-only`, `runnable=false` and
+`runtimeBindingVerified=false`. The actual Parcel sample has separate compiler and
+behavior evidence; that is not runtime certification for arbitrary product inputs.
+Its seven generated production Scala files consume three external handwritten
+implementations. Build and generated shape suites are separate outputs.
+
+Use `compile-project` and `generate-project` with live mixed-input capture; raw
+`generate-products` rejects this family even in plan mode. Serialized canonical,
+request or capture data cannot authorize source-root admission. Existing layout1
+and artifact1–3 contracts are not expanded implicitly. See [project use](PROJECT.md#finite-module-seams-projects)
+and [the module-seams contract](docs/artifacts/scala-cqrs/MODULE-SEAMS.md).
+
 ## Explicit five-plane design and deterministic review projection
 
 `product-design@1` (`truthsrc.product-design/v1`, capability

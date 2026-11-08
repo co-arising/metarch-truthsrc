@@ -1,17 +1,8 @@
 import { symbol } from '../scala-cqrs-domain/naming.mjs';
+import { jdbcScalaType as scalaType, jdbcSqlType as sqlType, jdbcIndexReader as indexReader } from '../shared-jdbc/model.mjs';
+import { jdbcPrimitivesTemplate, jdbcTransactionTemplate, jdbcSessionTemplate } from '../shared-jdbc/templates.mjs';
 
 const q = JSON.stringify;
-const scalaType = column => {
-  const base = { text: 'String', digest: 'String', long: 'Long', boolean: 'Boolean', bytes: 'Array[Byte]' }[column.type];
-  if (!base) throw new TypeError('unsupported journal index column type');
-  return column.nullable ? `Option[${base}]` : base;
-};
-const sqlType = column => {
-  if (column.type === 'text') return `VARCHAR(${column.size})`;
-  const name = { digest: 'CHAR(64)', long: 'BIGINT', boolean: 'BOOLEAN', bytes: 'LONGBLOB' }[column.type];
-  if (!name) throw new TypeError('unsupported journal index column type');
-  return name;
-};
 
 export function journalStatements(store) {
   const prefix = store.tablePrefix;
@@ -37,13 +28,6 @@ ${index.columns.map(c => `  ${c.name} ${sqlType(c)}${c.nullable ? '' : ' NOT NUL
   PRIMARY KEY (namespace, ${index.key.join(', ')})
 )`)
   ];
-}
-
-function indexReader(column) {
-  const getter = { text: 'getString', digest: 'getString', long: 'getLong', boolean: 'getBoolean', bytes: 'getBytes' }[column.type];
-  const value = `result.${getter}(${q(column.name)})`;
-  return !column.nullable ? value : ['long', 'boolean'].includes(column.type)
-    ? `{ val value = ${value}; if (result.wasNull()) None else Some(value) }` : `Option(${value})`;
 }
 
 function indexMethods(store, index) {
@@ -101,32 +85,7 @@ final class ${name}Repository(namespace: String, dataSource: DataSource) {
   require(namespace != null && namespace.nonEmpty && namespace.length <= 64, "bounded journal namespace required")
   require(dataSource != null, "JDBC data source required")
 
-  private def bindOne(statement: PreparedStatement, position: Int, value: Any): Unit = value match {
-    case None => statement.setNull(position, java.sql.Types.NULL)
-    case Some(item) => bindOne(statement, position, item)
-    case bytes: Array[Byte] => statement.setBytes(position, bytes)
-    case number: Long => statement.setLong(position, number)
-    case number: Int => statement.setInt(position, number)
-    case flag: Boolean => statement.setBoolean(position, flag)
-    case text: String => statement.setString(position, text)
-    case _ => throw new IllegalArgumentException("unsupported JDBC parameter")
-  }
-  private def bind(statement: PreparedStatement, values: Seq[Any]): Unit =
-    values.zipWithIndex.foreach { case (value, index) => bindOne(statement, index + 1, value) }
-  private def execute(connection: Connection, sql: String, values: Seq[Any]): Int = {
-    val statement = connection.prepareStatement(sql)
-    try { bind(statement, values); statement.executeUpdate() } finally statement.close()
-  }
-  private def query[A](connection: Connection, sql: String, values: Seq[Any])(decode: ResultSet => A): Vector[A] = {
-    val statement = connection.prepareStatement(sql)
-    try {
-      bind(statement, values)
-      val result = statement.executeQuery()
-      try { val rows = Vector.newBuilder[A]; while (result.next()) rows += decode(result); rows.result() }
-      finally result.close()
-    } finally statement.close()
-  }
-  def initialize(): Unit = blocking {
+${jdbcPrimitivesTemplate()}  def initialize(): Unit = blocking {
     val connection = dataSource.getConnection
     try {
       connection.setAutoCommit(true)
@@ -144,38 +103,13 @@ final class ${name}Repository(namespace: String, dataSource: DataSource) {
   }
   def read[A](f: Session => A): A = transaction(writable = false)(f)
   def write[A](f: Session => A): A = transaction(writable = true)(f)
-  private def transaction[A](writable: Boolean)(f: Session => A): A = blocking {
-    val connection = dataSource.getConnection
-    try {
-      connection.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ)
-      connection.setAutoCommit(false)
-      val session = new Session(connection, writable)
-      try {
-        if (writable) {
+${jdbcTransactionTemplate({ signature: 'private def transaction[A](writable: Boolean)(f: Session => A): A', session: 'new Session(connection, writable)', beforeBody: `        if (writable) {
           val versions = query(connection, "SELECT schema_version FROM ${prefix}_namespace WHERE namespace=? FOR UPDATE", Seq(namespace))(_.getString(1))
           require(versions == Vector(${name}Schema.version), "read schema namespace is not installed")
         }
-        val result = f(session)
-        connection.commit()
-        result
-      } catch {
-        case NonFatal(error) =>
-          try connection.rollback() catch { case NonFatal(rollback) => error.addSuppressed(rollback) }
-          throw error
-      } finally session.finish()
-    } finally connection.close()
-  }
-
+` })}
   final class Session private[${name}Repository] (connection: Connection, writable: Boolean) {
-    private var active = true
-    private[${name}Repository] def finish(): Unit = { active = false }
-    private def requireActive(): Unit = require(active, "transaction session is closed")
-    private def requireWrite(): Unit = { requireActive(); require(writable, "write transaction required") }
-    private def update(sql: String, values: Any*): Int = { requireWrite(); execute(connection, sql, values) }
-    private def select[A](sql: String, values: Seq[Any])(decode: ResultSet => A): Vector[A] = {
-      requireActive(); query(connection, sql, values)(decode)
-    }
-    private def requirePage(limit: Long, after: Long): Unit =
+${jdbcSessionTemplate({ owner: name + 'Repository' })}    private def requirePage(limit: Long, after: Long): Unit =
       require(limit > 0L && limit <= Int.MaxValue.toLong && after >= 0L && after <= Int.MaxValue.toLong, "bounded page required")
     private def decodeRow(result: ResultSet): Row = {
       val observed = result.getLong("observed_sequence")

@@ -64,3 +64,17 @@ BC有聚合Rules容器/内嵌Rule以及需port的class变体；JS生成Either[St
 ### 第五批有限module-seams候选
 
 CapacityRule原独立参考字节仅初始化scaffold一次，之后为用户维护的外置kernel算法；ownership=handwritten、routes为空，不计JS生成。 该显式产品链与旧BC/legacy/ref-only变体并存，不互相继承资格。生成源码经唯一writer回锚；外置实现仅独立file级来源，不能认证任意symbol/span。完整说明见[有限多模块接缝](../MODULE-SEAMS.md)。
+
+## 第六批有限 persistence-readside 候选登记
+
+本类新增 `js-persistence-readside-candidate-v1`，由显式 `scala-cqrs-persistence-readside-v1`／`scala-cqrs-persistence-readside@1` 提供；模块为 `kernel`。本段只登记实际源结构，不宣称本批已完成或已编译。
+
+实际输出合同（可覆盖同一物理文件中的不同职责，不按合同数冒充文件数）
+
+- `invariant-rule`／`rules`：Ordered pure decide(state, command, hosts): Either[String, Vector[Event]] and typed per-command Rules; reject and succeed-empty short-circuit later guards/hosts. No I/O, guessed errors or external producer authorization. 路径 `modules/kernel/src/main/scala/**/domain/invariant/*.scala`。
+
+输入为唯一业务作者树、原七个 family2 产品及显式 persistence-readside 技术 binding；wire layout SHA 必须核对，不能自动重签。沿用 family2 kernel/glue 和唯一 writer；生成测试与独立 oracle 分开，sbt 定义存在不等任务执行。
+
+本次登记移除旧 active evidence 引用，原24观察和旧回执在[独立历史索引](../../evidence/capability-persistence-readside-prior-current06-history.json)保真；新观察要在生产冻结后单独采集并通过原公共验证器。本段及目录 implemented 仅表示实现存在，当前 generated/compiled/behavior/final-approved 不由本配方晋升。范围与限制见[本族合同](../PERSISTENCE-READSIDE.md)。
+
+读侧文件库重放不是生产 Actor journal 耐久性；不扩张为 MySQL、任意读模型、HTTP、银行/Saga/Monarch 或架构批准。

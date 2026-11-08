@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:truthsrc:persistence-readside-binding:v1",
+  "title": "Finite persistence/readside technical binding; domain behavior is referenced, never copied",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "version", "context", "aggregate", "wire", "store"],
+  "properties": {
+    "schemaVersion": { "const": "truthsrc.persistence-readside-binding/v1" },
+    "id": { "$ref": "#/$defs/token" },
+    "version": { "const": "1" },
+    "context": { "type": "string", "minLength": 1, "maxLength": 65536 },
+    "aggregate": { "$ref": "#/$defs/aggregateRef" },
+    "wire": {
+      "type": "object", "additionalProperties": false,
+      "required": ["serializerId", "envelopeVersion", "registrations"],
+      "properties": {
+        "serializerId": { "type": "integer", "minimum": 1001, "maximum": 2147483647 },
+        "envelopeVersion": { "const": 1 },
+        "registrations": { "type": "array", "minItems": 2, "maxItems": 65, "items": { "$ref": "#/$defs/registration" } }
+      }
+    },
+    "store": { "$ref": "#/$defs/store" }
+  },
+  "$defs": {
+    "token": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[A-Za-z][A-Za-z0-9._-]*$(?![\\s\\S])" },
+    "version": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^\\S(?:[^\\u0000-\\u001f\\u007f]*\\S)?$(?![\\s\\S])" },
+    "scalaName": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[A-Za-z][A-Za-z0-9_]*$(?![\\s\\S])" },
+    "sqlName": { "type": "string", "minLength": 1, "maxLength": 63, "pattern": "^[a-z][a-z0-9_]*$(?![\\s\\S])" },
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$(?![\\s\\S])" },
+    "ref": {
+      "type": "object", "additionalProperties": false,
+      "required": ["context", "kind", "owner", "id"],
+      "properties": {
+        "context": { "type": "string", "minLength": 1, "maxLength": 65536 },
+        "kind": { "enum": ["aggregate", "event", "state-field", "type"] },
+        "owner": { "type": "array", "maxItems": 1, "items": { "type": "string", "minLength": 1, "maxLength": 65536 } },
+        "id": { "type": "string", "minLength": 1, "maxLength": 65536 }
+      }
+    },
+    "aggregateRef": {
+      "allOf": [{ "$ref": "#/$defs/ref" }, { "properties": { "kind": { "const": "aggregate" }, "owner": { "maxItems": 0 } } }]
+    },
+    "eventRef": {
+      "allOf": [{ "$ref": "#/$defs/ref" }, { "properties": { "kind": { "const": "event" }, "owner": { "minItems": 1, "maxItems": 1 } } }]
+    },
+    "stateFieldRef": {
+      "allOf": [{ "$ref": "#/$defs/ref" }, { "properties": { "kind": { "const": "state-field" }, "owner": { "minItems": 1, "maxItems": 1 } } }]
+    },
+    "registration": {
+      "type": "object", "additionalProperties": false,
+      "required": ["ref", "role", "typeId", "version", "layoutSha256"],
+      "properties": {
+        "ref": { "$ref": "#/$defs/ref" },
+        "role": { "enum": ["event", "state"] },
+        "typeId": { "$ref": "#/$defs/token" },
+        "version": { "type": "integer", "minimum": 1, "maximum": 2147483647 },
+        "layoutSha256": { "$ref": "#/$defs/sha256" }
+      },
+      "allOf": [{
+        "if": { "properties": { "role": { "const": "event" } } },
+        "then": { "properties": { "ref": { "$ref": "#/$defs/eventRef" } } },
+        "else": { "properties": { "ref": { "$ref": "#/$defs/aggregateRef" } } }
+      }]
+    },
+    "index": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "table", "stateField", "keySize", "valueSize", "query"],
+      "properties": {
+        "id": { "$ref": "#/$defs/scalaName" },
+        "table": { "$ref": "#/$defs/sqlName" },
+        "stateField": { "$ref": "#/$defs/stateFieldRef" },
+        "keySize": { "type": "integer", "minimum": 1, "maximum": 2048 },
+        "valueSize": { "type": "integer", "minimum": 1, "maximum": 2048 },
+        "query": {
+          "type": "object", "additionalProperties": false, "required": ["id"],
+          "properties": { "id": { "$ref": "#/$defs/sqlName" } }
+        }
+      }
+    },
+    "store": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schemaVersion", "id", "version", "dialect", "tablePrefix", "source", "identity", "streamKind", "pollIntervalMillis", "closeTimeoutMillis", "pageSize", "maxPayloadBytes", "maxPending", "indexes"],
+      "properties": {
+        "schemaVersion": { "const": "truthsrc.journal-readside/v2" },
+        "id": { "$ref": "#/$defs/scalaName" },
+        "version": { "$ref": "#/$defs/version" },
+        "dialect": { "const": "h2-2" },
+        "tablePrefix": { "$ref": "#/$defs/sqlName" },
+        "source": {
+          "type": "object", "additionalProperties": false, "required": ["id", "version"],
+          "properties": { "id": { "$ref": "#/$defs/token" }, "version": { "$ref": "#/$defs/version" } }
+        },
+        "identity": {
+          "type": "object", "additionalProperties": false, "required": ["kind"],
+          "properties": { "kind": { "const": "envelope-resource" } }
+        },
+        "streamKind": { "allOf": [{ "$ref": "#/$defs/token" }, { "maxLength": 32 }] },
+        "pollIntervalMillis": { "type": "integer", "minimum": 10, "maximum": 60000 },
+        "closeTimeoutMillis": { "type": "integer", "minimum": 1, "maximum": 60000 },
+        "pageSize": { "type": "integer", "minimum": 1, "maximum": 1024 },
+        "maxPayloadBytes": { "type": "integer", "minimum": 1, "maximum": 8388608 },
+        "maxPending": { "type": "integer", "minimum": 1, "maximum": 1024 },
+        "indexes": { "type": "array", "minItems": 1, "maxItems": 1, "items": { "$ref": "#/$defs/index" } }
+      }
+    }
+  }
+}

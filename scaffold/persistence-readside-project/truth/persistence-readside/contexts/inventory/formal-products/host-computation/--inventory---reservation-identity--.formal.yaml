@@ -1,0 +1,114 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: formal-product
+schemaVersion: "truthsrc.formal-product/v1"
+family: host-computation
+id: "[\"inventory\",\"ReservationIdentity\"]"
+version: "1"
+payload:
+  {
+    "id": {
+      "context": "inventory",
+      "kind": "port",
+      "owner": [],
+      "id": "ReservationIdentity"
+    },
+    "version": "1",
+    "command": {
+      "context": "inventory",
+      "kind": "command",
+      "owner": [
+        "Warehouse"
+      ],
+      "id": "ReserveSkuQuantity"
+    },
+    "outputType": {
+      "form": "nominal",
+      "ref": {
+        "context": "inventory",
+        "kind": "type",
+        "owner": [],
+        "id": "ReservationId"
+      }
+    },
+    "inputDependencies": [
+      {
+        "context": "inventory",
+        "kind": "parameter",
+        "owner": [
+          "Warehouse",
+          "ReserveSkuQuantity"
+        ],
+        "id": "txid"
+      },
+      {
+        "context": "inventory",
+        "kind": "parameter",
+        "owner": [
+          "Warehouse",
+          "ReserveSkuQuantity"
+        ],
+        "id": "warehouseId"
+      },
+      {
+        "context": "inventory",
+        "kind": "parameter",
+        "owner": [
+          "Warehouse",
+          "ReserveSkuQuantity"
+        ],
+        "id": "skuId"
+      },
+      {
+        "context": "inventory",
+        "kind": "parameter",
+        "owner": [
+          "Warehouse",
+          "ReserveSkuQuantity"
+        ],
+        "id": "quantity"
+      }
+    ],
+    "stableIdentityContract": {
+      "id": "reservation-per-original-inputs",
+      "version": "1",
+      "keys": [
+        {
+          "context": "inventory",
+          "kind": "parameter",
+          "owner": [
+            "Warehouse",
+            "ReserveSkuQuantity"
+          ],
+          "id": "txid"
+        },
+        {
+          "context": "inventory",
+          "kind": "parameter",
+          "owner": [
+            "Warehouse",
+            "ReserveSkuQuantity"
+          ],
+          "id": "warehouseId"
+        },
+        {
+          "context": "inventory",
+          "kind": "parameter",
+          "owner": [
+            "Warehouse",
+            "ReserveSkuQuantity"
+          ],
+          "id": "skuId"
+        },
+        {
+          "context": "inventory",
+          "kind": "parameter",
+          "owner": [
+            "Warehouse",
+            "ReserveSkuQuantity"
+          ],
+          "id": "quantity"
+        }
+      ]
+    }
+  }

@@ -65,3 +65,19 @@ build.sbt、project/build.properties、plugins.sbt；单模块app与多模块mod
 ### 第五批有限module-seams候选
 
 两个build条目声明四模块及已捕获外置绝对源根；项目移址后重新capture/generate。direct Scala compiler通过不等于sbt已执行。 该显式产品链与旧BC/legacy/ref-only变体并存，不互相继承资格。生成源码经唯一writer回锚；外置实现仅独立file级来源，不能认证任意symbol/span。完整说明见[有限多模块接缝](../MODULE-SEAMS.md)。
+
+## 第六批有限 persistence-readside 候选登记
+
+本类新增 `js-persistence-readside-candidate-v1`，由显式 `scala-cqrs-persistence-readside-v1`／`scala-cqrs-persistence-readside@1` 提供；模块为 `root`。本段只登记实际源结构，不宣称本批已完成或已编译。
+
+实际输出合同（可覆盖同一物理文件中的不同职责，不按合同数冒充文件数）
+
+- `project-build`／`build`：Generated kernel/glue sbt build with explicit ScalaPB/Akka/H2 and test dependencies; sbt tasks have not been run by this registration. 路径 `build.sbt`。
+- `build-properties`／`build`：Generated explicit sbt/protoc plugin or version definition, not proof of build execution. 路径 `project/build.properties`。
+- `build-plugins`／`build`：Generated explicit sbt/protoc plugin or version definition, not proof of build execution. 路径 `project/plugins.sbt`。
+
+输入为唯一业务作者树、原七个 family2 产品及显式 persistence-readside 技术 binding；wire layout SHA 必须核对，不能自动重签。沿用 family2 kernel/glue 和唯一 writer；生成测试与独立 oracle 分开，sbt 定义存在不等任务执行。
+
+本次登记移除旧 active evidence 引用，原24观察和旧回执在[独立历史索引](../../evidence/capability-persistence-readside-prior-current06-history.json)保真；新观察要在生产冻结后单独采集并通过原公共验证器。本段及目录 implemented 仅表示实现存在，当前 generated/compiled/behavior/final-approved 不由本配方晋升。范围与限制见[本族合同](../PERSISTENCE-READSIDE.md)。
+
+读侧文件库重放不是生产 Actor journal 耐久性；不扩张为 MySQL、任意读模型、HTTP、银行/Saga/Monarch 或架构批准。

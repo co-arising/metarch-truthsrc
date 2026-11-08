@@ -8,7 +8,11 @@
 
 第四批的显式 [有限aggregate-core合同](AGGREGATE-CORE.md) 对应 `scala-cqrs-aggregate-core-v1`／`scala-cqrs-aggregate-core@1`，catalog profile为 `js-aggregate-core-candidate-v1`。复用family1单份kernel值/协议与glue PB基础，加纯Rules/CommandHelpers/fold、独立ActorProtocol、真实Aggregate行为、Factory/Bootstrap及Actor-specific Repository接口/本地实现。kernel无Actor类型；root只聚合kernel/glue，未完成ext/业务root或外部结果桥。
 
-catalog 2.3.0仍为125类/523变体、41个producer/534条输出合同，active observations=20：原12份样例generated，family1/family2各complete-plan generated及同样例源码generated/compiled/behavior-verified。第四批19项source职责取得同一Warehouse样例的三层资格，2项build职责仅generated；exact-value-codec明确excluded，artifact-generator仍handwritten。[原16声明历史](../evidence/capability-domain-kernel-final-history.json)不重签、不计current。主Warehouse源码24 entries含22参考生产文件与2生成测试（PB空State往返、空历史replay基线），支持测试纳入真实源码资格，但不当独立oracle；不由直接compiler通过推定sbt已执行。第四批按有限候选合同收口，完整回归、离线安装与来源门的实际结果见[第四批验收](../AGGREGATE-CORE-ACCEPTANCE.md)；无Bank、完整服务或最终批准，final-approved=0。
+第四批收口的历史catalog 2.3.0为125类/523变体、41个producer/534条输出合同，当时active observations=20：原12份样例generated，family1/family2各complete-plan generated及同样例源码generated/compiled/behavior-verified。第四批19项source职责取得同一Warehouse样例的三层资格，2项build职责仅generated；exact-value-codec明确excluded，artifact-generator仍handwritten。[原16声明历史](../evidence/capability-domain-kernel-final-history.json)不重签、不计current。主Warehouse源码24 entries含22参考生产文件与2生成测试（PB空State往返、空历史replay基线），支持测试纳入真实源码资格，但不当独立oracle；不由直接compiler通过推定sbt已执行。第四批按有限候选合同收口，完整回归、离线安装与来源门的实际结果见[第四批验收](../AGGREGATE-CORE-ACCEPTANCE.md)；无Bank、完整服务或最终批准，final-approved=0。
+
+第五批[有限module-seams合同](MODULE-SEAMS.md)另提供单Parcel四模块port/条件Bridge/显式root，7份生成生产Scala只读消费3份外置手写实现；不自动拼装family2 Actor。当前catalog 2.4.0为125类/536变体/42producer、current06观察24份；compiled与behavior各23类/37变体，final-approved仍0。完整公共回归为4084通过/15既有opt-in跳过/0失败，artifact68/68、onboarding34/34、BC50/Play32公共同步与八仓3424来源核验通过；详见[第五批有限验收](../MODULE-SEAMS-ACCEPTANCE.md)。上段旧current02只保留历史资格，不重复计为current。
+
+第六批[有限persistence/readside合同](PERSISTENCE-READSIDE.md)沿用Warehouse作者与family2 kernel/glue，显式加入版本化Frame/serializer/adapters和真实JDBC读投影。catalog2.5.0为125类/571变体/43producer；旧current06已保历史，当前能力见[派生矩阵](../CAPABILITY-MATRIX.md)。reference/generated/installed运行与双JVM文件重放通过，完整回归及保护收口尚未裁定；详见[第六批验收进度](../PERSISTENCE-READSIDE-ACCEPTANCE.md)。上段第五批数量仅表示当时历史，不是当前状态。
 
 ## 领域结构与纯行为
 

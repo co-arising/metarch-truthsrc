@@ -17,9 +17,23 @@
 - [旧family1最终观察历史](evidence/capability-domain-kernel-final-history.json)：原16声明、74条变体引用和原receipt路径/字节保留，不重签、不计current。
 - [现状盘点与剩余落地计划](STATUS-AND-IMPLEMENTATION-PLAN.md)：保留校准前125类/66项登记的原始盘点，以及先校准能力台账再按依赖家族收敛的路线。
 
-## 当前暂停状态（2026-11-08，第五批检查点）
+## 第六批持久化与读投影：运行资格通过，最终回归进行中（2026-11-09）
 
-第五批已批准但停在 A 阶段起点；详见[暂停检查点](MODULE-SEAMS-CHECKPOINT.md)。旧 current02 的20条观察及510处引用已[保真归档](evidence/capability-module-seams-prior-history.json)，当前 **active observations=0**。应生成及producer定位仍为63类/95变体；当前generated、compiled、behavior-verified、final-approved均为0。三个未提交草稿测试仅产生missing-import RED，新产品/模板尚未实现。以下第四批数字保留为当时历史事实，不代表暂停后的现役资格；相关类别页中的第四批current叙述亦按此边界理解。
+[有限family4合同](scala-cqrs/PERSISTENCE-READSIDE.md)对应显式 `scala-cqrs-persistence-readside-v1`／`scala-cqrs-persistence-readside@1`：Warehouse唯一业务作者与独立技术binding经8产品及单一writer形成kernel＋glue；不自动组成四模块应用或生产journal。
+
+catalog `2.5.0`登记125类、571变体及43个producer，新增35个本族变体、34项输出合同，真实主样例39个producer条目。当前28项观察由12个既有生成样例、三个旧族及本族同样例分层资格构成；完整矩阵以[派生结果](CAPABILITY-MATRIX.md)为准，不将合同数、文件数、类别数或测试数互换。旧current06的24项观察及544处引用已[保真历史化](evidence/capability-persistence-readside-prior-current06-history.json)，旧回执不重签。
+
+独立参考14项测试及双JVM文件重放通过；最终generated和installed各通过44个阶段：14项独立测试、原/同名Frame各4项shape、6对运行时正负控制、3正/2负编译控制及改名ABI正编译。H2默认IGNORECASE设置误判曾导致真实失败，已按独立3库实测修复并复验，失败回执保留。旧14完整plan共942条目和module11条目完整恒等。JDBC正常关闭/重开重放不证明生产Actor journal耐久性、强杀断电或MySQL/Mongo兼容；build、SQL及config不冒称Scala编译资格，final-approved仍0。
+
+**完整Node、BC/Play副本、八仓来源与最终保护仍按收口门执行，本段不提前裁定整批完成。** 详细运行与限制见[本批验收进度](PERSISTENCE-READSIDE-ACCEPTANCE.md)。
+
+## 第五批收口记录（历史，2026-11-08）
+
+[有限多模块接缝合同](scala-cqrs/MODULE-SEAMS.md)已形成唯一作者树、两个严格产品、7份生成生产Scala与3份外置手写实现的完整候选链。A/B已通过，C/D的四模块编译、独立业务oracle、ABI/缺实现/变异控制、五种布局以及离线安装消费已执行；不自动组合Actor或完整CQRS应用。[最初暂停检查点](MODULE-SEAMS-CHECKPOINT.md)保留历史，不再代表当前实现状态。
+
+catalog `2.4.0`登记 **125类、536变体、42个producer（15现役/20旧式/7退役）**，current06共 **24条当前观察**：旧12样例各一份generation，三个有限family各有完整计划generation及同样例代码generation/compiled/behavior。现役JS代码应生成及已定位65类/105变体，generated64类/103变体，compiled和behavior各23类/37变体，final-approved仍0；派生证据generated2类/2变体。build仅有generation资格，手写实现不计生成算法。
+
+旧current02的20条观察及510处引用仍[保真归档](evidence/capability-module-seams-prior-history.json)，不重签为current。完整公共Node已执行：4099项中4084通过、15项既有opt-in跳过、0失败；artifact68/68、onboarding34/34、BC文档dispatch2/2通过，KB为0错误/1既有警告。BC50/Play32经公共同步，八仓3424来源及副本检查通过。原full12外层预算耗尽的FAIL保留；full17使用新身份完成，不改测试或业务deadline。各门及最后文档保护复核的范围见[第五批有限验收](MODULE-SEAMS-ACCEPTANCE.md)，不以24条观察替代执行结果。以下第四批数字是当时历史事实，当前资格以[派生矩阵](CAPABILITY-MATRIX.md)为准。
 
 ## 第四批收口时登记状态（历史，2026-11-08）
 

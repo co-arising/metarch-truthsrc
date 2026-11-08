@@ -7,7 +7,7 @@
 | 合同ID | 用途 | 当前资格 | 自动生成入口 |
 |---|---|---|---|
 | `scala-cqrs-legacy-compatible-v1` | 描述现有公开载体与完整Scala名字的保护边界 | compatibility-contract；不是推荐新结构 | 无新入口，仍使用原生成器 |
-| `scala-cqrs-modular-candidate-v1` | 新项目四模块、纯领域和显式端口的推荐设计候选 | candidate；`approval:null` | 完整目标仍`generator:null`；第三/四批分别有显式family1/family2有限子集入口，见[领域kernel](DOMAIN-KERNEL.md)／[aggregate-core](AGGREGATE-CORE.md) |
+| `scala-cqrs-modular-candidate-v1` | 新项目四模块、纯领域和显式端口的推荐设计候选 | candidate；`approval:null` | 完整目标仍`generator:null`；第三至六批分别有显式family1/family2/family3/family4有限入口，见[领域kernel](DOMAIN-KERNEL.md)／[aggregate-core](AGGREGATE-CORE.md)／[module-seams](MODULE-SEAMS.md)／[persistence-readside](PERSISTENCE-READSIDE.md) |
 
 `targetProfile(id)`返回不可变描述。未知/省略ID失败；语义product版本、运行库版本、ArtifactType目录变体与这些目标合同不是同一身份。`buildTargetModel`仅接受modular candidate，不能用它重新解释旧银行结构。第二批的参考保留`reference-only`变体；第三批另登记实际JS family1生成变体，不覆盖参考资格，批准数量仍独立。
 
@@ -20,6 +20,12 @@
 options仍仅 `packages/names/protobuf`；新增角色由本族模型分流，原family1白名单不扩权。所有实际名称/作用域/portable路径在同一完整plan核对。Factory包为 `application.factories`，物理目录仍是 `modules/glue/src/main/scala/...`。ActorProtocol/Factory/Repository留glue；显式typed PersistenceId、initial、hosts、event/snapshot adapters和spawn API不由知识ID或类名猜测，技术名选择不修改PB或持久化身份。
 
 两处external producer产品必须一致且为空，无本地command producer的事件也拒绝；没有伪造授权或静默丢外部事件。root仅聚合kernel/glue，无ext/业务root。主Warehouse完整源码24 entries含两份生成基线测试；最终双lane真实35／37案例通过；同样例观察及完整回归分项结果见[第四批有限验收](../AGGREGATE-CORE-ACCEPTANCE.md)，原obs0／FAIL保留在[阶段提交历史快照](../AGGREGATE-CORE-CHECKPOINT.md)。[旧16声明历史](../evidence/capability-domain-kernel-final-history.json)保原receipt不重签，旧参考/初二三批验收不冒current。无银行或服务切换；完整范围以[aggregate-core合同](AGGREGATE-CORE.md)为准。
+
+## 第五批显式接缝入口
+
+`scala-cqrs-module-seams-v1`／`scala-cqrs-module-seams@1`及catalog的 `js-module-seams-candidate-v1` 是独立有限入口，不把上述目标模型JSON改成第二份可编辑知识。单context作者唯一声明值/closed sum和port签名；`module-seams-contract@1`与`module-seams-composition@1`严格派生，技术binding只声明实现、构造ABI及root选择。主Parcel为7份生成生产Scala＋3份外置手写实现，四模块逐个编译；同kernel Bridge和直接implements两条路径分别验证。
+
+主样例、布局、精确变异和installed消费是有限工程证据，不使整个modular target成为生成器，也不包含Actor/存储/银行/Saga/Monarch自动组合。原独立Parcel与14个reference-only变体保持。生成/编译/行为当前资格见[能力矩阵](../CAPABILITY-MATRIX.md)，具体边界见[module-seams合同](MODULE-SEAMS.md)。
 
 ## 名称不是业务身份
 

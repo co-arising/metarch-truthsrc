@@ -4,9 +4,21 @@
 
 本页沿用已完成P0和后续P1–P4成果路线，不重做类别清点工程、已实现公共验证闭环或聚合参考切片。数字对应本次捕获状态；后续实施必须从实际catalog及证据重新派生，不持续手工维护另一份类别真源。
 
-## 第五批启动后暂停（2026-11-08）
+## 第六批持久化与读投影：运行资格通过，最终回归进行中（2026-11-09）
 
-家族3多模块接缝计划已获批准；用户随后要求先提交并压缩。当前只完成保护基线、14样例/942条完整计划双次对账，以及20条current02观察/510引用的[保真退休](evidence/capability-module-seams-prior-history.json)。**active observations=0**；应生成/已定位仍63类95变体，当前generated/compiled/behavior/final均为0。A代理已停止，三份草稿测试未纳入检查点提交；首次RED为产品模块缺失导致的加载失败，不是反例或新实现通过。新产品、scaffold与producer尚未实现，未进入模板/JVM/银行运行。实际停点及续接顺序见[第五批暂停检查点](MODULE-SEAMS-CHECKPOINT.md)。下文family2与类别页相关current叙述保留第四批收口历史，不冒暂停后的现役能力。
+[有限family4合同](scala-cqrs/PERSISTENCE-READSIDE.md)对应显式 `scala-cqrs-persistence-readside-v1`／`scala-cqrs-persistence-readside@1`：Warehouse唯一业务作者与独立技术binding经8产品及单一writer形成kernel＋glue；不自动组成四模块应用或生产journal。
+
+catalog `2.5.0`登记125类、571变体及43个producer，新增35个本族变体、34项输出合同，真实主样例39个producer条目。当前28项观察由12个既有生成样例、三个旧族及本族同样例分层资格构成；完整矩阵以[派生结果](CAPABILITY-MATRIX.md)为准，不将合同数、文件数、类别数或测试数互换。旧current06的24项观察及544处引用已[保真历史化](evidence/capability-persistence-readside-prior-current06-history.json)，旧回执不重签。
+
+独立参考14项测试及双JVM文件重放通过；最终generated和installed各通过44个阶段：14项独立测试、原/同名Frame各4项shape、6对运行时正负控制、3正/2负编译控制及改名ABI正编译。H2默认IGNORECASE设置误判曾导致真实失败，已按独立3库实测修复并复验，失败回执保留。旧14完整plan共942条目和module11条目完整恒等。JDBC正常关闭/重开重放不证明生产Actor journal耐久性、强杀断电或MySQL/Mongo兼容；build、SQL及config不冒称Scala编译资格，final-approved仍0。
+
+**完整Node、BC/Play副本、八仓来源与最终保护仍按收口门执行，本段不提前裁定整批完成。** 详细运行与限制见[本批验收进度](PERSISTENCE-READSIDE-ACCEPTANCE.md)。
+
+## 第五批有限接缝（历史，2026-11-08）
+
+家族3已实现[显式module-seams候选](scala-cqrs/MODULE-SEAMS.md)：单Parcel作者树经contract/composition两产品、lowering/model/templates和唯一writer，输出7份生产Scala并只读消费3份外置手写实现。A/B正式门、C/D主样例和五布局、ABI/缺实现/两业务变异、安装移址与三输入stale/update已有执行结果；没有启动银行或R2。最初产品未实现、missing-import RED及obs0停点保留在[历史检查点](MODULE-SEAMS-CHECKPOINT.md)，不能再用于描述当前实现。
+
+当前catalog `2.4.0`为125类/536变体/42producer，**active observations=24（current06）**；现役JS代码应生成/定位65类105变体，generated64类103变体，compiled及behavior各23类37变体，final-approved=0。三份手写实现保持handwritten、routes为空；原14个modular reference-only不被覆盖。旧20观察/510引用继续[保真退休](evidence/capability-module-seams-prior-history.json)，失败候选不改写。生产冻结下完整Node已执行4099项：4084通过、15项既有外仓opt-in跳过、0失败；artifact68/68、onboarding34/34及BC文档2/2通过。BC50/Play32受控同步、八仓3424来源及snapshots通过；只更新82条来源，其余3342条不变。两次有界只读review无新增具体缺陷；原full12预算FAIL保留，full17新身份完成，不改测试或业务timeout。详细结果、最后文档保护复核与非结论见[第五批有限验收](MODULE-SEAMS-ACCEPTANCE.md)。下文第四批及更早数字仍是对应批次历史，不是今天的现役完成率。
 
 ## 第四批family2有限交付（历史，2026-11-08）
 

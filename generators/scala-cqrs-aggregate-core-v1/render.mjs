@@ -1,4 +1,4 @@
-import { productionJobs, renderJobs } from '../scala-cqrs-domain-kernel-v1/render.mjs';
+import { productionJobs as kernelProductionJobs, renderJobs } from '../scala-cqrs-domain-kernel-v1/render.mjs';
 import { aggregateSourceEntry } from '../scala-cqrs-domain-kernel-v1/entry.mjs';
 import { generatedTestArtifacts, generatedTestsTemplate } from '../scala-cqrs-domain-kernel-v1/templates/generated-tests.mjs';
 import { rulesTemplate } from './templates/rules.mjs';
@@ -12,8 +12,8 @@ import { repositoryTemplate, repositoryImplementationTemplate } from './template
 import { buildArtifacts, buildTemplate } from './templates/build.mjs';
 import { generatedBehaviorArtifacts, generatedBehaviorTemplate } from './templates/generated-tests.mjs';
 
-export function render(model, footprint) {
-  const jobs = productionJobs(model.kernel, model.serialization);
+export function productionJobs(model) {
+  const jobs = kernelProductionJobs(model.kernel, model.serialization);
   for (const aggregate of model.aggregates) {
     for (const [role, template] of [
       ['rules', rulesTemplate], ['helpers', commandHelpersTemplate], ['eventHandler', eventHandlerTemplate],
@@ -21,6 +21,11 @@ export function render(model, footprint) {
       ['bootstrap', bootstrapTemplate], ['repository', repositoryTemplate], ['repositoryImplementation', repositoryImplementationTemplate],
     ]) jobs.push({ artifact: aggregate[role], template: out => template(aggregate, model, out) });
   }
+  return jobs;
+}
+
+export function render(model, footprint) {
+  const jobs = productionJobs(model);
   for (const artifact of buildArtifacts(model)) jobs.push({ artifact, template: out => buildTemplate(artifact, out) });
   for (const artifact of generatedTestArtifacts(model.kernel, model.serialization))
     jobs.push({ artifact: { ...artifact, kind: 'generated-test' }, template: out => generatedTestsTemplate(artifact, out) });

@@ -73,6 +73,32 @@ not a read-only replay of its receipt.
   Supported line queries match verified final source spans. Unmapped lines and
   symbol-only queries remain candidates; no name-based semantic certification.
 
+## Finite persistence/readside projects
+
+Copy `scaffold/persistence-readside-project` to a new owned directory outside the
+tool installation. Its configured Warehouse author tree is the sole business input;
+`bindings/persistence.json` is a separate technical document selected through
+`documents` and `roles`. The config explicitly selects all eight product versions
+and `scala-cqrs-persistence-readside-v1`. Use the ordinary `compile-project`,
+`generate-project --plan`, generation, verification and query commands above.
+
+The producer emits kernel and glue modules, versioned persistence adapters and
+serializer registration, H2 schema/repository/handler/runner, and separate build
+and shape-test outputs. It does not require generation-time handwritten Scala or
+reuse the module-seams mixed-input admission. Caller-supplied hosts, PID/resource,
+DataSource, event source and execution context are runtime dependencies, not
+inferred implementations or production journal configuration.
+
+Changes to the author or technical binding make recorded output stale. A changed
+wire layout requires an explicit compatible design/version decision; generation
+never refreshes the expected wire pin automatically. Preview an authorized update
+before apply. Final generated spans navigate to the actual author or binding,
+including wire registration and index declarations. Inspecting these spans does
+not execute Scala/JDBC or certify storage compatibility.
+
+The batch remains under acceptance; its independent reference, generated and
+installed runtime qualifications must be distinguished. See [the finite contract](docs/artifacts/scala-cqrs/PERSISTENCE-READSIDE.md).
+
 ## Finite module-seams projects
 
 The explicit `scala-cqrs-module-seams-v1` profile uses a single Parcel author tree,

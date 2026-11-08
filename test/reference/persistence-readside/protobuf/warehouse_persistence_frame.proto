@@ -1,0 +1,13 @@
+// Independent technical envelope; original inventory_domain.proto is read-only.
+syntax = "proto3";
+package example.inventory.persistence.protobuf;
+import "scalapb/scalapb.proto";
+option (scalapb.options) = { flat_package: true single_file: true };
+message Frame {
+  uint32 envelope_version = 1;
+  string role = 2;
+  string type_id = 3;
+  uint32 wire_version = 4;
+  string layout_sha256 = 5;
+  bytes payload = 6;
+}

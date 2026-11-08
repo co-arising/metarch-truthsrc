@@ -55,6 +55,42 @@ are closed; compiler-overwritten payload fields and unconsumed definitions rejec
 Policy and note origins both require an explicit session stage and collision-free
 frozen seq. Legacy parsing remains unchanged for byte compatibility.
 
+## Finite persistence/readside author contract
+
+`scaffold/persistence-readside-project/truth/persistence-readside/` reuses the
+Warehouse Reserve/Commit business facts. Command guards, event bindings, state
+and folds stay in their existing author atoms. Do not add warehouse identity to
+business payloads merely to satisfy storage layout, or copy folds into a separate
+projection model. `ReservationIdentity` remains an explicit host port.
+
+Versioned frame registrations, expected wire-layout pins, serializer ID and the
+finite `truthsrc.journal-readside/v2` store/index selection belong in the separate
+project technical binding, not the author tree. The index references an existing
+state-map field; it does not redefine that field or accept arbitrary projection
+code. PID/resource are caller-supplied opaque runtime identities, not evidence of
+business ownership. Every author edit still requires validate **and** roundtrip;
+product/lowering checks and actual runtime qualification are additional gates.
+See [the bounded contract](docs/artifacts/scala-cqrs/PERSISTENCE-READSIDE.md).
+
+## Finite module-seams author contract
+
+The opt-in Parcel example is `scaffold/module-seams-project/truth/module-seams/`.
+Its eight value definitions live only in `value-objects/*.vo.yaml`; seven records
+retain `name/fields[{name,dataType}]`, while the closed sum uses the explicit
+`truthsrc.signature-value/v1` shape. The `module-seams-contract` formal atom under
+`formal-products/` declares ports and references these values; it does not repeat
+their fields. Compilation emits the separate `canonical.moduleSeamsContracts`
+collection, not a second editable model or an upgrade of legacy `canonical.ports`.
+
+This finite signature supports String/Boolean/Long, declared nominal records and
+closed sums, and Option/Vector/Map/Either. Recursion, open sums, defaults,
+overloads and arbitrary external Scala types are rejected. Technical constructor
+bindings and handwritten implementations are separate project inputs, never
+business atoms or copied method signatures. Author changes require both validate
+and roundtrip; author, binding and implementation changes each make generated
+project evidence stale until an explicit update. See [the finite contract](docs/artifacts/scala-cqrs/MODULE-SEAMS.md)
+and [project capture](PROJECT.md#finite-module-seams-projects).
+
 ## Finite structural sharing
 
 An explicit system `authoring` block can select `structures: "truthsrc.structure/v1"`.

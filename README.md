@@ -20,6 +20,8 @@
 
 [可选验证工具](docs/artifacts/tooling/verification-runner.md)提供文件取证/清单、协作租约、串行构建/独立验证/只读报告，以及受限进程、工作线程和工具归属API。[独立Catalog示例](scaffold/verification-project/README.md)把输入、builder、独立oracle与配置分开，消费安装后的公共闭环，不复制银行脚本。进程执行目前限定Darwin Seatbelt，基础source CLI不新增JDK/Docker要求。银行的实际输入、人工实现、目录与工具来源见[构建配方](../bank-wealth-demo/docs/BUILD-RECIPE.md)（该链接需要相邻银行源码）。
 
+[有限 Parcel 多模块样例](docs/artifacts/scala-cqrs/MODULE-SEAMS.md)展示另一条显式候选链：唯一作者树与技术 binding → 两个严格产品 → 7份生成生产 Scala＋3份外置手写实现 → 四模块编译、行为与来源互查。它不自动组合完整 CQRS、Actor、Saga 或 Monarch；静态验证、实际样例资格与最终架构批准分开。完整回归与目录收口的当前状态见[中央状态](docs/artifacts/README.md#第五批当前状态2026-11-08最终收口进行中)。
+
 ## Install the local CLI
 
 ### 环境与版本边界
