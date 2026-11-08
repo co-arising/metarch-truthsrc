@@ -1,0 +1,19 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: value-object
+name: QuoteRequest
+seq: 6
+payload:
+  {
+    "name": "QuoteRequest",
+    "fields": [
+      {
+        "name": "routeId",
+        "dataType": "RouteId"
+      },
+      {
+        "name": "parcels",
+        "dataType": "Vector[Parcel]"
+      }
+    ]
+  }

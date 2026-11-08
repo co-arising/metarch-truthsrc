@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:truthsrc:signature-value:v1",
+  "title": "Versioned closed signature sum in a value-object payload, never an inline port value definition",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "truthsrc.signature-value/v1"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 65536
+    },
+    "shape": {
+      "const": "sum"
+    },
+    "variants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 65536
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/field"
+            },
+            "minItems": 0
+          }
+        },
+        "required": [
+          "name",
+          "fields"
+        ]
+      },
+      "minItems": 1
+    },
+    "context": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 65536
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 65536
+    },
+    "seq": {
+      "type": "integer"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 65536
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "name",
+    "shape",
+    "variants"
+  ]
+}

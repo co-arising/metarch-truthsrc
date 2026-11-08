@@ -1,0 +1,144 @@
+{
+  "schemaVersion": "truthsrc.project/v1",
+  "tree": "truth/module-seams",
+  "canonicalId": "parcel-domain",
+  "context": "parcel",
+  "products": [
+    {
+      "id": "module-seams-contract",
+      "version": "1"
+    },
+    {
+      "id": "module-seams-composition",
+      "version": "1"
+    }
+  ],
+  "exactTypes": [],
+  "exactCodecs": [],
+  "documents": [
+    {
+      "id": "parcel-composition",
+      "file": "bindings/module-seams.json"
+    }
+  ],
+  "roles": {
+    "moduleSeamsCompositionBinding": "parcel-composition"
+  },
+  "assemblies": [],
+  "generator": "scala-cqrs-module-seams-v1",
+  "options": {
+    "packages": [
+      {
+        "context": "parcel",
+        "package": "example.parcel"
+      }
+    ],
+    "names": [
+      {
+        "ref": {
+          "component": "capacity-bridge"
+        },
+        "role": "bridge",
+        "name": "CapacityPolicyBridge"
+      },
+      {
+        "ref": {
+          "component": "root"
+        },
+        "role": "composition",
+        "name": "ParcelModule"
+      }
+    ],
+    "valueFiles": [
+      {
+        "ref": {
+          "context": "parcel",
+          "kind": "type",
+          "owner": [],
+          "id": "RouteId"
+        },
+        "fileStem": "ParcelValues"
+      },
+      {
+        "ref": {
+          "context": "parcel",
+          "kind": "type",
+          "owner": [],
+          "id": "ParcelId"
+        },
+        "fileStem": "ParcelValues"
+      },
+      {
+        "ref": {
+          "context": "parcel",
+          "kind": "type",
+          "owner": [],
+          "id": "Parcel"
+        },
+        "fileStem": "ParcelValues"
+      },
+      {
+        "ref": {
+          "context": "parcel",
+          "kind": "type",
+          "owner": [],
+          "id": "Route"
+        },
+        "fileStem": "ParcelValues"
+      },
+      {
+        "ref": {
+          "context": "parcel",
+          "kind": "type",
+          "owner": [],
+          "id": "Load"
+        },
+        "fileStem": "ParcelValues"
+      },
+      {
+        "ref": {
+          "context": "parcel",
+          "kind": "type",
+          "owner": [],
+          "id": "QuoteRequest"
+        },
+        "fileStem": "ParcelValues"
+      },
+      {
+        "ref": {
+          "context": "parcel",
+          "kind": "type",
+          "owner": [],
+          "id": "Quote"
+        },
+        "fileStem": "ParcelValues"
+      },
+      {
+        "ref": {
+          "context": "parcel",
+          "kind": "type",
+          "owner": [],
+          "id": "QuoteError"
+        },
+        "fileStem": "QuoteError"
+      }
+    ],
+    "sourceRoots": [
+      {
+        "id": "kernel-handwritten",
+        "module": "kernel",
+        "path": "handwritten/kernel"
+      },
+      {
+        "id": "glue-handwritten",
+        "module": "glue",
+        "path": "handwritten/glue"
+      },
+      {
+        "id": "ext-handwritten",
+        "module": "ext",
+        "path": "handwritten/ext"
+      }
+    ]
+  }
+}

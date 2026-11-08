@@ -1,0 +1,280 @@
+{
+  "schemaVersion": "truthsrc.module-seams-composition-binding/v1",
+  "id": "parcel-module",
+  "version": "1",
+  "contract": {
+    "id": "parcel-seams",
+    "version": "1",
+    "context": "parcel"
+  },
+  "implementations": [
+    {
+      "id": "capacity-rule",
+      "version": "1",
+      "module": "kernel",
+      "role": "pure-implementation",
+      "symbol": "example.parcel.domain.CapacityRule",
+      "construction": "object",
+      "source": {
+        "root": "kernel-handwritten",
+        "file": "CapacityRule.scala"
+      },
+      "implements": null,
+      "constructor": [],
+      "methods": [
+        {
+          "method": {
+            "port": {
+              "context": "parcel",
+              "kind": "port",
+              "owner": [],
+              "id": "CapacityPolicy"
+            },
+            "method": "assess"
+          },
+          "delegateMember": "assess"
+        }
+      ]
+    },
+    {
+      "id": "repository",
+      "version": "1",
+      "module": "glue",
+      "role": "adapter",
+      "symbol": "example.parcel.infrastructure.InMemoryRouteRepository",
+      "construction": "class",
+      "source": {
+        "root": "glue-handwritten",
+        "file": "InMemoryRouteRepository.scala"
+      },
+      "implements": {
+        "context": "parcel",
+        "kind": "port",
+        "owner": [],
+        "id": "RouteRepository"
+      },
+      "constructor": [
+        {
+          "implicit": false,
+          "arguments": [
+            {
+              "name": "routes",
+              "from": {
+                "kind": "root-input",
+                "id": "routes"
+              }
+            }
+          ]
+        }
+      ],
+      "methods": [
+        {
+          "method": {
+            "port": {
+              "context": "parcel",
+              "kind": "port",
+              "owner": [],
+              "id": "RouteRepository"
+            },
+            "method": "find"
+          },
+          "delegateMember": "find"
+        }
+      ]
+    },
+    {
+      "id": "flow",
+      "version": "1",
+      "module": "ext",
+      "role": "extension",
+      "symbol": "example.parcel.application.DefaultQuoteFlow",
+      "construction": "class",
+      "source": {
+        "root": "ext-handwritten",
+        "file": "DefaultQuoteFlow.scala"
+      },
+      "implements": {
+        "context": "parcel",
+        "kind": "port",
+        "owner": [],
+        "id": "QuoteFlow"
+      },
+      "constructor": [
+        {
+          "implicit": false,
+          "arguments": [
+            {
+              "name": "repository",
+              "from": {
+                "kind": "port",
+                "ref": {
+                  "context": "parcel",
+                  "kind": "port",
+                  "owner": [],
+                  "id": "RouteRepository"
+                }
+              }
+            },
+            {
+              "name": "capacity",
+              "from": {
+                "kind": "port",
+                "ref": {
+                  "context": "parcel",
+                  "kind": "port",
+                  "owner": [],
+                  "id": "CapacityPolicy"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "implicit": true,
+          "arguments": [
+            {
+              "name": "executionContext",
+              "from": {
+                "kind": "root-input",
+                "id": "execution-context"
+              }
+            }
+          ]
+        }
+      ],
+      "methods": [
+        {
+          "method": {
+            "port": {
+              "context": "parcel",
+              "kind": "port",
+              "owner": [],
+              "id": "QuoteFlow"
+            },
+            "method": "quote"
+          },
+          "delegateMember": "quote"
+        }
+      ]
+    }
+  ],
+  "bridges": [
+    {
+      "id": "capacity-bridge",
+      "port": {
+        "context": "parcel",
+        "kind": "port",
+        "owner": [],
+        "id": "CapacityPolicy"
+      },
+      "delegateImplementation": "capacity-rule",
+      "methods": [
+        {
+          "method": {
+            "port": {
+              "context": "parcel",
+              "kind": "port",
+              "owner": [],
+              "id": "CapacityPolicy"
+            },
+            "method": "assess"
+          },
+          "delegateMember": "assess"
+        }
+      ]
+    }
+  ],
+  "root": {
+    "id": "root",
+    "method": "create",
+    "parameterGroups": [
+      {
+        "implicit": false,
+        "inputs": [
+          {
+            "id": "routes",
+            "name": "routes",
+            "type": {
+              "form": "map",
+              "key": {
+                "form": "nominal",
+                "ref": {
+                  "context": "parcel",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "RouteId"
+                }
+              },
+              "value": {
+                "form": "nominal",
+                "ref": {
+                  "context": "parcel",
+                  "kind": "type",
+                  "owner": [],
+                  "id": "Route"
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "implicit": true,
+        "inputs": [
+          {
+            "id": "execution-context",
+            "name": "executionContext",
+            "type": {
+              "form": "technical",
+              "name": "ExecutionContext"
+            }
+          }
+        ]
+      }
+    ],
+    "result": {
+      "context": "parcel",
+      "kind": "port",
+      "owner": [],
+      "id": "QuoteFlow"
+    },
+    "bindings": [
+      {
+        "port": {
+          "context": "parcel",
+          "kind": "port",
+          "owner": [],
+          "id": "CapacityPolicy"
+        },
+        "target": {
+          "kind": "bridge",
+          "id": "capacity-bridge"
+        }
+      },
+      {
+        "port": {
+          "context": "parcel",
+          "kind": "port",
+          "owner": [],
+          "id": "RouteRepository"
+        },
+        "target": {
+          "kind": "implementation",
+          "id": "repository"
+        }
+      },
+      {
+        "port": {
+          "context": "parcel",
+          "kind": "port",
+          "owner": [],
+          "id": "QuoteFlow"
+        },
+        "target": {
+          "kind": "implementation",
+          "id": "flow"
+        }
+      }
+    ]
+  }
+}

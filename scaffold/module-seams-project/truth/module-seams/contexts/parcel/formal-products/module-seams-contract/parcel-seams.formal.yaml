@@ -1,0 +1,173 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: formal-product
+schemaVersion: "truthsrc.formal-product/v1"
+family: module-seams-contract
+id: parcel-seams
+version: "1"
+payload:
+  {
+    "schemaVersion": "truthsrc.module-seams-contract/v1",
+    "id": "parcel-seams",
+    "version": "1",
+    "context": "parcel",
+    "ports": [
+      {
+        "id": "CapacityPolicy",
+        "name": "CapacityPolicy",
+        "role": "computation",
+        "methods": [
+          {
+            "id": "assess",
+            "name": "assess",
+            "parameters": [
+              {
+                "id": "route",
+                "name": "route",
+                "valueType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "parcel",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "Route"
+                  }
+                }
+              },
+              {
+                "id": "parcels",
+                "name": "parcels",
+                "valueType": {
+                  "form": "sequence",
+                  "element": {
+                    "form": "nominal",
+                    "ref": {
+                      "context": "parcel",
+                      "kind": "type",
+                      "owner": [],
+                      "id": "Parcel"
+                    }
+                  }
+                }
+              }
+            ],
+            "result": {
+              "effect": "pure",
+              "valueType": {
+                "form": "either",
+                "left": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "parcel",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "QuoteError"
+                  }
+                },
+                "right": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "parcel",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "Load"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "RouteRepository",
+        "name": "RouteRepository",
+        "role": "repository",
+        "methods": [
+          {
+            "id": "find",
+            "name": "find",
+            "parameters": [
+              {
+                "id": "id",
+                "name": "id",
+                "valueType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "parcel",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "RouteId"
+                  }
+                }
+              }
+            ],
+            "result": {
+              "effect": "future",
+              "valueType": {
+                "form": "optional",
+                "element": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "parcel",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "Route"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "QuoteFlow",
+        "name": "QuoteFlow",
+        "role": "flow",
+        "methods": [
+          {
+            "id": "quote",
+            "name": "quote",
+            "parameters": [
+              {
+                "id": "request",
+                "name": "request",
+                "valueType": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "parcel",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "QuoteRequest"
+                  }
+                }
+              }
+            ],
+            "result": {
+              "effect": "future",
+              "valueType": {
+                "form": "either",
+                "left": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "parcel",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "QuoteError"
+                  }
+                },
+                "right": {
+                  "form": "nominal",
+                  "ref": {
+                    "context": "parcel",
+                    "kind": "type",
+                    "owner": [],
+                    "id": "Quote"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }

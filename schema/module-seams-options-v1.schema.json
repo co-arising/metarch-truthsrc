@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:truthsrc:module-seams-options:v1",
+  "title": "Closed options for pure module-seams lowering; source-root paths are relative project I/O declarations",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "packages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "context": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 65536
+          },
+          "package": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 65536
+          }
+        },
+        "required": [
+          "context",
+          "package"
+        ]
+      },
+      "minItems": 1
+    },
+    "names": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "ref": {
+            "oneOf": [
+              {
+                "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/typeRef"
+              },
+              {
+                "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/portRef"
+              },
+              {
+                "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/methodRef"
+              },
+              {
+                "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/parameterRef"
+              },
+              {
+                "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/variantRef"
+              },
+              {
+                "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/fieldRef"
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "component": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 65536
+                  }
+                },
+                "required": [
+                  "component"
+                ]
+              }
+            ]
+          },
+          "role": {
+            "enum": [
+              "value",
+              "port",
+              "method",
+              "parameter",
+              "variant",
+              "field",
+              "pure-implementation",
+              "adapter",
+              "extension",
+              "bridge",
+              "composition"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 65536
+          }
+        },
+        "required": [
+          "ref",
+          "role",
+          "name"
+        ]
+      },
+      "minItems": 0
+    },
+    "valueFiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "ref": {
+            "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/typeRef"
+          },
+          "fileStem": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 65536
+          }
+        },
+        "required": [
+          "ref",
+          "fileStem"
+        ]
+      },
+      "minItems": 1
+    },
+    "sourceRoots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 65536
+          },
+          "module": {
+            "enum": [
+              "kernel",
+              "glue",
+              "ext"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.?(?:/|$))(?!.*[<>:\"|?*])[^/]+(?:/[^/]+)*$"
+          }
+        },
+        "required": [
+          "id",
+          "module",
+          "path"
+        ]
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "packages",
+    "names",
+    "valueFiles",
+    "sourceRoots"
+  ]
+}

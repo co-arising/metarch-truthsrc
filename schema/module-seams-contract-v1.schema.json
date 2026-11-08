@@ -1,0 +1,786 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:truthsrc:module-seams-contract:v1",
+  "title": "Authored ports-only finite module seam contract; compiled contract is in $defs/contract",
+  "$ref": "#/$defs/author",
+  "$defs": {
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 65536
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "document": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "pointer": {
+          "type": "string",
+          "pattern": "^(?:|/(?:[^~]|~[01])*)$"
+        }
+      },
+      "required": [
+        "document",
+        "pointer"
+      ]
+    },
+    "typeRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "context": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "kind": {
+          "const": "type"
+        },
+        "owner": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        }
+      },
+      "required": [
+        "context",
+        "kind",
+        "owner",
+        "id"
+      ]
+    },
+    "portRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "context": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "kind": {
+          "const": "port"
+        },
+        "owner": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        }
+      },
+      "required": [
+        "context",
+        "kind",
+        "owner",
+        "id"
+      ]
+    },
+    "methodRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "port": {
+          "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/portRef"
+        },
+        "method": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        }
+      },
+      "required": [
+        "port",
+        "method"
+      ]
+    },
+    "parameterRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "method": {
+          "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/methodRef"
+        },
+        "parameter": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        }
+      },
+      "required": [
+        "method",
+        "parameter"
+      ]
+    },
+    "variantRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/typeRef"
+        },
+        "variant": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        }
+      },
+      "required": [
+        "value",
+        "variant"
+      ]
+    },
+    "fieldRef": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/typeRef"
+            },
+            "field": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 65536
+            }
+          },
+          "required": [
+            "value",
+            "field"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/typeRef"
+            },
+            "variant": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 65536
+            },
+            "field": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 65536
+            }
+          },
+          "required": [
+            "value",
+            "variant",
+            "field"
+          ]
+        }
+      ]
+    },
+    "type": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "form": {
+              "const": "primitive"
+            },
+            "name": {
+              "enum": [
+                "string",
+                "boolean",
+                "integer"
+              ]
+            }
+          },
+          "required": [
+            "form",
+            "name"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "form": {
+              "const": "nominal"
+            },
+            "ref": {
+              "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/typeRef"
+            }
+          },
+          "required": [
+            "form",
+            "ref"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "form": {
+              "enum": [
+                "optional",
+                "sequence"
+              ]
+            },
+            "element": {
+              "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/type"
+            }
+          },
+          "required": [
+            "form",
+            "element"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "form": {
+              "const": "map"
+            },
+            "key": {
+              "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/type"
+            },
+            "value": {
+              "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/type"
+            }
+          },
+          "required": [
+            "form",
+            "key",
+            "value"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "form": {
+              "const": "either"
+            },
+            "left": {
+              "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/type"
+            },
+            "right": {
+              "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/type"
+            }
+          },
+          "required": [
+            "form",
+            "left",
+            "right"
+          ]
+        }
+      ]
+    },
+    "field": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "dataType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        }
+      },
+      "required": [
+        "name",
+        "dataType"
+      ]
+    },
+    "parameter": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "valueType": {
+          "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/type"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "valueType"
+      ]
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "effect": {
+          "enum": [
+            "pure",
+            "future"
+          ]
+        },
+        "valueType": {
+          "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/type"
+        }
+      },
+      "required": [
+        "effect",
+        "valueType"
+      ]
+    },
+    "method": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/parameter"
+          },
+          "minItems": 0
+        },
+        "result": {
+          "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/result"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "parameters",
+        "result"
+      ]
+    },
+    "port": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "role": {
+          "enum": [
+            "computation",
+            "repository",
+            "flow"
+          ]
+        },
+        "methods": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/method"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "role",
+        "methods"
+      ]
+    },
+    "compiledField": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "ref": {
+          "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/fieldRef"
+        },
+        "valueType": {
+          "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/type"
+        },
+        "source": {
+          "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/source"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "ref",
+        "valueType",
+        "source"
+      ]
+    },
+    "compiledVariant": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "ref": {
+          "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/variantRef"
+        },
+        "source": {
+          "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/source"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/compiledField"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "ref",
+        "source",
+        "fields"
+      ]
+    },
+    "compiledValue": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "ref": {
+              "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/typeRef"
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 65536
+            },
+            "shape": {
+              "const": "record"
+            },
+            "source": {
+              "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/source"
+            },
+            "fields": {
+              "type": "array",
+              "items": {
+                "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/compiledField"
+              },
+              "minItems": 0
+            },
+            "variants": {
+              "type": "array",
+              "maxItems": 0
+            }
+          },
+          "required": [
+            "ref",
+            "name",
+            "shape",
+            "source",
+            "fields",
+            "variants"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "ref": {
+              "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/typeRef"
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 65536
+            },
+            "shape": {
+              "const": "sum"
+            },
+            "source": {
+              "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/source"
+            },
+            "fields": {
+              "type": "array",
+              "maxItems": 0
+            },
+            "variants": {
+              "type": "array",
+              "items": {
+                "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/compiledVariant"
+              },
+              "minItems": 1
+            }
+          },
+          "required": [
+            "ref",
+            "name",
+            "shape",
+            "source",
+            "fields",
+            "variants"
+          ]
+        }
+      ]
+    },
+    "compiledParameter": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "valueType": {
+          "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/type"
+        },
+        "ref": {
+          "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/parameterRef"
+        },
+        "source": {
+          "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/source"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "valueType",
+        "ref",
+        "source"
+      ]
+    },
+    "compiledMethod": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "ref": {
+          "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/methodRef"
+        },
+        "source": {
+          "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/source"
+        },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/compiledParameter"
+          },
+          "minItems": 0
+        },
+        "result": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "effect": {
+              "enum": [
+                "pure",
+                "future"
+              ]
+            },
+            "valueType": {
+              "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/type"
+            },
+            "source": {
+              "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/source"
+            }
+          },
+          "required": [
+            "effect",
+            "valueType",
+            "source"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "ref",
+        "source",
+        "parameters",
+        "result"
+      ]
+    },
+    "compiledPort": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "role": {
+          "enum": [
+            "computation",
+            "repository",
+            "flow"
+          ]
+        },
+        "ref": {
+          "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/portRef"
+        },
+        "source": {
+          "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/source"
+        },
+        "methods": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/compiledMethod"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "role",
+        "ref",
+        "source",
+        "methods"
+      ]
+    },
+    "author": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "truthsrc.module-seams-contract/v1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "version": {
+          "const": "1"
+        },
+        "context": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "ports": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/port"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "id",
+        "version",
+        "context",
+        "ports"
+      ]
+    },
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "version": {
+          "const": "1"
+        },
+        "context": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "source": {
+          "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/source"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/compiledValue"
+          },
+          "minItems": 1
+        },
+        "ports": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/compiledPort"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "context",
+        "source",
+        "values",
+        "ports"
+      ]
+    }
+  }
+}

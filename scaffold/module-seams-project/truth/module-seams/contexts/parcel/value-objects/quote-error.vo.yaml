@@ -1,0 +1,82 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: value-object
+name: QuoteError
+seq: 8
+payload:
+  {
+    "schemaVersion": "truthsrc.signature-value/v1",
+    "name": "QuoteError",
+    "shape": "sum",
+    "variants": [
+      {
+        "name": "EmptyParcels",
+        "fields": []
+      },
+      {
+        "name": "InvalidCapacity",
+        "fields": [
+          {
+            "name": "routeId",
+            "dataType": "RouteId"
+          },
+          {
+            "name": "capacityGrams",
+            "dataType": "Long"
+          }
+        ]
+      },
+      {
+        "name": "InvalidWeight",
+        "fields": [
+          {
+            "name": "parcelId",
+            "dataType": "ParcelId"
+          },
+          {
+            "name": "grams",
+            "dataType": "Long"
+          }
+        ]
+      },
+      {
+        "name": "DuplicateParcel",
+        "fields": [
+          {
+            "name": "parcelId",
+            "dataType": "ParcelId"
+          }
+        ]
+      },
+      {
+        "name": "OverCapacity",
+        "fields": [
+          {
+            "name": "routeId",
+            "dataType": "RouteId"
+          },
+          {
+            "name": "totalGrams",
+            "dataType": "Long"
+          },
+          {
+            "name": "capacityGrams",
+            "dataType": "Long"
+          }
+        ]
+      },
+      {
+        "name": "WeightOverflow",
+        "fields": []
+      },
+      {
+        "name": "UnknownRoute",
+        "fields": [
+          {
+            "name": "routeId",
+            "dataType": "RouteId"
+          }
+        ]
+      }
+    ]
+  }

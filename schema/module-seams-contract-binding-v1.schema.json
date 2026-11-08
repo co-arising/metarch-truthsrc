@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:truthsrc:module-seams-contract-binding:v1",
+  "title": "Derived whole contract binding; compiler reconstructs and compares every field and source",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "truthsrc.module-seams-contract-binding/v1"
+    },
+    "contract": {
+      "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/contract"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "contract"
+  ]
+}

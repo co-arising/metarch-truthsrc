@@ -1,0 +1,637 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:truthsrc:module-seams-composition:v1",
+  "title": "Reconstructed static ABI obligations and complete origins; not handwritten Scala certification",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "truthsrc.module-seams-composition/v1"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 65536
+    },
+    "version": {
+      "const": "1"
+    },
+    "context": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 65536
+    },
+    "contract": {
+      "$ref": "urn:truthsrc:module-seams-composition-binding:v1#/$defs/pin"
+    },
+    "source": {
+      "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/source"
+    },
+    "implementations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 65536
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 65536
+          },
+          "module": {
+            "enum": [
+              "kernel",
+              "glue",
+              "ext"
+            ]
+          },
+          "role": {
+            "enum": [
+              "pure-implementation",
+              "adapter",
+              "extension"
+            ]
+          },
+          "symbol": {
+            "type": "string",
+            "pattern": "^(?:[a-z][a-z0-9_]*\\.)+[A-Z][A-Za-z0-9]*$"
+          },
+          "construction": {
+            "enum": [
+              "class",
+              "object"
+            ]
+          },
+          "source": {
+            "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/source"
+          },
+          "implements": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/portRef"
+              }
+            ]
+          },
+          "constructor": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "implicit": {
+                  "type": "boolean"
+                },
+                "arguments": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 65536
+                      },
+                      "from": {
+                        "$ref": "urn:truthsrc:module-seams-composition-binding:v1#/$defs/from"
+                      },
+                      "valueType": {
+                        "oneOf": [
+                          {
+                            "$ref": "urn:truthsrc:module-seams-composition-binding:v1#/$defs/rootType"
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "form": {
+                                "const": "port"
+                              },
+                              "ref": {
+                                "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/portRef"
+                              }
+                            },
+                            "required": [
+                              "form",
+                              "ref"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "form": {
+                                "const": "component"
+                              },
+                              "id": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 65536
+                              }
+                            },
+                            "required": [
+                              "form",
+                              "id"
+                            ]
+                          }
+                        ]
+                      },
+                      "component": {
+                        "oneOf": [
+                          {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 65536
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "source": {
+                        "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/source"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "from",
+                      "valueType",
+                      "component",
+                      "source"
+                    ]
+                  },
+                  "minItems": 1
+                },
+                "source": {
+                  "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/source"
+                }
+              },
+              "required": [
+                "implicit",
+                "arguments",
+                "source"
+              ]
+            },
+            "minItems": 0
+          },
+          "methods": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "method": {
+                  "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/methodRef"
+                },
+                "delegateMember": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 65536
+                },
+                "signature": {
+                  "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/compiledMethod"
+                },
+                "source": {
+                  "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/source"
+                }
+              },
+              "required": [
+                "method",
+                "delegateMember",
+                "signature",
+                "source"
+              ]
+            },
+            "minItems": 1
+          },
+          "context": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 65536
+          },
+          "sourceFile": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "root": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 65536
+              },
+              "file": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.?(?:/|$))(?!.*[<>:\"|?*])[^/]+(?:/[^/]+)*$"
+              },
+              "source": {
+                "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/source"
+              }
+            },
+            "required": [
+              "root",
+              "file",
+              "source"
+            ]
+          },
+          "dependencies": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 65536
+            },
+            "minItems": 0
+          },
+          "requires": {
+            "type": "array",
+            "items": {
+              "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/portRef"
+            },
+            "minItems": 0
+          }
+        },
+        "required": [
+          "id",
+          "version",
+          "module",
+          "role",
+          "symbol",
+          "construction",
+          "source",
+          "implements",
+          "constructor",
+          "methods",
+          "context",
+          "sourceFile",
+          "dependencies",
+          "requires"
+        ]
+      },
+      "minItems": 1
+    },
+    "bridges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 65536
+          },
+          "port": {
+            "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/portRef"
+          },
+          "delegateImplementation": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 65536
+          },
+          "methods": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "method": {
+                  "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/methodRef"
+                },
+                "delegateMember": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 65536
+                },
+                "signature": {
+                  "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/compiledMethod"
+                },
+                "source": {
+                  "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/source"
+                }
+              },
+              "required": [
+                "method",
+                "delegateMember",
+                "signature",
+                "source"
+              ]
+            },
+            "minItems": 1
+          },
+          "context": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 65536
+          },
+          "module": {
+            "const": "kernel"
+          },
+          "role": {
+            "const": "bridge"
+          },
+          "implements": {
+            "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/portRef"
+          },
+          "construction": {
+            "const": "class"
+          },
+          "source": {
+            "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/source"
+          },
+          "dependencies": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 65536
+            },
+            "minItems": 1
+          },
+          "requires": {
+            "type": "array",
+            "maxItems": 0
+          }
+        },
+        "required": [
+          "id",
+          "port",
+          "delegateImplementation",
+          "methods",
+          "context",
+          "module",
+          "role",
+          "implements",
+          "construction",
+          "source",
+          "dependencies",
+          "requires"
+        ]
+      },
+      "minItems": 0
+    },
+    "root": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "method": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "parameterGroups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "implicit": {
+                "type": "boolean"
+              },
+              "inputs": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 65536
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 65536
+                    },
+                    "type": {
+                      "$ref": "urn:truthsrc:module-seams-composition-binding:v1#/$defs/rootType"
+                    },
+                    "source": {
+                      "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/source"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "type",
+                    "source"
+                  ]
+                },
+                "minItems": 1
+              },
+              "source": {
+                "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/source"
+              }
+            },
+            "required": [
+              "implicit",
+              "inputs",
+              "source"
+            ]
+          },
+          "minItems": 0
+        },
+        "result": {
+          "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/portRef"
+        },
+        "bindings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "port": {
+                "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/portRef"
+              },
+              "target": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "implementation",
+                      "bridge"
+                    ]
+                  },
+                  "id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 65536
+                  }
+                },
+                "required": [
+                  "kind",
+                  "id"
+                ]
+              },
+              "component": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 65536
+              },
+              "source": {
+                "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/source"
+              }
+            },
+            "required": [
+              "port",
+              "target",
+              "component",
+              "source"
+            ]
+          },
+          "minItems": 1
+        },
+        "context": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        "module": {
+          "const": "root"
+        },
+        "role": {
+          "const": "composition"
+        },
+        "construction": {
+          "const": "object"
+        },
+        "source": {
+          "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/source"
+        },
+        "resultComponent": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        }
+      },
+      "required": [
+        "id",
+        "method",
+        "parameterGroups",
+        "result",
+        "bindings",
+        "context",
+        "module",
+        "role",
+        "construction",
+        "source",
+        "resultComponent"
+      ]
+    },
+    "order": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 65536
+      },
+      "minItems": 1
+    },
+    "handwritten": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 65536
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 65536
+          },
+          "module": {
+            "enum": [
+              "kernel",
+              "glue",
+              "ext"
+            ]
+          },
+          "role": {
+            "enum": [
+              "pure-implementation",
+              "adapter",
+              "extension"
+            ]
+          },
+          "symbol": {
+            "type": "string",
+            "pattern": "^(?:[a-z][a-z0-9_]*\\.)+[A-Z][A-Za-z0-9]*$"
+          },
+          "construction": {
+            "enum": [
+              "class",
+              "object"
+            ]
+          },
+          "implements": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/portRef"
+              }
+            ]
+          },
+          "sourceRootKey": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 65536
+          },
+          "file": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.?(?:/|$))(?!.*[<>:\"|?*])[^/]+(?:/[^/]+)*$"
+          },
+          "source": {
+            "$ref": "urn:truthsrc:module-seams-contract:v1#/$defs/source"
+          }
+        },
+        "required": [
+          "id",
+          "version",
+          "module",
+          "role",
+          "symbol",
+          "construction",
+          "implements",
+          "sourceRootKey",
+          "file",
+          "source"
+        ]
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "version",
+    "context",
+    "contract",
+    "source",
+    "implementations",
+    "bridges",
+    "root",
+    "order",
+    "handwritten"
+  ]
+}
