@@ -2,6 +2,7 @@ import { at, array, detach, equal, fail, object, text, unique } from '../../lib/
 import { compileProductSet } from '../../lib/products/compile.mjs';
 import { COMPILER, PRODUCT_SET } from '../../lib/products/registry.mjs';
 import { lowerModuleSeamsTarget } from '../../lib/products/module-seams-target.mjs';
+import { portableSeamsPath } from '../../lib/products/module-seams-composition.mjs';
 import { refKey } from '../../lib/domain-products/references.mjs';
 import { resolveName, resolveNameSet, resolveArtifactPath } from '../../lib/scala-target/naming.mjs';
 import { MODULAR_CANDIDATE } from '../../lib/scala-target/profiles.mjs';
@@ -201,7 +202,9 @@ export function buildModels(raw) {
     return { ...base, root, directDeps: uniquePaths([...externalRequirements, ...bridges.map(b => b.path),
       ...parameterGroups.flatMap(g => g.inputs.flatMap(i => typePaths(i.type))), ...typePaths(root.result.type)]).filter(p => p !== file.path) };
   });
-  const testSymbol = (module, pkg, name) => {
+  const verificationPackage = target.contexts[0].packageName + '.verification';
+  const testSymbol = (module, name) => {
+    const pkg = verificationPackage;
     const n = resolveName({ profile: MODULAR_CANDIDATE, ...named('module-seams-support:' + module, pkg, 'scala-type', name) });
     return { packageName: pkg, name: n.name, identifier: n.identifier,
       path: resolveArtifactPath({ profile: MODULAR_CANDIDATE, module, packageName: pkg, typeName: n.name }).replace('src/main/', 'src/test/') };
@@ -210,12 +213,24 @@ export function buildModels(raw) {
     { role: 'build', kind: 'build', path: 'project/build.properties', sources: [contract.source, composition.source], directDeps: [] },
     { role: 'build', kind: 'build', path: 'build.sbt', sources: [contract.source, composition.source, ...lowered.handwritten.map(h => h.source)],
       directDeps: ['project/build.properties', ...artifacts.map(a => a.path)] },
-    { role: 'value-shape-test', kind: 'generated-test', ...testSymbol('kernel', target.contexts[0].packageName + '.domain', 'ModuleSeamsValueShapeSpec'),
+    { role: 'value-shape-test', kind: 'generated-test', ...testSymbol('kernel', 'ModuleSeamsValueShapeSpec'),
       sources: values.map(v => v.source), directDeps: uniquePaths(values.map(v => v.path)), values },
-    { role: 'root-shape-test', kind: 'generated-test', ...testSymbol('root', root.packageName, 'ModuleSeamsRootShapeSpec'),
+    { role: 'root-shape-test', kind: 'generated-test', ...testSymbol('root', 'ModuleSeamsRootShapeSpec'),
       sources: [root.source], directDeps: [root.path], root,
       shapeMethod: explicitMember('bindingShape', root.source).identifier },
   ];
+  // Keep support symbols in the same collision check as all generated and
+  // externally declared production symbols; a module boundary does not hide FQNs.
+  const declarations = [...target.values, ...target.ports, ...target.components, ...support.filter(s => s.kind === 'generated-test')];
+  resolveNameSet({ profile: MODULAR_CANDIDATE, names: declarations.map((s, i) =>
+    named('module-seams-declaration:' + i, s.packageName, 'scala-type', s.name)), reserved: [] });
+  const portablePaths = new Set();
+  for (const path of [...target.files, ...support.map(s => s.path)]) {
+    portableSeamsPath(path, location);
+    const key = path.normalize('NFC').toLowerCase();
+    if (portablePaths.has(key)) fail('MODULE_SEAMS_MODEL', 'production, handwritten and support paths must be portable and distinct', location);
+    portablePaths.add(key);
+  }
   return detach({ schemaVersion: 'truthsrc.module-seams-render-model/v1', lowered, values, ports, bridges, root, artifacts, support,
     modules: target.modules.map(m => ({ ...m, identifier: explicitMember(m.id, composition.source).identifier })),
     buildSettingsIdentifier: explicitMember('moduleSeamsSettings', composition.source).identifier,

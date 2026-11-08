@@ -1,7 +1,7 @@
-import { detach, equal, fail } from '../../lib/products/request.mjs';
+import { array, at, detach, equal, fail } from '../../lib/products/request.mjs';
+import { portableSeamsPath } from '../../lib/products/module-seams-composition.mjs';
 import { moduleSeamsSourceEntry } from '../scala-cqrs-domain-kernel-v1/entry.mjs';
-import { renderJobs } from '../scala-cqrs-domain-kernel-v1/render.mjs';
-import { productFootprint, resolveBuildSourceRoots } from './build-models.mjs';
+import { productFootprint, resolveBuildSourceRoots, sourcesOf } from './build-models.mjs';
 import { valuesTemplate, portTemplate, bridgeTemplate, rootTemplate, buildTemplate,
   valueShapeTestTemplate, rootShapeTestTemplate } from './templates/scala.mjs';
 
@@ -26,5 +26,34 @@ export function render(rawModel, buildSourceRoots, footprint) {
     if (!template) fail('MODULE_SEAMS_RENDER', 'unknown finite support artifact');
     jobs.push({ artifact, template });
   }
-  return renderJobs(jobs, footprint, moduleSeamsSourceEntry);
+  const kinds = { value: 'value-object', port: 'module-seams-port', bridge: 'module-seams-bridge',
+    composition: 'module-seams-composition', build: 'build', 'value-shape-test': 'generated-test', 'root-shape-test': 'generated-test' };
+  const byPath = new Map(), portable = new Set(), location = at('module-seams-render');
+  for (const { artifact } of jobs) {
+    portableSeamsPath(artifact.path, location);
+    const key = artifact.path.normalize('NFC').toLowerCase();
+    if (portable.has(key)) fail('MODULE_SEAMS_RENDER', 'duplicate portable rendered artifact path: ' + artifact.path, location);
+    if (artifact.kind !== kinds[artifact.role]) fail('MODULE_SEAMS_RENDER', 'artifact kind conflicts with its responsibility', location);
+    portable.add(key); byPath.set(artifact.path, artifact);
+  }
+  for (const { artifact } of jobs) for (const dep of array(artifact.directDeps, location)) {
+    portableSeamsPath(dep, location);
+    if (!byPath.has(dep)) fail('MODULE_SEAMS_RENDER', 'missing actual rendered dependency: ' + dep, location);
+  }
+  // Acyclic nominal types can share files that refer back to each other. Each
+  // starting file therefore owns a visited set, not the family1 file-DAG cache.
+  const complete = new Map();
+  for (const { artifact } of jobs) {
+    const seen = new Set([artifact.path]), deps = [], pending = [...artifact.directDeps].reverse();
+    while (pending.length) {
+      const dep = pending.pop();
+      if (seen.has(dep)) continue;
+      seen.add(dep); deps.push(dep);
+      const direct = byPath.get(dep).directDeps;
+      for (let i = direct.length - 1; i >= 0; i--) pending.push(direct[i]);
+    }
+    complete.set(artifact.path, deps);
+  }
+  return Object.freeze(jobs.map(({ artifact, template }) => moduleSeamsSourceEntry({ path: artifact.path,
+    kind: artifact.kind, sources: sourcesOf(artifact.sources), footprint, deps: complete.get(artifact.path) }, template)));
 }
