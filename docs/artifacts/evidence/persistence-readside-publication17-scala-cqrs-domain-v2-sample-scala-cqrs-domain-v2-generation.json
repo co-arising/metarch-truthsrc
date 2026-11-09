@@ -1,0 +1,245 @@
+{
+  "schemaVersion": "truthsrc.artifact-capability-observation/v1",
+  "producer": "scala-cqrs-domain-v2",
+  "channel": "manifest",
+  "level": "generated",
+  "status": "passed",
+  "sourceFingerprint": "eabecb24faead3e5753761d79a4d47cc0ee04a6eafa437709b4160b1b796fc4d",
+  "command": "Derived portable publication persistence-readside-publication17 of original actual current-recipe run persistence-readside-current01; sample persistence-readside-current01/scala-cqrs-domain-v2-generation-sample; original qualification SHA256 22285e91807b7113a154f6d8acb3f12da88785d0ccaf74abb6ad2792694d11d1; original evidence level generated; no generator, compiler, JVM or oracle rerun; no new execution or qualification.",
+  "inputs": [
+    {
+      "name": "request",
+      "sha256": "1dcf8e2de4aa20a2283c9355c99a7cc8f8f7032650b5c589e68042abf3a5ca3a"
+    },
+    {
+      "name": "options",
+      "sha256": "988c5945bc6c79d2f55e1d29e9252fa812779408c4b6c426a7d917f2e8bb3826"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "app/example/tickets/domain/BookingAggregate.scala",
+      "kind": "aggregate",
+      "bytes": 1965,
+      "sha256": "286ad2968d7c87c4d36c59d80d9586f68ae2ff594f158389379fe3c403eb7c37",
+      "contracts": [
+        "aggregate",
+        "aggregate-2"
+      ]
+    },
+    {
+      "path": "app/example/tickets/domain/BookingCommandHelpers.scala",
+      "kind": "command-helpers",
+      "bytes": 449,
+      "sha256": "9c25be606bffaeb8fc9891b64cd1a37c7f667fd2c38bd176f9b744c3e21c7579",
+      "contracts": [
+        "command-helpers"
+      ]
+    },
+    {
+      "path": "app/example/tickets/domain/BookingEventHandler.scala",
+      "kind": "event-handler",
+      "bytes": 621,
+      "sha256": "3f9eb303ef280f9c2cde426f796d1c3af562347655f0af9423379f09b40edcc4",
+      "contracts": [
+        "event-handler"
+      ]
+    },
+    {
+      "path": "app/example/tickets/domain/BookingExternalEvents.scala",
+      "kind": "external-event-bridge",
+      "bytes": 376,
+      "sha256": "0873afaba805fa812d05dcbfd9a3636c2960694b690a15e5084a478f3b48a1db",
+      "contracts": [
+        "external-event-bridge"
+      ]
+    },
+    {
+      "path": "app/example/tickets/domain/BookingProtocol.scala",
+      "kind": "protocol",
+      "bytes": 520,
+      "sha256": "6741f2a4c107aec995d01fb83b8cea095753b2554d08a8ae8c5b804ece71cb5f",
+      "contracts": [
+        "protocol"
+      ]
+    },
+    {
+      "path": "app/example/tickets/domain/BookingRules.scala",
+      "kind": "rules",
+      "bytes": 372,
+      "sha256": "272f2f0d607a77dfe322d4ff1e5fb87c3075fb131d36301febcb36cd0408e57f",
+      "contracts": [
+        "rules"
+      ]
+    },
+    {
+      "path": "app/example/tickets/domain/BookingState.scala",
+      "kind": "state",
+      "bytes": 402,
+      "sha256": "ece0031cf2d1d3ce752e1066f36934c56dbd693a3b2229c18ce4d7fbe8e88331",
+      "contracts": [
+        "state"
+      ]
+    },
+    {
+      "path": "app/example/tickets/domain/values/Distance.scala",
+      "kind": "value-object",
+      "bytes": 924,
+      "sha256": "0a7a21c0b8ee99623f0c83d932919ca270872b8a5342ec862e9788c485d0ceb1",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/tickets/domain/values/DistancePO.scala",
+      "kind": "value-object",
+      "bytes": 128,
+      "sha256": "1057c0ef71cdc4b40c3274ea287c720a4791307dff721968be91999aa6f33aaa",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/tickets/domain/values/DistanceWire.scala",
+      "kind": "value-object",
+      "bytes": 130,
+      "sha256": "0d8656a41725c538cd72d19c94b0082314cdb658f7c3d1052b0cfb2e4ed55641",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/tickets/domain/values/TicketId.scala",
+      "kind": "value-object",
+      "bytes": 126,
+      "sha256": "5827c72fd00022506d1b57993e1d3b86df2fb5d33b56b6fa86b6a961e1835ade",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/tickets/domain/values/TicketReceipt.scala",
+      "kind": "value-object",
+      "bytes": 164,
+      "sha256": "28bfb0fd234e706612dab39d3230943e8598a71dfb730e6db7c305a6fcf1d289",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/tickets/infrastructure/serialization/BookingAdapters.scala",
+      "kind": "serialization-adapter",
+      "bytes": 1702,
+      "sha256": "8c9aac99bb7784dcf9ddb653969f40deb8731a0b1584af0553c5f83af0ec85a0",
+      "contracts": [
+        "serialization-adapter-2"
+      ]
+    },
+    {
+      "path": "app/example/tickets/infrastructure/serialization/DomainConverters.scala",
+      "kind": "converter",
+      "bytes": 5529,
+      "sha256": "ae5c8b6bf5a2ab6d580803a53e2384ffcb516dcca4531fff94619980957b160c",
+      "contracts": [
+        "converter",
+        "converter-2"
+      ]
+    },
+    {
+      "path": "app/example/tickets/infrastructure/serialization/DomainProtoSerializer.scala",
+      "kind": "serialization-adapter",
+      "bytes": 2191,
+      "sha256": "15506bdf947ca5509405f982e8cd0495bcac66b5a452528da3a124b692395ee4",
+      "contracts": [
+        "serialization-adapter"
+      ]
+    },
+    {
+      "path": "app/protobuf/example_tickets_domain.proto",
+      "kind": "proto",
+      "bytes": 626,
+      "sha256": "be61f94e3dcd36a21dec47bde8f98dc935473116241a4844a333f3bb74bad662",
+      "contracts": [
+        "proto"
+      ]
+    },
+    {
+      "path": "build.sbt",
+      "kind": "build",
+      "bytes": 686,
+      "sha256": "b2f0bba0042e1614539f2bfc49fba2bcebc9dba7eb5965dd3f6c587842f4fbb3",
+      "contracts": [
+        "build"
+      ]
+    },
+    {
+      "path": "project/build.properties",
+      "kind": "build",
+      "bytes": 19,
+      "sha256": "bc2e83307ba4a40cb286711cee6f644d9bca62ab2d791053000c7c9ce7a82bb2",
+      "contracts": [
+        "build"
+      ]
+    },
+    {
+      "path": "project/plugins.sbt",
+      "kind": "build",
+      "bytes": 178,
+      "sha256": "b0b249c1421454db041a3a1e519d71e83ef5a4b5d46567c5a24371ba285f0e05",
+      "contracts": [
+        "build"
+      ]
+    },
+    {
+      "path": "src/main/resources/application.conf",
+      "kind": "build",
+      "bytes": 807,
+      "sha256": "6d0aa5ab49f79652436f11e71fbbe94a84eeb2b215d5bf6abac85448b4abdc52",
+      "contracts": [
+        "build-2"
+      ]
+    },
+    {
+      "path": "src/test/scala/GeneratedActorStateSpec.scala",
+      "kind": "generated-test",
+      "bytes": 1248,
+      "sha256": "a74f63a174e065210331a85c07ff4bf29b25c3d4ad2560c6198dbaa2ef745055",
+      "contracts": [
+        "generated-test"
+      ]
+    },
+    {
+      "path": "src/test/scala/GeneratedDomainRoundtripSpec.scala",
+      "kind": "generated-test",
+      "bytes": 1204,
+      "sha256": "df4a02783eedad9c7ef46fc37cee91f9c7a373d7616e8518f1295ba5810951b2",
+      "contracts": [
+        "generated-test"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "product-compilation-has-no-diagnostics",
+      "passed": true
+    },
+    {
+      "name": "pure-producer-has-no-diagnostics",
+      "passed": true
+    },
+    {
+      "name": "repeat-plan-is-identical",
+      "passed": true
+    },
+    {
+      "name": "request-and-options-unchanged",
+      "passed": true
+    },
+    {
+      "name": "actual-path-kind-channel-and-conditional-contracts",
+      "passed": true
+    }
+  ],
+  "independent": false,
+  "approval": null
+}

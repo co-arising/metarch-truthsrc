@@ -1,6 +1,6 @@
-# 第六批有限持久化／JDBC读投影验收进度
+# 第六批有限持久化／JDBC读投影验收
 
-本页是结果记录，**不是整批最终完成裁定**。生成链和reference/generated/installed运行交付单元已通过；完整Node、跨仓副本／来源与最终保护须在同一候选上完成后再收口。
+本页记录第六批有限候选的工程收口：生成链及reference/generated/installed运行、完整Node回归与副本／来源／保护门按各自证据成立。有限工程收口不是全profile能力、生产服务交付或最终架构批准；后置文档不追认为原测试输入。
 
 ## 已通过的有限运行
 
@@ -13,7 +13,7 @@
 | 安装后真实运行 | 44阶段均符合预期 | installed-core02 |
 | 最终checkout生成与运行 | 602捕获输入含bin；39条目／45文件；894运行输入保持；44阶段 | generated-source04 / generated-core04 |
 | 旧计划恒等 | 14样例942条目、原根module11条目；不归一化路径冒相等 | legacy-plans04 |
-| 当前能力 | 28新观察；旧12生成、三个旧族重新执行、本族复用有效运行 | persistence-readside-current01 |
+| 能力观察原执行 | 28项观察；旧12生成、三个旧族重新执行、本族复用有效运行；后续portable替代及supersession见下文 | persistence-readside-current01 |
 
 44阶段包含14项独立oracle，默认和Frame同名变体各4项shape，6对运行时正负控制，3项编译正控、2项编译负控和1项同名ABI编译正控，以及跨JVM文件重放。36进程exit0，8个预期拒绝进程exit1；后者仍保存failed process receipt，通过的是精确负控制断言，不是把失败改签为进程成功。JVM保持120秒、512MiB、2CPU及OS禁网，实际wait/reap与共同运行位归还均单列核验。
 
@@ -35,10 +35,16 @@ reference-core01供应分类预检失败、core02测试helper名称遮蔽、core
 
 catalog-prep01/05和current-readside-preflight08/09是独占准备／消费接口失败，后继新身份修复；不覆盖旧结果。Provider限流不是测试成功或工程完成。默认Node发现新增显式工具只跳过其运行入口，显式JVM断言/限额保留；新锁在实施后、执行前固定，不能冒称所有oracle早于实现冻结。
 
-## 尚未完成的收口门
+## 有限收口结果与最后保护范围
 
-- 一次完整Node默认发现回归（串行，60分钟外层；每测试原期限不变，skip独立报告）。
-- BC/Play仅固定说明副本的expected-digest同步、八仓来源／本地／snapshots及BC文档门。
-- 四仓index／HEAD／原dirty、历史／失败／来源精确保护与本批最终交接。
+完整Node默认发现回归以新身份full05串行执行，60分钟外层与每测试原期限不变；TAP总4197项：4182通过、0失败、15跳过，耗时约27分46秒。skip分为13项BCROOT、1项BCMANIFEST、1项BANKROOT；跳过不计通过，也不证明对应外仓测试已执行。
+
+旧full04有13项真实失败，原因是公共metadata契约问题；修复该层后，full05以新身份完整执行取得上述通过结果。这13项失败未指向runtime算法缺陷；旧FAIL及其输入、输出、回执保留，不改签成功。reference/generated/installed的有效运行按原证据保留，本次没有206 phase重跑。
+
+artifact为68/68。此前metadata修复的publication仅修改catalog/coverage并新增28份portable回执和1份supersession记录，旧28份回执原字节保留；本次文档收尾不改catalog、public receipt、matrix或BC/Play副本，来源锁只更新下述4项文档摘要。
+
+BC/Play固定说明副本的expected-digest同步、八仓来源／本地／snapshots、BC文档门，以及四仓index／HEAD／原dirty、历史／失败／来源保护，按最终封存的对应通过结果收口；保证仅及封存清单列出的对象，不扩张为全仓任意文件不变。最终记录为 `/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/persistence-readside-7ci6expr/final-protection-publication-close25-result.json`（文件SHA-256：`4d94f6a66d5f892cd6fc7aa39040f407cd861df00a49c23fdf8c29788414d9aa`）。
+
+最后文档保护对上述final既有封存pins作对照，例外严格限exact6投影：本次4个结果页全文、`sources.lock.json`的`documents`中对应4个既有键、`coverage.json`的对应派生更新；lock其余内容及其余pins保持。后置publicdocscheck仅核此时公共文档一致性，保护检查仅核排除上述精确投影后的封存保持；两者不追认后置文档为full05或finalchecker25的测试输入，也不构成新的runtime或206 phase验证。
 
 不包括生产Actor journal、断电强杀恢复、MySQL/Mongo、历史迁移、完整四模块、API/页面、Saga/Monarch、银行replay/R2或真人签收；final-approved为0。不得自动进入下一族或提交／推送／发布。

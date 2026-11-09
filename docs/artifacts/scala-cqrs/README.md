@@ -12,7 +12,7 @@
 
 第五批[有限module-seams合同](MODULE-SEAMS.md)另提供单Parcel四模块port/条件Bridge/显式root，7份生成生产Scala只读消费3份外置手写实现；不自动拼装family2 Actor。当前catalog 2.4.0为125类/536变体/42producer、current06观察24份；compiled与behavior各23类/37变体，final-approved仍0。完整公共回归为4084通过/15既有opt-in跳过/0失败，artifact68/68、onboarding34/34、BC50/Play32公共同步与八仓3424来源核验通过；详见[第五批有限验收](../MODULE-SEAMS-ACCEPTANCE.md)。上段旧current02只保留历史资格，不重复计为current。
 
-第六批[有限persistence/readside合同](PERSISTENCE-READSIDE.md)沿用Warehouse作者与family2 kernel/glue，显式加入版本化Frame/serializer/adapters和真实JDBC读投影。catalog2.5.0为125类/571变体/43producer；旧current06已保历史，当前能力见[派生矩阵](../CAPABILITY-MATRIX.md)。reference/generated/installed运行与双JVM文件重放通过，完整回归及保护收口尚未裁定；详见[第六批验收进度](../PERSISTENCE-READSIDE-ACCEPTANCE.md)。上段第五批数量仅表示当时历史，不是当前状态。
+第六批[有限persistence/readside合同](PERSISTENCE-READSIDE.md)沿用Warehouse作者与family2 kernel/glue，显式加入版本化Frame/serializer/adapters和真实JDBC读投影。catalog2.5.0为125类/571变体/43producer；旧current06已保历史，当前能力见[派生矩阵](../CAPABILITY-MATRIX.md)。reference/generated/installed运行与双JVM文件重放资格保持；完整回归、来源及最后保护的有限收口见[第六批验收](../PERSISTENCE-READSIDE-ACCEPTANCE.md)，不等最终批准，后置文档不追认为原测试输入。上段第五批数量仅表示当时历史，不是当前状态。
 
 ## 领域结构与纯行为
 

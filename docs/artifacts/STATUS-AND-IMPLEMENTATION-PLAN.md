@@ -4,7 +4,7 @@
 
 本页沿用已完成P0和后续P1–P4成果路线，不重做类别清点工程、已实现公共验证闭环或聚合参考切片。数字对应本次捕获状态；后续实施必须从实际catalog及证据重新派生，不持续手工维护另一份类别真源。
 
-## 第六批持久化与读投影：运行资格通过，最终回归进行中（2026-11-09）
+## 第六批持久化与读投影：有限工程收口（2026-11-09）
 
 [有限family4合同](scala-cqrs/PERSISTENCE-READSIDE.md)对应显式 `scala-cqrs-persistence-readside-v1`／`scala-cqrs-persistence-readside@1`：Warehouse唯一业务作者与独立技术binding经8产品及单一writer形成kernel＋glue；不自动组成四模块应用或生产journal。
 
@@ -12,7 +12,7 @@ catalog `2.5.0`登记125类、571变体及43个producer，新增35个本族变�
 
 独立参考14项测试及双JVM文件重放通过；最终generated和installed各通过44个阶段：14项独立测试、原/同名Frame各4项shape、6对运行时正负控制、3正/2负编译控制及改名ABI正编译。H2默认IGNORECASE设置误判曾导致真实失败，已按独立3库实测修复并复验，失败回执保留。旧14完整plan共942条目和module11条目完整恒等。JDBC正常关闭/重开重放不证明生产Actor journal耐久性、强杀断电或MySQL/Mongo兼容；build、SQL及config不冒称Scala编译资格，final-approved仍0。
 
-**完整Node、BC/Play副本、八仓来源与最终保护仍按收口门执行，本段不提前裁定整批完成。** 详细运行与限制见[本批验收进度](PERSISTENCE-READSIDE-ACCEPTANCE.md)。
+**第六批按有限候选合同工程收口，不等最终批准。** 完整回归、原失败到新通过、来源及最后文档保护的精确范围统一见[本批验收](PERSISTENCE-READSIDE-ACCEPTANCE.md)；后置文档不追认为原测试输入。
 
 ## 第五批有限接缝（历史，2026-11-08）
 

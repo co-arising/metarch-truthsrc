@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "truthsrc.artifact-capability-observation/v1",
+  "producer": "scala-cqrs-module-seams-v1",
+  "channel": "manifest",
+  "level": "behavior-verified",
+  "status": "passed",
+  "sourceFingerprint": "62fa4a5b1a01a4295f235c6c77007c4cba58f3a84bde69037150b9e6fcca0c9d",
+  "command": "Derived portable publication persistence-readside-publication17 of original actual current-recipe run persistence-readside-current01; sample persistence-readside-current01/module-seams; original qualification SHA256 2f08d130618ba2f11f628355c76a92485272103efc791cea65262ae2b715374f; original evidence level behavior-verified; no generator, compiler, JVM or oracle rerun; no new execution or qualification.",
+  "inputs": [
+    {
+      "name": "sample-qualification:persistence-readside-current01/module-seams",
+      "sha256": "2f08d130618ba2f11f628355c76a92485272103efc791cea65262ae2b715374f"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "modules/kernel/src/main/scala/example/parcel/application/ports/QuoteFlow.scala",
+      "kind": "module-seams-port",
+      "bytes": 327,
+      "sha256": "e8283b0ed2ba55c0cbe61d0fc749b74e5ea2060719cb3f04edc82614e4e7f4ac",
+      "contracts": [
+        "flow-port"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/parcel/application/ports/RouteRepository.scala",
+      "kind": "module-seams-port",
+      "bytes": 276,
+      "sha256": "204bfb9616f800eff4378a4cbcbe5aff71cc71b8bf70e145b2abcc2ece855366",
+      "contracts": [
+        "repository-port"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/parcel/domain/QuoteError.scala",
+      "kind": "value-object",
+      "bytes": 1088,
+      "sha256": "a788ae6ef091c4acdae458a366265c2271618881d8a8799dec53ce52d320d856",
+      "contracts": [
+        "value-sum"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/parcel/domain/ports/CapacityPolicy.scala",
+      "kind": "module-seams-port",
+      "bytes": 381,
+      "sha256": "efabd15541ee5c0b6d9dbac4d3c89b64ae79ff935a7aae85942925496d13d7cf",
+      "contracts": [
+        "computation-port"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/parcel/domain/ports/CapacityPolicyBridge.scala",
+      "kind": "module-seams-bridge",
+      "bytes": 531,
+      "sha256": "e34f478569d7734333ab7719fa8f3276ab19b808945942e4ca2f49d792e168a0",
+      "contracts": [
+        "port-bridge"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/parcel/domain/values/ParcelValues.scala",
+      "kind": "value-object",
+      "bytes": 768,
+      "sha256": "21290000b9de38eac7270e8083e676282676a382f1e3dd726787870b944525c8",
+      "contracts": [
+        "value-records"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/test/scala/example/parcel/verification/ModuleSeamsValueShapeSpec.scala",
+      "kind": "generated-test",
+      "bytes": 3306,
+      "sha256": "7783f481fa40becf9324616a2ca23fd5ecfa0862c458c983dfb8aa316ebf3646",
+      "contracts": [
+        "value-shape-test"
+      ]
+    },
+    {
+      "path": "src/main/scala/example/parcel/composition/ParcelModule.scala",
+      "kind": "module-seams-composition",
+      "bytes": 819,
+      "sha256": "3b63f885dfa59303233ebf3eb833cd4a08894d391c3dd8f47a7a97f1177feb68",
+      "contracts": [
+        "binding-root"
+      ]
+    },
+    {
+      "path": "src/test/scala/example/parcel/verification/ModuleSeamsRootShapeSpec.scala",
+      "kind": "generated-test",
+      "bytes": 771,
+      "sha256": "0dad68011251171db82ab71d3c57bd98b12fe6abfbba1d666a1c3077a8985021",
+      "contracts": [
+        "root-shape-test"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "fixed independent oracle",
+      "passed": true
+    },
+    {
+      "name": "exact positive/negative controls",
+      "passed": true
+    },
+    {
+      "name": "separate generated shape regression",
+      "passed": true
+    }
+  ],
+  "independent": true,
+  "approval": null
+}
