@@ -2009,9 +2009,7 @@ runGen(
         basePkg,
         aggTraits: aggregates.map((a) => objNameOf(a)),
         viewTraits: wiredViews,
-        // service ports are metarch-golden wiring (ModelCatalog domain services);
-        // a saga-binding tree has no such aggregate → no phantom ports.
-        servicePorts: sagaBinding ? [] : (PHASE1_SERVICE_PORTS.ModelCatalog || []),
+        aggPorts: PHASE1_SERVICE_PORTS,
         // P12 strict deployment wiring (BC parity): the binding's entrypoints spawn the
         // cluster-singleton coordinator and install the journal event-stream source.
         strictEntries: sagaBinding

@@ -442,6 +442,17 @@
           ],
           "packaged": false,
           "files": false
+        },
+        {
+          "id": "mainline-merge-tests",
+          "paths": [
+            "test/bootstrap-mainline-merge.test.mjs"
+          ],
+          "extensions": [
+            ".mjs"
+          ],
+          "packaged": false,
+          "files": true
         }
       ],
       "files": [
@@ -4313,10 +4324,10 @@
         },
         {
           "path": "generators/bootstrap-dsl/emit.mjs",
-          "bytes": 14128,
-          "sha256": "0d6276b9270075c660cd975fb7d8e8975063897ab8eaf5c4776e3621b283a1c0",
+          "bytes": 14584,
+          "sha256": "ec3f06fa358b3ede2e98a660ba485228e09c4de26577db6b1f98fa8bd83dbb3a",
           "mode": "100644",
-          "baselineBlob": "7b0d76ba910ac260a7e1b120a914f732f9889c95",
+          "baselineBlob": null,
           "evidence": "inspected-working-tree",
           "scope": "generators",
           "categories": [
@@ -4347,12 +4358,12 @@
           ],
           "outputSites": [
             {
-              "line": 350,
+              "line": 360,
               "sha256": "e0fa4f35172385d0249c6453ad78095b5385f4ccd930c7463c9280dc07f0f84a",
               "excerpt": "writeFileSync(join(outDir, `${traitName}.scala`), traitContent);"
             },
             {
-              "line": 353,
+              "line": 363,
               "sha256": "db2a995a7ae3c2e9f733e0b8c3d39ffb2e8253b0697cfd8b3ce542a856f34377",
               "excerpt": "writeFileSync(join(outDir, `ApplicationBootstrap.scala`), emitApplicationBootstrap());"
             }
@@ -7056,10 +7067,10 @@
         },
         {
           "path": "generators/run-all.mjs",
-          "bytes": 117675,
-          "sha256": "07a1f9eac8aeb0b14a25ec6e6b080b3e7c898ad22830f9b49673fd0676509dbb",
+          "bytes": 117473,
+          "sha256": "8e6534b94d13415ff67fc41431939374d28e8077c1a9e61a51b71fe421ae0f62",
           "mode": "100644",
-          "baselineBlob": "65f1ab025de19cd8e4a639c7725def0d581463e2",
+          "baselineBlob": null,
           "evidence": "inspected-working-tree",
           "scope": "generators",
           "categories": [
@@ -7283,87 +7294,87 @@
               "excerpt": "writeFileSync(specPath, JSON.stringify(spec, null, 2));"
             },
             {
-              "line": 2022,
+              "line": 2020,
               "sha256": "cf534f7b145e808245a08c5762eabf9043e2f557e1ae05f5fde9adf6c6517d27",
               "excerpt": "writeFileSync(specPath, JSON.stringify(appSpec, null, 2));"
             },
             {
-              "line": 2063,
+              "line": 2061,
               "sha256": "e2a0be56444831bc9c80103578c19939ef23446231a6b0ba8dbab1bc69fbb319",
               "excerpt": "writeFileSync(p, f.content);"
             },
             {
-              "line": 2076,
+              "line": 2074,
               "sha256": "e2a0be56444831bc9c80103578c19939ef23446231a6b0ba8dbab1bc69fbb319",
               "excerpt": "writeFileSync(p, f.content);"
             },
             {
-              "line": 2094,
+              "line": 2092,
               "sha256": "e2a0be56444831bc9c80103578c19939ef23446231a6b0ba8dbab1bc69fbb319",
               "excerpt": "writeFileSync(p, f.content);"
             },
             {
-              "line": 2114,
+              "line": 2112,
               "sha256": "202edbcbfc50b7017159120476800048ddb89f5c4d5763fd0b74a1e3fc865131",
               "excerpt": "if (out !== src) writeFileSync(p, out);"
             },
             {
-              "line": 2141,
+              "line": 2139,
               "sha256": "be3bbfa02e8e6b4cdf22ea3e5310a22444930c05227e92f2e933e218759c2b12",
               "excerpt": "writeFileSync(join(outDir, \"build.sbt\"), scaffoldStatic(\"build.sbt\"));"
             },
             {
-              "line": 2144,
+              "line": 2142,
               "sha256": "9ec9c801b3f93a758a2855c027d413d4169a0279652638a9fcbff1ba3ada7d9a",
               "excerpt": "writeFileSync(join(outDir, \"project\", \"build.properties\"), \"sbt.version=1.4.9\\n\");"
             },
             {
-              "line": 2145,
+              "line": 2143,
               "sha256": "80ebb4efd4f91159a65710ce811ba9ebeb5ecd2c1af06da24f0c95764704901a",
               "excerpt": "writeFileSync(join(outDir, \"project\", \"plugins.sbt\"), scaffoldStatic(\"plugins.sbt\"));"
             },
             {
-              "line": 2148,
+              "line": 2146,
               "sha256": "0af91f1eedb8061e9ed1b4b2ee33a856efe7cce36e0ba0140e62ad97ab4b8017",
               "excerpt": "writeFileSync(join(outDir, \"conf\", \"application.conf\"), scaffoldStatic(\"application.conf\"));"
             },
             {
-              "line": 2149,
+              "line": 2147,
               "sha256": "69b5ecf7b2611430762e30bb6e6091e5b1d92d3476734a7f7184648930aef93a",
               "excerpt": "writeFileSync("
             },
             {
-              "line": 2157,
+              "line": 2155,
               "sha256": "d9febc6060c20c7ad39fbc4b45e966e95ade1d1f307bfaf8a870ca535b61e14c",
               "excerpt": "writeFileSync(join(outDir, \".gitignore\"), scaffoldStatic(\"gitignore\"));"
             },
             {
-              "line": 2174,
+              "line": 2172,
               "sha256": "c66db70828fe29bcb9b6a0467ee2cd7df7b7a9c1780547555456a98140b072c3",
               "excerpt": "writeFileSync(dest, readFileSync(src));"
             },
             {
-              "line": 2226,
+              "line": 2224,
               "sha256": "b7439f156300613f8ac87563c928dbce4cd244c826256f18073f4680116f9091",
               "excerpt": "writeFileSync(join(outDir, \"lib\", basename(sagaCoreJar)), readFileSync(sagaCoreJar));"
             },
             {
-              "line": 2268,
+              "line": 2266,
               "sha256": "4623b24c00cc09855bc7f8826ace0e300ba9f5dfb877889e5d1160032488ee43",
               "excerpt": "writeFileSync(join(outDir, \"conf\", \"serialization.conf\"),"
             },
             {
-              "line": 2277,
+              "line": 2275,
               "sha256": "8703f1329c47b47ae6d0ca86627abad645c9d42803d5d4f7dc83bb8f1bfb9120",
               "excerpt": "writeFileSync(join(outDir, \"conf\", \"persistence.conf\"), `# Saga deployment face: shared durable Mongo journal (akka-persistence-mongo)."
             },
             {
-              "line": 2382,
+              "line": 2380,
               "sha256": "9d9ffd19a31ce7025b0ee99702c1dfbb1c2e0180a7bec4754adb04f26a3a12b6",
               "excerpt": "writeFileSync(join(outDir, \"lib\", basename(String(rel))), readFileSync(src));"
             },
             {
-              "line": 2401,
+              "line": 2399,
               "sha256": "8b5eca03cb35e0984c7d4538c30a952f64fe7670cc2f26dd28a31ec01b260d01",
               "excerpt": "writeFileSync(rp, cur.trimEnd() + \"\\n\\n# >>> gen_api_layer (E301) >>>\\n\" + apiRouteLinesAll.join(\"\\n\") + \"\\n# <<< gen_api_layer <<<\\n\");"
             }
@@ -32937,6 +32948,36 @@
           "dynamicKinds": []
         },
         {
+          "path": "test/bootstrap-mainline-merge.test.mjs",
+          "bytes": 3455,
+          "sha256": "7cf8faa05abec607fe76012b140ae77a09a9098a2565dadcd38510b03b048230",
+          "mode": "100644",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "scope": "mainline-merge-tests",
+          "categories": [
+            "aggregate-bootstrap",
+            "application-bootstrap",
+            "generated-test",
+            "independent-business-oracle",
+            "strict-saga-definition"
+          ],
+          "disposition": "test-support",
+          "reason": "Mainline bootstrap port and retained Strict Saga deployment regression.",
+          "symbols": [
+            "render"
+          ],
+          "outputSites": [
+            {
+              "line": 14,
+              "sha256": "25363f31f9e8179312ccf87e9c8bb8fc550e70cbfcc5ddc5ae6b3b417383b9a4",
+              "excerpt": "writeFileSync(spec, JSON.stringify({ name: 'Application', package: 'example.infrastructure.bootstrap', basePkg: 'example', skipTrait: true, ...fields }));"
+            }
+          ],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
           "path": "test/domain-kernel-entry.test.mjs",
           "bytes": 3463,
           "sha256": "2d67f98e1d646ce1656970e050ec0619ec33dd647bf9b5fe834fd0ec348f5d96",
@@ -41089,8 +41130,8 @@
         },
         {
           "path": "test/play-application-capabilities.test.mjs",
-          "bytes": 3428,
-          "sha256": "7b686c0524858506049de9fd5589d572ed0999576490e1a95cf4a660119bb906",
+          "bytes": 4505,
+          "sha256": "74b9d2be5504c296d20455f4484200e3e6c5b33162344028c5db02f5fefec5dd",
           "mode": "100644",
           "scope": "play-application-tests",
           "categories": [
@@ -50502,8 +50543,8 @@
         },
         {
           "path": "test/saga-monarch-capabilities.test.mjs",
-          "bytes": 3499,
-          "sha256": "d7fb9ba76ebd76639e9190dc71769185fe4b4a332b2f7d3eba0d8f6273e623aa",
+          "bytes": 3526,
+          "sha256": "cbed6403f87d372c52b0f1cfa8a4aadfae4457781ece0a8799a6350bc674963a",
           "mode": "100644",
           "scope": "saga-monarch-tests",
           "categories": [
@@ -106380,7 +106421,8 @@
     "tooling/teaching-summary.md": "bc8f06d272ea43c51405832dd553edde96dcd4b4d101ef5e17ce6a6aebc3cf85",
     "tooling/truth-rebuild-adapter.md": "03f7c59d026f5b1348e333f13574c1e41ac5b8e00389a4e5585ab8fa88e16c2f",
     "tooling/verification-runner.md": "9554af482f51c2cd990a40018e644dae2a0ba309ffdd1223d9d9a95c01d87b48",
-    "typescript/typescript-types.md": "7b6bf4a81359a5f325b4f6de39bd459fe371bd110271315cd530a055e5361a5a"
+    "typescript/typescript-types.md": "7b6bf4a81359a5f325b4f6de39bd459fe371bd110271315cd530a055e5361a5a",
+    "MAINLINE-MERGE-ACCEPTANCE.md": "b035b563d13c594124a665fe45356a7e4d2edc50775052733d81b2844437df9c"
   },
   "instances": {
     "dipoc": {
@@ -113186,5 +113228,5 @@
       "guarantee": "Package-preserving root relocations only; same filename never implies identity. Ledger-only entries remain historical evidence and are not rewritten."
     }
   },
-  "productionToolSha256": "68570a50d11da7db1e031bc3cd6a51468ea39b0f990e4d6bb12b21d9a4e7ccc0"
+  "productionToolSha256": "582b3e72de54d4b50a286309385948b46e57b29c895b5b18b6b332cd5adbb52a"
 }

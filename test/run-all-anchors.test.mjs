@@ -31,6 +31,14 @@ test('public run-all emits real Scala sources with four keys, exact hashes and r
   const out = join(scratch(), 'app');
   let result = runAll(out);
   assert.equal(result.status, 0, result.stderr + result.stdout);
+  const bootstrap = readFileSync(join(out, 'app/net/imadz/fab/infrastructure/bootstrap/ApplicationBootstrap.scala'), 'utf8');
+  const entries = JSON.parse(readFileSync(join(fab, 'bindings.json'), 'utf8')).sagas.map(saga => saga.engine.entrypoint);
+  assert.equal(entries.length, 2);
+  for (const entry of entries) {
+    assert(bootstrap.includes(entry + '.spawnClusterSingleton(system, sharding,'));
+    assert(bootstrap.includes(entry + '.installEventSource(system, sharding,'));
+  }
+  assert(!bootstrap.includes('ConceptDeltaAdjudicator') && !bootstrap.includes('ContentFingerprintPort'));
   const index = read(join(out, 'anchors.json'));
   assert.deepEqual(Object.keys(index.anchors).sort(), [key, childKey, 'saga:fab-merge', 'saga:fab-split'].sort());
   assert.equal(index.anchors['saga:fab-split'].length, 8);

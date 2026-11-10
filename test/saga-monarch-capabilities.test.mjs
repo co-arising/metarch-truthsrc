@@ -15,7 +15,7 @@ test('Saga Monarch public observations retain one input and code sample across q
   const { catalog, lock } = loadCatalogue();
   for (const variant of ['main', 'retry', 'pure', 'carry']) {
     const proofs = ['generated', 'compiled', 'behavior-verified'].map(level => {
-      const observation = catalog.observations.find(row => row.id === 'play-application-saga-' + variant + '-' + level);
+      const observation = catalog.observations.find(row => row.id === 'mainline-play-application-saga-' + variant + '-' + level);
       assert(observation, variant + '/' + level);
       assert.equal(observation.producer, producer);
       const bytes = readFileSync(join(DOC_ROOT, observation.receipt.file));
@@ -26,7 +26,7 @@ test('Saga Monarch public observations retain one input and code sample across q
       return validateObservation(catalog, lock, observation, bytes);
     });
     assert(proofs.every(proof => proof.passed && proof.sample === proofs[0].sample));
-    const build = catalog.observations.filter(row => row.id.startsWith('play-application-saga-' + variant + '-build-'));
+    const build = catalog.observations.filter(row => row.id.startsWith('mainline-play-application-saga-' + variant + '-build-'));
     assert.deepEqual(build.map(row => row.level), ['generated']);
   }
 });
@@ -39,7 +39,7 @@ test('Saga Monarch main observation replays the actual public project writer wit
     author: fileURLToPath(new URL('../scaffold/saga-monarch-project/', import.meta.url)),
     destination: join(root, 'sample'),
   });
-  const declaration = catalog.observations.find(row => row.id === 'play-application-saga-main-generated');
+  const declaration = catalog.observations.find(row => row.id === 'mainline-play-application-saga-main-generated');
   assert(declaration);
   const receipt = JSON.parse(readFileSync(join(DOC_ROOT, declaration.receipt.file)));
   assert.deepEqual(observed.inputs, receipt.inputs);

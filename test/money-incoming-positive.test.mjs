@@ -53,6 +53,10 @@ test('P22 public run-all emits actual positive Rules and real participant/Host r
     '--saga-binding', join(example, 'bindings.json'), '--saga-runtime-binding', join(example, 'runtime-binding.json')],
   { cwd: root, encoding: 'utf8', timeout: 120000, maxBuffer: 8 * 1024 * 1024 });
   assert.equal(generated.status, 0, generated.stderr + generated.stdout);
+  const bootstrap = readFileSync(join(out, 'app/net/imadz/metarch/infrastructure/bootstrap/ApplicationBootstrap.scala'), 'utf8');
+  assert(bootstrap.includes('fixture.StrictSagaEntry.spawnClusterSingleton(system, sharding,'));
+  assert(bootstrap.includes('fixture.StrictSagaEntry.installEventSource(system, sharding,'));
+  assert(!bootstrap.includes('ConceptDeltaAdjudicator') && !bootstrap.includes('ContentFingerprintPort'));
   const rules = readFileSync(join(out, 'app/net/imadz/metarch/domain/invariant/CreditBalanceRules.scala'), 'utf8');
   assert.equal(rules, readFileSync(new URL('./golden/money-prepare-evidence/CreditBalanceRules.scala', import.meta.url), 'utf8'));
   const body = rules.slice(rules.indexOf('object RecordIncomingCreditsRule')).split('\n  }')[0];

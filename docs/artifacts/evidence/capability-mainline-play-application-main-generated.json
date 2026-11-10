@@ -1,0 +1,642 @@
+{
+  "schemaVersion": "truthsrc.artifact-capability-observation/v1",
+  "producer": "scala-cqrs-play-application-v1",
+  "channel": "manifest",
+  "level": "generated",
+  "status": "passed",
+  "sourceFingerprint": "b09c711140c51d08ca91e2888cdf8b39667997e750815e932a16a82c1a8ba31f",
+  "command": "node .rounds/play-application-g8monfFV/commit-main-RFSCfc/refresh-mainline.mjs (actual public generation)",
+  "inputs": [
+    {
+      "name": "request",
+      "sha256": "e22d0627abfcfe132f5b87aa8473a0c0ad830efdebda601c1c3ad6a707ea55be"
+    },
+    {
+      "name": "options",
+      "sha256": "f72388cde618dedf8a244826837f52483c5f27345a3897dbe019e9b4c2c142e3"
+    },
+    {
+      "name": "project-file:bindings/application.json",
+      "sha256": "bac9dcbb4cd1918abb9ea346787103ef3b90b6aafb9c064bc0148a27bd50db34"
+    },
+    {
+      "name": "project-file:bindings/persistence.json",
+      "sha256": "3f51cdce0bc99403b5abd0e8a52e59cd68542b54f7604e7282aee167ca4d9069"
+    },
+    {
+      "name": "project-file:implementations/ConfiguredWarehouseAuthority.scala",
+      "sha256": "d01afdc71979f3ba2ea62fa14ea235bcf0c598f441b143290ea4426653f71535"
+    },
+    {
+      "name": "project-file:implementations/ReservationIdentity.scala",
+      "sha256": "bf171e31004d22f57ac37a5cdb2f0873c8cf5a7d968d9a99c6a223c0ea3da617"
+    },
+    {
+      "name": "project-file:truth/play-application/contexts/inventory/aggregates/warehouse/aggregate.yaml",
+      "sha256": "007e0dd813f9400c72192a97313e91de068051992511ce8c2d921420f30588b9"
+    },
+    {
+      "name": "project-file:truth/play-application/contexts/inventory/aggregates/warehouse/slices/commit-sku-reservation.slice.yaml",
+      "sha256": "71f6f0f20943ee29ea6d44002887ec4b11d6477f240d765338f208625a8a3a90"
+    },
+    {
+      "name": "project-file:truth/play-application/contexts/inventory/aggregates/warehouse/slices/reserve-sku-quantity.slice.yaml",
+      "sha256": "b4c2caf53bbfe8bf62f3438dc5af04c855612e724113622feda3493d3f2391ee"
+    },
+    {
+      "name": "project-file:truth/play-application/contexts/inventory/context.yaml",
+      "sha256": "b2e1efdc6e3389efdb38d1620298028593bef0de0c062bcf12f53153c5f660ad"
+    },
+    {
+      "name": "project-file:truth/play-application/contexts/inventory/formal-products/api-contract/warehouse-api.formal.yaml",
+      "sha256": "c60c79d3f116e94772eaa23ba72a31a9c4374f8ad91df2a8b83fabc306862278"
+    },
+    {
+      "name": "project-file:truth/play-application/contexts/inventory/formal-products/host-computation/--inventory---reservation-identity--.formal.yaml",
+      "sha256": "16aa581f39bee008f7566fe8977e95145bfd538745d8763561175862897969ea"
+    },
+    {
+      "name": "project-file:truth/play-application/contexts/inventory/formal-products/technical-port/reservation-identity.formal.yaml",
+      "sha256": "a1bfd272dcf68c49eb7b81f7b11e7aea5b04961ac82c790139b4c6965f36a937"
+    },
+    {
+      "name": "project-file:truth/play-application/contexts/inventory/value-objects/reservation-id.vo.yaml",
+      "sha256": "88e3bc57cc0bfa4555b857d4c293a6954c71b44e9cf180e6ffe73134859ecc45"
+    },
+    {
+      "name": "project-file:truth/play-application/contexts/inventory/value-objects/sku-id.vo.yaml",
+      "sha256": "287ec071123ee799d74232873d962a4b6fd55397bd3726da89db25e45845ca53"
+    },
+    {
+      "name": "project-file:truth/play-application/contexts/inventory/value-objects/tx-id.vo.yaml",
+      "sha256": "078e96185b7caa86be604df234adc3252edab6f02e54dd272a8d16f255b13c32"
+    },
+    {
+      "name": "project-file:truth/play-application/contexts/inventory/value-objects/warehouse-id.vo.yaml",
+      "sha256": "d554389600ac30ff044ad84d33fae550d6f365c937f47794ebd2be0d3a62c579"
+    },
+    {
+      "name": "project-file:truth/play-application/system.yaml",
+      "sha256": "ad5083816508492da098006a3b0500cb2fec152b3c20bb697a9d26e2aaa2fd9a"
+    },
+    {
+      "name": "project-file:truthsrc.project.json",
+      "sha256": "d23b2ebe08942b01c8a436a5fc7db398cc9e1940eeb72220258995c8cbb3102a"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "app/views/warehouseReceipts.scala.html",
+      "kind": "view-template",
+      "bytes": 620,
+      "sha256": "3109c12fd623341c9a8d89228ee72ca1c24311707e91c422de3a20dfac60f828",
+      "contracts": [
+        "receipt-view"
+      ]
+    },
+    {
+      "path": "conf/application.conf",
+      "kind": "application-config",
+      "bytes": 455,
+      "sha256": "5039791960818a3f2f6aa2cfa71f86ba48122a9c323d2bc765bcf7069fb6433f",
+      "contracts": [
+        "application-config"
+      ]
+    },
+    {
+      "path": "conf/routes",
+      "kind": "routes",
+      "bytes": 624,
+      "sha256": "04dc2f1343b641f9433e25f9023e575d8ba67c08b0701648c86db8a8af9379b2",
+      "contracts": [
+        "http-routes"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/protobuf/inventory_domain.proto",
+      "kind": "proto",
+      "bytes": 782,
+      "sha256": "582f18afb9c903a43f22ab3b99fcb8c71ceb04978f9c4e1be7092c5e5870838c",
+      "contracts": [
+        "protobuf-schema"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/protobuf/warehouse_persistence_frame.proto",
+      "kind": "proto",
+      "bytes": 390,
+      "sha256": "1adca3ce01693441d15519fddd1f5ee2c9bfb53763c85a676b4d55b8947d8b6c",
+      "contracts": [
+        "protobuf-schema"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/resources/reference.conf",
+      "kind": "serialization-config",
+      "bytes": 290,
+      "sha256": "59e456159ed43c216919311e3e19f38f047cd29ed8987f8ce22029e6f28ab3b3",
+      "contracts": [
+        "serialization-config"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/resources/warehouse_rs.sql",
+      "kind": "projection-schema",
+      "bytes": 1426,
+      "sha256": "b665bd28f3a6ed02c2eb3e7c2afc4b3d2c1d7e5a00bae65aeb8349445f218917",
+      "contracts": [
+        "readside-ddl"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/application/aggregates/WarehouseActorProtocol.scala",
+      "kind": "actor-protocol",
+      "bytes": 662,
+      "sha256": "f65d01b2bb893d236c7ef2a8a84d09d4bcb9e37030be90b66f6ca3612ff303d4",
+      "contracts": [
+        "application-protocol"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/application/aggregates/WarehouseActorRepository.scala",
+      "kind": "actor-repository",
+      "bytes": 445,
+      "sha256": "70684568a1866a381b30e891efce2c8b25cdb6eafb20eaa0b13389527ad7d0a3",
+      "contracts": [
+        "aggregate-repository-port"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/application/aggregates/WarehouseAggregate.scala",
+      "kind": "aggregate",
+      "bytes": 1413,
+      "sha256": "22cb2efce77b6bd4d7a985e0a1710cf062b03cb0e91c3327933d0978219f1ab0",
+      "contracts": [
+        "aggregate-root"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/application/factories/WarehouseAggregateFactory.scala",
+      "kind": "aggregate-factory",
+      "bytes": 753,
+      "sha256": "f70c2b30d01ea4d4f7f90457d242b53c3cf5e69e3a43090d7cad2ac999d76896",
+      "contracts": [
+        "aggregate-factory"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/infrastructure/bootstrap/WarehouseBootstrap.scala",
+      "kind": "aggregate-bootstrap",
+      "bytes": 1775,
+      "sha256": "580536421c5e6a366fc933f76a7114fca9c08558246e11c62bc24e3870405d74",
+      "contracts": [
+        "aggregate-bootstrap"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/infrastructure/persistence/WarehouseEventAdapter.scala",
+      "kind": "event-adapter",
+      "bytes": 979,
+      "sha256": "a47682979d6db006ba8adf0d05730e46cbe61c3cc0280c789ddc5a6b646888da",
+      "contracts": [
+        "persistence-event-adapter"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/infrastructure/persistence/WarehousePersistence.scala",
+      "kind": "persistence-runtime",
+      "bytes": 5384,
+      "sha256": "63e993ae5958be95b5eeffcf53427142f6101c63b59315c7fbbdbe8610200dae",
+      "contracts": [
+        "persistence-runtime"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/infrastructure/persistence/WarehousePersistenceFactory.scala",
+      "kind": "aggregate-factory",
+      "bytes": 766,
+      "sha256": "41b8ba2436db18bb272740ffaeedba06aefb825beda616b490a0a870f0f1f449",
+      "contracts": [
+        "persistence-factory"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/infrastructure/persistence/WarehouseSerializer.scala",
+      "kind": "serializer",
+      "bytes": 1299,
+      "sha256": "b8a96d625c909309eb538d32dcec540d40b3f48506a594f499a5c9860d16e60a",
+      "contracts": [
+        "persistence-serializer"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/infrastructure/persistence/WarehouseSnapshotAdapter.scala",
+      "kind": "snapshot-adapter",
+      "bytes": 650,
+      "sha256": "c6e760b2e2c07ecdd5fcd292732e5126d4fc2f55b21aa3d065b16d6be4125974",
+      "contracts": [
+        "persistence-snapshot-adapter"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/infrastructure/readside/WarehouseEnvelope.scala",
+      "kind": "read-model",
+      "bytes": 3256,
+      "sha256": "32667b399b55e9b97811814b962b9c3421aa2bafeef67ea29a10edb43ab33b0f",
+      "contracts": [
+        "readside-envelope"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/infrastructure/readside/WarehouseEventSource.scala",
+      "kind": "event-source",
+      "bytes": 1254,
+      "sha256": "189bf795cf386120e09f603184969bd8c3433e0c100e6eb7a12b8051ffd06a87",
+      "contracts": [
+        "readside-event-source"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/infrastructure/readside/WarehouseReadsideHandler.scala",
+      "kind": "projection-handler",
+      "bytes": 2139,
+      "sha256": "997b500fd9fca2c4457e29516248a219d3ce99990b96b292af78376b40080f6d",
+      "contracts": [
+        "readside-handler"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/infrastructure/readside/WarehouseReadsideRepository.scala",
+      "kind": "projection-repository",
+      "bytes": 14962,
+      "sha256": "8f020d99d93bea34bd4e63f0462bd6bf2ca795bcc0db23ba63ab0c6b25fe3f9f",
+      "contracts": [
+        "readside-repository"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/infrastructure/readside/WarehouseReadsideRunner.scala",
+      "kind": "projection-runner",
+      "bytes": 8547,
+      "sha256": "aa18b3261e2c123e23515e76a15e6b84b0efe493af201bae6a6dd1593dfb8e49",
+      "contracts": [
+        "readside-runner"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/infrastructure/readside/WarehouseReadsideSchema.scala",
+      "kind": "projection-schema",
+      "bytes": 7862,
+      "sha256": "90a64e24cd0c6644bfeada5a41752c8651c5ca2642410c6f472d0abaad0116ec",
+      "contracts": [
+        "readside-schema"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/infrastructure/repositories/LocalWarehouseActorRepository.scala",
+      "kind": "actor-repository-implementation",
+      "bytes": 2638,
+      "sha256": "bf0b22b20eb293961f1cd639a75b4bb1cd34c595c66757a71bd91f571b138163",
+      "contracts": [
+        "aggregate-repository-implementation"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/infrastructure/serialization/DomainConverters.scala",
+      "kind": "converter",
+      "bytes": 4303,
+      "sha256": "1e0a0e26cf4931a6a26e87867d21e4ba5e962897327eba908062a6928e40e257",
+      "contracts": [
+        "proto-converter"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/infrastructure/web/WarehouseAuthority.scala",
+      "kind": "authorization-policy",
+      "bytes": 675,
+      "sha256": "6c5a841cd6ac91c5d647988415d8036ee221ab103869f3ec5c034497e2188639",
+      "contracts": [
+        "api-authority"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/infrastructure/web/WarehouseCommandService.scala",
+      "kind": "application-service",
+      "bytes": 3167,
+      "sha256": "7121d32abd572fbeb1ca9f5f055d708f0b3277c5ca2254b023280d6fe4d8a860",
+      "contracts": [
+        "command-service"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/infrastructure/web/WarehouseDirectory.scala",
+      "kind": "application-runtime",
+      "bytes": 1232,
+      "sha256": "c1fd1215ae7ead5a6fe9496e5f8eeaa1d4de678c7e92a40bf4b5ef082c0cc9a3",
+      "contracts": [
+        "resource-directory"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/infrastructure/web/WarehouseHttpCodec.scala",
+      "kind": "http-codec",
+      "bytes": 5891,
+      "sha256": "0e0f57a7f5ac0a14d4050240a1f2eae11892964a29771e10853fcaa7f869b61b",
+      "contracts": [
+        "http-codec"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/infrastructure/web/WarehouseJournalSource.scala",
+      "kind": "event-source",
+      "bytes": 4369,
+      "sha256": "b23b20c47539e34692c757113da886ea2ae16896b42697f4d65141eb729adfd0",
+      "contracts": [
+        "journal-source"
+      ]
+    },
+    {
+      "path": "modules/glue/src/main/scala/example/inventory/infrastructure/web/WarehouseQueryService.scala",
+      "kind": "query-service",
+      "bytes": 1408,
+      "sha256": "945d6442010683936a0244908aad8c2ca0b4a197d1eb43d18c2885668043c348",
+      "contracts": [
+        "query-service"
+      ]
+    },
+    {
+      "path": "modules/glue/src/test/scala/example/inventory/domain/invariant/WarehouseAggregateReplaySpec.scala",
+      "kind": "generated-test",
+      "bytes": 663,
+      "sha256": "13053fd2bed69d8a592e8e4bfc3d166271cb18ba266b0ddd0e929f2d5dc7a462",
+      "contracts": [
+        "generated-test"
+      ]
+    },
+    {
+      "path": "modules/glue/src/test/scala/example/inventory/infrastructure/persistence/WarehousePersistenceRoundTripSpec.scala",
+      "kind": "generated-test",
+      "bytes": 1075,
+      "sha256": "47b4f9fe6e3c4be312fe227d0020ff55c823eaa906eb5095158e7a48301760ec",
+      "contracts": [
+        "generated-test"
+      ]
+    },
+    {
+      "path": "modules/glue/src/test/scala/example/inventory/infrastructure/serialization/WarehouseStateRoundTripSpec.scala",
+      "kind": "generated-test",
+      "bytes": 679,
+      "sha256": "ea6f53c8ff76eb2c910c772591e90f042879f0e7978c013bb9d3dcb5854a5544",
+      "contracts": [
+        "generated-test"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/inventory/application/api/WarehouseApi.scala",
+      "kind": "http-dto",
+      "bytes": 1757,
+      "sha256": "033739bc3d716cd7d794b54a8163bdfd9cd7df382e7256123055abddcbea71ba",
+      "contracts": [
+        "api-dto"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/inventory/application/api/WarehouseCommands.scala",
+      "kind": "application-service-port",
+      "bytes": 487,
+      "sha256": "fa6cea254bdcab1222a5365a88b6374273db0663ba1e9bfc41918aae007e1997",
+      "contracts": [
+        "api-ports"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/inventory/application/api/WarehouseQueries.scala",
+      "kind": "query-service-port",
+      "bytes": 358,
+      "sha256": "1154273d86d9b202ed095754fb6f2da133d9ad57ffa99030bf2e0da06a0655d6",
+      "contracts": [
+        "query-ports"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/inventory/domain/WarehouseProtocol.scala",
+      "kind": "protocol",
+      "bytes": 621,
+      "sha256": "c6df7a56f45d35974feccfb3c28f80a77385c72830fe0797e00123fdc625f040",
+      "contracts": [
+        "domain-protocol"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/inventory/domain/WarehouseState.scala",
+      "kind": "state",
+      "bytes": 279,
+      "sha256": "3ab3251231996a2898e4e2d3bc12f60bab15cdfda86ffc5004cf136cd86a2ba4",
+      "contracts": [
+        "domain-state"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/inventory/domain/command/WarehouseCommandHelpers.scala",
+      "kind": "command-helpers",
+      "bytes": 849,
+      "sha256": "5e70fb81d56ee6d6f38adecfa43909bbf801e8dfe08b64d3e3186c1ee2bb0f47",
+      "contracts": [
+        "command-helper"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/inventory/domain/entities/behaviors/WarehouseEventHandler.scala",
+      "kind": "event-handler",
+      "bytes": 570,
+      "sha256": "73f385d6cc2811c3e8b6e6bb57f0c2c71dd46c94126d83adc4d5011094916ae6",
+      "contracts": [
+        "event-handler"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/inventory/domain/invariant/WarehouseRules.scala",
+      "kind": "rules",
+      "bytes": 1562,
+      "sha256": "a678225f0e58b465b9ab5b7abf4984ac8e24067ac3bf2c809da2d325b0fdaad3",
+      "contracts": [
+        "invariant-rule"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/inventory/domain/invariant/params/WarehouseRuleParams.scala",
+      "kind": "rule-parameters",
+      "bytes": 621,
+      "sha256": "9d7991159cca1dd1b4a42d981620bd36b160c80a8f14e2dc13609ed929562c7c",
+      "contracts": [
+        "rule-parameters"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/inventory/domain/ports/WarehouseComputations.scala",
+      "kind": "computation-port",
+      "bytes": 279,
+      "sha256": "05f5c1d118a7bea4b71b99e936265e1dc98674254120796c4828f733d8d654a1",
+      "contracts": [
+        "computation-port"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/inventory/domain/values/ReservationId.scala",
+      "kind": "value-object",
+      "bytes": 143,
+      "sha256": "38ab0f765533bc4a44d341c5fcf6f7072ffcb1dbd9114c697fca924c95146983",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/inventory/domain/values/SkuId.scala",
+      "kind": "value-object",
+      "bytes": 135,
+      "sha256": "2c6a31ca69fecf59c42da3611d6f4a99dbf819863e22dda6785eb1eeb89b3f87",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/inventory/domain/values/TxId.scala",
+      "kind": "value-object",
+      "bytes": 134,
+      "sha256": "44ff9c79311ae0487ed2a792035d590feb1a895b888d4309b64ad1e44fc89834",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "modules/kernel/src/main/scala/example/inventory/domain/values/WarehouseId.scala",
+      "kind": "value-object",
+      "bytes": 141,
+      "sha256": "995f86046a61ce98692c4235c800aff2a46e002eb93df905ca815a243953d055",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "src/main/scala/example/inventory/composition/WarehouseApplication.scala",
+      "kind": "application-root",
+      "bytes": 7561,
+      "sha256": "457027e72a02757fc4f45d28c5b8507a3b4cdb831a9261843fba5a00c8a2bd51",
+      "contracts": [
+        "application-root"
+      ]
+    },
+    {
+      "path": "src/main/scala/example/inventory/composition/WarehouseCloseReport.scala",
+      "kind": "application-runtime",
+      "bytes": 177,
+      "sha256": "df68763d8c33cb246465515c71424a9c53d71af308cf8217d126e78ae5f79062",
+      "contracts": [
+        "application-lifecycle"
+      ]
+    },
+    {
+      "path": "src/main/scala/example/inventory/composition/WarehouseComponents.scala",
+      "kind": "application-components",
+      "bytes": 1823,
+      "sha256": "42c9df6052931b8e6c25092167306e4b6c51507c11afd3bebed207e762155826",
+      "contracts": [
+        "application-components"
+      ]
+    },
+    {
+      "path": "src/main/scala/example/inventory/composition/WarehouseLoader.scala",
+      "kind": "application-loader",
+      "bytes": 1258,
+      "sha256": "86b0bfbba032e6a8dc4bb1436670e7d4893d1acc767f1e3b5bc504711fbf4032",
+      "contracts": [
+        "application-loader"
+      ]
+    },
+    {
+      "path": "src/main/scala/example/inventory/composition/WarehouseResourceLifecycle.scala",
+      "kind": "application-runtime",
+      "bytes": 3472,
+      "sha256": "b8e4401ddb379e7ed2b5eb35d6abe8e50e9edc1716b7297ccf519e2375a5b839",
+      "contracts": [
+        "application-lifecycle"
+      ]
+    },
+    {
+      "path": "src/main/scala/example/inventory/composition/WarehouseSettings.scala",
+      "kind": "application-config",
+      "bytes": 2004,
+      "sha256": "fec18848db89034fe82b43eb67b08c684767068631924e74d1074bd2b6c8083a",
+      "contracts": [
+        "application-settings"
+      ]
+    },
+    {
+      "path": "src/main/scala/example/inventory/controllers/WarehouseController.scala",
+      "kind": "controller",
+      "bytes": 5554,
+      "sha256": "1528c05f2c3bffa3f95416d2d45af89c8eeceb47a5fb07323288d799794a4632",
+      "contracts": [
+        "http-controller"
+      ]
+    },
+    {
+      "path": "src/main/scala/example/inventory/controllers/WarehouseHttpErrors.scala",
+      "kind": "http-errors",
+      "bytes": 752,
+      "sha256": "5b1574fd0836a37ebd9590c6f3d9f42289c09cd867f2d3cb283fb1f88221f5e5",
+      "contracts": [
+        "http-errors"
+      ]
+    },
+    {
+      "path": "src/test/scala/example/inventory/infrastructure/web/HttpWireSpec.scala",
+      "kind": "generated-test",
+      "bytes": 460,
+      "sha256": "6d0c48fa43920abf6634f1a7bd3393c41f91974c8c4e5273f233698ddb89070f",
+      "contracts": [
+        "generated-test"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "sole-author-validate-and-roundtrip",
+      "passed": true
+    },
+    {
+      "name": "exact-ten-product-source-lowering",
+      "passed": true
+    },
+    {
+      "name": "public-capture-graph-plan-single-writer",
+      "passed": true
+    },
+    {
+      "name": "actual-output-contracts-and-byte-equality",
+      "passed": true
+    },
+    {
+      "name": "external-implementations-preserved-and-source-fresh",
+      "passed": true
+    },
+    {
+      "name": "unchanged-regeneration-writes-zero-source",
+      "passed": true
+    },
+    {
+      "name": "mainline-same-input-complete-source-reconciliation",
+      "passed": true
+    },
+    {
+      "name": "original-qualified-runtime-sha256:9c19a263a1b69e8dd77ec0a6a9d0fd988834bc387d980465f077db499b3f5425",
+      "passed": true
+    },
+    {
+      "name": "mainline-reconciliation-audit-sha256:8eacc111b27997fabb368bda6c6f3590f79cfdbb30192edbd9f16daf0b100941",
+      "passed": true
+    }
+  ],
+  "independent": false,
+  "approval": null
+}
