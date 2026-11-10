@@ -2,6 +2,26 @@
 
 最后更新: 2026-11-10
 
+## Finite Play application products
+
+`scala-cqrs-play-application-v1` targets `scala-cqrs-play-application@1` and adds
+`api-contract@1` plus `application-composition@1` to the eight persistence/readside
+products. API lowering reconstructs the complete authored formal atom and checks
+all command parameter/event slot references, scalar wire codecs, route collisions,
+query/index identity and role/resource/CSRF obligations. The explicit application
+binding pins the finite Play/LevelDB/H2 stack, resource associations, configuration
+keys, limits and two external class implementations. Unsupported shapes fail;
+neither product is permission to inject arbitrary Scala or a second business request.
+
+The published JSON schemas describe structural admission; reference resolution,
+UTF-8 byte limits and cross-field constraints still require the strict compiler.
+Command and query ports retain distinct `application-service-port` and
+`query-service-port` artifact kinds.
+Generation requires live project implementation capture. Static validity and
+`verify-project` are not runtime qualification; the finite sample has separately
+recorded compiler/HTTP/storage/lifecycle evidence. See [the application
+contract](docs/artifacts/scala-cqrs/PLAY-APPLICATION.md).
+
 ## Finite Strict Saga and Monarch R2 products
 
 The explicit `scala-cqrs-saga-monarch-v1` producer targets

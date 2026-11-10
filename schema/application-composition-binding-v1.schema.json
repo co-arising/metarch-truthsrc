@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "truthsrc.application-composition-binding/v1",
+  "title": "Finite Play application composition binding",
+  "type": "object", "additionalProperties": false,
+  "required": ["schemaVersion", "id", "version", "context", "api", "persistence", "runtime", "resources", "config", "limits", "implementations", "root"],
+  "properties": {
+    "schemaVersion": { "const": "truthsrc.application-composition-binding/v1" },
+    "id": { "$ref": "#/$defs/id" }, "version": { "const": "1" }, "context": { "type": "string", "minLength": 1 },
+    "api": { "$ref": "#/$defs/pin" }, "persistence": { "$ref": "#/$defs/pin" },
+    "runtime": { "const": {
+      "scala": "2.13.14", "jdk": "11", "play": "2.8.18", "akka": "2.6.20", "scalaPB": "0.11.14", "h2": "2.2.224", "leveldb": "0.12",
+      "journal": "leveldb-java", "guava": "30.1.1-jre", "commonsCodec": "1.15", "sbt": "1.4.9", "sbtProtoc": "1.0.6", "twirl": "1.5.1"
+    } },
+    "resources": { "type": "array", "minItems": 1, "maxItems": 8, "items": {
+      "type": "object", "additionalProperties": false, "required": ["resourceId", "persistenceId", "envelopeResource"], "properties": {
+        "resourceId": { "$ref": "#/$defs/scalar" }, "persistenceId": { "$ref": "#/$defs/scalar" }, "envelopeResource": { "$ref": "#/$defs/scalar" }
+      }
+    } },
+    "config": { "type": "object", "additionalProperties": false,
+      "required": ["journalPath", "readsidePath", "namespace", "freshJournal", "freshReadside", "credentials"], "properties": {
+        "journalPath": { "$ref": "#/$defs/key" }, "readsidePath": { "$ref": "#/$defs/key" }, "namespace": { "$ref": "#/$defs/key" },
+        "freshJournal": { "$ref": "#/$defs/key" }, "freshReadside": { "$ref": "#/$defs/key" }, "credentials": { "$ref": "#/$defs/key" }
+      }
+    },
+    "limits": { "type": "object", "additionalProperties": false, "required": ["askMillis", "closeMillis", "maxPending", "bodyBytes", "blockingThreads"],
+      "properties": { "askMillis": { "type": "integer", "minimum": 1, "maximum": 5000 }, "closeMillis": { "const": 10000 },
+        "maxPending": { "const": 64 }, "bodyBytes": { "const": 65536 }, "blockingThreads": { "const": 2 } }
+    },
+    "implementations": { "type": "array", "minItems": 2, "maxItems": 2, "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "version", "role", "port", "symbol", "module", "sourceRoot", "file", "construction"], "properties": {
+        "id": { "$ref": "#/$defs/id" }, "version": { "const": "1" }, "role": { "enum": ["computations", "authority"] },
+        "port": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/ref" }] },
+        "symbol": { "type": "string", "pattern": "^(?:[a-z][a-z0-9_]*\\.)+[A-Z][A-Za-z0-9]*$" },
+        "module": { "const": "ext" }, "sourceRoot": { "type": "string", "minLength": 1 },
+        "file": { "type": "string", "pattern": "\\.scala$" }, "construction": { "const": "class" }
+      }
+    } },
+    "root": { "type": "object", "additionalProperties": false, "required": ["id", "actorSystem", "ownership"], "properties": {
+      "id": { "$ref": "#/$defs/id" }, "actorSystem": { "$ref": "#/$defs/id" }, "ownership": { "const": "application-owned-domain-play-owned-http" }
+    } }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$" },
+    "scalar": { "type": "string", "minLength": 1, "maxLength": 256, "description": "Strict compiler additionally enforces at most 256 UTF-8 bytes, well-formed Unicode and no control/format characters." },
+    "key": { "type": "string", "pattern": "^[a-z][a-zA-Z0-9]*(?:\\.[a-z][a-zA-Z0-9]*)+$" },
+    "pin": { "type": "object", "additionalProperties": false, "required": ["id", "version"], "properties": {
+      "id": { "type": "string", "minLength": 1 }, "version": { "type": "string", "minLength": 1 }
+    } },
+    "ref": { "type": "object", "additionalProperties": false, "required": ["context", "kind", "owner", "id"], "properties": {
+      "context": { "type": "string", "minLength": 1 }, "kind": { "const": "port" },
+      "owner": { "type": "array", "maxItems": 0 }, "id": { "type": "string", "minLength": 1 }
+    } }
+  }
+}

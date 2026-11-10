@@ -1,0 +1,237 @@
+{
+  "schemaVersion": "truthsrc.product-generator/v1",
+  "name": "scala-cqrs-play-application",
+  "version": "1",
+  "targetProfile": "scala-cqrs-play-application@1",
+  "products": [
+    {
+      "id": "reference-layout",
+      "version": "1",
+      "payloadSchemaVersion": "truthsrc.reference-layout/v1",
+      "capabilities": [
+        {
+          "id": "qualified-reference-layout",
+          "version": "1"
+        }
+      ]
+    },
+    {
+      "id": "exact-value-types",
+      "version": "1",
+      "payloadSchemaVersion": "truthsrc.exact-value-types/v1",
+      "capabilities": [
+        {
+          "id": "exact-value-types",
+          "version": "1"
+        }
+      ]
+    },
+    {
+      "id": "domain-decision",
+      "version": "4",
+      "payloadSchemaVersion": "truthsrc.domain-decision/v4",
+      "capabilities": [
+        {
+          "id": "ordered-domain-decision",
+          "version": "4"
+        }
+      ]
+    },
+    {
+      "id": "domain-dependencies",
+      "version": "6",
+      "payloadSchemaVersion": "truthsrc.domain-dependencies/v6",
+      "capabilities": [
+        {
+          "id": "domain-dependencies",
+          "version": "6"
+        }
+      ]
+    },
+    {
+      "id": "domain-folds",
+      "version": "6",
+      "payloadSchemaVersion": "truthsrc.domain-folds/v6",
+      "capabilities": [
+        {
+          "id": "domain-folds",
+          "version": "6"
+        }
+      ]
+    },
+    {
+      "id": "domain-external-events",
+      "version": "2",
+      "payloadSchemaVersion": "truthsrc.domain-external-events/v2",
+      "capabilities": [
+        {
+          "id": "external-event-producers",
+          "version": "2"
+        }
+      ]
+    },
+    {
+      "id": "exact-value-codecs",
+      "version": "1",
+      "payloadSchemaVersion": "truthsrc.exact-value-codecs/v1",
+      "capabilities": [
+        {
+          "id": "exact-value-codecs",
+          "version": "1"
+        }
+      ]
+    },
+    {
+      "id": "persistence-readside-contract",
+      "version": "1",
+      "payloadSchemaVersion": "truthsrc.persistence-readside-contract/v1",
+      "capabilities": [
+        {
+          "id": "finite-persistence-readside",
+          "version": "1"
+        }
+      ]
+    },
+    {
+      "id": "api-contract",
+      "version": "1",
+      "payloadSchemaVersion": "truthsrc.api-contract/v1",
+      "capabilities": [
+        {
+          "id": "finite-http-api",
+          "version": "1"
+        }
+      ]
+    },
+    {
+      "id": "application-composition",
+      "version": "1",
+      "payloadSchemaVersion": "truthsrc.application-composition/v1",
+      "capabilities": [
+        {
+          "id": "finite-play-application",
+          "version": "1"
+        }
+      ]
+    }
+  ],
+  "producers": [
+    {
+      "id": "play-application",
+      "version": "1",
+      "products": [
+        "reference-layout",
+        "exact-value-types",
+        "domain-decision",
+        "domain-dependencies",
+        "domain-folds",
+        "domain-external-events",
+        "exact-value-codecs",
+        "persistence-readside-contract",
+        "api-contract",
+        "application-composition"
+      ],
+      "artifactKinds": [
+        "value-object",
+        "protocol",
+        "state",
+        "rule-parameters",
+        "computation-port",
+        "exact-value-codec",
+        "proto",
+        "converter",
+        "rules",
+        "command-helpers",
+        "event-handler",
+        "actor-protocol",
+        "aggregate",
+        "aggregate-factory",
+        "aggregate-bootstrap",
+        "actor-repository",
+        "actor-repository-implementation",
+        "build",
+        "generated-test",
+        "persistence-runtime",
+        "event-adapter",
+        "snapshot-adapter",
+        "serializer",
+        "read-model",
+        "projection-schema",
+        "projection-repository",
+        "projection-handler",
+        "event-source",
+        "projection-runner",
+        "serialization-config",
+        "http-dto",
+        "application-service-port",
+        "query-service-port",
+        "authorization-policy",
+        "application-runtime",
+        "http-codec",
+        "application-service",
+        "query-service",
+        "application-config",
+        "application-root",
+        "http-errors",
+        "view-template",
+        "controller",
+        "routes",
+        "application-components",
+        "application-loader"
+      ]
+    }
+  ],
+  "artifactKinds": [
+    "value-object",
+    "protocol",
+    "state",
+    "rule-parameters",
+    "computation-port",
+    "exact-value-codec",
+    "proto",
+    "converter",
+    "rules",
+    "command-helpers",
+    "event-handler",
+    "actor-protocol",
+    "aggregate",
+    "aggregate-factory",
+    "aggregate-bootstrap",
+    "actor-repository",
+    "actor-repository-implementation",
+    "build",
+    "generated-test",
+    "persistence-runtime",
+    "event-adapter",
+    "snapshot-adapter",
+    "serializer",
+    "read-model",
+    "projection-schema",
+    "projection-repository",
+    "projection-handler",
+    "event-source",
+    "projection-runner",
+    "serialization-config",
+    "http-dto",
+    "application-service-port",
+    "query-service-port",
+    "authorization-policy",
+    "application-runtime",
+    "http-codec",
+    "application-service",
+    "query-service",
+    "application-config",
+    "application-root",
+    "http-errors",
+    "view-template",
+    "controller",
+    "routes",
+    "application-components",
+    "application-loader"
+  ],
+  "options": [
+    "packages",
+    "names",
+    "protobuf"
+  ]
+}

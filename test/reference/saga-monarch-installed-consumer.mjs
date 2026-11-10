@@ -12,7 +12,7 @@ export async function installedSagaMonarchConsumer(installed, sample, { evolve =
     'if (r.url.startsWith("file:") && !r.url.startsWith(' + JSON.stringify(allowed) + ')) throw Error("checkout fallback"); return r; }'), import.meta.url);
   const module = file => import(pathToFileURL(join(installed, file)));
   const api = await module('lib/project/cli.mjs');
-  const { verifyProject } = await module('lib/project/verify.mjs');
+  const { inspectProject, verifyProject } = await module('lib/project/verify.mjs');
   const { queryProject, statusProject } = await module('lib/project/query.mjs');
   const { emitAuthorDoc } = await module('lib/author-surface.mjs');
   const { parseAuthorDoc } = await module('lib/author-parse.mjs');
@@ -24,26 +24,34 @@ export async function installedSagaMonarchConsumer(installed, sample, { evolve =
   cpSync(join(installed, 'scaffold/saga-monarch-project'), sample, { recursive: true, force: false, errorOnExist: true });
   const project = join(sample, 'truthsrc.project.json'), out = join(sample, 'generated'), f = { project, out };
   const original = inventory(join(sample, 'implementations'));
-  const captured = api.captureProject(project);
-  assert.equal(captured.compilation.result.products.length, 8);
-  assert.equal(captured.validation.hard.length, 0); assert.equal(captured.validation.roundtrip.ok, true);
   const args = ['--project', project, '--out', out];
   const planned = await api.projectCli('generate-project', [...args, '--plan']);
+  const compilation = JSON.parse(planned.plan.entries.find(entry => entry.path === '.truthsrc/compiled.json').content);
+  assert.equal(compilation.products.length, 8);
+  assert.equal(planned.validation.hard.length, 0); assert.equal(planned.validation.roundtrip.ok, true);
   const applied = await api.projectCli('generate-project', args);
   assert.equal(applied.applied, true);
   const production = planned.plan.entries.filter(entry => entry.path.endsWith('.scala'));
   assert.equal(production.length, 6);
   assert.deepEqual(inventory(join(sample, 'implementations')), original);
-  assert.equal(verifyProject(f).passed, true);
+  const inspected = inspectProject(f);
+  let verification = inspected.result;
+  assert.equal(verification.passed, true); assert.equal(verification.runtimeVerified, false);
   const query = queryProject({ ...f, implementation: 'inventory-files' });
   assert.equal(query.state, 'mapped'); assert.equal(query.result[0].spanVerified, false);
-  for (const entry of production) {
+  for (const [index, entry] of production.entries()) {
     const mapping = entry.codeMappings[0], bytes = readFileSync(join(out, entry.path));
     assert.equal(bytes.subarray(mapping.span.start, mapping.span.end).toString(), mapping.span.text);
-    const line = bytes.subarray(0, mapping.span.start).toString().split('\n').length;
-    const reverse = queryProject({ ...f, file: entry.path, line });
-    assert(reverse.result.some(row => row.knowledge === mapping.knowledgeKey && row.origins.every(origin => origin.file)));
+    const reverse = inspected.query.reverse(entry.path);
+    assert(reverse.some(row => row.knowledge === mapping.knowledgeKey && row.origins.every(origin => origin.file) &&
+      row.location.span.start === mapping.span.start && row.location.span.end === mapping.span.end));
+    if (index === 0) {
+      const line = bytes.subarray(0, mapping.span.start).toString().split('\n').length;
+      const positioned = queryProject({ ...f, file: entry.path, line });
+      assert(positioned.result.some(row => row.knowledge === mapping.knowledgeKey && row.origins.every(origin => origin.file)));
+    }
   }
+  api.assertUnchanged(inspected.captured);
   const initial = inventory(out);
   const stats = production.map(e => { const s = statSync(join(out, e.path), { bigint: true }); return [e.path, String(s.mtimeNs), String(s.ctimeNs), String(s.ino)]; });
   assert.equal((await api.projectCli('generate-project', [...args, '--update'])).result.written, 0);
@@ -54,11 +62,12 @@ export async function installedSagaMonarchConsumer(installed, sample, { evolve =
     const refresh = async kind => {
       assert.equal(statusProject(f).inputs.state, 'changed');
       assert.equal(verifyProject(f).passed, false);
-      const current = api.captureProject(project);
-      assert.equal(current.validation.hard.length, 0); assert.equal(current.validation.roundtrip.ok, true);
-      await api.projectCli('generate-project', [...args, '--update', '--plan']);
-      await api.projectCli('generate-project', [...args, '--update']);
-      assert.equal(verifyProject(f).passed, true); assert.equal(statusProject(f).inputs.state, 'current'); changed.push(kind);
+      const updated = await api.projectCli('generate-project', [...args, '--update']);
+      assert.equal(updated.applied, true);
+      assert.equal(updated.validation.hard.length, 0); assert.equal(updated.validation.roundtrip.ok, true);
+      verification = verifyProject(f);
+      assert.equal(verification.passed, true); assert.equal(verification.runtimeVerified, false);
+      assert.equal(verification.checks.currentInputs, true); changed.push(kind);
     };
     const impl = join(sample, 'implementations/FileInventoryPorts.scala');
     writeFileSync(impl, readFileSync(impl, 'utf8') + '\n// installed consumer annotation\n');
@@ -70,9 +79,10 @@ export async function installedSagaMonarchConsumer(installed, sample, { evolve =
     const doc = parseAuthorDoc(readFileSync(author, 'utf8'));
     doc.payload.areas[0].batch.maxWaitMillis = 125; writeFileSync(author, emitAuthorDoc(doc));
     await refresh('author');
+    assert.equal(statusProject(f).inputs.state, 'current');
   }
   const result = { installed: true, generated: 6, handwritten: 1, changed, checkoutFallback: false,
-    runtimeVerified: false, project, out, sourceVerification: verifyProject(f).passed };
+    runtimeVerified: verification.runtimeVerified, project, out, sourceVerification: verification.passed };
   writeFileSync(join(sample, 'installed-consumer-result.json'), JSON.stringify(result, null, 2) + '\n', { flag: 'wx' });
   return result;
 }

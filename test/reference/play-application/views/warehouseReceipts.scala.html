@@ -1,0 +1,15 @@
+@(warehouseId: String, page: example.inventory.application.api.WarehouseApi.ReceiptPage, next: Option[String])
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Warehouse receipts</title></head>
+<body>
+<h1>Receipts for @warehouseId</h1>
+<table><thead><tr><th>Transaction</th><th>Receipt</th></tr></thead><tbody>
+@for(row <- page.rows) {
+<tr><td>@row.txid.value</td><td>@row.receipt</td></tr>
+}
+</tbody></table>
+@if(page.rows.isEmpty) { <p>No receipts yet.</p> }
+@for(link <- next) { <a rel="next" href="@link">Next page</a> }
+</body>
+</html>

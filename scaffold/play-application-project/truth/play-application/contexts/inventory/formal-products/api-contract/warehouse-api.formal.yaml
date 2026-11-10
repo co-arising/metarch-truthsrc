@@ -1,0 +1,268 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: formal-product
+schemaVersion: "truthsrc.formal-product/v1"
+family: api-contract
+id: warehouse-api
+version: "1"
+payload:
+  {
+    "schemaVersion": "truthsrc.api-contract/v1",
+    "id": "warehouse-api",
+    "version": "1",
+    "context": "inventory",
+    "aggregate": {
+      "context": "inventory",
+      "kind": "aggregate",
+      "owner": [],
+      "id": "Warehouse"
+    },
+    "resourceType": {
+      "context": "inventory",
+      "kind": "type",
+      "owner": [],
+      "id": "WarehouseId"
+    },
+    "commands": [
+      {
+        "id": "reserve",
+        "command": {
+          "context": "inventory",
+          "kind": "command",
+          "owner": [
+            "Warehouse"
+          ],
+          "id": "ReserveSkuQuantity"
+        },
+        "method": "POST",
+        "path": "/api/v1/warehouses/:warehouseId/reserve",
+        "roles": [
+          "operator"
+        ],
+        "csrf": true,
+        "request": [
+          {
+            "field": "txid",
+            "parameter": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "ReserveSkuQuantity"
+              ],
+              "id": "txid"
+            },
+            "codec": "string",
+            "maxLength": 256,
+            "location": "body"
+          },
+          {
+            "field": "warehouseId",
+            "parameter": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "ReserveSkuQuantity"
+              ],
+              "id": "warehouseId"
+            },
+            "codec": "string",
+            "maxLength": 256,
+            "location": "path"
+          },
+          {
+            "field": "skuId",
+            "parameter": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "ReserveSkuQuantity"
+              ],
+              "id": "skuId"
+            },
+            "codec": "string",
+            "maxLength": 256,
+            "location": "body"
+          },
+          {
+            "field": "quantity",
+            "parameter": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "ReserveSkuQuantity"
+              ],
+              "id": "quantity"
+            },
+            "codec": "long-string",
+            "maxLength": null,
+            "location": "body"
+          }
+        ],
+        "result": {
+          "event": {
+            "context": "inventory",
+            "kind": "event",
+            "owner": [
+              "Warehouse"
+            ],
+            "id": "SkuQuantityReserved"
+          },
+          "fields": [
+            {
+              "field": "reservationId",
+              "slot": {
+                "context": "inventory",
+                "kind": "event-slot",
+                "owner": [
+                  "Warehouse",
+                  "SkuQuantityReserved"
+                ],
+                "id": "reservationId"
+              },
+              "codec": "string",
+              "maxLength": 256
+            }
+          ],
+          "empty": "no-change"
+        }
+      },
+      {
+        "id": "commit",
+        "command": {
+          "context": "inventory",
+          "kind": "command",
+          "owner": [
+            "Warehouse"
+          ],
+          "id": "CommitSkuReservation"
+        },
+        "method": "POST",
+        "path": "/api/v1/warehouses/:warehouseId/commit",
+        "roles": [
+          "operator"
+        ],
+        "csrf": true,
+        "request": [
+          {
+            "field": "txid",
+            "parameter": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "CommitSkuReservation"
+              ],
+              "id": "txid"
+            },
+            "codec": "string",
+            "maxLength": 256,
+            "location": "body"
+          },
+          {
+            "field": "warehouseId",
+            "parameter": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "CommitSkuReservation"
+              ],
+              "id": "warehouseId"
+            },
+            "codec": "string",
+            "maxLength": 256,
+            "location": "path"
+          },
+          {
+            "field": "skuId",
+            "parameter": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "CommitSkuReservation"
+              ],
+              "id": "skuId"
+            },
+            "codec": "string",
+            "maxLength": 256,
+            "location": "body"
+          },
+          {
+            "field": "reservationId",
+            "parameter": {
+              "context": "inventory",
+              "kind": "parameter",
+              "owner": [
+                "Warehouse",
+                "CommitSkuReservation"
+              ],
+              "id": "reservationId"
+            },
+            "codec": "string",
+            "maxLength": 256,
+            "location": "body"
+          }
+        ],
+        "result": {
+          "event": {
+            "context": "inventory",
+            "kind": "event",
+            "owner": [
+              "Warehouse"
+            ],
+            "id": "SkuReservationCommitted"
+          },
+          "fields": [
+            {
+              "field": "txid",
+              "slot": {
+                "context": "inventory",
+                "kind": "event-slot",
+                "owner": [
+                  "Warehouse",
+                  "SkuReservationCommitted"
+                ],
+                "id": "txid"
+              },
+              "codec": "string",
+              "maxLength": 256
+            }
+          ],
+          "empty": "no-change"
+        }
+      }
+    ],
+    "query": {
+      "id": "receipts",
+      "persistence": {
+        "id": "warehouse-persistence",
+        "version": "1"
+      },
+      "index": "Receipt",
+      "query": "by_resource",
+      "path": "/api/v1/warehouses/:warehouseId/receipts",
+      "resourceParameter": "warehouseId",
+      "roles": [
+        "reader",
+        "operator"
+      ],
+      "pageSize": 20,
+      "maxPageSize": 64,
+      "output": {
+        "key": "txid",
+        "value": "receipt"
+      }
+    },
+    "page": {
+      "id": "warehouse-receipts",
+      "path": "/warehouses/:warehouseId/receipts",
+      "title": "Warehouse receipts",
+      "query": "receipts"
+    },
+    "readinessPath": "/ready"
+  }

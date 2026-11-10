@@ -1,4 +1,4 @@
-import { productionJobs } from '../scala-cqrs-aggregate-core-v1/render.mjs';
+import { productionJobs as aggregateProductionJobs } from '../scala-cqrs-aggregate-core-v1/render.mjs';
 import { renderJobs } from '../scala-cqrs-domain-kernel-v1/render.mjs';
 import { persistenceSourceEntry } from '../scala-cqrs-domain-kernel-v1/entry.mjs';
 import { generatedTestArtifacts, generatedTestsTemplate } from '../scala-cqrs-domain-kernel-v1/templates/generated-tests.mjs';
@@ -10,9 +10,8 @@ import { repositoryTemplate, handlerTemplate } from './templates/repository.mjs'
 import { sourceTemplate, runnerTemplate } from './templates/runner.mjs';
 import { buildArtifacts, buildTemplate, generatedPersistenceTest } from './templates/build.mjs';
 
-/** One complete job graph and one final-byte writer, including reused family2. */
-export function render(m, footprint) {
-  const jobs = productionJobs(m.family), n = m.names;
+export function productionJobs(m) {
+  const jobs = aggregateProductionJobs(m.family), n = m.names;
   const add = (path, kind, sources, directDeps, template) => jobs.push({ artifact: { path, kind, sources, directDeps }, template });
   const artifact = (key, kind, directDeps, template, sources = m.sources) => add(n[key].path, kind, sources, directDeps, template);
   add(m.frameProtoPath, 'proto', [m.product.wire.source], [], out => frameTemplate(m, out));
@@ -31,11 +30,22 @@ export function render(m, footprint) {
   artifact('runner', 'projection-runner', [n.source.path, n.handler.path, n.repository.path, n.envelope.path], out => runnerTemplate(m, out));
   add('modules/glue/src/main/resources/reference.conf', 'serialization-config', [m.product.wire.source, ...m.registrations.map(r => r.source)],
     [n.serializer.path, m.frameProtoPath], out => configTemplate(m, out));
-  for (const a of buildArtifacts(m)) jobs.push({ artifact: a, template: out => buildTemplate(m, a, out) });
+  return jobs;
+}
+export function testJobs(m) {
+  const jobs = [], n = m.names;
+  const add = (path, kind, sources, directDeps, template) => jobs.push({ artifact: { path, kind, sources, directDeps }, template });
   for (const a of generatedTestArtifacts(m.family.kernel, m.family.serialization))
     jobs.push({ artifact: { ...a, kind: 'generated-test' }, template: out => generatedTestsTemplate(a, out) });
   for (const a of generatedBehaviorArtifacts(m.family)) jobs.push({ artifact: a, template: out => generatedBehaviorTemplate(a, out) });
   const testPath = 'modules/glue/src/test/scala/' + n.persistence.package.replaceAll('.', '/') + '/' + n.persistence.name + 'RoundTripSpec.scala';
   add(testPath, 'generated-test', [m.product.wire.source, m.aggregate.source], [n.persistence.path, m.frameProtoPath], out => generatedPersistenceTest(m, out));
+  return jobs;
+}
+/** One complete job graph and one final-byte writer, including reused family2. */
+export function render(m, footprint) {
+  const jobs = productionJobs(m);
+  for (const a of buildArtifacts(m)) jobs.push({ artifact: a, template: out => buildTemplate(m, a, out) });
+  jobs.push(...testJobs(m));
   return renderJobs(jobs, footprint, persistenceSourceEntry);
 }

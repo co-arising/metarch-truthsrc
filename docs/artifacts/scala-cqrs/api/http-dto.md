@@ -40,3 +40,12 @@ JSON读写、缺字段/额外字段/重复键、可选字段向后兼容与精�
 ## 版本与实例
 
 本页按上述 profile 区分当前原生、保留/退役路径与手写参考；不跨 profile 传播实现或验收结论。完整来源 revision、摘要和生产链由目录、派生矩阵及 `sources.lock.json` 记录，本页不另抄暂定统计。
+
+## 第八批有限 Play 应用入口
+
+新增 `js-play-application-candidate-v1`，由 `scala-cqrs-play-application-v1` 提供。原先profile的缺口描述保留为对应历史，不覆盖本段的新有限入口。
+
+- `api-dto`：Pure typed command DTOs, results, failures and keyset query carriers.
+- `http-codec`：Strict JSON/UTF-8/Long-string codecs, exact event outputs, resource-bound canonical keyset cursors.
+
+唯一作者和显式技术/外置实现bindings经过公共单writer；源码、真实编译、HTTP行为、安装与最终批准逐层记证。有限范围及不适用项见[本族合同](../PLAY-APPLICATION.md)；旧回执不重签，不表示银行或完整modular target已最终批准。

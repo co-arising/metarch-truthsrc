@@ -4,6 +4,12 @@
 
 本页沿用已完成P0和后续P1–P4成果路线，不重做类别清点工程、已实现公共验证闭环或聚合参考切片。数字对应本次捕获状态；后续实施必须从实际catalog及证据重新派生，不持续手工维护另一份类别真源。
 
+## 第八批 API／有限 Play 应用（2026-11-11，有限工程收口）
+
+[本族合同](scala-cqrs/PLAY-APPLICATION.md)把唯一作者树的十产品落到四模块应用：DTO/service/controller/routes/Twirl/Loader、真实LevelDB journal reader、H2读侧及资源组合根。独立参考、实际生成、离线安装后主样例与真实名字/包变体已经通过sbt/direct compiler及HTTP／存储／生命周期／故障验证；六项权限/签名/依赖负控、迟到Ready/Loader、漏释放负控和四个生成suite也已执行。16完整旧plan992项恒等。
+
+catalog2.7.0／638变体／45producer／36观察已落盘，原28观察保真历史化。能力文档74/74通过；完整Node4345项中4328通过、2安装consumer超时、15既有跳过；测试侧消除重复捕获后，受影响2项复验通过，原全量FAIL保留。BC50／Play32受控同步、八仓3655来源及27451文件＋2362元数据保护通过，120进程运行证据已组合对账。详见[验收记录](PLAY-APPLICATION-ACCEPTANCE.md)。本批按有限合同收口，不扩成银行迁移、runtime发布、所有家族自由组合或最终架构批准。下文早期批次数字仍是对应历史。
+
 ## 第七批 Strict Saga / Monarch R2：有限工程收口（2026-11-10）
 
 [新非银行合同](SAGA-MONARCH-R2.md)与[验收记录](SAGA-MONARCH-R2-ACCEPTANCE.md)对应唯一作者树、八产品及固定dev.r2／Strict Saga装配。主样例及typed Run／retry／whole Carry的generated与installed证据已闭合；installed主28恢复窗、八项精确变异及注册／命名控制通过。catalog2.6.0新增20变体，19代码项达到同输入行为层，build仅generated，final-approved仍0。

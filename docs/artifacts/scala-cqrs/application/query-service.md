@@ -51,3 +51,12 @@ application/query或对应readside实现；FeedAggregator属于多来源查询�
 ### 类别依赖
 
 `projection-repository-port`、`http-dto`。这些是职责依赖，不代替真实Scala import或执行顺序验证。
+
+## 第八批有限 Play 应用入口
+
+新增 `js-play-application-candidate-v1`，由 `scala-cqrs-play-application-v1` 提供。原先profile的缺口描述保留为对应历史，不覆盖本段的新有限入口。
+
+- `query-ports`：Platform-independent asynchronous query service contracts.
+- `query-service`：Existing H2 state-map query on owned blocking execution context with complete keyset identity.
+
+唯一作者和显式技术/外置实现bindings经过公共单writer；源码、真实编译、HTTP行为、安装与最终批准逐层记证。有限范围及不适用项见[本族合同](../PLAY-APPLICATION.md)；旧回执不重签，不表示银行或完整modular target已最终批准。

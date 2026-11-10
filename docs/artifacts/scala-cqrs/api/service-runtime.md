@@ -43,3 +43,15 @@ factory生成或手写实现按profile安装，startup/shutdown需完整清理�
 ### 类别依赖
 
 `service-contract`、`application-bootstrap`、`application-configuration`。这些是职责依赖，不代替真实Scala import或执行顺序验证。
+
+## 第八批有限 Play 应用入口
+
+新增 `js-play-application-candidate-v1`，由 `scala-cqrs-play-application-v1` 提供。原先profile的缺口描述保留为对应历史，不覆盖本段的新有限入口。
+
+- `resource-directory`：Explicit bounded resource/PID/envelope-resource association, shared by command and journal adapters.
+- `application-lifecycle`：Immediate resource registration, reverse cleanup, independent cleanup workers and one fixed close deadline; incomplete cleanup remains failed.
+- `application-root`：Complete finite assembly of actor runtime, repository, journal source, readside runner and API services; Play owns HTTP runtime.
+- `application-components`：Built-in Play components, controller/router construction and domain/HTTP initialization failure cleanup.
+- `application-loader`：Configured application loader with explicit external implementations and required local credentials.
+
+唯一作者和显式技术/外置实现bindings经过公共单writer；源码、真实编译、HTTP行为、安装与最终批准逐层记证。有限范围及不适用项见[本族合同](../PLAY-APPLICATION.md)；旧回执不重签，不表示银行或完整modular target已最终批准。

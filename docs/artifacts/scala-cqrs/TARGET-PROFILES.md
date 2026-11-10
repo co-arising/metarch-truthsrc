@@ -33,6 +33,12 @@ options仍仅 `packages/names/protobuf`；新增角色由本族模型分流，�
 
 名称/包覆盖不改变显式 codec、Saga definition、Run semantic digest 和操作身份；运行时 supply、cold query、两阶段恢复、whole Carry 及 retry exhaustion 边界见[本族合同](../SAGA-MONARCH-R2.md)。生成、分模块 direct compiler、独立行为、跨 JVM 恢复与安装消费分别记证；build.sbt 的存在不等于 sbt 执行通过。旧 family1–4 的资格保留在原记录中，现役资格只按[能力矩阵](../CAPABILITY-MATRIX.md)中的同输入证据判断。
 
+## 第八批显式 Play 应用入口
+
+`scala-cqrs-play-application-v1`／`scala-cqrs-play-application@1` 与 catalog 变体 `js-play-application-candidate-v1` 是复用 family1/2/4 的有限应用入口。十产品生成真实 DTO/service/controller/routes/Twirl/Loader、LevelDB journal reader、H2 读侧及资源组合根；不是把旧 P23 Mongo/MySQL Play service profile 换依赖冒作新目标。
+
+kernel 不依赖 Play/Akka/JDBC；glue 依赖 kernel，ext 依赖 kernel/glue，root 拥有组合与生命周期。名称/包变体保持业务事件、PB、serializer 和 PID 身份；查询路径内部参数独立于作者参数名。真实 sbt、direct compiler、HTTP、正常重开与安装资格按各自字节证据记录。完整 modular target 仍不是任意家族自动组合开关，`approval:null`；范围见[本族合同](PLAY-APPLICATION.md)。
+
 ## 名称不是业务身份
 
 `resolveName`要求以下完整输入；返回原身份、原spelling、解析后的`name`和仅适用于Scala的`identifier`，不修改调用方数据：

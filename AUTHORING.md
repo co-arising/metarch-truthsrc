@@ -55,6 +55,23 @@ are closed; compiler-overwritten payload fields and unconsumed definitions rejec
 Policy and note origins both require an explicit session stage and collision-free
 frozen seq. Legacy parsing remains unchanged for byte compatibility.
 
+## Finite Play API author contract
+
+`scaffold/play-application-project/truth/play-application/` is the sole application
+knowledge surface. Its `api-contract` formal atom explicitly references declared
+command parameters, event slots and the existing readside index. It declares
+methods, routes, typed scalar codecs, role/resource/CSRF obligations and the
+server-rendered page's query. It does not copy domain guards or folds into API
+code, infer inventory balances, or turn descriptive text into authorization.
+
+The separate application binding owns versions, constructor ABI, explicit
+resource/PID associations and the two captured implementation files. Authority
+is an application seam, not an invented business port; its synthetic capture
+association points to that technical binding. Every author edit requires
+validate **and** roundtrip. Product admission, source freshness, real Scala
+compilation and HTTP behavior are separate gates. See [the application
+contract](docs/artifacts/scala-cqrs/PLAY-APPLICATION.md).
+
 ## Finite Saga/Monarch R2 author contract
 
 `scaffold/saga-monarch-project/truth/saga-monarch/` is the sole inventory author

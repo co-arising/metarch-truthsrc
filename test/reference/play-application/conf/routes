@@ -1,0 +1,5 @@
+POST /api/v1/warehouses/:warehouseId/reserve example.inventory.controllers.WarehouseController.reserve(warehouseId: String)
+POST /api/v1/warehouses/:warehouseId/commit example.inventory.controllers.WarehouseController.commit(warehouseId: String)
+GET /api/v1/warehouses/:warehouseId/receipts example.inventory.controllers.WarehouseController.query(warehouseId: String)
+GET /warehouses/:warehouseId/receipts example.inventory.controllers.WarehouseController.page(warehouseId: String)
+GET /ready example.inventory.controllers.WarehouseController.readiness

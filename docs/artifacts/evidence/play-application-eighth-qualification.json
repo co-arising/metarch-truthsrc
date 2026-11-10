@@ -1,0 +1,297 @@
+{
+  "schemaVersion": "truthsrc.play-application-eighth-qualification/v1",
+  "status": "finite-batch-engineering-complete",
+  "approval": null,
+  "producer": "scala-cqrs-play-application-v1",
+  "targetProfile": "scala-cqrs-play-application@1",
+  "productionToolSha256": "68570a50d11da7db1e031bc3cd6a51468ea39b0f990e4d6bb12b21d9a4e7ccc0",
+  "scope": "Finite Warehouse-lite ten-product four-module Play/LevelDB/H2 application; no bank migration, runtime publication, arbitrary profile composition or final architecture approval.",
+  "runtime": {
+    "record": {
+      "file": ".rounds/play-application-g8monfFV/qualification-i5828H/result.json",
+      "sha256": "3af17d67c1ff4d730261b75709b7a9ffac763c2049836195a3da21933f97406d"
+    },
+    "processReceipts": 120,
+    "lanes": [
+      {
+        "name": "reference-10",
+        "file": "/private/tmp/truthsrc-play-reference-10-g8monfFV/result.json",
+        "sha256": "11547256855d12f94d2d991e51aa799a9f4c0581c749ffb3df4601ce899192c4",
+        "runtimeStages": 19,
+        "directCompilerStages": 5,
+        "sbt": true
+      },
+      {
+        "name": "generated-02",
+        "file": "/private/tmp/truthsrc-play-generated-02-g8monfFV/result.json",
+        "sha256": "bf5d9f38b1672a08adac606caff8f0875992d9c460819271c27803fd6c0454e1",
+        "runtimeStages": 18,
+        "directCompilerStages": 5,
+        "sbt": true
+      },
+      {
+        "name": "installed-main-01",
+        "file": "/private/tmp/truthsrc-play-installed-main-01-g8monfFV/result.json",
+        "sha256": "9c19a263a1b69e8dd77ec0a6a9d0fd988834bc387d980465f077db499b3f5425",
+        "runtimeStages": 19,
+        "directCompilerStages": 5,
+        "sbt": true
+      },
+      {
+        "name": "installed-renamed-01",
+        "file": "/private/tmp/truthsrc-play-installed-renamed-01-g8monfFV/result.json",
+        "sha256": "f8e1b5fc776069f38e92dedf5314eb7e55844670825724954d1b74ad5c75377e",
+        "runtimeStages": 19,
+        "directCompilerStages": 5,
+        "sbt": true
+      }
+    ],
+    "installation": {
+      "file": "/private/tmp/truthsrc-play-installed-02-g8monfFV/result.json",
+      "sha256": "ecd1df689d22a3b3eb7ed45b6eb753141410fca5fc180c5ea1f92efb1059d15e",
+      "relocated": true,
+      "checkoutReadsDeniedForConsumer": true,
+      "samples": [
+        {
+          "variant": "main",
+          "entries": 64,
+          "receiptSha256": "8832ba48fffc05efe4062d571ec8e973668d10e415d4a0a6a98bd945d346050b"
+        },
+        {
+          "variant": "renamed",
+          "entries": 64,
+          "receiptSha256": "3e6b031facc6e1356607f5d3c7cbff4040ee457704c1203c2cc4ca098a434359"
+        }
+      ]
+    },
+    "controls": [
+      {
+        "id": "role",
+        "rejectedAtSpecifiedAssertion": true
+      },
+      {
+        "id": "resource",
+        "rejectedAtSpecifiedAssertion": true
+      },
+      {
+        "id": "csrf",
+        "rejectedAtSpecifiedAssertion": true
+      },
+      {
+        "id": "kernel-reverse-dependency",
+        "rejectedAtSpecifiedAssertion": true
+      },
+      {
+        "id": "routes-action-signature",
+        "rejectedAtSpecifiedAssertion": true
+      },
+      {
+        "id": "twirl-signature",
+        "rejectedAtSpecifiedAssertion": true
+      }
+    ],
+    "supplemental": [
+      {
+        "name": "startup-03",
+        "file": "/private/tmp/truthsrc-play-startup-03-g8monfFV/result.json",
+        "sha256": "06863a3ae943b93ef1bad81d961cf092df6d09fdb4c32cca20fc6b6a93062147",
+        "cases": 9,
+        "tests": null
+      },
+      {
+        "name": "release-control-02",
+        "file": "/private/tmp/truthsrc-play-release-control-02-g8monfFV/result.json",
+        "sha256": "c7e9dc9e227e925834bd26db312320560a6790098f7e82925792c7d5786a31a5",
+        "cases": null,
+        "tests": null
+      },
+      {
+        "name": "suites-02",
+        "file": "/private/tmp/truthsrc-play-suites-02-g8monfFV/result.json",
+        "sha256": "0e1aa8588aa0350572b01966694172b7de00506ed458c2a36f7ae72dc2b912f2",
+        "cases": null,
+        "tests": 6
+      },
+      {
+        "name": "network-02",
+        "file": "/private/tmp/truthsrc-play-network-02-g8monfFV/result.json",
+        "sha256": "75896e47b8dec4551388d06a1da1735d6650c380b07b9eda950ad73f4dc5c36b",
+        "cases": 5,
+        "tests": null
+      }
+    ],
+    "jvmReexecutedDuringCloseout": false
+  },
+  "legacyPlanEquality": {
+    "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/play-application-g8monfFV/legacy-final-a2LGqU/result.json",
+    "sha256": "1b44d385394a447f1adc663038eaf879b144c0f5fe1d56f6875a2f22d62d972f",
+    "samples": 16,
+    "entries": 992
+  },
+  "catalog": {
+    "version": "2.7.0",
+    "categories": 125,
+    "variants": 638,
+    "producers": 45,
+    "activeObservations": 36,
+    "apply": {
+      "file": ".rounds/play-application-g8monfFV/catalog-s2ztnK/result.json",
+      "sha256": "4ee210b3adb6089339b377156e8599df4b9beb84e9f6ffbdb38919e781297e09"
+    },
+    "sagaReconciliation": {
+      "file": ".rounds/play-application-g8monfFV/catalog-s2ztnK/saga-audit.json",
+      "sha256": "0e55749b047a1c8f8573fb47cc66ef7630f23bb493a23cabf19afb4062269763"
+    },
+    "playReconciliation": {
+      "file": ".rounds/play-application-g8monfFV/catalog-s2ztnK/play-audit.json",
+      "sha256": "38e2060e9c5cf642fa81a8ee5bee122d4ceaf84780068541d17164ca9408d4a6"
+    },
+    "history": {
+      "file": "docs/artifacts/evidence/capability-play-application-prior28-history.json",
+      "sha256": "c42e4ce4ed171d3fd18d808dbbc5252b7a396bc65c619ad5956ff4de644ece6c"
+    }
+  },
+  "regression": {
+    "full": {
+      "record": {
+        "file": ".rounds/play-application-g8monfFV/node-full-NxJhSz/result.json",
+        "sha256": "345e10fd00ac8caf3d314e539d5b5659a577c229149104a0b0543596ea805e1a"
+      },
+      "originalPassed": false,
+      "counts": {
+        "plan": 4242,
+        "tests": 4345,
+        "suites": 0,
+        "pass": 4328,
+        "fail": 2,
+        "cancelled": 0,
+        "skipped": 15,
+        "todo": 0,
+        "durationMs": 2649998.564888
+      },
+      "failedTests": [
+        "not ok 2037 - module seams tarball installs offline, relocates and preserves three input freshness surfaces",
+        "not ok 3372 - Saga Monarch package installs offline, relocates and preserves author/binding/implementation freshness"
+      ],
+      "skips": [
+        "ok 1537 - explicit BC loader consumes the same bundle with no installed-source fallback # SKIP",
+        "ok 1624 - opt-in actual BC tree: all five objects equal external compileTree # SKIP",
+        "ok 1625 - opt-in BC Scala consumer: successful typed parsing, all merge views and complete AssemblyResult # SKIP",
+        "ok 1626 - selected normal BC loaders stay synchronous and use all five public products without the old tree or cache # SKIP",
+        "ok 1627 - selected normal BC loader rejects changed source after a successful read # SKIP",
+        "ok 1628 - selected normal BC loader rejects changed product after a successful read # SKIP",
+        "ok 1629 - selected normal BC loader rejects changed manifest after a successful read # SKIP",
+        "ok 1630 - selected normal BC loader rejects changed selection after a successful read # SKIP",
+        "ok 1631 - selected normal BC loader rejects changed disable after a successful read # SKIP",
+        "ok 1632 - selected normal BC loader rejects changed other-selection after a successful read # SKIP",
+        "ok 1633 - a process imported in legacy mode refuses a later selection rather than serving its old memo # SKIP",
+        "ok 1634 - selected compile check verifies the bundle without writing old cache; write and override modes refuse # SKIP",
+        "ok 1635 - direct legacy compiler is not a fallback for the selected source # SKIP",
+        "ok 1636 - opt-in exact BC migration keeps content and merge carriers separate from source locations # SKIP",
+        "ok 2488 - current bank uses its actual root project, fourteen products and only named current inputs # SKIP"
+      ]
+    },
+    "firstRepair": {
+      "record": {
+        "file": ".rounds/play-application-g8monfFV/node-targeted-3gntKJ/result.json",
+        "sha256": "273706c9bac662b5fbd1ff8363a444d48df5f1085055a8c7d877ac126da06973"
+      },
+      "originalPassed": false,
+      "counts": {
+        "plan": 55,
+        "tests": 55,
+        "suites": 0,
+        "pass": 54,
+        "fail": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "durationMs": 599295.195957
+      },
+      "failedTests": [
+        "not ok 49 - Saga Monarch package installs offline, relocates and preserves author/binding/implementation freshness"
+      ]
+    },
+    "secondRepair": {
+      "record": {
+        "file": ".rounds/play-application-g8monfFV/node-targeted-lydTpI/result.json",
+        "sha256": "5404a93fade0127086f9b391e5c9b1ca9e4be142570d7a195bdeea0304d2b87c"
+      },
+      "originalPassed": false,
+      "counts": {
+        "plan": 2,
+        "tests": 2,
+        "suites": 0,
+        "pass": 1,
+        "fail": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "durationMs": 221415.694558
+      },
+      "failedTests": [
+        "not ok 2 - Saga Monarch package installs offline, relocates and preserves author/binding/implementation freshness"
+      ]
+    },
+    "repair": {
+      "record": {
+        "file": ".rounds/play-application-g8monfFV/node-targeted-YtZzeD/result.json",
+        "sha256": "3d0d0b4fd2fa60f1c432c3e6ca7a6112d9211fd4188d38b58fcb5a3c30728bf9"
+      },
+      "counts": {
+        "plan": 2,
+        "tests": 2,
+        "suites": 0,
+        "pass": 2,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "durationMs": 191910.94088
+      },
+      "suites": [
+        "test/module-seams-onboarding.test.mjs",
+        "test/saga-monarch-onboarding.test.mjs"
+      ]
+    },
+    "interpretation": "The original full run and both interim reruns remain failed. Test-only consumers now batch authenticated reverse queries and reuse completed validation results. Saga evolutions use actual updates rather than duplicate preview captures, with unchanged three-input stale/update/fresh coverage. The final rerun exercises both complete installed-consumer tests successfully under their unchanged deadlines; this is not a new all-green full run.",
+    "sourceRepairs": [
+      {
+        "file": ".rounds/play-application-g8monfFV/source-refresh-installed-consumers-0mE6uM/result.json",
+        "sha256": "8a6e64cb666386b740c31d5621087b53316b3aa5ccbe34b00e28ab79957b0f22"
+      },
+      {
+        "file": ".rounds/play-application-g8monfFV/source-refresh-saga-capture-batching-ZuWEnp/result.json",
+        "sha256": "39eab489fc6fab211a59bec0aa529fa294cdf88d4ba6b410dc67b36275a8a343"
+      }
+    ]
+  },
+  "compatibility": {
+    "record": {
+      "file": ".rounds/play-application-g8monfFV/compatibility-apply-U951qr/result.json",
+      "sha256": "0ba5c0f4a1fd4b651872944d5ae2f031afa3121e9c927ba763e739ac5e951567"
+    },
+    "bcFiles": 50,
+    "playFiles": 32,
+    "checkedSources": 3655
+  },
+  "protectionBeforeFinalDocumentation": {
+    "record": {
+      "file": ".rounds/play-application-g8monfFV/protection-0801C6/result.json",
+      "sha256": "305dff65b598a38797ca1394cc889db0c00691c5faa4577f4828645680adfc48"
+    },
+    "files": 27451,
+    "metadata": 2362,
+    "originalObservations": 28
+  },
+  "auxiliary": {
+    "file": ".rounds/play-application-g8monfFV/auxiliary-SY6PXv/result.json",
+    "sha256": "b5886d7cdaa758aa97517522cbae3f5574a17d0201b696e602e62df698824772"
+  },
+  "limitations": [
+    "SSR HTTP output/escaping/links/authorization tested; browser layout and accessibility not certified.",
+    "Normal journal/H2 close and reopen, not forced power-loss, production Mongo/MySQL or clustering.",
+    "Exact-value-codec has no applicable artifact in this sample; copied build/layout observations remain generated-only despite separately recorded original sbt qualification.",
+    "Historical observations and failed receipts retain original identities and bytes."
+  ]
+}

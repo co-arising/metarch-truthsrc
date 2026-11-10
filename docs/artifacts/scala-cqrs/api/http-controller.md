@@ -45,3 +45,12 @@ BC controllers/*与JS Service Components内的typed路由是不同profile；多�
 ### 类别依赖
 
 `service-contract`、`http-dto`、`authorization-policy`。这些是职责依赖，不代替真实Scala import或执行顺序验证。
+
+## 第八批有限 Play 应用入口
+
+新增 `js-play-application-candidate-v1`，由 `scala-cqrs-play-application-v1` 提供。原先profile的缺口描述保留为对应历史，不覆盖本段的新有限入口。
+
+- `http-errors`：Redacted consistent parser/router/server error responses.
+- `http-controller`：Real Play actions, shared role/resource/CSRF gates and exact command/query result mapping.
+
+唯一作者和显式技术/外置实现bindings经过公共单writer；源码、真实编译、HTTP行为、安装与最终批准逐层记证。有限范围及不适用项见[本族合同](../PLAY-APPLICATION.md)；旧回执不重签，不表示银行或完整modular target已最终批准。

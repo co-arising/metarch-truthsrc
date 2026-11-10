@@ -93,3 +93,11 @@ port所有签名可达的自有值类型必须处于接口可依赖的模块；�
 - `protocol`：Nominal bounded inventory values, typed Saga results/ports and optional typed Run Input/State/Output/leaf protocols; no Akka dependency.
 
 输入来自唯一作者树与显式技术/外置实现 bindings；运行库接口及内核仍由冻结制品提供。implemented 表示生成实现存在；资格仅由匹配实际输入的独立验收决定，旧28回执不改签。范围、两阶段恢复、重试耗尽与安装边界见[本族合同](../../SAGA-MONARCH-R2.md)。不表示银行迁移或架构批准。
+
+## 第八批有限 Play 应用入口
+
+新增 `js-play-application-candidate-v1`，由 `scala-cqrs-play-application-v1` 提供。原先profile的缺口描述保留为对应历史，不覆盖本段的新有限入口。
+
+- `value-object`：One nominal/record/exact domain, declared wire or PO value definition; no duplicate signature VO copies.
+
+唯一作者和显式技术/外置实现bindings经过公共单writer；源码、真实编译、HTTP行为、安装与最终批准逐层记证。有限范围及不适用项见[本族合同](../PLAY-APPLICATION.md)；旧回执不重签，不表示银行或完整modular target已最终批准。

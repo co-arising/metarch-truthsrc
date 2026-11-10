@@ -92,3 +92,14 @@ kernel接口不能指向ext/glue具体类型；必要的boundary DTO需显式定
 本次登记移除旧 active evidence 引用，原24观察和旧回执在[独立历史索引](../../evidence/capability-persistence-readside-prior-current06-history.json)保真；新观察要在生产冻结后单独采集并通过原公共验证器。本段及目录 implemented 仅表示实现存在，当前 generated/compiled/behavior/final-approved 不由本配方晋升。范围与限制见[本族合同](../PERSISTENCE-READSIDE.md)。
 
 读侧文件库重放不是生产 Actor journal 耐久性；不扩张为 MySQL、任意读模型、HTTP、银行/Saga/Monarch 或架构批准。
+
+## 第八批有限 Play 应用入口
+
+新增 `js-play-application-candidate-v1`，由 `scala-cqrs-play-application-v1` 提供。原先profile的缺口描述保留为对应历史，不覆盖本段的新有限入口。
+
+- `value-object`：One nominal/record/exact domain, declared wire or PO value definition; no duplicate signature VO copies.
+- `domain-protocol`：Pure Command/Event payload container with resolved technical type name; no ActorRef or CommandHelpers.
+- `rule-parameters`：Per-aggregate params container: each command params preserves (state, command, hosts).
+- `computation-port`：Minimal typed computations trait from ordered declared host inputs and return types, with no business implementation.
+
+唯一作者和显式技术/外置实现bindings经过公共单writer；源码、真实编译、HTTP行为、安装与最终批准逐层记证。有限范围及不适用项见[本族合同](../PLAY-APPLICATION.md)；旧回执不重签，不表示银行或完整modular target已最终批准。

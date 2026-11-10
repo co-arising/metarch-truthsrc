@@ -1,0 +1,157 @@
+{
+  "schemaVersion": "truthsrc.project/v1",
+  "tree": "truth/play-application",
+  "canonicalId": "inventory-domain",
+  "context": "inventory",
+  "products": [
+    {
+      "id": "reference-layout",
+      "version": "1"
+    },
+    {
+      "id": "exact-value-types",
+      "version": "1"
+    },
+    {
+      "id": "exact-value-codecs",
+      "version": "1"
+    },
+    {
+      "id": "domain-decision",
+      "version": "4"
+    },
+    {
+      "id": "domain-dependencies",
+      "version": "6"
+    },
+    {
+      "id": "domain-folds",
+      "version": "6"
+    },
+    {
+      "id": "domain-external-events",
+      "version": "2"
+    },
+    {
+      "id": "persistence-readside-contract",
+      "version": "1"
+    },
+    {
+      "id": "api-contract",
+      "version": "1"
+    },
+    {
+      "id": "application-composition",
+      "version": "1"
+    }
+  ],
+  "exactTypes": [],
+  "exactCodecs": [],
+  "documents": [
+    {
+      "id": "persistence",
+      "file": "bindings/persistence.json"
+    },
+    {
+      "id": "application",
+      "file": "bindings/application.json"
+    }
+  ],
+  "assemblies": [],
+  "roles": {
+    "persistenceReadsideBinding": "persistence",
+    "applicationCompositionBinding": "application"
+  },
+  "generator": "scala-cqrs-play-application-v1",
+  "options": {
+    "packages": [
+      {
+        "context": "inventory",
+        "package": "example.inventory"
+      }
+    ],
+    "names": [],
+    "protobuf": [
+      {
+        "context": "inventory",
+        "package": "example.inventory.protobuf",
+        "messages": [
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "type",
+              "owner": [],
+              "id": "TxId"
+            },
+            "role": "value",
+            "name": "TxIdValue"
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "type",
+              "owner": [],
+              "id": "WarehouseId"
+            },
+            "role": "value",
+            "name": "WarehouseIdValue"
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "type",
+              "owner": [],
+              "id": "SkuId"
+            },
+            "role": "value",
+            "name": "SkuIdValue"
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "type",
+              "owner": [],
+              "id": "ReservationId"
+            },
+            "role": "value",
+            "name": "ReservationIdValue"
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "aggregate",
+              "owner": [],
+              "id": "Warehouse"
+            },
+            "role": "state",
+            "name": "WarehouseSnapshot"
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "event",
+              "owner": [
+                "Warehouse"
+              ],
+              "id": "SkuQuantityReserved"
+            },
+            "role": "event",
+            "name": "WarehouseSkuQuantityReserved"
+          },
+          {
+            "ref": {
+              "context": "inventory",
+              "kind": "event",
+              "owner": [
+                "Warehouse"
+              ],
+              "id": "SkuReservationCommitted"
+            },
+            "role": "event",
+            "name": "WarehouseSkuReservationCommitted"
+          }
+        ]
+      }
+    ]
+  }
+}

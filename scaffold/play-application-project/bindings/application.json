@@ -1,0 +1,90 @@
+{
+  "schemaVersion": "truthsrc.application-composition-binding/v1",
+  "id": "warehouse-application",
+  "version": "1",
+  "context": "inventory",
+  "api": {
+    "id": "warehouse-api",
+    "version": "1"
+  },
+  "persistence": {
+    "id": "warehouse-persistence",
+    "version": "1"
+  },
+  "runtime": {
+    "scala": "2.13.14",
+    "jdk": "11",
+    "play": "2.8.18",
+    "akka": "2.6.20",
+    "scalaPB": "0.11.14",
+    "h2": "2.2.224",
+    "leveldb": "0.12",
+    "journal": "leveldb-java",
+    "guava": "30.1.1-jre",
+    "commonsCodec": "1.15",
+    "sbt": "1.4.9",
+    "sbtProtoc": "1.0.6",
+    "twirl": "1.5.1"
+  },
+  "resources": [
+    {
+      "resourceId": "east",
+      "persistenceId": "warehouse-east-v1",
+      "envelopeResource": "east"
+    },
+    {
+      "resourceId": "west",
+      "persistenceId": "warehouse-west-v1",
+      "envelopeResource": "west"
+    }
+  ],
+  "config": {
+    "journalPath": "warehouse.journal",
+    "readsidePath": "warehouse.readside",
+    "namespace": "warehouse.namespace",
+    "freshJournal": "warehouse.freshJournal",
+    "freshReadside": "warehouse.freshReadside",
+    "credentials": "warehouse.credentials"
+  },
+  "limits": {
+    "askMillis": 1000,
+    "closeMillis": 10000,
+    "maxPending": 64,
+    "bodyBytes": 65536,
+    "blockingThreads": 2
+  },
+  "implementations": [
+    {
+      "id": "reservation-identity",
+      "version": "1",
+      "role": "computations",
+      "port": {
+        "context": "inventory",
+        "kind": "port",
+        "owner": [],
+        "id": "ReservationIdentity"
+      },
+      "symbol": "example.inventory.extensions.ReservationIdentity",
+      "module": "ext",
+      "sourceRoot": "implementations",
+      "file": "ReservationIdentity.scala",
+      "construction": "class"
+    },
+    {
+      "id": "local-authority",
+      "version": "1",
+      "role": "authority",
+      "port": null,
+      "symbol": "example.inventory.extensions.ConfiguredWarehouseAuthority",
+      "module": "ext",
+      "sourceRoot": "implementations",
+      "file": "ConfiguredWarehouseAuthority.scala",
+      "construction": "class"
+    }
+  ],
+  "root": {
+    "id": "warehouse",
+    "actorSystem": "WarehouseDomain",
+    "ownership": "application-owned-domain-play-owned-http"
+  }
+}

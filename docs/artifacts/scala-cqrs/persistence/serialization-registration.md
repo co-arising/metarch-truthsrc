@@ -76,3 +76,12 @@ SerializationExtension/策略注册与reference.conf/serialization.conf；基础
 - `serialization-registration`：Explicit fixed Saga/R2 serializer bindings; no journal or production storage defaults.
 
 输入来自唯一作者树与显式技术/外置实现 bindings；运行库接口及内核仍由冻结制品提供。implemented 表示生成实现存在；资格仅由匹配实际输入的独立验收决定，旧28回执不改签。范围、两阶段恢复、重试耗尽与安装边界见[本族合同](../../SAGA-MONARCH-R2.md)。不表示银行迁移或架构批准。
+
+## 第八批有限 Play 应用入口
+
+新增 `js-play-application-candidate-v1`，由 `scala-cqrs-play-application-v1` 提供。原先profile的缺口描述保留为对应历史，不覆盖本段的新有限入口。
+
+- `persistence-runtime`：Versioned frame validation and event/state encode/decode dispatch through the existing DomainConverters ABI; explicit wire-registration rows, not a journal implementation.
+- `serialization-config`：Explicit Akka serializer registration and binding for this Frame, with no journal default.
+
+唯一作者和显式技术/外置实现bindings经过公共单writer；源码、真实编译、HTTP行为、安装与最终批准逐层记证。有限范围及不适用项见[本族合同](../PLAY-APPLICATION.md)；旧回执不重签，不表示银行或完整modular target已最终批准。
