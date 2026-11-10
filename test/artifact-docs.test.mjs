@@ -56,7 +56,15 @@ test('category identity, legacy alias and dependency ambiguity reject', () => {
 
 test('strict runtime capability is not advertised as generated bank R2 consumption', () => {
   const c = data.catalog.categories.find(c => c.id === 'workflow-program');
-  assert.ok(c.variants.every(v => v.availability === 'not-generated' && v.profile === 'monarch-r2'));
+  const runtime = c.variants.find(v => v.profile === 'monarch-r2');
+  assert.equal(runtime.availability, 'not-generated');
+  assert.equal(runtime.ownership, 'handwritten');
+  assert.deepEqual(runtime.capability.routes, []);
+  const generated = c.variants.find(v => v.profile === 'js-saga-monarch-r2-candidate-v1');
+  assert.equal(generated.availability, 'implemented');
+  assert.equal(generated.ownership, 'generated');
+  assert.deepEqual(generated.capability.routes, [{ producer: 'scala-cqrs-saga-monarch-v1', outputs: ['workflow-program'] }]);
+  assert.equal(c.variants.some(v => v.profile === 'bank-p23'), false);
   assert.match(read(c.document), /P23/);
   assert.match(read('scala-cqrs/CONVENTIONS.md'), /五个空间/);
   assert.match(read('scala-cqrs/ports/port-binding-module.md'), /不是BC全部原生生成/);

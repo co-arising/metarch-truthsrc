@@ -295,7 +295,10 @@ test('pure product graph uses fixed declarations, schema and deterministic compi
   const graph = {
     'src/core/products.mjs': ['../../lib/saga/product.mjs', './product-declarations.mjs', './product-declarations.mjs'],
     'src/core/product-declarations.mjs': ['../../lib/immutable-data.mjs'],
-    'lib/saga/product.mjs': ['./compile-pure.mjs'],
+    'lib/saga/product.mjs': ['./compile-pure.mjs', '../products/contract-schemas-v2.mjs', './version-dispatch.mjs'],
+    'lib/products/contract-schemas-v2.mjs': ['../immutable-data.mjs', './contract-schemas.mjs'],
+    'lib/products/contract-schemas.mjs': ['../immutable-data.mjs'],
+    'lib/saga/version-dispatch.mjs': ['node:util'],
     'lib/saga/compile-pure.mjs': ['node:crypto', 'node:util', '../immutable-data.mjs'],
     'lib/immutable-data.mjs': ['node:util'],
   };
@@ -316,8 +319,14 @@ test('preloaded product initialization and calls work while effects are denied',
   const declarations = dataURL(readFileSync(join(ROOT, 'src/core/product-declarations.mjs'), 'utf8').replace("'../../lib/immutable-data.mjs'", JSON.stringify(helper)));
   const compiler = dataURL(readFileSync(join(ROOT, 'lib/saga/compile-pure.mjs'), 'utf8').replace("'../immutable-data.mjs'", JSON.stringify(helper)));
   const schema = `data:application/json;base64,${readFileSync(join(ROOT, 'schema/saga-ir-v1.schema.json')).toString('base64')}`;
+  const schemas = dataURL(readFileSync(join(ROOT, 'lib/products/contract-schemas.mjs'), 'utf8')
+    .replace("'../immutable-data.mjs'", JSON.stringify(helper)));
+  const schemasV2 = dataURL(readFileSync(join(ROOT, 'lib/products/contract-schemas-v2.mjs'), 'utf8')
+    .replace("'../immutable-data.mjs'", JSON.stringify(helper)).replace("'./contract-schemas.mjs'", JSON.stringify(schemas)));
+  const dispatch = dataURL(readFileSync(join(ROOT, 'lib/saga/version-dispatch.mjs'), 'utf8'));
   const product = dataURL(readFileSync(join(ROOT, 'lib/saga/product.mjs'), 'utf8')
-    .replace("'./compile-pure.mjs'", JSON.stringify(compiler)).replace("'../../schema/saga-ir-v1.schema.json'", JSON.stringify(schema)));
+    .replace("'./compile-pure.mjs'", JSON.stringify(compiler)).replace("'../../schema/saga-ir-v1.schema.json'", JSON.stringify(schema))
+    .replace("'../products/contract-schemas-v2.mjs'", JSON.stringify(schemasV2)).replace("'./version-dispatch.mjs'", JSON.stringify(dispatch)));
   const source = dataURL(readFileSync(join(ROOT, 'src/core/products.mjs'), 'utf8')
     .replaceAll("'./product-declarations.mjs'", JSON.stringify(declarations)).replace("'../../lib/saga/product.mjs'", JSON.stringify(product)));
   const input = request();
@@ -343,5 +352,5 @@ test('preloaded product initialization and calls work while effects are denied',
     if (admitProducts(input).context !== null) throw new Error('binding unexpectedly admitted');
     finish(0);
   `;
-  execFileSync(process.execPath, ['--input-type=module', '-e', script], { encoding: 'utf8', timeout: 15000 });
+  execFileSync(process.execPath, ['--input-type=module'], { input: script, encoding: 'utf8', timeout: 15000 });
 });

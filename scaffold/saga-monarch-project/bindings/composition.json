@@ -1,0 +1,210 @@
+{
+  "schemaVersion": "truthsrc.saga-monarch-binding/v1",
+  "id": "inventory-composition",
+  "version": "v1",
+  "host": {
+    "id": "inventory-host",
+    "version": "v1"
+  },
+  "runtime": {
+    "saga": {
+      "artifact": "net.imadz:saga-core_2.13:0.2.1-p23.20261027.1",
+      "artifactSha256": "f20ad61eba670d2766cd39a1f75bd236351d0069b0480bb85d7335ffff93f8cf",
+      "artifactStatus": "fixed-offline-candidate",
+      "apiMode": "strict",
+      "definitionApi": "net.imadz.infra.saga.strict.StrictSagaDefinition",
+      "coordinatorApi": "net.imadz.infra.saga.strict.StrictSagaCoordinator",
+      "executionMode": "static-serial-allTCC"
+    },
+    "monarch": [
+      {
+        "artifact": "net.imadz:monarch-persistence_2.13:0.3.0-dev.r2-20261106-dc168f96fa62",
+        "sha256": "2dea09f3c97b4832fd78552f546a1d5fb4f68d5b92c42cb3d4466101c59d21b0"
+      },
+      {
+        "artifact": "net.imadz:monarch-core_2.13:0.2.1",
+        "sha256": "66223d37ab979b59cde557500f3da7aafaf532ddfe3268401c5f786093e0f971"
+      }
+    ]
+  },
+  "identity": {
+    "transactionPrefix": "inventory-tx/",
+    "resultPrefix": "inventory-result/",
+    "strategy": "sha256-item-frame-v1"
+  },
+  "wire": {
+    "format": "length-prefixed-v1",
+    "maxBytes": 65536,
+    "codecs": [
+      {
+        "role": "request",
+        "id": "inventory.request",
+        "version": 1
+      },
+      {
+        "role": "identity",
+        "id": "inventory.saga-identity",
+        "version": 1
+      },
+      {
+        "role": "phaseIdentity",
+        "id": "inventory.phase-identity",
+        "version": 1
+      },
+      {
+        "role": "item",
+        "id": "inventory.item-identity",
+        "version": 1
+      },
+      {
+        "role": "association",
+        "id": "inventory.association",
+        "version": 1
+      },
+      {
+        "role": "prepare",
+        "id": "inventory.prepare-receipt",
+        "version": 1
+      },
+      {
+        "role": "commit",
+        "id": "inventory.commit-receipt",
+        "version": 1
+      },
+      {
+        "role": "compensate",
+        "id": "inventory.compensate-receipt",
+        "version": 1
+      },
+      {
+        "role": "result",
+        "id": "inventory.result",
+        "version": 1
+      },
+      {
+        "role": "manifestResult",
+        "id": "inventory.manifest-result",
+        "version": 1
+      }
+    ],
+    "phaseTags": [
+      {
+        "phase": "prepare",
+        "tag": 1
+      },
+      {
+        "phase": "commit",
+        "tag": 2
+      },
+      {
+        "phase": "compensate",
+        "tag": 3
+      }
+    ],
+    "resultTags": [
+      {
+        "kind": "succeeded",
+        "tag": 1
+      },
+      {
+        "kind": "rejected-before-effects",
+        "tag": 2
+      },
+      {
+        "kind": "compensated",
+        "tag": 3
+      },
+      {
+        "kind": "recovery-required",
+        "tag": 4
+      },
+      {
+        "kind": "outcome-unknown",
+        "tag": 5
+      }
+    ]
+  },
+  "workflow": {
+    "stepId": "execute",
+    "codecVersion": "batch-codec-1",
+    "connectorPrefix": "inventory/",
+    "connectorVersion": "1",
+    "ledgerEpoch": "inventory-ledger-1",
+    "proofFormat": "digest-proof-v1"
+  },
+  "settings": {
+    "maxTransactions": 32,
+    "maxJobs": 4,
+    "maxChildren": 128,
+    "systemOwnership": "caller"
+  },
+  "implementations": [
+    {
+      "id": "inventory-files",
+      "version": "v1",
+      "module": "ext",
+      "role": "adapter",
+      "symbol": "reference.inventory.ext.FileInventoryPorts",
+      "construction": "class",
+      "implements": {
+        "context": "inventory",
+        "kind": "port",
+        "owner": [],
+        "id": "WarehouseParticipant"
+      },
+      "sourceRootKey": "inventory-implementations",
+      "file": "FileInventoryPorts.scala",
+      "constructor": [
+        {
+          "implicit": false,
+          "parameters": [
+            {
+              "name": "directory",
+              "input": "directory"
+            },
+            {
+              "name": "warehouseA",
+              "input": "resourceA"
+            },
+            {
+              "name": "warehouseB",
+              "input": "resourceB"
+            },
+            {
+              "name": "recoveryAuthorization",
+              "input": "recoveryAuthorization"
+            }
+          ]
+        },
+        {
+          "implicit": true,
+          "parameters": [
+            {
+              "name": "ec",
+              "input": "executionContext"
+            }
+          ]
+        }
+      ],
+      "provides": [
+        "participant",
+        "association",
+        "result",
+        "evidence",
+        "executionEvidence",
+        "recoveryAuthorization"
+      ]
+    }
+  ],
+  "root": {
+    "id": "InventoryApplication",
+    "bindings": {
+      "participant": "inventory-files",
+      "association": "inventory-files",
+      "result": "inventory-files",
+      "evidence": "inventory-files",
+      "executionEvidence": "inventory-files",
+      "recoveryAuthorization": "inventory-files"
+    }
+  }
+}

@@ -1,0 +1,796 @@
+{
+  "schemaVersion": "truthsrc.artifact-capability-observation/v1",
+  "producer": "scala-cqrs-application",
+  "channel": "manifest",
+  "level": "generated",
+  "status": "passed",
+  "sourceFingerprint": "7582a6da847f32ee2b950d92ac964bfc6b33c26bc8b146e3509bef20d9276aa0",
+  "command": "node .rounds/saga-monarch-ldftye3a/E03-catalog.mjs --apply (observeArtifactCapability: scala-cqrs-application)",
+  "inputs": [
+    {
+      "name": "request",
+      "sha256": "3c3ba3f97557a59aa2b54f33bad5a97c5b9a8c6b15960907aa93611199fb893c"
+    },
+    {
+      "name": "options",
+      "sha256": "d64dbdbef3b3f4220850c9f5c6ab5360204f9ab72eb6915c90abfd98841197ac"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "app/example/inventory/application/inventory_allocation_hostDefinition.scala",
+      "kind": "saga-definition",
+      "bytes": 59709,
+      "sha256": "96db0ac618cd72093db54f20fbf5a405fdaaa38c127646905e92ad890ad21bbe",
+      "contracts": [
+        "saga-definition",
+        "saga-definition-2"
+      ]
+    },
+    {
+      "path": "app/example/inventory/application/inventory_allocation_hostHost.scala",
+      "kind": "invocation-host",
+      "bytes": 12859,
+      "sha256": "ae3c318c9ea114154e35248a48eda5129595d1d10966bcdebef17ed124fdca43",
+      "contracts": [
+        "invocation-host"
+      ]
+    },
+    {
+      "path": "app/example/inventory/application/inventory_allocation_hostHostIO.scala",
+      "kind": "technical-port",
+      "bytes": 4234,
+      "sha256": "8d2d376b3d793abbbcac6efd0aa46e2a129addacbb3aa6f042f912cc4deba2b2",
+      "contracts": [
+        "technical-port-2"
+      ]
+    },
+    {
+      "path": "app/example/inventory/application/inventory_allocation_hostHostSerializer.scala",
+      "kind": "host-serialization",
+      "bytes": 2586,
+      "sha256": "bc25c32f4a35a610a29cb1359754afa5c08767e459a8c6e2a611c150a6e8b53f",
+      "contracts": [
+        "host-serialization"
+      ]
+    },
+    {
+      "path": "app/example/inventory/application/inventory_allocation_hostTechnicalPorts.scala",
+      "kind": "technical-port",
+      "bytes": 57701,
+      "sha256": "7e81527150069409c8b3c09caeeb7cdfa08f3177760c75bd648954b7f4f7bfce",
+      "contracts": [
+        "technical-port"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/AllocationOrderAggregate.scala",
+      "kind": "aggregate",
+      "bytes": 6097,
+      "sha256": "3b993028eaeb7f61afe8b7271e443b688aef8b0fc525c4b5036f578f462fe15d",
+      "contracts": [
+        "aggregate",
+        "aggregate-2"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/AllocationOrderCommandHelpers.scala",
+      "kind": "command-helpers",
+      "bytes": 808,
+      "sha256": "306619988bd9e566afed725b07ba7307fa65d225920f462871d39d755f40a215",
+      "contracts": [
+        "command-helpers"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/AllocationOrderEventHandler.scala",
+      "kind": "event-handler",
+      "bytes": 1214,
+      "sha256": "327cc71f8df3fd0ddf33f939046546377c9dee51d55bc1590bbe22738695390b",
+      "contracts": [
+        "event-handler"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/AllocationOrderExternalEvents.scala",
+      "kind": "external-event-bridge",
+      "bytes": 1616,
+      "sha256": "9f89080945327f86441cb411c977a585acb93674d7eda52eaf47ca5800fe1224",
+      "contracts": [
+        "external-event-bridge"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/AllocationOrderProtocol.scala",
+      "kind": "protocol",
+      "bytes": 1415,
+      "sha256": "0a78f44f2e31ea20330320bc3746eef37529d1d0ee5186d4a0dd92d3e459e731",
+      "contracts": [
+        "protocol"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/AllocationOrderRules.scala",
+      "kind": "rules",
+      "bytes": 830,
+      "sha256": "48ae755710106ed4e9d3a0152c791493fbca981895188a85fcdd06b573ab0028",
+      "contracts": [
+        "rules"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/AllocationOrderState.scala",
+      "kind": "state",
+      "bytes": 250,
+      "sha256": "85a8c1d5318417960a22c303d2ea14f0a5d9e674e52f783b6f65807bc1f6b943",
+      "contracts": [
+        "state"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/WarehouseAggregate.scala",
+      "kind": "aggregate",
+      "bytes": 2324,
+      "sha256": "221da339969a05e2c4e82dd3be21ac185bb9a079a4e323e79c623d2c8f0844c2",
+      "contracts": [
+        "aggregate",
+        "aggregate-2"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/WarehouseCommandHelpers.scala",
+      "kind": "command-helpers",
+      "bytes": 1081,
+      "sha256": "526550c611a2d42f6f973a475520baa616ece77b800a5cce8132d530086369c8",
+      "contracts": [
+        "command-helpers"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/WarehouseEventHandler.scala",
+      "kind": "event-handler",
+      "bytes": 748,
+      "sha256": "5a7cefb7471edc359a1dd4b748307e659eecc7ca237b96a905d3539766e32341",
+      "contracts": [
+        "event-handler"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/WarehouseProtocol.scala",
+      "kind": "protocol",
+      "bytes": 1910,
+      "sha256": "a0a438133b919b48c45b3604cd7a7fb0ef9afcdf3836348df9bc35a23f4ff7f2",
+      "contracts": [
+        "protocol"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/WarehouseRules.scala",
+      "kind": "rules",
+      "bytes": 1108,
+      "sha256": "e7c742b7ce1c88328c6a065ebb84f48e64d36cd74ee42916229ffe3ff8ac7a35",
+      "contracts": [
+        "rules"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/WarehouseState.scala",
+      "kind": "state",
+      "bytes": 251,
+      "sha256": "6462456af6c365139a4f15a5bbf756909df398b130fae8fcdd9b6db369169318",
+      "contracts": [
+        "state"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/AllocationId.scala",
+      "kind": "value-object",
+      "bytes": 132,
+      "sha256": "db4271705baa86c3db5ef0cfff5d18d54b8ba7165bc3f4efd4afdc52c5f86cd5",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/CompletionRecord0.scala",
+      "kind": "value-object",
+      "bytes": 166,
+      "sha256": "86e2cb55882d1a3138e10705cfed7f43995d809ecb6ed4b52aedf92e368bf881",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/CompletionRecord1.scala",
+      "kind": "value-object",
+      "bytes": 166,
+      "sha256": "f30c2e4e62350b6a7befaefeeef6ef306265b025872d097e0d2d915fa2296039",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/CompletionRecord2.scala",
+      "kind": "value-object",
+      "bytes": 166,
+      "sha256": "5df79f4cfaf6913e4c8d8dbb7d7363a45253642d52e2d902b88a7294ff77f3e7",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/CompletionRecord3.scala",
+      "kind": "value-object",
+      "bytes": 166,
+      "sha256": "02d5a4a71928fbcd65303e47d9e8f70dc46480f323f2cc2e1a667991eca1aa20",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/CompletionRecord4.scala",
+      "kind": "value-object",
+      "bytes": 166,
+      "sha256": "c137228e6758bf325a742fb1946486b6db3a80e8d902f851c78933cfb67911cd",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/DeploymentTarget.scala",
+      "kind": "value-object",
+      "bytes": 173,
+      "sha256": "361ee2fc9a55a54999a8b152931a7778e932ba6076a7951baf37548c1e6b2012",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/Distance.scala",
+      "kind": "value-object",
+      "bytes": 1181,
+      "sha256": "3e7b0e7b0fd8e979362d138e93e4a3bce3a937d22bcca900df21f9e345aed13b",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/DistancePO.scala",
+      "kind": "value-object",
+      "bytes": 145,
+      "sha256": "ae0acd903d402fc8dfe7346505cf1036a337ead8fdd0a18a5164d115612b38db",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/DistanceWire.scala",
+      "kind": "value-object",
+      "bytes": 147,
+      "sha256": "8dc32022b9ac5c36f57cc0966ad8ef2350bea0e2404a4de46b89564593c50817",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/OccurrenceEnvelope.scala",
+      "kind": "value-object",
+      "bytes": 182,
+      "sha256": "02488dd1fcce2283e6d52cd0ab0e3a946728809d54f28971880bcfbf7623e33a",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/OriginalReservation.scala",
+      "kind": "value-object",
+      "bytes": 421,
+      "sha256": "fca02a4e5c4d2673c2fd58cf4d6e0ed3cfaed86e988cd9219aad60d5c644f6e1",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/ReservationArgsRecord.scala",
+      "kind": "value-object",
+      "bytes": 358,
+      "sha256": "02037a4a2750320fa37db4fa49c9ff1e9c93babfb858a695acfbb6cb8d6c718d",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/ReservationId.scala",
+      "kind": "value-object",
+      "bytes": 133,
+      "sha256": "60a40329d68262b52d70ea3601b81441a0603cf777584adfd6d8b056493f3b5c",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/ReservationQuery.scala",
+      "kind": "value-object",
+      "bytes": 186,
+      "sha256": "6e341e6d0ae7e08b61c3b6d2d94f488e069670de19f11b0a4db6ea231efc3a3f",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/ReservationRequestId.scala",
+      "kind": "value-object",
+      "bytes": 140,
+      "sha256": "9c43eea712a7b5aeeb1312a365487be35607fc4b2ee1aaf2321740b3a6c815b1",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/ReservationView.scala",
+      "kind": "value-object",
+      "bytes": 201,
+      "sha256": "d5707e2422e1077d8bc85c2535b04e337bfa3e637d7965ab67db37d083007850",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/SkuId.scala",
+      "kind": "value-object",
+      "bytes": 125,
+      "sha256": "bbce3d0b7732622b748c6e556232f3ada98c0e568288b7f572b6c439869e1923",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/TaReceiptRecord.scala",
+      "kind": "value-object",
+      "bytes": 201,
+      "sha256": "9de0dbbc0d8fb26345b301548fcc199e426a8dbf5b944f77f45c31ec73adedb1",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/TaSubmissionRecord.scala",
+      "kind": "value-object",
+      "bytes": 204,
+      "sha256": "773bd9a86a4a4ae8f2f4baa6a0063157958cd4e670dfcfd3cb4ed7ab21eff4cc",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/TxId.scala",
+      "kind": "value-object",
+      "bytes": 124,
+      "sha256": "2c7a71f607812cb1006fe389986768a350014237c1eea524aa5cb7b6e12a6425",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/WarehouseId.scala",
+      "kind": "value-object",
+      "bytes": 131,
+      "sha256": "72c4e21945717d0d67212fd07d85a5c9117b1aac20ff713faf9e5d5d5dcd7c65",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/allocationcommitInput.scala",
+      "kind": "value-object",
+      "bytes": 228,
+      "sha256": "f733b6a93c231975ad481218c835e9c44223a97d523faf9167f09b0cb5bf7f35",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/allocationcommitQuery.scala",
+      "kind": "value-object",
+      "bytes": 330,
+      "sha256": "8e3f45c13ed2fb41112a2c92f6527f682bc1742da1929b4fd5e4cd6553c6cbae",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/allocationcommitReceipt.scala",
+      "kind": "value-object",
+      "bytes": 383,
+      "sha256": "2d29c09b4944273bc4136183e96ecb6e0e4a0e83873d066e6897d5211a1c7383",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/allocationcompensateInput.scala",
+      "kind": "value-object",
+      "bytes": 232,
+      "sha256": "74fbb14dccdbe656eb1b455931785ebc9bed51e864c0a590fecfaa364b427af1",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/allocationcompensateQuery.scala",
+      "kind": "value-object",
+      "bytes": 334,
+      "sha256": "a7807021962c2edaec6f9ff014264798c22c8eac6c953d7277082ca80a76766e",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/allocationcompensateReceipt.scala",
+      "kind": "value-object",
+      "bytes": 387,
+      "sha256": "1f1c8245591e1f1ae077e2dba2468c651a71d7e361df2cbe16260329fc4e928b",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/allocationprepareInput.scala",
+      "kind": "value-object",
+      "bytes": 229,
+      "sha256": "0b511490441d38271bc6434b67ee4e00bf3e71ae6ba701c0fc246a1470b5b06d",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/allocationprepareQuery.scala",
+      "kind": "value-object",
+      "bytes": 331,
+      "sha256": "e7d4b331601664f03f264d17c3619adce846216355d7707cf819e493490b3290",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/allocationprepareReceipt.scala",
+      "kind": "value-object",
+      "bytes": 384,
+      "sha256": "0f197abd066d924bcc99cd2b85be7576e03d2fd646156edbf7f834183a4ce840",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/destinationcommitInput.scala",
+      "kind": "value-object",
+      "bytes": 331,
+      "sha256": "42efb6b4c99dc66382ee13e11ad29f42fda9a9328f9a21c8bdda622a74ed41b6",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/destinationcommitQuery.scala",
+      "kind": "value-object",
+      "bytes": 330,
+      "sha256": "f5fc76f4d914b60d51a1ff034e5f05638e1f070830df54a582d3b3c7c8ecc536",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/destinationcommitReceipt.scala",
+      "kind": "value-object",
+      "bytes": 383,
+      "sha256": "7355f989c025fbd1c970dbaee1002224d721ae296160d60f8b8ccc59484895b4",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/destinationcompensateInput.scala",
+      "kind": "value-object",
+      "bytes": 335,
+      "sha256": "0f8530822c75840a365d0d4cdaa814b9682600dccca02775d09bebfb5c622021",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/destinationcompensateQuery.scala",
+      "kind": "value-object",
+      "bytes": 334,
+      "sha256": "cef4faa148689b357de5473fca7464fe02921e40ccba32631af1fc28c69d0aea",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/destinationcompensateReceipt.scala",
+      "kind": "value-object",
+      "bytes": 387,
+      "sha256": "695d58d2e00af716406650541667881f10d04933e2fb542d2c7ae79682b20177",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/destinationprepareInput.scala",
+      "kind": "value-object",
+      "bytes": 288,
+      "sha256": "2c0a05bd15cfe9879fcfb98ceaebd43e7d6d39e89ae82cfdf3ad9d965e9ecb1f",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/destinationprepareQuery.scala",
+      "kind": "value-object",
+      "bytes": 331,
+      "sha256": "5ffce13b4884b4d17bb461129b85db682ae6259503818fe2f954a7e6bd697f25",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/destinationprepareReceipt.scala",
+      "kind": "value-object",
+      "bytes": 400,
+      "sha256": "73407aaeb658426b9a8a70144d9f65d70a28de9c8017e96c5ba079da870a80e7",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/warehousecommitInput.scala",
+      "kind": "value-object",
+      "bytes": 329,
+      "sha256": "f07a235710887a2ab23064e4cc5a8dd9ad300530ca81e3cb8824a00de95f9b50",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/warehousecommitQuery.scala",
+      "kind": "value-object",
+      "bytes": 328,
+      "sha256": "9eb3b4198dbbd3ba35f09fb8ef8bd0f3544744999ddaec1abe9e7d54aa82c8ee",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/warehousecommitReceipt.scala",
+      "kind": "value-object",
+      "bytes": 381,
+      "sha256": "b9ee5dd1a546e46cde50178199cc02a4e5cd72a4b12be88682321af1e95d6ca8",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/warehousecompensateInput.scala",
+      "kind": "value-object",
+      "bytes": 333,
+      "sha256": "8ef73ddef8c57314a35ff9f61ee74332c4ab4b932e8bae8874f63dfda21c5ffa",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/warehousecompensateQuery.scala",
+      "kind": "value-object",
+      "bytes": 332,
+      "sha256": "2e57a894921ea91e115ec62c6d6ef9baea912e67361c4d3e968722cdc8b8ebe3",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/warehousecompensateReceipt.scala",
+      "kind": "value-object",
+      "bytes": 385,
+      "sha256": "9f768263a14bfefd3c47fed3037c15cee6f9614bbffda6c27c0f8dfd1bd0dc7c",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/warehouseprepareInput.scala",
+      "kind": "value-object",
+      "bytes": 286,
+      "sha256": "c337740507e30de5c7d498cdd4ed94b6a188ec6f12719bd37cf201599b2c31bf",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/warehouseprepareQuery.scala",
+      "kind": "value-object",
+      "bytes": 329,
+      "sha256": "d37fc4f0d298622fe9e93702ab14395ed5e1e8c79f4a64ff7423392665201d27",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/domain/values/warehouseprepareReceipt.scala",
+      "kind": "value-object",
+      "bytes": 398,
+      "sha256": "00d5a23be14fce844d2b15e275be868a4f997b98b3862a9cb3a50289857b363f",
+      "contracts": [
+        "value-object"
+      ]
+    },
+    {
+      "path": "app/example/inventory/infrastructure/serialization/AllocationOrderAdapters.scala",
+      "kind": "serialization-adapter",
+      "bytes": 4545,
+      "sha256": "03334c5d8215c86c9e6617e4735cbeea18eb4328201790b371a4ca60c58e6abb",
+      "contracts": [
+        "serialization-adapter-2"
+      ]
+    },
+    {
+      "path": "app/example/inventory/infrastructure/serialization/DomainConverters.scala",
+      "kind": "converter",
+      "bytes": 50559,
+      "sha256": "6e3d2ace10eaa8b416dd89673ce3c7acd31c60a197460930456683f6e8b6e17e",
+      "contracts": [
+        "converter",
+        "converter-2"
+      ]
+    },
+    {
+      "path": "app/example/inventory/infrastructure/serialization/DomainProtoSerializer.scala",
+      "kind": "serialization-adapter",
+      "bytes": 15475,
+      "sha256": "be6030ff9ed5b7d05fa2bcee64cb0bd3e145ef7ae8a9c71e0c7859a65597cf42",
+      "contracts": [
+        "serialization-adapter"
+      ]
+    },
+    {
+      "path": "app/example/inventory/infrastructure/serialization/WarehouseAdapters.scala",
+      "kind": "serialization-adapter",
+      "bytes": 2725,
+      "sha256": "51714dbc9f98ba1c59730eedc02532c0e91b2d0591a912a50155e65ef5e750ae",
+      "contracts": [
+        "serialization-adapter-2"
+      ]
+    },
+    {
+      "path": "app/protobuf/example_inventory_domain.proto",
+      "kind": "proto",
+      "bytes": 7048,
+      "sha256": "624cd2dd3a9b966baab41d66bd8d4a67cf96c94ab0a09d02608072cc190e3040",
+      "contracts": [
+        "proto"
+      ]
+    },
+    {
+      "path": "app/protobuf/inventory_allocation_host_host.proto",
+      "kind": "host-proto",
+      "bytes": 296,
+      "sha256": "8114aa0e86302a15de68e3beeb4f4988ab99bd7cd96d94bfbf193744ebaba44e",
+      "contracts": [
+        "host-proto"
+      ]
+    },
+    {
+      "path": "build.sbt",
+      "kind": "build",
+      "bytes": 926,
+      "sha256": "466cf0bb8911e133d9e34eb6134600d73c5b440d28a0a9146f0d57922e8ebc27",
+      "contracts": [
+        "build"
+      ]
+    },
+    {
+      "path": "project/build.properties",
+      "kind": "build",
+      "bytes": 19,
+      "sha256": "bc2e83307ba4a40cb286711cee6f644d9bca62ab2d791053000c7c9ce7a82bb2",
+      "contracts": [
+        "build"
+      ]
+    },
+    {
+      "path": "project/plugins.sbt",
+      "kind": "build",
+      "bytes": 178,
+      "sha256": "b0b249c1421454db041a3a1e519d71e83ef5a4b5d46567c5a24371ba285f0e05",
+      "contracts": [
+        "build"
+      ]
+    },
+    {
+      "path": "src/main/resources/application.conf",
+      "kind": "build",
+      "bytes": 6042,
+      "sha256": "8c34cf30d13f3b535268c96c98d3f0cf0d3e5740db8268c0071470629448df23",
+      "contracts": [
+        "build-2"
+      ]
+    },
+    {
+      "path": "src/test/scala/GeneratedActorStateSpec.scala",
+      "kind": "generated-test",
+      "bytes": 2281,
+      "sha256": "41ca4b521536738516359fa86225d1d5f7d352deb6b416d00bdbf4c10e7b3817",
+      "contracts": [
+        "generated-test"
+      ]
+    },
+    {
+      "path": "src/test/scala/GeneratedDomainRoundtripSpec.scala",
+      "kind": "generated-test",
+      "bytes": 1735,
+      "sha256": "1f4e49af19bfe03629699e3cc646de6547743fc04b74dd5b7b165ac6b7e2fad2",
+      "contracts": [
+        "generated-test"
+      ]
+    },
+    {
+      "path": "src/test/scala/GeneratedExtendedPortsSpec.scala",
+      "kind": "generated-test",
+      "bytes": 43802,
+      "sha256": "8edf4b9d250e422abe4c41d8c6622129d1df64b6ad5d8be1890c5d6fe1e55561",
+      "contracts": [
+        "generated-test-3"
+      ]
+    },
+    {
+      "path": "src/test/scala/GeneratedFiniteHostSpec.scala",
+      "kind": "generated-test",
+      "bytes": 61476,
+      "sha256": "c5e8cd96cc325c14cbf5e08537ee4c788aac045938a04a22ea9e87d64bacac4d",
+      "contracts": [
+        "generated-test-3"
+      ]
+    },
+    {
+      "path": "src/test/scala/GeneratedHostRecoverySpec.scala",
+      "kind": "generated-test",
+      "bytes": 60648,
+      "sha256": "6ec107d24f87f2c882bc2baec9ce564428d3144c133ff47b4e50294d203a832c",
+      "contracts": [
+        "generated-test-3"
+      ]
+    },
+    {
+      "path": "src/test/scala/GeneratedRequiredBindingsSpec.scala",
+      "kind": "generated-test",
+      "bytes": 47445,
+      "sha256": "b35fc3e05bad7e9b503180a133d157feb89ce87334139f132cc1c0275c5269e8",
+      "contracts": [
+        "generated-test-3"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "product-compilation-has-no-diagnostics",
+      "passed": true
+    },
+    {
+      "name": "pure-producer-has-no-diagnostics",
+      "passed": true
+    },
+    {
+      "name": "repeat-plan-is-identical",
+      "passed": true
+    },
+    {
+      "name": "request-and-options-unchanged",
+      "passed": true
+    },
+    {
+      "name": "actual-path-kind-channel-and-conditional-contracts",
+      "passed": true
+    }
+  ],
+  "independent": false,
+  "approval": null
+}

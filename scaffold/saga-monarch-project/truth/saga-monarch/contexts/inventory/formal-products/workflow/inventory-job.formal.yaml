@@ -1,0 +1,122 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: formal-product
+schemaVersion: "truthsrc.formal-product/v1"
+family: workflow
+id: inventory-job
+version: v1
+payload:
+  {
+    "schemaVersion": "truthsrc.workflow/v1",
+    "id": "inventory-job",
+    "version": "v1",
+    "context": "inventory",
+    "input": {
+      "type": {
+        "context": "inventory",
+        "kind": "type",
+        "owner": [],
+        "id": "ReservationRequest"
+      },
+      "identity": "caller-job-sequence-item",
+      "eof": "explicit-close",
+      "conflict": "reject-different-payload"
+    },
+    "capacities": [
+      {
+        "id": "execution-permit",
+        "units": 1
+      }
+    ],
+    "areas": [
+      {
+        "id": "reserve",
+        "version": "v1",
+        "batch": {
+          "kind": "count-or-wait",
+          "maxItems": 2,
+          "minItems": 1,
+          "maxWaitMillis": 100,
+          "allowPartialOnClose": true
+        },
+        "resources": [
+          {
+            "id": "execution-permit",
+            "units": 1
+          }
+        ],
+        "parallelism": 1,
+        "maxExecutions": 3,
+        "action": {
+          "kind": "invoke-saga",
+          "ref": {
+            "id": "inventory-reservation",
+            "version": "v1"
+          }
+        },
+        "completion": {
+          "terminal": {
+            "kind": "route",
+            "target": "publish-result",
+            "compatibilityKey": "results",
+            "delayMillis": 0
+          },
+          "unknown": "hold",
+          "resource": "release",
+          "retainCarried": false
+        },
+        "verification": false
+      },
+      {
+        "id": "publish-result",
+        "version": "v1",
+        "batch": {
+          "kind": "single",
+          "maxItems": 1,
+          "minItems": 1,
+          "maxWaitMillis": 0,
+          "allowPartialOnClose": true
+        },
+        "resources": [
+          {
+            "id": "execution-permit",
+            "units": 1
+          }
+        ],
+        "parallelism": 1,
+        "maxExecutions": 3,
+        "action": {
+          "kind": "publish-result",
+          "ref": {
+            "id": "inventory-reservation",
+            "version": "v1"
+          }
+        },
+        "completion": {
+          "terminal": {
+            "kind": "complete",
+            "target": null,
+            "compatibilityKey": null,
+            "delayMillis": 0
+          },
+          "unknown": "hold",
+          "resource": "release",
+          "retainCarried": false
+        },
+        "verification": false
+      }
+    ],
+    "settings": {
+      "maxAcceptedItems": 3,
+      "maxActiveItems": 3,
+      "maxActiveBytes": 12288,
+      "maxItemBytes": 4096,
+      "maxResultBytes": 4096,
+      "maxConcurrentBatches": 2,
+      "maxTransitions": 16,
+      "maxBatchCalls": 300,
+      "maxReconciliations": 3,
+      "pollIntervalMillis": 25,
+      "callTimeoutMillis": 2000
+    }
+  }

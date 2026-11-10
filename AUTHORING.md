@@ -55,6 +55,22 @@ are closed; compiler-overwritten payload fields and unconsumed definitions rejec
 Policy and note origins both require an explicit session stage and collision-free
 frozen seq. Legacy parsing remains unchanged for byte compatibility.
 
+## Finite Saga/Monarch R2 author contract
+
+`scaffold/saga-monarch-project/truth/saga-monarch/` is the sole inventory author
+surface. It declares the complete two-resource Saga and typed result port;
+optional pipelines own their steps, reads, writes and outcomes. The registered
+`workflow` formal family references these declarations and states the finite
+batch/resource/settlement policy. It does not duplicate a complete request or
+infer a business retry from prose.
+
+The separate project `bindings/` documents pin runtime artifacts, codec and wire
+identities, external implementation locations and constructor ABI. Actual run
+IDs, input history and settlement receipts come from execution, not author
+metadata. Every author edit requires validate and roundtrip; strict product
+admission, generated source freshness and execution qualification remain separate.
+See [the finite contract](docs/artifacts/SAGA-MONARCH-R2.md).
+
 ## Finite persistence/readside author contract
 
 `scaffold/persistence-readside-project/truth/persistence-readside/` reuses the

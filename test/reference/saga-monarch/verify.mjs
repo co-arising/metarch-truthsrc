@@ -118,7 +118,7 @@ export async function verifyReference({ round, out, compileOnly = false }) {
   }
   return result;
 }
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (!process.env.NODE_TEST_CONTEXT && process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const args = process.argv.slice(2); assert(args.length === 4 && args[0] === '--round' && args[2] === '--out');
   const result = await verifyReference({ round: args[1], out: args[3] });
   console.log(JSON.stringify({ passed: result.passed, completeB: result.completeB, tests: result.tests, out: result.out,

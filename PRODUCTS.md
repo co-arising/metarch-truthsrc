@@ -1,6 +1,28 @@
 # Versioned product admission — canonical and static Saga contracts
 
-最后更新: 2026-10-30
+最后更新: 2026-11-10
+
+## Finite Strict Saga and Monarch R2 products
+
+The explicit `scala-cqrs-saga-monarch-v1` producer targets
+`scala-cqrs-saga-monarch@1`. Its eight product versions are reference-layout@1,
+exact-value-types@1, exact-value-codecs@1, saga-contract@2,
+saga-runtime-contract@2, execution-contract@2, workflow-contract@1 and
+saga-host-contract@3. These versions do not reinterpret the legacy v1 contracts.
+
+Saga v2 uses a typed result port and per-interaction timeout; the runtime product
+uses v4 lowering with the pinned Strict Saga artifact. Execution v2 retains the
+R2 Run definition/codec identity and complete reads, writes and outcome mapping.
+Workflow v1 admits finite batches, original-item settlement, explicit release or
+whole-group Carry, and bounded retry with an explicit exhausted disposition.
+The host product closes these references over captured implementations and an
+explicit composition root; unknown or unsupported shapes fail before generation.
+
+Static product validity is not runtime qualification. The nonbank samples have
+separate source-bound compile, behavior and journal-recovery evidence; no bank
+migration, runtime publication, generic deadline or architecture approval is
+inferred. See [the family contract](docs/artifacts/SAGA-MONARCH-R2.md) and
+[project use](PROJECT.md#finite-sagamonarch-r2-projects).
 
 ## Finite persistence/readside product
 

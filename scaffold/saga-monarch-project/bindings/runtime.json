@@ -1,0 +1,83 @@
+{
+  "schemaVersion": "truthsrc.saga-runtime-binding/v3",
+  "target": {
+    "artifact": "net.imadz:saga-core_2.13:0.2.1-p23.20261027.1",
+    "artifactSha256": "f20ad61eba670d2766cd39a1f75bd236351d0069b0480bb85d7335ffff93f8cf",
+    "artifactStatus": "fixed-offline-candidate",
+    "apiMode": "strict",
+    "definitionApi": "net.imadz.infra.saga.strict.StrictSagaDefinition",
+    "coordinatorApi": "net.imadz.infra.saga.strict.StrictSagaCoordinator",
+    "executionMode": "static-serial-allTCC",
+    "capabilities": [
+      "positive-int-definition-version",
+      "static-participants",
+      "serial-all-tcc",
+      "fresh-canonical-args",
+      "pinned-args-codec",
+      "pinned-phase-receipt-codecs",
+      "minor-unit-string-money",
+      "singleton-serial-barriers",
+      "confirmed-receipt-context",
+      "fresh-receipt-decode",
+      "typed-result-port",
+      "explicit-authorized-recovery",
+      "per-interaction-timeout"
+    ]
+  },
+  "sagas": [
+    {
+      "sagaId": "inventory-reservation",
+      "definitionVersion": "v1",
+      "runtimeVersion": 1,
+      "argsCodec": {
+        "id": "inventory.request",
+        "version": "args-v1",
+        "runtimeVersion": 1
+      },
+      "receiptCodecs": [
+        {
+          "stepId": "reserve-a",
+          "phase": "prepare",
+          "id": "inventory.prepare-receipt",
+          "version": "receipt-v1",
+          "runtimeVersion": 1
+        },
+        {
+          "stepId": "reserve-a",
+          "phase": "commit",
+          "id": "inventory.commit-receipt",
+          "version": "receipt-v1",
+          "runtimeVersion": 1
+        },
+        {
+          "stepId": "reserve-a",
+          "phase": "compensate",
+          "id": "inventory.compensate-receipt",
+          "version": "receipt-v1",
+          "runtimeVersion": 1
+        },
+        {
+          "stepId": "reserve-b",
+          "phase": "prepare",
+          "id": "inventory.prepare-receipt",
+          "version": "receipt-v1",
+          "runtimeVersion": 1
+        },
+        {
+          "stepId": "reserve-b",
+          "phase": "commit",
+          "id": "inventory.commit-receipt",
+          "version": "receipt-v1",
+          "runtimeVersion": 1
+        },
+        {
+          "stepId": "reserve-b",
+          "phase": "compensate",
+          "id": "inventory.compensate-receipt",
+          "version": "receipt-v1",
+          "runtimeVersion": 1
+        }
+      ]
+    }
+  ]
+}

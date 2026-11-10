@@ -1,0 +1,30 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: value-object
+name: ReservationRequest
+payload:
+  {
+    "name": "ReservationRequest",
+    "fields": [
+      {
+        "name": "requestId",
+        "dataType": "RequestId"
+      },
+      {
+        "name": "warehouseA",
+        "dataType": "Warehouse"
+      },
+      {
+        "name": "warehouseB",
+        "dataType": "Warehouse"
+      },
+      {
+        "name": "sku",
+        "dataType": "Sku"
+      },
+      {
+        "name": "quantity",
+        "dataType": "Quantity"
+      }
+    ]
+  }

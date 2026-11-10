@@ -1,0 +1,21 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: aggregate
+name: WarehouseA
+context: inventory
+order:
+  commands: ["PrepareReservation","CommitReservation","CompensateReservation","RequestReservation"]
+  events: ["ReservationPrepared","ReservationCommitted","ReservationCompensated"]
+payload:
+  {
+    "name": "WarehouseA",
+    "identifier": {
+      "name": "id",
+      "dataType": "Warehouse",
+      "origin": "BUSINESS_INPUT"
+    },
+    "stateFields": [],
+    "entity": "WarehouseA"
+  }
+extraEvents:
+  []

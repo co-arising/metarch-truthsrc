@@ -325,7 +325,13 @@ test('complete source and JSON dependency initialize and admit Saga while effect
   const helper = dataURL(readFileSync(join(ROOT, 'lib/immutable-data.mjs'), 'utf8'));
   const compiler = dataURL(readFileSync(join(ROOT, 'lib/saga/compile-pure.mjs'), 'utf8').replace("'../immutable-data.mjs'", JSON.stringify(helper)));
   const schema = `data:application/json;base64,${readFileSync(join(ROOT, 'schema/saga-ir-v1.schema.json')).toString('base64')}`;
-  const product = dataURL(readFileSync(join(ROOT, 'lib/saga/product.mjs'), 'utf8').replace("'./compile-pure.mjs'", JSON.stringify(compiler)).replace("'../../schema/saga-ir-v1.schema.json'", JSON.stringify(schema)));
+  const schemas = dataURL(readFileSync(join(ROOT, 'lib/products/contract-schemas.mjs'), 'utf8').replace("'../immutable-data.mjs'", JSON.stringify(helper)));
+  const schemasV2 = dataURL(readFileSync(join(ROOT, 'lib/products/contract-schemas-v2.mjs'), 'utf8')
+    .replace("'../immutable-data.mjs'", JSON.stringify(helper)).replace("'./contract-schemas.mjs'", JSON.stringify(schemas)));
+  const versions = dataURL(readFileSync(join(ROOT, 'lib/saga/version-dispatch.mjs'), 'utf8'));
+  const product = dataURL(readFileSync(join(ROOT, 'lib/saga/product.mjs'), 'utf8').replace("'./compile-pure.mjs'", JSON.stringify(compiler))
+    .replace("'../../schema/saga-ir-v1.schema.json'", JSON.stringify(schema))
+    .replace("'../products/contract-schemas-v2.mjs'", JSON.stringify(schemasV2)).replace("'./version-dispatch.mjs'", JSON.stringify(versions)));
   const declarations = dataURL(readFileSync(join(ROOT, 'src/core/product-declarations.mjs'), 'utf8').replace("'../../lib/immutable-data.mjs'", JSON.stringify(helper)));
   const source = dataURL(readFileSync(join(ROOT, 'src/core/products.mjs'), 'utf8').replaceAll("'./product-declarations.mjs'", JSON.stringify(declarations)).replace("'../../lib/saga/product.mjs'", JSON.stringify(product)));
   const input = request(inventorySagaContract());

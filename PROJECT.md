@@ -73,6 +73,25 @@ not a read-only replay of its receipt.
   Supported line queries match verified final source spans. Unmapped lines and
   symbol-only queries remain candidates; no name-based semantic certification.
 
+## Finite Saga/Monarch R2 projects
+
+Copy `scaffold/saga-monarch-project` to a new owned directory outside the tool
+installation. The explicit `scala-cqrs-saga-monarch-v1` producer consumes the
+configured inventory author tree, eight versioned products, technical bindings
+and live captured external implementations. Use `compile-project`,
+`generate-project --plan`, generation, `verify-project` and `query-project` above.
+Raw `generate-products`, including plan mode, cannot replace live project capture.
+
+The generated kernel, glue and root assemble fixed Strict Saga and Monarch R2
+artifacts; ext implementations remain caller-owned. Optional typed Runs retain
+original inputs, checkpoints, outcomes and explicitly bound business leaves.
+Cold Run query does not start recovery. Authorized `recoverRuns` activates the
+original inner Runs; `resumeRuns` may wake the outer batch only after read-only
+queries confirm their durable terminal results. Retry exhaustion is explicit;
+no generic durable transaction/job deadline is promised. See [the finite
+contract](docs/artifacts/SAGA-MONARCH-R2.md) for supply pins, supported shapes,
+source navigation and separate generation/compilation/behavior evidence.
+
 ## Finite persistence/readside projects
 
 Copy `scaffold/persistence-readside-project` to a new owned directory outside the

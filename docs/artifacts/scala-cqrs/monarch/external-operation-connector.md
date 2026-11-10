@@ -54,3 +54,11 @@ def validateSafeToSubmit(request: Request, proof: Evidence, lastEvidence: Option
 ```
 
 后两项默认Left；宿主必须给出可信领域证明。查询的NotFound不是safeToSubmit，timeout也不能释放资源或清空预算。
+
+## 第七批 Strict Saga / Monarch R2 生成入口
+
+新增 `js-saga-monarch-r2-candidate-v1`，由 `scala-cqrs-saga-monarch-v1` 提供。此前“未建立原生生成”的描述保留为原基线，不能覆盖本段明确的新非银行入口。
+
+- `typed-run`：Pure fixed-step or single-operation managed Run generated reads/writes/outcomes, typed leaf adapters, six-field identity checks and bounded Host. Low-level reference facade is separate from declared Run generation.
+
+输入来自唯一作者树与显式技术/外置实现 bindings；运行库接口及内核仍由冻结制品提供。implemented 表示生成实现存在；资格仅由匹配实际输入的独立验收决定，旧28回执不改签。范围、两阶段恢复、重试耗尽与安装边界见[本族合同](../../SAGA-MONARCH-R2.md)。不表示银行迁移或架构批准。

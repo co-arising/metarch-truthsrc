@@ -62,6 +62,10 @@ export function admitProducts(input) {
   if (result.rows.length) return finish(null);
   const payloads = new Map([['canonical', canonical]]);
   if (sagaDeclared) {
+    if (bindings[0]?.schemaVersion === 'truthsrc.saga-binding/v2') {
+      result.report('PRODUCT_BINDINGS_VERSION', 'bindings', '/0/schemaVersion', 'Declared saga-contract@1 requires exact truthsrc.saga-binding/v1.');
+      return finish(null);
+    }
     const compiled = compileSagaProduct(canonical, bindings[0]);
     result.rows.push(...compiled.diagnostics);
     if (result.rows.length) return finish(null);

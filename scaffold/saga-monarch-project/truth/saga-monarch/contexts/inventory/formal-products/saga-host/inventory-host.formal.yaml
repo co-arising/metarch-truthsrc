@@ -1,0 +1,91 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: formal-product
+schemaVersion: "truthsrc.formal-product/v1"
+family: saga-host
+id: inventory-host
+version: v1
+payload:
+  {
+    "schemaVersion": "truthsrc.saga-monarch-host/v1",
+    "id": "inventory-host",
+    "version": "v1",
+    "context": "inventory",
+    "saga": {
+      "id": "inventory-reservation",
+      "version": "v1"
+    },
+    "workflow": {
+      "id": "inventory-job",
+      "version": "v1"
+    },
+    "requestType": {
+      "context": "inventory",
+      "kind": "type",
+      "owner": [],
+      "id": "ReservationRequest"
+    },
+    "slots": {
+      "requestId": "requestId",
+      "resourceA": "warehouseA",
+      "resourceB": "warehouseB",
+      "subject": "sku",
+      "quantity": "quantity"
+    },
+    "ports": {
+      "participant": {
+        "ref": {
+          "context": "inventory",
+          "kind": "port",
+          "owner": [],
+          "id": "WarehouseParticipant"
+        },
+        "version": "v1"
+      },
+      "association": {
+        "ref": {
+          "context": "inventory",
+          "kind": "port",
+          "owner": [],
+          "id": "AssociationPort"
+        },
+        "version": "v1"
+      },
+      "result": {
+        "ref": {
+          "context": "inventory",
+          "kind": "port",
+          "owner": [],
+          "id": "ReservationResultPort"
+        },
+        "version": "v1"
+      },
+      "evidence": {
+        "ref": {
+          "context": "inventory",
+          "kind": "port",
+          "owner": [],
+          "id": "EvidenceValidator"
+        },
+        "version": "v1"
+      },
+      "executionEvidence": {
+        "ref": {
+          "context": "inventory",
+          "kind": "port",
+          "owner": [],
+          "id": "ExecutionEvidencePort"
+        },
+        "version": "v1"
+      },
+      "recoveryAuthorization": {
+        "ref": {
+          "context": "inventory",
+          "kind": "port",
+          "owner": [],
+          "id": "RecoveryAuthorization"
+        },
+        "version": "v1"
+      }
+    }
+  }

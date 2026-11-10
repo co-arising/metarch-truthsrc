@@ -1,0 +1,582 @@
+{
+  "schemaVersion": "truthsrc.execution-binding/v2",
+  "pipelines": [],
+  "sagaBindings": {
+    "schemaVersion": "truthsrc.saga-binding/v2",
+    "sagas": [
+      {
+        "sagaId": "inventory-reservation",
+        "version": "v1",
+        "module": "reference.inventory.glue.InventorySaga",
+        "engine": {
+          "artifact": "net.imadz:saga-core_2.13:0.2.1-p23.20261027.1",
+          "apiMode": "strict",
+          "entrypoint": "net.imadz.infra.saga.strict.StrictSagaCoordinator",
+          "capabilities": {
+            "required": [
+              "durable-commit-decision",
+              "durable-abort-decision",
+              "typed-nonterminal-unknown",
+              "safe-status-reattach",
+              "receipt-reconciliation",
+              "participant-idempotency-query",
+              "pinned-definition-codec",
+              "manual-evidence-authorization",
+              "cancel-before-prepare-fencing",
+              "durable-manifest"
+            ]
+          }
+        },
+        "codec": {
+          "id": "inventory.request",
+          "version": "args-v1",
+          "compatibleVersions": [
+            "args-v1"
+          ],
+          "mapper": "reference.inventory.kernel.BinaryCodecs.request"
+        },
+        "types": [
+          {
+            "id": "RequestId",
+            "canonicalType": "RequestId",
+            "implementation": "reference.inventory.kernel.RequestId",
+            "kind": "id",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          {
+            "id": "Warehouse",
+            "canonicalType": "Warehouse",
+            "implementation": "reference.inventory.kernel.Warehouse",
+            "kind": "id",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          {
+            "id": "Sku",
+            "canonicalType": "Sku",
+            "implementation": "reference.inventory.kernel.Sku",
+            "kind": "id",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          {
+            "id": "TransactionId",
+            "canonicalType": "TransactionId",
+            "implementation": "reference.inventory.kernel.TransactionId",
+            "kind": "id",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          {
+            "id": "Quantity",
+            "canonicalType": "Quantity",
+            "implementation": "reference.inventory.kernel.Quantity",
+            "kind": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          {
+            "id": "ReservationId",
+            "canonicalType": "String",
+            "implementation": "java.lang.String",
+            "kind": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          {
+            "id": "ReservationRequest",
+            "canonicalType": "ReservationRequest",
+            "implementation": "reference.inventory.kernel.ReservationRequest",
+            "kind": "value-object",
+            "fields": [
+              {
+                "slot": "requestId",
+                "type": "RequestId"
+              },
+              {
+                "slot": "warehouseA",
+                "type": "Warehouse"
+              },
+              {
+                "slot": "warehouseB",
+                "type": "Warehouse"
+              },
+              {
+                "slot": "sku",
+                "type": "Sku"
+              },
+              {
+                "slot": "quantity",
+                "type": "Quantity"
+              }
+            ]
+          }
+        ],
+        "participants": [
+          {
+            "participantId": "warehouse-a",
+            "addressing": {
+              "resolver": "inventory.WarehouseResolver",
+              "aggregate": "WarehouseA",
+              "resourceType": "Warehouse",
+              "mode": "exact-resource"
+            }
+          },
+          {
+            "participantId": "warehouse-b",
+            "addressing": {
+              "resolver": "inventory.WarehouseResolver",
+              "aggregate": "WarehouseB",
+              "resourceType": "Warehouse",
+              "mode": "exact-resource"
+            }
+          }
+        ],
+        "steps": [
+          {
+            "stepId": "reserve-a",
+            "phases": {
+              "prepare": {
+                "kind": "command",
+                "port": "inventory.WarehouseParticipant",
+                "commandMapper": "inventory.PrepareReservation",
+                "confirmation": {
+                  "kind": "durable-receipt",
+                  "eventRef": {
+                    "aggregate": "WarehouseA",
+                    "name": "ReservationPrepared"
+                  },
+                  "mapper": "inventory.ReservationPrepared",
+                  "outputs": [
+                    {
+                      "slot": "reservationId",
+                      "ref": "receipt:reservationId",
+                      "type": "ReservationId"
+                    }
+                  ]
+                },
+                "query": {
+                  "mapper": "inventory.QueryPrepareReservation",
+                  "mode": "read-only",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "resultKinds": [
+                    "confirmed",
+                    "not-executed",
+                    "unknown"
+                  ]
+                },
+                "receipt": {
+                  "mapper": "inventory.prepareReceipt",
+                  "version": "receipt-v1",
+                  "durable": true,
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadCompatibility": "exact",
+                  "evidence": "reservation-decision-effect-reconciliation"
+                },
+                "idempotency": {
+                  "mapper": "inventory.PhaseIdentity",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadConflict": "reject",
+                  "attemptIdentity": "excluded"
+                }
+              },
+              "commit": {
+                "kind": "command",
+                "port": "inventory.WarehouseParticipant",
+                "commandMapper": "inventory.CommitReservation",
+                "confirmation": {
+                  "kind": "durable-receipt",
+                  "eventRef": {
+                    "aggregate": "WarehouseA",
+                    "name": "ReservationCommitted"
+                  },
+                  "mapper": "inventory.ReservationCommitted",
+                  "outputs": [
+                    {
+                      "slot": "reservationId",
+                      "ref": "receipt:reservationId",
+                      "type": "ReservationId"
+                    }
+                  ]
+                },
+                "query": {
+                  "mapper": "inventory.QueryCommitReservation",
+                  "mode": "read-only",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "resultKinds": [
+                    "confirmed",
+                    "not-executed",
+                    "unknown"
+                  ]
+                },
+                "receipt": {
+                  "mapper": "inventory.commitReceipt",
+                  "version": "receipt-v1",
+                  "durable": true,
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadCompatibility": "exact",
+                  "evidence": "reservation-decision-effect-reconciliation"
+                },
+                "idempotency": {
+                  "mapper": "inventory.PhaseIdentity",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadConflict": "reject",
+                  "attemptIdentity": "excluded"
+                }
+              },
+              "compensate": {
+                "kind": "command",
+                "port": "inventory.WarehouseParticipant",
+                "commandMapper": "inventory.CompensateReservation",
+                "confirmation": {
+                  "kind": "durable-receipt",
+                  "eventRef": {
+                    "aggregate": "WarehouseA",
+                    "name": "ReservationCompensated"
+                  },
+                  "mapper": "inventory.ReservationCompensated",
+                  "outputs": [
+                    {
+                      "slot": "reservationId",
+                      "ref": "receipt:reservationId",
+                      "type": "ReservationId"
+                    }
+                  ]
+                },
+                "query": {
+                  "mapper": "inventory.QueryCompensateReservation",
+                  "mode": "read-only",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "resultKinds": [
+                    "confirmed",
+                    "not-executed",
+                    "unknown"
+                  ]
+                },
+                "receipt": {
+                  "mapper": "inventory.compensateReceipt",
+                  "version": "receipt-v1",
+                  "durable": true,
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadCompatibility": "exact",
+                  "evidence": "reservation-decision-effect-reconciliation"
+                },
+                "idempotency": {
+                  "mapper": "inventory.PhaseIdentity",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadConflict": "reject",
+                  "attemptIdentity": "excluded"
+                }
+              }
+            }
+          },
+          {
+            "stepId": "reserve-b",
+            "phases": {
+              "prepare": {
+                "kind": "command",
+                "port": "inventory.WarehouseParticipant",
+                "commandMapper": "inventory.PrepareReservation",
+                "confirmation": {
+                  "kind": "durable-receipt",
+                  "eventRef": {
+                    "aggregate": "WarehouseB",
+                    "name": "ReservationPrepared"
+                  },
+                  "mapper": "inventory.ReservationPrepared",
+                  "outputs": [
+                    {
+                      "slot": "reservationId",
+                      "ref": "receipt:reservationId",
+                      "type": "ReservationId"
+                    }
+                  ]
+                },
+                "query": {
+                  "mapper": "inventory.QueryPrepareReservation",
+                  "mode": "read-only",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "resultKinds": [
+                    "confirmed",
+                    "not-executed",
+                    "unknown"
+                  ]
+                },
+                "receipt": {
+                  "mapper": "inventory.prepareReceipt",
+                  "version": "receipt-v1",
+                  "durable": true,
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadCompatibility": "exact",
+                  "evidence": "reservation-decision-effect-reconciliation"
+                },
+                "idempotency": {
+                  "mapper": "inventory.PhaseIdentity",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadConflict": "reject",
+                  "attemptIdentity": "excluded"
+                }
+              },
+              "commit": {
+                "kind": "command",
+                "port": "inventory.WarehouseParticipant",
+                "commandMapper": "inventory.CommitReservation",
+                "confirmation": {
+                  "kind": "durable-receipt",
+                  "eventRef": {
+                    "aggregate": "WarehouseB",
+                    "name": "ReservationCommitted"
+                  },
+                  "mapper": "inventory.ReservationCommitted",
+                  "outputs": [
+                    {
+                      "slot": "reservationId",
+                      "ref": "receipt:reservationId",
+                      "type": "ReservationId"
+                    }
+                  ]
+                },
+                "query": {
+                  "mapper": "inventory.QueryCommitReservation",
+                  "mode": "read-only",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "resultKinds": [
+                    "confirmed",
+                    "not-executed",
+                    "unknown"
+                  ]
+                },
+                "receipt": {
+                  "mapper": "inventory.commitReceipt",
+                  "version": "receipt-v1",
+                  "durable": true,
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadCompatibility": "exact",
+                  "evidence": "reservation-decision-effect-reconciliation"
+                },
+                "idempotency": {
+                  "mapper": "inventory.PhaseIdentity",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadConflict": "reject",
+                  "attemptIdentity": "excluded"
+                }
+              },
+              "compensate": {
+                "kind": "command",
+                "port": "inventory.WarehouseParticipant",
+                "commandMapper": "inventory.CompensateReservation",
+                "confirmation": {
+                  "kind": "durable-receipt",
+                  "eventRef": {
+                    "aggregate": "WarehouseB",
+                    "name": "ReservationCompensated"
+                  },
+                  "mapper": "inventory.ReservationCompensated",
+                  "outputs": [
+                    {
+                      "slot": "reservationId",
+                      "ref": "receipt:reservationId",
+                      "type": "ReservationId"
+                    }
+                  ]
+                },
+                "query": {
+                  "mapper": "inventory.QueryCompensateReservation",
+                  "mode": "read-only",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "resultKinds": [
+                    "confirmed",
+                    "not-executed",
+                    "unknown"
+                  ]
+                },
+                "receipt": {
+                  "mapper": "inventory.compensateReceipt",
+                  "version": "receipt-v1",
+                  "durable": true,
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "args-digest",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadCompatibility": "exact",
+                  "evidence": "reservation-decision-effect-reconciliation"
+                },
+                "idempotency": {
+                  "mapper": "inventory.PhaseIdentity",
+                  "identity": [
+                    "txid",
+                    "definition-version",
+                    "participant",
+                    "resource",
+                    "step",
+                    "phase"
+                  ],
+                  "payloadConflict": "reject",
+                  "attemptIdentity": "excluded"
+                }
+              }
+            }
+          }
+        ],
+        "triggerMappers": [
+          {
+            "triggerId": "request",
+            "argsMapper": "reference.inventory.glue.InventorySaga.request",
+            "idempotencyMapper": "reference.inventory.glue.InventorySaga.expected"
+          }
+        ],
+        "completionMappers": [
+          {
+            "kind": "succeeded",
+            "mapper": "reference.inventory.glue.InventorySaga.classify"
+          },
+          {
+            "kind": "rejected-before-effects",
+            "mapper": "reference.inventory.glue.InventorySaga.classify"
+          },
+          {
+            "kind": "compensated",
+            "mapper": "reference.inventory.glue.InventorySaga.classify"
+          },
+          {
+            "kind": "recovery-required",
+            "mapper": "reference.inventory.glue.InventorySaga.classify"
+          },
+          {
+            "kind": "outcome-unknown",
+            "mapper": "reference.inventory.glue.InventorySaga.classify"
+          }
+        ]
+      }
+    ]
+  }
+}

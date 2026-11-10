@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "truthsrc.project/v1",
+  "tree": "truth/saga-monarch",
+  "canonicalId": "inventory-domain",
+  "context": "inventory",
+  "products": [
+    {
+      "id": "reference-layout",
+      "version": "1"
+    },
+    {
+      "id": "exact-value-types",
+      "version": "1"
+    },
+    {
+      "id": "exact-value-codecs",
+      "version": "1"
+    },
+    {
+      "id": "saga-contract",
+      "version": "2"
+    },
+    {
+      "id": "saga-runtime-contract",
+      "version": "2"
+    },
+    {
+      "id": "execution-contract",
+      "version": "2"
+    },
+    {
+      "id": "workflow-contract",
+      "version": "1"
+    },
+    {
+      "id": "saga-host-contract",
+      "version": "3"
+    }
+  ],
+  "exactTypes": [],
+  "exactCodecs": [],
+  "assemblies": [],
+  "documents": [
+    {
+      "id": "saga-binding",
+      "file": "bindings/saga.json"
+    },
+    {
+      "id": "runtime-binding",
+      "file": "bindings/runtime.json"
+    },
+    {
+      "id": "execution-binding",
+      "file": "bindings/execution.json"
+    },
+    {
+      "id": "composition",
+      "file": "bindings/composition.json"
+    }
+  ],
+  "roles": {
+    "sagaBinding": "saga-binding",
+    "runtimeBinding": "runtime-binding",
+    "executionBinding": "execution-binding",
+    "sagaMonarchBinding": "composition"
+  },
+  "generator": "scala-cqrs-saga-monarch-v1",
+  "options": {
+    "packages": [
+      {
+        "context": "inventory",
+        "package": "reference.inventory"
+      }
+    ],
+    "names": [
+      {
+        "ref": { "context": "inventory", "kind": "saga", "owner": [], "id": "inventory-reservation" },
+        "role": "saga",
+        "name": "InventorySaga"
+      },
+      {
+        "ref": { "context": "inventory", "kind": "saga", "owner": [], "id": "inventory-reservation" },
+        "role": "workflow",
+        "name": "InventoryWorkflow"
+      }
+    ],
+    "sourceRoots": [
+      {
+        "id": "inventory-implementations",
+        "module": "ext",
+        "path": "implementations"
+      }
+    ]
+  }
+}

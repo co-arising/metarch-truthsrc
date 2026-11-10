@@ -4,6 +4,12 @@
 
 本页沿用已完成P0和后续P1–P4成果路线，不重做类别清点工程、已实现公共验证闭环或聚合参考切片。数字对应本次捕获状态；后续实施必须从实际catalog及证据重新派生，不持续手工维护另一份类别真源。
 
+## 第七批 Strict Saga / Monarch R2：有限工程收口（2026-11-10）
+
+[新非银行合同](SAGA-MONARCH-R2.md)与[验收记录](SAGA-MONARCH-R2-ACCEPTANCE.md)对应唯一作者树、八产品及固定dev.r2／Strict Saga装配。主样例及typed Run／retry／whole Carry的generated与installed证据已闭合；installed主28恢复窗、八项精确变异及注册／命名控制通过。catalog2.6.0新增20变体，19代码项达到同输入行为层，build仅generated，final-approved仍0。
+
+完整Node原4314项中的30失败保留；7个影响suite复验178项通过，不重签原FAIL。BC50／Play32兼容文档、八仓来源与历史保护通过；旧28观察[按原字节历史化](evidence/capability-saga-monarch-prior28-history.json)。本批不迁移银行、不发布runtime或完整modular应用。下文较早批次数字均为各自历史，不是当前资格。
+
 ## 第六批持久化与读投影：有限工程收口（2026-11-09）
 
 [有限family4合同](scala-cqrs/PERSISTENCE-READSIDE.md)对应显式 `scala-cqrs-persistence-readside-v1`／`scala-cqrs-persistence-readside@1`：Warehouse唯一业务作者与独立技术binding经8产品及单一writer形成kernel＋glue；不自动组成四模块应用或生产journal。

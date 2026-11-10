@@ -1,0 +1,18 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: value-object
+name: ReservationResult
+payload:
+  {
+    "name": "ReservationResult",
+    "fields": [
+      {
+        "name": "transactionId",
+        "dataType": "TransactionId"
+      },
+      {
+        "name": "originalRequest",
+        "dataType": "ReservationRequest"
+      }
+    ]
+  }

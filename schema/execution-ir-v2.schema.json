@@ -1,0 +1,1649 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://madpolaris.dev/truthsrc/schema/execution-ir-v2.schema.json",
+  "title": "Truthsrc versioned Monarch execution IR v2",
+  "description": "Explicit versioned or managed Monarch R2 runs. Pure calls remain pure; external calls require stable managed-operation bindings. Typed Saga result ports and authorized recovery retain the original identity. Static contract only, not runtime qualification.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "workshop",
+    "pipelines",
+    "documentOnly",
+    "sourceMap"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "truthsrc.execution/v2"
+    },
+    "workshop": {
+      "type": "string",
+      "minLength": 1
+    },
+    "pipelines": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/pipelineIr"
+      }
+    },
+    "documentOnly": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/documentOnly"
+      }
+    },
+    "sourceMap": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/pointer"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "sagas": {
+      "type": "array",
+      "items": {
+        "$ref": "saga-ir-v2.schema.json#/$defs/compiledSaga"
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._-]*$"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "pointer": {
+      "type": "string",
+      "pattern": "^(?:/(?:[^~]|~[01])*)?$"
+    },
+    "ref": {
+      "type": "string",
+      "pattern": "^(?:input:[A-Za-z][A-Za-z0-9._-]*|step:[A-Za-z][A-Za-z0-9._-]*:[A-Za-z][A-Za-z0-9._-]*)$"
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "line",
+        "column"
+      ],
+      "properties": {
+        "line": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "column": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "sourceHint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "file"
+      ],
+      "properties": {
+        "file": {
+          "$ref": "#/$defs/text"
+        },
+        "atom": {
+          "$ref": "#/$defs/text"
+        },
+        "path": {
+          "$ref": "#/$defs/pointer"
+        },
+        "location": {
+          "$ref": "#/$defs/location"
+        }
+      }
+    },
+    "sourceHints": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "canonical": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/pointer"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/sourceHint"
+          }
+        },
+        "binding": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/pointer"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/sourceHint"
+          }
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "document",
+        "pointer",
+        "file",
+        "atom",
+        "path",
+        "location"
+      ],
+      "properties": {
+        "document": {
+          "enum": [
+            "canonical",
+            "binding"
+          ]
+        },
+        "pointer": {
+          "$ref": "#/$defs/pointer"
+        },
+        "file": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "atom": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "path": {
+          "$ref": "#/$defs/pointer"
+        },
+        "location": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "required": [
+            "line",
+            "column"
+          ],
+          "properties": {
+            "line": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "column": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        }
+      }
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "durability"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "type": {
+          "$ref": "#/$defs/id"
+        },
+        "durability": {
+          "enum": [
+            "start-record",
+            "durable-reference"
+          ]
+        }
+      }
+    },
+    "read": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "slot",
+        "ref",
+        "type"
+      ],
+      "properties": {
+        "slot": {
+          "$ref": "#/$defs/id"
+        },
+        "ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "type": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "write": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "slot",
+        "type",
+        "durability"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "slot": {
+          "$ref": "#/$defs/id"
+        },
+        "type": {
+          "$ref": "#/$defs/id"
+        },
+        "durability": {
+          "enum": [
+            "checkpoint",
+            "durable-reference"
+          ]
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "ref",
+        "type"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "type": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "outcomeKind": {
+      "enum": [
+        "success",
+        "business-rejection",
+        "resolved",
+        "unknown-effect",
+        "infrastructure-failure"
+      ]
+    },
+    "portOutcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "kind"
+      ],
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "$ref": "#/$defs/outcomeKind"
+        }
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "kind",
+        "action"
+      ],
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "$ref": "#/$defs/outcomeKind"
+        },
+        "action": {
+          "enum": [
+            "continue",
+            "stop",
+            "manual-recovery"
+          ]
+        }
+      },
+      "description": "success/resolved must continue; business-rejection must stop or enter manual recovery; unknown-effect/infrastructure-failure must enter manual recovery. No retry, compensation, implicit default or arbitrary policy evaluation in v1. Writes must be returned on every continuing outcome, including resolved."
+    },
+    "recovery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "inputResponsibility",
+        "inputs",
+        "planVersion",
+        "planCompatibility",
+        "checkpoint",
+        "unknownEffect",
+        "ownership"
+      ],
+      "properties": {
+        "inputResponsibility": {
+          "const": "host"
+        },
+        "inputs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^input:[A-Za-z][A-Za-z0-9._-]*$"
+          }
+        },
+        "planVersion": {
+          "$ref": "#/$defs/id"
+        },
+        "planCompatibility": {
+          "const": "exact"
+        },
+        "checkpoint": {
+          "const": "confirmed-prefix"
+        },
+        "unknownEffect": {
+          "const": "reconcile-before-resume"
+        },
+        "ownership": {
+          "const": "single-writer"
+        }
+      },
+      "description": "The host must durably save every initial input before accepting a run. Recovery references must cover all initial inputs, not outputs produced later. Exact plan and codec compatibility are declarations, not a JVM ownership or journal verification."
+    },
+    "bound": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "admission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "maxConcurrentRuns",
+        "maxInFlightSteps",
+        "maxItemsPerChunk",
+        "maxInFlightChunks"
+      ],
+      "properties": {
+        "maxConcurrentRuns": {
+          "$ref": "#/$defs/bound"
+        },
+        "maxInFlightSteps": {
+          "const": 1
+        },
+        "maxItemsPerChunk": {
+          "$ref": "#/$defs/bound"
+        },
+        "maxInFlightChunks": {
+          "$ref": "#/$defs/bound"
+        }
+      },
+      "description": "Finite host admission/chunk limits; an emitter must wire them or reject generation. The ordered checkpoint window is exactly one. No unbounded streams or durable dynamic insertion in v1."
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "inputs",
+        "outputs",
+        "recovery",
+        "admission"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "truthsrc.execution/v2"
+        },
+        "inputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/input"
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/output"
+          }
+        },
+        "recovery": {
+          "$ref": "#/$defs/recovery"
+        },
+        "admission": {
+          "$ref": "#/$defs/admission"
+        }
+      }
+    },
+    "stepExecution": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/portStepExecution"
+        },
+        {
+          "$ref": "#/$defs/sagaStepExecution"
+        }
+      ],
+      "description": "Exactly one discriminator property: port, invokeSaga or awaitChildRun. An invocation is never a pure port, arbitrary expression, or runtime certificate; an awaited child run is never a pure port, implicit success, or dynamic insertion."
+    },
+    "portStepExecution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "port",
+        "reads",
+        "writes",
+        "outcomes"
+      ],
+      "properties": {
+        "port": {
+          "$ref": "#/$defs/id"
+        },
+        "reads": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/read"
+          }
+        },
+        "writes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/write"
+          }
+        },
+        "outcomes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/outcome"
+          }
+        }
+      }
+    },
+    "sagaRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sagaId",
+        "version"
+      ],
+      "properties": {
+        "sagaId": {
+          "$ref": "saga-ir-v2.schema.json#/$defs/id"
+        },
+        "version": {
+          "$ref": "saga-ir-v2.schema.json#/$defs/id"
+        }
+      }
+    },
+    "identityRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref",
+        "type"
+      ],
+      "properties": {
+        "ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "type": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "transactionIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "derivation",
+        "source",
+        "stageId",
+        "stageOccurrence",
+        "scope",
+        "conflict"
+      ],
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/id"
+        },
+        "derivation": {
+          "const": "durable-source-stage"
+        },
+        "source": {
+          "$ref": "#/$defs/identityRef"
+        },
+        "stageId": {
+          "$ref": "#/$defs/id"
+        },
+        "stageOccurrence": {
+          "$ref": "#/$defs/identityRef"
+        },
+        "iteration": {
+          "$ref": "#/$defs/identityRef"
+        },
+        "chunk": {
+          "$ref": "#/$defs/identityRef"
+        },
+        "scope": {
+          "const": "saga-version"
+        },
+        "conflict": {
+          "const": "reject-different-args"
+        }
+      },
+      "description": "Host derives transaction identity from Saga ID/version, pipeline ID (the enclosing pipeline.id), durable source token, exact stage ID, durable stage occurrence and each declared iteration/chunk token. All tokens must be typed reads of durable initial inputs; source is an ID, other tokens are IDs or bounded nonnegative integers in the Saga binding. No expressions, FQNs, clock, random, attempt or JVM generation. Missing optional tokens mean a single occurrence dimension, not inferred dynamic iteration."
+    },
+    "sagaResultOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "slot",
+        "ref",
+        "type"
+      ],
+      "properties": {
+        "slot": {
+          "$ref": "#/$defs/id"
+        },
+        "ref": {
+          "type": "string",
+          "pattern": "^result:[A-Za-z][A-Za-z0-9_-]*(?![\\s\\S])"
+        },
+        "type": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "sagaResultMapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resultKind",
+        "code",
+        "outputs"
+      ],
+      "properties": {
+        "resultKind": {
+          "$ref": "saga-ir-v2.schema.json#/$defs/resultKind"
+        },
+        "code": {
+          "$ref": "#/$defs/id"
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/sagaResultOutput"
+          }
+        }
+      },
+      "description": "Exact five-result mapping. Only succeeded publishes typed result-port payload fields; unknown and recovery-required never advance a successful checkpoint."
+    },
+    "invokeSaga": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref",
+        "args",
+        "transactionIdentity",
+        "start",
+        "completionMode",
+        "results"
+      ],
+      "properties": {
+        "ref": {
+          "$ref": "#/$defs/sagaRef"
+        },
+        "args": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/read"
+          }
+        },
+        "transactionIdentity": {
+          "$ref": "#/$defs/transactionIdentity"
+        },
+        "start": {
+          "const": "durable-intent-before-start"
+        },
+        "completionMode": {
+          "const": "await-terminal"
+        },
+        "results": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {
+            "$ref": "#/$defs/sagaResultMapping"
+          }
+        }
+      },
+      "description": "Persist pinned ref, exact args/codec and derived identity as durable intent before requesting Saga start; replay reattaches using the same identity. Await a terminal confirmation before checkpointing success. RecoveryRequired and Unknown are controlled manual outcomes, never successful terminal completion. Contract declaration only."
+    },
+    "sagaStepExecution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "invokeSaga",
+        "reads",
+        "writes",
+        "outcomes"
+      ],
+      "properties": {
+        "invokeSaga": {
+          "$ref": "#/$defs/invokeSaga"
+        },
+        "reads": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/read"
+          }
+        },
+        "writes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/write"
+          }
+        },
+        "outcomes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/outcome"
+          }
+        }
+      }
+    },
+    "childResultKind": {
+      "enum": [
+        "succeeded",
+        "child-rejected",
+        "child-failed",
+        "recovery-required",
+        "outcome-unknown"
+      ]
+    },
+    "childResultMapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resultKind",
+        "code",
+        "outputs"
+      ],
+      "properties": {
+        "resultKind": {
+          "$ref": "#/$defs/childResultKind"
+        },
+        "code": {
+          "$ref": "#/$defs/id"
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/sagaResultOutput"
+          }
+        }
+      },
+      "description": "Exact coverage of the five child-run results. Only succeeded maps to success/continue and publishes writes from the child's durable completed-manifest fields. child-rejected (StartRun refused with a reason other than already-in-state) maps to business-rejection/stop; child-failed (RunFailedEvt) maps to business-rejection/stop. recovery-required maps to infrastructure-failure/manual-recovery; outcome-unknown to unknown-effect/manual-recovery. A rejected re-attach (already in state) is not a result kind — the host treats it as already-attached and keeps observing. Compensation is never stage recovery."
+    },
+    "childRunIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "derivation",
+        "source",
+        "stepId",
+        "stageOccurrence",
+        "conflict"
+      ],
+      "properties": {
+        "derivation": {
+          "const": "durable-parent-step"
+        },
+        "source": {
+          "$ref": "#/$defs/identityRef"
+        },
+        "stepId": {
+          "$ref": "#/$defs/id"
+        },
+        "stageOccurrence": {
+          "$ref": "#/$defs/identityRef"
+        },
+        "chunk": {
+          "$ref": "#/$defs/identityRef"
+        },
+        "conflict": {
+          "const": "reject-different-args"
+        }
+      },
+      "description": "Host derives the child run identity from the parent operation key (a durable source token), the exact await step ID and a durable stage occurrence token, plus an optional chunk token. All tokens must be typed reads of durable initial inputs. No expressions, FQNs, clock, random, attempt or JVM generation. Re-attaching with the same identity is the only legal re-entry; different payload with the same identity is a conflict."
+    },
+    "awaitChildRun": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "childRun",
+        "start",
+        "completionMode",
+        "results"
+      ],
+      "properties": {
+        "childRun": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "planRef",
+            "identity",
+            "payload",
+            "payloadCompatibility"
+          ],
+          "properties": {
+            "planRef": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "pipelineId"
+              ],
+              "properties": {
+                "pipelineId": {
+                  "$ref": "#/$defs/id"
+                }
+              }
+            },
+            "identity": {
+              "$ref": "#/$defs/childRunIdentity"
+            },
+            "payload": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/read"
+              }
+            },
+            "payloadCompatibility": {
+              "const": "exact"
+            }
+          }
+        },
+        "start": {
+          "const": "durable-intent-before-start"
+        },
+        "completionMode": {
+          "const": "await-terminal"
+        },
+        "results": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {
+            "$ref": "#/$defs/childResultMapping"
+          }
+        }
+      },
+      "description": "Persist the derived child identity and exact payload as durable intent before requesting StartRun; replay reattaches using the same identity (a refusal saying the run is already in state means attached, not conflict). Observe the child's terminal state on its durable journal; a mirrored progress record is derived and never authoritative. RunFailedEvt pauses with recovery-required; it never auto-compensates the parent. Contract declaration only."
+    },
+    "awaitChildRunStepExecution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "awaitChildRun",
+        "reads",
+        "writes",
+        "outcomes"
+      ],
+      "properties": {
+        "awaitChildRun": {
+          "$ref": "#/$defs/awaitChildRun"
+        },
+        "reads": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/read"
+          }
+        },
+        "writes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/write"
+          }
+        },
+        "outcomes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/outcome"
+          }
+        }
+      }
+    },
+    "invocationCodec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "mapper"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "saga-ir-v2.schema.json#/$defs/codecId"
+        },
+        "version": {
+          "$ref": "saga-ir-v2.schema.json#/$defs/id"
+        },
+        "mapper": {
+          "$ref": "saga-ir-v2.schema.json#/$defs/symbol"
+        }
+      }
+    },
+    "invocationBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stepId",
+        "ref",
+        "adapter",
+        "runtime",
+        "argsCodec",
+        "resultCodec",
+        "transactionIdentity"
+      ],
+      "properties": {
+        "stepId": {
+          "$ref": "#/$defs/id"
+        },
+        "ref": {
+          "$ref": "#/$defs/sagaRef"
+        },
+        "adapter": {
+          "$ref": "saga-ir-v2.schema.json#/$defs/symbol"
+        },
+        "runtime": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "artifact",
+            "apiMode",
+            "entrypoint"
+          ],
+          "properties": {
+            "artifact": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+(?![\\s\\S])"
+            },
+            "apiMode": {
+              "const": "strict"
+            },
+            "entrypoint": {
+              "$ref": "saga-ir-v2.schema.json#/$defs/symbol"
+            }
+          }
+        },
+        "argsCodec": {
+          "$ref": "#/$defs/invocationCodec"
+        },
+        "resultCodec": {
+          "$ref": "#/$defs/invocationCodec"
+        },
+        "transactionIdentity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "mapper",
+            "derivation",
+            "payloadCompatibility"
+          ],
+          "properties": {
+            "mapper": {
+              "$ref": "saga-ir-v2.schema.json#/$defs/symbol"
+            },
+            "derivation": {
+              "const": "durable-source-stage"
+            },
+            "payloadCompatibility": {
+              "const": "exact"
+            }
+          }
+        }
+      },
+      "description": "One adapter binding per invoked step; exact ref/runtime and args codec equality with the independently compiled Saga binding. Result codec version equals pinned args codec version. Type implementations agree exactly with Saga bindings; invoked Sagas in one pipeline must agree on shared nominal type contracts including referenced element/field bindings. Participant-resource mappings remain statically non-aliasing after args substitution. Runtime capabilities, participants, phase ports and completion mappers stay in sagaBindings, not duplicated here. Named adapters/mappers are never loaded or certified."
+    },
+    "slot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "slot",
+        "type"
+      ],
+      "properties": {
+        "slot": {
+          "$ref": "#/$defs/id"
+        },
+        "type": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "childRunBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stepId",
+        "planRef",
+        "runtime",
+        "journal"
+      ],
+      "properties": {
+        "stepId": {
+          "$ref": "#/$defs/id"
+        },
+        "planRef": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "pipelineId"
+          ],
+          "properties": {
+            "pipelineId": {
+              "$ref": "#/$defs/id"
+            }
+          }
+        },
+        "runtime": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "artifact",
+            "apiMode"
+          ],
+          "properties": {
+            "artifact": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+(?![\\s\\S])"
+            },
+            "apiMode": {
+              "const": "strict"
+            }
+          }
+        },
+        "stateCodec": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "mapper"
+          ],
+          "properties": {
+            "mapper": {
+              "$ref": "saga-ir-v2.schema.json#/$defs/symbol"
+            }
+          }
+        },
+        "journal": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "pidPrefix"
+          ],
+          "properties": {
+            "pidPrefix": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        }
+      },
+      "description": "One child run binding per awaitChildRun step. The child plan is a separately compiled stages pipeline bound to monarch-persistence; the host derives the child persistence id from pidPrefix plus the derived run identity. The child's durable journal is the authoritative terminal-state source. Named mappers are never loaded or certified."
+    },
+    "typeBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "implementation"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "implementation": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "idempotency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "none",
+            "keyed"
+          ]
+        },
+        "key": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "description": "key is the name of an input slot (never source code). An external port requires keyed idempotency and a key whose reference is an initial input, stable across replay."
+    },
+    "port": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "implementation",
+        "effect",
+        "confirmation",
+        "idempotency",
+        "inputs",
+        "outputs",
+        "outcomes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "implementation": {
+          "$ref": "#/$defs/text"
+        },
+        "effect": {
+          "enum": [
+            "pure",
+            "external"
+          ]
+        },
+        "confirmation": {
+          "enum": [
+            "checkpoint",
+            "durable-ack"
+          ]
+        },
+        "idempotency": {
+          "$ref": "#/$defs/idempotency"
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/slot"
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/slot"
+          }
+        },
+        "outcomes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/portOutcome"
+          }
+        }
+      },
+      "description": "External effects require durable-ack, stable keyed idempotency, and an explicit unknown-effect outcome. Every port must declare success and infrastructure-failure. The compiler checks coverage/equality, not behavior of the implementation."
+    },
+    "codec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "compatibleVersions"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "version": {
+          "$ref": "#/$defs/id"
+        },
+        "compatibleVersions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        }
+      },
+      "description": "compatibleVersions must include version. These are host codec declarations; they do not certify byte compatibility."
+    },
+    "pipelineBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pipelineId",
+        "engine",
+        "module",
+        "codec",
+        "types",
+        "ports",
+        "run"
+      ],
+      "oneOf": [
+        {
+          "properties": {
+            "ports": {
+              "minItems": 1
+            },
+            "invocations": {
+              "maxItems": 0
+            }
+          }
+        },
+        {
+          "required": [
+            "invocations"
+          ]
+        }
+      ],
+      "properties": {
+        "pipelineId": {
+          "$ref": "#/$defs/id"
+        },
+        "engine": {
+          "const": "monarch-persistence/0.3.0-dev.r2-20261106-dc168f96fa62"
+        },
+        "module": {
+          "$ref": "#/$defs/text"
+        },
+        "codec": {
+          "$ref": "#/$defs/codec"
+        },
+        "types": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/typeBinding"
+          }
+        },
+        "ports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/port"
+          }
+        },
+        "invocations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/invocationBinding"
+          }
+        },
+        "run": {
+          "$ref": "#/$defs/versionedRun"
+        }
+      }
+    },
+    "bindingDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "pipelines"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "truthsrc.execution-binding/v2"
+        },
+        "pipelines": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/pipelineBinding"
+          }
+        },
+        "sourceMap": {
+          "$ref": "#/$defs/sourceHints"
+        },
+        "sagaBindings": {
+          "$ref": "saga-ir-v2.schema.json#/$defs/bindingDocument"
+        }
+      }
+    },
+    "canonicalEnvelope": {
+      "type": "object",
+      "required": [
+        "schemaVersion",
+        "workshop"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "truthsrc/v1"
+        },
+        "workshop": {
+          "$ref": "#/$defs/text"
+        },
+        "pipelines": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "name",
+              "steps"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/text"
+              },
+              "name": {
+                "$ref": "#/$defs/text"
+              },
+              "steps": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "name"
+                  ],
+                  "properties": {
+                    "id": {
+                      "$ref": "#/$defs/text"
+                    },
+                    "name": {
+                      "$ref": "#/$defs/text"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "description": "Only the canonical envelope and pipeline identities are checked here. This does not replace validateTree or validate the rest of canonical. An execution property opts in, including a malformed/null declaration. Steps without a pipeline declaration may not carry execution."
+    },
+    "stepIr": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/portStepIr"
+        },
+        {
+          "$ref": "#/$defs/sagaStepIr"
+        }
+      ]
+    },
+    "sagaStepIr": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "ordinal",
+        "invokeSaga",
+        "reads",
+        "writes",
+        "outcomes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "$ref": "#/$defs/text"
+        },
+        "ordinal": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "invokeSaga": {
+          "$ref": "#/$defs/invokeSaga"
+        },
+        "reads": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/read"
+          }
+        },
+        "writes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/write"
+          }
+        },
+        "outcomes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/outcome"
+          }
+        }
+      }
+    },
+    "portStepIr": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "ordinal",
+        "port",
+        "reads",
+        "writes",
+        "outcomes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "$ref": "#/$defs/text"
+        },
+        "ordinal": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "port": {
+          "$ref": "#/$defs/id"
+        },
+        "reads": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/read"
+          }
+        },
+        "writes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/write"
+          }
+        },
+        "outcomes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/outcome"
+          }
+        }
+      }
+    },
+    "awaitChildRunStepIr": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "ordinal",
+        "awaitChildRun",
+        "reads",
+        "writes",
+        "outcomes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "$ref": "#/$defs/text"
+        },
+        "ordinal": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "awaitChildRun": {
+          "$ref": "#/$defs/awaitChildRun"
+        },
+        "reads": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/read"
+          }
+        },
+        "writes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/write"
+          }
+        },
+        "outcomes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/outcome"
+          }
+        }
+      }
+    },
+    "bindingIr": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "engine",
+        "module",
+        "codec",
+        "types",
+        "ports",
+        "run"
+      ],
+      "oneOf": [
+        {
+          "properties": {
+            "ports": {
+              "minItems": 1
+            },
+            "invocations": {
+              "maxItems": 0
+            }
+          }
+        },
+        {
+          "required": [
+            "invocations"
+          ]
+        }
+      ],
+      "properties": {
+        "engine": {
+          "const": "monarch-persistence/0.3.0-dev.r2-20261106-dc168f96fa62"
+        },
+        "module": {
+          "$ref": "#/$defs/text"
+        },
+        "codec": {
+          "$ref": "#/$defs/codec"
+        },
+        "types": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/typeBinding"
+          }
+        },
+        "ports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/port"
+          }
+        },
+        "invocations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/invocationBinding"
+          }
+        },
+        "run": {
+          "$ref": "#/$defs/versionedRun"
+        }
+      }
+    },
+    "pipelineIr": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "readiness",
+        "inputs",
+        "outputs",
+        "steps",
+        "recovery",
+        "admission",
+        "binding"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "$ref": "#/$defs/text"
+        },
+        "readiness": {
+          "const": "contract-only"
+        },
+        "inputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/input"
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/output"
+          }
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/stepIr"
+          }
+        },
+        "recovery": {
+          "$ref": "#/$defs/recovery"
+        },
+        "admission": {
+          "$ref": "#/$defs/admission"
+        },
+        "binding": {
+          "$ref": "#/$defs/bindingIr"
+        }
+      }
+    },
+    "documentOnly": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "reason",
+        "source"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/text"
+        },
+        "reason": {
+          "const": "execution-not-declared"
+        },
+        "source": {
+          "$ref": "#/$defs/source"
+        }
+      }
+    },
+    "versionedRun": {
+      "type": "object",
+      "required": [
+        "definitionId",
+        "definitionVersion",
+        "codecVersion",
+        "mode",
+        "identity",
+        "operations"
+      ],
+      "properties": {
+        "definitionId": {
+          "$ref": "#/$defs/text"
+        },
+        "definitionVersion": {
+          "$ref": "#/$defs/text"
+        },
+        "codecVersion": {
+          "$ref": "#/$defs/text"
+        },
+        "mode": {
+          "enum": [
+            "versioned",
+            "managed"
+          ]
+        },
+        "identity": {
+          "const": "caller-supplied-exact"
+        },
+        "operations": {
+          "type": "array",
+          "maxItems": 1024,
+          "items": {
+            "$ref": "#/$defs/managedOperation"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "managedOperation": {
+      "type": "object",
+      "required": [
+        "stepId",
+        "connectorId",
+        "connectorVersion",
+        "ledgerEpoch",
+        "requestCodec",
+        "identity",
+        "query"
+      ],
+      "properties": {
+        "stepId": {
+          "$ref": "#/$defs/id"
+        },
+        "connectorId": {
+          "$ref": "#/$defs/text"
+        },
+        "connectorVersion": {
+          "$ref": "#/$defs/text"
+        },
+        "ledgerEpoch": {
+          "$ref": "#/$defs/text"
+        },
+        "requestCodec": {
+          "$ref": "#/$defs/codec"
+        },
+        "identity": {
+          "const": "original-run-step"
+        },
+        "query": {
+          "const": "read-only-original-request"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

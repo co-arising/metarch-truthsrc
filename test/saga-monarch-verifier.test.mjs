@@ -90,5 +90,6 @@ test('saga-monarch recovery fixtures retain forced files and the fixed journal h
   }
 });
 test('saga-monarch default Node discovery never starts a JVM or creates output', async () => {
+  assert.match(read('verify.mjs'), /if \(!process\.env\.NODE_TEST_CONTEXT && process\.argv\[1\] &&/);
   await assert.rejects(verifyReference({ round: '/must-not-read', out: '/must-not-create' }), /default test discovery must not execute JVM/);
 });

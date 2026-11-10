@@ -27,6 +27,12 @@ options仍仅 `packages/names/protobuf`；新增角色由本族模型分流，�
 
 主样例、布局、精确变异和installed消费是有限工程证据，不使整个modular target成为生成器，也不包含Actor/存储/银行/Saga/Monarch自动组合。原独立Parcel与14个reference-only变体保持。生成/编译/行为当前资格见[能力矩阵](../CAPABILITY-MATRIX.md)，具体边界见[module-seams合同](MODULE-SEAMS.md)。
 
+## 第七批显式 Saga / Monarch R2 入口
+
+`scala-cqrs-saga-monarch-v1`／`scala-cqrs-saga-monarch@1` 与 catalog 变体 `js-saga-monarch-r2-candidate-v1` 是新的非银行有限入口，仍不是完整 modular target 开关。唯一库存作者树与显式技术 bindings 生成 Strict Saga phase/result/recovery 接缝、typed pure/managed Run、有限 R2 workflow 与组合根；运行内核来自冻结制品，不复制到生成代码。
+
+名称/包覆盖不改变显式 codec、Saga definition、Run semantic digest 和操作身份；运行时 supply、cold query、两阶段恢复、whole Carry 及 retry exhaustion 边界见[本族合同](../SAGA-MONARCH-R2.md)。生成、分模块 direct compiler、独立行为、跨 JVM 恢复与安装消费分别记证；build.sbt 的存在不等于 sbt 执行通过。旧 family1–4 的资格保留在原记录中，现役资格只按[能力矩阵](../CAPABILITY-MATRIX.md)中的同输入证据判断。
+
 ## 名称不是业务身份
 
 `resolveName`要求以下完整输入；返回原身份、原spelling、解析后的`name`和仅适用于Scala的`identifier`，不修改调用方数据：

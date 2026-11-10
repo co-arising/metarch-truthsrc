@@ -42,3 +42,11 @@ R2资源证据接口与应用具体政策分开；R1不含本组资源域API，�
 - `monarch:src/main/scala/net/imadz/monarch/persistence/workflow/BatchModel.scala` — `AreaDefinition`。
 
 来源revision、摘要及处置见[sources.lock.json](../../sources.lock.json)；本页摘录不是生产认证。
+
+## 第七批 Strict Saga / Monarch R2 生成入口
+
+新增 `js-saga-monarch-r2-candidate-v1`，由 `scala-cqrs-saga-monarch-v1` 提供。此前“未建立原生生成”的描述保留为原基线，不能覆盖本段明确的新非银行入口。
+
+- `workflow-program`：Finite R2 batch policy, original-item conservation, explicit release/whole Carry, query-only verification and typed inner Run mapping. Retry exhaustion and two-phase authorized recovery are explicit.
+
+输入来自唯一作者树与显式技术/外置实现 bindings；运行库接口及内核仍由冻结制品提供。implemented 表示生成实现存在；资格仅由匹配实际输入的独立验收决定，旧28回执不改签。范围、两阶段恢复、重试耗尽与安装边界见[本族合同](../../SAGA-MONARCH-R2.md)。不表示银行迁移或架构批准。

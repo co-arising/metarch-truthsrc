@@ -1,0 +1,1696 @@
+{
+  "schemaVersion": "truthsrc.saga-monarch-seventh-batch/v1",
+  "status": "finite-engineering-qualified-with-recorded-regression-repair",
+  "runtime": {
+    "schemaVersion": "truthsrc.saga-monarch-qualification/v1",
+    "status": "runtime-and-source-qualified-final-node-separate",
+    "reference": {
+      "receipt": {
+        "sha256": "2635e592c3621fd5388738a11e958394ee5cd9949ee29db07d268a05d6680b94",
+        "bytes": 154106
+      },
+      "mandatoryCases": 42,
+      "positives": 38,
+      "compiledMutationControls": 8,
+      "retainedRecoveryWindows": 30
+    },
+    "installedSamples": {
+      "main": {
+        "receipt": {
+          "sha256": "2cd16c0dd880e619db1466aec61314c3f6b21f2ebd06fd993d7725b1ca9e3697",
+          "bytes": 176437
+        },
+        "phases": [
+          {
+            "label": "kernel",
+            "process": {
+              "sha256": "c0587984204d497efd0da62d31f6e1e0824fd4d7baa0ec8995e2a41efd7b06f7",
+              "bytes": 4501
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "glue",
+            "process": {
+              "sha256": "23e886be64dfb5cb819f6eb16ec334a10714cec50e9337d31422562d943228ce",
+              "bytes": 24915
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "ext",
+            "process": {
+              "sha256": "41bec4736921ed8335ce5648e03f7d9096d0d39e0a163541281a4d3cda436693",
+              "bytes": 4392
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "root",
+            "process": {
+              "sha256": "c682d6c45973cdc949696bc3aa0586a7fb3d723beb2aac97089d822142ccca80",
+              "bytes": 24820
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "independent-oracles",
+            "process": {
+              "sha256": "d0c043c02e6cee88ce74e00b2147f080f45ec79549a25496bdb26b76f69f75c9",
+              "bytes": 27789
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "oracle-tests",
+            "process": {
+              "sha256": "e4b585005331b7ed7477a0c44ff8c9c8a1e9ce56308cc1b9e5b51146a9d73ba7",
+              "bytes": 26133
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "6f26258382a4d5f19d9b21de8e0c7a3415873b38955c6b2fe05479b3739e4117",
+            "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+            "expected": "suites",
+            "environmentError": false
+          }
+        ],
+        "tests": 18,
+        "fourModulesCompiled": true
+      },
+      "retry": {
+        "receipt": {
+          "sha256": "4d00818e8c2351e42ad2f08e608168092183f6c6a131f7e85cb30727e58e81d7",
+          "bytes": 175852
+        },
+        "phases": [
+          {
+            "label": "kernel",
+            "process": {
+              "sha256": "a9a6c10d0a6143818dafaa16dd320e90d9f2e67441b5f8f0875a33ccae797861",
+              "bytes": 4532
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "glue",
+            "process": {
+              "sha256": "bc03aed13f98ba8a3bd65d0be906acd5606c6ddc1237d2fea94712da44478ac5",
+              "bytes": 24957
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "ext",
+            "process": {
+              "sha256": "becf39017d5f2963dabc1f6fb23b6613b94dd2e0cffdb4fda475774aa3d7d6d7",
+              "bytes": 4513
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "root",
+            "process": {
+              "sha256": "8aab5ba8e1426d60e1da61a2f0ae74bd76eea50b9d3e45d7af51e11ed4c18599",
+              "bytes": 24844
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "independent-oracles",
+            "process": {
+              "sha256": "bf8b9cd20a2a5d8ea84f7cbe2f165861e9665a5e71e1ab5047dea23fe5e8d6e6",
+              "bytes": 27234
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "oracle-tests",
+            "process": {
+              "sha256": "ceb06189a67fe1dbe021dbd7c6fbe1cd5d105a99ed0924fc3320fb60204e1127",
+              "bytes": 26229
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "d9fda948dcf002d6d946ccc64e0f875a634609983f2c3060c2552e537c08e184",
+            "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+            "expected": "suites",
+            "environmentError": false
+          }
+        ],
+        "tests": 8,
+        "fourModulesCompiled": true
+      },
+      "pure": {
+        "receipt": {
+          "sha256": "f1fd03a14045f11341ed1dba3d120672a8b53c6d618f27469d7f9abcd66a4dda",
+          "bytes": 175548
+        },
+        "phases": [
+          {
+            "label": "kernel",
+            "process": {
+              "sha256": "874760196e60095c2c2ebe1c7f60cf3892d8ca776d2dd210c2332ff4c4f2ccf2",
+              "bytes": 4519
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "glue",
+            "process": {
+              "sha256": "61c2a9fe4dc630fbb26e831d4e679e29b9b4ceb9ea2fdb3cc7e8be3394750606",
+              "bytes": 24942
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "ext",
+            "process": {
+              "sha256": "1370abbcbba689312cecc1452b53b5c022d7eb4abac2424aa4aa9bb4e73c298b",
+              "bytes": 4596
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "root",
+            "process": {
+              "sha256": "b2a44596459705aac4c73efe8eeff6417ebe2c3cfadfbfdcc42d0a8af4bf2aa1",
+              "bytes": 24829
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "independent-oracles",
+            "process": {
+              "sha256": "e1c87bac4fadbb78c994cab537e2638e243c412616740435ab031d4c0366fc83",
+              "bytes": 27089
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "oracle-tests",
+            "process": {
+              "sha256": "9c7cd14f12d7784bfa8018aae8091e9636d9c244ac145a6d50b55cf53c9699ce",
+              "bytes": 26141
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "7c609c65c3b2804daa3435ba0d9d342b0410404bbf0ded50c82954d1e73cffec",
+            "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+            "expected": "suites",
+            "environmentError": false
+          }
+        ],
+        "tests": 4,
+        "fourModulesCompiled": true
+      },
+      "carry": {
+        "receipt": {
+          "sha256": "20d1df5b3b3b247bb873c0a6c4095ad080a9bb1b997250d7e26e99e00b93b499",
+          "bytes": 175266
+        },
+        "phases": [
+          {
+            "label": "kernel",
+            "process": {
+              "sha256": "06f2cf4646fd8c5d75cf2985bdb7e4e3d5b9ff3ff582d9e6fc6e86dbb598a593",
+              "bytes": 4532
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "glue",
+            "process": {
+              "sha256": "3ae71bcb69e1aae4730d7089a17da23a204b1a6787f49cc2a74e99bbfa4df1f5",
+              "bytes": 24957
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "ext",
+            "process": {
+              "sha256": "f959c31a91173b72a4aa4d0fbee06b056c76b39c5dfcc73bec39e99ac5e71598",
+              "bytes": 4414
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "root",
+            "process": {
+              "sha256": "cc8844c6bef848f480ac5310e8ce5b516f4176a1276d01ba79a3e3583e6a4410",
+              "bytes": 24844
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "independent-oracles",
+            "process": {
+              "sha256": "d2c4ac22dff967ef92b0e02a9da4c8cf240b6f86ce14d252a53027840fdc91e0",
+              "bytes": 27112
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "oracle-tests",
+            "process": {
+              "sha256": "282d34cc6df32bc6598e81c1d758598d70a679b92210f71c399ca7f51048eea6",
+              "bytes": 26166
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "1170fd218a83477e80735686b37b4cf73111595c31e9e3ceeab491b8695ff261",
+            "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+            "expected": "suites",
+            "environmentError": false
+          }
+        ],
+        "tests": 2,
+        "fourModulesCompiled": true
+      }
+    },
+    "installedMainRecovery": {
+      "windows": [
+        {
+          "caseId": "commit-decision",
+          "boundary": "before-write",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "2be14575df226109c0aa3340cf01d865d7e388f6b9ae9a22f3f95a93651ae6c6",
+            "bytes": 450975
+          }
+        },
+        {
+          "caseId": "commit-decision",
+          "boundary": "force-before-ack",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "2be14575df226109c0aa3340cf01d865d7e388f6b9ae9a22f3f95a93651ae6c6",
+            "bytes": 450975
+          }
+        },
+        {
+          "caseId": "saga-terminal",
+          "boundary": "before-write",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "2be14575df226109c0aa3340cf01d865d7e388f6b9ae9a22f3f95a93651ae6c6",
+            "bytes": 450975
+          }
+        },
+        {
+          "caseId": "saga-terminal",
+          "boundary": "force-before-ack",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "2be14575df226109c0aa3340cf01d865d7e388f6b9ae9a22f3f95a93651ae6c6",
+            "bytes": 450975
+          }
+        },
+        {
+          "caseId": "operation-terminal",
+          "boundary": "before-write",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "2be14575df226109c0aa3340cf01d865d7e388f6b9ae9a22f3f95a93651ae6c6",
+            "bytes": 450975
+          }
+        },
+        {
+          "caseId": "operation-terminal",
+          "boundary": "force-before-ack",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "2be14575df226109c0aa3340cf01d865d7e388f6b9ae9a22f3f95a93651ae6c6",
+            "bytes": 450975
+          }
+        },
+        {
+          "caseId": "grant",
+          "boundary": "before-write",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "f7c7bda78f832138ed842698389973ee81cf76250f0e21c6a7e08ef5917ad3ef",
+            "bytes": 449871
+          }
+        },
+        {
+          "caseId": "grant",
+          "boundary": "force-before-ack",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "f7c7bda78f832138ed842698389973ee81cf76250f0e21c6a7e08ef5917ad3ef",
+            "bytes": 449871
+          }
+        },
+        {
+          "caseId": "inbox",
+          "boundary": "before-write",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "f7c7bda78f832138ed842698389973ee81cf76250f0e21c6a7e08ef5917ad3ef",
+            "bytes": 449871
+          }
+        },
+        {
+          "caseId": "inbox",
+          "boundary": "force-before-ack",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "f7c7bda78f832138ed842698389973ee81cf76250f0e21c6a7e08ef5917ad3ef",
+            "bytes": 449871
+          }
+        },
+        {
+          "caseId": "child-intent",
+          "boundary": "before-write",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "f7c7bda78f832138ed842698389973ee81cf76250f0e21c6a7e08ef5917ad3ef",
+            "bytes": 449871
+          }
+        },
+        {
+          "caseId": "child-intent",
+          "boundary": "force-before-ack",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "f7c7bda78f832138ed842698389973ee81cf76250f0e21c6a7e08ef5917ad3ef",
+            "bytes": 449871
+          }
+        },
+        {
+          "caseId": "settlement",
+          "boundary": "before-write",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "ffc56d195cb04f053154882e7c28331289bf972dfa6a1e6e505040bca7b037a1",
+            "bytes": 300857
+          }
+        },
+        {
+          "caseId": "settlement",
+          "boundary": "force-before-ack",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "ffc56d195cb04f053154882e7c28331289bf972dfa6a1e6e505040bca7b037a1",
+            "bytes": 300857
+          }
+        },
+        {
+          "caseId": "participant-commit",
+          "boundary": "external-force-before-ack",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "ffc56d195cb04f053154882e7c28331289bf972dfa6a1e6e505040bca7b037a1",
+            "bytes": 300857
+          }
+        },
+        {
+          "caseId": "result",
+          "boundary": "external-force-before-ack",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "ffc56d195cb04f053154882e7c28331289bf972dfa6a1e6e505040bca7b037a1",
+            "bytes": 300857
+          }
+        },
+        {
+          "caseId": "checkpoint",
+          "boundary": "before-write",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "5b281fd5eaf8890746b930c1c274609bfeb8abfb13476e14baef2432b4bc5d40",
+            "bytes": 450193
+          }
+        },
+        {
+          "caseId": "checkpoint",
+          "boundary": "force-before-ack",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "5b281fd5eaf8890746b930c1c274609bfeb8abfb13476e14baef2432b4bc5d40",
+            "bytes": 450193
+          }
+        },
+        {
+          "caseId": "run-terminal",
+          "boundary": "before-write",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "5b281fd5eaf8890746b930c1c274609bfeb8abfb13476e14baef2432b4bc5d40",
+            "bytes": 450193
+          }
+        },
+        {
+          "caseId": "run-terminal",
+          "boundary": "force-before-ack",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "5b281fd5eaf8890746b930c1c274609bfeb8abfb13476e14baef2432b4bc5d40",
+            "bytes": 450193
+          }
+        },
+        {
+          "caseId": "release",
+          "boundary": "before-write",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "5b281fd5eaf8890746b930c1c274609bfeb8abfb13476e14baef2432b4bc5d40",
+            "bytes": 450193
+          }
+        },
+        {
+          "caseId": "release",
+          "boundary": "force-before-ack",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "5b281fd5eaf8890746b930c1c274609bfeb8abfb13476e14baef2432b4bc5d40",
+            "bytes": 450193
+          }
+        },
+        {
+          "caseId": "input",
+          "boundary": "before-write",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "738c5d58f2fb8a9226eae6411506ce456971572d1946f719d51f4a372bb75b1b",
+            "bytes": 449595
+          }
+        },
+        {
+          "caseId": "input",
+          "boundary": "force-before-ack",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "738c5d58f2fb8a9226eae6411506ce456971572d1946f719d51f4a372bb75b1b",
+            "bytes": 449595
+          }
+        },
+        {
+          "caseId": "eof",
+          "boundary": "before-write",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "738c5d58f2fb8a9226eae6411506ce456971572d1946f719d51f4a372bb75b1b",
+            "bytes": 449595
+          }
+        },
+        {
+          "caseId": "eof",
+          "boundary": "force-before-ack",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "738c5d58f2fb8a9226eae6411506ce456971572d1946f719d51f4a372bb75b1b",
+            "bytes": 449595
+          }
+        },
+        {
+          "caseId": "manifest",
+          "boundary": "before-write",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "738c5d58f2fb8a9226eae6411506ce456971572d1946f719d51f4a372bb75b1b",
+            "bytes": 449595
+          }
+        },
+        {
+          "caseId": "manifest",
+          "boundary": "force-before-ack",
+          "journalPrefixPreserved": true,
+          "thirdReadUnchanged": true,
+          "receipt": {
+            "sha256": "738c5d58f2fb8a9226eae6411506ce456971572d1946f719d51f4a372bb75b1b",
+            "bytes": 449595
+          }
+        }
+      ],
+      "jvmPhases": 84
+    },
+    "installedControls": {
+      "receipt": {
+        "sha256": "8298af8c04649d08e9f07fac41c04373465890c831eb1c3156821d2fe70db63e",
+        "bytes": 602431
+      },
+      "phases": [
+        {
+          "label": "adapted-independent-oracle",
+          "process": {
+            "sha256": "4ccb01e8654b6d5c2de301fadf3edf2148c6ee4680bdfff28969d71b8bade38b",
+            "bytes": 27033
+          },
+          "exitCode": 0,
+          "processStatus": "passed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "expected": "success",
+          "environmentError": false
+        },
+        {
+          "label": "positive-controls",
+          "process": {
+            "sha256": "f45b41cee266d3b53f403ca7ac30b930b1d98c293dff68d9d1acce34760f96ea",
+            "bytes": 26259
+          },
+          "exitCode": 0,
+          "processStatus": "passed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "d49e2dc9d243c3a1848b410df2c3a6a97154715d3ecc769a4a8f9439e7ea0d9a",
+          "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+          "expected": "suites",
+          "environmentError": false
+        },
+        {
+          "label": "drop-participant-compile",
+          "process": {
+            "sha256": "ca367bd7d656bc5724f9c68bba8468219b7c1003063d0970b7f4e0fcd731450f",
+            "bytes": 24944
+          },
+          "exitCode": 0,
+          "processStatus": "passed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "expected": "success",
+          "environmentError": false
+        },
+        {
+          "label": "drop-participant-negative",
+          "process": {
+            "sha256": "d3b586ddebcc7a22104e9947e3b6782dcc390b46bb622c9d46a1ed81a95d0e1f",
+            "bytes": 26383
+          },
+          "exitCode": 1,
+          "processStatus": "failed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "b02d1e85a30fc3e8ace69d06dd967d61906b8d1de506ab327398179976cbab55",
+          "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+          "expected": "suite-rejection",
+          "environmentError": false
+        },
+        {
+          "label": "unknown-success-compile",
+          "process": {
+            "sha256": "e6293ecb95681fb06e77a7197f7b7b859193e54177ef0d3f755c9021485140e3",
+            "bytes": 24939
+          },
+          "exitCode": 0,
+          "processStatus": "passed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "expected": "success",
+          "environmentError": false
+        },
+        {
+          "label": "unknown-success-negative",
+          "process": {
+            "sha256": "c4e50a6b8c132edf8b94dc162f00f9e727046084bd23f03b49396006b5aaec9c",
+            "bytes": 26377
+          },
+          "exitCode": 1,
+          "processStatus": "failed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "6df93cdcb9dcd825f465477da1ac935045df267e6db93fd10d83160dcdd4c3ec",
+          "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+          "expected": "suite-rejection",
+          "environmentError": false
+        },
+        {
+          "label": "compensate-committed-compile",
+          "process": {
+            "sha256": "e62697d9159bab69abbabbffa35a378942bcc4e8fb4d3b93376d5600e03d149e",
+            "bytes": 4486
+          },
+          "exitCode": 0,
+          "processStatus": "passed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "expected": "success",
+          "environmentError": false
+        },
+        {
+          "label": "compensate-committed-negative",
+          "process": {
+            "sha256": "506a263751ebd86871fd729ddfce9006ebd70a6cc560ea558af4d51c5226308d",
+            "bytes": 26408
+          },
+          "exitCode": 1,
+          "processStatus": "failed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "2e56e66a2d7ef891d2909c4f6b54a9fd84f4e747925bfeff04312447b060a6be",
+          "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+          "expected": "suite-rejection",
+          "environmentError": false
+        },
+        {
+          "label": "identity-mismatch-compile",
+          "process": {
+            "sha256": "863edd1d93fe7df8610647238378c87f778cb83a7fab187407dc6c45af4df3f1",
+            "bytes": 24953
+          },
+          "exitCode": 0,
+          "processStatus": "passed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "expected": "success",
+          "environmentError": false
+        },
+        {
+          "label": "identity-mismatch-negative",
+          "process": {
+            "sha256": "bb0eefe8a62b7d14c308fa6a0900850f1b745c9839ac65f5143a31655acfcb2c",
+            "bytes": 26391
+          },
+          "exitCode": 1,
+          "processStatus": "failed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "3ace4097e86bd0adba168950dc7aaf5d9a5faa82f920b70a4d0e830e812e4d3c",
+          "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+          "expected": "suite-rejection",
+          "environmentError": false
+        },
+        {
+          "label": "notfound-safeabsent-compile",
+          "process": {
+            "sha256": "46438a16709ad937c07e61dc4954445bb4dda1fb655592863588a559561d4929",
+            "bytes": 24959
+          },
+          "exitCode": 0,
+          "processStatus": "passed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "expected": "success",
+          "environmentError": false
+        },
+        {
+          "label": "notfound-safeabsent-negative",
+          "process": {
+            "sha256": "ffbae8e38ba170763b6f42557945a086efc5e862a568066467cafd3981e52f30",
+            "bytes": 26402
+          },
+          "exitCode": 1,
+          "processStatus": "failed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "dece86010ddad617925d12bb7d12628b0a9ff7e257386398a626362765e11c4d",
+          "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+          "expected": "suite-rejection",
+          "environmentError": false
+        },
+        {
+          "label": "release-early-compile",
+          "process": {
+            "sha256": "b084fc0fb535d7491761989f1333129e350da3c3bf51bde90844e9ff915a4e5f",
+            "bytes": 24933
+          },
+          "exitCode": 0,
+          "processStatus": "passed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "expected": "success",
+          "environmentError": false
+        },
+        {
+          "label": "release-early-negative",
+          "process": {
+            "sha256": "102203a8bf15b2985c6515aecc602842b868a4511a9432c12041fba83607b782",
+            "bytes": 26365
+          },
+          "exitCode": 1,
+          "processStatus": "failed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "8cc002a5b5e46888bd1522193b724640af4a345c03eb2453de16fa9bcc7dd126",
+          "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+          "expected": "suite-rejection",
+          "environmentError": false
+        },
+        {
+          "label": "drop-item-compile",
+          "process": {
+            "sha256": "d93cd6ec2808a3d4623d122aed3bc5b7a9efb8e0f675ca03c762428e8c65eb0c",
+            "bytes": 24913
+          },
+          "exitCode": 0,
+          "processStatus": "passed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "expected": "success",
+          "environmentError": false
+        },
+        {
+          "label": "drop-item-negative",
+          "process": {
+            "sha256": "d806cd057e35e1ece4c59481b4884fe36e69188d773a0a9193894884fe48539a",
+            "bytes": 26342
+          },
+          "exitCode": 1,
+          "processStatus": "failed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "b8f81699c93040536718c970e8edca78903343871393fdc23c48ecc2455b7704",
+          "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+          "expected": "suite-rejection",
+          "environmentError": false
+        },
+        {
+          "label": "settle-before-result-compile",
+          "process": {
+            "sha256": "8232d78daf2de86db207faa2656dab0d4b4f5050a8a00a3c11c3081dae33d879",
+            "bytes": 24968
+          },
+          "exitCode": 0,
+          "processStatus": "passed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "expected": "success",
+          "environmentError": false
+        },
+        {
+          "label": "settle-before-result-negative",
+          "process": {
+            "sha256": "100aae796c1ddac4b5590f53b5754558390a34a964a5c1f1761bc11096359cbd",
+            "bytes": 26408
+          },
+          "exitCode": 1,
+          "processStatus": "failed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "fc39870aff242d1c4a1bfd99784a14045ee4a6f378efcfd5dcdc4fbf4211f3a4",
+          "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+          "expected": "suite-rejection",
+          "environmentError": false
+        }
+      ],
+      "positiveTests": 20,
+      "mutations": [
+        {
+          "caseId": "DROP-PARTICIPANT",
+          "assertion": "MUTATION_DROP_PARTICIPANT",
+          "compiled": true,
+          "rejectedByDesignatedAssertion": true
+        },
+        {
+          "caseId": "UNKNOWN-SUCCESS",
+          "assertion": "MUTATION_UNKNOWN_SUCCESS",
+          "compiled": true,
+          "rejectedByDesignatedAssertion": true
+        },
+        {
+          "caseId": "COMPENSATE-COMMITTED",
+          "assertion": "MUTATION_COMPENSATE_COMMITTED",
+          "compiled": true,
+          "rejectedByDesignatedAssertion": true
+        },
+        {
+          "caseId": "IDENTITY-MISMATCH",
+          "assertion": "MUTATION_OPERATION_IDENTITY",
+          "compiled": true,
+          "rejectedByDesignatedAssertion": true
+        },
+        {
+          "caseId": "NOTFOUND-SAFEABSENT",
+          "assertion": "MUTATION_NOTFOUND_SAFEABSENT",
+          "compiled": true,
+          "rejectedByDesignatedAssertion": true
+        },
+        {
+          "caseId": "RELEASE-EARLY",
+          "assertion": "MUTATION_RELEASE_EARLY",
+          "compiled": true,
+          "rejectedByDesignatedAssertion": true
+        },
+        {
+          "caseId": "DROP-ITEM",
+          "assertion": "MUTATION_DROP_ITEM",
+          "compiled": true,
+          "rejectedByDesignatedAssertion": true
+        },
+        {
+          "caseId": "SETTLE-BEFORE-RESULT",
+          "assertion": "MUTATION_SETTLE_BEFORE_RESULT",
+          "compiled": true,
+          "rejectedByDesignatedAssertion": true
+        }
+      ]
+    },
+    "registration": {
+      "receipt": {
+        "sha256": "2100e45cb02ed6719f3faa45fe1555e23310d89cc1d436e38c1669f68a6c5dc0",
+        "bytes": 125353
+      },
+      "phases": [
+        {
+          "label": "registration-oracle",
+          "process": {
+            "sha256": "5ab7e9fa5192adca1bb6daf482676c9faabc91e06c5b09600e959e8b0b894015",
+            "bytes": 27065
+          },
+          "exitCode": 0,
+          "processStatus": "passed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "expected": "success",
+          "environmentError": false
+        },
+        {
+          "label": "registration-positive",
+          "process": {
+            "sha256": "d53e43ffd31d9f766453167e2fcf2b9b79d96459a190d7d714d7efa989a82a10",
+            "bytes": 26134
+          },
+          "exitCode": 0,
+          "processStatus": "passed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "f24e9fe39bd436675ac34209a482f3a5dd9e900fab26cab6b1da81143374d21e",
+          "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+          "expected": "suites",
+          "environmentError": false
+        },
+        {
+          "label": "strict-registration-missing",
+          "process": {
+            "sha256": "d1a6854018fe8fd7d1ef4a882bc47c9830596749ae4a818f1c16e9ad458db07c",
+            "bytes": 26236
+          },
+          "exitCode": 1,
+          "processStatus": "failed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "8927a90a18e8fdb953606a59dd96884798d49633dc5bfbd7d4a3f1e1fb95c99a",
+          "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+          "expected": "suite-rejection",
+          "environmentError": false
+        },
+        {
+          "label": "run-registration-missing",
+          "process": {
+            "sha256": "b9a32407f2ac215b652f634e2e4eb51d00efb89ebb54ae8574a297e5833d5f1a",
+            "bytes": 26232
+          },
+          "exitCode": 1,
+          "processStatus": "failed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "3bdcfd016093fbe1b534641df8385f75d69c2b7d32b53b142d40d7696d1d201f",
+          "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+          "expected": "suite-rejection",
+          "environmentError": false
+        }
+      ],
+      "positiveTests": 1,
+      "missingBindings": [
+        {
+          "binding": "net.imadz.infra.saga.strict.StrictDurable",
+          "designatedAssertion": "REGISTRATION_REQUIRED",
+          "accepted": true
+        },
+        {
+          "binding": "net.imadz.monarch.persistence.RunProtocol$Wire",
+          "designatedAssertion": "REGISTRATION_REQUIRED",
+          "accepted": true
+        }
+      ]
+    },
+    "renamedGenerated": {
+      "receipt": {
+        "sha256": "f43a2055aeaa62fb42e4296c723ff9a5494d6d6d7b90da90246327d750c68119",
+        "bytes": 174525
+      },
+      "phases": [
+        {
+          "label": "kernel",
+          "process": {
+            "sha256": "5aa21b946fef2219837c494eac6932493cad357c5454859f836b998992f0f0da",
+            "bytes": 4532
+          },
+          "exitCode": 0,
+          "processStatus": "passed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "expected": "success",
+          "environmentError": false
+        },
+        {
+          "label": "glue",
+          "process": {
+            "sha256": "0b1d577a8d3088f21ec77a2852a73daabd46f9aac7f4676dfd3b6ba02356e95b",
+            "bytes": 24967
+          },
+          "exitCode": 0,
+          "processStatus": "passed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "expected": "success",
+          "environmentError": false
+        },
+        {
+          "label": "ext",
+          "process": {
+            "sha256": "19dbe00da0b6c1838d87cb38d881a4c0ebccb782969179322adf614b3af03bea",
+            "bytes": 4395
+          },
+          "exitCode": 0,
+          "processStatus": "passed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "expected": "success",
+          "environmentError": false
+        },
+        {
+          "label": "root",
+          "process": {
+            "sha256": "f5915980f0b38d1bdde0cac2c01c7173ad4b20ec88a021d24465016bb7f29068",
+            "bytes": 24810
+          },
+          "exitCode": 0,
+          "processStatus": "passed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "expected": "success",
+          "environmentError": false
+        },
+        {
+          "label": "renamed-oracle",
+          "process": {
+            "sha256": "8d7ba124c9cd1793a78c75075bba5af56829f193050bf2b3262ebec4d757c1da",
+            "bytes": 27056
+          },
+          "exitCode": 0,
+          "processStatus": "passed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "expected": "success",
+          "environmentError": false
+        },
+        {
+          "label": "renamed-behavior",
+          "process": {
+            "sha256": "89840189d16a9f391297f361934c19d1ba5053fa716a074e89e65afc72aaca38",
+            "bytes": 26129
+          },
+          "exitCode": 0,
+          "processStatus": "passed",
+          "assertionAccepted": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false,
+          "stdoutSha256": "d7366a251f03f7e1909ad510d7d5c34857ced9712ca8c50e18b9d26011b94756",
+          "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+          "expected": "suites",
+          "environmentError": false
+        }
+      ],
+      "tests": 18,
+      "fourModulesCompiled": true,
+      "wirePinsUnchanged": true
+    },
+    "typedRecovery": [
+      {
+        "kind": "generated-typed-ack",
+        "receipt": {
+          "sha256": "d774a726d45f86bb7aaf0d0f33acc222efb648100ae0d5c99917c47c450de2ae",
+          "bytes": 124583
+        },
+        "phases": [
+          {
+            "label": "recovery-oracle",
+            "process": {
+              "sha256": "3bb360519e3f883906eaa309e5bc0ff41bfe55ed5c5cf9583d383706e2276c07",
+              "bytes": 26924
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "leaf-ack-fault",
+            "process": {
+              "sha256": "01f63e1e4a04898c7324fa9f6c93fe1677584422653e51a090d4d8e1cfe3391e",
+              "bytes": 26031
+            },
+            "exitCode": 78,
+            "processStatus": "failed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "3c6a4e0f0348e5ee366b7f5de0068d00f86e24aa6474f76752c2d2b7353916e9",
+            "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+            "expected": "suite-rejection",
+            "environmentError": false
+          },
+          {
+            "label": "leaf-ack-recover",
+            "process": {
+              "sha256": "ec95eb55a2d8bda5d06ae5f64c2024dabd3c3fb2b4c5b5e07c3b406e2ef35de4",
+              "bytes": 26038
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "66378becf32724ea1dda51a63f23d8aa8cc01dcf489c79c3d4a208c3fea5e558",
+            "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "leaf-ack-third-read",
+            "process": {
+              "sha256": "1f8ee7a6102620db55ebe091211272eef706cc95c508ce5ad1e6b34f52d5533e",
+              "bytes": 26041
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "a3b09a6e18aa0d321a98e92f9ca1d4c2e68e28bdd7beca8e63d2fc23d7847916",
+            "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+            "expected": "success",
+            "environmentError": false
+          }
+        ],
+        "journalPrefixPreserved": true,
+        "thirdReadUnchanged": true
+      },
+      {
+        "kind": "installed-typed-ack",
+        "receipt": {
+          "sha256": "680d5e2c2bbfa0bd2be61361c1b42fbdd543e11399ef7c6194f3ed8ec990eec0",
+          "bytes": 124918
+        },
+        "phases": [
+          {
+            "label": "recovery-oracle",
+            "process": {
+              "sha256": "5ff194acdf5a52006ad0eabd64fbc25c314aa0a4ce0fe9c8654f063a8d3d09e9",
+              "bytes": 26988
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "leaf-ack-fault",
+            "process": {
+              "sha256": "0ef227e5af27b5fff1555e62374f523a5655ce564a6b423098c381c0a044fe59",
+              "bytes": 26095
+            },
+            "exitCode": 78,
+            "processStatus": "failed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "15fdcd8cfd06a7d678035be4bb724b4a6ad8e56770f88ad82c4672577f18756a",
+            "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+            "expected": "suite-rejection",
+            "environmentError": false
+          },
+          {
+            "label": "leaf-ack-recover",
+            "process": {
+              "sha256": "a43b3e5f756826c1b68821ddda3e543a981f31e462b22d9fd308f1f5f7ad2c7a",
+              "bytes": 26102
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "9feee2b36f868249adaa11637ebac839fab771379cddb7b55158b667801e76b7",
+            "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "leaf-ack-third-read",
+            "process": {
+              "sha256": "e275b865e01a093722f9c6490366eb0d44155480c14bb45542e37bb8ed8d7f29",
+              "bytes": 26105
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "d6f80614fcb62bcb55c350ae3e20b5b83a2ac3fdc2a05a0acf614b4d32f2dd9d",
+            "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+            "expected": "success",
+            "environmentError": false
+          }
+        ],
+        "journalPrefixPreserved": true,
+        "thirdReadUnchanged": true
+      },
+      {
+        "kind": "generated-durable-delay",
+        "receipt": {
+          "sha256": "1e81c4f8ee3c5e995be1482a681be617f025c2bc0737c783bd59770e8252e6cc",
+          "bytes": 124546
+        },
+        "phases": [
+          {
+            "label": "delay-oracle",
+            "process": {
+              "sha256": "df12818c75e402ffaedd4eb01212a0c16dfd2b4ba31649b8ecfba11eff760010",
+              "bytes": 26924
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "delay-fault",
+            "process": {
+              "sha256": "389a2e6ed808e80d68619a17d12429cd1e34395e18eb48ca7b5c5399421efb76",
+              "bytes": 26033
+            },
+            "exitCode": 79,
+            "processStatus": "failed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "eb8b82e5e2c7ad2a093a3aac5a511ee8d53cce244973bdc5e640b5d4529946ef",
+            "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+            "expected": "suite-rejection",
+            "environmentError": false
+          },
+          {
+            "label": "delay-recover",
+            "process": {
+              "sha256": "32352d9e7f58dbb0b6bea95487e3faf954b5b812ee155a4ab554e4cc1a8cc410",
+              "bytes": 26038
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "f8a04aab45b272430364a85a7e190fef29e9243400c80c9216eaeed0228cf172",
+            "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "delay-third-read",
+            "process": {
+              "sha256": "29a374372b5b526fa3c2cc51c257ff2f541b49d4102c526c2383714d78acfc72",
+              "bytes": 26042
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "f74edf10ff87421497ca65a5be5d8eecd521606cebd794812dad6fbcbf9460df",
+            "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+            "expected": "success",
+            "environmentError": false
+          }
+        ],
+        "journalPrefixPreserved": true,
+        "thirdReadUnchanged": true
+      },
+      {
+        "kind": "installed-durable-delay",
+        "receipt": {
+          "sha256": "714aa254379e41bf9b8d4e2f3091420f1e837b95184b657ad3295f61a075082c",
+          "bytes": 124881
+        },
+        "phases": [
+          {
+            "label": "delay-oracle",
+            "process": {
+              "sha256": "3a31f6c09802ec3c4387b22e57f5af5fd8564fc544184d1a87463b1d7e8f0cca",
+              "bytes": 26988
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "delay-fault",
+            "process": {
+              "sha256": "b2b2b7fced9400da27ebd2ba782709d04a2ac1b0ddb7a979567dba49ef15a63e",
+              "bytes": 26097
+            },
+            "exitCode": 79,
+            "processStatus": "failed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "d710ea5445dcd6a63943f14f48d8156e9fc0dd69311b72209b32eb69af261816",
+            "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+            "expected": "suite-rejection",
+            "environmentError": false
+          },
+          {
+            "label": "delay-recover",
+            "process": {
+              "sha256": "0e9f49616b932ab098c45270a185a3eeac486d11a54226a07eca77abca5f7df3",
+              "bytes": 26102
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "76d20d11d8c784274040752f81b725436f51031b86eba7a4034cdf0d9ec61fd3",
+            "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+            "expected": "success",
+            "environmentError": false
+          },
+          {
+            "label": "delay-third-read",
+            "process": {
+              "sha256": "4062215b170b211ce18b76ad544311563469b0e4703c93109940e13ea149deb5",
+              "bytes": 26106
+            },
+            "exitCode": 0,
+            "processStatus": "passed",
+            "assertionAccepted": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false,
+            "stdoutSha256": "11db596294f072d8878a94ba5c5b702c4d64d3c87c86142409a2c9fb920266b6",
+            "stderrSha256": "3283a1bfeea8fde1890c664a01d8cab3697bb76b5407d729fea38d885eb9a6db",
+            "expected": "success",
+            "environmentError": false
+          }
+        ],
+        "journalPrefixPreserved": true,
+        "thirdReadUnchanged": true
+      }
+    ],
+    "retainedFailedAttempts": [
+      {
+        "kind": "registration-control-fallback-not-disabled",
+        "receipt": {
+          "sha256": "7f2ea23aa5e298bb24889e4659752ba5dadf7c0de835423fc74185d7707e0050",
+          "bytes": 100893
+        },
+        "originalPassed": false
+      },
+      {
+        "kind": "naming-harness-author-overlaps-tool",
+        "receipt": {
+          "sha256": "a1387e0089e18d95bc1a5c1eea8556e0768e00fec8d82800ad959a1dc3018589",
+          "bytes": 1114
+        },
+        "originalPassed": false
+      }
+    ],
+    "boundaries": [
+      "Fixed dev.r2 and Strict Saga artifacts; no runtime rebuild.",
+      "SerializedValidationJournal fixture qualification only.",
+      "Generated build files are not sbt qualification.",
+      "No bank migration, runtime release or architecture final approval.",
+      "Expected crash and mutation process failures remain failed; their designated assertions are separately accepted."
+    ]
+  },
+  "node": {
+    "full": {
+      "originalPassed": false,
+      "totals": {
+        "tests": 4314,
+        "suites": 0,
+        "pass": 4269,
+        "fail": 30,
+        "cancelled": 0,
+        "skipped": 15,
+        "todo": 0,
+        "duration_ms": 2103607.022656
+      },
+      "receiptSha256": "cc9269165906ec1b77a5697378aac307509c3886befcc5d6345d58005e8591db",
+      "stdoutSha256": "091222d5063fab6d0b6626aecc3d7943fc4e94789f0a3141c3fac2fef2102d60",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "completeFooter": true,
+      "failedTests": [
+        "strict runtime capability is not advertised as generated bank R2 consumption",
+        "nonbank explicit policy produces compatible file-only evidence with 1:N and N:1 references",
+        "generic source documents retain finite decimal values without product compilation policy",
+        "native filesystem paths use portable slash-separated inventory and mapping keys",
+        "duplicate document IDs fail even when the ambiguous document is not referenced",
+        "exact coverage rejects missing, extra, duplicate and unsafe file entries",
+        "entries require unique nonempty sources, explicit rationale and a declared relation",
+        "generator and relation policies have no implicit defaults",
+        "inventory includes hidden and build files and safely represents a literal __proto__ filename",
+        "canonical roots reject relative, non-normalized, missing and non-directory paths",
+        "symlink roots, ancestors, files, directories and dangling links are rejected",
+        "duplicate hardlinks are not accepted as independent source files",
+        "nonregular FIFO inventory entries reject before any blocking file read",
+        "successful verification performs no filesystem writes or input mutations",
+        "unmapped file additions across async anchor verification fail the complete post-inventory",
+        "stale, removed and renamed files across async verification cannot be certified",
+        "links added during async verification and a replaced root are rejected on re-inventory",
+        "caller mutations across await do not alter captured source references or declarations",
+        "local tarball allowlist installs offline and runs without the source checkout",
+        "pure product graph uses fixed declarations, schema and deterministic compiler dependencies",
+        "preloaded product initialization and calls work while effects are denied",
+        "test/reference/saga-monarch/verify.mjs",
+        "real non-bank Node run seals evidence; inspector is static after completion",
+        "event timestamps follow the monotonic invocation timeline across a wall-clock adjustment",
+        "Seatbelt actually denies writes outside its owned root and network access",
+        "targeted signal, callback settlement and revoked controls are preserved",
+        "cancellation and nonzero exits cannot be relabelled passed",
+        "redaction precedes disk and covers split UTF-8 plus truncated EOF",
+        "optional sandbox process execution is composed and statically rechecked",
+        "fire-and-forget owned processes settle before release and late execution capabilities are revoked"
+      ]
+    },
+    "repair": {
+      "passed": true,
+      "suites": [
+        "artifact-docs",
+        "handwritten-provenance",
+        "onboarding-cli",
+        "product-admission",
+        "saga-monarch-verifier",
+        "verification-process",
+        "verification-runner"
+      ],
+      "totals": {
+        "plan": 178,
+        "tests": 178,
+        "suites": 0,
+        "pass": 178,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "durationMs": 62060.101437
+      },
+      "receiptSha256": "cb69dbefe8c1e057313973a76691199afd2033c8547c6b06cd90a531f0bcc3bd",
+      "stdoutSha256": "51167851f7cbc10d074eb376ea6f8e64fb600b0a93e8ebceb8e67507b3d67dd7",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "allFailedSuitesReverified": true,
+    "fullRunResigned": false
+  },
+  "protection": {
+    "checkedFiles": 15955,
+    "metadataChecked": 2361,
+    "originalReceipts": 28,
+    "receiptSha256": "f32570a908eebb436c67e4da707996201a7ceeb81f1c93fa341b3d934b504db1"
+  },
+  "compatibility": [
+    {
+      "target": "bc",
+      "files": 50,
+      "written": 50
+    },
+    {
+      "target": "play",
+      "files": 32,
+      "written": 32
+    }
+  ],
+  "approval": null,
+  "bankMigration": false,
+  "runtimePublished": false,
+  "sbtExecuted": false
+}

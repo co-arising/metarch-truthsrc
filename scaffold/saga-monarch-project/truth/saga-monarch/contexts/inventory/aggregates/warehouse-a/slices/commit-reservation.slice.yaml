@@ -1,0 +1,52 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: slice
+aggregate: WarehouseA
+command: CommitReservation
+payload:
+  {
+    "name": "CommitReservation",
+    "parameters": [
+      {
+        "name": "transactionId",
+        "dataType": "TransactionId",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "warehouse",
+        "dataType": "Warehouse",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "sku",
+        "dataType": "Sku",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "reservationA",
+        "dataType": "String",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "reservationB",
+        "dataType": "String",
+        "origin": "BUSINESS_INPUT"
+      }
+    ],
+    "produces": [
+      "ReservationCommitted"
+    ]
+  }
+events:
+  {
+    "ReservationCommitted": {
+      "name": "ReservationCommitted",
+      "payloads": [
+        {
+          "name": "reservationId",
+          "dataType": "String",
+          "origin": "BUSINESS_INPUT"
+        }
+      ]
+    }
+  }
