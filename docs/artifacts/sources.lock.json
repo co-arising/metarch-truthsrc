@@ -453,6 +453,23 @@
           ],
           "packaged": false,
           "files": true
+        },
+        {
+          "id": "pending-current-fix-tests",
+          "paths": [
+            "test/domain-kernel-jvm-parameters.test.mjs",
+            "test/journal-readside-generation.test.mjs",
+            "test/reference/journal-readside-concurrency.mjs",
+            "test/reference/journal-readside-concurrency.scala",
+            "test/verification-process.test.mjs",
+            "test/verification-runner.test.mjs"
+          ],
+          "extensions": [
+            ".mjs",
+            ".scala"
+          ],
+          "packaged": false,
+          "files": true
         }
       ],
       "files": [
@@ -9845,8 +9862,8 @@
         },
         {
           "path": "generators/scala-cqrs-application/generate.mjs",
-          "bytes": 1350,
-          "sha256": "e517297855102990fde2ddc16fe79cdc2e72f2a948cbcabeebbce10f63e20d59",
+          "bytes": 1331,
+          "sha256": "1c107b4fa19709fc2df536bcd949dec53333325953b02c0b641cd396aff893bc",
           "mode": "100644",
           "baselineBlob": "c826e26d6e8b6913882367d360cb9715f6a12520",
           "evidence": "inspected-working-tree",
@@ -10382,8 +10399,8 @@
         },
         {
           "path": "generators/scala-cqrs-application/render-build.mjs",
-          "bytes": 1424,
-          "sha256": "9b814fe361c4550209c71404642d738ea8320a450d92df49d0a383ee3a9362b7",
+          "bytes": 1379,
+          "sha256": "0ef1cd102e1c33bbc3baeaf2649b0a3d8d31a2fe0ccafcdd3fefa1606fb01ab9",
           "mode": "100644",
           "baselineBlob": "b75037e29799eb3fed05a4f895bd6d07f04d7cb5",
           "evidence": "inspected-working-tree",
@@ -12666,8 +12683,8 @@
         },
         {
           "path": "generators/scala-cqrs-domain-kernel-v1/build-models.mjs",
-          "bytes": 31729,
-          "sha256": "add67bc6fae2755544df6154bcc71a1d00c9e4dcae8163abb73bfd6812eb604d",
+          "bytes": 32296,
+          "sha256": "4a6d50c3c931e06f817843427e86567d2966c481f9c69b481777b515b98a44b5",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "inspected-working-tree",
@@ -12703,6 +12720,7 @@
             "artifact",
             "buildModels",
             "checkDeclaration",
+            "checkParameters",
             "closure",
             "field",
             "finishFields",
@@ -12721,12 +12739,12 @@
           ],
           "outputSites": [
             {
-              "line": 329,
+              "line": 337,
               "sha256": "580ee004455f6ab297c39d660f97b67ce3f73fd47fadd37be4ac5e4db0ab7eec",
               "excerpt": "return { role: 'exact-codec', kind: 'exact-value-codec', module: 'glue', ref: c.domain, name, identifier: name, package: pkg,"
             },
             {
-              "line": 359,
+              "line": 367,
               "sha256": "a4af4a4f14b1e8c351a51d78fff23d9e96d2ba54853a118d72f82e026cc398bc",
               "excerpt": "const proto = { role: 'protobuf', kind: 'proto', module: 'glue', ref: null, name: null, identifier: null, package: pb.package, fqn: null,"
             }
@@ -12937,6 +12955,37 @@
           "dynamicKinds": []
         },
         {
+          "categories": [
+            "computation-port",
+            "domain-protocol",
+            "domain-state",
+            "exact-value-codec",
+            "generated-test",
+            "project-build",
+            "proto-converter",
+            "protobuf-schema",
+            "rule-parameters",
+            "signature-value-closure",
+            "value-object"
+          ],
+          "disposition": "producer-support",
+          "reason": "Explicit generator family scala-cqrs-domain-kernel-v1; manifest/entry contract and all source branches are inventoried, not only the bank profile.",
+          "path": "generators/scala-cqrs-domain-kernel-v1/jvm-parameters.mjs",
+          "bytes": 1242,
+          "sha256": "0e3b1f488dcc0c09a8a0e36eff5be6c49c17bb6c1d8d5fe29ed85a230b638572",
+          "mode": "100644",
+          "scope": "generators",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "symbols": [
+            "checkJvmParameters",
+            "kernelParameterSlots"
+          ],
+          "outputSites": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
           "path": "generators/scala-cqrs-domain-kernel-v1/render.mjs",
           "bytes": 5258,
           "sha256": "82d1577e686de7b0233116b66b4c186ee41e6a99070aa80157d5991a04d98c5c",
@@ -13001,8 +13050,8 @@
         },
         {
           "path": "generators/scala-cqrs-domain-kernel-v1/serialization-model.mjs",
-          "bytes": 9801,
-          "sha256": "8542380f6d5a4e6eb3194fc2afcb5c5c6cfd23cd571d64dffb0143ac050cbb2e",
+          "bytes": 10400,
+          "sha256": "0e2a78adf06e33e8fec7a6eac9556c3e8f9e7d2dd0ad7d16f459db7457bc5dbf",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "inspected-working-tree",
@@ -18884,10 +18933,10 @@
         },
         {
           "path": "generators/scala-cqrs-play-service/render-journal-readside.mjs",
-          "bytes": 12180,
-          "sha256": "62d6d3cef122696be1bb6b68feb41c9c4ec40c82d650f643c83fe60c704eaf72",
+          "bytes": 13003,
+          "sha256": "ddef1f4c384b344e629619e1feec17eb480d099162aba45cea5461acc9812cd7",
           "mode": "100644",
-          "baselineBlob": "0dfc673d033d909919c1f32529be64d628e9cf25",
+          "baselineBlob": null,
           "evidence": "inspected-working-tree",
           "scope": "generators",
           "categories": [
@@ -18966,7 +19015,7 @@
           ],
           "outputSites": [
             {
-              "line": 220,
+              "line": 237,
               "sha256": "35147e7733ab4a1beed0b9fe129368f2b0f85a298c9c78c5ad5fd0a2bbe2adbd",
               "excerpt": "return entry(path, content, kind, sources, footprint, deps, [{ source, span, scope: span }, ...mappings]);"
             }
@@ -18977,7 +19026,7 @@
             "entry:kind"
           ],
           "outputContract": {
-            "sourceSha256": "62d6d3cef122696be1bb6b68feb41c9c4ec40c82d650f643c83fe60c704eaf72",
+            "sourceSha256": "ddef1f4c384b344e629619e1feec17eb480d099162aba45cea5461acc9812cd7",
             "categories": [
               "aggregate-behavior",
               "aggregate-bootstrap",
@@ -19047,8 +19096,8 @@
         },
         {
           "path": "generators/scala-cqrs-play-service/render-journal-repository.mjs",
-          "bytes": 11472,
-          "sha256": "2224687a3f2a1b76f8fc44d6ca28b3851c4573b261493b9d9fcbb5209c239ed7",
+          "bytes": 11636,
+          "sha256": "8e94d5c816a2f78bf11bdb19c0276c7ad37b2067eaab6606466a1a1c8209ad71",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "inspected-working-tree",
@@ -25208,8 +25257,8 @@
         },
         {
           "path": "lib/products/contract-schemas-v2.mjs",
-          "bytes": 6957,
-          "sha256": "af39fe8f092684a5e1ca6aec6c56d030d25ea744f66cac4c6423f12b2a73d596",
+          "bytes": 6928,
+          "sha256": "f4c877e9de3d2bf6c4dc927a3cd1817e9092346754b45061fa30ddbb8d88611c",
           "mode": "100644",
           "scope": "profiles",
           "categories": [
@@ -25338,8 +25387,8 @@
         },
         {
           "path": "lib/products/generate-cli.mjs",
-          "bytes": 11704,
-          "sha256": "de7c19f5c1c38446988f0dcc83f82221bfc7468efba0b8398136d21744616ee5",
+          "bytes": 11644,
+          "sha256": "4b255346896f8f27534a90ed338d078b568c6f9d5a56a8b80f6e782001dd12f6",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "inspected-working-tree",
@@ -26419,8 +26468,8 @@
         },
         {
           "path": "lib/verification/callbacks.mjs",
-          "bytes": 2131,
-          "sha256": "29407bd94b7d1a05bfca2f6b2e6809b9bdaa625f3fb94a801eae73c578ac42f2",
+          "bytes": 3332,
+          "sha256": "ae8eb93353abe72c23676f1feff2bdb1e7712334ecad7f8ef8383ff5a5556780",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "inspected-working-tree",
@@ -26432,6 +26481,7 @@
           "reason": "Optional public evidence/lifecycle or tool-ownership mechanism; caller-owned policies remain outside the basic author CLI.",
           "symbols": [
             "assertVerificationCallback",
+            "captureVerificationSignal",
             "immediate",
             "settleVerificationCallback"
           ],
@@ -26612,8 +26662,8 @@
         },
         {
           "path": "lib/verification/process.mjs",
-          "bytes": 30986,
-          "sha256": "884c6dddbe9562cf6133b85aa2d8822020431b07e6ab6db5b7f41e984c40c6ab",
+          "bytes": 30948,
+          "sha256": "72dafbd18dbaeb1c5900fce86788492214964ca95b052e4995452738bd4d2cd2",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "inspected-working-tree",
@@ -26646,8 +26696,8 @@
         },
         {
           "path": "lib/verification/runner.mjs",
-          "bytes": 22487,
-          "sha256": "61d8f6181668f48ba68b197323414df45a5ea44e4a5d6de756169ed351bf77a5",
+          "bytes": 22423,
+          "sha256": "f54f07d752bc6da4c613f18beb705e83f99c96c4cce21c7cd1ce0330d41bd240",
           "mode": "100644",
           "baselineBlob": null,
           "evidence": "inspected-working-tree",
@@ -26695,7 +26745,7 @@
               "excerpt": "assertCanonicalPath(directory, { kind: 'new' }); assertCanonicalPath(dirname(lease.registry));"
             },
             {
-              "line": 209,
+              "line": 208,
               "sha256": "56ad96ff5e0b45bf7a3481a7e252d627bc3d605a498035d7454a590296fc8e1d",
               "excerpt": "try { assertCanonicalPath(directory, { kind: 'new' }); mkdirSync(directory, { mode: 0o700 }); }"
             }
@@ -29942,8 +29992,8 @@
         },
         {
           "path": "scaffold/saga-monarch-project/bindings/composition.json",
-          "bytes": 4966,
-          "sha256": "359d06fa68c0bbc81c60a9e057d28f292b5c449b3fb8e30db6903fbaf106d9e1",
+          "bytes": 4922,
+          "sha256": "de2dd053e49b810f8953d6cc5d02b935d06b1930e5e9eec35e4da4d84d8614ce",
           "mode": "100644",
           "scope": "scaffold",
           "categories": [
@@ -29981,8 +30031,8 @@
         },
         {
           "path": "scaffold/saga-monarch-project/bindings/execution.json",
-          "bytes": 19658,
-          "sha256": "9b9346db48751b5cf1462967be81f8bd8fa9dfff4dd2511075f65b7d406de7a8",
+          "bytes": 19643,
+          "sha256": "f7ee7041f34c621d6dec8058187af30217008efdee01056b96bc3dc5de5c1cd3",
           "mode": "100644",
           "scope": "scaffold",
           "categories": [
@@ -30020,8 +30070,8 @@
         },
         {
           "path": "scaffold/saga-monarch-project/bindings/runtime.json",
-          "bytes": 2403,
-          "sha256": "4a970b031ad284a06cfb984c8805730ae4adfdf9ab809e1bd1c9c05eeeb6160f",
+          "bytes": 2388,
+          "sha256": "de5e4748a3c5a15f8d1bf4dd8d09ba753e02fe03513874987a15e7c48ab751a8",
           "mode": "100644",
           "scope": "scaffold",
           "categories": [
@@ -30059,8 +30109,8 @@
         },
         {
           "path": "scaffold/saga-monarch-project/bindings/saga.json",
-          "bytes": 18411,
-          "sha256": "fac8f6b5e47f711255b3b9f84fb509d7d2c651d89db33afeb2442ff9aa3588e4",
+          "bytes": 18396,
+          "sha256": "969ea2c23fea36efb08b314cae80f11b7b0179969436c04a91f873ae462bb1d9",
           "mode": "100644",
           "scope": "scaffold",
           "categories": [
@@ -33099,6 +33149,73 @@
           ],
           "outputSites": [],
           "declaredKinds": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "categories": [
+            "generated-test",
+            "independent-business-oracle"
+          ],
+          "disposition": "test-support",
+          "reason": "Explicit finite current-fix test/oracle source, not generated application or execution qualification. JVM concurrency lane remains opt-in; Node context runs cleanup predicates only.",
+          "path": "test/domain-kernel-jvm-parameters.test.mjs",
+          "bytes": 11233,
+          "sha256": "46b242454a50c1113888c66a4b747cfde2bd9db3f9997094191c8f2bf6d90015",
+          "mode": "100644",
+          "scope": "pending-current-fix-tests",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "symbols": [
+            "variant"
+          ],
+          "outputSites": [
+            {
+              "line": 81,
+              "sha256": "82b08fa4bee0823d2f5b54c104db71b5f04c3c8e2dcbee20a84398af3a7a8921",
+              "excerpt": "const v = variant({ kind: 'host', n: 126 });"
+            },
+            {
+              "line": 85,
+              "sha256": "93db4791da309ae2dd4289022acd3a2b37a66b84a146f82fb82fd421df9b2ce8",
+              "excerpt": "const legal = buildModels(variant({ kind: 'host', n: 125 }).input).aggregates[0];"
+            },
+            {
+              "line": 93,
+              "sha256": "3be18a83d15e1f198c651b0944140982d0127ebbc52d09ba2821d691964c536f",
+              "excerpt": "const v = variant({ kind: 'record', n: 127 }), model = buildModels(v.input);"
+            },
+            {
+              "line": 114,
+              "sha256": "b4b853bfbe01bfb4f311b6a1de4816ba05f96092449d273a2903636e54d3ce09",
+              "excerpt": "const v = variant({ kind: 'record', n: types.length, types });"
+            },
+            {
+              "line": 131,
+              "sha256": "e1fb4f14dec6e61d8be3d8534be27aa99e4bd955497322f83e51dc9baa3e9d32",
+              "excerpt": "const v = variant({ kind: 'record', n, types: Array(n).fill(type) });"
+            },
+            {
+              "line": 147,
+              "sha256": "eb2107c01a88349d5a56c1714706658db34a9e2030b4dedc2372830e9578a84a",
+              "excerpt": "const v = variant({ kind: 'record', n: 254, types: Array(254).fill('String') });"
+            },
+            {
+              "line": 152,
+              "sha256": "d28cd8d06ea238b3bd7a54c4bd4eb949463a7e28d7bacec5a05a382ad213645a",
+              "excerpt": "const v = variant({ kind: 'command', n: 128, types: Array(128).fill('Reading') });"
+            },
+            {
+              "line": 160,
+              "sha256": "fb9e81cd641ad3bb39f4585c333cf76ec7815d4a1d4dd8f3390649658c1f1394",
+              "excerpt": "const v = variant({ kind: 'record', n: 128, types: Array(128).fill('Int') });"
+            },
+            {
+              "line": 162,
+              "sha256": "a01621f6e24fc93b73c4ea3ea2d896aa96cf98066384a821e22cb7bc07f4a2c4",
+              "excerpt": "assert.throws(() => variant({ kind: 'record', n: 1, types: ['Double'] }), error => error.diagnostic?.code === 'VALUE_TYPE');"
+            }
+          ],
           "emittedKinds": [],
           "dynamicKinds": []
         },
@@ -39794,6 +39911,42 @@
           "dynamicKinds": []
         },
         {
+          "categories": [
+            "generated-test",
+            "independent-business-oracle"
+          ],
+          "disposition": "test-support",
+          "reason": "Explicit finite current-fix test/oracle source, not generated application or execution qualification. JVM concurrency lane remains opt-in; Node context runs cleanup predicates only.",
+          "path": "test/journal-readside-generation.test.mjs",
+          "bytes": 26386,
+          "sha256": "f3516589e77c6e522e883479aef7eff169d492626670a065babeb4317fd2a52f",
+          "mode": "100644",
+          "scope": "pending-current-fix-tests",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "symbols": [
+            "ArchiveStoreSchema",
+            "Envelope",
+            "Owner",
+            "Payload",
+            "Row",
+            "Session",
+            "State",
+            "TicketReadsideRepository",
+            "WorkItem",
+            "fixture"
+          ],
+          "outputSites": [
+            {
+              "line": 26,
+              "sha256": "6081be349db6d9b470f3d2090fecc094aa18cc99143709850a0d23cab3c4b0dd",
+              "excerpt": "streams: [{ kind: 'booking', aggregate: ref('aggregate', 'Booking'), identity: ref('state-field', 'type', ['Booking']),"
+            }
+          ],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
           "path": "test/module-seams-admission.test.mjs",
           "bytes": 10071,
           "sha256": "3ebbe7be889149f7bd2b8f8744e4473595843a42315eb82627d5a91aa52e0199",
@@ -41130,8 +41283,8 @@
         },
         {
           "path": "test/play-application-capabilities.test.mjs",
-          "bytes": 4505,
-          "sha256": "74b9d2be5504c296d20455f4484200e3e6c5b33162344028c5db02f5fefec5dd",
+          "bytes": 4645,
+          "sha256": "ea790dc84d64eb82804cdac5449a1a6f7b4687a094e2f240c9e6b8084ee44d36",
           "mode": "100644",
           "scope": "play-application-tests",
           "categories": [
@@ -44736,6 +44889,95 @@
             }
           ],
           "declaredKinds": [],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "categories": [
+            "generated-test",
+            "independent-business-oracle"
+          ],
+          "disposition": "test-support",
+          "reason": "Explicit finite current-fix test/oracle source, not generated application or execution qualification. JVM concurrency lane remains opt-in; Node context runs cleanup predicates only.",
+          "path": "test/reference/journal-readside-concurrency.mjs",
+          "bytes": 19607,
+          "sha256": "6235825fd03123a1d7749239411d89a0d5520a8fce397448dcbbcc2b743dd9c3",
+          "mode": "100644",
+          "scope": "pending-current-fix-tests",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "symbols": [
+            "attested",
+            "imports",
+            "processStopped",
+            "sessionReceipt",
+            "settleLease",
+            "tree"
+          ],
+          "outputSites": [
+            {
+              "line": 113,
+              "sha256": "6081be349db6d9b470f3d2090fecc094aa18cc99143709850a0d23cab3c4b0dd",
+              "excerpt": "streams: [{ kind: 'booking', aggregate: ref('aggregate', 'Booking'), identity: ref('state-field', 'type', ['Booking']),"
+            },
+            {
+              "line": 123,
+              "sha256": "eb8b71484535abf7ff46fda212238da1f90c79fa8cb2719665d6ec61f4554a22",
+              "excerpt": "fs.writeFileSync(receiptPath, JSON.stringify({ mode, entries, pins, passed: true }, null, 2) + '\\n', { flag: 'wx', mode: 0o600 });"
+            },
+            {
+              "line": 245,
+              "sha256": "e5255bc0442bf31a59b619e02abd18bbf4d6a88a1bb028c288e0f5224e21c3bb",
+              "excerpt": "? { kind: 'suite-rejection', suite, testNames: [failedTestName], failedTestName, diagnostic }"
+            },
+            {
+              "line": 247,
+              "sha256": "775be79aa1f1baec8cad6f742fe5a2e9be6eda061d3f8bcd4b7075ed6af36863",
+              "excerpt": "? { kind: 'suite-rejection', suite, testNames: preservationTests, failedTestName: preservationTests[0],"
+            },
+            {
+              "line": 249,
+              "sha256": "dc70f2d70d5f5eb60ada65b36e9404b8c845bcce7eb851aec269406de21e2db4",
+              "excerpt": ": { kind: 'suites', suites: [suite], tests, ...(name === 'ErrorPreservationSpec' ? { testNames: preservationTests } : {}) };"
+            },
+            {
+              "line": 280,
+              "sha256": "271444777438ea06dda833b1155488a95772705bf86051d802f27f24a7b42495",
+              "excerpt": "fs.writeFileSync(receiptPath, JSON.stringify(result, null, 2) + '\\n', { flag: 'wx', mode: 0o600 });"
+            }
+          ],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "categories": [
+            "generated-test",
+            "independent-business-oracle"
+          ],
+          "disposition": "test-support",
+          "reason": "Explicit finite current-fix test/oracle source, not generated application or execution qualification. JVM concurrency lane remains opt-in; Node context runs cleanup predicates only.",
+          "path": "test/reference/journal-readside-concurrency.scala",
+          "bytes": 19093,
+          "sha256": "02c6c241db92ccd63b310f026cc39ed409f5174380a5f56e7dc0e2a91acc6c41",
+          "mode": "100644",
+          "scope": "pending-current-fix-tests",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "symbols": [
+            "CleanupBoundarySpec",
+            "ConcurrencyDataSource",
+            "ConcurrencyExecutor",
+            "ConcurrencyFixture",
+            "ConcurrencyJournal",
+            "ConcurrencySpec",
+            "ErrorPreservationSpec",
+            "FailureInvalidationSpec",
+            "LifecycleSpec",
+            "ObservationSpec",
+            "OverlapSpec",
+            "Sample"
+          ],
+          "outputSites": [],
           "emittedKinds": [],
           "dynamicKinds": []
         },
@@ -50543,8 +50785,8 @@
         },
         {
           "path": "test/saga-monarch-capabilities.test.mjs",
-          "bytes": 3526,
-          "sha256": "cbed6403f87d372c52b0f1cfa8a4aadfae4457781ece0a8799a6350bc674963a",
+          "bytes": 3631,
+          "sha256": "bc451813fe3087fd10c39c4274e6eb1c3918991fa910a7c84e7af05798c27aa2",
           "mode": "100644",
           "scope": "saga-monarch-tests",
           "categories": [
@@ -51180,6 +51422,223 @@
           "dynamicKinds": [],
           "baselineBlob": null,
           "evidence": "inspected-working-tree"
+        },
+        {
+          "categories": [
+            "generated-test",
+            "independent-business-oracle"
+          ],
+          "disposition": "test-support",
+          "reason": "Explicit finite current-fix test/oracle source, not generated application or execution qualification. JVM concurrency lane remains opt-in; Node context runs cleanup predicates only.",
+          "path": "test/verification-process.test.mjs",
+          "bytes": 31024,
+          "sha256": "abb531602b892d960e448bf917723e6f8dbf7b7e1c647465718b9df33080c9a0",
+          "mode": "100644",
+          "scope": "pending-current-fix-tests",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "symbols": [
+            "AdjustedDate",
+            "directory",
+            "fixture",
+            "mockChild",
+            "prototype",
+            "sample",
+            "sealed"
+          ],
+          "outputSites": [
+            {
+              "line": 37,
+              "sha256": "6c822791e206b48f25dd5d691dada02a2ce8a54593d4ff6b367072b9f4f5b192",
+              "excerpt": "writeFileSync(profile, text, { flag: 'wx' });"
+            },
+            {
+              "line": 38,
+              "sha256": "9236c0b2362243cb15d312420cbfbe2a29dce191bd9842cee087f6da166199a6",
+              "excerpt": "writeFileSync(paths.stdout, 'owned\\n', { flag: 'wx' }); writeFileSync(paths.stderr, '', { flag: 'wx' });"
+            },
+            {
+              "line": 39,
+              "sha256": "4ef3c7beaf913dcbc9860f4520e0214c304a86fff687512e94628b2f46f961a2",
+              "excerpt": "const save = () => writeFileSync(paths.receipt, JSON.stringify(receipt) + '\\n');"
+            },
+            {
+              "line": 47,
+              "sha256": "6c822791e206b48f25dd5d691dada02a2ce8a54593d4ff6b367072b9f4f5b192",
+              "excerpt": "writeFileSync(profile, text, { flag: 'wx' });"
+            },
+            {
+              "line": 48,
+              "sha256": "54c7bc1b80f31e53fe668c69a4a3e18dfb680ba4f613c139bdeed4a3635dd88a",
+              "excerpt": "writeFileSync(script, \"import { writeFileSync, existsSync } from 'node:fs';\\n\" +"
+            },
+            {
+              "line": 49,
+              "sha256": "310fcd281be16eb59887bb2506766c4cc4764ee719efc2d6401b3721109f4896",
+              "excerpt": "\"const mark = name => writeFileSync(process.env.OWNED_ROOT + '/' + name, '', {flag:'wx'});\\n\" + source, { flag: 'wx' });"
+            },
+            {
+              "line": 137,
+              "sha256": "d7407cd4db98ca549e1aa185cba0b6113612b333cc6186f8f6c9dc7d2bba0eb7",
+              "excerpt": "receipt.schemaVersion = 'custom.process/v1'; writeFileSync(base + '.json', JSON.stringify(receipt));"
+            },
+            {
+              "line": 144,
+              "sha256": "fec6e1b2db8570b80ac6a236dd69ae412d330c3aeb59b67f73d5651b6c8d7e58",
+              "excerpt": "writeFileSync(file === 'profile' ? receipt.sandboxProfile : receipt.paths[file], 'changed');"
+            },
+            {
+              "line": 155,
+              "sha256": "52cdddcebba8aeb06740d5bb83917e1694b8a7ac5b1d9a6f1a13cde724df662f",
+              "excerpt": "writeFileSync(base + '.json', bytes); assert.throws(() => inspectProcessEvidence(base));"
+            },
+            {
+              "line": 212,
+              "sha256": "e56b29310fabc54afd238f16297fa4e88f28d024838b43723bcc0b48355ae1f8",
+              "excerpt": "try { writeFileSync(process.env.OUTSIDE, 'forbidden', {flag:'wx'}); } catch (error) { denied = error.code === 'EPERM' || error.code === 'EACCES'; }"
+            },
+            {
+              "line": 261,
+              "sha256": "e817247b157731e3235422280ef9ccb02670101aab7104cab18677262bde85ed",
+              "excerpt": "writeFileSync(join(f.cwd, 'continue'), '', { flag: 'wx' });"
+            },
+            {
+              "line": 275,
+              "sha256": "a3517129a7e3752bc1f47d37f031561f76320419fc4946c08a61b44b6adb8ed7",
+              "excerpt": "else writeFileSync(f.base + '.' + kind, 'keep', { flag: 'wx' });"
+            },
+            {
+              "line": 283,
+              "sha256": "a767e9c168089e22aeec7e72b10b59adec243542f2183f44cd68903ac8290aa0",
+              "excerpt": "const failed = sealed(await runVerifiedProcess({ ...f, onStarted: () => writeFileSync(f.sandbox.profile, '\\n', { flag: 'a' }) }));"
+            },
+            {
+              "line": 288,
+              "sha256": "e1b4fa70826e3cd6c90e5ad6c1643eacc2f3b0e1e1f02683f1b8d5a4503adf75",
+              "excerpt": "writeFileSync(replaced.base + '.stdout.log', 'substituted', { flag: 'wx' });"
+            },
+            {
+              "line": 481,
+              "sha256": "23180b5873a8ccb5d70e413845215bf24dccaad6863ecb9d7ff463fa706a66a1",
+              "excerpt": "writeFileSync(f.base + '.stdout.log', 'other\\n');"
+            }
+          ],
+          "emittedKinds": [],
+          "dynamicKinds": []
+        },
+        {
+          "categories": [
+            "generated-test",
+            "independent-business-oracle"
+          ],
+          "disposition": "test-support",
+          "reason": "Explicit finite current-fix test/oracle source, not generated application or execution qualification. JVM concurrency lane remains opt-in; Node context runs cleanup predicates only.",
+          "path": "test/verification-runner.test.mjs",
+          "bytes": 25748,
+          "sha256": "f596215bd61eb14a518d27d0063e1e5372c65d620cdeba44b2802ff774e40fa7",
+          "mode": "100644",
+          "scope": "pending-current-fix-tests",
+          "baselineBlob": null,
+          "evidence": "inspected-working-tree",
+          "symbols": [
+            "fileState",
+            "fixture",
+            "processFixture"
+          ],
+          "outputSites": [
+            {
+              "line": 14,
+              "sha256": "cffb296d869104e94a0d63d4599ee3a66f342166c09a6e3c86b31b5ee3c9b550",
+              "excerpt": "const save = (file, value) => writeFileSync(file, JSON.stringify(value) + '\\n', { flag: 'wx' });"
+            },
+            {
+              "line": 22,
+              "sha256": "458a0db568a4640e8dc69f2c54eb4a496355cb98263b24e631bbab2cd417139c",
+              "excerpt": "writeFileSync(builder, 'export const responsibility = \"build catalog\";\\n');"
+            },
+            {
+              "line": 23,
+              "sha256": "927b3522b7ea570618fcdb5d1bf473ab2387f08d8a03de6e92aa4f183ea340bf",
+              "excerpt": "writeFileSync(checker, 'export const responsibility = \"independent catalog oracle\";\\n');"
+            },
+            {
+              "line": 82,
+              "sha256": "6e1c676a8b1b2c630027de3b98d5da7f528c4979f36a0d3af547d265615617b2",
+              "excerpt": "f => writeFileSync(f.input, '{\"items\":[\"wrong\"]}'),"
+            },
+            {
+              "line": 83,
+              "sha256": "0e9012b8b8b7b7befc6a6c2af0549b51345392a838f89744e80516560b39fa6a",
+              "excerpt": "f => writeFileSync(join(f.source, 'added.json'), '{}'),"
+            },
+            {
+              "line": 85,
+              "sha256": "745a2793a66837f51e388bab40682e5c3d7a55c1c39ebb543944366f178ec186",
+              "excerpt": "f => writeFileSync(f.checker, '// a different verification implementation\\n'),"
+            },
+            {
+              "line": 86,
+              "sha256": "76fdf7de20ce92f5c7a04295c098367e5a41a1875a9e1afee9e087b7eb75a2db",
+              "excerpt": "f => writeFileSync(join(f.run, 'artifacts/catalog.json'), '[]'),"
+            },
+            {
+              "line": 98,
+              "sha256": "8938adf6ed141043b7f41ba2d9051a558d2c1cbfe41b4c3fb1c9df17e311493b",
+              "excerpt": "const value = await build(context); writeFileSync(f.input, '{\"items\":[\"changed\"]}'); return value;"
+            },
+            {
+              "line": 126,
+              "sha256": "8657abdb0c0238b50ffd08ba33fd8d2a570cfc397295693723599e8cd638dd15",
+              "excerpt": "value.plan.verifiers = []; chmodSync(start, 0o600); writeFileSync(start, JSON.stringify(value));"
+            },
+            {
+              "line": 171,
+              "sha256": "5eb2a224217e3813646d219fe3100d57aba9574393d4273cabe185034cb661fc",
+              "excerpt": "writeFileSync(join(f.registry, 'catalog.lock'), '{\"owner\":\"foreign\"}'); return value;"
+            },
+            {
+              "line": 273,
+              "sha256": "0546cff2a9db9a9aef7f7add863cde81f89090cecb2822e908064c37fbf603b5",
+              "excerpt": "writeFileSync(join(artifactRoot, 'catalog.json'), '[\"changed\"]'); return true;"
+            },
+            {
+              "line": 348,
+              "sha256": "655b9f4e8999e20af511758ff0378572707bc1ebd8728bde56ad1c106970611a",
+              "excerpt": "const bytes = Buffer.from(JSON.stringify(start, null, 2) + '\\n'); chmodSync(startFile, 0o600); writeFileSync(startFile, bytes);"
+            },
+            {
+              "line": 350,
+              "sha256": "7d65109cd15b0d950edd0b1e5fc9117abc8aa1c231236125c2ec5de7537f6b74",
+              "excerpt": "chmodSync(resultFile, 0o600); writeFileSync(resultFile, JSON.stringify(result, null, 2) + '\\n');"
+            },
+            {
+              "line": 357,
+              "sha256": "f4f9b589c15d569121d1e4e25dec3c78d94993cf0fc13e8777d1a58c663a2def",
+              "excerpt": "setImmediate(() => writeFileSync(join(artifactRoot, 'catalog.json'), '[]'));"
+            },
+            {
+              "line": 370,
+              "sha256": "57ed8d0742eb18c14d177a00e0a3afd0e785731b226b2b90d50f2d06fb4469cb",
+              "excerpt": "writeFileSync(join(f.registry, 'catalog.lock'), 'foreign'); throw new Error('failed');"
+            },
+            {
+              "line": 381,
+              "sha256": "901d8efec06b48ff62788d080b81216034eb8437ca8e587fcf5746d7804b7151",
+              "excerpt": "writeFileSync(profile, policy, { flag: 'wx' });"
+            },
+            {
+              "line": 395,
+              "sha256": "bf693fc3c485659d742c7f7a1df540521a6a387e2941c79d99a42807410f1ebe",
+              "excerpt": "writeFileSync(join(f.run, 'process-001.stdout.log'), 'tampered');"
+            },
+            {
+              "line": 416,
+              "sha256": "ea5dbb062cb0dc1bac4bc9693655e9c4d19c802c62910a01862de800ea65e1c2",
+              "excerpt": "writeFileSync(join(artifactRoot, 'catalog.json'), '[\"TEA\",\"COFFEE\"]');"
+            }
+          ],
+          "emittedKinds": [],
+          "dynamicKinds": []
         },
         {
           "path": "tools/artifact-docs-check.mjs",
@@ -106273,7 +106732,7 @@
     "AGGREGATE-CORE-CHECKPOINT.md": "9b07d4b830df2d2e3aa23abd07f68fdd3f1acb3d93fb856185bee12b5019c155",
     "CAPABILITY-ACCEPTANCE.md": "fb0f664b6a617c6c0e22f5a4234d8508f4313f3049c478ce84867eaf6df4f2f8",
     "CAPABILITY-CONTRACT.md": "fded5f2525d88e60ab59fd1af32a6cf3cacde829a67084bcbac7d039d7d55f32",
-    "CAPABILITY-MATRIX.md": "73f5c134c96b28f2f6393d2b91a753d70e72cbb462affb220b94cf179c29d30d",
+    "CAPABILITY-MATRIX.md": "2caea418873fd194a9ddba3d2bc014164faf6a61cbd09963bdf9d5814108140f",
     "DOMAIN-KERNEL-ACCEPTANCE.md": "6eb75676eb7f4f4b37153dad3495148eb175b5288f0ea03dea99b8d09fbf00ab",
     "DRIFT.md": "7b49264f44c47c773f70c03267e9bca2620ca46b35244422d9888f2358f48b27",
     "MAINTENANCE.md": "8d6a56f739b64404d1a2d79d2bd92745cb2d68e3374e1c918f5764b244156f3c",
@@ -113228,5 +113687,5 @@
       "guarantee": "Package-preserving root relocations only; same filename never implies identity. Ledger-only entries remain historical evidence and are not rewritten."
     }
   },
-  "productionToolSha256": "582b3e72de54d4b50a286309385948b46e57b29c895b5b18b6b332cd5adbb52a"
+  "productionToolSha256": "ddcda7d046cfb81aba868d85c0497dc301cd82c0a09511cccb25ae47ce6e0e65"
 }

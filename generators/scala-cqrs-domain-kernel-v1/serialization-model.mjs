@@ -2,6 +2,7 @@ import { targetData, resolveNameSet } from '../../lib/scala-target/naming.mjs';
 import { MODULAR_CANDIDATE } from '../../lib/scala-target/profiles.mjs';
 import { fail } from '../../lib/products/request.mjs';
 import { refKey } from '../../lib/domain-products/references.mjs';
+import { checkJvmParameters } from './jvm-parameters.mjs';
 
 const reject = message => fail('KERNEL_PROTOBUF', message, { document: 'target', pointer: '/protobuf' });
 const syntaxReserved = new Set('syntax import weak public package option optional required repeated oneof map reserved extensions to max message enum service rpc returns stream extend group true false inf nan'.split(' '));
@@ -59,6 +60,12 @@ export function serializationModel(raw) {
       type, ref, refs: refsOf(refs), sources: sourcesOf(sources), fields: [], deps: [], path: context.protoPath };
   }
   function finish(node) {
+    // Pinned ScalaPB 0.11.14 emits one UnknownFieldSet constructor/copy/apply
+    // parameter with this family's options. Count actual PB fields, including
+    // presence wrappers/map entries; repeated and message fields are references.
+    // An absent Option[Long] still has an int64 in its PB presence wrapper.
+    checkJvmParameters(node.fqn + '.<init>/copy/apply (ScalaPB)', node.path, node.sources[0],
+      node.fields.reduce((sum, f) => sum + (!f.repeated && !f.nodeId && f.wireType === 'int64' ? 2 : 1), 0), ['unknownFields']);
     node.deps = dedupe(node.fields.flatMap(f => f.nodeId ? [f.nodeId] : []));
     if (node.deps.includes(node.id) || node.deps.some(id => !completed.has(id))) reject('recursive or incomplete protobuf node graph');
     node.refs = refsOf([...node.refs, ...node.deps.flatMap(id => completed.get(id).refs)]);

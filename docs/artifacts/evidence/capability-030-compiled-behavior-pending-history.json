@@ -1,0 +1,732 @@
+{
+  "schemaVersion": "truthsrc.artifact-capability-history/v1",
+  "catalogVersion": "2.8.0",
+  "catalogSha256": "075297387ae5012e704c36bc113cd9c301ae6bea8b7978cbdb8dcebb3f799c26",
+  "productionToolSha256": "ddcda7d046cfb81aba868d85c0497dc301cd82c0a09511cccb25ae47ce6e0e65",
+  "status": "historical-not-current",
+  "reason": "compiled/behavior-verified observations from the pre-0.3.0 execution round (2026-11-12); the 0.3.0 engine release changed the production tool fingerprint and these executions predate it — re-run the per-protocol acceptance rounds (bank compile console, journal-readside concurrency, verification runner) to re-establish current compiled/behavior evidence; original receipt bytes preserved verbatim",
+  "observations": [
+    {
+      "id": "pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-main-generated",
+      "producer": "scala-cqrs-saga-monarch-v1",
+      "channel": "manifest",
+      "level": "generated",
+      "status": "passed",
+      "sourceFingerprint": "3b43766769f6527b697eae1826aacd60d126ba64216195085fea19b22b14bbd4",
+      "outputs": [
+        "application-root",
+        "binary-codecs",
+        "protocol",
+        "serialization-registration",
+        "strict-saga-bridge",
+        "workflow-program"
+      ],
+      "receipt": {
+        "file": "evidence/pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-main-generated.json",
+        "sha256": "5277e09c15f67b74fadee3a7f5b9e3241edfbaa62e85f558adfd345cfaa882f6"
+      }
+    },
+    {
+      "id": "pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-main-compiled",
+      "producer": "scala-cqrs-saga-monarch-v1",
+      "channel": "manifest",
+      "level": "compiled",
+      "status": "passed",
+      "sourceFingerprint": "3b43766769f6527b697eae1826aacd60d126ba64216195085fea19b22b14bbd4",
+      "outputs": [
+        "application-root",
+        "binary-codecs",
+        "protocol",
+        "serialization-registration",
+        "strict-saga-bridge",
+        "workflow-program"
+      ],
+      "receipt": {
+        "file": "evidence/pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-main-compiled.json",
+        "sha256": "7243cc68560b8601f7c6ee684b4e34f969af800c36b4cfc7b853a886d182d72f"
+      }
+    },
+    {
+      "id": "pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-main-behavior-verified",
+      "producer": "scala-cqrs-saga-monarch-v1",
+      "channel": "manifest",
+      "level": "behavior-verified",
+      "status": "passed",
+      "sourceFingerprint": "3b43766769f6527b697eae1826aacd60d126ba64216195085fea19b22b14bbd4",
+      "outputs": [
+        "application-root",
+        "binary-codecs",
+        "protocol",
+        "serialization-registration",
+        "strict-saga-bridge",
+        "workflow-program"
+      ],
+      "receipt": {
+        "file": "evidence/pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-main-behavior-verified.json",
+        "sha256": "a5053a6f76465b09716bbfe0407d8c65d7051b10b5f74a569e15360793417b4e"
+      }
+    },
+    {
+      "id": "pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-main-build-generated",
+      "producer": "scala-cqrs-saga-monarch-v1",
+      "channel": "manifest",
+      "level": "generated",
+      "status": "passed",
+      "sourceFingerprint": "3b43766769f6527b697eae1826aacd60d126ba64216195085fea19b22b14bbd4",
+      "outputs": [
+        "build-definition",
+        "build-version"
+      ],
+      "receipt": {
+        "file": "evidence/pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-main-build-generated.json",
+        "sha256": "3572a0fc86afe9a9f079e2ca9d25b306b62d7ef19b8b429d7fe8534964cd6e62"
+      }
+    },
+    {
+      "id": "pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-retry-generated",
+      "producer": "scala-cqrs-saga-monarch-v1",
+      "channel": "manifest",
+      "level": "generated",
+      "status": "passed",
+      "sourceFingerprint": "3b43766769f6527b697eae1826aacd60d126ba64216195085fea19b22b14bbd4",
+      "outputs": [
+        "application-root",
+        "binary-codecs",
+        "protocol",
+        "serialization-registration",
+        "strict-saga-bridge",
+        "typed-run",
+        "workflow-program"
+      ],
+      "receipt": {
+        "file": "evidence/pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-retry-generated.json",
+        "sha256": "dc11245a8c6f63a3cc1fb103473b00b4e623683a2d9963283be2d8a72af3fc4a"
+      }
+    },
+    {
+      "id": "pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-retry-compiled",
+      "producer": "scala-cqrs-saga-monarch-v1",
+      "channel": "manifest",
+      "level": "compiled",
+      "status": "passed",
+      "sourceFingerprint": "3b43766769f6527b697eae1826aacd60d126ba64216195085fea19b22b14bbd4",
+      "outputs": [
+        "application-root",
+        "binary-codecs",
+        "protocol",
+        "serialization-registration",
+        "strict-saga-bridge",
+        "typed-run",
+        "workflow-program"
+      ],
+      "receipt": {
+        "file": "evidence/pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-retry-compiled.json",
+        "sha256": "8113ad154f5574ee423fea54b92ab1f563013e25cbea1afe3eb05c4bfb21ffcb"
+      }
+    },
+    {
+      "id": "pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-retry-behavior-verified",
+      "producer": "scala-cqrs-saga-monarch-v1",
+      "channel": "manifest",
+      "level": "behavior-verified",
+      "status": "passed",
+      "sourceFingerprint": "3b43766769f6527b697eae1826aacd60d126ba64216195085fea19b22b14bbd4",
+      "outputs": [
+        "application-root",
+        "binary-codecs",
+        "protocol",
+        "serialization-registration",
+        "strict-saga-bridge",
+        "typed-run",
+        "workflow-program"
+      ],
+      "receipt": {
+        "file": "evidence/pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-retry-behavior-verified.json",
+        "sha256": "8d537667e15ba58ea0b0019165837ce64274f00bac36ca6d1e3517cce56b011d"
+      }
+    },
+    {
+      "id": "pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-retry-build-generated",
+      "producer": "scala-cqrs-saga-monarch-v1",
+      "channel": "manifest",
+      "level": "generated",
+      "status": "passed",
+      "sourceFingerprint": "3b43766769f6527b697eae1826aacd60d126ba64216195085fea19b22b14bbd4",
+      "outputs": [
+        "build-definition",
+        "build-version"
+      ],
+      "receipt": {
+        "file": "evidence/pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-retry-build-generated.json",
+        "sha256": "e56d930c6283f12c3c93de57f98ba0ac031effffabe956c6c180d2b7d75080d2"
+      }
+    },
+    {
+      "id": "pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-pure-generated",
+      "producer": "scala-cqrs-saga-monarch-v1",
+      "channel": "manifest",
+      "level": "generated",
+      "status": "passed",
+      "sourceFingerprint": "3b43766769f6527b697eae1826aacd60d126ba64216195085fea19b22b14bbd4",
+      "outputs": [
+        "application-root",
+        "binary-codecs",
+        "protocol",
+        "serialization-registration",
+        "strict-saga-bridge",
+        "typed-run",
+        "workflow-program"
+      ],
+      "receipt": {
+        "file": "evidence/pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-pure-generated.json",
+        "sha256": "4cac4d69e88d6ff868ff62e4a1cb3d0a2d5b7c4e725221e2e22455e636eb0fbc"
+      }
+    },
+    {
+      "id": "pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-pure-compiled",
+      "producer": "scala-cqrs-saga-monarch-v1",
+      "channel": "manifest",
+      "level": "compiled",
+      "status": "passed",
+      "sourceFingerprint": "3b43766769f6527b697eae1826aacd60d126ba64216195085fea19b22b14bbd4",
+      "outputs": [
+        "application-root",
+        "binary-codecs",
+        "protocol",
+        "serialization-registration",
+        "strict-saga-bridge",
+        "typed-run",
+        "workflow-program"
+      ],
+      "receipt": {
+        "file": "evidence/pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-pure-compiled.json",
+        "sha256": "17337bc09a4033a87c690c037d4aa4a1c1f4bf487563bb84448e3aed9eb0657d"
+      }
+    },
+    {
+      "id": "pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-pure-behavior-verified",
+      "producer": "scala-cqrs-saga-monarch-v1",
+      "channel": "manifest",
+      "level": "behavior-verified",
+      "status": "passed",
+      "sourceFingerprint": "3b43766769f6527b697eae1826aacd60d126ba64216195085fea19b22b14bbd4",
+      "outputs": [
+        "application-root",
+        "binary-codecs",
+        "protocol",
+        "serialization-registration",
+        "strict-saga-bridge",
+        "typed-run",
+        "workflow-program"
+      ],
+      "receipt": {
+        "file": "evidence/pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-pure-behavior-verified.json",
+        "sha256": "6e843b243d2b4fbfebdff4f4283ffd4fb032f97cb9deb4c9090b81d92598f8bb"
+      }
+    },
+    {
+      "id": "pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-pure-build-generated",
+      "producer": "scala-cqrs-saga-monarch-v1",
+      "channel": "manifest",
+      "level": "generated",
+      "status": "passed",
+      "sourceFingerprint": "3b43766769f6527b697eae1826aacd60d126ba64216195085fea19b22b14bbd4",
+      "outputs": [
+        "build-definition",
+        "build-version"
+      ],
+      "receipt": {
+        "file": "evidence/pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-pure-build-generated.json",
+        "sha256": "fb0187c75044d6551241ed0f60026d10402492df9b09036216690c0191d5e933"
+      }
+    },
+    {
+      "id": "pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-carry-generated",
+      "producer": "scala-cqrs-saga-monarch-v1",
+      "channel": "manifest",
+      "level": "generated",
+      "status": "passed",
+      "sourceFingerprint": "3b43766769f6527b697eae1826aacd60d126ba64216195085fea19b22b14bbd4",
+      "outputs": [
+        "application-root",
+        "binary-codecs",
+        "protocol",
+        "serialization-registration",
+        "strict-saga-bridge",
+        "workflow-program"
+      ],
+      "receipt": {
+        "file": "evidence/pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-carry-generated.json",
+        "sha256": "45ee5682ae5cfc43a407f703c3047d75f5e141fa2cdf3fbca930da83ae26e1c7"
+      }
+    },
+    {
+      "id": "pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-carry-compiled",
+      "producer": "scala-cqrs-saga-monarch-v1",
+      "channel": "manifest",
+      "level": "compiled",
+      "status": "passed",
+      "sourceFingerprint": "3b43766769f6527b697eae1826aacd60d126ba64216195085fea19b22b14bbd4",
+      "outputs": [
+        "application-root",
+        "binary-codecs",
+        "protocol",
+        "serialization-registration",
+        "strict-saga-bridge",
+        "workflow-program"
+      ],
+      "receipt": {
+        "file": "evidence/pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-carry-compiled.json",
+        "sha256": "7f476c572b06ae4a650005d6fe617b0cde72f054926256ef71fc67a383b8a0c7"
+      }
+    },
+    {
+      "id": "pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-carry-behavior-verified",
+      "producer": "scala-cqrs-saga-monarch-v1",
+      "channel": "manifest",
+      "level": "behavior-verified",
+      "status": "passed",
+      "sourceFingerprint": "3b43766769f6527b697eae1826aacd60d126ba64216195085fea19b22b14bbd4",
+      "outputs": [
+        "application-root",
+        "binary-codecs",
+        "protocol",
+        "serialization-registration",
+        "strict-saga-bridge",
+        "workflow-program"
+      ],
+      "receipt": {
+        "file": "evidence/pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-carry-behavior-verified.json",
+        "sha256": "1bac3eae0096f1a3d6e0580e8850fcd0b03308b68ba28c7f90245f79a8a853a6"
+      }
+    },
+    {
+      "id": "pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-carry-build-generated",
+      "producer": "scala-cqrs-saga-monarch-v1",
+      "channel": "manifest",
+      "level": "generated",
+      "status": "passed",
+      "sourceFingerprint": "3b43766769f6527b697eae1826aacd60d126ba64216195085fea19b22b14bbd4",
+      "outputs": [
+        "build-definition",
+        "build-version"
+      ],
+      "receipt": {
+        "file": "evidence/pending-20261111-jpao-rv0-967a18ca-mainline-play-application-saga-carry-build-generated.json",
+        "sha256": "83dc6bea8bc45fd753340876055f76f16b7d3b775e460a83431ecd6c563c5fc2"
+      }
+    },
+    {
+      "id": "pending-20261111-jpao-rv0-967a18ca-mainline-play-application-main-generated",
+      "producer": "scala-cqrs-play-application-v1",
+      "channel": "manifest",
+      "level": "generated",
+      "status": "passed",
+      "sourceFingerprint": "a3df34c6968b8b9a4a61af7fbd1dcadfde7da8f959d3dd75fe3dbc808545640b",
+      "outputs": [
+        "aggregate-bootstrap",
+        "aggregate-factory",
+        "aggregate-repository-implementation",
+        "aggregate-repository-port",
+        "aggregate-root",
+        "api-authority",
+        "api-dto",
+        "api-ports",
+        "application-components",
+        "application-config",
+        "application-lifecycle",
+        "application-loader",
+        "application-protocol",
+        "application-root",
+        "application-settings",
+        "command-helper",
+        "command-service",
+        "computation-port",
+        "domain-protocol",
+        "domain-state",
+        "event-handler",
+        "generated-test",
+        "http-codec",
+        "http-controller",
+        "http-errors",
+        "http-routes",
+        "invariant-rule",
+        "journal-source",
+        "persistence-event-adapter",
+        "persistence-factory",
+        "persistence-runtime",
+        "persistence-serializer",
+        "persistence-snapshot-adapter",
+        "proto-converter",
+        "protobuf-schema",
+        "query-ports",
+        "query-service",
+        "readside-ddl",
+        "readside-envelope",
+        "readside-event-source",
+        "readside-handler",
+        "readside-repository",
+        "readside-runner",
+        "readside-schema",
+        "receipt-view",
+        "resource-directory",
+        "rule-parameters",
+        "serialization-config",
+        "value-object"
+      ],
+      "receipt": {
+        "file": "evidence/pending-20261111-jpao-rv0-967a18ca-mainline-play-application-main-generated.json",
+        "sha256": "18a720cf854533362a4ccb3d84bf51c1458c00dba1ffcfd09d5c3bc6bab68b82"
+      }
+    },
+    {
+      "id": "pending-20261111-jpao-rv0-967a18ca-mainline-play-application-main-compiled",
+      "producer": "scala-cqrs-play-application-v1",
+      "channel": "manifest",
+      "level": "compiled",
+      "status": "passed",
+      "sourceFingerprint": "a3df34c6968b8b9a4a61af7fbd1dcadfde7da8f959d3dd75fe3dbc808545640b",
+      "outputs": [
+        "aggregate-bootstrap",
+        "aggregate-factory",
+        "aggregate-repository-implementation",
+        "aggregate-repository-port",
+        "aggregate-root",
+        "api-authority",
+        "api-dto",
+        "api-ports",
+        "application-components",
+        "application-config",
+        "application-lifecycle",
+        "application-loader",
+        "application-protocol",
+        "application-root",
+        "application-settings",
+        "command-helper",
+        "command-service",
+        "computation-port",
+        "domain-protocol",
+        "domain-state",
+        "event-handler",
+        "generated-test",
+        "http-codec",
+        "http-controller",
+        "http-errors",
+        "http-routes",
+        "invariant-rule",
+        "journal-source",
+        "persistence-event-adapter",
+        "persistence-factory",
+        "persistence-runtime",
+        "persistence-serializer",
+        "persistence-snapshot-adapter",
+        "proto-converter",
+        "protobuf-schema",
+        "query-ports",
+        "query-service",
+        "readside-ddl",
+        "readside-envelope",
+        "readside-event-source",
+        "readside-handler",
+        "readside-repository",
+        "readside-runner",
+        "readside-schema",
+        "receipt-view",
+        "resource-directory",
+        "rule-parameters",
+        "serialization-config",
+        "value-object"
+      ],
+      "receipt": {
+        "file": "evidence/pending-20261111-jpao-rv0-967a18ca-mainline-play-application-main-compiled.json",
+        "sha256": "3664610d61f1f635bfb59d0e94169652f66891815018563aad7d5c3b95afb566"
+      }
+    },
+    {
+      "id": "pending-20261111-jpao-rv0-967a18ca-mainline-play-application-main-behavior",
+      "producer": "scala-cqrs-play-application-v1",
+      "channel": "manifest",
+      "level": "behavior-verified",
+      "status": "passed",
+      "sourceFingerprint": "a3df34c6968b8b9a4a61af7fbd1dcadfde7da8f959d3dd75fe3dbc808545640b",
+      "outputs": [
+        "aggregate-bootstrap",
+        "aggregate-factory",
+        "aggregate-repository-implementation",
+        "aggregate-repository-port",
+        "aggregate-root",
+        "api-authority",
+        "api-dto",
+        "api-ports",
+        "application-components",
+        "application-config",
+        "application-lifecycle",
+        "application-loader",
+        "application-protocol",
+        "application-root",
+        "application-settings",
+        "command-helper",
+        "command-service",
+        "computation-port",
+        "domain-protocol",
+        "domain-state",
+        "event-handler",
+        "generated-test",
+        "http-codec",
+        "http-controller",
+        "http-errors",
+        "http-routes",
+        "invariant-rule",
+        "journal-source",
+        "persistence-event-adapter",
+        "persistence-factory",
+        "persistence-runtime",
+        "persistence-serializer",
+        "persistence-snapshot-adapter",
+        "proto-converter",
+        "protobuf-schema",
+        "query-ports",
+        "query-service",
+        "readside-ddl",
+        "readside-envelope",
+        "readside-event-source",
+        "readside-handler",
+        "readside-repository",
+        "readside-runner",
+        "readside-schema",
+        "receipt-view",
+        "resource-directory",
+        "rule-parameters",
+        "serialization-config",
+        "value-object"
+      ],
+      "receipt": {
+        "file": "evidence/pending-20261111-jpao-rv0-967a18ca-mainline-play-application-main-behavior.json",
+        "sha256": "bcf71dcf75d88254633ea1ba49972e3b26dfd8e241927b3013dee81a2cff396c"
+      }
+    },
+    {
+      "id": "pending-20261111-jpao-rv0-967a18ca-mainline-play-application-main-build-generated",
+      "producer": "scala-cqrs-play-application-v1",
+      "channel": "manifest",
+      "level": "generated",
+      "status": "passed",
+      "sourceFingerprint": "a3df34c6968b8b9a4a61af7fbd1dcadfde7da8f959d3dd75fe3dbc808545640b",
+      "outputs": [
+        "build-plugins",
+        "build-properties",
+        "project-build"
+      ],
+      "receipt": {
+        "file": "evidence/pending-20261111-jpao-rv0-967a18ca-mainline-play-application-main-build-generated.json",
+        "sha256": "87dc0019b73107f3306ccf84d64dcbc9e3ef19631516a5509a9cb604410e787c"
+      }
+    },
+    {
+      "id": "pending-20261111-jpao-rv0-967a18ca-mainline-play-application-renamed-generated",
+      "producer": "scala-cqrs-play-application-v1",
+      "channel": "manifest",
+      "level": "generated",
+      "status": "passed",
+      "sourceFingerprint": "a3df34c6968b8b9a4a61af7fbd1dcadfde7da8f959d3dd75fe3dbc808545640b",
+      "outputs": [
+        "aggregate-bootstrap",
+        "aggregate-factory",
+        "aggregate-repository-implementation",
+        "aggregate-repository-port",
+        "aggregate-root",
+        "api-authority",
+        "api-dto",
+        "api-ports",
+        "application-components",
+        "application-config",
+        "application-lifecycle",
+        "application-loader",
+        "application-protocol",
+        "application-root",
+        "application-settings",
+        "command-helper",
+        "command-service",
+        "computation-port",
+        "domain-protocol",
+        "domain-state",
+        "event-handler",
+        "generated-test",
+        "http-codec",
+        "http-controller",
+        "http-errors",
+        "http-routes",
+        "invariant-rule",
+        "journal-source",
+        "persistence-event-adapter",
+        "persistence-factory",
+        "persistence-runtime",
+        "persistence-serializer",
+        "persistence-snapshot-adapter",
+        "proto-converter",
+        "protobuf-schema",
+        "query-ports",
+        "query-service",
+        "readside-ddl",
+        "readside-envelope",
+        "readside-event-source",
+        "readside-handler",
+        "readside-repository",
+        "readside-runner",
+        "readside-schema",
+        "receipt-view",
+        "resource-directory",
+        "rule-parameters",
+        "serialization-config",
+        "value-object"
+      ],
+      "receipt": {
+        "file": "evidence/pending-20261111-jpao-rv0-967a18ca-mainline-play-application-renamed-generated.json",
+        "sha256": "38381b19ab26a03b46c82209fbfc3251ed49f6f0e48867b2fbd5a9c2c75d94c4"
+      }
+    },
+    {
+      "id": "pending-20261111-jpao-rv0-967a18ca-mainline-play-application-renamed-compiled",
+      "producer": "scala-cqrs-play-application-v1",
+      "channel": "manifest",
+      "level": "compiled",
+      "status": "passed",
+      "sourceFingerprint": "a3df34c6968b8b9a4a61af7fbd1dcadfde7da8f959d3dd75fe3dbc808545640b",
+      "outputs": [
+        "aggregate-bootstrap",
+        "aggregate-factory",
+        "aggregate-repository-implementation",
+        "aggregate-repository-port",
+        "aggregate-root",
+        "api-authority",
+        "api-dto",
+        "api-ports",
+        "application-components",
+        "application-config",
+        "application-lifecycle",
+        "application-loader",
+        "application-protocol",
+        "application-root",
+        "application-settings",
+        "command-helper",
+        "command-service",
+        "computation-port",
+        "domain-protocol",
+        "domain-state",
+        "event-handler",
+        "generated-test",
+        "http-codec",
+        "http-controller",
+        "http-errors",
+        "http-routes",
+        "invariant-rule",
+        "journal-source",
+        "persistence-event-adapter",
+        "persistence-factory",
+        "persistence-runtime",
+        "persistence-serializer",
+        "persistence-snapshot-adapter",
+        "proto-converter",
+        "protobuf-schema",
+        "query-ports",
+        "query-service",
+        "readside-ddl",
+        "readside-envelope",
+        "readside-event-source",
+        "readside-handler",
+        "readside-repository",
+        "readside-runner",
+        "readside-schema",
+        "receipt-view",
+        "resource-directory",
+        "rule-parameters",
+        "serialization-config",
+        "value-object"
+      ],
+      "receipt": {
+        "file": "evidence/pending-20261111-jpao-rv0-967a18ca-mainline-play-application-renamed-compiled.json",
+        "sha256": "96af2bded0b2c065233edc7b26ed4dbc17afb9ade35f9eb408a4c4bf3b4f5e31"
+      }
+    },
+    {
+      "id": "pending-20261111-jpao-rv0-967a18ca-mainline-play-application-renamed-behavior",
+      "producer": "scala-cqrs-play-application-v1",
+      "channel": "manifest",
+      "level": "behavior-verified",
+      "status": "passed",
+      "sourceFingerprint": "a3df34c6968b8b9a4a61af7fbd1dcadfde7da8f959d3dd75fe3dbc808545640b",
+      "outputs": [
+        "aggregate-bootstrap",
+        "aggregate-factory",
+        "aggregate-repository-implementation",
+        "aggregate-repository-port",
+        "aggregate-root",
+        "api-authority",
+        "api-dto",
+        "api-ports",
+        "application-components",
+        "application-config",
+        "application-lifecycle",
+        "application-loader",
+        "application-protocol",
+        "application-root",
+        "application-settings",
+        "command-helper",
+        "command-service",
+        "computation-port",
+        "domain-protocol",
+        "domain-state",
+        "event-handler",
+        "generated-test",
+        "http-codec",
+        "http-controller",
+        "http-errors",
+        "http-routes",
+        "invariant-rule",
+        "journal-source",
+        "persistence-event-adapter",
+        "persistence-factory",
+        "persistence-runtime",
+        "persistence-serializer",
+        "persistence-snapshot-adapter",
+        "proto-converter",
+        "protobuf-schema",
+        "query-ports",
+        "query-service",
+        "readside-ddl",
+        "readside-envelope",
+        "readside-event-source",
+        "readside-handler",
+        "readside-repository",
+        "readside-runner",
+        "readside-schema",
+        "receipt-view",
+        "resource-directory",
+        "rule-parameters",
+        "serialization-config",
+        "value-object"
+      ],
+      "receipt": {
+        "file": "evidence/pending-20261111-jpao-rv0-967a18ca-mainline-play-application-renamed-behavior.json",
+        "sha256": "c78e5003bd715f3798deb801496b0256b1e4c185e2718a3fbf4e33e47851fa73"
+      }
+    },
+    {
+      "id": "pending-20261111-jpao-rv0-967a18ca-mainline-play-application-renamed-build-generated",
+      "producer": "scala-cqrs-play-application-v1",
+      "channel": "manifest",
+      "level": "generated",
+      "status": "passed",
+      "sourceFingerprint": "a3df34c6968b8b9a4a61af7fbd1dcadfde7da8f959d3dd75fe3dbc808545640b",
+      "outputs": [
+        "build-plugins",
+        "build-properties",
+        "project-build"
+      ],
+      "receipt": {
+        "file": "evidence/pending-20261111-jpao-rv0-967a18ca-mainline-play-application-renamed-build-generated.json",
+        "sha256": "214324419120d2608ba5751dafd48564bba2bc75ffa74579add8f2dc1d5d2707"
+      }
+    }
+  ]
+}

@@ -9,7 +9,7 @@
 
 | 范围 | 应生成类别/变体 | producer已定位 | 样例已生成 | 已编译 | 行为已验证 | 最终审定 |
 |---|---:|---:|---:|---:|---:|---:|
-| 现役JS代码/装配 | 78/207 | 78/207 | 76/126 | 59/63 | 59/63 | 0/0 |
+| 现役JS代码/装配 | 78/207 | 78/207 | 60/60 | 0/0 | 0/0 | 0/0 |
 | 现役JS派生证据 | 3/3 | 3/3 | 2/2 | 0/0 | 0/0 | 0/0 |
 | 旧式JS代码/装配 | 65/71 | 65/71 | 0/0 | 0/0 | 0/0 | 0/0 |
 | 旧式JS派生证据 | 1/1 | 1/1 | 0/0 | 0/0 | 0/0 | 0/0 |
@@ -47,7 +47,7 @@
   - 边界：Finite family4 source responsibilities. One application Aggregate assembles actual command behavior and pure fold. Same physical aggregate output/sample serves aggregate-root and aggregate-behavior; no extra facade or duplicated category/file.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:aggregate-root`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:aggregate-root`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：One application Aggregate assembles actual command behavior and pure fold. Same physical aggregate output/sample serves aggregate-root and aggregate-behavior; no extra facade or duplicated category/file.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -82,7 +82,7 @@
   - 边界：Finite family4 source responsibilities. Infrastructure implementation assembles EventSourcedBehavior with explicit PID/initial/hosts/typed adapters. No spawn, default journal, serializer registration, retries or backoff.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:aggregate-bootstrap`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:aggregate-bootstrap`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Infrastructure implementation assembles EventSourcedBehavior with explicit PID/initial/hosts/typed adapters. No spawn, default journal, serializer registration, retries or backoff.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -121,7 +121,7 @@
   - 边界：Finite family4 source responsibilities. Factory trait create[J] explicitly accepts typed PersistenceId, initial, hosts, EventAdapter and SnapshotAdapter; no inferred PID or default identity adapters. Explicit persistence factory supplies both adapters to reused family2 bootstrap; caller provides PID, initial state and computation hosts.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:aggregate-factory,persistence-factory`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:aggregate-factory,persistence-factory`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Factory trait create[J] explicitly accepts typed PersistenceId, initial, hosts, EventAdapter and SnapshotAdapter; no inferred PID or default identity adapters. Explicit persistence factory supplies both adapters to reused family2 bootstrap; caller provides PID, initial state and computation hosts.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -158,7 +158,7 @@
   - 边界：Finite family4 source responsibilities. Local Actor cache with explicit key/PersistenceId/behavior/spawn callbacks; same-key reuse, conflicting PID rejection, register only successful nonnull spawn, retry after failure, serial get/close and callback reentry rejection. close does not stop Actors; no deathwatch/eviction or distributed PID guarantee.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:aggregate-repository-implementation`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:aggregate-repository-implementation`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Local Actor cache with explicit key/PersistenceId/behavior/spawn callbacks; same-key reuse, conflicting PID rejection, register only successful nonnull spawn, retry after failure, serial get/close and callback reentry rejection. close does not stop Actors; no deathwatch/eviction or distributed PID guarantee.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -197,7 +197,7 @@
   - 边界：Finite family4 source responsibilities. Actor-specific Repository[K] trait and Handle(PersistenceId, ActorRef) in glue/application; not the later-family runtime-neutral kernel business Repository port.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:aggregate-repository-port`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:aggregate-repository-port`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Actor-specific Repository[K] trait and Handle(PersistenceId, ActorRef) in glue/application; not the later-family runtime-neutral kernel business Repository port.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -236,7 +236,7 @@
   - 边界：Finite family4 source responsibilities. One application Aggregate assembles actual command behavior and pure fold. Same physical aggregate output/sample serves aggregate-root and aggregate-behavior; no extra facade or duplicated category/file.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:aggregate-root`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:aggregate-root`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：One application Aggregate assembles actual command behavior and pure fold. Same physical aggregate output/sample serves aggregate-root and aggregate-behavior; no extra facade or duplicated category/file.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -289,7 +289,7 @@
   - 边界：Byte-exact application config scaffold copy. Route run-all-static-copy; run-all unconditional scaffold stage; not standalone bootstrap-dsl output
   - 未满足项：This profile has source-backed output contracts, not independent compilation, behavior or final approval.
 - **js-play-application-candidate-v1**：current；generate-wiring；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:application-settings,application-config`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:application-settings,application-config`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Explicit fresh/existing storage modes and local path validation. No production secrets or shared service defaults; explicit storage and credential configuration.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -343,7 +343,7 @@
   - 边界：Finite family4 source responsibilities. Separate Actor envelope Execute/GetState and Accepted/Rejected, referencing pure payloads; no compatibility aliases or ActorRef in kernel.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:application-protocol`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:application-protocol`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Separate Actor envelope Execute/GetState and Accepted/Rejected, referencing pure payloads; no compatibility aliases or ActorRef in kernel.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -365,7 +365,7 @@
   - 边界：{"producerRepository":"js","producer":"service-dsl standalone CLI; separate from formal product registry"}
   - 未满足项：Not a registered formal-product producer in lib/products/generate-cli.mjs.；Contains ??? service bodies.；Hardcoded generated header names rules_domain_gen even though actual writer is metarch-truthsrc service-dsl; do not infer ownership from that copied stamp.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:api-ports,command-service`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:api-ports,command-service`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Platform-independent asynchronous command service contracts. Typed actor ask facade, no fabricated sequence, no automatic resend after unknown outcome.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -422,7 +422,7 @@
   - 边界：metarch-truthsrc formal scala-cqrs-play-service@1 producer Category has real JS auth-dsl map emission but currently no JS variant. Add legacy generate-code/consume-library role-map support, not full authentication. Native service emits Authority contract and enforcement wiring; represent a narrower generate-wiring variant while preserving handwritten BankDemoAuthority as owner of credentials/CSRF. di-poc kernel location does not make RoleGate/TokenService framework-free: sources import Play/JWT. Do not infer purity from module name.
   - 未满足项：Generated authorization call-site wiring only. Credentials, token verification and actual authority decisions remain externally supplied; no full auth implementation is generated.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:api-authority,http-controller`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:api-authority,http-controller`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Typed Authority/principal seam; external credentials implementation is captured, not invented domain knowledge. Real Play actions, shared role/resource/CSRF gates and exact command/query result mapping.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -440,7 +440,7 @@
   - 边界：consumer application owns concrete business contract; monarch-persistence owns interface. Concrete BatchDefinition/AreaDefinition/BatchPolicy is application-owned data. BatchDefinition lives in batch/BatchProtocol.scala. Hard minimum applies to compatible/allowPartialOnClose=false, not any CountOrWait. Runtime type existence is not generated business definition.
   - 未满足项：BatchDefinition lives in batch/BatchProtocol.scala. Hard minimum applies to compatible/allowPartialOnClose=false, not any CountOrWait. Runtime type existence is not generated business definition.
 - **js-saga-monarch-r2-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-saga-monarch-v1:workflow-program`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-saga-monarch-v1:workflow-program`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Finite R2 batch policy, original-item conservation, explicit release/whole Carry, query-only verification and typed inner Run mapping. Retry exhaustion and two-phase authorized recovery are explicit.
   - 未满足项：Registration describes finite implemented source responsibilities; matching public observations and final approval are not inferred from this entry.
 
@@ -559,7 +559,7 @@
   - 边界：Finite family4 source responsibilities. Pure declared-event construction in product slot order; actual host parameters follow ordered inputDependencies. No persistence/replies or host memoization inferred from dependency deduplication.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:command-helper`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:command-helper`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Pure declared-event construction in product slot order; actual host parameters follow ordered inputDependencies. No persistence/replies or host memoization inferred from dependency deduplication.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -609,7 +609,7 @@
   - 边界：Finite family4 source responsibilities. Minimal typed computations trait from ordered declared host inputs and return types, with no business implementation.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:computation-port`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:computation-port`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Minimal typed computations trait from ordered declared host inputs and return types, with no business implementation.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -710,11 +710,11 @@
   - 边界：Finite family4 source responsibilities. Pure Command/Event payload container with resolved technical type name; no ActorRef or CommandHelpers.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-saga-monarch-r2-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-saga-monarch-v1:protocol`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-saga-monarch-v1:protocol`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Nominal bounded inventory values, typed Saga results/ports and optional typed Run Input/State/Output/leaf protocols; no Akka dependency.
   - 未满足项：Registration describes finite implemented source responsibilities; matching public observations and final approval are not inferred from this entry.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:domain-protocol`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:domain-protocol`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Pure Command/Event payload container with resolved technical type name; no ActorRef or CommandHelpers.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -772,7 +772,7 @@
   - 边界：Finite family4 source responsibilities. Pure state carrier and explicit empty defaults; no Entity forwarding, event fold or recovery.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:domain-state`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:domain-state`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Pure state carrier and explicit empty defaults; no Entity forwarding, event fold or recovery.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -827,7 +827,7 @@
   - 边界：Finite family4 source responsibilities. Typed Akka EventAdapter with manifest/role/version/layout checks and a registered technical Frame.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:persistence-event-adapter`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:persistence-event-adapter`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Typed Akka EventAdapter with manifest/role/version/layout checks and a registered technical Frame.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -866,7 +866,7 @@
   - 边界：Finite family4 source responsibilities. Pure event fold with all RHS evaluated from one pre-event State; set, put, remove, put-all, remove-all, money-apply, integer-apply. No hosts, command reads or decision replay; no half-updated pure State.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:event-handler`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:event-handler`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Pure event fold with all RHS evaluated from one pre-event State; set, put, remove, put-all, remove-all, money-apply, integer-apply. No hosts, command reads or decision replay; no half-updated pure State.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -901,7 +901,7 @@
   - 边界：Finite family4 source responsibilities. One combined exact domain/wire/PO codec object per context, retaining descriptor IDs/versions; not one output per nested codec.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-saga-monarch-r2-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-saga-monarch-v1:binary-codecs`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-saga-monarch-v1:binary-codecs`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Explicit bounded binary frames, original identities, phase receipt domains and optional string-version typed Run codecs.
   - 未满足项：Registration describes finite implemented source responsibilities; matching public observations and final approval are not inferred from this entry.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
@@ -971,7 +971,7 @@
   - 边界：consumer application owns concrete business contract; monarch-persistence owns interface. Application owns concrete connector/evidence rules, library defines port and Typed helper. No native R1/R2 concrete generator located. NotFound/timeout cannot authorize safe retry; validation defaults to rejection.
   - 未满足项：No native R1/R2 concrete generator located. NotFound/timeout cannot authorize safe retry; validation defaults to rejection.
 - **js-saga-monarch-r2-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-saga-monarch-v1:typed-run`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-saga-monarch-v1:typed-run`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Pure fixed-step or single-operation managed Run generated reads/writes/outcomes, typed leaf adapters, six-field identity checks and bounded Host. Low-level reference facade is separate from declared Run generation.
   - 未满足项：Registration describes finite implemented source responsibilities; matching public observations and final approval are not inferred from this entry.
 
@@ -1044,7 +1044,7 @@
   - 边界：Finite family4 source responsibilities. Three generated ScalaTest source responsibilities: inherited real-PB empty-state byte roundtrip, inherited empty typed-event-history replay baseline, and finite persistence-frame empty-state roundtrip/unknown-version smoke tests. Independent nonempty/JDBC oracle remains separate; source presence is not execution.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:generated-test`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:generated-test`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Three inherited domain/persistence smoke suites and one strict HTTP JSON codec suite; independent application oracle is separate.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -1126,7 +1126,7 @@
   - 边界：Controller from generated protocol parsed back into endpoint model. Route manifest-entrypoint; aggregates
   - 未满足项：This profile has source-backed output contracts, not independent compilation, behavior or final approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:http-errors,http-controller`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:http-errors,http-controller`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Redacted consistent parser/router/server error responses. Real Play actions, shared role/resource/CSRF gates and exact command/query result mapping.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -1153,7 +1153,7 @@
   - 边界：Play JSON Writes for view DTOs; controller kind does not make this a controller. Route manifest-entrypoint;
   - 未满足项：This profile has source-backed output contracts, not independent compilation, behavior or final approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:api-dto,http-codec`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:api-dto,http-codec`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Pure typed command DTOs, results, failures and keyset query carriers. Strict JSON/UTF-8/Long-string codecs, exact event outputs, resource-bound canonical keyset cursors.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -1228,7 +1228,7 @@
   - 边界：Finite family4 source responsibilities. Ordered pure decide(state, command, hosts): Either[String, Vector[Event]] and typed per-command Rules; reject and succeed-empty short-circuit later guards/hosts. No I/O, guessed errors or external producer authorization.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:invariant-rule`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:invariant-rule`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Ordered pure decide(state, command, hosts): Either[String, Vector[Event]] and typed per-command Rules; reject and succeed-empty short-circuit later guards/hosts. No I/O, guessed errors or external producer authorization.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -1247,7 +1247,7 @@
   - 边界：Finite family4 source responsibilities. Bounded EventSource interface and JDBC reader of already persisted event-cache rows. No Akka journal plugin, external-event authority or production journal durability claim.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:readside-event-source,journal-source`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:readside-event-source,journal-source`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Bounded EventSource interface and JDBC reader of already persisted event-cache rows. No Akka journal plugin, external-event authority or production journal durability claim. Real finite LevelDB read-journal adapter preserving PID/sequence and checking Frame/serializer; no fake event-cache source.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -1276,7 +1276,7 @@
   - 边界：monarch-persistence runtime. R1 mechanism is retained in current R2 library. No native managedBehavior consumption in current bank/formal JS wrappers; technical wait budgets do not close business retry/deadline debt.
   - 未满足项：No native managedBehavior consumption in current bank/formal JS wrappers; technical wait budgets do not close business retry/deadline debt.
 - **js-saga-monarch-r2-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-saga-monarch-v1:typed-run`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-saga-monarch-v1:typed-run`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Pure fixed-step or single-operation managed Run generated reads/writes/outcomes, typed leaf adapters, six-field identity checks and bounded Host. Low-level reference facade is separate from declared Run generation.
   - 未满足项：Registration describes finite implemented source responsibilities; matching public observations and final approval are not inferred from this entry.
 
@@ -1315,7 +1315,7 @@
   - 边界：metarch-truthsrc composition child-plan producer. Library runtime classification is correct, bank wrapper classification is not. bank-p23 must include generated application wiring/handwritten actor owner, not only runtime-library. Missing JS/BC/legacy wrapper profiles. P23 behavior is not managed/versioned API.
   - 未满足项：bank-p23 must include generated application wiring/handwritten actor owner, not only runtime-library. Missing JS/BC/legacy wrapper profiles. P23 behavior is not managed/versioned API.
 - **js-saga-monarch-r2-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-saga-monarch-v1:typed-run`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-saga-monarch-v1:typed-run`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Pure fixed-step or single-operation managed Run generated reads/writes/outcomes, typed leaf adapters, six-field identity checks and bounded Host. Low-level reference facade is separate from declared Run generation.
   - 未满足项：Registration describes finite implemented source responsibilities; matching public observations and final approval are not inferred from this entry.
 
@@ -1342,7 +1342,7 @@
   - 边界：metarch-truthsrc composition child-plan producer. Generated business stages/requests/results/state/StateCodec wrap runtime. Missing BC semantic, legacy monarch-dsl and run-all composition profiles. No generated duplicate Monarch engine; no native R2 guarantee.
   - 未满足项：Missing BC semantic, legacy monarch-dsl and run-all composition profiles. No generated duplicate Monarch engine; no native R2 guarantee.
 - **js-saga-monarch-r2-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-saga-monarch-v1:typed-run`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-saga-monarch-v1:typed-run`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Pure fixed-step or single-operation managed Run generated reads/writes/outcomes, typed leaf adapters, six-field identity checks and bounded Host. Low-level reference facade is separate from declared Run generation.
   - 未满足项：Registration describes finite implemented source responsibilities; matching public observations and final approval are not inferred from this entry.
 
@@ -1392,7 +1392,7 @@
   - 边界：metarch-truthsrc composition child-plan producer. R1/R2 concrete codec is app-owned, and P23 JS/BC already generate business StateCodec. Missing JS/bank/BC/legacy generated variants; do not erase them by marking all codecs handwritten. Interface source is not concrete application implementation.
   - 未满足项：Missing JS/bank/BC/legacy generated variants; do not erase them by marking all codecs handwritten. Interface source is not concrete application implementation.
 - **js-saga-monarch-r2-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-saga-monarch-v1:binary-codecs`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-saga-monarch-v1:binary-codecs`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Explicit bounded binary frames, original identities, phase receipt domains and optional string-version typed Run codecs.
   - 未满足项：Registration describes finite implemented source responsibilities; matching public observations and final approval are not inferred from this entry.
 
@@ -1442,7 +1442,7 @@
   - 边界：Finite family4 source responsibilities. Generated kernel/glue sbt build with explicit ScalaPB/Akka/H2 and test dependencies; sbt tasks have not been run by this registration.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:project-build`。有效证据：generated。
+  - 生产路径：`scala-cqrs-play-application-v1:project-build`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Explicit four-module Play/ScalaPB/routes/Twirl build input; actual sbt compilation evidence is separately recorded.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -1460,7 +1460,7 @@
   - 生产路径：无JS产出声明。有效证据：不作JS生成证明。
   - 边界：backkend-codegen independent semantic-products producer Formal JS generates the optional interface, installed pin check and routing; actual shell/script/render implementation is handwritten BankBrowserPages. implemented/mixed must not mean autogenerated product UI. BC semantic-products has a separate optional ProductServicePagesTemplate; add its wiring-only coverage instead of assigning JS templates to it.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:receipt-view`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:receipt-view`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Twirl SSR receipt table/empty state/next link, escaped text, same query and authorization; no browser-layout qualification.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -1589,11 +1589,11 @@
   - 边界：Explicit finite module-seams candidate. Author values/ports and technical composition are separated from external handwritten algorithms; source existence and mechanical testing are separate evidence levels.
   - 未满足项：Current capability observations have not yet been collected for the final source freeze. Full-profile certification and final approval are not conferred.
 - **js-saga-monarch-r2-candidate-v1**：current；generate-wiring；owner=generated。
-  - 生产路径：`scala-cqrs-saga-monarch-v1:application-root`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-saga-monarch-v1:application-root`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Typed construction of captured external providers and Run Leaves/Hosts, caller-owned lifecycle and finite authorized recovery/resume of original batches.
   - 未满足项：Registration describes finite implemented source responsibilities; matching public observations and final approval are not inferred from this entry.
 - **js-play-application-candidate-v1**：current；generate-wiring；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:application-root,application-components`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:application-root,application-components`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Complete finite assembly of actor runtime, repository, journal source, readside runner and API services; Play owns HTTP runtime. Built-in Play components, controller/router construction and domain/HTTP initialization failure cleanup.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -1673,11 +1673,11 @@
   - 边界：Finite family4 source responsibilities. Generated kernel/glue sbt build with explicit ScalaPB/Akka/H2 and test dependencies; sbt tasks have not been run by this registration. Generated explicit sbt/protoc plugin or version definition, not proof of build execution. Generated explicit sbt/protoc plugin or version definition, not proof of build execution.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-saga-monarch-r2-candidate-v1**：current；generate-wiring；owner=generated。
-  - 生产路径：`scala-cqrs-saga-monarch-v1:build-definition,build-version`。有效证据：generated。
+  - 生产路径：`scala-cqrs-saga-monarch-v1:build-definition,build-version`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Independent kernel/glue/ext/root sbt definition and explicit frozen runtime coordinates; definition presence is not sbt qualification. Explicit sbt version for the finite multi-module generated application.
   - 未满足项：Registration describes finite implemented source responsibilities; matching public observations and final approval are not inferred from this entry.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:project-build,build-properties,build-plugins`。有效证据：generated。
+  - 生产路径：`scala-cqrs-play-application-v1:project-build,build-properties,build-plugins`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Explicit four-module Play/ScalaPB/routes/Twirl build input; actual sbt compilation evidence is separately recorded. Explicit four-module Play/ScalaPB/routes/Twirl build input; actual sbt compilation evidence is separately recorded. Explicit four-module Play/ScalaPB/routes/Twirl build input; actual sbt compilation evidence is separately recorded.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -1700,7 +1700,7 @@
   - 边界：Finite family4 source responsibilities. Same-connection sequence/duplicate checks, existing domain EventHandler fold, event/state/index/checkpoint writes; does not duplicate business rules.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:readside-handler`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:readside-handler`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Same-connection sequence/duplicate checks, existing domain EventHandler fold, event/state/index/checkpoint writes; does not duplicate business rules.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -1731,7 +1731,7 @@
   - 边界：Finite family4 source responsibilities. Explicit initialize/start, bounded coalesced catch-up, observable failure and shutdown/drain lifecycle; only owns its own work, not the caller DataSource/ActorSystem.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:readside-runner`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:readside-runner`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Explicit initialize/start, bounded coalesced catch-up, observable failure and shutdown/drain lifecycle; only owns its own work, not the caller DataSource/ActorSystem.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -1762,7 +1762,7 @@
   - 边界：Finite family4 source responsibilities. Same-connection sequence/duplicate checks, existing domain EventHandler fold, event/state/index/checkpoint writes; does not duplicate business rules.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:readside-handler`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:readside-handler`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Same-connection sequence/duplicate checks, existing domain EventHandler fold, event/state/index/checkpoint writes; does not duplicate business rules.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -1797,7 +1797,7 @@
   - 边界：Finite family4 source responsibilities. Concrete JDBC repository plus nested transaction Session trait in glue; not an invented standalone kernel repository port. Atomic event/state/index/checkpoint and bounded keyset queries.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:readside-repository`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:readside-repository`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Concrete JDBC repository plus nested transaction Session trait in glue; not an invented standalone kernel repository port. Atomic event/state/index/checkpoint and bounded keyset queries.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -1828,7 +1828,7 @@
   - 边界：Finite family4 source responsibilities. Concrete JDBC repository plus nested transaction Session trait in glue; not an invented standalone kernel repository port. Atomic event/state/index/checkpoint and bounded keyset queries.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:readside-repository`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:readside-repository`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Concrete JDBC repository plus nested transaction Session trait in glue; not an invented standalone kernel repository port. Atomic event/state/index/checkpoint and bounded keyset queries.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -1855,7 +1855,7 @@
   - 边界：Finite family4 source responsibilities. Explicit initialize/start, bounded coalesced catch-up, observable failure and shutdown/drain lifecycle; only owns its own work, not the caller DataSource/ActorSystem.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:readside-runner`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:readside-runner`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Explicit initialize/start, bounded coalesced catch-up, observable failure and shutdown/drain lifecycle; only owns its own work, not the caller DataSource/ActorSystem.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -1886,7 +1886,7 @@
   - 边界：Finite family4 source responsibilities. H2 schema initialization, precise metadata and namespace compatibility checks; no automatic migration. Explicit table/index DDL for namespace, events, state, selected map index and checkpoints.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:readside-schema,readside-ddl`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:readside-schema,readside-ddl`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：H2 schema initialization, precise metadata and namespace compatibility checks; no automatic migration. Explicit table/index DDL for namespace, events, state, selected map index and checkpoints.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -1931,7 +1931,7 @@
   - 边界：Finite family4 source responsibilities. Domain/value/state/event conversion to and from actual ScalaPB messages, with declared exact codecs and presence handling. Versioned frame validation and event/state encode/decode dispatch through the existing DomainConverters ABI; explicit wire-registration rows, not a journal implementation.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:proto-converter,persistence-runtime`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:proto-converter,persistence-runtime`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Domain/value/state/event conversion to and from actual ScalaPB messages, with declared exact codecs and presence handling. Versioned frame validation and event/state encode/decode dispatch through the existing DomainConverters ABI; explicit wire-registration rows, not a journal implementation.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -1972,7 +1972,7 @@
   - 边界：Finite family4 source responsibilities. Real protobuf messages for declared value/state/event roots and finite presence/container shapes; explicit PB identity separate from Scala names. Also emits a separate technical persistence Frame proto; existing domain PB fields are not changed.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:protobuf-schema`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:protobuf-schema`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Real protobuf messages for declared value/state/event roots and finite presence/container shapes; explicit PB identity separate from Scala names. Also emits a separate technical persistence Frame proto; existing domain PB fields are not changed.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -1999,7 +1999,7 @@
   - 边界：Finite family4 source responsibilities. Versioned frame validation and event/state encode/decode dispatch through the existing DomainConverters ABI; explicit wire-registration rows, not a journal implementation. Application SerializerWithStringManifest for the registered Frame only; no AnyRef/GeneratedMessage blanket binding.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:persistence-runtime,persistence-serializer`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:persistence-runtime,persistence-serializer`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Versioned frame validation and event/state encode/decode dispatch through the existing DomainConverters ABI; explicit wire-registration rows, not a journal implementation. Application SerializerWithStringManifest for the registered Frame only; no AnyRef/GeneratedMessage blanket binding.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -2021,7 +2021,7 @@
   - 边界：{"producerRepository":"js","producer":"service-dsl standalone CLI; separate from formal product registry"}
   - 未满足项：Not a registered formal-product producer in lib/products/generate-cli.mjs.；Contains ??? service bodies.；Hardcoded generated header names rules_domain_gen even though actual writer is metarch-truthsrc service-dsl; do not infer ownership from that copied stamp.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:query-ports,query-service`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:query-ports,query-service`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Platform-independent asynchronous query service contracts. Existing H2 state-map query on owned blocking execution context with complete keyset identity.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -2052,7 +2052,7 @@
   - 边界：Finite family4 source responsibilities. Bounded event envelope, stored state and typed index row/page/cursor/result carriers derived from the selected state-map field.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:readside-envelope`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:readside-envelope`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Bounded event envelope, stored state and typed index row/page/cursor/result carriers derived from the selected state-map field.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -2081,7 +2081,7 @@
   - 边界：consumer application owns concrete business contract; monarch-persistence owns interface. Concrete release/carry evidence and pure classification are application-owned. Default rejection is not implemented domain safety. No native R2 producer or bank business policy generation established.
   - 未满足项：Default rejection is not implemented domain safety. No native R2 producer or bank business policy generation established.
 - **js-saga-monarch-r2-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-saga-monarch-v1:workflow-program`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-saga-monarch-v1:workflow-program`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Finite R2 batch policy, original-item conservation, explicit release/whole Carry, query-only verification and typed inner Run mapping. Retry exhaustion and two-phase authorized recovery are explicit.
   - 未满足项：Registration describes finite implemented source responsibilities; matching public observations and final approval are not inferred from this entry.
 
@@ -2138,7 +2138,7 @@
   - 边界：run-all initializes routes then appends aggregated API marker block; not standalone api-dsl final writer. Route run-all-scaffold;
   - 未满足项：This profile has source-backed output contracts, not independent compilation, behavior or final approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:http-routes`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:http-routes`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Real Play routes compiler inputs with internally safe parameter bindings.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -2177,7 +2177,7 @@
   - 边界：Finite family4 source responsibilities. Per-aggregate params container: each command params preserves (state, command, hosts).
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:rule-parameters`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:rule-parameters`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Per-aggregate params container: each command params preserves (state, command, hosts).
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -2192,7 +2192,7 @@
   - 边界：consumer application owns concrete business contract; monarch-persistence owns interface. RunDefinition/StartOrAttach are R1; RunSubmission/RunSubmissionPort are R2 additions. R1 sourceRef/output currently incorrectly includes RunSubmission. Read-only R1 d2fd6df ls-tree lacks RunSubmission.scala and WorkflowHost.scala.
   - 未满足项：R1 sourceRef/output currently incorrectly includes RunSubmission. Read-only R1 d2fd6df ls-tree lacks RunSubmission.scala and WorkflowHost.scala.
 - **js-saga-monarch-r2-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-saga-monarch-v1:typed-run`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-saga-monarch-v1:typed-run`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Pure fixed-step or single-operation managed Run generated reads/writes/outcomes, typed leaf adapters, six-field identity checks and bounded Host. Low-level reference facade is separate from declared Run generation.
   - 未满足项：Registration describes finite implemented source responsibilities; matching public observations and final approval are not inferred from this entry.
 
@@ -2203,7 +2203,7 @@
   - 边界：bank-wealth-demo handwritten implementation owner BankRuntime remains handwritten host lifecycle owner even after switching to generated local repositories/bootstraps. Successful-spawn caches are not durable business truth or restart recovery proof.
   - 未满足项：Registration/source location only. Producer execution, target compilation, business behavior and final template approval remain ungranted by this audit.；No generator builder/template/final writer applies to this handwritten implementation; human edits are outside this audit.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:resource-directory,application-lifecycle,application-root`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:resource-directory,application-lifecycle,application-root`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Explicit bounded resource/PID/envelope-resource association, shared by command and journal adapters. Immediate resource registration, reverse cleanup, independent cleanup workers and one fixed close deadline; incomplete cleanup remains failed. Complete finite assembly of actor runtime, repository, journal source, readside runner and API services; Play owns HTTP runtime.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -2288,7 +2288,7 @@
   - 边界：metarch-truthsrc strict fixture/composition source face. Host is application generated code plus concrete I/O, not strict coordinator internals. saga-strict profile has no unique Host producer; retain as reference label or rename only with explicit source contract. BC fixture/composition and semantic-products differ. Add run-all source face.
   - 未满足项：saga-strict profile has no unique Host producer; retain as reference label or rename only with explicit source contract. BC fixture/composition and semantic-products differ. Add run-all source face.
 - **js-saga-monarch-r2-candidate-v1**：current；generate-wiring；owner=generated。
-  - 生产路径：`scala-cqrs-saga-monarch-v1:strict-saga-bridge,application-root`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-saga-monarch-v1:strict-saga-bridge,application-root`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Two-resource serial TCC definition and typed phase bridges consuming fixed Strict Saga artifact; original association, query, result delivery and authorized bounded recovery. Typed construction of captured external providers and Run Leaves/Hosts, caller-owned lifecycle and finite authorized recovery/resume of original batches.
   - 未满足项：Registration describes finite implemented source responsibilities; matching public observations and final approval are not inferred from this entry.
 
@@ -2403,7 +2403,7 @@
   - 边界：metarch-truthsrc retained strict source face. Runtime owns interface/outcomes, generators emit typed bridges, app owns authoritative I/O. BC strict needs StrictSagaModuleTemplate and BC semantic needs ProductApplicationTemplate, not JS refs. query None remains Unknown, not safe retry.
   - 未满足项：BC strict needs StrictSagaModuleTemplate and BC semantic needs ProductApplicationTemplate, not JS refs. query None remains Unknown, not safe retry.
 - **js-saga-monarch-r2-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-saga-monarch-v1:protocol,strict-saga-bridge`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-saga-monarch-v1:protocol,strict-saga-bridge`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Nominal bounded inventory values, typed Saga results/ports and optional typed Run Input/State/Output/leaf protocols; no Akka dependency. Two-resource serial TCC definition and typed phase bridges consuming fixed Strict Saga artifact; original association, query, result delivery and authorized bounded recovery.
   - 未满足项：Registration describes finite implemented source responsibilities; matching public observations and final approval are not inferred from this entry.
 
@@ -2583,11 +2583,11 @@
   - 边界：Finite family4 source responsibilities. Versioned frame validation and event/state encode/decode dispatch through the existing DomainConverters ABI; explicit wire-registration rows, not a journal implementation. Explicit Akka serializer registration and binding for this Frame, with no journal default.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-saga-monarch-r2-candidate-v1**：current；generate-wiring；owner=generated。
-  - 生产路径：`scala-cqrs-saga-monarch-v1:serialization-registration`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-saga-monarch-v1:serialization-registration`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Explicit fixed Saga/R2 serializer bindings; no journal or production storage defaults.
   - 未满足项：Registration describes finite implemented source responsibilities; matching public observations and final approval are not inferred from this entry.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:persistence-runtime,serialization-config`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:persistence-runtime,serialization-config`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Versioned frame validation and event/state encode/decode dispatch through the existing DomainConverters ABI; explicit wire-registration rows, not a journal implementation. Explicit Akka serializer registration and binding for this Frame, with no journal default.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -2602,7 +2602,7 @@
   - 边界：backkend-codegen independent semantic-products Scala producer Separate metarch-truthsrc native product producer from BC independent Scala ProductServiceBuilder/ProductServiceTemplate path; both consume explicit implementation pins, neither manufactures application behavior. Generated contract/readiness/close hooks are obligations and wiring, not proof that a supplied composition or service passed runtime acceptance.
   - 未满足项：Registration/source location only. Producer execution, target compilation, business behavior and final template approval remain ungranted by this audit.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:api-dto`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:api-dto`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Pure typed command DTOs, results, failures and keyset query carriers.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -2617,7 +2617,7 @@
   - 边界：backkend-codegen independent semantic-products Scala producer Separate metarch-truthsrc native product producer from BC independent Scala ProductServiceBuilder/ProductServiceTemplate path; both consume explicit implementation pins, neither manufactures application behavior. Generated contract/readiness/close hooks are obligations and wiring, not proof that a supplied composition or service passed runtime acceptance. BC ProductServiceTemplate places factory startup in Loader; native JS splits ApplicationBootstrap. Do not mechanically propagate file names across profiles. Configuration output is generated by separate renderConfiguration/ProductServiceConfigurationTemplate stages.
   - 未满足项：Registration/source location only. Producer execution, target compilation, business behavior and final template approval remain ungranted by this audit.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:resource-directory,application-lifecycle,application-root,application-components,application-loader`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:resource-directory,application-lifecycle,application-root,application-components,application-loader`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Explicit bounded resource/PID/envelope-resource association, shared by command and journal adapters. Immediate resource registration, reverse cleanup, independent cleanup workers and one fixed close deadline; incomplete cleanup remains failed. Complete finite assembly of actor runtime, repository, journal source, readside runner and API services; Play owns HTTP runtime. Built-in Play components, controller/router construction and domain/HTTP initialization failure cleanup. Configured application loader with explicit external implementations and required local credentials.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -2666,7 +2666,7 @@
   - 边界：Finite family4 source responsibilities. One nominal/record/exact domain, declared wire or PO value definition; no duplicate signature VO copies. Pure Command/Event payload container with resolved technical type name; no ActorRef or CommandHelpers. Per-aggregate params container: each command params preserves (state, command, hosts). Minimal typed computations trait from ordered declared host inputs and return types, with no business implementation.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:value-object,domain-protocol,computation-port,rule-parameters`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:value-object,domain-protocol,computation-port,rule-parameters`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：One nominal/record/exact domain, declared wire or PO value definition; no duplicate signature VO copies. Pure Command/Event payload container with resolved technical type name; no ActorRef or CommandHelpers. Per-aggregate params container: each command params preserves (state, command, hosts). Minimal typed computations trait from ordered declared host inputs and return types, with no business implementation.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -2717,7 +2717,7 @@
   - 边界：Finite family4 source responsibilities. Typed state SnapshotAdapter that rejects foreign or incompatible frames.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:persistence-snapshot-adapter`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:persistence-snapshot-adapter`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Typed state SnapshotAdapter that rejects foreign or incompatible frames.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -2755,7 +2755,7 @@
   - 边界：metarch-truthsrc retained strict source face. Runtime immutable definition API is library; concrete Module/Definition is generated wiring. BC strict uses StrictSagaModuleBuilder/Model/Template. saga-contract JSON is evidence, not runnable Scala definition; place in report or explicit evidence-only variant.
   - 未满足项：BC strict uses StrictSagaModuleBuilder/Model/Template. saga-contract JSON is evidence, not runnable Scala definition; place in report or explicit evidence-only variant.
 - **js-saga-monarch-r2-candidate-v1**：current；generate-wiring；owner=generated。
-  - 生产路径：`scala-cqrs-saga-monarch-v1:strict-saga-bridge`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-saga-monarch-v1:strict-saga-bridge`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Two-resource serial TCC definition and typed phase bridges consuming fixed Strict Saga artifact; original association, query, result delivery and authorized bounded recovery.
   - 未满足项：Registration describes finite implemented source responsibilities; matching public observations and final approval are not inferred from this entry.
 
@@ -2833,11 +2833,11 @@
   - 边界：Finite family4 source responsibilities. One nominal/record/exact domain, declared wire or PO value definition; no duplicate signature VO copies.
   - 未满足项：Registration and pure source-plan reconciliation only. No current generated/compiled/behavior/final-approved observation is minted by this recipe. Fresh writer, independent oracle, installed and regression evidence must be recorded separately after production freeze. No production Actor journal, MySQL, arbitrary read model, HTTP or architecture approval.
 - **js-saga-monarch-r2-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-saga-monarch-v1:protocol`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-saga-monarch-v1:protocol`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Nominal bounded inventory values, typed Saga results/ports and optional typed Run Input/State/Output/leaf protocols; no Akka dependency.
   - 未满足项：Registration describes finite implemented source responsibilities; matching public observations and final approval are not inferred from this entry.
 - **js-play-application-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-play-application-v1:value-object`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-play-application-v1:value-object`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：One nominal/record/exact domain, declared wire or PO value definition; no duplicate signature VO copies.
   - 未满足项：Finite supported input only; no final architecture-owner approval.
 
@@ -2878,7 +2878,7 @@
   - 边界：monarch-persistence runtime. WorkflowHost class is correctly library-owned; invocation/config is app wiring. Correct symbol WorkflowProgram -> WorkflowHost. No native JS R2 bootstrap established; P23 Execution.behavior is not this host.
   - 未满足项：Correct symbol WorkflowProgram -> WorkflowHost. No native JS R2 bootstrap established; P23 Execution.behavior is not this host.
 - **js-saga-monarch-r2-candidate-v1**：current；generate-wiring；owner=generated。
-  - 生产路径：`scala-cqrs-saga-monarch-v1:application-root`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-saga-monarch-v1:application-root`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Typed construction of captured external providers and Run Leaves/Hosts, caller-owned lifecycle and finite authorized recovery/resume of original batches.
   - 未满足项：Registration describes finite implemented source responsibilities; matching public observations and final approval are not inferred from this entry.
 
@@ -2889,7 +2889,7 @@
   - 边界：consumer application owns concrete business contract; monarch-persistence owns interface. Concrete WorkflowProgram business mappings belong to application. Current handwritten/not-generated classification is correct; refs are API obligations, not concrete generated implementation. operation/complete pure; exact manifest coverage.
   - 未满足项：Current handwritten/not-generated classification is correct; refs are API obligations, not concrete generated implementation. operation/complete pure; exact manifest coverage.
 - **js-saga-monarch-r2-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-saga-monarch-v1:workflow-program`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-saga-monarch-v1:workflow-program`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Finite R2 batch policy, original-item conservation, explicit release/whole Carry, query-only verification and typed inner Run mapping. Retry exhaustion and two-phase authorized recovery are explicit.
   - 未满足项：Registration describes finite implemented source responsibilities; matching public observations and final approval are not inferred from this entry.
 
@@ -2904,7 +2904,7 @@
   - 边界：consumer application owns concrete business contract; monarch-persistence owns interface. R1 Run/Operation and R2 WorkflowHost/Batch query-reconcile contracts differ. Replace R1 WorkflowHost/BatchProtocol refs with GetRun/Operation Get/Reconcile; query is observation, authorized reconcile is action, neither equals business completion.
   - 未满足项：Replace R1 WorkflowHost/BatchProtocol refs with GetRun/Operation Get/Reconcile; query is observation, authorized reconcile is action, neither equals business completion.
 - **js-saga-monarch-r2-candidate-v1**：current；generate-code；owner=generated。
-  - 生产路径：`scala-cqrs-saga-monarch-v1:workflow-program,application-root`。有效证据：generated、compiled、behavior-verified。
+  - 生产路径：`scala-cqrs-saga-monarch-v1:workflow-program,application-root`。有效证据：producer-located；未取得样例/编译/行为/审定回执。
   - 边界：Finite R2 batch policy, original-item conservation, explicit release/whole Carry, query-only verification and typed inner Run mapping. Retry exhaustion and two-phase authorized recovery are explicit. Typed construction of captured external providers and Run Leaves/Hosts, caller-owned lifecycle and finite authorized recovery/resume of original batches.
   - 未满足项：Registration describes finite implemented source responsibilities; matching public observations and final approval are not inferred from this entry.
 
@@ -3959,7 +3959,7 @@
 
 - Manifest：`generators/scala-cqrs-domain-kernel-v1/generator.json`；版本 1；current/product-profile。
 - 输入：Explicit scala-cqrs-domain-kernel@1; complete compiled product set: reference-layout@1, exact-value-types@1, exact-value-codecs@1, domain-decision@4, domain-dependencies@6, domain-folds@6, domain-external-events@2. Finite options packages/names/protobuf; no editable alternate request or inferred methods.
-- 生产链：entrypoint=`js:generators/scala-cqrs-domain-kernel-v1/generate.mjs#generate`；entrypoint=`js:lib/products/generate-cli.mjs#generateProductCli`；implementation=`js:lib/products/generate-cli.mjs#registeredProductProducer`；input=`js:lib/products/compile.mjs#compileProductSet`；input=`js:src/core/product-plan.mjs#planProductSet`；model=`js:generators/scala-cqrs-domain-kernel-v1/build-models.mjs#buildModels`；model=`js:generators/scala-cqrs-domain-kernel-v1/serialization-model.mjs#serializationModel`；implementation=`js:generators/scala-cqrs-domain-kernel-v1/render.mjs#render`；implementation=`js:generators/scala-cqrs-domain-kernel-v1/entry.mjs#sourceEntry`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/values.mjs#valueTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/protocol.mjs#protocolTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/state.mjs#stateTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/params.mjs#paramsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/params.mjs#computationsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/exact-codecs.mjs#exactCodecsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/protobuf.mjs#protobufTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/converters.mjs#convertersTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/build.mjs#buildTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/generated-tests.mjs#generatedTestsTemplate`；writer=`js:src/core/generate.mjs#applyEntries`
+- 生产链：entrypoint=`js:generators/scala-cqrs-domain-kernel-v1/generate.mjs#generate`；entrypoint=`js:lib/products/generate-cli.mjs#generateProductCli`；implementation=`js:lib/products/generate-cli.mjs#registeredProductProducer`；input=`js:lib/products/compile.mjs#compileProductSet`；input=`js:src/core/product-plan.mjs#planProductSet`；model=`js:generators/scala-cqrs-domain-kernel-v1/build-models.mjs#buildModels`；model=`js:generators/scala-cqrs-domain-kernel-v1/serialization-model.mjs#serializationModel`；implementation=`js:generators/scala-cqrs-domain-kernel-v1/render.mjs#render`；implementation=`js:generators/scala-cqrs-domain-kernel-v1/entry.mjs#sourceEntry`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/values.mjs#valueTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/protocol.mjs#protocolTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/state.mjs#stateTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/params.mjs#paramsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/params.mjs#computationsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/exact-codecs.mjs#exactCodecsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/protobuf.mjs#protobufTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/converters.mjs#convertersTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/build.mjs#buildTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/generated-tests.mjs#generatedTestsTemplate`；writer=`js:src/core/generate.mjs#applyEntries`；model=`js:generators/scala-cqrs-domain-kernel-v1/jvm-parameters.mjs#kernelParameterSlots`；model=`js:generators/scala-cqrs-domain-kernel-v1/jvm-parameters.mjs#checkJvmParameters`
 
 | 输出合同 | kind | 路径 | 类别/profile |
 |---|---|---|---|
@@ -3988,7 +3988,7 @@
 
 - Manifest：`generators/scala-cqrs-aggregate-core-v1/generator.json`；版本 1；current/product-profile。
 - 输入：Explicit scala-cqrs-aggregate-core@1; complete compiled product set: reference-layout@1, exact-value-types@1, exact-value-codecs@1, domain-decision@4, domain-dependencies@6, domain-folds@6, domain-external-events@2. Options only packages/names/protobuf. Both external producer products must agree and be empty; every event needs a local command producer. Configured author tree is the only editable business input.
-- 生产链：entrypoint=`js:generators/scala-cqrs-aggregate-core-v1/generate.mjs#generate`；entrypoint=`js:lib/products/generate-cli.mjs#generateProductCli`；implementation=`js:lib/products/generate-cli.mjs#registeredProductProducer`；input=`js:lib/products/compile.mjs#compileProductSet`；input=`js:src/core/product-plan.mjs#planProductSet`；model=`js:generators/scala-cqrs-aggregate-core-v1/build-models.mjs#buildModels`；model=`js:generators/scala-cqrs-aggregate-core-v1/expression-model.mjs#expressionResolver`；model=`js:generators/scala-cqrs-domain-kernel-v1/build-models.mjs#buildModels`；model=`js:generators/scala-cqrs-domain-kernel-v1/serialization-model.mjs#serializationModel`；implementation=`js:generators/scala-cqrs-aggregate-core-v1/render.mjs#render`；implementation=`js:generators/scala-cqrs-domain-kernel-v1/render.mjs#productionJobs`；implementation=`js:generators/scala-cqrs-domain-kernel-v1/render.mjs#renderJobs`；implementation=`js:generators/scala-cqrs-domain-kernel-v1/entry.mjs#aggregateSourceEntry`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/values.mjs#valueTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/protocol.mjs#protocolTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/state.mjs#stateTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/params.mjs#paramsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/params.mjs#computationsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/exact-codecs.mjs#exactCodecsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/protobuf.mjs#protobufTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/converters.mjs#convertersTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/build.mjs#buildTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/generated-tests.mjs#generatedTestsTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/generated-tests.mjs#generatedBehaviorTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/rules.mjs#rulesTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/command-helpers.mjs#commandHelpersTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/event-handler.mjs#eventHandlerTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/actor-protocol.mjs#actorProtocolTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/aggregate.mjs#aggregateTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/factory.mjs#factoryTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/bootstrap.mjs#bootstrapTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/repository.mjs#repositoryTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/repository.mjs#repositoryImplementationTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/expressions.mjs#expressionSyntax`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/generated-tests.mjs#generatedBehaviorArtifacts`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/build.mjs#buildArtifacts`；writer=`js:src/core/generate.mjs#applyEntries`
+- 生产链：entrypoint=`js:generators/scala-cqrs-aggregate-core-v1/generate.mjs#generate`；entrypoint=`js:lib/products/generate-cli.mjs#generateProductCli`；implementation=`js:lib/products/generate-cli.mjs#registeredProductProducer`；input=`js:lib/products/compile.mjs#compileProductSet`；input=`js:src/core/product-plan.mjs#planProductSet`；model=`js:generators/scala-cqrs-aggregate-core-v1/build-models.mjs#buildModels`；model=`js:generators/scala-cqrs-aggregate-core-v1/expression-model.mjs#expressionResolver`；model=`js:generators/scala-cqrs-domain-kernel-v1/build-models.mjs#buildModels`；model=`js:generators/scala-cqrs-domain-kernel-v1/serialization-model.mjs#serializationModel`；implementation=`js:generators/scala-cqrs-aggregate-core-v1/render.mjs#render`；implementation=`js:generators/scala-cqrs-domain-kernel-v1/render.mjs#productionJobs`；implementation=`js:generators/scala-cqrs-domain-kernel-v1/render.mjs#renderJobs`；implementation=`js:generators/scala-cqrs-domain-kernel-v1/entry.mjs#aggregateSourceEntry`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/values.mjs#valueTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/protocol.mjs#protocolTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/state.mjs#stateTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/params.mjs#paramsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/params.mjs#computationsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/exact-codecs.mjs#exactCodecsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/protobuf.mjs#protobufTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/converters.mjs#convertersTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/build.mjs#buildTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/generated-tests.mjs#generatedTestsTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/generated-tests.mjs#generatedBehaviorTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/rules.mjs#rulesTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/command-helpers.mjs#commandHelpersTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/event-handler.mjs#eventHandlerTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/actor-protocol.mjs#actorProtocolTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/aggregate.mjs#aggregateTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/factory.mjs#factoryTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/bootstrap.mjs#bootstrapTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/repository.mjs#repositoryTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/repository.mjs#repositoryImplementationTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/expressions.mjs#expressionSyntax`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/generated-tests.mjs#generatedBehaviorArtifacts`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/build.mjs#buildArtifacts`；writer=`js:src/core/generate.mjs#applyEntries`；model=`js:generators/scala-cqrs-domain-kernel-v1/jvm-parameters.mjs#kernelParameterSlots`；model=`js:generators/scala-cqrs-domain-kernel-v1/jvm-parameters.mjs#checkJvmParameters`
 
 | 输出合同 | kind | 路径 | 类别/profile |
 |---|---|---|---|
@@ -4048,7 +4048,7 @@
 
 - Manifest：`generators/scala-cqrs-persistence-readside-v1/generator.json`；版本 1；current/product-profile。
 - 输入：Explicit scala-cqrs-persistence-readside@1, the seven family2 products plus persistence-readside-contract@1, from the configured sole business author tree and captured truthsrc.persistence-readside-binding/v1. One context/aggregate/string-carrier map index; both external-producer lists empty. Options packages/names/protobuf; actual wire-layout SHA and converter ABI are checked, never inferred or refreshed.
-- 生产链：entrypoint=`js:generators/scala-cqrs-persistence-readside-v1/generate.mjs#generate`；entrypoint=`js:lib/products/generate-cli.mjs#generateProductCli`；implementation=`js:lib/products/generate-cli.mjs#registeredProductProducer`；input=`js:lib/products/compile.mjs#compileProductSet`；input=`js:src/core/product-plan.mjs#planProductSet`；model=`js:generators/scala-cqrs-aggregate-core-v1/build-models.mjs#buildModels`；model=`js:generators/scala-cqrs-aggregate-core-v1/expression-model.mjs#expressionResolver`；model=`js:generators/scala-cqrs-domain-kernel-v1/build-models.mjs#buildModels`；model=`js:generators/scala-cqrs-domain-kernel-v1/serialization-model.mjs#serializationModel`；implementation=`js:generators/scala-cqrs-aggregate-core-v1/render.mjs#productionJobs`；implementation=`js:generators/scala-cqrs-domain-kernel-v1/render.mjs#productionJobs`；implementation=`js:generators/scala-cqrs-domain-kernel-v1/render.mjs#renderJobs`；implementation=`js:generators/scala-cqrs-domain-kernel-v1/entry.mjs#persistenceSourceEntry`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/values.mjs#valueTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/protocol.mjs#protocolTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/state.mjs#stateTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/params.mjs#paramsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/params.mjs#computationsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/exact-codecs.mjs#exactCodecsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/protobuf.mjs#protobufTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/converters.mjs#convertersTemplate`；template=`js:generators/scala-cqrs-persistence-readside-v1/templates/build.mjs#buildTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/generated-tests.mjs#generatedTestsTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/generated-tests.mjs#generatedBehaviorTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/rules.mjs#rulesTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/command-helpers.mjs#commandHelpersTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/event-handler.mjs#eventHandlerTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/actor-protocol.mjs#actorProtocolTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/aggregate.mjs#aggregateTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/factory.mjs#factoryTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/bootstrap.mjs#bootstrapTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/repository.mjs#repositoryTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/repository.mjs#repositoryImplementationTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/expressions.mjs#expressionSyntax`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/generated-tests.mjs#generatedBehaviorArtifacts`；template=`js:generators/scala-cqrs-persistence-readside-v1/templates/build.mjs#buildArtifacts`；writer=`js:src/core/generate.mjs#applyEntries`；input=`js:lib/products/persistence-readside.mjs#compilePersistenceReadside`；model=`js:generators/scala-cqrs-persistence-readside-v1/build-models.mjs#buildModels`；model=`js:generators/scala-cqrs-persistence-readside-v1/wire-layout.mjs#persistenceWireLayout`；model=`js:generators/scala-cqrs-persistence-readside-v1/schema-model.mjs#readsideSchemaModel`；implementation=`js:generators/scala-cqrs-persistence-readside-v1/render.mjs#render`
+- 生产链：entrypoint=`js:generators/scala-cqrs-persistence-readside-v1/generate.mjs#generate`；entrypoint=`js:lib/products/generate-cli.mjs#generateProductCli`；implementation=`js:lib/products/generate-cli.mjs#registeredProductProducer`；input=`js:lib/products/compile.mjs#compileProductSet`；input=`js:src/core/product-plan.mjs#planProductSet`；model=`js:generators/scala-cqrs-aggregate-core-v1/build-models.mjs#buildModels`；model=`js:generators/scala-cqrs-aggregate-core-v1/expression-model.mjs#expressionResolver`；model=`js:generators/scala-cqrs-domain-kernel-v1/build-models.mjs#buildModels`；model=`js:generators/scala-cqrs-domain-kernel-v1/serialization-model.mjs#serializationModel`；implementation=`js:generators/scala-cqrs-aggregate-core-v1/render.mjs#productionJobs`；implementation=`js:generators/scala-cqrs-domain-kernel-v1/render.mjs#productionJobs`；implementation=`js:generators/scala-cqrs-domain-kernel-v1/render.mjs#renderJobs`；implementation=`js:generators/scala-cqrs-domain-kernel-v1/entry.mjs#persistenceSourceEntry`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/values.mjs#valueTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/protocol.mjs#protocolTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/state.mjs#stateTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/params.mjs#paramsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/params.mjs#computationsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/exact-codecs.mjs#exactCodecsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/protobuf.mjs#protobufTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/converters.mjs#convertersTemplate`；template=`js:generators/scala-cqrs-persistence-readside-v1/templates/build.mjs#buildTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/generated-tests.mjs#generatedTestsTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/generated-tests.mjs#generatedBehaviorTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/rules.mjs#rulesTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/command-helpers.mjs#commandHelpersTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/event-handler.mjs#eventHandlerTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/actor-protocol.mjs#actorProtocolTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/aggregate.mjs#aggregateTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/factory.mjs#factoryTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/bootstrap.mjs#bootstrapTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/repository.mjs#repositoryTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/repository.mjs#repositoryImplementationTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/expressions.mjs#expressionSyntax`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/generated-tests.mjs#generatedBehaviorArtifacts`；template=`js:generators/scala-cqrs-persistence-readside-v1/templates/build.mjs#buildArtifacts`；writer=`js:src/core/generate.mjs#applyEntries`；input=`js:lib/products/persistence-readside.mjs#compilePersistenceReadside`；model=`js:generators/scala-cqrs-persistence-readside-v1/build-models.mjs#buildModels`；model=`js:generators/scala-cqrs-persistence-readside-v1/wire-layout.mjs#persistenceWireLayout`；model=`js:generators/scala-cqrs-persistence-readside-v1/schema-model.mjs#readsideSchemaModel`；implementation=`js:generators/scala-cqrs-persistence-readside-v1/render.mjs#render`；model=`js:generators/scala-cqrs-domain-kernel-v1/jvm-parameters.mjs#kernelParameterSlots`；model=`js:generators/scala-cqrs-domain-kernel-v1/jvm-parameters.mjs#checkJvmParameters`
 
 | 输出合同 | kind | 路径 | 类别/profile |
 |---|---|---|---|
@@ -4117,7 +4117,7 @@
 
 - Manifest：`generators/scala-cqrs-play-application-v1/generator.json`；版本 1；current/product-profile。
 - 输入：One configured Warehouse-lite-compatible author tree; ten exact products including api-contract@1 and application-composition@1; separately captured computations/Authority implementations, explicit resource/PID associations and finite Play/LevelDB/H2 versions. Unknown capabilities fail before writing.
-- 生产链：entrypoint=`js:generators/scala-cqrs-play-application-v1/generate.mjs#generate`；entrypoint=`js:lib/products/generate-cli.mjs#generateProductCli`；implementation=`js:lib/products/generate-cli.mjs#registeredProductProducer`；input=`js:lib/products/compile.mjs#compileProductSet`；input=`js:src/core/product-plan.mjs#planProductSet`；model=`js:generators/scala-cqrs-aggregate-core-v1/build-models.mjs#buildModels`；model=`js:generators/scala-cqrs-aggregate-core-v1/expression-model.mjs#expressionResolver`；model=`js:generators/scala-cqrs-domain-kernel-v1/build-models.mjs#buildModels`；model=`js:generators/scala-cqrs-domain-kernel-v1/serialization-model.mjs#serializationModel`；implementation=`js:generators/scala-cqrs-aggregate-core-v1/render.mjs#productionJobs`；implementation=`js:generators/scala-cqrs-domain-kernel-v1/render.mjs#productionJobs`；implementation=`js:generators/scala-cqrs-domain-kernel-v1/render.mjs#renderJobs`；implementation=`js:generators/scala-cqrs-domain-kernel-v1/entry.mjs#applicationSourceEntry`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/values.mjs#valueTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/protocol.mjs#protocolTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/state.mjs#stateTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/params.mjs#paramsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/params.mjs#computationsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/exact-codecs.mjs#exactCodecsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/protobuf.mjs#protobufTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/converters.mjs#convertersTemplate`；template=`js:generators/scala-cqrs-persistence-readside-v1/templates/build.mjs#buildTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/generated-tests.mjs#generatedTestsTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/generated-tests.mjs#generatedBehaviorTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/rules.mjs#rulesTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/command-helpers.mjs#commandHelpersTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/event-handler.mjs#eventHandlerTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/actor-protocol.mjs#actorProtocolTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/aggregate.mjs#aggregateTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/factory.mjs#factoryTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/bootstrap.mjs#bootstrapTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/repository.mjs#repositoryTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/repository.mjs#repositoryImplementationTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/expressions.mjs#expressionSyntax`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/generated-tests.mjs#generatedBehaviorArtifacts`；template=`js:generators/scala-cqrs-persistence-readside-v1/templates/build.mjs#buildArtifacts`；writer=`js:src/core/generate.mjs#applyEntries`；input=`js:lib/products/persistence-readside.mjs#compilePersistenceReadside`；model=`js:generators/scala-cqrs-persistence-readside-v1/build-models.mjs#buildModels`；model=`js:generators/scala-cqrs-persistence-readside-v1/wire-layout.mjs#persistenceWireLayout`；model=`js:generators/scala-cqrs-persistence-readside-v1/schema-model.mjs#readsideSchemaModel`；implementation=`js:generators/scala-cqrs-persistence-readside-v1/render.mjs#productionJobs`；input=`js:lib/products/api-contract.mjs#compileApiContract`；input=`js:lib/products/application-composition.mjs#compileApplicationComposition`；model=`js:generators/scala-cqrs-play-application-v1/build-models.mjs#buildModels`；implementation=`js:generators/scala-cqrs-play-application-v1/render.mjs#render`
+- 生产链：entrypoint=`js:generators/scala-cqrs-play-application-v1/generate.mjs#generate`；entrypoint=`js:lib/products/generate-cli.mjs#generateProductCli`；implementation=`js:lib/products/generate-cli.mjs#registeredProductProducer`；input=`js:lib/products/compile.mjs#compileProductSet`；input=`js:src/core/product-plan.mjs#planProductSet`；model=`js:generators/scala-cqrs-aggregate-core-v1/build-models.mjs#buildModels`；model=`js:generators/scala-cqrs-aggregate-core-v1/expression-model.mjs#expressionResolver`；model=`js:generators/scala-cqrs-domain-kernel-v1/build-models.mjs#buildModels`；model=`js:generators/scala-cqrs-domain-kernel-v1/serialization-model.mjs#serializationModel`；implementation=`js:generators/scala-cqrs-aggregate-core-v1/render.mjs#productionJobs`；implementation=`js:generators/scala-cqrs-domain-kernel-v1/render.mjs#productionJobs`；implementation=`js:generators/scala-cqrs-domain-kernel-v1/render.mjs#renderJobs`；implementation=`js:generators/scala-cqrs-domain-kernel-v1/entry.mjs#applicationSourceEntry`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/values.mjs#valueTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/protocol.mjs#protocolTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/state.mjs#stateTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/params.mjs#paramsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/params.mjs#computationsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/exact-codecs.mjs#exactCodecsTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/protobuf.mjs#protobufTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/converters.mjs#convertersTemplate`；template=`js:generators/scala-cqrs-persistence-readside-v1/templates/build.mjs#buildTemplate`；template=`js:generators/scala-cqrs-domain-kernel-v1/templates/generated-tests.mjs#generatedTestsTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/generated-tests.mjs#generatedBehaviorTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/rules.mjs#rulesTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/command-helpers.mjs#commandHelpersTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/event-handler.mjs#eventHandlerTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/actor-protocol.mjs#actorProtocolTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/aggregate.mjs#aggregateTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/factory.mjs#factoryTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/bootstrap.mjs#bootstrapTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/repository.mjs#repositoryTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/repository.mjs#repositoryImplementationTemplate`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/expressions.mjs#expressionSyntax`；template=`js:generators/scala-cqrs-aggregate-core-v1/templates/generated-tests.mjs#generatedBehaviorArtifacts`；template=`js:generators/scala-cqrs-persistence-readside-v1/templates/build.mjs#buildArtifacts`；writer=`js:src/core/generate.mjs#applyEntries`；input=`js:lib/products/persistence-readside.mjs#compilePersistenceReadside`；model=`js:generators/scala-cqrs-persistence-readside-v1/build-models.mjs#buildModels`；model=`js:generators/scala-cqrs-persistence-readside-v1/wire-layout.mjs#persistenceWireLayout`；model=`js:generators/scala-cqrs-persistence-readside-v1/schema-model.mjs#readsideSchemaModel`；implementation=`js:generators/scala-cqrs-persistence-readside-v1/render.mjs#productionJobs`；input=`js:lib/products/api-contract.mjs#compileApiContract`；input=`js:lib/products/application-composition.mjs#compileApplicationComposition`；model=`js:generators/scala-cqrs-play-application-v1/build-models.mjs#buildModels`；implementation=`js:generators/scala-cqrs-play-application-v1/render.mjs#render`；model=`js:generators/scala-cqrs-domain-kernel-v1/jvm-parameters.mjs#kernelParameterSlots`；model=`js:generators/scala-cqrs-domain-kernel-v1/jvm-parameters.mjs#checkJvmParameters`
 
 | 输出合同 | kind | 路径 | 类别/profile |
 |---|---|---|---|

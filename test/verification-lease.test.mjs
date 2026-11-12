@@ -263,16 +263,37 @@ test('failed preflight propagates its error, removes only its locks and writes n
   const lease = await acquireFileLease(input(f)); lease.release();
 });
 
-test('preflight cannot defer work through thenables, generators or proxy promises', async t => {
+test('preflight cannot defer work through synchronous thenables or generators', async t => {
   const f = fixture(t); let calls = 0;
   const trap = () => { calls++; throw new Error('executed'); };
   for (const result of [{ then: trap }, { get then() { return trap(); } },
-    new Proxy(Promise.resolve(), { get: trap }), (function* () { calls++; })(),
+    (function* () { calls++; })(),
     Object.defineProperty(Promise.resolve(), 'then', { get: trap })]) {
     await assert.rejects(acquireFileLease({ ...input(f), preflight: () => result }), code('FILE_LEASE_INVALID'));
     assert.deepEqual(entries(f), []);
   }
   assert.equal(calls, 0);
+});
+
+test('C1 proxy preflight promises retain locks without traps and close owned handles', { timeout: 5000 }, async t => {
+  for (const revoked of [false, true]) await t.test(revoked ? 'revoked' : 'pending', async t => {
+    const f = fixture(t), handles = new Set(), open = fs.openSync, close = fs.closeSync;
+    t.mock.method(fs, 'openSync', (...args) => { const fd = open(...args); handles.add(fd); return fd; });
+    t.mock.method(fs, 'closeSync', fd => { handles.delete(fd); return close(fd); });
+    let finish, calls = 0, settled = false;
+    const work = new Promise(resolve => { finish = resolve; }); work.then(() => { settled = true; });
+    const trap = () => { calls++; throw new Error('proxy trap executed'); };
+    const { proxy, revoke } = Proxy.revocable(work, { get: trap, getPrototypeOf: trap, ownKeys: trap, getOwnPropertyDescriptor: trap });
+    if (revoked) revoke();
+    try {
+      await assert.rejects(acquireFileLease({ ...input(f), preflight: () => proxy }), error =>
+        error.code === 'FILE_LEASE_CLEANUP' && error.errors[0].code === 'FILE_LEASE_INVALID' &&
+        error.errors[1].code === 'FILE_LEASE_CHANGED');
+      assert.equal(calls, 0); assert.equal(settled, false);
+      assert.deepEqual(entries(f), [...f.lockNames].sort()); assert.equal(handles.size, 0);
+      await assert.rejects(acquireFileLease(input(f)), code('FILE_LEASE_HELD'));
+    } finally { finish(); await work; }
+  });
 });
 
 test('preflight mutation is checked before marker; failed cleanup retains all locks and closes handles', async t => {

@@ -55,7 +55,7 @@ export function configureSagaMonarchVariant(author, variant) {
     const executionFile = join(author, 'bindings/execution.json');
     const execution = JSON.parse(readFileSync(executionFile, 'utf8'));
     if (execution.pipelines.length) throw new Error('variant requires the unmodified empty standalone Run set');
-    execution.pipelines.push({ pipelineId: runId, engine: 'monarch-persistence/0.3.0-dev.r2-20261106-dc168f96fa62',
+    execution.pipelines.push({ pipelineId: runId, engine: 'monarch-persistence/0.3.0',
       module: 'reference.inventory.glue.ManagedCheckRun',
       codec: { id: 'ManagedCodec', version: 'managed-codec-v1', compatibleVersions: ['managed-codec-v1'] },
       types: ['TransactionId', 'ReservationRequest', 'ReservationResult'].map(id => ({ id, implementation: 'reference.inventory.kernel.' + id })),

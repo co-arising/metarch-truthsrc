@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
+import { getEventListeners } from 'node:events';
 import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -186,6 +187,62 @@ test('cancellation while an action is unsettled does not release its lease early
   assert.equal(existsSync(join(f.registry, 'catalog.lock')), false);
 });
 
+test('C2 native cancellation ignores signal own methods and getters without leaking leases', { timeout: 15000 }, async t => {
+  for (const override of ['addEventListener', 'removeEventListener', 'getters'])
+    for (const cancelled of [false, true]) await t.test(override + (cancelled ? ' cancelled' : ' completed'), async t => {
+    const f = fixture(), controller = new AbortController(), handles = new Set(), open = fs.openSync, close = fs.closeSync;
+    t.mock.method(fs, 'openSync', (...args) => {
+      const fd = open(...args); if (String(args[0]).endsWith('catalog.lock')) handles.add(fd); return fd;
+    });
+    t.mock.method(fs, 'closeSync', fd => { handles.delete(fd); return close(fd); });
+    t.after(() => {
+      t.diagnostic('open lease descriptors at completion: ' + handles.size);
+      for (const fd of handles) close(fd);
+    });
+    let calls = 0, enter, finish;
+    const trap = () => { calls++; throw new Error('signal override executed'); };
+    if (override === 'getters') {
+      for (const key of ['addEventListener', 'removeEventListener', 'aborted', 'throwIfAborted', 'reason'])
+        Object.defineProperty(controller.signal, key, { get: trap });
+    } else Object.defineProperty(controller.signal, override, { value: trap });
+    const entered = new Promise(resolve => { enter = resolve; }), pending = new Promise(resolve => { finish = resolve; });
+    const running = runVerification({ ...f.options(), signal: controller.signal, action: async context => {
+      enter(); if (cancelled) await pending;
+      return f.action(context);
+    } });
+    try {
+      if (cancelled) {
+        await Promise.race([entered, running]); controller.abort();
+        assert.ok(existsSync(join(f.registry, 'catalog.lock')));
+        assert.equal(existsSync(join(f.run, 'result.json')), false); finish();
+      }
+      const report = await running;
+      assert.equal(report.passed, !cancelled); assert.equal(calls, 0); assert.equal(handles.size, 0);
+      const result = JSON.parse(readFileSync(join(f.run, 'result.json')));
+      assert.equal(result.leaseReleased, true); assert.equal(result.resourcesStopped, true);
+      assert.equal(result.cancelled, cancelled); assert.equal(existsSync(join(f.registry, 'catalog.lock')), false);
+      assert.equal(getEventListeners(controller.signal, 'abort').length, 0);
+    } finally { finish(); }
+  });
+});
+
+test('C2 invalid signal brands and proxies are rejected before a lease or run directory exists', async () => {
+  let calls = 0;
+  const trap = () => { calls++; throw new Error('signal admission executed a getter or proxy'); };
+  const { proxy, revoke } = Proxy.revocable(new AbortController().signal, {}); revoke();
+  for (const signal of [new Proxy(new AbortController().signal, { get: trap, getPrototypeOf: trap }), proxy,
+    Object.create(AbortSignal.prototype), Object.create(new Proxy(AbortSignal.prototype, { get: trap, getPrototypeOf: trap }))]) {
+    const f = fixture();
+    await assert.rejects(runVerification({ ...f.options(), signal }));
+    assert.equal(existsSync(f.run), false); assert.equal(existsSync(f.registry), false);
+  }
+  const f = fixture(), controller = new AbortController(); controller.abort();
+  Object.defineProperty(controller.signal, 'throwIfAborted', { value: () => {} });
+  Object.defineProperty(controller.signal, 'aborted', { get: trap });
+  await assert.rejects(runVerification({ ...f.options(), signal: controller.signal }));
+  assert.equal(existsSync(f.run), false); assert.equal(existsSync(f.registry), false); assert.equal(calls, 0);
+});
+
 test('metadata and callback maps are captured before awaiting and getters never execute', async () => {
   const f = fixture(); let reads = 0;
   const options = { ...f.options() }; Object.defineProperty(options, 'plan', { enumerable: true, get() { reads++; return f.plan; } });
@@ -257,6 +314,29 @@ test('invalid decorated callback promises settle before lease release', async ()
   assert.ok(existsSync(join(f.registry, 'catalog.lock')));
   finish({}); assert.equal((await result).passed, false);
   assert.equal(existsSync(join(f.registry, 'catalog.lock')), false);
+});
+
+test('C1 proxy action and verifier promises retain ownership without invoking traps', { timeout: 5000 }, async t => {
+  for (const site of ['action', 'verify']) await t.test(site, async t => {
+    const f = fixture(), handles = new Set(), open = fs.openSync, close = fs.closeSync;
+    t.mock.method(fs, 'openSync', (...args) => {
+      const fd = open(...args); if (String(args[0]).endsWith('catalog.lock')) handles.add(fd); return fd;
+    });
+    t.mock.method(fs, 'closeSync', fd => { handles.delete(fd); return close(fd); });
+    let finish, calls = 0, settled = false;
+    const work = new Promise(resolve => { finish = resolve; }); work.then(() => { settled = true; });
+    const trap = () => { calls++; throw new Error('proxy trap executed'); };
+    const proxy = new Proxy(work, { get: trap, getPrototypeOf: trap, ownKeys: trap, getOwnPropertyDescriptor: trap });
+    try {
+      const report = await runVerification({ ...f.options(), ...(site === 'action' ? { action: () => proxy }
+        : { verify: { 'catalog-matches': () => proxy } }) });
+      assert.equal(report.passed, false); assert.equal(calls, 0); assert.equal(settled, false);
+      assert.ok(report.diagnostics.includes('VERIFICATION_RESOURCES_UNVERIFIED'));
+      const result = JSON.parse(readFileSync(join(f.run, 'result.json')));
+      assert.equal(result.resourcesStopped, false); assert.equal(result.leaseReleased, false);
+      assert.ok(existsSync(join(f.registry, 'catalog.lock'))); assert.equal(handles.size, 0);
+    } finally { finish(); await work; }
+  });
 });
 
 test('private evidence permission drift and malformed lease metadata cannot pass static inspection', async () => {

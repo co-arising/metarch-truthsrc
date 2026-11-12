@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "truthsrc.pending-targeted-test-run/v1",
+  "status": "passed",
+  "command": [
+    "/Users/zhongdj/.nvm/versions/node/v22.23.4/bin/node",
+    "--test",
+    "--test-concurrency=1",
+    "test/domain-kernel-jvm-parameters.test.mjs",
+    "test/journal-readside-generation.test.mjs",
+    "test/reference/journal-readside-concurrency.mjs"
+  ],
+  "cwd": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+  "startedAt": "2026-11-11T09:12:32.925Z",
+  "endedAt": "2026-11-11T09:12:56.669Z",
+  "exitCode": 0,
+  "signal": null,
+  "error": null,
+  "stdout": {
+    "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/pending-progress-20261111-jpao_rv0/capability-audit-967a18ca-UV0eUQ/explicit-no-jvm-01.stdout.log",
+    "sha256": "5bf42b9c13f80aec347843abced180de50d004333861079e3c91692742f51350"
+  },
+  "stderr": {
+    "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/pending-progress-20261111-jpao_rv0/capability-audit-967a18ca-UV0eUQ/explicit-no-jvm-01.stderr.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "summary": [
+    "# tests 44",
+    "# suites 0",
+    "# pass 44",
+    "# fail 0",
+    "# cancelled 0",
+    "# skipped 0",
+    "# todo 0",
+    "# duration_ms 23681.486183"
+  ],
+  "inputs": [
+    {
+      "file": "test/domain-kernel-jvm-parameters.test.mjs",
+      "sha256": "46b242454a50c1113888c66a4b747cfde2bd9db3f9997094191c8f2bf6d90015"
+    },
+    {
+      "file": "test/journal-readside-generation.test.mjs",
+      "sha256": "f3516589e77c6e522e883479aef7eff169d492626670a065babeb4317fd2a52f"
+    },
+    {
+      "file": "test/reference/journal-readside-concurrency.mjs",
+      "sha256": "6235825fd03123a1d7749239411d89a0d5520a8fce397448dcbbcc2b743dd9c3"
+    }
+  ],
+  "scope": "Explicit Node-only parameter-slot, journal-generation and concurrency cleanup-predicate tests. No JVM lane invocation, no runtime qualification."
+}

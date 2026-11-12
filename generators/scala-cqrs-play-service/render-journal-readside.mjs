@@ -56,6 +56,7 @@ final class ${name}Projection(journal: ${name}Projection.Journal, bindings: ${na
   private val stop: SharedKillSwitch = KillSwitches.shared(${q(store.id + '-')} + namespace)
   private val allowedKinds: Set[String] = Set(${[...store.streams.map(s => s.kind), ...store.technicalKinds].map(q).join(', ')})
   private val watches = mutable.Map.empty[String, Future[Done]]
+  private val catchUps = mutable.Map.empty[String, Future[Unit]]
   private var discovery: Option[Future[Done]] = None
   private var poll: Option[akka.actor.Cancellable] = None
   private var closed = false
@@ -121,20 +122,37 @@ final class ${name}Projection(journal: ${name}Projection.Journal, bindings: ${na
   def read[A](f: ${name}Repository#Session => A): Future[A] = tracked() {
     Future(repository.read(session => f(session)))
   }
-  def catchUp(pid: String): Future[Unit] = tracked() {
-    val (kind, resource) = identity(pid)
-    initialize().flatMap(_ => Future(repository.read(_.row(pid).map(_.last).getOrElse(0L)))).flatMap { after =>
-      journal.currentEvents(pid, after).flatMap { events =>
-        require(events.forall(_.pid == pid), "foreign PID returned by journal")
-        events.foldLeft(Future.successful(()))((done, event) => done.flatMap(_ => project(event))).flatMap { _ =>
-          val high = events.lastOption.map(_.sequenceNr).getOrElse(after)
-          Future(repository.write { session =>
-            session.ensureRow(pid, kind, resource)
-            session.observe(pid, high)
-          })
+  def catchUp(pid: String): Future[Unit] = synchronized {
+    if (closed) Future.failed(new IllegalStateException("readside is closed"))
+    else catchUps.getOrElse(pid, {
+      // Reserve before starting work: immediate failures must not leave a cached Future.
+      val result = Promise[Unit]()
+      catchUps.put(pid, result.future)
+      val running = tracked() {
+        val (kind, resource) = identity(pid)
+        initialize().flatMap(_ => Future(repository.read(_.row(pid).map(_.last).getOrElse(0L)))).flatMap { after =>
+          journal.currentEvents(pid, after).flatMap { events =>
+            require(events.forall(_.pid == pid), "foreign PID returned by journal")
+            events.foldLeft(Future.successful(()))((done, event) => done.flatMap(_ => project(event))).flatMap { _ =>
+              val high = events.lastOption.map(_.sequenceNr).getOrElse(after)
+              Future(repository.write { session =>
+                session.ensureRow(pid, kind, resource)
+                session.observe(pid, high)
+              })
+            }
+          }
+        }.recoverWith { case NonFatal(error) =>
+          invalidate(pid).recover { case NonFatal(cleanup) =>
+            if (cleanup ne error) error.addSuppressed(cleanup)
+          }.flatMap(_ => Future.failed(error))
         }
       }
-    }
+      running.onComplete { outcome => synchronized {
+        catchUps.remove(pid)
+        result.tryComplete(outcome)
+      } }(ExecutionContext.parasitic)
+      result.future
+    })
   }
   private def invalidate(pid: String): Future[Unit] = Future(repository.write(_.invalidate(pid)))
   private def watch(pid: String): Unit = synchronized {
@@ -164,9 +182,8 @@ final class ${name}Projection(journal: ${name}Projection.Journal, bindings: ${na
         def run(): Unit = ${name}Projection.this.synchronized {
           if (!closed) {
             discover()
-            watches.keys.toVector.foreach { pid =>
-              tracked() { catchUp(pid).recoverWith { case NonFatal(_) => invalidate(pid) } }
-            }
+            // catchUp owns one tracked sample (including failure invalidation) per PID.
+            watches.keys.toVector.foreach(catchUp)
           }
         }
       })(ec))

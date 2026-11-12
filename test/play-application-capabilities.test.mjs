@@ -13,7 +13,7 @@ test('Play application evidence preserves one semantic sample across code qualif
   const { catalog, lock } = loadCatalogue();
   for (const variant of ['main', 'renamed']) {
     const proofs = ['generated', 'compiled', 'behavior'].map(suffix => {
-      const declaration = catalog.observations.find(o => o.id === 'mainline-play-application-' + variant + '-' + suffix);
+      const declaration = catalog.observations.find(o => o.id === 'pending-20261111-jpao-rv0-967a18ca-mainline-play-application-' + variant + '-' + suffix);
       assert(declaration);
       const bytes = fs.readFileSync(path.join(DOC_ROOT, declaration.receipt.file)), receipt = JSON.parse(bytes);
       assert.equal(receipt.artifacts.some(a => a.kind === 'build'), false);
@@ -23,7 +23,7 @@ test('Play application evidence preserves one semantic sample across code qualif
       return validateObservation(catalog, lock, declaration, bytes);
     });
     assert(proofs.every(p => p.passed && p.sample === proofs[0].sample));
-    assert.equal(catalog.observations.find(o => o.id === 'mainline-play-application-' + variant + '-build-generated').level, 'generated');
+    assert.equal(catalog.observations.find(o => o.id === 'pending-20261111-jpao-rv0-967a18ca-mainline-play-application-' + variant + '-build-generated').level, 'generated');
   }
 });
 test('Play public observation actually regenerates and reconciles main source bytes', async t => {
@@ -31,7 +31,7 @@ test('Play public observation actually regenerates and reconciles main source by
   t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
   const { catalog } = loadCatalogue();
   const observed = await observePlayCapability(catalog, { author: fileURLToPath(new URL('../scaffold/play-application-project/', import.meta.url)), destination: directory + '/sample' });
-  const declaration = catalog.observations.find(o => o.id === 'mainline-play-application-main-generated');
+  const declaration = catalog.observations.find(o => o.id === 'pending-20261111-jpao-rv0-967a18ca-mainline-play-application-main-generated');
   const receipt = JSON.parse(fs.readFileSync(path.join(DOC_ROOT, declaration.receipt.file)));
   assert.deepEqual(observed.inputs, receipt.inputs);
   assert.deepEqual(observed.artifacts.filter(a => a.kind !== 'build'), receipt.artifacts);
@@ -47,7 +47,7 @@ test('mainline merge preserves all batch8 observation bytes under their original
     assert(!catalog.observations.some(row => row.id === declaration.id));
     const bytes = fs.readFileSync(path.join(DOC_ROOT, declaration.receipt.file));
     assert(validateObservation(JSON.parse(oldCatalog), JSON.parse(oldLock), declaration, bytes).passed);
-    assert(catalog.observations.some(row => row.id === 'mainline-' + declaration.id));
+    assert(catalog.observations.some(row => row.id === 'pending-20261111-jpao-rv0-967a18ca-mainline-' + declaration.id));
   }
 });
 test('batch8 retains original batch7 observation bytes without treating old identities as current', () => {

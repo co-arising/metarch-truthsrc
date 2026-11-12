@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "truthsrc.pending-targeted-test-run/v1",
+  "status": "passed",
+  "command": [
+    "/Users/zhongdj/.nvm/versions/node/v22.23.4/bin/node",
+    "--test",
+    "--test-concurrency=1",
+    "test/artifact-docs.test.mjs",
+    "test/artifact-docs-coverage.test.mjs",
+    "test/artifact-docs-compat.test.mjs",
+    "test/artifact-docs-generation.test.mjs",
+    "test/artifact-capabilities.test.mjs",
+    "test/artifact-capability-generation.test.mjs",
+    "test/saga-monarch-capabilities.test.mjs",
+    "test/play-application-capabilities.test.mjs"
+  ],
+  "cwd": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+  "startedAt": "2026-11-11T09:09:03.942Z",
+  "endedAt": "2026-11-11T09:11:12.437Z",
+  "exitCode": 0,
+  "signal": null,
+  "error": null,
+  "stdout": {
+    "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/pending-progress-20261111-jpao_rv0/capability-audit-967a18ca-UV0eUQ/targeted-artifact-capabilities-01.stdout.log",
+    "sha256": "f0f61f307358e7d500e0adcd1e023aa885493143695bd163d1227807dbc5f133"
+  },
+  "stderr": {
+    "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/pending-progress-20261111-jpao_rv0/capability-audit-967a18ca-UV0eUQ/targeted-artifact-capabilities-01.stderr.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "summary": [
+    "# tests 75",
+    "# suites 0",
+    "# pass 75",
+    "# fail 0",
+    "# cancelled 0",
+    "# skipped 0",
+    "# todo 0",
+    "# duration_ms 128425.131458"
+  ],
+  "inputs": [
+    {
+      "file": "test/artifact-docs.test.mjs",
+      "sha256": "4755b252ebb1c9951bad0f98b33e41b12cdd427572264807258e67014aa969ef"
+    },
+    {
+      "file": "test/artifact-docs-coverage.test.mjs",
+      "sha256": "ca1b4bd3175e8c4aaf0069f3d5a7f4aeb994969a3e9534ddcfa3af147f8d922a"
+    },
+    {
+      "file": "test/artifact-docs-compat.test.mjs",
+      "sha256": "663a306da3d0b7bf35abb850c6aea5e690f1f62d9c4ecaec257351fe1dccda94"
+    },
+    {
+      "file": "test/artifact-docs-generation.test.mjs",
+      "sha256": "4b7ba286ac10b0824353693cabb5facf25ba82d1afbddbcdf6e949798bf8c0ca"
+    },
+    {
+      "file": "test/artifact-capabilities.test.mjs",
+      "sha256": "035be29c92c8ca5e15cb6994c393329612e298c05e3cc025ef116e4437cb0942"
+    },
+    {
+      "file": "test/artifact-capability-generation.test.mjs",
+      "sha256": "d3c8980933e32069fa0226f6510c188c17f6cb449e3a5d3a00ba48605d461933"
+    },
+    {
+      "file": "test/saga-monarch-capabilities.test.mjs",
+      "sha256": "bc451813fe3087fd10c39c4274e6eb1c3918991fa910a7c84e7af05798c27aa2"
+    },
+    {
+      "file": "test/play-application-capabilities.test.mjs",
+      "sha256": "ea790dc84d64eb82804cdac5449a1a6f7b4687a094e2f240c9e6b8084ee44d36"
+    }
+  ],
+  "scope": "Artifact-docs full targeted and Saga/Play capability suites only; no global Node run or JVM qualification."
+}

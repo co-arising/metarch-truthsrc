@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { EventEmitter } from 'node:events';
+import { EventEmitter, getEventListeners } from 'node:events';
+import fs from 'node:fs';
 import childProcess from 'node:child_process';
 import { syncBuiltinESMExports } from 'node:module';
 import { performance } from 'node:perf_hooks';
@@ -342,6 +343,88 @@ test('null-prototype JSON records compare by serialized fields, not object proto
   const input = Object.assign(Object.create(null), receipt);
   assert.doesNotThrow(() => validateProcessReceipt(input, { base }));
   assert.doesNotThrow(() => validateProcessReceipt(JSON.parse(JSON.stringify(input)), { embedded: input }));
+});
+
+function mockChild(t) {
+  const child = new EventEmitter(); let gone = false;
+  child.pid = 888886; child.stdout = new PassThrough(); child.stderr = new PassThrough(); child.unref = () => {};
+  const finish = (signal = null) => {
+    gone = true; child.stdout.end(); child.stderr.end();
+    child.emit('exit', signal ? null : 0, signal); child.emit('close', signal ? null : 0, signal);
+  };
+  t.mock.method(childProcess, 'spawn', () => { setImmediate(() => child.emit('spawn')); return child; });
+  t.mock.method(process, 'kill', (_pid, signal) => {
+    if (gone) throw Object.assign(new Error('owned group absent'), { code: 'ESRCH' });
+    if (signal !== 0) setImmediate(() => finish(signal));
+    return true;
+  });
+  syncBuiltinESMExports();
+  t.after(() => { t.mock.restoreAll(); syncBuiltinESMExports(); });
+  return { child, finish };
+}
+
+test('C1 proxy callback promises remain unsettled after the child is reaped', options, async t => {
+  const f = fixture(t); mockChild(t);
+  let finish, calls = 0, settled = false;
+  const work = new Promise(resolve => { finish = resolve; }); work.then(() => { settled = true; });
+  const trap = () => { calls++; throw new Error('proxy trap executed'); };
+  const proxy = new Proxy(work, { get: trap, getPrototypeOf: trap, ownKeys: trap, getOwnPropertyDescriptor: trap });
+  try {
+    const receipt = sealed(await runVerifiedProcess({ ...f, onStarted: () => proxy }));
+    assert.equal(receipt.passed, false); assert.equal(receipt.barrier.status, 'failed');
+    assert.equal(receipt.barrier.settled, false); assert.equal(settled, false); assert.equal(calls, 0);
+    assert.equal(receipt.directChildReaped, true); assert.throws(() => inspectProcessEvidence(f.base));
+  } finally { finish(); await work; }
+});
+
+test('C2 signal own methods and getters cannot bypass process cleanup or native cancellation', options, async t => {
+  for (const override of ['addEventListener', 'removeEventListener', 'getters'])
+    for (const cancelled of [false, true]) await t.test(override + (cancelled ? ' cancelled' : ' completed'), async t => {
+    const f = fixture(t), controller = new AbortController(), handles = new Set(), open = fs.openSync, close = fs.closeSync;
+    const listeners = ['SIGINT', 'SIGTERM'].map(name => process.listenerCount(name));
+    t.mock.method(fs, 'openSync', (...args) => {
+      const fd = open(...args); if (args[1] === 'wx' && String(args[0]).startsWith(f.base + '.')) handles.add(fd); return fd;
+    });
+    t.mock.method(fs, 'closeSync', fd => { handles.delete(fd); return close(fd); });
+    const owned = mockChild(t);
+    t.after(() => {
+      t.diagnostic('open process evidence descriptors at completion: ' + handles.size);
+      for (const fd of handles) close(fd);
+    });
+    let calls = 0;
+    const trap = () => { calls++; throw new Error('signal override executed'); };
+    if (override === 'getters') {
+      for (const key of ['addEventListener', 'removeEventListener', 'aborted', 'throwIfAborted', 'reason'])
+        Object.defineProperty(controller.signal, key, { get: trap });
+    } else Object.defineProperty(controller.signal, override, { value: trap });
+    const receipt = sealed(await runVerifiedProcess({ ...f, signal: controller.signal, onStarted: () => {
+      if (cancelled) controller.abort(); else owned.finish();
+    } }));
+    assert.equal(receipt.passed, !cancelled); assert.equal(receipt.cancelled, cancelled ? 'AbortSignal' : null);
+    assert.equal(receipt.directChildClosed, true); assert.equal(receipt.directChildReaped, true);
+    assert.equal(receipt.barrier.settled, true); assert.equal(calls, 0); assert.equal(handles.size, 0);
+    assert.deepEqual(['SIGINT', 'SIGTERM'].map(name => process.listenerCount(name)), listeners);
+    assert.equal(getEventListeners(controller.signal, 'abort').length, 0);
+    assert.equal(owned.child.stdout.listenerCount('data'), 0); assert.equal(owned.child.stderr.listenerCount('data'), 0);
+  });
+});
+
+test('C2 invalid signal brands and proxies cannot reserve evidence or execute traps', options, async t => {
+  let calls = 0;
+  const trap = () => { calls++; throw new Error('signal trap executed'); };
+  const { proxy, revoke } = Proxy.revocable(new AbortController().signal, {}); revoke();
+  for (const signal of [new Proxy(new AbortController().signal, { get: trap, getPrototypeOf: trap }), proxy,
+    Object.create(AbortSignal.prototype), Object.create(new Proxy(AbortSignal.prototype, { get: trap, getPrototypeOf: trap }))]) {
+    const f = fixture(t);
+    await assert.rejects(runVerifiedProcess({ ...f, signal }));
+    assert.equal(calls, 0);
+    for (const suffix of ['.stdout.log', '.stderr.log', '.json']) assert.equal(existsSync(f.base + suffix), false);
+  }
+  const f = fixture(t), controller = new AbortController(); controller.abort();
+  Object.defineProperty(controller.signal, 'aborted', { get: trap });
+  const receipt = sealed(await runVerifiedProcess({ ...f, signal: controller.signal }));
+  assert.equal(receipt.passed, false); assert.equal(receipt.cancelled, 'AbortSignal'); assert.equal(receipt.pid, null);
+  assert.equal(calls, 0);
 });
 
 test('reap exhaustion revokes stream writers before releasing owned evidence descriptors', options, async t => {

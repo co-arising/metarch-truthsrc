@@ -28,7 +28,7 @@ export function configurePureRun(author) {
   const directory = join(author, 'truth/saga-monarch/contexts/inventory/pipelines'); mkdirSync(directory, { recursive: true });
   writeFileSync(join(directory, 'pure-review.pipeline.yaml'), emitAuthorDoc(pipeline), { flag: 'wx' });
   const executionFile = join(author, 'bindings/execution.json'), execution = JSON.parse(readFileSync(executionFile, 'utf8'));
-  execution.pipelines.push({ pipelineId: runId, engine: 'monarch-persistence/0.3.0-dev.r2-20261106-dc168f96fa62',
+  execution.pipelines.push({ pipelineId: runId, engine: 'monarch-persistence/0.3.0',
     module: 'reference.inventory.glue.PureReviewRun', codec: { id: 'PureReviewCodec', version: 'pure-codec-v1', compatibleVersions: ['pure-codec-v1'] },
     types: ['TransactionId', 'ReservationRequest', 'ReservationResult'].map(id => ({ id, implementation: 'reference.inventory.kernel.' + id })),
     ports: pipeline.steps.map(step => ({ id: step.execution.port, implementation: 'reference.inventory.ext.' + step.execution.port + 'Leaf',

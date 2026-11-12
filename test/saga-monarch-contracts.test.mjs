@@ -155,7 +155,7 @@ for (const id of ['inventory..request', '.inventory', 'inventory.', 'inventory/r
 
 test('execution v2 has fixed R2 mode and v2 Saga references while the old schema stays unchanged', () => {
   assert.equal(executionSchema.$defs.pipelineBinding.properties.engine.const, 'monarch-persistence/0.2.1');
-  assert.equal(executionSchemaV2.$defs.pipelineBinding.properties.engine.const, 'monarch-persistence/0.3.0-dev.r2-20261106-dc168f96fa62');
+  assert.equal(executionSchemaV2.$defs.pipelineBinding.properties.engine.const, 'monarch-persistence/0.3.0');
   const compiler = createExecutionCompiler(executionSchemaV2, sagaSchemaV2, compileSagasV2);
   const ir = ok(compiler.compileExecution({ schemaVersion: 'truthsrc/v1', workshop: 'no executable pipelines' },
     { schemaVersion: 'truthsrc.execution-binding/v2', pipelines: [] }));

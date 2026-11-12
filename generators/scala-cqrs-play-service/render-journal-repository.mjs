@@ -160,7 +160,10 @@ ${jdbcSessionTemplate({ owner: name + 'Repository' })}    private def requirePag
       requireWrite()
       val current = row(pid).getOrElse(throw new IllegalArgumentException("stream must exist"))
       require(high >= 0L && high <= current.last, "frontier cannot jump checkpoint")
-      update("UPDATE ${prefix}_stream SET observed_sequence=? WHERE namespace=? AND pid_key=?", if (current.last == high) Some(high) else None, namespace, hash(pid))
+      // An older successful sample cannot revoke a newer observation. Appends and
+      // explicit invalidation still clear freshness independently of this sample.
+      if (current.last == high)
+        update("UPDATE ${prefix}_stream SET observed_sequence=? WHERE namespace=? AND pid_key=?", Some(high), namespace, hash(pid))
       ()
     }
     def invalidate(pid: String): Unit = {

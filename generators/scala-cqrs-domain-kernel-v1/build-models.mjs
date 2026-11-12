@@ -5,6 +5,7 @@ import { owner, reference, refKey, typeRefs } from '../../lib/domain-products/re
 import { validateValue } from '../../lib/domain-products/values.mjs';
 import { checkExactBounds, checkExactShape } from '../../lib/value-products/exact-types.mjs';
 import { buildStateModels } from '../scala-cqrs-domain/build-state-models.mjs';
+import { checkJvmParameters, kernelParameterSlots } from './jvm-parameters.mjs';
 
 const location = at('target');
 const productIds = ['reference-layout', 'exact-value-types', 'exact-value-codecs', 'domain-decision', 'domain-dependencies', 'domain-folds', 'domain-external-events'];
@@ -209,7 +210,12 @@ export function buildModels(raw) {
     return { ref: d.ref, ...n, accessor: n.identifier, type: resolveType(d.valueType, decimal), source: d.source, sources: [d.source] };
   }
   const synthetic = (name, type, s) => ({ ref: null, name, identifier: name, accessor: name, type, source: s, sources: [s] });
+  function checkParameters(fqn, path, fields, source, member = '<init>/copy/apply') {
+    checkJvmParameters(fqn + '.' + member, path, source,
+      fields.reduce((sum, f) => sum + kernelParameterSlots(f.type, f.source), 0));
+  }
   function finishFields(value, fields, initialSources) {
+    checkParameters(value.fqn, value.path, fields, initialSources[0]);
     value.fields = fields;
     value.refs = refsOf([...value.refs, ...fields.flatMap(f => [...(f.ref ? [f.ref] : []), ...typeReferences(f.type)])]);
     value.sources = sourcesOf([...initialSources, ...fields.flatMap(f => f.sources)]);
@@ -270,6 +276,7 @@ export function buildModels(raw) {
     const ruleParams = artifact(d.ref, 'rule-params', 'rule-parameters', pkg + '.domain.invariant.params', h.ruleParams);
     function nested(ref, role, token, container, fields) {
       const n = names(token), s = find(ref).source;
+      checkParameters(container.fqn + '.' + n.identifier, container.path, fields, s);
       return { ref, role, ...n, fqn: container.fqn + '.' + n.identifier, path: container.path, fields, source: s, sources: sourcesOf([s, ...fields.flatMap(f => f.sources)]) };
     }
     protocol.commands = [...h.commands].map(([id, token]) => nested(commandRows.get(id).command, 'command', token, protocol, signature(commandRows.get(id), 'command')));
@@ -287,6 +294,7 @@ export function buildModels(raw) {
     computations.methods = dependency.hosts.flatMap((host, i) => {
       if (!equal(owner(host.command), d.ref)) return [];
       const m = methodNames.get(i), n = names(m.token), parameters = host.inputDependencies.map((r, j) => field(find(r), m.parameters[j]));
+      checkParameters(computations.fqn, computations.path, parameters, host.source, n.identifier);
       return [{ ref: host.id, command: host.command, version: host.version, stableIdentityContract: host.stableIdentityContract,
         ...n, fqn: computations.fqn + '.' + n.identifier, path: computations.path, parameters, outputType: resolveType(host.outputType),
         source: host.source, sources: sourcesOf([host.source, ...parameters.flatMap(p => p.sources)]) }];
