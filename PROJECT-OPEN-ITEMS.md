@@ -1,6 +1,6 @@
 # Project-entry open items
 
-Updated 2026-11-06. These are recorded debts and candidates, not authorization to
+Updated 2026-11-15. These are recorded debts and candidates, not authorization to
 expand the current implementation batch. The 2026-11-04 sections below are retained
 as historical observations; current delivery status is governed by
 [MINIMAL-DELIVERY.md](MINIMAL-DELIVERY.md) and [TEMPLATE-PARITY.md](TEMPLATE-PARITY.md).
@@ -10,6 +10,45 @@ Entity/Behaviors/Bootstrap/local repositories and explicit JDBC projectionStore 
 now been implemented and verified. Their concrete BC compatibility exceptions and
 explicit hand-written ports are in TEMPLATE-PARITY.md; the historical OPEN sections
 below do not override that current status.
+
+## OPEN — business-expression contract closure (2026-11-15)
+
+The user approved assessment/design/planning and the P0 documentation step, not
+compiler implementation. The single design is
+[BUSINESS-EXPRESSION-DESIGN.md](BUSINESS-EXPRESSION-DESIGN.md). Its P0-F1–F5 list
+remains open: precise function/call schemas, durable replay-bundle association,
+external-standard versions/subsets, artifact realization and independent fixtures
+are not yet frozen. No new syntax, runtime certification or capability observation
+is delivered by these documents.
+
+- **DEF-21 — versioned functions, independent BDD and expression resolution.**
+  BC already has `knowledge_base/functions/functions.yaml`, independent cases and
+  specialized test generation; JS legacy has `declaredFunction`/`fn:`. The gap is
+  the current strict chain: signatures and typed cases → versioned call resolution
+  → explicit implementation binding → actual target-runtime tests. Gherkin output
+  (DEF-01) is not an independently authored oracle. Pure declarations alone cannot
+  certify arbitrary implementation purity or replay compatibility.
+- **DEF-22 / DEF-23 — external contracts and owned consumption.** Existing typed
+  ports, external-event producers, artifacts and version checks are not absent.
+  The missing closure connects external datasets/messages/APIs, explicit translation
+  or consumption, contract-version resolution, implementation bindings and concrete
+  ArtifactType realizations. Preserve both command-side ingress and direct owned
+  read-model ingestion; do not fabricate commands to satisfy the existing
+  persistence-readside profile's no-external contract. Outbound API effects and
+  unknown results are distinct from pure functions and local domain facts.
+- **DEF-25 — multiple bounded contexts and cross-context relationships.** The
+  recommended author/project entry currently admits one context; context schema
+  relationships must be empty. This is a separate expression/composition gap, not
+  a claim that all historical context metadata is missing. Preserve qualified
+  identities now; do not silently flatten or expand multi-context generation in
+  the function/integration batches.
+
+The JS strict file-first chain is the proposed implementation owner; BC remains
+an explicit compatibility/parity path, not a second independently maintained
+language. Portal IDs are tracked in the co-arising site's LEDGER; BC S2-104 links
+to this same design. DEF-09/24 business/workshop content and DEF-18 runtime
+retry/backoff/deadline remain separate debts. Existing legacy preservation at
+`86c525e`, bank inputs, generated applications and prior evidence are unchanged.
 
 ## DEFERRED — useful ideas from the information-density alternative review
 
