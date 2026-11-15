@@ -97,7 +97,9 @@ test('public example file snapshot and serialized-memory input admit identical p
   const snapshot = loadTreeSnapshot(tree);
   const fromFiles = compileSnapshot(snapshot);
   const fromMemory = compileSnapshot(clone(snapshot));
-  assert.equal(fromFiles.text, compileTree(tree));
+  const { legacyAuthoring, ...projected } = JSON.parse(compileTree(tree));
+  assert.equal(legacyAuthoring.schemaVersion, 'truthsrc.legacy-author/v1');
+  assert.equal(fromFiles.text, JSON.stringify(projected, null, 2) + '\n');
   assert.equal(fromFiles.text, fromMemory.text);
   const first = admitProducts(request(fromFiles.canonical));
   assert.deepEqual(first.diagnostics, []);

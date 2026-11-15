@@ -151,9 +151,12 @@ test('Legacy trees emit no sagas key, retain canonical bytes/key order, and deco
   const addedNote = join(example, 'inbox', 'eventStorming', 'question-es-how-is-a-distributed-transfer-reconciled--7.yaml');
   assert.ok(existsSync(addedNote));
   rmSync(addedNote);
-  assert.equal(createHash('sha256').update(compileTree(example)).digest('hex'),
+  const { legacyAuthoring, ...projection } = JSON.parse(compileTree(example));
+  assert.equal(legacyAuthoring.schemaVersion, 'truthsrc.legacy-author/v1');
+  assert.equal(createHash('sha256').update(JSON.stringify(projection, null, 2) + '\n').digest('hex'),
     'fb8cc70e8702ea8c52498476e2c69bd39229076b72f26e8dc423cb7719d246e7',
     'pre-Saga legacy example canonical SHA256');
+  assert.equal(roundtrip(example).ok, true);
 });
 
 test('Legacy single-payload emitAtom constructor and parseAtom alias stay unchanged', () => {

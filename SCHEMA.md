@@ -1052,6 +1052,32 @@ back verbatim by decompose. No other canonical content changes shape.
   runs not collapsed, edges kept) — the reference shape the metarch tree's
   filenames were built with.
 
+- For a legacy workshop tree that ordinary decomposition cannot reproduce,
+  `legacyAuthoring` carries `schemaVersion: truthsrc.legacy-author/v1` and the
+  original relative `{file, content}` entries in the derived canonical. It is
+  emitted only for divergent, structurally valid trees with an explicit workshop
+  name; fixed-point trees and the pure parsed-snapshot projection keep their
+  existing bytes. Restoration checks paths, aliases, recognized headers and
+  consumed atoms, then recompiles the carried text and compares the full semantic
+  projection before writing. Original filenames, absent catalog header ids,
+  comments, JSON formatting, UTF-8 BOM bytes and sparse origins are retained, not
+  normalized. Duplicate semantic declarations must agree: emission bindings,
+  formal-policy types and mirrors, supported unique workshop stages, unambiguous
+  workshop identity, and string-array ordering directives are checked before
+  admitting carry. Object-key order does not change semantic agreement; array
+  order and the byte-sensitive projection comparison remain significant.
+  The optional envelope has an 8 MiB UTF-8 path-and-content budget and requires
+  a complete YAML inventory. If the budget is exceeded, inventory is incomplete,
+  or the ordinary inverse is unavailable, compilation still returns its original
+  semantic projection without claiming surface preservation; restoration and
+  roundtrip remain strict. The envelope is not an editable second truth source
+  or execution qualification.
+- Policy-typed inbox/aggregate notes remain `kind: note` at their recorded
+  residence; only formal policy atoms require structured triggers/invokes.
+  A proposed note is never promoted or assigned invented causal bindings by
+  decomposition. Without a recorded residence, historical canonical policy
+  decomposition retains its existing formal-policy default.
+
 With the carry in place, both metarch trees were surface-normalized once
 (regenerated from decompose output; canonical byte-identical before and
 after). Deliberate adoptions in that normalization: subdomainExploration
