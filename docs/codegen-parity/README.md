@@ -1,6 +1,8 @@
 # Scala → JavaScript 生成器内容级对齐
 
-最新状态：**classic `@2` 已承接 F1 并扩展 value-object／invariant-rule／event-handler：两份完整同输入各15文件实际逐字节一致，重复生成、六文件负对照及有界准入均已闭合**，见 [@2实施收口](CLASSIC-V2-IMPLEMENTATION-CLOSEOUT.md) 与 [反馈裁定](CLASSIC-V2-FEEDBACK.md)。旧`@1`仍两套4/4回归；新增目标不改变其四族含义。本包独立核对及汇总元数据补正已闭合；原失败和原plan不改，不用运行包装的PASS替代该复核。最终来源见 [限定验收结论](../../.rounds/classic-cqrs-v2-closeout-20261116-01/final-completion.json)。此前 [F1实施收口](F1-IMPLEMENTATION-CLOSEOUT.md) 保留原四件历史证据。[验收与反馈合同](ACCEPTANCE-AND-FEEDBACK-CONTRACT.md)优先于旧“允许差异”口径；[common 0.2.1消费核对](COMMON-CORE-021-CONSUMPTION.md)替代历史等发布状态。
+最新实施：classic `@3` 在原十五件基础上增加 **aggregate-root／aggregate-factory**，两输入A/B各17/17完整原字节、两次源码确定性、37项有效接口观察和`@1/@2`两输入回归均完成，**独立源码及证据核对已闭合**。见 [@3实施收口](CLASSIC-V3-IMPLEMENTATION-CLOSEOUT.md)、[@3范围](CLASSIC-V3-SCOPE.md) 和 [@3反馈](CLASSIC-V3-FEEDBACK.md)。结论只指non-runnable scaffold；不修改原raw名字、回复或`???`，不迁银行，未提交／推送。
+
+已完成基线：**classic `@2` 已承接 F1 并扩展 value-object／invariant-rule／event-handler：两份完整同输入各15文件实际逐字节一致，重复生成、六文件负对照及有界准入均已闭合**，见 [@2实施收口](CLASSIC-V2-IMPLEMENTATION-CLOSEOUT.md) 与 [反馈裁定](CLASSIC-V2-FEEDBACK.md)。旧`@1`仍两套4/4回归；新增目标不改变其四族含义。本包独立核对及汇总元数据补正已闭合；原失败和原plan不改，不用运行包装的PASS替代该复核。最终来源见 [限定验收结论](../../.rounds/classic-cqrs-v2-closeout-20261116-01/final-completion.json)。此前 [F1实施收口](F1-IMPLEMENTATION-CLOSEOUT.md) 保留原四件历史证据。[验收与反馈合同](ACCEPTANCE-AND-FEEDBACK-CONTRACT.md)优先于旧“允许差异”口径；[common 0.2.1消费核对](COMMON-CORE-021-CONSUMPTION.md)替代历史等发布状态。
 
 此前文档阶段的收口见[CLOSEOUT.md](CLOSEOUT.md)：42份diff、中央分工、F1/F2映射及13项接口仍保留为来源/目标设计材料。F1 raw真实expected与旧curated target不同；原target的4项expectedSha仍为空。四件byte PASS不等108文件全项目、42族全覆盖、银行默认链已切流或业务可运行。
 

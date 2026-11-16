@@ -8,7 +8,7 @@ import { buildEntityBehavior } from '../scala-cqrs-domain/builders/entity-behavi
 import { renderEntityBehavior } from '../scala-cqrs-domain/templates/entity-behavior.mjs';
 
 export const version = '2';
-function buildSourceArtifacts(product, ctx) {
+export function buildSourceArtifacts(product, ctx) {
   const { system, source } = product;
   const family = (key, build, render, kind) => system.domain[key].map((meta, i) => artifact(build(meta, ctx), render, kind,
     { document: source.document, pointer: source.pointer + '/domain/' + key + '/' + i }));
