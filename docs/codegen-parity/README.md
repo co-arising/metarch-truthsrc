@@ -1,6 +1,6 @@
 # Scala → JavaScript 生成器内容级对齐
 
-最新状态：**F1首批已获用户批准实施，并完成真实公开CLI的四件完整文件逐字节验收**，见[F1实施收口](F1-IMPLEMENTATION-CLOSEOUT.md)。baseline重复与timestamp类型变体均4/4 exact；六文件负对照、准入与现役profile保护已观察。[验收与反馈合同](ACCEPTANCE-AND-FEEDBACK-CONTRACT.md)优先于旧“允许差异”口径；[common 0.2.1消费核对](COMMON-CORE-021-CONSUMPTION.md)替代历史等发布状态。
+最新状态：**classic `@2` 已承接 F1 并扩展 value-object／invariant-rule／event-handler：两份完整同输入各15文件实际逐字节一致，重复生成、六文件负对照及有界准入均已闭合**，见 [@2实施收口](CLASSIC-V2-IMPLEMENTATION-CLOSEOUT.md) 与 [反馈裁定](CLASSIC-V2-FEEDBACK.md)。旧`@1`仍两套4/4回归；新增目标不改变其四族含义。本包独立核对及汇总元数据补正已闭合；原失败和原plan不改，不用运行包装的PASS替代该复核。最终来源见 [限定验收结论](../../.rounds/classic-cqrs-v2-closeout-20261116-01/final-completion.json)。此前 [F1实施收口](F1-IMPLEMENTATION-CLOSEOUT.md) 保留原四件历史证据。[验收与反馈合同](ACCEPTANCE-AND-FEEDBACK-CONTRACT.md)优先于旧“允许差异”口径；[common 0.2.1消费核对](COMMON-CORE-021-CONSUMPTION.md)替代历史等发布状态。
 
 此前文档阶段的收口见[CLOSEOUT.md](CLOSEOUT.md)：42份diff、中央分工、F1/F2映射及13项接口仍保留为来源/目标设计材料。F1 raw真实expected与旧curated target不同；原target的4项expectedSha仍为空。四件byte PASS不等108文件全项目、42族全覆盖、银行默认链已切流或业务可运行。
 

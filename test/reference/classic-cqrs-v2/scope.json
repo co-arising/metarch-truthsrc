@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "truthsrc.codegen-parity-scope/v1",
+  "paths": [
+    "app/net/imadz/banking/application/aggregates/CreditBalanceProtocol.scala",
+    "app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceCommandHelpers.scala",
+    "app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceBehaviors.scala",
+    "app/net/imadz/banking/domain/entities/CreditBalanceEntity.scala",
+    "app/net/imadz/banking/domain/values/Money.scala",
+    "app/net/imadz/banking/domain/entities/behaviors/CreditBalanceEventHandler.scala",
+    "app/net/imadz/banking/domain/invariant/AddInitialOnlyOnceRuleRule.scala",
+    "app/net/imadz/banking/domain/invariant/CancelIncomingCreditRuleRule.scala",
+    "app/net/imadz/banking/domain/invariant/CommitIncomingCreditsRuleRule.scala",
+    "app/net/imadz/banking/domain/invariant/DeductFundsRuleRule.scala",
+    "app/net/imadz/banking/domain/invariant/DepositRuleRule.scala",
+    "app/net/imadz/banking/domain/invariant/RecordIncomingCreditsRuleRule.scala",
+    "app/net/imadz/banking/domain/invariant/ReleaseReservedFundsRuleRule.scala",
+    "app/net/imadz/banking/domain/invariant/ReserveFundsRuleRule.scala",
+    "app/net/imadz/banking/domain/invariant/WithdrawRuleRule.scala"
+  ],
+  "expectedOnly": [],
+  "actualOnly": [
+    "anchors.json",
+    "truthsrc.ledger.json"
+  ]
+}

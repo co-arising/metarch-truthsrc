@@ -4,6 +4,7 @@ import { at, detach, equal, fail, object, ProductError, text, unique } from '../
 import { PRODUCT_SET, COMPILER, profileFor } from '../../lib/products/registry.mjs';
 import { validateCodeMappings } from './code-mappings.mjs';
 import { isClassicScaffoldManifest, preservesClassicPlaceholders } from '../../lib/classic-architecture/target.mjs';
+import { isClassicSourceScaffoldManifest, preservesClassicSourcePlaceholders } from '../../lib/classic-architecture/target-v2.mjs';
 
 const VERSION = 'truthsrc.product-generator/v1';
 const entryKeys = ['path', 'content', 'kind', 'deps', 'knowledgeIds', 'productFootprint', 'merge', 'codeMappings'];
@@ -88,7 +89,8 @@ export function planProductSet({ compilation, manifest: rawManifest, options = {
     for (const producer of m.producers) {
       const implementation = producerRegistry?.[producer.id];
       if (!implementation || implementation.version !== producer.version || typeof implementation.produce !== 'function') fail('PRODUCT_PRODUCER', 'exact trusted producer implementation is required');
-      const preservePlaceholders = preservesClassicPlaceholders(m, implementation, products);
+      const preservePlaceholders = preservesClassicPlaceholders(m, implementation, products) ||
+        preservesClassicSourcePlaceholders(m, implementation, products);
       const first = validateEntries(implementation.produce(restricted(products, producer, o)), producer, products, preservePlaceholders);
       const second = validateEntries(implementation.produce(restricted(products, producer, o)), producer, products, preservePlaceholders);
       if (!equal(first, second)) fail('PRODUCT_NONDETERMINISTIC', 'two independently detached source plans differ');
@@ -99,7 +101,7 @@ export function planProductSet({ compilation, manifest: rawManifest, options = {
     if (entries.some(e => e.deps.some(p => !paths.has(p)))) fail('PRODUCT_ENTRY_DEPENDENCY', 'all source entry dependencies must be generated in the same complete plan');
     return copyImmutableData({ plan: { schemaVersion: 'truthsrc.source-product-plan/v1', generator: { id: m.name, version: m.version },
       targetProfile: m.targetProfile, manifest: m,
-      ...(isClassicScaffoldManifest(m) ? { readiness: { level: 'classic-scaffold-only', runnable: false } } : {}),
+      ...(isClassicScaffoldManifest(m) || isClassicSourceScaffoldManifest(m) ? { readiness: { level: 'classic-scaffold-only', runnable: false } } : {}),
       entries: [...entries].sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0) }, diagnostics: [] });
   } catch (error) {
     if (error instanceof ProductError) return copyImmutableData({ plan: null, diagnostics: [error.diagnostic] });

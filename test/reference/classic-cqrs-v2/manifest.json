@@ -1,0 +1,890 @@
+{
+  "schemaVersion": "truthsrc.classic-cqrs-v2-assets/v1",
+  "pathBase": "repository root",
+  "self": "test/reference/classic-cqrs-v2/manifest.json",
+  "selfExcluded": true,
+  "fileCountExcludingSelf": 35,
+  "fileCountIncludingSelf": 36,
+  "bytesExcludingSelf": 237738,
+  "copiedFileCount": 30,
+  "copiedOriginalByteCount": 72067,
+  "copiedRawBytesByVariant": {
+    "baseline": 36034,
+    "timestamp-int": 36033
+  },
+  "comparisonRootFilesPerVariant": 15,
+  "files": [
+    {
+      "path": "test/fixtures/classic-cqrs-v2/request-baseline.json",
+      "bytes": 589,
+      "sha256": "e9f166903ceef915060598cfac16e3e7ba15f991ae022c4443a6b01525f322c4",
+      "category": "v2-request"
+    },
+    {
+      "path": "test/fixtures/classic-cqrs-v2/request-timestamp-int.json",
+      "bytes": 594,
+      "sha256": "f057a5f9829c4e8ff0b4dd5a9eef1152561fb66117bbaf9ca3f2a191802a671a",
+      "category": "v2-request"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/README.md",
+      "bytes": 8821,
+      "sha256": "e1c87b9a974338bf30350c6664f466ef6968f73d466651c4e192c54fbcefb4c3",
+      "category": "readme"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/application/aggregates/CreditBalanceProtocol.scala",
+      "bytes": 3675,
+      "sha256": "a87d6eb810e696d0fd0ed6a021038eb953ccf30ae1db0aee9c437f4b53504a50",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceBehaviors.scala",
+      "bytes": 4989,
+      "sha256": "be1747471aaa7e313e6d4e7995d980294035d73933dece0bdb67cc996f2564bf",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceCommandHelpers.scala",
+      "bytes": 10155,
+      "sha256": "d31fc1c7b1236320786ad29023710fe10c079294473e146bdf810a5439405d0e",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/domain/entities/CreditBalanceEntity.scala",
+      "bytes": 1375,
+      "sha256": "a7a4e3e2566e40d93b54cab3c760ce0cf5787d917d19fe8bbcb9739f825d64a0",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/domain/entities/behaviors/CreditBalanceEventHandler.scala",
+      "bytes": 3019,
+      "sha256": "5078bc34dffde204ac4fb7e1e0f8eeffd05878e004a9432678c0e8c92c327cd3",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/domain/invariant/AddInitialOnlyOnceRuleRule.scala",
+      "bytes": 1397,
+      "sha256": "39910486b541db52c5e0bb74a497b2b118a322e0f0a32b4192a562ca1d206564",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/domain/invariant/CancelIncomingCreditRuleRule.scala",
+      "bytes": 1338,
+      "sha256": "18398519efe34883c9e81e9bf9e97847b7fc6e02355a81cb096b34e9e73f360c",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/domain/invariant/CommitIncomingCreditsRuleRule.scala",
+      "bytes": 1339,
+      "sha256": "e31938a85bd1536902f526872638292bcd6b76b61aefbbcdef9bf33f855c6a55",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/domain/invariant/DeductFundsRuleRule.scala",
+      "bytes": 1347,
+      "sha256": "1dc67d3709d16e04b03128eb8c044b17d3b1be6bfd4df05133c0e75016566bc0",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/domain/invariant/DepositRuleRule.scala",
+      "bytes": 1349,
+      "sha256": "8e012d69181b328a588c09acbbf6b6759f4f7fd84a782e0288b939bc2147bb91",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/domain/invariant/RecordIncomingCreditsRuleRule.scala",
+      "bytes": 1414,
+      "sha256": "51701862924110ac8c1e4b98a0232573766c03a3a2f1db7999bbde90c9860cc3",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/domain/invariant/ReleaseReservedFundsRuleRule.scala",
+      "bytes": 1356,
+      "sha256": "848ec6e5314cba319ad680f6c740a151ca163be645e2999d38a7dacffc6c5943",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/domain/invariant/ReserveFundsRuleRule.scala",
+      "bytes": 1527,
+      "sha256": "c6cf6a3e2906783e299d6dcc24674ffd74902c4eee2f0c131a29a6d87d769892",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/domain/invariant/WithdrawRuleRule.scala",
+      "bytes": 1393,
+      "sha256": "86e4009a3abb3b2963239371b4cc2b4ec6687c766328fb83db7838860a04fbc4",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/domain/values/Money.scala",
+      "bytes": 361,
+      "sha256": "3c04c8db45c656ea8d395efe76229e5b10cb023dd1d5469dbdb7b55d5692354c",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/provenance.json",
+      "bytes": 154333,
+      "sha256": "c6886aca7762bbd032ecdfef06eac6872e76a3293be9afba0035b0315904539d",
+      "category": "provenance"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/scope.json",
+      "bytes": 1334,
+      "sha256": "d028eca4df315675846fb26f2d741038aff98981661fdc0e5a4522c74cd21564",
+      "category": "parity-scope"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/application/aggregates/CreditBalanceProtocol.scala",
+      "bytes": 3675,
+      "sha256": "a87d6eb810e696d0fd0ed6a021038eb953ccf30ae1db0aee9c437f4b53504a50",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceBehaviors.scala",
+      "bytes": 4989,
+      "sha256": "be1747471aaa7e313e6d4e7995d980294035d73933dece0bdb67cc996f2564bf",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceCommandHelpers.scala",
+      "bytes": 10155,
+      "sha256": "d31fc1c7b1236320786ad29023710fe10c079294473e146bdf810a5439405d0e",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/domain/entities/CreditBalanceEntity.scala",
+      "bytes": 1374,
+      "sha256": "3d47dfc6bb177313c6d1a3e36390c94bd3d66b7b813e9723a0ed8948abb48a54",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/domain/entities/behaviors/CreditBalanceEventHandler.scala",
+      "bytes": 3019,
+      "sha256": "5078bc34dffde204ac4fb7e1e0f8eeffd05878e004a9432678c0e8c92c327cd3",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/domain/invariant/AddInitialOnlyOnceRuleRule.scala",
+      "bytes": 1397,
+      "sha256": "39910486b541db52c5e0bb74a497b2b118a322e0f0a32b4192a562ca1d206564",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/domain/invariant/CancelIncomingCreditRuleRule.scala",
+      "bytes": 1338,
+      "sha256": "18398519efe34883c9e81e9bf9e97847b7fc6e02355a81cb096b34e9e73f360c",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/domain/invariant/CommitIncomingCreditsRuleRule.scala",
+      "bytes": 1339,
+      "sha256": "e31938a85bd1536902f526872638292bcd6b76b61aefbbcdef9bf33f855c6a55",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/domain/invariant/DeductFundsRuleRule.scala",
+      "bytes": 1347,
+      "sha256": "1dc67d3709d16e04b03128eb8c044b17d3b1be6bfd4df05133c0e75016566bc0",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/domain/invariant/DepositRuleRule.scala",
+      "bytes": 1349,
+      "sha256": "8e012d69181b328a588c09acbbf6b6759f4f7fd84a782e0288b939bc2147bb91",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/domain/invariant/RecordIncomingCreditsRuleRule.scala",
+      "bytes": 1414,
+      "sha256": "51701862924110ac8c1e4b98a0232573766c03a3a2f1db7999bbde90c9860cc3",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/domain/invariant/ReleaseReservedFundsRuleRule.scala",
+      "bytes": 1356,
+      "sha256": "848ec6e5314cba319ad680f6c740a151ca163be645e2999d38a7dacffc6c5943",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/domain/invariant/ReserveFundsRuleRule.scala",
+      "bytes": 1527,
+      "sha256": "c6cf6a3e2906783e299d6dcc24674ffd74902c4eee2f0c131a29a6d87d769892",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/domain/invariant/WithdrawRuleRule.scala",
+      "bytes": 1393,
+      "sha256": "86e4009a3abb3b2963239371b4cc2b4ec6687c766328fb83db7838860a04fbc4",
+      "category": "complete-original-scala-bytes"
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/domain/values/Money.scala",
+      "bytes": 361,
+      "sha256": "3c04c8db45c656ea8d395efe76229e5b10cb023dd1d5469dbdb7b55d5692354c",
+      "category": "complete-original-scala-bytes"
+    }
+  ],
+  "copyOperations": [
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/application/aggregates/CreditBalanceProtocol.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a/app/net/imadz/banking/application/aggregates/CreditBalanceProtocol.scala",
+        "bytes": 3675,
+        "sha256": "a87d6eb810e696d0fd0ed6a021038eb953ccf30ae1db0aee9c437f4b53504a50"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a.manifest.json",
+        "bytes": 43299,
+        "sha256": "d7e4405ea8d44e84d3fd3c95e3c245fdd85bb0385166c42c3a10225d3b89810b"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/application/aggregates/CreditBalanceProtocol.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-b.manifest.json",
+        "bytes": 43299,
+        "sha256": "c17a824db6f1e90b6aa87ed99bab1a60f3f2f9484864fb80c1edbce306d5f446"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceCommandHelpers.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a/app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceCommandHelpers.scala",
+        "bytes": 10155,
+        "sha256": "d31fc1c7b1236320786ad29023710fe10c079294473e146bdf810a5439405d0e"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a.manifest.json",
+        "bytes": 43299,
+        "sha256": "d7e4405ea8d44e84d3fd3c95e3c245fdd85bb0385166c42c3a10225d3b89810b"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceCommandHelpers.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-b.manifest.json",
+        "bytes": 43299,
+        "sha256": "c17a824db6f1e90b6aa87ed99bab1a60f3f2f9484864fb80c1edbce306d5f446"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceBehaviors.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a/app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceBehaviors.scala",
+        "bytes": 4989,
+        "sha256": "be1747471aaa7e313e6d4e7995d980294035d73933dece0bdb67cc996f2564bf"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a.manifest.json",
+        "bytes": 43299,
+        "sha256": "d7e4405ea8d44e84d3fd3c95e3c245fdd85bb0385166c42c3a10225d3b89810b"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceBehaviors.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-b.manifest.json",
+        "bytes": 43299,
+        "sha256": "c17a824db6f1e90b6aa87ed99bab1a60f3f2f9484864fb80c1edbce306d5f446"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/domain/entities/CreditBalanceEntity.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a/app/net/imadz/banking/domain/entities/CreditBalanceEntity.scala",
+        "bytes": 1375,
+        "sha256": "a7a4e3e2566e40d93b54cab3c760ce0cf5787d917d19fe8bbcb9739f825d64a0"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a.manifest.json",
+        "bytes": 43299,
+        "sha256": "d7e4405ea8d44e84d3fd3c95e3c245fdd85bb0385166c42c3a10225d3b89810b"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/domain/entities/CreditBalanceEntity.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-b.manifest.json",
+        "bytes": 43299,
+        "sha256": "c17a824db6f1e90b6aa87ed99bab1a60f3f2f9484864fb80c1edbce306d5f446"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/domain/values/Money.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a/app/net/imadz/banking/domain/values/Money.scala",
+        "bytes": 361,
+        "sha256": "3c04c8db45c656ea8d395efe76229e5b10cb023dd1d5469dbdb7b55d5692354c"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a.manifest.json",
+        "bytes": 43299,
+        "sha256": "d7e4405ea8d44e84d3fd3c95e3c245fdd85bb0385166c42c3a10225d3b89810b"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/domain/values/Money.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-b.manifest.json",
+        "bytes": 43299,
+        "sha256": "c17a824db6f1e90b6aa87ed99bab1a60f3f2f9484864fb80c1edbce306d5f446"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/domain/entities/behaviors/CreditBalanceEventHandler.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a/app/net/imadz/banking/domain/entities/behaviors/CreditBalanceEventHandler.scala",
+        "bytes": 3019,
+        "sha256": "5078bc34dffde204ac4fb7e1e0f8eeffd05878e004a9432678c0e8c92c327cd3"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a.manifest.json",
+        "bytes": 43299,
+        "sha256": "d7e4405ea8d44e84d3fd3c95e3c245fdd85bb0385166c42c3a10225d3b89810b"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/domain/entities/behaviors/CreditBalanceEventHandler.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-b.manifest.json",
+        "bytes": 43299,
+        "sha256": "c17a824db6f1e90b6aa87ed99bab1a60f3f2f9484864fb80c1edbce306d5f446"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/domain/invariant/AddInitialOnlyOnceRuleRule.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a/app/net/imadz/banking/domain/invariant/AddInitialOnlyOnceRuleRule.scala",
+        "bytes": 1397,
+        "sha256": "39910486b541db52c5e0bb74a497b2b118a322e0f0a32b4192a562ca1d206564"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a.manifest.json",
+        "bytes": 43299,
+        "sha256": "d7e4405ea8d44e84d3fd3c95e3c245fdd85bb0385166c42c3a10225d3b89810b"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/domain/invariant/AddInitialOnlyOnceRuleRule.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-b.manifest.json",
+        "bytes": 43299,
+        "sha256": "c17a824db6f1e90b6aa87ed99bab1a60f3f2f9484864fb80c1edbce306d5f446"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/domain/invariant/CancelIncomingCreditRuleRule.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a/app/net/imadz/banking/domain/invariant/CancelIncomingCreditRuleRule.scala",
+        "bytes": 1338,
+        "sha256": "18398519efe34883c9e81e9bf9e97847b7fc6e02355a81cb096b34e9e73f360c"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a.manifest.json",
+        "bytes": 43299,
+        "sha256": "d7e4405ea8d44e84d3fd3c95e3c245fdd85bb0385166c42c3a10225d3b89810b"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/domain/invariant/CancelIncomingCreditRuleRule.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-b.manifest.json",
+        "bytes": 43299,
+        "sha256": "c17a824db6f1e90b6aa87ed99bab1a60f3f2f9484864fb80c1edbce306d5f446"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/domain/invariant/CommitIncomingCreditsRuleRule.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a/app/net/imadz/banking/domain/invariant/CommitIncomingCreditsRuleRule.scala",
+        "bytes": 1339,
+        "sha256": "e31938a85bd1536902f526872638292bcd6b76b61aefbbcdef9bf33f855c6a55"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a.manifest.json",
+        "bytes": 43299,
+        "sha256": "d7e4405ea8d44e84d3fd3c95e3c245fdd85bb0385166c42c3a10225d3b89810b"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/domain/invariant/CommitIncomingCreditsRuleRule.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-b.manifest.json",
+        "bytes": 43299,
+        "sha256": "c17a824db6f1e90b6aa87ed99bab1a60f3f2f9484864fb80c1edbce306d5f446"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/domain/invariant/DeductFundsRuleRule.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a/app/net/imadz/banking/domain/invariant/DeductFundsRuleRule.scala",
+        "bytes": 1347,
+        "sha256": "1dc67d3709d16e04b03128eb8c044b17d3b1be6bfd4df05133c0e75016566bc0"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a.manifest.json",
+        "bytes": 43299,
+        "sha256": "d7e4405ea8d44e84d3fd3c95e3c245fdd85bb0385166c42c3a10225d3b89810b"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/domain/invariant/DeductFundsRuleRule.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-b.manifest.json",
+        "bytes": 43299,
+        "sha256": "c17a824db6f1e90b6aa87ed99bab1a60f3f2f9484864fb80c1edbce306d5f446"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/domain/invariant/DepositRuleRule.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a/app/net/imadz/banking/domain/invariant/DepositRuleRule.scala",
+        "bytes": 1349,
+        "sha256": "8e012d69181b328a588c09acbbf6b6759f4f7fd84a782e0288b939bc2147bb91"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a.manifest.json",
+        "bytes": 43299,
+        "sha256": "d7e4405ea8d44e84d3fd3c95e3c245fdd85bb0385166c42c3a10225d3b89810b"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/domain/invariant/DepositRuleRule.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-b.manifest.json",
+        "bytes": 43299,
+        "sha256": "c17a824db6f1e90b6aa87ed99bab1a60f3f2f9484864fb80c1edbce306d5f446"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/domain/invariant/RecordIncomingCreditsRuleRule.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a/app/net/imadz/banking/domain/invariant/RecordIncomingCreditsRuleRule.scala",
+        "bytes": 1414,
+        "sha256": "51701862924110ac8c1e4b98a0232573766c03a3a2f1db7999bbde90c9860cc3"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a.manifest.json",
+        "bytes": 43299,
+        "sha256": "d7e4405ea8d44e84d3fd3c95e3c245fdd85bb0385166c42c3a10225d3b89810b"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/domain/invariant/RecordIncomingCreditsRuleRule.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-b.manifest.json",
+        "bytes": 43299,
+        "sha256": "c17a824db6f1e90b6aa87ed99bab1a60f3f2f9484864fb80c1edbce306d5f446"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/domain/invariant/ReleaseReservedFundsRuleRule.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a/app/net/imadz/banking/domain/invariant/ReleaseReservedFundsRuleRule.scala",
+        "bytes": 1356,
+        "sha256": "848ec6e5314cba319ad680f6c740a151ca163be645e2999d38a7dacffc6c5943"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a.manifest.json",
+        "bytes": 43299,
+        "sha256": "d7e4405ea8d44e84d3fd3c95e3c245fdd85bb0385166c42c3a10225d3b89810b"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/domain/invariant/ReleaseReservedFundsRuleRule.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-b.manifest.json",
+        "bytes": 43299,
+        "sha256": "c17a824db6f1e90b6aa87ed99bab1a60f3f2f9484864fb80c1edbce306d5f446"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/domain/invariant/ReserveFundsRuleRule.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a/app/net/imadz/banking/domain/invariant/ReserveFundsRuleRule.scala",
+        "bytes": 1527,
+        "sha256": "c6cf6a3e2906783e299d6dcc24674ffd74902c4eee2f0c131a29a6d87d769892"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a.manifest.json",
+        "bytes": 43299,
+        "sha256": "d7e4405ea8d44e84d3fd3c95e3c245fdd85bb0385166c42c3a10225d3b89810b"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/domain/invariant/ReserveFundsRuleRule.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-b.manifest.json",
+        "bytes": 43299,
+        "sha256": "c17a824db6f1e90b6aa87ed99bab1a60f3f2f9484864fb80c1edbce306d5f446"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/baseline/app/net/imadz/banking/domain/invariant/WithdrawRuleRule.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a/app/net/imadz/banking/domain/invariant/WithdrawRuleRule.scala",
+        "bytes": 1393,
+        "sha256": "86e4009a3abb3b2963239371b4cc2b4ec6687c766328fb83db7838860a04fbc4"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-a.manifest.json",
+        "bytes": 43299,
+        "sha256": "d7e4405ea8d44e84d3fd3c95e3c245fdd85bb0385166c42c3a10225d3b89810b"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/domain/invariant/WithdrawRuleRule.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/reference/raw-b.manifest.json",
+        "bytes": 43299,
+        "sha256": "c17a824db6f1e90b6aa87ed99bab1a60f3f2f9484864fb80c1edbce306d5f446"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/application/aggregates/CreditBalanceProtocol.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw/app/net/imadz/banking/application/aggregates/CreditBalanceProtocol.scala",
+        "bytes": 3675,
+        "sha256": "a87d6eb810e696d0fd0ed6a021038eb953ccf30ae1db0aee9c437f4b53504a50"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw.manifest.json",
+        "bytes": 43179,
+        "sha256": "dab2d7f9f9adb1e7044a30cd17b96f2b8ad792a04641c8efae920c3b0fd73b71"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/application/aggregates/CreditBalanceProtocol.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw2.manifest.json",
+        "bytes": 43292,
+        "sha256": "d1647500ea0673e9bfe3482a58cb8a332ea57b199492d8b5be7f85cfd6659c47"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceCommandHelpers.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw/app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceCommandHelpers.scala",
+        "bytes": 10155,
+        "sha256": "d31fc1c7b1236320786ad29023710fe10c079294473e146bdf810a5439405d0e"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw.manifest.json",
+        "bytes": 43179,
+        "sha256": "dab2d7f9f9adb1e7044a30cd17b96f2b8ad792a04641c8efae920c3b0fd73b71"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceCommandHelpers.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw2.manifest.json",
+        "bytes": 43292,
+        "sha256": "d1647500ea0673e9bfe3482a58cb8a332ea57b199492d8b5be7f85cfd6659c47"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceBehaviors.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw/app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceBehaviors.scala",
+        "bytes": 4989,
+        "sha256": "be1747471aaa7e313e6d4e7995d980294035d73933dece0bdb67cc996f2564bf"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw.manifest.json",
+        "bytes": 43179,
+        "sha256": "dab2d7f9f9adb1e7044a30cd17b96f2b8ad792a04641c8efae920c3b0fd73b71"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceBehaviors.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw2.manifest.json",
+        "bytes": 43292,
+        "sha256": "d1647500ea0673e9bfe3482a58cb8a332ea57b199492d8b5be7f85cfd6659c47"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/domain/entities/CreditBalanceEntity.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw/app/net/imadz/banking/domain/entities/CreditBalanceEntity.scala",
+        "bytes": 1374,
+        "sha256": "3d47dfc6bb177313c6d1a3e36390c94bd3d66b7b813e9723a0ed8948abb48a54"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw.manifest.json",
+        "bytes": 43179,
+        "sha256": "dab2d7f9f9adb1e7044a30cd17b96f2b8ad792a04641c8efae920c3b0fd73b71"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/domain/entities/CreditBalanceEntity.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw2.manifest.json",
+        "bytes": 43292,
+        "sha256": "d1647500ea0673e9bfe3482a58cb8a332ea57b199492d8b5be7f85cfd6659c47"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/domain/values/Money.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw/app/net/imadz/banking/domain/values/Money.scala",
+        "bytes": 361,
+        "sha256": "3c04c8db45c656ea8d395efe76229e5b10cb023dd1d5469dbdb7b55d5692354c"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw.manifest.json",
+        "bytes": 43179,
+        "sha256": "dab2d7f9f9adb1e7044a30cd17b96f2b8ad792a04641c8efae920c3b0fd73b71"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/domain/values/Money.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw2.manifest.json",
+        "bytes": 43292,
+        "sha256": "d1647500ea0673e9bfe3482a58cb8a332ea57b199492d8b5be7f85cfd6659c47"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/domain/entities/behaviors/CreditBalanceEventHandler.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw/app/net/imadz/banking/domain/entities/behaviors/CreditBalanceEventHandler.scala",
+        "bytes": 3019,
+        "sha256": "5078bc34dffde204ac4fb7e1e0f8eeffd05878e004a9432678c0e8c92c327cd3"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw.manifest.json",
+        "bytes": 43179,
+        "sha256": "dab2d7f9f9adb1e7044a30cd17b96f2b8ad792a04641c8efae920c3b0fd73b71"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/domain/entities/behaviors/CreditBalanceEventHandler.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw2.manifest.json",
+        "bytes": 43292,
+        "sha256": "d1647500ea0673e9bfe3482a58cb8a332ea57b199492d8b5be7f85cfd6659c47"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/domain/invariant/AddInitialOnlyOnceRuleRule.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw/app/net/imadz/banking/domain/invariant/AddInitialOnlyOnceRuleRule.scala",
+        "bytes": 1397,
+        "sha256": "39910486b541db52c5e0bb74a497b2b118a322e0f0a32b4192a562ca1d206564"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw.manifest.json",
+        "bytes": 43179,
+        "sha256": "dab2d7f9f9adb1e7044a30cd17b96f2b8ad792a04641c8efae920c3b0fd73b71"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/domain/invariant/AddInitialOnlyOnceRuleRule.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw2.manifest.json",
+        "bytes": 43292,
+        "sha256": "d1647500ea0673e9bfe3482a58cb8a332ea57b199492d8b5be7f85cfd6659c47"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/domain/invariant/CancelIncomingCreditRuleRule.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw/app/net/imadz/banking/domain/invariant/CancelIncomingCreditRuleRule.scala",
+        "bytes": 1338,
+        "sha256": "18398519efe34883c9e81e9bf9e97847b7fc6e02355a81cb096b34e9e73f360c"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw.manifest.json",
+        "bytes": 43179,
+        "sha256": "dab2d7f9f9adb1e7044a30cd17b96f2b8ad792a04641c8efae920c3b0fd73b71"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/domain/invariant/CancelIncomingCreditRuleRule.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw2.manifest.json",
+        "bytes": 43292,
+        "sha256": "d1647500ea0673e9bfe3482a58cb8a332ea57b199492d8b5be7f85cfd6659c47"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/domain/invariant/CommitIncomingCreditsRuleRule.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw/app/net/imadz/banking/domain/invariant/CommitIncomingCreditsRuleRule.scala",
+        "bytes": 1339,
+        "sha256": "e31938a85bd1536902f526872638292bcd6b76b61aefbbcdef9bf33f855c6a55"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw.manifest.json",
+        "bytes": 43179,
+        "sha256": "dab2d7f9f9adb1e7044a30cd17b96f2b8ad792a04641c8efae920c3b0fd73b71"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/domain/invariant/CommitIncomingCreditsRuleRule.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw2.manifest.json",
+        "bytes": 43292,
+        "sha256": "d1647500ea0673e9bfe3482a58cb8a332ea57b199492d8b5be7f85cfd6659c47"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/domain/invariant/DeductFundsRuleRule.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw/app/net/imadz/banking/domain/invariant/DeductFundsRuleRule.scala",
+        "bytes": 1347,
+        "sha256": "1dc67d3709d16e04b03128eb8c044b17d3b1be6bfd4df05133c0e75016566bc0"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw.manifest.json",
+        "bytes": 43179,
+        "sha256": "dab2d7f9f9adb1e7044a30cd17b96f2b8ad792a04641c8efae920c3b0fd73b71"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/domain/invariant/DeductFundsRuleRule.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw2.manifest.json",
+        "bytes": 43292,
+        "sha256": "d1647500ea0673e9bfe3482a58cb8a332ea57b199492d8b5be7f85cfd6659c47"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/domain/invariant/DepositRuleRule.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw/app/net/imadz/banking/domain/invariant/DepositRuleRule.scala",
+        "bytes": 1349,
+        "sha256": "8e012d69181b328a588c09acbbf6b6759f4f7fd84a782e0288b939bc2147bb91"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw.manifest.json",
+        "bytes": 43179,
+        "sha256": "dab2d7f9f9adb1e7044a30cd17b96f2b8ad792a04641c8efae920c3b0fd73b71"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/domain/invariant/DepositRuleRule.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw2.manifest.json",
+        "bytes": 43292,
+        "sha256": "d1647500ea0673e9bfe3482a58cb8a332ea57b199492d8b5be7f85cfd6659c47"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/domain/invariant/RecordIncomingCreditsRuleRule.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw/app/net/imadz/banking/domain/invariant/RecordIncomingCreditsRuleRule.scala",
+        "bytes": 1414,
+        "sha256": "51701862924110ac8c1e4b98a0232573766c03a3a2f1db7999bbde90c9860cc3"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw.manifest.json",
+        "bytes": 43179,
+        "sha256": "dab2d7f9f9adb1e7044a30cd17b96f2b8ad792a04641c8efae920c3b0fd73b71"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/domain/invariant/RecordIncomingCreditsRuleRule.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw2.manifest.json",
+        "bytes": 43292,
+        "sha256": "d1647500ea0673e9bfe3482a58cb8a332ea57b199492d8b5be7f85cfd6659c47"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/domain/invariant/ReleaseReservedFundsRuleRule.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw/app/net/imadz/banking/domain/invariant/ReleaseReservedFundsRuleRule.scala",
+        "bytes": 1356,
+        "sha256": "848ec6e5314cba319ad680f6c740a151ca163be645e2999d38a7dacffc6c5943"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw.manifest.json",
+        "bytes": 43179,
+        "sha256": "dab2d7f9f9adb1e7044a30cd17b96f2b8ad792a04641c8efae920c3b0fd73b71"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/domain/invariant/ReleaseReservedFundsRuleRule.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw2.manifest.json",
+        "bytes": 43292,
+        "sha256": "d1647500ea0673e9bfe3482a58cb8a332ea57b199492d8b5be7f85cfd6659c47"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/domain/invariant/ReserveFundsRuleRule.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw/app/net/imadz/banking/domain/invariant/ReserveFundsRuleRule.scala",
+        "bytes": 1527,
+        "sha256": "c6cf6a3e2906783e299d6dcc24674ffd74902c4eee2f0c131a29a6d87d769892"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw.manifest.json",
+        "bytes": 43179,
+        "sha256": "dab2d7f9f9adb1e7044a30cd17b96f2b8ad792a04641c8efae920c3b0fd73b71"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/domain/invariant/ReserveFundsRuleRule.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw2.manifest.json",
+        "bytes": 43292,
+        "sha256": "d1647500ea0673e9bfe3482a58cb8a332ea57b199492d8b5be7f85cfd6659c47"
+      },
+      "completeByteCopy": true
+    },
+    {
+      "path": "test/reference/classic-cqrs-v2/timestamp-int/app/net/imadz/banking/domain/invariant/WithdrawRuleRule.scala",
+      "source": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw/app/net/imadz/banking/domain/invariant/WithdrawRuleRule.scala",
+        "bytes": 1393,
+        "sha256": "86e4009a3abb3b2963239371b4cc2b4ec6687c766328fb83db7838860a04fbc4"
+      },
+      "sourceManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw.manifest.json",
+        "bytes": 43179,
+        "sha256": "dab2d7f9f9adb1e7044a30cd17b96f2b8ad792a04641c8efae920c3b0fd73b71"
+      },
+      "manifestRelativePath": "app/net/imadz/banking/domain/invariant/WithdrawRuleRule.scala",
+      "pairedRepeatManifest": {
+        "path": ".rounds/f1-byte-parity-20261116/variant/raw2.manifest.json",
+        "bytes": 43292,
+        "sha256": "d1647500ea0673e9bfe3482a58cb8a332ea57b199492d8b5be7f85cfd6659c47"
+      },
+      "completeByteCopy": true
+    }
+  ],
+  "originalRawManifests": [
+    {
+      "path": ".rounds/f1-byte-parity-20261116/reference/raw-a.manifest.json",
+      "bytes": 43299,
+      "sha256": "d7e4405ea8d44e84d3fd3c95e3c245fdd85bb0385166c42c3a10225d3b89810b"
+    },
+    {
+      "path": ".rounds/f1-byte-parity-20261116/reference/raw-b.manifest.json",
+      "bytes": 43299,
+      "sha256": "c17a824db6f1e90b6aa87ed99bab1a60f3f2f9484864fb80c1edbce306d5f446"
+    },
+    {
+      "path": ".rounds/f1-byte-parity-20261116/variant/raw.manifest.json",
+      "bytes": 43179,
+      "sha256": "dab2d7f9f9adb1e7044a30cd17b96f2b8ad792a04641c8efae920c3b0fd73b71"
+    },
+    {
+      "path": ".rounds/f1-byte-parity-20261116/variant/raw2.manifest.json",
+      "bytes": 43292,
+      "sha256": "d1647500ea0673e9bfe3482a58cb8a332ea57b199492d8b5be7f85cfd6659c47"
+    }
+  ],
+  "readOnlyReferencedInputs": [
+    {
+      "path": "test/fixtures/classic-cqrs-f1/baseline.json",
+      "bytes": 159364,
+      "sha256": "860aac654a4877fef37d933afb058424b6017efecd7becc0a5595f772b33dc02"
+    },
+    {
+      "path": "test/fixtures/classic-cqrs-f1/timestamp-int.json",
+      "bytes": 159363,
+      "sha256": "51c5cb9de55e99b04cf79c46b1cfa389305a1db63689a22ea072aca98d5b5954"
+    },
+    {
+      "path": "test/fixtures/classic-cqrs-f1/options.json",
+      "bytes": 167,
+      "sha256": "84406bd393b3632c0789e432919fd9b8614cc99da67432723890700e14cf031f"
+    }
+  ],
+  "provenance": "test/reference/classic-cqrs-v2/provenance.json",
+  "preservationChecks": {
+    "allThirtyCopiesMatchOriginalBytesAndManifest": true,
+    "bothSelectedFifteenFileABPairsByteEqual": true,
+    "fourOriginalManifestPinsMatchHistoricalEvidence": true,
+    "fourSuccessfulOriginalPublicCliReceiptsAndCompletionsChecked": true,
+    "metadataOriginalBytesPinned": [
+      159364,
+      159363
+    ],
+    "unselectedPayloadsRead": false,
+    "inputsRecheckedBeforeAndAfterCopy": true,
+    "newAssetHashesRechecked": true,
+    "exclusiveNewPaths": true,
+    "generationRun": false,
+    "comparatorCliRun": false,
+    "testsRun": false,
+    "typecheckRun": false,
+    "internalImportsRun": false,
+    "meaning": "Preservation integrity only, not an @2 generation pass"
+  }
+}

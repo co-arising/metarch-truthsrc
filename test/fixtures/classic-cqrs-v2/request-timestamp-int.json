@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "truthsrc.product-input-files/v1",
+  "documents": [
+    {
+      "id": "classic-system",
+      "schemaVersion": "truthsrc.classic-architecture-input/v1",
+      "file": "../classic-cqrs-f1/timestamp-int.json"
+    }
+  ],
+  "assemblies": [],
+  "requirements": [
+    {
+      "id": "classic-architecture",
+      "version": "2",
+      "payloadSchemaVersion": "truthsrc.classic-architecture/v2",
+      "capabilities": [{ "id": "classic-source-scaffold", "version": "2" }],
+      "inputRoles": { "architecture": "classic-system" },
+      "requires": []
+    }
+  ],
+  "options": {}
+}
