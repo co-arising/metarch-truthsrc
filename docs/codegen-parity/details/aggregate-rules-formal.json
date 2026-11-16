@@ -1,0 +1,577 @@
+{
+  "group": "aggregate-rules-formal",
+  "artifactIds": ["aggregate-rules-formal"],
+  "diffs": [
+    {
+      "artifactId": "aggregate-rules-formal",
+      "file": "diffs/aggregate-rules-formal.diff.md",
+      "status": "decision-required",
+      "scalaVariants": [
+        {
+          "id": "formal-single-project",
+          "condition": "非 application.services.transactor；formalSemantics 有同名 aggregate；eventFamilyRef 与 stateRef 元数据可解析；至少一个非只读命令的所有 produced event 槽位及全部 guards 可解析；writer concern scope 包含该制品。",
+          "outputPaths": ["<target>/app/<base-as-path>/domain/invariant/<meta.name>Rules.scala"],
+          "cardinality": "每聚合至多一个文件；每个成功 buildRule 的命令一对 Params/Rule，保持 metadata 命令顺序。",
+          "sourceStatus": "enabled",
+          "exercised": false,
+          "evidence": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala#L660-L678"
+        },
+        {
+          "id": "formal-multi-project-raw-fallback",
+          "condition": "同上且 multiProject=true；raw 的 rules-formal 未列入 targetModuleOf 的 rules 分支，因此走 app 兜底，不是 kernel。",
+          "outputPaths": ["<target>/app/<base-as-path>/domain/invariant/<meta.name>Rules.scala"],
+          "cardinality": "0 或 1；改为 modules/kernel/src/main/scala 须 D8 裁定，不擅改原始基准。",
+          "sourceStatus": "enabled",
+          "exercised": false,
+          "evidence": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala#L331-L378"
+        },
+        {
+          "id": "suppressed-by-dispatch-or-builder",
+          "condition": "Saga transactor 调度排除；或 formal 缺省/找不到同名 aggregate/event family/state；或无非只读命令；或全部命令缺事件/绑定不可解析/guard 不支持。",
+          "outputPaths": [],
+          "cardinality": "0；部分命令不可解析时仅这些命令从 rules 序列消失，并非自动产生空事件成功。",
+          "sourceStatus": "suppressed",
+          "exercised": false,
+          "evidence": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateRulesBuilder.scala#L14-L89"
+        },
+        {
+          "id": "no-guards-and-zero-payload-event",
+          "condition": "命令有可解析 produced event，可以没有 guards；事件字段为空时不要求 emission binding 行。",
+          "outputPaths": ["<target>/app/<base-as-path>/domain/invariant/<meta.name>Rules.scala"],
+          "cardinality": "同一 Rules 文件内的成员变体，不增加独立文件；apply 直接 Right(List(Owner.Event()))。",
+          "sourceStatus": "enabled",
+          "exercised": false,
+          "evidence": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateRulesBuilder.scala#L125-L136"
+        },
+        {
+          "id": "template-only-emission-none",
+          "condition": "外部直接构造 RuleModel(emission=None) 时 T 渲染 Right(Nil)；正常 B 对通过的命令要求 produced 非空，故这不是正常 builder 的缺实现兜底。",
+          "outputPaths": ["<target>/app/<base-as-path>/domain/invariant/<meta.name>Rules.scala"],
+          "sourceStatus": "template-boundary-only",
+          "exercised": false,
+          "evidence": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRulesTemplate.scala#L48-L51"
+        }
+      ],
+      "jsSources": [
+        {
+          "file": "generators/scala-cqrs-domain/render-domain.mjs",
+          "symbols": ["renderInvariant", "renderCommand", "owner", "fields", "valuesPath", "aggregateRows"],
+          "lane": "formal",
+          "disposition": "replace",
+          "lines": "1-133",
+          "scope": "只替换 Rules/Params/wrapper 的组装；renderInvariant L93-L130 的 folds/EventHandler 交 event-handler owner；renderCommand L31-L42 的 computations 与 emit helper 必须迁责，不能删除调用。",
+          "evidence": "baseline/js/generators/scala-cqrs-domain/render-domain.mjs#L57-L132"
+        },
+        {
+          "file": "generators/scala-cqrs-domain/render-expressions.mjs",
+          "symbols": ["decision", "literal", "valueExpression", "descriptor", "nodeType"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "1-115",
+          "scope": "保留 ref/member/集合/精确算术/单位 require/typed literal/host 调用的现有语义，由结构化表达式层处理反极性与优先级；不得对最终 Scala 作 regex 清洗。",
+          "evidence": "baseline/js/generators/scala-cqrs-domain/render-expressions.mjs#L34-L114"
+        },
+        {
+          "file": "generators/scala-cqrs-domain/naming.mjs",
+          "symbols": ["symbol", "packageFor", "typeName", "pathFor", "entry"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "1-32",
+          "scope": "现 symbol 只检查/反引号，nominal 类型直接 FQN；entry 加头后换算 UTF-8 span。公共 names/types/import 与最终字节定位由集成者统一，不保留旧 offsets。",
+          "evidence": "baseline/js/generators/scala-cqrs-domain/naming.mjs#L2-L31"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/generate.mjs",
+          "symbols": ["inherited", "registry", "generate"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "16-23,59-70",
+          "scope": "真实 invariant-dsl 分支调用 renderInvariant(context, footprint, true)，对应银行三文件形态；不能把 family2 的存在当成此入口已迁接。",
+          "evidence": "baseline/js/generators/scala-cqrs-play-service/generate.mjs#L16-L23"
+        },
+        {
+          "file": "generators/invariant-dsl/produce.mjs",
+          "symbols": ["version", "produce"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "1-6",
+          "scope": "正式 v1 producer 指向 render-domain.mjs，不指向相邻 legacy render.mjs；footprint decision=3、folds=4，layered 默认 false。",
+          "evidence": "baseline/js/generators/invariant-dsl/produce.mjs#L1-L6"
+        },
+        {
+          "file": "generators/scala-cqrs-domain/produce-v2.mjs",
+          "symbols": ["footprint", "producer", "producerRegistryV2"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "1-17",
+          "scope": "invariant-dsl 同样调用 renderInvariant，decision=4、folds=6；domain-v2/generate.mjs L1-L6 实际消费该 registry。",
+          "evidence": "baseline/js/generators/scala-cqrs-domain/produce-v2.mjs#L8-L16"
+        },
+        {
+          "file": "generators/invariant-dsl/render.mjs",
+          "symbols": ["render", "buildRuleObject", "buildPostconditions", "cmdNamesSorted", "paramObjects", "typeImports"],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "lines": "1-103,1080-1459",
+          "scope": "有 InvariantRule/iMadzError/List 外壳及 payload Params，但 formal producer 未调它；legacy emit.mjs 显式调用。按命令字母排序，额外 checkAggregate/postconditions/端口 class，List 参数有 List.empty 默认；这些均不同于 raw T。不得自动复活 sentinel、业务固定表、散文翻译或缺省算法。",
+          "evidence": "baseline/js/generators/invariant-dsl/render.mjs#L1085-L1459"
+        },
+        {
+          "file": "generators/invariant-dsl/emit.mjs",
+          "symbols": ["render 调用", "result.files 写入循环"],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "lines": "1-9",
+          "scope": "真实 legacy CLI 读取 spec，调用 render 后 mkdir/write；若 outPath 以 .scala 结尾另写标记文件。这里读取的是源码文本，没有执行或读取任何运行中进程的参数。",
+          "evidence": "baseline/js/generators/invariant-dsl/emit.mjs#L3-L9"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/build-models.mjs",
+          "symbols": ["artifactsSpec", "ordinals", "sameRefs", "buildModels", "rowsByRef", "setDeps"],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "1-248",
+          "scope": "family2 显式 profile，规则有 guards、emissions 数组、来源与依赖闭包；要求槽位顺序及类型精确相等，拒绝 external producer，保留 family1 kernel/serialization 身份。Params 仍含 state/command/hosts，helpers 仍在 domain.command，不能直接认定与传统 MBT 等价。",
+          "evidence": "baseline/js/generators/scala-cqrs-aggregate-core-v1/build-models.mjs#L139-L181"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/templates/rules.mjs",
+          "symbols": ["rulesTemplate"],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "1-26",
+          "scope": "可借鉴顶层 not 反极性处理和 scope imports；但仍生成 decide dispatcher、Either[String,Vector[Event]]、lowerCamel methods 和 emit helper 调用，不是 Params/Rule InvariantRule 结构。",
+          "evidence": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/rules.mjs#L3-L26"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/generate.mjs",
+          "symbols": ["generate"],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "11-23",
+          "scope": "要求 scala-cqrs-aggregate-core@1，显式 buildModels 再 render；并非 play-service 分支。",
+          "evidence": "baseline/js/generators/scala-cqrs-aggregate-core-v1/generate.mjs#L11-L23"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/render.mjs",
+          "symbols": ["productionJobs", "render"],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "15-35",
+          "scope": "productionJobs 为 rules 角色调用 rulesTemplate；其余角色和生成测试不归本制品改写。",
+          "evidence": "baseline/js/generators/scala-cqrs-aggregate-core-v1/render.mjs#L15-L24"
+        },
+        {
+          "file": "lib/products/generate-cli.mjs",
+          "symbols": ["generateProductCli", "registeredProductProducer", "planCapturedProducts", "planCompiledProducts"],
+          "lane": "formal",
+          "disposition": "reuse",
+          "lines": "66-145",
+          "scope": "正式路径注册、四个显式路径 flag、--plan 与 runtime/externalSourceRoots 准入；本轮不改公共注册或新增 artifact 专属 flag。",
+          "evidence": "baseline/js/lib/products/generate-cli.mjs#L66-L145"
+        },
+        {
+          "file": "src/core/generate.mjs",
+          "symbols": ["applyEntries"],
+          "lane": "formal",
+          "disposition": "reuse",
+          "lines": "246-268",
+          "scope": "最终写入文件、复读核对、ledger 和 anchors；不是锁或 rollback。迁移只计划，不修改现存 generated/ledger/anchor。",
+          "evidence": "baseline/js/src/core/generate.mjs#L246-L268"
+        }
+      ],
+      "writeSet": [
+        "generators/scala-cqrs-domain/models/aggregate-rules-model.mjs",
+        "generators/scala-cqrs-domain/build-aggregate-rules-models.mjs",
+        "generators/scala-cqrs-domain/templates/aggregate-rules.mjs",
+        "generators/scala-cqrs-domain/render-aggregate-rules.mjs",
+        "generators/scala-cqrs-domain/render-domain.mjs",
+        "generators/scala-cqrs-domain/render-expressions.mjs",
+        "generators/scala-cqrs-domain/naming.mjs",
+        "generators/scala-cqrs-domain/produce-v2.mjs",
+        "generators/invariant-dsl/produce.mjs",
+        "generators/scala-cqrs-play-service/generate.mjs",
+        "generators/scala-cqrs-aggregate-core-v1/build-models.mjs",
+        "generators/scala-cqrs-aggregate-core-v1/templates/rules.mjs",
+        "generators/scala-cqrs-aggregate-core-v1/render.mjs",
+        "lib/scala-target/naming.mjs",
+        "lib/scala-target/model.mjs",
+        "lib/products/generate-cli.mjs",
+        "src/core/generate.mjs",
+        "docs/codegen-parity/fixtures/aggregate-rules-formal/",
+        "docs/codegen-parity/expected/aggregate-rules-formal/"
+      ],
+      "writeSetScope": "全部是后续阶段 proposed 写集合，不是本次实际写入或实施授权。前四路径和 fixtures/expected 是 proposed new；公共 writer/registry 仅确有必要且获集成者批准才改。",
+      "writeOwnership": {
+        "artifactOwner": "aggregate-rules-formal：前四个 proposed MBT/entry 文件。",
+        "sharedOwner": "集成者独占 render-domain/render-expressions/naming/正式 producer 注册及公共 type/layout/writer；先隔离 Rules 与相邻 Entity/EventHandler/Protocol 职责。",
+        "familyOwner": "family2 owner 与集成者协商其模型/模板/productionJobs；本制品不并发接管其公共文件。",
+        "fixtureOwner": "集成者指定同一 fixture owner，建立同语义 BC/JS 输入映射与独立 oracle，不造第二套银行真源。"
+      },
+      "assemblyOwner": {
+        "artifact": "aggregate-rules-formal",
+        "proposedTemplate": "generators/scala-cqrs-domain/templates/aggregate-rules.mjs",
+        "proposedEntryAdapter": "generators/scala-cqrs-domain/render-aggregate-rules.mjs",
+        "target": "app/<base-as-path>/domain/invariant/<Agg>Rules.scala",
+        "rule": "本目标文件最终字节只由一个 assembly 产生；一般 invariant-rule 与 formal-rule 若共享物理文件，由集成者汇合有序成员并诊断冲突，禁止最后 writer 获胜。multiProject 落点留 D8。"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "shared-expression-rendering",
+        "domain-entity",
+        "value-object",
+        "application-protocol",
+        "command-helper",
+        "aggregate-behavior",
+        "event-handler",
+        "shared-writer-anchors"
+      ],
+      "conflictsWith": [
+        "invariant-rule 对同一 <Agg>Rules.scala 的独立组装",
+        "event-handler 对 render-domain.mjs 的并发修改",
+        "application-protocol/command-helper 对 renderCommand 与 types/imports 的并发修改",
+        "family2 对 shared naming/type/entry 以及 Rules 文件的重复登记"
+      ],
+      "glue": [
+        "net.imadz.common.CommonTypes.InvariantRule",
+        "net.imadz.common.CommonTypes.iMadzError",
+        "net.imadz.common.MoneyOps",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.CommandHelper",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.runReplyingPolicy",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.RunnablePolicyWithHelper.replyWith",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.RunnablePolicyWithHelper.replyWithAndPublish",
+        "example.bankwealth.domain.CreditBalanceComputations"
+      ],
+      "glueContracts": [
+        {
+          "symbol": "net.imadz.common.CommonTypes.InvariantRule",
+          "signature": "trait InvariantRule[Event, State, Param] { def apply(state: State, param: Param): Either[iMadzError, List[Event]] }",
+          "semantics": "Param 不变型；Rules 与 Helper 必须消费同一 nominal Params，不以 tuple 或另一个同形 case class 替代。规则本身不 persist、不 reply。",
+          "source": "baseline/common/src/main/scala/net/imadz/common/CommonTypes.scala#L15-L17"
+        },
+        {
+          "symbol": "net.imadz.common.CommonTypes.iMadzError",
+          "signature": "final case class iMadzError(code: String, message: String) extends Throwable with CborSerializable",
+          "semantics": "JS 的 String errCode 没有自动补足 message；错误文本来源及转义由 D3 决定。",
+          "source": "baseline/common/src/main/scala/net/imadz/common/CommonTypes.scala#L11"
+        },
+        {
+          "symbol": "net.imadz.common.application.CommandHandlerReplyingBehavior.CommandHelper",
+          "signature": "trait CommandHelper[Command, State, Param, Reply] { def toParam(state: State, command: Command): Param; def createFailureReply(param: Param)(error: iMadzError): Reply; def createSuccessReply(param: Param)(state: State): Reply }",
+          "semantics": "生成 Helper 放 application.aggregates.behaviors；现 domain emit* 不构成此合同。",
+          "source": "baseline/common/src/main/scala/net/imadz/common/application/CommandHandlerReplyingBehavior.scala#L16-L23"
+        },
+        {
+          "symbol": "net.imadz.common.application.CommandHandlerReplyingBehavior.runReplyingPolicy",
+          "signature": "def runReplyingPolicy[Event, State, Param, Reply, Command](rule: InvariantRule[Event, State, Param], helper: CommandHelper[Command, State, Param, Reply])(state: State, command: Command): RunnablePolicyWithHelper[Event, State, Param, Reply, Command]",
+          "semantics": "replyWith 先 helper.toParam，再 rule.fold；Left 只有 Effect.reply；Right 为 Effect.persist(events).thenReply(replyTo)(helper.createSuccessReply(param))，回调读取事件应用后的 State。replyWithAndPublish 额外 thenRun 中逐事件 EventStream.Publish，不能互换。",
+          "source": "baseline/common/src/main/scala/net/imadz/common/application/CommandHandlerReplyingBehavior.scala#L29-L75"
+        },
+        {
+          "symbol": "net.imadz.common.MoneyOps",
+          "signature": "isPositive(minorUnits: String): Boolean; compare(a: String, b: String): Int; shift(a: String, b: String, sign: Int): String",
+          "semantics": "冻结 scaffold 源分别是 BigInt(minorUnits)>0、BigInt(a) compare BigInt(b)、(BigInt(a)+BigInt(b)*sign).toString；raw B 使用前两者。不是当前银行 BigDecimal Money 的自动适配器，不改精度/单位/溢出身份。",
+          "source": "baseline/js/generators/scaffold-static/app/net/imadz/common/MoneyOps.scala#L12-L22"
+        },
+        {
+          "symbol": "example.bankwealth.domain.CreditBalanceComputations",
+          "signature": "BalanceAfterCommitIncomingCredits(state: CreditBalanceState, p: CommitIncomingCredits): example.bankwealth.domain.values.Money; BalanceAfterReleaseReservedFunds(state: CreditBalanceState, p: ReleaseReservedFunds): example.bankwealth.domain.values.Money; BalanceAfterReserveFunds(state: CreditBalanceState, p: ReserveFunds): example.bankwealth.domain.values.Money",
+          "semantics": "三个抽象方法及空 companion 是现存内容，不是实现或纯度证明。emit 在成功臂调用，迁移时不能删除、提前求值或伪造余额算法。",
+          "source": "baseline/actual-js/app/example/bankwealth/domain/CreditBalanceCommandHelpers.scala#L6-L20"
+        }
+      ],
+      "dependencySupply": {
+        "bcDeclaredCoordinate": "net.imadz:common-core_2.13:0.2",
+        "bcCoordinateSource": "baseline/bc/scaffold/build.sbt#L127-L136",
+        "status": "消费者制品 ABI/hash 与 scaffold 同包源的实际选择尚未核定；源码存在不证明 Jar 可用。",
+        "jsGateBoundary": "baseline/js/lib/products/generate-cli.mjs L114-L126 校验 saga-core 0.3.0 与条件 Monarch pins，未因此证明 CommonTypes/CommandHandlerReplyingBehavior/MoneyOps 供给。",
+        "forbiddenWorkarounds": ["publishLocal", "runtime 升级或重发", "下载依赖洗绿", "银行私有 CommandHelper 库副本"]
+      },
+      "openDecisions": [
+        "D1 多事件：raw B 校验全部 produced events，却在 L88 只保存 headOption；formal JS/family2 有序发射全部。需裁定扩展 emissions 模型或单事件对账准入，不能丢弃已支持事件。",
+        "D2 类型/导入：统一 recursive TypeRef、signature、嵌套 owner 与 import 同名冲突 API；raw B 只收集顶层 paramTypes，不能当作正确依赖闭包。",
+        "D3 错误/文本：errCode 对应 iMadzError.message 的权威来源与缺省策略、Rule.comment 是否输出、errCode/desc/literal 的引号/反斜杠/LF/注释转义须明确；不编造银行错误消息。",
+        "D4 计算端口：payload-only Params 与三个 BalanceAfter... calls 如何接合？Rule class 领域依赖或显式纯计算输入等合同尚未选定；必须保留成功臂调用顺序及一次求值、Money.amount 与 minorUnits 的真实差异。",
+        "D5 准入/回复：Rules、Helper、Behavior 对 formal 非空、replyFamily、部分失败的判据不完全一致。必须共同决定无回复/不可解析命令的诊断及 typed replyTo 合同，不以首回复推断冒充接通。",
+        "D6 库供给：最终消费者 CommonTypes/CommandHandlerReplyingBehavior/MoneyOps 的 artifact 或批准 scaffold、坐标、版本、ABI 和 SHA 尚需核定，不升级/发布/复制 runtime。",
+        "D7 输入边界：重复 emissions/guards key 的后写覆盖、replyTo 在引用准入后才被移出 Params、owner substring 异常、未核类型形状、literal 全当 String、TypeResolver ???/Any 应采用何种明确拒绝诊断；不得缺实现返回成功。",
+        "D8 布局/组装：raw multiProject 的 rules-formal 落 app，family2 落 kernel；需固定目标 profile 与批准偏差，并明确一般 invariant-rule/formal-rule 同文件唯一 owner 和旧壳退役。",
+        "D9 可选参数：AggregateProtocolBuilder 按 p.optional 将应用命令字段包装 Option[T] 并默认 None，但 AggregateRulesBuilder L86 仅 parameterType(p.parameterType)，TypeResolverDSL L1150-L1151 不接收 optional。需与 Protocol/Helper 共同裁定 Params 的可选类型映射及是否有字段默认；不得误称 raw 已处理 optional 或给 Params 擅加 None。"
+      ],
+      "extraSources": [],
+      "fixedHeads": {
+        "js": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+        "bc": "cc335eb1e0d0fae17bf092fd61b126040196ea70"
+      },
+      "baselineIndex": "baseline/index.json",
+      "scalaSources": [
+        {
+          "role": "Model",
+          "file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/AggregateRulesModel.scala",
+          "lines": "1-31",
+          "bytes": 1735,
+          "sha256": "8f5d54684e4f4abfbb9dade5a335f19ecd1cd5061e95bb722ebba48573cb2b05",
+          "readScope": "全文",
+          "fullTextLocation": "diffs/aggregate-rules-formal.diff.md 附录 A"
+        },
+        {
+          "role": "Builder",
+          "file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateRulesBuilder.scala",
+          "lines": "1-155",
+          "bytes": 8691,
+          "sha256": "2a96b64a95eec149465147adfff3f34724fdbe33721e39c4b7a21fd4be2170d6",
+          "readScope": "全文",
+          "fullTextLocation": "diffs/aggregate-rules-formal.diff.md 附录 B"
+        },
+        {
+          "role": "Template",
+          "file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRulesTemplate.scala",
+          "lines": "1-78",
+          "bytes": 3488,
+          "sha256": "b897db889faae4906846476d00078a164cab2974d6b61c805dd7d9949479ac12",
+          "readScope": "全文",
+          "fullTextLocation": "diffs/aggregate-rules-formal.diff.md 附录 C"
+        }
+      ],
+      "modelInspection": {
+        "AggregateRulesModel": [
+          "selfType: override val TypeRef，无默认；B=<meta.name>Rules@domain.invariants.root；package/object/path。",
+          "eventType: TypeRef，无默认；eventFamily resolver；T 使用 name。",
+          "stateType: TypeRef，无默认；entityState resolver；T 使用 name。",
+          "ownerType: TypeRef，无默认；meta.entityRef.targetName 加事件族 packageName 最后一个点之前的包；成功 Owner.Event 调用。",
+          "rules: Seq[RuleModel]，无默认；过滤成功命令，源序。",
+          "dependencies: override val Set[TypeRef]，无默认；顶层参数/事件/状态/owner/条件 MoneyOps 经 shouldImport，再加 iMadzError 与 InvariantRule。",
+          "noteIds: override val Seq[String] = Nil；B 用 meta.noteId.toSeq；T 不直接输出。"
+        ],
+        "RuleModel": [
+          "name: String，无默认，cmd.name + Rule。",
+          "paramsName: String，无默认，cmd.name + Params。",
+          "paramFields: Seq[(String, TypeRef)]，无默认；命令参数序，过滤精确名字 replyTo；无独立 optional/default/note/description 字段。",
+          "guards: Seq[GuardModel]，无默认，源序。",
+          "emission: Option[EmittedEvent]，无默认，仅首个已解析事件。",
+          "comment: String，无默认；B 合成命令名/guards 数/emission 名，T 未使用，不是直接保留 desc。"
+        ],
+        "GuardModel": [
+          "cond: String，无默认，是已渲染 Scala 成功条件代码槽。",
+          "onFail: String，无默认；B 对缺失/非字符串默认 reject，只允许 reject/succeed-empty。",
+          "errCode: String，无默认；B 要求字符串，即使 succeed-empty。",
+          "desc: String，无默认；B 对缺失/非字符串默认空串。"
+        ],
+        "EmittedEvent": [
+          "name: String，无默认。",
+          "args: Seq[String]，无默认，是按事件字段序的代码字符串实参槽。"
+        ],
+        "inherited": "ArtifactModel.fqn=selfType.packageName + '.' + selfType.name；registerTo 仅 registry.register(this)；morphisms=Nil；noteIds=Nil 被 M 覆写。TypeRef.typeParams=Nil、signature 与 fqn 分开；collectAllDependencies 递归，但 B 未调用。",
+        "constructTable": "原 diff §3.1、§3.2 B01-B13；本 JSON 的 D9 补记与应用 Protocol 的 optional 接口差异。"
+      },
+      "templateInspection": {
+        "orderedConstructs": [
+          "T01 writer fingerprintHeader；T 本身不发 header。",
+          "T02 package selfType.packageName。",
+          "T03 dependencies 按 fqn 排序去重，DSL 再 sorted，单 import 组。",
+          "T04 object selfType.name；extendsClause=None，implementsClause 默认 None。",
+          "T05 固定三行 Formal-path/P4 注释，非 Rule.comment。",
+          "T06 按 rules 顺序先 final case class Params，paramFields 用 TypeRef.signature 和逗号空格连接；无字段输出 ()，无字段默认。",
+          "T07 object Rule extends InvariantRule[EventName, StateName, ParamsName]。",
+          "T08 def apply(state: StateName, p: ParamsName): Either[iMadzError, List[EventName]]。",
+          "T09 guards.zipWithIndex：首 if、其后 else if；cond 首字符 ! 则 drop(1)，否则 !(cond)。",
+          "T10 succeed-empty => Right(Nil)，其他 => Left(iMadzError(errCode, escaped desc))；非空 desc 有行尾注释；errCode 未 escape，desc 只 escape 反斜杠和双引号。",
+          "T11 Some event => Right(List(Owner.Event(args 原序)))，无参 Event()，None => Right(Nil)。",
+          "T12 无 guards 直接成功表达式，有 guards 在最后 else 发射；关闭 apply/Rule/object；SourceFile 各部分双换行，末尾一个 LF。"
+        ],
+        "notEmitted": "无额外 trait/type alias/val/var/lazy/implicit/annotation/self-type/泛型上下界/主辅构造器/显式 companion/重载/curried apply/MANUAL/dispatcher/persist/publish/reply；编译器合成成员不计为模板输出。",
+        "retainedDebt": "cond/args 代码字符串槽、Rule.comment 未用、命令级解析失败、仅 headOption、转义不足；相邻 AggregateBehaviorTemplate 的 MANUAL/??? 和 TypeResolver.resolveMetaRef 的 ??? 不被 Right(Nil) 代替。",
+        "constructTable": "原 diff §4 T01-T12，完整固定源码为附录 C；没有执行模板。"
+      },
+      "evidenceSurfaces": {
+        "raw-scala": {
+          "status": "固定 M/B/T 源码可取得；同输入新生成完整业务输出不存在。",
+          "freshOutputAvailable": false,
+          "reference": "原 diff §2-4、附录 A-C"
+        },
+        "approved-target": {
+          "status": "已批准质量/布局合同与有限表达 diff；完整银行 expected 受 D1-D9 阻断。",
+          "freshOutputAvailable": false,
+          "reference": "原 diff §6；不得把 curated Lot 事件、错误消息或 Deposit 算法复制成银行默认。",
+          "requiredContracts": [
+            "业务根只 domain/application/infrastructure；Rules 在 domain.invariant。",
+            "payload-only Params，state 为 apply 第一参；domain Params/events 不含 ActorRef。",
+            "应用 Actor commands 仅按明确回复合同生成 typed replyTo；不无条件补通用 Reply。",
+            "真正 CommandHelper 在 application.aggregates.behaviors，含 toParam/createFailureReply/createSuccessReply。",
+            "拒绝不持久化；成功事件应用后 thenReply 读新 state；replyWith 不额外发布。",
+            "不改变 PB 字段号、PID、serializer ID/binding、nominal 类型、receipt 身份、溢出与单位行为。"
+          ]
+        },
+        "actual-js": {
+          "status": "冻结的银行已有输出，不是本轮生成或运行证明。",
+          "files": [
+            {
+              "file": "baseline/actual-js/app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+              "bytes": 9423,
+              "sha256": "03e1a70268cfafcb80e833c3df306dfb9b2f2c50bbec1a3d726af48039c82fa4",
+              "lines": "1-105"
+            },
+            {
+              "file": "baseline/actual-js/app/example/bankwealth/domain/invariant/params/CreditBalanceRuleParams.scala",
+              "bytes": 1253,
+              "sha256": "deeca0caf515bcdde8b532c8c7e191c88dfc6676da94f035a04f400e7d5285b7",
+              "lines": "1-14"
+            },
+            {
+              "file": "baseline/actual-js/app/example/bankwealth/domain/CreditBalanceRules.scala",
+              "bytes": 2437,
+              "sha256": "f45512bb16df96379c502fa655187f0a1e385412bfd24df3dfa9f47fe7b22c6f",
+              "lines": "1-21"
+            },
+            {
+              "file": "baseline/actual-js/app/example/bankwealth/domain/CreditBalanceCommandHelpers.scala",
+              "bytes": 2124,
+              "sha256": "2ca13177769ec883420e90770ef16a8cdb68188311c4f31d6777fe6a80342203",
+              "lines": "1-21"
+            }
+          ],
+          "orderedMethods": ["InitializeAccount", "ReserveFunds", "DeductFunds", "ReleaseReservedFunds", "RecordIncomingCredits", "CommitIncomingCredits", "CancelIncomingCredit"],
+          "bodyAccounting": "原 diff §5.3 七行依序列出全部 guard/拒绝或空成功 RHS、成功 helper 和事件参数；附录 D 保留完整原字节，包括冗余括号。AP 的 state/command/hosts 字段和 AW 的全部七个转发亦单列；不得用简写重构结果替换 frozen 实际字节。"
+        },
+        "curated-scala": {
+          "status": "人工参考，非 raw 新生成产物，也不是银行同输入 oracle。",
+          "files": [
+            {
+              "file": "baseline/curated-scala/net/imadz/FabSplitMergeDesign/domain/invariant/LotRules.scala",
+              "bytes": 7788,
+              "sha256": "30d90ae60deba89ba4736cc430756d7fd7e8360d5464d7ea541d89a899ab1867",
+              "lines": "1-121"
+            },
+            {
+              "file": "baseline/curated-scala/net/imadz/application/aggregates/behaviors/CreditBalanceCommandHelpers.scala",
+              "bytes": 5746,
+              "sha256": "ec0c4f05e9398b8fd8aa1a93d6aafbe10a845e687bdffc27d3510e51a177d531",
+              "lines": "1-95"
+            }
+          ],
+          "bodyAccounting": "Lot 的十二 Params/Rule 对在原 diff §5.4；Deposit 的 toParam=command.change，failure=CreditBalanceConfirmation(Some(error), Nil)，success=CreditBalanceConfirmation(None, state.accountBalance.values.toList)。与 raw 单槽 Reply(None)/Reply(Some(error)) 不同。",
+          "lotTextLiteralSupplement": {
+            "ReserveWaferRemoval-idempotent-comment": "Removal already reserved for this transaction: idempotent success, no events (mirror of golden master 60008 semantics).",
+            "61003": "Source lot does not carry the full frozen wafer set (conservation precondition).",
+            "61006": "No reserved removal found for this transaction.",
+            "61007": "Addition already registered for this transaction (deterministic target-prepare rejection — the auto-abort/compensate face).",
+            "61008": "Addition cannot be found or already committed.",
+            "61009": "Addition cannot be found or already canceled.",
+            "RecordResult-idempotent-comment": "Result already recorded for this transaction: idempotent republication success, no events (designed strict TCC outcome ledger 61010)."
+          }
+        }
+      },
+      "migration": [
+        "新目标同一 <Agg>Rules.scala replace 内容；payload Params move 进 Rules；domain/invariant/params/<Agg>RuleParams.scala 与 domain/<Agg>Rules.scala 旧转发壳按拥有权计划退役。",
+        "domain/<Agg>CommandHelpers.scala 的事件构造迁回纯规则/领域服务；三个 computations calls 依 D4；应用三方法 Helper 由 command-helper 制品负责。",
+        "Entity/Protocol/Behavior/Helper 的 imports、Params nominal type、源根/生成配置及 fixtures 同批迁接，不改 PB/PID/serializer 身份。",
+        "source.document/pointer、command/guard 顺序保留，最终排版后重算 UTF-8 spans/fingerprint；由 writer/注册 owner 处理 owned path 退役，不手改 generated/current、ledger 或 anchors。"
+      ],
+      "acceptancePlan": {
+        "executionStatus": "全部未执行；本次仅源内容检查。",
+        "fixtures": [
+          "F1 non-saga/saga、formal 有无、聚合/state/family 缺失、只读、部分/全部命令解析失败；核 0/1 文件与成员基数。",
+          "F2 五种闭形 guards、reject/succeed-empty、无 guards、顺序、MoneyOps 条件 import、无载荷 Event()、空成功仍要求 raw errCode。",
+          "F3 param/receipt 同名优先、两种 receipt fallback、literal 转义、缺绑定、多个事件；D1 未定前多事件不能按首个冒充通过。",
+          "F4 嵌套 optional/sequence/map nominal、同名 imports、owner、单/多工程；新增 D9 用 optional=true 的命令同时核 Protocol/Params/toParam 类型闭包。",
+          "F5 银行七命令全部 guards/events、三个 computations、错误说明与真实更新后回复；不能拿 Lot 当银行 oracle。",
+          "F6 两次同输入完整文件稳定；一处 guard 改动的局部 diff、source query 新位置、旧壳退役、手写内容保护。"
+        ],
+        "comparison": "建立同一语义 fixture 的 BC canonical/bindings 与 JS request/options 映射，逐字段/顺序/绑定核对，完整比较 Rules 及依赖闭包；生成头/行尾白名单单列，不压平空白、包名、注释或 RHS。",
+        "commands": [
+          {
+            "id": "js-domain-v2-plan",
+            "cwd": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+            "command": "node /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/bin/truthsrc.js generate-products --request /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/aggregate-rules-formal/request.json --generator /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/generators/scala-cqrs-domain-v2 --out /Users/zhongdj/Workspaces/mad-polaris/aggregate-rules-formal-candidate-js --options-json /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/aggregate-rules-formal/options.json --plan",
+            "inputStatus": "proposed-not-created",
+            "scope": "通过仅含本聚合及必要依赖的 fixture 限域；不是只生成一个 artifact 的 flag；domain-v2 不等于银行 play-service 验收。",
+            "sideEffects": "读取并捕获 request/options/manifest，内存 product graph/AST 编译与 entry 构造；所读 CLI L86 在 --plan 返回、不调用 applyEntries。去掉 --plan 后会写 changed entries、truthsrc.ledger.json 和 anchors.json，要求独占 out，不保证 rollback。",
+            "executed": false
+          },
+          {
+            "id": "bc-traditional-formal",
+            "cwd": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+            "command": "sbt -Dcodegen.systemFile=/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/aggregate-rules-formal/bc-canonical.json -Dcodegen.systemBindings=/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/aggregate-rules-formal/bc-bindings.json -Dcodegen.targetDir=/Users/zhongdj/Workspaces/mad-polaris/aggregate-rules-formal-candidate-bc -Dcodegen.multiProject=false \"runMain net.imadz.codegen.CodegenMain\"",
+            "inputStatus": "proposed-not-created",
+            "scope": "由显式 formal fixture 限定聚合及依赖；传统 runCommon，不是 semanticProductsFile 分支，也不用 Examples/default banking-app。",
+            "sideEffects": "启动 sbt/JVM，可能编译、下载、写缓存/target，读取 formal 文件、复制 scaffold、写全闭包制品/台账，版本检测可能启动子进程。以后须先批准离线供给、全部写面与批末执行预算；本轮没有执行权限。",
+            "executed": false
+          }
+        ],
+        "bankRouteFollowup": "银行接线另选显式 generators/scala-cqrs-play-service 与完整 request/options/runtimeArtifact/externalSourceRoots；现 CLI 校验本地 Jar/目录，不授权下载、发布或更换 pin。需要外置实现捕获时由集成者选择既有 generate-project 合同及完整副作用清单。",
+        "behaviorRequirements": [
+          "guard 顺序及短路、错误码/说明、幂等无事件、所有事件实参次序。",
+          "失败无 persist；成功事件应用后 thenReply 用新 state；回复次数与 replyWith 无意外发布。",
+          "必要接口类型/codec/recovery 只覆盖受影响闭包；独立 oracle 不与生成器共用业务实现。"
+        ],
+        "runnerDecision": "本 fixture 的实际 suite/runner 尚未固定，不编造测试名；由集成者复用现有入口并明确资源和时限后执行。",
+        "complexity": {
+          "status": "not-measured",
+          "ordinaryMethodGoal": "McCabe CC <=5；6-10 逐方法说明，>10 重构或逐方法认可例外。",
+          "nestingGoal": "普通业务 <=2；sealed ADT dispatch 单列，不使用 String/Any dispatcher 刷分。",
+          "measurementDecision": "工具、版本与 Scala 语法口径未固定，没有分数或通过结论。"
+        },
+        "budgets": "后续初始生成/内容比对预算 5 分钟、集中局部编译/行为预算 15 分钟；是停止点而非性能结果，不全量银行重跑。"
+      },
+      "continuationSupplement": [
+        {
+          "id": "optional-command-parameter-interface",
+          "status": "decision-required",
+          "sources": [
+            "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateRulesBuilder.scala#L81-L88",
+            "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/TypeResolverDSL.scala#L1150-L1151",
+            "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateProtocolBuilder.scala#L43-L67",
+            "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/CommandHelpersBuilder.scala#L73-L77"
+          ],
+          "observed": "Rules paramFields 仅传 p.parameterType；Protocol 的 p.optional 分支使用 TypeRef.Option(...) 及 defaultValue=Some(None 的代码字符串)；Helper 按 command.<name> 原值构造 Params。",
+          "conditionalConsequence": "若 admitted 参数以 optional=true 配合裸基础类型声明，Protocol 字段可为 Option[T] 而 raw Rules 字段仍为 T。这里只报告源级接口差异，未运行 fixture，也不断言现银行七命令已触发。",
+          "requiredDecision": "共同确定可选参数 TypeRef 映射及默认值规则；记录为 raw→approved-target 偏差后才能改 JS，不修改冻结 BC 或已有 diff。"
+        }
+      ]
+    }
+  ],
+  "continuation": {
+    "attempt": 2,
+    "initialExistence": {
+      "diff": "present",
+      "detail": "absent"
+    },
+    "documentDisposition": "already-exists",
+    "preservedDiff": {
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/aggregate-rules-formal.diff.md",
+      "bytes": 88366,
+      "sha256": "32e5f2fd187b1f4662a881569a247941079a65f5b5eea20d3442801eda85709a",
+      "rewritten": false
+    },
+    "actualWriteSet": ["/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/details/aggregate-rules-formal.json"],
+    "preservationNote": "原 diff 第9行描述的是此前写入尝试，并非本次起始状态；本次实际发现 diff 已存在、detail 不存在，仅补 detail。没有借旧 workflow 的 null 结果推断成功，也不修改原文或此前十五份 diff。",
+    "sourceContentInspection": {
+      "mode": "仅读取冻结源码、比较文件字节/SHA 与文档摘录；不 import/执行生成器，不做测试、typecheck、compile、generation 或 runtime。",
+      "catalog": "只提取 scala-artifacts.json 中 ordinal=11/id=aggregate-rules-formal 一行。",
+      "fixedIdentityCheck": "原 diff 的冻结文件链接加本次三个补充冻结文件，共42个文件的实际 bytes/SHA 与 baseline/index.json 匹配；这只是身份检查，不是42个文件的行为认证。",
+      "fullMbtRead": true,
+      "appendixByteChecks": [
+        "附录 A 的完整 Model 代码与冻结 Model 字节相等。",
+        "附录 B 的完整 Builder 代码与冻结 Builder 字节相等。",
+        "附录 C 的完整 Template 代码与冻结 Template 字节相等。",
+        "附录 D 的完整 actual-js Rules 代码与冻结银行文件字节相等。"
+      ],
+      "diffBlockChecks": [
+        "§6.3 第一个 hunk 的 minus/context 与 actual-js L14-L18 相等，行数正确；plus 只是已批准的局部反极性表达目标。",
+        "§6.3 第二个 hunk 的 minus/context 与 actual-js L30-L34 相等，行数正确；plus 不代表完整 API 迁移。",
+        "§6.4 hunk 的 minus/context 与 actual-js L36-L49、plus/context 与 curated Lot L24-L31 相等；这是明确标注的跨业务结构对照，不是 DeductFunds 的业务替换。"
+      ],
+      "readScopeBoundary": "本次重读本制品完整 Scala M/B/T、formal renderer/expression、family2 builder/template、银行四文件及 curated 两文件；共享支撑按相关区间读。legacy render 本次读1-103、1080-1459，不把其余历史启发式章节的保留描述说成本次全文复审。",
+      "extraSourcePolicy": "没有读取 baseline 之外的当前实现源码；仓库指引、批准计划、作者合同、布局标准、catalog 单行及已有本制品 diff 是工作指令/交付资料，不是补充实现源码。extraSources=[]。"
+    }
+  },
+  "generatorsModified": false,
+  "runtimeExecuted": false,
+  "testsExecuted": false,
+  "typecheckExecuted": false,
+  "compilationExecuted": false,
+  "generationExecuted": false,
+  "truthTreeModified": false,
+  "baselineModified": false,
+  "gitWrites": false
+}

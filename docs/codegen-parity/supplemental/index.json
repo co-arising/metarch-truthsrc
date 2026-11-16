@@ -1,0 +1,81 @@
+{
+  "schemaVersion": "codegen-parity.supplemental-source-index/v1",
+  "date": "2026-11-16",
+  "status": "source-bytes-only-not-runtime-evidence",
+  "originalBaseline": "baseline/index.json",
+  "originalBaselineModified": false,
+  "files": [
+    {
+      "repo": "js",
+      "source": "src/core/code-mappings.mjs",
+      "snapshot": "supplemental/js/src/core/code-mappings.mjs",
+      "bytes": 2028,
+      "sha256": "231c27fce2118a69aa5e67e5d688741da943c6f18167d9392175673583e37a1a",
+      "sourceHead": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+      "reason": "SHARED-SEAMS.md requires exact UTF-8 source-mapping and finalMappingSpan contracts; original 852-file capture omitted this support source.",
+      "byteComparison": "exact-equal-at-capture"
+    },
+    {
+      "repo": "js",
+      "source": "lib/project/graph.mjs",
+      "snapshot": "supplemental/js/lib/project/graph.mjs",
+      "bytes": 2217,
+      "sha256": "d0e1efaaf4c3784094c66f0f77afee59a053a0d5c317c2684e4d56450fb3c47a",
+      "sourceHead": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+      "reason": "formal-domain partition: real project snapshot/generation publication calls.",
+      "byteComparison": "matches-reader-pin-and-exclusive-byte-copy"
+    },
+    {
+      "repo": "js",
+      "source": "lib/knowledge-sqlite.mjs",
+      "snapshot": "supplemental/js/lib/knowledge-sqlite.mjs",
+      "bytes": 7828,
+      "sha256": "096767820645e3e05789ba5c9a701dd9f9c6f6f41f6646cdf03083a2a33fee71",
+      "sourceHead": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+      "reason": "formal-domain partition: exact project knowledge-store write boundary and lifecycle.",
+      "byteComparison": "matches-reader-pin-and-exclusive-byte-copy"
+    },
+    {
+      "repo": "js",
+      "source": "lib/products/journal-readside.mjs",
+      "snapshot": "supplemental/js/lib/products/journal-readside.mjs",
+      "bytes": 11688,
+      "sha256": "d64eb49171b2ce6c468f788a8c8c921b8eb7e21d74c08c019ade9fb5f159362b",
+      "sourceHead": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+      "reason": "Existing projection diff supplementary dependency; closed journal/index gate.",
+      "byteComparison": "matches-reader-pin-and-exclusive-byte-copy"
+    },
+    {
+      "repo": "bc",
+      "source": "src/main/scala/net/imadz/meta/filesystem/FormalSemantics.scala",
+      "snapshot": "supplemental/bc/src/main/scala/net/imadz/meta/filesystem/FormalSemantics.scala",
+      "bytes": 3259,
+      "sha256": "42369c2847888cad4373572354c314479c57b8697e9596c76d66f48b76a4825e",
+      "sourceHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "reason": "event-handler diff: exact formal fold row and semantic model definitions.",
+      "byteComparison": "matches-reader-pin-and-exclusive-byte-copy"
+    },
+    {
+      "repo": "js",
+      "source": "generators/ts-types/bank-types.spec.json",
+      "snapshot": "supplemental/js/generators/ts-types/bank-types.spec.json",
+      "bytes": 356,
+      "sha256": "77df0714e27c41adefc349352f5dc1ee6e59ae4782868664ae180f01018de054",
+      "sourceHead": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+      "reason": "ordinary-review: teaching input, not bank consumption evidence.",
+      "byteComparison": "matches-reader-pin-and-exclusive-byte-copy"
+    },
+    {
+      "repo": "js",
+      "source": "generators/ts-types/README.md",
+      "snapshot": "supplemental/js/generators/ts-types/README.md",
+      "bytes": 22,
+      "sha256": "4959c9b11885301406aaf4a53538e7e17ee0efb35e68e3a446df253e3f186482",
+      "sourceHead": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+      "reason": "ordinary-review: exact single-heading documentation boundary.",
+      "byteComparison": "matches-reader-pin-and-exclusive-byte-copy"
+    }
+  ],
+  "generatorModified": false,
+  "runtimeExecuted": false
+}

@@ -1,0 +1,222 @@
+{
+  "summary": "并行修正已确认的服务规格与F1/F2文档问题，保持未授权实现和原基线不变",
+  "agentCount": 6,
+  "logs": [],
+  "result": {
+    "scope": "docs-only-targeted-corrections",
+    "implementationAuthorized": false,
+    "generationExecuted": false,
+    "results": [
+      {
+        "correction": {
+          "lane": "application-service",
+          "status": "docs-only-corrected; decision-required; implementation-not-authorized",
+          "corrections": [
+            "已同步纠正 MD/JSON 的六项意见，仅编辑分配的两份既存文档。明确 source-fact／user-required／proposed 分账，编辑权记为主集成者分工，不升格为用户逐字原话或实施许可。",
+            "§1.2／scalaVariants、rawWriterCoverage：分开实际文件路径与 ledgerPath。single 台账为 app/...，multi fallback 台账为 app/app/...；两者实际文件均仍在 target/app/...。明确这是 raw writer 缺陷，未修改目标或台账。",
+            "§4.1／rawWriterCoverage、observedSources、coverage：补齐 WriteTerritory.mergeManual 的最近匹配 def 名、同名及匿名块出现序、新块保留 incoming、无标记及旧块无落点拒写；明确不按参数签名匹配，重载重排仍可能错配。补入固定来源及 SHA。",
+            "§6.3、D07／knownCuratedInterfaces：明确 curated repository 和无余额 factory 返回 EntityRef[CreditBalanceCommand]，初始化 factory 返回 Future[Either[iMadzError, EntityRef[CreditBalanceCommand]]]；Examples 的 flatMap 与此不一致。未决收窄为目标合同选择／适配，不再称参考接口未定位。",
+            "§2.2、§10.1／resolvedClarifications：D10 已从 openDecisions 移除。现有 ServiceMethod→ApplicationServiceMethodModel、ParameterMetadata→FieldDef 链完整；独立 Function API 非本族当前必需支撑。",
+            "§5.2／assemblyOwners：恢复 formal-service/play-loader/lifecycle 为 B，Loader／Components 两目标及 assemblyOwner=play-http-assembly 与中央对应行一致；Bootstrap.load/config/pin/create/cleanup 保持 A，未改中央分区。",
+            "§5.3、§7.2、D05／dependsOn、assemblyOwners：引用既有 family-readside-play/resource-directory，目标 kernel 的 application.services 中 ResourceDirectory，精确 owner=family-readside-play/resource-directory/assembly；不另造 trait。dependsOn 明确为接口协同，不作为生成 artifact 依赖环。",
+            "前后记录：MD 56684→63652 bytes，起始 SHA-256=569b7721b8b9083a9b389b8412b3a6b1815c36cda9d1530e4cd3293219efc6ec；JSON 38645→50395 bytes，起始 SHA-256=64e8b995c261cea9b5acf82f9c46f0c58c629cfa04c8cf8676a184a8a884c5ff。6 proposed／32 shared 路径及顺序摘要均未变。JSON 解析、77处相对链接目标和三条中央分类／目标／owner 静态核对通过；不构成运行验收。"
+          ],
+          "files": [
+            {
+              "path": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/application-service.diff.md",
+              "bytes": 63652,
+              "sha256": "250c3b89ca67a16399a1bbefa4ff2f5a906c0ae49fad80b2e7195297b195d8ac"
+            },
+            {
+              "path": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/details/application-service.json",
+              "bytes": 50395,
+              "sha256": "f3a1d380a96decea4e23471bb006e7002b279b588c6f73201dc5578e53351e13"
+            }
+          ],
+          "unresolved": [
+            "D01–D04：classic formal 接线、typed 实现准入、实现槽与重载／改名唯一身份、raw 有限覆盖及共享依赖／注入／import 合同仍待裁定。",
+            "D05：classic multi 目标模块，以及既有 ResourceDirectory 的最终 ABI／所有消费者闭合仍待审；其布局与 owner 不再悬空。",
+            "D06–D07：Play 私有可见性／拆分 ABI／旧输出退役，以及 policy Mechanics 迁移、已知 curated 与 Examples 差异的目标适配仍待审。",
+            "D08：common 演进由用户另派 agent；发布制品字节未锁。本轮未调查或修改 glue。",
+            "D09：同输入完整 expected、双端 fixture、真实接口验收与 CC 工具口径仍未冻结；生成、编译、测试、typecheck、运行和 CC 均未执行。",
+            "退休 support-controller 任意源码槽、projection manualBlocks、implOverrides 三槽继续 blocked，不用 B 兜底；未决收窄不等实施获批。"
+          ]
+        },
+        "review": {
+          "lane": "application-service",
+          "status": "read-only-reviewed; no-remaining-local-findings; decision-required; implementation-not-authorized",
+          "corrections": [
+            "本轮零写入。已复核有限 workflow 结果中指定的六项意见，未发现需要进一步局部修正的问题；两份文档在复核前后均匹配前次返回的 SHA。",
+            "MD §1.2／JSON scalaVariants、rawWriterCoverage：实际输出路径与 ledgerPath 正确分账；single 为 app/...，multi 台账为 app/app/...，实际文件均仍在 target/app/...；明确为 raw writer 缺陷，没有转成目标布局要求。",
+            "MD §4.1／JSON rawWriterCoverage、coverage、observedSources：最近匹配 def 名、同名及匿名块出现序、新块保留 incoming、无标记或旧块无落点拒写、重载重排可能错配均与指定固定源码一致。新增六份局部来源的 bytes/SHA 与固定副本及 baseline 索引一致。",
+            "MD §6.3、D07／JSON knownCuratedInterfaces：curated repository／无余额 factory 的 bare EntityRef、初始化 factory 的 Future[Either] 及 Examples.flatMap 不一致均表述正确；只保留目标选择／适配未决。",
+            "MD §2.2、§10.1／JSON resolvedClarifications：D10 已移出 openDecisions，现有 ServiceMethod→ApplicationServiceMethodModel、ParameterMetadata→FieldDef 链完整；独立 Function API 不再阻塞本族。核心 Model 字段、顺序和默认值与固定源码一致。",
+            "MD §5.2／JSON assemblyOwners：Bootstrap.load/config/pin/create/cleanup 保持 A；Loader／Components／EC／httpFilters／stop hook／pageRenderer 初始化恢复 B，两个目标及 play-http-assembly 均与按精确 id 提取的中央行一致。",
+            "MD §5.3、§7.2、D05／JSON dependsOn、assemblyOwners：既有 resource-directory 的 B 分类、kernel/application.services/ResourceDirectory 目标及 family-readside-play/resource-directory/assembly 均正确；dependsOn 明确为接口协同，不新造 trait 或生成 artifact 依赖环。",
+            "授权与摘要分账一致：MD §1、JSON documentationCorrection 将编辑权写为主集成者分工，未把 agent 提示标成用户逐字原话或实施批准。observedSources.sha256 是来源指纹，beforeFiles 是修正前文档指纹，本次 files 是当前文档指纹，均未冒充 expectedSha；完整 expected 仍未冻结。当前 6 proposed／32 shared 无重复、无交集，顺序摘要与前后记录一致。"
+          ],
+          "files": [
+            {
+              "path": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/application-service.diff.md",
+              "bytes": 63652,
+              "sha256": "250c3b89ca67a16399a1bbefa4ff2f5a906c0ae49fad80b2e7195297b195d8ac"
+            },
+            {
+              "path": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/details/application-service.json",
+              "bytes": 50395,
+              "sha256": "f3a1d380a96decea4e23471bb006e7002b279b588c6f73201dc5578e53351e13"
+            }
+          ],
+          "unresolved": [
+            "D01–D04：classic formal 接线、typed 实现准入、实现槽唯一身份及共享依赖／注入／import 合同仍待裁定。",
+            "D05–D07：classic multi 目标模块、ResourceDirectory 最终 ABI／消费者闭合、Play 私有可见性与旧输出退役、policy 迁移及已知 curated／Examples 差异的目标适配仍待审。",
+            "D08：common 演进由用户另派 agent，发布制品字节未锁；本轮未调查或修改 glue。",
+            "D09：双端 fixture、同输入完整 expected、真实接口验收和 CC 工具口径仍未冻结。生成、validate、roundtrip、编译、测试、typecheck、运行及 CC 均未执行；本次只有静态文档复核。",
+            "退休 support-controller 任意源码槽、projection manualBlocks、implOverrides 三槽在 MD/JSON 中均继续 blocked，不用 B 兜底。局部问题收窄不等于实施获批。"
+          ]
+        }
+      },
+      {
+        "correction": {
+          "lane": "F1-input-target-authorization-correction",
+          "status": "completed-docs-only; same-input-blocked; implementation-not-authorized",
+          "corrections": [
+            "四个写前SHA均匹配，无peer冲突；仅修改指定四份既存文档。",
+            "四文件统一限定U-balance-replies为Deposit点名三方法示例；新增P-balance-replies，将AddInitial/Withdraw两臂保留为curated候选、proposed-default及decision-required。同步D02、逐命令approvedUserOverride/decisionRefs、helper rhsAuthority/rhsStatus及两份MD表；通用成功读新state、失败不persist规则不变，同形RHS不推导授权。",
+            "INPUT-MAPPING.md的userId表格改为无默认表达式：FieldDef.defaultValue=None、JSON null，不是Scala '= None'；empty(userId)仍单独按实参传入userId。",
+            "mapping.json十条命令共21个curated字段的origin改指CP实际独立声明，另以correspondsToRaw定位raw字段槽；PB synthetic仅保留在rawBuilderTemplate，未改原字段、顺序、类型或算法。",
+            "将原两文件创建分工、U-scope及相关开篇标注为主agent分工，而非用户逐字授权；既有制品坐标标为主agent转述，JSON使用artifactCoordinateReportedByIntegrator及明确provenance。保留当前用户docs-only纠正边界，不推导实施许可。",
+            "刷新TARGET-CONTRACT.md及manifest.json对两份输入文档的SHA、bytes、行数和引用行范围；未刷新任何原fixed-source pin以掩盖漂移。静态核对43处自有文档引用范围、37处精确JSON pointer片段、21个CP字段对应及8个选定来源pin；不属于运行验收，CC未测。"
+          ],
+          "files": [
+            {
+              "bytes": 85168,
+              "path": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/f1-credit-balance/INPUT-MAPPING.md",
+              "sha256": "b0005cfa7f17288fd659097b3efb91df6db2a16a6b351aef770d4f0819f411c9"
+            },
+            {
+              "bytes": 213970,
+              "path": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/f1-credit-balance/mapping.json",
+              "sha256": "35c55305d2a8ced3e2eed98b41b9bd641a7bb8e2fec3c3dc4515e0a15d51e980"
+            },
+            {
+              "bytes": 65655,
+              "path": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/expected/f1-credit-balance/TARGET-CONTRACT.md",
+              "sha256": "6c710ad5839f4bcc0717532ed4d02a4b4c65b32e81f6b7077ba5c32a4f5a6463"
+            },
+            {
+              "bytes": 106494,
+              "path": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/expected/f1-credit-balance/manifest.json",
+              "sha256": "1fae465dbeeafbf1c5822e09e411d76088ad6c08dcb1204d4958e021b7f33124"
+            }
+          ],
+          "unresolved": [
+            "AddInitial/Withdraw回复候选仍待逐项采纳；六阶段回复、GetBalance投影及字段级输入绑定仍未闭合。",
+            "默认值、时钟、包/命名/顺序和额外回复等既有决定未解除；无损adapter、九规则、Money/fold金融算法及独立oracle继续blocked，lossless=false。",
+            "common演进归用户另派agent；制品字节/API尚未锁定，本轮未调查或修改glue。",
+            "四个expectedSha全部null；未创建Scala或实际fixture，未执行生成、validate、roundtrip、编译、测试、typecheck或运行验收，CC全部未测。",
+            "support-controller任意path/content、projection manualBlocks、implOverrides三退休源码槽仍blocked，不用B兜底；公共fixture合同、command-helper旧diff及其余非分配文件未修改。"
+          ]
+        },
+        "review": {
+          "lane": "F1-input-target-authorization-correction-readonly-review",
+          "status": "read-only-review-complete; one-provenance-correction-required; same-input-blocked; implementation-not-authorized",
+          "corrections": [
+            "本轮未写任何文件。四份文档的起止SHA均匹配前次修正返回值，无peer冲突；以下files列出只读复核后的原字节指纹。",
+            "剩余一处最小修正：/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/f1-credit-balance/mapping.json:7660（/blocked/7/reason）仍写“用户给定 common-core 目录对应…”。应将首句同步为同文件:7486（/decisions/18/decision）的“主agent转述的既有 common-core 坐标为 net.imadz:common-core_2.13:0.2”；其余blocked/API/制品边界不变。这是漏改的来源标签，不需要调查glue。",
+            "上述单行修正后，仅同步映射文档的新bytes/SHA到 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/expected/f1-credit-balance/TARGET-CONTRACT.md:69，以及 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/expected/f1-credit-balance/manifest.json:360–361、369–370。保持原fixed-source pins与四个expectedSha不变；本轮未执行这些修改。",
+            "指定回复授权修正通过局部复核：四文件的U-balance-replies仅覆盖Deposit；AddInitial/Withdraw使用P-balance-replies、proposed-default及decision-required。逐命令approvedUserOverride/decisionRefs、D02、helper rhsAuthority/rhsStatus及两份MD表一致；通用成功读新state、失败不persist规则保留，未以同形两臂推导批准。",
+            "userId默认值修正一致：FieldDef.defaultValue=None及JSON null表示无Scala默认表达式；empty(userId)仍独立传入userId。十命令21个curated字段的origin均定位CP实际独立声明，correspondsToRaw均准确；十处PB synthetic仅在rawBuilderTemplate。字段名称、类型、顺序与固定CP、raw对应槽及manifest一致，声明写集合仍为原两对四文件；未进行修正前全文的历史diff比较。",
+            "除上述blocked镜像残留外，已核分工、U-scope及制品坐标标签明确区分主agent分工/转述与真实用户要求。当前输入文档pins的SHA、bytes、行数一致；43处自有文档引用行界、37处精确JSON pointer片段及10个选定来源pin核对一致。sourceSha未混作expectedSha；四个expectedSha均null，四个计划Scala目标均不存在。以上仅为静态文档检查。"
+          ],
+          "files": [
+            {
+              "bytes": 85168,
+              "path": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/f1-credit-balance/INPUT-MAPPING.md",
+              "sha256": "b0005cfa7f17288fd659097b3efb91df6db2a16a6b351aef770d4f0819f411c9"
+            },
+            {
+              "bytes": 213970,
+              "path": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/f1-credit-balance/mapping.json",
+              "sha256": "35c55305d2a8ced3e2eed98b41b9bd641a7bb8e2fec3c3dc4515e0a15d51e980"
+            },
+            {
+              "bytes": 65655,
+              "path": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/expected/f1-credit-balance/TARGET-CONTRACT.md",
+              "sha256": "6c710ad5839f4bcc0717532ed4d02a4b4c65b32e81f6b7077ba5c32a4f5a6463"
+            },
+            {
+              "bytes": 106494,
+              "path": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/expected/f1-credit-balance/manifest.json",
+              "sha256": "1fae465dbeeafbf1c5822e09e411d76088ad6c08dcb1204d4958e021b7f33124"
+            }
+          ],
+          "unresolved": [
+            "mapping.json:7660的provenance镜像残留及其修改后的下游文档指纹同步尚未执行；不能宣称授权标签已全部纠正。",
+            "AddInitial/Withdraw候选、六阶段回复、GetBalance投影与字段级输入绑定仍待裁；默认值、时钟、命名/顺序、额外回复等既有决定未解除。无损adapter、九规则、Money/fold金融算法及独立oracle继续blocked，lossless=false。",
+            "common演进由用户另派agent负责，制品字节/API未锁；本轮未调查glue。support-controller任意path/content、projection manualBlocks、implOverrides三退休槽仍blocked，不用B兜底。",
+            "未生成Scala或建立实际fixture，未运行generate、validate、roundtrip、编译、测试、typecheck或任何运行验收；CC全部未测。未修改公共fixture合同、command-helper旧diff或其他文件，文档复核不构成实施批准。"
+          ]
+        }
+      },
+      {
+        "correction": {
+          "lane": "f2-warehouse-input-mapping",
+          "status": "docs-only-corrections-completed; implementation-still-blocked",
+          "corrections": [
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/f2-warehouse/INPUT-MAPPING.md L322 与 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/f2-warehouse/mapping.json 的 independent-HAND.description 均改为“11 份 HAND 源码/配置＋1 份旧 ABI 文档”。未改来源集合。",
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/f2-warehouse/INPUT-MAPPING.md L334、L341 补充 D-evidence-md L69；/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/f2-warehouse/mapping.json 的 incrementBeyondF1[3].baselineEvidence 增加该来源的 [69,69]。F1 raw state 含 userId 的事实不变，未新增 source；引用文档 SHA 与原 pin 一致。",
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/f2-warehouse/INPUT-MAPPING.md L9、B6、B7 的来源注明为“主agent分工转述，非用户逐字原话”；/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/f2-warehouse/mapping.json 同步调整 authorization.authority、commonCore 及 B6/B7 的归因，未新增实施授权。",
+            "写前两份指定 SHA 均匹配。仅局部编辑上述两份文件；静态 JSON 解析及计数检查确认仍为27个固定来源、33项总来源、20 slots、14 expected角色。三条 wire pins、raw/HAND 区别及 blocked 状态未改；未运行生成、编译、测试或其他验收。"
+          ],
+          "files": [
+            {
+              "bytes": 59829,
+              "path": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/f2-warehouse/INPUT-MAPPING.md",
+              "sha256": "a02b5811c93b2e8a5bbef5056957d2edbd4db64209025c0e949f1be69f6bbd17"
+            },
+            {
+              "bytes": 107852,
+              "path": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/f2-warehouse/mapping.json",
+              "sha256": "d00efeb4638a4d9bfec857176a2389dd8798d31f298e5f631cd3e6df550e3547"
+            }
+          ],
+          "unresolved": [
+            "有限 BC 无损 adapter、state/default/FormalFold 消费及 classic 回复映射仍未建立或裁定；ReservationIdentity 算法、完整声明与独立期望值未冻结。",
+            "历史 wire bytes、独立 oracle、完整 HAND 编译闭包、双端产物及目标 expected 全文件仍缺。",
+            "common 演进仍由另派 agent 负责；实施前制品字节未锁，本轮未调查或修改 glue。",
+            "三退休任意源码槽继续 blocked，不用 B 兜底；CC 全部未测。文档纠正完成不构成实施批准、同输入通过或运行验收。"
+          ]
+        },
+        "review": {
+          "lane": "f2-warehouse-input-mapping",
+          "status": "read-only-local-corrections-verified; no-further-correction-found; implementation-still-blocked",
+          "corrections": [
+            "本轮只读复核，未写文件、未重做全量 source 审阅。两份文件在复核前后均匹配用户提供的修正后 SHA；指定范围内未发现还需局部修正的问题。",
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/f2-warehouse/INPUT-MAPPING.md L322 与 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/f2-warehouse/mapping.json L2404 均正确写为“11 份 HAND 源码/配置＋1 份旧 ABI 文档”；来源记录对应 8 Scala、2 proto、1 conf、1 MD，27 个固定来源／33 项总来源未变。",
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/f2-warehouse/INPUT-MAPPING.md L334、L341 与 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/f2-warehouse/mapping.json L2570–2575 已补现有 D-evidence-md L69。该行明确支持 F1 raw state 含 userId；引用文档实际 SHA、bytes 与既有 pin 一致，未新增 source 或改变事实。",
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/f2-warehouse/INPUT-MAPPING.md L9、L356–357 与 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/f2-warehouse/mapping.json L8、L17、L2714、L2719 归因一致，明确为主 agent 分工转述、非用户逐字原话。未将内部提示升格为用户实施授权；implementationApproved 仍为 false。",
+            "跨文件静态核对确认 20 slots、14 expected 角色、三条 wire pins 及 raw／HAND／target 身份分层保持；sourceSha256 是来源文件指纹，不是 layoutSha256 或 expected 输出哈希。14 个角色的 targetPath、actualExpectedPath、actualExpectedSha256 均为 null，generatedThisRun 均为 false；原 onlyWrites 仍仅指定两文件。未执行生成、validate、roundtrip、编译、测试、typecheck 或运行验收。"
+          ],
+          "files": [
+            {
+              "bytes": 59829,
+              "path": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/f2-warehouse/INPUT-MAPPING.md",
+              "sha256": "a02b5811c93b2e8a5bbef5056957d2edbd4db64209025c0e949f1be69f6bbd17"
+            },
+            {
+              "bytes": 107852,
+              "path": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/f2-warehouse/mapping.json",
+              "sha256": "d00efeb4638a4d9bfec857176a2389dd8798d31f298e5f631cd3e6df550e3547"
+            }
+          ],
+          "unresolved": [
+            "既有 B1–B5 保留：有限 BC adapter、state/default/FormalFold 消费、classic 回复映射及 ReservationIdentity 算法／完整声明／独立期望值未冻结；历史 wire bytes、独立 oracle、完整 HAND 编译闭包、双端产物及目标 expected 全文件仍缺。",
+            "既有 B6–B7 保留：common 演进由另派 agent 负责，实施前制品字节未锁；本轮未调查或修改 glue。三退休任意源码槽继续 blocked，不用 B 兜底。",
+            "CC 全部未测，同输入未建立。此次局部文档复核不构成实施批准、生成通过或运行验收。"
+          ]
+        }
+      }
+    ]
+  }
+}

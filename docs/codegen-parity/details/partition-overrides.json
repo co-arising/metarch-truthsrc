@@ -1,0 +1,132 @@
+{
+  "schemaVersion": "codegen-parity.partition-overrides/v1",
+  "authority": "PARTITION-RESOLUTIONS.md",
+  "scope": "中央文档合并的显式分类与construct裁定；不改分组原稿或生产实现",
+  "reclassify": [
+    {"id":"formal-service/computation-port/pure","classification":"A","scalaArtifact":"domain-service","coverage":"declaration-only","resolution":"R01"},
+    {"id":"family-domain-aggregate/computations/port","classification":"A","scalaArtifact":"domain-service","coverage":"declaration-only","resolution":"R01"},
+    {"id":"legacy-domain/computation-port/product","classification":"A","scalaArtifact":"domain-service","coverage":"declaration-only","resolution":"R01"},
+    {"id":"legacy-application/service/computation-port","classification":"A","scalaArtifact":"domain-service","coverage":"declaration-only","resolution":"R01"},
+    {"id":"family-seams-saga/seams-port/computation","classification":"A","scalaArtifact":"domain-service","coverage":"declaration-only","resolution":"R06"},
+    {"id":"family-seams-saga/seams-port/flow","classification":"A","scalaArtifact":"application-service","coverage":"declaration-only","resolution":"R06"},
+    {"id":"retired-seven/ports/domain-contract","classification":"A","scalaArtifact":"domain-service","coverage":"declaration-only","resolution":"R07"},
+    {"id":"retired-seven/ports/domain-service-bridge","classification":"B","scalaArtifact":null,"coverage":"independent-implementation-delegation","resolution":"R07"},
+    {"id":"legacy-orchestration/policy/sharding-mechanics","classification":"A","scalaArtifact":"application-service","coverage":"typed-command-dispatch-method","resolution":"R07"},
+    {"id":"retired-seven/policy-exec/envelope-handler","classification":"B","scalaArtifact":null,"coverage":"policy-delivery-not-readmodel-handler","resolution":"R07"},
+    {"id":"formal-application/pure-rule-parameters/shared","classification":"B","scalaArtifact":null,"coverage":"pure-payload-not-rule-params","resolution":"R04"}
+  ],
+  "mergeDeclarations": [
+    {"from":["formal-domain/exact-representation-carriers/shared"],"into":"formal-domain/ordinary-values/shared","resolution":"R02","variant":"非exact-domain descriptor的所有声明record/nominal，包含codec引用的独立wire/PO表示","conditions":["reference-layout kind=type且无exact-domain descriptor；codec wire/PO ref不改变值声明职责；不同nominal仍分别生成"],"note":"撤销无条件infrastructure迁移；值声明与codec/调用方的最终位置另裁，不制造kernel→glue倒依赖。"},
+    {"from":["family-domain-aggregate/representation/wire","family-domain-aggregate/representation/po"],"into":"family-domain-aggregate/value-object/domain","resolution":"R02","variant":"所有声明nominal/record/exact值，包含独立wire/PO表示声明","conditions":["每个已声明value按真实模型生成；exact来自descriptor；codec引用的wire/PO保持各自nominal身份"],"note":"codecs仍单独B，表示声明并入A但不批准移包或类型合并。"}
+  ],
+  "renameBootstrapRoles": [
+    {"from":"formal-domain/actor-root/standalone","into":"formal-domain/aggregate-bootstrap/standalone","target":"app/{basePath}/infrastructure/bootstrap/{Aggregate}Bootstrap.scala","resolution":"R03"},
+    {"from":"formal-application/aggregate-root/shared","into":"formal-application/aggregate-bootstrap/shared","target":"app/<basePath>/infrastructure/bootstrap/<Aggregate>Bootstrap.scala","resolution":"R03"},
+    {"from":"legacy-domain/actor-root/product","into":"legacy-domain/aggregate-bootstrap/product","target":"app/<base-path>/infrastructure/bootstrap/<A>Bootstrap.scala","resolution":"R03"}
+  ],
+  "patches": [
+    {
+      "id":"formal-application/pure-rule-parameters/shared",
+      "resolution":"R04",
+      "role":"独立纯领域command-payload ADT；不是Actor协议，也不是raw InvariantRule Params制品",
+      "currentConstructs":["共享package/object边界由domain-semantics-assembly汇总；sealed Command及按declaredSignature产生的case class/字段，没有replyTo/Reply/Handler alias","不把载荷声明自动并入formal Rules；已有真正规则Params另行A登记"],
+      "targetPaths":["app/<basePath>/domain/invariant/params/<Aggregate>Commands.scala"],
+      "constructDisposition":[{"current":"sealed Command及declaredSignature有序载荷case classes","target":"app/<basePath>/domain/invariant/params/<Aggregate>Commands.scala","action":"split","reason":"纯载荷与规则参数/Actor协议分别建模；依赖、身份和字段顺序保留"}]
+    },
+    {
+      "id":"formal-domain/actor-behavior/standalone",
+      "resolution":"R03",
+      "currentConstructs":["GetState → Effect.none.thenRun(s => reply ! s)","Execute → command typed match 调 Rules(state,p,hosts)","Left(code) → Effect.none.thenRun Refused；Right(events) → Effect.persist(events).thenRun Accepted(events)","Effect与命令/规则imports属于behavior；EventHandler callback装配单独归bootstrap，不重复拥有"],
+      "constructDisposition":[{"current":"request/command/decision三层match及回复，不包含event callback装配","target":"app/{basePath}/application/aggregates/behaviors/{Aggregate}Behaviors.scala","action":"adapt","reason":"按业务组与真实CommandHelper恢复应用职责，事件应用接线在bootstrap"}]
+    },
+    {
+      "id":"formal-service/strict-definition/module-and-phases",
+      "resolution":"R05",
+      "currentConstructs":["当前Definition共享package/framework imports/object及Args alias，由strict-definition-assembly汇总；具体argsCodec由独立strict-payload-codecs条目拥有","Ports.technical/installed及逐participant-phase接口；fromTechnical/execute/query/OperationNotExecuted或Unknown；check身份/command映射/历史receipt读取；具体receiptCodec body交独立codec条目","bind<phase>检查codec/querySafety/operation身份；definition验证并StrictParticipant/PhaseBinding有序组装；coordinator显式PID/authorizer/timeout/32预算"],
+      "sharedPhysicalOutput":"app/<basePath>/application/<host_stem>Definition.scala",
+      "constructDisposition":[{"current":"模块外壳/Args alias/Ports/fromTechnical/phase check/bind/definition/coordinator（不含具体PayloadCodec实现体）","target":"app/<basePath>/application/services/transactor/<Host>Definition.scala","action":"split","reason":"模块与具体codec分责但共享唯一当前assembler；定义只消费对应codec合同"}]
+    },
+    {
+      "id":"formal-service/invocation-host/direct",
+      "resolution":"R05",
+      "currentConstructs":["共享package/import/object由invocation-host-assembly；Request/Reply与所有Event/State/defaults；operationIdentity/nextResult/validStatus/terminal intent选择归本B，fromEntry与纯completion classify交独立A条目","Delivery残余trait、TechnicalPorts.Installed、setup/ec/pipeToSelf与durable association；Start/Attach判别、Associated/IdentityObserved/ResultIntent/DeliveryAcknowledged/fold/恢复生命周期归本B，具体entry参数映射引用A","wireHostIO追加AdmissionGranted/admitted/Admitted、可选occurrence消息、admissionPending/replies排队；许可后才Start；最终调用HostIO.deliver，原被替换delivery body不重复计当前实现"],
+      "sharedPhysicalOutput":"app/<basePath>/application/<host_stem>Host.scala",
+      "constructDisposition":[{"current":"direct宿主稳定身份、协议、intent/观察/投递ack、准入/生命周期全部状态机；不含已拆出的纯entry/classify子操作","target":"app/<basePath>/application/services/transactor/<Host>Host.scala","action":"split","reason":"不因存在部分FixtureHost对应而把association状态机错归整个A"}]
+    },
+    {
+      "id":"formal-service/host-io/admission-delivery",
+      "resolution":"R05",
+      "role":"HostIO准入与occurrence恢复；completion deliver由独立部分A条目拥有",
+      "currentConstructs":["共享package/import/object由host-io-assembly；admit先entry、association、可选resource-policy，无policy Boolean、有policy Option[String]","可选admitOccurrence先gate再restore；纯准入不持久化或伪造交付完成；deliver方法与TransactionIdentity/result依赖交独立A"],
+      "sharedPhysicalOutput":"app/<basePath>/application/<host_stem>HostIO.scala",
+      "constructDisposition":[{"current":"admit/admitOccurrence完整方法与其依赖","target":"app/<basePath>/application/services/transactor/<Host>HostIO.scala::admit/admitOccurrence","action":"split","reason":"准入保持B；同文件的completion映射/交付有具体strict-fixture-host部分对应"}]
+    },
+    {
+      "id":"formal-application/direct-entry-mapping/shared",
+      "resolution":"R05",
+      "currentConstructs":["fromEntry按完整原始字段映射Args；start消息的参数构造对应raw触发入口映射，不拥有何时Start/Attach的耐久状态决定","classify对已核status映射completion类别；保留JS outcome-unknown与raw分类不同的差距；不包含operationIdentity/nextResult/validStatus/intent/ack"],
+      "targetPaths":["app/<basePath>/application/services/transactor/<Host>EntryMapping.scala"],
+      "constructDisposition":[{"current":"fromEntry/Start参数映射及completion分类纯子操作","target":"app/<basePath>/application/services/transactor/<Host>EntryMapping.scala","action":"split","reason":"仅此部分与raw FixtureHost匹配，association/lifecycle仍B"}]
+    },
+    {
+      "id":"formal-application/direct-association-host/shared",
+      "resolution":"R05",
+      "appendConstructs":["接管原A行误包含的operationIdentity长度前缀UTF8/sha256:、terminalResults/nextResult/validStatus、Start-vs-Attach选择与durable观察/intent/ack；保持完整身份/摘要和异常顺序","wireHostIO替换后的实际delivery委托仅引用HostIO.deliver；被替换的初始body不单独重复计为当前生产内容"]
+    }
+  ],
+  "splitRoles": [
+    {
+      "from":"formal-service/strict-definition/module-and-phases",
+      "newId":"formal-service/strict-payload-codecs/pb",
+      "resolution":"R05",
+      "classification":"A",
+      "scalaArtifact":"strict-fixture-host",
+      "coverage":"partial-concrete-codec-contract",
+      "role":"Strict Args/Receipt的具体PB PayloadCodec；不等于整套fixture host或wire/PO一般codec",
+      "variant":"args-and-phase-receipt",
+      "constructs":["argsCodec的CodecPin、encode DomainConverters→PB ByteString、Try(parseFrom+domain decode)","每phase receiptCodec的pin/typed encode/decode及所需ByteString/Try imports；Header/object共同assembler汇总，不再由Definition模块行重复拥有"],
+      "sources":[{"file":"baseline/js/generators/scala-cqrs-application/render-host.mjs","symbol":"renderDefinitions concrete argsCodec and receiptCodec","lines":"25,40-42"}],
+      "targetPaths":["app/<basePath>/infrastructure/persistence/converters/<Host>PayloadCodecs.scala"],
+      "assemblyOwner":"formal-service/strict-definition-assembly",
+      "fixtureId":"formal-service/strict-payload-codecs-v1",
+      "fixtureConditions":["正确Args/Receipt PB类型与codec pin","坏bytes、错误pin、required/presence；raw length-prefixed wire不是兼容替代"],
+      "openDecisions":["保持PB布局/codec身份；不得改为raw自定义wire洗对齐。","codec移包后的依赖方向由shared owner先定，Definition不可反向依赖外层实现。"]
+    },
+    {
+      "from":"formal-service/invocation-host/direct",
+      "newId":"formal-service/direct-entry-mapping/partial",
+      "resolution":"R05",
+      "classification":"A",
+      "scalaArtifact":"strict-fixture-host",
+      "coverage":"partial-entry-and-completion-mapping",
+      "role":"typed direct入口→Args/Start参数与completion类别映射；耐久association不是此A职责",
+      "variant":"direct-entry",
+      "constructs":["fromEntry有序字段→Args及Start的typed参数构造；不拥有operationIdentity/Start与Attach的状态选择","已核status到completion类别的classify纯映射；保留未知结果区别，不暗加raw的确定失败"],
+      "sources":[{"file":"baseline/js/generators/scala-cqrs-application/render-invocation-host.mjs","symbol":"renderInvocationHosts fromEntry/classify/start parameter mapping","lines":"19,27-29,32,39"}],
+      "targetPaths":["app/<basePath>/application/services/transactor/<Host>EntryMapping.scala"],
+      "assemblyOwner":"formal-service/invocation-host-assembly",
+      "fixtureId":"formal-service/direct-entry-mapping-v1",
+      "fixtureConditions":["完整original到Args字段顺序","状态分类包含unknown；identity校验后分类","不以A存在证明cluster singleton/live source已实现"],
+      "openDecisions":["raw事件源/聚合触发与JS Submit/Observe的接线不相同，部分对应不能当整个fixture已齐。"]
+    },
+    {
+      "from":"formal-service/host-io/admission-delivery",
+      "newId":"formal-service/completion-delivery/partial",
+      "resolution":"R05",
+      "classification":"A",
+      "scalaArtifact":"strict-fixture-host",
+      "coverage":"partial-completion-materialization-delivery",
+      "role":"严格完成结果的expected构造、authority核对与交付callback；不证明耐久结果发布",
+      "variant":"completion",
+      "constructs":["deliver(technical,identity,CompletionContext(original,identity),kind)逐kind有序构造expected result","authorityCompletion→require(actual==expected)→deliveryCompletion；未知kind Future.failed；所需TransactionIdentity/result imports由共享HostIO assembler汇总"],
+      "sources":[{"file":"baseline/js/generators/scala-cqrs-application/render-host-io.mjs","symbol":"renderHostIO completion deliver","lines":"35-39,50-52"}],
+      "targetPaths":["app/<basePath>/application/services/transactor/<Host>HostIO.scala"],
+      "assemblyOwner":"formal-service/host-io-assembly",
+      "fixtureId":"formal-service/completion-delivery-v1",
+      "fixtureConditions":["原original/identity匹配、authority结果全等","错误result/kind拒绝、delivery失败不ack","raw producing-command幂等与JS外置callback需分别证明"],
+      "openDecisions":["receipt-derived result未支持不能填空；raw聚合ask发布与callback的幂等/持久性不同。"]
+    }
+  ],
+  "generatorModified": false,
+  "runtimeExecuted": false
+}

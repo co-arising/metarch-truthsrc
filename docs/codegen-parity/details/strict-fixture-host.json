@@ -1,0 +1,248 @@
+{
+  "group": "strict-fixture-host",
+  "artifactIds": ["strict-fixture-host"],
+  "diffs": [
+    {
+      "artifactId": "strict-fixture-host",
+      "file": "diffs/strict-fixture-host.diff.md",
+      "status": "decision-required",
+      "scalaVariants": [
+        {
+          "id": "suppressed",
+          "condition": "CodegenMain traditional 分支没有 admitted strict plan；本族输出零文件。未运行。",
+          "outputPaths": []
+        },
+        {
+          "id": "money-single",
+          "condition": "strict plan 每个 model；moneyCodecName.nonEmpty；!multiProject。T 为隔离目标绝对根，P 为 module package 的斜线形式；五个 production 文件加两个 test。没有本轮同输入输出。",
+          "outputPaths": [
+            "<T>/app/<P>/types.scala",
+            "<T>/app/<P>/<moneyCodecName>.scala",
+            "<T>/app/<P>/<argsCodecName>.scala",
+            "<T>/app/<P>/FixtureHost.scala",
+            "<T>/app/<P>/<entryName>.scala",
+            "<T>/test/<P>/FixtureSafetySpec.scala",
+            "<T>/test/<P>/FixtureDeploymentNode.scala"
+          ]
+        },
+        {
+          "id": "collection-single",
+          "condition": "strict plan；moneyCodecName 为空；argsFields 含 FixtureCollectionShape；!multiProject。两份 test 读取 bounded-collection 资源。未运行。",
+          "outputPaths": [
+            "<T>/app/<P>/types.scala",
+            "<T>/app/<P>/StrictWire.scala",
+            "<T>/app/<P>/<argsCodecName>.scala",
+            "<T>/app/<P>/FixtureHost.scala",
+            "<T>/app/<P>/<entryName>.scala",
+            "<T>/test/<P>/FixtureSafetySpec.scala",
+            "<T>/test/<P>/FixtureDeploymentNode.scala"
+          ]
+        },
+        {
+          "id": "strict-multi",
+          "condition": "strict plan 且 multiProject；五个 production 文件归 glue，test 与 strict entry bootstrap wiring suppress。Builder 仍要求第二 step funding。未运行。",
+          "outputPaths": [
+            "<T>/modules/glue/src/main/scala/<P>/types.scala",
+            "<T>/modules/glue/src/main/scala/<P>/<moneyCodecName-or-StrictWire>.scala",
+            "<T>/modules/glue/src/main/scala/<P>/<argsCodecName>.scala",
+            "<T>/modules/glue/src/main/scala/<P>/FixtureHost.scala",
+            "<T>/modules/glue/src/main/scala/<P>/<entryName>.scala"
+          ]
+        },
+        {
+          "id": "unsettled-shape-combinations",
+          "condition": "money+collection、text-only、empty args 的 production/test 分支选择不等于可用 profile；需要 D4 明确准入或扩展，不虚构成功输出。",
+          "outputPaths": []
+        }
+      ],
+      "jsSources": [
+        {
+          "file": "generators/saga-dsl/emit-strict.mjs",
+          "symbols": ["emitStrictFiles", "renderFiles", "model", "typesFile", "strictWireFile", "moneyFile", "argsFile"],
+          "lane": "legacy",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/saga-dsl/emit-strict-host.mjs",
+          "symbols": ["emitStrictHostFiles", "phaseBindings", "triggerBindings", "completionBindings", "fixtureHost", "entry"],
+          "lane": "legacy",
+          "disposition": "replace"
+        },
+        {
+          "file": "generators/saga-dsl/emit-strict-spec.mjs",
+          "symbols": ["emitStrictSpecFiles", "fabFamily", "phaseHelpers", "moneyEvidenceSpec", "moneyTerminalEvidenceSpec", "moneyPrepareTerminalBarrierSpec", "moneyIncomingPositiveSpec"],
+          "lane": "legacy",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/run-all.mjs",
+          "symbols": ["strictSourceEntries", "emitStrictFiles", "emitStrictHostFiles", "emitStrictSpecFiles"],
+          "lane": "legacy",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/saga-dsl/generate.mjs",
+          "symbols": ["generate", "runtimeBlocked", "buildStrictPlan"],
+          "lane": "legacy",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/scala-cqrs-application/render-host.mjs",
+          "symbols": ["renderDefinitions"],
+          "lane": "formal",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/scala-cqrs-application/produce.mjs",
+          "symbols": ["applicationRegistry", "finite-host-dsl"],
+          "lane": "formal",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/scala-cqrs-application/produce-effect.mjs",
+          "symbols": ["createEffectRegistry"],
+          "lane": "formal",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/generate.mjs",
+          "symbols": ["inherited", "registry", "generate"],
+          "lane": "formal",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "lib/products/generate-cli.mjs",
+          "symbols": ["registeredProductProducer", "generateProductCli", "planCompiledProducts", "implementationProducers"],
+          "lane": "formal",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/scala-cqrs-saga-monarch-v1/generate.mjs",
+          "symbols": ["generate", "resolveSagaMonarchTarget"],
+          "lane": "family",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/scala-cqrs-saga-monarch-v1/render.mjs",
+          "symbols": ["render", "templates"],
+          "lane": "family",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/scala-cqrs-saga-monarch-v1/templates/saga-phases.mjs",
+          "symbols": ["sagaPhasesTemplate"],
+          "lane": "family",
+          "disposition": "not-wired"
+        }
+      ],
+      "writeSet": [
+        "generators/strict-fixture-host/model.mjs (proposed; 本族 owner)",
+        "generators/strict-fixture-host/build-model.mjs (proposed; 本族 owner)",
+        "generators/strict-fixture-host/render-files.mjs (proposed; 本族物理文件集合唯一 assembly owner)",
+        "generators/strict-fixture-host/templates/types.mjs (proposed)",
+        "generators/strict-fixture-host/templates/wire.mjs (proposed)",
+        "generators/strict-fixture-host/templates/args-codec.mjs (proposed)",
+        "generators/strict-fixture-host/templates/host.mjs (proposed)",
+        "generators/strict-fixture-host/templates/entry.mjs (proposed)",
+        "generators/strict-fixture-host/templates/safety-spec.mjs (proposed)",
+        "generators/strict-fixture-host/templates/deployment-node.mjs (proposed)",
+        "generators/saga-dsl/emit-strict-host.mjs (future adapt; 切口由集成者协调)",
+        "generators/saga-dsl/emit-strict-spec.mjs (future adapt; 切口由集成者协调)",
+        "generators/saga-dsl/emit-strict.mjs (future split; strict module owner 与集成者独占)",
+        "generators/run-all.mjs (future wiring; 集成者独占)",
+        "generators/scala-cqrs-application/produce.mjs (conditional D2; 集成者独占)",
+        "generators/scala-cqrs-application/render-host.mjs (conditional D2; 不覆盖银行 PB/technical port 合同)",
+        "generators/scala-cqrs-play-service/generate.mjs (conditional D2; 集成者独占)",
+        "lib/products/generate-cli.mjs (conditional D2; 集成者独占)"
+      ],
+      "dependsOn": [
+        "shared-layout-types",
+        "strict-saga-module",
+        "application-protocol",
+        "command-helper",
+        "aggregate-behavior",
+        "domain-entity",
+        "event-handler",
+        "aggregate-rules-formal",
+        "shared-writer-anchors",
+        "application-bootstrap"
+      ],
+      "glue": [
+        "net.imadz.infra.saga.strict.PayloadCodec",
+        "net.imadz.infra.saga.strict.CodecPin",
+        "net.imadz.infra.saga.strict.PhaseOutcome",
+        "net.imadz.infra.saga.strict.ConfirmedReceipt",
+        "net.imadz.infra.saga.strict.NotExecuted",
+        "net.imadz.infra.saga.strict.Unknown",
+        "net.imadz.infra.saga.strict.OperationIdentity",
+        "net.imadz.infra.saga.strict.TransactionIdentity",
+        "net.imadz.infra.saga.strict.OperationRequest",
+        "net.imadz.infra.saga.strict.PhasePort",
+        "net.imadz.infra.saga.strict.PhaseBinding",
+        "net.imadz.infra.saga.strict.QuerySafety.DeclaredReadOnly",
+        "net.imadz.infra.saga.strict.StrictSagaDefinition",
+        "net.imadz.infra.saga.strict.StrictSagaCoordinator",
+        "net.imadz.infra.saga.strict.StrictState",
+        "net.imadz.infra.saga.strict.StrictStatus",
+        "net.imadz.infra.saga.strict.StrictEvent",
+        "net.imadz.infra.saga.strict.Evidence",
+        "net.imadz.infra.saga.strict.ReconcileAuthorizer",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.CommandHelper",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.runReplyingPolicy",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.RunnablePolicyWithHelper.replyWith",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.RunnablePolicyWithHelper.replyWithAndPublish",
+        "akka.actor.typed.ActorRef",
+        "akka.actor.typed.ActorSystem",
+        "akka.actor.typed.Scheduler",
+        "akka.actor.typed.scaladsl.AskPattern",
+        "akka.cluster.sharding.typed.scaladsl.ClusterSharding",
+        "akka.cluster.sharding.typed.scaladsl.EntityRef",
+        "akka.cluster.typed.ClusterSingleton",
+        "akka.cluster.typed.SingletonActor",
+        "akka.persistence.typed.PersistenceId",
+        "akka.persistence.typed.scaladsl.EventSourcedBehavior",
+        "akka.persistence.typed.scaladsl.Effect",
+        "akka.contrib.persistence.mongodb.ScalaDslMongoReadJournal",
+        "akka.persistence.query.PersistenceQuery",
+        "akka.persistence.query.EventEnvelope",
+        "akka.stream.KillSwitches",
+        "akka.stream.UniqueKillSwitch",
+        "akka.stream.SystemMaterializer",
+        "akka.stream.scaladsl.Sink",
+        "akka.stream.scaladsl.Keep",
+        "com.google.protobuf.ByteString",
+        "akka.actor.testkit.typed.scaladsl.ActorTestKit",
+        "akka.persistence.testkit.scaladsl.PersistenceTestKit",
+        "com.typesafe.config.ConfigFactory",
+        "org.scalatest.funsuite.AnyFunSuite",
+        "java.security.MessageDigest.isEqual"
+      ],
+      "openDecisions": [
+        "D1：BC strictIndependentNamespace 明确拒绝业务三层，而 approved-target 只准三层；裁定新 profile/admission、module/codec/entry/type implementationFqn 迁移和 types→Types，保持 PID/codec/业务身份。",
+        "D2：formal finite-host 为 PB 与 external technical ports，不调用 FixtureHost renderer；决定新增 fixture profile 或仅维护 legacy，对产品输入、注册与唯一 assembly owner 签收，不替换银行 InvocationHost。",
+        "D3：明确单字段 Reply、无额外参数 query、command 输入顺序、resource 槽、publication txid+replyTo、event family/publication face、trigger 额外 opId 的准入约束或泛化接口。",
+        "D4：裁定 money+collection/text-only/empty args、List/Vector、64 上限、UTF8/length 拒绝与 StrictWire 物理共文件策略；不静默改变有效载荷或 pin。",
+        "D5：普通 execute 无 recover、query 固定 input.resource 与错误插值、q 不 escape、共享输出碰撞须先定位 raw 字节再批准有限修正；不修改基线。",
+        "D6：裁定 outcome-unknown 与 RecoveryRequired/Uncertain 的映射、event source 的 terminal 选择、publishCompletion reply.error 与重试责任。",
+        "D7：controlled map absence→NotExecuted(true) 的 fixture 限制不得降级 bank technical/family fenced absence，明确生产禁用边界。",
+        "D8：BC 默认 runtime 0.2、candidate 与 JS 冻结 0.3.0 的真实 JAR/API 供给未验证；固定既有坐标/SHA，不发布或升级 runtime 洗绿。",
+        "D9：执行前收敛 legacy run-all 的全部 execSync/旁路写入以及 BC optional ledger/anchor 写面；当前仅源内容检视，不授权运行。",
+        "D10：限定 CreditBalance Money 与 wafer fixture 的硬编码业务/测试边界；P21/P22 BC/JS 规则参数容器与资源差异须随 rules 制品裁定。"
+      ],
+      "extraSources": [
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/AGENTS.md | sha256=8bfd761390a6fc90b09663157f9d35b23c0c58b20c9f6a41dd5698450015d601 | repository-guidance",
+        "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/AGENTS.md | sha256=660668bdf6ccb02cf8d27ebdf2a977ce8d1e595b0d8fafc1f6aab2fa35350ff8 | repository-guidance",
+        "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/CLAUDE.md | sha256=5d1cb1236a225899eb9790c882c5d27bb850842a6cf57f9cef19b74c4a3a26f1 | repository-guidance",
+        "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/MAINLINE.md | sha256=c95fe1468a6f1657d8c7a0629f4dfe1cd9cbfa100a5f2194f4747cbde55de0a4 | repository-guidance",
+        "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/resources/codegen/templates/bounded-collection-FixtureSafetySpec.scala.tpl | sha256=9bf0de74ea6ee867f5eedb851dc6a6d4ce10060d110763893d99f3b4f7cdf72f | bytes=34734",
+        "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/resources/codegen/templates/bounded-collection-FixtureDeploymentNode.scala.tpl | sha256=c8fcde0fb8ac9e77d597a5c958de9636dd2009ff8f1e9db69fee98e74e3e2ce0 | bytes=13341",
+        "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/resources/codegen/templates/money-prepare-evidence.scala.tpl | sha256=d8054bd55326fbc6441ddce2ac05d2536fdb6b44f0326a760941ea6a26c2141e | bytes=17252",
+        "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/resources/codegen/templates/money-terminal-evidence.scala.tpl | sha256=8fab37329b1a8b269fcc7acbf178c405db088a3dd33abd73be3acc00773afc6a | bytes=20764",
+        "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/resources/codegen/templates/money-prepare-terminal-barrier.scala.tpl | sha256=962cb3b873aaa9157ae899af560969aef4e4d33e42dcce98254504be6de659c8 | bytes=9819",
+        "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/resources/codegen/templates/money-incoming-positive.scala.tpl | sha256=2be68a34dfef0a922dd54a6f2bc4f5860b1a7d4bcebf21b707df67383de008ed | bytes=6841"
+      ]
+    }
+  ],
+  "generatorsModified": false,
+  "runtimeExecuted": false
+}

@@ -1,0 +1,476 @@
+[
+  {
+    "resolutionId": "TOR-01-single-projection-resource-owner",
+    "logicalIds": [
+      "formal-service/journal-projection/source-runtime",
+      "formal-service/journal-handler/ingestion"
+    ],
+    "patches": [
+      {
+        "id": "formal-service/journal-projection/source-runtime",
+        "targetPaths": [
+          "app/<basePath>/infrastructure/projection/<Store>Projection.scala"
+        ],
+        "currentConstructs": [
+          "J:11-24,26,41,43-51,210: package/imports, companion shell, owner documentation, final Projection class and constructor; journal/bindings/dataSource and implicit system/ec remain its dependencies.",
+          "J:30-35: Journal.namespace, persistenceIds(), currentEvents(pid,after), events(pid,after). Envelope and Bindings declarations are allocated only to the handler logical row in this same file.",
+          "J:52-57: namespace, repository, materializer, serialization, stop (the SharedKillSwitch), allowedKinds.",
+          "J:58-66: watches, catchUps, discovery, poll, closed, initialized, pendingWork, drained, shutdownResult.",
+          "J:68-81: tracked; J:96-103: initialize; J:125-156: catchUp; J:157: invalidate; J:158-168: watch; J:169-176: discover; J:177-192: start, including Runnable.run at J:182-188; J:193-208: shutdown; J:209: close."
+        ],
+        "constructDisposition": [
+          {
+            "current": "J:11-24,26,41,43-51,210: package, all emitted Scala imports, companion/class shells, constructor dependencies and non-null check",
+            "target": "app/<basePath>/infrastructure/projection/<Store>Projection.scala::file and Projection constructor",
+            "action": "retain",
+            "reason": "One physical owner and one initialization site. Retain imports for both logical rows, including Projection._ and Repository.Payload. The companion shell does not claim the handler-owned Envelope/Bindings declarations. Do not move JDBC/Akka infrastructure into an application class merely to satisfy a filename convention."
+          },
+          {
+            "current": "J:30-35: Journal.namespace, persistenceIds, currentEvents, events",
+            "target": "app/<basePath>/infrastructure/projection/<Store>Projection.scala::Projection.Journal",
+            "action": "retain",
+            "reason": "Keep the existing source contract and its existing Envelope reference; no new source or lifecycle API."
+          },
+          {
+            "current": "J:52 namespace; J:53 repository; J:54 materializer; J:55 serialization; J:56 stop; J:57 allowedKinds",
+            "target": "app/<basePath>/infrastructure/projection/<Store>Projection.scala::Projection resource fields",
+            "action": "retain",
+            "reason": "Each named field is declared exactly once in the same class. repository is the sole repository instance used here; serialization is the same Akka extension used by payload; materializer and stop are shared by discovery/watch. journal, dataSource and system are borrowed, not newly owned or closed."
+          },
+          {
+            "current": "J:58 watches; J:59 catchUps; J:60 discovery; J:61 poll; J:62 closed; J:63 initialized; J:64 pendingWork; J:65 drained; J:66 shutdownResult",
+            "target": "app/<basePath>/infrastructure/projection/<Store>Projection.scala::Projection lifecycle fields",
+            "action": "retain",
+            "reason": "One synchronized state owner; no second maps, initialized cache, counter, promise, poll or shutdown result in Lifecycle or Handler."
+          },
+          {
+            "current": "J:68-81: tracked[A]()(work)",
+            "target": "app/<basePath>/infrastructure/projection/<Store>Projection.scala::Projection.tracked",
+            "action": "retain",
+            "reason": "Retain closed rejection, synchronous NonFatal capture, pendingWork increment/decrement and parasitic completion on this owner's monitor. Do not flatten nested tracked calls as part of ownership correction."
+          },
+          {
+            "current": "J:96-103: initialize()",
+            "target": "app/<basePath>/infrastructure/projection/<Store>Projection.scala::Projection.initialize",
+            "action": "retain",
+            "reason": "The sole initialized cache retains the Future from tracked repository.initialize, including its existing failure behavior."
+          },
+          {
+            "current": "J:125-156: catchUp(pid)",
+            "target": "app/<basePath>/infrastructure/projection/<Store>Projection.scala::Projection.catchUp",
+            "action": "retain",
+            "reason": "Keep same-PID Promise reservation before work, identity-before-SQL, serialized calls to this.project, frontier observation, failure invalidation/suppressed cleanup, and parasitic cache removal together."
+          },
+          {
+            "current": "J:157: invalidate(pid)",
+            "target": "app/<basePath>/infrastructure/projection/<Store>Projection.scala::Projection.invalidate",
+            "action": "retain",
+            "reason": "Uses this repository; do not introduce a separate tracked wrapper or repository. Its catchUp/watch callers retain their current tracking boundaries."
+          },
+          {
+            "current": "J:158-168: watch(pid)",
+            "target": "app/<basePath>/infrastructure/projection/<Store>Projection.scala::Projection.watch",
+            "action": "retain",
+            "reason": "Keep identity, watches, stop.flow, mapAsync(1)(project), completion invalidation and tracked completion on the same owner."
+          },
+          {
+            "current": "J:169-176: discover()",
+            "target": "app/<basePath>/infrastructure/projection/<Store>Projection.scala::Projection.discover",
+            "action": "retain",
+            "reason": "Keep the single potentially infinite discovery subscription and its tracked lifetime; discovery completion is not readiness."
+          },
+          {
+            "current": "J:177-192: start(), including J:182-188 Runnable.run()",
+            "target": "app/<basePath>/infrastructure/projection/<Store>Projection.scala::Projection.start and its local Runnable.run",
+            "action": "retain",
+            "reason": "The only poll is scheduled using the existing system/ec, synchronizes on this Projection, discovers and invokes this.catchUp. The nested Runnable does not become another lifecycle owner."
+          },
+          {
+            "current": "J:193-208: shutdown()",
+            "target": "app/<basePath>/infrastructure/projection/<Store>Projection.scala::Projection.shutdown",
+            "action": "retain",
+            "reason": "Preserve order: reuse a cached shutdown result if present; otherwise mark closed, cancel poll, shut down stop, complete/wait for drained, follow the existing initialized Future, and only then repository.write(_.invalidateAll()); cache the resulting Future before returning. No external journal/DataSource/ActorSystem close."
+          },
+          {
+            "current": "J:209: close()",
+            "target": "app/<basePath>/infrastructure/projection/<Store>Projection.scala::Projection.close",
+            "action": "retain",
+            "reason": "Retain the configured bounded Await on this.shutdown; no extra cleanup owner or new shutdown semantics."
+          }
+        ],
+        "openDecision": [
+          "Replace the proposed Projection.scala plus ProjectionLifecycle.scala split with this one retained infrastructure file; the effective target disposition is retain, not split. No ProjectionLifecycle.scala is allocated by this correction; retain the existing logical A classification and assembly owner.",
+          "A later application-facing projection/lifecycle API or package relocation requires a separate explicit content/API decision. This documentation correction neither specifies a generic lifecycle engine nor approves implementation, schema, runtime or parity changes."
+        ]
+      },
+      {
+        "id": "formal-service/journal-handler/ingestion",
+        "targetPaths": [
+          "app/<basePath>/infrastructure/projection/<Store>Projection.scala"
+        ],
+        "currentConstructs": [
+          "J:27-29: Envelope(pid,sequenceNr,event) and its constructor require; J:36-40: Bindings.identity, fold, indexes.",
+          "J:82-88: private identity(pid); J:89-95: private payload(event).",
+          "J:104-121: project(envelope), including its sole write-session callback; J:122-124: read(f), including its separate read-session callback."
+        ],
+        "constructDisposition": [
+          {
+            "current": "J:27-29: Envelope fields and validation",
+            "target": "app/<basePath>/infrastructure/projection/<Store>Projection.scala::Projection.Envelope",
+            "action": "retain",
+            "reason": "A single declaration in the existing companion, referenced by Journal and project; not copied to a Handler companion."
+          },
+          {
+            "current": "J:36-40: Bindings.identity(pid), fold(row,event), indexes(session,row)",
+            "target": "app/<basePath>/infrastructure/projection/<Store>Projection.scala::Projection.Bindings",
+            "action": "retain",
+            "reason": "Keep these existing supplied contracts, including Repository#Session for indexes. No new adapter, session abstraction or business dispatch API is introduced."
+          },
+          {
+            "current": "J:82-88: identity(pid)",
+            "target": "app/<basePath>/infrastructure/projection/<Store>Projection.scala::Projection.identity",
+            "action": "retain",
+            "reason": "Directly uses this.bindings and this.allowedKinds, with the current PID/kind/resource bounds before initialization or SQL in project/catchUp."
+          },
+          {
+            "current": "J:89-95: payload(event)",
+            "target": "app/<basePath>/infrastructure/projection/<Store>Projection.scala::Projection.payload",
+            "action": "retain",
+            "reason": "Directly uses the one private serialization field. Preserve GeneratedMessage bytes and the Akka serializer identifier/manifest/bytes branches exactly; no Handler-local serialization instance."
+          },
+          {
+            "current": "J:104-121: project(envelope), including J:106-120 repository.write session body",
+            "target": "app/<basePath>/infrastructure/projection/<Store>Projection.scala::Projection.project",
+            "action": "retain",
+            "reason": "The logical handler remains a method of the resource owner: identity then tracked then initialize then one repository.write. Its session owns ensureRow, event lookup, append and indexes; payload and fold occur within that callback. Preserve duplicate byte equality/no index rewrite, addExact contiguous sequence check and transaction failure propagation. Never open a second session for indexes or detach work from tracked."
+          },
+          {
+            "current": "J:122-124: read[A](f)",
+            "target": "app/<basePath>/infrastructure/projection/<Store>Projection.scala::Projection.read",
+            "action": "retain",
+            "reason": "Uses the same repository and tracked owner but its own repository.read callback/session, not project's write session. Preserve the absence of an initialize call in this method."
+          }
+        ],
+        "openDecision": [
+          "Handler is a logical responsibility, not a newly approved physical class. The effective target disposition is retain, not split. Remove application/projection/handlers/<Store>Handler.scala from this row's immediate target paths; its four methods stay in Projection with their existing visibility and direct private dependencies.",
+          "If a later change extracts Handler, first decide a typed invocation/visibility boundary that preserves the same serialization owner, project write session, initialized Future and full tracked lifetime. Do not expose private fields, manufacture an API or duplicate resources in this correction."
+        ]
+      }
+    ],
+    "sourceRefs": [
+      {
+        "id": "finding",
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/details/partition-workflow-results.json",
+        "jsonPointer": "/result/lanes/0/reviews/0/issues/2"
+      },
+      {
+        "id": "rows",
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-service.json",
+        "jsonPointers": ["/logicalOutputs/71", "/logicalOutputs/72"]
+      },
+      {
+        "id": "J",
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-play-service/render-journal-readside.mjs",
+        "symbol": "renderProjection",
+        "lines": "9-212"
+      }
+    ],
+    "reason": "Documentation-only replacement recommendations for two existing logical rows, not applied to the fragments or central file. The frozen emitter has one resource owner with private cross-method dependencies. Retaining its physical location is the minimal semantics-preserving allocation; the two logical responsibilities remain distinct without inventing files or APIs. Paths are generated-artifact templates relative to an unspecified application root, not files created by this correction."
+  },
+  {
+    "resolutionId": "TOR-02-play-declarations-versus-references",
+    "logicalIds": [
+      "formal-service/service-composition/factory-contract",
+      "formal-service/page-contract/renderer",
+      "formal-service/http-controller/actions",
+      "formal-service/page-delivery/http-presentation"
+    ],
+    "patches": [
+      {
+        "id": "formal-service/service-composition/factory-contract",
+        "targetPaths": [
+          "app/<basePath>/infrastructure/bootstrap/<Service>Composition.scala"
+        ],
+        "currentConstructs": [
+          "S:79-83: Composition extends AutoCloseable, authority, bindings, ready and conditional pages: Option[PageRenderer] = None.",
+          "S:84-88: Factory.implementation, version, create(ApplicationLoader.Context).",
+          "S:89-92: requireInstalled(value: Composition), including endpoint pins and the conditional P:15-16 installedPages local and renderer pin require."
+        ],
+        "constructDisposition": [
+          {
+            "current": "S:79-83: Composition declaration, authority/bindings/ready; specifically S:83 pages default None",
+            "target": "app/<basePath>/infrastructure/bootstrap/<Service>Composition.scala::Composition",
+            "action": "split",
+            "reason": "Composition is the sole declaration owner of pages. Its PageRenderer type is a reference to the renderer contract, not a reason to emit pages in that contract file. Emit pages only under the frozen hasPages condition."
+          },
+          {
+            "current": "S:84-88: Factory implementation/version/create",
+            "target": "app/<basePath>/infrastructure/bootstrap/<Service>Composition.scala::Factory",
+            "action": "split",
+            "reason": "Preserve the existing factory member contracts, including create's Composition result."
+          },
+          {
+            "current": "S:89-92 and P:15-16: complete requireInstalled body, including val installedPages = value.pages and its non-null/exact renderer implementation/version require",
+            "target": "app/<basePath>/infrastructure/bootstrap/<Service>Composition.scala::requireInstalled(value: Composition)",
+            "action": "split",
+            "reason": "Keep all root-composition validation in this one existing method. The page pin statements are emitted inside this method, not a second PageRenderer method. No separately delegated validation API is proposed."
+          }
+        ],
+        "openDecision": [
+          "No renderer-validation extraction is selected. Eventual source nesting/import wiring follows the existing naming/assembly decision process; this patch assigns member bodies and does not approve a new Factory or PageRenderer API."
+        ]
+      },
+      {
+        "id": "formal-service/page-contract/renderer",
+        "targetPaths": [
+          "app/<basePath>/infrastructure/connectors/http/<Service>PageRenderer.scala"
+        ],
+        "currentConstructs": [
+          "P:3-9: PageRenderer trait with implementation, version, shell, script, render(endpointId,status,value).",
+          "S:83 and P:15-16 are Composition-owned references to this contract, not declarations or validation bodies owned by this row."
+        ],
+        "constructDisposition": [
+          {
+            "current": "P:3-9: PageRenderer; implementation at P:4, version at P:5, shell at P:6, script at P:7, render(endpointId:String,status:Int,value:JsValue):String at P:8",
+            "target": "app/<basePath>/infrastructure/connectors/http/<Service>PageRenderer.scala::PageRenderer",
+            "action": "split",
+            "reason": "Own only this existing interface and its JsValue type dependency. Delete the pages and requireInstalled ownership claims from this row; their sole owner is the Composition row. No implementation of business HTML/JavaScript is added."
+          }
+        ],
+        "openDecision": [
+          "None for these duplicate declarations: PageRenderer does not declare Composition.pages or own the renderer pin-check body. Keep pages conditional; do not turn the emitter helper pageRendererRequirement into an invented Scala API."
+        ]
+      },
+      {
+        "id": "formal-service/http-controller/actions",
+        "targetPaths": [
+          "app/controllers/<Service>Controller.scala"
+        ],
+        "currentConstructs": [
+          "S:120-128 and S:132-156: no-pages invoke/action bodies and tuple-typed action parameter; reference the existing routes row for the actions table.",
+          "P:53: Response(status,value) declaration; P:59: failure(error) body; P:75-83: pages-mode invoke body.",
+          "P:91-121: complete pages-mode action body, including parser local P:92-97 and parser-error conversion P:95; controllerComponents/executionContext and Play/JSON/Future/NonFatal imports are dependencies.",
+          "P:95 and P:119 call the one Pages.response body; neither call owns or duplicates that rendering method."
+        ],
+        "constructDisposition": [
+          {
+            "current": "S:120-128,132-156: no-pages invoke/action",
+            "target": "app/controllers/<Service>Controller.scala::invoke and action (no-pages variant)",
+            "action": "split",
+            "reason": "Retain typed endpoint Reads/run/Writes, ready/authentication/roles/CSRF/body processing and failure mapping. The no-pages tolerantText parser does not acquire the pages-only conversion."
+          },
+          {
+            "current": "P:53: Response(status: Int, value: JsValue)",
+            "target": "app/controllers/<Service>Controller.scala::Response",
+            "action": "split",
+            "reason": "One declaration, shared by reference with Pages.response and the route contract. Pages owns presentation of Response, not a second Response declaration."
+          },
+          {
+            "current": "P:59: failure(error: Failure): Response; P:75-83: invoke[I,O](...): Future[Response]",
+            "target": "app/controllers/<Service>Controller.scala::failure and invoke (pages variant)",
+            "action": "split",
+            "reason": "Own these action-result construction bodies; reference the sole Response declaration in this file."
+          },
+          {
+            "current": "P:91-121: action, specifically P:92-97 parser construction and P:95 parsed.left.map error-to-Response-to-response call",
+            "target": "app/controllers/<Service>Controller.scala::action, including its local parser and conversion callback",
+            "action": "split",
+            "reason": "The complete parser and error conversion stay nested in action, with the same row, controllerComponents, materializer/execution dependencies and 65536 limit. P:95 constructs Response with result.header.status and invalid-request, then calls Pages.response; P:119 also calls Pages.response. Neither body is copied into Pages. Preserve the ready/authentication/CSRF and recovery order of this variant."
+          }
+        ],
+        "openDecision": [
+          "The parser body owner is resolved, not deferred. Later physical extraction must explicitly wire the existing response dependency and decide visibility of currently private Response/Route/response; do not silently widen them, duplicate them or invent a parser/renderer API here.",
+          "The unchanged http-routes row continues to own Route/table/router constructs (P:54-55,84-90,122-130). This correction does not redesign routes or authorize the proposed conf/routes conversion."
+        ]
+      },
+      {
+        "id": "formal-service/page-delivery/http-presentation",
+        "targetPaths": [
+          "app/controllers/<Service>Pages.scala"
+        ],
+        "currentConstructs": [
+          "P:56-58: staticHeaders, htmlHeaders and unavailableHtml; emitted CSP/unavailable document constants originate at P:28-29.",
+          "P:60-65: response(row,value) presentation body; P:66-74: staticPage(script) body.",
+          "Response is referenced from the Controller declaration at P:53; parser-error conversion is a Controller-owned caller at P:92-97, not a Pages-owned body.",
+          "The pageRenderer instance is a dependency: its existing requireInstalled(composition) then composition.pages.get initialization at P:49-52 remains owned by the play-loader/lifecycle row."
+        ],
+        "constructDisposition": [
+          {
+            "current": "P:56 staticHeaders; P:57 htmlHeaders; P:58 unavailableHtml; P:28-29 embedded constant values",
+            "target": "app/controllers/<Service>Pages.scala::staticHeaders, htmlHeaders and unavailableHtml",
+            "action": "split",
+            "reason": "One owner of no-store/nosniff/referrer headers, exact CSP and unavailable HTML. Preserve the emitted values and MIME behavior; P:28-29 are emitter locals whose values enter these bodies, not extra Scala declarations."
+          },
+          {
+            "current": "P:60-65: response(row: Route, value: Response)",
+            "target": "app/controllers/<Service>Pages.scala::response",
+            "action": "split",
+            "reason": "Own the JSON-versus-HTML presentation branch, renderer.render call and NonFatal unavailableHtml fallback. Reference Controller-owned Response and route-owned Route; do not declare a second Response or parser-error callback."
+          },
+          {
+            "current": "P:66-74: staticPage(script: Boolean)",
+            "target": "app/controllers/<Service>Pages.scala::staticPage",
+            "action": "split",
+            "reason": "Own shell/script MIME, headers and distinct failure bodies. Existing shell/script route bindings reference this method; no route binding is re-owned here. The renderer is supplied by the existing Components initialization, not initialized again in this row."
+          }
+        ],
+        "openDecision": [
+          "Only the existing presentation methods/fields move here; P:92-97 is removed from this row's body-ownership claim. The caller-to-presentation relationship is concrete, while Scala visibility/constructor wiring for a future split remains a separate implementation decision.",
+          "Do not move or duplicate Composition.pages, requireInstalled, Response, failure, Route, the Components pageRenderer initializer, or the parser into this file. No page content or runtime decision is made."
+        ]
+      }
+    ],
+    "sourceRefs": [
+      {
+        "id": "finding",
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/details/partition-workflow-results.json",
+        "jsonPointer": "/result/lanes/0/reviews/0/issues/3"
+      },
+      {
+        "id": "rows",
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-service.json",
+        "jsonPointers": ["/logicalOutputs/59", "/logicalOutputs/60", "/logicalOutputs/61", "/logicalOutputs/64"],
+        "referenceOnlyLogicalIds": ["formal-service/http-routes/embedded", "formal-service/play-loader/lifecycle"]
+      },
+      {
+        "id": "S",
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-play-service/render-service.mjs",
+        "symbol": "renderService",
+        "lines": "23,79-92,101-163"
+      },
+      {
+        "id": "P",
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-play-service/render-service-pages.mjs",
+        "symbols": ["pageRendererContract", "pageRendererRequirement", "renderPageLoader"],
+        "lines": "2-18,28-29,30-131"
+      }
+    ],
+    "reason": "Documentation-only replacement recommendations for four existing rows. Distinguish declaration/body ownership from references: Composition owns pages and the complete requireInstalled body; PageRenderer owns only its interface; Controller owns Response/failure/invoke/action and the parser conversion; Pages owns only presentation fields/methods. This does not claim that the private mixed Components implementation can already be compiled as separate files. No new logical row, schema, route policy or renderer API is introduced."
+  },
+  {
+    "resolutionId": "TOR-03-context-authoritative-converters",
+    "logicalIds": [
+      "formal-domain/domain-pb-converters/shared",
+      "formal-domain/exact-wire-po-codecs/shared"
+    ],
+    "patches": [
+      {
+        "id": "formal-domain/domain-pb-converters/shared",
+        "targetPaths": [
+          "app/{basePath}/infrastructure/serialization/DomainConverters.scala",
+          "app/{basePath}/infrastructure/serialization/DomainConvertersPart{n}.scala"
+        ],
+        "currentConstructs": [
+          "M:8-45: the context-local byNominal(key(ref)) graph creates each nominal/exact type once before the aggregate loop; nested optional/sequence/map/map-entry carriers are graph nodes, not aggregate-owned copies.",
+          "M:46-56: state/event nodes and their carriers join that same context graph; R:25-28 emits one converter owner per existing package mapping.",
+          "R:29-32,41-49,56-76: all typed encode<NodeName>/decode<NodeName> pairs for nominal, exact, optional, sequence, map, map-entry, state and event nodes. Exact PB pairs reference the B-owned private text helpers; the wire/PO public methods at R:50-55 are not A-owned.",
+          "R:33,78-94: DomainConverters header/object, no imports, dependency paths, whole-node grouping, facade/Parts/self-type. B-owned helpers and wire/PO members remain physically co-located without changing their logical ownership."
+        ],
+        "constructDisposition": [
+          {
+            "current": "R:33,78-82: package/object shell and complete converter when text.length <= 60000",
+            "target": "app/{basePath}/infrastructure/serialization/DomainConverters.scala::DomainConverters",
+            "action": "retain",
+            "reason": "Retain the existing per-context/package authoritative singleton and infrastructure.serialization FQN. There is no per-aggregate converter owner; shared nodes are not copied into aggregate files."
+          },
+          {
+            "current": "R:29-32,41-49,56-76: every encode<NodeName>/decode<NodeName> pair when text.length <= 60000",
+            "target": "app/{basePath}/infrastructure/serialization/DomainConverters.scala::encode<NodeName> and decode<NodeName>",
+            "action": "retain",
+            "reason": "This one file declares all nominal/exact/container/state/event mappings. In particular exact PB encode/decode remain here rather than being mistaken for B-owned wire/PO functions. No alternative aggregate destination exists."
+          },
+          {
+            "current": "R:83-92: facade when text.length > 60000",
+            "target": "app/{basePath}/infrastructure/serialization/DomainConverters.scala::DomainConverters extends DomainConvertersPart0 with subsequent parts",
+            "action": "retain",
+            "reason": "The existing singleton remains the authoritative caller-visible owner; in this branch it inherits node methods rather than redeclaring them. Keep the B-owned private helper copies in its header."
+          },
+          {
+            "current": "R:41-76,83-94: each complete node group's encode/decode declarations and containing trait when text.length > 60000",
+            "target": "app/{basePath}/infrastructure/serialization/DomainConvertersPart{n}.scala::DomainConvertersPart{n}, self: DomainConverters.type",
+            "action": "retain",
+            "reason": "n is uniquely fixed by the frozen R:84-89 algorithm: traverse groups in existing local-node order; start part 0; start the next part only when existing part content length plus whole group content length exceeds 48000. Each node group includes its existing B wire/PO methods where present. A group is never split or repeated; an oversized single group is not repaired here. Cross-part encode/decode calls use the existing singleton self-type/inherited methods, not a new aggregate facade."
+          },
+          {
+            "current": "R:79-81,90-94: proto/value/state/protocol dependency paths, Parts dependencies and package/self-type scaffolding",
+            "target": "app/{basePath}/infrastructure/serialization/DomainConverters.scala::converter assembly ownership",
+            "action": "retain",
+            "reason": "This logical owner coordinates headers/dependency metadata for the same facade/part destinations above. The frozen renderer emits no Scala imports. Preserve FQNs and current dependencies; do not invent an import-only shared type or duplicate node declaration."
+          }
+        ],
+        "openDecision": [
+          "Select the existing context-authoritative owner, not a new persistence/converters shared API; the effective target disposition is retain, not split. Remove {Aggregate}Converters.scala and {Aggregate}ConvertersPart{n}.scala as immediate targets. Per-aggregate facade/placement and any persistence/converters relocation remain deferred; they may not fork shared conversion algorithms.",
+          "FD-ABI and FD-PARTS remain open for a later approved change. Preserve current public signatures/FQNs, PB message/field identities and presence carriers, exact/decimal text behavior, required-field rejection, deterministic map-byte sorting, duplicate-key rejection and protected bytes/regions. Do not substitute raw oneof, floating-point, None-as-empty or new codecs.",
+          "The 60000/48000 conditions use the frozen JavaScript string.length and whole-group order, not UTF-8 bytes or a compilation guarantee. A future approved layout change needs the existing serialization-graph fixture to include two aggregates sharing one nominal/exact type and its carriers, plus a cross-Part reference case. No fixture, test or compilation is created or executed here."
+        ]
+      },
+      {
+        "id": "formal-domain/exact-wire-po-codecs/shared",
+        "targetPaths": [
+          "app/{basePath}/infrastructure/serialization/DomainConverters.scala",
+          "app/{basePath}/infrastructure/serialization/DomainConvertersPart{n}.scala"
+        ],
+        "currentConstructs": [
+          "R:34-39: private fixed/readExact helpers, present in the single-file object and retained facade header.",
+          "R:93-94: a private fixed/readExact copy in each emitted Part, even when that Part has no exact node; copies have distinct lexical owners.",
+          "R:50-55: exact <Type>ToWire/<Type>FromWire/<Type>ToPO/<Type>FromPO methods, emitted as part of that exact node's group and calling its A-owned encode/decode pair."
+        ],
+        "constructDisposition": [
+          {
+            "current": "R:34-39,91-92: object/facade private fixed and readExact",
+            "target": "app/{basePath}/infrastructure/serialization/DomainConverters.scala::DomainConverters.fixed and DomainConverters.readExact",
+            "action": "retain",
+            "reason": "Keep their exact current visibility, bodies, canonical grammar, negative-zero rejection, scale and length checks. This B row alone owns these declarations; the A row only owns the containing shell and references them."
+          },
+          {
+            "current": "R:93-94: each emitted Part's private fixed/readExact declarations",
+            "target": "app/{basePath}/infrastructure/serialization/DomainConvertersPart{n}.scala::DomainConvertersPart{n}.fixed and DomainConvertersPart{n}.readExact",
+            "action": "retain",
+            "reason": "Each private copy remains in its existing lexical scope. These are deliberate existing copies, not competing public owners. Do not deduplicate them or widen visibility in order to force an ExactValueCodecs file."
+          },
+          {
+            "current": "R:50-55,82: <Type>ToWire/FromWire/ToPO/FromPO when text.length <= 60000",
+            "target": "app/{basePath}/infrastructure/serialization/DomainConverters.scala::<Type>ToWire, <Type>FromWire, <Type>ToPO, <Type>FromPO",
+            "action": "retain",
+            "reason": "A single declaration of each existing public wire/PO function beside the corresponding exact PB pair, with unchanged representation types and delegation. No second function is declared in ExactValueCodecs."
+          },
+          {
+            "current": "R:50-55,76,83-94: <Type>ToWire/FromWire/ToPO/FromPO when text.length > 60000",
+            "target": "app/{basePath}/infrastructure/serialization/DomainConvertersPart{n}.scala::<Type>ToWire, <Type>FromWire, <Type>ToPO, <Type>FromPO",
+            "action": "retain",
+            "reason": "Use exactly the same unique n as the complete exact-node group in the A row. Public calls still resolve through the existing DomainConverters singleton; no aggregate-specific algorithm or separate wire/PO owner is introduced."
+          }
+        ],
+        "openDecision": [
+          "Defer the proposed ExactValueCodecs.scala physical extraction with FD-CODEC; the effective target disposition is retain, not split. Updating this existing B row is necessary so that A's retained exact PB methods do not depend on helpers simultaneously documented as moving elsewhere.",
+          "This correction does not settle wire/PO carrier relocation or any new helper visibility/API, and does not change their nominal identities. A later extraction must separately preserve ABI, protected bytes and all current conversion bodies; no new algorithms are authorized."
+        ]
+      }
+    ],
+    "sourceRefs": [
+      {
+        "id": "finding",
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/details/partition-workflow-results.json",
+        "jsonPointer": "/result/lanes/1/reviews/0/issues/2"
+      },
+      {
+        "id": "rows",
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-domain.json",
+        "jsonPointers": ["/logicalOutputs/17", "/logicalOutputs/18"]
+      },
+      {
+        "id": "M",
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-domain/serialization.mjs",
+        "symbol": "serializationModel",
+        "lines": "8-61"
+      },
+      {
+        "id": "R",
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-domain/render-serialization.mjs",
+        "symbols": ["converterPath", "renderConverters"],
+        "lines": "6,23-96"
+      }
+    ],
+    "reason": "Documentation-only replacement recommendations for the existing A converter and coupled B codec rows; no new row. The frozen graph creates shared nominal/exact nodes before aggregates and the renderer gives all nodes one context/package converter owner. Retaining that owner and its already deterministic Parts resolves shared-type/container/cross-Part placement without changing ABI, protected bytes, encoding algorithms or user decisions."
+  }
+]

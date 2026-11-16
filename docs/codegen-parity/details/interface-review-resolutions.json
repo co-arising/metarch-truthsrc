@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "codegen-parity.interface-review-resolutions/v1",
+  "scope": "公共接口文档的来源、所有权与未完成common进展口径修正；仅文档，不是公开API或运行验收",
+  "status": "corrections-applied-static-pins-checked",
+  "resolutions": [
+    {
+      "id": "IFR-01",
+      "issue": "主agent的子任务提示被误标为用户逐字授权",
+      "resolution": "U1分开真实用户摘录与主agent分工/设计建议；IF-00和JSON顶层initialAuthorWriteScope/initialAuthorWriteFiles限定初次作者写集合，不代表整个会话权限。"
+    },
+    {
+      "id": "IFR-02",
+      "issue": "nested真实owner登记被误作源码默认Owner限定形式",
+      "resolution": "IF-04保留真实owner身份，但A遵守目标/用户示例：无冲突时显式导入嵌套成员并用简名；仅实际冲突或族合同要求保留Owner/FQN，不改类型身份。",
+      "evidence": "diffs/command-helper.diff.md#L164-L188"
+    },
+    {
+      "id": "IFR-03",
+      "issue": "共享源集成写权与逐输出逻辑assemblyOwner混为一层",
+      "resolution": "IF-05和IF-08的MD/JSON统一：最终内容/具体映射沿用中央target.assemblyOwner；main-integrator拥有共享源码/writer/mapping实现的写权与接线协调。各族仍按明确新MBT分工。"
+    },
+    {
+      "id": "IFR-04",
+      "issue": "D5在文档编写期间由主agent更新，原记录指纹过时",
+      "resolution": "已核IF-00/05/10/12相关约束与中央ASSIGNMENT-MAP更新一致，更新D5 bytes/SHA；未改固定源码或回填历史发布证据。旧记录仍见fixture-design-workflow-results.json。"
+    },
+    {
+      "id": "IFR-05",
+      "issue": "0.2缺withPost易被读成未来永久禁止；新通报仅有路径未入sources",
+      "resolution": "新增D8固定COMMON-CORE-CONSUMPTION-HANDOFF.md全文指纹并由IF-12引用；该来源明确是用户转述的未完成演进建议，不是已发布/已锁字节/已消费。knownBaseline与selectedConsumption/nextRelease坐标分开，后两者未提供保持null。rule/publish、case-class形状、业务/MoneyOps/auth归属分账。"
+    }
+  ],
+  "checks": {
+    "interfaceDocument": {
+      "file": "INTERFACE-DECISIONS.md",
+      "bytes": 35977,
+      "sha256": "e04088bf5e0f7616ece1ff6af8675fb7002d29ecbd61d617abce5cfe0563197f"
+    },
+    "jsonParsed": true,
+    "sourceRecordsChecked": 17,
+    "sourcePinMismatches": [],
+    "decisionSectionRangesRefreshed": 13,
+    "commonHandoff": {
+      "file": "COMMON-CORE-CONSUMPTION-HANDOFF.md",
+      "bytes": 6437,
+      "sha256": "491805be5059b305a9c1c53b925c55e6ee849c7946b02ed251e88b891f506838",
+      "identity": "user-relayed-unfinished-proposals-not-release-evidence"
+    }
+  },
+  "remaining": [
+    "classic profile/实际接口与业务语义的逐包审定",
+    "双端无损输入、完整expected字节、独立oracle及真实接口观察",
+    "common-core下一版最终交接、实际供给锁定和同FQN唯一owner",
+    "三个退休任意外部源码槽仍blocked"
+  ],
+  "generatorModified": false,
+  "generationExecuted": false,
+  "runtimeExecuted": false,
+  "implementationAuthorized": false
+}

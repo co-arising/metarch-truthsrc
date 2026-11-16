@@ -1,0 +1,84 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: slice
+aggregate: Warehouse
+command: ReserveSkuQuantity
+payload:
+  {
+    "name": "ReserveSkuQuantity",
+    "parameters": [
+      {
+        "name": "txid",
+        "dataType": "TxId",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "warehouseId",
+        "dataType": "WarehouseId",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "skuId",
+        "dataType": "SkuId",
+        "origin": "BUSINESS_INPUT"
+      },
+      {
+        "name": "quantity",
+        "dataType": "Long",
+        "origin": "BUSINESS_INPUT"
+      }
+    ],
+    "produces": [
+      "SkuQuantityReserved"
+    ],
+    "guards": [
+      {
+        "kind": "invariantRef",
+        "ref": "positive-quantity",
+        "errCode": "quantity-positive",
+        "cond": "param.quantity > 0",
+        "onFail": "reject",
+        "desc": "Reject non-positive quantity before inspecting a receipt or invoking the host."
+      },
+      {
+        "ruleId": "commit-receipt-absent",
+        "errCode": "receipt-present",
+        "when": {
+          "form": "map-absent",
+          "map": "receipts",
+          "key": "param.txid"
+        },
+        "onFail": "succeed-empty",
+        "desc": "New sample guard: an existing commit receipt is an empty success."
+      }
+    ]
+  }
+events:
+  {
+    "SkuQuantityReserved": {
+      "name": "SkuQuantityReserved",
+      "payloads": [
+        {
+          "name": "reservationId",
+          "dataType": "ReservationId",
+          "origin": "COMPUTED"
+        }
+      ],
+      "bindings": [
+        {
+          "slot": "reservationId",
+          "expr": {
+            "form": "host",
+            "id": {
+              "context": "inventory",
+              "kind": "port",
+              "owner": [],
+              "id": "ReservationIdentity"
+            },
+            "version": "1"
+          }
+        }
+      ],
+      "foldAssignments": []
+    }
+  }

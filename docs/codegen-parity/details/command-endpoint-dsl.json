@@ -1,0 +1,323 @@
+{
+  "group": "command-endpoint-dsl",
+  "artifactIds": ["command-endpoint-dsl"],
+  "diffs": [
+    {
+      "artifactId": "command-endpoint-dsl",
+      "file": "diffs/command-endpoint-dsl.diff.md",
+      "status": "decision-required",
+      "scalaVariants": [
+        {
+          "id": "gate-declared-single",
+          "condition": "传统 runCommon 的 generateInterfaceLayer 中，interfaces.controllers.exists(_.endpoints.exists(_.gate.isDefined)) 为 true；单工程；前置 Controller 构建及 writer 保护条件允许写入。",
+          "outputPaths": ["app/net/imadz/infrastructure/api/CommandDsl.scala"],
+          "cardinality": "每个 InterfaceLayer 最多一份，五件套全部发射",
+          "evidenceStatus": "source-observed-not-executed"
+        },
+        {
+          "id": "gate-declared-multi-root",
+          "condition": "同一 gate 存在条件；multiProject=true，kind command-dsl 映射 root，不能放入 modules/kernel。",
+          "outputPaths": ["app/net/imadz/infrastructure/api/CommandDsl.scala"],
+          "cardinality": "一份",
+          "evidenceStatus": "source-observed-not-executed"
+        },
+        {
+          "id": "gate-none",
+          "condition": "无 controllers、无 endpoints 或全部 gate=None；Builder 返回 None。",
+          "outputPaths": [],
+          "cardinality": "零新增文件，不自动删除已有文件",
+          "evidenceStatus": "suppression-source-observed-not-executed"
+        }
+      ],
+      "jsSources": [
+        {
+          "file": "generators/scala-cqrs-play-service/generate.mjs",
+          "symbols": ["inherited", "registry", "generate"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "finding": "真实产品 registry 可达；play-service-dsl 调 renderService 等，但未发射本项五件套；接线依赖 D1。"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/render-service.mjs",
+          "symbols": ["serviceSelection", "renderService"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "finding": "混合服务、认证、错误、JSON 解码、绑定、装配与 HTTP 输出；不能整文件替换成 CommandDsl；银行成功/失败 wire 适配依赖 D2。"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/render-service-pages.mjs",
+          "symbols": ["pageRendererContract", "pageRendererRequirement", "renderPageLoader"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "finding": "render-service 的已观察 import/call 接缝与现存银行页面宿主消费有关；本次未逐行审阅该文件正文，不据此声明该 renderer 已完成内容核查。"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es-api/templates/scala.mjs",
+          "symbols": ["OCC_EXPR", "renderCommandDsl"],
+          "lane": "legacy",
+          "disposition": "reuse",
+          "finding": "五件套 RHS 的真实近似 counterpart；静态时间表达式及 Scala 插值须保留，包位/import 格式需要适配；不复活整个 retired profile。"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es-api/generate.mjs",
+          "symbols": ["generate", "MODULE", "pkgPath", "entries.push"],
+          "lane": "legacy",
+          "disposition": "adapt",
+          "finding": "无 gate 条件的全局一次发射；物理 kernel 路径从首聚合派生，正文固定 metarch 包，deps 为空；legacy 显式路径有源码可达证据，但不是 formal 注册 producer。"
+        },
+        {
+          "file": "generators/scaffold-static/app/net/imadz/metarch/infrastructure/api/CommandDsl.scala",
+          "symbols": ["OkReceipt", "ViewListDto", "ViewItem", "IdGuard", "InstantGuard"],
+          "lane": "legacy",
+          "disposition": "replace",
+          "finding": "仅在 legacy 消费迁移批准后由唯一模板替代静态复制；本次不删除、不修改副本。"
+        },
+        {
+          "file": "generators/run-all.mjs",
+          "symbols": ["sagaBinding", "supportRoot", "walk"],
+          "lane": "legacy",
+          "disposition": "adapt",
+          "finding": "L2157–2174 根据 sagaBinding 复制整个 supportRoot；该条件不同于 endpoint gate；退役本项不能误删同目录其他支撑件。"
+        },
+        {
+          "file": "generators/api-dsl/emit.mjs",
+          "symbols": ["renderStandardEndpoint", "renderEstablishEndpoint", "renderFlowDelegateEndpoint"],
+          "lane": "legacy",
+          "disposition": "adapt",
+          "finding": "本次定点读取匹配行显示 OkReceipt 完整 FQN 固定 metarch，同时 import 从 basePkg 派生；包位迁移由 controller owner 同步，不声称全文审阅。"
+        },
+        {
+          "file": "generators/command-dsl/render.mjs",
+          "symbols": ["render", "helperFor"],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "finding": "此同名目录输出 Actor CommandHelpers，不是 HTTP 信封，不纳入本项独占写集合。"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/generate.mjs",
+          "symbols": ["generate", "resolveApplicationTarget"],
+          "lane": "family",
+          "disposition": "adapt",
+          "finding": "已注册的 family producer 要求 exact ten-product closure 和 live implementations，须由 generate-project 捕获；不取消其准入。"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/build-models.mjs",
+          "symbols": ["productIds", "roles", "buildModels", "resolveApplicationTarget"],
+          "lane": "family",
+          "disposition": "adapt",
+          "finding": "实读完整模型推导；其 api/composition/persistence/names/commands/resource/query/view/sources 不是 Scala CommandDslModel；显式新合同才能适配。"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/render.mjs",
+          "symbols": ["render"],
+          "lane": "family",
+          "disposition": "adapt",
+          "finding": "实读完整输出 job 列表；发 api/commands/queries/codec/http 等，不发 BC 五件套。"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/templates/api.mjs",
+          "symbols": ["apiTemplate", "commandsTemplate", "queriesTemplate"],
+          "lane": "family",
+          "disposition": "not-wired",
+          "finding": "Failure/Outcome/CommandResult/Applied/NoChange/请求 DTO/游标 ReceiptPage 是另一合同，不能直接替换或 alias 成 OkReceipt/ViewListDto。"
+        },
+        {
+          "file": "lib/products/generate-cli.mjs",
+          "symbols": ["generateProductCli", "registeredProductProducer", "planCompiledProducts", "implementationProducers"],
+          "lane": "formal",
+          "disposition": "reuse",
+          "finding": "固定注册表、局部 runtime pin 检查与实施捕获准入由集成者维护；不存在 command-endpoint-dsl 专用 CLI filter。"
+        },
+        {
+          "file": "src/core/generate.mjs",
+          "symbols": ["plan", "anchorInputs", "prepareEntries", "applyEntries"],
+          "lane": "formal",
+          "disposition": "reuse",
+          "finding": "formal 与 legacy 共用 writer；最终字节映射、owned 路径保护、ledger/anchors 不由本项重新实现；未再计划的 owned rows 为 RETAINED，不自动删除。"
+        }
+      ],
+      "writeSet": [
+        "generators/command-endpoint-dsl/model.mjs",
+        "generators/command-endpoint-dsl/build-model.mjs",
+        "generators/command-endpoint-dsl/template.mjs",
+        "generators/command-endpoint-dsl/produce.mjs",
+        "test/command-endpoint-dsl-content.test.mjs"
+      ],
+      "writeSetStatus": "全部为 proposed 新建路径，仅第二阶段获准后实施；本阶段只写分配的 diff/details。",
+      "sharedWriteSet": [
+        "generators/scala-cqrs-play-service/generate.mjs",
+        "generators/scala-cqrs-play-service/generator.json",
+        "generators/scala-cqrs-play-service/render-service.mjs",
+        "generators/scala-cqrs-play-service/render-service-pages.mjs",
+        "generators/scala-cqrs-play-application-v1/build-models.mjs",
+        "generators/scala-cqrs-play-application-v1/render.mjs",
+        "generators/scala-cqrs-play-application-v1/templates/api.mjs",
+        "generators/scala-cqrs-play-application-v1/generator.json",
+        "generators/api-dsl/emit.mjs",
+        "generators/_deprecated/scala-cqrs-es-api/templates/scala.mjs",
+        "generators/_deprecated/scala-cqrs-es-api/generate.mjs",
+        "generators/run-all.mjs",
+        "generators/scaffold-static/app/net/imadz/metarch/infrastructure/api/CommandDsl.scala",
+        "lib/products/generate-cli.mjs"
+      ],
+      "sharedWriteSetPolicy": "仅共享 owner 串行接线或经消费者退役批准后处理；不是本 artifact 的独占并行写权限。公共 layout/types/writer/registry/catalog/生成配置与 ledger/anchor 迁移由集成者统一管理。",
+      "assemblyOwner": {
+        "role": "controller-api-integration",
+        "status": "proposed-single-owner",
+        "outputPaths": ["app/net/imadz/infrastructure/api/CommandDsl.scala"],
+        "responsibility": "唯一组装 package/import/provenance、三个 case class、五个 object、最终 source entry；其余 owner 不重复发射该路径。"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "shared-naming-imports",
+        "shared-writer-provenance",
+        "http-controller",
+        "route-definition",
+        "application-service",
+        "application-protocol",
+        "command-helper",
+        "aggregate-behavior",
+        "application-bootstrap",
+        "actual-auth-common-artifact-supply",
+        "formal-gate-product-decision"
+      ],
+      "glue": [
+        "net.imadz.common.auth.ApiError",
+        "net.imadz.common.CommonTypes.Id",
+        "net.imadz.common.Id.of",
+        "play.api.libs.json.JsValue",
+        "play.api.libs.json.OWrites",
+        "play.api.libs.json.Writes",
+        "play.api.libs.json.Json.obj",
+        "play.api.libs.json.Json.arr",
+        "play.api.libs.json.Json.toJson",
+        "scala.util.Try",
+        "java.time.Instant.parse",
+        "java.time.Instant.now",
+        "java.time.format.DateTimeFormatterBuilder.appendInstant",
+        "net.imadz.common.auth.Endpoint",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.CommandHelper",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.runReplyingPolicy",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.RunnablePolicyWithHelper.replyWith",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.RunnablePolicyWithHelper.replyWithAndPublish"
+      ],
+      "glueSupply": {
+        "rawScaffoldDeclarations": [
+          "net.imadz:common-core_2.13:0.2",
+          "net.imadz:auth-core_2.13:0.2",
+          "com.typesafe.play:play-json_2.13:2.9.3 override",
+          "Scala 2.13.14"
+        ],
+        "actualJarVerified": false,
+        "note": "curated ApiError 在 net.imadz.infrastructure.auth，不能证明本项所需 net.imadz.common.auth ABI；源码存在不等于消费 JAR 可用。"
+      },
+      "constructIds": ["C00", "C01", "C02", "C03", "C04", "C05", "C06", "C07", "C08", "C09"],
+      "modelCoverage": {
+        "fieldsInOrder": ["selfType: TypeRef", "dependencies: Set[TypeRef]"],
+        "constructorDefaults": [],
+        "inherited": ["fqn", "registerTo", "morphisms = Nil", "noteIds = Nil"],
+        "templateReadsModel": false,
+        "rawCodeDebt": [
+          "Template.private val content 为静态源码字符串",
+          "固定包位不经 PackageLayout",
+          "Model.dependencies 只登记 ApiError，不代表完整 Play/Java 渲染引用",
+          "输出保留长 FQN",
+          "OkReceipt JSON writes 每次调用读取系统时钟"
+        ],
+        "rawBusinessPlaceholders": [],
+        "manualRegions": []
+      },
+      "comparisonEvidence": {
+        "rawScala": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/CommandDslTemplate.scala#L15-L64",
+        "rawScalaIsFreshGeneratedOutput": false,
+        "curatedScala": "baseline/curated-scala/net/imadz/infrastructure/api/CommandDsl.scala",
+        "approvedTarget": "diffs/command-endpoint-dsl.diff.md 第4.3节完整非注释目标正文；最终 provenance 头由共享 writer 裁定",
+        "actualJs": [
+          "baseline/actual-js/app/example/bankwealth/service/BankServiceService.scala",
+          "baseline/actual-js/app/example/bankwealth/service/BankServiceLoader.scala"
+        ],
+        "legacyCounterparts": [
+          "baseline/js/generators/_deprecated/scala-cqrs-es-api/templates/scala.mjs#L77-L128",
+          "baseline/js/generators/scaffold-static/app/net/imadz/metarch/infrastructure/api/CommandDsl.scala"
+        ],
+        "sameInputOutputsAvailable": false,
+        "comparisonKind": "structural-contrast-not-same-input-byte-comparison",
+        "formalCounterpartStatus": "missing-counterpart",
+        "wholeArtifactStatus": "decision-required"
+      },
+      "fixtures": [
+        { "id": "no-gate", "status": "proposed-not-created", "expectedFiles": [] },
+        { "id": "one-gate", "status": "proposed-not-created", "expectedFiles": ["app/net/imadz/infrastructure/api/CommandDsl.scala"] },
+        { "id": "many-gates", "status": "proposed-not-created", "expectedFiles": ["app/net/imadz/infrastructure/api/CommandDsl.scala"] },
+        { "id": "multi-root", "status": "proposed-not-created", "expectedFiles": ["app/net/imadz/infrastructure/api/CommandDsl.scala"] },
+        { "id": "guard-order", "status": "proposed-not-created", "purpose": "UUID/Instant 成功失败与空输入；Id 外层、Instant 内层；失败不 ask" },
+        { "id": "json-shapes", "status": "proposed-not-created", "purpose": "完整 JSON 键及顺序、隐式 Writes[V]、item wrapper、序列化时三位小数 Instant" },
+        { "id": "formal-negative", "status": "proposed-not-created", "purpose": "无已批准 gate 投影不得推断 gate；不得抹掉 nominal responses、Applied/NoChange 或 cursor contract" }
+      ],
+      "acceptance": {
+        "sourceInspectionOnly": true,
+        "commandsExecuted": false,
+        "cliShapesDocumented": ["generate-products --request --generator --out --options-json --plan", "generate-project --project --out --plan", "sbt -Dcodegen.systemFile=... -Dcodegen.systemBindings=... -Dcodegen.targetDir=... -Dcodegen.generatorVersion=... -Dcodegen.noGit=true -Dcodegen.ledger=... runMain", "sbt testOnly（仅未来明确建立的隔离 suite）"],
+        "fullAbsoluteCommandExamples": "diffs/command-endpoint-dsl.diff.md 第9.2节",
+        "sideEffectsDocumented": [
+          "generate-products plan 仍捕获/内存编译/生成产品并检查本地 runtime pins；apply 写完整计划源/配置、ledger、anchors",
+          "generate-project 包含 tree validate/roundtrip/compile/tool evidence；即使 plan 也调用 implementation evidence verifier，其全部副作用闭包未核定",
+          "generate-project apply 另写 .truthsrc 证据和选定 SQLite project graph/回锚，不能以新 out 保证无旁路写入",
+          "sbt/JVM 编译缓存、潜在依赖解析/下载、scaffold 复制、multi 文件移动、完整最小闭包生成、manifest/formal-semantics/ledger",
+          "explicit generatorVersion + noGit 只约束生成器的 Git/日期探测，不证明整个构建链无其他 I/O"
+        ],
+        "complexity": { "ordinaryMethodTarget": "CC <= 5", "status": "not-measured", "toolAndVersion": "unresolved" },
+        "parityClaimed": false,
+        "behaviorClaimed": false
+      },
+      "protectedSemantics": [
+        "业务根仅 domain/application/infrastructure；本项固定 net.imadz.infrastructure.api，不新增 example.bankwealth.api",
+        "CommandHelper 在 application.aggregates.behaviors，保留 toParam/createFailureReply/createSuccessReply",
+        "仅有明确回复合同的应用 Actor 命令条件性添加 typed replyTo；domain params/events 无 ActorRef",
+        "失败不持久化，成功 thenReply 读取事件应用后 state；replyWith 不等于 replyWithAndPublish",
+        "OkReceipt 空 events 是既有 HTTP 形状，不是伪造业务完成；不改变 occurrence time 的现有语义",
+        "保留 UUID 类型位/表达式位、所有 JSON 键/消息/顺序、Try 异常范围和 guard 短路顺序",
+        "不改变 PB 字段号、PID、serializer 身份/绑定、名义类型或 addExact/overflow 语义",
+        "不删除 JSON duplicate detection/深度/完整性检查、安全与 CSRF、页面和资源释放行为"
+      ],
+      "openDecisions": [
+        "D1：选择真实准入产品及版本，明确 BC endpoint.gate 的 presence/引用投影；不能把 audience、csrf、POST 或 sagaBinding 当作 gate。",
+        "D2：逐端点裁定采用 OkReceipt/ViewListDto/ViewItem 还是保留银行 nominal response/family Applied-NoChange/cursor；明确 Failure 与 ApiError 字段和 wire 映射，保留已有副作用顺序。",
+        "D3：核定 net.imadz.common.auth.ApiError、CommonTypes.Id/Id.of、CommandHelper 的实际消费 JAR ABI/字节和唯一供给；不同 FQN curated 类与 sibling 源码不能证明可用。",
+        "D4：建立能够通过真实传统 CodegenMain 且保留 endpoint.gate 的 BC file/registry adapter 与同字段 JS fixture；固定 single/multi 最小闭包，不能用不触发本项的成功生成替代。",
+        "D5：由唯一 assembly owner 固定 global support 的真实 productFootprint/source identity、额外渲染依赖接口、provenance 头与 owned 旧路径退役；不伪造 noteIds/anchor，不无故复活 legacy。"
+      ],
+      "extraSources": [
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/execution/generate-cli.mjs | sha256=b9f33e711730f1f6fcac9311e20ec3333531353ca65e588c4058bd106012fe66 | bytes=2407"
+      ],
+      "extraSourceEvidence": [
+        {
+          "path": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/execution/generate-cli.mjs",
+          "sha256": "b9f33e711730f1f6fcac9311e20ec3333531353ca65e588c4058bd106012fe66",
+          "bytes": 2407,
+          "lines": "1-45",
+          "reason": "固定 baseline 不含该 parser；为核对 legacy 显式 generator 路径准入而读取，写入前重核 SHA 未变。",
+          "copied": false,
+          "modified": false
+        }
+      ]
+    }
+  ],
+  "fixedHeads": {
+    "js": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+    "bc": "cc335eb1e0d0fae17bf092fd61b126040196ea70"
+  },
+  "generatorsModified": false,
+  "runtimeExecuted": false,
+  "testsExecuted": false,
+  "typecheckExecuted": false,
+  "compileExecuted": false,
+  "generationExecuted": false,
+  "truthTreeModified": false,
+  "baselineModified": false,
+  "gitWrites": false,
+  "actualWrites": [
+    "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/command-endpoint-dsl.diff.md",
+    "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/details/command-endpoint-dsl.json"
+  ]
+}

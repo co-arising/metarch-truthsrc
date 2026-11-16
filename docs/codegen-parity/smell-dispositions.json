@@ -1,0 +1,352 @@
+{
+  "schemaVersion": "codegen-parity.smell-dispositions/v1",
+  "date": "2026-11-16",
+  "status": "proposal-disposition-not-implementation",
+  "source": {
+    "file": "baseline/user-generated-smells.md",
+    "sha256": "d1bbfcedc8a68c7b32b280771a0047fdd093b5691a030ae4ec259eecd2e0c417",
+    "scope": "逐条裁定原文63条编号建议的采用边界，不重新认证原文计数或全部缺陷断言。"
+  },
+  "classes": {
+    "expression-improvement": "可按已批准质量要求改善表达；仍需保留求值、类型、错误、ABI和来源映射。不是立即修改代码的授权。",
+    "semantic-review-required": "建议涉及业务、协议、运行方式、所有权或类型合同，须在对应diff/fixture中核语义后裁定。",
+    "do-not-apply-as-written": "原样采用会违反已批准目标或改变受保护语义；允许另列保真改进，不机械执行建议。"
+  },
+  "evidencePolicy": "条目的disposition裁定建议，不声称已运行或完成缺陷复现；observed代码事实以各diff及partition的准确引用为准。",
+  "items": [
+    {
+      "id": "1.1", "sourceLine": 17, "classification": "semantic-review-required", "artifacts": ["value-object", "proto-converter"],
+      "decision": "领域与wire边界需明确，但不在模板中把MoneyWire全局替换为Money。",
+      "requiredEvidence": "列明每个DTO的端口角色、进入领域的解码/校验位置、调用方与错误合同；绑定迁移后才能调整类型。"
+    },
+    {
+      "id": "1.2", "sourceLine": 18, "classification": "semantic-review-required", "artifacts": ["value-object", "saga-definition", "proto-converter"],
+      "decision": "可共享已证明相同的结构描述，不能仅因字段同构合并Receipt或嵌套公共SagaEnvelope。",
+      "requiredEvidence": "逐名义类型、阶段、序列化与PB字段号、摘要输入、外部接口做兼容对照，保持独立金融oracle。"
+    },
+    {
+      "id": "1.3", "sourceLine": 19, "classification": "do-not-apply-as-written", "artifacts": ["value-object", "proto-converter"],
+      "decision": "禁止将Prepare/Commit/Compensate等不同名义输入自动改成type alias。",
+      "requiredEvidence": "若抽取底层纯编解码计算，保留各公开类型和阶段约束，证明拒绝范围及字节协议不变。"
+    },
+    {
+      "id": "1.4", "sourceLine": 20, "classification": "semantic-review-required", "artifacts": ["value-object", "proto-converter"],
+      "decision": "精度检查可能有不同入口保障；抽取公共ExactAmount需先确认存在可复用库合同，不能新造银行私有运行库。",
+      "requiredEvidence": "保留UNNECESSARY舍入、精度上限、单位检查、UNLIMITED计算与结果再次校验；分别检查构造与解码入口。"
+    },
+    {
+      "id": "1.5", "sourceLine": 21, "classification": "semantic-review-required", "artifacts": ["value-object", "proto-converter", "protobuf-schema"],
+      "decision": "Wire与PO职责不因今日字段一样而自动合并。可以消除无意义内部中转，但保留边界类型。",
+      "requiredEvidence": "完整wire/PO/domain ABI、codec拒绝行为、PB布局与持久化历史对照。"
+    },
+    {
+      "id": "1.6", "sourceLine": 22, "classification": "expression-improvement", "artifacts": ["value-object"],
+      "decision": "长字段逐行，同包类型用简名；跨包通过TypeRef收集import，不靠生成后正则删包名。",
+      "requiredEvidence": "字段顺序、默认值、注释锚和类型冲突消歧保持；不以原文估算行数作收益验收。"
+    },
+    {
+      "id": "1.7", "sourceLine": 23, "classification": "semantic-review-required", "artifacts": ["value-object"],
+      "decision": "不同ID可以有不同可信边界，不能默认加统一非空/长度require。",
+      "requiredEvidence": "每个ID的允许集合、空初态用途、反序列化与外部输入约束由明确事实或选定fixture给出。"
+    },
+    {
+      "id": "2.1", "sourceLine": 30, "classification": "expression-improvement", "artifacts": ["domain-entity"],
+      "decision": "State字段可读排版与精确import；不以全局通配import掩盖依赖缺失。",
+      "requiredEvidence": "全部字段/默认值/顺序和真实nested owner保持，输出归属以Entity diff为准。"
+    },
+    {
+      "id": "2.2", "sourceLine": 31, "classification": "do-not-apply-as-written", "artifacts": ["domain-entity"],
+      "decision": "认可消除State/Entity双向别名壳，但目标是传统Entity真实持有State/Events，不是把Entity继续降为State别名。",
+      "requiredEvidence": "旧State.empty、Entity.empty、消费者和回锚一次迁移；显式初值不可换成猜测中性值。"
+    },
+    {
+      "id": "3.1", "sourceLine": 37, "classification": "do-not-apply-as-written", "artifacts": ["invariant-rule", "aggregate-rules-formal", "command-helper"],
+      "decision": "不无条件删除Params与规则层；按Scala的纯业务参数、规则及应用胶水职责裁定无意义转发。",
+      "requiredEvidence": "逐命令给出请求→参数→决定→事件路径，保留有意义类型边界与手写实现槽；不能把Actor命令直接灌入纯领域。"
+    },
+    {
+      "id": "3.2", "sourceLine": 38, "classification": "expression-improvement", "artifacts": ["invariant-rule", "aggregate-rules-formal"],
+      "decision": "在结构化表达式中按优先级保真简化双重否定与括号；不默认新增guard/replayable万能DSL。",
+      "requiredEvidence": "短路、异常、检查顺序及幂等分支完整保留；复用具名业务纯函数而非正则洗源码。"
+    },
+    {
+      "id": "3.3", "sourceLine": 39, "classification": "semantic-review-required", "artifacts": ["invariant-rule"],
+      "decision": "同族守卫可提炼具名业务决定，但先证明Accepted/Confirmed/Rejected/Unknown的前置真正相同。",
+      "requiredEvidence": "每命令的状态、身份、迟到与重复语义及独立正反例；不能抽取后扩大接受范围。"
+    },
+    {
+      "id": "3.4", "sourceLine": 40, "classification": "expression-improvement", "artifacts": ["invariant-rule", "command-helper"],
+      "decision": "使用清晰一致的局部命名；按目标Params合同决定字段名，不靠删除整个参数模型解决。",
+      "requiredEvidence": "具名构造调用、手写实现接口、来源锚和局部变量作用域完整迁移。"
+    },
+    {
+      "id": "3.5", "sourceLine": 41, "classification": "expression-improvement", "artifacts": ["invariant-rule", "event-handler"],
+      "decision": "已知合法64位常量可生成准确Long字面量/边界常量，不经JS Number损精度。",
+      "requiredEvidence": "Long.MinValue/MaxValue、负号优先级及越界拒绝由结构化常量渲染保证；原输入校验不删除。"
+    },
+    {
+      "id": "4.1", "sourceLine": 47, "classification": "do-not-apply-as-written", "artifacts": ["domain-entity", "application-protocol", "protobuf-schema", "event-adapter"],
+      "decision": "禁止为减分支合并五种持久化事件为单Outcome事件。",
+      "requiredEvidence": "可共享结果状态的内部类型描述，但保留事件身份、历史解码、PB字段、业务事实和失败/未知差异。"
+    },
+    {
+      "id": "4.2", "sourceLine": 48, "classification": "semantic-review-required", "artifacts": ["domain-entity", "value-object", "protobuf-schema"],
+      "decision": "共享TaReceiptContext会改变事件构造和载荷形状，不能仅按文本重复执行。",
+      "requiredEvidence": "逐事件字段来源、冻结wire/PB/摘要与调用方迁移；Command与Event只共享已确定的领域值，不混成一种消息。"
+    },
+    {
+      "id": "5.1", "sourceLine": 54, "classification": "do-not-apply-as-written", "artifacts": ["command-helper", "aggregate-behavior", "invariant-rule"],
+      "decision": "emit事件构造器不能冒充CommandHelper；目标是新增/复刻三方法implicit CommandHelper与runReplyingPolicy，而非删除真正命令胶水。",
+      "requiredEvidence": "逐业务command/param/reply映射，失败不persist、成功新state回复；emit所承担的纯事件构造另归规则，不丢事件。"
+    },
+    {
+      "id": "5.2", "sourceLine": 55, "classification": "semantic-review-required", "artifacts": ["domain-entity", "invariant-rule", "event-handler"],
+      "decision": "可以单一元数据源派生常量，改sealed枚举需明确编解码边界。",
+      "requiredEvidence": "已存字符串值、未知值拒绝、wire与serializer映射保持；不得联动合并事件种类。"
+    },
+    {
+      "id": "5.3", "sourceLine": 56, "classification": "semantic-review-required", "artifacts": ["domain-service", "command-helper"],
+      "decision": "无成员且无消费者的空companion可省略，但接口/默认实例/implicit owner仍被引用时不能删。",
+      "requiredEvidence": "逐生成变体和host构造调用证明对象不可达；不能因一个银行实例为空删除所有模型扩展点。"
+    },
+    {
+      "id": "6.1", "sourceLine": 62, "classification": "expression-improvement", "artifacts": ["event-handler"],
+      "decision": "用传统domain.entities.behaviors唯一事件应用实现替换无职责转发壳。",
+      "requiredEvidence": "全调用方与回锚同步、旧路径受控退役；应用根布局和纯fold合同保持。"
+    },
+    {
+      "id": "6.2", "sourceLine": 63, "classification": "expression-improvement", "artifacts": ["event-handler"],
+      "decision": "简单copy直接具名赋值；需要一次求值/先后依赖的中间值保留并赋业务名。",
+      "requiredEvidence": "保留读取旧state、各字段求值和抛错顺序；不能全局内联或删除关键类型消歧。"
+    },
+    {
+      "id": "6.3", "sourceLine": 64, "classification": "do-not-apply-as-written", "artifacts": ["event-handler", "domain-entity"],
+      "decision": "禁止依赖4.1合并事件来折叠分支；可以抽取相同纯状态更新而保留各具体事件match。",
+      "requiredEvidence": "各事件重放语义、状态/结果字段及错误行为独立覆盖。"
+    },
+    {
+      "id": "6.4", "sourceLine": 65, "classification": "do-not-apply-as-written", "artifacts": ["event-handler"],
+      "decision": "addExact不能改为可能静默溢出的+。可import Math.addExact、将已验证常量1渲染1L。",
+      "requiredEvidence": "Long边界溢出仍拒绝，不能以业务通常到不了为由去掉保护。"
+    },
+    {
+      "id": "7.1", "sourceLine": 71, "classification": "do-not-apply-as-written", "artifacts": ["aggregate-root", "aggregate-factory", "application-protocol"],
+      "decision": "不把所有应用命令统一降为泛型Execute协议，也不自动删除传统Factory职责。",
+      "requiredEvidence": "逐业务typed reply协议及工厂依赖/资源装配；按角色复刻而非以文件数优化。"
+    },
+    {
+      "id": "7.2", "sourceLine": 72, "classification": "semantic-review-required", "artifacts": ["application-protocol", "aggregate-behavior"],
+      "decision": "PascalCase命名为明确目标；统一Ingest ADT是另一个协议设计，不能绑在改名里偷偷执行。",
+      "requiredEvidence": "源码名与稳定external-event/operation/PID身份分离；保持每事件typed合同和authority检查。"
+    },
+    {
+      "id": "7.3", "sourceLine": 73, "classification": "do-not-apply-as-written", "artifacts": ["aggregate-root", "aggregate-factory", "application-protocol"],
+      "decision": "不能把三种制品合为一个Application.scala当达标；应恢复各自真实职责、删除错误domain别名依赖。",
+      "requiredEvidence": "按各自Scala MBT内容与跨文件阅读路径对账，避免再次制造空壳。"
+    },
+    {
+      "id": "8.1", "sourceLine": 79, "classification": "do-not-apply-as-written", "artifacts": ["domain-entity"],
+      "decision": "目标是Entity真实声明State/Events，不是val Events = domain.Protocol继续倒置所有权。",
+      "requiredEvidence": "全部case class、event family与handler类型迁移，不丢nominal身份/序列化注册。"
+    },
+    {
+      "id": "8.2", "sourceLine": 80, "classification": "expression-improvement", "artifacts": ["domain-entity"],
+      "decision": "empty按字段名逐行构造，保留当前显式默认值。",
+      "requiredEvidence": "原始字段/求值次序、可空/Option/集合/精确数值默认与知识来源完整对应。"
+    },
+    {
+      "id": "9.1", "sourceLine": 86, "classification": "semantic-review-required", "artifacts": ["application-protocol", "aggregate-behavior"],
+      "decision": "改成驼峰命名；不能以合并Outcome为前提减少external conversion/identity方法数量。",
+      "requiredEvidence": "每外部事件字段映射、来源权威、摘要字节与重复/冲突处理保真。"
+    },
+    {
+      "id": "10.1", "sourceLine": 92, "classification": "semantic-review-required", "artifacts": ["aggregate-behavior", "command-helper"],
+      "decision": "纯事件转换可计算一次并复用，但不改成无类型数据表隐藏业务分支。",
+      "requiredEvidence": "conversion确实纯且无副作用；持久化事件与回复内容、失败路径和authority顺序保持。"
+    },
+    {
+      "id": "10.2", "sourceLine": 93, "classification": "do-not-apply-as-written", "artifacts": ["aggregate-behavior"],
+      "decision": "采用具名业务组与typed PartialFunction/规则胶水；不为压CC把命令match换成异构Extractor/Rule表。",
+      "requiredEvidence": "dispatch穷尽性、优先级、未识别消息与CommandHelper的类型关系清楚可见。"
+    },
+    {
+      "id": "10.3", "sourceLine": 94, "classification": "semantic-review-required", "artifacts": ["aggregate-behavior", "command-helper"],
+      "decision": "优先复用已存在runReplyingPolicy/CommandHelper，不自造Effect.fromDecision替代成熟合同。",
+      "requiredEvidence": "消费jar确有API、失败不persist、成功thenReply读取新state且只回复一次；不得增加发布。"
+    },
+    {
+      "id": "11.1", "sourceLine": 100, "classification": "do-not-apply-as-written", "artifacts": ["aggregate-repository-port", "aggregate-repository-implementation"],
+      "decision": "当前本地Actor缓存不等于传统Repository；泛型化缓存不能解决生命周期/分片职责错配。",
+      "requiredEvidence": "先裁定本地独占与ClusterSharding profile、id→persistence映射、Actor终止/缓存失效与close合同，再决定实现复用。"
+    },
+    {
+      "id": "12.1", "sourceLine": 106, "classification": "do-not-apply-as-written", "artifacts": ["application-protocol"],
+      "decision": "不能用domain.XAggregate._导入继续掩盖应用协议只做别名；目标是逐业务Commands/Replies真实定义。",
+      "requiredEvidence": "command分组、typed replyTo及Handler alias RHS逐项对照；domain只留纯参数/事件。"
+    },
+    {
+      "id": "13.1", "sourceLine": 112, "classification": "semantic-review-required", "artifacts": ["composition-invocation-host"],
+      "decision": "桥接抽取需先明确timeout、Promise完成、Actor退出、所有权和异常传播，优先复用现有库。",
+      "requiredEvidence": "按已选runtime API保留每stage输入/结果/幂等身份，不能为少20行引入新通用运行器。"
+    },
+    {
+      "id": "13.2", "sourceLine": 113, "classification": "do-not-apply-as-written", "artifacts": ["composition-invocation-host"],
+      "decision": "不把typed结果降为semantics:String查表；失败、补偿、恢复与未知结果应明确建模。",
+      "requiredEvidence": "保留sealed结果分发和具体StageError映射及retry/recovery合同。"
+    },
+    {
+      "id": "13.3", "sourceLine": 114, "classification": "semantic-review-required", "artifacts": ["composition-invocation-host", "proto-converter"],
+      "decision": "改进多字段decode排版和字段名；类型异构字段表不是默认方案。",
+      "requiredEvidence": "每字段required/missing/type/顺序与完整状态codec保持，不经Any或统一字符串中转。"
+    },
+    {
+      "id": "13.4", "sourceLine": 115, "classification": "semantic-review-required", "artifacts": ["composition-invocation-host"],
+      "decision": "仅在该变体没有纯stage且无签名/装配依赖时省略空PureStages；接口删除不是单纯格式化。",
+      "requiredEvidence": "所有install/caller/capture绑定的引用闭包及非空变体行为。"
+    },
+    {
+      "id": "14.1", "sourceLine": 121, "classification": "semantic-review-required", "artifacts": ["strict-saga-module", "composition-invocation-host"],
+      "decision": "不按文本相似把durable effect host与Saga invocation host合成一个泛型状态机。",
+      "requiredEvidence": "各宿主受理/持久化/外部执行/观察/投递/重启语义，现有运行库可复用性与冻结ABI；运行库新增发布另需授权。"
+    },
+    {
+      "id": "14.2", "sourceLine": 122, "classification": "do-not-apply-as-written", "artifacts": ["composition-invocation-host", "strict-saga-module"],
+      "decision": "禁止统一sha256前缀/分段拼接导致operationIdentity变化。",
+      "requiredEvidence": "可抽取保持逐字节编码的纯函数，但每版本摘要格式、分隔/长度编码、空值和幂等键必须原样保留。"
+    },
+    {
+      "id": "14.3", "sourceLine": 123, "classification": "semantic-review-required", "artifacts": ["composition-invocation-host", "strict-saga-module"],
+      "decision": "先区分真实状态机职责与生成样板，未经独立语义对照不抽共同Host骨架。",
+      "requiredEvidence": "相同与不同的状态/事件/恢复窗口逐项列表，保留durable副作用边界与异常证据。"
+    },
+    {
+      "id": "15.1", "sourceLine": 129, "classification": "semantic-review-required", "artifacts": ["composition-invocation-host"],
+      "decision": "expected纯构造可按求值语义提取；deliver仍保持typed结果/端口分发，不用字符串表消除差异。",
+      "requiredEvidence": "每种结果的投递身份、重试、回复与失败传播；不得扩大端口接受集合。"
+    },
+    {
+      "id": "16.1", "sourceLine": 135, "classification": "semantic-review-required", "artifacts": ["event-adapter", "snapshot-adapter", "proto-converter"],
+      "decision": "通用serializer helper只能复用编码操作，不能合并serializer身份、事件类或manifest命名。",
+      "requiredEvidence": "identifier、manifest、允许类集合、unknown拒绝、PB bytes及历史重放兼容。"
+    },
+    {
+      "id": "16.2", "sourceLine": 136, "classification": "do-not-apply-as-written", "artifacts": ["protobuf-schema", "event-adapter", "snapshot-adapter"],
+      "decision": "允许单一类型元数据派生三份必要登记；禁止绑定scalapb.GeneratedMessage扩大接受范围。",
+      "requiredEvidence": "精确逐类allowlist和serializer/manifest一致；同源派生不等于必须减少输出行数。"
+    },
+    {
+      "id": "17.1", "sourceLine": 142, "classification": "semantic-review-required", "artifacts": ["proto-converter"],
+      "decision": "可复用typed required读取辅助，但不能将proto3字段擅改required或吞缺失错误。",
+      "requiredEvidence": "Option presence、错误类别/上下文、读取顺序与类型保持；helper不成为无类型通道。"
+    },
+    {
+      "id": "17.2", "sourceLine": 143, "classification": "semantic-review-required", "artifacts": ["protobuf-schema", "proto-converter"],
+      "decision": "proto字段名改动涉及ScalaPB API/JSON与冻结layout，不只改可读性；字段号绝不变化。",
+      "requiredEvidence": "明确持久化byte不变与source/JSON兼容是否需迁移，两者分别裁定。"
+    },
+    {
+      "id": "17.3", "sourceLine": 144, "classification": "semantic-review-required", "artifacts": ["value-object", "proto-converter"],
+      "decision": "不按X/XWire/XPO相似度合并名义边界；如提取ExactView须保持独立类型与检查。",
+      "requiredEvidence": "每个方向的精度/单位/空值和错误合同及类型封装，不能统一编码后失去边界。"
+    },
+    {
+      "id": "17.4", "sourceLine": 145, "classification": "semantic-review-required", "artifacts": ["proto-converter"],
+      "decision": "按语义所有权分converter，复用纯精度检查；不能仅删除Part分片而忽略JVM方法/常量池边界。",
+      "requiredEvidence": "完整函数清单与消费者、代码锚、大小边界、object初始化与可见性对照。"
+    },
+    {
+      "id": "18.1", "sourceLine": 151, "classification": "semantic-review-required", "artifacts": ["event-adapter"],
+      "decision": "共享事件元数据驱动三段typed match可取；不默认改成擦除类型map或扩大serializer域。",
+      "requiredEvidence": "manifest/toJournal/fromJournal完整对应、未知输入拒绝、逐事件字段/类身份不变。"
+    },
+    {
+      "id": "18.2", "sourceLine": 152, "classification": "semantic-review-required", "artifacts": ["event-adapter", "snapshot-adapter"],
+      "decision": "重复错误文案不足以新增公共trait；可共享准确诊断构造，保留边界上下文。",
+      "requiredEvidence": "错误类型、throw时机、输入类别和对象生命周期；不能抽取后隐藏真实失败。"
+    },
+    {
+      "id": "19.1", "sourceLine": 158, "classification": "semantic-review-required", "artifacts": ["projection", "projection-apply-event", "projection-handler"],
+      "decision": "这是待证的identity规则差异，不能从字段名字resource推断金融规则或当已确认bug。",
+      "requiredEvidence": "逐aggregate事件身份来源、projection key、合法与非法事件oracle；不照样给所有分支加require。"
+    },
+    {
+      "id": "19.2", "sourceLine": 159, "classification": "expression-improvement", "artifacts": ["projection-repository-implementation"],
+      "decision": "Unit表达式可简洁化，但只有结果值discard语义与资源关闭顺序不变时删除尾随()。",
+      "requiredEvidence": "方法返回类型、warn-value-discard口径、finally/close及SQL执行顺序保持。"
+    },
+    {
+      "id": "19.3", "sourceLine": 160, "classification": "expression-improvement", "artifacts": ["query-service", "projection-repository-port", "projection-repository-implementation"],
+      "decision": "公共resolver生成清晰lowerCamelCase，如queryOccurrencesByPlan；具体词形来自已定模型而非盲目正则。",
+      "requiredEvidence": "稳定query ID/SQL列名不变；接口/调用方/实现/回锚同步，保留拼写迁移表。"
+    },
+    {
+      "id": "20.1", "sourceLine": 166, "classification": "semantic-review-required", "artifacts": ["bootstrap", "aggregate-factory"],
+      "decision": "按传统Bootstrap四变体恢复职责；不把所有装配自动改成新泛型eventSourced包装器。",
+      "requiredEvidence": "每聚合PID、tags、adapters、恢复、retention和生命周期明确且调用API兼容。"
+    },
+    {
+      "id": "20.2", "sourceLine": 167, "classification": "expression-improvement", "artifacts": ["bootstrap"],
+      "decision": "将长前置表达式合理分行/命名，复用有业务含义校验；不为短require另造碎片helper。",
+      "requiredEvidence": "短路、报错优先级、null边界与初始化副作用顺序保持。"
+    },
+    {
+      "id": "21.1", "sourceLine": 173, "classification": "semantic-review-required", "artifacts": ["application-service", "application-bootstrap"],
+      "decision": "endpoint安装条件可结构化复用，但每端点显式版本和能力检查不能统一成一个猜测常量。",
+      "requiredEvidence": "逐endpoint版本/host/port/observer依赖、拒绝缺失能力与调用路径；ServiceService及第四层包另按硬约束整改。"
+    },
+    {
+      "id": "21.2", "sourceLine": 174, "classification": "semantic-review-required", "artifacts": ["http-controller", "route-definition", "application-bootstrap"],
+      "decision": "去位置下标耦合，用稳定路由身份关联；API与页面不是同一安全/请求语义，不能copy表无差别生成。",
+      "requiredEvidence": "HTTP方法/路径、认证授权、DTO、响应及page action语义和顺序不变。"
+    },
+    {
+      "id": "21.3", "sourceLine": 175, "classification": "expression-improvement", "artifacts": ["route-definition", "application-bootstrap"],
+      "decision": "长Route构造使用具名参数和清晰布尔职责，不为排版引入万能builder。",
+      "requiredEvidence": "全部15槽逐项映射，参数默认/顺序与路由安全含义不变。"
+    },
+    {
+      "id": "22.1", "sourceLine": 181, "classification": "semantic-review-required", "artifacts": [],
+      "decision": "空suite与配置哨兵需分别处理；移到build可能丢失直接runner的隔离保护，不能一并删除。",
+      "requiredEvidence": "实际测试入口、独占配置与副作用安全合同；生成测试不得作为生产行为验收替代。"
+    },
+    {
+      "id": "22.2", "sourceLine": 182, "classification": "semantic-review-required", "artifacts": [],
+      "decision": "测试编排样板可复用，但每聚合独立期望、oracle与类型合同保留。",
+      "requiredEvidence": "不能共享被测决定/事件计算来制造自测自证；公共fixture helper不掩盖场景区别。"
+    },
+    {
+      "id": "23.1", "sourceLine": 188, "classification": "do-not-apply-as-written", "artifacts": ["protobuf-schema", "event-adapter", "snapshot-adapter", "application-bootstrap"],
+      "decision": "禁止将逐类serialization绑定改成scalapb.GeneratedMessage广泛绑定。",
+      "requiredEvidence": "允许一个精确注册元模型派生现有allowlist；保持未知类型拒绝与serializer身份。"
+    },
+    {
+      "id": "23.2", "sourceLine": 189, "classification": "semantic-review-required", "artifacts": ["application-bootstrap"],
+      "decision": "生成/手写所有权需清楚，但拆HOCON文件影响include与覆盖优先级，不是加头注释就完成。",
+      "requiredEvidence": "完整配置合成顺序、MANUAL边界、writer所有权、现有host绑定和final-byte anchors。"
+    },
+    {
+      "id": "23.3", "sourceLine": 190, "classification": "semantic-review-required", "artifacts": ["application-bootstrap"],
+      "decision": "可移植构建需显式供给解析而非硬编码本机路径；合并sbt keys前核:=、+=、~=的顺序语义。",
+      "requiredEvidence": "冻结依赖来源及SHA保持，不下载/替换供给洗绿；独立目标source roots、捕获手写来源和配置覆盖保持。"
+    }
+  ],
+  "crossCutting": [
+    {"id": "lever-1", "sourceLine": 196, "items": ["16.2", "18.1", "23.1"], "decision": "可共享精确注册元数据，不以减少三份必要输出或放宽绑定作为目标。"},
+    {"id": "lever-2", "sourceLine": 197, "items": ["17.1", "13.3"], "decision": "typed required读取与诊断可复用，保持presence和错误顺序；不制造异构Any字段表。"},
+    {"id": "lever-3", "sourceLine": 198, "items": ["3.1", "6.1", "8.1", "12.1", "7.1", "7.3", "2.2", "11.1", "20.1"], "decision": "恢复职责与阅读路径，不以批量删层/泛型缓存代替架构对齐。"},
+    {"id": "lever-4", "sourceLine": 199, "items": ["4.1", "5.2", "6.3", "7.2", "9.1"], "decision": "可改清晰命名与结果内部表达，不合并持久化事件或更改稳定外部身份。"},
+    {"id": "lever-5", "sourceLine": 200, "items": ["14.1", "14.3"], "decision": "先核已有库与不同宿主状态机，不自动新造通用运行器或发布运行库。"},
+    {"id": "lever-6", "sourceLine": 201, "items": ["2.1", "1.6", "6.2"], "decision": "TypeRef/import/具名表达/格式在final fingerprint与anchor前完成。"},
+    {"id": "lever-7", "sourceLine": 202, "items": ["19.3", "7.2", "9.1"], "decision": "源码命名统一，业务ID/PID/摘要不改；所有调用方必须迁移。"},
+    {"id": "lever-8", "sourceLine": 203, "items": ["19.1", "14.2"], "decision": "差异是待查信号，不先判bug、不统一身份算法，具体语义按合同复核。"}
+  ],
+  "userAddedRequirements": [
+    {"id": "three-business-layers", "decision": "业务根下仅domain/application/infrastructure；原Scala modules是显式布局覆盖，框架controllers另计。", "reference": "layout-and-style.md#2-唯一布局规则"},
+    {"id": "no-duplicated-role-suffix", "decision": "禁止ServiceService/HostHost，稳定ID与源码名分离。", "reference": "layout-and-style.md#3-标识符与依赖"},
+    {"id": "real-command-helper", "decision": "三方法implicit CommandHelper及事件应用后回复；不是emit函数或总是成功的包装器。", "reference": "layout-and-style.md#6-commandhelper-与行为组不可被替代为空壳"},
+    {"id": "readable-business-decisions", "decision": "用例、规则、重复/冲突/未知/退款语义必须清楚可执行；不能只追文件/测试数量。", "reference": "REVIEW-AND-DELIVERY-DECISIONS-20261115.md"}
+  ],
+  "generatorModified": false,
+  "runtimeExecuted": false,
+  "complexityMeasured": false
+}

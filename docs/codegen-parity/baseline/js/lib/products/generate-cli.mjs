@@ -1,0 +1,146 @@
+import { realpathSync } from 'node:fs';
+import { resolve, join } from 'node:path';
+import { copyImmutableData } from '../immutable-data.mjs';
+import { captureProductJson, captureProductRequest } from './cli.mjs';
+import { compileProductSet } from './compile.mjs';
+import { fail } from './request.mjs';
+import { applyEntries } from '../../src/core/generate.mjs';
+import { generate as generateDomain } from '../../generators/scala-cqrs-domain/generate.mjs';
+import { generate as generateApplication } from '../../generators/scala-cqrs-application/generate.mjs';
+import { generate as generateChildApplication } from '../../generators/scala-cqrs-child-application/generate.mjs';
+import { generate as generateDesignReview } from '../../generators/product-design-review/generate.mjs';
+import { generate as generateEffectApplication } from '../../generators/scala-cqrs-effect-application/generate.mjs';
+import { generate as generateDomainV2 } from '../../generators/scala-cqrs-domain-v2/generate.mjs';
+import { generate as generateApplicationV2 } from '../../generators/scala-cqrs-application-v2/generate.mjs';
+import { generate as generateChildApplicationV2 } from '../../generators/scala-cqrs-child-application-v2/generate.mjs';
+import { generate as generateEffectApplicationV2 } from '../../generators/scala-cqrs-effect-application-v2/generate.mjs';
+import { generate as generatePlayService } from '../../generators/scala-cqrs-play-service/generate.mjs';
+import { generate as generateDomainKernel } from '../../generators/scala-cqrs-domain-kernel-v1/generate.mjs';
+import { generate as generateAggregateCore } from '../../generators/scala-cqrs-aggregate-core-v1/generate.mjs';
+import { generate as generateModuleSeams } from '../../generators/scala-cqrs-module-seams-v1/generate.mjs';
+import { generate as generatePersistenceReadside } from '../../generators/scala-cqrs-persistence-readside-v1/generate.mjs';
+import { resolveModuleSeamsTarget } from '../../generators/scala-cqrs-module-seams-v1/build-models.mjs';
+import { generate as generateSagaMonarch, resolveSagaMonarchTarget } from '../../generators/scala-cqrs-saga-monarch-v1/generate.mjs';
+import { generate as generatePlayApplication, resolveApplicationTarget } from '../../generators/scala-cqrs-play-application-v1/generate.mjs';
+import { readFileSync, lstatSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { fileURLToPath } from 'node:url';
+
+const domain = new URL('../../generators/scala-cqrs-domain/', import.meta.url);
+const application = new URL('../../generators/scala-cqrs-application/', import.meta.url);
+const childApplication = new URL('../../generators/scala-cqrs-child-application/', import.meta.url);
+const designReview = new URL('../../generators/product-design-review/', import.meta.url);
+const effectApplication = new URL('../../generators/scala-cqrs-effect-application/', import.meta.url);
+const domainV2 = new URL('../../generators/scala-cqrs-domain-v2/', import.meta.url);
+const applicationV2 = new URL('../../generators/scala-cqrs-application-v2/', import.meta.url);
+const childApplicationV2 = new URL('../../generators/scala-cqrs-child-application-v2/', import.meta.url);
+const playService = new URL('../../generators/scala-cqrs-play-service/', import.meta.url);
+const effectApplicationV2 = new URL('../../generators/scala-cqrs-effect-application-v2/', import.meta.url);
+const domainKernel = new URL('../../generators/scala-cqrs-domain-kernel-v1/', import.meta.url);
+const aggregateCore = new URL('../../generators/scala-cqrs-aggregate-core-v1/', import.meta.url);
+const moduleSeams = new URL('../../generators/scala-cqrs-module-seams-v1/', import.meta.url);
+const persistenceReadside = new URL('../../generators/scala-cqrs-persistence-readside-v1/', import.meta.url);
+const sagaMonarch = new URL('../../generators/scala-cqrs-saga-monarch-v1/', import.meta.url);
+const playApplication = new URL('../../generators/scala-cqrs-play-application-v1/', import.meta.url);
+const implementationProducers = new Map([
+  [generatePlayApplication, {
+    resolveImplementations: resolveApplicationTarget,
+    identity: Object.freeze({ id: 'scala-cqrs-play-application', version: '1' }),
+    captureRequired: Object.freeze({ code: 'APPLICATION_CAPTURE_REQUIRED',
+      message: 'play application requires generate-project and captured implementation sources, including for --plan' }),
+  }],
+  [generateModuleSeams, {
+    resolveImplementations: resolveModuleSeamsTarget,
+    identity: Object.freeze({ id: 'scala-cqrs-module-seams', version: '1' }),
+    captureRequired: Object.freeze({ code: 'MODULE_SEAMS_CAPTURE_REQUIRED',
+      message: 'module-seams requires generate-project and captured implementation sources, including for --plan' }),
+  }],
+  [generateSagaMonarch, {
+    resolveImplementations: resolveSagaMonarchTarget,
+    identity: Object.freeze({ id: 'scala-cqrs-saga-monarch', version: '1' }),
+    captureRequired: Object.freeze({ code: 'SAGA_MONARCH_CAPTURE_REQUIRED',
+      message: 'saga-monarch requires generate-project and captured implementation sources, including for --plan' }),
+  }],
+]);
+/** File capture and target I/O adapter. No generator code is imported from caller JSON. */
+export async function generateProductCli(args) {
+  const values = new Map(); let planOnly = false;
+  for (let i = 0; i < args.length; i++) {
+    const flag = args[i];
+    if (flag === '--plan') {
+      if (planOnly) fail('PRODUCT_CLI', 'duplicate --plan');
+      planOnly = true; continue;
+    }
+    if (!['--request', '--generator', '--out', '--options-json'].includes(flag) || values.has(flag) || !args[i + 1] || args[i + 1].startsWith('--'))
+      fail('PRODUCT_CLI', 'unknown, duplicate or incomplete generation flag');
+    values.set(flag, resolve(args[++i]));
+  }
+  for (const flag of ['--request', '--generator', '--out', '--options-json']) if (!values.has(flag)) fail('PRODUCT_CLI', 'explicit ' + flag + ' required');
+  const producer = registeredProductProducer(values.get('--generator'));
+  if (producer.resolveImplementations) fail(producer.captureRequired.code, producer.captureRequired.message);
+  const options = captureProductJson(values.get('--options-json'));
+  const captured = captureProductRequest(values.get('--request'));
+  const planned = planCapturedProducts({ request: captured.request, generatorDir: values.get('--generator'), options: options.value, outDir: values.get('--out') });
+  const sources = [...captured.sources, ...planned.sources,
+    { role: 'generator-options', file: options.file, sha256: options.sha256, bytes: options.bytes }];
+  if (planOnly) return copyImmutableData({ plan: planned.plan, sources, applied: false });
+  const applied = await applyEntries({ entries: planned.plan.entries, outDir: values.get('--out'), generator: planned.plan.generator, anchorPolicy: 'written-only' });
+  return copyImmutableData({ applied: true, result: applied, sources });
+}
+
+/** Shared admission for captured file requests and locally derived project requests. */
+export function registeredProductProducer(generatorDir) {
+  const directory = realpathSync(generatorDir);
+  const generate = [[domain, generateDomain], [application, generateApplication], [childApplication, generateChildApplication],
+    [designReview, generateDesignReview], [effectApplication, generateEffectApplication], [domainV2, generateDomainV2],
+    [applicationV2, generateApplicationV2], [childApplicationV2, generateChildApplicationV2], [effectApplicationV2, generateEffectApplicationV2], [playService, generatePlayService],
+    [domainKernel, generateDomainKernel], [aggregateCore, generateAggregateCore], [moduleSeams, generateModuleSeams], [persistenceReadside, generatePersistenceReadside],
+    [sagaMonarch, generateSagaMonarch], [playApplication, generatePlayApplication]]
+    .find(([path]) => directory === realpathSync(path))?.[1];
+  if (!generate) fail('PRODUCT_PRODUCER', 'generator must be a shipped registered source producer');
+  return Object.freeze({ directory, generate, ...implementationProducers.get(generate) });
+}
+
+export function planCapturedProducts({ request, generatorDir, options, outDir }) {
+  const compilation = compileProductSet(request);
+  if (!compilation.result) fail('PRODUCT_COMPILATION', JSON.stringify(compilation.diagnostics));
+  return planCompiledProducts({ compilation, generatorDir, options, outDir });
+}
+
+export function planCompiledProducts({ compilation, generatorDir, options, outDir }, implementations) {
+  const { directory, generate, resolveImplementations } = registeredProductProducer(generatorDir);
+  const manifest = captureProductJson(join(directory, 'generator.json'));
+  if (!compilation?.result || compilation.diagnostics?.length) fail('PRODUCT_COMPILATION', 'complete successful graph AST compilation required');
+  if ([generateApplication, generateChildApplication, generateEffectApplication, generateApplicationV2, generateChildApplicationV2, generateEffectApplicationV2, generatePlayService].includes(generate)) {
+    const binding = options.runtimeArtifact;
+    if (!binding || !binding.repository?.startsWith('file:///')) fail('APPLICATION_ARTIFACT', 'explicit local runtime repository required');
+    const jar = join(fileURLToPath(binding.repository), 'net/imadz/saga-core_2.13/0.3.0/saga-core_2.13-0.3.0.jar');
+    const stat = lstatSync(jar);
+    if (!stat.isFile() || stat.isSymbolicLink() || createHash('sha256').update(readFileSync(jar)).digest('hex') !== binding.sha256) fail('APPLICATION_ARTIFACT', 'actual frozen runtime artifact bytes do not match the explicit pin');
+    if (compilation.result.products.find(p=>p.id==='execution-contract')?.payload.pipelines.length) {
+      for (const [artifact, sha] of [['monarch-core','0c7a25eecae28d6f4b14a36c887511ffca5d2a755a5a618b281a271a66310b3b'], ['monarch-persistence','f42f1b9946be8f5a659ef067a731eee093e81b7c2df9b3e1ad8abefef4971c55']]) {
+        const file=join(fileURLToPath(binding.repository), 'net/imadz/'+artifact+'_2.13/0.3.0/'+artifact+'_2.13-0.3.0.jar');
+        const s=lstatSync(file);
+        if (!s.isFile() || s.isSymbolicLink() || createHash('sha256').update(readFileSync(file)).digest('hex')!==sha) fail('APPLICATION_ARTIFACT', 'actual frozen Monarch artifact bytes differ from selected finite execution profile');
+      }
+    }
+  }
+  if (generate === generatePlayService) {
+    const roots = options.service?.externalSourceRoots;
+    if (!Array.isArray(roots)) fail('SERVICE_OPTIONS', 'explicit external source roots required');
+    const target = outDir;
+    for (const root of roots) {
+      if (typeof root !== 'string' || resolve(root) !== root || root.includes('\\') || root.includes('\0')) fail('SERVICE_OPTIONS', 'canonical absolute external source root required');
+      let stat;
+      try { stat = lstatSync(root); }
+      catch { fail('SERVICE_OPTIONS', 'existing external source directory required'); }
+      if (!stat.isDirectory() || stat.isSymbolicLink() || realpathSync(root) !== root) fail('SERVICE_OPTIONS', 'existing non-symlink external source directory required');
+      if (target === root || target.startsWith(root + '/') || root.startsWith(target + '/')) fail('SERVICE_OPTIONS', 'external sources must be disjoint from generated target');
+    }
+  }
+  const input = { compilation, manifest: manifest.value, options };
+  const planned = resolveImplementations ? generate(input, { implementations, outDir }) : generate(input);
+  if (!planned.plan) fail('PRODUCT_PLAN', JSON.stringify(planned.diagnostics));
+  const sources = [{ role: 'generator-manifest', file: manifest.file, sha256: manifest.sha256, bytes: manifest.bytes }];
+  return copyImmutableData({ plan: planned.plan, sources });
+}

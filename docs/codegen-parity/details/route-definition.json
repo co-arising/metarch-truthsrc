@@ -1,0 +1,337 @@
+{
+  "group": "route-definition",
+  "artifactIds": ["route-definition"],
+  "diffs": [
+    {
+      "artifactId": "route-definition",
+      "file": "diffs/route-definition.diff.md",
+      "status": "decision-required",
+      "inspectionMode": "source-content-only",
+      "fixedHeads": {
+        "js": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+        "bc": "cc335eb1e0d0fae17bf092fd61b126040196ea70"
+      },
+      "scalaVariants": [
+        {
+          "id": "gated-controller-fragment",
+          "condition": "ControllerModel.endpoints 中 gate.isDefined && skip.isEmpty 的路由行非空；ControllerModel/endpoint 输入顺序保留",
+          "outputPaths": ["<target>/conf/routes"],
+          "cardinality": "一个 codegen:controllers 标记块，N 条路由，至多一个物理文件",
+          "state": "enabled",
+          "exercised": false
+        },
+        {
+          "id": "no-active-endpoints",
+          "condition": "routeLines.isEmpty，RoutesBuilder.build 返回 None",
+          "outputPaths": [],
+          "cardinality": "零写；不创建 routes，也不删除或更新既有块",
+          "state": "suppressed",
+          "exercised": false
+        },
+        {
+          "id": "single-project",
+          "condition": "multiProjectMode=false；规范化 outputRoot 的 parent 为 projectRoot，通常 outputRoot=<target>/app",
+          "outputPaths": ["<target>/conf/routes"],
+          "state": "enabled",
+          "exercised": false
+        },
+        {
+          "id": "multi-project",
+          "condition": "multiProjectMode=true；outputRoot 就是 projectRoot，不根据目录名判断",
+          "outputPaths": ["<target>/conf/routes"],
+          "state": "enabled",
+          "exercised": false
+        },
+        {
+          "id": "writer-new-file",
+          "condition": "模型非空且目标不存在；三行 NewFileHeader 紧接 block，再加末 LF",
+          "outputPaths": ["<target>/conf/routes"],
+          "exercised": false
+        },
+        {
+          "id": "writer-replace-first-pair",
+          "condition": "目标包含首个 start 之后的 end；quote/replaceFirst 替换含两标记的整段",
+          "outputPaths": ["<target>/conf/routes"],
+          "exercised": false
+        },
+        {
+          "id": "writer-append",
+          "condition": "目标完全没有标记；trim 尾随空白，添加双 LF、AppendNotice、block、末 LF",
+          "outputPaths": ["<target>/conf/routes"],
+          "exercised": false
+        },
+        {
+          "id": "writer-malformed",
+          "condition": "未形成 start 后 end，且并非完全无标记；抛 IllegalStateException；并不完整检查重复标记",
+          "outputPaths": [],
+          "exercised": false
+        }
+      ],
+      "jsSources": [
+        {
+          "file": "lib/products/generate-cli.mjs",
+          "symbols": ["registeredProductProducer", "generateProductCli", "planCompiledProducts"],
+          "lines": "45-145",
+          "lane": "formal",
+          "disposition": "adapt",
+          "note": "正式 service 与 family 注册可达；family 要求 generate-project 捕获实现，不能直接 generate-products"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/generate.mjs",
+          "symbols": ["registry.play-service-dsl.produce", "generate"],
+          "lines": "59-70",
+          "lane": "formal",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/render-service.mjs",
+          "symbols": ["serviceSelection", "renderService", "routeRows", "loader"],
+          "lines": "5-31,95-163,199-204",
+          "lane": "formal",
+          "disposition": "replace",
+          "note": "routeRows 从复合 service/loader 中 split；必须迁移 controller/装配职责，不是整文件删除"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/render-service-pages.mjs",
+          "symbols": ["renderPageLoader", "rows", "aliases"],
+          "lines": "20-133",
+          "lane": "formal",
+          "disposition": "replace",
+          "note": "银行冻结输出为此 pages 变体；14 API、14 aliases、2 static 匹配位置不等于传统 gate 路由数"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es-api/generate.mjs",
+          "symbols": ["generate", "routesLines"],
+          "lines": "129-256",
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "note": "旧 generate 动态 import 源码可达；不在正式 registeredProductProducer 中；默认不复活、不修改"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es-api/builders/controller.mjs",
+          "symbols": ["buildCommandModel", "buildAggregateController"],
+          "lines": "212-259,471-513",
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "note": "routeLine 为 POST/kebab/id String 派生，不是 BC 显式 endpoint 输入的等价模型"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es-api/templates/views.mjs",
+          "symbols": ["renderViewController"],
+          "lines": "64-91",
+          "lane": "legacy",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es-api/templates/vector_search.mjs",
+          "symbols": ["renderVectorSearchController"],
+          "lines": "12-75",
+          "lane": "legacy",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es-api/templates/state_api.mjs",
+          "symbols": ["stateRouteLines"],
+          "lines": "13-21",
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "note": "实际已在 legacy generate 中调用，不能沿用文件开头 state 未移植的旧注释；非传统本族输出"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/build-models.mjs",
+          "symbols": ["buildModels", "resolveApplicationTarget", "roles"],
+          "lines": "1-116",
+          "lane": "family",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/generate.mjs",
+          "symbols": ["generate"],
+          "lines": "10-42",
+          "lane": "family",
+          "disposition": "reuse",
+          "note": "保留捕获实现、固定 manifest 与十产品闭包检查；不是运行通过声明"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/templates/http.mjs",
+          "symbols": ["routesTemplate"],
+          "lines": "101-111",
+          "lane": "family",
+          "disposition": "replace",
+          "note": "当前 command POST + query/page/readiness，整文件无 marker；拟抽出 route template，其他 HTTP 模板归原 owner"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/render.mjs",
+          "symbols": ["render", "add"],
+          "lines": "16-46",
+          "lane": "family",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-domain-kernel-v1/entry.mjs",
+          "symbols": ["applicationSourceEntry", "mappedEntry"],
+          "lines": "28-64",
+          "lane": "family",
+          "disposition": "adapt",
+          "note": "shared owner 专管；routes 当前有整文件生成头、merge:null、UTF-8 byte mappings"
+        }
+      ],
+      "writeSet": [
+        "generators/route-definition/model.mjs",
+        "generators/route-definition/build-models.mjs",
+        "generators/route-definition/templates/routes.mjs",
+        "generators/route-definition/assembly.mjs",
+        "generators/scala-cqrs-play-service/render-service.mjs",
+        "generators/scala-cqrs-play-service/render-service-pages.mjs",
+        "generators/scala-cqrs-play-service/generate.mjs",
+        "generators/scala-cqrs-play-service/generator.json",
+        "generators/scala-cqrs-play-application-v1/build-models.mjs",
+        "generators/scala-cqrs-play-application-v1/templates/http.mjs",
+        "generators/scala-cqrs-play-application-v1/render.mjs",
+        "generators/scala-cqrs-play-application-v1/generator.json",
+        "generators/scala-cqrs-domain-kernel-v1/entry.mjs",
+        "src/core/merge.mjs",
+        "src/core/apply-preflight.mjs",
+        "src/core/generate.mjs",
+        "lib/products/generate-cli.mjs"
+      ],
+      "writeSetStatus": "后续提议，非本次修改许可；共享文件需集成者先拆分或独占修改",
+      "proposedNewPaths": [
+        "generators/route-definition/model.mjs",
+        "generators/route-definition/build-models.mjs",
+        "generators/route-definition/templates/routes.mjs",
+        "generators/route-definition/assembly.mjs"
+      ],
+      "assemblyOwner": {
+        "physicalOutput": "conf/routes",
+        "owner": "route-definition assembly",
+        "module": "generators/route-definition/assembly.mjs",
+        "status": "proposed",
+        "rule": "每目标仅一个 routes entry；controller/page/state 等 owner 只提交有序 contributions，公共 core 为唯一实际写漏斗"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "http-controller",
+        "command-endpoint-dsl",
+        "application-service",
+        "application-bootstrap",
+        "shared-marker-writer",
+        "shared-provenance"
+      ],
+      "conflictsWith": [
+        "http-controller 对 templates/http.mjs 及复合 formal renderer 的改动",
+        "application-bootstrap 对 formal loader/components 的拆分",
+        "公共 registry、writer、entry/provenance 与 generator manifest 的并行改动"
+      ],
+      "glue": [
+        "net.imadz.codegen.scaffolding.cqrs.model.infrastructure.api.ControllerModel",
+        "net.imadz.codegen.scaffolding.cqrs.model.infrastructure.api.EndpointModel",
+        "net.imadz.codegen.scaffolding.cqrs.model.infrastructure.api.RoutesFragmentModel",
+        "net.imadz.codegen.scaffolding.cqrs.TypeRef.signature",
+        "net.imadz.codegen.scaffolding.cqrs.FieldDef",
+        "net.imadz.codegen.scaffolding.cqrs.ArtifactModel",
+        "net.imadz.codegen.scaffolding.cqrs.MarkerBlockWriter.write",
+        "java.nio.file.Files",
+        "java.nio.file.Path",
+        "java.nio.file.Paths",
+        "java.nio.charset.StandardCharsets.UTF_8",
+        "java.util.regex.Pattern",
+        "java.util.regex.Matcher",
+        "play.api.routing.Router",
+        "play.api.mvc.Handler",
+        "play.api.mvc.BodyParser",
+        "play.api.mvc.Result",
+        "src/core/generate.mjs#applyEntries",
+        "src/core/generate.mjs#previewEntries",
+        "src/core/merge.mjs#mergeRoutesBlock",
+        "generators/scala-cqrs-domain-kernel-v1/entry.mjs#applicationSourceEntry"
+      ],
+      "openDecisions": [
+        "D1：formal endpointId/port/audience/csrf/pages 与 BC gate/skip/controller action/typed parameters 的逐项映射；family command/query/page/readiness 是否共享该门模型。禁止推断默认门或伪造 controller 方法。",
+        "D2：raw contains(':name') 子串绑定与不检查 method 的 page/pageSize 默认是否保留，或批准 token-aware/GET-only 的有限偏差；自定义 Play binder/default 声明来源须明确。",
+        "D3：BC 新建/append notice/尾空白/重复块 first-pair 行为与严格重复拒绝、CRLF 保真的目标取舍；不能给 shared routes 加整文件 fingerprint，不能直接调用 E301-only merge。",
+        "D4：E301 DSL/view/vector/state 与新 codegen:controllers 块的逐条归属、URL 重叠顺序及 retirement；raw None 不等于删除旧块，不得整块删掉其他 owner 或手写路由。",
+        "D5：noLedger shared 段如何支持 generate-project --update ownership；新 marker/new-file/header 策略的公共 API、final-byte source spans、family 整文件 ownership 迁移均待冻结。",
+        "D6：传统 CodegenMain 同语义 fixture 如何产生 interfaces.controllers；Play/controller/binder 离线供应、family capture verifier 传递副作用、graph 绝对路径与构建缓存/子进程边界必须在执行前固定。"
+      ],
+      "missingCounterparts": [
+        {
+          "lane": "formal",
+          "item": "与传统 RoutesBuilder/RoutesTemplate 等同的 codegen:controllers marker fragment",
+          "status": "missing-counterpart",
+          "evidence": "formal service 当前发程序化 Router.from；不是没有任何 HTTP 路由"
+        },
+        {
+          "lane": "curated-reference",
+          "item": "baseline/curated-scala 中的 route/controller 完整参考",
+          "status": "missing-counterpart",
+          "evidence": "仅对冻结 index 的路径集合得出结论，未冒称整个当前仓库不存在参考"
+        }
+      ],
+      "evidenceSeparation": {
+        "rawScala": "固定完整 MBT 和 writer；未运行同输入生成",
+        "approvedTarget": "diff 的完整中性模型示例与构造规则；D1-D6 待裁定，未创建 expected 文件集",
+        "actualJs": "baseline/actual-js/app/example/bankwealth/service/BankServiceLoader.scala 全文及逐构造账",
+        "curatedReference": "missing-counterpart",
+        "comparison": "结构性对照，非同输入字节比较"
+      },
+      "contentAccounts": {
+        "model": ["M1 routeLines", "M2 selfType", "M3 dependencies", "M4 noteIds", "ArtifactModel inherited fqn/registerTo/morphisms"],
+        "builder": ["B1 build", "B2 routesOf", "B3 routeLineOf", "B4 empty parameters", "B5 ordered parameters", "B6 path contains", "B7 defaults", "B8 dependencies/errors"],
+        "template": ["T1 MarkerStart", "T2 all routeLines", "T3 MarkerEnd", "T4 join and trailing newline", "T5 NewFileHeader", "T6 AppendNotice", "T7 non-Scala constructs not applicable"],
+        "rawDebt": ["routeLines: Seq[String] 是源码字符串槽", "queryDefaultOf 不检查 GET", "pathBound 使用子串判断", "append 会 trim 尾随空白", "重复 marker 未完整拒绝", "相邻 gate=None controller raw stub 不是成功业务实现"]
+      },
+      "fixtures": [
+        {"id": "controller-surface", "status": "proposed-not-created", "purpose": "ordered controllers/endpoints、gate/skip/None、空参数、多参数、TypeRef signature 与忽略 FieldDef 默认"},
+        {"id": "pagination-boundary", "status": "proposed-not-created", "purpose": "GET/POST、page/pageSize、路径子串边界、Int 与非 Int"},
+        {"id": "shared-file", "status": "proposed-not-created", "purpose": "新建/替换/追加/畸形/重复/CRLF/其他 marker/段外手写/幂等"},
+        {"id": "formal-pages", "status": "proposed-not-created", "purpose": "原 API/aliases/static 路由与 auth/CSRF/parser/readiness 顺序保真，不反编造业务合同"},
+        {"id": "family-closure", "status": "proposed-not-created", "purpose": "commands/query/page/readiness 与来源映射、明确 ControllerModel adapter"}
+      ],
+      "acceptance": {
+        "commands": "精确公开 CLI 参数形状与全部已知写面见 diff 第 8.2 节；不存在已证实 routes-only CLI",
+        "commandsExecuted": false,
+        "sameInputOutputsAvailable": false,
+        "contentReconciliation": "not-run",
+        "interfaceAndBehavior": "not-run",
+        "complexity": "not-measured",
+        "ordinaryMethodCcGoal": 5,
+        "generationAndAnchorStability": "not-run",
+        "runtimeJarAvailability": "not-validated"
+      },
+      "frozenSources": [
+        {"snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/api/RoutesFragmentModel.scala", "bytes": 1450, "sha256": "653bbddf44270a31df19eb7a9088f47cf81213e8eaed87d44e33e62fc0091029", "read": "full"},
+        {"snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/api/RoutesBuilder.scala", "bytes": 2922, "sha256": "c23541b6df9720928fd90b0db9622dc84562130f98b85d55803f426aa8e9f6f3", "read": "full"},
+        {"snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/RoutesTemplate.scala", "bytes": 2275, "sha256": "4272ced844752343f859338d64c6a9263874618bbc2f985b3c060539b1217708", "read": "full"},
+        {"snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/MarkerBlockWriter.scala", "bytes": 4026, "sha256": "6634ec9da4b6d0b58971a9161a863b77ef1136c5473ae3777af20bc4195ed365", "read": "full"},
+        {"snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala", "bytes": 56458, "sha256": "af98d7ccb3f894fc0641096448d0508942900304a903dc682160a58724e90341", "read": "bounded dispatch/writer sections"},
+        {"snapshot": "baseline/js/generators/scala-cqrs-play-service/render-service.mjs", "bytes": 12954, "sha256": "c8d92119b3e98dc868ea7bc17b018fef4372f24621206d2d00d1af365de160de", "read": "full"},
+        {"snapshot": "baseline/js/generators/scala-cqrs-play-service/render-service-pages.mjs", "bytes": 7624, "sha256": "6c76511c60b1f79510526c3f7ea7642ba8c22870f06e446dd044467e90274c6f", "read": "full"},
+        {"snapshot": "baseline/js/generators/_deprecated/scala-cqrs-es-api/generate.mjs", "bytes": 17379, "sha256": "007cfe762df634cc654f86794d9de5cda78f76aaf740749638ad3627e69e74c4", "read": "full"},
+        {"snapshot": "baseline/js/generators/scala-cqrs-play-application-v1/build-models.mjs", "bytes": 9771, "sha256": "3588e1ac7cfb6ea5c9f0a180acd4446c9196556bd42a4c87b41e78454b6091e5", "read": "full"},
+        {"snapshot": "baseline/js/generators/scala-cqrs-play-application-v1/templates/http.mjs", "bytes": 7578, "sha256": "8b1910fabfb3448d8a7f0a6e92e815232d43844cde60a4a88e5af3cd7f0db33c", "read": "full"},
+        {"snapshot": "baseline/actual-js/app/example/bankwealth/service/BankServiceLoader.scala", "bytes": 10379, "sha256": "12428f65ad1190f911102bd8bdf448aa6fd4c3017a9eeea301cab658a8eac3a0", "read": "full"}
+      ],
+      "extraSources": [
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/bin/truthsrc.js | sha256=5ef06f3e322b01ad5f9c472e923dc677182d771abce55023fb1e52d15398e970",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/execution/generate-cli.mjs | sha256=b9f33e711730f1f6fcac9311e20ec3333531353ca65e588c4058bd106012fe66",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/src/core/merge.mjs | sha256=de9c0c65841f7abda8d359f7e932066511bce10cbb3ea6df588e21c8e37e93eb",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/src/core/apply-preflight.mjs | sha256=1d8af5eafee837a04b5bb2c3d08482db5fee0ada9f1814e6a62a69f1e7f70db4",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/project/implementation-evidence.mjs | sha256=da6889091818f35bac0e3a62e04a862ee4268fef6f7b94cad6fed80cb637aa76"
+      ],
+      "sourceFingerprints": [
+        {"file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/bin/truthsrc.js", "bytes": 18463, "sha256": "5ef06f3e322b01ad5f9c472e923dc677182d771abce55023fb1e52d15398e970", "baseline": false},
+        {"file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/execution/generate-cli.mjs", "bytes": 2407, "sha256": "b9f33e711730f1f6fcac9311e20ec3333531353ca65e588c4058bd106012fe66", "baseline": false},
+        {"file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/src/core/merge.mjs", "bytes": 7963, "sha256": "de9c0c65841f7abda8d359f7e932066511bce10cbb3ea6df588e21c8e37e93eb", "baseline": false},
+        {"file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/src/core/apply-preflight.mjs", "bytes": 11730, "sha256": "1d8af5eafee837a04b5bb2c3d08482db5fee0ada9f1814e6a62a69f1e7f70db4", "baseline": false},
+        {"file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/project/implementation-evidence.mjs", "bytes": 2794, "sha256": "da6889091818f35bac0e3a62e04a862ee4268fef6f7b94cad6fed80cb637aa76", "baseline": false}
+      ]
+    }
+  ],
+  "generatorsModified": false,
+  "runtimeExecuted": false,
+  "testsExecuted": false,
+  "generationExecuted": false,
+  "baselineModified": false,
+  "sameInputOutputsGenerated": false
+}

@@ -1,0 +1,396 @@
+{
+  "group": "bootstrap",
+  "artifactIds": ["bootstrap"],
+  "diffs": [
+    {
+      "artifactId": "bootstrap",
+      "file": "diffs/bootstrap.diff.md",
+      "status": "decision-required",
+      "sourceHeads": {
+        "js": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+        "bc": "cc335eb1e0d0fae17bf092fd61b126040196ea70"
+      },
+      "approvedPlan": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/prettify-generated-code-resume-20261115-cgr9lzlk/APPROVED-PLAN.md",
+      "evidenceMode": "source-content-inspection",
+      "sameInputFreshOutputs": false,
+      "complexity": {
+        "status": "not-measured",
+        "ordinaryMethodTarget": "CC <= 5",
+        "exceptions": "6–10逐方法解释；>10重构或逐方法批准；multi projection 分发单列，不使用 String/Any 表刷分"
+      },
+      "scalaSources": [
+        {
+          "role": "model",
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/bootstrap/BootstrapModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/bootstrap/BootstrapModel.scala",
+          "lines": "1-54",
+          "bytes": 3031,
+          "sha256": "cc00cdae4801c8d27113c104783982c96aa4d8fe30edd2279f0f3c056bb987a9",
+          "read": "full"
+        },
+        {
+          "role": "builder",
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/bootstrap/BootstrapBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/bootstrap/BootstrapBuilder.scala",
+          "lines": "1-238",
+          "bytes": 9064,
+          "sha256": "b5dbe31a3da1810e19d2110adc64174bed012da69bce86ad5822424f5df3dd63",
+          "read": "full"
+        },
+        {
+          "role": "template",
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/bootstsrap/BootstrapTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/bootstsrap/BootstrapTemplate.scala",
+          "lines": "1-220",
+          "bytes": 8930,
+          "sha256": "951a9cfd7813b6b543af515d575fa0d7b954daa9ed3b422d4f78c45f07818b5d",
+          "read": "full"
+        }
+      ],
+      "scalaVariants": [
+        {
+          "id": "aggregate",
+          "condition": "system.application.aggregates.foreach；每聚合一次；A=0抑制",
+          "builder": "BootstrapBuilder.buildAggregate",
+          "template": "BootstrapTemplate.renderAggregateBootstrap",
+          "outputPaths": [
+            "app/<base-path>/infrastructure/bootstrap/<getAggregateBaseName(meta.name)>Bootstrap.scala",
+            "modules/glue/src/main/scala/<base-path>/infrastructure/bootstrap/<getAggregateBaseName(meta.name)>Bootstrap.scala"
+          ],
+          "cardinality": "A",
+          "status": "decision-required",
+          "currentJs": "formal及family有local Behavior factory object；legacy有sharding trait近似实现；PID和工厂协议未等价",
+          "rawBranches": [
+            "ShardedTags(b,s)与fallback(tag,5)",
+            "StringType使用entityId；其它使用Id.of(entityId)",
+            "entityName/eventHandlerType/emptyStateArg的模板fallback"
+          ],
+          "freshlyExercised": false
+        },
+        {
+          "id": "saga-coordinator",
+          "condition": "system.application.sagas.nonEmpty；全系统一次，不是每个Saga一次",
+          "builder": "BootstrapBuilder.buildSagaCoordinator",
+          "template": "BootstrapTemplate.renderSagaBootstrap",
+          "outputPaths": [
+            "app/<base-path>/infrastructure/bootstrap/SagaTransactionCoordinatorBootstrap.scala",
+            "modules/glue/src/main/scala/<base-path>/infrastructure/bootstrap/SagaTransactionCoordinatorBootstrap.scala"
+          ],
+          "cardinality": "S > 0 ? 1 : 0",
+          "status": "missing-counterpart",
+          "currentJs": "已检查formal/legacy/family bootstrap路由没有classic coordinator对应体；不将strict Saga或Monarch host认作同款",
+          "identityConstraints": ["saga-coordinator-$txId", "saga-executor-$name"],
+          "freshlyExercised": false
+        },
+        {
+          "id": "saga-transactor",
+          "condition": "system.application.sagas.foreach；每classic Saga一次；S=0抑制",
+          "builder": "BootstrapBuilder.buildSagaTransactor",
+          "template": "BootstrapTemplate.renderSagaTransactorBootstrap",
+          "outputPaths": [
+            "app/<base-path>/infrastructure/bootstrap/<meta.name>Bootstrap.scala",
+            "modules/glue/src/main/scala/<base-path>/infrastructure/bootstrap/<meta.name>Bootstrap.scala"
+          ],
+          "cardinality": "S",
+          "status": "missing-counterpart",
+          "currentJs": "已检查路由没有definition.register后返回Unit的classic变体",
+          "orderingConstraint": "definition注册须早于sharding恢复，由application-bootstrap owner保证",
+          "freshlyExercised": false
+        },
+        {
+          "id": "projection",
+          "condition": "system.infrastructure.projections.foreach；每projection一次；P=0抑制",
+          "builder": "BootstrapBuilder.buildProjection",
+          "template": "BootstrapTemplate.renderProjectionBootstrap",
+          "outputPaths": [
+            "app/<base-path>/infrastructure/bootstrap/<removeSuffix(meta.name,Projection)>Bootstrap.scala",
+            "modules/glue/src/main/scala/<base-path>/infrastructure/bootstrap/<removeSuffix(meta.name,Projection)>Bootstrap.scala"
+          ],
+          "cardinality": "P",
+          "status": "decision-required",
+          "currentJs": "legacy有single/multi近似实现但formal未调用；formal projectionStore的journal polling生命周期不是ShardedDaemonProcess合同",
+          "rawBranches": [
+            "sourceAggregates.size <= 1产生Nil并走single",
+            "多源按handler解析后的FQN归属过滤，保持声明序",
+            "过滤剩一源仍走ForX分支",
+            "全部过滤为空回退single，须与projection接口裁定",
+            "multi逐臂前缀和/index偏移，最后IllegalStateException"
+          ],
+          "freshlyExercised": false
+        }
+      ],
+      "jsSources": [
+        {
+          "file": "generators/scala-cqrs-play-service/build-aggregate-models.mjs",
+          "symbols": ["buildAggregateModels"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "4-41",
+          "note": "bootstrap role分离由集成者单写，保留其它六role"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/templates/aggregate-bootstrap.mjs",
+          "symbols": ["bootstrapTemplate"],
+          "lane": "formal",
+          "disposition": "replace",
+          "lines": "1-35",
+          "note": "unique-id与authority分支完整保留为迁移前置；不能直接套two-part PID"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/render-aggregate-layers.mjs",
+          "symbols": ["templates", "renderAggregateLayers"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "1-31"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/generate.mjs",
+          "symbols": ["inherited", "registry", "generate"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "16-23,59-70"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/aggregate-names.mjs",
+          "symbols": ["aggregateNames"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "3-24"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/render-journal-readside.mjs",
+          "symbols": ["renderJournalReadside", "renderProjection"],
+          "lane": "formal",
+          "disposition": "not-wired",
+          "lines": "151-259",
+          "note": "有实际journal投影producer，但不是本项classic daemon bootstrap；生命周期不得删除"
+        },
+        {
+          "file": "generators/bootstrap-dsl/emit.mjs",
+          "symbols": ["emitAggregateBootstrap", "emitProjectionBootstrap"],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "lines": "26-97,142-250,359-365",
+          "note": "standalone直接写盘；默认还写ApplicationBootstrap；不在generate-products清单"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es/builders/bootstrap.mjs",
+          "symbols": ["aggregateBootstrapModel", "projectionBootstrapModel"],
+          "lane": "legacy",
+          "disposition": "adapt",
+          "lines": "14-127",
+          "note": "显式legacy generate可选择的近似结构；非formal，未执行；含源码字符串model槽"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es/templates/persistence.mjs",
+          "symbols": ["renderAggregateBootstrap", "renderProjectionBootstrap"],
+          "lane": "legacy",
+          "disposition": "adapt",
+          "lines": "50-64",
+          "note": "同物理文件还含别的artifact；不分配给bootstrap owner并发写"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es/generate.mjs",
+          "symbols": ["generate"],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "lines": "153-177",
+          "note": "not-wired指formal products未调用，不是目录名推断全局不可达"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/build-models.mjs",
+          "symbols": ["artifactsSpec", "buildModels", "setDeps"],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "1-248",
+          "note": "全文件已读；no-external准入及完整base校验不可绕过"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/templates/bootstrap.mjs",
+          "symbols": ["bootstrapTemplate"],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "1-14",
+          "note": "create[J]接收PersistenceId及typed adapters，不等于formal String PID或BC sharding trait"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/templates/imports.mjs",
+          "symbols": ["importsFor", "named", "library"],
+          "lane": "family",
+          "disposition": "reuse",
+          "lines": "1-25",
+          "note": "复用前须对齐shared import顺序/冲突合同"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/render.mjs",
+          "symbols": ["productionJobs", "render"],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "15-34"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/generate.mjs",
+          "symbols": ["generate"],
+          "lane": "family",
+          "disposition": "reuse",
+          "lines": "11-23"
+        },
+        {
+          "file": "generators/scala-cqrs-persistence-readside-v1/templates/persistence.mjs",
+          "symbols": ["adapterTemplate"],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "149-157",
+          "note": "真实create[J]下游；ABI变化由family owner统筹，非本轮改动"
+        }
+      ],
+      "writeSet": [
+        "generators/scala-cqrs-play-service/bootstrap/model.mjs",
+        "generators/scala-cqrs-play-service/bootstrap/build-models.mjs",
+        "generators/scala-cqrs-play-service/bootstrap/templates/aggregate.mjs",
+        "generators/scala-cqrs-play-service/bootstrap/templates/saga-coordinator.mjs",
+        "generators/scala-cqrs-play-service/bootstrap/templates/saga-transactor.mjs",
+        "generators/scala-cqrs-play-service/bootstrap/templates/projection.mjs",
+        "generators/scala-cqrs-play-service/bootstrap/render.mjs",
+        "generators/scala-cqrs-play-service/templates/aggregate-bootstrap.mjs"
+      ],
+      "proposedNewPaths": [
+        "generators/scala-cqrs-play-service/bootstrap/model.mjs",
+        "generators/scala-cqrs-play-service/bootstrap/build-models.mjs",
+        "generators/scala-cqrs-play-service/bootstrap/templates/aggregate.mjs",
+        "generators/scala-cqrs-play-service/bootstrap/templates/saga-coordinator.mjs",
+        "generators/scala-cqrs-play-service/bootstrap/templates/saga-transactor.mjs",
+        "generators/scala-cqrs-play-service/bootstrap/templates/projection.mjs",
+        "generators/scala-cqrs-play-service/bootstrap/render.mjs"
+      ],
+      "writeSetMode": "proposed-second-phase-only",
+      "integrationOwnedPaths": [
+        "generators/scala-cqrs-play-service/build-aggregate-models.mjs",
+        "generators/scala-cqrs-play-service/render-aggregate-layers.mjs",
+        "generators/scala-cqrs-play-service/generate.mjs",
+        "generators/scala-cqrs-play-service/aggregate-names.mjs",
+        "generators/scala-cqrs-play-service/generator.json",
+        "lib/scala-target/naming.mjs",
+        "lib/products/generate-cli.mjs",
+        "src/core/generate.mjs"
+      ],
+      "familyOwnedPaths": [
+        "generators/scala-cqrs-aggregate-core-v1/templates/bootstrap.mjs",
+        "generators/scala-cqrs-aggregate-core-v1/build-models.mjs",
+        "generators/scala-cqrs-aggregate-core-v1/render.mjs",
+        "generators/scala-cqrs-persistence-readside-v1/templates/persistence.mjs"
+      ],
+      "assemblyOwner": {
+        "owner": "bootstrap-owner",
+        "proposedSymbol": "renderBootstraps",
+        "proposedFile": "generators/scala-cqrs-play-service/bootstrap/render.mjs",
+        "rule": "每个四变体输出文件只由一个entry组装全部头/import/body/mappings；集成者先移除旧重复writer；ApplicationBootstrap不归本owner"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "shared-writer-provenance",
+        "domain-entity",
+        "event-handler",
+        "aggregate-root",
+        "application-protocol",
+        "aggregate-behavior",
+        "command-helper",
+        "aggregate-factory",
+        "event-adapter",
+        "snapshot-adapter",
+        "saga-definition",
+        "saga-context",
+        "projection",
+        "projection-repository-port",
+        "application-bootstrap"
+      ],
+      "glue": [
+        "akka.actor.typed.ActorSystem",
+        "akka.actor.typed.Behavior",
+        "akka.actor.typed.LogOptions",
+        "akka.actor.typed.SupervisorStrategy",
+        "akka.actor.typed.Scheduler",
+        "akka.actor.typed.scaladsl.Behaviors",
+        "akka.actor.ExtendedActorSystem",
+        "akka.cluster.sharding.typed.scaladsl.ClusterSharding",
+        "akka.cluster.sharding.typed.scaladsl.Entity",
+        "akka.cluster.sharding.typed.scaladsl.EntityContext",
+        "akka.cluster.sharding.typed.scaladsl.EntityTypeKey",
+        "akka.cluster.sharding.typed.scaladsl.EntityRef",
+        "akka.cluster.sharding.typed.scaladsl.ShardedDaemonProcess",
+        "akka.cluster.sharding.typed.ShardedDaemonProcessSettings",
+        "akka.persistence.typed.PersistenceId",
+        "akka.persistence.typed.scaladsl.EventSourcedBehavior",
+        "akka.persistence.typed.scaladsl.RetentionCriteria",
+        "akka.projection.ProjectionBehavior",
+        "akka.util.Timeout",
+        "scala.concurrent.ExecutionContext",
+        "scala.concurrent.duration.DurationInt",
+        "scala.concurrent.duration.FiniteDuration",
+        "org.slf4j.LoggerFactory",
+        "org.slf4j.event.Level",
+        "net.imadz.common.CommonTypes.Id",
+        "net.imadz.common.Id",
+        "net.imadz.infra.saga.SagaTransactionCoordinator",
+        "net.imadz.infra.saga.StepExecutor",
+        "net.imadz.application.services.transactor.MoneyTransferSagaDefinition.register"
+      ],
+      "glueScope": "CommonTypes.Id和StepExecutor的非默认framework/rootPackage按resolver；MoneyTransferSagaDefinition仅curated实例，不作为所有业务默认实现；JAR ABI未验证",
+      "actualJsOutputs": [
+        "baseline/actual-js/app/example/bankwealth/infrastructure/bootstrap/CreditBalanceBootstrap.scala",
+        "baseline/actual-js/app/example/bankwealth/infrastructure/bootstrap/FundOrderBootstrap.scala",
+        "baseline/actual-js/app/example/bankwealth/infrastructure/bootstrap/SipPlanBootstrap.scala"
+      ],
+      "curatedReferences": [
+        "baseline/curated-scala/net/imadz/infrastructure/bootstrap/CreditBalanceBootstrap.scala",
+        "baseline/curated-scala/net/imadz/infrastructure/bootstrap/SagaTransactionCoordinatorBootstrap.scala",
+        "baseline/curated-scala/net/imadz/infrastructure/bootstrap/MoneyTransferSagaTransactorBootstrap.scala",
+        "baseline/curated-scala/net/imadz/infrastructure/bootstrap/MonthlyIncomeAndExpenseBootstrap.scala"
+      ],
+      "fixtures": {
+        "state": "proposed-not-created",
+        "root": "docs/codegen-parity/fixtures/bootstrap",
+        "cases": [
+          "aggregate-id",
+          "aggregate-string",
+          "aggregate-external",
+          "classic-saga-none",
+          "classic-saga-two",
+          "projection-single",
+          "projection-multi",
+          "invalid-and-layout"
+        ],
+        "cliContract": "diff第8.2节给出带绝对路径的generate-products及CodegenMain形状；没有bootstrap-only flag；通过小输入限定依赖闭包",
+        "effects": [
+          "generate-products --plan读取request/options/manifest并内存编译产品；formal还读取本地runtime JAR和检查externalSourceRoots；不调用applyEntries",
+          "实际generate-products写整个计划文件集、truthsrc.ledger.json和anchors.json；不是仅bootstrap文件",
+          "BC runMain复制scaffold、创建输出/缓存并可能解析依赖；需独立批准离线供应和运行窗口",
+          "standalone emit默认额外覆盖ApplicationBootstrap且没有core provenance，不作最终验收入口"
+        ]
+      },
+      "openDecisions": [
+        "D1：确定local unique-id factory与BC sharding trait的profile及caller迁移合同，禁止静默改变two-part/ofUniqueId身份",
+        "D2：确定hosts、ExternalAuthority、initial state及object/new adapters的准确新接口与唯一factory implementation owner",
+        "D3：裁定多源投影全过滤为空时拒绝/抑制/真实single实现及非空tags门，并共享projection归属过滤结果",
+        "D4：确认classic Saga API在冻结消费JAR中的坐标/SHA/签名，以及非默认rootPackage的StepExecutor引用",
+        "D5：固定JS产品到Scala metadata的无损输入映射及完整name/method resolver，不从散文补tagging或reply算法",
+        "D6：由application-bootstrap owner固定definition注册先于engine sharding恢复及重复初始化策略",
+        "D7：统一source refs/noteId回锚及raw projection patch与真实文件名不一致问题，不手修ledger或anchors",
+        "D8：批准同输入expected、准确局部行为runner、offline供应pins与CC口径；当前无执行结果"
+      ],
+      "extraSources": []
+    }
+  ],
+  "generatorsModified": false,
+  "runtimeExecuted": false,
+  "testsExecuted": false,
+  "compileExecuted": false,
+  "generationExecuted": false,
+  "baselineModified": false,
+  "truthTreeModified": false,
+  "gitWrites": false,
+  "documentationWrites": [
+    "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/bootstrap.diff.md",
+    "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/details/bootstrap.json"
+  ]
+}

@@ -1,0 +1,331 @@
+{
+  "group": "saga-trigger-root",
+  "artifactIds": [
+    "saga-trigger-root"
+  ],
+  "diffs": [
+    {
+      "artifactId": "saga-trigger-root",
+      "file": "diffs/saga-trigger-root.diff.md",
+      "status": "missing-counterpart",
+      "scalaVariants": [
+        {
+          "id": "classic-v3-context-explicit",
+          "condition": "传统 runCommon 的 app.sagas.foreach 中一项；meta.context=Some(c)，前置 definition/entity 构建成功且 scope 包含该 attribution；每项一个 Root。",
+          "outputPaths": [
+            "<target>/app/<base-package-path>/application/services/transactor/<meta.name>.scala"
+          ],
+          "observed": "源码分支已阅读，未生成",
+          "contextRule": "ctx.typeResolver.sagaContext(c.name)"
+        },
+        {
+          "id": "classic-v3-context-fallback",
+          "condition": "同一经典 Saga 循环，meta.context=None；仅解析 context 类型名，不保证对应 context 文件存在。",
+          "outputPaths": [
+            "<target>/app/<base-package-path>/application/services/transactor/<meta.name>.scala"
+          ],
+          "observed": "源码分支已阅读，未生成",
+          "contextRule": "ctx.typeResolver.sagaContext(meta.name)"
+        },
+        {
+          "id": "classic-v3-multi-project-fallback",
+          "condition": "multiProject=true；saga-trigger-root 未列入 targetModuleOf，返回 None 后 writer 使用 app 前缀；不可推断为 modules/glue。",
+          "outputPaths": [
+            "<target>/app/<base-package-path>/application/services/transactor/<meta.name>.scala"
+          ],
+          "observed": "writer 分支已阅读，未生成"
+        },
+        {
+          "id": "suppressed-no-saga-or-scope",
+          "condition": "app.sagas 为空则本族零文件；scope 不包含 attribution 时模型和模板已求值、ledger 已记录，writer 随后跳过写入。",
+          "outputPaths": [],
+          "observed": "源码条件，未执行"
+        }
+      ],
+      "jsSources": [
+        {
+          "file": "lib/products/generate-cli.mjs",
+          "symbols": [
+            "registeredProductProducer",
+            "generateProductCli",
+            "planCompiledProducts",
+            "implementationProducers"
+          ],
+          "lane": "formal",
+          "disposition": "adapt",
+          "note": "公共集成者独占；PlayService 与 SagaMonarch 是不同注册入口；后者要求 live implementation capture。"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/generate.mjs",
+          "symbols": [
+            "inherited",
+            "registry",
+            "generate"
+          ],
+          "lane": "formal",
+          "disposition": "reuse",
+          "note": "银行 project 实际选择；finite-host-dsl 经 createEffectRegistry('2') 继承，不能只修改未被选择的 family renderer。"
+        },
+        {
+          "file": "generators/scala-cqrs-application/produce-effect.mjs",
+          "symbols": [
+            "createEffectRegistry"
+          ],
+          "lane": "formal",
+          "disposition": "reuse"
+        },
+        {
+          "file": "generators/scala-cqrs-application/produce.mjs",
+          "symbols": [
+            "applicationRegistry",
+            "finite-host-dsl"
+          ],
+          "lane": "formal",
+          "disposition": "adapt",
+          "note": "D1 裁定后由 saga-family-integrator 接经典 Root；不把 strict products 静默降级。"
+        },
+        {
+          "file": "generators/scala-cqrs-application/render-invocation-host.mjs",
+          "symbols": [
+            "renderInvocationHosts"
+          ],
+          "lane": "formal",
+          "disposition": "adapt",
+          "note": "direct 自行拼复合 Host；pipeline 分支转 renderPipelineInvocation；不是八字段经典 Root renderer。"
+        },
+        {
+          "file": "generators/scala-cqrs-application/render-pipeline-invocation.mjs",
+          "symbols": [
+            "renderPipelineInvocation"
+          ],
+          "lane": "formal",
+          "disposition": "adapt",
+          "note": "银行近似 counterpart 的真实 renderer；保留 parent checkpoint、身份、admission、result/delivery，不将其行为删除后称复刻。"
+        },
+        {
+          "file": "generators/scala-cqrs-application/render-host-io.mjs",
+          "symbols": [
+            "wireHostIO"
+          ],
+          "lane": "formal",
+          "disposition": "adapt",
+          "note": "完整阅读 wireHostIO L5–22；它后处理 apply 参数、admitted state/event/commands、observe、delivery 和 event fold。没有声称完整审阅此文件的 renderHostIO 函数。"
+        },
+        {
+          "file": "generators/scala-cqrs-application/produce-child.mjs",
+          "symbols": [
+            "createChildRegistry"
+          ],
+          "lane": "formal",
+          "disposition": "reuse",
+          "note": "复用 applicationRegistry 的 finite-host-dsl；是共享拆分的调用方依赖。"
+        },
+        {
+          "file": "generators/scala-cqrs-domain/naming.mjs",
+          "symbols": [
+            "packageFor",
+            "symbol",
+            "typeName",
+            "pathFor",
+            "entry"
+          ],
+          "lane": "formal",
+          "disposition": "adapt",
+          "note": "当前 header/路径/FQN/byte-span 支撑；统一迁移由集成者负责。"
+        },
+        {
+          "file": "generators/saga-dsl/generate.mjs",
+          "symbols": [
+            "generate",
+            "buildStrictPlan",
+            "runtimeBlocked"
+          ],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "note": "明确 legacy specs 才调用 emitLegacySagaSpec；strict-contract 发 JSON，该文件的 strict-scala 分支拒绝。不是 formal 银行入口，也没有 Root 产物。"
+        },
+        {
+          "file": "generators/saga-dsl/emit.mjs",
+          "symbols": [
+            "validateLegacySagaSpec",
+            "emitLegacySagaSpec",
+            "emitCli"
+          ],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "note": "发 Args/Context/Definition/register，不发 entityTypeKey/tags/delegating apply；保留 explicit trusted source 槽，不复活 legacy。"
+        },
+        {
+          "file": "generators/scala-cqrs-saga-monarch-v1/generate.mjs",
+          "symbols": [
+            "generate",
+            "resolveSagaMonarchTarget"
+          ],
+          "lane": "family",
+          "disposition": "not-wired",
+          "note": "本 family 实际可达，但未接为经典 saga-trigger-root；固定八产品和 captured implementations。"
+        },
+        {
+          "file": "generators/scala-cqrs-saga-monarch-v1/build-models.mjs",
+          "symbols": [
+            "buildModels",
+            "artifacts.root",
+            "artifactRows",
+            "resolveSagaMonarchTarget"
+          ],
+          "lane": "family",
+          "disposition": "not-wired",
+          "note": "读取 L1–93、L141–180、L381–418 的相关区段；root 是 application-root，package 为 .root，非经典八字段模型；未对其其他角色宣称全文件内容验收。"
+        },
+        {
+          "file": "generators/scala-cqrs-saga-monarch-v1/render.mjs",
+          "symbols": [
+            "templates",
+            "render"
+          ],
+          "lane": "family",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/scala-cqrs-saga-monarch-v1/templates/root.mjs",
+          "symbols": [
+            "rootTemplate"
+          ],
+          "lane": "family",
+          "disposition": "not-wired",
+          "note": "完整阅读；输出生命周期 class/companion、workflow/recovery/fromExternal/close，不可按文件名认作经典 Root。"
+        },
+        {
+          "file": "lib/scala-target/naming.mjs",
+          "symbols": [
+            "resolveName",
+            "resolveNameSet",
+            "resolveArtifactPath"
+          ],
+          "lane": "family",
+          "disposition": "reuse",
+          "note": "保留稳定身份限制、重复后缀诊断和 portable collision 规则；需要与 BC 命名/布局语义核对。"
+        }
+      ],
+      "writeSet": [
+        "generators/scala-cqrs-application/model/saga-trigger-root.mjs (proposed/new)",
+        "generators/scala-cqrs-application/build-saga-trigger-root.mjs (proposed/new)",
+        "generators/scala-cqrs-application/templates/saga-trigger-root.mjs (proposed/new)",
+        "generators/scala-cqrs-application/render-saga-trigger-root.mjs (proposed/new; unique Root assembly owner)",
+        "generators/scala-cqrs-application/produce.mjs (proposed/adapt; integrator only; D1)",
+        "generators/scala-cqrs-application/generator.json (proposed/adapt; integrator only; D1)",
+        "generators/scala-cqrs-play-service/generator.json (proposed/adapt; integrator only; D1)",
+        "generators/scala-cqrs-application/render-invocation-host.mjs (proposed/split; saga-family-integrator only; D4)",
+        "generators/scala-cqrs-application/render-pipeline-invocation.mjs (proposed/split; saga-family-integrator only; D4)",
+        "generators/scala-cqrs-application/render-host-io.mjs (proposed/split; saga-family-integrator only; D4)",
+        "lib/products/generate-cli.mjs (proposed/adapt only if D1 selects a new formal route; integrator only)",
+        "lib/products/registry.mjs (proposed/adapt only if D1 changes admitted products; integrator only)",
+        "test/codegen-parity/saga-trigger-root.test.mjs (proposed/new)",
+        "test/fixtures/codegen-parity/saga-trigger-root/ (proposed/new)"
+      ],
+      "dependsOn": [
+        "shared-layout-types",
+        "shared-naming",
+        "shared-writer-anchors",
+        "saga-trigger-protocol",
+        "saga-trigger-behaviors",
+        "saga-context",
+        "classic-strict-runtime-interface-decision",
+        "saga-family-integration"
+      ],
+      "glue": [
+        "akka.actor.typed.Behavior",
+        "akka.cluster.sharding.typed.scaladsl.EntityRef",
+        "akka.cluster.sharding.typed.scaladsl.EntityTypeKey",
+        "net.imadz.infra.saga.SagaTransactionCoordinator.Command",
+        "net.imadz.infra.saga.SagaTransactionCoordinator.StartSaga",
+        "net.imadz.banking.application.services.transactor.MoneyTransferSagaTransactorProtocol.MoneyTransferSagaCommand",
+        "net.imadz.banking.application.services.transactor.MoneyTransferContext",
+        "net.imadz.banking.application.services.transactor.behaviors.MoneyTransferSagaTransactorBehaviors.apply"
+      ],
+      "openDecisions": [
+        "D1 classic-vs-strict-input：裁定新增经典 capability/profile，还是保留 strict Host 并另立适配变体；确定产品版本、输入槽和正式入口，禁止将 strict 合同静默降级。",
+        "D2 coordinator-supply：实际冻结 JAR 是否支持经典 SagaTransactionCoordinator.Command/StartSaga 与 EntityRef；strict ActorRef/Installed 不能通过改 import、alias 或 cast 替代。",
+        "D3 names-identities-imports：非标准 meta.name 的全串 replace 与 selfType+Protocol 不一致应拒绝还是显式绑定；key/tag 身份如何保持；framework/protocol 结构依赖补齐是否允许而不改变正常 import 字节。",
+        "D4 bank-host-retirement：严格银行 Host 的协议/状态/事件/admission/identity/delivery/serialization 拆分目标与所有者、父 execution/服务/serializer 完整迁移闭包须单独批准。",
+        "D5 classic-behavior-debt：argsCtorExpr 首命令假设、fallback context 文件、null failure snapshot、Nil tracing、未接 tags/未用 ctx 由 sibling 合同裁定，Root 不填假实现。",
+        "D6 acceptance-execution-boundary：固定同输入 fixtures、实际行为 runner、离线供给，以及 family project implementation-evidence/graph/临时目录/子进程写面后才允许执行。"
+      ],
+      "extraSources": [],
+      "fixedHeads": {
+        "js": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+        "bc": "cc335eb1e0d0fae17bf092fd61b126040196ea70"
+      },
+      "scalaSourceFingerprints": [
+        {
+          "role": "model",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/SagaTriggerModels.scala",
+          "bytes": 2982,
+          "sha256": "c7331985fb13f32e0f8104fed9110893703eece551f03c7da031796a073db2f1",
+          "readExtent": "完整文件 L1–71；本族字段 L41–50"
+        },
+        {
+          "role": "builder",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaTriggerBuilder.scala",
+          "bytes": 8368,
+          "sha256": "43876918912c7a5c97e18a647821f1467c74f6ee0ed058906de4d76a25cfa664",
+          "readExtent": "完整文件 L1–158；buildRoot L72–92"
+        },
+        {
+          "role": "template",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerRootTemplate.scala",
+          "bytes": 1367,
+          "sha256": "f7d001fbe47ffbb3ba0e59c92f1e5341e4fbdfa558a98b9ac682779e56f1ad84",
+          "readExtent": "完整文件 L1–36"
+        }
+      ],
+      "evidenceSeparation": {
+        "rawScala": "固定 MBT 原文和依据固定 Examples/GeneratorContext 的完整正文静态展开；不是新生成输出。",
+        "approvedTarget": "规范命名的经典 MoneyTransfer Root 正文保留 raw 结构及 RHS；stable key/tag、EntityRef、ctx 和单次委托不变。",
+        "actualJs": {
+          "snapshot": "baseline/actual-js/app/example/bankwealth/application/bank_payment_hostHost.scala",
+          "bytes": 11966,
+          "sha256": "e74f76532abdadc384d4fda34cad3d8896d34898c5996b3e3fa85758afa986c4",
+          "relation": "完整银行复合 strict Host；文档逐构造保留其身份/admission/result/delivery 内容。非经典同输入输出。"
+        },
+        "curated": "固定集合未找到 MoneyTransferSagaTransactor Root；只展示 MoneyTransferContext 与 MoneyTransferSagaTransactorBootstrap 的真实完整邻接参考，且其 net.imadz 包不等于 Examples 的 net.imadz.banking。",
+        "comparison": "结构性对照，非同输入字节比较",
+        "freshSameInputOutputs": false
+      },
+      "ownership": {
+        "artifactOwner": "saga-trigger-root",
+        "rootAssemblyOwner": "generators/scala-cqrs-application/render-saga-trigger-root.mjs (proposed)",
+        "compositeHostAssemblyOwner": "saga-family-integrator",
+        "filesystemWriter": "src/core/generate.mjs::applyEntries",
+        "sharedFilesOwner": "集成者；本族 owner 不修改共享 registry/naming/layout/writer 或其他人的 diff"
+      },
+      "contentAccounting": {
+        "model": "八字段原序、类型、无默认值、ArtifactModel inherited defaults；同文件 sibling 字段独立列账。",
+        "builder": "buildRoot 全文与 B01–B09；共享文件其他方法的规则、分支与 argsCtorExpr 槽分账。",
+        "template": "完整 T 源码、T00–T07 输出顺序、全部 RHS/body、静态及动态 imports、未输出构造。",
+        "actualJs": "银行固定 Host L1–132 的构造与主要 RHS/分支/副作用次序独立表，不以单纯改名视作完成拆分。",
+        "rawSlots": "Root 无 ???/MANUAL/body-string；共享 behaviors 的 argsCtorExpr、null snapshot、Nil tracing 等未完成/例外面明确保留。"
+      },
+      "acceptance": {
+        "status": "not-executed",
+        "commandShapes": "diff 第9节列实际 CodegenMain concern/families/scope-file 形状与拟制 scope JSON、formal generate-products 四必需参数、family generate-project 限制和副作用。",
+        "fixtures": "F1–F7 均为 proposed，当前未创建。",
+        "complexity": {
+          "status": "not-measured",
+          "ordinaryMethodCcGoal": 5,
+          "cc6To10": "逐方法说明职责",
+          "ccAbove10": "重构或逐方法批准例外，不使用 String/Any dispatcher 刷分"
+        },
+        "requiredEvidence": [
+          "无损同输入适配后的完整路径、文件正文、construct/RHS 和 import 顺序对账",
+          "冻结 JAR 的真实经典 coordinator/EntityRef/Context/Behaviors 接口证据",
+          "最小依赖闭包的持久化/回复时序和无意外发布行为证据",
+          "两次稳定生成、局部变更和最终字节来源回锚",
+          "旧 strict Host 身份、PB/PID/serializer/nominal/overflow 保护与唯一所有者退役计划"
+        ]
+      }
+    }
+  ],
+  "generatorsModified": false,
+  "runtimeExecuted": false
+}

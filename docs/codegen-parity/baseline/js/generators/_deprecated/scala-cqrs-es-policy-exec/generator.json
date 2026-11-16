@@ -1,0 +1,18 @@
+{
+  "name": "scala-cqrs-es-policy-exec",
+  "inputSchema": "truthsrc/v0.3",
+  "products": [
+    "template"
+  ],
+  "artifactKinds": [
+    "policy-exec"
+  ],
+  "output": {
+    "language": "scala",
+    "layout": "live-single-module"
+  },
+  "options": {
+    "generatedBy": "gen_policy_exec:2026-10-04（policy 执行侧·glue policy 生成面批）"
+  },
+  "description": "Policy execution-side face (V4-19): five files per executionSide policy (kernel <Cmd>Policy pure pair + glue PolicyOn<Cmd>On<Evt>Handler / <Cmd>Mechanics / PolicyOn<Cmd>Runner / PolicyOn<Cmd>Bootstrap), ported verbatim from the production gen_policy_exec.mjs (债④余账批 2026-10-04). Consumes the canonical policies slot's executionSide/entityIdField/dispose facts; signature facts (command params minus replyTo, reply type) resolve from the aggregate's canonical commands. The stamp line is the tool's fixed literal; shared runtime (PolicyMachine/DlqBury/FailureVerdict) stays handwritten territory."
+}

@@ -1,0 +1,3083 @@
+{
+  "schemaVersion": "codegen-parity.glue-source-evidence/v1",
+  "group": "glue-source-evidence",
+  "status": "content-evidence",
+  "language": "zh-CN",
+  "scope": "传统 Scala runCommon 的 39 Template 族及 strict-saga-module、strict-fixture-host、composition-invocation-host 三个条件扩展；研究胶水消费合同，不作完整 MBT 或运行验收",
+  "evidenceBoundary": {
+    "sourceContentInspected": true,
+    "declaredDependenciesInspected": true,
+    "resolvedClasspathVerified": false,
+    "actualConsumedJarBytesVerified": false,
+    "publishedAbiCompatibility": "unverified",
+    "runtimeVerdict": "not-run",
+    "oldRuntimeReceipts": "not-revalidated; 不把源码注释、既有 diff 或旧回执中的 PASS 迁移到本次结论",
+    "thirdPartySignatures": "仅保存模板中的精确消费/override 形状；未下载第三方源码或验证已解析 jar 的声明全集",
+    "extraSourcePolicy": "可变工作副本只读，逐文件 SHA-256；不冒充 baseline 冻结源码或发布版本",
+    "bankBusinessPolicyInvented": false
+  },
+  "baseline": {
+    "index": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/index.json",
+    "indexSha256": "d60175f98077ef302df3765a08591ded41ad2b07c8bd62e6ce95e18569fed0fc",
+    "capturedAt": "2026-11-15T09:14:23.674268+00:00",
+    "bcHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+    "commonHead": "2829932df674221c679a774367f11320c7b51d36",
+    "jsHead": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+    "headCaveat": "HEAD 是 index 保存的上下文；文件证据以 index 每条 source/snapshot/sha256 为准，不推断冻结时工作树完全干净"
+  },
+  "dependencyDeclarations": [
+    {
+      "id": "D-net-imadz",
+      "source": "build",
+      "lines": "127-167",
+      "coordinates": [
+        "net.imadz:common-core_2.13:0.2",
+        "net.imadz:monarch-core_2.13:0.2",
+        "net.imadz:monarch-persistence_2.13:0.2",
+        "net.imadz:saga-core_2.13:0.2",
+        "net.imadz:auth-core_2.13:0.2"
+      ],
+      "status": "declared-only",
+      "notes": "%% 按声明的 Scala 2.13.14 对应 _2.13；不是 0.2.0。scaffold 同时复制部分同 FQN 源码，不能断言实际实现全部来自这些 jars。"
+    },
+    {
+      "id": "D-akka",
+      "source": "build",
+      "lines": "10-42,75-112,173-190",
+      "coordinates": [
+        "com.typesafe.akka:akka-actor-typed_2.13:2.6.20",
+        "com.typesafe.akka:akka-cluster-typed_2.13:2.6.20",
+        "com.typesafe.akka:akka-cluster-sharding-typed_2.13:2.6.20",
+        "com.typesafe.akka:akka-persistence-typed_2.13:2.6.20",
+        "com.typesafe.akka:akka-persistence-query_2.13:2.6.20",
+        "com.typesafe.akka:akka-stream_2.13:2.6.20",
+        "com.typesafe.akka:akka-serialization-jackson_2.13:2.6.20",
+        "com.typesafe.akka:akka-remote_2.13:2.6.20",
+        "com.typesafe.akka:akka-protobuf-v3_2.13:2.6.20",
+        "com.lightbend.akka.management:akka-management_2.13:1.1.4",
+        "com.lightbend.akka.management:akka-management-cluster-http_2.13:1.1.4",
+        "com.lightbend.akka.management:akka-management-cluster-bootstrap_2.13:1.1.4",
+        "com.lightbend.akka.discovery:akka-discovery-kubernetes-api_2.13:1.1.4"
+      ],
+      "status": "declared-only",
+      "notes": "build:14-39 对 Actor/cluster/sharding/persistence/query/remote/stream 等统一 overrides；未解析 Play 传递依赖或验证 ManifestInfo。"
+    },
+    {
+      "id": "D-projection",
+      "source": "build",
+      "lines": "40-46,94-118,172-191",
+      "coordinates": [
+        "com.lightbend.akka:akka-projection-eventsourced_2.13:1.2.5",
+        "com.lightbend.akka:akka-projection-jdbc_2.13:1.2.5",
+        "org.scalikejdbc:scalikejdbc_2.13:3.5.0",
+        "org.scalikejdbc:scalikejdbc-config_2.13:3.5.0",
+        "org.scalikejdbc:scalikejdbc-play-initializer_2.13:2.8.0-scalikejdbc-3.5",
+        "mysql:mysql-connector-java:8.0.33",
+        "com.github.scullxbones:akka-persistence-mongo-rxmongo_2.13:3.0.8",
+        "org.reactivemongo:reactivemongo_2.13:1.1.0-noshaded-RC11",
+        "org.mongodb.scala:mongo-scala-driver_2.13:4.11.0"
+      ],
+      "overrides": [
+        "org.mongodb.scala:mongo-scala-driver_2.13:4.3.4"
+      ],
+      "inactiveDeclarations": [
+        "AkkaPersistenceJdbcVersion=5.1.0；akka-persistence-jdbc 依赖行被注释",
+        "SlickVersion=3.3.3；slick/slick-hikaricp 依赖行被注释"
+      ],
+      "status": "declared-only"
+    },
+    {
+      "id": "D-wire-play",
+      "source": "build",
+      "lines": "48-50,72-74,168-195",
+      "coordinates": [
+        "com.google.protobuf:protobuf-java:3.15.6",
+        "com.thesamet.scalapb:scalapb-runtime_2.13:${scalapb.compiler.Version.scalapbVersion} [protobuf configuration]",
+        "com.github.jwt-scala:jwt-play_2.13:9.1.2",
+        "com.github.ben-manes.caffeine:caffeine:3.1.8",
+        "com.typesafe.play:play-json_2.13:2.9.3 [override]"
+      ],
+      "sbtPluginSymbols": [
+        "PlayScala",
+        "guice",
+        "jdbc",
+        "clusterSharding"
+      ],
+      "extraDeclarationRefs": [
+        "plugins:1-23",
+        "sbt-properties:1",
+        "auth-build:44-58",
+        "common-build:65-77"
+      ],
+      "notes": "额外 scaffold plugins 声明 com.typesafe.play:sbt-plugin:2.8.18、com.thesamet:sbt-protoc:1.0.6、com.thesamet.scalapb:compilerplugin_2.12:0.11.14（sbt 构建侧 %%，不与应用 _2.13 混淆），sbt.version=1.4.9。auth-core 当前源码 build 另声明 play_2.13:2.8.20、javax.inject:javax.inject:1、com.google.inject:guice:5.1.0；实际 eviction 未核验。",
+      "status": "declared-only"
+    },
+    {
+      "id": "D-candidates",
+      "source": "build",
+      "lines": "138-167",
+      "properties": [
+        "codegen.candidate.sagaCore",
+        "codegen.candidate.monarchCore",
+        "codegen.candidate.monarchPersistence"
+      ],
+      "semantics": "默认不启用。saga 属性存在时过滤 saga-core 并加入 Compile/unmanagedJars；该分支本身没有 Monarch 分支的绝对路径/isFile 检查。Monarch 两属性必须同时存在，过滤两项 0.2 并要求绝对且现存 jar。unmanaged jars 不提供 POM 传递依赖。",
+      "candidateBytesRead": false,
+      "versions": "InvocationHost 的 0.2.1 只是模板注释，不是依赖选择。当前 monarch-persistence/build.sbt 默认 monarch.core.version=0.3.0、examples 默认 monarch.example.version=0.3.0；均不反向改写冻结 scaffold 0.2。runtime 自身 version 由 dynver/tag 导出，本次未求值。"
+    },
+    {
+      "id": "D-transitive-ambiguity",
+      "sources": [
+        "build:94-103",
+        "common-build:65-77"
+      ],
+      "semantics": "冻结 scaffold 注释要求只保留 rxmongo；额外读取的 common-core/build.sbt 仍声明 akka-persistence-mongo-scala_2.13:3.0.8 和 HikariCP:3.4.5。只能报告声明层的潜在双 driver 来源，未解析实际 0.2 POM，不断言真实 classpath 已冲突。"
+    }
+  ],
+  "contracts": [
+    {
+      "id": "G01",
+      "title": "纯规则、错误和身份的真正 FQN",
+      "artifactIds": [
+        "value-object",
+        "domain-entity",
+        "event-handler",
+        "invariant-rule",
+        "domain-service",
+        "aggregate-rules-formal"
+      ],
+      "symbols": [
+        "net.imadz.common.CommonTypes.Id",
+        "net.imadz.common.CommonTypes.iMadzError",
+        "net.imadz.common.CommonTypes.InvariantRule",
+        "net.imadz.common.CommonTypes.ReadModel",
+        "net.imadz.common.CommonTypes.DomainService",
+        "net.imadz.common.CommonTypes.ApplicationService",
+        "net.imadz.common.Id",
+        "net.imadz.common.CborSerializable"
+      ],
+      "signatures": [
+        "type Id = java.util.UUID",
+        "final case class iMadzError(code: String, message: String) extends Throwable with CborSerializable",
+        "trait InvariantRule[Event, State, Param] { def apply(state: State, param: Param): Either[iMadzError, List[Event]] }",
+        "trait ReadModel",
+        "trait DomainService",
+        "trait ApplicationService",
+        "net.imadz.common.Id.of(value: String): Id",
+        "net.imadz.common.Id.gen: Id"
+      ],
+      "semantics": "Id.of 用 UUID.fromString，非法输入抛异常；gen 用 randomUUID，不是纯业务算法。InvariantRule 只定义 State×Param→Either，Left 不是异常捕获包装；空 List 是可表达的成功。标记 trait 不创建资源、不持久化、不发消息。metadata FrameworkTypes 将 iMadzError 精确映射到 common.CommonTypes，而非臆造的 metadata error 类。",
+      "rawVsManual": "DomainEntity 是每聚合自己的 case class State，不继承共享 EntityState；事件折叠 handler alias=(State,Event)=>State。EntityBehavior 未匹配事件默认返回 state、helper 默认 ???。普通 InvariantRuleTemplate 条件逻辑只写注释，结果 ???；formal AggregateRules 按 guards 顺序 reject→Left、succeed-empty→Right(Nil)、emission→Right(List(event))。不能拿 formal 或人工业务算法替换普通 raw 模板。",
+      "refs": [
+        "types:7-28",
+        "cbor:1-5",
+        "framework-types:129-153,264-276",
+        "T-DomainEntity:44-95",
+        "T-EntityBehavior:31-82",
+        "T-InvariantRule:28-74",
+        "T-AggregateRules:41-74",
+        "T-DomainService:29-44"
+      ]
+    },
+    {
+      "id": "G02",
+      "title": "CommandHelper 与 Effect 顺序",
+      "artifactIds": [
+        "command-helper",
+        "aggregate-behavior",
+        "application-protocol",
+        "aggregate-root"
+      ],
+      "owner": "net.imadz.common.application.CommandHandlerReplyingBehavior",
+      "signatures": [
+        "trait CommandHelper[Command, State, Param, Reply] { def toParam(state: State, command: Command): Param; def createFailureReply(param: Param)(error: iMadzError): Reply; def createSuccessReply(param: Param)(state: State): Reply }",
+        "case class RunnablePolicyWithHelper[Event, State, Param, Reply, Command](rule: InvariantRule[Event, State, Param], helper: CommandHelper[Command, State, Param, Reply], state: State, command: Command)",
+        "def runReplyingPolicy[Event, State, Param, Reply, Command](rule: InvariantRule[Event, State, Param], helper: CommandHelper[Command, State, Param, Reply])(state: State, command: Command): RunnablePolicyWithHelper[Event, State, Param, Reply, Command]",
+        "RunnablePolicyWithHelper.replyWith(replyTo: akka.actor.typed.ActorRef[Reply]): akka.persistence.typed.scaladsl.Effect[Event, State]",
+        "RunnablePolicyWithHelper.replyWithAndPublish(replyTo: akka.actor.typed.ActorRef[Reply])(implicit context: akka.actor.typed.scaladsl.ActorContext[_]): akka.persistence.typed.scaladsl.Effect[Event, State]",
+        "case class AwaitingReplyToRunnablePolicy[Event, State, Param, ReplyMessage](rule: InvariantRule[Event, State, Param], state: State, param: Param)",
+        "def runReplyingPolicy[Event, State, Param, ReplyMessage](rule: InvariantRule[Event, State, Param])(state: State, param: Param): AwaitingReplyToRunnablePolicy[Event, State, Param, ReplyMessage]",
+        "AwaitingReplyToRunnablePolicy.replyWith(replyTo: ActorRef[ReplyMessage])(leftConfirmationFactory: Param => iMadzError => ReplyMessage, rightConfirmationFactory: Param => State => ReplyMessage): Effect[Event, State]"
+      ],
+      "consumer": "AggregateBehaviorTemplate 发 runReplyingPolicy(rule, helper)(state, cmd).replyWith(cmd.replyTo)；CommandHelpersBuilder 显式提供 helper，不靠 implicit 搜索自动选取。",
+      "effectOrder": {
+        "failure": [
+          "helper.toParam(oldState,command)",
+          "rule(oldState,param) = Left(error)",
+          "Effect.reply(replyTo)(helper.createFailureReply(param)(error))；零持久化、零发布"
+        ],
+        "success": [
+          "rule(oldState,param) = Right(events)",
+          "Effect.persist(events)",
+          "由宿主 EventSourcedBehavior 的 eventHandler 应用事件",
+          "thenReply(replyTo)(helper.createSuccessReply(param)) 使用更新后 State"
+        ],
+        "publishVariant": [
+          "persist/apply 之后 thenRun 逐个向 context.system.eventStream 发送 EventStream.Publish(e)",
+          "然后 thenReply；不是持久 outbox，不担保跨 JVM 可靠交付"
+        ]
+      },
+      "failureBoundary": "toParam/rule/helper 抛出的异常没有在此 try/recover；持久化失败不伪装业务 Left。Right(Nil) 不得改为拒绝，thenReply 仍有意义。",
+      "manualSlots": "三个 helper 方法体都在 MANUAL 块。builder 默认 param=单字段/tuple/Unit，formal 用 <Cmd>Params；reply=Unit→()、formal 单 error 槽→Reply(None/Some(error))、其余 Reply(param 或 param._1,None/Some(error))。默认成功 reply 通常不读取 state；必须以真实回复合同定制，不能虚构银行余额行为。behavior.apply 默认 orElse 链在 MANUAL；空行为为 ???；只读 Get*StateReply(state) 直接 Effect.reply。",
+      "refs": [
+        "common-helper:16-86",
+        "T-CommandHelpers:26-63",
+        "B-CommandHelpers:38-141",
+        "T-AggregateBehavior:77-160",
+        "T-AggregateProtocol:98-106"
+      ]
+    },
+    {
+      "id": "G03",
+      "title": "同 FQN 三个源码版本与 source-copy 消费路线",
+      "artifactIds": [
+        "command-helper",
+        "aggregate-behavior",
+        "application-bootstrap"
+      ],
+      "variants": [
+        {
+          "source": "common-helper",
+          "constructor": "(rule, helper, state, command)",
+          "replyWith": true,
+          "replyWithAndPublish": true,
+          "withPost": false
+        },
+        {
+          "source": "curated-helper",
+          "constructor": "(rule, helper, state, command)",
+          "replyWith": true,
+          "replyWithAndPublish": false,
+          "withPost": false
+        },
+        {
+          "source": "scaffold-helper",
+          "constructor": "(policy, helper, state, command, post: List[Event] => Option[iMadzError] = (_: List[Event]) => None)",
+          "replyWith": true,
+          "replyWithAndPublish": false,
+          "withPost": true
+        }
+      ],
+      "sourceLocalSignatures": [
+        "RunnablePolicyWithHelper.withPost(f: List[Event] => Option[iMadzError]): RunnablePolicyWithHelper[Event, State, Param, Reply, Command]",
+        "def runReplyingPolicy[Event, State, Param, Reply, Command](policy: InvariantRule[Event, State, Param], helper: CommandHelper[Command, State, Param, Reply])(state: State, command: Command): RunnablePolicyWithHelper[Event, State, Param, Reply, Command]"
+      ],
+      "semantics": "source-local withPost=copy(post=f)；只在 policy Right 后、persist 前运行；Some(error)→失败 reply，不持久化；None→persist/thenReply。参数名 rule/policy、case class arity、copy/unapply/defaults、发布/后置方法均不能当作同一 ABI。",
+      "consumerRoute": "冻结 CodegenMain:199-201 先复制整个 scaffold；额外原仓 scaffold 确有 common/auth/classic saga 同 FQN 源码。multiProject 把 13 common 文件搬到 kernel/glue，部分 auth 仍留 Play root。这与五个 0.2 libraryDependencies 并存。模板只用共同的 positional runReplyingPolicy(...)(...).replyWith，但新增 withPost 或 publish 要先决定 source owner 与真实 artifact；没有 classpath/编译/jar 证据。",
+      "refs": [
+        "codegen-main:192-241",
+        "common-helper:29-86",
+        "curated-helper:29-67",
+        "scaffold-helper:29-79",
+        "build:127-167"
+      ]
+    },
+    {
+      "id": "G04",
+      "title": "Akka Aggregate、sharding、factory 职责",
+      "artifactIds": [
+        "aggregate-root",
+        "application-protocol",
+        "aggregate-factory",
+        "aggregate-repository-port",
+        "aggregate-repository-implementation",
+        "bootstrap"
+      ],
+      "symbols": [
+        "akka.actor.typed.ActorRef",
+        "akka.actor.typed.Behavior",
+        "akka.persistence.typed.PersistenceId",
+        "akka.persistence.typed.scaladsl.EventSourcedBehavior",
+        "akka.persistence.typed.scaladsl.Effect",
+        "akka.persistence.typed.scaladsl.RetentionCriteria",
+        "akka.cluster.sharding.typed.scaladsl.ClusterSharding",
+        "akka.cluster.sharding.typed.scaladsl.Entity",
+        "akka.cluster.sharding.typed.scaladsl.EntityContext",
+        "akka.cluster.sharding.typed.scaladsl.EntityRef",
+        "akka.cluster.sharding.typed.scaladsl.EntityTypeKey"
+      ],
+      "generatedSignatures": [
+        "type <CommandHandler> = (<State>, <Command>) => akka.persistence.typed.scaladsl.Effect[<Event>, <State>]",
+        "def init<Aggregate>(sharding: ClusterSharding): Unit",
+        "private def apply(entityId: String, tag: String): Behavior[<Protocol>.<Command>]",
+        "class <Factory> @Inject()(clusterSharding: ClusterSharding)(implicit ec: ExecutionContext)",
+        "def <createWithInitial>(<id-if-not-already-command-param>, <command-payload-in-order>): Future[Either[iMadzError, EntityRef[<Command>]]]",
+        "class <RepositoryImpl> @Inject()(sharding: ClusterSharding) extends <Repository>",
+        "override def <find>(<param>: <IdType>): EntityRef[<Command>]"
+      ],
+      "callShapes": [
+        "sharding.init(Entity(<Aggregate>.entityTypeKey)(behaviorFactory))",
+        "PersistenceId(<Aggregate>.entityTypeKey.name, entityId)",
+        "EventSourcedBehavior(persistenceId=..., emptyState=<Entity>.empty(...), commandHandler=<Behaviors>.apply, eventHandler=<EventHandler>.apply).withTagger(_ => Set(tag)).withRetention(RetentionCriteria.snapshotEvery(numberOfEvents=100,keepNSnapshots=3)).onPersistFailure(SupervisorStrategy.restartWithBackoff(200.millis,5.seconds,0.1).withStashCapacity(100)).eventAdapter(new <EventAdapter>).snapshotAdapter(new <SnapshotAdapter>)",
+        "sharding.entityRefFor(<Aggregate>.entityTypeKey, param.toString)",
+        "entityRef.ask[Reply](Cmd(<all-payload-args>, _))"
+      ],
+      "semantics": "AggregateRoot 多为 key/tags/handler 接线，不自行持久化；Bootstrap 创建 ESB，Akka 执行 persist/replay/retention。Repository 只寻址，不加载数据库状态，也不等于初始化成功。Factory 默认 timeout=10.seconds；收到 confirmation.error 才 Left/Right(entityRef)，ask 失败仍是失败 Future。标签用 abs(entityId.hashCode % tags.size) 选取；tag 数与读侧消费需一致。",
+      "refs": [
+        "T-AggregateRoot:101-133",
+        "T-AggregateProtocol:25-61,98-106",
+        "T-AggregateFactory:39-75",
+        "B-AggregateFactory:170-255",
+        "T-AggregateRepository:37-70",
+        "T-AggregateRepositoryImpl:35-55",
+        "T-Bootstrap:72-114"
+      ]
+    },
+    {
+      "id": "G05",
+      "title": "序列化与 converter 不是持久化或兼容性证明",
+      "artifactIds": [
+        "protobuf-schema",
+        "proto-converter",
+        "event-adapter",
+        "snapshot-adapter",
+        "value-object"
+      ],
+      "symbols": [
+        "net.imadz.common.serialization.PrimitiveConverter",
+        "net.imadz.common.serialization.PrimitiveConverter.ProtoConverter",
+        "net.imadz.common.serialization.ObjectIdOffsetSerializer",
+        "akka.persistence.typed.EventAdapter",
+        "akka.persistence.typed.EventSeq",
+        "akka.persistence.typed.SnapshotAdapter",
+        "akka.serialization.Serializer",
+        "akka.remote.serialization.ProtobufSerializer",
+        "akka.serialization.jackson.JacksonCborSerializer"
+      ],
+      "signatures": [
+        "trait ProtoConverter[S,P] { def toProto(domain:S):P; def fromProto(proto:P):S; def toProtoOption(domain:Option[S]):Option[P]; def fromProtoOption(proto:Option[P]):Option[S]; def toProtoList(domain:Seq[S]):Seq[P]; def fromProtoList(proto:Seq[P]):List[S] }",
+        "def toProtoMap[K1,V1,K2,V2](domain:Map[K1,V1],keyConv:ProtoConverter[K1,K2],valConv:ProtoConverter[V1,V2]):Map[K2,V2]",
+        "def fromProtoMap[K1,V1,K2,V2](proto:Map[K1,V1],keyConv:ProtoConverter[K2,K1],valConv:ProtoConverter[V2,V1]):Map[K2,V2]",
+        "IdConv.toProto(id:Id):String; IdConv.fromProto(s:String):Id",
+        "CurrencyConv.toProto(c:java.util.Currency):String; CurrencyConv.fromProto(s:String):java.util.Currency",
+        "StringConv.toProto(s:String):String; StringConv.fromProto(s:String):String",
+        "override def manifest(event:<DomainEvent>):String = event.getClass.getName",
+        "override def toJournal(e:<DomainEvent>):<ProtoEventUnion>",
+        "override def fromJournal(p:<ProtoEventUnion>,manifest:String):akka.persistence.typed.EventSeq[<DomainEvent>]",
+        "override def toJournal(state:<State>):Any",
+        "override def fromJournal(from:Any):<State>",
+        "ObjectIdOffsetSerializer.identifier:Int = 20160728; includeManifest:Boolean = true",
+        "ObjectIdOffsetSerializer.toBinary(o:AnyRef):Array[Byte]",
+        "ObjectIdOffsetSerializer.fromBinary(bytes:Array[Byte],manifest:Option[Class[_]]):AnyRef"
+      ],
+      "semantics": "converter map 的 key/value 方向不对称，必须保持型参/参数顺序。Id/Currency 解析异常向外抛；转换 key 碰撞不是自动验证。event adapter 具体 PO arm→EventSeq.single；Empty→EventSeq.empty，manifest 入参未用于版本分派；snapshot 用 asInstanceOf，可类型失败。OffsetSerializer 只接受 ObjectIdOffset，hex BigInteger↔BSONObjectID，忽略原 timestamp 而从 ID 重建。它不证明 leading-zero/跨版本往返。",
+      "rawDefaults": "AggregateConverter 在 VO→event→state 顺序生成 Conv；ListConv 两方向有 implicit ProtoConverter；Instant null→0L→epoch，非 null 往返；BigDecimal→doubleValue 是 raw 有损路径；Option[List] None→Nil、回读恒 Some；复杂必填 PO 缺失抛 IllegalArgumentException。VO raw 自带 Play JSON：≤22 字段 Json.format/DefaultValues；>22 手写 Reads/OWrites（内部 as[T] 可抛异常）；不能把 raw 说成零框架依赖。",
+      "bindings": "额外 scaffold/conf/serialization.conf 明确将 ObjectIdOffset 绑定自定义 serializer、com.google.protobuf.Message 和 scalapb.GeneratedMessage 绑定 Akka ProtobufSerializer、CborSerializable 绑定 Jackson CBOR；Java serialization off。广泛 scalapb.GeneratedMessage 绑定是既存 raw 事实，不是认可其正确性；layout 禁止以扩大绑定解决 parity。strict durable/Monarch serializer 的部署完整绑定未在本轮核验。",
+      "refs": [
+        "primitive:7-61",
+        "offset:9-24",
+        "T-EventAdapter:24-96",
+        "T-SnapshotAdapter:28-65",
+        "T-AggregateConverter:52-99,115-199",
+        "T-Proto:14-84",
+        "T-ValueObject:26-105",
+        "serialization-conf:1-20"
+      ]
+    },
+    {
+      "id": "G06",
+      "title": "Classic Saga 的完整调用面",
+      "artifactIds": [
+        "saga-participant",
+        "saga-definition",
+        "saga-context",
+        "bootstrap"
+      ],
+      "owner": "net.imadz.infra.saga.dsl (冻结 curated 源码；与 strict namespace 不混用)",
+      "signatures": [
+        "final case class SagaStep[E,R,C](stepId:String,participant:net.imadz.infra.saga.SagaParticipant[E,R,C],resilience:ResiliencePolicy=ResiliencePolicy.defaults,stepGroup:Int=1)",
+        "SagaDefinition.apply[E,C,A](name:String,version:Int,argsCodec:ArgsCodec[A],steps:A=>Seq[SagaStep[E,_,C]],preCheck:A=>Either[E,A]=(a:A)=>Right(a),errorText:E=>(String,String)=(e:E)=>(\"PRECHECK_FAILED\",String.valueOf(e)),onResult:(A,TransactionResult)=>Seq[SagaBusinessEvent]=(_:A,_:TransactionResult)=>Nil,defaultResilience:ResiliencePolicy=ResiliencePolicy.defaults):SagaDefinition[E,C,A]",
+        "SagaDefinition.expand(args:A):scala.util.Try[List[net.imadz.infra.saga.SagaTransactionStep[E,Any,C]]]",
+        "trait ArgsCodec[A] { def encode(a:A):Array[Byte]; def decode(bytes:Array[Byte]):scala.util.Try[A] }",
+        "ArgsCodec.playJson[A](implicit fmt:play.api.libs.json.Format[A]):ArgsCodec[A]",
+        "ArgsCodec.fromFunctions[A](encode:A=>Array[Byte],decodeFn:Array[Byte]=>scala.util.Try[A]):ArgsCodec[A]",
+        "SagaRegistry.register[E,C,A](definition:SagaDefinition[E,C,A]):Unit",
+        "SagaRegistry.resolve(name:String,version:Int):scala.util.Try[SagaDefinition[_,_,_]]",
+        "SagaRegistry.registeredCount:Int",
+        "abstract class AskParticipant[E,R,C](rules:ErrorRules[E]=ErrorRules.none[E],val askTimeout:FiniteDuration=5.seconds)(implicit ec:ExecutionContext,scheduler:akka.actor.typed.Scheduler)",
+        "protected def prepareBinding:Option[PhaseAsk[E,R,C]]=None; protected def commitBinding:Option[PhaseAsk[E,R,C]]=None; protected def compensateBinding:Option[PhaseAsk[E,R,C]]=None",
+        "final override def prepare(transactionId:String,context:C,traceId:String)(implicit ec:ExecutionContext):ParticipantEffect[RetryableOrNotException,R]",
+        "final override def commit(transactionId:String,context:C,traceId:String)(implicit ec:ExecutionContext):ParticipantEffect[RetryableOrNotException,R]",
+        "final override def compensate(transactionId:String,context:C,traceId:String)(implicit ec:ExecutionContext):ParticipantEffect[RetryableOrNotException,R]",
+        "PhaseAsk.ask[Cmd,Reply,E,R,C](ref:C=>akka.actor.typed.RecipientRef[Cmd],command:(String,akka.actor.typed.ActorRef[Reply])=>Cmd,mapReply:Reply=>Either[E,SagaResult[R]]):PhaseAsk[E,R,C]",
+        "PhaseAsk.direct[E,R,C](f:(String,C,String)=>Future[Either[E,SagaResult[R]]]):PhaseAsk[E,R,C]",
+        "PhaseAsk.send(transactionId:String,ctx:C,traceId:String)(implicit ec:ExecutionContext,s:akka.actor.typed.Scheduler,timeout:akka.util.Timeout):Future[Either[E,SagaResult[R]]]",
+        "type net.imadz.infra.saga.SagaParticipant.ParticipantEffect[E,R] = Future[Either[E,SagaResult[R]]]",
+        "case class SagaResult[T](message:Option[String],metadata:Map[String,String],data:Option[T]); SagaResult.empty[T]():SagaResult[T]; SagaResult.apply[T](data:T):SagaResult[T]; SagaResult.apply[T](data:T,message:String):SagaResult[T]"
+      ],
+      "semantics": "definition 参数为 val 属性；steps 从 args 重建 participant，expand 为实际 phase 顺序 Prepare/Commit/Compensate 的 engine descriptors。只有实现 PhaseAwareParticipant 的对象才按 boundPhases 裁剪；本冻结 AskParticipant 不混入该 trait，None binding 会成功 Right(SagaResult.empty)，不是删除 phase。PhaseAsk 只 ask/map，异常由 AskParticipant 分 typed-business 与 thrown 两轨归类，三 phase 方法不持久化。Registry 是 ConcurrentHashMap，name/version 重注册覆盖，必须在 sharding recovery 前注册。",
+      "rawVsManual": "SagaDefinitionTemplate 的 preCheck=args=>Right(args)、onResult=(_,_)=>Nil 均为默认业务槽；ArgsCodec.playJson，errorText=(code,message)。participant 显式 reply.error→Left，否则 SagaResult(resultField 或 .toString)；repository 寻址固定 find<Base>ByUserId，取首 ctor 字段，不是通用任意资源适配。SagaContext 只装配字段无资源生命周期。",
+      "refs": [
+        "classic-definition:14-141",
+        "classic-ask:20-66",
+        "classic-phase:17-49",
+        "classic-participant:11-55",
+        "T-SagaDefinition:60-93",
+        "T-SagaParticipant:46-110",
+        "T-SagaContext:24-40"
+      ]
+    },
+    {
+      "id": "G07",
+      "title": "Classic Saga 错误/完成/恢复与发布 owner",
+      "artifactIds": [
+        "saga-definition",
+        "saga-participant",
+        "saga-trigger-protocol",
+        "saga-trigger-entity",
+        "saga-trigger-root",
+        "saga-trigger-behaviors",
+        "bootstrap"
+      ],
+      "signatures": [
+        "ErrorRules.apply[E](business:PartialFunction[E,ErrorAction]=PartialFunction.empty,thrown:PartialFunction[Throwable,ErrorAction]=PartialFunction.empty):ErrorRules[E]",
+        "ErrorRules.apply[E](business:PartialFunction[E,ErrorAction],describe:E=>String):ErrorRules[E]",
+        "ErrorRules.apply[E](business:PartialFunction[E,ErrorAction],thrown:PartialFunction[Throwable,ErrorAction],describe:E=>String):ErrorRules[E]",
+        "ErrorRules.none[E]:ErrorRules[E]; ErrorRules.describe(e:E):String; classifyBusiness(e:E):RetryableOrNotException; classifyThrown(t:Throwable):RetryableOrNotException",
+        "final case class ResiliencePolicy(maxRetries:Int=3,timeoutPerAttempt:FiniteDuration=5.seconds,recovery:RecoveryBehavior=RecoveryBehavior.FailIfOngoing,circuitBreaker:Option[net.imadz.infra.saga.StepExecutor.CircuitBreakerSettings]=None)",
+        "final class SagaRunner[E,A](definition:SagaDefinition[E,_,A],coordinatorRef:String=>akka.cluster.sharding.typed.scaladsl.EntityRef[SagaTransactionCoordinator.Command],system:akka.actor.typed.ActorSystem[_],startAckTimeout:FiniteDuration=15.seconds,completionBackstop:FiniteDuration=5.minutes)",
+        "SagaRunner.run(transactionId:String,args:A,traceId:String=\"\",singleStep:Boolean=false):Future[SagaTransactionCoordinator.TransactionResult]",
+        "SagaRunner.statusOf(transactionId:String,statusTimeout:FiniteDuration=15.seconds):Future[Option[SagaTransactionCoordinator.StatusSnapshot]]",
+        "SagaRunner.admin:SagaAdminOps",
+        "SagaAdminOps.proceed(transactionId:String,timeout:FiniteDuration=5.minutes):Future[TransactionResult]; resolveSuspended(transactionId:String,timeout:FiniteDuration=5.minutes):Future[TransactionResult]; retryPhase(transactionId:String,timeout:FiniteDuration=5.minutes):Future[TransactionResult]; fixStep(transactionId:String,stepId:String,phase:SagaPhase.TransactionPhase):Unit",
+        "SagaTransactionCoordinator.StartSaga(transactionId:String,definitionName:String,definitionVersion:Int,argsBytes:Array[Byte],traceId:String=\"\",singleStep:Boolean=false,replyTo:Option[ActorRef[SagaStartReply]]=None,completionReply:Option[ActorRef[TransactionResult]]=None)",
+        "SagaTransactionCoordinator.apply(persistenceId:PersistenceId,stepExecutorBehavior:String=>Behavior[StepExecutor.Command],globalTimeout:FiniteDuration=5.minutes)(implicit ec:ExecutionContext,timeout:Timeout):Behavior[Command]",
+        "StepExecutor.apply[E,R,C](persistenceId:PersistenceId,context:C,defaultMaxRetries:Int,initialRetryDelay:FiniteDuration,circuitBreakerSettings:StepExecutor.CircuitBreakerSettings,extendedSystem:akka.actor.ExtendedActorSystem):Behavior[StepExecutor.Command]",
+        "case class StepExecutor.CircuitBreakerSettings(maxFailures:Int,callTimeout:FiniteDuration,resetTimeout:FiniteDuration)",
+        "case class SagaTransactionCoordinator.TransactionResult(successful:Boolean,snapshot:StatusSnapshot,failReason:String=\"\")"
+      ],
+      "semantics": "未匹配 business error 默认 NonRetryable；Timeout/Connect/SQLTransient thrown 默认 Retryable，显式 thrown 覆盖。ResiliencePolicy.defaults 相等值意味着继承 definition 默认。Runner 的 Started 只等 terminal bridge；AlreadyRunning 合成 unsuccessful=false 结果，非终态业务失败；AlreadyFinished 返回缓存；rejection/ask/backstop 失败 Future。completion registry/system actor 是节点内内存，不持久 reply channel，状态查询是另一路。Coordinator 持久 args/descriptors，preCheck Right 的变换值被忽略（展开原 args）；终态先 persist，再发 SagaProgressEvent 和 completionReply，然后 stop。未在冻结 classic runtime 找到 .onResult(...) 调用，不能声称该 callback 自动发布业务事件。",
+      "recovery": "Coordinator 对 InProgress/Compensating 非 paused 恢复自发 RecoveredInProgress；StepExecutor 自身 RecoveryCompleted 只等 Attach。和 strict 恢复不自动执行明显不同。",
+      "trigger": "SagaTriggerBehaviors 自己持久 TransactionInitiated 后 context.ask StartSaga(completionReply=Some(ref))；终态再 persist Completed/Failed，thenReply；ask 失败 raw 用 TransactionResult(false,null,\"start failed\")，不是已证明未执行。无该触发器的耐久重试/恢复发送证明。",
+      "refs": [
+        "classic-resilience:8-89",
+        "classic-runner:31-182",
+        "classic-coordinator:21-58,127-138,229-260,462-550,705-742",
+        "classic-step:36-77,149-179",
+        "T-SagaTriggerProtocol:30-47",
+        "T-SagaTriggerEntity:23-51",
+        "T-SagaTriggerRoot:22-32",
+        "T-SagaTriggerBehaviors:46-108",
+        "T-Bootstrap:125-166"
+      ]
+    },
+    {
+      "id": "G08",
+      "title": "Strict Saga 独立 typed port 与证据协议",
+      "artifactIds": [
+        "strict-saga-module",
+        "strict-fixture-host"
+      ],
+      "owner": "net.imadz.infra.saga.strict (额外读取当前源码；不是已消费 jar ABI)",
+      "signatures": [
+        "final case class CodecPin(id:String,version:Int)",
+        "trait PayloadCodec[A] { def pin:CodecPin; def encode(value:A):com.google.protobuf.ByteString; def decode(bytes:com.google.protobuf.ByteString):scala.util.Try[A] }",
+        "final case class TransactionIdentity(transactionId:String,definitionName:String,definitionVersion:Int,argsDigest:String,definitionDigest:String,argsCodec:CodecPin,planDigest:String)",
+        "final case class OperationIdentity(transaction:TransactionIdentity,participantId:String,resource:String,stepId:String,phase:Phase)",
+        "final case class OperationRequest[A](identity:OperationIdentity,args:A,receiptContext:StrictReceiptContext=StrictReceiptContext.unavailable) { def receipt[R](producer:OperationIdentity,expectedCodec:CodecPin,codec:PayloadCodec[R]):scala.util.Try[R] }",
+        "trait PhasePort[A,R] { def receiptCodec:PayloadCodec[R]; def querySafety:QuerySafety; def execute(request:OperationRequest[A]):Future[PhaseOutcome[R]]; def query(request:OperationRequest[A]):Future[PhaseOutcome[R]] }",
+        "final case class ConfirmedReceipt[R](identity:OperationIdentity,receipt:R) extends PhaseOutcome[R]",
+        "final case class NotExecuted(identity:OperationIdentity,evidence:String,safeToRetry:Boolean) extends PhaseOutcome[Nothing]",
+        "final case class Unknown(identity:OperationIdentity,reason:String) extends PhaseOutcome[Nothing]",
+        "final case class Rejected(identity:OperationIdentity,reason:String) extends PhaseOutcome[Nothing]",
+        "PhaseBinding.apply[A,R](port:PhasePort[A,R]):PhaseBinding[A]",
+        "final case class StrictParticipant[A](stepId:String,participantId:String,resource:String,phases:Map[Phase,PhaseBinding[A]])",
+        "final case class StrictSagaDefinition[A](name:String,version:Int,definitionDigest:String,argsCodec:PayloadCodec[A],participants:A=>Vector[StrictParticipant[A]])",
+        "trait ReconcileAuthorizer { def authorize(identity:TransactionIdentity,token:String):Either[String,String] }",
+        "StrictSagaCoordinator.apply[A](persistenceId:PersistenceId,definition:StrictSagaDefinition[A],authorizer:ReconcileAuthorizer,settings:Settings=Settings()):Behavior[Command]",
+        "final case class StrictSagaCoordinator.Settings(interactionTimeout:FiniteDuration=5.seconds,maxReconcileInteractions:Int=32)",
+        "StrictSagaCoordinator.Start(transactionId:String,argsBytes:com.google.protobuf.ByteString,replyTo:ActorRef[Reply]); Attach(identity:TransactionIdentity,replyTo:ActorRef[Reply]); GetStatus(replyTo:ActorRef[Reply]); Abort(identity:TransactionIdentity,reason:String,replyTo:ActorRef[Reply]); Reconcile(identity:TransactionIdentity,authorization:String,maxInteractions:Int,replyTo:ActorRef[Reply])"
+      ],
+      "semantics": "PayloadCodec 不等于 classic ArgsCodec，ByteString 不等于 Array[Byte]；pin/identity/receipt-query 都是严格合同。当前 materialize 要求 canonical encode(decode(bytes))==bytes、非空参与者、三个 TCC phases、唯一 stepId。ConfirmedReceipt 需真实持久收据；NotExecuted 还要求权威 absence 与旧调用不能晚生效的 fencing 声明；Rejected/timeout 不能当 absence。PhaseBinding 固定 codec 实例与 pin，把 outcome 编成 Evidence；声明只检查形状不证明数据库。Coordinator intent-before-I/O，commit-decision-before-commit，unknown→RecoveryRequired，恢复时 halt，Start/Attach/GetStatus 对已存在交易不 re-drive；只有同步鉴权通过且预算合法的 Reconcile 恢复。",
+      "generatedHost": "每 phase 的 <Stem>HostBinding 要求 contract:PhaseContract、receiptCodec、querySafety、execute(identity:OperationIdentity,input:<Input>):Future[PhaseOutcome[<Receipt>]]、query 同签名。Host.requireImplemented(requirements,types,argsCodec):Unit 和 requireIndependentNamespace(persistenceId):Unit 必须 fail closed；正常返回仅为 host 声明，不认证任意实现。completionEvent 是纯 mapping，发布归 host。",
+      "refs": [
+        "strict-definition:8-173,213-218",
+        "strict-coordinator:14-277",
+        "T-StrictSaga:81-115,123-158,191-274",
+        "strict-plan:44-99"
+      ]
+    },
+    {
+      "id": "G09",
+      "title": "Strict fixture / composition 的装配与资源",
+      "artifactIds": [
+        "strict-fixture-host",
+        "composition-invocation-host",
+        "application-bootstrap"
+      ],
+      "generatedSignatures": [
+        "<Entry>.spawn(system:ActorSystem[_],sharding:ClusterSharding,reconcileToken:String)(implicit ec:ExecutionContext):ActorRef[StrictSagaCoordinator.Command]",
+        "<Entry>.spawnClusterSingleton(system:ActorSystem[_],sharding:ClusterSharding,reconcileToken:String)(implicit ec:ExecutionContext):ActorRef[StrictSagaCoordinator.Command]",
+        "<Entry>.start(coordinator:ActorRef[StrictSagaCoordinator.Command],host:SagaModule.Host,source:<typed trigger>,replyTo:ActorRef[StrictSagaCoordinator.Reply]):StrictSagaCoordinator.Start",
+        "<Entry>.installEventSource(system:ActorSystem[_],sharding:ClusterSharding,coordinator:ActorRef[StrictSagaCoordinator.Command])(implicit ec:ExecutionContext):akka.stream.UniqueKillSwitch",
+        "<Entry>.status(coordinator:ActorRef[StrictSagaCoordinator.Command])(implicit timeout:Timeout,scheduler:Scheduler,ec:ExecutionContext):Future[StrictState]",
+        "<Entry>.completionEvent(identity:TransactionIdentity,args:SagaModule.Args,host:SagaModule.Host,state:StrictState):Option[<event family>]",
+        "<Entry>.publishCompletion(sharding:ClusterSharding,host:SagaModule.Host,state:StrictState)(implicit timeout:Timeout,scheduler:Scheduler,ec:ExecutionContext):Future[<aggregate reply>]",
+        "<CompositionHost>.spawnClusterSingleton(system:ActorSystem[_],sharding:ClusterSharding,splitCoordinator:ActorRef[StrictSagaCoordinator.Command],mergeCoordinator:ActorRef[StrictSagaCoordinator.Command],operation:String,occurrence:String)(implicit ec:ExecutionContext):ActorRef[Command]"
+      ],
+      "semantics": "Entry 一个定义固定 namespace/SagaModule.Name PID，用 ClusterSingleton 避免多 writer。installEventSource 消费 ScalaDslMongoReadJournal.allEvents()；触发持久事件发 Start；匹配 coordinator PID 的 terminal marker 触发 GetStatus→publishCompletion→aggregate command，真正业务持久化与去重归 aggregate。stream 返回 UniqueKillSwitch，但冻结 ApplicationBootstrap 调用没有保存返回值；Sink.foreach 中发出的 Future 未构成 durable outbox，失败日志不自动补偿/重启。注释称 shared durable journal 不等于已验证 replay/offset 持久化。",
+      "composition": "严格 admission + singleProject 才发 composition。Host ESB 持久 invocation intent，创建本地 PersistentMonarch child；Accepted 只是 start ack，child terminal 通过 eventsByPersistenceId(pid,0L,Long.MaxValue) 判定。Parent mirror 非权威；StartRun timeout=unknown。host PostStop 标 ownerClosed、cancel scheduledPolls、shutdown childWatch；未证明所有同步异常/PreRestart 路径已清理。fixture child 是无设备 I/O 的有界转换，不是银行策略。",
+      "refs": [
+        "dispatch:216-270",
+        "T-FixtureHost:555-746",
+        "T-InvocationHost:150-241,402-513,532-600",
+        "T-ApplicationBootstrap:47-71"
+      ]
+    },
+    {
+      "id": "G10",
+      "title": "Monarch 核心与持久宿主不能当 Saga",
+      "artifactIds": [
+        "composition-invocation-host"
+      ],
+      "symbols": [
+        "net.imadz.monarch.Monarch",
+        "net.imadz.monarch.LifecycleHooks",
+        "net.imadz.monarch.StageInterpreter",
+        "net.imadz.monarch.FailureInterceptor",
+        "net.imadz.monarch.persistence.PersistentMonarch",
+        "net.imadz.monarch.persistence.StateCodec",
+        "net.imadz.monarch.persistence.RunObserver"
+      ],
+      "signatures": [
+        "class Monarch[Stage,State](interpreter:StageInterpreter[Stage,State],hooks:LifecycleHooks[Stage,State],failureInterceptor:Option[FailureInterceptor[Stage,State]]=None,runToken:()=>Boolean=()=>true)",
+        "StageInterpreter.run(stage:Stage,state:State)(implicit ec:ExecutionContext):Future[State]",
+        "LifecycleHooks.stageName(stage:Stage):String; onStageStart(cursor:String):Unit; onStageComplete(cursor:String,state:State,metadata:Map[String,String]=Map.empty):Unit; onStageFailed(cursor:String,error:StageError):Unit; onStageResolved(cursor:String,error:StageError,state:State):Unit",
+        "FailureInterceptor.intercept(cursor:String,error:StageError,state:State)(implicit ec:ExecutionContext):Future[State]",
+        "Monarch.initialize(stages:Seq[Stage]):Unit; injectHead(stages:Seq[Stage]):Unit; appendTail(stages:Seq[Stage]):Unit; pendingCount:Int; cursorOf(stage:Stage,pos:Int):String",
+        "Monarch.process(initial:State)(implicit ec:ExecutionContext):Future[State]; resume(state:State,completedCursors:Set[String])(implicit ec:ExecutionContext):Future[State]; resumeFromIndex(state:State,completedCount:Int)(implicit ec:ExecutionContext):Future[State]",
+        "trait StateCodec[S] { def encode(state:S):Array[Byte]; def decode(bytes:Array[Byte]):S }",
+        "StateCodec.apply[S](enc:S=>Array[Byte],dec:Array[Byte]=>S):StateCodec[S]",
+        "PersistentMonarch.behavior[Stage,S](persistenceId:PersistenceId,stages:Seq[Stage],interpreter:(Stage,S)=>Future[S],stateCodec:StateCodec[S],stageName:Stage=>String=(s:Stage)=>String.valueOf(s),failurePolicy:Option[(String,StageError,S)=>Future[S]]=None,observer:RunObserver[S]=RunObserver.nop[S])(implicit ec:ExecutionContext):Behavior[PersistentMonarch.Command[S]]",
+        "PersistentMonarch.StartRun[S](runId:String,initialState:S,replyTo:ActorRef[RunReply]); Accepted(runId:String); Rejected(runId:String,reason:String)",
+        "PersistentMonarch.RunStarted(runId:String,stageCursors:Vector[String],initialSnapshot:Array[Byte]); StageDone(cursor:String,timestamp:Long,metadata:Map[String,String],snapshot:Array[Byte]); RunCompleted(runId:String); RunFailedEvt(cursor:String,reason:String)",
+        "PersistentMonarch.initSharding[Stage,S](sharding:ClusterSharding,typeKeyName:String,behaviorFor:String=>Behavior[Command[S]]):EntityTypeKey[Command[S]]",
+        "RunObserver.onStart(runId:String):Unit; onStageComplete(cursor:String,metadata:Map[String,String],snapshot:S):Unit; onStageFailed(cursor:String,detail:String):Unit; onRecovery(runId:String,completedCount:Int):Unit; onCompleted(runId:String):Unit; onFailed(runId:String,cursor:String,reason:String):Unit; RunObserver.nop[S]:RunObserver[S]",
+        "DurableRunObserver.onCheckpointCommitted(cursor:String,metadata:Map[String,String],snapshot:S):Unit; onResolutionCommitted(cursor:String,error:net.imadz.monarch.StageError,snapshot:S):Unit"
+      ],
+      "semantics": "额外当前源码：核心无 Akka 运行依赖，Future 顺序队列；每 run 捕获计划，injectHead/appendTail 配置后续 run，不改变正在执行的队列。resume 只跳过连续前缀。runToken 是 JVM 内失效检查，不撤回外部 I/O。异步 checkpoint 失败不交业务 failureInterceptor。持久宿主拥有事件、快照、accepted 后执行；当前 checkpoint ack 在 StageDone/StageResolved commit 后发，RunObserver.onStageComplete 在 persist 前而 DurableRunObserver 在后。恢复 decode 已提交 snapshot/prefix，可能重跑未提交阶段；PostStop/PreRestart closeOwner。不能用源码实现或 MiMa previousArtifacts 声明证明 0.2 jar ABI/行为。",
+      "consumer": "冻结 InvocationHost 子计划严格按 behavior(pid, chain, interpreter, codec, stageName, None, RunObserver.nop) 顺序调用；普通 39 族没有因此变成 Monarch 队列，传统 Saga 不由 Monarch 提交/补偿。",
+      "refs": [
+        "monarch-types:12-43",
+        "monarch:31-73,91-204",
+        "state-codec:3-25",
+        "run-observer:3-25",
+        "persistent-monarch:18-53,138-162,296-331,390-405,443-573",
+        "T-InvocationHost:544-599",
+        "monarch-build:63-72",
+        "monarch-persistence-build:48-77"
+      ]
+    },
+    {
+      "id": "G11",
+      "title": "JDBC session、pool、projection 与真实事务边界",
+      "artifactIds": [
+        "projection-repository-port",
+        "projection-repository-implementation",
+        "projection-apply-event",
+        "projection",
+        "projection-handler",
+        "bootstrap"
+      ],
+      "signatures": [
+        "net.imadz.common.application.projection.ScalikeJdbcSession.withSession[R](f:ScalikeJdbcSession=>R):R",
+        "final class ScalikeJdbcSession extends akka.projection.jdbc.JdbcSession { val db:scalikejdbc.DB; override def withConnection[Result](func:akka.japi.function.Function[java.sql.Connection,Result]):Result; override def commit():Unit; override def rollback():Unit; override def close():Unit }",
+        "net.imadz.common.application.projection.ScalikeJdbcSetup.init(system:akka.actor.typed.ActorSystem[_]):Unit",
+        "private def sourceProvider(tag:String)(implicit system:ActorSystem[_]):akka.projection.scaladsl.SourceProvider[akka.persistence.query.Offset,akka.projection.eventsourced.EventEnvelope[<ProtoEvent>]]",
+        "def createProjection(system:ActorSystem[_],sharding:ClusterSharding,index:Int,repository:<Repo>):akka.projection.scaladsl.ExactlyOnceProjection[Offset,EventEnvelope[<ProtoEvent>]]",
+        "def createProjectionFor<Aggregate>(system:ActorSystem[_],sharding:ClusterSharding,index:Int,repository:<Repo>):ExactlyOnceProjection[Offset,EventEnvelope[<ProtoEvent>]]",
+        "override def process(session:ScalikeJdbcSession,envelope:akka.projection.eventsourced.EventEnvelope[<ProtoEvent>]):Unit"
+      ],
+      "callShapes": [
+        "EventSourcedProvider.eventsByTag[<ProtoEvent>](system=system,readJournalPluginId=MongoReadJournal.Identifier,tag=tag)",
+        "JdbcProjection.exactlyOnce(projectionId=ProjectionId(name,tag),sourceProvider=sourceProvider(tag),handler=()=>new <Handler>(repository),sessionFactory=()=>new ScalikeJdbcSession())",
+        "ShardedDaemonProcess(system).init(name=<Projection>.projectionName,numberOfInstances=<tags.size or sum>,behaviorFactory=index=>ProjectionBehavior(...),settings=ShardedDaemonProcessSettings(system),stopMessage=Some(ProjectionBehavior.Stop))"
+      ],
+      "semantics": "Session 构造 DB.connect/autoClose(false)，withConnection 调 db.begin 然后 withinTxWithConnection；commit/rollback/close 委托 DB；withSession 只 finally close，不自动 commit/rollback。Setup 建 HikariDataSource→ConnectionPool.singleton，ActorSystem.whenTerminated 通过 global EC closeAll；配置缺失/初始化失败无伪成功。Projection engine 调 sessionFactory/handler 并管 offset 事务；ShardedDaemonProcess/ProjectionBehavior 管实例生命周期。",
+      "transactionGap": "raw table repository upsert=DB.localTx，query=Future { DB readOnly {...} }，没有传入 handler 的 ScalikeJdbcSession；不能据 ExactlyOnceProjection 类型断言 read-model 和 offset 同一连接/事务。Mongo/graph/vector 的原子性更不可由 JDBC wrapper 推出。",
+      "rawVsManual": "单项目 handler 关注事件 arm=MANUAL ???，其他事件=()；multi 非 graph 用 ViewMachine.run/updateOnly/delete/persistenceIdCreate；该 ViewMachine 的定义/真实 ABI 未定位，仅记录消费参数顺序 envelope,decode,identity,read,applyEvent,write。多 handler composite 按 PO arm 路由，未知事件静默跳过；multi source 每聚合独立 tag/offset。ApplyEvent 是生成的本地函数，ts 可 Instant.now，不能笼统称全部纯函数。",
+      "refs": [
+        "jdbc-session:9-36",
+        "jdbc-setup:17-75",
+        "T-Projection:51-193",
+        "T-ProjectionHandler:30-185",
+        "T-ProjectionApply:59-150",
+        "T-ProjectionRepository:16-18,62-91",
+        "T-ProjectionRepositoryImpl:49-85",
+        "B-ProjectionRepositoryImpl:480-604",
+        "T-Bootstrap:169-217",
+        "projection-metadata:diffs[*].glue/openDecisions"
+      ]
+    },
+    {
+      "id": "G12",
+      "title": "HTTP/Auth typed DSL 与结果翻译",
+      "artifactIds": [
+        "http-controller",
+        "aggregate-state-controller",
+        "command-endpoint-dsl",
+        "route-definition",
+        "value-object"
+      ],
+      "owner": "net.imadz.common.auth；额外 auth-core 源码与相应 scaffold 文件同字节，不等于已发布 auth-core:0.2",
+      "signatures": [
+        "final case class ApiError(status:Int,errorCode:String,message:String,payload:Option[play.api.libs.json.JsObject]=None)",
+        "ApiError.forbidden(code:String,msg:String):ApiError; badRequest(code:String,msg:String):ApiError; notFound(code:String,msg:String):ApiError",
+        "ApiError.conflict[P](code:String,msg:String,payload:P)(implicit pw:play.api.libs.json.OWrites[P]):ApiError",
+        "ApiError.toResult[T](e:Either[ApiError,T])(implicit w:play.api.libs.json.OWrites[T]):play.api.mvc.Result",
+        "ApiError.param[T](e:Either[String,T]):Either[ApiError,T]",
+        "final class Endpoint @Inject()(defaultAction:play.api.mvc.DefaultActionBuilder,anyParser:play.api.mvc.BodyParsers.Default,tokens:TokenService,config:play.api.Configuration,resolver:NotFoundRoleResolver)(implicit ec:ExecutionContext)",
+        "Endpoint.global:GlobalRoot; tenant:TenantRoot; anonymous:AnonymousRoot; workgroup(id:String):WorkgroupRoot; project(id:String):ProjectRoot; workshop(id:String):WorkshopRoot",
+        "GlobalRoot.read(roles:String*):GReader; GReader.apply[T](handler:GlobalCtx=>Future[Either[ApiError,T]])(implicit w:OWrites[T]):Action[AnyContent]",
+        "GlobalRoot.write[R](roles:String*)(implicit reads:Reads[R]):GWriter[R]; GWriter.apply[T](handler:(GlobalCtx,R)=>Future[Either[ApiError,T]])(implicit w:OWrites[T]):Action[AnyContent]",
+        "TenantRoot.read(roles:String*):TReader; TReader.apply[T](handler:TenantCtx=>Future[Either[ApiError,T]])(implicit w:OWrites[T]):Action[AnyContent]",
+        "TenantRoot.write[R](roles:String*)(implicit reads:Reads[R]):TWriter[R]; TWriter.apply[T](handler:(TenantCtx,R)=>Future[Either[ApiError,T]])(implicit w:OWrites[T]):Action[AnyContent]",
+        "AnonymousRoot.write[R](implicit reads:Reads[R]):AnonWriter[R]; AnonWriter.apply[T](handler:(Request[AnyContent],R)=>Future[Either[ApiError,T]])(implicit w:OWrites[T]):Action[AnyContent]",
+        "Endpoint.dispatchView(viewKey:String,page:Int,pageSize:Int,registry:Map[String,ViewBranch]):Action[AnyContent]",
+        "RoleResolver.workgroupRole(workgroupId:String,userId:String,expectedTenantId:String):Future[Option[String]]; projectRole(projectId:String,userId:String,expectedTenantId:String):Future[Option[String]]; workshopRole(workshopId:String,userId:String,expectedTenantId:String):Future[Option[String]]",
+        "RoleGate.fromConfig(raw:String):RoleGate",
+        "TokenService.verifyAccess(token:String):Option[VerifiedToken]",
+        "TokenService.issueAccessToken(userId:String,tokenVersion:Int,tenant:Option[TenantIdentity]=None):(String,Long)",
+        "TokenService.accessTtlSeconds:Int",
+        "AuthAction.invokeBlock[A](request:Request[A],block:TenantSession[A]=>Future[Result]):Future[Result]"
+      ],
+      "semantics": "认证 Bearer + 本地 JWT 验签；身份/角色是声明式准入，不持久业务。默认 globalRole=User；RoleGate 未识别配置回 Migration；tenant owner 绕过细角色、缺 mrole migration 可放行；子域 resolver None 即403，当前 Endpoint 注入 concrete NotFoundRoleResolver（三方法总 None），不能以存在 RoleResolver interface 推断真实名单接通。ApiError 仅输出 errorCode/message 加 payload 顶层合并，Right→200，Left→自身 status。finishImpl recover 异步 Future 失败为500；参数求值先抛的同步异常不由该 recover 自动包住。JWT verify 提取 tokenVersion 但本方法无撤销查询。",
+      "rawApi": "command controller typed ask Reply，reply.error.fold 成 Right(OkReceipt(id,JsNull)) 或 ApiError.badRequest(code,message)；IdGuard 外层、InstantGuard 内层；OkReceipt 写出空 events 与当前 occurredAt，不代表事件明细或 read-side 已追平。raw legacy stub 返回200 Not implemented yet，必须保留为未完成而非行为成功。GetState 走 api.global.read() 与直接 actor ask，不查 projection；anonymous 用例委托手写 Flow，不推导银行鉴权。CommandRoleMap/ViewKeys 是模块生成桩，不属于 auth-core 库。",
+      "refs": [
+        "auth-endpoint:35-65,68-230,235-339",
+        "auth-error:15-39",
+        "auth-role-gate:57-73",
+        "auth-resolver:19-85",
+        "auth-action:15-74",
+        "auth-token:14-65",
+        "T-Controller:19-125,382-556",
+        "T-StateController:74-105",
+        "T-CommandDsl:17-62",
+        "T-Routes:13-33",
+        "auth-build:44-58"
+      ]
+    },
+    {
+      "id": "G13",
+      "title": "服务/connector/bootstrap 的手写与资源 ownership",
+      "artifactIds": [
+        "domain-service",
+        "application-service",
+        "query-service",
+        "external-connector-port",
+        "connector-implementation",
+        "bootstrap",
+        "application-bootstrap"
+      ],
+      "generatedSignatures": [
+        "trait <Connector> { def <method>(<model parameters>):scala.concurrent.Future[<return type>] }",
+        "class <ConnectorImpl> @Inject()(<helperNames in order>) extends <Connector>",
+        "class <ApplicationService> @Inject()(<selected dependencies>)(implicit ec:ExecutionContext)",
+        "class <QueryService> @Inject()(<selected dependencies>)(implicit val ec:ExecutionContext)",
+        "def initSagaEngine[C](sharding:ClusterSharding,context:C,system:ActorSystem[_],globalTimeout:FiniteDuration=5.minutes):Unit",
+        "def coordinatorRef(sharding:ClusterSharding,transactionId:String):EntityRef[SagaTransactionCoordinator.Command]",
+        "def init<SagaTransactor>(implicit ec:ExecutionContext,scheduler:akka.actor.typed.Scheduler):Unit",
+        "class ApplicationBootstrap @Inject()(<classicSystem,sharding,sorted repo fields>) extends <bootstrap traits>"
+      ],
+      "semantics": "服务方法按 model 参数/返回型，ApplicationService=MANUAL ???，Query/DomainService=???，不由库自动实现。ConnectorImplBuilder 只生成接口首 method 且 parameters=Nil，默认首 helper.run(script)/run()，无 helper 则 ???；runner 子进程/外部连接创建销毁归手写 helper，接口名本身不能证明真实 runner ABI。不能用空成功替代业务/IO 槽。",
+      "bootstrapOrder": "B-ApplicationBootstrap 先全部 classic saga.register，再用首 saga 首 participant repo 构造一个 context 初始化共享 engine，然后 aggregates，然后 projections，最后模板 strict singleton/event source。这不是任意多个异构 context 的泛型装配保证。raw 模板/Builder 未调用 ScalikeJdbcSetup.init；pool 初始化、Guice ConfigurationLike binding、Play eager module 激活另需部署 owner。@Singleton 不是 asEagerSingleton，也不能仅由生成 bootstrap 文件证明会启动。",
+      "layout": "原始/额外 module 桩路径与用户三层规则分开；目标装配位 infrastructure.bootstrap。此研究不修改写集合或集成者 glue-dependencies.md。",
+      "refs": [
+        "T-DomainService:29-44",
+        "T-ApplicationService:34-87",
+        "T-QueryService:62-132",
+        "T-Connector:24-45",
+        "B-ConnectorImpl:18-47",
+        "T-ConnectorImpl:18-62",
+        "T-Bootstrap:125-217",
+        "B-ApplicationBootstrap:31-132",
+        "T-ApplicationBootstrap:43-87"
+      ]
+    }
+  ],
+  "unresolvedRequestedSymbols": [
+    {
+      "requested": "InvariantValidation",
+      "fullSymbol": null,
+      "signature": null,
+      "status": "not-located-in-inspected-sources",
+      "boundedEvidence": "baseline/common 七个文件与 baseline/bc/src、baseline/js/lib/generators、原 BC src/scaffold/app 的限定源码搜索未找到该精确标识；CommonTypes 唯一已读规则 SPI 是 InvariantRule。不是全工作区/已发布 jar 不存在的断言。"
+    },
+    {
+      "requested": "Policy",
+      "fullSymbol": null,
+      "signature": null,
+      "status": "ambiguous-name",
+      "boundedEvidence": "common 源码没有共享 Policy trait；CommandHandlerReplyingBehavior 注释中的 Policy 实参实型 InvariantRule。另有 reactive PolicyTemplate.createPolicy(system,sharding,index):Unit 与 Handler.process(envelope:Any):Unit，均 ???，classic dispatch 该族被排除，不能混成 runReplyingPolicy 的规则 SPI。",
+      "refs": [
+        "T-Policy:28-50",
+        "inventory:excluded"
+      ]
+    },
+    {
+      "requested": "EntityState",
+      "fullSymbol": null,
+      "signature": null,
+      "status": "ambiguous-name",
+      "boundedEvidence": "DomainEntityTemplate 定义按聚合命名的 State case class；EntityStateRef 是元数据引用名，不是已确认的运行库 trait。未定位统一 EntityState ABI，不凭名称新造接口。",
+      "refs": [
+        "T-DomainEntity:44-95"
+      ]
+    },
+    {
+      "requested": "metadata error",
+      "fullSymbol": "net.imadz.common.CommonTypes.iMadzError",
+      "signature": "final case class iMadzError(code: String, message: String) extends Throwable with CborSerializable",
+      "status": "only-established-runtime-error",
+      "boundedEvidence": "FrameworkTypes 的 metadata 映射指向此符号；若意指独立 metadata 包错误，仍须给出 FQN/提供者。不要和 HTTP ApiError、Saga retry classification 或 strict Evidence 混同。",
+      "refs": [
+        "framework-types:264-276",
+        "types:11",
+        "auth-error:15"
+      ]
+    }
+  ],
+  "openDecisions": [
+    "G-ABI-01：实际消费 source-local scaffold 还是 net.imadz jar？三种 CommandHandlerReplyingBehavior 的 withPost/publish/ctor/named-arg 差异需选定，不能拼接成虚构超集。",
+    "G-ABI-02：为所选 profile 提供冻结的 resolved artifact 坐标/字节及 ABI；本次全部 unverified，旧候选 receipts 不重验。",
+    "G-DEP-03：Play 2.8.18/2.8.20 与 mongo rxmongo/scala 传递依赖选择，真实 classpath 未解析。",
+    "G-SER-04：classic PO、strict durable、Monarch、命令/回复各自 serializer/binding 覆盖及旧字节兼容；不能保留广泛 GeneratedMessage 绑定就宣称已闭环。",
+    "G-PROJ-05：read-model upsert 与 projection offset 是否共享 session；独立 DB.localTx 与外部 sink 的幂等/重放需单独决策。",
+    "G-PROJ-06：ViewMachine 的 FQN、方法声明、Await/事务 owner 尚未找到；现有 diff D-P04/D-P10/D-P12 保留。",
+    "G-SAGA-07：classic onResult 的实际 consumer 未定位；需区分 progress EventStream、callback mapping 与 durable business publication。",
+    "G-RES-08：strict installEventSource 的 kill switch、stream failure、poll Future 与重放 owner；当前 ApplicationBootstrap 不保存 handle。",
+    "G-AUTH-09：Endpoint concrete NotFoundRoleResolver、ConfigurationLike 的部署 binding、Migration 默认是否可用；不引申银行角色策略。",
+    "G-BOOT-10：Play eager activation、JDBC pool 初始化、多个 saga context 与 source-root profile 的真正装配 owner。",
+    "G-NAME-11：InvariantValidation/Policy/EntityState/metadata error 的预期 FQN 若不是已定位合同，需提供源定位，不编造签名。"
+  ],
+  "execution": {
+    "documentationOnly": true,
+    "worktreeCreated": false,
+    "nestedAgentsUsed": false,
+    "gitCommandsRun": false,
+    "productionEdited": false,
+    "baselineModified": false,
+    "tasksModified": false,
+    "testsExecuted": false,
+    "typecheckExecuted": false,
+    "compileExecuted": false,
+    "importsExecuted": false,
+    "generatorsRun": false,
+    "servicesRun": false,
+    "downloadsRun": false,
+    "jarOrCacheInspected": false,
+    "publicationRun": false,
+    "secretsOrEnvironmentRead": false,
+    "runtimeExecuted": false,
+    "allowedWrites": [
+      "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/details/glue-source-evidence.json",
+      "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/details/glue-source-evidence.md"
+    ]
+  },
+  "generatorsModified": false,
+  "runtimeExecuted": false,
+  "snapshotSources": [
+    {
+      "id": "build",
+      "repo": "bc",
+      "snapshot": "baseline/bc/scaffold/build.sbt",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/scaffold/build.sbt",
+      "source": "scaffold/build.sbt",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/build.sbt",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 9535,
+      "sha256": "106b0c8339374c459a0389dd202e2b99f0d64a7b70d78ca8da34f94606c6bfd2",
+      "observedSha256": "106b0c8339374c459a0389dd202e2b99f0d64a7b70d78ca8da34f94606c6bfd2",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "codegen-main",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/CodegenMain.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/CodegenMain.scala",
+      "source": "src/main/scala/net/imadz/codegen/CodegenMain.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/CodegenMain.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 14183,
+      "sha256": "c2edd09c65acdb63eb4412698a05f903da5604011725d6c7472355a5c9b7fd0e",
+      "observedSha256": "c2edd09c65acdb63eb4412698a05f903da5604011725d6c7472355a5c9b7fd0e",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "192-250; scoped scaffold/copy symbols",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "dispatch",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 56458,
+      "sha256": "af98d7ccb3f894fc0641096448d0508942900304a903dc682160a58724e90341",
+      "observedSha256": "af98d7ccb3f894fc0641096448d0508942900304a903dc682160a58724e90341",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "185-302; scoped dispatch/bootstrap symbols",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "framework-types",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/GeneratorContext.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/GeneratorContext.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/GeneratorContext.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/GeneratorContext.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 13656,
+      "sha256": "aefad01bb39476eda8af783aa5e86540fff7dbd5fa1f507dfb50d66b026d24a8",
+      "observedSha256": "aefad01bb39476eda8af783aa5e86540fff7dbd5fa1f507dfb50d66b026d24a8",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "129-153,211-286",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "strict-plan",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/StrictSagaGenerationPlan.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/StrictSagaGenerationPlan.scala",
+      "source": "src/main/scala/net/imadz/codegen/StrictSagaGenerationPlan.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/StrictSagaGenerationPlan.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 7484,
+      "sha256": "3f97c916b2ecc633cb81410c8c8c969ca69f396d609049617719e884a7a2c89b",
+      "observedSha256": "3f97c916b2ecc633cb81410c8c8c969ca69f396d609049617719e884a7a2c89b",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "common-helper",
+      "repo": "common",
+      "snapshot": "baseline/common/src/main/scala/net/imadz/common/application/CommandHandlerReplyingBehavior.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/common/src/main/scala/net/imadz/common/application/CommandHandlerReplyingBehavior.scala",
+      "source": "src/main/scala/net/imadz/common/application/CommandHandlerReplyingBehavior.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/common-core/src/main/scala/net/imadz/common/application/CommandHandlerReplyingBehavior.scala",
+      "recordedRepoHead": "2829932df674221c679a774367f11320c7b51d36",
+      "bytes": 4380,
+      "sha256": "2af0b26def49ccf43a23413642fa92bae2233a605b9bb84690ce68e16b0f8852",
+      "observedSha256": "2af0b26def49ccf43a23413642fa92bae2233a605b9bb84690ce68e16b0f8852",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "curated-helper",
+      "repo": "bc",
+      "snapshot": "baseline/curated-scala/net/imadz/common/application/CommandHandlerReplyingBehavior.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/curated-scala/net/imadz/common/application/CommandHandlerReplyingBehavior.scala",
+      "source": "reference_project/app/net/imadz/common/application/CommandHandlerReplyingBehavior.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/reference_project/app/net/imadz/common/application/CommandHandlerReplyingBehavior.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 3654,
+      "sha256": "92ac1e9005ddf70d8665edea2211b1c06cf48374e51b0c765cabd2831a90eee4",
+      "observedSha256": "92ac1e9005ddf70d8665edea2211b1c06cf48374e51b0c765cabd2831a90eee4",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "types",
+      "repo": "common",
+      "snapshot": "baseline/common/src/main/scala/net/imadz/common/CommonTypes.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/common/src/main/scala/net/imadz/common/CommonTypes.scala",
+      "source": "src/main/scala/net/imadz/common/CommonTypes.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/common-core/src/main/scala/net/imadz/common/CommonTypes.scala",
+      "recordedRepoHead": "2829932df674221c679a774367f11320c7b51d36",
+      "bytes": 539,
+      "sha256": "a59f619abad7dda5d4e1e54d4fbd7b772db53fd4d015f0775800e12d725d85fe",
+      "observedSha256": "a59f619abad7dda5d4e1e54d4fbd7b772db53fd4d015f0775800e12d725d85fe",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "cbor",
+      "repo": "common",
+      "snapshot": "baseline/common/src/main/scala/net/imadz/common/CborSerializable.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/common/src/main/scala/net/imadz/common/CborSerializable.scala",
+      "source": "src/main/scala/net/imadz/common/CborSerializable.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/common-core/src/main/scala/net/imadz/common/CborSerializable.scala",
+      "recordedRepoHead": "2829932df674221c679a774367f11320c7b51d36",
+      "bytes": 54,
+      "sha256": "93bc07b2a2d38163239bb1c4674bf16d249ce36fa7c186d0bcb3e9b2459e1036",
+      "observedSha256": "93bc07b2a2d38163239bb1c4674bf16d249ce36fa7c186d0bcb3e9b2459e1036",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "primitive",
+      "repo": "common",
+      "snapshot": "baseline/common/src/main/scala/net/imadz/common/serialization/PrimitiveConverter.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/common/src/main/scala/net/imadz/common/serialization/PrimitiveConverter.scala",
+      "source": "src/main/scala/net/imadz/common/serialization/PrimitiveConverter.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/common-core/src/main/scala/net/imadz/common/serialization/PrimitiveConverter.scala",
+      "recordedRepoHead": "2829932df674221c679a774367f11320c7b51d36",
+      "bytes": 2180,
+      "sha256": "206f35c18a9d097164046716c4881cdfae57687eefc7ff4daa47be7e0ef9c442",
+      "observedSha256": "206f35c18a9d097164046716c4881cdfae57687eefc7ff4daa47be7e0ef9c442",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "offset",
+      "repo": "common",
+      "snapshot": "baseline/common/src/main/scala/net/imadz/common/serialization/ObjectIdOffsetSerializer.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/common/src/main/scala/net/imadz/common/serialization/ObjectIdOffsetSerializer.scala",
+      "source": "src/main/scala/net/imadz/common/serialization/ObjectIdOffsetSerializer.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/common-core/src/main/scala/net/imadz/common/serialization/ObjectIdOffsetSerializer.scala",
+      "recordedRepoHead": "2829932df674221c679a774367f11320c7b51d36",
+      "bytes": 864,
+      "sha256": "5b3d0366f78a44a816885df493bf1fd0e83b435dedfe33543075b1da1d359ac1",
+      "observedSha256": "5b3d0366f78a44a816885df493bf1fd0e83b435dedfe33543075b1da1d359ac1",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "jdbc-session",
+      "repo": "common",
+      "snapshot": "baseline/common/src/main/scala/net/imadz/common/application/projection/ScalikeJdbcSession.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/common/src/main/scala/net/imadz/common/application/projection/ScalikeJdbcSession.scala",
+      "source": "src/main/scala/net/imadz/common/application/projection/ScalikeJdbcSession.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/common-core/src/main/scala/net/imadz/common/application/projection/ScalikeJdbcSession.scala",
+      "recordedRepoHead": "2829932df674221c679a774367f11320c7b51d36",
+      "bytes": 849,
+      "sha256": "b1bf8f009ffbac056ab8c2db441bb81c225e80ec46a2d048e1ee8276a511f5f3",
+      "observedSha256": "b1bf8f009ffbac056ab8c2db441bb81c225e80ec46a2d048e1ee8276a511f5f3",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "jdbc-setup",
+      "repo": "common",
+      "snapshot": "baseline/common/src/main/scala/net/imadz/common/application/projection/ScalikeJdbcSetup.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/common/src/main/scala/net/imadz/common/application/projection/ScalikeJdbcSetup.scala",
+      "source": "src/main/scala/net/imadz/common/application/projection/ScalikeJdbcSetup.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/common-core/src/main/scala/net/imadz/common/application/projection/ScalikeJdbcSetup.scala",
+      "recordedRepoHead": "2829932df674221c679a774367f11320c7b51d36",
+      "bytes": 2472,
+      "sha256": "42f55a87236945218f950c38ad55f67b5498da46d64abe4bf4d3ea08ebb0e785",
+      "observedSha256": "42f55a87236945218f950c38ad55f67b5498da46d64abe4bf4d3ea08ebb0e785",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "classic-definition",
+      "repo": "bc",
+      "snapshot": "baseline/curated-scala/net/imadz/infra/saga/dsl/SagaDefinition.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/curated-scala/net/imadz/infra/saga/dsl/SagaDefinition.scala",
+      "source": "reference_project/app/net/imadz/infra/saga/dsl/SagaDefinition.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/reference_project/app/net/imadz/infra/saga/dsl/SagaDefinition.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 5803,
+      "sha256": "cce4e3c85a2094c7ce9d8bcfdd34efad92d2f91ab5c6e12488ac1914f4149af3",
+      "observedSha256": "cce4e3c85a2094c7ce9d8bcfdd34efad92d2f91ab5c6e12488ac1914f4149af3",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "classic-ask",
+      "repo": "bc",
+      "snapshot": "baseline/curated-scala/net/imadz/infra/saga/dsl/AskParticipant.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/curated-scala/net/imadz/infra/saga/dsl/AskParticipant.scala",
+      "source": "reference_project/app/net/imadz/infra/saga/dsl/AskParticipant.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/reference_project/app/net/imadz/infra/saga/dsl/AskParticipant.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 3822,
+      "sha256": "c7200613c7b93e4d49fa6b35e8e3a658b47c459bfad612d91f0ec2039e67072e",
+      "observedSha256": "c7200613c7b93e4d49fa6b35e8e3a658b47c459bfad612d91f0ec2039e67072e",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "classic-phase",
+      "repo": "bc",
+      "snapshot": "baseline/curated-scala/net/imadz/infra/saga/dsl/PhaseAsk.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/curated-scala/net/imadz/infra/saga/dsl/PhaseAsk.scala",
+      "source": "reference_project/app/net/imadz/infra/saga/dsl/PhaseAsk.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/reference_project/app/net/imadz/infra/saga/dsl/PhaseAsk.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 2497,
+      "sha256": "7a49f1723ef860462a764b6efbb89ec1f113f5895aec5423d39aada9d25d0da4",
+      "observedSha256": "7a49f1723ef860462a764b6efbb89ec1f113f5895aec5423d39aada9d25d0da4",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "classic-resilience",
+      "repo": "bc",
+      "snapshot": "baseline/curated-scala/net/imadz/infra/saga/dsl/Resilience.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/curated-scala/net/imadz/infra/saga/dsl/Resilience.scala",
+      "source": "reference_project/app/net/imadz/infra/saga/dsl/Resilience.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/reference_project/app/net/imadz/infra/saga/dsl/Resilience.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 3620,
+      "sha256": "3b50d30aa864105a83f6b3e97062720253d65c3166b06b22deb3997ae6777eef",
+      "observedSha256": "3b50d30aa864105a83f6b3e97062720253d65c3166b06b22deb3997ae6777eef",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "classic-runner",
+      "repo": "bc",
+      "snapshot": "baseline/curated-scala/net/imadz/infra/saga/dsl/SagaRunner.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/curated-scala/net/imadz/infra/saga/dsl/SagaRunner.scala",
+      "source": "reference_project/app/net/imadz/infra/saga/dsl/SagaRunner.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/reference_project/app/net/imadz/infra/saga/dsl/SagaRunner.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 8756,
+      "sha256": "cbcf513643fbbc45a473711185e22507a2f458234d3dcab36f7bc2e56bcc4c53",
+      "observedSha256": "cbcf513643fbbc45a473711185e22507a2f458234d3dcab36f7bc2e56bcc4c53",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "classic-participant",
+      "repo": "bc",
+      "snapshot": "baseline/curated-scala/net/imadz/infra/saga/SagaParticipant.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/curated-scala/net/imadz/infra/saga/SagaParticipant.scala",
+      "source": "reference_project/app/net/imadz/infra/saga/SagaParticipant.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/reference_project/app/net/imadz/infra/saga/SagaParticipant.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 4620,
+      "sha256": "6e48d18e8ead1f9feb1b37b8de5a64b92d7b3816876a5b34493ab4d30fa5b4f7",
+      "observedSha256": "6e48d18e8ead1f9feb1b37b8de5a64b92d7b3816876a5b34493ab4d30fa5b4f7",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "classic-step",
+      "repo": "bc",
+      "snapshot": "baseline/curated-scala/net/imadz/infra/saga/StepExecutor.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/curated-scala/net/imadz/infra/saga/StepExecutor.scala",
+      "source": "reference_project/app/net/imadz/infra/saga/StepExecutor.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/reference_project/app/net/imadz/infra/saga/StepExecutor.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 9136,
+      "sha256": "d5d935cee51888e5b4b9bd5a5cafa7834406cf9273a77a959785294cad92eeb3",
+      "observedSha256": "d5d935cee51888e5b4b9bd5a5cafa7834406cf9273a77a959785294cad92eeb3",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "classic-coordinator",
+      "repo": "bc",
+      "snapshot": "baseline/curated-scala/net/imadz/infra/saga/SagaTransactionCoordinator.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/curated-scala/net/imadz/infra/saga/SagaTransactionCoordinator.scala",
+      "source": "reference_project/app/net/imadz/infra/saga/SagaTransactionCoordinator.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/reference_project/app/net/imadz/infra/saga/SagaTransactionCoordinator.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 52401,
+      "sha256": "7d4bbc26f1746e444f6ebcef8143de32827fb40a4a833fbd66cdcb5a65e098c1",
+      "observedSha256": "7d4bbc26f1746e444f6ebcef8143de32827fb40a4a833fbd66cdcb5a65e098c1",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "21-138,229-262,462-555,701-746; scoped onResult/publish symbols",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-DomainEntity",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainEntityTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainEntityTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainEntityTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainEntityTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 5962,
+      "sha256": "b5d64f4d21e71e6eee41af8a2c7e9b1f1652de13b53ed324c335b782fb9a314d",
+      "observedSha256": "b5d64f4d21e71e6eee41af8a2c7e9b1f1652de13b53ed324c335b782fb9a314d",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-EntityBehavior",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/EntityBehaviorTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/EntityBehaviorTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/EntityBehaviorTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/EntityBehaviorTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 3711,
+      "sha256": "59725ae168286fa5a2d13bc7d2fc5f3078e68c875342b8a1b76aca4056093a51",
+      "observedSha256": "59725ae168286fa5a2d13bc7d2fc5f3078e68c875342b8a1b76aca4056093a51",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-InvariantRule",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/InvariantRuleTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/InvariantRuleTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/InvariantRuleTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/InvariantRuleTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 2727,
+      "sha256": "de5285cf72e959e415420ff0063d7f307b15f99fc06043e729e178314eaefd23",
+      "observedSha256": "de5285cf72e959e415420ff0063d7f307b15f99fc06043e729e178314eaefd23",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-AggregateRules",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRulesTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRulesTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRulesTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRulesTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 3488,
+      "sha256": "b897db889faae4906846476d00078a164cab2974d6b61c805dd7d9949479ac12",
+      "observedSha256": "b897db889faae4906846476d00078a164cab2974d6b61c805dd7d9949479ac12",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-DomainService",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainServiceTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainServiceTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainServiceTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainServiceTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 1712,
+      "sha256": "89d8e550a486ee75c5b3179076c080619f57e3e90d12ad080989e080de662584",
+      "observedSha256": "89d8e550a486ee75c5b3179076c080619f57e3e90d12ad080989e080de662584",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-CommandHelpers",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/CommandHelpersTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/CommandHelpersTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/CommandHelpersTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/CommandHelpersTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 3284,
+      "sha256": "999303df54f728e2096789493a7d07b3f8d41ed1b5d3f25b99b0589d02536d1c",
+      "observedSha256": "999303df54f728e2096789493a7d07b3f8d41ed1b5d3f25b99b0589d02536d1c",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-AggregateBehavior",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateBehaviorTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateBehaviorTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateBehaviorTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateBehaviorTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 8682,
+      "sha256": "8e01fd549619334ed21a5eb78f5bbd2aa9889f93d8af94d18ea5233d3456410e",
+      "observedSha256": "8e01fd549619334ed21a5eb78f5bbd2aa9889f93d8af94d18ea5233d3456410e",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-AggregateProtocol",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateProtocolTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateProtocolTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateProtocolTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateProtocolTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 4692,
+      "sha256": "25fd60e6c669ef03b4d0b3165f34c8629c758276cb70328831407a37835d313a",
+      "observedSha256": "25fd60e6c669ef03b4d0b3165f34c8629c758276cb70328831407a37835d313a",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-AggregateRoot",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRootTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRootTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRootTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRootTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 5729,
+      "sha256": "a138a86cf3c4e72d5eaba650f8e3636082047a5b0fdc6f9fa9ad7c0c78befbd4",
+      "observedSha256": "a138a86cf3c4e72d5eaba650f8e3636082047a5b0fdc6f9fa9ad7c0c78befbd4",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-AggregateFactory",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateFactoryTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateFactoryTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateFactoryTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateFactoryTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 2971,
+      "sha256": "b54ab0387af9bb2d4c4e9ab66939a5462c7b55c532dc5dd6e486945506c6a52b",
+      "observedSha256": "b54ab0387af9bb2d4c4e9ab66939a5462c7b55c532dc5dd6e486945506c6a52b",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-AggregateRepository",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRepositoryTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRepositoryTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRepositoryTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRepositoryTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 3199,
+      "sha256": "c8b3bf0f17e7538325fb7d6bbe0166da8ed97bc8a34b7f12a463415ded60dbf6",
+      "observedSha256": "c8b3bf0f17e7538325fb7d6bbe0166da8ed97bc8a34b7f12a463415ded60dbf6",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-AggregateRepositoryImpl",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/repository/AggregateRepositoryImplTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/repository/AggregateRepositoryImplTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/repository/AggregateRepositoryImplTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/repository/AggregateRepositoryImplTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 1822,
+      "sha256": "96e0a18d3d388b971b4a76769043367f060dfd0abba0c1e8c1fb86e938090d02",
+      "observedSha256": "96e0a18d3d388b971b4a76769043367f060dfd0abba0c1e8c1fb86e938090d02",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-Bootstrap",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/bootstsrap/BootstrapTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/bootstsrap/BootstrapTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/bootstsrap/BootstrapTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/bootstsrap/BootstrapTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 8930,
+      "sha256": "951a9cfd7813b6b543af515d575fa0d7b954daa9ed3b422d4f78c45f07818b5d",
+      "observedSha256": "951a9cfd7813b6b543af515d575fa0d7b954daa9ed3b422d4f78c45f07818b5d",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-EventAdapter",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/persistence/EventAdapterTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/persistence/EventAdapterTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/persistence/EventAdapterTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/persistence/EventAdapterTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 2785,
+      "sha256": "fdc112cd12b9049ab1e037c6d76c5bd079e04dfba305d1eda3fe827f1c471d01",
+      "observedSha256": "fdc112cd12b9049ab1e037c6d76c5bd079e04dfba305d1eda3fe827f1c471d01",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-SnapshotAdapter",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/persistence/SnapshotAdapterTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/persistence/SnapshotAdapterTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/persistence/SnapshotAdapterTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/persistence/SnapshotAdapterTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 1816,
+      "sha256": "7b2fc75f65bde694eb8704fe7fd770766429726f96bc56899c91315f2eb76b35",
+      "observedSha256": "7b2fc75f65bde694eb8704fe7fd770766429726f96bc56899c91315f2eb76b35",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-AggregateConverter",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/persistence/AggregateConverterTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/persistence/AggregateConverterTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/persistence/AggregateConverterTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/persistence/AggregateConverterTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 8202,
+      "sha256": "92543a5f3bc821256596fc4b42faaf9c7391e4bea4bd0ce5b31aa3a8ac4e7a0e",
+      "observedSha256": "92543a5f3bc821256596fc4b42faaf9c7391e4bea4bd0ce5b31aa3a8ac4e7a0e",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-Proto",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/proto/ProtoTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/proto/ProtoTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/proto/ProtoTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/proto/ProtoTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 2855,
+      "sha256": "f4222930400b194407f6815c8b4c76d9a9779950ad3d10c5d6063c99cb2f77b7",
+      "observedSha256": "f4222930400b194407f6815c8b4c76d9a9779950ad3d10c5d6063c99cb2f77b7",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-ValueObject",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/ValueObjectTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/ValueObjectTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/ValueObjectTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/ValueObjectTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 7211,
+      "sha256": "64f4560981077866ab3a0927c175648c9d36977e59bffb69c41493388f28b826",
+      "observedSha256": "64f4560981077866ab3a0927c175648c9d36977e59bffb69c41493388f28b826",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-SagaDefinition",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaDefinitionTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaDefinitionTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaDefinitionTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaDefinitionTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 3579,
+      "sha256": "0cc80e820075c8dd5c36330dc71a28fef69c3b0a0d7cdbd0c832df6cb691d263",
+      "observedSha256": "0cc80e820075c8dd5c36330dc71a28fef69c3b0a0d7cdbd0c832df6cb691d263",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-SagaParticipant",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaParticipantTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaParticipantTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaParticipantTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaParticipantTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 4327,
+      "sha256": "6bdd9d0f65f2d7dfe2eb833fe1e87030f0e6fdd1f218ccab0e0d5a2053e249c4",
+      "observedSha256": "6bdd9d0f65f2d7dfe2eb833fe1e87030f0e6fdd1f218ccab0e0d5a2053e249c4",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-SagaContext",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaContextTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaContextTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaContextTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaContextTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 1172,
+      "sha256": "85b75575d7cc904b9a8a623bf78fd837e270eaa437c467792af0f41583061ec7",
+      "observedSha256": "85b75575d7cc904b9a8a623bf78fd837e270eaa437c467792af0f41583061ec7",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-SagaTriggerProtocol",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerProtocolTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerProtocolTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerProtocolTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerProtocolTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 1800,
+      "sha256": "656729b7dda1265fa45e1d766c62a5a590ac68321d8202802107a63ea28b3055",
+      "observedSha256": "656729b7dda1265fa45e1d766c62a5a590ac68321d8202802107a63ea28b3055",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-SagaTriggerEntity",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerEntityTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerEntityTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerEntityTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerEntityTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 2442,
+      "sha256": "914c4d4dc1ca86a9c0d3533d3251468917e33c3108c3837534c18d95811ece39",
+      "observedSha256": "914c4d4dc1ca86a9c0d3533d3251468917e33c3108c3837534c18d95811ece39",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-SagaTriggerRoot",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerRootTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerRootTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerRootTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerRootTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 1367,
+      "sha256": "f7d001fbe47ffbb3ba0e59c92f1e5341e4fbdfa558a98b9ac682779e56f1ad84",
+      "observedSha256": "f7d001fbe47ffbb3ba0e59c92f1e5341e4fbdfa558a98b9ac682779e56f1ad84",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-SagaTriggerBehaviors",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerBehaviorsTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerBehaviorsTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerBehaviorsTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerBehaviorsTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 5876,
+      "sha256": "f478b038b386b60cd53c3cc42d0c683e92aefc57425a5830b88ef308ccb9c0e7",
+      "observedSha256": "f478b038b386b60cd53c3cc42d0c683e92aefc57425a5830b88ef308ccb9c0e7",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-StrictSaga",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/StrictSagaModuleTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/StrictSagaModuleTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/StrictSagaModuleTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/StrictSagaModuleTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 20540,
+      "sha256": "a5d7be540f7606bb4a941dc0e7cb0f2e84609b874c5dd85177cbf1d38343d70d",
+      "observedSha256": "a5d7be540f7606bb4a941dc0e7cb0f2e84609b874c5dd85177cbf1d38343d70d",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-FixtureHost",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/FixtureHostTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/FixtureHostTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/FixtureHostTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/FixtureHostTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 109034,
+      "sha256": "b592d85c1b96ad5ef605bcfc4bf6a781dbd632a857bd843ddc63b1b2ebc5a59b",
+      "observedSha256": "b592d85c1b96ad5ef605bcfc4bf6a781dbd632a857bd843ddc63b1b2ebc5a59b",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "555-755; scoped phase host/entry symbols",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-InvocationHost",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/InvocationHostTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/InvocationHostTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/InvocationHostTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/InvocationHostTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 46611,
+      "sha256": "abc451d0a25acd8dcb8fd1f81bf04b55db91024a55dcdc17c88991213759be1b",
+      "observedSha256": "abc451d0a25acd8dcb8fd1f81bf04b55db91024a55dcdc17c88991213759be1b",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "150-261,402-525,532-616; scoped public/child/resource symbols",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-ApplicationBootstrap",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/bootstsrap/ApplicationBootstrapTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/bootstsrap/ApplicationBootstrapTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/bootstsrap/ApplicationBootstrapTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/bootstsrap/ApplicationBootstrapTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 3303,
+      "sha256": "532ee3182f6821420ae0eb6c1dd4373aca2b7be7087ebbd306721ae25842946f",
+      "observedSha256": "532ee3182f6821420ae0eb6c1dd4373aca2b7be7087ebbd306721ae25842946f",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-Projection",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 10770,
+      "sha256": "4622d776d4152d2ade2daa42339e03e169ce600a6c08e2bd67e5ac07db1e2e77",
+      "observedSha256": "4622d776d4152d2ade2daa42339e03e169ce600a6c08e2bd67e5ac07db1e2e77",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-ProjectionHandler",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionHandlerTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionHandlerTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionHandlerTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionHandlerTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 9726,
+      "sha256": "8d308843e7eacfdb612ec3e4a7d12d97bb74943c833f00965c1421e2a99ce149",
+      "observedSha256": "8d308843e7eacfdb612ec3e4a7d12d97bb74943c833f00965c1421e2a99ce149",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-ProjectionApply",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionApplyEventTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionApplyEventTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionApplyEventTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionApplyEventTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 9705,
+      "sha256": "5bb8aeea91fb37d5ef7d24acb3c525ed36ff3392eaf24a6257cb73a8b8828cc1",
+      "observedSha256": "5bb8aeea91fb37d5ef7d24acb3c525ed36ff3392eaf24a6257cb73a8b8828cc1",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-ProjectionRepository",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionRepositoryTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionRepositoryTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionRepositoryTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionRepositoryTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 4016,
+      "sha256": "d60fdeee859ce52c095309c10757533bc0a0df83decbfa5ebd24bcafba59a1ab",
+      "observedSha256": "d60fdeee859ce52c095309c10757533bc0a0df83decbfa5ebd24bcafba59a1ab",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-ProjectionRepositoryImpl",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/repository/ProjectionRepositoryImplTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/repository/ProjectionRepositoryImplTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/repository/ProjectionRepositoryImplTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/repository/ProjectionRepositoryImplTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 3694,
+      "sha256": "11da140441075e65238465acb59776a1032786935ea6315c1663baf27e20960c",
+      "observedSha256": "11da140441075e65238465acb59776a1032786935ea6315c1663baf27e20960c",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-Controller",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/ControllerTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/ControllerTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/ControllerTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/ControllerTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 35969,
+      "sha256": "cce8e32e0139d8d447812498dad894130d10cbffe9d38df179be687dbd73e123",
+      "observedSha256": "cce8e32e0139d8d447812498dad894130d10cbffe9d38df179be687dbd73e123",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "19-130,382-565; scoped DSL/API symbols",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-StateController",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/AggregateStateControllerTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/AggregateStateControllerTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/AggregateStateControllerTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/AggregateStateControllerTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 5538,
+      "sha256": "12ec14b353d3682a5c9ef36d66520a02e42daa9c81331babae6b95a3f04a7195",
+      "observedSha256": "12ec14b353d3682a5c9ef36d66520a02e42daa9c81331babae6b95a3f04a7195",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-CommandDsl",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/CommandDslTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/CommandDslTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/CommandDslTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/CommandDslTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 3864,
+      "sha256": "49d83f977b5a7f707d47ecc4636bf8234f90924ea78f8041db83f3038aeedfa3",
+      "observedSha256": "49d83f977b5a7f707d47ecc4636bf8234f90924ea78f8041db83f3038aeedfa3",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-Routes",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/RoutesTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/RoutesTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/RoutesTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/RoutesTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 2275,
+      "sha256": "4272ced844752343f859338d64c6a9263874618bbc2f985b3c060539b1217708",
+      "observedSha256": "4272ced844752343f859338d64c6a9263874618bbc2f985b3c060539b1217708",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-ApplicationService",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ApplicationServiceTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ApplicationServiceTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ApplicationServiceTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ApplicationServiceTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 3228,
+      "sha256": "afe3693dd25c9268d6ee11f0d02d981d264a6e050fa73bac233f6f96202ac548",
+      "observedSha256": "afe3693dd25c9268d6ee11f0d02d981d264a6e050fa73bac233f6f96202ac548",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-QueryService",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/QueryServiceTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/QueryServiceTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/QueryServiceTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/QueryServiceTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 4500,
+      "sha256": "ccb898355b2af33d930275f9eb9edaaedf89594255a8715fb68e0da033d4adc5",
+      "observedSha256": "ccb898355b2af33d930275f9eb9edaaedf89594255a8715fb68e0da033d4adc5",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-Connector",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ConnectorTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ConnectorTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ConnectorTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ConnectorTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 1963,
+      "sha256": "091fadf11eb1636c9f411794b8e9c16e90ce8a0c3ea9e4671fd51ff81b765811",
+      "observedSha256": "091fadf11eb1636c9f411794b8e9c16e90ce8a0c3ea9e4671fd51ff81b765811",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-ConnectorImpl",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/connector/ConnectorImplTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/connector/ConnectorImplTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/connector/ConnectorImplTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/connector/ConnectorImplTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 2779,
+      "sha256": "aed09862e1dc7c09f49a2f124d9ab9ec3d1a47f41732992e6bec0bd0b1f130e5",
+      "observedSha256": "aed09862e1dc7c09f49a2f124d9ab9ec3d1a47f41732992e6bec0bd0b1f130e5",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "T-Policy",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/PolicyTemplate.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/PolicyTemplate.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/PolicyTemplate.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/PolicyTemplate.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 1781,
+      "sha256": "54fc73fb7547c1bfdcf9dcad55945e4b788388aa34133ba373074ba1c0477eee",
+      "observedSha256": "54fc73fb7547c1bfdcf9dcad55945e4b788388aa34133ba373074ba1c0477eee",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "B-CommandHelpers",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/CommandHelpersBuilder.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/CommandHelpersBuilder.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/CommandHelpersBuilder.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/CommandHelpersBuilder.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 7685,
+      "sha256": "6a46c0d8420639ec87352e1c26f20f2ac5bea541d8fc7b1e15af5e9218db44fb",
+      "observedSha256": "6a46c0d8420639ec87352e1c26f20f2ac5bea541d8fc7b1e15af5e9218db44fb",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "B-AggregateFactory",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateFactoryBuilder.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateFactoryBuilder.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateFactoryBuilder.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateFactoryBuilder.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 10071,
+      "sha256": "4ab2b1f8dca64623b7b4dbfa8af7cb2289bbc9ca24e1fb8a0c7a0f5513c1163a",
+      "observedSha256": "4ab2b1f8dca64623b7b4dbfa8af7cb2289bbc9ca24e1fb8a0c7a0f5513c1163a",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "164-257; scoped factory methods",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "B-ProjectionRepositoryImpl",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/repository/ProjectionRepositoryImplBuilder.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/repository/ProjectionRepositoryImplBuilder.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/repository/ProjectionRepositoryImplBuilder.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/repository/ProjectionRepositoryImplBuilder.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 31243,
+      "sha256": "c55ae88f32997a02bc0328fd3d16e3d3c938d0d5e7e718ccb041681ca52faea5",
+      "observedSha256": "c55ae88f32997a02bc0328fd3d16e3d3c938d0d5e7e718ccb041681ca52faea5",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "480-615; scoped DB/Future methods",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "B-ApplicationBootstrap",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/bootstrap/ApplicationBootstrapBuilder.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/bootstrap/ApplicationBootstrapBuilder.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/bootstrap/ApplicationBootstrapBuilder.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/bootstrap/ApplicationBootstrapBuilder.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 5024,
+      "sha256": "feb954ccf8c64e51b97c04291f5e6a2a30e6431c3588afa3c678d4a7f2fc9ca4",
+      "observedSha256": "feb954ccf8c64e51b97c04291f5e6a2a30e6431c3588afa3c678d4a7f2fc9ca4",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    },
+    {
+      "id": "B-ConnectorImpl",
+      "repo": "bc",
+      "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/connector/ConnectorImplBuilder.scala",
+      "absoluteSnapshot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/connector/ConnectorImplBuilder.scala",
+      "source": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/connector/ConnectorImplBuilder.scala",
+      "originalAbsolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/connector/ConnectorImplBuilder.scala",
+      "recordedRepoHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "bytes": 2605,
+      "sha256": "5ddff821d006b87baef80a16b24a6bf4e5409e4a45c413ba4a4badee21ba5412",
+      "observedSha256": "5ddff821d006b87baef80a16b24a6bf4e5409e4a45c413ba4a4badee21ba5412",
+      "sourceIntegrity": "matches-recorded-SHA256",
+      "readScope": "complete",
+      "evidenceKind": "frozen-source-content-not-runtime"
+    }
+  ],
+  "extraSources": [
+    {
+      "id": "plugins",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/project/plugins.sbt",
+      "repositoryRelativePath": "scaffold/project/plugins.sbt",
+      "sha256": "ff325cf01c0b712a42807448c25b75cce13ba90eee958a4a00a170ee68c43f9c",
+      "bytes": 1472,
+      "readScope": "complete",
+      "reason": "sbt/Play/ScalaPB version declarations absent baseline",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "sbt-properties",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/project/build.properties",
+      "repositoryRelativePath": "scaffold/project/build.properties",
+      "sha256": "ef0027fa322ca439f465803fdfa777a1216a4ed32e8fcaea3e7b038b4510e632",
+      "bytes": 18,
+      "readScope": "complete",
+      "reason": "sbt version declaration absent baseline",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "common-build",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/common-core/build.sbt",
+      "repositoryRelativePath": "build.sbt",
+      "sha256": "d51ef5a9fd982c06e6225338ed3e2c47135744142740a3e996b4735c24149130",
+      "bytes": 3293,
+      "readScope": "complete",
+      "reason": "declared transitive dependency route, not published POM",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "auth-build",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/auth-core/build.sbt",
+      "repositoryRelativePath": "build.sbt",
+      "sha256": "b84159aa33dfcbecebc6fd664a222ddbb35257737485e59abbd3da81496cc3ac",
+      "bytes": 2195,
+      "readScope": "complete",
+      "reason": "declared Play/auth coordinates, not published POM",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "saga-build",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/saga-core/build.sbt",
+      "repositoryRelativePath": "build.sbt",
+      "sha256": "aaca3873c9e8fca5f54c9dc50bdaa35f499e7baa62252a4032baef28e34280a1",
+      "bytes": 3879,
+      "readScope": "complete",
+      "reason": "runtime version declaration scope",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "monarch-build",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/monarch-core/build.sbt",
+      "repositoryRelativePath": "build.sbt",
+      "sha256": "45f8f8a345c4f4fafb13b2419b566dbb49bf4547fa7657b7a611113f43dcc1c2",
+      "bytes": 2977,
+      "readScope": "complete",
+      "reason": "runtime dependency declaration scope",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "monarch-persistence-build",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/monarch-persistence/build.sbt",
+      "repositoryRelativePath": "build.sbt",
+      "sha256": "691f74328229facd12df8b3643e0a63cdf56c528867774cee44408039a31a1f6",
+      "bytes": 3676,
+      "readScope": "complete",
+      "reason": "runtime candidate defaults vs frozen scaffold",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "strict-definition",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/saga-core/src/main/scala/net/imadz/infra/saga/strict/StrictSagaDefinition.scala",
+      "repositoryRelativePath": "src/main/scala/net/imadz/infra/saga/strict/StrictSagaDefinition.scala",
+      "sha256": "ae73217f373a1bb14a8eea422df7282bfe9e22400b1f4003a0a6d631e097da6a",
+      "bytes": 11009,
+      "readScope": "complete",
+      "reason": "strict typed source API absent baseline",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "strict-coordinator",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/saga-core/src/main/scala/net/imadz/infra/saga/strict/StrictSagaCoordinator.scala",
+      "repositoryRelativePath": "src/main/scala/net/imadz/infra/saga/strict/StrictSagaCoordinator.scala",
+      "sha256": "97a8948b8db1eeafe0c6007bca3e69a69b704c0573641a8abf64de4e36621080",
+      "bytes": 16031,
+      "readScope": "complete",
+      "reason": "strict persistence/reconcile source contract",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "strict-model-symbols",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/saga-core/src/main/scala/net/imadz/infra/saga/strict/StrictSagaModel.scala",
+      "repositoryRelativePath": "src/main/scala/net/imadz/infra/saga/strict/StrictSagaModel.scala",
+      "sha256": "645b9b1f4f85401caf4773ea239e79b669c785343bf0288e6bbc41926fe15e3b",
+      "bytes": 7318,
+      "readScope": "scoped top-level signatures only",
+      "reason": "Evidence/StrictState names, no full model audit",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "monarch-types",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/monarch-core/src/main/scala/net/imadz/monarch/MonarchTypes.scala",
+      "repositoryRelativePath": "src/main/scala/net/imadz/monarch/MonarchTypes.scala",
+      "sha256": "e2170d8ec4bf372de36a173a6317803607cdaef09777bb5170c303182e07de4d",
+      "bytes": 2086,
+      "readScope": "complete",
+      "reason": "core interpreter/lifecycle SPI",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "monarch",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/monarch-core/src/main/scala/net/imadz/monarch/Monarch.scala",
+      "repositoryRelativePath": "src/main/scala/net/imadz/monarch/Monarch.scala",
+      "sha256": "2c7abe12265b6e5decfbefa12c62d1e425f79d0597dd51c52b1bd60c9ed581bb",
+      "bytes": 9415,
+      "readScope": "complete",
+      "reason": "current queue semantics, not old receipt revalidation",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "monarch-builder-symbols",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/monarch-core/src/main/scala/net/imadz/monarch/MonarchBuilder.scala",
+      "repositoryRelativePath": "src/main/scala/net/imadz/monarch/MonarchBuilder.scala",
+      "sha256": "cc178374bc338f3efa0733e6d0bdd467696ff03aa50091246362b59fe84cfb2e",
+      "bytes": 7138,
+      "readScope": "scoped public method signatures only",
+      "reason": "locate builder/checkpoint SPI",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "state-codec",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/monarch-persistence/src/main/scala/net/imadz/monarch/persistence/StateCodec.scala",
+      "repositoryRelativePath": "src/main/scala/net/imadz/monarch/persistence/StateCodec.scala",
+      "sha256": "bca0df1bdd162d35e63d5e5a8c69b53398b10ece863f00a603a989b1fd1ba34b",
+      "bytes": 1001,
+      "readScope": "complete",
+      "reason": "host state encoding SPI",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "run-observer",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/monarch-persistence/src/main/scala/net/imadz/monarch/persistence/RunObserver.scala",
+      "repositoryRelativePath": "src/main/scala/net/imadz/monarch/persistence/RunObserver.scala",
+      "sha256": "fddd4c0590f6568b655b33a6365bf5fc7864e323a80d7514bcb73dcf751b3b1b",
+      "bytes": 1191,
+      "readScope": "complete",
+      "reason": "execution vs durable callback contract",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "persistent-monarch",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/monarch-persistence/src/main/scala/net/imadz/monarch/persistence/PersistentMonarch.scala",
+      "repositoryRelativePath": "src/main/scala/net/imadz/monarch/persistence/PersistentMonarch.scala",
+      "sha256": "f5a82408eeec0a76ede993c0b9223447818ff7dd81a3f514afc01ce830653506",
+      "bytes": 32924,
+      "readScope": "1-169,273-331,380-413,443-573; scoped lifecycle methods",
+      "reason": "consumer signature and persist/recovery/resource ownership",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "serialization-conf",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/conf/serialization.conf",
+      "repositoryRelativePath": "scaffold/conf/serialization.conf",
+      "sha256": "0385674e15954367e9620b1fa00d8babe00acbd8c7a0623314a985d41c55351a",
+      "bytes": 849,
+      "readScope": "complete",
+      "reason": "exact narrow/broad serializer declarations; no runtime config values read",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "scaffold-helper",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/common/application/CommandHandlerReplyingBehavior.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/common/application/CommandHandlerReplyingBehavior.scala",
+      "sha256": "d2499de5832333c39ef644da3094ef5b5cc023c69d4b43643e83de94c2973350",
+      "bytes": 4403,
+      "readScope": "complete",
+      "reason": "source-copy provider differs from frozen common/curated",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "money-ops",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/common/MoneyOps.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/common/MoneyOps.scala",
+      "sha256": "139558aaa1a28fdd929dddb504fe91572bd7a23600a0ae375a5315b40b66248d",
+      "bytes": 1058,
+      "readScope": "complete",
+      "reason": "strict minor-unit helper, not a bank policy",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "inventory",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/scala-artifacts.json",
+      "repositoryRelativePath": "docs/codegen-parity/scala-artifacts.json",
+      "sha256": "b778bb11e6c879bcb2adc3161e2583204df7faafa97a077d8f2c6039e091cb0d",
+      "bytes": 71518,
+      "readScope": "parsed family ids/template paths/optional/excluded",
+      "reason": "39+3 scope",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "projection-metadata",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/details/projection.json",
+      "repositoryRelativePath": "docs/codegen-parity/details/projection.json",
+      "sha256": "fb9e3d821f36c9d1ee79b524231c585d85e3ba6f028e6bfa84cd2fe7f3a8bebd",
+      "bytes": 33659,
+      "readScope": "parsed baseline/sourceReview/glue/openDecisions/extraSources",
+      "reason": "existing diff metadata, not runtime proof",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "saga-definition-diff",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/saga-definition.diff.md",
+      "repositoryRelativePath": "docs/codegen-parity/diffs/saga-definition.diff.md",
+      "sha256": "1bdec4188b2d724cc5993b82b3f2be34b67a3c2341211384a8d186cb13508c0a",
+      "bytes": 9748,
+      "readScope": "scoped classic DSL/default/glue lines",
+      "reason": "existing diff cross-check",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "saga-participant-diff",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/saga-participant.diff.md",
+      "repositoryRelativePath": "docs/codegen-parity/diffs/saga-participant.diff.md",
+      "sha256": "acc20e5c8962d4ae0734b82fa8fef02201d5f2c67fb77dd0f8d57e8d256b4aab",
+      "bytes": 10976,
+      "readScope": "scoped participant/glue/default lines",
+      "reason": "existing diff cross-check",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "delivery-decisions-symbols",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/REVIEW-AND-DELIVERY-DECISIONS-20261115.md",
+      "repositoryRelativePath": "docs/codegen-parity/REVIEW-AND-DELIVERY-DECISIONS-20261115.md",
+      "sha256": "2e735dc9f0717bfe649babdcd3882cccbf10ad56ba929c95c843979de6629f55",
+      "bytes": 10819,
+      "readScope": "scoped glue/metadata line 93 only",
+      "reason": "existing status context; no implementation/PASS claim",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "auth-endpoint",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/auth-core/src/main/scala/net/imadz/common/auth/Endpoint.scala",
+      "repositoryRelativePath": "src/main/scala/net/imadz/common/auth/Endpoint.scala",
+      "sha256": "7ce7ab0e2a82c7545dd23859430c8c569ee692ba2f7f5787b13f724daeb530cc",
+      "bytes": 18229,
+      "readScope": "complete",
+      "reason": "exact public source API; consumed jar ABI unverified",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "auth-error",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/auth-core/src/main/scala/net/imadz/common/auth/ApiError.scala",
+      "repositoryRelativePath": "src/main/scala/net/imadz/common/auth/ApiError.scala",
+      "sha256": "ffe12a6e8ebce83d3fc6f862c458b6465203d6999de42fca29ecd84bcaca06e8",
+      "bytes": 2181,
+      "readScope": "complete",
+      "reason": "exact public source API; consumed jar ABI unverified",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "auth-role-gate",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/auth-core/src/main/scala/net/imadz/common/auth/RoleGate.scala",
+      "repositoryRelativePath": "src/main/scala/net/imadz/common/auth/RoleGate.scala",
+      "sha256": "80cf2185d96262412ac4c7db6d486d7c978c98df91de4fce587129a94f639629",
+      "bytes": 3413,
+      "readScope": "complete",
+      "reason": "exact public source API; consumed jar ABI unverified",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "auth-resolver",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/auth-core/src/main/scala/net/imadz/common/auth/RoleResolver.scala",
+      "repositoryRelativePath": "src/main/scala/net/imadz/common/auth/RoleResolver.scala",
+      "sha256": "db50d27171fadf0090f71944477d52f431104f90d078d820412ef4d3a6e5c48d",
+      "bytes": 5105,
+      "readScope": "complete",
+      "reason": "exact public source API; consumed jar ABI unverified",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "auth-action",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/auth-core/src/main/scala/net/imadz/common/auth/AuthAction.scala",
+      "repositoryRelativePath": "src/main/scala/net/imadz/common/auth/AuthAction.scala",
+      "sha256": "c9f3ee7d7b2ee99b07cee17ea73b38f04803d781897784d0e6cffca777f50604",
+      "bytes": 3574,
+      "readScope": "complete",
+      "reason": "exact public source API; consumed jar ABI unverified",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "auth-token",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/auth-core/src/main/scala/net/imadz/common/auth/TokenService.scala",
+      "repositoryRelativePath": "src/main/scala/net/imadz/common/auth/TokenService.scala",
+      "sha256": "7b80377928ac8d29408a3f11cf37782c8b87b6f06cee12b36f803be52ce3979d",
+      "bytes": 2918,
+      "readScope": "complete",
+      "reason": "exact public source API; consumed jar ABI unverified",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "workspace-guidance",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/CLAUDE.md",
+      "repositoryRelativePath": "CLAUDE.md",
+      "sha256": "d820979410916e446a0d4559fa8d3ca654468dab7459529fd919e49b38cb0ff3",
+      "bytes": 13618,
+      "readScope": "complete",
+      "reason": "read-only guidance; user assigned-output restrictions control this research",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "repo-guidance",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/AGENTS.md",
+      "repositoryRelativePath": "AGENTS.md",
+      "sha256": "8bfd761390a6fc90b09663157f9d35b23c0c58b20c9f6a41dd5698450015d601",
+      "bytes": 6108,
+      "readScope": "complete",
+      "reason": "read-only guidance; user assigned-output restrictions control this research",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "bc-guidance",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/CLAUDE.md",
+      "repositoryRelativePath": "CLAUDE.md",
+      "sha256": "5d1cb1236a225899eb9790c882c5d27bb850842a6cf57f9cef19b74c4a3a26f1",
+      "bytes": 6381,
+      "readScope": "complete",
+      "reason": "read-only guidance; user assigned-output restrictions control this research",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "bc-agents",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/AGENTS.md",
+      "repositoryRelativePath": "AGENTS.md",
+      "sha256": "660668bdf6ccb02cf8d27ebdf2a977ce8d1e595b0d8fafc1f6aab2fa35350ff8",
+      "bytes": 32540,
+      "readScope": "complete",
+      "reason": "read-only guidance; user assigned-output restrictions control this research",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "bc-mainline",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/MAINLINE.md",
+      "repositoryRelativePath": "MAINLINE.md",
+      "sha256": "c95fe1468a6f1657d8c7a0629f4dfe1cd9cbfa100a5f2194f4747cbde55de0a4",
+      "bytes": 5713,
+      "readScope": "complete",
+      "reason": "read-only guidance; user assigned-output restrictions control this research",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "bc-architecture",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/knowledge_base/ARCHITECTURE.md",
+      "repositoryRelativePath": "knowledge_base/ARCHITECTURE.md",
+      "sha256": "1ad022a190187771318a0f3e158b85383cdce5d6392e5c01f91eb94890995fe7",
+      "bytes": 3200,
+      "readScope": "complete",
+      "reason": "read-only guidance; user assigned-output restrictions control this research",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "bc-index",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/knowledge_base/CORE_INDEX.md",
+      "repositoryRelativePath": "knowledge_base/CORE_INDEX.md",
+      "sha256": "41de2c880db1cca4ed1449b6de2ad2902bb9d49f985f5721fb78ce19fce48a6b",
+      "bytes": 5924,
+      "readScope": "complete",
+      "reason": "read-only guidance; user assigned-output restrictions control this research",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "authoring-contract",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/AUTHORING-CONTRACT.md",
+      "repositoryRelativePath": "docs/codegen-parity/AUTHORING-CONTRACT.md",
+      "sha256": "9c827000f1e864b6a86a04a855df4853a4457b854bd5b2f0bfff14b1ce9514a9",
+      "bytes": 5941,
+      "readScope": "complete",
+      "reason": "read-only guidance; user assigned-output restrictions control this research",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "layout-contract",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/layout-and-style.md",
+      "repositoryRelativePath": "docs/codegen-parity/layout-and-style.md",
+      "sha256": "bc8d0f3325a0f67a7c23ff4af6bc5f5b9c23b6caaf8aa12d1f93189c7a911d13",
+      "bytes": 12934,
+      "readScope": "complete",
+      "reason": "read-only guidance; user assigned-output restrictions control this research",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null,
+      "headNotReadReason": "No Git commands; exact file hash is the extra-source identity"
+    },
+    {
+      "id": "scaffold-copy-net.imadz.common.CborSerializable",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/common/CborSerializable.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/common/CborSerializable.scala",
+      "sha256": "93bc07b2a2d38163239bb1c4674bf16d249ce36fa7c186d0bcb3e9b2459e1036",
+      "bytes": 54,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": "baseline/common/src/main/scala/net/imadz/common/CborSerializable.scala",
+      "sameBytesAsReviewedExtra": null,
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.common.CommonTypes",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/common/CommonTypes.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/common/CommonTypes.scala",
+      "sha256": "a59f619abad7dda5d4e1e54d4fbd7b772db53fd4d015f0775800e12d725d85fe",
+      "bytes": 539,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": "baseline/common/src/main/scala/net/imadz/common/CommonTypes.scala",
+      "sameBytesAsReviewedExtra": null,
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.common.application.projection.ScalikeJdbcSession",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/common/application/projection/ScalikeJdbcSession.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/common/application/projection/ScalikeJdbcSession.scala",
+      "sha256": "b1bf8f009ffbac056ab8c2db441bb81c225e80ec46a2d048e1ee8276a511f5f3",
+      "bytes": 849,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": "baseline/common/src/main/scala/net/imadz/common/application/projection/ScalikeJdbcSession.scala",
+      "sameBytesAsReviewedExtra": null,
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.common.application.projection.ScalikeJdbcSetup",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/common/application/projection/ScalikeJdbcSetup.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/common/application/projection/ScalikeJdbcSetup.scala",
+      "sha256": "42f55a87236945218f950c38ad55f67b5498da46d64abe4bf4d3ea08ebb0e785",
+      "bytes": 2472,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": "baseline/common/src/main/scala/net/imadz/common/application/projection/ScalikeJdbcSetup.scala",
+      "sameBytesAsReviewedExtra": null,
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.common.auth.ApiError",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/common/auth/ApiError.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/common/auth/ApiError.scala",
+      "sha256": "ffe12a6e8ebce83d3fc6f862c458b6465203d6999de42fca29ecd84bcaca06e8",
+      "bytes": 2181,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": null,
+      "sameBytesAsReviewedExtra": "auth-error",
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.common.auth.AuthAction",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/common/auth/AuthAction.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/common/auth/AuthAction.scala",
+      "sha256": "c9f3ee7d7b2ee99b07cee17ea73b38f04803d781897784d0e6cffca777f50604",
+      "bytes": 3574,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": null,
+      "sameBytesAsReviewedExtra": "auth-action",
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.common.auth.Endpoint",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/common/auth/Endpoint.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/common/auth/Endpoint.scala",
+      "sha256": "7ce7ab0e2a82c7545dd23859430c8c569ee692ba2f7f5787b13f724daeb530cc",
+      "bytes": 18229,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": null,
+      "sameBytesAsReviewedExtra": "auth-endpoint",
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.common.auth.IdCodec",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/common/auth/IdCodec.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/common/auth/IdCodec.scala",
+      "sha256": "cac8f12d8243bef1b77e17da5ba2b8a7d26eb1fdf643f1dac18f6f45bc300577",
+      "bytes": 1454,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": null,
+      "sameBytesAsReviewedExtra": null,
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.common.auth.LoginRateLimiter",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/common/auth/LoginRateLimiter.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/common/auth/LoginRateLimiter.scala",
+      "sha256": "0afb6e4f47c287ad5c228e8c673ec5d6b1901c408eb9265b3d082e2120e91255",
+      "bytes": 1259,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": null,
+      "sameBytesAsReviewedExtra": null,
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.common.auth.PasswordHashing",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/common/auth/PasswordHashing.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/common/auth/PasswordHashing.scala",
+      "sha256": "550ca78362db92edaf6a90149da2e2171dc4f7ece1f99f3c01f1b3cf597fa697",
+      "bytes": 1993,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": null,
+      "sameBytesAsReviewedExtra": null,
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.common.auth.RoleGate",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/common/auth/RoleGate.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/common/auth/RoleGate.scala",
+      "sha256": "80cf2185d96262412ac4c7db6d486d7c978c98df91de4fce587129a94f639629",
+      "bytes": 3413,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": null,
+      "sameBytesAsReviewedExtra": "auth-role-gate",
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.common.auth.RoleResolver",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/common/auth/RoleResolver.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/common/auth/RoleResolver.scala",
+      "sha256": "db50d27171fadf0090f71944477d52f431104f90d078d820412ef4d3a6e5c48d",
+      "bytes": 5105,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": null,
+      "sameBytesAsReviewedExtra": "auth-resolver",
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.common.auth.TokenService",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/common/auth/TokenService.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/common/auth/TokenService.scala",
+      "sha256": "7b80377928ac8d29408a3f11cf37782c8b87b6f06cee12b36f803be52ce3979d",
+      "bytes": 2918,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": null,
+      "sameBytesAsReviewedExtra": "auth-token",
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.common.serialization.ObjectIdOffsetSerializer",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/common/serialization/ObjectIdOffsetSerializer.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/common/serialization/ObjectIdOffsetSerializer.scala",
+      "sha256": "5b3d0366f78a44a816885df493bf1fd0e83b435dedfe33543075b1da1d359ac1",
+      "bytes": 864,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": "baseline/common/src/main/scala/net/imadz/common/serialization/ObjectIdOffsetSerializer.scala",
+      "sameBytesAsReviewedExtra": null,
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.common.serialization.PrimitiveConverter",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/common/serialization/PrimitiveConverter.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/common/serialization/PrimitiveConverter.scala",
+      "sha256": "206f35c18a9d097164046716c4881cdfae57687eefc7ff4daa47be7e0ef9c442",
+      "bytes": 2180,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": "baseline/common/src/main/scala/net/imadz/common/serialization/PrimitiveConverter.scala",
+      "sameBytesAsReviewedExtra": null,
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.infra.saga.SagaParticipant",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/infra/saga/SagaParticipant.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/infra/saga/SagaParticipant.scala",
+      "sha256": "6e48d18e8ead1f9feb1b37b8de5a64b92d7b3816876a5b34493ab4d30fa5b4f7",
+      "bytes": 4620,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": "baseline/curated-scala/net/imadz/infra/saga/SagaParticipant.scala",
+      "sameBytesAsReviewedExtra": null,
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.infra.saga.SagaProgressEvent",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/infra/saga/SagaProgressEvent.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/infra/saga/SagaProgressEvent.scala",
+      "sha256": "1a60c96d719c06d8e68e828b42d801fdd3471809c22577d87c5275debc550a51",
+      "bytes": 1041,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": "baseline/curated-scala/net/imadz/infra/saga/SagaProgressEvent.scala",
+      "sameBytesAsReviewedExtra": null,
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.infra.saga.SagaTransactionCoordinator",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/infra/saga/SagaTransactionCoordinator.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/infra/saga/SagaTransactionCoordinator.scala",
+      "sha256": "7d4bbc26f1746e444f6ebcef8143de32827fb40a4a833fbd66cdcb5a65e098c1",
+      "bytes": 52401,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": "baseline/curated-scala/net/imadz/infra/saga/SagaTransactionCoordinator.scala",
+      "sameBytesAsReviewedExtra": null,
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.infra.saga.StepExecutor",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/infra/saga/StepExecutor.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/infra/saga/StepExecutor.scala",
+      "sha256": "d5d935cee51888e5b4b9bd5a5cafa7834406cf9273a77a959785294cad92eeb3",
+      "bytes": 9136,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": "baseline/curated-scala/net/imadz/infra/saga/StepExecutor.scala",
+      "sameBytesAsReviewedExtra": null,
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.infra.saga.dsl.AskParticipant",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/infra/saga/dsl/AskParticipant.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/infra/saga/dsl/AskParticipant.scala",
+      "sha256": "c7200613c7b93e4d49fa6b35e8e3a658b47c459bfad612d91f0ec2039e67072e",
+      "bytes": 3822,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": "baseline/curated-scala/net/imadz/infra/saga/dsl/AskParticipant.scala",
+      "sameBytesAsReviewedExtra": null,
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.infra.saga.dsl.PhaseAsk",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/infra/saga/dsl/PhaseAsk.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/infra/saga/dsl/PhaseAsk.scala",
+      "sha256": "7a49f1723ef860462a764b6efbb89ec1f113f5895aec5423d39aada9d25d0da4",
+      "bytes": 2497,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": "baseline/curated-scala/net/imadz/infra/saga/dsl/PhaseAsk.scala",
+      "sameBytesAsReviewedExtra": null,
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.infra.saga.dsl.Resilience",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/infra/saga/dsl/Resilience.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/infra/saga/dsl/Resilience.scala",
+      "sha256": "3b50d30aa864105a83f6b3e97062720253d65c3166b06b22deb3997ae6777eef",
+      "bytes": 3620,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": "baseline/curated-scala/net/imadz/infra/saga/dsl/Resilience.scala",
+      "sameBytesAsReviewedExtra": null,
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.infra.saga.dsl.SagaDefinition",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/infra/saga/dsl/SagaDefinition.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/infra/saga/dsl/SagaDefinition.scala",
+      "sha256": "cce4e3c85a2094c7ce9d8bcfdd34efad92d2f91ab5c6e12488ac1914f4149af3",
+      "bytes": 5803,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": "baseline/curated-scala/net/imadz/infra/saga/dsl/SagaDefinition.scala",
+      "sameBytesAsReviewedExtra": null,
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.infra.saga.dsl.SagaRunner",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/infra/saga/dsl/SagaRunner.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/infra/saga/dsl/SagaRunner.scala",
+      "sha256": "cbcf513643fbbc45a473711185e22507a2f458234d3dcab36f7bc2e56bcc4c53",
+      "bytes": 8756,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": "baseline/curated-scala/net/imadz/infra/saga/dsl/SagaRunner.scala",
+      "sameBytesAsReviewedExtra": null,
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.infra.saga.dsl.package",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/infra/saga/dsl/package.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/infra/saga/dsl/package.scala",
+      "sha256": "f920a71edbff6ff260b5478b34aec44dd03bcbb5f6747ac60f0fccfb83b3afd9",
+      "bytes": 300,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": "baseline/curated-scala/net/imadz/infra/saga/dsl/package.scala",
+      "sameBytesAsReviewedExtra": null,
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.infra.saga.handlers.StepExecutorCommandHandler",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/infra/saga/handlers/StepExecutorCommandHandler.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/infra/saga/handlers/StepExecutorCommandHandler.scala",
+      "sha256": "02b6c40613e38190b7e445330e7323b3d225b02057c0edf702f0b696fceee763",
+      "bytes": 14505,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": "baseline/curated-scala/net/imadz/infra/saga/handlers/StepExecutorCommandHandler.scala",
+      "sameBytesAsReviewedExtra": null,
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.infra.saga.handlers.StepExecutorEventHandler",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/infra/saga/handlers/StepExecutorEventHandler.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/infra/saga/handlers/StepExecutorEventHandler.scala",
+      "sha256": "ecf98f2da283b628bf36301bc46fcefd5af09daa5a9208aa17a582fc8cf62ab7",
+      "bytes": 1141,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": "baseline/curated-scala/net/imadz/infra/saga/handlers/StepExecutorEventHandler.scala",
+      "sameBytesAsReviewedExtra": null,
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.infra.saga.persistence.SagaCoordinatorProtoConverters",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/infra/saga/persistence/SagaCoordinatorProtoConverters.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/infra/saga/persistence/SagaCoordinatorProtoConverters.scala",
+      "sha256": "48f34114ecf0359c3f0c4a634ec8e6b9f822b51d864566a5a5fdee904ea13456",
+      "bytes": 6642,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": "baseline/curated-scala/net/imadz/infra/saga/persistence/SagaCoordinatorProtoConverters.scala",
+      "sameBytesAsReviewedExtra": null,
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.infra.saga.persistence.SagaTransactionCoordinatorEventAdapter",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/infra/saga/persistence/SagaTransactionCoordinatorEventAdapter.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/infra/saga/persistence/SagaTransactionCoordinatorEventAdapter.scala",
+      "sha256": "c96cbe9d6b11c4313bf05e1c560e548661d7f1d49263cb27b601a7c805cc5704",
+      "bytes": 4648,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": "baseline/curated-scala/net/imadz/infra/saga/persistence/SagaTransactionCoordinatorEventAdapter.scala",
+      "sameBytesAsReviewedExtra": null,
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.infra.saga.persistence.StepExecutorEventAdapter",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/infra/saga/persistence/StepExecutorEventAdapter.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/infra/saga/persistence/StepExecutorEventAdapter.scala",
+      "sha256": "934fa436cf12d4032c9f32cfe25639fbefe6f5e039a229ffc3204bcac8b09fec",
+      "bytes": 2222,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": "baseline/curated-scala/net/imadz/infra/saga/persistence/StepExecutorEventAdapter.scala",
+      "sameBytesAsReviewedExtra": null,
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    },
+    {
+      "id": "scaffold-copy-net.imadz.infra.saga.serialization.SagaExecutorConverter",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/scaffold/app/net/imadz/infra/saga/serialization/SagaExecutorConverter.scala",
+      "repositoryRelativePath": "scaffold/app/net/imadz/infra/saga/serialization/SagaExecutorConverter.scala",
+      "sha256": "d46f92d19f31357035b3b686c840903eedf52afb87ee75be30bddda8a0789ef8",
+      "bytes": 7447,
+      "readScope": "byte-hash census; source text not independently reviewed here",
+      "sameBytesAsSnapshot": "baseline/curated-scala/net/imadz/infra/saga/serialization/SagaExecutorConverter.scala",
+      "sameBytesAsReviewedExtra": null,
+      "reason": "source-copy route census; existence/hash evidence only unless matching reviewed source",
+      "sourceKind": "mutable-workcopy-not-baseline",
+      "readOnly": true,
+      "headAtRead": null
+    }
+  ],
+  "artifactGlueCoverage": [
+    {
+      "artifactId": "value-object",
+      "contracts": [
+        "G01",
+        "G05",
+        "G12"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "domain-entity",
+      "contracts": [
+        "G01"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "event-handler",
+      "contracts": [
+        "G01"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "invariant-rule",
+      "contracts": [
+        "G01"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "domain-service",
+      "contracts": [
+        "G01",
+        "G13"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "aggregate-root",
+      "contracts": [
+        "G02",
+        "G04"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "application-protocol",
+      "contracts": [
+        "G02",
+        "G04"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "aggregate-factory",
+      "contracts": [
+        "G04"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "aggregate-behavior",
+      "contracts": [
+        "G02",
+        "G03"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "command-helper",
+      "contracts": [
+        "G02",
+        "G03"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "aggregate-rules-formal",
+      "contracts": [
+        "G01"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "aggregate-repository-port",
+      "contracts": [
+        "G04"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "external-connector-port",
+      "contracts": [
+        "G13"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "application-service",
+      "contracts": [
+        "G13"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "query-service",
+      "contracts": [
+        "G13"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "saga-participant",
+      "contracts": [
+        "G06",
+        "G07"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "saga-definition",
+      "contracts": [
+        "G06",
+        "G07"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "saga-trigger-protocol",
+      "contracts": [
+        "G07"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "saga-trigger-entity",
+      "contracts": [
+        "G07"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "saga-trigger-root",
+      "contracts": [
+        "G07"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "saga-trigger-behaviors",
+      "contracts": [
+        "G07"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "aggregate-repository-implementation",
+      "contracts": [
+        "G04"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "projection-repository-port",
+      "contracts": [
+        "G11"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "projection-repository-implementation",
+      "contracts": [
+        "G11"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "connector-implementation",
+      "contracts": [
+        "G13"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "projection-apply-event",
+      "contracts": [
+        "G11"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "projection",
+      "contracts": [
+        "G11"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "projection-handler",
+      "contracts": [
+        "G11"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "protobuf-schema",
+      "contracts": [
+        "G05"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "proto-converter",
+      "contracts": [
+        "G05"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "event-adapter",
+      "contracts": [
+        "G05"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "snapshot-adapter",
+      "contracts": [
+        "G05"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "saga-context",
+      "contracts": [
+        "G06"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "aggregate-state-controller",
+      "contracts": [
+        "G12"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "http-controller",
+      "contracts": [
+        "G12"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "command-endpoint-dsl",
+      "contracts": [
+        "G12"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "route-definition",
+      "contracts": [
+        "G12"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "bootstrap",
+      "contracts": [
+        "G04",
+        "G06",
+        "G07",
+        "G11",
+        "G13"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "application-bootstrap",
+      "contracts": [
+        "G03",
+        "G09",
+        "G13"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "strict-saga-module",
+      "contracts": [
+        "G08"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "strict-fixture-host",
+      "contracts": [
+        "G08",
+        "G09"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    },
+    {
+      "artifactId": "composition-invocation-host",
+      "contracts": [
+        "G09",
+        "G10"
+      ],
+      "status": "content-evidence-not-parity-PASS"
+    }
+  ],
+  "documentationChecks": {
+    "jsonParsed": true,
+    "allContractReferenceIdsResolved": true,
+    "artifactScopeCount": 42,
+    "sourceHashesAreContentEvidenceOnly": true,
+    "runtimeOrAbiGateExecuted": false,
+    "markdownLocalLinkTargetsExist": true,
+    "markdownLinkCount": 46,
+    "citedSourceHashesUnchangedAtClose": true,
+    "notRuntimeGate": "仅 JSON/文档链接/源码哈希核对；未执行项目测试、构建、类型检查或 ABI 验证"
+  }
+}

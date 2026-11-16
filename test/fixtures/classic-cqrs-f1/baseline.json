@@ -1,0 +1,4563 @@
+{
+  "schemaVersion": "truthsrc.classic-architecture-input/v1",
+  "system": {
+    "_type": "SystemMetadata",
+    "name": "BankingSystem",
+    "contextName": "banking",
+    "domain": {
+      "_type": "DomainLayer",
+      "valueObjects": [
+        {
+          "_type": "ValueObjectMetadata",
+          "name": "Money",
+          "fields": [
+            {
+              "_type": "FieldMetadata",
+              "name": "amount",
+              "fieldType": {
+                "_type": "BigDecimalType"
+              },
+              "optional": false,
+              "defaultValue": null,
+              "introducedIn": "",
+              "nature": "",
+              "noteId": null,
+              "description": "",
+              "writtenBy": []
+            },
+            {
+              "_type": "FieldMetadata",
+              "name": "currency",
+              "fieldType": {
+                "_type": "CustomType",
+                "typeName": "Currency",
+                "packagePath": "java.util",
+                "typeParameters": []
+              },
+              "optional": false,
+              "defaultValue": null,
+              "introducedIn": "",
+              "nature": "",
+              "noteId": null,
+              "description": "",
+              "writtenBy": []
+            }
+          ],
+          "description": "金额值对象",
+          "logic": null,
+          "noteIds": [],
+          "ownNoteId": null
+        }
+      ],
+      "behaviors": [
+        {
+          "_type": "EntityBehaviorMetadata",
+          "name": "CreditBalanceEventHandler",
+          "eventFamilyRef": {
+            "_type": "EventFamilyRef",
+            "targetName": "CreditBalanceEvent"
+          },
+          "handlers": [
+            {
+              "_type": "EventStateMutation",
+              "eventRef": {
+                "_type": "EventRef",
+                "targetName": "BalanceChanged"
+              },
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "将余额变动累加到对应币种的账户余额",
+                "invariants": [],
+                "referenceCode": "state.copy(accountBalance = updateAccountBalance(state, event.update.currency, event.update))"
+              }
+            },
+            {
+              "_type": "EventStateMutation",
+              "eventRef": {
+                "_type": "EventRef",
+                "targetName": "FundsReserved"
+              },
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "登记预留并立即扣减账户余额（防止预留期间超额支取）",
+                "invariants": [],
+                "referenceCode": "state.copy(accountBalance = updateAccountBalance(state, event.amount.currency, event.amount.copy(amount = -event.amount.amount)), reservedAmount = state.reservedAmount + (event.transferId -> event.amount))"
+              }
+            },
+            {
+              "_type": "EventStateMutation",
+              "eventRef": {
+                "_type": "EventRef",
+                "targetName": "FundsDeducted"
+              },
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "转账提交后移除该笔预留",
+                "invariants": [],
+                "referenceCode": "state.copy(reservedAmount = state.reservedAmount - event.transferId)"
+              }
+            },
+            {
+              "_type": "EventStateMutation",
+              "eventRef": {
+                "_type": "EventRef",
+                "targetName": "ReservationReleased"
+              },
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "转账回滚时释放该笔预留并回补账户余额",
+                "invariants": [],
+                "referenceCode": "state.copy(accountBalance = updateAccountBalance(state, event.amount.currency, event.amount), reservedAmount = state.reservedAmount - event.transferId)"
+              }
+            },
+            {
+              "_type": "EventStateMutation",
+              "eventRef": {
+                "_type": "EventRef",
+                "targetName": "IncomingCreditsRecorded"
+              },
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "按转账 id 登记入账金额",
+                "invariants": [],
+                "referenceCode": "state.copy(incomingCredits = state.incomingCredits.updated(event.transferId, event.amount))"
+              }
+            },
+            {
+              "_type": "EventStateMutation",
+              "eventRef": {
+                "_type": "EventRef",
+                "targetName": "IncomingCreditsCommited"
+              },
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "入账提交后贷记账户余额并移除该笔入账记录",
+                "invariants": [],
+                "referenceCode": "state.copy(accountBalance = updateAccountBalance(state, state.incomingCredits(event.transferId).currency, state.incomingCredits(event.transferId)), incomingCredits = state.incomingCredits - event.transferId)"
+              }
+            },
+            {
+              "_type": "EventStateMutation",
+              "eventRef": {
+                "_type": "EventRef",
+                "targetName": "IncomingCreditsCanceled"
+              },
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "入账取消时移除该笔入账记录",
+                "invariants": [],
+                "referenceCode": "state.copy(incomingCredits = state.incomingCredits - event.transferId)"
+              }
+            }
+          ],
+          "helperMethods": [
+            {
+              "_type": "MethodMetadata",
+              "name": "updateAccountBalance",
+              "parameters": [
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "state",
+                  "parameterType": {
+                    "_type": "EntityStateRef",
+                    "targetName": "CreditBalanceState"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "currency",
+                  "parameterType": {
+                    "_type": "CustomType",
+                    "typeName": "Currency",
+                    "packagePath": "java.util",
+                    "typeParameters": []
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "updateMoney",
+                  "parameterType": {
+                    "_type": "StructRef",
+                    "targetName": "Money"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                }
+              ],
+              "returnType": {
+                "_type": "CustomType",
+                "typeName": "Map",
+                "packagePath": "scala.collection.immutable",
+                "typeParameters": [
+                  {
+                    "_type": "StringType"
+                  },
+                  {
+                    "_type": "StructRef",
+                    "targetName": "Money"
+                  }
+                ]
+              },
+              "logic": {
+                "_type": "Right",
+                "value": {
+                  "_type": "BusinessLogic",
+                  "intent": "按币种键把 updateMoney 累加到账户余额（币种不一致视为零）",
+                  "invariants": [],
+                  "referenceCode": "state.accountBalance + (currency.getCurrencyCode -> Money(currentBalance.amount + updateMoney.amount, currency))"
+                }
+              },
+              "description": "",
+              "isPrivate": true
+            }
+          ]
+        }
+      ],
+      "entities": [
+        {
+          "_type": "DomainEntityMetadata",
+          "name": "CreditBalanceEntity",
+          "state": {
+            "_type": "ValueObjectMetadata",
+            "name": "CreditBalanceState",
+            "fields": [
+              {
+                "_type": "FieldMetadata",
+                "name": "userId",
+                "fieldType": {
+                  "_type": "CustomType",
+                  "typeName": "Id",
+                  "packagePath": "net.imadz.common.CommonTypes",
+                  "typeParameters": []
+                },
+                "optional": false,
+                "defaultValue": null,
+                "introducedIn": "",
+                "nature": "",
+                "noteId": null,
+                "description": "",
+                "writtenBy": []
+              },
+              {
+                "_type": "FieldMetadata",
+                "name": "accountBalance",
+                "fieldType": {
+                  "_type": "CustomType",
+                  "typeName": "Map",
+                  "packagePath": "scala.collection.immutable",
+                  "typeParameters": [
+                    {
+                      "_type": "StringType"
+                    },
+                    {
+                      "_type": "StructRef",
+                      "targetName": "Money"
+                    }
+                  ]
+                },
+                "optional": true,
+                "defaultValue": null,
+                "introducedIn": "",
+                "nature": "",
+                "noteId": null,
+                "description": "",
+                "writtenBy": []
+              },
+              {
+                "_type": "FieldMetadata",
+                "name": "reservedAmount",
+                "fieldType": {
+                  "_type": "CustomType",
+                  "typeName": "Map",
+                  "packagePath": "scala.collection.immutable",
+                  "typeParameters": [
+                    {
+                      "_type": "CustomType",
+                      "typeName": "Id",
+                      "packagePath": "net.imadz.common.CommonTypes",
+                      "typeParameters": []
+                    },
+                    {
+                      "_type": "StructRef",
+                      "targetName": "Money"
+                    }
+                  ]
+                },
+                "optional": true,
+                "defaultValue": null,
+                "introducedIn": "",
+                "nature": "",
+                "noteId": null,
+                "description": "",
+                "writtenBy": []
+              },
+              {
+                "_type": "FieldMetadata",
+                "name": "incomingCredits",
+                "fieldType": {
+                  "_type": "CustomType",
+                  "typeName": "Map",
+                  "packagePath": "scala.collection.immutable",
+                  "typeParameters": [
+                    {
+                      "_type": "CustomType",
+                      "typeName": "Id",
+                      "packagePath": "net.imadz.common.CommonTypes",
+                      "typeParameters": []
+                    },
+                    {
+                      "_type": "StructRef",
+                      "targetName": "Money"
+                    }
+                  ]
+                },
+                "optional": true,
+                "defaultValue": null,
+                "introducedIn": "",
+                "nature": "",
+                "noteId": null,
+                "description": "",
+                "writtenBy": []
+              }
+            ],
+            "description": "持有用户余额...",
+            "logic": null,
+            "noteIds": [],
+            "ownNoteId": null
+          },
+          "eventFamily": {
+            "_type": "EventFamilyMetadata",
+            "name": "CreditBalanceEvent",
+            "description": "...",
+            "events": [
+              {
+                "_type": "SubordinateDomainEventMetadata",
+                "name": "BalanceChanged",
+                "fields": [
+                  {
+                    "_type": "FieldMetadata",
+                    "name": "update",
+                    "fieldType": {
+                      "_type": "StructRef",
+                      "targetName": "Money"
+                    },
+                    "optional": false,
+                    "defaultValue": null,
+                    "introducedIn": "",
+                    "nature": "",
+                    "noteId": null,
+                    "description": "",
+                    "writtenBy": []
+                  },
+                  {
+                    "_type": "FieldMetadata",
+                    "name": "timestamp",
+                    "fieldType": {
+                      "_type": "LongType"
+                    },
+                    "optional": false,
+                    "defaultValue": null,
+                    "introducedIn": "",
+                    "nature": "",
+                    "noteId": null,
+                    "description": "",
+                    "writtenBy": []
+                  }
+                ],
+                "requiresProtobuf": true,
+                "description": "余额发生变动",
+                "protoFieldMapping": {
+                  "timestamp": 2,
+                  "update": 1
+                },
+                "causedBy": [],
+                "producedBy": [],
+                "noteId": null
+              },
+              {
+                "_type": "SubordinateDomainEventMetadata",
+                "name": "FundsReserved",
+                "fields": [
+                  {
+                    "_type": "FieldMetadata",
+                    "name": "transferId",
+                    "fieldType": {
+                      "_type": "CustomType",
+                      "typeName": "Id",
+                      "packagePath": "net.imadz.common.CommonTypes",
+                      "typeParameters": []
+                    },
+                    "optional": false,
+                    "defaultValue": null,
+                    "introducedIn": "",
+                    "nature": "",
+                    "noteId": null,
+                    "description": "",
+                    "writtenBy": []
+                  },
+                  {
+                    "_type": "FieldMetadata",
+                    "name": "amount",
+                    "fieldType": {
+                      "_type": "StructRef",
+                      "targetName": "Money"
+                    },
+                    "optional": false,
+                    "defaultValue": null,
+                    "introducedIn": "",
+                    "nature": "",
+                    "noteId": null,
+                    "description": "",
+                    "writtenBy": []
+                  }
+                ],
+                "requiresProtobuf": true,
+                "description": "资金已预留",
+                "protoFieldMapping": {
+                  "amount": 2,
+                  "transferId": 1
+                },
+                "causedBy": [],
+                "producedBy": [],
+                "noteId": null
+              },
+              {
+                "_type": "SubordinateDomainEventMetadata",
+                "name": "FundsDeducted",
+                "fields": [
+                  {
+                    "_type": "FieldMetadata",
+                    "name": "transferId",
+                    "fieldType": {
+                      "_type": "CustomType",
+                      "typeName": "Id",
+                      "packagePath": "net.imadz.common.CommonTypes",
+                      "typeParameters": []
+                    },
+                    "optional": false,
+                    "defaultValue": null,
+                    "introducedIn": "",
+                    "nature": "",
+                    "noteId": null,
+                    "description": "",
+                    "writtenBy": []
+                  },
+                  {
+                    "_type": "FieldMetadata",
+                    "name": "amount",
+                    "fieldType": {
+                      "_type": "StructRef",
+                      "targetName": "Money"
+                    },
+                    "optional": false,
+                    "defaultValue": null,
+                    "introducedIn": "",
+                    "nature": "",
+                    "noteId": null,
+                    "description": "",
+                    "writtenBy": []
+                  }
+                ],
+                "requiresProtobuf": true,
+                "description": "资金已扣除",
+                "protoFieldMapping": {
+                  "amount": 2,
+                  "transferId": 1
+                },
+                "causedBy": [],
+                "producedBy": [],
+                "noteId": null
+              },
+              {
+                "_type": "SubordinateDomainEventMetadata",
+                "name": "ReservationReleased",
+                "fields": [
+                  {
+                    "_type": "FieldMetadata",
+                    "name": "transferId",
+                    "fieldType": {
+                      "_type": "CustomType",
+                      "typeName": "Id",
+                      "packagePath": "net.imadz.common.CommonTypes",
+                      "typeParameters": []
+                    },
+                    "optional": false,
+                    "defaultValue": null,
+                    "introducedIn": "",
+                    "nature": "",
+                    "noteId": null,
+                    "description": "",
+                    "writtenBy": []
+                  },
+                  {
+                    "_type": "FieldMetadata",
+                    "name": "amount",
+                    "fieldType": {
+                      "_type": "StructRef",
+                      "targetName": "Money"
+                    },
+                    "optional": false,
+                    "defaultValue": null,
+                    "introducedIn": "",
+                    "nature": "",
+                    "noteId": null,
+                    "description": "",
+                    "writtenBy": []
+                  }
+                ],
+                "requiresProtobuf": true,
+                "description": "预留已释放",
+                "protoFieldMapping": {
+                  "amount": 2,
+                  "transferId": 1
+                },
+                "causedBy": [],
+                "producedBy": [],
+                "noteId": null
+              },
+              {
+                "_type": "SubordinateDomainEventMetadata",
+                "name": "IncomingCreditsRecorded",
+                "fields": [
+                  {
+                    "_type": "FieldMetadata",
+                    "name": "transferId",
+                    "fieldType": {
+                      "_type": "CustomType",
+                      "typeName": "Id",
+                      "packagePath": "net.imadz.common.CommonTypes",
+                      "typeParameters": []
+                    },
+                    "optional": false,
+                    "defaultValue": null,
+                    "introducedIn": "",
+                    "nature": "",
+                    "noteId": null,
+                    "description": "",
+                    "writtenBy": []
+                  },
+                  {
+                    "_type": "FieldMetadata",
+                    "name": "amount",
+                    "fieldType": {
+                      "_type": "StructRef",
+                      "targetName": "Money"
+                    },
+                    "optional": false,
+                    "defaultValue": null,
+                    "introducedIn": "",
+                    "nature": "",
+                    "noteId": null,
+                    "description": "",
+                    "writtenBy": []
+                  }
+                ],
+                "requiresProtobuf": true,
+                "description": "入账资金已记录",
+                "protoFieldMapping": {
+                  "amount": 2,
+                  "transferId": 1
+                },
+                "causedBy": [],
+                "producedBy": [],
+                "noteId": null
+              },
+              {
+                "_type": "SubordinateDomainEventMetadata",
+                "name": "IncomingCreditsCommited",
+                "fields": [
+                  {
+                    "_type": "FieldMetadata",
+                    "name": "transferId",
+                    "fieldType": {
+                      "_type": "CustomType",
+                      "typeName": "Id",
+                      "packagePath": "net.imadz.common.CommonTypes",
+                      "typeParameters": []
+                    },
+                    "optional": false,
+                    "defaultValue": null,
+                    "introducedIn": "",
+                    "nature": "",
+                    "noteId": null,
+                    "description": "",
+                    "writtenBy": []
+                  }
+                ],
+                "requiresProtobuf": true,
+                "description": "入账资金已提交",
+                "protoFieldMapping": {
+                  "transferId": 1
+                },
+                "causedBy": [],
+                "producedBy": [],
+                "noteId": null
+              },
+              {
+                "_type": "SubordinateDomainEventMetadata",
+                "name": "IncomingCreditsCanceled",
+                "fields": [
+                  {
+                    "_type": "FieldMetadata",
+                    "name": "transferId",
+                    "fieldType": {
+                      "_type": "CustomType",
+                      "typeName": "Id",
+                      "packagePath": "net.imadz.common.CommonTypes",
+                      "typeParameters": []
+                    },
+                    "optional": false,
+                    "defaultValue": null,
+                    "introducedIn": "",
+                    "nature": "",
+                    "noteId": null,
+                    "description": "",
+                    "writtenBy": []
+                  }
+                ],
+                "requiresProtobuf": true,
+                "description": "入账资金已取消",
+                "protoFieldMapping": {
+                  "transferId": 1
+                },
+                "causedBy": [],
+                "producedBy": [],
+                "noteId": null
+              }
+            ],
+            "fields": [],
+            "requiresProtobuf": true
+          },
+          "noteId": null
+        }
+      ],
+      "services": [
+        {
+          "_type": "DomainServiceMetadata",
+          "name": "TransferValidator",
+          "description": "转账校验器",
+          "methods": [
+            {
+              "_type": "MethodMetadata",
+              "name": "validate",
+              "parameters": [
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "transferId",
+                  "parameterType": {
+                    "_type": "CustomType",
+                    "typeName": "Id",
+                    "packagePath": "net.imadz.common.CommonTypes",
+                    "typeParameters": []
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "reservedAmount",
+                  "parameterType": {
+                    "_type": "CustomType",
+                    "typeName": "Map",
+                    "packagePath": "scala.collection.immutable",
+                    "typeParameters": [
+                      {
+                        "_type": "CustomType",
+                        "typeName": "Id",
+                        "packagePath": "net.imadz.common.CommonTypes",
+                        "typeParameters": []
+                      },
+                      {
+                        "_type": "StructRef",
+                        "targetName": "Money"
+                      }
+                    ]
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "fromBalance",
+                  "parameterType": {
+                    "_type": "CustomType",
+                    "typeName": "Option",
+                    "packagePath": "scala",
+                    "typeParameters": [
+                      {
+                        "_type": "StructRef",
+                        "targetName": "Money"
+                      }
+                    ]
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "transferAmount",
+                  "parameterType": {
+                    "_type": "StructRef",
+                    "targetName": "Money"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                }
+              ],
+              "returnType": {
+                "_type": "CustomType",
+                "typeName": "Either",
+                "packagePath": "scala.util",
+                "typeParameters": [
+                  {
+                    "_type": "CustomType",
+                    "typeName": "iMadzError",
+                    "packagePath": "net.imadz.common.CommonTypes",
+                    "typeParameters": []
+                  },
+                  {
+                    "_type": "UnitType"
+                  }
+                ]
+              },
+              "logic": {
+                "_type": "Right",
+                "value": {
+                  "_type": "BusinessLogic",
+                  "intent": "校验预留不重复、转账金额为正、且不超过该币种可用余额（transferAmount ≤ fromBalance）",
+                  "invariants": [],
+                  "referenceCode": "if (reservedAmount.contains(transferId)) Left(DuplicateReservationError) else if (transferAmount.amount <= BigDecimal(0)) Left(InvalidTransferAmountError) else if (fromBalance.forall(_.amount < transferAmount.amount)) Left(InsufficientBalanceError) else Right(())"
+                }
+              },
+              "description": "",
+              "isPrivate": false
+            }
+          ]
+        }
+      ],
+      "invariants": [
+        {
+          "_type": "InvariantRuleMetadata",
+          "name": "AddInitialOnlyOnceRule",
+          "description": "初始金额只能添加一次",
+          "subject": {
+            "_type": "EntityStateRef",
+            "targetName": "CreditBalanceState"
+          },
+          "trigger": {
+            "_type": "StructRef",
+            "targetName": "Money"
+          },
+          "output": {
+            "_type": "EventFamilyRef",
+            "targetName": "CreditBalanceEvent"
+          },
+          "conditions": [
+            {
+              "_type": "InvariantCondition",
+              "name": "InitialConditionNotMeet",
+              "errorCode": "60000",
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "余额必须为0",
+                "invariants": [],
+                "referenceCode": "!state.accountBalance.values.exists(_.amount > 0)"
+              }
+            }
+          ]
+        },
+        {
+          "_type": "InvariantRuleMetadata",
+          "name": "DepositRule",
+          "description": "存款校验",
+          "subject": {
+            "_type": "EntityStateRef",
+            "targetName": "CreditBalanceState"
+          },
+          "trigger": {
+            "_type": "StructRef",
+            "targetName": "Money"
+          },
+          "output": {
+            "_type": "EventFamilyRef",
+            "targetName": "CreditBalanceEvent"
+          },
+          "conditions": [
+            {
+              "_type": "InvariantCondition",
+              "name": "ChangeShouldBePositive",
+              "errorCode": "60001",
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "金额必须>0",
+                "invariants": [],
+                "referenceCode": "change.amount > 0"
+              }
+            }
+          ]
+        },
+        {
+          "_type": "InvariantRuleMetadata",
+          "name": "WithdrawRule",
+          "description": "取款校验",
+          "subject": {
+            "_type": "EntityStateRef",
+            "targetName": "CreditBalanceState"
+          },
+          "trigger": {
+            "_type": "StructRef",
+            "targetName": "Money"
+          },
+          "output": {
+            "_type": "EventFamilyRef",
+            "targetName": "CreditBalanceEvent"
+          },
+          "conditions": [
+            {
+              "_type": "InvariantCondition",
+              "name": "NotEnoughBalance",
+              "errorCode": "60002",
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "余额需充足",
+                "invariants": [],
+                "referenceCode": "state.accountBalance.get(change.currency.getCurrencyCode).exists(change <= _)"
+              }
+            }
+          ]
+        },
+        {
+          "_type": "InvariantRuleMetadata",
+          "name": "ReserveFundsRule",
+          "description": "资金预留校验",
+          "subject": {
+            "_type": "EntityStateRef",
+            "targetName": "CreditBalanceState"
+          },
+          "trigger": {
+            "_type": "CustomType",
+            "typeName": "Tuple2",
+            "packagePath": "scala",
+            "typeParameters": [
+              {
+                "_type": "CustomType",
+                "typeName": "Id",
+                "packagePath": "net.imadz.common.CommonTypes",
+                "typeParameters": []
+              },
+              {
+                "_type": "StructRef",
+                "targetName": "Money"
+              }
+            ]
+          },
+          "output": {
+            "_type": "EventFamilyRef",
+            "targetName": "CreditBalanceEvent"
+          },
+          "conditions": [
+            {
+              "_type": "InvariantCondition",
+              "name": "ReservationCheck",
+              "errorCode": "600xx",
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "Delegate to TransferValidator",
+                "invariants": [],
+                "referenceCode": "transferValidator.validate(change._1, state.reservedAmount, state.accountBalance.get(change._2.currency.getCurrencyCode), change._2).isRight"
+              }
+            }
+          ]
+        },
+        {
+          "_type": "InvariantRuleMetadata",
+          "name": "DeductFundsRule",
+          "description": "资金扣除校验",
+          "subject": {
+            "_type": "EntityStateRef",
+            "targetName": "CreditBalanceState"
+          },
+          "trigger": {
+            "_type": "CustomType",
+            "typeName": "Id",
+            "packagePath": "net.imadz.common.CommonTypes",
+            "typeParameters": []
+          },
+          "output": {
+            "_type": "EventFamilyRef",
+            "targetName": "CreditBalanceEvent"
+          },
+          "conditions": [
+            {
+              "_type": "InvariantCondition",
+              "name": "ReservationFound",
+              "errorCode": "60006",
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "Must have reserved funds",
+                "invariants": [],
+                "referenceCode": "state.reservedAmount.contains(change)"
+              }
+            }
+          ]
+        },
+        {
+          "_type": "InvariantRuleMetadata",
+          "name": "ReleaseReservedFundsRule",
+          "description": "资金释放校验",
+          "subject": {
+            "_type": "EntityStateRef",
+            "targetName": "CreditBalanceState"
+          },
+          "trigger": {
+            "_type": "CustomType",
+            "typeName": "Id",
+            "packagePath": "net.imadz.common.CommonTypes",
+            "typeParameters": []
+          },
+          "output": {
+            "_type": "EventFamilyRef",
+            "targetName": "CreditBalanceEvent"
+          },
+          "conditions": [
+            {
+              "_type": "InvariantCondition",
+              "name": "ReservationFound",
+              "errorCode": "60006",
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "Must have reserved funds",
+                "invariants": [],
+                "referenceCode": "state.reservedAmount.contains(change)"
+              }
+            }
+          ]
+        },
+        {
+          "_type": "InvariantRuleMetadata",
+          "name": "RecordIncomingCreditsRule",
+          "description": "入账记录校验 (Try)",
+          "subject": {
+            "_type": "EntityStateRef",
+            "targetName": "CreditBalanceState"
+          },
+          "trigger": {
+            "_type": "CustomType",
+            "typeName": "Tuple2",
+            "packagePath": "scala",
+            "typeParameters": [
+              {
+                "_type": "CustomType",
+                "typeName": "Id",
+                "packagePath": "net.imadz.common.CommonTypes",
+                "typeParameters": []
+              },
+              {
+                "_type": "StructRef",
+                "targetName": "Money"
+              }
+            ]
+          },
+          "output": {
+            "_type": "EventFamilyRef",
+            "targetName": "CreditBalanceEvent"
+          },
+          "conditions": [
+            {
+              "_type": "InvariantCondition",
+              "name": "UniqueRecord",
+              "errorCode": "60007",
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "Id must be unique",
+                "invariants": [],
+                "referenceCode": "!state.incomingCredits.contains(change._1)"
+              }
+            }
+          ]
+        },
+        {
+          "_type": "InvariantRuleMetadata",
+          "name": "CommitIncomingCreditsRule",
+          "description": "入账提交校验 (Confirm)",
+          "subject": {
+            "_type": "EntityStateRef",
+            "targetName": "CreditBalanceState"
+          },
+          "trigger": {
+            "_type": "CustomType",
+            "typeName": "Id",
+            "packagePath": "net.imadz.common.CommonTypes",
+            "typeParameters": []
+          },
+          "output": {
+            "_type": "EventFamilyRef",
+            "targetName": "CreditBalanceEvent"
+          },
+          "conditions": [
+            {
+              "_type": "InvariantCondition",
+              "name": "RecordExists",
+              "errorCode": "60008",
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "Record must exist",
+                "invariants": [],
+                "referenceCode": "state.incomingCredits.contains(change)"
+              }
+            }
+          ]
+        },
+        {
+          "_type": "InvariantRuleMetadata",
+          "name": "CancelIncomingCreditRule",
+          "description": "入账取消校验 (Cancel)",
+          "subject": {
+            "_type": "EntityStateRef",
+            "targetName": "CreditBalanceState"
+          },
+          "trigger": {
+            "_type": "CustomType",
+            "typeName": "Id",
+            "packagePath": "net.imadz.common.CommonTypes",
+            "typeParameters": []
+          },
+          "output": {
+            "_type": "EventFamilyRef",
+            "targetName": "CreditBalanceEvent"
+          },
+          "conditions": [
+            {
+              "_type": "InvariantCondition",
+              "name": "RecordExists",
+              "errorCode": "60009",
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "Record must exist",
+                "invariants": [],
+                "referenceCode": "state.incomingCredits.contains(change)"
+              }
+            }
+          ]
+        }
+      ],
+      "policies": []
+    },
+    "application": {
+      "_type": "ApplicationLayer",
+      "valueObjects": [],
+      "behaviors": [
+        {
+          "_type": "AggregateBehaviorMetadata",
+          "name": "CreditBalanceBehaviors",
+          "behaviors": [
+            {
+              "_type": "AggregateCommandHandlersMetadata",
+              "name": "DirectBehaviors",
+              "flows": [
+                {
+                  "_type": "CommandHandlingFlow",
+                  "commandRef": {
+                    "_type": "CommandRef",
+                    "targetName": "AddInitial"
+                  },
+                  "invariantRef": {
+                    "_type": "InvariantRuleRef",
+                    "targetName": "AddInitialOnlyOnceRule"
+                  },
+                  "replyMapping": {
+                    "_type": "ReplyMappingConfig",
+                    "successReplyRef": {
+                      "_type": "CommandReplyRef",
+                      "targetName": "CreditBalanceConfirmation"
+                    },
+                    "failureReplyRef": {
+                      "_type": "CommandReplyRef",
+                      "targetName": "CreditBalanceConfirmation"
+                    }
+                  }
+                },
+                {
+                  "_type": "CommandHandlingFlow",
+                  "commandRef": {
+                    "_type": "CommandRef",
+                    "targetName": "Deposit"
+                  },
+                  "invariantRef": {
+                    "_type": "InvariantRuleRef",
+                    "targetName": "DepositRule"
+                  },
+                  "replyMapping": {
+                    "_type": "ReplyMappingConfig",
+                    "successReplyRef": {
+                      "_type": "CommandReplyRef",
+                      "targetName": "CreditBalanceConfirmation"
+                    },
+                    "failureReplyRef": {
+                      "_type": "CommandReplyRef",
+                      "targetName": "CreditBalanceConfirmation"
+                    }
+                  }
+                },
+                {
+                  "_type": "CommandHandlingFlow",
+                  "commandRef": {
+                    "_type": "CommandRef",
+                    "targetName": "Withdraw"
+                  },
+                  "invariantRef": {
+                    "_type": "InvariantRuleRef",
+                    "targetName": "WithdrawRule"
+                  },
+                  "replyMapping": {
+                    "_type": "ReplyMappingConfig",
+                    "successReplyRef": {
+                      "_type": "CommandReplyRef",
+                      "targetName": "CreditBalanceConfirmation"
+                    },
+                    "failureReplyRef": {
+                      "_type": "CommandReplyRef",
+                      "targetName": "CreditBalanceConfirmation"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "_type": "AggregateCommandHandlersMetadata",
+              "name": "ReserveBehaviors",
+              "flows": [
+                {
+                  "_type": "CommandHandlingFlow",
+                  "commandRef": {
+                    "_type": "CommandRef",
+                    "targetName": "ReserveFunds"
+                  },
+                  "invariantRef": {
+                    "_type": "InvariantRuleRef",
+                    "targetName": "ReserveFundsRule"
+                  },
+                  "replyMapping": {
+                    "_type": "ReplyMappingConfig",
+                    "successReplyRef": {
+                      "_type": "CommandReplyRef",
+                      "targetName": "FundsReservationConfirmation"
+                    },
+                    "failureReplyRef": {
+                      "_type": "CommandReplyRef",
+                      "targetName": "FundsReservationConfirmation"
+                    }
+                  }
+                },
+                {
+                  "_type": "CommandHandlingFlow",
+                  "commandRef": {
+                    "_type": "CommandRef",
+                    "targetName": "DeductFunds"
+                  },
+                  "invariantRef": {
+                    "_type": "InvariantRuleRef",
+                    "targetName": "DeductFundsRule"
+                  },
+                  "replyMapping": {
+                    "_type": "ReplyMappingConfig",
+                    "successReplyRef": {
+                      "_type": "CommandReplyRef",
+                      "targetName": "FundsDeductionConfirmation"
+                    },
+                    "failureReplyRef": {
+                      "_type": "CommandReplyRef",
+                      "targetName": "FundsDeductionConfirmation"
+                    }
+                  }
+                },
+                {
+                  "_type": "CommandHandlingFlow",
+                  "commandRef": {
+                    "_type": "CommandRef",
+                    "targetName": "ReleaseReservedFunds"
+                  },
+                  "invariantRef": {
+                    "_type": "InvariantRuleRef",
+                    "targetName": "ReleaseReservedFundsRule"
+                  },
+                  "replyMapping": {
+                    "_type": "ReplyMappingConfig",
+                    "successReplyRef": {
+                      "_type": "CommandReplyRef",
+                      "targetName": "FundsReleaseConfirmation"
+                    },
+                    "failureReplyRef": {
+                      "_type": "CommandReplyRef",
+                      "targetName": "FundsReleaseConfirmation"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "_type": "AggregateCommandHandlersMetadata",
+              "name": "IncomingCreditBehaviors",
+              "flows": [
+                {
+                  "_type": "CommandHandlingFlow",
+                  "commandRef": {
+                    "_type": "CommandRef",
+                    "targetName": "RecordIncomingCredits"
+                  },
+                  "invariantRef": {
+                    "_type": "InvariantRuleRef",
+                    "targetName": "RecordIncomingCreditsRule"
+                  },
+                  "replyMapping": {
+                    "_type": "ReplyMappingConfig",
+                    "successReplyRef": {
+                      "_type": "CommandReplyRef",
+                      "targetName": "RecordIncomingCreditsConfirmation"
+                    },
+                    "failureReplyRef": {
+                      "_type": "CommandReplyRef",
+                      "targetName": "RecordIncomingCreditsConfirmation"
+                    }
+                  }
+                },
+                {
+                  "_type": "CommandHandlingFlow",
+                  "commandRef": {
+                    "_type": "CommandRef",
+                    "targetName": "CommitIncomingCredits"
+                  },
+                  "invariantRef": {
+                    "_type": "InvariantRuleRef",
+                    "targetName": "CommitIncomingCreditsRule"
+                  },
+                  "replyMapping": {
+                    "_type": "ReplyMappingConfig",
+                    "successReplyRef": {
+                      "_type": "CommandReplyRef",
+                      "targetName": "CommitIncomingCreditsConfirmation"
+                    },
+                    "failureReplyRef": {
+                      "_type": "CommandReplyRef",
+                      "targetName": "CommitIncomingCreditsConfirmation"
+                    }
+                  }
+                },
+                {
+                  "_type": "CommandHandlingFlow",
+                  "commandRef": {
+                    "_type": "CommandRef",
+                    "targetName": "CancelIncomingCredit"
+                  },
+                  "invariantRef": {
+                    "_type": "InvariantRuleRef",
+                    "targetName": "CancelIncomingCreditRule"
+                  },
+                  "replyMapping": {
+                    "_type": "ReplyMappingConfig",
+                    "successReplyRef": {
+                      "_type": "CommandReplyRef",
+                      "targetName": "CancelIncomingCreditConfirmation"
+                    },
+                    "failureReplyRef": {
+                      "_type": "CommandReplyRef",
+                      "targetName": "CancelIncomingCreditConfirmation"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "aggregates": [
+        {
+          "_type": "AggregateRootMetadata",
+          "name": "CreditBalanceAggregate",
+          "identifier": {
+            "_type": "FieldMetadata",
+            "name": "userId",
+            "fieldType": {
+              "_type": "CustomType",
+              "typeName": "Id",
+              "packagePath": "net.imadz.common.CommonTypes",
+              "typeParameters": []
+            },
+            "optional": false,
+            "defaultValue": null,
+            "introducedIn": "",
+            "nature": "",
+            "noteId": null,
+            "description": "",
+            "writtenBy": []
+          },
+          "entityRef": {
+            "_type": "EntityRef",
+            "targetName": "CreditBalanceEntity"
+          },
+          "stateRef": {
+            "_type": "EntityStateRef",
+            "targetName": "CreditBalanceState"
+          },
+          "eventFamilyRef": {
+            "_type": "EventFamilyRef",
+            "targetName": "CreditBalanceEvent"
+          },
+          "commandFamily": {
+            "_type": "CommandFamilyMetadata",
+            "name": "CreditBalanceCommand",
+            "description": "...",
+            "commands": [
+              {
+                "_type": "SubordinateCommandMetadata",
+                "name": "AddInitial",
+                "parameters": [
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "initial",
+                    "parameterType": {
+                      "_type": "StructRef",
+                      "targetName": "Money"
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  }
+                ],
+                "replyToType": {
+                  "_type": "CommandReplyRef",
+                  "targetName": "CreditBalanceConfirmation"
+                },
+                "isReadOnly": false,
+                "description": "",
+                "isSystemCommand": false,
+                "noteId": null
+              },
+              {
+                "_type": "SubordinateCommandMetadata",
+                "name": "Deposit",
+                "parameters": [
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "change",
+                    "parameterType": {
+                      "_type": "StructRef",
+                      "targetName": "Money"
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  }
+                ],
+                "replyToType": {
+                  "_type": "CommandReplyRef",
+                  "targetName": "CreditBalanceConfirmation"
+                },
+                "isReadOnly": false,
+                "description": "",
+                "isSystemCommand": false,
+                "noteId": null
+              },
+              {
+                "_type": "SubordinateCommandMetadata",
+                "name": "Withdraw",
+                "parameters": [
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "change",
+                    "parameterType": {
+                      "_type": "StructRef",
+                      "targetName": "Money"
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  }
+                ],
+                "replyToType": {
+                  "_type": "CommandReplyRef",
+                  "targetName": "CreditBalanceConfirmation"
+                },
+                "isReadOnly": false,
+                "description": "",
+                "isSystemCommand": false,
+                "noteId": null
+              },
+              {
+                "_type": "SubordinateCommandMetadata",
+                "name": "GetBalance",
+                "parameters": [],
+                "replyToType": {
+                  "_type": "CommandReplyRef",
+                  "targetName": "CreditBalanceConfirmation"
+                },
+                "isReadOnly": true,
+                "description": "",
+                "isSystemCommand": false,
+                "noteId": null
+              },
+              {
+                "_type": "SubordinateCommandMetadata",
+                "name": "ReserveFunds",
+                "parameters": [
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "transferId",
+                    "parameterType": {
+                      "_type": "CustomType",
+                      "typeName": "Id",
+                      "packagePath": "net.imadz.common.CommonTypes",
+                      "typeParameters": []
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  },
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "amount",
+                    "parameterType": {
+                      "_type": "StructRef",
+                      "targetName": "Money"
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  }
+                ],
+                "replyToType": {
+                  "_type": "CommandReplyRef",
+                  "targetName": "FundsReservationConfirmation"
+                },
+                "isReadOnly": false,
+                "description": "",
+                "isSystemCommand": false,
+                "noteId": null
+              },
+              {
+                "_type": "SubordinateCommandMetadata",
+                "name": "DeductFunds",
+                "parameters": [
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "transferId",
+                    "parameterType": {
+                      "_type": "CustomType",
+                      "typeName": "Id",
+                      "packagePath": "net.imadz.common.CommonTypes",
+                      "typeParameters": []
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  }
+                ],
+                "replyToType": {
+                  "_type": "CommandReplyRef",
+                  "targetName": "FundsDeductionConfirmation"
+                },
+                "isReadOnly": false,
+                "description": "",
+                "isSystemCommand": false,
+                "noteId": null
+              },
+              {
+                "_type": "SubordinateCommandMetadata",
+                "name": "ReleaseReservedFunds",
+                "parameters": [
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "transferId",
+                    "parameterType": {
+                      "_type": "CustomType",
+                      "typeName": "Id",
+                      "packagePath": "net.imadz.common.CommonTypes",
+                      "typeParameters": []
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  }
+                ],
+                "replyToType": {
+                  "_type": "CommandReplyRef",
+                  "targetName": "FundsReleaseConfirmation"
+                },
+                "isReadOnly": false,
+                "description": "",
+                "isSystemCommand": false,
+                "noteId": null
+              },
+              {
+                "_type": "SubordinateCommandMetadata",
+                "name": "RecordIncomingCredits",
+                "parameters": [
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "transferId",
+                    "parameterType": {
+                      "_type": "CustomType",
+                      "typeName": "Id",
+                      "packagePath": "net.imadz.common.CommonTypes",
+                      "typeParameters": []
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  },
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "amount",
+                    "parameterType": {
+                      "_type": "StructRef",
+                      "targetName": "Money"
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  }
+                ],
+                "replyToType": {
+                  "_type": "CommandReplyRef",
+                  "targetName": "RecordIncomingCreditsConfirmation"
+                },
+                "isReadOnly": false,
+                "description": "",
+                "isSystemCommand": false,
+                "noteId": null
+              },
+              {
+                "_type": "SubordinateCommandMetadata",
+                "name": "CommitIncomingCredits",
+                "parameters": [
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "transferId",
+                    "parameterType": {
+                      "_type": "CustomType",
+                      "typeName": "Id",
+                      "packagePath": "net.imadz.common.CommonTypes",
+                      "typeParameters": []
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  }
+                ],
+                "replyToType": {
+                  "_type": "CommandReplyRef",
+                  "targetName": "CommitIncomingCreditsConfirmation"
+                },
+                "isReadOnly": false,
+                "description": "",
+                "isSystemCommand": false,
+                "noteId": null
+              },
+              {
+                "_type": "SubordinateCommandMetadata",
+                "name": "CancelIncomingCredit",
+                "parameters": [
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "transferId",
+                    "parameterType": {
+                      "_type": "CustomType",
+                      "typeName": "Id",
+                      "packagePath": "net.imadz.common.CommonTypes",
+                      "typeParameters": []
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  }
+                ],
+                "replyToType": {
+                  "_type": "CommandReplyRef",
+                  "targetName": "CancelIncomingCreditConfirmation"
+                },
+                "isReadOnly": false,
+                "description": "",
+                "isSystemCommand": false,
+                "noteId": null
+              }
+            ]
+          },
+          "replyFamily": {
+            "_type": "CommandReplyFamilyMetadata",
+            "name": "CreditBalanceReply",
+            "replies": [
+              {
+                "_type": "SubordinateCommandReplyMetadata",
+                "name": "CreditBalanceConfirmation",
+                "parameters": [
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "error",
+                    "parameterType": {
+                      "_type": "CustomType",
+                      "typeName": "Option",
+                      "packagePath": "scala",
+                      "typeParameters": [
+                        {
+                          "_type": "CustomType",
+                          "typeName": "iMadzError",
+                          "packagePath": "net.imadz.common.CommonTypes",
+                          "typeParameters": []
+                        }
+                      ]
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  },
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "balances",
+                    "parameterType": {
+                      "_type": "CustomType",
+                      "typeName": "List",
+                      "packagePath": "scala.collection.immutable",
+                      "typeParameters": [
+                        {
+                          "_type": "CustomType",
+                          "typeName": "Money",
+                          "packagePath": "net.imadz.banking.domain.values",
+                          "typeParameters": []
+                        }
+                      ]
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  }
+                ]
+              },
+              {
+                "_type": "SubordinateCommandReplyMetadata",
+                "name": "FundsReservationConfirmation",
+                "parameters": [
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "transferId",
+                    "parameterType": {
+                      "_type": "CustomType",
+                      "typeName": "Id",
+                      "packagePath": "net.imadz.common.CommonTypes",
+                      "typeParameters": []
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  },
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "error",
+                    "parameterType": {
+                      "_type": "CustomType",
+                      "typeName": "Option",
+                      "packagePath": "scala",
+                      "typeParameters": [
+                        {
+                          "_type": "CustomType",
+                          "typeName": "iMadzError",
+                          "packagePath": "net.imadz.common.CommonTypes",
+                          "typeParameters": []
+                        }
+                      ]
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  }
+                ]
+              },
+              {
+                "_type": "SubordinateCommandReplyMetadata",
+                "name": "FundsDeductionConfirmation",
+                "parameters": [
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "transferId",
+                    "parameterType": {
+                      "_type": "CustomType",
+                      "typeName": "Id",
+                      "packagePath": "net.imadz.common.CommonTypes",
+                      "typeParameters": []
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  },
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "error",
+                    "parameterType": {
+                      "_type": "CustomType",
+                      "typeName": "Option",
+                      "packagePath": "scala",
+                      "typeParameters": [
+                        {
+                          "_type": "CustomType",
+                          "typeName": "iMadzError",
+                          "packagePath": "net.imadz.common.CommonTypes",
+                          "typeParameters": []
+                        }
+                      ]
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  }
+                ]
+              },
+              {
+                "_type": "SubordinateCommandReplyMetadata",
+                "name": "FundsReleaseConfirmation",
+                "parameters": [
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "transferId",
+                    "parameterType": {
+                      "_type": "CustomType",
+                      "typeName": "Id",
+                      "packagePath": "net.imadz.common.CommonTypes",
+                      "typeParameters": []
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  },
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "error",
+                    "parameterType": {
+                      "_type": "CustomType",
+                      "typeName": "Option",
+                      "packagePath": "scala",
+                      "typeParameters": [
+                        {
+                          "_type": "CustomType",
+                          "typeName": "iMadzError",
+                          "packagePath": "net.imadz.common.CommonTypes",
+                          "typeParameters": []
+                        }
+                      ]
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  }
+                ]
+              },
+              {
+                "_type": "SubordinateCommandReplyMetadata",
+                "name": "RecordIncomingCreditsConfirmation",
+                "parameters": [
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "transferId",
+                    "parameterType": {
+                      "_type": "CustomType",
+                      "typeName": "Id",
+                      "packagePath": "net.imadz.common.CommonTypes",
+                      "typeParameters": []
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  },
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "error",
+                    "parameterType": {
+                      "_type": "CustomType",
+                      "typeName": "Option",
+                      "packagePath": "scala",
+                      "typeParameters": [
+                        {
+                          "_type": "CustomType",
+                          "typeName": "iMadzError",
+                          "packagePath": "net.imadz.common.CommonTypes",
+                          "typeParameters": []
+                        }
+                      ]
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  }
+                ]
+              },
+              {
+                "_type": "SubordinateCommandReplyMetadata",
+                "name": "CommitIncomingCreditsConfirmation",
+                "parameters": [
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "transferId",
+                    "parameterType": {
+                      "_type": "CustomType",
+                      "typeName": "Id",
+                      "packagePath": "net.imadz.common.CommonTypes",
+                      "typeParameters": []
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  },
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "error",
+                    "parameterType": {
+                      "_type": "CustomType",
+                      "typeName": "Option",
+                      "packagePath": "scala",
+                      "typeParameters": [
+                        {
+                          "_type": "CustomType",
+                          "typeName": "iMadzError",
+                          "packagePath": "net.imadz.common.CommonTypes",
+                          "typeParameters": []
+                        }
+                      ]
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  }
+                ]
+              },
+              {
+                "_type": "SubordinateCommandReplyMetadata",
+                "name": "CancelIncomingCreditConfirmation",
+                "parameters": [
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "transferId",
+                    "parameterType": {
+                      "_type": "CustomType",
+                      "typeName": "Id",
+                      "packagePath": "net.imadz.common.CommonTypes",
+                      "typeParameters": []
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  },
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "error",
+                    "parameterType": {
+                      "_type": "CustomType",
+                      "typeName": "Option",
+                      "packagePath": "scala",
+                      "typeParameters": [
+                        {
+                          "_type": "CustomType",
+                          "typeName": "iMadzError",
+                          "packagePath": "net.imadz.common.CommonTypes",
+                          "typeParameters": []
+                        }
+                      ]
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  }
+                ]
+              }
+            ]
+          },
+          "behaviorRef": {
+            "_type": "AggregateBehaviorRef",
+            "targetName": "CreditBalanceBehaviors"
+          },
+          "persistenceConfig": {
+            "_type": "PersistenceConfig",
+            "entityTypeKey": "CreditBalance",
+            "tagging": {
+              "_type": "ShardedTags",
+              "baseName": "credit-balance-",
+              "numberOfShards": 5
+            },
+            "snapshotInterval": 100,
+            "eventAdapter": true
+          },
+          "repository": {
+            "_type": "AggregateRepositoryRef",
+            "targetName": "CreditBalanceRepository"
+          },
+          "description": "信用余额聚合根：管理账户余额、资金预留与入账记录，是存取款与转账的核心一致性边界。",
+          "implConfig": {
+            "_type": "ImplementationConfig",
+            "protoConfig": {
+              "_type": "ProtoConfig",
+              "fileName": "credits.proto",
+              "javaPackage": null,
+              "javaOuterClass": null,
+              "imports": [
+                "saga_v2.proto",
+                "saga_participant.proto"
+              ]
+            },
+            "bootstrapStrategy": {
+              "_type": "AkkaShardingBootstrap",
+              "shardingTagName": "credit-balance-",
+              "shards": 5
+            },
+            "diStrategy": null
+          },
+          "factoryMethods": [
+            {
+              "_type": "MethodMetadata",
+              "name": "createCreditBalanceWithoutBalance",
+              "parameters": [
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "userId",
+                  "parameterType": {
+                    "_type": "CustomType",
+                    "typeName": "Id",
+                    "packagePath": "net.imadz.common.CommonTypes",
+                    "typeParameters": []
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                }
+              ],
+              "returnType": {
+                "_type": "CustomType",
+                "typeName": "EntityRef",
+                "packagePath": "akka.cluster.sharding.typed.scaladsl",
+                "typeParameters": [
+                  {
+                    "_type": "CustomType",
+                    "typeName": "CreditBalanceCommand",
+                    "packagePath": "",
+                    "typeParameters": []
+                  }
+                ]
+              },
+              "logic": {
+                "_type": "Right",
+                "value": {
+                  "_type": "BusinessLogic",
+                  "intent": "获取 EntityRef",
+                  "invariants": [],
+                  "referenceCode": "sharding.entityRefFor(CreditBalanceEntityKey, userId.toString)"
+                }
+              },
+              "description": "",
+              "isPrivate": false
+            },
+            {
+              "_type": "MethodMetadata",
+              "name": "createCreditBalanceWithDefaultBalance",
+              "parameters": [
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "userId",
+                  "parameterType": {
+                    "_type": "CustomType",
+                    "typeName": "Id",
+                    "packagePath": "net.imadz.common.CommonTypes",
+                    "typeParameters": []
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "initial",
+                  "parameterType": {
+                    "_type": "StructRef",
+                    "targetName": "Money"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                }
+              ],
+              "returnType": {
+                "_type": "CustomType",
+                "typeName": "Future",
+                "packagePath": "scala.concurrent",
+                "typeParameters": [
+                  {
+                    "_type": "CustomType",
+                    "typeName": "Either",
+                    "packagePath": "",
+                    "typeParameters": [
+                      {
+                        "_type": "CustomType",
+                        "typeName": "Option",
+                        "packagePath": "scala",
+                        "typeParameters": [
+                          {
+                            "_type": "CustomType",
+                            "typeName": "iMadzError",
+                            "packagePath": "net.imadz.common.CommonTypes",
+                            "typeParameters": []
+                          }
+                        ]
+                      },
+                      {
+                        "_type": "CustomType",
+                        "typeName": "EntityRef",
+                        "packagePath": "akka.cluster.sharding.typed.scaladsl",
+                        "typeParameters": [
+                          {
+                            "_type": "CustomType",
+                            "typeName": "CreditBalanceCommand",
+                            "packagePath": "",
+                            "typeParameters": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "logic": {
+                "_type": "Right",
+                "value": {
+                  "_type": "BusinessLogic",
+                  "intent": "初始化并返回",
+                  "invariants": [],
+                  "referenceCode": "createCreditBalanceWithoutBalance(userId).flatMap(ref => ref.ask[CreditBalanceConfirmation](replyTo => AddInitial(initial, replyTo)).map(conf => conf.error.map(Left(_)).getOrElse(Right(ref))))"
+                }
+              },
+              "description": "",
+              "isPrivate": false
+            }
+          ],
+          "noteId": null
+        }
+      ],
+      "services": [
+        {
+          "_type": "ApplicationServiceMetadata",
+          "name": "CreateCreditBalanceService",
+          "description": "创建账户服务",
+          "dependencies": [
+            {
+              "_type": "AggregateRepositoryRef",
+              "targetName": "CreditBalanceRepository"
+            }
+          ],
+          "methods": [
+            {
+              "_type": "ServiceMethod",
+              "name": "createCreditBalance",
+              "parameters": [
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "userId",
+                  "parameterType": {
+                    "_type": "CustomType",
+                    "typeName": "Id",
+                    "packagePath": "net.imadz.common.CommonTypes",
+                    "typeParameters": []
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "initial",
+                  "parameterType": {
+                    "_type": "StructRef",
+                    "targetName": "Money"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                }
+              ],
+              "returnType": {
+                "_type": "CustomType",
+                "typeName": "Future",
+                "packagePath": "scala.concurrent",
+                "typeParameters": [
+                  {
+                    "_type": "CustomType",
+                    "typeName": "Either",
+                    "packagePath": "",
+                    "typeParameters": [
+                      {
+                        "_type": "CustomType",
+                        "typeName": "iMadzError",
+                        "packagePath": "net.imadz.common.CommonTypes",
+                        "typeParameters": []
+                      },
+                      {
+                        "_type": "CustomType",
+                        "typeName": "List",
+                        "packagePath": "scala.collection.immutable",
+                        "typeParameters": [
+                          {
+                            "_type": "CustomType",
+                            "typeName": "Money",
+                            "packagePath": "net.imadz.banking.domain.values",
+                            "typeParameters": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "创建并初始化",
+                "invariants": [],
+                "referenceCode": "creditBalanceRepository.findCreditBalanceByUserId(userId).flatMap(_.ask[CreditBalanceConfirmation](replyTo => AddInitial(initial, replyTo))).map(conf => conf.error.map(Left(_)).getOrElse(Right(conf.balances)))"
+              },
+              "invokes": [
+                {
+                  "_type": "CommandRef",
+                  "targetName": "AddInitial"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "_type": "ApplicationServiceMetadata",
+          "name": "DepositService",
+          "description": "存款服务",
+          "dependencies": [
+            {
+              "_type": "AggregateRepositoryRef",
+              "targetName": "CreditBalanceRepository"
+            }
+          ],
+          "methods": [
+            {
+              "_type": "ServiceMethod",
+              "name": "requestDeposit",
+              "parameters": [
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "userId",
+                  "parameterType": {
+                    "_type": "CustomType",
+                    "typeName": "Id",
+                    "packagePath": "net.imadz.common.CommonTypes",
+                    "typeParameters": []
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "amount",
+                  "parameterType": {
+                    "_type": "StructRef",
+                    "targetName": "Money"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                }
+              ],
+              "returnType": {
+                "_type": "CustomType",
+                "typeName": "Future",
+                "packagePath": "scala.concurrent",
+                "typeParameters": [
+                  {
+                    "_type": "CommandReplyRef",
+                    "targetName": "CreditBalanceConfirmation"
+                  }
+                ]
+              },
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "Ask Deposit",
+                "invariants": [],
+                "referenceCode": "creditBalanceRepository.findCreditBalanceByUserId(userId).flatMap(_.ask[CreditBalanceConfirmation](replyTo => Deposit(amount, replyTo)))"
+              },
+              "invokes": [
+                {
+                  "_type": "CommandRef",
+                  "targetName": "Deposit"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "_type": "ApplicationServiceMetadata",
+          "name": "WithdrawService",
+          "description": "取款服务",
+          "dependencies": [
+            {
+              "_type": "AggregateRepositoryRef",
+              "targetName": "CreditBalanceRepository"
+            }
+          ],
+          "methods": [
+            {
+              "_type": "ServiceMethod",
+              "name": "requestWithdraw",
+              "parameters": [
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "userId",
+                  "parameterType": {
+                    "_type": "CustomType",
+                    "typeName": "Id",
+                    "packagePath": "net.imadz.common.CommonTypes",
+                    "typeParameters": []
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "amount",
+                  "parameterType": {
+                    "_type": "StructRef",
+                    "targetName": "Money"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                }
+              ],
+              "returnType": {
+                "_type": "CustomType",
+                "typeName": "Future",
+                "packagePath": "scala.concurrent",
+                "typeParameters": [
+                  {
+                    "_type": "CommandReplyRef",
+                    "targetName": "CreditBalanceConfirmation"
+                  }
+                ]
+              },
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "Ask Withdraw",
+                "invariants": [],
+                "referenceCode": "creditBalanceRepository.findCreditBalanceByUserId(userId).flatMap(_.ask[CreditBalanceConfirmation](replyTo => Withdraw(amount, replyTo)))"
+              },
+              "invokes": [
+                {
+                  "_type": "CommandRef",
+                  "targetName": "Withdraw"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "_type": "ApplicationServiceMetadata",
+          "name": "MoneyTransferService",
+          "description": "转账服务",
+          "dependencies": [],
+          "methods": [
+            {
+              "_type": "ServiceMethod",
+              "name": "transfer",
+              "parameters": [
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "from",
+                  "parameterType": {
+                    "_type": "CustomType",
+                    "typeName": "Id",
+                    "packagePath": "net.imadz.common.CommonTypes",
+                    "typeParameters": []
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "to",
+                  "parameterType": {
+                    "_type": "CustomType",
+                    "typeName": "Id",
+                    "packagePath": "net.imadz.common.CommonTypes",
+                    "typeParameters": []
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "amount",
+                  "parameterType": {
+                    "_type": "StructRef",
+                    "targetName": "Money"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                }
+              ],
+              "returnType": {
+                "_type": "CustomType",
+                "typeName": "Future",
+                "packagePath": "scala.concurrent",
+                "typeParameters": [
+                  {
+                    "_type": "CommandReplyRef",
+                    "targetName": "TransactionResultConfirmation"
+                  }
+                ]
+              },
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "Initiate Saga via SagaRunner",
+                "invariants": [],
+                "referenceCode": "moneyTransferSaga.runner(system, MoneyTransferSagaDefinition.coordinatorRef).run(from.toString, to.toString, Money(amount.amount, amount.currency)).map(_.fold(e => Left(e), r => Right(TransactionResultConfirmation(r.snapshot.transactionId, None))))"
+              },
+              "invokes": []
+            }
+          ]
+        }
+      ],
+      "queries": [
+        {
+          "_type": "QueryServiceMetadata",
+          "name": "GetBalanceQuery",
+          "description": "余额查询",
+          "repositories": [
+            {
+              "_type": "AggregateRepositoryRef",
+              "targetName": "CreditBalanceRepository"
+            }
+          ],
+          "structs": [],
+          "methods": [
+            {
+              "_type": "ServiceMethod",
+              "name": "fetchBalanceByUserId",
+              "parameters": [
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "userId",
+                  "parameterType": {
+                    "_type": "CustomType",
+                    "typeName": "Id",
+                    "packagePath": "net.imadz.common.CommonTypes",
+                    "typeParameters": []
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                }
+              ],
+              "returnType": {
+                "_type": "CustomType",
+                "typeName": "Future",
+                "packagePath": "scala.concurrent",
+                "typeParameters": [
+                  {
+                    "_type": "CustomType",
+                    "typeName": "Either",
+                    "packagePath": "scala.util",
+                    "typeParameters": [
+                      {
+                        "_type": "CustomType",
+                        "typeName": "iMadzError",
+                        "packagePath": "net.imadz.common.CommonTypes",
+                        "typeParameters": []
+                      },
+                      {
+                        "_type": "CustomType",
+                        "typeName": "List",
+                        "packagePath": "scala.collection.immutable",
+                        "typeParameters": [
+                          {
+                            "_type": "CustomType",
+                            "typeName": "Money",
+                            "packagePath": "net.imadz.banking.domain.values",
+                            "typeParameters": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "Ask GetBalance",
+                "invariants": [],
+                "referenceCode": "creditBalanceRepository.findCreditBalanceByUserId(userId).flatMap(_.ask[CreditBalanceConfirmation](replyTo => GetBalance(replyTo))).map(conf => conf.error.map(Left(_)).getOrElse(Right(conf.balances)))"
+              },
+              "invokes": [
+                {
+                  "_type": "CommandRef",
+                  "targetName": "GetBalance"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "_type": "QueryServiceMetadata",
+          "name": "GetRecent12MonthsIncomeAndExpenseReport",
+          "description": "报表查询",
+          "repositories": [
+            {
+              "_type": "ProjectionRepositoryRef",
+              "targetName": "MonthlyIncomeAndExpenseSummaryRepository"
+            }
+          ],
+          "structs": [
+            {
+              "_type": "ValueObjectMetadata",
+              "name": "MonthlyIncomeAndExpense",
+              "fields": [
+                {
+                  "_type": "FieldMetadata",
+                  "name": "year",
+                  "fieldType": {
+                    "_type": "IntType"
+                  },
+                  "optional": false,
+                  "defaultValue": null,
+                  "introducedIn": "",
+                  "nature": "",
+                  "noteId": null,
+                  "description": "",
+                  "writtenBy": []
+                },
+                {
+                  "_type": "FieldMetadata",
+                  "name": "month",
+                  "fieldType": {
+                    "_type": "IntType"
+                  },
+                  "optional": false,
+                  "defaultValue": null,
+                  "introducedIn": "",
+                  "nature": "",
+                  "noteId": null,
+                  "description": "",
+                  "writtenBy": []
+                },
+                {
+                  "_type": "FieldMetadata",
+                  "name": "incomeTotal",
+                  "fieldType": {
+                    "_type": "BigDecimalType"
+                  },
+                  "optional": false,
+                  "defaultValue": null,
+                  "introducedIn": "",
+                  "nature": "",
+                  "noteId": null,
+                  "description": "",
+                  "writtenBy": []
+                },
+                {
+                  "_type": "FieldMetadata",
+                  "name": "expenseTotal",
+                  "fieldType": {
+                    "_type": "BigDecimalType"
+                  },
+                  "optional": false,
+                  "defaultValue": null,
+                  "introducedIn": "",
+                  "nature": "",
+                  "noteId": null,
+                  "description": "",
+                  "writtenBy": []
+                }
+              ],
+              "description": "",
+              "logic": null,
+              "noteIds": [],
+              "ownNoteId": null
+            },
+            {
+              "_type": "ValueObjectMetadata",
+              "name": "Recent12MonthsIncomeAndExpenseReport",
+              "fields": [
+                {
+                  "_type": "FieldMetadata",
+                  "name": "monthlySummaries",
+                  "fieldType": {
+                    "_type": "CustomType",
+                    "typeName": "List",
+                    "packagePath": "scala.collection.immutable",
+                    "typeParameters": [
+                      {
+                        "_type": "StructRef",
+                        "targetName": "MonthlyIncomeAndExpense"
+                      }
+                    ]
+                  },
+                  "optional": false,
+                  "defaultValue": null,
+                  "introducedIn": "",
+                  "nature": "",
+                  "noteId": null,
+                  "description": "",
+                  "writtenBy": []
+                }
+              ],
+              "description": "",
+              "logic": null,
+              "noteIds": [],
+              "ownNoteId": null
+            }
+          ],
+          "methods": [
+            {
+              "_type": "ServiceMethod",
+              "name": "fetchByUserId",
+              "parameters": [
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "userId",
+                  "parameterType": {
+                    "_type": "CustomType",
+                    "typeName": "Id",
+                    "packagePath": "net.imadz.common.CommonTypes",
+                    "typeParameters": []
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                }
+              ],
+              "returnType": {
+                "_type": "CustomType",
+                "typeName": "Future",
+                "packagePath": "scala.concurrent",
+                "typeParameters": [
+                  {
+                    "_type": "StructRef",
+                    "targetName": "Recent12MonthsIncomeAndExpenseReport"
+                  }
+                ]
+              },
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "查询 Repo",
+                "invariants": [],
+                "referenceCode": "val now = java.time.LocalDate.now(); monthlyIncomeAndExpenseSummaryRepository.filterByPeriodLCRO(userId, now.getYear - 1, now.getMonthValue, now.getYear, now.getMonthValue)"
+              },
+              "invokes": []
+            }
+          ]
+        }
+      ],
+      "sagas": [
+        {
+          "_type": "SagaTransactorMetadata",
+          "name": "MoneyTransferSagaTransactor",
+          "commandFamily": {
+            "_type": "CommandFamilyMetadata",
+            "name": "MoneyTransferTransactionCommand",
+            "description": "Money Transfer Saga Commands",
+            "commands": [
+              {
+                "_type": "SubordinateCommandMetadata",
+                "name": "InitiateMoneyTransferTransaction",
+                "parameters": [
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "fromUserId",
+                    "parameterType": {
+                      "_type": "CustomType",
+                      "typeName": "Id",
+                      "packagePath": "net.imadz.common.CommonTypes",
+                      "typeParameters": []
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  },
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "toUserId",
+                    "parameterType": {
+                      "_type": "CustomType",
+                      "typeName": "Id",
+                      "packagePath": "net.imadz.common.CommonTypes",
+                      "typeParameters": []
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  },
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "amount",
+                    "parameterType": {
+                      "_type": "StructRef",
+                      "targetName": "Money"
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  }
+                ],
+                "replyToType": {
+                  "_type": "CommandReplyRef",
+                  "targetName": "TransactionResultConfirmation"
+                },
+                "isReadOnly": false,
+                "description": "",
+                "isSystemCommand": false,
+                "noteId": null
+              },
+              {
+                "_type": "SubordinateCommandMetadata",
+                "name": "UpdateMoneyTransferTransactionStatus",
+                "parameters": [
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "id",
+                    "parameterType": {
+                      "_type": "CustomType",
+                      "typeName": "Id",
+                      "packagePath": "net.imadz.common.CommonTypes",
+                      "typeParameters": []
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  },
+                  {
+                    "_type": "ParameterMetadata",
+                    "name": "newStatus",
+                    "parameterType": {
+                      "_type": "CustomType",
+                      "typeName": "TransactionResult",
+                      "packagePath": "net.imadz.infra.saga.SagaTransactionCoordinator",
+                      "typeParameters": []
+                    },
+                    "optional": false,
+                    "optionalWhen": "",
+                    "noteId": null,
+                    "description": ""
+                  }
+                ],
+                "replyToType": {
+                  "_type": "CommandReplyRef",
+                  "targetName": "TransactionResultConfirmation"
+                },
+                "isReadOnly": false,
+                "description": "",
+                "isSystemCommand": false,
+                "noteId": null
+              }
+            ]
+          },
+          "triggerCommandName": "InitiateMoneyTransferTransaction",
+          "participants": [
+            {
+              "_type": "SagaParticipantMetadata",
+              "name": "FromAccountParticipant",
+              "interactsWith": {
+                "_type": "AggregateRef",
+                "targetName": "CreditBalanceAggregate"
+              },
+              "fields": [
+                {
+                  "_type": "FieldMetadata",
+                  "name": "userId",
+                  "fieldType": {
+                    "_type": "CustomType",
+                    "typeName": "Id",
+                    "packagePath": "net.imadz.common.CommonTypes",
+                    "typeParameters": []
+                  },
+                  "optional": false,
+                  "defaultValue": null,
+                  "introducedIn": "",
+                  "nature": "",
+                  "noteId": null,
+                  "description": "",
+                  "writtenBy": []
+                },
+                {
+                  "_type": "FieldMetadata",
+                  "name": "amount",
+                  "fieldType": {
+                    "_type": "StructRef",
+                    "targetName": "Money"
+                  },
+                  "optional": false,
+                  "defaultValue": null,
+                  "introducedIn": "",
+                  "nature": "",
+                  "noteId": null,
+                  "description": "",
+                  "writtenBy": []
+                }
+              ],
+              "argMappings": {
+                "amount": "amount",
+                "userId": "fromUserId"
+              }
+            },
+            {
+              "_type": "SagaParticipantMetadata",
+              "name": "ToAccountParticipant",
+              "interactsWith": {
+                "_type": "AggregateRef",
+                "targetName": "CreditBalanceAggregate"
+              },
+              "fields": [
+                {
+                  "_type": "FieldMetadata",
+                  "name": "userId",
+                  "fieldType": {
+                    "_type": "CustomType",
+                    "typeName": "Id",
+                    "packagePath": "net.imadz.common.CommonTypes",
+                    "typeParameters": []
+                  },
+                  "optional": false,
+                  "defaultValue": null,
+                  "introducedIn": "",
+                  "nature": "",
+                  "noteId": null,
+                  "description": "",
+                  "writtenBy": []
+                },
+                {
+                  "_type": "FieldMetadata",
+                  "name": "amount",
+                  "fieldType": {
+                    "_type": "StructRef",
+                    "targetName": "Money"
+                  },
+                  "optional": false,
+                  "defaultValue": null,
+                  "introducedIn": "",
+                  "nature": "",
+                  "noteId": null,
+                  "description": "",
+                  "writtenBy": []
+                }
+              ],
+              "argMappings": {
+                "amount": "amount",
+                "userId": "toUserId"
+              }
+            }
+          ],
+          "steps": [
+            {
+              "_type": "SagaStepMetadata",
+              "stepId": "reserve-amount-from-account",
+              "participantName": "FromAccountParticipant",
+              "phaseLogic": {
+                "_type": "SagaPhaseLogic",
+                "prepareCommand": {
+                  "_type": "CommandBinding",
+                  "commandRef": {
+                    "_type": "CommandRef",
+                    "targetName": "ReserveFunds"
+                  },
+                  "mappings": {
+                    "amount": "amount",
+                    "transferId": "transactionId"
+                  }
+                },
+                "commitCommand": null,
+                "compensateCommand": null
+              },
+              "resilience": {
+                "_type": "ResiliencePolicy",
+                "timeoutPerAttempt": "5 seconds",
+                "retryStrategy": {
+                  "_type": "ExponentialBackoff",
+                  "initialDelay": "100 millis",
+                  "factor": 2,
+                  "maxRetries": 5
+                },
+                "circuitBreaker": {
+                  "_type": "CircuitBreakerConfig",
+                  "maxFailures": 5,
+                  "callTimeout": "30 seconds",
+                  "resetTimeout": "30 seconds"
+                },
+                "recoveryBehavior": {
+                  "_type": "RetryIfOngoing"
+                },
+                "errorRules": [
+                  {
+                    "_type": "ErrorRule",
+                    "errorType": "iMadzError",
+                    "codePattern": "60003",
+                    "action": {
+                      "_type": "MarkAsNonRetryable"
+                    }
+                  },
+                  {
+                    "_type": "ErrorRule",
+                    "errorType": "iMadzError",
+                    "codePattern": "60004",
+                    "action": {
+                      "_type": "MarkAsNonRetryable"
+                    }
+                  }
+                ]
+              },
+              "stepGroup": 1
+            },
+            {
+              "_type": "SagaStepMetadata",
+              "stepId": "record-incoming-amount-to-account",
+              "participantName": "ToAccountParticipant",
+              "phaseLogic": {
+                "_type": "SagaPhaseLogic",
+                "prepareCommand": {
+                  "_type": "CommandBinding",
+                  "commandRef": {
+                    "_type": "CommandRef",
+                    "targetName": "RecordIncomingCredits"
+                  },
+                  "mappings": {
+                    "amount": "amount",
+                    "transferId": "transactionId"
+                  }
+                },
+                "commitCommand": null,
+                "compensateCommand": null
+              },
+              "resilience": {
+                "_type": "ResiliencePolicy",
+                "timeoutPerAttempt": "5 seconds",
+                "retryStrategy": {
+                  "_type": "ExponentialBackoff",
+                  "initialDelay": "100 millis",
+                  "factor": 2,
+                  "maxRetries": 5
+                },
+                "circuitBreaker": {
+                  "_type": "CircuitBreakerConfig",
+                  "maxFailures": 5,
+                  "callTimeout": "30 seconds",
+                  "resetTimeout": "30 seconds"
+                },
+                "recoveryBehavior": {
+                  "_type": "RetryIfOngoing"
+                },
+                "errorRules": [
+                  {
+                    "_type": "ErrorRule",
+                    "errorType": "iMadzError",
+                    "codePattern": "60003",
+                    "action": {
+                      "_type": "MarkAsNonRetryable"
+                    }
+                  },
+                  {
+                    "_type": "ErrorRule",
+                    "errorType": "iMadzError",
+                    "codePattern": "60004",
+                    "action": {
+                      "_type": "MarkAsNonRetryable"
+                    }
+                  }
+                ]
+              },
+              "stepGroup": 1
+            },
+            {
+              "_type": "SagaStepMetadata",
+              "stepId": "commit-from-account",
+              "participantName": "FromAccountParticipant",
+              "phaseLogic": {
+                "_type": "SagaPhaseLogic",
+                "prepareCommand": null,
+                "commitCommand": {
+                  "_type": "CommandBinding",
+                  "commandRef": {
+                    "_type": "CommandRef",
+                    "targetName": "DeductFunds"
+                  },
+                  "mappings": {
+                    "transferId": "transactionId"
+                  }
+                },
+                "compensateCommand": null
+              },
+              "resilience": {
+                "_type": "ResiliencePolicy",
+                "timeoutPerAttempt": "5 seconds",
+                "retryStrategy": {
+                  "_type": "ExponentialBackoff",
+                  "initialDelay": "100 millis",
+                  "factor": 2,
+                  "maxRetries": 5
+                },
+                "circuitBreaker": {
+                  "_type": "CircuitBreakerConfig",
+                  "maxFailures": 5,
+                  "callTimeout": "30 seconds",
+                  "resetTimeout": "30 seconds"
+                },
+                "recoveryBehavior": {
+                  "_type": "RetryIfOngoing"
+                },
+                "errorRules": [
+                  {
+                    "_type": "ErrorRule",
+                    "errorType": "iMadzError",
+                    "codePattern": "60003",
+                    "action": {
+                      "_type": "MarkAsNonRetryable"
+                    }
+                  },
+                  {
+                    "_type": "ErrorRule",
+                    "errorType": "iMadzError",
+                    "codePattern": "60004",
+                    "action": {
+                      "_type": "MarkAsNonRetryable"
+                    }
+                  }
+                ]
+              },
+              "stepGroup": 1
+            },
+            {
+              "_type": "SagaStepMetadata",
+              "stepId": "commit-to-account",
+              "participantName": "ToAccountParticipant",
+              "phaseLogic": {
+                "_type": "SagaPhaseLogic",
+                "prepareCommand": null,
+                "commitCommand": {
+                  "_type": "CommandBinding",
+                  "commandRef": {
+                    "_type": "CommandRef",
+                    "targetName": "CommitIncomingCredits"
+                  },
+                  "mappings": {
+                    "transferId": "transactionId"
+                  }
+                },
+                "compensateCommand": null
+              },
+              "resilience": {
+                "_type": "ResiliencePolicy",
+                "timeoutPerAttempt": "5 seconds",
+                "retryStrategy": {
+                  "_type": "ExponentialBackoff",
+                  "initialDelay": "100 millis",
+                  "factor": 2,
+                  "maxRetries": 5
+                },
+                "circuitBreaker": {
+                  "_type": "CircuitBreakerConfig",
+                  "maxFailures": 5,
+                  "callTimeout": "30 seconds",
+                  "resetTimeout": "30 seconds"
+                },
+                "recoveryBehavior": {
+                  "_type": "RetryIfOngoing"
+                },
+                "errorRules": [
+                  {
+                    "_type": "ErrorRule",
+                    "errorType": "iMadzError",
+                    "codePattern": "60003",
+                    "action": {
+                      "_type": "MarkAsNonRetryable"
+                    }
+                  },
+                  {
+                    "_type": "ErrorRule",
+                    "errorType": "iMadzError",
+                    "codePattern": "60004",
+                    "action": {
+                      "_type": "MarkAsNonRetryable"
+                    }
+                  }
+                ]
+              },
+              "stepGroup": 1
+            },
+            {
+              "_type": "SagaStepMetadata",
+              "stepId": "compensate-from-account",
+              "participantName": "FromAccountParticipant",
+              "phaseLogic": {
+                "_type": "SagaPhaseLogic",
+                "prepareCommand": null,
+                "commitCommand": null,
+                "compensateCommand": {
+                  "_type": "CommandBinding",
+                  "commandRef": {
+                    "_type": "CommandRef",
+                    "targetName": "ReleaseReservedFunds"
+                  },
+                  "mappings": {
+                    "transferId": "transactionId"
+                  }
+                }
+              },
+              "resilience": {
+                "_type": "ResiliencePolicy",
+                "timeoutPerAttempt": "5 seconds",
+                "retryStrategy": {
+                  "_type": "ExponentialBackoff",
+                  "initialDelay": "100 millis",
+                  "factor": 2,
+                  "maxRetries": 5
+                },
+                "circuitBreaker": {
+                  "_type": "CircuitBreakerConfig",
+                  "maxFailures": 5,
+                  "callTimeout": "30 seconds",
+                  "resetTimeout": "30 seconds"
+                },
+                "recoveryBehavior": {
+                  "_type": "RetryIfOngoing"
+                },
+                "errorRules": [
+                  {
+                    "_type": "ErrorRule",
+                    "errorType": "iMadzError",
+                    "codePattern": "60003",
+                    "action": {
+                      "_type": "MarkAsNonRetryable"
+                    }
+                  },
+                  {
+                    "_type": "ErrorRule",
+                    "errorType": "iMadzError",
+                    "codePattern": "60004",
+                    "action": {
+                      "_type": "MarkAsNonRetryable"
+                    }
+                  }
+                ]
+              },
+              "stepGroup": 1
+            },
+            {
+              "_type": "SagaStepMetadata",
+              "stepId": "compensate-to-account",
+              "participantName": "ToAccountParticipant",
+              "phaseLogic": {
+                "_type": "SagaPhaseLogic",
+                "prepareCommand": null,
+                "commitCommand": null,
+                "compensateCommand": {
+                  "_type": "CommandBinding",
+                  "commandRef": {
+                    "_type": "CommandRef",
+                    "targetName": "CancelIncomingCredit"
+                  },
+                  "mappings": {
+                    "transferId": "transactionId"
+                  }
+                }
+              },
+              "resilience": {
+                "_type": "ResiliencePolicy",
+                "timeoutPerAttempt": "5 seconds",
+                "retryStrategy": {
+                  "_type": "ExponentialBackoff",
+                  "initialDelay": "100 millis",
+                  "factor": 2,
+                  "maxRetries": 5
+                },
+                "circuitBreaker": {
+                  "_type": "CircuitBreakerConfig",
+                  "maxFailures": 5,
+                  "callTimeout": "30 seconds",
+                  "resetTimeout": "30 seconds"
+                },
+                "recoveryBehavior": {
+                  "_type": "RetryIfOngoing"
+                },
+                "errorRules": [
+                  {
+                    "_type": "ErrorRule",
+                    "errorType": "iMadzError",
+                    "codePattern": "60003",
+                    "action": {
+                      "_type": "MarkAsNonRetryable"
+                    }
+                  },
+                  {
+                    "_type": "ErrorRule",
+                    "errorType": "iMadzError",
+                    "codePattern": "60004",
+                    "action": {
+                      "_type": "MarkAsNonRetryable"
+                    }
+                  }
+                ]
+              },
+              "stepGroup": 1
+            }
+          ],
+          "replyMetadata": {
+            "_type": "SubordinateCommandReplyMetadata",
+            "name": "TransactionResultConfirmation",
+            "parameters": [
+              {
+                "_type": "ParameterMetadata",
+                "name": "transactionId",
+                "parameterType": {
+                  "_type": "CustomType",
+                  "typeName": "Id",
+                  "packagePath": "net.imadz.common.CommonTypes",
+                  "typeParameters": []
+                },
+                "optional": false,
+                "optionalWhen": "",
+                "noteId": null,
+                "description": ""
+              },
+              {
+                "_type": "ParameterMetadata",
+                "name": "error",
+                "parameterType": {
+                  "_type": "CustomType",
+                  "typeName": "Option",
+                  "packagePath": "",
+                  "typeParameters": [
+                    {
+                      "_type": "StringType"
+                    }
+                  ]
+                },
+                "optional": false,
+                "optionalWhen": "",
+                "noteId": null,
+                "description": ""
+              }
+            ]
+          },
+          "version": 1,
+          "args": {
+            "_type": "SagaArgsMetadata",
+            "name": "TransferArgs",
+            "fields": [
+              {
+                "_type": "FieldMetadata",
+                "name": "fromUserId",
+                "fieldType": {
+                  "_type": "StringType"
+                },
+                "optional": false,
+                "defaultValue": null,
+                "introducedIn": "",
+                "nature": "",
+                "noteId": null,
+                "description": "",
+                "writtenBy": []
+              },
+              {
+                "_type": "FieldMetadata",
+                "name": "toUserId",
+                "fieldType": {
+                  "_type": "StringType"
+                },
+                "optional": false,
+                "defaultValue": null,
+                "introducedIn": "",
+                "nature": "",
+                "noteId": null,
+                "description": "",
+                "writtenBy": []
+              },
+              {
+                "_type": "FieldMetadata",
+                "name": "amount",
+                "fieldType": {
+                  "_type": "BigDecimalType"
+                },
+                "optional": false,
+                "defaultValue": null,
+                "introducedIn": "",
+                "nature": "",
+                "noteId": null,
+                "description": "",
+                "writtenBy": []
+              },
+              {
+                "_type": "FieldMetadata",
+                "name": "currency",
+                "fieldType": {
+                  "_type": "StringType"
+                },
+                "optional": false,
+                "defaultValue": null,
+                "introducedIn": "",
+                "nature": "",
+                "noteId": null,
+                "description": "",
+                "writtenBy": []
+              }
+            ],
+            "description": "转账参数（JSON 编码）"
+          },
+          "context": {
+            "_type": "SagaContextMetadata",
+            "name": "MoneyTransferContext",
+            "fields": [
+              {
+                "_type": "FieldMetadata",
+                "name": "creditBalanceRepository",
+                "fieldType": {
+                  "_type": "AggregateRepositoryRef",
+                  "targetName": "CreditBalanceRepository"
+                },
+                "optional": false,
+                "defaultValue": null,
+                "introducedIn": "",
+                "nature": "",
+                "noteId": null,
+                "description": "",
+                "writtenBy": []
+              }
+            ],
+            "description": "转账 Saga 上下文",
+            "logic": null
+          }
+        }
+      ],
+      "repositories": [
+        {
+          "_type": "ProjectionRepositoryMetadata",
+          "name": "MonthlyIncomeAndExpenseSummaryRepository",
+          "storageConfig": {
+            "_type": "TableMetadata",
+            "tableName": "monthly_income_and_expense_summary",
+            "columns": [
+              {
+                "_type": "ColumnMetadata",
+                "name": "user_id",
+                "dataType": "VARCHAR(255)",
+                "isPrimaryKey": true
+              },
+              {
+                "_type": "ColumnMetadata",
+                "name": "year",
+                "dataType": "INT",
+                "isPrimaryKey": true
+              },
+              {
+                "_type": "ColumnMetadata",
+                "name": "month",
+                "dataType": "INT",
+                "isPrimaryKey": true
+              },
+              {
+                "_type": "ColumnMetadata",
+                "name": "day",
+                "dataType": "INT",
+                "isPrimaryKey": true
+              },
+              {
+                "_type": "ColumnMetadata",
+                "name": "income",
+                "dataType": "DECIMAL(19,2)",
+                "isPrimaryKey": false
+              },
+              {
+                "_type": "ColumnMetadata",
+                "name": "expense",
+                "dataType": "DECIMAL(19,2)",
+                "isPrimaryKey": false
+              }
+            ],
+            "description": "用户月度收支明细表"
+          },
+          "methods": [
+            {
+              "_type": "UpsertMethod",
+              "name": "updateIncome",
+              "parameters": [
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "userId",
+                  "parameterType": {
+                    "_type": "StringType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "amount",
+                  "parameterType": {
+                    "_type": "BigDecimalType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "year",
+                  "parameterType": {
+                    "_type": "IntType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "month",
+                  "parameterType": {
+                    "_type": "IntType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "day",
+                  "parameterType": {
+                    "_type": "IntType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                }
+              ],
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "将当日收入累计计入指定日期的 income 列",
+                "invariants": [],
+                "referenceCode": "UPDATE monthly_income_and_expense_summary SET income = income + ? WHERE user_id = ? AND year = ? AND month = ? AND day = ?"
+              }
+            },
+            {
+              "_type": "UpsertMethod",
+              "name": "updateExpense",
+              "parameters": [
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "userId",
+                  "parameterType": {
+                    "_type": "StringType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "amount",
+                  "parameterType": {
+                    "_type": "BigDecimalType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "year",
+                  "parameterType": {
+                    "_type": "IntType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "month",
+                  "parameterType": {
+                    "_type": "IntType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "day",
+                  "parameterType": {
+                    "_type": "IntType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                }
+              ],
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "将当日支出累计计入指定日期的 expense 列",
+                "invariants": [],
+                "referenceCode": "UPDATE monthly_income_and_expense_summary SET expense = expense + ? WHERE user_id = ? AND year = ? AND month = ? AND day = ?"
+              }
+            },
+            {
+              "_type": "QueryMethod",
+              "name": "filterByPeriodLCRO",
+              "parameters": [
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "userId",
+                  "parameterType": {
+                    "_type": "StringType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "startYear",
+                  "parameterType": {
+                    "_type": "IntType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "startMonth",
+                  "parameterType": {
+                    "_type": "IntType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "endYear",
+                  "parameterType": {
+                    "_type": "IntType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "endMonth",
+                  "parameterType": {
+                    "_type": "IntType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                }
+              ],
+              "returnType": {
+                "_type": "CustomType",
+                "typeName": "List",
+                "packagePath": "",
+                "typeParameters": [
+                  {
+                    "_type": "CustomType",
+                    "typeName": "Summary",
+                    "packagePath": "",
+                    "typeParameters": []
+                  }
+                ]
+              },
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "按用户与年月区间查询月度收支汇总",
+                "invariants": [],
+                "referenceCode": "SELECT * FROM monthly_income_and_expense_summary WHERE user_id = ? AND year BETWEEN ? AND ? AND month BETWEEN ? AND ?"
+              }
+            }
+          ]
+        },
+        {
+          "_type": "AggregateRepositoryMetadata",
+          "name": "CreditBalanceRepository",
+          "aggregate": {
+            "_type": "AggregateRef",
+            "targetName": "CreditBalanceAggregate"
+          },
+          "methods": [
+            {
+              "_type": "QueryMethod",
+              "name": "findCreditBalanceByUserId",
+              "parameters": [
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "userId",
+                  "parameterType": {
+                    "_type": "CustomType",
+                    "typeName": "Id",
+                    "packagePath": "net.imadz.common.CommonTypes",
+                    "typeParameters": []
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                }
+              ],
+              "returnType": {
+                "_type": "CustomType",
+                "typeName": "EntityRef",
+                "packagePath": "akka.cluster.sharding.typed.scaladsl",
+                "typeParameters": [
+                  {
+                    "_type": "CommandFamilyRef",
+                    "targetName": "CreditBalanceCommand"
+                  }
+                ]
+              },
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "通过 Sharding 获取聚合根引用",
+                "invariants": [],
+                "referenceCode": "sharding.entityRefFor(CreditBalanceEntityKey, userId.toString)"
+              }
+            }
+          ],
+          "storage": null
+        }
+      ],
+      "lifecycles": [],
+      "useCases": [],
+      "gates": [
+        {
+          "_type": "GateDefinition",
+          "name": "anonymous",
+          "requiresIdentity": false,
+          "requiresTenant": false,
+          "description": ""
+        },
+        {
+          "_type": "GateDefinition",
+          "name": "global",
+          "requiresIdentity": true,
+          "requiresTenant": false,
+          "description": ""
+        },
+        {
+          "_type": "GateDefinition",
+          "name": "tenant",
+          "requiresIdentity": true,
+          "requiresTenant": true,
+          "description": ""
+        }
+      ],
+      "viewKeys": [
+        {
+          "_type": "ViewKeyDefinition",
+          "name": "monthly-income-expense-summaries",
+          "repository": {
+            "_type": "ProjectionRepositoryRef",
+            "targetName": "MonthlyIncomeAndExpenseSummaryRepository"
+          },
+          "singleKey": false,
+          "description": "月度收支汇总读视图（BalanceChanged 投影）"
+        }
+      ],
+      "connectors": []
+    },
+    "infrastructure": {
+      "_type": "InfrastructureLayer",
+      "valueObjects": [],
+      "repositories": [
+        {
+          "_type": "ProjectionRepositoryMetadata",
+          "name": "MonthlyIncomeAndExpenseSummaryRepository",
+          "storageConfig": {
+            "_type": "TableMetadata",
+            "tableName": "monthly_income_and_expense_summary",
+            "columns": [
+              {
+                "_type": "ColumnMetadata",
+                "name": "user_id",
+                "dataType": "VARCHAR(255)",
+                "isPrimaryKey": true
+              },
+              {
+                "_type": "ColumnMetadata",
+                "name": "year",
+                "dataType": "INT",
+                "isPrimaryKey": true
+              },
+              {
+                "_type": "ColumnMetadata",
+                "name": "month",
+                "dataType": "INT",
+                "isPrimaryKey": true
+              },
+              {
+                "_type": "ColumnMetadata",
+                "name": "day",
+                "dataType": "INT",
+                "isPrimaryKey": true
+              },
+              {
+                "_type": "ColumnMetadata",
+                "name": "income",
+                "dataType": "DECIMAL(19,2)",
+                "isPrimaryKey": false
+              },
+              {
+                "_type": "ColumnMetadata",
+                "name": "expense",
+                "dataType": "DECIMAL(19,2)",
+                "isPrimaryKey": false
+              }
+            ],
+            "description": "用户月度收支明细表"
+          },
+          "methods": [
+            {
+              "_type": "UpsertMethod",
+              "name": "updateIncome",
+              "parameters": [
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "userId",
+                  "parameterType": {
+                    "_type": "StringType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "amount",
+                  "parameterType": {
+                    "_type": "BigDecimalType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "year",
+                  "parameterType": {
+                    "_type": "IntType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "month",
+                  "parameterType": {
+                    "_type": "IntType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "day",
+                  "parameterType": {
+                    "_type": "IntType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                }
+              ],
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "将当日收入累计计入指定日期的 income 列",
+                "invariants": [],
+                "referenceCode": "UPDATE monthly_income_and_expense_summary SET income = income + ? WHERE user_id = ? AND year = ? AND month = ? AND day = ?"
+              }
+            },
+            {
+              "_type": "UpsertMethod",
+              "name": "updateExpense",
+              "parameters": [
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "userId",
+                  "parameterType": {
+                    "_type": "StringType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "amount",
+                  "parameterType": {
+                    "_type": "BigDecimalType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "year",
+                  "parameterType": {
+                    "_type": "IntType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "month",
+                  "parameterType": {
+                    "_type": "IntType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "day",
+                  "parameterType": {
+                    "_type": "IntType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                }
+              ],
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "将当日支出累计计入指定日期的 expense 列",
+                "invariants": [],
+                "referenceCode": "UPDATE monthly_income_and_expense_summary SET expense = expense + ? WHERE user_id = ? AND year = ? AND month = ? AND day = ?"
+              }
+            },
+            {
+              "_type": "QueryMethod",
+              "name": "filterByPeriodLCRO",
+              "parameters": [
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "userId",
+                  "parameterType": {
+                    "_type": "StringType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "startYear",
+                  "parameterType": {
+                    "_type": "IntType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "startMonth",
+                  "parameterType": {
+                    "_type": "IntType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "endYear",
+                  "parameterType": {
+                    "_type": "IntType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "endMonth",
+                  "parameterType": {
+                    "_type": "IntType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                }
+              ],
+              "returnType": {
+                "_type": "CustomType",
+                "typeName": "List",
+                "packagePath": "",
+                "typeParameters": [
+                  {
+                    "_type": "CustomType",
+                    "typeName": "Summary",
+                    "packagePath": "",
+                    "typeParameters": []
+                  }
+                ]
+              },
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "按用户与年月区间查询月度收支汇总",
+                "invariants": [],
+                "referenceCode": "SELECT * FROM monthly_income_and_expense_summary WHERE user_id = ? AND year BETWEEN ? AND ? AND month BETWEEN ? AND ?"
+              }
+            }
+          ]
+        },
+        {
+          "_type": "AggregateRepositoryMetadata",
+          "name": "CreditBalanceRepository",
+          "aggregate": {
+            "_type": "AggregateRef",
+            "targetName": "CreditBalanceAggregate"
+          },
+          "methods": [
+            {
+              "_type": "QueryMethod",
+              "name": "findCreditBalanceByUserId",
+              "parameters": [
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "userId",
+                  "parameterType": {
+                    "_type": "CustomType",
+                    "typeName": "Id",
+                    "packagePath": "net.imadz.common.CommonTypes",
+                    "typeParameters": []
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                }
+              ],
+              "returnType": {
+                "_type": "CustomType",
+                "typeName": "EntityRef",
+                "packagePath": "akka.cluster.sharding.typed.scaladsl",
+                "typeParameters": [
+                  {
+                    "_type": "CommandFamilyRef",
+                    "targetName": "CreditBalanceCommand"
+                  }
+                ]
+              },
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "通过 Sharding 获取聚合根引用",
+                "invariants": [],
+                "referenceCode": "sharding.entityRefFor(CreditBalanceEntityKey, userId.toString)"
+              }
+            }
+          ],
+          "storage": null
+        }
+      ],
+      "projections": [
+        {
+          "_type": "ProjectionMetadata",
+          "name": "MonthlyIncomeAndExpenseSummaryProjection",
+          "sourceAggregate": "CreditBalanceAggregate",
+          "repositoryRef": {
+            "_type": "ProjectionRepositoryRef",
+            "targetName": "MonthlyIncomeAndExpenseSummaryRepository"
+          },
+          "handlers": [
+            {
+              "_type": "ProjectionEventHandlerMetadata",
+              "name": "MonthlyIncomeAndExpenseSummaryProjection",
+              "eventName": "BalanceChanged",
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "余额变动时按变动方向增量更新月度收支汇总（正向计 income、负向计 expense，日期取自 event.timestamp）",
+                "invariants": [],
+                "referenceCode": "if (event.update.amount > 0) \"UPDATE monthly_income_and_expense_summary SET income = income + ? WHERE user_id = ?\" else \"UPDATE monthly_income_and_expense_summary SET expense = expense + ? WHERE user_id = ?\""
+              }
+            }
+          ],
+          "readModelSchema": {
+            "_type": "ReadModelSchema",
+            "fields": [
+              {
+                "_type": "ReadModelField",
+                "name": "user_id",
+                "dataType": {
+                  "_type": "StringType"
+                },
+                "derivation": {
+                  "_type": "AggregateIdentity"
+                },
+                "isKey": true,
+                "nullable": null,
+                "noteId": null,
+                "description": ""
+              },
+              {
+                "_type": "ReadModelField",
+                "name": "year",
+                "dataType": {
+                  "_type": "IntType"
+                },
+                "derivation": {
+                  "_type": "ComputedField",
+                  "expression": "从 event.timestamp 提取年份",
+                  "dependsOn": [
+                    {
+                      "_type": "DirectField",
+                      "eventName": "BalanceChanged",
+                      "sourceField": "timestamp"
+                    }
+                  ]
+                },
+                "isKey": true,
+                "nullable": null,
+                "noteId": null,
+                "description": ""
+              },
+              {
+                "_type": "ReadModelField",
+                "name": "month",
+                "dataType": {
+                  "_type": "IntType"
+                },
+                "derivation": {
+                  "_type": "ComputedField",
+                  "expression": "从 event.timestamp 提取月份",
+                  "dependsOn": [
+                    {
+                      "_type": "DirectField",
+                      "eventName": "BalanceChanged",
+                      "sourceField": "timestamp"
+                    }
+                  ]
+                },
+                "isKey": true,
+                "nullable": null,
+                "noteId": null,
+                "description": ""
+              },
+              {
+                "_type": "ReadModelField",
+                "name": "day",
+                "dataType": {
+                  "_type": "IntType"
+                },
+                "derivation": {
+                  "_type": "ComputedField",
+                  "expression": "从 event.timestamp 提取日",
+                  "dependsOn": [
+                    {
+                      "_type": "DirectField",
+                      "eventName": "BalanceChanged",
+                      "sourceField": "timestamp"
+                    }
+                  ]
+                },
+                "isKey": true,
+                "nullable": null,
+                "noteId": null,
+                "description": ""
+              },
+              {
+                "_type": "ReadModelField",
+                "name": "income",
+                "dataType": {
+                  "_type": "BigDecimalType"
+                },
+                "derivation": {
+                  "_type": "ComputedField",
+                  "expression": "event.update.amount > 0 时取 amount，否则 0",
+                  "dependsOn": [
+                    {
+                      "_type": "DirectField",
+                      "eventName": "BalanceChanged",
+                      "sourceField": "update"
+                    }
+                  ]
+                },
+                "isKey": false,
+                "nullable": null,
+                "noteId": null,
+                "description": ""
+              },
+              {
+                "_type": "ReadModelField",
+                "name": "expense",
+                "dataType": {
+                  "_type": "BigDecimalType"
+                },
+                "derivation": {
+                  "_type": "ComputedField",
+                  "expression": "event.update.amount < 0 时取 -amount，否则 0",
+                  "dependsOn": [
+                    {
+                      "_type": "DirectField",
+                      "eventName": "BalanceChanged",
+                      "sourceField": "update"
+                    }
+                  ]
+                },
+                "isKey": false,
+                "nullable": null,
+                "noteId": null,
+                "description": ""
+              }
+            ],
+            "identityKeys": [
+              "user_id",
+              "year",
+              "month",
+              "day"
+            ]
+          },
+          "decisionSupport": [],
+          "sourceAggregates": [],
+          "noteId": null,
+          "updateOnlyEvents": [],
+          "identityScheme": null
+        }
+      ],
+      "connectors": [],
+      "handwritten": []
+    },
+    "interfaces": {
+      "_type": "InterfaceLayer",
+      "valueObjects": [],
+      "controllers": [
+        {
+          "_type": "ControllerMetadata",
+          "name": "HomeController",
+          "basePath": "/",
+          "description": "主控制器",
+          "dependencies": [
+            {
+              "_type": "QueryServiceRef",
+              "targetName": "GetRecent12MonthsIncomeAndExpenseReport"
+            },
+            {
+              "_type": "ProjectionRepositoryRef",
+              "targetName": "MonthlyIncomeAndExpenseSummaryRepository"
+            },
+            {
+              "_type": "AggregateRepositoryRef",
+              "targetName": "CreditBalanceRepository"
+            },
+            {
+              "_type": "QueryServiceRef",
+              "targetName": "GetBalanceQuery"
+            },
+            {
+              "_type": "ApplicationServiceRef",
+              "targetName": "CreateCreditBalanceService"
+            },
+            {
+              "_type": "ApplicationServiceRef",
+              "targetName": "DepositService"
+            },
+            {
+              "_type": "ApplicationServiceRef",
+              "targetName": "WithdrawService"
+            },
+            {
+              "_type": "ApplicationServiceRef",
+              "targetName": "MoneyTransferService"
+            }
+          ],
+          "endpoints": [
+            {
+              "_type": "EndpointMetadata",
+              "method": "GET",
+              "path": "/",
+              "actionName": "index",
+              "parameters": [],
+              "requestBody": null,
+              "responseType": {
+                "_type": "CustomType",
+                "typeName": "Result",
+                "packagePath": "play.api.mvc",
+                "typeParameters": []
+              },
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "渲染首页",
+                "invariants": [],
+                "referenceCode": "Ok(views.html.index())"
+              },
+              "gate": null,
+              "serves": null,
+              "errorPayloads": []
+            },
+            {
+              "_type": "EndpointMetadata",
+              "method": "GET",
+              "path": "/balance/:userId",
+              "actionName": "getBalance",
+              "parameters": [
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "userId",
+                  "parameterType": {
+                    "_type": "StringType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                }
+              ],
+              "requestBody": null,
+              "responseType": {
+                "_type": "CustomType",
+                "typeName": "Future",
+                "packagePath": "scala.concurrent",
+                "typeParameters": [
+                  {
+                    "_type": "CustomType",
+                    "typeName": "Either",
+                    "packagePath": "scala.util",
+                    "typeParameters": [
+                      {
+                        "_type": "CustomType",
+                        "typeName": "iMadzError",
+                        "packagePath": "net.imadz.common.CommonTypes",
+                        "typeParameters": []
+                      },
+                      {
+                        "_type": "CustomType",
+                        "typeName": "List",
+                        "packagePath": "scala.collection.immutable",
+                        "typeParameters": [
+                          {
+                            "_type": "CustomType",
+                            "typeName": "Money",
+                            "packagePath": "net.imadz.banking.domain.values",
+                            "typeParameters": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "查询余额",
+                "invariants": [],
+                "referenceCode": "getBalanceQuery.fetchBalanceByUserId(userId)"
+              },
+              "gate": null,
+              "serves": null,
+              "errorPayloads": []
+            },
+            {
+              "_type": "EndpointMetadata",
+              "method": "POST",
+              "path": "/deposit/:userId/:currency/:amount",
+              "actionName": "deposit",
+              "parameters": [
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "userId",
+                  "parameterType": {
+                    "_type": "StringType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "currency",
+                  "parameterType": {
+                    "_type": "StringType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "amount",
+                  "parameterType": {
+                    "_type": "BigDecimalType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                }
+              ],
+              "requestBody": null,
+              "responseType": {
+                "_type": "CustomType",
+                "typeName": "Future",
+                "packagePath": "scala.concurrent",
+                "typeParameters": [
+                  {
+                    "_type": "CommandReplyRef",
+                    "targetName": "CreditBalanceConfirmation"
+                  }
+                ]
+              },
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "存款",
+                "invariants": [],
+                "referenceCode": "depositService.requestDeposit(userId, Money(amount, Currency.getInstance(currency)))"
+              },
+              "gate": null,
+              "serves": null,
+              "errorPayloads": []
+            },
+            {
+              "_type": "EndpointMetadata",
+              "method": "POST",
+              "path": "/withdraw/:userId/:currency/:amount",
+              "actionName": "withdraw",
+              "parameters": [
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "userId",
+                  "parameterType": {
+                    "_type": "StringType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "currency",
+                  "parameterType": {
+                    "_type": "StringType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "amount",
+                  "parameterType": {
+                    "_type": "BigDecimalType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                }
+              ],
+              "requestBody": null,
+              "responseType": {
+                "_type": "CustomType",
+                "typeName": "Future",
+                "packagePath": "scala.concurrent",
+                "typeParameters": [
+                  {
+                    "_type": "CommandReplyRef",
+                    "targetName": "CreditBalanceConfirmation"
+                  }
+                ]
+              },
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "取款",
+                "invariants": [],
+                "referenceCode": "withdrawService.requestWithdraw(userId, Money(amount, Currency.getInstance(currency)))"
+              },
+              "gate": null,
+              "serves": null,
+              "errorPayloads": []
+            },
+            {
+              "_type": "EndpointMetadata",
+              "method": "POST",
+              "path": "/transfer/:fromUserId/:toUserId/:currency/:amount",
+              "actionName": "transfer",
+              "parameters": [
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "fromUserId",
+                  "parameterType": {
+                    "_type": "StringType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "toUserId",
+                  "parameterType": {
+                    "_type": "StringType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "currency",
+                  "parameterType": {
+                    "_type": "StringType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "amount",
+                  "parameterType": {
+                    "_type": "BigDecimalType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                }
+              ],
+              "requestBody": null,
+              "responseType": {
+                "_type": "CustomType",
+                "typeName": "Future",
+                "packagePath": "scala.concurrent",
+                "typeParameters": [
+                  {
+                    "_type": "CommandReplyRef",
+                    "targetName": "CreditBalanceConfirmation"
+                  }
+                ]
+              },
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "转账",
+                "invariants": [],
+                "referenceCode": "moneyTransferService.transfer(fromUserId, toUserId, Money(amount, Currency.getInstance(currency)))"
+              },
+              "gate": null,
+              "serves": null,
+              "errorPayloads": []
+            }
+          ]
+        },
+        {
+          "_type": "ControllerMetadata",
+          "name": "CreditBalanceApiController",
+          "basePath": "/api/v1/credit-balances",
+          "description": "CreditBalance 命令 API（DSL 形态示范——tenant 档）",
+          "dependencies": [],
+          "endpoints": [
+            {
+              "_type": "EndpointMetadata",
+              "method": "POST",
+              "path": "/api/v1/credit-balances/deposit",
+              "actionName": "deposit",
+              "parameters": [],
+              "requestBody": null,
+              "responseType": {
+                "_type": "CustomType",
+                "typeName": "Future",
+                "packagePath": "scala.concurrent",
+                "typeParameters": [
+                  {
+                    "_type": "CommandReplyRef",
+                    "targetName": "CreditBalanceConfirmation"
+                  }
+                ]
+              },
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "存款",
+                "invariants": [],
+                "referenceCode": "repository.entityRef(generatedId).ask(replyTo => Deposit(req.change, replyTo))"
+              },
+              "gate": {
+                "_type": "GateRef",
+                "value": "tenant"
+              },
+              "serves": {
+                "_type": "ServesCommand",
+                "command": "Deposit"
+              },
+              "errorPayloads": []
+            },
+            {
+              "_type": "EndpointMetadata",
+              "method": "GET",
+              "path": "/api/v1/credit-balances/monthly-income-expense-summaries",
+              "actionName": "monthlySummaries",
+              "parameters": [
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "page",
+                  "parameterType": {
+                    "_type": "IntType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                },
+                {
+                  "_type": "ParameterMetadata",
+                  "name": "pageSize",
+                  "parameterType": {
+                    "_type": "IntType"
+                  },
+                  "optional": false,
+                  "optionalWhen": "",
+                  "noteId": null,
+                  "description": ""
+                }
+              ],
+              "requestBody": null,
+              "responseType": {
+                "_type": "UnitType"
+              },
+              "logic": {
+                "_type": "BusinessLogic",
+                "intent": "查询月度收支汇总",
+                "invariants": [],
+                "referenceCode": "monthlyIncomeAndExpenseSummaryRepository.findAll()"
+              },
+              "gate": {
+                "_type": "GateRef",
+                "value": "tenant"
+              },
+              "serves": {
+                "_type": "ServesView",
+                "viewKey": "monthly-income-expense-summaries"
+              },
+              "errorPayloads": []
+            }
+          ]
+        }
+      ]
+    },
+    "storyboard": {
+      "_type": "StoryboardMetadata",
+      "roles": [],
+      "stories": []
+    },
+    "externalSystems": [],
+    "timers": []
+  }
+}

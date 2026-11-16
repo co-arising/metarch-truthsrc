@@ -1,0 +1,397 @@
+{
+  "group": "application-protocol",
+  "artifactIds": [
+    "application-protocol"
+  ],
+  "diffs": [
+    {
+      "artifactId": "application-protocol",
+      "file": "diffs/application-protocol.diff.md",
+      "status": "decision-required",
+      "scalaVariants": [
+        {
+          "id": "traditional-aggregate",
+          "condition": "非 semanticProductsFile 的传统 runCommon；generateApplicationLayer 遍历 app.aggregates，每个普通聚合构造一次 Protocol；实际落盘仍受 scope/territory 约束",
+          "outputPaths": [
+            "<target>/app/<base-as-path>/application/aggregates/<Base>Protocol.scala",
+            "<target>/modules/kernel/src/main/scala/<base-as-path>/application/aggregates/<Base>Protocol.scala"
+          ],
+          "cardinality": "每个聚合一份计划文件，实际写入可为零",
+          "observation": "enabled-in-source; fresh-output-not-exercised"
+        },
+        {
+          "id": "traditional-transactor-attribution",
+          "condition": "app.aggregates 中 meta.metaCategory == application.services.transactor；使用相同 MBT 和 application.aggregates 包，kind=protocol，schemaCategory=saga",
+          "outputPaths": [
+            "<target>/app/<base-as-path>/application/aggregates/<Base>Protocol.scala",
+            "<target>/modules/kernel/src/main/scala/<base-as-path>/application/aggregates/<Base>Protocol.scala"
+          ],
+          "observation": "条件源码已观察，不是 saga-trigger 或另一个模板族"
+        },
+        {
+          "id": "reply-to-present",
+          "condition": "cmd.replyToType 为 Some；原业务参数后追加 FieldDef(replyTo, ActorRef[ResolvedReply])，无默认、无合成 noteId",
+          "outputPaths": [
+            "<selected-source-root>/<base-as-path>/application/aggregates/<Base>Protocol.scala"
+          ],
+          "observation": "enabled-in-source"
+        },
+        {
+          "id": "reply-to-absent",
+          "condition": "cmd.replyToType 为 None；不追加 replyTo，不推断默认 Reply；目标 Actor 命令缺少明确回复合同则阻断该输入",
+          "outputPaths": [
+            "<selected-source-root>/<base-as-path>/application/aggregates/<Base>Protocol.scala"
+          ],
+          "observation": "enabled-in-source; input-contract-decision-required"
+        },
+        {
+          "id": "handler-pair",
+          "condition": "stateType.zip(eventType) 非空；传统 Builder 始终给两者 Some；alias 名全量替换 Command 为 CommandHandler，RHS=(State, CommandFamily)=>Effect[Event, State]",
+          "outputPaths": [
+            "<selected-source-root>/<base-as-path>/application/aggregates/<Base>Protocol.scala"
+          ],
+          "observation": "成对启用，单边缺失在 Template 中抑制"
+        },
+        {
+          "id": "inline-state-template-only",
+          "condition": "Model.state 为 Some 时 Template 发 TransactionEvent、Status、State、applyEvent=???、empty(id)=State(id=Some(id))；本传统 Builder 固定 state=None",
+          "outputPaths": [
+            "<selected-source-root>/<base-as-path>/application/aggregates/<Base>Protocol.scala"
+          ],
+          "observation": "suppressed-on-observed-mainline; raw-placeholder-retained; 普通目标不启用"
+        },
+        {
+          "id": "scope-or-territory-suppressed",
+          "condition": "writer scope 不包含 attribution，或已有领地 KEEP/冻结规则拒写；不能用模型数量冒充文件写入数量",
+          "outputPaths": [],
+          "observation": "source-inspection-only"
+        }
+      ],
+      "jsSources": [
+        {
+          "file": "generators/scala-cqrs-domain/render-domain.mjs",
+          "symbols": [
+            "renderCommand",
+            "fields",
+            "valuesPath"
+          ],
+          "lane": "formal",
+          "disposition": "replace",
+          "scope": "20–56：domain Command/Event 平铺及相邻 Computations/emit/external 输出；复合文件须先由集成者拆分，不能删除别族职责"
+        },
+        {
+          "file": "generators/scala-cqrs-domain/naming.mjs",
+          "symbols": [
+            "symbol",
+            "packageFor",
+            "typeName",
+            "pathFor",
+            "entry"
+          ],
+          "lane": "formal",
+          "disposition": "adapt",
+          "scope": "共享名字、类型依赖、最终 UTF-8 来源映射，非本族独占写面"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/build-aggregate-models.mjs",
+          "symbols": [
+            "buildAggregateModels"
+          ],
+          "lane": "formal",
+          "disposition": "adapt",
+          "scope": "4–42，protocol 模型当前只有 carrierOwner=legacy、aliases 和 artifact 路径依赖，无 per-command/replyFamily 模型"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/aggregate-names.mjs",
+          "symbols": [
+            "aggregateNames",
+            "externalNames"
+          ],
+          "lane": "formal",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/templates/aggregate-protocol.mjs",
+          "symbols": [
+            "protocolTemplate",
+            "legacyTemplate"
+          ],
+          "lane": "formal",
+          "disposition": "replace",
+          "scope": "两个函数都被 formal renderAggregateLayers 调用；legacyTemplate 名称不表示不可达退休代码；Request/Reply 与 apply/Factory 分拆移交"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/render-aggregate-layers.mjs",
+          "symbols": [
+            "templates",
+            "renderAggregateLayers"
+          ],
+          "lane": "formal",
+          "disposition": "adapt",
+          "scope": "保留其他 role、layered state、codeMappings；单一集成 owner"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/generate.mjs",
+          "symbols": [
+            "inherited",
+            "registry",
+            "generate"
+          ],
+          "lane": "formal",
+          "disposition": "adapt",
+          "scope": "实际银行 profile 接线；只在批准产品接口后修改必要 registry/footprint"
+        },
+        {
+          "file": "generators/scala-cqrs-application/produce-effect.mjs",
+          "symbols": [
+            "createEffectRegistry"
+          ],
+          "lane": "formal",
+          "disposition": "reuse",
+          "scope": "继承 applicationRegistry 的 command-dsl，不假定此处走 command-dsl/render.mjs"
+        },
+        {
+          "file": "generators/scala-cqrs-application/produce.mjs",
+          "symbols": [
+            "applicationRegistry"
+          ],
+          "lane": "formal",
+          "disposition": "adapt",
+          "scope": "command-dsl 实际绑定 renderCommand；公共调用方由集成者处理"
+        },
+        {
+          "file": "lib/products/generate-cli.mjs",
+          "symbols": [
+            "generateProductCli",
+            "registeredProductProducer",
+            "planCapturedProducts",
+            "planCompiledProducts"
+          ],
+          "lane": "formal",
+          "disposition": "reuse",
+          "scope": "66–145；明确 shipped producer、四个参数、plan/apply 分界及本地 runtime pin 读取；若新产品合同需改注册则由集成者独占"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es/builders/models.mjs",
+          "symbols": [
+            "protocolModel",
+            "replyNameOf",
+            "replyNames",
+            "commandFamilyOf",
+            "handlerAliasOf",
+            "anchorRow",
+            "headerOf"
+          ],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "scope": "17–102：近似传统结构存在，但无条件追加 replyTo、推断默认回复、按命令去重回复；不在 formal producer registry"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es/templates/scala.mjs",
+          "symbols": [
+            "paramDoc",
+            "renderProtocol"
+          ],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "scope": "6–48：Commands/Replies/Handler 结构可作参考，不作为银行 formal 实现或本轮通过证据"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es/generate.mjs",
+          "symbols": [
+            "generate",
+            "emit",
+            "MODULE_OF"
+          ],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "scope": "67–93 有 protocolModel→renderProtocol→emit 调用；legacy CLI 动态加载可达形状仍受输入门约束，未运行"
+        },
+        {
+          "file": "src/core/generate.mjs",
+          "symbols": [
+            "plan",
+            "apply",
+            "applyEntries",
+            "anchorInputs"
+          ],
+          "lane": "legacy",
+          "disposition": "reuse",
+          "scope": "legacy plan 动态 import；applyEntries 同时被 formal 调用，实际目标/ledger/anchor 写入漏斗必须共用"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/build-models.mjs",
+          "symbols": [
+            "buildModels",
+            "artifactsSpec",
+            "setDeps"
+          ],
+          "lane": "family",
+          "disposition": "adapt",
+          "scope": "完整 1–248 已读；actorProtocol 位于 application.aggregates/glue，保留无 external 准入、类型/依赖/源序号/碰撞门"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/templates/actor-protocol.mjs",
+          "symbols": [
+            "actorProtocolTemplate"
+          ],
+          "lane": "family",
+          "disposition": "adapt",
+          "scope": "3–12：Execute/GetState/Accepted/Rejected，非每业务命令 typed reply 合同，无 Cbor/Handler alias"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/templates/imports.mjs",
+          "symbols": [
+            "importsFor",
+            "named",
+            "library"
+          ],
+          "lane": "family",
+          "disposition": "reuse",
+          "scope": "冲突时 _root_.FQN，正常短名与同组 import 合并；与 raw 排序语义须 shared owner 核对"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/render.mjs",
+          "symbols": [
+            "productionJobs",
+            "render"
+          ],
+          "lane": "family",
+          "disposition": "adapt",
+          "scope": "15–34 实际调用 actorProtocolTemplate，不由目录名推断可达"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/generate.mjs",
+          "symbols": [
+            "generate"
+          ],
+          "lane": "family",
+          "disposition": "reuse",
+          "scope": "显式 scala-cqrs-aggregate-core@1，不是 formal 银行 fallback"
+        },
+        {
+          "file": "lib/scala-target/naming.mjs",
+          "symbols": [
+            "resolveName",
+            "resolveNameSet",
+            "resolveArtifactPath",
+            "targetData"
+          ],
+          "lane": "family",
+          "disposition": "reuse",
+          "scope": "稳定身份/显式绑定/冗余 affix/portable collision；需公共接口兼容，不另写一套名字解析器"
+        }
+      ],
+      "writeSet": [
+        "generators/scala-cqrs-application-protocol/model.mjs (proposed; application-protocol owner)",
+        "generators/scala-cqrs-application-protocol/build-model.mjs (proposed; application-protocol owner)",
+        "generators/scala-cqrs-application-protocol/template.mjs (proposed; application-protocol owner)",
+        "generators/scala-cqrs-play-service/build-aggregate-models.mjs (integration owner)",
+        "generators/scala-cqrs-play-service/templates/aggregate-protocol.mjs (integration owner; split mixed responsibilities)",
+        "generators/scala-cqrs-play-service/render-aggregate-layers.mjs (integration owner)",
+        "generators/scala-cqrs-domain/render-domain.mjs (integration owner; split first)",
+        "generators/scala-cqrs-play-service/aggregate-names.mjs (shared layout owner)",
+        "generators/scala-cqrs-domain/naming.mjs (shared types/writer owner)",
+        "generators/scala-cqrs-aggregate-core-v1/build-models.mjs (family owner after AP-D6)",
+        "generators/scala-cqrs-aggregate-core-v1/templates/actor-protocol.mjs (family owner)",
+        "generators/scala-cqrs-aggregate-core-v1/render.mjs (family/integration owner)",
+        "generators/scala-cqrs-play-service/generate.mjs (integration owner; only approved required wiring)",
+        "generators/scala-cqrs-application/produce.mjs (integration owner; only approved required wiring)",
+        "lib/products/generate-cli.mjs (integration owner; conditional on input-contract decision)",
+        "lib/scala-target/naming.mjs (shared owner; only approved required interface changes)",
+        "lib/scala-target/model.mjs (shared owner; only approved required interface changes)",
+        "src/core/generate.mjs (shared writer owner; only approved required migration changes)"
+      ],
+      "dependsOn": [
+        "shared-layout-types",
+        "shared-writer-registry-anchors",
+        "domain-entity",
+        "value-object",
+        "invariant-rule",
+        "command-helper",
+        "aggregate-behavior",
+        "aggregate-root",
+        "aggregate-factory",
+        "aggregate-repository-port",
+        "proto-converter",
+        "event-adapter",
+        "snapshot-adapter",
+        "application-service"
+      ],
+      "glue": [
+        "akka.actor.typed.ActorRef",
+        "akka.persistence.typed.scaladsl.Effect",
+        "net.imadz.common.CborSerializable",
+        "net.imadz.common.CommonTypes.Id",
+        "net.imadz.common.CommonTypes.iMadzError",
+        "net.imadz.common.CommonTypes.InvariantRule",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.CommandHelper",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.runReplyingPolicy",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.RunnablePolicyWithHelper.replyWith",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.RunnablePolicyWithHelper.replyWithAndPublish",
+        "net.imadz.domain.entities.CreditBalanceEntity.CreditBalanceState",
+        "net.imadz.domain.entities.CreditBalanceEntity.CreditBalanceEvent",
+        "net.imadz.domain.values.Money"
+      ],
+      "openDecisions": [
+        "AP-D1：银行七个业务命令各自的 Reply 类型、字段来源和更新后状态语义；GetState 的只读回复及 external ingress 授权拒绝合同尚未确定，不能复制人工参考 transferId:Id 或推断 Accepted(events)。",
+        "AP-D2：formal 产品/绑定在哪个版本接口承载独立 replyFamily、conditional replyToType、readonly、optional/default、nested owner 和字段来源，以及 BC/JS 同语义 fixture 的无损适配。",
+        "AP-D3：raw Builder 丢弃 reply optional/default/noteId、Template 忽略 command superTypes、空/泛型 parent、inline State 的 ???/status/id 假设，须明确拒绝输入或批准变更；普通主链 inline 仍抑制。",
+        "AP-D4：handler alias 全量 Command 替换的边界、同名跨 owner import/self import、泛型 signature 与 Pascal/lowerCamel 碰撞策略由 shared resolver 裁定，不能改稳定身份避冲突。",
+        "AP-D5：实际 common-core 坐标与冻结字节、scaffold 同 FQN 是否重复、CommandHelper/runReplyingPolicy/thenReply API 是否与固定源码一致；Saga JAR pin 不替代该证据。",
+        "AP-D6：传统 multi protocol=kernel、family2 actor-protocol=glue、银行 single=app 的 profile 选择及复合文件/最终输出唯一 assembly owner 需固定。",
+        "AP-D7：领域协议拆分后的 Event/State FQN、serializer/codec/host 引用兼容适配，以及真实 AP-F6 suite、资源、预算与停止点；PB/PID/manifest/名义类型/overflow 不得暗改。"
+      ],
+      "extraSources": [
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/AGENTS.md | sha256=8bfd761390a6fc90b09663157f9d35b23c0c58b20c9f6a41dd5698450015d601 | repository-guidance; read-only; absent from production baseline"
+      ],
+      "sourceHeads": {
+        "js": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+        "bc": "cc335eb1e0d0fae17bf092fd61b126040196ea70"
+      },
+      "evidenceKinds": {
+        "rawScala": "固定 M/B/T 完整源码、逐字段/分支/construct/RHS 规格；未取得本轮同输入新输出",
+        "approvedTarget": "diff 第 7.3 节完整人工参考切片目标示例与第 7.4 节有限覆盖；不是银行业务回复裁定",
+        "actualJs": [
+          "baseline/actual-js/app/example/bankwealth/application/aggregates/CreditBalanceProtocol.scala",
+          "baseline/actual-js/app/example/bankwealth/domain/CreditBalanceProtocol.scala"
+        ],
+        "curatedReference": "baseline/curated-scala/net/imadz/application/aggregates/CreditBalanceProtocol.scala",
+        "comparison": "结构性源文件对照，非同输入字节比较；完整统一 diff 有真实 minus/plus 和上下文"
+      },
+      "assemblyOwnership": {
+        "protocolContent": "application-protocol 模块为目标 Protocol 唯一内容组装者",
+        "mixedSourceSplitAndEntryAssembly": "集成者独占 render-domain、play-service aggregate-protocol、build-aggregate-models、render-aggregate-layers 复合文件拆分/接线",
+        "sharedInterfaces": "shared-layout-types / shared-writer-registry-anchors owner",
+        "retirement": "通过 owned 生成迁移计划和引用更新退役错误 domain carrier，不留永久 facade，不直接编辑生成应用"
+      },
+      "proposedFixtures": [
+        "AP-F1 credit-balance：人工参考 10 commands/8 replies，同语义双端适配",
+        "AP-F2 reply-contract-edges：有/无 replyTo、optional None、空参数、未使用 Reply、泛型与空集合",
+        "AP-F3 names-and-imports：keyword、nested owner、同短名、重复后缀、portable collision、alias 替换边界",
+        "AP-F4 template-suppressed：成对/单边 stateType-eventType、state=None、原 inline ??? 只核源码",
+        "AP-F5 bank-structural：保留现有 7 command/7 event 字段，回复 AP-D1 独立裁定",
+        "AP-F6 reply-behavior：失败无 persist、成功新 state、单次回复、两种发布语义分开"
+      ],
+      "acceptance": {
+        "sameInputFreshOutputs": "not-run; missing",
+        "constructAndRhsReview": "文档已逐项记录观察和缺口，不等于执行覆盖",
+        "compileAndBehavior": "not-run",
+        "complexity": "not-measured; ordinary-method CC goal <=5; >10 requires refactor or per-method approved exception",
+        "stableGenerationAndAnchors": "not-run",
+        "cliShape": "diff 第 10.2 节：generate-products 的 --request/--generator/--out/--options-json/--plan；BC CodegenMain 的显式 systemFile/systemBindings/targetDir/multiProject；无虚构 artifact filter 或测试 suite",
+        "sideEffects": "plan 读取请求/选项/manifest/本地 runtime pins 并内存编译；实写生成完整 profile entries、truthsrc.ledger.json、anchors.json；BC sbt 可写 target/project target/依赖缓存和 scaffold/各层输出，缺依赖可下载；本轮均未执行"
+      }
+    }
+  ],
+  "generatorsModified": false,
+  "runtimeExecuted": false,
+  "testsExecuted": false,
+  "compilationExecuted": false,
+  "generationExecuted": false,
+  "baselineModified": false,
+  "documentationWrites": [
+    "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/application-protocol.diff.md",
+    "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/details/application-protocol.json"
+  ]
+}

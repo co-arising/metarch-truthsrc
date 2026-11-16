@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "truthsrc.persistence-readside-binding/v1",
+  "id": "warehouse-persistence",
+  "version": "1",
+  "context": "inventory",
+  "aggregate": { "context": "inventory", "kind": "aggregate", "owner": [], "id": "Warehouse" },
+  "wire": {
+    "serializerId": 736401,
+    "envelopeVersion": 1,
+    "registrations": [
+      {
+        "ref": { "context": "inventory", "kind": "event", "owner": ["Warehouse"], "id": "SkuQuantityReserved" },
+        "role": "event", "typeId": "warehouse.reserved", "version": 1,
+        "layoutSha256": "1eccd9ea9c05f5be946f4004559f989bcacdc380c543e4f8fd3c31888e8d7384"
+      },
+      {
+        "ref": { "context": "inventory", "kind": "event", "owner": ["Warehouse"], "id": "SkuReservationCommitted" },
+        "role": "event", "typeId": "warehouse.committed", "version": 1,
+        "layoutSha256": "52f2395e2b6abfa6dafaaea866918efe3ec022ff5835981f6c18e80bbdaa8c80"
+      },
+      {
+        "ref": { "context": "inventory", "kind": "aggregate", "owner": [], "id": "Warehouse" },
+        "role": "state", "typeId": "warehouse.state", "version": 1,
+        "layoutSha256": "fe21099de54414f4a08cdf8342f685ed8941569876f11f5ae3bfa54cda2b5ba7"
+      }
+    ]
+  },
+  "store": {
+    "schemaVersion": "truthsrc.journal-readside/v2",
+    "id": "WarehouseReadside", "version": "1", "dialect": "h2-2", "tablePrefix": "warehouse_rs",
+    "source": { "id": "warehouse-events", "version": "1" },
+    "identity": { "kind": "envelope-resource" },
+    "streamKind": "warehouse",
+    "pollIntervalMillis": 100,
+    "closeTimeoutMillis": 5000,
+    "pageSize": 64,
+    "maxPayloadBytes": 1048576,
+    "maxPending": 64,
+    "indexes": [{
+      "id": "Receipt", "table": "receipt",
+      "stateField": { "context": "inventory", "kind": "state-field", "owner": ["Warehouse"], "id": "receipts" },
+      "keySize": 256, "valueSize": 256, "query": { "id": "by_resource" }
+    }]
+  }
+}

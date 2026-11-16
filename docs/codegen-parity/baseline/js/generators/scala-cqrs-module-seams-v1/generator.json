@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "truthsrc.product-generator/v1",
+  "name": "scala-cqrs-module-seams",
+  "version": "1",
+  "targetProfile": "scala-cqrs-module-seams@1",
+  "products": [
+    { "id": "module-seams-contract", "version": "1", "payloadSchemaVersion": "truthsrc.module-seams-contract/v1", "capabilities": [{ "id": "finite-module-seams-signature", "version": "1" }] },
+    { "id": "module-seams-composition", "version": "1", "payloadSchemaVersion": "truthsrc.module-seams-composition/v1", "capabilities": [{ "id": "finite-module-seams-composition", "version": "1" }] }
+  ],
+  "producers": [{
+    "id": "module-seams", "version": "1",
+    "products": ["module-seams-contract", "module-seams-composition"],
+    "artifactKinds": ["value-object", "module-seams-port", "module-seams-bridge", "module-seams-composition", "build", "generated-test"]
+  }],
+  "artifactKinds": ["value-object", "module-seams-port", "module-seams-bridge", "module-seams-composition", "build", "generated-test"],
+  "options": ["packages", "names", "valueFiles", "sourceRoots"]
+}

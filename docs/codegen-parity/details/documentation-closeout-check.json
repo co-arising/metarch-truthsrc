@@ -1,0 +1,119 @@
+{
+  "schemaVersion": "codegen-parity.documentation-closeout-check/v1",
+  "checkedAt": "2026-11-16T04:01:43.600622+00:00",
+  "scope": "静态文档JSON/来源字节/指针/链接/分工与保护基线核对；不是代码生成或运行验收",
+  "status": "complete-no-document-integrity-issues",
+  "sourceChecks": [
+    {
+      "document": "fixtures/f1-credit-balance/mapping.json",
+      "sourceRecords": 42,
+      "issues": []
+    },
+    {
+      "document": "expected/f1-credit-balance/manifest.json",
+      "sourceRecords": 25,
+      "issues": []
+    },
+    {
+      "document": "fixtures/f2-warehouse/mapping.json",
+      "sourceRecords": 33,
+      "issues": []
+    },
+    {
+      "document": "details/interface-decisions.json",
+      "sourceRecords": 17,
+      "issues": []
+    },
+    {
+      "document": "fixtures/coverage-matrix.json",
+      "sourceRecords": 78,
+      "issues": []
+    }
+  ],
+  "assignmentChecks": {
+    "counts": {
+      "artifacts": 42,
+      "distinctWritePaths": 290,
+      "bLogicalOccurrences": 308,
+      "integratorPaths": 132
+    },
+    "all42DiffHashesCurrent": true,
+    "sourceAssignmentsUnchangedByServiceReview": true,
+    "bAssignmentsUnchanged": true,
+    "other41ArtifactRecordsUnchanged": true
+  },
+  "protectedBaseline": {
+    "files": 852,
+    "issues": [],
+    "originalDiffsCompared": 15,
+    "originalDiffChanges": []
+  },
+  "coverageMatrix": {
+    "structuredVariantsChecked": 173,
+    "bOccurrencesChecked": 308,
+    "counts": {
+      "familiesListed": 42,
+      "traditionalFamilies": 39,
+      "optionalExtensions": 3,
+      "diffDocuments": 42,
+      "familiesWithStructuredScalaVariants": 32,
+      "structuredScalaVariantRecords": 173,
+      "familiesWithoutStructuredScalaVariants": 10,
+      "markdownNamedVariantRecords": 2,
+      "remainingProseOnlyFamilies": 9,
+      "f1SourceCandidateFamilies": 18,
+      "f1FirstFour": 4,
+      "f1NecessaryClosureCandidateFamilies": 14,
+      "f2SemanticSourceCandidateFamilies": 8,
+      "candidateFamilyUnion": 19,
+      "familiesWithoutF1F2Candidate": 23,
+      "f1StructuredVariantCandidates": 17,
+      "structuredVariantsWithoutCandidate": 156,
+      "f1MarkdownVariantCandidates": 1,
+      "f2TraditionalVariantHitsClaimed": 0,
+      "bOccurrenceRows": 308,
+      "bOriginalFixtureIds": 197,
+      "bDistinctFullFixtureMetadata": 292,
+      "bRowsWithExactFixturePointer": 308,
+      "bRowsAssignedConcreteF1F2Input": 0,
+      "bRowsUncovered": 308,
+      "blockedExternalContentSlots": 3,
+      "sameInputExecutableFixturesEstablishedHere": 0,
+      "fullFamilyExpectedByteSetsEstablishedHere": 0,
+      "exercisedVariants": 0,
+      "familiesWithSameInputCoveragePass": 0,
+      "bOccurrencesWithCoveragePass": 0
+    },
+    "issues": []
+  },
+  "f1ExpectedState": {
+    "files": 4,
+    "commands": 10,
+    "helpers": 9,
+    "stateFields": 4,
+    "events": 7,
+    "allExpectedShaNull": true,
+    "noPlannedScalaFilesCreated": true
+  },
+  "localLinks": {
+    "documents": 11,
+    "checked": 1483,
+    "issues": [],
+    "currentReportLink": "self-reference path admitted; no self-hash"
+  },
+  "reviewResults": [
+    "details/fixture-design-workflow-results.json",
+    "details/targeted-corrections-workflow-results.json",
+    "details/coverage-review-resolutions.json",
+    "details/interface-review-resolutions.json"
+  ],
+  "issues": [],
+  "runtimeVerification": {
+    "verdict": "SKIP",
+    "reason": "docs-only; no new runtime surface"
+  },
+  "generatorModified": false,
+  "generationExecuted": false,
+  "runtimeExecuted": false,
+  "implementationAuthorized": false
+}

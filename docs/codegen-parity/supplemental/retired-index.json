@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "codegen-parity.supplemental-retired/v1",
+  "scope": "Known source bytes only, not arbitrary passthrough input coverage",
+  "files": [
+    {
+      "file": "lib/execution/generate-cli.mjs",
+      "repo": "js",
+      "sha256": "b9f33e711730f1f6fcac9311e20ec3333531353ca65e588c4058bd106012fe66",
+      "bytes": 2407,
+      "reason": "固定基线未捕获的legacy CLI参数入口：证明没有retired路径封锁，完整读取但未执行。",
+      "readCoverage": "full",
+      "snapshot": "supplemental/js/lib/execution/generate-cli.mjs",
+      "byteComparison": "matches-reader-pin"
+    },
+    {
+      "file": "golden/scala-cqrs-es-api-metarch/retired-controllers.json",
+      "repo": "js",
+      "sha256": "ec65ae8d5d078c5f43c45f730316f0b62281a9df285eb90ce970c60a7ed88f8d",
+      "bytes": 13341,
+      "reason": "options.retiredControllers已知三键的实际Scala字节，用于内容分类；不是raw Scala金样，未另行快照。",
+      "readCoverage": "full",
+      "snapshot": "supplemental/js/golden/scala-cqrs-es-api-metarch/retired-controllers.json",
+      "byteComparison": "matches-reader-pin"
+    }
+  ],
+  "originalBaselineModified": false,
+  "runtimeExecuted": false
+}

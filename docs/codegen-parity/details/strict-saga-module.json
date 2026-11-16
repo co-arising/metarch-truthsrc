@@ -1,0 +1,281 @@
+{
+  "group": "strict-saga-module",
+  "artifactIds": [
+    "strict-saga-module"
+  ],
+  "diffs": [
+    {
+      "artifactId": "strict-saga-module",
+      "file": "diffs/strict-saga-module.diff.md",
+      "status": "decision-required",
+      "scalaVariants": [
+        {
+          "id": "admitted-v3-single",
+          "condition": "CodegenMain 的显式 codegen.sagaExecutionV3 经实际 base 准入且 sagas 非空；StrictSagaGenerationPlan 准备成功，multiProject=false，writer scope 接受。每 admitted saga 一个模块；整条 CLI 还发其他层和 fixture-host。当前未运行。",
+          "outputPaths": [
+            "<absolute-target>/app/<binding.module.package path>/<binding.module object>.scala"
+          ]
+        },
+        {
+          "id": "admitted-v3-multi",
+          "condition": "同一 admitted v3 条件，multiProject=true；targetModuleOf(strict-saga-module)=glue。每 admitted saga 一个模块。当前未运行。",
+          "outputPaths": [
+            "<absolute-target>/modules/glue/src/main/scala/<binding.module.package path>/<binding.module object>.scala"
+          ]
+        },
+        {
+          "id": "suppressed",
+          "condition": "未提供 strict slot 或 writer scope 排除 strict-saga-module 时本族零输出；不是缺少 Template。当前未运行。",
+          "outputPaths": []
+        },
+        {
+          "id": "invalid-admission",
+          "condition": "空 sagas、实际 base 不匹配、unsafe/碰撞输出、unsupported source 或类型形状等拒绝，不制造空成功模型。当前未运行。",
+          "outputPaths": []
+        }
+      ],
+      "jsSources": [
+        {
+          "file": "generators/scala-cqrs-application/render-host.mjs",
+          "symbols": [
+            "renderDefinitions",
+            "targetName",
+            "rawName",
+            "phaseName"
+          ],
+          "lane": "formal",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-application/produce.mjs",
+          "symbols": [
+            "applicationRegistry",
+            "finite-host-dsl"
+          ],
+          "lane": "formal",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-application/produce-effect.mjs",
+          "symbols": [
+            "createEffectRegistry"
+          ],
+          "lane": "formal",
+          "disposition": "reuse"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/generate.mjs",
+          "symbols": [
+            "inherited",
+            "registry",
+            "generate"
+          ],
+          "lane": "formal",
+          "disposition": "adapt"
+        },
+        {
+          "file": "lib/products/generate-cli.mjs",
+          "symbols": [
+            "registeredProductProducer",
+            "generateProductCli",
+            "planCompiledProducts",
+            "implementationProducers"
+          ],
+          "lane": "formal",
+          "disposition": "reuse"
+        },
+        {
+          "file": "generators/saga-dsl/emit-strict.mjs",
+          "symbols": [
+            "emitStrictFiles",
+            "renderFiles",
+            "lowerInputs",
+            "phaseContractOf",
+            "phaseBlocks",
+            "triggerBlocks",
+            "completionBlocks",
+            "sagaModule"
+          ],
+          "lane": "legacy",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/saga-dsl/generate.mjs",
+          "symbols": [
+            "generate",
+            "planStrictSagaIR",
+            "buildStrictPlan",
+            "runtimeBlocked"
+          ],
+          "lane": "legacy",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/run-all.mjs",
+          "symbols": [
+            "strict-scala dispatch at lines 2182-2214",
+            "strictSourceEntry"
+          ],
+          "lane": "legacy",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-saga-monarch-v1/generate.mjs",
+          "symbols": [
+            "generate",
+            "resolveSagaMonarchTarget"
+          ],
+          "lane": "family",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/scala-cqrs-saga-monarch-v1/build-models.mjs",
+          "symbols": [
+            "buildModels",
+            "productIds",
+            "artifactRows",
+            "resolveSagaMonarchTarget"
+          ],
+          "lane": "family",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/scala-cqrs-saga-monarch-v1/render.mjs",
+          "symbols": [
+            "render",
+            "templates"
+          ],
+          "lane": "family",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/scala-cqrs-saga-monarch-v1/templates/saga.mjs",
+          "symbols": [
+            "sagaTemplate"
+          ],
+          "lane": "family",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/scala-cqrs-saga-monarch-v1/templates/saga-identity.mjs",
+          "symbols": [
+            "sagaIdentityTemplate"
+          ],
+          "lane": "family",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/scala-cqrs-saga-monarch-v1/templates/saga-phases.mjs",
+          "symbols": [
+            "sagaPhasesTemplate"
+          ],
+          "lane": "family",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "lib/scala-target/naming.mjs",
+          "symbols": [
+            "resolveName",
+            "resolveNameSet",
+            "resolveArtifactPath"
+          ],
+          "lane": "family",
+          "disposition": "reuse"
+        },
+        {
+          "file": "src/core/generate.mjs",
+          "symbols": [
+            "applyEntries",
+            "previewEntries"
+          ],
+          "lane": "formal",
+          "disposition": "reuse"
+        }
+      ],
+      "writeSet": [
+        "generators/saga-dsl/strict-module/model.mjs",
+        "generators/saga-dsl/strict-module/build-model.mjs",
+        "generators/saga-dsl/strict-module/render.mjs",
+        "generators/saga-dsl/strict-module/adapt-formal.mjs",
+        "generators/saga-dsl/emit-strict.mjs",
+        "generators/scala-cqrs-application/render-host.mjs",
+        "generators/scala-cqrs-application/produce.mjs",
+        "generators/scala-cqrs-application/produce-effect.mjs",
+        "generators/scala-cqrs-play-service/generate.mjs",
+        "generators/run-all.mjs"
+      ],
+      "dependsOn": [
+        "shared-layout-types",
+        "application-protocol",
+        "command-helper",
+        "aggregate-behavior",
+        "fixture-host",
+        "protobuf-schema",
+        "proto-converter",
+        "bootstrap",
+        "application-bootstrap",
+        "shared-writer-registry-anchor-owner"
+      ],
+      "glue": [
+        "akka.actor.typed.ActorRef",
+        "akka.actor.typed.Behavior",
+        "akka.persistence.typed.PersistenceId",
+        "scala.concurrent.ExecutionContext",
+        "scala.concurrent.Future",
+        "scala.util.Try",
+        "net.imadz.infra.saga.strict.CodecPin",
+        "net.imadz.infra.saga.strict.PayloadCodec",
+        "net.imadz.infra.saga.strict.TransactionIdentity",
+        "net.imadz.infra.saga.strict.OperationIdentity",
+        "net.imadz.infra.saga.strict.OperationRequest",
+        "net.imadz.infra.saga.strict.Phase",
+        "net.imadz.infra.saga.strict.QuerySafety",
+        "net.imadz.infra.saga.strict.PhasePort",
+        "net.imadz.infra.saga.strict.PhaseOutcome",
+        "net.imadz.infra.saga.strict.PhaseBinding",
+        "net.imadz.infra.saga.strict.StrictParticipant",
+        "net.imadz.infra.saga.strict.StrictSagaDefinition",
+        "net.imadz.infra.saga.strict.StrictSagaCoordinator",
+        "net.imadz.infra.saga.strict.StrictSagaCoordinator.Start",
+        "net.imadz.infra.saga.strict.StrictSagaCoordinator.Settings",
+        "net.imadz.infra.saga.strict.ReconcileAuthorizer"
+      ],
+      "openDecisions": [
+        "D1：raw strictIndependentNamespace 禁止 domain/application/infrastructure 及后代，且 plan 禁止改写 binding.module FQN；须裁定三层内新 module FQN、源码映射、准入适配和摘要处理，不能修改稳定 PID 绕过。",
+        "D2：formal 的外置 nominal Args/Receipt、PB codec、安装与证据身份如何无损映射到 raw nested Args/Receipt 和完整 Address/Phase/Trigger/Completion/HostRequirements；缺输入不得猜，不能 alias 合并业务身份。",
+        "D3：Host 的 canonical codecs、显式 settings/reconcile budget、requireImplemented/独立 namespace、各 Binding mapper 和 durable completion observer 的实现所有权，以及实际消费 JAR 坐标/SHA/API 尚未重核；32不能作为猜测默认。",
+        "D4：raw dependency 递归/类型缺项、FQN输出、FieldDef default/comment 不发、Money 固定 currency/encoding、可选 shape reserved-name 缺项等基准例外须逐项审定；不静默修订基线语义。",
+        "D5：覆盖全部 type shape、非同名 trigger、去重 producer receipt 的同输入 module fixture 能否穿过 CLI 随后调用的 FixtureHostBuilder；不可用私有 import-and-call 代替公开入口验收。",
+        "D6：正式 finite-host 接线与共享 module renderer 的组装、legacy 继续消费范围、family 有限 bridge 定位，以及 captured implementation verifier 的子进程/缓存/资源写面尚需明确；现有 CLI 无本族-only flag。"
+      ],
+      "extraSources": [],
+      "assemblyOwner": "codegen-parity-integrator",
+      "proposedNewFiles": [
+        "generators/saga-dsl/strict-module/model.mjs",
+        "generators/saga-dsl/strict-module/build-model.mjs",
+        "generators/saga-dsl/strict-module/render.mjs",
+        "generators/saga-dsl/strict-module/adapt-formal.mjs"
+      ],
+      "laneNotes": {
+        "formal": "银行 frozen Definition 确有 StrictSagaDefinition/PhasePort；当前 renderer 混合类型推导、技术适配、codec和源码字符串，不是完整 strict-module MBT。",
+        "legacy": "run-all 的 strict 分支可调用 emitStrictFiles；saga-dsl/generate 的 strict-scala 则明确阻断。不得将两个入口合并描述。",
+        "family": "not-wired 表示未接成本族完整 raw Host module，绝非整条 family 不可达：family 已注册，须 generate-project/captured implementations，只允许两 participant serial 和 positive Int 等有限输入。"
+      },
+      "comparison": {
+        "freshSameInputOutputs": false,
+        "rawScala": "完整 M/B/T 源码及逐构造展开规则；不是一次新的生成产物",
+        "approvedTarget": "三层/命名/import/排版目标和待裁定接口规格；无完整目标输出字节",
+        "actualJs": "baseline/actual-js/app/example/bankwealth/application/bank_payment_hostDefinition.scala",
+        "curatedReference": "baseline/curated-scala/net/imadz/application/services/transactor/MoneyTransferSagaDefinition.scala；classic，仅结构参考",
+        "cyclomaticComplexity": "not-measured; ordinary-method target <=5",
+        "runtimeAbi": "not-verified"
+      },
+      "sourceHeads": {
+        "js": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+        "bc": "cc335eb1e0d0fae17bf092fd61b126040196ea70"
+      }
+    }
+  ],
+  "generatorsModified": false,
+  "runtimeExecuted": false
+}

@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "codegen-parity.coverage-review-resolutions/v1",
+  "scope": "候选fixture覆盖矩阵的独立语义复核及集成者裁定；文档范围，不批准业务算法或生成器实施",
+  "status": "corrections-applied-source-refresh-complete",
+  "finalResult": "details/documentation-closeout-check.json",
+  "finalMatrixSha256": "655fc3386f709083bb9db0a8296dce0f94a986996f13560569e30210675efacf",
+  "reviewedMatrix": {
+    "path": "fixtures/coverage-matrix.json",
+    "sha256": "f7b582828112dd97bac57d0e23661984b9433245a8a5702952ff4eec7d86054b"
+  },
+  "findings": [
+    {
+      "id": "CM-R1",
+      "issue": "F1保留ReserveFunds规则却未登记TransferValidator的服务闭包裁定",
+      "verdict": "confirmed",
+      "evidence": [
+        "baseline/bc/src/main/scala/net/imadz/meta/Examples.scala#L50-L57",
+        "diffs/invariant-rule.diff.md#L615-L618",
+        "baseline/curated-scala/net/imadz/domain/invariants/ReserveFundsRule.scala#L1-L26"
+      ],
+      "resolution": "domain-service加入F1来源候选，仅指TransferValidator及其依赖/算法/错误定义的decision-required闭包；service-object-single是候选不是已exercise。不得因发现来源而批准curated算法，也不把整个Examples的services纳入。"
+    },
+    {
+      "id": "CM-R2",
+      "issue": "event-handler helper-method-slots的原输入已有却被写成需要另找独立数据",
+      "verdict": "confirmed",
+      "evidence": [
+        "baseline/bc/src/main/scala/net/imadz/meta/Examples.scala#L43-L45",
+        "details/event-handler.json#/diffs/0/scalaVariants/6"
+      ],
+      "resolution": "该条件挂F1来源候选，输入映射/目标体仍decision-required且not-exercised；保留raw模板???与referenceCode仅进入prompt、curated完整体的区别。"
+    },
+    {
+      "id": "CM-R3",
+      "issue": "proto文件名的raw输入配置、Builder派生名与curated历史引用被压成两层标签",
+      "verdict": "clarification-required",
+      "evidence": [
+        "baseline/bc/src/main/scala/net/imadz/meta/Examples.scala#L161",
+        "diffs/protobuf-schema.diff.md#L9-L18"
+      ],
+      "resolution": "明确三栏：raw ProtoConfig.fileName=credits.proto；传统Builder依命名规则派生credit_balance.proto；curated历史imports引用credits。不改原diff/verbatim证据或PB身份。"
+    }
+  ],
+  "resolvedCandidateCounts": {
+    "f1SourceCandidateFamilies": 18,
+    "f1FirstFour": 4,
+    "f1NecessaryClosureCandidateFamilies": 14,
+    "f2SemanticSourceCandidateFamilies": 8,
+    "candidateFamilyUnion": 19,
+    "familiesWithoutF1F2Candidate": 23,
+    "f1StructuredVariantCandidates": 17,
+    "structuredVariantsWithoutCandidate": 156
+  },
+  "preserve": {
+    "aFamilyIds": 42,
+    "structuredVariantDefinitions": 173,
+    "markdownNamedVariants": 2,
+    "proseOnlyFamilies": 9,
+    "bOccurrences": 308,
+    "bOriginalFixtureIds": 197,
+    "bDistinctFullFixtureMetadata": 292,
+    "blockedExternalContentSlots": 3,
+    "originalVariantObjectsAndVerbatimEvidence": "unchanged",
+    "bClassificationFixtureMetadataAndPointers": "unchanged"
+  },
+  "interpretation": "以上增加的是来源候选而不是通过率；尚未提供可执行双端同输入fixture/完整target字节/运行观察。GetBalance、资金阶段命令、单聚合nominal仍不能自动算query service、Saga或shared proto命中。",
+  "generationExecuted": false,
+  "runtimeExecuted": false,
+  "generatorModified": false,
+  "implementationAuthorized": false
+}

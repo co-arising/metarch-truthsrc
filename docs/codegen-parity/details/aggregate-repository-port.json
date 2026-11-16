@@ -1,0 +1,310 @@
+{
+  "group": "aggregate-repository-port",
+  "artifactIds": ["aggregate-repository-port"],
+  "diffs": [
+    {
+      "artifactId": "aggregate-repository-port",
+      "file": "diffs/aggregate-repository-port.diff.md",
+      "status": "decision-required",
+      "scalaVariants": [
+        {
+          "id": "single-default",
+          "condition": "传统 runCommon 的 app.repositories 中每条 AggregateRepositoryMetadata；其他 RepositoryMetadata 在该分派不输出。Builder 成功后计划一文件，scope/领地策略可能跳过实际写盘。",
+          "outputPaths": ["<target>/app/<basePath>/application/aggregates/repository/<RepositoryName>.scala"],
+          "state": "enabled-not-exercised",
+          "cardinality": "每条匹配 metadata 一份，不是每个 aggregate 无条件一份"
+        },
+        {
+          "id": "multi-default",
+          "condition": "同一 metadata 条件且实际 multiProject 开启；repository-iface 路由 kernel",
+          "outputPaths": ["<target>/modules/kernel/src/main/scala/<basePath>/application/aggregates/repository/<RepositoryName>.scala"],
+          "state": "enabled-not-exercised"
+        },
+        {
+          "id": "declared-query-methods",
+          "condition": "合成 entityRef 首位；声明 QueryMethod 先构造再过滤同名 entityRef，其他 QueryMethod 保留顺序；非 QueryMethod 忽略",
+          "outputPaths": ["与所选 single/multi 变体同一 repository trait 文件"],
+          "state": "enabled-not-exercised"
+        },
+        {
+          "id": "knowledge-present-or-absent",
+          "condition": "aggregate noteId 控制容器注释；QueryMethod 参数 noteId 控制参数锚；缺来源不发射、不编造 hash",
+          "outputPaths": ["与所选 single/multi 变体同一 repository trait 文件"],
+          "state": "enabled-not-exercised"
+        },
+        {
+          "id": "non-aggregate-repository",
+          "condition": "app.repositories 元素不是 AggregateRepositoryMetadata",
+          "outputPaths": [],
+          "state": "suppressed"
+        }
+      ],
+      "jsSources": [
+        {
+          "file": "generators/scala-cqrs-play-service/build-aggregate-models.mjs",
+          "symbols": ["buildAggregateModels", "role: repository", "lookup: owned-local-actor-cache"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "4-41",
+          "assemblyOwner": "codegen-parity-integration"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/aggregate-names.mjs",
+          "symbols": ["aggregateNames", "paths.repository"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "3-24",
+          "assemblyOwner": "codegen-parity-integration"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/templates/aggregate-repository.mjs",
+          "symbols": ["repositoryTemplate"],
+          "lane": "formal",
+          "disposition": "replace",
+          "lines": "1-34",
+          "boundary": "split 应用端口与本地 cache；现有 Handle/get/close/PID/lifecycle 必须由实现族明确承接，不能直接删除"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/render-aggregate-layers.mjs",
+          "symbols": ["templates.repository", "renderAggregateLayers"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "10-29",
+          "assemblyOwner": "codegen-parity-integration"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/generate.mjs",
+          "symbols": ["inherited", "registry", "generate"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "16-23,59-70",
+          "boundary": "aggregate-dsl 正式接 renderAggregateLayers；不是 family2 renderer"
+        },
+        {
+          "file": "generators/repository-dsl/emit.mjs",
+          "symbols": ["emitAggregate", "variantIface", "iface"],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "lines": "11-30,32-126,186",
+          "boundary": "独立 node 脚本启动即写文件；不是 registeredProductProducer，manifest 也不满足 legacy core loader；默认不复活"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es/builders/models.mjs",
+          "symbols": ["repositoryModel"],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "lines": "212-248",
+          "boundary": "存在 sharding 近似模型但含已渲染 imports/entityRefMethod 与 corpus finders；不是通用 QueryMethod 模型"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es/templates/scala.mjs",
+          "symbols": ["renderRepository"],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "lines": "148-169"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es/generate.mjs",
+          "symbols": ["generate", "emit", "MODULE_OF.repository"],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "lines": "25-55,67-93",
+          "boundary": "合法 legacy manifest 经 src/core/generate.mjs 动态 import 的源码路径存在；未执行，不因 _deprecated 目录名推断不可调用；formal products 白名单未接入"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/build-models.mjs",
+          "symbols": ["artifactsSpec", "buildModels", "setDeps"],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "18-28,50-119,221-247",
+          "boundary": "family2 独立 no-external profile；actor-repository 在 glue/application.aggregates；D1 裁定前不能全局替换 local contract"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/templates/repository.mjs",
+          "symbols": ["repositoryTemplate", "repositoryImplementationTemplate"],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "3-20",
+          "boundary": "port 为泛型 get/close/Handle，Handle 包含 PersistenceId/ActorRef；实现同文件且归另一族，不合并 ActorRef 与 EntityRef"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/render.mjs",
+          "symbols": ["productionJobs", "render"],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "15-35"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/generate.mjs",
+          "symbols": ["generate"],
+          "lane": "family",
+          "disposition": "reuse",
+          "lines": "11-23",
+          "boundary": "已注册独立 family2 入口，不代表 formal 银行消费"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/templates/imports.mjs",
+          "symbols": ["importsFor", "named", "library"],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "3-25",
+          "boundary": "可复用冲突处理；当前组内顺序/去重规则不等于 BC 全局排序"
+        }
+      ],
+      "writeSet": [
+        "generators/scala-cqrs-aggregate-repository-port/model.mjs",
+        "generators/scala-cqrs-aggregate-repository-port/build.mjs",
+        "generators/scala-cqrs-aggregate-repository-port/template.mjs"
+      ],
+      "writeSetStatus": "proposed-only-not-authorized-in-this-phase",
+      "writeSetRoot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "proposedNewFiles": [
+        "generators/scala-cqrs-aggregate-repository-port/model.mjs",
+        "generators/scala-cqrs-aggregate-repository-port/build.mjs",
+        "generators/scala-cqrs-aggregate-repository-port/template.mjs"
+      ],
+      "sharedIntegrationWriteSet": [
+        "generators/scala-cqrs-play-service/build-aggregate-models.mjs",
+        "generators/scala-cqrs-play-service/aggregate-names.mjs",
+        "generators/scala-cqrs-play-service/render-aggregate-layers.mjs",
+        "generators/scala-cqrs-play-service/templates/aggregate-repository.mjs",
+        "generators/scala-cqrs-play-service/generate.mjs",
+        "generators/scala-cqrs-play-service/generator.json",
+        "generators/scala-cqrs-aggregate-core-v1/build-models.mjs",
+        "generators/scala-cqrs-aggregate-core-v1/render.mjs",
+        "generators/scala-cqrs-aggregate-core-v1/templates/repository.mjs",
+        "lib/scala-target/naming.mjs",
+        "lib/scala-target/model.mjs",
+        "lib/scala-target/profiles.mjs",
+        "lib/products/generate-cli.mjs",
+        "src/core/generate.mjs"
+      ],
+      "assemblyOwner": "codegen-parity-integration",
+      "dependsOn": [
+        "shared-layout-types",
+        "application-protocol",
+        "aggregate-repository-implementation",
+        "aggregate-root",
+        "aggregate-factory",
+        "bootstrap",
+        "shared-writer-and-anchors"
+      ],
+      "conflictsWith": [
+        "aggregate-repository-implementation 对 cache/同文件 implementation 函数的写入",
+        "application-protocol/aggregate-factory/aggregate-root 对 shared build-aggregate-models 与 aggregate-names 的写入",
+        "公共 layout/type/profile/writer/registry 集成"
+      ],
+      "glue": [
+        "akka.cluster.sharding.typed.scaladsl.EntityRef",
+        "akka.cluster.sharding.typed.scaladsl.ClusterSharding.entityRefFor",
+        "com.google.inject.ImplementedBy",
+        "javax.inject.Inject",
+        "net.imadz.common.CommonTypes.Id",
+        "example.bankwealth.application.aggregates.CreditBalanceProtocol.CreditBalanceCommandFamily（仅静态目标示例，待真实协议确认）",
+        "example.bankwealth.infrastructure.repositories.aggregate.CreditBalanceRepositoryImpl（目标示例依赖，非现有银行实现声明）",
+        "akka.actor.typed.ActorRef（现存 local 合同）",
+        "akka.actor.typed.Behavior（现存 local 合同）",
+        "akka.persistence.typed.PersistenceId（family2 local 合同）"
+      ],
+      "openDecisions": [
+        "D1：确定银行采用 sharding EntityRef 还是单列 local actor profile，并给出 identity/behavior/spawn/get/close、key→PID、资源所有权及调用方迁移合同；ActorRef 不可强转为 EntityRef。",
+        "D2：确定真实协议 CommandFamily、curated CreditBalanceCommand、formal/family Command 的不同类型关系，解决 raw aggMeta.name 直接拼接与后缀归一化不一致；不合并名义类型。",
+        "D3：确定 JS 通用 QueryMethod 的产品/绑定输入面及 Scala formal adapter 等价 fixture，明确多参数/返回类型、optionalWhen、unsupported MetaRef/Any/??? 的拒绝策略；不由端口声明推断实现算法。",
+        "D4：裁定 application @ImplementedBy 引用 infrastructure 的分层例外与 kernel/glue 依赖，或明确把绑定迁入 infrastructure.bootstrap 并修订目标；本族不能自行删注解。",
+        "D5：固定实际 EntityRef/Guice/JSR-330/common-core JAR 坐标、字节/API、最小行为入口及 CC 工具口径；源码声明不证明消费供给已满足。"
+      ],
+      "extraSources": [],
+      "evidence": {
+        "baselineIndex": "baseline/index.json",
+        "bcHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+        "jsHead": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+        "scalaModel": {
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/AggregateRepositoryModel.scala",
+          "bytes": 1848,
+          "sha256": "5a8d2b8f0c362af0b40a396dbdf22ab49a8225178ffda050b8edbf410ee75e50",
+          "read": "full",
+          "fields": ["selfType", "superInterface", "isImplementedBy", "aggregateType", "methods", "dependencies", "noteIds", "noteId"],
+          "methodModelFields": ["name", "parameters", "returnType", "logicIntent"]
+        },
+        "scalaBuilder": {
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateRepositoryBuilder.scala",
+          "bytes": 6268,
+          "sha256": "4eb9eb888695fa9777c203f5144677b098b07285e102c2899f9d0ad783de5eee",
+          "read": "full",
+          "methods": ["build", "resolveAggregateType", "resolveImplementationType", "buildRepositoryMethods", "synthesizeEntityRefMethod", "buildQueryMethod", "buildMethodParameters", "collectDependencies", "collectMethodDependencies"]
+        },
+        "scalaTemplate": {
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRepositoryTemplate.scala",
+          "bytes": 3199,
+          "sha256": "c8b3bf0f17e7538325fb7d6bbe0166da8ed97bc8a34b7f12a463415ded60dbf6",
+          "read": "full",
+          "constructLedger": "diff 第4节 T0-T10；抽象方法无 RHS/body，不以 ??? 或 fake success 填充"
+        },
+        "curated": {
+          "snapshot": "baseline/curated-scala/net/imadz/application/aggregates/repository/CreditBalanceRepository.scala",
+          "bytes": 518,
+          "sha256": "e3cd76eab166ce2eb17128e3e5b6377198a15bfd10f16bd8e94a5c48c3a60a00",
+          "distinction": "仅 findCreditBalanceByUserId(Id): EntityRef[CreditBalanceCommand]，不能冒充当前 raw 模板的合成 entityRef"
+        },
+        "actualJs": [
+          {
+            "snapshot": "baseline/actual-js/app/example/bankwealth/application/aggregates/CreditBalanceRepository.scala",
+            "bytes": 1370,
+            "sha256": "561ca59e23b4a2e9f2dd474c3336761a6c28cc20fe87ee70812b472b851a1c42"
+          },
+          {
+            "snapshot": "baseline/actual-js/app/example/bankwealth/application/aggregates/FundOrderRepository.scala",
+            "bytes": 1354,
+            "sha256": "d75f21d2b590f776397264a43d25c8330984029235c530b92ee7d56948fe96af"
+          },
+          {
+            "snapshot": "baseline/actual-js/app/example/bankwealth/application/aggregates/SipPlanRepository.scala",
+            "bytes": 1346,
+            "sha256": "90efb72f869a41ae9e14e508671e1a6190b1b1543198fa22c3653d01f85ec543"
+          }
+        ],
+        "rawScalaOutput": "未生成；diff 中仅按明确最小模型静态展开，完整模板冻结可取回",
+        "approvedTarget": "三层与正常 imports/独立端口方向已明确；完整 sharding 示例受 D1/D2/D4 约束，不是银行迁移许可",
+        "comparison": "structural-not-same-input",
+        "freshSameInputOutputs": false,
+        "scopedBaselineFingerprintCheck": "第1节列出的13个固定文件字节数与SHA匹配index；非运行时或生成测试"
+      },
+      "fixtures": {
+        "status": "proposed-not-created",
+        "root": "docs/codegen-parity/fixtures/aggregate-repository-port",
+        "expectedRoot": "docs/codegen-parity/expected/aggregate-repository-port",
+        "cases": [
+          "最小 methods=Nil 仍合成 entityRef",
+          "QueryMethod声明顺序、entityRef解析后过滤、非Query忽略",
+          "空/多/关键字参数与递归泛型、tuple、import冲突",
+          "aggregate/parameter noteId及description/hash组合",
+          "缺aggregate引用、unsupported MetaRef与optionalWhen未决输入",
+          "后缀归一化和协议family一致性",
+          "local profile的各自callback/PID/close/回入保护面",
+          "single/multi与Guice依赖装配"
+        ]
+      },
+      "acceptance": {
+        "executed": false,
+        "cliSection": "diff 第9.1节，完整绝对路径与受支持flags；未运行",
+        "jsCommandShape": "node /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/bin/truthsrc.js generate-products --request <absolute-fixture-request> --generator /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/generators/scala-cqrs-play-service --out <absolute-new-owned-target> --options-json <absolute-fixture-options> --plan",
+        "bcCommandShape": "在backkend-codegen进程工作目录：sbt -Dcodegen.systemFile=<absolute-fixture-canonical> -Dcodegen.systemBindings=<absolute-fixture-bindings> -Dcodegen.targetDir=<absolute-new-owned-target> -Dcodegen.ledger=<absolute-owned-ledger> \"runMain net.imadz.codegen.CodegenMain\"",
+        "sideEffects": [
+          "JS --plan 捕获JSON、内存产品编译和渲染、读取本地runtime JAR并核pin、检查externalSourceRoots；不是完整apply预检，不写输出。",
+          "JS去掉--plan会经applyEntries写计划中全部Scala/proto/build/test/config及out下truthsrc.ledger.json/anchors.json，不仅端口；不启动sbt/服务或发布依赖。",
+          "BC命令可能编译、写sbt/JVM缓存日志并解析下载依赖；prepare后copy scaffold并运行完整传统层，写输出、显式ledger、knowledge manifest、formal-semantics；需独立离线供给与执行批准。",
+          "新模块不是CLI producer，不得伪造--artifact等未支持flag或通过repository-dsl直接写盘绕开唯一writer。"
+        ],
+        "fullFileComparison": "要求同等输入完整文件与构造/RHS/来源对账；raw→approved仅有限列明差异，禁止压平空白",
+        "behavior": "按所选真实profile验证引用类型、identity/callback/lifecycle与DI；actor联动另核失败不persist、成功thenReply新state、replyWith不额外发布",
+        "stability": "同输入两次字节稳定后改单字段核局部diff与最终字节回锚",
+        "complexity": "not-measured；普通方法CC目标<=5，工具/口径待固定，非通过声明"
+      }
+    }
+  ],
+  "generatorsModified": false,
+  "runtimeExecuted": false,
+  "testsExecuted": false,
+  "generationExecuted": false,
+  "documentationOnly": true
+}

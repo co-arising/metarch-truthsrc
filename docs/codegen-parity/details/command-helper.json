@@ -1,0 +1,254 @@
+{
+  "group": "command-helper",
+  "artifactIds": ["command-helper"],
+  "diffs": [
+    {
+      "artifactId": "command-helper",
+      "file": "diffs/command-helper.diff.md",
+      "status": "decision-required",
+      "scalaVariants": [
+        {
+          "id": "ordinary-write",
+          "condition": "meta.metaCategory != application.services.transactor；formalReplyName 不可选中；逐命令排除 isReadOnly，保留元数据原顺序。每聚合一个文件，每写命令一个 implicit object。",
+          "outputPaths": [
+            "<target>/app/<base-path>/application/aggregates/behaviors/<AggregateBase>CommandHelpers.scala",
+            "<target>/modules/kernel/src/main/scala/<base-path>/application/aggregates/behaviors/<AggregateBase>CommandHelpers.scala"
+          ]
+        },
+        {
+          "id": "formal-single-slot",
+          "condition": "非 transactor；formalSemantics 中 aggregate 与 meta.name 相等，guards 或 emissions 非空，且 replyFamily.replies.headOption 存在。命名 Params 在 domain.invariants.root 下的 <meta.name>Rules 内；写命令回复取族首项。源码未核验其构造器确为单 error 槽。",
+          "outputPaths": [
+            "<target>/app/<base-path>/application/aggregates/behaviors/<AggregateBase>CommandHelpers.scala",
+            "<target>/modules/kernel/src/main/scala/<base-path>/application/aggregates/behaviors/<AggregateBase>CommandHelpers.scala"
+          ]
+        },
+        {
+          "id": "formal-without-first-reply",
+          "condition": "formal guards/emissions 存在但回复族为空，formalReplyName=None，raw 退回普通推断而非自动拒绝；目标需 D1/D5 裁定。",
+          "outputPaths": [
+            "<target>/app/<base-path>/application/aggregates/behaviors/<AggregateBase>CommandHelpers.scala"
+          ]
+        },
+        {
+          "id": "read-only-suppressed",
+          "condition": "isReadOnly 命令被 Builder.filterNot 排除，不生成该命令 Helper；内部只读回复推断分支因此不可达。混合聚合仍有其余写命令的文件。",
+          "outputPaths": []
+        },
+        {
+          "id": "empty-write-set",
+          "condition": "非 transactor 但无写命令，raw 仍产生空 Helpers trait 并导入 CommandHelper；目标是否抑制空文件需 D8 裁定。",
+          "outputPaths": [
+            "<target>/app/<base-path>/application/aggregates/behaviors/<AggregateBase>CommandHelpers.scala",
+            "<target>/modules/kernel/src/main/scala/<base-path>/application/aggregates/behaviors/<AggregateBase>CommandHelpers.scala"
+          ]
+        },
+        {
+          "id": "transactor-suppressed",
+          "condition": "meta.metaCategory == application.services.transactor 时 CQRSApplicationGenerator L660–678 不调用本族 Builder/Template，零文件。",
+          "outputPaths": []
+        },
+        {
+          "id": "scope-suppressed",
+          "condition": "writeArtifact 先记录 attribution/dependencies/noteIds/morphisms，随后 currentScope.includes=false 时 return，不写内容；不是 Builder 未执行。",
+          "outputPaths": []
+        }
+      ],
+      "jsSources": [
+        {
+          "file": "generators/scala-cqrs-domain/render-domain.mjs",
+          "symbols": ["renderCommand", "renderInvariant"],
+          "lane": "formal",
+          "disposition": "replace"
+        },
+        {
+          "file": "generators/command-dsl/produce.mjs",
+          "symbols": ["produce"],
+          "lane": "formal",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-domain/produce-v2.mjs",
+          "symbols": ["producerRegistryV2"],
+          "lane": "formal",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-application/produce.mjs",
+          "symbols": ["applicationRegistry"],
+          "lane": "formal",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-application/produce-effect.mjs",
+          "symbols": ["createEffectRegistry"],
+          "lane": "formal",
+          "disposition": "reuse"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/generate.mjs",
+          "symbols": ["inherited", "registry", "generate"],
+          "lane": "formal",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/build-aggregate-models.mjs",
+          "symbols": ["buildAggregateModels"],
+          "lane": "formal",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/templates/aggregate-protocol.mjs",
+          "symbols": ["legacyTemplate", "protocolTemplate"],
+          "lane": "formal",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/templates/aggregate-behavior.mjs",
+          "symbols": ["behaviorTemplate"],
+          "lane": "formal",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/command-dsl/render.mjs",
+          "symbols": ["render", "helperFor"],
+          "lane": "legacy",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/command-dsl/emit.mjs",
+          "symbols": ["legacy CLI -> render(spec) -> writeFileSync"],
+          "lane": "legacy",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/run-all.mjs",
+          "symbols": ["runGen(command-dsl)", "paramDefsByAgg", "Step 4 helper relocation"],
+          "lane": "legacy",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/build-models.mjs",
+          "symbols": ["artifactsSpec", "buildModels", "setDeps"],
+          "lane": "family",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/templates/command-helpers.mjs",
+          "symbols": ["commandHelpersTemplate"],
+          "lane": "family",
+          "disposition": "replace"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/render.mjs",
+          "symbols": ["productionJobs", "render"],
+          "lane": "family",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-persistence-readside-v1/build-models.mjs",
+          "symbols": ["aggregateModels"],
+          "lane": "family",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-persistence-readside-v1/render.mjs",
+          "symbols": ["aggregateProductionJobs"],
+          "lane": "family",
+          "disposition": "adapt"
+        },
+        {
+          "file": "lib/products/generate-cli.mjs",
+          "symbols": ["generateProductCli", "registeredProductProducer", "planCompiledProducts"],
+          "lane": "formal",
+          "disposition": "adapt"
+        }
+      ],
+      "writeSet": [
+        "proposed: generators/scala-cqrs-command-helper/model.mjs",
+        "proposed: generators/scala-cqrs-command-helper/build-models.mjs",
+        "proposed: generators/scala-cqrs-command-helper/templates/command-helpers.mjs"
+      ],
+      "dependsOn": [
+        "shared-layout-types",
+        "application-protocol",
+        "domain-entity",
+        "invariant-rule",
+        "aggregate-rules-formal",
+        "aggregate-behavior",
+        "glue-runtime-supply",
+        "writer-anchor-migration"
+      ],
+      "glue": [
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.CommandHelper",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.runReplyingPolicy",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.RunnablePolicyWithHelper",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.AwaitingReplyToRunnablePolicy",
+        "net.imadz.common.CommonTypes.InvariantRule",
+        "net.imadz.common.CommonTypes.iMadzError",
+        "net.imadz.common.CommonTypes.Id",
+        "akka.actor.typed.ActorRef",
+        "akka.persistence.typed.scaladsl.Effect",
+        "akka.actor.typed.scaladsl.ActorContext",
+        "akka.actor.typed.eventstream.EventStream.Publish"
+      ],
+      "openDecisions": [
+        "D1：逐条银行写命令的 Reply 构造器、成功新 State 字段及失败 code/message 尚未确定；不能将 curated Deposit 语义泛化到 InitializeAccount、TA/退款或 SipPlan。",
+        "D2：BC formal Params、普通 Money/Id/Tuple、JS RuleParams、optional/零参数/host 输入与 Either[String,Vector] 到 Either[iMadzError,List] 的保真映射需固定。",
+        "D3：确定实际可消费 common-core/统一供给的 coordinate/version/SHA/API 和唯一 classpath；源码不证明 JAR 能力，禁止借此发布、下载或更换冻结 runtime。",
+        "D4：三 body 的 MANUAL 或外置实现 capture 所有权，以及多个 implicit object 内同名 def 的唯一锚定/迁移需裁定。",
+        "D5：确定 raw 类型/导入例外的目标策略：name 丢泛型、硬编码 Error、scala 前缀过滤、optional 未传播、Unit/Tuple 名称判据、replyTo cast 与 unresolved ???；保留原始债务，不制造成功。",
+        "D6：multi 物理模块需裁定；raw command-helpers 在 kernel，不得无记录改为 glue。首个拟验收 profile 仅 single。",
+        "D7：formal/legacy/family 接入、domain event emissions 和 Computations 的唯一 owner/path、产品版本/profile 与 capture 入口需由 assembly owner 固定。",
+        "D8：明确作者命令顺序/业务组信息输入，以及只读聚合 raw 空 trait 的目标抑制规则。"
+      ],
+      "extraSources": [],
+      "assemblyOwner": "protocol-behavior-integration",
+      "sharedWriteSetOwner": "protocol-behavior-integration",
+      "sharedWriteSet": [
+        "generators/scala-cqrs-domain/render-domain.mjs",
+        "generators/command-dsl/produce.mjs",
+        "generators/scala-cqrs-domain/produce-v2.mjs",
+        "generators/scala-cqrs-application/produce.mjs",
+        "generators/scala-cqrs-play-service/build-aggregate-models.mjs",
+        "generators/scala-cqrs-play-service/aggregate-names.mjs",
+        "generators/scala-cqrs-play-service/templates/aggregate-protocol.mjs",
+        "generators/scala-cqrs-play-service/templates/aggregate-behavior.mjs",
+        "generators/command-dsl/render.mjs",
+        "generators/run-all.mjs",
+        "generators/scala-cqrs-aggregate-core-v1/build-models.mjs",
+        "generators/scala-cqrs-aggregate-core-v1/render.mjs",
+        "generators/scala-cqrs-aggregate-core-v1/templates/command-helpers.mjs",
+        "generators/scala-cqrs-aggregate-core-v1/templates/rules.mjs",
+        "proposed: generators/scala-cqrs-aggregate-core-v1/templates/event-emissions.mjs",
+        "lib/scala-target/naming.mjs",
+        "lib/scala-target/model.mjs",
+        "lib/scala-target/profiles.mjs",
+        "lib/products/generate-cli.mjs",
+        "src/core/product-plan.mjs",
+        "src/core/generate.mjs"
+      ],
+      "sourcePins": {
+        "jsHead": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+        "bcHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+        "baselineIndex": "baseline/index.json",
+        "modelSha256": "28beb61c8e41ee35cb481eedeea2ca5004c73f7e7290f9d26584965621ab3fd0",
+        "builderSha256": "6a46c0d8420639ec87352e1c26f20f2ac5bea541d8fc7b1e15af5e9218db44fb",
+        "templateSha256": "999303df54f728e2096789493a7d07b3f8d41ed1b5d3f25b99b0589d02536d1c"
+      },
+      "evidenceState": {
+        "inspection": "source-content-only",
+        "rawScala": "完整冻结 MBT 源码及逐字段/分支/construct/RHS 账；无新生成文件",
+        "curatedScala": "完整人工 CreditBalance 参考，九个 Helper，独立于 raw 默认与银行输入",
+        "approvedTarget": "三层布局、应用 Helper 三方法、typed application replyTo、更新后 State 回复；具体银行实例仍需裁定",
+        "actualJs": "读取冻结 CreditBalance、FundOrder、SipPlan 三文件，逐构造保留其事件 RHS；不是 fresh generation",
+        "sameInputOutputComparison": "not-run",
+        "interfaceAndBehaviorValidation": "not-run",
+        "complexity": "not-measured",
+        "complexityGoal": "普通方法 CC <= 5；6–10 逐方法说明；>10 重构或明确批准例外"
+      }
+    }
+  ],
+  "generatorsModified": false,
+  "runtimeExecuted": false
+}

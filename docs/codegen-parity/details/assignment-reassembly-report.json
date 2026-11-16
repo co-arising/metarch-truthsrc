@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "codegen-parity.assignment-reassembly/v1",
+  "scope": "补齐 application-service 后重装文档分工；静态文档数据核对，不是生成器或运行验收",
+  "status": "initial-assembly-preserved-final-review-and-reassembly-complete",
+  "finalResult": "details/documentation-closeout-check.json",
+  "date": "2026-11-16",
+  "sourceCommand": "python3 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/details/assemble-assignments.py",
+  "previousMap": {
+    "path": "details/assignment-map.pre-application-service.json",
+    "bytes": 775744,
+    "sha256": "6ec71095cb5bcf62548b95d05e431f62a2f2d57cb03c24adcdcfc92210c5220b",
+    "preservation": "核对字节及 application-service 缺失状态后原样移动保留，不删除，不改历史内容"
+  },
+  "before": {
+    "artifacts": 42,
+    "savedDiffs": 41,
+    "distinctWritePaths": 277,
+    "integratorPaths": 125,
+    "bLogicalOccurrences": 308
+  },
+  "after": {
+    "artifacts": 42,
+    "savedDiffs": 42,
+    "distinctWritePaths": 290,
+    "integratorPaths": 132,
+    "bLogicalOccurrences": 308
+  },
+  "checks": {
+    "inventoryIdsDistinct": true,
+    "missingDiffs": [],
+    "all42DiffHashesCurrentAtAssembly": true,
+    "other41ArtifactRecordsUnchanged": true,
+    "bOutputAssignmentsUnchanged": true,
+    "removedWritePaths": [],
+    "allSourceAssignmentsImplementationAuthorizedFalse": true
+  },
+  "addedWritePaths": [
+    {"path": "generators/_deprecated/scala-cqrs-es-policy-exec/generate.mjs", "owner": "main-integrator"},
+    {"path": "generators/application-service/build-models.mjs", "owner": "service-api"},
+    {"path": "generators/application-service/model.mjs", "owner": "service-api"},
+    {"path": "generators/application-service/render.mjs", "owner": "service-api"},
+    {"path": "generators/application-service/templates/application-service.mjs", "owner": "service-api"},
+    {"path": "generators/policy-dsl/policyexec.mjs", "owner": "main-integrator"},
+    {"path": "generators/scala-cqrs-domain-kernel-v1/render.mjs", "owner": "main-integrator"},
+    {"path": "generators/scala-cqrs-module-seams-v1/build-models.mjs", "owner": "main-integrator"},
+    {"path": "generators/scala-cqrs-module-seams-v1/render.mjs", "owner": "main-integrator"},
+    {"path": "generators/scala-cqrs-module-seams-v1/templates/scala.mjs", "owner": "main-integrator"},
+    {"path": "generators/scala-cqrs-play-application-v1/generate.mjs", "owner": "main-integrator"},
+    {"path": "generators/scala-cqrs-play-application-v1/templates/command-service.mjs", "owner": "service-api"},
+    {"path": "generators/scala-cqrs-play-application-v1/templates/commands.mjs", "owner": "service-api"}
+  ],
+  "protectedDocuments": {
+    "fixedBaselineFiles": 852,
+    "fixedBaselineBytes": 10405274,
+    "baselineIndex": "baseline/index.json",
+    "baselineHashOrByteMismatches": [],
+    "originalDiffsCompared": 15,
+    "originalDiffComparisonSource": ".rounds/parity-window-20261116/diffs/",
+    "originalDiffChanges": []
+  },
+  "pendingAtInitialAssembly": [
+    "application-service Scala 与 JS 侧独立复核，结果回来后按事实修正并重装有变化的派生记录",
+    "F1/F2 同输入映射、四件套 expected 身份合同、公共接口裁定与42族变体覆盖矩阵正在独立分工编制",
+    "原3个任意外部源码槽仍 blocked，未取得源码不分入B或声称完整内容覆盖",
+    "common-core演进由用户另派agent调查；发布优先裁定不变，实施前实际锁定制品字节与唯一owner"
+  ],
+  "generationExecuted": false,
+  "runtimeExecuted": false,
+  "generatorModified": false,
+  "implementationAuthorized": false
+}

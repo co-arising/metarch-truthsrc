@@ -1,0 +1,18 @@
+{
+  "name": "scala-cqrs-es-function-specs",
+  "inputSchema": "truthsrc/v0.3",
+  "products": [
+    "template"
+  ],
+  "artifactKinds": [
+    "function-spec"
+  ],
+  "output": {
+    "language": "scala",
+    "layout": "live-single-module"
+  },
+  "options": {
+    "functionSpecs": "golden/scala-cqrs-es-metarch/function-spec-inputs.json"
+  },
+  "description": "Function oracle-spec face (V4-22): test/net/imadz/metarch/domain/service/ContentFingerprintSpec.scala, ported from gen_function_specs.mjs (EP 行为层锚·2026-09-21). Assertions come verbatim from the handwritten yaml oracle tables (functions.yaml + cases/*.yaml, distilled to the function-spec-inputs sidecar with anchoredTo→noteId resolution); the generator never reads production code."
+}

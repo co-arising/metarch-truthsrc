@@ -1,0 +1,19 @@
+{
+  "schemaVersion":"codegen-parity.pure-parameter-split/v1",
+  "resolution":"R04-revised",
+  "authority":"PARTITION-RESOLUTIONS.md#5-r04交叉复核后修订纯command按参数记录与分发骨架拆分",
+  "rule":"具体command payload记录/字段为部分A形式规则参数声明；sealed Command和extends Command分发成员关系B。共同assembler一次组装，不双计字段，不插ActorRef。",
+  "rows":[
+    {"from":"formal-domain/pure-command-payload/shared","newId":"formal-domain/rule-parameter-records/shared","consumption":"直接被flat Rules的p消费；不同版本准入差异保留"},
+    {"from":"formal-service/command-payload/pure","newId":"formal-service/rule-parameter-records/pure","consumption":"layered RuleParams.command显式引用；wrapper自身的state/command/hosts字段另属既有A"},
+    {"from":"formal-application/pure-rule-parameters/shared","newId":"formal-application/rule-parameter-records/shared","consumption":"六profile flat Rules直接消费具体record；不把整Command sum当Params"},
+    {"from":"legacy-domain/pure-command-payload/product","newId":"legacy-domain/rule-parameter-records/product","consumption":"现代product子producer的记录声明；legacy独立Params实现另账"},
+    {"from":"family-domain-aggregate/payload/command","newId":"family-domain-aggregate/rule-parameter-records/shared","consumption":"kernel1只提供record与per-command wrapper声明，不发规则；family2增加真实rule消费，不能混说kernel已实现"},
+    {"from":"family-readside-play/domain-command-payload","newId":"family-readside-play/rule-parameter-records","consumption":"继承family2规则经Params.command消费；不是Actor-facing protocol"}
+  ],
+  "recordConstructs":["每个具体command case class的记录声明和有序业务参数字段：字段名、类型、可选性/default、source mapping；raw CmdParams与当前Cmd名称/接口差异仍开放","不拥有sealed Command声明或extends Command成员关系；不拥有Event、ActorRef、规则body或wrapper字段"],
+  "dispatchConstructs":["sealed trait Command及各具体record的extends Command sum成员关系；类型化dispatch骨架，无ActorRef/回复/业务规则body","文件header/package/import/object开闭与case class语法合成由唯一物理assembler协调，参数record字段从独立A条目接收，不重新声明"],
+  "recordTargetPolicy":"复用该pure-input文件的明确目标位置，按subconstruct合成，而非另造duplicate类；是否消除wrapper/改名CmdParams另待接口裁定。",
+  "generatorModified":false,
+  "runtimeExecuted":false
+}

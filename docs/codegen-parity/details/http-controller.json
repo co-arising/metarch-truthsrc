@@ -1,0 +1,307 @@
+{
+  "group": "http-controller",
+  "artifactIds": [
+    "http-controller"
+  ],
+  "diffs": [
+    {
+      "artifactId": "http-controller",
+      "file": "diffs/http-controller.diff.md",
+      "status": "decision-required",
+      "scalaVariants": [
+        {
+          "id": "legacy-stub",
+          "condition": "ControllerMetadata 存在且 dslFlags.aggHasDsl=false；raw 模板对全部 endpoints 发 stub，包括全部 skip 后退回此分支的情况；本次未生成",
+          "outputPaths": [
+            "<target>/app/controllers/<resolvedControllerName>.scala"
+          ]
+        },
+        {
+          "id": "dsl-command-path",
+          "condition": "存在 non-skip gate 端点；tenant Command 的 Id 参数与 aggregate.identifier.name 相同，按 Path 寻址；本次未生成",
+          "outputPaths": [
+            "<target>/app/controllers/<resolvedControllerName>.scala"
+          ]
+        },
+        {
+          "id": "dsl-command-factory",
+          "condition": "active tenant/global Command 没有 pathKey，按 Factory 发号；可叠加 empty-body、IdGuard、InstantGuard；本次未生成",
+          "outputPaths": [
+            "<target>/app/controllers/<resolvedControllerName>.scala"
+          ]
+        },
+        {
+          "id": "dsl-conflict",
+          "condition": "active Command 的 errorPayloads 非空且符合单聚合单投影约定；首个 payload 用于预查冲突，全部 payload 用于尾部 VO 声明；本次未生成",
+          "outputPaths": [
+            "<target>/app/controllers/<resolvedControllerName>.scala"
+          ]
+        },
+        {
+          "id": "dsl-flow-anonymous",
+          "condition": "anonymous GateKind + ServesUseCase + requestBody，生成 Flow 委托；非匿名 Flow 不在 raw 发射集；本次未生成",
+          "outputPaths": [
+            "<target>/app/controllers/<resolvedControllerName>.scala"
+          ]
+        },
+        {
+          "id": "dsl-view",
+          "condition": "tenant/global ServesView；精确 list/item 签名；复合 item 仅 tenant；按需生成 pageGuard、tenantList、globalList、tenantItem、globalItem、compositeItem；本次未生成",
+          "outputPaths": [
+            "<target>/app/controllers/<resolvedControllerName>.scala"
+          ]
+        },
+        {
+          "id": "mixed",
+          "condition": "DSL controller 内 gate=None 端点保留 raw stub；skip 只在 DSL 分支过滤；本次未生成",
+          "outputPaths": [
+            "<target>/app/controllers/<resolvedControllerName>.scala"
+          ]
+        },
+        {
+          "id": "skip-and-rejection",
+          "condition": "VO-List/read-only 标 skip；全 skip 退回 stub 是待裁定缺陷。悬空引用、多聚合、多投影、匿名读/命令直发等抛异常；不承诺整个生成事务回滚",
+          "outputPaths": []
+        }
+      ],
+      "jsSources": [
+        {
+          "file": "lib/products/generate-cli.mjs",
+          "symbols": [
+            "registeredProductProducer",
+            "generateProductCli",
+            "planCompiledProducts",
+            "implementationProducers"
+          ],
+          "lane": "formal",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/generate.mjs",
+          "symbols": [
+            "registry.play-service-dsl",
+            "generate"
+          ],
+          "lane": "formal",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/render-service.mjs",
+          "symbols": [
+            "serviceSelection",
+            "renderService"
+          ],
+          "lane": "formal",
+          "disposition": "replace"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/render-service-pages.mjs",
+          "symbols": [
+            "pageRendererContract",
+            "pageRendererRequirement",
+            "renderPageLoader"
+          ],
+          "lane": "formal",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/run-all.mjs",
+          "symbols": [
+            "apiBuildAggregateController",
+            "api-dsl execSync emission"
+          ],
+          "lane": "legacy",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/api-dsl/emit.mjs",
+          "symbols": [
+            "askBody",
+            "guardWrapped",
+            "renderStandardEndpoint",
+            "renderEstablishEndpoint",
+            "renderFlowDelegateEndpoint",
+            "renderDslEndpoint",
+            "renderController"
+          ],
+          "lane": "legacy",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es-api/generate.mjs",
+          "symbols": [
+            "generate"
+          ],
+          "lane": "legacy",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es-api/builders/controller.mjs",
+          "symbols": [
+            "parseProtocol",
+            "buildCommandModel",
+            "buildViewModels",
+            "topoSortVos",
+            "buildAggregateController"
+          ],
+          "lane": "legacy",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es-api/templates/controller.mjs",
+          "symbols": [
+            "renderControllerFile"
+          ],
+          "lane": "legacy",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/generate.mjs",
+          "symbols": [
+            "generate",
+            "resolveApplicationTarget"
+          ],
+          "lane": "family",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/build-models.mjs",
+          "symbols": [
+            "roles",
+            "buildModels",
+            "resolveApplicationTarget"
+          ],
+          "lane": "family",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/render.mjs",
+          "symbols": [
+            "render"
+          ],
+          "lane": "family",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/templates/http.mjs",
+          "symbols": [
+            "controllerTemplate",
+            "errorsTemplate",
+            "routesTemplate",
+            "viewTemplate"
+          ],
+          "lane": "family",
+          "disposition": "adapt"
+        },
+        {
+          "file": "lib/scala-target/naming.mjs",
+          "symbols": [
+            "targetData",
+            "resolveName",
+            "resolveNameSet",
+            "resolveArtifactPath"
+          ],
+          "lane": "family",
+          "disposition": "reuse"
+        },
+        {
+          "file": "src/core/generate.mjs",
+          "symbols": [
+            "plan",
+            "previewEntries",
+            "applyEntries"
+          ],
+          "lane": "legacy",
+          "disposition": "reuse"
+        },
+        {
+          "file": "lib/project/cli.mjs",
+          "symbols": [
+            "captureProject",
+            "projectCli"
+          ],
+          "lane": "family",
+          "disposition": "reuse"
+        }
+      ],
+      "writeSet": [
+        "generators/scala-cqrs-play-service/models/http-controller.mjs",
+        "generators/scala-cqrs-play-service/build-http-controller-models.mjs",
+        "generators/scala-cqrs-play-service/templates/http-controller.mjs",
+        "generators/scala-cqrs-play-service/render-http-controllers.mjs",
+        "generators/scala-cqrs-play-service/render-service.mjs",
+        "generators/scala-cqrs-play-service/render-service-pages.mjs",
+        "generators/scala-cqrs-play-service/generate.mjs",
+        "generators/scala-cqrs-play-service/generator.json"
+      ],
+      "dependsOn": [
+        "shared-layout-types",
+        "application-protocol",
+        "aggregate-repository-port",
+        "command-helper",
+        "aggregate-behavior",
+        "command-endpoint-dsl",
+        "route-definition",
+        "application-service",
+        "query-service",
+        "projection-repository-port",
+        "application-bootstrap",
+        "HTTP authorization and page adapter contracts"
+      ],
+      "glue": [
+        "javax.inject.Inject",
+        "javax.inject.Singleton",
+        "play.api.mvc.BaseController",
+        "play.api.mvc.ControllerComponents",
+        "play.api.mvc.Action",
+        "play.api.mvc.AnyContent",
+        "play.api.libs.json.Reads",
+        "play.api.libs.json.Writes",
+        "play.api.libs.json.OWrites",
+        "play.api.libs.json.OFormat",
+        "play.api.libs.json.Json",
+        "scala.concurrent.Future",
+        "scala.concurrent.ExecutionContext",
+        "akka.util.Timeout",
+        "akka.actor.typed.ActorRef",
+        "net.imadz.common.auth.Endpoint",
+        "net.imadz.common.auth.ApiError",
+        "net.imadz.common.Id.of",
+        "net.imadz.common.CommonTypes.Id",
+        "net.imadz.common.CommonTypes.iMadzError",
+        "net.imadz.infrastructure.api.IdGuard.parse",
+        "net.imadz.infrastructure.api.InstantGuard.parse",
+        "net.imadz.infrastructure.api.OkReceipt",
+        "net.imadz.infrastructure.api.ViewListDto",
+        "net.imadz.infrastructure.api.ViewItem",
+        "<modulePkg>.infrastructure.auth.CommandRoleMap.ofCommand",
+        "<modulePkg>.infrastructure.auth.CommandRoleMap.of",
+        "<modulePkg>.infrastructure.auth.ViewKeys",
+        "<base>.application.aggregates.<resolvedProtocol>",
+        "<base>.application.aggregates.repository.<resolvedRepository>.entityRef",
+        "<base>.application.projection.repository.<resolvedRepository>.findAll",
+        "<base>.application.projection.repository.<resolvedRepository>.findByIdentity",
+        "<base>.application.<UseCase>Flow.<declaredMethod>",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.CommandHelper",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.runReplyingPolicy"
+      ],
+      "openDecisions": [
+        "D01：银行 port-based endpoint 到 ControllerMetadata/ServesTarget 的显式映射及 audience/csrf 与门档的关系未定。",
+        "D02：银行 nominal DTO/Failure(code) 与 BC OkReceipt/ApiError(errorCode,message,payload) 的 wire 合同、decisionView、页面别名、安全前置不能无条件互换。",
+        "D03：CmdReply 拼名、reply.error 与 repository.entityRef.ask 必须核对真实应用协议；replyTo 仅按明确应用 Actor 回复合同生成。",
+        "D04：raw 空 import、空注入逗号、零 ctor 逗号、泛型名损失、显式 Req 类型丢失、依赖遗漏、关键字/文案转义、同名 VO 与重复仓库注入需要精确修复白名单。",
+        "D05：全 skip 时 raw 退回 legacy 并发 stub；是否空 controller 或零文件须与 routes/ledger 同步裁定。",
+        "D06：gate=None 未实现 endpoint 的正式失败/外置实现合同未定；不能用 Ok(Not implemented yet) 作为业务成功。",
+        "D07：多 conflict payload 的类型与分派、唯一键及 soft-delete 声明、投影预查和领域约束所有权未定。",
+        "D08：ViewRepository 方法与 Row.tenantId 供应、eager Future 查询、分页/排序及 Int 索引溢出处理未定。",
+        "D09：raw common.auth 与 curated infrastructure.auth 的 FQN 不同；common-core/auth-core 0.2 的实际消费 JAR API 未核，禁止升级或复制私有实现绕过。",
+        "D10：Option/Id/Instant 默认值、tenantId 实型、path 首参名、Flow 方法参数及返回类型未定；空串和 register 不得泛化为银行算法。",
+        "D11：formal/legacy/family 共享模型或兼容分支策略未定；legacy 稳定寻址与 family resource/cursor/readiness 扩展不得因对齐 Scala 被删除。",
+        "D12：同输入 fixture 的 BC binding 表达能力、完整目标文件集、外置实现验证写面和共享接口尚需集成者固定；无同输入新鲜输出。"
+      ],
+      "extraSources": []
+    }
+  ],
+  "generatorsModified": false,
+  "runtimeExecuted": false
+}

@@ -1,0 +1,294 @@
+{
+  "schemaVersion": "codegen-parity.partition-review-results/v1",
+  "workflowRunId": "wf_15bef85e-833",
+  "sourceResultSha256": "e7946e322cfdbba636d4b1b4dc71119e0a941ea5867e8438a24f450828bea7e1",
+  "result": {
+    "scope": "documentation-only",
+    "lanes": [
+      {
+        "lane": 1,
+        "completed": [
+          {
+            "catalogOutputCount": 60,
+            "files": [
+              "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-service.json",
+              "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-service.md"
+            ],
+            "group": "formal-service",
+            "logicalOutputCount": 84,
+            "producerCount": 1,
+            "status": "saved",
+            "summary": "已保存中文内容分区：完整覆盖60条catalog合同，拆为84个逻辑条目（A 28、B 56），登记82个固定来源及3个只读extraSources。明确银行选择、createEffectRegistry('2')继承、复合文件成员与唯一目标组装者；发现项目SQLite和anchors临时文件两类未登记写入。仅完成文档与机械覆盖对账，未执行应用、CLI、测试、编译、生成或运行时。",
+            "unresolved": [
+              "Actor协议真实所有权、CommandHelper三方法、runReplyingPolicy及新State回复尚未接通；需要明确回复与参数合同。",
+              "本地actor缓存/ofUniqueId与传统sharding、tags、retention、backoff存在差异，目标部署profile须裁定，不能改变稳定PID。",
+              "Strict模块的HostRequirements、deadline/admission、phase mapper与冻结运行时ABI仍需后续实证；composition仅部分对应，本profile不继承child计划。",
+              "Play Factory、Authority、Endpoint、PageRenderer及清理/路由接口拆分需要先固定手写边界；HTTP技术子包仅为建议。",
+              "JDBC repository port、Session生命周期、commit未知结果及读侧资源排空接口需明确；Journal和Ownership实现仍由外部提供。",
+              "搬包与格式化必须同步调用方、配置和最终字节回锚，并保持PB字段、serializer、摘要、名义类型和溢出行为不变。",
+              "项目知识图写入未列原catalog；三个extraSources需由集成者补充固定快照，本组未修改catalog或baseline。",
+              "没有新的同输入完整产物对账、复杂度测量或运行验证；库存fixture筛选和空银行verificationCases不构成银行业务通过证据。"
+            ]
+          },
+          {
+            "catalogOutputCount": 36,
+            "files": [
+              "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/legacy-application.json",
+              "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/legacy-application.md"
+            ],
+            "group": "legacy-application",
+            "logicalOutputCount": 40,
+            "producerCount": 7,
+            "status": "saved",
+            "summary": "已保存中文内容分区：36条目录合同全部映射，40个逻辑项（A21/B19），另登记11条真实中间写出；51份已读固定来源登记完整字节SHA。明确复合文件所有权、实际调用条件及七个legacy producer均非银行当前消费。未执行应用、CLI、测试、编译或生成。",
+            "unresolved": [
+              "ReadModel parser截断前5字段，括号扫描、字段命名和类型降级存在信息损失，需完整类型模型替代。",
+              "stamped聚合仓储接口遗漏额外方法；projection仓储包路径、DTO、DI和真实数据库实现未接齐。",
+              "应用、查询、领域服务及连接器实现保留???；不能据源码存在认定业务实现完成。",
+              "HTTP寻址、409查重、scoped Flow与Endpoint实际API需明确对齐；最终routes writer当前覆盖手写领地。",
+              "计算port签名/import推断、bridge包位与依赖方向、同名异型注入需要接口裁定。",
+              "Bootstrap空traits/空forSources及静态配置include/模块闭包存在缺口；配置写入还受显式Saga JAR门控。",
+              "公共库副本与冻结JAR的ABI、serializer绑定、命名迁移及MoneyOps sign约束须单独裁定，不得改变稳定身份或数值语义。",
+              "run-all为本组创建的临时spec未见清理路径，需要明确失败保留与资源退出策略；本轮未清理任何现存文件。"
+            ]
+          },
+          {
+            "catalogOutputCount": 87,
+            "files": [
+              "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/family-readside-play.json",
+              "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/family-readside-play.md"
+            ],
+            "group": "family-readside-play",
+            "logicalOutputCount": 79,
+            "producerCount": 2,
+            "status": "saved",
+            "summary": "已保存中文分区规范及JSON，完整映射34+53条catalog合同，形成79个逻辑条目（A 37、B 42），包含7类公共附加写入。登记83份已读来源及全字节SHA，其中2份未入基线源码仅只读登记。明确复合文件组装所有权、profile差异与银行未选择状态；没有运行应用、CLI、测试、编译、生成或服务。",
+            "unresolved": [
+              "Actor回复ABI尚未对齐：通用Execute/Accepted(events)不能替代逐业务请求、三方法CommandHelper与新State回复；发布语义亦须独立裁定。",
+              "复合文件拆分后的接口、imports及资源所有权须按唯一assembly owner集成；composition及业务根内controllers仍有布局差距。",
+              "Frame技术namespace与三层布局存在冲突，不能静默改变PB字段、serializer manifest、wire SHA、PID摘要或converter ABI。",
+              "主读侧Repository端口尚未独立，拆分须保持同步事务session、提交不确定语义及写入顺序。",
+              "读侧Cursor允许空mapKey，但HTTP游标解析要求非空；分页语义需要明确裁定。",
+              "同输入产物及运行行为均未验证；family未被银行选择，JDBC副本source也不等真实journal接入。",
+              "7类公共附加写入需由集成者按公共owner去重；两份extraSources是否补充固定基线由集成者决定，本组未复制源码。"
+            ]
+          }
+        ],
+        "pending": [],
+        "reviews": [
+          {
+            "group": "formal-service",
+            "issues": [
+              "[高] Connector 接口与具体委托实现被混归，而且同一方法体出现两次所有权。/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-service.json:3308-3332 将 external-submission/query 的 Installed 转发及关联检查归入 A external-connector-port；3382-3418 又将“Installed全部转发、external/readside关联检查”归入 B TechnicalBindings。实际 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-application/render-technical-ports.mjs:16-22,43-49 生成了具体类中的输入校验、callback 调用、Future 非空检查和返回关联校验，不只是安装槽。传统 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/connector/ConnectorImplTemplate.scala:34-60 本身就是委托给注入手写基建的实现模板，因此“外部业务实现仍手写”不能排除 connector-implementation 对应。应将接口声明、外部委托实现、通用安装设施分别定位，给委托实现独立 A 差距与 infrastructure 目标，并消除重复 construct 归属；不能直接沿用 catalog 的“no external connector implementation”结论。",
+              "[中] Direct host 的整体 B 判断遗漏了 strict 扩展中已经存在的触发与完成映射职责。/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-service.json:2960-3050 把 fromEntry、Start 参数映射、classify 和结果投递全部放进 B，理由是并非完整 fixture 宿主；但其 FixtureHost 来源只读到 220 行（1323-1327），尚未进入真实 host/entry 实现。实际 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/FixtureHostTemplate.scala:514-552,642-645,705-733 分别生成完整 trigger→args/id 映射、completion→event 映射、Start 入口及 terminal 分类/发布；/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/StrictSagaModuleTemplate.scala:118-159 也明确承载 trigger/completion 胶水。JS 对应内容见 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-application/render-invocation-host.mjs:18-29,32-39 及 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-application/render-host-io.mjs:35-51。应按这些构造补局部 A 对应和具体差距，独立持久关联、准入排队等仍可留 B；不能把“尚未实现整个 fixture”当作没有局部对应。",
+              "[中] Journal projection 的目标拆分尚未分配资源成员的唯一落点。/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-service.json:7144-7161 的每条 constructDisposition 都把整组成员同时指向 Projection.scala 和 ProjectionLifecycle.scala，并未决定 repository、serialization、kill switch、pendingWork、drained、initialized、tracked、shutdown 各归哪个文件。与此同时，7212-7240 把 payload/project/read 搬到 Handler，而它们实际依赖上述私有资源与方法。来源 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-play-service/render-journal-readside.mjs:47-124,193-209 清楚显示这些跨方法依赖和排空顺序。一个 assemblyOwner 标签只能确定写入者，不能替代字段、初始化、方法与 import 的具体归属。应逐项选定单一目标，并明确 Handler 使用同一 session、serialization 和 tracked 生命周期的接口，否则当前“完整拆分”仍可能导致双初始化、缺依赖或漏入排空计数。",
+              "[中] Play 复合文件仍有重复声明/方法体迁移，不能称 construct 账已经完整且唯一。/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-service.json:6108-6133 将 Composition.pages 迁入 Composition.scala，6193-6218 又将同一成员迁入 PageRenderer.scala；6307-6310 将 page BodyParser 错误转换迁入 Controller.scala，6578-6581 又将该转换迁入 Pages.scala。实际 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-play-service/render-service.mjs:79-92 只有一个 Composition.pages 声明，/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-play-service/render-service-pages.mjs:91-97 也只有一段 parser 转换。应区分声明所有者与引用方：pages 成员留给 Composition，PageRenderer 行只拥有渲染接口及明确委托的校验；parser 转换选一个方法体所有者，另一方仅引用。共同的 play-http-assembly 不能消除当前两个目标都声称迁入同一构造的冲突。"
+            ],
+            "summary": "只读审阅 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-service.json 与 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-service.md。60 条 producer-output 键无遗漏或多余，catalogCoverage 与 catalogRefs 双向一致；现有 84 条逻辑项计数为 A28/B56，82 个固定来源及 3 个 extraSources 的完整字节 SHA 均匹配。纯 payload/Actor 协议、emit helper/CommandHelper 缺口、本地 repository.close 不 stop actor，以及 bank 经 createEffectRegistry('2') 继承而非自动消费 family 的描述与所读源码一致。SQLite 发布与 anchors 临时写入也有实际 writer 依据。以上 4 项是内容分类和唯一构造归属问题，清单计数不能消除它们。未修改文件，未执行项目代码、生成、编译、测试或运行验证；不作 runtime/parity 认证。"
+          }
+        ]
+      },
+      {
+        "lane": 2,
+        "completed": [
+          {
+            "catalogOutputCount": 40,
+            "files": [
+              "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-domain.json",
+              "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-domain.md"
+            ],
+            "group": "formal-domain",
+            "logicalOutputCount": 33,
+            "producerCount": 2,
+            "status": "saved",
+            "summary": "已保存完整中文分区规格：40条catalog合同全部映射至33个内容级逻辑项（A16、B17），明确复合文件构造/import/初始化所有权及银行继承差异。另记录项目知识SQLite持久写入、anchor瞬态写入及2份未入基线源码的准确哈希。仅进行了文档机械对账，未执行应用、CLI、生成、编译或测试。",
+            "unresolved": [
+              "应用CommandHelper三方法及runReplyingPolicy接线缺失；Accepted(events)、纯Params、iMadzError与新State回复合同需裁定。",
+              "standalone Behavior factory与传统sharding factory、无参State.empty与ID初始化的差异需明确，不能改变PID。",
+              "PB字段与manifest、serializer ID、exact/presence/nominal语义必须保留；converter与serializer分片边界尚无新编译验证。",
+              "Computations仅有能力接口；raw Scala的JSON companion差距及wire/PO移包所需codec-aware模型、依赖方向和调用迁移尚待决定。",
+              "verificationTests只检查选中命令的host，却实例化全聚合空Computations；同聚合其它命令有抽象计算时缺完整测试实现。",
+              "standalone外部事件桥未接Actor ingress；银行service另有入口，身份提取器本身不实现授权。",
+              "v1/v2共享manifest名称的输出所有权迁移需协调；新增读取的graph.mjs与knowledge-sqlite.mjs需由集成者决定补充冻结。"
+            ]
+          },
+          {
+            "catalogOutputCount": 34,
+            "files": [
+              "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/legacy-domain.json",
+              "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/legacy-domain.md"
+            ],
+            "group": "legacy-domain",
+            "logicalOutputCount": 49,
+            "producerCount": 8,
+            "status": "saved",
+            "summary": "已保存中文分区，完整覆盖8个producer的34条catalog合同，拆为49个逻辑条目（A33、B16）。登记83份已读固定来源及SHA，发现8个未列入所属catalog的parser中间spec写出，归入5个B条目。明确旧CLI、产品子producer与银行createEffectRegistry('2')继承及替换边界；覆盖账无遗漏。未执行应用、CLI、生成、编译、测试或运行验证。",
+            "unresolved": [
+              "银行layered输出与共享renderer须由集成者按formal分区的精确catalogRefs归并，不能用本组flat变体替代。",
+              "现代纯命令、Actor协议、RuleParams、Computations及Accepted(events)向三方法CommandHelper迁移的接口和回复语义尚待裁定。",
+              "旧聚合合成GetState缺行为接线，初始化命令按字母序选择且空命令未保护；规则后置检查存在但未接入行为。",
+              "旧规则含固定哨兵、跳过guard、启发式事件构造和Instant.now，不能视为纯规则或真实跨聚合验证。",
+              "invariant CLI的marker可能覆盖真实Rules文件；部分独立parser与当前renderer输入形状不匹配。",
+              "旧PO与现代PB、serializer身份、精确值和名义类型必须保持；codec分片接口、JSON严格读取差距及测试package迁移仍需专门实施与验证。"
+            ]
+          },
+          {
+            "catalogOutputCount": 33,
+            "files": [
+              "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/family-domain-aggregate.json",
+              "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/family-domain-aggregate.md"
+            ],
+            "group": "family-domain-aggregate",
+            "logicalOutputCount": 32,
+            "producerCount": 2,
+            "status": "saved",
+            "summary": "已保存完整中文分区：33条catalog合同全部覆盖，32个逻辑项（A16/B16），登记62个已读固定来源及SHA。明确复合文件拆分与唯一组装责任、两family未被银行选择，并记录公共writer的3种未列写出。仅文档编制与机械对账，未执行应用、CLI、生成、编译或测试。",
+            "unresolved": [
+              "应用CommandHelper三方法及runReplyingPolicy接线缺失；现有Accepted(events)忽略新State，回复类型与common artifact/API仍需裁定。",
+              "纯Command、Params、Decision与Entity内嵌State/Event的目标接口及FQN迁移需协调。",
+              "wire/PO移出domain前须确认kernel引用边界，不能引入kernel→glue依赖或合并名义类型。",
+              "Computations只有typed端口，未生成业务实现及逐方法独立BDD。",
+              "本地Factory/Bootstrap/Repository缺少raw集群生命周期完整接线；PID、重试、serializer与Actor停止策略不得自动推导。",
+              "PB布局、descriptor及converter公开ABI与raw基准不同，迁移必须保持字段号、精度、nominal及溢出语义。",
+              "catalog存在三项描述漂移：proto文件名实际来自context ID；codec未发descriptor身份常量；pure fold实际接线位于Bootstrap。",
+              "公共ledger/anchors及临时索引写出需要中央跨组去重；同输入完整文件对账、复杂度与行为验证均未运行。"
+            ]
+          },
+          {
+            "catalogOutputCount": 12,
+            "files": [
+              "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/ordinary-review.json",
+              "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/ordinary-review.md"
+            ],
+            "group": "ordinary-review",
+            "logicalOutputCount": 16,
+            "producerCount": 3,
+            "status": "saved",
+            "summary": "已保存中文内容级分区，覆盖全部12条catalog合同，形成16个B逻辑条目（A=0），无未覆盖合同。登记4类额外写出及4份带准确哈希的extraSources，明确共享writer、入口缺接线和银行未选择这三个producer的事实。未执行工程代码、生成、测试、编译或运行时验证。",
+            "unresolved": [
+              "ts-types真实直接发射器存在，但普通manifest与固定generate.mjs入口未接通；后续接线方式待裁定。",
+              "TS的long/timestamp精度与单位、未知类型string回退、optional及名义类型合同需语义裁定。",
+              "init-generator缺少已有文件保护，目录名替换缺少JSON转义与slug准入；覆盖策略待CLI owner裁定。",
+              "教学摘要没有知识keys；设计评审没有codeMappings，不能宣称细粒度代码跨度定位。",
+              "共享回执、项目知识库与pipeline队列清单需中央去重；4份extraSources仅只读登记，尚未补充固定基线。"
+            ]
+          }
+        ],
+        "pending": [],
+        "reviews": [
+          {
+            "group": "formal-domain",
+            "issues": [
+              "[P1] 纯命令载荷被整体放入 B，遗漏了它实际承担的 formal Rules 参数职责。定位 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-domain.json:1382-1466，以及 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-domain.md:61、85。不把纯 Command 当 Actor 协议是正确的，但不能由此推导其没有 A 对应。真实 JS /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-domain/render-domain.mjs:25-26、71-88 将这些 case class 直接作为纯规则的 p 参数；raw classic /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateRulesBuilder.scala:81-86 正是从命令参数排除 replyTo 后构造 paramFields，/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRulesTemplate.scala:42-46、68-71 再生成纯 Params 并传给规则。这是职责对应，不只是字段同构。至少应将被 Rules 消费的参数声明/字段列为 A aggregate-rules-formal 的参数构造；若 sealed Command/分发容器另有 B 职责，再具体拆分。FD-PARAM 可以保留接口迁移决策，但不能代替现有职责分类。",
+              "[P2] uncataloguedOutputs 漏掉 project capture 阶段的真实临时文件写入，--plan 也会经过该路径。定位 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-domain.json:4552-4596 和 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-domain.md:107-121。固定入口 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/lib/project/cli.mjs:91-101、171 在判断 planOnly 前调用默认启用的 roundtrip；实际 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/roundtrip.mjs:12-15、30-31 创建系统临时目录、反解树，最后删除；/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/decompose.mjs:297-317 明确 mkdirSync/writeFileSync 写出 entries。因此除了 SQLite 和 anchor 临时文件，还应登记系统临时目录下 truthsrc-rt-* 的反解树为 B 瞬态校验产物，说明作者格式/legacy 路径差异、唯一清理 owner、fixture 和不触碰原作者树的边界；不要把 SQLite 的“plan仅memory”扩展为整个 project 流程没有文件写入。这两份源码不在基线，需补 extraSources：roundtrip.mjs 为 1921 bytes，SHA-256 e90d9068f9e8fa53c3163bb5a08e2b24440b161ba1c2b2d975b250f05b8aac15；decompose.mjs 为 17820 bytes，SHA-256 2fcac2db003a0a03752fa914a3e7cbd7d0e259c85a5e432438a722a4ab8dc65e。本次仅只读发现，未执行或复制这些源码。",
+              "[P2] converter 的目标分区没有给共享 nominal/exact/container 转换声明确定落点。定位 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-domain.json:2541-2558。target.paths 只有按 Aggregate 命名的 Converters/Parts，但实际 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-domain/serialization.mjs:32-45 在每 context 为全部 type 建立一次 nominal/exact 节点，与聚合遍历分开；/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-domain/render-serialization.mjs:25-28、41-76 再为这些共享节点发出 encode/decode。多个聚合共享同一类型时，“按聚合与共享类型重新建立唯一所有权”并未说明共享方法落在哪个文件、由谁声明、各聚合如何调用；ExactValueCodecs 的 B 行只接走文本/wire/PO 方法，不能补上该缺口。应明确共享转换文件路径或确定的分配规则，覆盖共享类型、其容器与跨 Part 调用，并补多聚合共享类型 fixture；否则当前逐构造目标账仍可能造成重复声明或遗漏。"
+            ],
+            "summary": "已只读审阅 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-domain.json 和 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-domain.md，并读取相关入口、renderer、classic 模板及写入终点。两 producer 的 40 条 catalog 输出键精确覆盖，无缺失/额外记录，logicalIds/catalogRefs 双向引用完整；登记的 55 份固定来源与 baseline/index.json 的 SHA/bytes 相符，两份已有 extraSources 哈希也相符。计数完整不代表职责分区完整，发现上述三项。Actor Request 与纯载荷的区别、emit helper 不等于应用 CommandHelper、银行经 createEffectRegistry('2') 复用而非直接选择 domain-v2、family 独立注册不等于银行消费等描述与已读源码相符。repository、Saga/Monarch host 和 Play service 其余产物不属于这两个 producer 的分区，本次不对其它分区作完整结论。未修改文件，未执行项目代码、生成、测试、编译、运行或服务；不提供任何新 parity/behavior/runtime 认证。"
+          }
+        ]
+      },
+      {
+        "lane": 3,
+        "completed": [
+          {
+            "catalogOutputCount": 214,
+            "files": [
+              "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-application.json",
+              "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-application.md"
+            ],
+            "group": "formal-application",
+            "logicalOutputCount": 73,
+            "producerCount": 6,
+            "status": "saved",
+            "summary": "已保存完整中文分片：214条catalog记录全部映射至73条逻辑制品（A27、B46），无未映射覆盖项。登记64个固定源码及2个只读extraSources，保留版本、银行继承、复合文件组装所有权和未列写操作。未执行应用/CLI、生成、编译、测试或运行时验证。",
+            "unresolved": [
+              "FA-01：应用CommandHelper三方法及runReplyingPolicy接线缺失，逐命令回复合同待明确。",
+              "FA-02：只有awaitChildRun、没有invokeSaga/effect的父计划未进入hosted分支，会被当前renderer拒绝。",
+              "FA-03：具有外部入口的聚合使用显式命令测试向量时，Aggregate构造缺authority实参；尚未执行验证。",
+              "FA-04：receipt-derived completion仍明确拒绝；strict deadline/admission/独立namespace和真实幂等发布接口尚未对齐。",
+              "FA-05：建议的拆分迁移需统一接口、imports、配置和私有限定符，同时保持PB、PID、serializer、摘要、名义类型及溢出语义。",
+              "FA-06：库存专用oracle、空suite、多host固定测试路径冲突和child全量日志读取的资源界限仍需独立验收。"
+            ]
+          },
+          {
+            "catalogOutputCount": 38,
+            "files": [
+              "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/legacy-orchestration.json",
+              "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/legacy-orchestration.md"
+            ],
+            "group": "legacy-orchestration",
+            "logicalOutputCount": 70,
+            "producerCount": 5,
+            "status": "saved",
+            "summary": "已保存中文分区合同：38条catalog输出全部映射到70个逻辑制品（A31、B39），引用54个固定源码文件的完整字节哈希。另登记5条未列入catalog的parser写出及7条待中央去重的run-all关联写出。明确复合文件所有权、银行未选择本组producer、strict-scala入口封禁及实际实现差距。仅写指定两文件；未执行应用、CLI、生成、编译、测试或运行验证。",
+            "unresolved": [
+              "Policy parser输出与grouped emitter输入不兼容；run-all另行构造输入且仅取首trigger/invoke。",
+              "PolicyMachine忽略Future成功返回的Left；DLQ写失败仍推进的处置语义需要裁定。",
+              "Projection handler存在无条件???及SM残余；graph mergeLinkTolerant未实现，Projection session与仓库事务/外部I/O边界未实证。",
+              "读侧struct可选性与Mongo codec不一致；SQL无tenant仍生成分页、部分类型读取及rsBigDecimal符号需要核对。",
+              "Saga manifest的strict-scala明确封禁；classic participant API、mapReply源码槽与runner缺项尚未贯通。",
+              "run-all strict宿主统一使用faces[0]；至少两step、command trigger及CreditBalance/Fab/Lot硬编码限制需明确准入。",
+              "JS StrictWire集合边界及UTF-8拒绝与raw Scala不同；迁包和codec调整必须保留稳定身份、名义类型及既有语义。",
+              "7条run-all关联写出需中央与run-all/scaffold分区去重；Java fallback注释与实际off配置存在漂移。"
+            ]
+          },
+          {
+            "catalogOutputCount": 20,
+            "files": [
+              "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/family-seams-saga.json",
+              "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/family-seams-saga.md"
+            ],
+            "group": "family-seams-saga",
+            "logicalOutputCount": 33,
+            "producerCount": 2,
+            "status": "saved",
+            "summary": "已保存中文内容级分片：20/20条输出合同映射至33个逻辑条目（A 8、B 25），覆盖缺口为0。登记47份固定来源及3份只读补充来源，明确复合文件成员、初始化/import及唯一装配所有权。两个family均非银行所选或继承producer。未执行应用、CLI、测试、编译、生成或运行时。",
+            "unresolved": [
+              "三层布局迁移须协调codec跨模块依赖与冻结的外置FQN，不能自动修改binding或稳定身份。",
+              "无Play kernel与传统VO JSON companion、读仓DTO的归属差异需要裁定。",
+              "Strict模块技术合同门及fixture宿主的聚合适配、ClusterSingleton、事件源接线仍有A差距。",
+              "独立RunHost授权边界、两条恢复路径的原批次校验差异、缓存容量及外置资源关闭协议需要明确。",
+              "位置性辅助名称、FQN密度与大型WorkflowProgram需后续整改；复杂度及真实ABI、行为和恢复均无本轮验证。"
+            ]
+          },
+          {
+            "catalogOutputCount": 67,
+            "files": [
+              "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/retired-seven.json",
+              "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/retired-seven.md"
+            ],
+            "group": "retired-seven",
+            "logicalOutputCount": 73,
+            "producerCount": 7,
+            "status": "saved",
+            "summary": "已保存中文分区规格：7个producer的67个catalog输出键全部映射至73个逻辑项（A50、B23），包括1个未列入catalog的anchors原子写临时文件。登记64份固定来源和2份只读extraSources，明确复合文件所有权、退役静态调用链及银行未选择事实。未运行应用、CLI、测试、编译、生成或服务。",
+            "unresolved": [
+              "support-controller允许任意调用方字节；已完整分类实读sidecar的三个精确控制器，新增键仍需固定来源并逐项审读。",
+              "projection manualBlocks与staleGenerations.implOverrides可替换实际内容；后续同输入比较须固定所选sidecar完整字节，不能由renderer覆盖推断任意替换内容已覆盖。",
+              "catalog port-2实际为port文件内联bridge，没有独立文件writer；bridgeSkip恒false及跨包/module归属需要裁定。",
+              "ApplicationBootstrap未接入policy-exec bootstrap；空视图constructor尾项及ports集合存在装配缺口。",
+              "投影tableManual按对象读取字符串keysDecl；graph mergeEdge调用缺tenantId；graph mergeLinkTolerant仍为未实现槽。",
+              "Protocol自定义命令族/回复与API解析、bootstrap硬编码假设未闭合；多向量视图重复路由及故障分类需明确。",
+              "规则哨兵降级、SKIP、时间与版本运算、生成测试独立oracle及资源隔离需要内容级裁定；保持稳定业务ID、PB、PID、名义类型和溢出合同不变。"
+            ]
+          }
+        ],
+        "pending": [],
+        "reviews": [
+          {
+            "group": "formal-application",
+            "issues": [
+              "[P1] Connector 实现职责被整体归入 B。/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-application.json:5379-5455 将 Installed 的所有方法连同安装元数据归为 technical-bindings/B；但 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-application/render-technical-ports.mjs:16-28,43-48 实际生成了 external-submission、external-query、deployment 能力面的具体实现：检查输入/关联/secretRef，再委托注入的 callback。原始 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/connector/ConnectorImplTemplate.scala:8-12,34-60 的职责也明确是实现 Connector 并机械委托注入的手写基础设施，不要求模板自身完成外部后台。应把这三个 role 的实现构造拆为 A/connector-implementation，保留安装、所有权登记及其它宿主适配的 B 部分，共用现有 assembly owner；缺少 Guice/MANUAL 等是 A 差距，不能作为归 B 的理由。六个 producer 的 technical-port coverage 都应关联新增 A 行。",
+              "[P2] 构建文件的 constructDisposition 与真实写入位置相反。/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-application.json:3500-3512 把 applicationBuild 增加的 runtime resolver、saga-core 和 Monarch 应用依赖分配到插件元构建，同时把 sbt-protoc 插件及 sbt.version 混在主构建的构造条目中；properties 目标没有对应构造。真实 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-application/render-build.mjs:6-9 只向应用主构建追加这些 runtime 依赖，/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-domain/scaffold.mjs:9-10,50-54 则分别写主构建、插件元构建和 properties。按当前机器规格实施会改变依赖所属 classpath，并丢失明确的 sbt 版本写入归属。需按三个物理文件重新逐构造分配，而非只在 target.paths 列出它们。",
+              "[P2] Effect 的目标拆分只有路径清单，没有实际的能力面/装配分工。/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-application.json:7495-7507 列出应用 EffectPorts 与基础设施 EffectBindings 两个目标，却把 bindingOwnership、Implementation、Bindings、Installed、install 的全部构造都分给应用 EffectPorts；基础设施目标没有任何构造。真实 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-application/render-effect-hosts.mjs:32-47 清楚区分 callback 委托方法、对象持有、精确 pin 校验和安装构造。当前映射也直接违反同一行 openDecisions 所说的“应用只依赖能力面，绑定归装配”。应分别指定应用能力签名、安装元数据/校验、Installed 持有与委托、构造器可见性及 imports 的目标；说明第92行宿主 apply 如何依赖应用能力面，而非仅新增第二个文件名。",
+              "[P2] Child 的两个 PB 容器被错误映射为一个目标构造。/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-application.json:7420-7433 虽列出 child-plan execution schema 和 context-level child-host schema，但唯一 constructDisposition 把两者全部指向 execution schema，child-host schema 没有内容归属。真实 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-application/render-child-plans.mjs:7-12 是先逐计划生成 execution schema，再按去重后的 context 单独生成 ChildHostEventPB；两者 package 和基数均不同。应将 planversion/input/output 与 ChildHostEventPB 的固定六字段、各自 package/import 分别映射，增加同 context 多 child plan 的 fixture 条件，避免按现有账重复声明或遗漏 host schema。"
+            ],
+            "summary": "只读审阅了 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-application.json 和 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/partition/formal-application.md，并追读实际入口、关键 renderer、传统 Scala 模板及 terminal writer。机械对账确认六个 producer 的214条输出记录无漏项、无额外项，catalogRefs/coverage 双向及 channel 一致；64个登记基线文件的 bytes/SHA 与索引一致，两个 extraSources 的 SHA 也匹配。发现上述4项需修订问题，不能将清单覆盖等同内容分区完成。纯 payload 与 Actor 协议、emit helper 与三方法 CommandHelper 的区分成立；银行选择 Play service 并经 createEffectRegistry('2') 部分继承的表述成立，未发现把独立 family 宣称为银行消费。Play 专属 repository/service 输出不应反向计入本组六入口；writer 的项目数据库、anchor 临时文件及非整体原子事务边界已有记录。未写入任何文件，未执行项目代码、生成、测试、编译、类型检查或运行时验证，不提供 parity/runtime 认证。"
+          }
+        ]
+      }
+    ],
+    "note": "Central merge and source/coverage checks still required; no content equality or runtime acceptance implied."
+  },
+  "scope": "Documentation classification only, not runtime or implementation approval"
+}

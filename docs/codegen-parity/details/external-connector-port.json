@@ -1,0 +1,528 @@
+{
+  "group": "external-connector-port",
+  "artifactIds": [
+    "external-connector-port"
+  ],
+  "diffs": [
+    {
+      "artifactId": "external-connector-port",
+      "file": "diffs/external-connector-port.diff.md",
+      "status": "decision-required",
+      "counterpartStatus": "missing-counterpart",
+      "counterpartScope": "缺少已核实的 formal ConnectorMetadata 到传统 ConnectorModel 的输入接线；legacy emitter、formal TechnicalPorts、family module-seams typed port 均真实存在，但不互相等价。",
+      "scalaVariants": [
+        {
+          "id": "single-project",
+          "condition": "system.application.connectors 的每项经 ConnectorBuilder/ConnectorTemplate 生成；multiProject=false；writeArtifact 的 scope 守卫允许实际写入。",
+          "outputPaths": [
+            "<target>/app/<base-as-path>/application/connectors/<meta.name>.scala"
+          ],
+          "cardinality": "每 connector 一份，methods 为空仍发 trait；connectors 默认 Nil 则零份。",
+          "observation": "source-reachable-not-executed"
+        },
+        {
+          "id": "multi-project-fallback",
+          "condition": "multiProject=true；connector-iface 未在 targetModuleOf 注册，返回 None 并落 root app。",
+          "outputPaths": [
+            "<target>/app/<base-as-path>/application/connectors/<meta.name>.scala"
+          ],
+          "cardinality": "每个 scope 允许的 connector 一份；不是 modules/kernel 路径。",
+          "observation": "source-reachable-not-executed"
+        },
+        {
+          "id": "script-param",
+          "condition": "ConnectorMethodMetadata.scriptParam=None 时 def m()；Some(p) 时 def m(p: String)，没有参数默认值。",
+          "outputPaths": [
+            "<target>/app/<base-as-path>/application/connectors/<meta.name>.scala"
+          ],
+          "observation": "source-branch-not-executed"
+        },
+        {
+          "id": "knowledge-comment",
+          "condition": "noteId=Some(id) 时 trait 注解前发知识注释，并按现有元素 hash 表追加后缀；None 不发。方法 noteId 不被本模板消费。",
+          "outputPaths": [
+            "<target>/app/<base-as-path>/application/connectors/<meta.name>.scala"
+          ],
+          "observation": "source-branch-not-executed"
+        },
+        {
+          "id": "empty-methods",
+          "condition": "某 connector methods=Nil，仍发 package/import/说明/可选知识注释/ImplementedBy/空 trait。",
+          "outputPaths": [
+            "<target>/app/<base-as-path>/application/connectors/<meta.name>.scala"
+          ],
+          "observation": "source-branch-not-executed"
+        },
+        {
+          "id": "no-connectors",
+          "condition": "ApplicationLayer.connectors=Nil。",
+          "outputPaths": [],
+          "observation": "suppressed-condition-located"
+        },
+        {
+          "id": "scope-suppressed",
+          "condition": "currentScope.includes(attribution)=false；writer 在记录 ledger/morphisms 之后跳过文件写入。",
+          "outputPaths": [],
+          "observation": "suppressed-condition-located"
+        }
+      ],
+      "jsSources": [
+        {
+          "file": "generators/connector-dsl/parse.mjs",
+          "symbols": [
+            "top-level binding byte copy"
+          ],
+          "lane": "legacy",
+          "disposition": "adapt",
+          "lines": "1-5",
+          "note": "位置参数输入；读取 binding 原字节并写 spec，无结构校验。"
+        },
+        {
+          "file": "generators/connector-dsl/emit.mjs",
+          "symbols": [
+            "pkg",
+            "ifaceName",
+            "implName",
+            "methods",
+            "implMethods",
+            "iface",
+            "impl",
+            "writeFileSync"
+          ],
+          "lane": "legacy",
+          "disposition": "replace",
+          "lines": "6-64",
+          "note": "port 与 impl 同一源码容器；由集成者独占 split 后适配。默认 infrastructure 包、重复技术后缀、源码字符串参数/返回值、缺省 Future[Unit]、MANUAL ??? 与直接两文件覆盖均已登记。"
+        },
+        {
+          "file": "generators/connector-dsl/generator.json",
+          "symbols": [
+            "entrypoint=emit.mjs",
+            "version=0.1.0"
+          ],
+          "lane": "legacy",
+          "disposition": "adapt",
+          "lines": "1",
+          "note": "manifest 不是 formal registeredProductProducer 的注册证明。"
+        },
+        {
+          "file": "generators/pipeline.mjs",
+          "symbols": [
+            "ORDER",
+            "SOURCES",
+            "manifest.generators"
+          ],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "lines": "60-99,120-134",
+          "note": "列出 connector-dsl 但循环仅排队记 manifest，不实际调用 emitter。"
+        },
+        {
+          "file": "lib/products/generate-cli.mjs",
+          "symbols": [
+            "generateProductCli",
+            "registeredProductProducer",
+            "implementationProducers",
+            "planCompiledProducts"
+          ],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "45-101,110-145",
+          "note": "公共注册与 capture 由集成者管理；当前没有 connector-dsl 或 proposed scala-cqrs-connectors-v1 注册。"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/generate.mjs",
+          "symbols": [
+            "inherited",
+            "registry",
+            "generate"
+          ],
+          "lane": "formal",
+          "disposition": "reuse",
+          "lines": "16-28,59-70",
+          "note": "实读继承 createEffectRegistry('2')，未调用 legacy connector emitter 或 family portTemplate。"
+        },
+        {
+          "file": "generators/scala-cqrs-application/produce-effect.mjs",
+          "symbols": [
+            "createEffectRegistry"
+          ],
+          "lane": "formal",
+          "disposition": "reuse",
+          "lines": "6-25"
+        },
+        {
+          "file": "generators/scala-cqrs-application/produce.mjs",
+          "symbols": [
+            "applicationRegistry",
+            "finite-host-dsl"
+          ],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "17-29",
+          "note": "TechnicalPorts 入口由 composite owner 独占；D1 前不改接线。"
+        },
+        {
+          "file": "generators/scala-cqrs-application/render-technical-ports.mjs",
+          "symbols": [
+            "renderTechnicalPorts",
+            "field",
+            "nonNull",
+            "textualValue",
+            "owner",
+            "installedRun"
+          ],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "1-56",
+          "note": "conditional-on-D1；全部 role body、run/operation/completion、bindings/identity guards 保留显式归属，不替换成传统 String 脚本端口。"
+        },
+        {
+          "file": "generators/scala-cqrs-domain/naming.mjs",
+          "symbols": [
+            "typeName",
+            "pathFor",
+            "entry"
+          ],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "15-31",
+          "note": "当前 nominal 直接 FQN；TechnicalPorts entry 仅顶层 nominal deps 且未传 codeMappings。共享 owner 决定迁移。"
+        },
+        {
+          "file": "generators/scala-cqrs-module-seams-v1/build-models.mjs",
+          "symbols": [
+            "resolveModuleSeamsTarget",
+            "typePaths",
+            "buildModels",
+            "resolveType",
+            "fields",
+            "ports"
+          ],
+          "lane": "family",
+          "disposition": "reuse",
+          "lines": "28-110,186-195,224-238",
+          "note": "有有限 typed port model 和递归文件依赖，但无传统 isImplementedBy/intent/同包返回名等价映射；不是获准改 family 的写集合。"
+        },
+        {
+          "file": "generators/scala-cqrs-module-seams-v1/templates/scala.mjs",
+          "symbols": [
+            "scalaSymbol",
+            "scalaType",
+            "resultType",
+            "fields",
+            "method",
+            "portTemplate"
+          ],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "1-34,53-57",
+          "note": "若批准复用仅提取适配概念；当前 plain/future、_root_ FQN、source mapping 合同不能直接当传统 ConnectorTemplate。"
+        },
+        {
+          "file": "generators/scala-cqrs-module-seams-v1/render.mjs",
+          "symbols": [
+            "render"
+          ],
+          "lane": "family",
+          "disposition": "reuse",
+          "lines": "13-18,29-58"
+        },
+        {
+          "file": "generators/scala-cqrs-module-seams-v1/generate.mjs",
+          "symbols": [
+            "generate"
+          ],
+          "lane": "family",
+          "disposition": "reuse",
+          "lines": "13-44",
+          "note": "真实 public entry 强制 live implementation capture；不得绕过 generate-project。"
+        },
+        {
+          "file": "generators/scala-cqrs-saga-monarch-v1/templates/workflow.mjs",
+          "symbols": [
+            "emitted connector(area): ExternalOperationPort"
+          ],
+          "lane": "family",
+          "disposition": "not-wired",
+          "lines": "106-125",
+          "note": "此 not-wired 指没有接到传统 ConnectorTemplate 对应面，不表示整个 family 不可达；它是带身份/manifest/reservations 调用的不同 runtime adapter，不在本族拟改范围。"
+        }
+      ],
+      "writeSet": [
+        "generators/scala-cqrs-connectors-v1/model.mjs",
+        "generators/scala-cqrs-connectors-v1/build-models.mjs",
+        "generators/scala-cqrs-connectors-v1/templates/connector-port.mjs",
+        "generators/scala-cqrs-connectors-v1/generate.mjs",
+        "generators/scala-cqrs-connectors-v1/generator.json"
+      ],
+      "writeSetStatus": "全部为 proposed，D1/D4 裁定后才可实施；本次未创建这些文件。",
+      "sharedWriteSet": [
+        {
+          "owner": "integrator-shared-layout-types",
+          "files": [
+            "lib/scala-target/naming.mjs",
+            "lib/scala-target/model.mjs",
+            "lib/scala-target/profiles.mjs"
+          ]
+        },
+        {
+          "owner": "integrator-public-entry",
+          "files": [
+            "lib/products/generate-cli.mjs",
+            "lib/products/registry.mjs",
+            "lib/project/derive.mjs"
+          ]
+        },
+        {
+          "owner": "integrator-legacy-connector-assembly",
+          "files": [
+            "generators/connector-dsl/emit.mjs",
+            "generators/connector-dsl/parse.mjs",
+            "generators/connector-dsl/generator.json"
+          ],
+          "condition": "与 connector-implementation 先拆物理容器，再迁移 port；不能两个 owner 各覆盖 emitter。"
+        },
+        {
+          "owner": "integrator-formal-technical-ports-assembly",
+          "files": [
+            "generators/scala-cqrs-application/render-technical-ports.mjs",
+            "generators/scala-cqrs-application/produce.mjs"
+          ],
+          "condition": "仅在 D1 明确 typed role 映射与全部 composite 消费者迁移后。"
+        },
+        {
+          "owner": "integrator-final-byte-writer",
+          "files": [
+            "src/core/generate.mjs"
+          ],
+          "condition": "格式、来源、owned retirement 的共享接缝；不直接编辑应用 ledger/anchors。"
+        }
+      ],
+      "assemblyOwners": [
+        {
+          "physicalOutput": "<target>/app/<base-as-path>/application/connectors/<Name>.scala",
+          "owner": "external-connector-port",
+          "rule": "唯一新 port entry owner；不输出 impl body。"
+        },
+        {
+          "physicalSource": "generators/connector-dsl/emit.mjs",
+          "owner": "integrator-legacy-connector-assembly",
+          "rule": "port/impl split 单写者。"
+        },
+        {
+          "physicalOutput": "<target>/app/<base-as-path>/application/<hostStem>TechnicalPorts.scala",
+          "owner": "integrator-formal-technical-ports-assembly",
+          "rule": "J00-J12 整体保全；本族不删除 companion/install/callback guards。"
+        }
+      ],
+      "dependsOn": [
+        "shared-layout-types",
+        "shared-public-product-admission",
+        "shared-final-byte-writer-anchors",
+        "connector-implementation",
+        "formal-technical-ports-assembly-owner"
+      ],
+      "conflictsWith": [
+        "connector-implementation 对 generators/connector-dsl/emit.mjs 的修改",
+        "formal host/TechnicalPorts 对 render-technical-ports.mjs 和 produce.mjs 的修改",
+        "family module-seams 对共享 build-models/templates 的修改"
+      ],
+      "glue": [
+        "net.imadz.codegen.scaffolding.cqrs.ArtifactModel",
+        "net.imadz.codegen.scaffolding.cqrs.TypeRef",
+        "net.imadz.codegen.scaffolding.cqrs.FieldDef",
+        "net.imadz.codegen.scaffolding.cqrs.GeneratorContext",
+        "net.imadz.codegen.scaffolding.cqrs.dsl.CodeGenerationDSL.ImportDeclaration.code",
+        "net.imadz.codegen.scaffolding.cqrs.CQRSApplicationGenerator.annotateKnowledge",
+        "net.imadz.codegen.structure.PackageLayout.application.connectors",
+        "net.imadz.codegen.structure.PackageLayout.infrastructure.connectors",
+        "net.imadz.codegen.structure.NamingConventions.connectorImplName",
+        "net.imadz.codegen.structure.NamingConventions.scalaIdentifier",
+        "scala.concurrent.Future",
+        "java.lang.String",
+        "com.google.inject.ImplementedBy",
+        "javax.inject._",
+        "<base>.application.connectors.<returnTypeName>",
+        "<base>.infrastructure.connectors.<Name>Impl",
+        "<base>.infrastructure.process.<HelperName>",
+        "net.imadz.infra.saga.strict.OperationIdentity",
+        "net.imadz.infra.saga.strict.TransactionIdentity"
+      ],
+      "sourcePins": [
+        {
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/ConnectorModel.scala",
+          "bytes": 821,
+          "sha256": "c865504f1a744bac5793da4eb974d83c14abcb494933d8a093ffcaea9ac47d61",
+          "readCoverage": "full"
+        },
+        {
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/ConnectorBuilder.scala",
+          "bytes": 1670,
+          "sha256": "be8c2cf7eb69dbb73ec2b86b910b93792766d0cc77e31d2d40935637f7caea7c",
+          "readCoverage": "full"
+        },
+        {
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ConnectorTemplate.scala",
+          "bytes": 1963,
+          "sha256": "091fadf11eb1636c9f411794b8e9c16e90ce8a0c3ea9e4671fd51ff81b765811",
+          "readCoverage": "full"
+        },
+        {
+          "snapshot": "baseline/js/generators/connector-dsl/emit.mjs",
+          "bytes": 1635,
+          "sha256": "c1d4290d23944e1d5ab7f0c8b5daa7d9bd3dc48f37342007ed7e0d7704b602e6",
+          "readCoverage": "full"
+        },
+        {
+          "snapshot": "baseline/js/generators/scala-cqrs-application/render-technical-ports.mjs",
+          "bytes": 7615,
+          "sha256": "f1d09894cfbd40abacb68fbf59329c708373f530eb60b1df6b8cf4ffa44d9b09",
+          "readCoverage": "full"
+        },
+        {
+          "snapshot": "baseline/actual-js/app/example/bankwealth/application/bank_payment_hostTechnicalPorts.scala",
+          "source": "generated/current/app/example/bankwealth/application/bank_payment_hostTechnicalPorts.scala",
+          "repo": "bank",
+          "bytes": 53668,
+          "sha256": "00acf25ce2f0688ea7ac6a9eacf89ccaa98f64dc7e72e0ff1c40bc03619b31ee",
+          "readCoverage": "full, bounded sections 1-145 and 146-240"
+        },
+        {
+          "snapshot": "baseline/js/generators/scala-cqrs-module-seams-v1/build-models.mjs",
+          "bytes": 19378,
+          "sha256": "c569e6e3f38db5ac6d74f77f7f7b97524bcdb683bb19be9caca13216b418fd37",
+          "readCoverage": "full, bounded sections"
+        },
+        {
+          "snapshot": "baseline/js/generators/scala-cqrs-module-seams-v1/templates/scala.mjs",
+          "bytes": 9338,
+          "sha256": "69b6a821feb8bd97c709afd1e19b1fab37cea7d16892295e83ec04acc27eec1e",
+          "readCoverage": "full; only port responsibility and signature support classified here"
+        },
+        {
+          "snapshot": "baseline/curated-scala/net/imadz/application/aggregates/repository/CreditBalanceRepository.scala",
+          "bytes": 518,
+          "sha256": "e3cd76eab166ce2eb17128e3e5b6377198a15bfd10f16bd8e94a5c48c3a60a00",
+          "readCoverage": "full; structural analogy only, not connector golden"
+        }
+      ],
+      "sourceComparison": {
+        "rawScala": "完整 MBT 与 writer 分支已读取并在 diff 保留；没有新执行的 connector 产物。",
+        "approvedTarget": "默认传统结构叠加已批准布局/命名约束；DI/import/input/source 特定裁定未完成，没有伪造 expected 文件。",
+        "actualJs": "银行 frozen TechnicalPorts 完整文件与 legacy 真实模板分账；均未重生成。",
+        "curatedReference": "CreditBalanceRepository 仅为应用端口 annotation 风格类比，基线未提供本族 connector golden。",
+        "sameInputOutputsExist": false,
+        "comparisonKind": "structural-not-byte-parity"
+      },
+      "constructAccounts": {
+        "model": "diff 第 3.1 节：五个 ConnectorModel 字段、五个 ConnectorMethodModel 字段、FieldDef 六字段、TypeRef 三字段与递归/签名规则、ArtifactModel 继承默认值。",
+        "builder": "B01-B10：所有 name/package/method/parameter/return/intent/note/dependency 规则；元数据未消费字段单列。",
+        "template": "C00-C10：writer 头、package/import 二次排序、固定说明、optional knowledge、ImplementedBy RHS、trait、全方法循环与 Logic 注释、尾部空行及未生成的 construct。",
+        "formalComposite": "J00-J12：银行 P 的 30 条声明与 companions 全字段/default/body/guards，renderer 未实例化角色另列。"
+      },
+      "slotsAndDefects": [
+        "port 抽象 def 没有 body，不是默认成功。",
+        "ConnectorImplBuilder 仅 methods.headOption 且 parameters=Nil，与 port 多方法/scriptParam 不一致。",
+        "impl 有 helper 时默认 runner.run(script) 或 runner.run()；无 helper 精确保留 ???；MANUAL 不能改成假成功。",
+        "返回 case class 是手写供应义务，GateRunResult 仅为原注释示例。",
+        "raw method noteId 不输出，ArtifactModel.noteIds/morphisms 仍 Nil。",
+        "raw imports 含未使用 javax.inject._；Future 不在 Model.dependencies 中，模板以 FQN 发射。",
+        "legacy params/returnType 是源码串，不能直接转为 BC 参数或对 Future 再包一层。"
+      ],
+      "fixtures": [
+        {
+          "id": "F1",
+          "status": "proposed-not-created",
+          "scope": "零参数单方法；显式 connector/method/result/intent，验证一层 Future 和空参数括号。"
+        },
+        {
+          "id": "F2",
+          "status": "proposed-not-created",
+          "scope": "多方法、不同返回名、Some(script)/None；暴露 impl 参数/基数冲突，不当作编译可过。"
+        },
+        {
+          "id": "F3",
+          "status": "proposed-not-created",
+          "scope": "有无 note/hash、关键字、非法名称及类型/import 碰撞；无虚构来源。"
+        },
+        {
+          "id": "F4",
+          "status": "proposed-not-created",
+          "scope": "无 connectors、空 methods、scope 跳过、single/multi fallback。"
+        },
+        {
+          "id": "F5",
+          "status": "proposed-not-created",
+          "scope": "银行固定 P 为结构反例；独立非银行输入用于 D1 typed 映射和 callback/身份语义。"
+        }
+      ],
+      "cliShapes": [
+        {
+          "lane": "legacy",
+          "command": "node /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/generators/connector-dsl/emit.mjs /absolute/approved-fixture/legacy-spec.json /absolute/owned-new-target/legacy",
+          "status": "existing-shape-not-run",
+          "sideEffects": "读 JSON、mkdir、直接先写 iface 再写 impl、stdout；无 ledger/anchor/graph，无内建 plan 或事务。"
+        },
+        {
+          "lane": "formal-proposed",
+          "command": "node /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/bin/truthsrc.js generate-products --request /absolute/approved-fixture/request.json --generator /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/generators/scala-cqrs-connectors-v1 --out /absolute/owned-new-target/connector-port --options-json /absolute/approved-fixture/options.json --plan",
+          "status": "proposed-producer-not-registered-not-run",
+          "sideEffects": "shape 来自真实四必填参数 CLI；D4 前不能成功准入。plan 为捕获/产品编译/内存产物；去掉 plan 后写源文件及 truthsrc.ledger.json、anchors.json；不保证回滚。"
+        },
+        {
+          "lane": "family",
+          "command": "node /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/bin/truthsrc.js generate-project --project /absolute/approved-fixture/truthsrc.project.json --out /absolute/owned-new-target/module-seams-connector-review --plan",
+          "status": "existing-shape-fixture-not-created-not-run",
+          "sideEffects": "capture/validate/roundtrip/compile；implementation verifier 在 plan 返回之前执行，其非基线闭包副作用 D8 未核。非 plan 写 project SQLite graph、.truthsrc 四份 evidence、源码、ledger/anchors；新 out 不隔离 graph。"
+        },
+        {
+          "lane": "raw-scala",
+          "command": "sbt -Dcodegen.systemFile=/absolute/approved-fixture/canonical.json -Dcodegen.systemBindings=/absolute/approved-fixture/scala-bindings.json -Dcodegen.targetDir=/absolute/owned-new-target/raw-scala-connectors -Dcodegen.multiProject=false -Dcodegen.ledger=/absolute/owned-new-target/raw-scala-connectors/connector-ledger.json \"runMain net.imadz.codegen.CodegenMain\"",
+          "cwd": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+          "status": "existing-shape-connector-input-lowering-unconfirmed-not-run",
+          "sideEffects": "JVM/sbt、可能编译/依赖解析下载及 target/cache、复制 scaffold、完整 fixture 分层/proto/账项/发布 manifest/可选 formal-semantics；无本族 only 开关，必须集中授权离线窗口。"
+        }
+      ],
+      "acceptance": {
+        "sameInputWholeFiles": "not-run",
+        "constructAndRhsComparison": "source-specification-only",
+        "realInterfaceCompilation": "not-run; D2/D3/D4 unresolved",
+        "behavior": "not-run; no connector implementation fabricated",
+        "stableGenerationAndAnchors": "not-run",
+        "complexity": "not-measured",
+        "complexityGoal": "普通方法 CC <=5；6-10 逐方法说明；>10 重构或逐方法裁定，不允许 String/Any dispatcher 刷分。",
+        "protectedContracts": [
+          "CommandHelper 在 application.aggregates.behaviors，保留 toParam/createFailureReply/createSuccessReply",
+          "typed replyTo 仅条件性加入应用 Actor commands，domain params/events 无 ActorRef",
+          "失败不 persist，成功持久化和事件应用后 thenReply 读新 state",
+          "replyWith 不等于 replyWithAndPublish",
+          "PB/PID/serializer/名义类型/overflow/OperationIdentity/TransactionIdentity 不改变",
+          "MANUAL/??? 和手写返回类/runner 供应缺口不被默认成功替代"
+        ]
+      },
+      "openDecisions": [
+        "D1：限定 BC Node 工具连接器，或显式批准 formal typed TechnicalPorts 中哪些 role/签名可映射；不能把银行 30 条 callback 压成 String 脚本能力。",
+        "D2：保留 @ImplementedBy 的 application→infrastructure 例外还是 infrastructure.bootstrap 显式绑定；多模块保留 app fallback 还是批准新模块和依赖。",
+        "D3：ConnectorImplBuilder 只首方法/parameters Nil 如何与 port 多方法/scriptParam 一致；谁提供真实返回类和 runner.run ABI。",
+        "D4：新的 versioned connector product 或有限 family adapter、准确 manifest/profile/registry owner 与可摄入全部字段的双端 fixture 输入。",
+        "D5：raw trait noteId、未输出 method noteId、noteIds=Nil 的来源粒度是否保留或显式补足，不虚构方法身份。",
+        "D6：是否批准删除 javax.inject._、Future 简名 import 与 import 分组作为 raw 对照的有限排版例外。",
+        "D7：空 methods、非法/冲突名称、非简单 returnTypeName、intent 换行的有限准入/拒绝规则，不猜 Unit/script/timeout。",
+        "D8：若采用 generate-project，先读取并记录 implementation verifier 的新增来源 SHA，核定子进程/临时文件/缓存/离线 pins；--plan 不等于无副作用。"
+      ],
+      "extraSources": []
+    }
+  ],
+  "baselineHeads": {
+    "js": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+    "bc": "cc335eb1e0d0fae17bf092fd61b126040196ea70"
+  },
+  "phase": "documentation-only-source-content-inspection",
+  "generatorsModified": false,
+  "runtimeExecuted": false,
+  "testsExecuted": false,
+  "generationExecuted": false,
+  "truthTreeChanged": false,
+  "extraSources": []
+}

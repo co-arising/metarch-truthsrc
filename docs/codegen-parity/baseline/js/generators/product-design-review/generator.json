@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "truthsrc.product-generator/v1",
+  "name": "product-design-review",
+  "version": "1",
+  "targetProfile": "product-design-review@1",
+  "products": [
+    {"id": "reference-layout", "version": "1", "payloadSchemaVersion": "truthsrc.reference-layout/v1", "capabilities": [{"id": "qualified-reference-layout", "version": "1"}]},
+    {"id": "product-design", "version": "1", "payloadSchemaVersion": "truthsrc.product-design/v1", "capabilities": [{"id": "five-plane-product-design", "version": "1"}]}
+  ],
+  "producers": [
+    {"id": "product-design-review", "version": "1", "products": ["reference-layout", "product-design"], "artifactKinds": ["design-model", "design-plane", "design-source-index"]}
+  ],
+  "artifactKinds": ["design-model", "design-plane", "design-source-index"],
+  "options": []
+}

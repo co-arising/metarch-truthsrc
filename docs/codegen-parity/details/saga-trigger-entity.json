@@ -1,0 +1,393 @@
+{
+  "group": "saga-trigger-entity",
+  "artifactIds": [
+    "saga-trigger-entity"
+  ],
+  "diffs": [
+    {
+      "artifactId": "saga-trigger-entity",
+      "file": "diffs/saga-trigger-entity.diff.md",
+      "status": "missing-counterpart",
+      "scalaVariants": [
+        {
+          "id": "classic-present-single-project",
+          "condition": "runCommon 的 generateApplicationLayer 遍历 app.sagas；args 为 Some；前序生成未失败且 scope/territory 允许写。每条 metadata 一份 Entity；代码没有独立 version == 3 判断。",
+          "outputPaths": [
+            "<target>/app/<basePackagePath>/domain/entities/<baseName>TransactionEntity.scala"
+          ],
+          "cardinality": "每条可写 Saga 1 个文件",
+          "observed": "enabled-source-only-not-exercised"
+        },
+        {
+          "id": "classic-present-multi-project",
+          "condition": "multiProject=true；saga-trigger-entity 未列入 targetModuleOf，raw writer fallback app，不自动落 kernel module。",
+          "outputPaths": [
+            "<target>/app/<basePackagePath>/domain/entities/<baseName>TransactionEntity.scala"
+          ],
+          "cardinality": "每条可写 Saga 1 个文件",
+          "observed": "target-module-decision-required"
+        },
+        {
+          "id": "no-sagas",
+          "condition": "app.sagas 为空，本族不调度。",
+          "outputPaths": [],
+          "cardinality": "0",
+          "observed": "suppressed-condition-not-exercised"
+        },
+        {
+          "id": "missing-args",
+          "condition": "meta.args=None；buildEntity 抛 RuntimeException，不是成功 suppression；整个链可能已有更早制品写入。",
+          "outputPaths": [],
+          "observed": "rejected-source-branch-not-exercised"
+        },
+        {
+          "id": "empty-args",
+          "condition": "args=Some 且 fields 为空；Builder 无拒绝，Template 发 TransactionInitiated(, timestamp: Long)，需裁定拒绝或 timestamp-only。未验证更上游准入。",
+          "outputPaths": [
+            "<target>/app/<basePackagePath>/domain/entities/<baseName>TransactionEntity.scala"
+          ],
+          "observed": "decision-required"
+        },
+        {
+          "id": "scope-or-territory-skip",
+          "condition": "writeArtifact 可在记账后 scope return，或 territorial writer 不写入；模型计数不能当实际写成文件数。",
+          "outputPaths": [],
+          "observed": "conditional-not-exercised"
+        }
+      ],
+      "jsSources": [
+        {
+          "file": "lib/products/generate-cli.mjs",
+          "symbols": [
+            "registeredProductProducer",
+            "generateProductCli",
+            "planCompiledProducts"
+          ],
+          "lane": "formal",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/generate.mjs",
+          "symbols": [
+            "inherited",
+            "registry",
+            "generate"
+          ],
+          "lane": "formal",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-application/produce-effect.mjs",
+          "symbols": [
+            "createEffectRegistry"
+          ],
+          "lane": "formal",
+          "disposition": "reuse"
+        },
+        {
+          "file": "generators/scala-cqrs-application/produce.mjs",
+          "symbols": [
+            "applicationRegistry",
+            "finite-host-dsl"
+          ],
+          "lane": "formal",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-application/render-invocation-host.mjs",
+          "symbols": [
+            "renderInvocationHosts"
+          ],
+          "lane": "formal",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-application/render-pipeline-invocation.mjs",
+          "symbols": [
+            "renderPipelineInvocation"
+          ],
+          "lane": "formal",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-application/render-host-io.mjs",
+          "symbols": [
+            "wireHostIO",
+            "renderHostIO"
+          ],
+          "lane": "formal",
+          "disposition": "adapt"
+        },
+        {
+          "file": "generators/scala-cqrs-application/render-host.mjs",
+          "symbols": [
+            "renderDefinitions"
+          ],
+          "lane": "formal",
+          "disposition": "reuse"
+        },
+        {
+          "file": "generators/saga-dsl/generate.mjs",
+          "symbols": [
+            "generate",
+            "buildStrictPlan",
+            "runtimeBlocked"
+          ],
+          "lane": "legacy",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/saga-dsl/emit.mjs",
+          "symbols": [
+            "emitLegacySagaSpec"
+          ],
+          "lane": "legacy",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/saga-dsl/emit-strict-host.mjs",
+          "symbols": [
+            "emitStrictHostFiles"
+          ],
+          "lane": "legacy",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/saga-dsl/emit-invocation-host.mjs",
+          "symbols": [
+            "emitInvocationHostFiles"
+          ],
+          "lane": "legacy",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/scala-cqrs-saga-monarch-v1/generate.mjs",
+          "symbols": [
+            "generate",
+            "resolveSagaMonarchTarget"
+          ],
+          "lane": "family",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/scala-cqrs-saga-monarch-v1/build-models.mjs",
+          "symbols": [
+            "buildModels",
+            "resolveSagaMonarchTarget"
+          ],
+          "lane": "family",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/scala-cqrs-saga-monarch-v1/render.mjs",
+          "symbols": [
+            "render"
+          ],
+          "lane": "family",
+          "disposition": "not-wired"
+        },
+        {
+          "file": "generators/scala-cqrs-saga-monarch-v1/templates/saga.mjs",
+          "symbols": [
+            "sagaTemplate"
+          ],
+          "lane": "family",
+          "disposition": "not-wired"
+        }
+      ],
+      "jsDispositionMeaning": "not-wired 指未接入经典 saga-trigger-entity 对应链，不表示 family producer 未注册或 legacy 不能通过自己的公开入口调用。adapt/reuse 是后续有条件复用方向，不是本次修改或已证实语义等价。",
+      "writeSet": [
+        "generators/scala-cqrs-saga-trigger-v1/models/entity.mjs",
+        "generators/scala-cqrs-saga-trigger-v1/build-entity-model.mjs",
+        "generators/scala-cqrs-saga-trigger-v1/templates/entity.mjs",
+        "test/codegen-parity/saga-trigger-entity.test.mjs"
+      ],
+      "writeSetStatus": "以上全部 proposed；未创建、未实现。仅供下一阶段 Entity 独占工作面，需先裁定 D1。",
+      "sharedWriteSet": [
+        {
+          "owner": "saga-trigger-family-integration",
+          "status": "proposed",
+          "files": [
+            "generators/scala-cqrs-saga-trigger-v1/generate.mjs",
+            "generators/scala-cqrs-saga-trigger-v1/render.mjs",
+            "generators/scala-cqrs-saga-trigger-v1/generator.json"
+          ],
+          "responsibility": "唯一组装 Protocol/Entity/Root/Behaviors 四件，禁止多 owner 拼同一物理文件。"
+        },
+        {
+          "owner": "formal-host-assembly",
+          "status": "conditional-on-D1",
+          "files": [
+            "generators/scala-cqrs-application/render-invocation-host.mjs",
+            "generators/scala-cqrs-application/render-pipeline-invocation.mjs",
+            "generators/scala-cqrs-application/render-host-io.mjs",
+            "generators/scala-cqrs-application/produce.mjs",
+            "generators/scala-cqrs-play-service/generate.mjs"
+          ],
+          "responsibility": "保留 host 七字段、五事件和 admission/投递证据；由结构模型替换 wireHostIO 文本注入，不能由 Entity owner 单独删宿主事实。"
+        },
+        {
+          "owner": "shared-layout-types-and-entry-integration",
+          "status": "interface-decision-required",
+          "files": [
+            "lib/scala-target/naming.mjs",
+            "lib/scala-target/model.mjs",
+            "lib/scala-target/profiles.mjs",
+            "lib/products/generate-cli.mjs",
+            "lib/project/derive.mjs",
+            "lib/project/cli.mjs"
+          ],
+          "responsibility": "固定 TypeRef/import/嵌套 owner、物理 profile 和产品准入；未实读的共享实现不假称可直接等价复用。"
+        }
+      ],
+      "dependsOn": [
+        "shared-layout-types",
+        "saga-trigger-protocol",
+        "saga-trigger-root",
+        "saga-trigger-behaviors",
+        "saga-definition",
+        "formal-host-assembly",
+        "shared-writer-anchors",
+        "serializer-identity-contract"
+      ],
+      "glue": [
+        "net.imadz.common.CborSerializable",
+        "net.imadz.common.CommonTypes.Id",
+        "scala.Option",
+        "scala.None",
+        "java.lang.String",
+        "scala.Long",
+        "net.imadz.infra.saga.SagaTransactionCoordinator",
+        "net.imadz.infra.saga.SagaTransactionCoordinator.StartSaga",
+        "net.imadz.infra.saga.SagaTransactionCoordinator.TransactionResult",
+        "net.imadz.infra.saga.strict.StrictSagaCoordinator",
+        "net.imadz.infra.saga.strict.TransactionIdentity",
+        "net.imadz.infra.saga.strict.StrictState",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.CommandHelper",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.runReplyingPolicy"
+      ],
+      "glueBoundary": "Entity 直接依赖 marker、Scala 基础类型及 args TypeRef；coordinator/CommandHelper 只属于跨制品消费者合同。源码存在不证明已消费 JAR 的 ABI，未读取或运行 JAR。",
+      "openDecisions": [
+        "D1 classic-vs-strict-counterpart：新增独立 classic product/producer，还是保留正式 host durable model 后分离纯实体；严格五结果及 admission/投递不能降格为经典三事件。",
+        "D2 args-admission：空 args 选择拒绝或 timestamp-only；timestamp/重复字段/Scala 参数名的准入责任需明确，raw Template 存在空参数逗号缺陷。",
+        "D3 source-name-vs-stable-id：全局 replace 与 suffix resolver 差异、嵌套类型 owner 和多个 Saga 同名事件注册；不得改变稳定业务或持久化身份。",
+        "D4 imports-marker-and-supply：frameworkPackage 与硬编码 marker、未使用 Id 依赖/ledger、递归 imports 冲突策略，以及 common JAR/scaffold 实际供给需一致。",
+        "D5 state-lifecycle：raw applyEvent 只改 status、保留 id 且无 terminal guard；是否增强必须由业务/Actor 合同裁定，不能默认添加。",
+        "D6 physical-profile-and-owner：multiProject raw 本 kind fallback app；目标物理 module、四件家族/serializer 调用方和唯一组装 owner 接口需确认。",
+        "D7 same-input-cli-fixture-and-effects：缺双端等价 classic fixture、formal adapter 产 app.sagas 证明和新 registered producer；未来命令版本头/离线供给/委托 verifier 传递副作用/准确行为 runner 尚待封闭。"
+      ],
+      "extraSources": [
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/project/implementation-evidence.mjs | sha256=da6889091818f35bac0e3a62e04a862ee4268fef6f7b94cad6fed80cb637aa76"
+      ],
+      "extraSourceEvidence": [
+        {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/project/implementation-evidence.mjs",
+          "bytes": 2794,
+          "sha256": "da6889091818f35bac0e3a62e04a862ee4268fef6f7b94cad6fed80cb637aa76",
+          "linesRead": "1-47",
+          "purpose": "补齐 generate-project 在 plan 前调用外置源码 verifier 的已知边界；没有复制或修改，委托 verifier 传递副作用仍为 D7。",
+          "sourceMode": "current-working-copy-not-in-baseline"
+        }
+      ],
+      "fixedHeads": {
+        "js": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+        "bc": "cc335eb1e0d0fae17bf092fd61b126040196ea70"
+      },
+      "fixedSources": [
+        {
+          "role": "model",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/SagaTriggerModels.scala",
+          "bytes": 2982,
+          "sha256": "c7331985fb13f32e0f8104fed9110893703eece551f03c7da031796a073db2f1",
+          "read": "full-file; Entity L31-38; sibling model fields separately accounted"
+        },
+        {
+          "role": "builder",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaTriggerBuilder.scala",
+          "bytes": 8368,
+          "sha256": "43876918912c7a5c97e18a647821f1467c74f6ee0ed058906de4d76a25cfa664",
+          "read": "full-file; buildEntity L51-70; sibling methods and argsCtorExpr branches separately accounted"
+        },
+        {
+          "role": "template",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerEntityTemplate.scala",
+          "bytes": 2442,
+          "sha256": "914c4d4dc1ca86a9c0d3533d3251468917e33c3108c3837534c18d95811ece39",
+          "read": "full-file L1-55; complete source and T01-T11 construct/RHS table"
+        },
+        {
+          "role": "actual-js-existing-bank-output",
+          "snapshot": "baseline/actual-js/app/example/bankwealth/application/bank_payment_hostHost.scala",
+          "bytes": 11966,
+          "sha256": "e74f76532abdadc384d4fda34cad3d8896d34898c5996b3e3fa85758afa986c4",
+          "read": "full-file L1-131; complete ordered construct/body inventory; different-input strict pipeline host"
+        },
+        {
+          "role": "curated-reference-other-artifact",
+          "snapshot": "baseline/curated-scala/net/imadz/domain/entities/CreditBalanceEntity.scala",
+          "bytes": 1259,
+          "sha256": "c2e41213ec31561448256c2cec955ce589e7e0a39b721a11828c37ec6b3bd555",
+          "read": "full-file L1-29; grouping reference only, not classic Saga golden"
+        }
+      ],
+      "comparison": {
+        "rawScala": "完整固定 MBT，未取得本次执行的生成文件",
+        "approvedTarget": "非空 args、标准无冲突 marker 的完整参数化文件体及明确目标规则；未决场景不填默认实现",
+        "actualJs": "银行既有 strict pipeline invocation host 完整字节，不是 classic 同输入",
+        "curatedReference": "索引没有同族 TransactionEntity；CreditBalanceEntity 仅作不同制品的分组对照",
+        "mode": "structural-not-same-input",
+        "freshSameInputOutputs": false,
+        "diffBlocks": [
+          "raw-scala marker qualification to approved simple import references with unchanged bodies",
+          "actual bank seven-field State to approved multiline formatting with exact defaults retained"
+        ]
+      },
+      "fixtures": {
+        "status": "proposed-not-created",
+        "inputRoot": "/Users/zhongdj/Workspaces/mad-polaris/codegen-parity-fixtures/saga-trigger-entity",
+        "outputRoot": "/Users/zhongdj/Workspaces/mad-polaris/codegen-parity-output/saga-trigger-entity",
+        "cases": [
+          "classic-minimal DispatchSagaTransactor with ordered requestId:String and quantity:Int",
+          "missing-args and empty-args",
+          "cross-package nominal and nested imports/collisions",
+          "source naming versus stable identity",
+          "pure fold for every old status and each event, preserving id and reason",
+          "formal retained host seven fields/five events/five folds",
+          "no-saga, two-saga, single/multi, scope, stable bytes and anchors"
+        ]
+      },
+      "acceptance": {
+        "runtimeValidation": "not-run",
+        "tests": "not-run",
+        "typecheck": "not-run",
+        "compile": "not-run",
+        "generation": "not-run",
+        "sameInputFileComparison": "not-available",
+        "complexity": "not-measured",
+        "ordinaryMethodCcGoal": 5,
+        "normalNestingGoal": 2,
+        "cliShapesDocumented": [
+          "BC sbt JVM systemFile/systemBindings/targetDir plus runMain net.imadz.codegen.CodegenMain; fixture adapter remains unresolved",
+          "JS generate-products with explicit request/generator/out/options-json and optional plan; no classic producer currently registered",
+          "JS family generate-project with explicit project/out and optional plan; generate-products is capture-blocked"
+        ],
+        "sideEffectsDocumented": "目标文件、scaffold、ledger、anchors、project .truthsrc 证据、project SQLite graph、输入/工具/外置实现捕获、sbt/JVM/依赖缓存；未闭合委托 verifier 传递副作用单列 D7。",
+        "protectedIdentities": [
+          "protobuf field numbers and message identities",
+          "persistence IDs",
+          "serializer IDs, manifests and binding scope",
+          "Saga/definition/codec identities and digest framing",
+          "nominal types",
+          "overflow and monetary semantics"
+        ]
+      }
+    }
+  ],
+  "generatorsModified": false,
+  "runtimeExecuted": false,
+  "productionSourcesModified": false,
+  "generatedOutputsModified": false,
+  "baselineModified": false,
+  "testsExecuted": false,
+  "generationExecuted": false
+}

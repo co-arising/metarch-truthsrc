@@ -1,0 +1,37 @@
+{
+  "schemaVersion":"codegen-parity.additional-common-output/v1",
+  "scope":"Public project capture transient output omitted by initial partition fragments",
+  "logicalOutputs":[
+    {
+      "id":"shared-project/roundtrip-temporary-tree",
+      "classification":"B",
+      "scalaArtifact":null,
+      "role":"compile-project/generate-project capture中validateAndRoundtrip的临时反解树，不是新业务作者树",
+      "variant":"new-author-system-root-or-legacy-flat-temp-root",
+      "catalogRefs":[],
+      "current":{
+        "paths":["<realpath(os.tmpdir)>/truthsrc-rt-<random>/<author.system.id>/**.yaml（new-author）","<realpath(os.tmpdir)>/truthsrc-rt-<random>/**.yaml（legacy）"],
+        "sources":[{"file":"supplemental/js/lib/roundtrip.mjs","symbol":"roundtrip","lines":"9-32"},{"file":"supplemental/js/lib/decompose.mjs","symbol":"decomposeCanonical","lines":"297-317"},{"file":"baseline/js/lib/project/cli.mjs","symbol":"validateAndRoundtrip/captureProject","lines":"91-101,171"}],
+        "constructs":["先compile得到canonical及authoring标志，再mkdtemp独占parent；new-author选择子system.id，legacy直接parent","decomposeEntries→new-author路径/basename/nonexistence检查→preflightPaths→逐entry mkdirSync/writeFileSync；原作者树只读","临时树再compile，逐文件路径/bytes对账；finally rmSync仅本次parent；这是验证临时产物，非业务运行证据"],
+        "conditions":["项目capture默认启用roundtrip，planOnly判断之前；--plan也可能创建系统临时树","不是直接generate-products入口必有的输出，也不泛化为45个producer均执行该校验"],
+        "reachability":"project CLI capture → validateAndRoundtrip → roundtrip → decomposeCanonical terminal writer",
+        "sharedPhysicalOutput":null
+      },
+      "target":{
+        "paths":["<owned-os-temp>/truthsrc-rt-<unique>/<system.id-or-legacy-root>/**.yaml"],
+        "disposition":"retain",
+        "constructDisposition":[{"current":"临时parent/反解entries/compile比较/finally清理","target":"仅本次独占系统临时目录；退出时由同一roundtrip owner清理","action":"retain","reason":"不写原作者面，不把临时canonical反解资产当第二真源或已生成应用"}],
+        "assemblyOwner":"shared-project-roundtrip-owner",
+        "qualityRules":["派生/临时根与作者隔离","成功失败均保护原作者，清理仅自身目录","不是Scala业务包，不套domain/application/infrastructure到临时树"]
+      },
+      "fixture":{"id":"shared-project-roundtrip-write-boundary-v1","requiredConditions":["new-author与legacy临时根区别","plan capture也执行校验时的瞬态写入","compile/decompose/比对失败时清理本次parent、不碰原作者"],"status":"specified-not-executed"},
+      "dependsOn":["shared-source-mappings"],
+      "openDecisions":["本轮未执行roundtrip，不将源码finally存在当真实退出证明；此项仅补全写面说明。"],
+      "sourceFragment":"integrator-addendum",
+      "sourceLogicalIds":[],
+      "sourceStatus":"source-located-not-executed"
+    }
+  ],
+  "generatorModified":false,
+  "runtimeExecuted":false
+}

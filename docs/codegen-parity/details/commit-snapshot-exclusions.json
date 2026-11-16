@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "truthsrc.parity-commit-snapshot-boundary/v1",
+  "recordedOn": "2026-11-16",
+  "scope": "Only the local codegen-parity snapshots and this commit; no secret values are recorded or rewritten.",
+  "baselineIndexModified": false,
+  "excludedSnapshots": [
+    {
+      "path": "docs/codegen-parity/baseline/js/generators/scaffold-static/application.conf",
+      "bytesFromFixedIndex": 4842,
+      "sha256FromFixedIndex": "a837fc05f1404a0898a26da69323444454c24b31a88474f725b9a09a6b5f77e3",
+      "reason": "Known high-entropy configuration secret; do not read or include its payload.",
+      "originalRetainedLocally": true,
+      "payloadCommitted": false
+    },
+    {
+      "path": "docs/codegen-parity/baseline/js/generators/scala-cqrs-application/render-host-verification.mjs",
+      "bytesFromFixedIndex": 53131,
+      "sha256FromFixedIndex": "3edda0ca4a4188238e404a018788b55b3d9dd14c781520532e81f32fa73a8890",
+      "reason": "Sensitive-reference match not fully classified; conservatively excluded without changing fixed bytes.",
+      "originalRetainedLocally": true,
+      "payloadCommitted": false
+    }
+  ],
+  "excludedRuntimeRoots": [
+    ".rounds/",
+    "docs/codegen-parity/.rounds/"
+  ],
+  "commonConsumptionStableRecord": {
+    "path": "docs/codegen-parity/details/common-core-021-pins.json",
+    "bytes": 19094,
+    "sha256": "11acb71acb90599e8e45ac4dc1ddd7d30f8d1b78acbf680335b97c2f67606de4",
+    "meaning": "Exact copy of the bounded artifact-fingerprint/public-signature observation; no JAR, POM payload, runtime logs or credentials.",
+    "originalRetainedLocally": true
+  },
+  "referencePolicy": "A fixed local snapshot index does not mean every indexed payload is delivered in Git. Missing excluded bytes must be BLOCKED when required; never infer or fabricate them from their hash.",
+  "f1GoldenAssetsAffected": false,
+  "f1GeneratorSourceAffected": false,
+  "noNetworkOrPublicationPerformed": true
+}

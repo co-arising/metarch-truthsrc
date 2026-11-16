@@ -1,0 +1,434 @@
+{
+  "group": "existing-fifteen-map",
+  "status": "complete",
+  "artifacts": [
+    {
+      "artifactId": "value-object",
+      "diff": "docs/codegen-parity/diffs/value-object.diff.md",
+      "writeSet": [
+        {"path": "generators/scala-cqrs-domain/render-values.mjs", "status": "existing", "owner": "value-object", "action": "替换直接插值，适配共享 MBT。"},
+        {"path": "generators/valueobject-dsl/produce.mjs", "status": "existing", "owner": "value-object", "action": "适配共享 MBT 入口。"},
+        {"path": "generators/valueobject-dsl/render.mjs", "status": "existing", "owner": "value-object", "action": "提取可复用分支、去硬编码兼容表，保留明确 legacy 入口。"},
+        {"path": "generators/scala-cqrs-domain/models/value-object.mjs", "status": "proposed", "owner": "value-object 模型", "action": "承载字段、默认值、依赖及 own-ID/携带者双槽。"},
+        {"path": "generators/scala-cqrs-domain/builders/value-object.mjs", "status": "proposed", "owner": "value-object builder", "action": "按明确输入能力推导结构，复用公共类型与命名责任。"},
+        {"path": "generators/scala-cqrs-domain/templates/value-object.mjs", "status": "proposed", "owner": "value-object 唯一文件组装者", "action": "组装字段、方法及 JSON 分支，经唯一 writer 输出。"}
+      ],
+      "sharedIntegrationWriteSet": [],
+      "dependsOn": [],
+      "consumerCoordination": [
+        "公共 owner 负责 family buildModels/localType 复用，以及 pipeline/producer registry、profile/layout、名字/依赖/import API、ledger/byte spans；未命名落点不补造路径。",
+        "与 domain-entity 明确 State 归属，避免重复 VO；旧原 ID 路径经映射迁移，仅退役真正被替代的输出。",
+        "银行 wire→domain 绑定与 nominal 类型保真由业务消费方裁定，不直接覆盖银行目录。"
+      ],
+      "openDecisions": [
+        "formal VO 的 JSON 是强制能力还是显式 profile；kernel 不暗引 Play。",
+        ">22 字段读取保留抛异常式语义还是改 JsError；嵌套 Instant 的修复范围。",
+        "派生规则采用 BC 原行为还是更严格类型门。",
+        "银行 wire 载体的领域归属；doc/hash→source pointer 的等价回锚桥。"
+      ],
+      "note": "仅提取未来写集；family 实现是复用参考，不据此列为必改文件。status 表示文档所述路径状态，非实现进度。"
+    },
+    {
+      "artifactId": "domain-entity",
+      "diff": "docs/codegen-parity/diffs/domain-entity.diff.md",
+      "writeSet": [
+        {"path": "generators/scala-cqrs-domain/build-state-models.mjs", "status": "existing", "owner": "domain-entity", "action": "适配真实 Entity 内 State/Events 模型及默认值、锚、依赖。"},
+        {"path": "generators/scala-cqrs-domain/templates/aggregate-state.mjs", "status": "existing", "owner": "domain-entity", "action": "替换 State/Entity 反向别名结构。"},
+        {"path": "generators/scala-cqrs-domain/models/domain-entity.mjs", "status": "proposed", "owner": "domain-entity 模型", "action": "表达 State、事件族、事件与真实 nested owner。"},
+        {"path": "generators/scala-cqrs-domain/builders/domain-entity.mjs", "status": "proposed", "owner": "domain-entity builder", "action": "接收领域事件定义，统一字段、默认值、锚和依赖。"},
+        {"path": "generators/scala-cqrs-domain/templates/domain-entity.mjs", "status": "proposed", "owner": "domain-entity 唯一文件组装者", "action": "真实声明 State/Events、empty 与 handler alias，经公共 writer 输出。"}
+      ],
+      "sharedIntegrationWriteSet": [
+        {"path": "generators/aggregate-dsl/render.mjs", "status": "existing", "owner": "legacy renderer 共享集成者；domain-entity 负责 entity 段", "action": "仅适配 entity 段，协调同文件其他模板族。"},
+        {"path": "generators/scala-cqrs-domain/render-domain.mjs", "status": "existing", "owner": "共享拆分集成者；domain-entity 与 application-protocol 分别接收", "action": "从 renderCommand 移出事件到 Entity；命令/回复交应用协议，不删除事件构造 helper/host。"},
+        {"path": "generators/scala-cqrs-play-service/render-aggregate-layers.mjs", "status": "existing", "owner": "共享集成者", "action": "接入真实 Entity 输出及迁移后的类型、依赖和映射。"}
+      ],
+      "dependsOn": [],
+      "consumerCoordination": [
+        "应用、转换器、adapter、bootstrap、projection 同步消费 Entity 真实 nested 名；公共 resolver/registry 反映真实输出 owner。",
+        "命令/回复与 ActorRef 留 application；领域事件、State 和纯规则不反向依赖 application。",
+        "全部消费者迁移后一次退役 root State/Protocol/实体别名壳，并更新 source memberOwner；公共 names/type/import/layout/writer/registry 由集成者统一接线。"
+      ],
+      "openDecisions": [
+        "empty 的首字段 ID/无参合同保持两种显式输入变体还是统一。",
+        "字符串 family resolver 与真实 nested owner/registry 的修复设计。",
+        "Cbor marker、持久化 FQN 迁移及 serializer/manifest 兼容范围。",
+        "Set/Vector 的 Nil、未知类型 null 等默认值的禁止或兼容例外。",
+        "legacy 字母事件序是否作为独立兼容模式；final 修饰兼容范围。"
+      ],
+      "note": "事件结构、字段和持久化身份保持；共享引用与迁移闭包列为消费协调，不构造循环执行依赖。"
+    },
+    {
+      "artifactId": "aggregate-root",
+      "diff": "docs/codegen-parity/diffs/aggregate-root.diff.md",
+      "writeSet": [
+        {"path": "generators/scala-cqrs-play-service/templates/aggregate-root.mjs", "status": "proposed", "owner": "aggregate-root 唯一文件组装者", "action": "从 factory 模板拆出 root，组装 wiring 与 sharding。"}
+      ],
+      "sharedIntegrationWriteSet": [
+        {"path": "generators/scala-cqrs-play-service/build-aggregate-models.mjs", "status": "existing", "owner": "聚合模型共享集成者；aggregate-root 提供结构规格", "action": "增加解析后的 wiring/sharding；拒绝不支持的 tagging，保留 hosts/authority 依赖。"},
+        {"path": "generators/scala-cqrs-play-service/templates/aggregate-factory.mjs", "status": "existing", "owner": "root/factory 拆分集成者；拆分后归 factory", "action": "移出 aggregateTemplate，文件仅保留 factory 所有权。"},
+        {"path": "generators/scala-cqrs-play-service/render-aggregate-layers.mjs", "status": "existing", "owner": "共享集成者", "action": "适配 role dispatch，迁移 root kind、dependencies、source/codeMappings；不自行发 header 或写盘。"},
+        {"path": "generators/scala-cqrs-play-service/aggregate-names.mjs", "status": "existing", "owner": "公共命名集成者", "action": "统一 root 及其消费者的名称与迁移路径。"}
+      ],
+      "dependsOn": [],
+      "consumerCoordination": [
+        "protocol/behavior/factory/bootstrap/repository 共同确认 commandHandler 与 entityTypeKey 契约；共享引用不作为互相阻塞的执行 DAG。",
+        "同一迁移闭包退役 domain wrapper 的 root/factory，不能提前删除仍被 alias 消费的 Request carrier；回锚保留知识身份。",
+        "公共 names/type/layout/writer/registry 由集成者统一；root 不拥有 Commands/Replies、普通 Events/State、factory 或持久化 bootstrap。"
+      ],
+      "openDecisions": [
+        "key 值名采用 entityTypeKey 还是人工命名；key/tag 前缀和数量须由业务 deployment/persistence 真源给出。",
+        "银行是否采用 cluster-sharding profile，以及 unique-id persistence 身份如何迁移。",
+        "无参 handler 与带 hosts/authority handler 的 typed 接线合同。",
+        "历史 suffix-Saga/null/inline/steps 分支支持还是拒绝；支持需完整模型、runtime API 和业务算法。"
+      ],
+      "note": "原 diff 为 decision-required；只登记未来责任，不将历史未完成分支视为可用实现。"
+    },
+    {
+      "artifactId": "protobuf-schema",
+      "diff": "docs/codegen-parity/diffs/protobuf-schema.diff.md",
+      "writeSet": [
+        {"path": "generators/scala-cqrs-domain/models/proto-file.mjs", "status": "proposed", "owner": "protobuf-schema 模型", "action": "承载完整 ProtoFileModel、兼容身份与来源槽。"},
+        {"path": "generators/scala-cqrs-domain/builders/aggregate-proto.mjs", "status": "proposed", "owner": "protobuf-schema builder", "action": "推导聚合/共享组件和 imports，冻结 wire name/number，拒绝不支持组合。"},
+        {"path": "generators/scala-cqrs-domain/templates/protobuf.mjs", "status": "proposed", "owner": "protobuf-schema 文件组装者", "action": "只发射结构，不推断或重排事件身份。"},
+        {"path": "generators/proto-dsl/render.mjs", "status": "existing", "owner": "protobuf-schema legacy 适配者", "action": "复用 construct，去硬编码 shared catalog 与 contract ID 折叠。"}
+      ],
+      "sharedIntegrationWriteSet": [
+        {"path": "generators/scala-cqrs-domain/serialization.mjs", "status": "existing", "owner": "schema/converter 共享序列化模型集成者", "action": "保留 nominal ref 闭包，增加冻结 wire identity/ownership 的共同数据。"},
+        {"path": "generators/scala-cqrs-domain/render-serialization.mjs", "status": "existing", "owner": "schema/converter 拆分集成者", "action": "搬出 proto 分支；converter 分支交 proto-converter，禁止各自决定字段号。"},
+        {"path": "generators/scala-cqrs-domain-kernel-v1/serialization-model.mjs", "status": "conditional", "owner": "family 协同 owner", "action": "后续协同时显式冻结与 formal 的 ABI 差异，不作静默替换。"},
+        {"path": "generators/scala-cqrs-domain-kernel-v1/templates/protobuf.mjs", "status": "conditional", "owner": "family 协同 owner", "action": "按独立版本与兼容决策适配 family 输出。"},
+        {"path": "generators/scala-cqrs-play-service/generate.mjs", "status": "existing", "owner": "共享集成者", "action": "统一调用与 producer registry 接线。"},
+        {"path": "generators/scala-cqrs-domain/produce-v2.mjs", "status": "existing", "owner": "共享集成者", "action": "接入拆分后的 schema/converter/adapter 产出。"},
+        {"path": "generators/proto-dsl/produce.mjs", "status": "existing", "owner": "共享集成者", "action": "适配 proto producer 调用。"}
+      ],
+      "dependsOn": [],
+      "consumerCoordination": [
+        "schema、converter、event/snapshot adapter、逐消息 serializer binding 共用冻结身份与来源映射，不分别定字段号。",
+        "域文件、共享文件、converter 与 binding 的锚同步迁移；消费者与旧数据迁移完成后，才由 manifest 退役旧 context proto。",
+        "公共 names/type/layout/writer/manifest 不属本组独立写权；family 是协同适配，非 formal 的替代执行依赖。"
+      ],
+      "openDecisions": [
+        "P-SCHEMA-IDENTITY：冻结现有 PB/flat-package，还是版本化 per-aggregate PO/oneof 并保留旧 decoder。",
+        "P-WIRE-FIELD-NAMES：fN 改名是否获准改变 ScalaPB/JSON/descriptor ABI。",
+        "P-PRESENCE-INTEGER：tag/presence、sint64/int64 与 Option[List] 语义如何冻结或迁移。",
+        "P-EXACT-CODEC：银行精确文本合同保留，历史 double 不作为银行目标。",
+        "P-SHARED-OWNERSHIP：cold VO、共享引用 state、imports 与稳定 local 顺序的处理。",
+        "P-SCALA-GAPS：state optional、nested、容器组合、tenantId 的拒绝或真实映射方案。"
+      ],
+      "note": "conditional 项是文档已命名的 family 协同落点，不表示文件缺失；不把产物示例路径纳入 JS 写集。"
+    },
+    {
+      "artifactId": "proto-converter",
+      "diff": "docs/codegen-parity/diffs/proto-converter.diff.md",
+      "writeSet": [
+        {"path": "generators/scala-cqrs-domain/models/aggregate-converter.mjs", "status": "proposed", "owner": "proto-converter 模型", "action": "承载冻结 wireField/domainAccessor 转换计划与 typed helper。"},
+        {"path": "generators/scala-cqrs-domain/builders/aggregate-converter.mjs", "status": "proposed", "owner": "proto-converter builder", "action": "共用 proto 的 VO 闭包/宿主，记录 codec、scope、imports 与不支持输入。"},
+        {"path": "generators/scala-cqrs-domain/templates/aggregate-converter.mjs", "status": "proposed", "owner": "proto-converter 文件组装者", "action": "发射 typed DSL/RHS、分组和正常 imports，不按字符数拼 PartN。"},
+        {"path": "generators/converter-dsl/render.mjs", "status": "existing", "owner": "proto-converter legacy 适配者", "action": "复用 construct，移除硬编码与类型 fallback。"}
+      ],
+      "sharedIntegrationWriteSet": [
+        {"path": "generators/scala-cqrs-domain/render-serialization.mjs", "status": "existing", "owner": "schema/converter 拆分集成者", "action": "移出 converter 分支，与 proto 分支拆分统一合并。"},
+        {"path": "generators/scala-cqrs-domain-kernel-v1/converter-abi.mjs", "status": "conditional", "owner": "family 协同 owner", "action": "协同复用显式 ABI 账，与 formal 语义/版本门分开。"},
+        {"path": "generators/scala-cqrs-domain-kernel-v1/templates/converters.mjs", "status": "conditional", "owner": "family 协同 owner", "action": "协同适配 typed 结构，不静默替换 presence、排序和 exact 语义。"},
+        {"path": "generators/scala-cqrs-domain/produce-v2.mjs", "status": "existing", "owner": "共享集成者", "action": "合并 converter producer 接线。"},
+        {"path": "generators/converter-dsl/produce.mjs", "status": "existing", "owner": "共享集成者", "action": "合并 converter/adapter 调用接线。"}
+      ],
+      "dependsOn": [],
+      "consumerCoordination": [
+        "与 protobuf-schema 共用 VO ownership、wire identity 与字段计划；与 domain-entity 同步真实类型映射。",
+        "event/snapshot/projection/host/execution 的 codec callers 与锚逐项迁移；ABI facade、目标 trait 和 schema 同批裁决，旧 PartN 由 manifest 退役。",
+        "serializer assembly 归 event-adapter；公共 names/types/layout/writer/registry 归集成者；PO/VO 同名用 alias，不合并 nominal 类型。"
+      ],
+      "openDecisions": [
+        "C-CODEC-IDENTITY：保留银行 exact codec，是否另开 schema 版本须显式决定。",
+        "C-DSL-ABI：保留哪些同签名委托 facade，以及退役期限。",
+        "C-SHARED-CONVERTER：各 trait 重复 typed object，还是有唯一 owner 的 shared trait。",
+        "C-CONTAINER-SEMANTICS：entry-byte/key-only 排序、presence 与逐类型容器缺口。",
+        "C-STATE-TENANT：state/PO 名一致性及 tenantId 的合法来源与读回路径。",
+        "C-GLUE：PrimitiveConverter 的坐标、版本与唯一源码 owner。",
+        "C-ERROR-CONTRACT：错误文本、路径信息和 Instant/null 等行为变更边界。"
+      ],
+      "note": "只提取转换器未来写集；共同接口与相互调用登记为协调，不冒充执行先后。"
+    },
+    {
+      "artifactId": "event-adapter",
+      "diff": "docs/codegen-parity/diffs/event-adapter.diff.md",
+      "writeSet": [
+        {"path": "generators/scala-cqrs-domain/templates/event-adapter.mjs", "status": "proposed", "owner": "event-adapter 文件组装者", "action": "发射独立 event adapter，按选定 journal/manifest 合同委托 typed converter。"},
+        {"path": "generators/scala-cqrs-domain/templates/domain-proto-serializer.mjs", "status": "proposed", "owner": "event-adapter 统管 byte serializer 组装", "action": "迁出显式注册与 byte methods，保留白名单，不扩大类型绑定。"}
+      ],
+      "sharedIntegrationWriteSet": [
+        {"path": "generators/scala-cqrs-domain/render-adapters.mjs", "status": "existing", "owner": "event-adapter 统一组装 owner；snapshot 提供分支规格", "action": "统一拆出 event/snapshot MBT 与 serializer；旧入口过渡转调，不重复算法。"},
+        {"path": "generators/scala-cqrs-domain/models/adapter.mjs", "status": "proposed", "owner": "event-adapter 共享模型 owner；snapshot 协作", "action": "共用 root/mapping/converter/manifest 模型，明确 payload 与内外 envelope。"},
+        {"path": "generators/scala-cqrs-domain/builders/aggregate-adapter.mjs", "status": "proposed", "owner": "event-adapter 共享 builder owner；snapshot 协作", "action": "统一推导 event/snapshot 类型与 converter refs，不用 body:String 代替正常规则。"},
+        {"path": "generators/scala-cqrs-domain/templates/snapshot-adapter.mjs", "status": "proposed", "owner": "snapshot-adapter 文件组装者", "action": "按 snapshot 子规格拆出独立模板，由 event 主 owner 协调接入。"},
+        {"path": "generators/adapter-dsl/emit.mjs", "status": "existing", "owner": "event-adapter 统一适配 owner；snapshot 协作", "action": "抽取纯内容 renderer，隔离现有 CLI I/O。"},
+        {"path": "generators/scala-cqrs-domain/produce-v2.mjs", "status": "existing", "owner": "共享集成者", "action": "协调 converter/adapter producer 接线。"},
+        {"path": "generators/converter-dsl/produce.mjs", "status": "existing", "owner": "共享集成者", "action": "协调 converter/adapter 调用入口。"},
+        {"path": "generators/scala-cqrs-play-service/templates/aggregate-bootstrap.mjs", "status": "existing", "owner": "bootstrap 共享集成者", "action": "同步 adapter import 与 singleton→class 构造/注入，保持 PersistenceId 不变。"},
+        {"path": "generators/scala-cqrs-domain/scaffold.mjs", "status": "existing", "owner": "serializer 配置共享集成者", "action": "同步具体 PB FQN 的显式 serialization binding。"},
+        {"path": "generators/scala-cqrs-play-service/generate.mjs", "status": "existing", "owner": "共享集成者", "action": "协调 scaffold 配置调用及 serialization.conf 输出接线。"}
+      ],
+      "dependsOn": [],
+      "consumerCoordination": [
+        "proto、converter、domain entity、snapshot、bootstrap 与逐消息 binding 共同确认 journal 类型及三层身份；共享引用不构成循环执行 DAG。",
+        "本组唯一统管 render-adapters 与 DomainProtoSerializer 组装；snapshot 不另写 serializer。",
+        "旧组合 adapter 与 serializer PartN 由 manifest/锚映射退役；文件迁移不重编号 serializer，也不换 PID。公共 names/types/layout/writer/registry 归集成者。"
+      ],
+      "openDecisions": [
+        "E-JOURNAL-TYPE：旧 PB payload、专用 inner-oneof serializer 或版本化 outer envelope。",
+        "E-MANIFEST：保留显式旧字符串/配对检查，还是新旧双 reader。",
+        "E-EMPTY：empty/unknown journal 是丢弃还是故障。",
+        "E-SERIALIZER-ID：稳定 ID 表还是保留当前 context 映射。",
+        "E-CLASS-WIRING：class/object、构造/注入点与配置 FQN。",
+        "E-CC：大封闭 type match 的 typed 拆分或逐方法例外，保留 byte 白名单。"
+      ],
+      "note": "scaffold-static 宽绑定仅是反例，不纳入写集；serializer 属关联产物，不另增 artifact。"
+    },
+    {
+      "artifactId": "snapshot-adapter",
+      "diff": "docs/codegen-parity/diffs/snapshot-adapter.diff.md",
+      "writeSet": [
+        {"path": "generators/scala-cqrs-domain/templates/snapshot-adapter.mjs", "status": "proposed", "owner": "snapshot-adapter 文件组装者", "action": "仅发 package/import/class 与两个 journal 方法，去重复 import，不暗改恢复错误策略。"}
+      ],
+      "sharedIntegrationWriteSet": [
+        {"path": "generators/scala-cqrs-domain/models/adapter.mjs", "status": "proposed", "owner": "event-adapter 共享模型 owner；snapshot 协作", "action": "补齐 snapshot 单一非空 mapping 及 state/PO/converter 一致性合同。"},
+        {"path": "generators/scala-cqrs-domain/builders/aggregate-adapter.mjs", "status": "proposed", "owner": "event-adapter 共享 builder owner；snapshot 协作", "action": "实现 snapshot 分支推导与一致性拒绝规则。"},
+        {"path": "generators/scala-cqrs-domain/render-adapters.mjs", "status": "existing", "owner": "event-adapter 统一组装 owner；snapshot 提供分支规格", "action": "统一拆出 snapshot，不另写第二份 serializer。"},
+        {"path": "generators/adapter-dsl/emit.mjs", "status": "existing", "owner": "event-adapter 统一适配 owner；snapshot 协作", "action": "隔离 CLI I/O 后复用 snapshot class 结构。"},
+        {"path": "generators/scala-cqrs-play-service/templates/aggregate-bootstrap.mjs", "status": "existing", "owner": "bootstrap 共享集成者", "action": "同步 snapshot import 与构造/注入，保留 PID、initial 和 eventHandler。"}
+      ],
+      "dependsOn": [],
+      "consumerCoordination": [
+        "与 state、converter、proto、serializer bindings 同步确认恢复接口与旧快照身份；SnapshotAdapter 不拥有 manifest/identifier/byte 方法。",
+        "组合文件的 snapshot 锚迁到独立文件/方法，由 manifest 控制退役；shared layout/names/types/writer/registry/config 归集成 owner。",
+        "event 主 owner 统管共享拆分；class 注入由 bootstrap/factory 消费方协调，不把彼此引用变成执行依赖环。"
+      ],
+      "openDecisions": [
+        "S-ERROR-POLICY：formal match、raw cast 或人工异常策略，含 null 行为。",
+        "S-SCHEMA-REPLAY：是否迁移 per-aggregate PO，以及旧 ID/manifest/descriptor 的读取路径。",
+        "S-STATE-NAME：state、PO、converter 的显式绑定及拒绝位置/报错。",
+        "S-CLASS-INJECTION：三个 bootstrap 与 legacy factory 的构造/注入和 profile 迁移范围。",
+        "S-PRESENCE-NUMERIC：tag/presence 与 sint64/int64 差异如何冻结或版本化。"
+      ],
+      "note": "仅登记 snapshot 子规格写权；不增加运行期保存策略、不删除快照、不以 empty state 掩盖 codec 缺口。"
+    },
+    {
+      "artifactId": "projection-repository-port",
+      "diff": "docs/codegen-parity/diffs/projection-repository-port.diff.md",
+      "writeSet": [
+        {"path": "generators/scala-cqrs-projection-v1/templates/repository-port.mjs", "status": "proposed", "owner": "projection-repository-port 模板内容；projection 集成者统一文件组装", "action": "发射四存储 DTO/trait、方法类型、声明序和锚来源。"}
+      ],
+      "sharedIntegrationWriteSet": [
+        {"path": "generators/scala-cqrs-projection-v1/build-repository-models.mjs", "status": "proposed", "owner": "projection repository 共享模型 owner；port/implementation 协作", "action": "统一四存储接口与实现的 DTO、签名、身份键和来源模型。"},
+        {"path": "generators/projection-dsl/viewrepo.mjs", "status": "existing", "owner": "projection 集成者；port/implementation 分段供稿", "action": "适配 renderTrait/tableMethods 等，迁移完成后退役重复 writer。"},
+        {"path": "generators/run-all.mjs", "status": "existing", "owner": "共享入口集成者", "action": "调用方、manifest、路径和回锚全部迁完后停旧 writer。"},
+        {"path": "generators/scala-cqrs-play-service/generate.mjs", "status": "conditional", "owner": "formal service 集成者", "action": "D-P01 裁决后协调 registry 与调用方迁移。"},
+        {"path": "generators/scala-cqrs-play-service/render-journal-readside.mjs", "status": "conditional", "owner": "formal journal 集成者", "action": "D-P01 裁决后协调新接口与原 journal 责任。"},
+        {"path": "generators/scala-cqrs-play-service/render-journal-repository.mjs", "status": "conditional", "owner": "formal journal 集成者", "action": "仅在 D-P01 明确替换或并存边界后适配。"}
+      ],
+      "dependsOn": [],
+      "consumerCoordination": [
+        "按 details/projection.json 提取；shared-layout-types、shared-imports-naming、shared-writer-registry 为公共接口合同。",
+        "projection-repository-implementation、root-repository-binding、projection-input-contract 共同确定 ABI/DI，不作为 port↔implementation 执行环。",
+        "五族公共 assembly 写集集中登记在 projection 项；projection 集成者唯一 job graph/final-byte writer。产品 schema 与公共 API 归各集成 owner。"
+      ],
+      "openDecisions": [
+        "D-P01：Akka Projection 应用读侧与银行 per-PID journal 的替换或并存，以及 ownership/offset/查询迁移合同。",
+        "D-P02：单项目 ImplementedBy 反向依赖是否统一 root binding，以及 Query 容器返回型替换规则。",
+        "D-P03：vector 三键身份/两键删除的全局唯一假设、graph props 类型、字段及身份键声明序与字母序。"
+      ],
+      "note": "新 scala-cqrs-projection-v1 路径均为 proposed；formal journal 适配受 D-P01 条件约束。deprecated/family 来源不自动进入写集。"
+    },
+    {
+      "artifactId": "projection-repository-implementation",
+      "diff": "docs/codegen-parity/diffs/projection-repository-implementation.diff.md",
+      "writeSet": [
+        {"path": "generators/scala-cqrs-projection-v1/templates/repository-implementation.mjs", "status": "proposed", "owner": "projection-repository-implementation 模板内容；projection 集成者统一文件组装", "action": "分离四存储结构化语句与 template，保留真实 RHS、副作用次序及手写边界。"}
+      ],
+      "sharedIntegrationWriteSet": [
+        {"path": "generators/scala-cqrs-projection-v1/build-repository-models.mjs", "status": "proposed", "owner": "projection repository 共享模型 owner；port/implementation 协作", "action": "统一 DTO/方法签名、存储分支、依赖与接口一致性。"},
+        {"path": "generators/projection-dsl/viewrepo.mjs", "status": "existing", "owner": "projection 集成者；port/implementation 分段供稿", "action": "拆开四路派生和模板；DDL/Mongo indexes 交存储配置 owner。"},
+        {"path": "generators/run-all.mjs", "status": "existing", "owner": "共享入口集成者", "action": "manifest/回锚迁移后退役旧 repository 调用。"},
+        {"path": "generators/scala-cqrs-play-service/render-journal-repository.mjs", "status": "conditional", "owner": "formal journal 集成者", "action": "保留至 D-P01 裁决，按明确责任适配，不以空实现替换原事务保障。"}
+      ],
+      "dependsOn": [],
+      "consumerCoordination": [
+        "projection-repository-port、projection-handler、storage-schema-owner、runtime-store-api 共定签名、事务、DDL/index 与 sink 合同，不建立相互阻塞 DAG。",
+        "shared-layout-types、shared-writer-registry 及 shared-jdbc/types/naming/layout 由公共集成者协调；复用参考不等于必改文件。",
+        "五族公共 assembly 写集集中在 projection 项；关联决策 D-P01、D-P02、D-P03。"
+      ],
+      "openDecisions": [
+        "D-P04：repository DB.localTx 与 offset session 是否同事务，以及非 JDBC sinks 的幂等/重放边界。",
+        "D-P05：table/port fallback、Long、nullable Instant、rsBigDecimal、List VO codecs 的类型及符号缺口。",
+        "D-P06：SQL JSON 列/子表、Mongo JSON/BSON ABI、毒行/count 语义，以及图/向量手写 API 和租户合同。",
+        "D-P07：人工月度参考的 LCRO 上界、day 粒度和增量更新重放语义。"
+      ],
+      "note": "写集来源为 projection 结构化数据及本 diff；不把四存储 raw 分支视为已验证业务实现。"
+    },
+    {
+      "artifactId": "projection-apply-event",
+      "diff": "docs/codegen-parity/diffs/projection-apply-event.diff.md",
+      "writeSet": [
+        {"path": "generators/scala-cqrs-projection-v1/build-apply-event-models.mjs", "status": "proposed", "owner": "projection-apply-event 模型责任", "action": "明确函数 presence/form/signature，复用类型解析，不迁入有损 regex 或静默默认。"},
+        {"path": "generators/scala-cqrs-projection-v1/templates/apply-event.mjs", "status": "proposed", "owner": "projection-apply-event 模板内容；projection 集成者统一文件组装", "action": "按已判定 presence 条件产出独立函数文件，保留字段/事件来源。"}
+      ],
+      "sharedIntegrationWriteSet": [
+        {"path": "generators/projection-dsl/smviews.mjs", "status": "existing", "owner": "projection 集成者；projection/handler/apply-event 分段供稿", "action": "将明确的 MANUAL 折叠逐项迁入模型，保留副作用边界与回锚。"},
+        {"path": "generators/projection-dsl/emit.mjs", "status": "existing", "owner": "projection 集成者；projection/handler/apply-event 分段供稿", "action": "协调 handler 与独立 ApplyEvent 的拆分，避免重复输出。"},
+        {"path": "generators/scala-cqrs-play-service/render-journal-domain.mjs", "status": "conditional", "owner": "formal journal 集成者", "action": "保留聚合状态回放责任，是否迁移按 D-P01 裁决。"},
+        {"path": "generators/scala-cqrs-play-service/render-journal-readside.mjs", "status": "conditional", "owner": "formal journal 集成者", "action": "D-P01 裁决后协调消费接线。"}
+      ],
+      "dependsOn": [],
+      "consumerCoordination": [
+        "projection-repository-port、projection-handler、domain-events、explicit-fold-dialect-and-oracle 共定数据函数合同；handler 只引用实际存在的函数。",
+        "shared-layout-types、shared-writer-registry 及 profile/registry/names/types/layout 归集成者；五族公共 assembly 写集集中在 projection 项。",
+        "converter/ViewMachine/repository IO 不倒灌 kernel；关联决策 D-P01、D-P03、D-P05。deprecated handler 仅作已审来源，不重新上线。"
+      ],
+      "openDecisions": [
+        "D-P08：delete 常量/表达式/键序与 form/presence 一致性，未知方言降级策略。",
+        "D-P09：None patch 保留或清空、epoch0/null 取 now、emptyRow 未知默认与全部 Id 取 entityId 的业务合同。",
+        "D-P10：ViewMachine 真实 API/FQN、kernel 依赖账，以及硬编码包/非法 existing/nullable 默认行的显式修正。"
+      ],
+      "note": "normal 单项目无 ApplyEvent 输出，multi 为条件子产物；这是输出基数合同，不将 proposed JS 模板误标为现存或已实现。"
+    },
+    {
+      "artifactId": "projection",
+      "diff": "docs/codegen-parity/diffs/projection.diff.md",
+      "writeSet": [
+        {"path": "generators/scala-cqrs-projection-v1/build-projection-models.mjs", "status": "proposed", "owner": "projection 模型责任", "action": "统一源、repository、handlers、conditional ApplyEvent 与多源路由模型。"},
+        {"path": "generators/scala-cqrs-projection-v1/templates/projection.mjs", "status": "proposed", "owner": "projection 模板内容；projection 集成者统一文件组装", "action": "组装 source/provider/factory/composite，不替代 bootstrap 生命周期责任。"}
+      ],
+      "sharedIntegrationWriteSet": [
+        {"path": "generators/scala-cqrs-projection-v1/build-models.mjs", "status": "proposed", "owner": "projection 五族集成者", "action": "统一 port/implementation/projection/apply-event/handler 模型与完整 job graph。"},
+        {"path": "generators/scala-cqrs-projection-v1/render.mjs", "status": "proposed", "owner": "projection 五族集成者；唯一 final-byte writer", "action": "统一条件输出、文件 owner、source mappings 与最终字节。"},
+        {"path": "generators/scala-cqrs-projection-v1/generate.mjs", "status": "proposed", "owner": "projection 五族集成者", "action": "统一生成调用，不设五套竞争 writer。"},
+        {"path": "generators/scala-cqrs-projection-v1/generator.json", "status": "proposed", "owner": "projection 五族集成者", "action": "登记统一 producer/装配合同。"},
+        {"path": "generators/projection-dsl/emit.mjs", "status": "existing", "owner": "projection 集成者；projection/handler/apply-event 分段供稿", "action": "拆分纯模型/模板，协调迁移旧直写。"},
+        {"path": "generators/projection-dsl/smviews.mjs", "status": "existing", "owner": "projection 集成者；projection/handler/apply-event 分段供稿", "action": "复用明确的多源组织，迁移重复模板。"},
+        {"path": "generators/run-all.mjs", "status": "existing", "owner": "共享入口集成者", "action": "调用方、映射、manifest、路径与历史 offset 身份迁完后退役旧直写。"},
+        {"path": "generators/scala-cqrs-play-service/generate.mjs", "status": "conditional", "owner": "formal service 集成者", "action": "D-P01 裁决后协调 registry 和新旧 profile 调用。"},
+        {"path": "generators/scala-cqrs-play-service/render-journal-readside.mjs", "status": "conditional", "owner": "formal journal 集成者", "action": "D-P01 裁决后处理替换/并存，不静默删除原 lifecycle、重复校验和水位合同。"}
+      ],
+      "dependsOn": [],
+      "consumerCoordination": [
+        "projection-repository-port/implementation、projection-handler、projection-apply-event 共享完整装配模型；原 details.dependsOn 的相互引用按接口协调解释。",
+        "bootstrap、proto-converter、event-adapter、runtime-session-and-source-api 共同确认启动、journal 类型、session 与历史 offset 合同。",
+        "shared-layout-types、shared-imports-naming、shared-writer-registry 由公共 owner 负责；新 persistence-readside family 保持独立 profile。",
+        "本项集中登记五族共用的四个 assembly 路径；未命名的 JS bootstrap、公共 API 或 schema 落点不补造。关联决策 D-P01、D-P04、D-P10。"
+      ],
+      "openDecisions": [
+        "D-P11：tag/ProjectionId/历史 offset 身份与多源空群、事件重名、主源选择的兼容性。",
+        "D-P12：factory+Bootstrap 或自管 PID runtime 的生命周期、readiness、failure、freshness 与 unknown 事件监控合同。"
+      ],
+      "note": "公共 assembly 路径直接采用 details/projection.json.sharedAssemblyWriteSet；仅记录未来写权，未把输入依赖误写为可执行拓扑顺序。"
+    },
+    {
+      "artifactId": "projection-handler",
+      "diff": "docs/codegen-parity/diffs/projection-handler.diff.md",
+      "writeSet": [
+        {"path": "generators/scala-cqrs-projection-v1/build-handler-models.mjs", "status": "proposed", "owner": "projection-handler 模型责任", "action": "显式建模函数 presence、事件 owner、typed decode、identity、顺序与路由。"},
+        {"path": "generators/scala-cqrs-projection-v1/templates/handler.mjs", "status": "proposed", "owner": "projection-handler 模板内容；projection 集成者统一文件组装", "action": "仅遍历已判定 handlers，保持各 form 与 MANUAL 边界，不让模板猜业务。"}
+      ],
+      "sharedIntegrationWriteSet": [
+        {"path": "generators/projection-dsl/emit.mjs", "status": "existing", "owner": "projection 集成者；projection/handler/apply-event 分段供稿", "action": "适配 handler 生成并退役重复模板，迁移 MANUAL 与映射。"},
+        {"path": "generators/projection-dsl/smviews.mjs", "status": "existing", "owner": "projection 集成者；projection/handler/apply-event 分段供稿", "action": "复用多源/有限图动词，协调 body 与回锚迁移。"},
+        {"path": "generators/run-all.mjs", "status": "existing", "owner": "共享入口集成者", "action": "协调旧路径调用、fingerprints 与 manifest 迁移，避免双 producer 覆盖。"},
+        {"path": "generators/scala-cqrs-play-service/generate.mjs", "status": "conditional", "owner": "formal service 集成者", "action": "D-P01 裁决后协调 registry 迁移。"},
+        {"path": "generators/scala-cqrs-play-service/render-journal-readside.mjs", "status": "conditional", "owner": "formal journal 集成者", "action": "D-P01 裁决后协调嵌入式处理与新 handler 的责任。"},
+        {"path": "generators/scala-cqrs-play-service/render-journal-domain.mjs", "status": "conditional", "owner": "formal journal 集成者", "action": "D-P01 裁决后适配消费边界，保留既有 fold 合同。"},
+        {"path": "generators/scala-cqrs-persistence-readside-v1/templates/repository.mjs", "status": "conditional", "owner": "persistence-readside family owner", "action": "若拆 handler 文件责任，保持原 family 契约；不将 project 改名 process 冒充兼容。"}
+      ],
+      "dependsOn": [],
+      "consumerCoordination": [
+        "projection、projection-apply-event、projection-repository-port/implementation 共定 presence、签名和路由，不把互引写成执行依赖环。",
+        "proto-converter、event-adapter、runtime-view-machine-api 共同提供真实 typed decode 与 IO 合同；MANUAL 算法仍归业务 owner。",
+        "shared-layout-types、shared-imports-naming、shared-writer-registry 及 bootstrap/运行库归集成 owner；五族 assembly 写集集中在 projection 项。",
+        "关联决策 D-P01、D-P03、D-P04、D-P08、D-P09、D-P10、D-P11、D-P12；deprecated handler 只作来源，不重启 sidecar 接管。"
+      ],
+      "openDecisions": [
+        "D-P13：缺失 identity 空串/tenantId fallback、persistenceId 固定双键、整族匹配、GraphView 名称判别与 MANUAL 算法归属合同。"
+      ],
+      "note": "以 projection 结构化写集为主，补入 diff 明确的条件性 family 拆分与 formal 协调；未访问其源码。"
+    },
+    {
+      "artifactId": "saga-participant",
+      "diff": "docs/codegen-parity/diffs/saga-participant.diff.md",
+      "writeSet": [
+        {"path": "generators/scala-cqrs-application/models/saga-participant.mjs", "status": "proposed", "owner": "saga-participant 模型", "action": "仅面向显式 traditional target，承载构造字段、三相位 binding、timeout 与 error rules。"},
+        {"path": "generators/scala-cqrs-application/builders/saga-participant.mjs", "status": "proposed", "owner": "saga-participant builder", "action": "按已确认 metadata 推导 typed command/reply/repository 引用，拒绝缺失或冲突输入。"},
+        {"path": "generators/scala-cqrs-application/templates/saga-participant.mjs", "status": "proposed", "owner": "saga-participant 唯一文件组装者", "action": "独立发射 AskParticipant 与三个 optional PhaseAsk，不在 definition 重复声明。"}
+      ],
+      "sharedIntegrationWriteSet": [
+        {"path": "generators/saga-dsl/emit.mjs", "status": "conditional", "owner": "classic 三族共享集成者", "action": "仅显式切 traditional 时调用新 participant 族，保留原 legacy 入口。"},
+        {"path": "generators/scala-cqrs-application/produce.mjs", "status": "conditional", "owner": "formal application 集成者", "action": "协调显式 target 调度，不将 strict finite-host 默认改成 classic。"}
+      ],
+      "dependsOn": [],
+      "consumerCoordination": [
+        "saga-definition/saga-context 与应用 repository/protocol 共定构造参数、context 名和 typed ask 契约；相互引用不是执行依赖环。",
+        "shared names/types/layout/writer/registry 归集成者；旧 inline 面仅在 manifest/anchors 同步迁移后退役。",
+        "traditional 与 strict 保持显式独立目标；strict PhasePort 不替代 AskParticipant，事务/步骤/participant 持久身份不因文件拆分改变。"
+      ],
+      "openDecisions": [
+        "是否将 traditional target 纳入实施范围；若只准 strict，本族继续 missing-counterpart。",
+        "resource accessor/result mapper 改为显式 metadata，还是限制首字段/ByUserId/first-result 输入并 fail-closed。",
+        "多步 error rules/timeout/phase 首条选择的一致性限制，以及实际消费 AskParticipant/PhaseAsk ABI。"
+      ],
+      "note": "原 diff 状态 missing-counterpart；proposed 仅为传统目标提案，不表示 classic 已获实施许可，也不改 strict 实现。"
+    },
+    {
+      "artifactId": "saga-definition",
+      "diff": "docs/codegen-parity/diffs/saga-definition.diff.md",
+      "writeSet": [
+        {"path": "generators/scala-cqrs-application/models/saga-definition.mjs", "status": "proposed", "owner": "saga-definition 模型", "action": "分开稳定 saga identity 与代码 symbol，将 participant args/resilience 结构化。"},
+        {"path": "generators/scala-cqrs-application/builders/saga-definition.mjs", "status": "proposed", "owner": "saga-definition builder", "action": "保留 Args/participant 步骤声明序，明确完整策略与输入一致性约束。"},
+        {"path": "generators/scala-cqrs-application/templates/saga-definition.mjs", "status": "proposed", "owner": "saga-definition 唯一文件组装者，含 nested Args", "action": "仅显式 classic target 发 definition/register/runner；不重复 participant/context。"}
+      ],
+      "sharedIntegrationWriteSet": [
+        {"path": "generators/saga-dsl/emit.mjs", "status": "conditional", "owner": "classic 三族共享集成者", "action": "适配显式 classic 路由，manifest 确认覆盖且锚迁移后才退役旧路径。"}
+      ],
+      "dependsOn": [],
+      "consumerCoordination": [
+        "saga-participant/saga-context 各自拥有独立文件；definition 独占自身文件与 nested Args，共同确认参数与 context 合同。",
+        "types/names/layout、registry、produce 调度、manifest 和回锚归集成者；strict render-host 保持 strict 责任，不双写同路径。",
+        "注册早于 sharding recovery 是未来消费生命周期合同，不是本次执行任务；稳定 Name/Version/stepId/transactionId/digest/codec pin/PID 不随美化重算。",
+        "实际消费 DSL/Play JSON/Akka ABI 需另确认；业务 owner 提供 preCheck/error/onResult 真源，默认空槽不等于完成业务。"
+      ],
+      "openDecisions": [
+        "是否授权显式 classic target；strict-only 范围下继续 missing-counterpart。",
+        "Args 导入缺口、与 ParticipantBuilder 的 Repository 字段过滤一致性。",
+        "Money 特判适用范围、error/result 业务槽及每 participant 首条 step 的一致性门。",
+        "稳定 saga name 与 code symbol 的分离及旧值兼容合同。"
+      ],
+      "note": "原 diff 状态 missing-counterpart；不把 legacy/strict 同名 definition 当传统 counterpart，不将默认 preCheck/onResult 视为业务实现。"
+    },
+    {
+      "artifactId": "saga-context",
+      "diff": "docs/codegen-parity/diffs/saga-context.diff.md",
+      "writeSet": [
+        {"path": "generators/scala-cqrs-application/models/saga-context.mjs", "status": "proposed", "owner": "saga-context 模型", "action": "承载 selfType、有序字段与完整类型依赖。"},
+        {"path": "generators/scala-cqrs-application/builders/saga-context.mjs", "status": "proposed", "owner": "saga-context builder", "action": "统一权威 context 名、required repositories 与用户字段去重/碰撞合同。"},
+        {"path": "generators/scala-cqrs-application/templates/saga-context.mjs", "status": "proposed", "owner": "saga-context 唯一文件组装者", "action": "独立发射 application repository context，完整保留类型参数，不植入 runtime logic。"}
+      ],
+      "sharedIntegrationWriteSet": [
+        {"path": "generators/saga-dsl/emit.mjs", "status": "conditional", "owner": "classic 三族共享集成者", "action": "仅适配明确 classic 分支，definition 停止重复写 context trait；退役由 manifest 明确。"}
+      ],
+      "dependsOn": [],
+      "consumerCoordination": [
+        "saga-participant/saga-definition 与应用 repository 共定 context 权威名、字段及 typed ref ABI；不是循环执行依赖。",
+        "调用方/registry/layout/naming/type-resolver/manifest/回锚归集成者，未命名路径不补造。",
+        "strict 保留 Host/exact-resource resolver；classic repository context 不替代 strict 读证据协议，稳定 saga Name/PID/digest 不改写。"
+      ],
+      "openDecisions": [
+        "classic target 的授权范围；未获准则保持 missing-counterpart。",
+        "显式 context.name 与 meta.name 使用哪个权威名。",
+        "同 simple name 跨包 repository 的 FQN 去重，以及 required repo/user field 名碰撞的 fail-closed 合同。",
+        "统一 renderer 如何完整发射类型参数，避免仅取 name 丢失泛型。"
+      ],
+      "note": "原 diff 状态 missing-counterpart；只登记未来应用依赖容器的写权，不新增业务或运行时实现。"
+    }
+  ],
+  "productionModified": false,
+  "runtimeExecuted": false
+}

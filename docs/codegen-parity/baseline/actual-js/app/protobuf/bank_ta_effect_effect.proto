@@ -1,0 +1,12 @@
+syntax = "proto3";
+import "scalapb/scalapb.proto";
+package example.bankwealth.infrastructure.effectproto;
+option (scalapb.options) = { flat_package: true };
+message banktaeffectEffectHostEventPB {
+  string version = 1;
+  string kind = 2;
+  bytes original = 3;
+  string operation = 4;
+  bytes observation = 5;
+  string authorization = 6;
+}

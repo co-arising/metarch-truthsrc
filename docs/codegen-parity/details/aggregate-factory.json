@@ -1,0 +1,397 @@
+{
+  "group": "aggregate-factory",
+  "artifactIds": ["aggregate-factory"],
+  "diffs": [
+    {
+      "artifactId": "aggregate-factory",
+      "file": "diffs/aggregate-factory.diff.md",
+      "status": "decision-required",
+      "scalaVariants": [
+        {
+          "id": "bare-reference-only",
+          "condition": "app.aggregates 中的聚合进入传统应用层调度；按原命令顺序 find(!isReadOnly && parameters.nonEmpty) 为 None；writer scope 允许。一个 Factory 文件，仅裸引用方法；仍发 Inject、implicit EC 和 10 秒 askTimeout。",
+          "outputPaths": [
+            "<target>/app/<base-path>/application/aggregates/factories/<FactoryName>.scala",
+            "<target>/modules/kernel/src/main/scala/<base-path>/application/aggregates/factories/<FactoryName>.scala"
+          ],
+          "observedExecution": "not-run"
+        },
+        {
+          "id": "reference-and-initialize",
+          "condition": "原序第一个非只读且带参数的命令存在并声明 replyToType；同一 Factory 文件先裸引用方法后 ask 初始化方法；factoryMethods 首带参方法只提供方法名。",
+          "outputPaths": [
+            "<target>/app/<base-path>/application/aggregates/factories/<FactoryName>.scala",
+            "<target>/modules/kernel/src/main/scala/<base-path>/application/aggregates/factories/<FactoryName>.scala"
+          ],
+          "observedExecution": "not-run; curated-reference 有人工完成的两方法，不是同输入生成证据"
+        },
+        {
+          "id": "initialization-missing-reply",
+          "condition": "find 命中但所选命令没有 replyToType；Builder 抛 IllegalStateException，不生成该 Factory 的成功输出；此前 Root/Protocol 可能已经落盘。",
+          "outputPaths": [],
+          "observedExecution": "not-run"
+        },
+        {
+          "id": "transactor-attribution",
+          "condition": "app.aggregates 中 metaCategory 为 application.services.transactor，仍调用同一 Factory MBT；attribution=saga-participant，BC multi targetModuleOf 无对应项，回退 app 根。方法条件仍按上述变体。",
+          "outputPaths": [
+            "<target>/app/<base-path>/application/aggregates/factories/<FactoryName>.scala"
+          ],
+          "observedExecution": "not-run"
+        },
+        {
+          "id": "no-aggregate-or-scope-suppressed",
+          "condition": "没有聚合，或 writer scope 排除 attribution；无 Factory 落盘。scope 检查晚于 build/render，不能绕过初始化缺回复错误。",
+          "outputPaths": [],
+          "observedExecution": "not-run"
+        }
+      ],
+      "jsSources": [
+        {
+          "file": "generators/scala-cqrs-play-service/build-aggregate-models.mjs",
+          "symbols": ["buildAggregateModels", "role=factory", "shared", "artifact"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "4-41",
+          "reason": "Factory 仅有 shared names/authority 和文件 deps，缺少 Scala 的 ID/reply/FactoryMethodModel/TypeRef 结构。"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/templates/aggregate-factory.mjs",
+          "symbols": ["factoryTemplate", "aggregateTemplate"],
+          "lane": "formal",
+          "disposition": "replace",
+          "lines": "1-33",
+          "reason": "factoryTemplate 是 Behavior 构造 trait；同文件 aggregateTemplate 属 aggregate-root，须由唯一组装 owner 拆分，不能一起覆盖。"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/aggregate-names.mjs",
+          "symbols": ["aggregateNames", "paths.factory"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "3-24",
+          "reason": "factory 缺少 factories 子包；路径用原 ref.id，symbol() 不是 PascalCase 派生器。"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/render-aggregate-layers.mjs",
+          "symbols": ["templates.factory", "renderAggregateLayers"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "1-29",
+          "reason": "formal Factory 的实际调用与 entry 组装点。"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/generate.mjs",
+          "symbols": ["inherited", "registry", "generate"],
+          "lane": "formal",
+          "disposition": "reuse",
+          "lines": "16-23,59-70",
+          "reason": "service registry 的 aggregate-dsl 实际替换成 renderAggregateLayers，不调用 legacy render.mjs。"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/templates/aggregate-protocol.mjs",
+          "symbols": ["legacyTemplate", "protocolTemplate", "generated domain AggregateFactory.create"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "3-39",
+          "reason": "role 名为 legacy 但 formal 可达；生成 domain Factory 转发对象和 application alias，需共同迁移。"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/templates/aggregate-bootstrap.mjs",
+          "symbols": ["bootstrapTemplate", "generated Bootstrap.create"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "1-33",
+          "reason": "真实 Behavior 构造端口实现；require、PersistenceId.ofUniqueId、event/snapshot adapters 不能丢失。"
+        },
+        {
+          "file": "generators/scala-cqrs-domain/render-actor.mjs",
+          "symbols": ["renderActors", "generated AggregateFactory.create"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "4-30",
+          "reason": "其他 versioned domain/application 路由生成 domain 同文件 Factory object，不是 standalone legacy sharding class。"
+        },
+        {
+          "file": "generators/scala-cqrs-application/produce.mjs",
+          "symbols": ["aggregate-dsl producer", "renderActors"],
+          "lane": "formal",
+          "disposition": "reuse",
+          "lines": "18-29",
+          "reason": "证实非 service 路由调用 renderActors；没有据文件夹名称推断可达性。"
+        },
+        {
+          "file": "generators/aggregate-dsl/produce.mjs",
+          "symbols": ["renderAggregate", "renderActors"],
+          "lane": "formal",
+          "disposition": "reuse",
+          "lines": "1-7",
+          "reason": "produce 与同目录 legacy render/emit 是不同调用面。"
+        },
+        {
+          "file": "generators/aggregate-dsl/render.mjs",
+          "symbols": ["render", "initCmd", "factoryImports", "factory"],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "lines": "1016-1131",
+          "reason": "有 sharding/ask class；按命令名排序取第一个、固定 Id/两方法/历史头，不等于当前 BC 分支；银行 formal 未调用此 renderer。"
+        },
+        {
+          "file": "generators/aggregate-dsl/emit.mjs",
+          "symbols": ["render(spec)", "result.files writer"],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "lines": "1-10",
+          "reason": "standalone spec CLI 直接写文件，非 formal product entry。"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es/builders/models.mjs",
+          "symbols": ["factoryModel"],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "lines": "250-315",
+          "reason": "存在近似 method model/body；无初始化候选时 throw、ID 固定 Id、description 为空，与 raw 存在具体差异。"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es/templates/scala.mjs",
+          "symbols": ["renderFactory"],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "lines": "171-194",
+          "reason": "Inject+ClusterSharding+EC+10 秒+两方法 renderer 可作算法参考，不是 formal 已接线。"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es/generate.mjs",
+          "symbols": ["generate", "emit", "MODULE_OF.factory"],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "lines": "25-93",
+          "reason": "通用 legacy plan 具备加载此 generate.mjs 的源码条件，但不在 registeredProductProducer 列表；未试跑 CLI 准入，不授权复活。"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/build-models.mjs",
+          "symbols": ["artifactsSpec.factory", "buildModels", "setDeps(a.factory)"],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "18-28,50-118,136-138,221-247",
+          "reason": "显式 family2 模型；factory 在 application.factories/glue，typed PID 构造接缝，不含 sharding 初始化模型；拒绝 external producers。"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/templates/factory.mjs",
+          "symbols": ["factoryTemplate"],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "1-11",
+          "reason": "trait create[J](PersistenceId, State, Computations, EventAdapter[Event,J], SnapshotAdapter[State]): Behavior[Command]，无 body。"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/templates/imports.mjs",
+          "symbols": ["importsFor", "named", "library"],
+          "lane": "family",
+          "disposition": "reuse",
+          "lines": "1-25",
+          "reason": "复用冲突检测思想；传入分组/组内去重/_root_ 规则不等于 BC 全局排序，需 shared adapter。"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/render.mjs",
+          "symbols": ["productionJobs", "render"],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "15-34",
+          "reason": "family2 Factory 的唯一 job 组装点，后续 family 复用此列表。"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/generate.mjs",
+          "symbols": ["generate"],
+          "lane": "family",
+          "disposition": "reuse",
+          "lines": "1-24",
+          "reason": "显式 scala-cqrs-aggregate-core@1 profile；不是银行 service 默认链。"
+        },
+        {
+          "file": "generators/scala-cqrs-persistence-readside-v1/render.mjs",
+          "symbols": ["productionJobs", "aggregateProductionJobs", "factory job"],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "1-23",
+          "reason": "复用 family2 job 并增加同 kind 的 PersistenceFactory，须分清逻辑身份。"
+        },
+        {
+          "file": "generators/scala-cqrs-persistence-readside-v1/templates/persistence.mjs",
+          "symbols": ["adapterTemplate(key=factory)"],
+          "lane": "family",
+          "disposition": "reuse",
+          "lines": "105-109,149-157",
+          "reason": "保留 require 后调用 bootstrap.create[Frame] 并 new event/snapshot adapters 的装配职责；它不是 BC EntityRef 工厂。"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/render.mjs",
+          "symbols": ["render", "productionJobs(m.persistence)"],
+          "lane": "family",
+          "disposition": "reuse",
+          "lines": "1-17",
+          "reason": "family8 传递消费上述 Factory jobs，不能遗漏共享影响。"
+        },
+        {
+          "file": "lib/products/generate-cli.mjs",
+          "symbols": ["generateProductCli", "registeredProductProducer", "planCompiledProducts"],
+          "lane": "formal",
+          "disposition": "reuse",
+          "lines": "66-145",
+          "reason": "真实公共 CLI 选型与本地 runtimeArtifact 读取准入；公共文件只由集成者维护。"
+        }
+      ],
+      "writeSet": [
+        "generators/scala-cqrs-play-service/models/aggregate-factory-model.mjs",
+        "generators/scala-cqrs-play-service/builders/aggregate-factory-builder.mjs",
+        "generators/scala-cqrs-play-service/templates/aggregate-reference-factory.mjs",
+        "test/codegen-parity/aggregate-factory.test.mjs",
+        "docs/codegen-parity/fixtures/aggregate-factory/",
+        "docs/codegen-parity/expected/aggregate-factory/",
+        "generators/scala-cqrs-play-service/templates/aggregate-factory.mjs",
+        "generators/scala-cqrs-play-service/build-aggregate-models.mjs",
+        "generators/scala-cqrs-play-service/render-aggregate-layers.mjs",
+        "generators/scala-cqrs-play-service/aggregate-names.mjs",
+        "generators/scala-cqrs-play-service/templates/aggregate-protocol.mjs",
+        "generators/scala-cqrs-play-service/templates/aggregate-bootstrap.mjs",
+        "generators/scala-cqrs-domain/render-actor.mjs",
+        "generators/scala-cqrs-domain/scaffold.mjs",
+        "generators/scala-cqrs-aggregate-core-v1/build-models.mjs",
+        "generators/scala-cqrs-aggregate-core-v1/templates/factory.mjs",
+        "generators/scala-cqrs-aggregate-core-v1/render.mjs",
+        "generators/scala-cqrs-persistence-readside-v1/templates/persistence.mjs",
+        "generators/scala-cqrs-persistence-readside-v1/render.mjs"
+      ],
+      "writeSetPolicy": {
+        "phase": "proposed-next-phase-only",
+        "root": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+        "newPaths": [
+          "generators/scala-cqrs-play-service/models/aggregate-factory-model.mjs",
+          "generators/scala-cqrs-play-service/builders/aggregate-factory-builder.mjs",
+          "generators/scala-cqrs-play-service/templates/aggregate-reference-factory.mjs",
+          "test/codegen-parity/aggregate-factory.test.mjs",
+          "docs/codegen-parity/fixtures/aggregate-factory/",
+          "docs/codegen-parity/expected/aggregate-factory/"
+        ],
+        "privateOwner": "aggregate-factory implementer; 尚未声称人员已指派",
+        "assemblyOwner": "aggregate-assembly-integrator; 唯一组装职责名，尚未声称人员已指派",
+        "sharedPathsPolicy": "既有复合 builder/template/renderer、registry、names/type/layout/writer、catalog/配置与回锚接线只由集成者改；legacy 默认仅参考，不批准复活；persistence 装配只有明确调用契约变化才改。",
+        "actualWritesThisPhase": [
+          "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/aggregate-factory.diff.md",
+          "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/details/aggregate-factory.json"
+        ]
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "shared-writer-anchors",
+        "aggregate-root",
+        "application-protocol",
+        "command-helper",
+        "aggregate-behavior",
+        "bootstrap",
+        "aggregate-repository-port",
+        "aggregate-repository-implementation",
+        "family2-family6-family8-assembly"
+      ],
+      "glue": [
+        "akka.cluster.sharding.typed.scaladsl.ClusterSharding",
+        "akka.cluster.sharding.typed.scaladsl.EntityRef",
+        "akka.cluster.sharding.typed.scaladsl.EntityTypeKey",
+        "akka.actor.typed.ActorRef",
+        "akka.actor.typed.Behavior",
+        "akka.persistence.typed.PersistenceId",
+        "akka.persistence.typed.EventAdapter",
+        "akka.persistence.typed.SnapshotAdapter",
+        "akka.util.Timeout",
+        "javax.inject.Inject",
+        "scala.concurrent.ExecutionContext",
+        "scala.concurrent.Future",
+        "scala.concurrent.duration._",
+        "scala.Either",
+        "scala.Left",
+        "scala.Right",
+        "net.imadz.common.CommonTypes.Id",
+        "net.imadz.common.CommonTypes.iMadzError",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.CommandHelper",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.runReplyingPolicy"
+      ],
+      "openDecisions": [
+        "D1：ClusterSharding 引用 Factory 替代当前 local Behavior 构造端口时，谁继续拥有 Bootstrap.create、typed PID/J/adapters/authority，如何迁移调用者与注册 sharding 且不改变 PersistenceId.ofUniqueId 的既有身份？",
+        "D2：每个银行聚合的初始化命令与 factory method 名来自何处；保留 raw 原序 first eligible 还是要求显式绑定；同名 ID 不同类型、optional ID、仅 replyTo 参数如何准入？",
+        "D3：Actor 初始化命令的 typed replyTo 与 Reply.error: Option[iMadzError] 的权威输入/正式产品合同是什么；当前 Accepted/Refused(code:String) 如何适配，缺失或不兼容回复必须拒绝而非合成成功。",
+        "D4：optional FieldDef 的 Some(None 源码文本) 在 raw Template 中未发射，目标保留无默认还是批准修正；重复 Future 去重与 import 冲突规则如何进入精确字节白名单？",
+        "D5：bodyLogic 的全字符串 entityTypeKey 替换、ID RHS/method 名未 escape、两套 baseName 规则、WithoutBalance 泛化命名、共享 TypeResolver 的 ???/Any 兜底，分别保留兼容还是批准结构化改写/拒绝？",
+        "D6：实际 common-core_2.13:0.2 jar 与 scaffold 同名实现由谁供给，是否真正具有 CommandHelper 三方法及 replyWith 语义；Guice/EC/sharding 接口与注册如何以冻结供给证明？本次不授权发布、下载或复制库。",
+        "D7：family multi/glue 与 BC kernel 物理分区、source pointer 与 noteId 方法参数映射、不同 Factory 逻辑 identity 以及唯一 writer/退役计划，需要集成者冻结，不按同 kind 合并。"
+      ],
+      "extraSources": [],
+      "sourcePins": {
+        "jsHead": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+        "bcHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+        "index": "baseline/index.json",
+        "model": {
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/AggregateFactoryModel.scala",
+          "bytes": 1662,
+          "sha256": "33e2bbb4fb5a44cc46694930e4f7582958080e2ff925137ea606f82547172ac7"
+        },
+        "builder": {
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateFactoryBuilder.scala",
+          "bytes": 10071,
+          "sha256": "4ab2b1f8dca64623b7b4dbfa8af7cb2289bbc9ca24e1fb8a0c7a0f5513c1163a"
+        },
+        "template": {
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateFactoryTemplate.scala",
+          "bytes": 2971,
+          "sha256": "b54ab0387af9bb2d4c4e9ab66939a5462c7b55c532dc5dd6e486945506c6a52b"
+        },
+        "curatedReference": {
+          "snapshot": "baseline/curated-scala/net/imadz/application/aggregates/factories/CreditBalanceAggregateFactory.scala",
+          "bytes": 1510,
+          "sha256": "693b1a9844f06b437fdf9b4986028b21205c698dbe1c592aabd0fa6c4053d0a3"
+        },
+        "actualJs": [
+          {
+            "snapshot": "baseline/actual-js/app/example/bankwealth/application/aggregates/CreditBalanceAggregateFactory.scala",
+            "bytes": 483,
+            "sha256": "670db6f6e0d19690e640e2b6940c95cd623c08ccbb205a9c045b9a09001f74d0"
+          },
+          {
+            "snapshot": "baseline/actual-js/app/example/bankwealth/application/aggregates/FundOrderAggregateFactory.scala",
+            "bytes": 487,
+            "sha256": "4385e9eaa346184e5001c35e82f9279f126607afc3d4f6b42e9f500a8af9fd96"
+          },
+          {
+            "snapshot": "baseline/actual-js/app/example/bankwealth/application/aggregates/SipPlanAggregateFactory.scala",
+            "bytes": 453,
+            "sha256": "5cb872ef32f140e2c5db83518ccfdc1fcf25f1df3772ee158bbf6d2601ac0145"
+          }
+        ]
+      },
+      "comparison": {
+        "kind": "structural-not-same-input",
+        "freshRawScalaOutput": false,
+        "freshJsOutput": false,
+        "approvedTarget": "diff §4 输出规则与 §6 完整结构示例；银行完整 expected 因 D1-D3 尚缺，不冒充同输入输出。",
+        "rawScalaDebt": [
+          "FactoryMethodModel.bodyLogic 源码字符串槽",
+          "Template 全字符串替换 entityTypeKey",
+          "optional defaultValue 在 Template 不发射",
+          "TypeRef Set 可落成重复 FQN import",
+          "共享 TypeResolver.resolveMetaRef 为 ???，其他未知类型有 Any fallback"
+        ],
+        "formalCounterpart": "同名 Factory trait 存在，但 BC EntityRef/ask 职责尚缺正式接线；legacy 有近似 renderer，故本族状态为 decision-required 而非完全没有对应实现。"
+      },
+      "acceptance": {
+        "sourceContentInspectionOnly": true,
+        "sameInputFileReconciliation": "not-run",
+        "constructAndRhsReconciliation": "规格已列 M1-M7、FM1-FM5、B1-B10、T0-T12；没有声明生成文件验证通过",
+        "interfaceAndBehavior": "not-run",
+        "stableGenerationAndAnchors": "not-run",
+        "complexity": {"goal": "普通方法 CC <= 5", "measurement": "not-measured"},
+        "cli": "diff §9.2 给出 generate-products 的四个实际必填 flag 与 --plan；§9.3 给出显式 systemFile/systemBindings/targetDir/multiProject 的传统 CodegenMain 形状；均未执行。",
+        "sideEffects": "JS apply 写候选 entries、truthsrc.ledger.json、anchors.json，service plan 读取本地 runtime jar/external roots；BC sbt 可写本仓构建目录/依赖缓存并解析依赖，CodegenMain 复制 scaffold、写产物/回执/manifest/formal-semantics，故需下一阶段单独授权。"
+      }
+    }
+  ],
+  "generatorsModified": false,
+  "runtimeExecuted": false
+}

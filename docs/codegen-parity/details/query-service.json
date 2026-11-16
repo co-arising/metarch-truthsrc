@@ -1,0 +1,321 @@
+{
+  "group": "query-service",
+  "artifactIds": [
+    "query-service"
+  ],
+  "diffs": [
+    {
+      "artifactId": "query-service",
+      "file": "diffs/query-service.diff.md",
+      "status": "decision-required",
+      "scalaVariants": [
+        {
+          "id": "query-class",
+          "condition": "传统 runCommon → generateApplicationLayer 的 app.queries.foreach；每个 QueryServiceMetadata 一文件，空列表不输出；scope/territory 仍可能抑制实际写入",
+          "outputPaths": [
+            "<target>/app/<base-path>/application/queries/<queryServiceName(getBaseName(meta.name))>.scala"
+          ],
+          "cardinality": "每个 query 元数据 1；与 methods/repositories 数无关",
+          "evidence": "模板及调度已实读；没有 fresh 同输入输出"
+        },
+        {
+          "id": "query-with-structs",
+          "condition": "model.structs.map(renderStruct).mkString 非空；同文件在 class 前输出一个 companion，structs/fields 均按输入顺序",
+          "outputPaths": [
+            "<target>/app/<base-path>/application/queries/<Name>.scala"
+          ],
+          "cardinality": "不增文件；0 或 1 companion，内含 N 个 case class",
+          "evidence": "renderStruct 只消费 selfType.name、fields.name/typeRef.signature 和 dependencies 中短名 ReadModel"
+        },
+        {
+          "id": "timeout-model-branch",
+          "condition": "Template 的 model.dependencies 含短名 Timeout 才输出 askTimeout；正常 QueryServiceBuilder 最终剔除全部短名 Timeout，因此生产链此分支被抑制，不能由 invokes 推断启用",
+          "outputPaths": [
+            "<target>/app/<base-path>/application/queries/<Name>.scala"
+          ],
+          "cardinality": "同文件 0 或 1 implicit askTimeout",
+          "evidence": "Template 直接模型分支存在；normal Builder 抑制；未运行"
+        },
+        {
+          "id": "multi-project-fallback",
+          "condition": "multiProject=true，但 targetModuleOf 没有 query-service 分支，writer fallback 为 app，不自动落 modules/kernel 或 modules/glue",
+          "outputPaths": [
+            "<target>/app/<base-path>/application/queries/<Name>.scala"
+          ],
+          "cardinality": "每个 query 1",
+          "evidence": "CQRSApplicationGenerator.scala:331–378"
+        }
+      ],
+      "jsSources": [
+        {
+          "file": "lib/products/generate-cli.mjs",
+          "symbols": [
+            "registeredProductProducer",
+            "generateProductCli",
+            "planCompiledProducts"
+          ],
+          "lane": "formal",
+          "disposition": "adapt",
+          "note": "真实目录注册；formal play-service 与 family play-application 是不同 producer；后者 requires generate-project capture，不能从目录名推断可达"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/generate.mjs",
+          "symbols": [
+            "registry.play-service-dsl",
+            "generate"
+          ],
+          "lane": "formal",
+          "disposition": "not-wired",
+          "note": "调用 renderService/renderJournalReadside 等，不调用传统 QueryService 或 legacy/family query renderer"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/render-service.mjs",
+          "symbols": [
+            "serviceSelection",
+            "renderService"
+          ],
+          "lane": "formal",
+          "disposition": "adapt",
+          "note": "混合 HTTP/鉴权/页面/Endpoint 容器，query bindings 不是 QueryService 方法；由唯一 formal service 集成者拆分，不能整文件迁 application.queries"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/render-journal-readside.mjs",
+          "symbols": [
+            "renderJournalReadside"
+          ],
+          "lane": "formal",
+          "disposition": "reuse",
+          "note": "projectionStore 条件发基础设施 repository/projection/schema/domain/SQL；仅作为查询端口依赖，不接管写面或改 PID/overflow"
+        },
+        {
+          "file": "generators/service-dsl/emit.mjs",
+          "symbols": [
+            "emitQueryService",
+            "scalaId",
+            "kind === query dispatch"
+          ],
+          "lane": "legacy",
+          "disposition": "adapt",
+          "note": "独立 direct emitter 可达；flat spec、no-op scalaId、extendsReadModel 布尔、直接 Timeout 检测、提示与 ???；缺同等 Builder，需 query-only split，不影响 application/domain/port"
+        },
+        {
+          "file": "generators/run-all.mjs",
+          "symbols": [
+            "runGen",
+            "service-dsl call at 1781–1792"
+          ],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "note": "实际 service-dsl 调用使用 kind=port，不是 query；本次仅依相关区段判定，不声称审阅整个 legacy pipeline"
+        },
+        {
+          "file": "generators/pipeline.mjs",
+          "symbols": [
+            "ORDER",
+            "SOURCES",
+            "manifest generators loop"
+          ],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "note": "binding-driven/queued 和 manifest 不是 query emitter 执行证据"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/build-models.mjs",
+          "symbols": [
+            "roles",
+            "buildModels",
+            "resolveApplicationTarget",
+            "carrier",
+            "named"
+          ],
+          "lane": "family",
+          "disposition": "adapt",
+          "note": "完整 API/composition lowering 验证及名称/carrier 模型保留；queryService 当前 glue/infrastructure.web，queries 为 kernel/application.api；不是传统 methods/structs 模型"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/templates/services.mjs",
+          "symbols": [
+            "queryServiceTemplate"
+          ],
+          "lane": "family",
+          "disposition": "adapt",
+          "note": "真实 receipts guard→directory→Future(blocking)→byResource→page/cursor mapping→NonFatal recover；split/move，不能替换成 raw ??? 或丢阻塞 executor/错误合同"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/templates/api.mjs",
+          "symbols": [
+            "apiTemplate",
+            "queriesTemplate"
+          ],
+          "lane": "family",
+          "disposition": "adapt",
+          "note": "ReceiptPosition/Item/Page 与 Outcome、queries trait 是独立 API 所有权；不能与传统 companion DTO 自动 alias 合并"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/templates/syntax.mjs",
+          "symbols": [
+            "scalarType",
+            "unwrap"
+          ],
+          "lane": "family",
+          "disposition": "reuse",
+          "note": "保留 nominal 最外层类型及 carrier accessor 顺序；不合并名义类型"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/generate.mjs",
+          "symbols": [
+            "generate"
+          ],
+          "lane": "family",
+          "disposition": "reuse",
+          "note": "完整 manifest、plain capture context、精确十产品闭包、implementationBuildInputs 等准入不删除"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/render.mjs",
+          "symbols": [
+            "render",
+            "query-service job",
+            "query-service-port job"
+          ],
+          "lane": "family",
+          "disposition": "adapt",
+          "note": "唯一 play-application 集成者装配 jobs/directDeps/application-root 引用，禁止两份模板同时拥有同一输出路径"
+        }
+      ],
+      "writeSet": [
+        "proposed: /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/generators/query-service/model.mjs",
+        "proposed: /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/generators/query-service/build-models.mjs",
+        "proposed: /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/generators/query-service/templates/query-service.mjs",
+        "proposed: /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/generators/query-service/render.mjs",
+        "proposed split: /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/generators/scala-cqrs-play-application-v1/templates/query-service.mjs",
+        "shared integrator only: /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/generators/service-dsl/emit.mjs",
+        "shared integrator only: /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/generators/scala-cqrs-play-application-v1/templates/services.mjs",
+        "shared integrator only: /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/generators/scala-cqrs-play-application-v1/build-models.mjs",
+        "shared integrator only: /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/generators/scala-cqrs-play-application-v1/render.mjs",
+        "shared integrator only: /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/generators/scala-cqrs-play-application-v1/templates/api.mjs",
+        "shared integrator only: /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/generators/scala-cqrs-play-application-v1/templates/application.mjs",
+        "shared integrator only: /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/generators/scala-cqrs-play-service/generate.mjs",
+        "shared integrator only: /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/generators/scala-cqrs-play-service/render-service.mjs",
+        "conditional registry integration after Q8: /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/products/generate-cli.mjs"
+      ],
+      "dependsOn": [
+        "shared-layout-types",
+        "shared-writer-provenance",
+        "value-object",
+        "aggregate-repository-port",
+        "application-protocol",
+        "projection-repository-port",
+        "projection-repository-implementation",
+        "application-service",
+        "http-controller",
+        "application-bootstrap"
+      ],
+      "glue": [
+        "javax.inject.Inject",
+        "scala.concurrent.ExecutionContext",
+        "scala.concurrent.Future",
+        "scala.concurrent.blocking",
+        "scala.concurrent.duration.DurationInt",
+        "scala.language.postfixOps",
+        "scala.util.control.NonFatal",
+        "akka.util.Timeout",
+        "akka.cluster.sharding.typed.scaladsl.EntityRef.ask",
+        "net.imadz.common.CommonTypes.Id",
+        "net.imadz.common.CommonTypes.ReadModel",
+        "net.imadz.application.aggregates.repository.CreditBalanceRepository.findCreditBalanceByUserId",
+        "net.imadz.application.aggregates.CreditBalanceProtocol.GetBalance",
+        "net.imadz.application.aggregates.CreditBalanceProtocol.CreditBalanceConfirmation",
+        "net.imadz.application.projection.repository.MonthlyIncomeAndExpenseSummaryRepository.filterByPeriodLCRO",
+        "family resolved names.directory.fqn.find",
+        "family resolved persistence.names.repository.fqn.byResource"
+      ],
+      "openDecisions": [
+        "Q1: normal QueryServiceBuilder 删除 Timeout，而 Template 依 dependencies 启用 askTimeout；需裁定显式 ask/timeout 输入、30 seconds 是否仅参考，以及 initializer 前的 imports 顺序。",
+        "Q2: bodyLogic/referenceCode 目前仅提示且方法实际 ???；需裁定每方法手写/外置实现所有者、保留区和来源，以及未实现如何阻断，不能制造空成功。",
+        "Q3: 显式有序 repository 注入 vs raw 后缀筛选，及同名/同包/泛型/scala 子包 imports 的有限兼容偏差。",
+        "Q4: companion DTO 的 ReadModel 身份、optional/default/知识号/logicMethods 是否有意抑制，如何不误用 standalone VO 输出或合并 nominal types。",
+        "Q5: family receipts 的 read-port、resource-directory、cursor/page 类型所有者；阻塞 executor 保留应用侧还是移 infra adapter；同步 directory 异常合同是否保持。",
+        "Q6: 传统 Query 后缀与 family QueryService 显式绑定的迁移、multi-module 物理归属及 application-root/API/controller 调用迁移。",
+        "Q7: 银行七个 Query endpoint 缺同等 QueryService 方法/仓储/结果错误与一致性映射；人工 error→Nil、LocalDate.now/LCRO 边界不得自动推广。",
+        "Q8: formal query 输入 product/adapter、唯一 producer 装配点、BC 文件 adapter 的 QueryServiceMetadata 承载能力、等价 fixtures、隔离 SQLite graph 路径和 legacy direct CLI 保留/退役。"
+      ],
+      "extraSources": [
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/project/implementation-evidence.mjs | bytes=2794 | sha256=da6889091818f35bac0e3a62e04a862ee4268fef6f7b94cad6fed80cb637aa76",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/handwritten-provenance.mjs | bytes=9833 | sha256=83f68ba4082a0c7677de3aff8552e01f0f191aa64a64062b6b2067df6fbf57d0"
+      ],
+      "assemblyOwners": [
+        {
+          "physicalOutput": "traditional query file",
+          "owner": "query-service renderer；仅一个上层 producer job 可登记该文件",
+          "scope": "package/import/companion/class/method/source mappings"
+        },
+        {
+          "physicalOutput": "family query-service and query-service-port jobs",
+          "owner": "play-application 集成者",
+          "scope": "render.mjs、shared build-models/API/application-root 接线；query owner 提供专属模板"
+        },
+        {
+          "physicalOutput": "BankServiceService.scala mixed container",
+          "owner": "formal service 集成者",
+          "scope": "保留 HTTP/鉴权/页面/非 query endpoints 的职责；不得整文件搬到 application.queries"
+        },
+        {
+          "physicalOutput": "service-dsl/emit.mjs shared emitter",
+          "owner": "service-family 集成者",
+          "scope": "先只拆 query 分支；application/domain/port 保持原职责"
+        }
+      ],
+      "counterparts": {
+        "formal": "missing-counterpart: 银行仅见 query Endpoint bindings 与 JDBC repository，不存在本次核定的传统 QueryService lowering 接线",
+        "legacy": "近似独立 emitter 存在；run-all 调用的是 kind=port；formal 未接线",
+        "family": "已注册且由 render job 调用有限 receipts query；与传统及银行输入不同，行为必须保留并裁定边界"
+      },
+      "baselineHeads": {
+        "js": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+        "bc": "cc335eb1e0d0fae17bf092fd61b126040196ea70"
+      },
+      "scalaSourceReview": {
+        "model": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/QueryServiceModel.scala",
+        "builder": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/QueryServiceBuilder.scala",
+        "template": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/QueryServiceTemplate.scala",
+        "fullModelBuilderTemplateRead": true,
+        "coverageMethod": "完整源码内嵌；逐字段/default/依赖、B1–B8 规则、T01–T12 构造与 RHS；独立列 ValueObject 子模型和 resolver 债务",
+        "rawSlots": [
+          "QueryServiceMethodModel.bodyLogic: String",
+          "referenceCode 或 // TODO: intent 仅进入 AI_PROMPT Description",
+          "所有 raw query methods 的实际 body 为 ???",
+          "本 QueryServiceTemplate 没有 BEGIN/END MANUAL",
+          "共享 TypeResolver.resolveMetaRef / SagaContextRef 有 ???，未知 MetaType fallback Any",
+          "ValueObjectBuilder.logicMethods 代码串进入 struct model 但不被 query template 输出"
+        ]
+      },
+      "fixturePlan": [
+        "proposed fixtures/query-service/empty: 无 query、空 methods/structs/deps 分开",
+        "proposed fixtures/query-service/aggregate-ask: CreditBalance typed reply/repository，raw skeleton 与手写实现分账",
+        "proposed fixtures/query-service/projection-structs: nested DTO、defaults/optional/ReadModel/knowledge/logicMethods",
+        "proposed fixtures/query-service/dependency-boundaries: 同包/同名/泛型/关键字/排序/未知引用",
+        "proposed fixtures/query-service/timeout-model: direct Template true/false 与 normal Builder 抑制",
+        "proposed fixtures/query-service/family-receipts: 十产品完整闭包、limit/cursor/missing/failure/外置源码捕获"
+      ],
+      "verification": {
+        "sameInputFreshOutputs": "not-available",
+        "sourceContentInspectionOnly": true,
+        "runtimeExecuted": false,
+        "testsExecuted": false,
+        "typecheckExecuted": false,
+        "compileExecuted": false,
+        "generationExecuted": false,
+        "cc": "not-measured; 普通方法目标 <=5，6–10逐方法说明，>10需重构或逐方法批准",
+        "cliSpecifications": "diff §9.2 列实际 generate-products、generate-project、legacy emitter 与 BC -Dcodegen.systemFile/systemBindings/targetDir 形状、隔离 proposed 输入/输出和所有已核定副作用；无虚构 --artifact/--generator 项目 flag",
+        "acceptance": "完整同输入文件/construct/RHS 对账、必要接口及行为验证、命名/layout/复杂度、稳定生成与最终字节回锚分账；当前全部 not-run"
+      }
+    }
+  ],
+  "generatorsModified": false,
+  "runtimeExecuted": false,
+  "currentWrites": [
+    "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/query-service.diff.md",
+    "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/details/query-service.json"
+  ],
+  "preservation": "只写本组两个文件；baseline、真源树、生成应用、.truthsrc、catalog、ledger、anchor、其他 diff 与 Git 均未修改"
+}

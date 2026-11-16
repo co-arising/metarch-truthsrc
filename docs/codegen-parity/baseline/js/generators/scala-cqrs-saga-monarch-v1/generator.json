@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "truthsrc.product-generator/v1",
+  "name": "scala-cqrs-saga-monarch",
+  "version": "1",
+  "targetProfile": "scala-cqrs-saga-monarch@1",
+  "products": [
+    { "id": "reference-layout", "version": "1", "payloadSchemaVersion": "truthsrc.reference-layout/v1", "capabilities": [{ "id": "qualified-reference-layout", "version": "1" }] },
+    { "id": "exact-value-types", "version": "1", "payloadSchemaVersion": "truthsrc.exact-value-types/v1", "capabilities": [{ "id": "exact-value-types", "version": "1" }] },
+    { "id": "exact-value-codecs", "version": "1", "payloadSchemaVersion": "truthsrc.exact-value-codecs/v1", "capabilities": [{ "id": "exact-value-codecs", "version": "1" }] },
+    { "id": "saga-contract", "version": "2", "payloadSchemaVersion": "truthsrc.saga-ir/v2", "capabilities": [{ "id": "saga-static-contract", "version": "2" }] },
+    { "id": "saga-runtime-contract", "version": "2", "payloadSchemaVersion": "truthsrc.saga-runtime-contract/v4", "capabilities": [{ "id": "saga-runtime-lowering", "version": "4" }] },
+    { "id": "execution-contract", "version": "2", "payloadSchemaVersion": "truthsrc.execution/v2", "capabilities": [{ "id": "execution-static-contract", "version": "2" }] },
+    { "id": "workflow-contract", "version": "1", "payloadSchemaVersion": "truthsrc.workflow-contract/v1", "capabilities": [{ "id": "finite-r2-workflow", "version": "1" }] },
+    { "id": "saga-host-contract", "version": "3", "payloadSchemaVersion": "truthsrc.saga-host-contract/v2", "capabilities": [{ "id": "finite-saga-monarch-host", "version": "1" }] }
+  ],
+  "producers": [{
+    "id": "saga-monarch", "version": "1",
+    "products": ["reference-layout", "exact-value-types", "exact-value-codecs", "saga-contract", "saga-runtime-contract", "execution-contract", "workflow-contract", "saga-host-contract"],
+    "artifactKinds": ["protocol", "exact-value-codec", "saga-bridge", "run-facade", "workflow-program", "application-root", "serialization-config", "build"]
+  }],
+  "artifactKinds": ["protocol", "exact-value-codec", "saga-bridge", "run-facade", "workflow-program", "application-root", "serialization-config", "build"],
+  "options": ["packages", "names", "sourceRoots"]
+}

@@ -1,0 +1,305 @@
+{
+  "group": "invariant-rule",
+  "artifactIds": ["invariant-rule"],
+  "diffs": [
+    {
+      "artifactId": "invariant-rule",
+      "file": "diffs/invariant-rule.diff.md",
+      "status": "decision-required",
+      "scalaVariants": [
+        {
+          "id": "classic-single",
+          "condition": "传统 CodegenMain -> runCommon -> domain.invariants.foreach；每个 metadata 一次 MBT，writer scope 包含 attribution；multiProject=false",
+          "outputPaths": ["<target>/app/<base-path>/domain/invariant/<resolvedRuleName>.scala"],
+          "cardinality": "每个被写出的 InvariantRuleMetadata 一个文件；不是每个 aggregate 一个文件",
+          "observation": "源码 enabled，本轮未生成"
+        },
+        {
+          "id": "classic-multi",
+          "condition": "同一传统 MBT 且 multiProject=true；kind=rules 映射 kernel",
+          "outputPaths": ["<target>/modules/kernel/src/main/scala/<base-path>/domain/invariant/<resolvedRuleName>.scala"],
+          "observation": "源码 enabled，本轮未生成；不能与单工程字节混比"
+        },
+        {
+          "id": "empty-invariants",
+          "condition": "domain.invariants 为空",
+          "outputPaths": [],
+          "observation": "本族零文件"
+        },
+        {
+          "id": "scope-excluded",
+          "condition": "currentScope.includes(attribution)=false；Builder/Template 与 writer 记账已在源文件写入 skip 前发生",
+          "outputPaths": [],
+          "observation": "源文件 suppressed，不能称无任何处理或记账"
+        },
+        {
+          "id": "empty-conditions",
+          "condition": "metadata 存在但 conditions 为空；并非制品级抑制条件",
+          "outputPaths": ["<selected-source-root>/<base-path>/domain/invariant/<resolvedRuleName>.scala"],
+          "observation": "仍有 object/apply/prompt/禁用逻辑注释/???；无 private error 定义"
+        },
+        {
+          "id": "reference-code-present-or-absent",
+          "condition": "每个 condition 的 BusinessLogic.referenceCode 为 Some 或 None",
+          "outputPaths": ["<selected-source-root>/<base-path>/domain/invariant/<resolvedRuleName>.scala"],
+          "observation": "Some 原样进入禁用注释；None 使用字符串 true；不是执行语义或独立文件族"
+        }
+      ],
+      "jsSources": [
+        {
+          "file": "generators/scala-cqrs-domain/render-domain.mjs",
+          "symbols": ["renderInvariant", "aggregateRows", "owner", "renderCommand"],
+          "lane": "formal",
+          "disposition": "replace",
+          "lines": "57-132：规则/Params/wrapper 与 event-handler 的共享组装；20-54：相邻协议/helper/事件构造，不能整文件覆盖",
+          "assemblyOwner": "集成者唯一组装 owner；先只分离不改字节"
+        },
+        {
+          "file": "generators/scala-cqrs-domain/render-expressions.mjs",
+          "symbols": ["decision", "literal", "valueExpression", "descriptor", "nodeType"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "1-116 全文已读；not 包装、短路、单位 require、addExact/subtractExact、nominal 金额行为须保留"
+        },
+        {
+          "file": "generators/scala-cqrs-domain/naming.mjs",
+          "symbols": ["symbol", "packageFor", "typeName", "pathFor", "entry"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "1-32；当前 nominal FQN、Vector 类型、header/byte span/knowledgeId 由此生成"
+        },
+        {
+          "file": "generators/scala-cqrs-domain/generate.mjs",
+          "symbols": ["producerRegistry", "generate"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "1-20；v1 registry 调 invariant-dsl/produce，不调 legacy render"
+        },
+        {
+          "file": "generators/invariant-dsl/produce.mjs",
+          "symbols": ["produce", "version"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "1-6；renderInvariant 默认 layered=false，decision=3/folds=4"
+        },
+        {
+          "file": "generators/scala-cqrs-domain/produce-v2.mjs",
+          "symbols": ["producerRegistryV2", "producer", "footprint"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "8-16；仍调 renderInvariant 默认 false，decision=4/folds=6"
+        },
+        {
+          "file": "generators/scala-cqrs-domain-v2/generate.mjs",
+          "symbols": ["generate"],
+          "lane": "formal",
+          "disposition": "reuse",
+          "lines": "1-7；显式 scala-cqrs-domain@2 准入"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/generate.mjs",
+          "symbols": ["inherited", "registry", "generate"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "16-24,67-70；service 对 invariant-dsl 直接覆盖为 renderInvariant(..., true)；不是 legacy/family 路由"
+        },
+        {
+          "file": "generators/invariant-dsl/render.mjs",
+          "symbols": ["render", "buildRuleObject", "buildCheckAggregate", "producesOf"],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "lines": "观察 1-91,994-1157,1300-1459；已有 nested InvariantRule object/class 和纯 Params，但不在银行 formal 调用链；未将全文启发式业务表审定为复用算法"
+        },
+        {
+          "file": "generators/invariant-dsl/emit.mjs",
+          "symbols": ["render 调用和 files 写盘循环"],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "lines": "1-9；直接 legacy CLI 读 spec、mkdir/write，与正式 products writer 不同"
+        },
+        {
+          "file": "generators/run-all.mjs",
+          "symbols": ["runGen(\"invariant-dsl\", ...)"],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "lines": "884-956；明确 legacy 登记和 spec 构造，不据目录名猜可达性"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/build-models.mjs",
+          "symbols": ["buildModels", "artifactsSpec", "ordinals", "rowsByRef", "setDeps"],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "1-249 全文已读；已有 names/guard/emission/deps 结构，但仍按 aggregate 生成 rules，拒绝 external producers"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/templates/rules.mjs",
+          "symbols": ["rulesTemplate"],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "1-27 全文已读；顶层 not 分支可消一层双否定，仍为 Either[String,Vector[Event]]/decide/emit-helper"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/render.mjs",
+          "symbols": ["productionJobs", "render"],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "15-34；每 aggregate 的 rules job，由 renderJobs 统一组装"
+        },
+        {
+          "file": "generators/scala-cqrs-aggregate-core-v1/generate.mjs",
+          "symbols": ["generate"],
+          "lane": "family",
+          "disposition": "reuse",
+          "lines": "11-23；显式 scala-cqrs-aggregate-core@1，不能因 registered 就视为银行消费"
+        },
+        {
+          "file": "lib/products/generate-cli.mjs",
+          "symbols": ["generateProductCli", "registeredProductProducer", "planCapturedProducts", "planCompiledProducts"],
+          "lane": "formal",
+          "disposition": "reuse",
+          "lines": "66-145；准确公开 CLI、realpath producer 选择、runtime/source-root 检查、apply writer"
+        },
+        {
+          "file": "src/core/product-plan.mjs",
+          "symbols": ["validateEntries", "planProductSet"],
+          "lane": "formal",
+          "disposition": "reuse",
+          "lines": "40-104；??? 被 L54 拒绝、完整依赖闭包、producer 两次计划；不允许删除拒绝门补绿"
+        }
+      ],
+      "writeSet": [
+        "generators/scala-cqrs-domain/models/invariant-rule.mjs (proposed; 本制品 owner)",
+        "generators/scala-cqrs-domain/builders/invariant-rule.mjs (proposed; 本制品 owner)",
+        "generators/scala-cqrs-domain/templates/invariant-rule.mjs (proposed; 本制品 owner)",
+        "generators/scala-cqrs-domain/render-domain.mjs (集成者唯一共享组装 owner)",
+        "generators/scala-cqrs-domain/render-expressions.mjs (shared-expression owner)",
+        "generators/invariant-dsl/produce.mjs (集成者)",
+        "generators/scala-cqrs-domain/produce-v2.mjs (集成者)",
+        "generators/scala-cqrs-play-service/generate.mjs (集成者)",
+        "generators/scala-cqrs-aggregate-core-v1/build-models.mjs (family owner; 条件性对齐)",
+        "generators/scala-cqrs-aggregate-core-v1/templates/rules.mjs (family owner; 条件性对齐)",
+        "generators/scala-cqrs-aggregate-core-v1/render.mjs (family owner; 条件性对齐)",
+        "lib/scala-target/naming.mjs (shared-layout-types owner; 条件性共享接口)",
+        "lib/scala-target/model.mjs (shared-layout-types owner; 条件性共享接口)",
+        "generators/scala-cqrs-domain/generator.json (集成者; 仅接口/声明必要时)",
+        "generators/scala-cqrs-domain-v2/generator.json (集成者; 仅接口/声明必要时)",
+        "generators/scala-cqrs-play-service/generator.json (集成者; 仅接口/声明必要时)",
+        "lib/products/generate-cli.mjs (集成者; 仅接口/声明必要时)",
+        "lib/products/registry.mjs (集成者; 仅接口/声明必要时)",
+        "src/core/product-plan.mjs (集成者; 不删除未实现体拒绝门)",
+        "src/core/generate.mjs (集成者; 仅 owned 输出/anchor 合同必要时)"
+      ],
+      "writeSetPhase": "仅第二阶段候选写集合；本轮没有创建或修改其中任何生产文件",
+      "dependsOn": [
+        "shared-layout-types",
+        "shared-expression-rendering",
+        "shared-writer-anchors",
+        "domain-entity",
+        "value-object",
+        "event-handler",
+        "application-protocol",
+        "command-helper",
+        "aggregate-behavior",
+        "aggregate-root",
+        "aggregate-rules-formal"
+      ],
+      "conflictsWith": [
+        "render-domain.mjs 的 domain-entity/application-protocol/command-helper/event-handler 共用写面",
+        "render-expressions.mjs 的规则、事件构造与 fold 共用表达式写面",
+        "scala-cqrs-play-service/generate.mjs 的其他 producer 覆盖与 service 组装",
+        "aggregate-core family 的 model/template/render 共用写面",
+        "公共 names/types/layout/registry/writer/anchor 的集成者所有权"
+      ],
+      "glue": [
+        "net.imadz.common.CommonTypes.InvariantRule",
+        "net.imadz.common.CommonTypes.iMadzError",
+        "net.imadz.common.CborSerializable",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.CommandHelper",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.RunnablePolicyWithHelper",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior.runReplyingPolicy",
+        "akka.persistence.typed.scaladsl.Effect",
+        "akka.actor.typed.ActorRef (仅应用层回复边界)",
+        "akka.actor.typed.eventstream.EventStream.Publish (仅 replyWithAndPublish 分支，不得替代 replyWith)"
+      ],
+      "openDecisions": [
+        "D1：保留 raw ???/注释 referenceCode 的对照资产，同时裁定正式可执行 body 采用结构化 domain-decision+emissions 还是已捕获纯实现端口；当前 product-plan 明确拒绝 ???，不能删除门或用空成功代替。",
+        "D2：一条 BC InvariantRuleMetadata 与 JS 每 command guards/emissions 的身份、名称、errorMsg 来源和 reject/succeed-empty 映射；不得猜消息、谓词极性或把命令名当稳定规则身份。",
+        "D3：纯 Param 的确切字段、顺序、默认与三个 CreditBalance BalanceAfter* host 的接口/注入/纯性；顶层 object 与需注入的实现如何衔接，不能让应用 command/ActorRef 进入 domain。",
+        "D4：String/Vector 到 iMadzError/List 的消费者闭包，以及 Refused/Accepted 与新 state reply 的对应；保持首错、幂等空事件、事件顺序和 host 调用时序。",
+        "D5：实际 common-core 坐标/JAR SHA/classpath 与 scaffold 同 FQN 的供给选择；源码不能证明 JAR API，未授权发布、下载、升级或私有副本。",
+        "D6：Rule 后缀重复、condition/参数名冲突、Tuple 参数名、关键词、引号/换行/注释终止符的 resolver/binding/escaping 策略；raw 特例须保留且不能改业务身份。",
+        "D7：固定单工程同输入 fixture 的两端正式槽及 expected 完整文件集；确认 BC systemFile adapter 真正产生 domain.invariants，否则明确已注册最小 SystemMetadata 输入，不能以另一 products/AggregateRules 族替代。"
+      ],
+      "extraSources": [
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/AGENTS.md | sha256=8bfd761390a6fc90b09663157f9d35b23c0c58b20c9f6a41dd5698450015d601 | bytes=6108 | 仓库控制指引",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/AUTHORING-CONTRACT.md | sha256=9c827000f1e864b6a86a04a855df4853a4457b854bd5b2f0bfff14b1ce9514a9 | bytes=5941 | 本轮作者合同",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/layout-and-style.md | sha256=bc8d0f3325a0f67a7c23ff4af6bc5f5b9c23b6caaf8aa12d1f93189c7a911d13 | bytes=12934 | 已批准目标标准",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/scala-artifacts.json | sha256=b778bb11e6c879bcb2adc3161e2583204df7faafa97a077d8f2c6039e091cb0d | bytes=71518 | 仅抽取 invariant-rule 一行，未倾倒清单",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/prettify-generated-code-resume-20261115-cgr9lzlk/APPROVED-PLAN.md | sha256=1b4f806ff64088d0c1eb481b8ae423cd2059d74b45192795a6609204d51cfd0c | bytes=40046 | 权威批准计划"
+      ],
+      "comparison": {
+        "kind": "structural-contrast-not-same-input-byte-comparison",
+        "rawScala": "完整冻结 Model/Builder/Template 与逐 construct/RHS 账；没有新鲜同输入生成输出",
+        "approvedTarget": "已批准结构与表达式/布局覆盖；可执行业务体尚未裁定，没有伪造完整银行目标文件",
+        "actualJs": [
+          "baseline/actual-js/app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+          "baseline/actual-js/app/example/bankwealth/domain/CreditBalanceRules.scala",
+          "baseline/actual-js/app/example/bankwealth/domain/invariant/params/CreditBalanceRuleParams.scala",
+          "baseline/actual-js/app/example/bankwealth/domain/CreditBalanceCommandHelpers.scala"
+        ],
+        "curatedReference": [
+          "baseline/curated-scala/net/imadz/domain/invariants/DepositRule.scala",
+          "baseline/curated-scala/net/imadz/domain/invariants/WithdrawRule.scala",
+          "baseline/curated-scala/net/imadz/domain/invariants/ReserveFundsRule.scala"
+        ],
+        "actualJsScope": "完整 CreditBalance 示例与其七个方法/参数/转发/emit RHS；不声称审定全部银行业务文件",
+        "realDiffs": [
+          "actual-js ReserveFunds 双重否定到明确正向 contains 的带上下文 diff；仅表达式子对照",
+          "curated DepositRule 到单数 invariant 包/lowerCamel error val 的参考适配 diff；不冒称 raw 输出"
+        ]
+      },
+      "sourceFindings": [
+        "InvariantRuleModel 七字段、InvariantConditionModel 四字段均无构造默认；ArtifactModel.morphisms/noteIds 继承 Nil。",
+        "Builder 的 referenceCode 缺失兜底为字符串 true，但 Template 把它放禁用注释，apply 最终仍是 ???。",
+        "TypeResolverDSL.invariantRule 注释称剥 Rule，实际 getBaseName suffix 列表没有 Rule，已带后缀的输入会再加 Rule。",
+        "正式 service 明确调 renderInvariant(..., true)，不会因为 invariant-dsl/render.mjs 同目录存在而消费其 legacy InvariantRule 实现。",
+        "family rulesTemplate 有顶层 not 的有限简化，但仍为 aggregate 级 String/Vector Rules 和 emit-helper，不是传统 per-rule MBT 完成。",
+        "正式产品计划拒绝 ???，因此纯粹照抄 raw 业务槽与正式可执行 profile 的准入冲突必须裁定。"
+      ],
+      "fixtures": [
+        "docs/codegen-parity/fixtures/invariant-rule/credit-balance-reference/ (proposed)",
+        "docs/codegen-parity/fixtures/invariant-rule/raw-slots/ (proposed)",
+        "docs/codegen-parity/fixtures/invariant-rule/ordered-guards/ (proposed)",
+        "docs/codegen-parity/fixtures/invariant-rule/import-collision/ (proposed)"
+      ],
+      "acceptance": {
+        "cliShapeLocation": "diffs/invariant-rule.diff.md §11.2：完整 generate-products 四必填参数/--plan；CodegenMain 的真实 JVM properties；新目标和副作用明确",
+        "content": "not-run",
+        "behavior": "not-run",
+        "compile": "not-run",
+        "stableGenerationAndAnchors": "not-run",
+        "complexity": "not-measured",
+        "complexityGoal": "普通 JS/Scala 方法 CC <= 5；6-10逐方法说明；>10先重构或逐方法认可例外，禁止 String/Any dispatcher 刷分",
+        "scope": "最小 fixture 及本制品真实依赖闭包；不重跑全银行、无运行库重发"
+      }
+    }
+  ],
+  "sourceHeads": {
+    "js": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+    "bc": "cc335eb1e0d0fae17bf092fd61b126040196ea70"
+  },
+  "generatorsModified": false,
+  "runtimeExecuted": false,
+  "testsExecuted": false,
+  "typecheckExecuted": false,
+  "compileExecuted": false,
+  "generationExecuted": false,
+  "baselineModified": false,
+  "truthTreeModified": false,
+  "gitWritesPerformed": false,
+  "existingDiffsModified": false,
+  "actualWriteSet": [
+    "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/invariant-rule.diff.md",
+    "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/details/invariant-rule.json"
+  ]
+}

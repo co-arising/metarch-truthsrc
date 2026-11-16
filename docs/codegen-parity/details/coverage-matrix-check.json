@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "codegen-parity.coverage-matrix-document-check/v1",
+  "scope": "新增矩阵的静态文档JSON、来源指纹与指针对账；不是同输入、生成器或运行验收",
+  "status": "initial-check-preserved-final-corrections-and-source-refresh-complete",
+  "finalResult": "details/documentation-closeout-check.json",
+  "matrix": {
+    "path": "fixtures/coverage-matrix.json",
+    "bytes": 1008515,
+    "sha256": "f7b582828112dd97bac57d0e23661984b9433245a8a5702952ff4eec7d86054b"
+  },
+  "referenceBase": "fixtures/",
+  "checks": {
+    "sourcePinsChecked": 75,
+    "sourcePinMismatches": [],
+    "familyIdsChecked": 42,
+    "familyIdsMatch39Plus3Inventory": true,
+    "structuredVariantFamilies": 32,
+    "structuredVariantsCheckedVerbatim": 173,
+    "bOccurrencesChecked": 308,
+    "bIdsMatchCentralPartition": true,
+    "bIdentityRoleVariantSourceAndCatalogRefsPreserved": true,
+    "bFixtureIdsChecked": 197,
+    "bFixtureMetadataVariantsChecked": 292,
+    "bFixtureForwardAndReversePointersMatch": true,
+    "bTargetPathsAndConstructPointersMatch": true,
+    "blockedExternalContentSlots": 3,
+    "issues": []
+  },
+  "coverageClaims": {
+    "sameInputExecutableFixturesEstablishedByMatrix": 0,
+    "fullFamilyExpectedByteSetsEstablishedByMatrix": 0,
+    "exercisedVariants": 0,
+    "bOccurrencesWithCoveragePass": 0
+  },
+  "interpretation": "32族的173条结构化记录、protobuf另2条原名变体及9族原文条件不是全部正交组合；F1/F2仅来源候选。B保留同ID的不同fixture条件，不将候选A自动传递为B覆盖。",
+  "pendingAtInitialCheck": [
+    "独立语义复核F1/F2候选范围、调度边界与用户覆盖授权；来源一致本身不证明结论正确",
+    "接收并核对并发F1/F2输入映射、四件套target合同与接口裁定后建立中央导航",
+    "3个未提供任意外部源码槽继续blocked，不改变A/B分类"
+  ],
+  "generatorModified": false,
+  "generationExecuted": false,
+  "runtimeExecuted": false,
+  "implementationAuthorized": false
+}

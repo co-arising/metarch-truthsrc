@@ -1,0 +1,241 @@
+{
+  "schemaVersion": "codegen-parity.document-link-corrections/v1",
+  "scope": "Only completed newly authored diff documents; original 15 and all baseline/source bytes preserved",
+  "reason": "Some source Read displays included an extra trailing blank line; clamp end anchors exactly one beyond newline-terminated files, with start unchanged",
+  "changes": [
+    {
+      "file": "diffs/aggregate-behavior.diff.md",
+      "changes": [
+        {
+          "old": "../baseline/actual-js/app/example/bankwealth/application/aggregates/behaviors/CreditBalanceBehaviors.scala#L1-L48",
+          "new": "../baseline/actual-js/app/example/bankwealth/application/aggregates/behaviors/CreditBalanceBehaviors.scala#L1-L47"
+        },
+        {
+          "old": "../baseline/actual-js/app/example/bankwealth/application/aggregates/behaviors/FundOrderBehaviors.scala#L1-L135",
+          "new": "../baseline/actual-js/app/example/bankwealth/application/aggregates/behaviors/FundOrderBehaviors.scala#L1-L134"
+        },
+        {
+          "old": "../baseline/actual-js/app/example/bankwealth/application/aggregates/behaviors/SipPlanBehaviors.scala#L1-L70",
+          "new": "../baseline/actual-js/app/example/bankwealth/application/aggregates/behaviors/SipPlanBehaviors.scala#L1-L69"
+        }
+      ],
+      "beforeSha256": "148c9fd1dfd77ac558886326e154688d49b3664d3d164fa475ba960d29be18ee",
+      "afterSha256": "a88fb0d7b440240f317aa99ec126de710b9c7dfe144cb63def6260c4ba0929d4"
+    },
+    {
+      "file": "diffs/aggregate-factory.diff.md",
+      "changes": [
+        {
+          "old": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/AggregateFactoryModel.scala#L1-L31",
+          "new": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/AggregateFactoryModel.scala#L1-L30"
+        },
+        {
+          "old": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateFactoryBuilder.scala#L1-L291",
+          "new": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateFactoryBuilder.scala#L1-L290"
+        },
+        {
+          "old": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateFactoryTemplate.scala#L1-L82",
+          "new": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateFactoryTemplate.scala#L1-L81"
+        },
+        {
+          "old": "../baseline/js/generators/scala-cqrs-play-service/templates/aggregate-factory.mjs#L1-L34",
+          "new": "../baseline/js/generators/scala-cqrs-play-service/templates/aggregate-factory.mjs#L1-L33"
+        },
+        {
+          "old": "../baseline/js/generators/scala-cqrs-play-service/build-aggregate-models.mjs#L1-L43",
+          "new": "../baseline/js/generators/scala-cqrs-play-service/build-aggregate-models.mjs#L1-L42"
+        }
+      ],
+      "beforeSha256": "d099fea0fd5910ab65a3723180182268ea9ff75a9187a7d41d84da268cd68980",
+      "afterSha256": "d4070065cf28839857e7293fcef7a5715ded719f24395054a8f545db00f73066"
+    },
+    {
+      "file": "diffs/application-protocol.diff.md",
+      "changes": [
+        {
+          "old": "../baseline/actual-js/app/example/bankwealth/application/aggregates/CreditBalanceProtocol.scala#L1-L30",
+          "new": "../baseline/actual-js/app/example/bankwealth/application/aggregates/CreditBalanceProtocol.scala#L1-L29"
+        },
+        {
+          "old": "../baseline/actual-js/app/example/bankwealth/domain/CreditBalanceProtocol.scala#L1-L22",
+          "new": "../baseline/actual-js/app/example/bankwealth/domain/CreditBalanceProtocol.scala#L1-L21"
+        }
+      ],
+      "beforeSha256": "7e382927f6ae48bf07965e57b6f860226afc67871cf2c42dc0a4b3f74f1177c4",
+      "afterSha256": "8c7e77f7d7ed38b5be82146341c0cfd980aac8688036c5aafa916d88feb97b2a"
+    },
+    {
+      "file": "diffs/bootstrap.diff.md",
+      "changes": [
+        {
+          "old": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/bootstsrap/BootstrapTemplate.scala#L1-L220",
+          "new": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/bootstsrap/BootstrapTemplate.scala#L1-L219"
+        },
+        {
+          "old": "../baseline/js/lib/products/generate-cli.mjs#L1-L147",
+          "new": "../baseline/js/lib/products/generate-cli.mjs#L1-L146"
+        },
+        {
+          "old": "../baseline/js/generators/scala-cqrs-play-service/generate.mjs#L1-L72",
+          "new": "../baseline/js/generators/scala-cqrs-play-service/generate.mjs#L1-L71"
+        },
+        {
+          "old": "../baseline/js/generators/scala-cqrs-play-service/render-aggregate-layers.mjs#L1-L31",
+          "new": "../baseline/js/generators/scala-cqrs-play-service/render-aggregate-layers.mjs#L1-L30"
+        },
+        {
+          "old": "../baseline/js/generators/scala-cqrs-play-service/build-aggregate-models.mjs#L1-L43",
+          "new": "../baseline/js/generators/scala-cqrs-play-service/build-aggregate-models.mjs#L1-L42"
+        },
+        {
+          "old": "../baseline/js/generators/scala-cqrs-play-service/aggregate-names.mjs#L1-L31",
+          "new": "../baseline/js/generators/scala-cqrs-play-service/aggregate-names.mjs#L1-L30"
+        },
+        {
+          "old": "../baseline/js/generators/scala-cqrs-play-service/templates/aggregate-bootstrap.mjs#L1-L35",
+          "new": "../baseline/js/generators/scala-cqrs-play-service/templates/aggregate-bootstrap.mjs#L1-L34"
+        },
+        {
+          "old": "../baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/bootstrap.mjs#L1-L14",
+          "new": "../baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/bootstrap.mjs#L1-L13"
+        }
+      ],
+      "beforeSha256": "f02cccb6cbccf7a992659239db37570c0ca14e025e20b887d4b121f5f791fda9",
+      "afterSha256": "7f4bac6b3ab7207a99918a50c7ce5638817ba33b106db0c44b39a4e924d68428"
+    },
+    {
+      "file": "diffs/domain-service.diff.md",
+      "changes": [
+        {
+          "old": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/domain/DomainServiceModel.scala#L1-L21",
+          "new": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/domain/DomainServiceModel.scala#L1-L20"
+        },
+        {
+          "old": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/domain/DomainServiceBuilder.scala#L1-L55",
+          "new": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/domain/DomainServiceBuilder.scala#L1-L54"
+        },
+        {
+          "old": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainServiceTemplate.scala#L1-L57",
+          "new": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainServiceTemplate.scala#L1-L56"
+        },
+        {
+          "old": "../baseline/curated-scala/net/imadz/domain/services/TransferValidatorDomainService.scala#L1-L18",
+          "new": "../baseline/curated-scala/net/imadz/domain/services/TransferValidatorDomainService.scala#L1-L17"
+        },
+        {
+          "old": "../baseline/actual-js/app/example/bankwealth/domain/CreditBalanceCommandHelpers.scala#L1-L22",
+          "new": "../baseline/actual-js/app/example/bankwealth/domain/CreditBalanceCommandHelpers.scala#L1-L21"
+        }
+      ],
+      "beforeSha256": "fb081db7ed5d8752e1302994aa5c6febbc8e890eaf0a551dfe90c75fa56e2550",
+      "afterSha256": "dc66e9c125a466a4f18c93f406c859724fdb65dd3617c69b87efde504007ff84"
+    },
+    {
+      "file": "diffs/invariant-rule.diff.md",
+      "changes": [
+        {
+          "old": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/domain/InvariantRuleModel.scala#L1-L22",
+          "new": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/domain/InvariantRuleModel.scala#L1-L21"
+        },
+        {
+          "old": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/domain/InvariantRuleBuilder.scala#L1-L73",
+          "new": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/domain/InvariantRuleBuilder.scala#L1-L72"
+        },
+        {
+          "old": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/InvariantRuleTemplate.scala#L1-L90",
+          "new": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/InvariantRuleTemplate.scala#L1-L89"
+        },
+        {
+          "old": "../baseline/js/generators/scala-cqrs-domain/render-domain.mjs#L1-L134",
+          "new": "../baseline/js/generators/scala-cqrs-domain/render-domain.mjs#L1-L133"
+        },
+        {
+          "old": "../baseline/js/generators/scala-cqrs-domain/render-expressions.mjs#L1-L116",
+          "new": "../baseline/js/generators/scala-cqrs-domain/render-expressions.mjs#L1-L115"
+        },
+        {
+          "old": "../baseline/js/generators/scala-cqrs-aggregate-core-v1/build-models.mjs#L1-L249",
+          "new": "../baseline/js/generators/scala-cqrs-aggregate-core-v1/build-models.mjs#L1-L248"
+        },
+        {
+          "old": "../baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/rules.mjs#L1-L27",
+          "new": "../baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/rules.mjs#L1-L26"
+        },
+        {
+          "old": "../baseline/actual-js/app/example/bankwealth/domain/invariant/CreditBalanceRules.scala#L1-L106",
+          "new": "../baseline/actual-js/app/example/bankwealth/domain/invariant/CreditBalanceRules.scala#L1-L105"
+        },
+        {
+          "old": "../baseline/actual-js/app/example/bankwealth/domain/CreditBalanceRules.scala#L1-L22",
+          "new": "../baseline/actual-js/app/example/bankwealth/domain/CreditBalanceRules.scala#L1-L21"
+        },
+        {
+          "old": "../baseline/actual-js/app/example/bankwealth/domain/invariant/params/CreditBalanceRuleParams.scala#L1-L15",
+          "new": "../baseline/actual-js/app/example/bankwealth/domain/invariant/params/CreditBalanceRuleParams.scala#L1-L14"
+        },
+        {
+          "old": "../baseline/curated-scala/net/imadz/domain/invariants/DepositRule.scala#L1-L14",
+          "new": "../baseline/curated-scala/net/imadz/domain/invariants/DepositRule.scala#L1-L13"
+        }
+      ],
+      "beforeSha256": "cb71e78e068220031f682fa28f84e164fb221013f61150a4f657d7f32e51becc",
+      "afterSha256": "feef4a0c20c23fb71b8ffaecd988ae04edc8ea6b7385d41425f7f34d8f4a6548"
+    },
+    {
+      "file": "diffs/saga-trigger-behaviors.diff.md",
+      "changes": [
+        {
+          "old": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/SagaTriggerModels.scala#L1-L72",
+          "new": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/SagaTriggerModels.scala#L1-L71"
+        },
+        {
+          "old": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaTriggerBuilder.scala#L1-L159",
+          "new": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaTriggerBuilder.scala#L1-L158"
+        },
+        {
+          "old": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerBehaviorsTemplate.scala#L1-L114",
+          "new": "../baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerBehaviorsTemplate.scala#L1-L113"
+        },
+        {
+          "old": "../baseline/js/generators/scala-cqrs-application/render-pipeline-invocation.mjs#L1-L51",
+          "new": "../baseline/js/generators/scala-cqrs-application/render-pipeline-invocation.mjs#L1-L50"
+        },
+        {
+          "old": "../baseline/js/generators/scala-cqrs-application/render-invocation-host.mjs#L1-L48",
+          "new": "../baseline/js/generators/scala-cqrs-application/render-invocation-host.mjs#L1-L47"
+        },
+        {
+          "old": "../baseline/js/generators/scala-cqrs-application/render-invocation-execution.mjs#L1-L57",
+          "new": "../baseline/js/generators/scala-cqrs-application/render-invocation-execution.mjs#L1-L56"
+        },
+        {
+          "old": "../baseline/actual-js/app/example/bankwealth/application/bank_payment_hostHost.scala#L1-L132",
+          "new": "../baseline/actual-js/app/example/bankwealth/application/bank_payment_hostHost.scala#L1-L131"
+        },
+        {
+          "old": "../baseline/actual-js/app/example/bankwealth/application/bank_cash_payment_v1Execution.scala#L1-L68",
+          "new": "../baseline/actual-js/app/example/bankwealth/application/bank_cash_payment_v1Execution.scala#L1-L67"
+        },
+        {
+          "old": "../baseline/curated-scala/net/imadz/application/services/transactor/MoneyTransferSagaDefinition.scala#L1-L72",
+          "new": "../baseline/curated-scala/net/imadz/application/services/transactor/MoneyTransferSagaDefinition.scala#L1-L71"
+        }
+      ],
+      "beforeSha256": "235f4eed57adca6a0ccb7cb558deeea87361c63812def046864823ca9ff13099",
+      "afterSha256": "55a7d614daeda5e5a0d56450ee682b4f646cbf475959afc6db48fc9836ab101f"
+    },
+    {
+      "file": "diffs/saga-trigger-root.diff.md",
+      "changes": [
+        {
+          "old": "../baseline/actual-js/app/example/bankwealth/application/bank_payment_hostHost.scala#L1-L132",
+          "new": "../baseline/actual-js/app/example/bankwealth/application/bank_payment_hostHost.scala#L1-L131"
+        }
+      ],
+      "beforeSha256": "06ce6b5ff5352a67676a59c2aa7cf9a1643487c2058fc751b71792d0b408f8b2",
+      "afterSha256": "1663ec8b1776319506e7dd96052acd8d41b716d01ee03e059e17aa6e66fb54fa"
+    }
+  ],
+  "productionModified": false,
+  "runtimeExecuted": false
+}

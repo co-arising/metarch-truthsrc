@@ -1,0 +1,1959 @@
+{
+  "schemaVersion": "codegen-parity.fixture-source-evidence/v1",
+  "status": "content-specification",
+  "researchState": "complete-source-evidence-not-acceptance",
+  "language": "zh-CN",
+  "scope": "两个 parity fixture 的可用来源、身份区分、缺失语义映射与公共入口；不制作 fixture/expected",
+  "roots": {
+    "workspace": "/Users/zhongdj/Workspaces/mad-polaris",
+    "js": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+    "bc": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+    "D": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity"
+  },
+  "evidenceBoundary": {
+    "evidenceFilesExistedAtStart": false,
+    "priorAgentTranscriptRead": false,
+    "onlyWrites": [
+      "details/fixture-source-evidence.json",
+      "details/fixture-source-evidence.md"
+    ],
+    "repoCodeImportedOrCalled": false,
+    "sourceContentInspected": true,
+    "sourceHashesAreAcceptance": false,
+    "newGeneration": "not-run",
+    "compilation": "not-run",
+    "tests": "not-run",
+    "typecheck": "not-run",
+    "runtime": "not-run",
+    "git": "not-run",
+    "servicesDownloadsSupplyScans": "not-run",
+    "canonicalRequestCompiledCreated": false,
+    "fixturesCreated": false,
+    "generatorsModified": false,
+    "acceptanceClaimed": false,
+    "graphConsistency": "未经图验证；仅源码证据，未运行图命令",
+    "ownerOfActualFixturesAndExpected": "main"
+  },
+  "referenceDiscovery": {
+    "requestedRoot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/reference",
+    "requestedRootExists": false,
+    "actualRoot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference",
+    "selectedExistingSubsets": [
+      "aggregate-core/project",
+      "persistence-readside"
+    ],
+    "breadth": "先目录/文件名，再相关源文件；未读取缓存、供应制品或旧回执"
+  },
+  "baseline": {
+    "index": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/index.json",
+    "policy": "来源字节以固定副本与 index SHA 为准；index HEAD 仅历史上下文，不执行 Git，不推断当前工作树状态",
+    "indexSha256": "d60175f98077ef302df3765a08591ded41ad2b07c8bd62e6ce95e18569fed0fc",
+    "capturedAt": "2026-11-15T09:14:23.674268+00:00",
+    "repositoryHeads": {
+      "bc": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "js": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+      "common": "2829932df674221c679a774367f11320c7b51d36",
+      "bank": "f8ac7ca882335a7c84cff7cbcb5100b6091b864a"
+    },
+    "observedSnapshotHashMismatches": []
+  },
+  "fixtures": [
+    {
+      "id": "F1-classic-credit-balance",
+      "status": "decision-required",
+      "sameInputEstablished": false,
+      "rawInput": {
+        "source": "S-raw",
+        "symbol": "Examples.bankingSystem",
+        "system": "BankingSystem",
+        "context": "banking",
+        "aggregate": "CreditBalanceAggregate",
+        "entity": "CreditBalanceEntity",
+        "state": "CreditBalanceState",
+        "lines": "19-162,364-365",
+        "kind": "hand-authored-Scala-SystemMetadata"
+      },
+      "scopeCaveat": "aggregate 子集与依赖闭包待主会话固定；Examples 整系统还含 services/query/projection/Saga/API，不默认纳入本 fixture",
+      "layerMatrix": [
+        {
+          "layer": "author",
+          "sources": [
+            "S-saga-author"
+          ],
+          "status": "different-semantics",
+          "reason": "legacy Saga 作者样例：AccountId/id、13命令、额外 phase/committed/compensated/sagaResults；不是 raw classic"
+        },
+        {
+          "layer": "binding",
+          "sources": [
+            "S-raw",
+            "S-meta"
+          ],
+          "status": "raw-embedded-only",
+          "reason": "persistenceConfig/implConfig 已在 Scala；未建立同语义 JS 作者项目技术绑定"
+        },
+        {
+          "layer": "raw-SystemMetadata",
+          "sources": [
+            "S-raw",
+            "S-meta"
+          ],
+          "status": "pinned-source"
+        },
+        {
+          "layer": "curated-reference",
+          "sources": [
+            "S-curated-protocol",
+            "S-curated-helper",
+            "S-curated-entity",
+            "S-curated-fold",
+            "S-curated-behavior",
+            "S-curated-glue",
+            "S-curated-bootstrap"
+          ],
+          "status": "independent-hand-completion-not-raw-output"
+        },
+        {
+          "layer": "generated-output",
+          "sources": [
+            "S-bank-output-protocol",
+            "S-bank-output-state"
+          ],
+          "status": "existing-bank-output-different-input",
+          "reason": "Execute/GetState/Accepted/Refused aliases；AccountId/TxId 与额外初始化/事务 marker 状态；未验证 freshness/runtime"
+        }
+      ],
+      "replyFamily": {
+        "rawName": "CreditBalanceReply",
+        "members": [
+          {
+            "name": "CreditBalanceConfirmation",
+            "orderedFields": [
+              "error: Option[iMadzError]",
+              "balances: List[Money]"
+            ]
+          },
+          {
+            "name": "FundsReservationConfirmation",
+            "orderedFields": [
+              "transferId: Id",
+              "error: Option[iMadzError]"
+            ]
+          },
+          {
+            "name": "FundsDeductionConfirmation",
+            "orderedFields": [
+              "transferId: Id",
+              "error: Option[iMadzError]"
+            ]
+          },
+          {
+            "name": "FundsReleaseConfirmation",
+            "orderedFields": [
+              "transferId: Id",
+              "error: Option[iMadzError]"
+            ]
+          },
+          {
+            "name": "RecordIncomingCreditsConfirmation",
+            "orderedFields": [
+              "transferId: Id",
+              "error: Option[iMadzError]"
+            ]
+          },
+          {
+            "name": "CommitIncomingCreditsConfirmation",
+            "orderedFields": [
+              "transferId: Id",
+              "error: Option[iMadzError]"
+            ]
+          },
+          {
+            "name": "CancelIncomingCreditConfirmation",
+            "orderedFields": [
+              "transferId: Id",
+              "error: Option[iMadzError]"
+            ]
+          }
+        ],
+        "curatedExtraNotRaw": "TransferConfirmation",
+        "packageIdentityDifference": "raw context=banking；listOfMoney显式net.imadz.banking.domain.values.Money；curated使用net.imadz.domain.values.Money。短名一致不等于FQN同一。",
+        "actorBoundary": "ActorRef[per-command reply] 只在 actor command；domainParams/event 不注入 ActorRef"
+      },
+      "perCommandMappings": [
+        {
+          "command": "AddInitial",
+          "reply": "CreditBalanceConfirmation",
+          "invariant": "AddInitialOnlyOnceRule",
+          "domainParams": "Money",
+          "toParam": "command.initial",
+          "success": "CreditBalanceConfirmation(None, postFoldState.accountBalance.values.toList)",
+          "failure": "CreditBalanceConfirmation(Some(error), Nil)",
+          "rhsSource": "S-curated-helper:17-24",
+          "rawRhsMatchesCurated": false
+        },
+        {
+          "command": "Deposit",
+          "reply": "CreditBalanceConfirmation",
+          "invariant": "DepositRule",
+          "domainParams": "Money",
+          "toParam": "command.change",
+          "success": "CreditBalanceConfirmation(None, postFoldState.accountBalance.values.toList)",
+          "failure": "CreditBalanceConfirmation(Some(error), Nil)",
+          "rhsSource": "S-curated-helper:35-42",
+          "rawRhsMatchesCurated": false
+        },
+        {
+          "command": "Withdraw",
+          "reply": "CreditBalanceConfirmation",
+          "invariant": "WithdrawRule",
+          "domainParams": "Money",
+          "toParam": "command.change",
+          "success": "CreditBalanceConfirmation(None, postFoldState.accountBalance.values.toList)",
+          "failure": "CreditBalanceConfirmation(Some(error), Nil)",
+          "rhsSource": "S-curated-helper:26-33",
+          "rawRhsMatchesCurated": false
+        },
+        {
+          "command": "GetBalance",
+          "reply": "CreditBalanceConfirmation",
+          "readOnly": true,
+          "domainParams": null,
+          "helper": null,
+          "commandHandlingFlow": null,
+          "curatedDirectReply": "Effect.reply(replyTo)(CreditBalanceConfirmation(None, state.accountBalance.values.toList))",
+          "rhsSource": "S-curated-behavior:29-30"
+        },
+        {
+          "command": "ReserveFunds",
+          "reply": "FundsReservationConfirmation",
+          "invariant": "ReserveFundsRule",
+          "domainParams": "(Id, Money)",
+          "toParam": "(command.transferId, command.amount)",
+          "success": "FundsReservationConfirmation(param._1, None)",
+          "failure": "FundsReservationConfirmation(param._1, Some(error))",
+          "rhsSource": "S-curated-helper:46-52"
+        },
+        {
+          "command": "DeductFunds",
+          "reply": "FundsDeductionConfirmation",
+          "invariant": "DeductFundsRule",
+          "domainParams": "Id",
+          "toParam": "command.transferId",
+          "success": "FundsDeductionConfirmation(param, None)",
+          "failure": "FundsDeductionConfirmation(param, Some(error))",
+          "rhsSource": "S-curated-helper:54-60"
+        },
+        {
+          "command": "ReleaseReservedFunds",
+          "reply": "FundsReleaseConfirmation",
+          "invariant": "ReleaseReservedFundsRule",
+          "domainParams": "Id",
+          "toParam": "command.transferId",
+          "success": "FundsReleaseConfirmation(param, None)",
+          "failure": "FundsReleaseConfirmation(param, Some(error))",
+          "rhsSource": "S-curated-helper:62-68"
+        },
+        {
+          "command": "RecordIncomingCredits",
+          "reply": "RecordIncomingCreditsConfirmation",
+          "invariant": "RecordIncomingCreditsRule",
+          "domainParams": "(Id, Money)",
+          "toParam": "(command.transferId, command.amount)",
+          "success": "RecordIncomingCreditsConfirmation(param._1, None)",
+          "failure": "RecordIncomingCreditsConfirmation(param._1, Some(error))",
+          "rhsSource": "S-curated-helper:72-78"
+        },
+        {
+          "command": "CommitIncomingCredits",
+          "reply": "CommitIncomingCreditsConfirmation",
+          "invariant": "CommitIncomingCreditsRule",
+          "domainParams": "Id",
+          "toParam": "command.transferId",
+          "success": "CommitIncomingCreditsConfirmation(param, None)",
+          "failure": "CommitIncomingCreditsConfirmation(param, Some(error))",
+          "rhsSource": "S-curated-helper:80-86"
+        },
+        {
+          "command": "CancelIncomingCredit",
+          "reply": "CancelIncomingCreditConfirmation",
+          "invariant": "CancelIncomingCreditRule",
+          "domainParams": "Id",
+          "toParam": "command.transferId",
+          "success": "CancelIncomingCreditConfirmation(param, None)",
+          "failure": "CancelIncomingCreditConfirmation(param, Some(error))",
+          "rhsSource": "S-curated-helper:88-94"
+        }
+      ],
+      "rawHelperMismatch": {
+        "sources": [
+          "S-meta:373-382",
+          "S-helper-builder:28-35,41,79-119"
+        ],
+        "problem": "ReplyMappingConfig 只有两臂类型引用；builder 只选 successReplyRef，按命令参数数推 domainParams，不读 invariant.changeType；非formal余额类机械构造 Reply(param,None)/Reply(param,Some(error)) 与(error,balances)不匹配",
+        "notFixedHere": true
+      },
+      "stateAndDefaults": {
+        "rawFields": [
+          "userId: Id",
+          "accountBalance: Map[String, Money]",
+          "reservedAmount: Map[Id, Money]",
+          "incomingCredits: Map[Id, Money]"
+        ],
+        "rawDefaultsExplicit": false,
+        "rawThreeMapsThirdArgument": "optional=true；不是默认值",
+        "builderPolicy": "S-entity-builder:174-193 生成 Map.empty；S-entity-template:48-63 将首字段作为 empty 参数，其余用 neutralValueFor；不是 author default",
+        "curated": "empty(userId) 三张 Map.empty；BalanceChanged timestamp=System.currentTimeMillis() 为人工参考默认，raw 无此显式默认",
+        "rawFoldHelperDebt": "Examples.scala:43 referenceCode 使用 currentBalance 但该 body 没有定义；curated fold helper 有 getOrElse/Money 加法，不能静默换基准"
+      },
+      "folds": [
+        {
+          "event": "BalanceChanged",
+          "effect": "按币种累加 update"
+        },
+        {
+          "event": "FundsReserved",
+          "effect": "扣可用余额；reservedAmount + transferId->amount"
+        },
+        {
+          "event": "FundsDeducted",
+          "effect": "移除 reservedAmount(transferId)"
+        },
+        {
+          "event": "ReservationReleased",
+          "effect": "回补可用余额；移除预留"
+        },
+        {
+          "event": "IncomingCreditsRecorded",
+          "effect": "incomingCredits.updated(transferId,amount)"
+        },
+        {
+          "event": "IncomingCreditsCommited",
+          "effect": "按原 incomingCredits 金额贷记余额再删；保留源拼写"
+        },
+        {
+          "event": "IncomingCreditsCanceled",
+          "effect": "移除 incomingCredits(transferId)"
+        }
+      ],
+      "runtimeIdentity": {
+        "identifier": "userId: net.imadz.common.CommonTypes.Id",
+        "entityTypeKey": "CreditBalance",
+        "tagBase": "credit-balance-",
+        "shards": 5,
+        "snapshotIntervalFromMetadataDefault": 100,
+        "eventAdapterFromMetadataDefault": true,
+        "proto": "credits.proto",
+        "protoImports": [
+          "saga_v2.proto",
+          "saga_participant.proto"
+        ],
+        "curatedPid": "PersistenceId(CreditBalanceEntityTypeKey.name,userId.toString)",
+        "mustNotReplaceWith": "JS unique-id/local actor-cache identity or inferred bank account id"
+      }
+    },
+    {
+      "id": "F2-warehouse-nominal-types-persistence",
+      "status": "missing-counterpart",
+      "sameInputEstablished": false,
+      "sourceReadiness": "现成小作者项目与独立HAND参考可选；公共JS入口存在；传统BC同语义adapter缺失",
+      "layerMatrix": [
+        {
+          "layer": "author",
+          "sources": [
+            "S-warehouse-system",
+            "S-warehouse-context",
+            "S-warehouse-author",
+            "S-warehouse-reserve",
+            "S-warehouse-commit",
+            "S-warehouse-txid",
+            "S-warehouse-id",
+            "S-warehouse-skuid",
+            "S-warehouse-reservationid",
+            "S-warehouse-host",
+            "S-warehouse-port"
+          ],
+          "status": "existing-scaffold-author-input-not-generated"
+        },
+        {
+          "layer": "binding",
+          "sources": [
+            "S-warehouse-config",
+            "S-warehouse-binding"
+          ],
+          "status": "explicit-separate-technical-input"
+        },
+        {
+          "layer": "raw-SystemMetadata",
+          "sources": [
+            "S-bc-file-adapter",
+            "S-bc-product-entry"
+          ],
+          "status": "no-established-same-semantic-runCommon-input"
+        },
+        {
+          "layer": "curated-reference",
+          "sources": [
+            "S-warehouse-state",
+            "S-warehouse-actor",
+            "S-warehouse-rules",
+            "S-warehouse-helpers",
+            "S-warehouse-fold",
+            "S-warehouse-converter",
+            "S-warehouse-domain-proto",
+            "S-warehouse-frame-proto",
+            "S-warehouse-persistence",
+            "S-warehouse-wire",
+            "S-warehouse-serializer-config"
+          ],
+          "status": "independent-HAND-source-not-generated-output"
+        },
+        {
+          "layer": "generated-output",
+          "sources": [],
+          "status": "not-generated-or-inspected-this-run"
+        }
+      ],
+      "businessSemantics": {
+        "context": "inventory",
+        "aggregate": "Warehouse",
+        "identifier": "id: WarehouseId",
+        "nominalTypes": [
+          "TxId",
+          "WarehouseId",
+          "SkuId",
+          "ReservationId"
+        ],
+        "allNominalCarriers": "String；身份不能合并",
+        "state": "receipts: Map[TxId,String]；作者 default=[]，HAND Map()，不把 identifier 注入 HAND state",
+        "reserveParameters": [
+          "txid:TxId",
+          "warehouseId:WarehouseId",
+          "skuId:SkuId",
+          "quantity:Long"
+        ],
+        "reserveDecisionOrder": [
+          "quantity>0 否则 Left(quantity-positive)",
+          "已有 receipt 则 succeed-empty",
+          "host ReservationIdentity(txid,warehouseId,skuId,quantity) -> ReservationId",
+          "emit SkuQuantityReserved(reservationId)"
+        ],
+        "reserveFold": "identity，不增加库存政策",
+        "commitParameters": [
+          "txid:TxId",
+          "warehouseId:WarehouseId",
+          "skuId:SkuId",
+          "reservationId:ReservationId"
+        ],
+        "commitDecision": "已有 receipt 则 succeed-empty，否则 SkuReservationCommitted(txid)",
+        "commitFold": "receipts.updated(event.txid, literal SkuReservationCommitted)；保留其它键",
+        "actorReplyFamily": "Execute(domain Command, ActorRef[Reply]); GetState(ActorRef[WarehouseState]); Accepted(Vector[Event])/Rejected(String)",
+        "classicCommandHelperAbiEquivalent": false
+      },
+      "technicalSemantics": {
+        "configSchema": "truthsrc.project/v1",
+        "canonicalId": "inventory-domain",
+        "generatorDirectoryName": "scala-cqrs-persistence-readside-v1",
+        "targetProfile": "scala-cqrs-persistence-readside@1",
+        "options": [
+          "packages",
+          "names",
+          "protobuf"
+        ],
+        "products": [
+          "reference-layout@1",
+          "exact-value-types@1",
+          "exact-value-codecs@1",
+          "domain-decision@4",
+          "domain-dependencies@6",
+          "domain-folds@6",
+          "domain-external-events@2",
+          "persistence-readside-contract@1"
+        ],
+        "bindingRole": "roles.persistenceReadsideBinding=persistence; documents[id=persistence].file=bindings/persistence.json",
+        "bindingId": "warehouse-persistence",
+        "bindingVersion": "1",
+        "serializerId": 736401,
+        "envelopeVersion": 1,
+        "registrations": [
+          {
+            "role": "event",
+            "typeId": "warehouse.reserved",
+            "version": 1,
+            "layoutSha256": "1eccd9ea9c05f5be946f4004559f989bcacdc380c543e4f8fd3c31888e8d7384"
+          },
+          {
+            "role": "event",
+            "typeId": "warehouse.committed",
+            "version": 1,
+            "layoutSha256": "52f2395e2b6abfa6dafaaea866918efe3ec022ff5835981f6c18e80bbdaa8c80"
+          },
+          {
+            "role": "state",
+            "typeId": "warehouse.state",
+            "version": 1,
+            "layoutSha256": "fe21099de54414f4a08cdf8342f685ed8941569876f11f5ae3bfa54cda2b5ba7"
+          }
+        ],
+        "pinsEvidence": "binding 与 HAND WirePins 文本相同；不是本轮重新计算PB layout；REFERENCE-CONTRACT pending文字较旧",
+        "syntheticPinsExcluded": "S-persistence-test-fixture 的重复1/2/3哈希明确只作 admission fixture",
+        "store": {
+          "id": "WarehouseReadside",
+          "version": "1",
+          "dialect": "h2-2",
+          "tablePrefix": "warehouse_rs",
+          "source": "warehouse-events@1",
+          "identity": "envelope-resource",
+          "streamKind": "warehouse",
+          "pollIntervalMillis": 100,
+          "closeTimeoutMillis": 5000,
+          "pageSize": 64,
+          "maxPayloadBytes": 1048576,
+          "maxPending": 64,
+          "index": "Receipt/receipt/by_resource; receipts; keySize=256,valueSize=256"
+        },
+        "callerSupplied": [
+          "PersistenceId",
+          "resource",
+          "namespace",
+          "initial state",
+          "WarehouseComputations",
+          "DataSource",
+          "event source",
+          "blocking ExecutionContext",
+          "ActorSystem"
+        ],
+        "crossTypeScope": "不同 nominal ID 的 domain/PB API；required message/duplicate map keys；event vs state explicit frame role；不声称任意同wire形状错换均可被检测",
+        "serializerBinding": "only example.inventory.persistence.protobuf.Frame，不扩大到AnyRef/GeneratedMessage"
+      }
+    }
+  ],
+  "missingInputAdapters": [
+    {
+      "slot": "replyFamily",
+      "status": "missing-counterpart",
+      "sources": [
+        "S-raw",
+        "S-js-derive",
+        "S-js-aggregate-model"
+      ],
+      "need": "classic actor reply族、成员字段顺序、每命令replyTo；现有JS deriveLayout无该 declaration路径，carrier aliases不能替代"
+    },
+    {
+      "slot": "per-command success/failure",
+      "status": "decision-required",
+      "sources": [
+        "S-meta",
+        "S-helper-builder",
+        "S-curated-helper",
+        "S-curated-glue"
+      ],
+      "need": "两臂每字段表达式与post-fold-state阶段；success/failure名义引用不够"
+    },
+    {
+      "slot": "domainParams",
+      "status": "decision-required",
+      "sources": [
+        "S-helper-builder",
+        "S-curated-helper"
+      ],
+      "need": "有序command字段到Money/Id/Tuple2及invariant.changeType；readonly不能生造write helper"
+    },
+    {
+      "slot": "initial defaults",
+      "status": "decision-required",
+      "sources": [
+        "S-raw",
+        "S-meta",
+        "S-entity-builder",
+        "S-entity-template",
+        "S-curated-entity",
+        "S-warehouse-author",
+        "S-warehouse-state"
+      ],
+      "need": "区分author声明、raw absent、builder推导、curated补全；不要填入金融/时钟/标量默认值"
+    },
+    {
+      "slot": "runtime identity",
+      "status": "decision-required",
+      "sources": [
+        "S-raw",
+        "S-curated-bootstrap",
+        "S-js-aggregate-model",
+        "S-warehouse-binding",
+        "S-warehouse-persistence"
+      ],
+      "need": "明确sharding key/tag/PID/proto/serializer/resource；不可从业务名称推断"
+    },
+    {
+      "slot": "BC file input",
+      "status": "missing-counterpart",
+      "sources": [
+        "S-bc-file-adapter"
+      ],
+      "need": "现有SerialCanonicalAdapter合成单槽error Reply与整state query Reply，注入identifier首字段、ShardedTags(lowercase,1)；不保留classic或Warehouse HAND完整语义"
+    },
+    {
+      "slot": "Warehouse traditional persistence target",
+      "status": "missing-counterpart",
+      "sources": [
+        "S-bc-product-entry",
+        "S-persistence-manifest"
+      ],
+      "need": "pinned BC product target switch不支持JS aggregate-core/persistence-readside profile；product路径本身也非传统runCommon"
+    }
+  ],
+  "publicCli": [
+    {
+      "id": "compile-project",
+      "entry": "node /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/bin/truthsrc.js compile-project --project <ABS_PROJECT>",
+      "sources": [
+        "S-js-cli",
+        "S-project-cli"
+      ],
+      "writes": "仅roundtrip临时树创建/清理；无target或project数据库/持久compiled写入",
+      "readsAndWork": "live author/config/documents；validate/roundtrip/derive/compile/tool fingerprint；stdout JSON或human",
+      "executed": false
+    },
+    {
+      "id": "generate-project-plan",
+      "entry": "node /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/bin/truthsrc.js generate-project --project <ABS_PROJECT> --out <ABS_OUT> --plan",
+      "sources": [
+        "S-project-cli",
+        "S-product-cli"
+      ],
+      "writes": "roundtrip临时树；不写target/project SQLite",
+      "readsAndWork": "compile-project工作+registered producer admission/render/in-memory graph；--update --plan另做overwrite/MANUAL preflight；部分application producers也读实际runtime JAR和外部roots",
+      "executed": false
+    },
+    {
+      "id": "generate-project-apply",
+      "entry": "node /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/bin/truthsrc.js generate-project --project <ABS_PROJECT> --out <ABS_OUT> [--update]",
+      "sources": [
+        "S-project-cli",
+        "S-project-doc"
+      ],
+      "writes": "project .truthsrc/knowledge.sqlite；target sources/build/config/generated-tests、.truthsrc/{canonical,request,compiled,inputs}.json、truthsrc.ledger.json、anchors.json",
+      "failureBoundary": "输出独占且与输入/tool/graph不重叠；可能部分落盘，无自动回滚/跨文件事务/自动删除旧输出；不是runtime验收",
+      "executed": false
+    },
+    {
+      "id": "generate-products",
+      "entry": "node /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/bin/truthsrc.js generate-products --request <ABS_MANIFEST> --generator <ABS_SHIPPED_DIR> --out <ABS_OUT> --options-json <ABS_OPTIONS> [--plan]",
+      "sources": [
+        "S-product-cli"
+      ],
+      "writes": "plan不写target；apply写source/ledger/anchors，无project live-author/SQLite语义",
+      "restrictions": "四个值全必需；无--update；非任意dynamic producer；module-seams/saga-monarch/play-application即便plan也必须project live implementation capture；不能本轮手造request",
+      "executed": false
+    },
+    {
+      "id": "compile-products",
+      "entry": "node /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/bin/truthsrc.js compile-products --request <ABS_MANIFEST> --out <ABS_NEW_FILE>",
+      "sources": [
+        "S-product-compile-cli"
+      ],
+      "writes": "wx写新compiled文件，拒绝覆盖；无授权执行或造输入",
+      "executed": false
+    },
+    {
+      "id": "BC-raw-Examples",
+      "cwd": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+      "entry": "JAVA_OPTS=\"-Dcodegen.system=Examples -Dcodegen.targetDir=<ABS_OUT>\" sbt \"runMain net.imadz.codegen.CodegenMain\"",
+      "sources": [
+        "S-bc-entry"
+      ],
+      "writes": "JVM/sbt依赖解析与构建缓存可能写；prepare/harness后mkdir/copy scaffold；runCommon输出/manifest；multiProject另搬13 common文件；版本探测可能读Git",
+      "restrictions": "main不解析--plan/--dry-run；不是预览；实际运行消费当时工作源码，不自动消费D/baseline副本，主会话需固定runner",
+      "executed": false
+    },
+    {
+      "id": "BC-file-slot",
+      "properties": [
+        "codegen.systemFile=<ABS_CANONICAL>",
+        "codegen.systemBindings=<ABS_BINDINGS>",
+        "codegen.targetDir=<ABS_OUT>"
+      ],
+      "sources": [
+        "S-bc-entry",
+        "S-bc-file-adapter"
+      ],
+      "restrictions": "前两项成对且与codegen.system互斥；仍会实际生成，输入是SerialCanonicalAdapter协议，不是任意raw SystemMetadata JSON；本轮禁止手造输入",
+      "executed": false
+    },
+    {
+      "id": "BC-product-slot",
+      "properties": [
+        "codegen.semanticProductsFile=<ABS_COMPILED>",
+        "codegen.productOptionsFile=<ABS_OPTIONS>",
+        "codegen.productTargetProfile=scala-cqrs-domain@2",
+        "codegen.targetDir=<ABS_ABSENT_OUT>"
+      ],
+      "sources": [
+        "S-bc-entry",
+        "S-bc-product-entry"
+      ],
+      "restrictions": "与legacy槽互斥；新独占目标；先admit/render/determinism计划再写；并非runCommon/39模板基准；本轮禁止造compiled",
+      "executed": false
+    }
+  ],
+  "profileDistinctions": {
+    "projectGeneratorIsConfigNotCliFlag": true,
+    "projectPresentationFlag": "--format human|json",
+    "registeredRelevantProducers": [
+      "scala-cqrs-aggregate-core-v1",
+      "scala-cqrs-persistence-readside-v1",
+      "scala-cqrs-play-service"
+    ],
+    "notRegisteredProducerAliases": [
+      "scala-cqrs-legacy-compatible-v1",
+      "scala-cqrs-modular-candidate-v1"
+    ],
+    "targetContractReason": "S-target-profiles 两者generator=null，不能当可调用classic profile",
+    "playServiceOptions": [
+      "packages",
+      "verificationCases",
+      "runtimeArtifact",
+      "service"
+    ],
+    "noInventedFlags": [
+      "generate-project --profile",
+      "generate-project --generator",
+      "generate-project --dry-run",
+      "CodegenMain --plan"
+    ]
+  },
+  "bcTestsReadOnlySpecifications": [
+    {
+      "source": "S-bc-helper-spec",
+      "use": "非裸???、MANUAL和Reply名字的机械shell规格；没有类型/行为验收，readonly注释不能覆盖当前实现"
+    },
+    {
+      "source": "S-bc-partition-spec",
+      "use": "Tickets宽converter方法完整/分片<=65536/关键字type与golden比对；与Warehouse无同输入关系"
+    },
+    {
+      "source": "S-bc-shared-spec",
+      "use": "共享nominal output的两个external bridge仍不同；compiled-shared-external-type与Warehouse无同输入关系"
+    }
+  ],
+  "sources": [
+    {
+      "id": "S-raw",
+      "root": "D",
+      "path": "baseline/bc/src/main/scala/net/imadz/meta/Examples.scala",
+      "role": "raw-SystemMetadata",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/meta/Examples.scala",
+      "bytes": 41607,
+      "sha256": "aaa4fbe90fa903e4e133014276506c2d18781c599a27385e8948ada9e8ebdeb3",
+      "sourceStatus": "pinned-baseline",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+      "repositoryRelativePath": "src/main/scala/net/imadz/meta/Examples.scala",
+      "baselineIndexedSha256": "aaa4fbe90fa903e4e133014276506c2d18781c599a27385e8948ada9e8ebdeb3",
+      "matchesBaselineIndex": true,
+      "requiresMainFreeze": false
+    },
+    {
+      "id": "S-meta",
+      "root": "D",
+      "path": "baseline/bc/src/main/scala/net/imadz/meta/ArchitectMetadata.scala",
+      "role": "metadata-contract",
+      "readExtent": "136-177,350-439",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/meta/ArchitectMetadata.scala",
+      "bytes": 54835,
+      "sha256": "1e776b3aa379257fc939931aedfa95cfe7f4215ce6f14311ed90b80caf11b06f",
+      "sourceStatus": "pinned-baseline",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+      "repositoryRelativePath": "src/main/scala/net/imadz/meta/ArchitectMetadata.scala",
+      "baselineIndexedSha256": "1e776b3aa379257fc939931aedfa95cfe7f4215ce6f14311ed90b80caf11b06f",
+      "matchesBaselineIndex": true,
+      "requiresMainFreeze": false
+    },
+    {
+      "id": "S-helper-builder",
+      "root": "D",
+      "path": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/CommandHelpersBuilder.scala",
+      "role": "raw-builder",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/CommandHelpersBuilder.scala",
+      "bytes": 7685,
+      "sha256": "6a46c0d8420639ec87352e1c26f20f2ac5bea541d8fc7b1e15af5e9218db44fb",
+      "sourceStatus": "pinned-baseline",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+      "repositoryRelativePath": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/CommandHelpersBuilder.scala",
+      "baselineIndexedSha256": "6a46c0d8420639ec87352e1c26f20f2ac5bea541d8fc7b1e15af5e9218db44fb",
+      "matchesBaselineIndex": true,
+      "requiresMainFreeze": false
+    },
+    {
+      "id": "S-entity-builder",
+      "root": "D",
+      "path": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/domain/DomainEntityBuilder.scala",
+      "role": "raw-default-policy",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/domain/DomainEntityBuilder.scala",
+      "bytes": 13039,
+      "sha256": "29f7d954afc5244ee33bbc5d64a4d4bd4915e5677b6902d6265ffb2490284563",
+      "sourceStatus": "pinned-baseline",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+      "repositoryRelativePath": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/domain/DomainEntityBuilder.scala",
+      "baselineIndexedSha256": "29f7d954afc5244ee33bbc5d64a4d4bd4915e5677b6902d6265ffb2490284563",
+      "matchesBaselineIndex": true,
+      "requiresMainFreeze": false
+    },
+    {
+      "id": "S-entity-template",
+      "root": "D",
+      "path": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainEntityTemplate.scala",
+      "role": "empty-factory-template",
+      "readExtent": "targeted default/empty excerpts",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainEntityTemplate.scala",
+      "bytes": 5962,
+      "sha256": "b5d64f4d21e71e6eee41af8a2c7e9b1f1652de13b53ed324c335b782fb9a314d",
+      "sourceStatus": "pinned-baseline",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+      "repositoryRelativePath": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainEntityTemplate.scala",
+      "baselineIndexedSha256": "b5d64f4d21e71e6eee41af8a2c7e9b1f1652de13b53ed324c335b782fb9a314d",
+      "matchesBaselineIndex": true,
+      "requiresMainFreeze": false
+    },
+    {
+      "id": "S-curated-protocol",
+      "root": "D",
+      "path": "baseline/curated-scala/net/imadz/application/aggregates/CreditBalanceProtocol.scala",
+      "role": "curated-reference",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/curated-scala/net/imadz/application/aggregates/CreditBalanceProtocol.scala",
+      "bytes": 2768,
+      "sha256": "9f860bbafefdc4200d2f211c5c68524130892e022c5417535722afa33c767a54",
+      "sourceStatus": "pinned-baseline",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+      "repositoryRelativePath": "reference_project/app/net/imadz/application/aggregates/CreditBalanceProtocol.scala",
+      "baselineIndexedSha256": "9f860bbafefdc4200d2f211c5c68524130892e022c5417535722afa33c767a54",
+      "matchesBaselineIndex": true,
+      "requiresMainFreeze": false
+    },
+    {
+      "id": "S-curated-helper",
+      "root": "D",
+      "path": "baseline/curated-scala/net/imadz/application/aggregates/behaviors/CreditBalanceCommandHelpers.scala",
+      "role": "curated-reference",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/curated-scala/net/imadz/application/aggregates/behaviors/CreditBalanceCommandHelpers.scala",
+      "bytes": 5746,
+      "sha256": "ec0c4f05e9398b8fd8aa1a93d6aafbe10a845e687bdffc27d3510e51a177d531",
+      "sourceStatus": "pinned-baseline",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+      "repositoryRelativePath": "reference_project/app/net/imadz/application/aggregates/behaviors/CreditBalanceCommandHelpers.scala",
+      "baselineIndexedSha256": "ec0c4f05e9398b8fd8aa1a93d6aafbe10a845e687bdffc27d3510e51a177d531",
+      "matchesBaselineIndex": true,
+      "requiresMainFreeze": false
+    },
+    {
+      "id": "S-curated-entity",
+      "root": "D",
+      "path": "baseline/curated-scala/net/imadz/domain/entities/CreditBalanceEntity.scala",
+      "role": "curated-reference",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/curated-scala/net/imadz/domain/entities/CreditBalanceEntity.scala",
+      "bytes": 1259,
+      "sha256": "c2e41213ec31561448256c2cec955ce589e7e0a39b721a11828c37ec6b3bd555",
+      "sourceStatus": "pinned-baseline",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+      "repositoryRelativePath": "reference_project/app/net/imadz/domain/entities/CreditBalanceEntity.scala",
+      "baselineIndexedSha256": "c2e41213ec31561448256c2cec955ce589e7e0a39b721a11828c37ec6b3bd555",
+      "matchesBaselineIndex": true,
+      "requiresMainFreeze": false
+    },
+    {
+      "id": "S-curated-fold",
+      "root": "D",
+      "path": "baseline/curated-scala/net/imadz/domain/entities/behaviors/CreditBalanceEventHandler.scala",
+      "role": "curated-reference",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/curated-scala/net/imadz/domain/entities/behaviors/CreditBalanceEventHandler.scala",
+      "bytes": 2455,
+      "sha256": "6af6ca27ed6b4c49559f35a5cd86850a2f24624044321c83d853c33c2e422534",
+      "sourceStatus": "pinned-baseline",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+      "repositoryRelativePath": "reference_project/app/net/imadz/domain/entities/behaviors/CreditBalanceEventHandler.scala",
+      "baselineIndexedSha256": "6af6ca27ed6b4c49559f35a5cd86850a2f24624044321c83d853c33c2e422534",
+      "matchesBaselineIndex": true,
+      "requiresMainFreeze": false
+    },
+    {
+      "id": "S-curated-behavior",
+      "root": "D",
+      "path": "baseline/curated-scala/net/imadz/application/aggregates/behaviors/CreditBalanceBehaviors.scala",
+      "role": "curated-reference",
+      "readExtent": "targeted runReplyingPolicy/GetBalance excerpts",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/curated-scala/net/imadz/application/aggregates/behaviors/CreditBalanceBehaviors.scala",
+      "bytes": 2615,
+      "sha256": "ee01261c6fbe640134dbcbc3c764882e8d5c2fd91897191a1048ad22e81d3d96",
+      "sourceStatus": "pinned-baseline",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+      "repositoryRelativePath": "reference_project/app/net/imadz/application/aggregates/behaviors/CreditBalanceBehaviors.scala",
+      "baselineIndexedSha256": "ee01261c6fbe640134dbcbc3c764882e8d5c2fd91897191a1048ad22e81d3d96",
+      "matchesBaselineIndex": true,
+      "requiresMainFreeze": false
+    },
+    {
+      "id": "S-curated-glue",
+      "root": "D",
+      "path": "baseline/curated-scala/net/imadz/common/application/CommandHandlerReplyingBehavior.scala",
+      "role": "curated-glue",
+      "readExtent": "targeted helper/runReplyingPolicy/replyWith excerpts",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/curated-scala/net/imadz/common/application/CommandHandlerReplyingBehavior.scala",
+      "bytes": 3654,
+      "sha256": "92ac1e9005ddf70d8665edea2211b1c06cf48374e51b0c765cabd2831a90eee4",
+      "sourceStatus": "pinned-baseline",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+      "repositoryRelativePath": "reference_project/app/net/imadz/common/application/CommandHandlerReplyingBehavior.scala",
+      "baselineIndexedSha256": "92ac1e9005ddf70d8665edea2211b1c06cf48374e51b0c765cabd2831a90eee4",
+      "matchesBaselineIndex": true,
+      "requiresMainFreeze": false
+    },
+    {
+      "id": "S-curated-bootstrap",
+      "root": "D",
+      "path": "baseline/curated-scala/net/imadz/infrastructure/bootstrap/CreditBalanceBootstrap.scala",
+      "role": "curated-runtime-identity",
+      "readExtent": "targeted PID/empty/tag/adapters excerpts",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/curated-scala/net/imadz/infrastructure/bootstrap/CreditBalanceBootstrap.scala",
+      "bytes": 2509,
+      "sha256": "56c3ad938cf7c8f87ca3c51903baa112867242a44323d666ffac7c3a42e4fa02",
+      "sourceStatus": "pinned-baseline",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+      "repositoryRelativePath": "reference_project/app/net/imadz/infrastructure/bootstrap/CreditBalanceBootstrap.scala",
+      "baselineIndexedSha256": "56c3ad938cf7c8f87ca3c51903baa112867242a44323d666ffac7c3a42e4fa02",
+      "matchesBaselineIndex": true,
+      "requiresMainFreeze": false
+    },
+    {
+      "id": "S-bank-output-protocol",
+      "root": "D",
+      "path": "baseline/actual-js/app/example/bankwealth/application/aggregates/CreditBalanceProtocol.scala",
+      "role": "existing-generated-output-not-same-input",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/actual-js/app/example/bankwealth/application/aggregates/CreditBalanceProtocol.scala",
+      "bytes": 1414,
+      "sha256": "32cd47bb368899f04a33b3496d15bf5be332a52e81d04a598eb6a2fc69768f18",
+      "sourceStatus": "pinned-baseline",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/bank-wealth-demo",
+      "repositoryRelativePath": "generated/current/app/example/bankwealth/application/aggregates/CreditBalanceProtocol.scala",
+      "baselineIndexedSha256": "32cd47bb368899f04a33b3496d15bf5be332a52e81d04a598eb6a2fc69768f18",
+      "matchesBaselineIndex": true,
+      "requiresMainFreeze": false
+    },
+    {
+      "id": "S-bank-output-state",
+      "root": "D",
+      "path": "baseline/actual-js/app/example/bankwealth/domain/CreditBalanceState.scala",
+      "role": "existing-generated-output-not-same-input",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/actual-js/app/example/bankwealth/domain/CreditBalanceState.scala",
+      "bytes": 999,
+      "sha256": "f01d3f8b6494b9ffba29c4d9afd0cadaddc583cfc71453ebde12925c953e74e6",
+      "sourceStatus": "pinned-baseline",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/bank-wealth-demo",
+      "repositoryRelativePath": "generated/current/app/example/bankwealth/domain/CreditBalanceState.scala",
+      "baselineIndexedSha256": "f01d3f8b6494b9ffba29c4d9afd0cadaddc583cfc71453ebde12925c953e74e6",
+      "matchesBaselineIndex": true,
+      "requiresMainFreeze": false
+    },
+    {
+      "id": "S-target-profiles",
+      "root": "D",
+      "path": "baseline/js/lib/scala-target/profiles.mjs",
+      "role": "target-contract-not-producer",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/lib/scala-target/profiles.mjs",
+      "bytes": 1701,
+      "sha256": "e9e18d487296abb8a4cc070227fecdf9f844c9a7f199cd9b3aa7cd747dab95b7",
+      "sourceStatus": "pinned-baseline",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "lib/scala-target/profiles.mjs",
+      "baselineIndexedSha256": "e9e18d487296abb8a4cc070227fecdf9f844c9a7f199cd9b3aa7cd747dab95b7",
+      "matchesBaselineIndex": true,
+      "requiresMainFreeze": false
+    },
+    {
+      "id": "S-js-derive",
+      "root": "D",
+      "path": "baseline/js/lib/project/derive.mjs",
+      "role": "author-to-request-adapter",
+      "readExtent": "1-210",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/lib/project/derive.mjs",
+      "bytes": 18116,
+      "sha256": "66997748e9c4eff8dcff7e3fa5699db1e674f31091e815237a9e20f030bed2f8",
+      "sourceStatus": "pinned-baseline",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "lib/project/derive.mjs",
+      "baselineIndexedSha256": "66997748e9c4eff8dcff7e3fa5699db1e674f31091e815237a9e20f030bed2f8",
+      "matchesBaselineIndex": true,
+      "requiresMainFreeze": false
+    },
+    {
+      "id": "S-js-aggregate-model",
+      "root": "D",
+      "path": "baseline/js/generators/scala-cqrs-play-service/build-aggregate-models.mjs",
+      "role": "formal-model-not-classic",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-play-service/build-aggregate-models.mjs",
+      "bytes": 3000,
+      "sha256": "c8635d726883a673801ab4d053005de8a3462913ba79c617813bc130270538c3",
+      "sourceStatus": "pinned-baseline",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "generators/scala-cqrs-play-service/build-aggregate-models.mjs",
+      "baselineIndexedSha256": "c8635d726883a673801ab4d053005de8a3462913ba79c617813bc130270538c3",
+      "matchesBaselineIndex": true,
+      "requiresMainFreeze": false
+    },
+    {
+      "id": "S-bc-entry",
+      "root": "D",
+      "path": "baseline/bc/src/main/scala/net/imadz/codegen/CodegenMain.scala",
+      "role": "public-BC-entry",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/CodegenMain.scala",
+      "bytes": 14183,
+      "sha256": "c2edd09c65acdb63eb4412698a05f903da5604011725d6c7472355a5c9b7fd0e",
+      "sourceStatus": "pinned-baseline",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+      "repositoryRelativePath": "src/main/scala/net/imadz/codegen/CodegenMain.scala",
+      "baselineIndexedSha256": "c2edd09c65acdb63eb4412698a05f903da5604011725d6c7472355a5c9b7fd0e",
+      "matchesBaselineIndex": true,
+      "requiresMainFreeze": false
+    },
+    {
+      "id": "S-bc-product-entry",
+      "root": "D",
+      "path": "baseline/bc/src/main/scala/net/imadz/codegen/SemanticProductsGenerationPlan.scala",
+      "role": "separate-product-entry-not-runCommon",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/SemanticProductsGenerationPlan.scala",
+      "bytes": 12649,
+      "sha256": "089363c39577531158f3a8398d40ea014c43b4f0b6aaf8fe10166f30c4ec0ea2",
+      "sourceStatus": "pinned-baseline",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+      "repositoryRelativePath": "src/main/scala/net/imadz/codegen/SemanticProductsGenerationPlan.scala",
+      "baselineIndexedSha256": "089363c39577531158f3a8398d40ea014c43b4f0b6aaf8fe10166f30c4ec0ea2",
+      "matchesBaselineIndex": true,
+      "requiresMainFreeze": false
+    },
+    {
+      "id": "S-js-cli",
+      "root": "js",
+      "path": "bin/truthsrc.js",
+      "role": "public-CLI-dispatcher",
+      "readExtent": "help matches and 135-219",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/bin/truthsrc.js",
+      "bytes": 18463,
+      "sha256": "5ef06f3e322b01ad5f9c472e923dc677182d771abce55023fb1e52d15398e970",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "bin/truthsrc.js",
+      "baselineCounterpart": {
+        "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/bin/truthsrc.js",
+        "sha256": "5ef06f3e322b01ad5f9c472e923dc677182d771abce55023fb1e52d15398e970",
+        "sameBytesAsObserved": true
+      },
+      "requiresMainFreeze": false
+    },
+    {
+      "id": "S-project-cli",
+      "root": "js",
+      "path": "lib/project/cli.mjs",
+      "role": "public-project-side-effects",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/project/cli.mjs",
+      "bytes": 14932,
+      "sha256": "dcabe26379e0bf95dc70a6b165b382396bf228b896711033a3e5029251710863",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "lib/project/cli.mjs",
+      "baselineCounterpart": {
+        "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/lib/project/cli.mjs",
+        "sha256": "dcabe26379e0bf95dc70a6b165b382396bf228b896711033a3e5029251710863",
+        "sameBytesAsObserved": true
+      },
+      "requiresMainFreeze": false
+    },
+    {
+      "id": "S-product-cli",
+      "root": "js",
+      "path": "lib/products/generate-cli.mjs",
+      "role": "public-product-admission",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/products/generate-cli.mjs",
+      "bytes": 11644,
+      "sha256": "4b255346896f8f27534a90ed338d078b568c6f9d5a56a8b80f6e782001dd12f6",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "lib/products/generate-cli.mjs",
+      "baselineCounterpart": {
+        "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/lib/products/generate-cli.mjs",
+        "sha256": "4b255346896f8f27534a90ed338d078b568c6f9d5a56a8b80f6e782001dd12f6",
+        "sameBytesAsObserved": true
+      },
+      "requiresMainFreeze": false
+    },
+    {
+      "id": "S-product-compile-cli",
+      "root": "js",
+      "path": "lib/products/cli.mjs",
+      "role": "public-compile-products-write-boundary",
+      "readExtent": "targeted 56-74 and capture signatures",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/products/cli.mjs",
+      "bytes": 4813,
+      "sha256": "b234b4caba42d9a5cc2847eacd91754aed9c47e995331858ba4461acb9694333",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "lib/products/cli.mjs",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-project-doc",
+      "root": "js",
+      "path": "PROJECT.md",
+      "role": "public-project-contract",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/PROJECT.md",
+      "bytes": 19351,
+      "sha256": "560b655a264e779863b177000db95763c073fd091078768fab2c2c2c078cfa7e",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "PROJECT.md",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-persistence-manifest",
+      "root": "js",
+      "path": "generators/scala-cqrs-persistence-readside-v1/generator.json",
+      "role": "registered-producer-contract",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/generators/scala-cqrs-persistence-readside-v1/generator.json",
+      "bytes": 3071,
+      "sha256": "5285a807f0cc8a0f5051a6330709f210bdd498367349662973c9386475baa07a",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "generators/scala-cqrs-persistence-readside-v1/generator.json",
+      "baselineCounterpart": {
+        "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-persistence-readside-v1/generator.json",
+        "sha256": "5285a807f0cc8a0f5051a6330709f210bdd498367349662973c9386475baa07a",
+        "sameBytesAsObserved": true
+      },
+      "requiresMainFreeze": false
+    },
+    {
+      "id": "S-aggregate-manifest",
+      "root": "js",
+      "path": "generators/scala-cqrs-aggregate-core-v1/generator.json",
+      "role": "registered-producer-contract",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/generators/scala-cqrs-aggregate-core-v1/generator.json",
+      "bytes": 2383,
+      "sha256": "b3f05a64e30c2292f2f4d05ea348ca5913b7ca50c7a79672e1f0f27200792c66",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "generators/scala-cqrs-aggregate-core-v1/generator.json",
+      "baselineCounterpart": {
+        "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-aggregate-core-v1/generator.json",
+        "sha256": "b3f05a64e30c2292f2f4d05ea348ca5913b7ca50c7a79672e1f0f27200792c66",
+        "sameBytesAsObserved": true
+      },
+      "requiresMainFreeze": false
+    },
+    {
+      "id": "S-service-manifest",
+      "root": "js",
+      "path": "generators/scala-cqrs-play-service/generator.json",
+      "role": "registered-producer-contract-not-classic",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/generators/scala-cqrs-play-service/generator.json",
+      "bytes": 7643,
+      "sha256": "c5736e057c2a5414a6e04b630b925ae26c21aad190c9e60a92fe56a5805df2b4",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "generators/scala-cqrs-play-service/generator.json",
+      "baselineCounterpart": {
+        "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-play-service/generator.json",
+        "sha256": "c5736e057c2a5414a6e04b630b925ae26c21aad190c9e60a92fe56a5805df2b4",
+        "sameBytesAsObserved": true
+      },
+      "requiresMainFreeze": false
+    },
+    {
+      "id": "S-saga-author",
+      "root": "js",
+      "path": "example/saga-money-transfer-serial/tree/aggregates/credit-balance/aggregate.yaml",
+      "role": "author-different-semantics",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/example/saga-money-transfer-serial/tree/aggregates/credit-balance/aggregate.yaml",
+      "bytes": 6257,
+      "sha256": "6264617c1555d141a25130287cc5206739caf91d93621797d6256ce461aaecdc",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "example/saga-money-transfer-serial/tree/aggregates/credit-balance/aggregate.yaml",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-warehouse-config",
+      "root": "js",
+      "path": "scaffold/persistence-readside-project/truthsrc.project.json",
+      "role": "author-project-entry",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truthsrc.project.json",
+      "bytes": 2134,
+      "sha256": "b3a427adbdcb63d69554328ba9f656af0dc5a0e6f35ce1d1fe5fba1afb49c02e",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/truthsrc.project.json",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-warehouse-binding",
+      "root": "js",
+      "path": "scaffold/persistence-readside-project/bindings/persistence.json",
+      "role": "technical-binding",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/bindings/persistence.json",
+      "bytes": 1898,
+      "sha256": "3f51cdce0bc99403b5abd0e8a52e59cd68542b54f7604e7282aee167ca4d9069",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/bindings/persistence.json",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-warehouse-system",
+      "root": "js",
+      "path": "scaffold/persistence-readside-project/truth/persistence-readside/system.yaml",
+      "role": "author-system",
+      "readExtent": "identity/context excerpts",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/system.yaml",
+      "bytes": 362,
+      "sha256": "56ef46e0b177ae48f8db738be212bfbd4a7114a70f6fb847b508ca8d44711c91",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/system.yaml",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-warehouse-context",
+      "root": "js",
+      "path": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/context.yaml",
+      "role": "author-context",
+      "readExtent": "identity excerpts",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/context.yaml",
+      "bytes": 339,
+      "sha256": "b2e1efdc6e3389efdb38d1620298028593bef0de0c062bcf12f53153c5f660ad",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/context.yaml",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-warehouse-author",
+      "root": "js",
+      "path": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/aggregate.yaml",
+      "role": "author-aggregate",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/aggregate.yaml",
+      "bytes": 574,
+      "sha256": "007e0dd813f9400c72192a97313e91de068051992511ce8c2d921420f30588b9",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/aggregate.yaml",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-warehouse-reserve",
+      "root": "js",
+      "path": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/slices/reserve-sku-quantity.slice.yaml",
+      "role": "author-command-event",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/slices/reserve-sku-quantity.slice.yaml",
+      "bytes": 1962,
+      "sha256": "b4c2caf53bbfe8bf62f3438dc5af04c855612e724113622feda3493d3f2391ee",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/slices/reserve-sku-quantity.slice.yaml",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-warehouse-commit",
+      "root": "js",
+      "path": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/slices/commit-sku-reservation.slice.yaml",
+      "role": "author-command-event",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/slices/commit-sku-reservation.slice.yaml",
+      "bytes": 1615,
+      "sha256": "71f6f0f20943ee29ea6d44002887ec4b11d6477f240d765338f208625a8a3a90",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/slices/commit-sku-reservation.slice.yaml",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-warehouse-txid",
+      "root": "js",
+      "path": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/tx-id.vo.yaml",
+      "role": "author-nominal-type",
+      "readExtent": "name/dataType excerpts",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/tx-id.vo.yaml",
+      "bytes": 213,
+      "sha256": "078e96185b7caa86be604df234adc3252edab6f02e54dd272a8d16f255b13c32",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/tx-id.vo.yaml",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-warehouse-id",
+      "root": "js",
+      "path": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/warehouse-id.vo.yaml",
+      "role": "author-nominal-type",
+      "readExtent": "name/dataType excerpts",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/warehouse-id.vo.yaml",
+      "bytes": 227,
+      "sha256": "d554389600ac30ff044ad84d33fae550d6f365c937f47794ebd2be0d3a62c579",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/warehouse-id.vo.yaml",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-warehouse-skuid",
+      "root": "js",
+      "path": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/sku-id.vo.yaml",
+      "role": "author-nominal-type",
+      "readExtent": "name/dataType excerpts",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/sku-id.vo.yaml",
+      "bytes": 215,
+      "sha256": "287ec071123ee799d74232873d962a4b6fd55397bd3726da89db25e45845ca53",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/sku-id.vo.yaml",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-warehouse-reservationid",
+      "root": "js",
+      "path": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/reservation-id.vo.yaml",
+      "role": "author-nominal-type",
+      "readExtent": "name/dataType excerpts",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/reservation-id.vo.yaml",
+      "bytes": 231,
+      "sha256": "88e3bc57cc0bfa4555b857d4c293a6954c71b44e9cf180e6ffe73134859ecc45",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/reservation-id.vo.yaml",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-warehouse-host",
+      "root": "js",
+      "path": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/formal-products/host-computation/--inventory---reservation-identity--.formal.yaml",
+      "role": "author-host-computation",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/formal-products/host-computation/--inventory---reservation-identity--.formal.yaml",
+      "bytes": 2449,
+      "sha256": "16aa581f39bee008f7566fe8977e95145bfd538745d8763561175862897969ea",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/formal-products/host-computation/--inventory---reservation-identity--.formal.yaml",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-warehouse-port",
+      "root": "js",
+      "path": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/formal-products/technical-port/reservation-identity.formal.yaml",
+      "role": "author-technical-port",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/formal-products/technical-port/reservation-identity.formal.yaml",
+      "bytes": 332,
+      "sha256": "a1bfd272dcf68c49eb7b81f7b11e7aea5b04961ac82c790139b4c6965f36a937",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/formal-products/technical-port/reservation-identity.formal.yaml",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-warehouse-state",
+      "root": "js",
+      "path": "test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/WarehouseState.scala",
+      "role": "independent-HAND-reference",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/WarehouseState.scala",
+      "bytes": 223,
+      "sha256": "40af157f9b50fe29d84e845b610b89dac892aca666616a860381340095be2484",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/WarehouseState.scala",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-warehouse-actor",
+      "root": "js",
+      "path": "test/reference/aggregate-core/project/modules/glue/src/main/scala/example/inventory/application/aggregates/WarehouseActorProtocol.scala",
+      "role": "independent-HAND-reference",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/aggregate-core/project/modules/glue/src/main/scala/example/inventory/application/aggregates/WarehouseActorProtocol.scala",
+      "bytes": 606,
+      "sha256": "12558f67c9b895f6a86ff057f40443c5ecebfd7be158a18ca29c8f11047b1d31",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/reference/aggregate-core/project/modules/glue/src/main/scala/example/inventory/application/aggregates/WarehouseActorProtocol.scala",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-warehouse-rules",
+      "root": "js",
+      "path": "test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/invariant/WarehouseRules.scala",
+      "role": "independent-HAND-reference",
+      "readExtent": "rule bodies excerpts",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/invariant/WarehouseRules.scala",
+      "bytes": 1506,
+      "sha256": "4375126ca5255fc19f5d19557376ef6a728521fa4364f863cef722fdaccf7a7b",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/invariant/WarehouseRules.scala",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-warehouse-helpers",
+      "root": "js",
+      "path": "test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/command/WarehouseCommandHelpers.scala",
+      "role": "independent-HAND-reference",
+      "readExtent": "emission helper excerpts",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/command/WarehouseCommandHelpers.scala",
+      "bytes": 793,
+      "sha256": "66aaf99f4dc9848bd158eec1d6e06c5b1d088c8bd2ce44b7616f81c51661429a",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/command/WarehouseCommandHelpers.scala",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-warehouse-fold",
+      "root": "js",
+      "path": "test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/entities/behaviors/WarehouseEventHandler.scala",
+      "role": "independent-HAND-reference",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/entities/behaviors/WarehouseEventHandler.scala",
+      "bytes": 514,
+      "sha256": "2d4e8869e3df5abba71b6d1355c5418fd65eb2b2ee7b15b7290badbf26d0655e",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/entities/behaviors/WarehouseEventHandler.scala",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-warehouse-converter",
+      "root": "js",
+      "path": "test/reference/aggregate-core/project/modules/glue/src/main/scala/example/inventory/infrastructure/serialization/DomainConverters.scala",
+      "role": "independent-HAND-reference",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/aggregate-core/project/modules/glue/src/main/scala/example/inventory/infrastructure/serialization/DomainConverters.scala",
+      "bytes": 4247,
+      "sha256": "f2f0ddb71e569f290bc152f02bddd7265773d4294d53bb987a99fd02efb534d4",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/reference/aggregate-core/project/modules/glue/src/main/scala/example/inventory/infrastructure/serialization/DomainConverters.scala",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-warehouse-domain-proto",
+      "root": "js",
+      "path": "test/reference/aggregate-core/project/modules/glue/src/main/protobuf/inventory_domain.proto",
+      "role": "independent-HAND-reference",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/aggregate-core/project/modules/glue/src/main/protobuf/inventory_domain.proto",
+      "bytes": 726,
+      "sha256": "96640e3776a90246d777cd4a6dcdf0a7ef9835c23b317f9249bf4c91bfecb3d6",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/reference/aggregate-core/project/modules/glue/src/main/protobuf/inventory_domain.proto",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-warehouse-frame-proto",
+      "root": "js",
+      "path": "test/reference/persistence-readside/protobuf/warehouse_persistence_frame.proto",
+      "role": "independent-HAND-reference",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/persistence-readside/protobuf/warehouse_persistence_frame.proto",
+      "bytes": 415,
+      "sha256": "d92dff015172afeb8f06a7c305bae21c2139296b5b5a1cabf6d6c205d96b7456",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/reference/persistence-readside/protobuf/warehouse_persistence_frame.proto",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-warehouse-persistence",
+      "root": "js",
+      "path": "test/reference/persistence-readside/scala/example/inventory/infrastructure/persistence/WarehousePersistence.scala",
+      "role": "independent-HAND-reference",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/persistence-readside/scala/example/inventory/infrastructure/persistence/WarehousePersistence.scala",
+      "bytes": 5781,
+      "sha256": "3b1bd7cc953637d753dd2c4139463ae673db2ead4e38ff48f37bf8f27df7f422",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/reference/persistence-readside/scala/example/inventory/infrastructure/persistence/WarehousePersistence.scala",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-warehouse-wire",
+      "root": "js",
+      "path": "test/reference/persistence-readside/scala/example/inventory/infrastructure/persistence/WarehouseWirePins.scala",
+      "role": "independent-HAND-explicit-pins",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/persistence-readside/scala/example/inventory/infrastructure/persistence/WarehouseWirePins.scala",
+      "bytes": 595,
+      "sha256": "e764ef3cf224bc45fd8839e0d33c05fcc2ed2bf11d5e8977d8dc7e3623744b8e",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/reference/persistence-readside/scala/example/inventory/infrastructure/persistence/WarehouseWirePins.scala",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-warehouse-serializer-config",
+      "root": "js",
+      "path": "test/reference/persistence-readside/resources/reference.conf",
+      "role": "independent-HAND-serializer-binding",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/persistence-readside/resources/reference.conf",
+      "bytes": 219,
+      "sha256": "256bbcb4666f4b0b5199863f033f0ed2f032373e884e6e3485e9c6b58fe2e2f0",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/reference/persistence-readside/resources/reference.conf",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-warehouse-reference-contract",
+      "root": "js",
+      "path": "test/reference/persistence-readside/REFERENCE-CONTRACT.md",
+      "role": "independent-reference-ABI-old-pending-text-not-current-verdict",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/persistence-readside/REFERENCE-CONTRACT.md",
+      "bytes": 16771,
+      "sha256": "f8ddb2912b1d2c5b5cad22d18c0ee4296e92473518197045660693c218dc1b9c",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/reference/persistence-readside/REFERENCE-CONTRACT.md",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-persistence-test-fixture",
+      "root": "js",
+      "path": "test/persistence-readside-fixture.mjs",
+      "role": "synthetic-admission-fixture-not-runtime-input",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/persistence-readside-fixture.mjs",
+      "bytes": 2800,
+      "sha256": "c3e7e7078ac798d4a62de0234f0e8075b322e25fd8d57342aef5d22e07b9f879",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/persistence-readside-fixture.mjs",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-bc-file-adapter",
+      "root": "bc",
+      "path": "src/main/scala/net/imadz/meta/filesystem/SerialCanonicalAdapter.scala",
+      "role": "current-file-input-adapter",
+      "readExtent": "185-224,320-389 and targeted reply/identity matches",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/meta/filesystem/SerialCanonicalAdapter.scala",
+      "bytes": 25331,
+      "sha256": "95a7e7d67f4e38b3a2e3b17b3b3797fa95cd67cda5b56739517f4f05f572d171",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+      "repositoryRelativePath": "src/main/scala/net/imadz/meta/filesystem/SerialCanonicalAdapter.scala",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-bc-helper-spec",
+      "root": "bc",
+      "path": "src/test/scala/net/imadz/codegen/scaffolding/cqrs/builder/CommandHelpersScaffoldSpec.scala",
+      "role": "test-read-as-spec-only",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/test/scala/net/imadz/codegen/scaffolding/cqrs/builder/CommandHelpersScaffoldSpec.scala",
+      "bytes": 3225,
+      "sha256": "4ee837d256d371ccd356f940a4d014b8f4ab1570167d920490ece73761c6f574",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+      "repositoryRelativePath": "src/test/scala/net/imadz/codegen/scaffolding/cqrs/builder/CommandHelpersScaffoldSpec.scala",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-bc-partition-spec",
+      "root": "bc",
+      "path": "src/test/scala/net/imadz/codegen/ProductConverterPartitionSpec.scala",
+      "role": "test-read-as-spec-only-not-Warehouse",
+      "readExtent": "targeted fixture/assertions",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/test/scala/net/imadz/codegen/ProductConverterPartitionSpec.scala",
+      "bytes": 2176,
+      "sha256": "7a67203c524157a6d765cf0caeb4d219f162cbabed110e3669ecefb307df76a2",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+      "repositoryRelativePath": "src/test/scala/net/imadz/codegen/ProductConverterPartitionSpec.scala",
+      "requiresMainFreeze": true
+    },
+    {
+      "id": "S-bc-shared-spec",
+      "root": "bc",
+      "path": "src/test/scala/net/imadz/codegen/ProductSharedExternalTypeSpec.scala",
+      "role": "test-read-as-spec-only-not-Warehouse",
+      "readExtent": "full",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/test/scala/net/imadz/codegen/ProductSharedExternalTypeSpec.scala",
+      "bytes": 1704,
+      "sha256": "6d7064bef9082ab7099ae82565784470d26d8f2fafbeb84a13df1a0b0b7b871b",
+      "sourceStatus": "mutable-working-copy-read-only",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+      "repositoryRelativePath": "src/test/scala/net/imadz/codegen/ProductSharedExternalTypeSpec.scala",
+      "requiresMainFreeze": true
+    }
+  ],
+  "beyondBaselineSources": [
+    {
+      "id": "S-product-compile-cli",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "lib/products/cli.mjs",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/products/cli.mjs",
+      "sha256": "b234b4caba42d9a5cc2847eacd91754aed9c47e995331858ba4461acb9694333",
+      "bytes": 4813,
+      "role": "public-compile-products-write-boundary",
+      "readExtent": "targeted 56-74 and capture signatures"
+    },
+    {
+      "id": "S-project-doc",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "PROJECT.md",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/PROJECT.md",
+      "sha256": "560b655a264e779863b177000db95763c073fd091078768fab2c2c2c078cfa7e",
+      "bytes": 19351,
+      "role": "public-project-contract",
+      "readExtent": "full"
+    },
+    {
+      "id": "S-saga-author",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "example/saga-money-transfer-serial/tree/aggregates/credit-balance/aggregate.yaml",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/example/saga-money-transfer-serial/tree/aggregates/credit-balance/aggregate.yaml",
+      "sha256": "6264617c1555d141a25130287cc5206739caf91d93621797d6256ce461aaecdc",
+      "bytes": 6257,
+      "role": "author-different-semantics",
+      "readExtent": "full"
+    },
+    {
+      "id": "S-warehouse-config",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/truthsrc.project.json",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truthsrc.project.json",
+      "sha256": "b3a427adbdcb63d69554328ba9f656af0dc5a0e6f35ce1d1fe5fba1afb49c02e",
+      "bytes": 2134,
+      "role": "author-project-entry",
+      "readExtent": "full"
+    },
+    {
+      "id": "S-warehouse-binding",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/bindings/persistence.json",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/bindings/persistence.json",
+      "sha256": "3f51cdce0bc99403b5abd0e8a52e59cd68542b54f7604e7282aee167ca4d9069",
+      "bytes": 1898,
+      "role": "technical-binding",
+      "readExtent": "full"
+    },
+    {
+      "id": "S-warehouse-system",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/system.yaml",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/system.yaml",
+      "sha256": "56ef46e0b177ae48f8db738be212bfbd4a7114a70f6fb847b508ca8d44711c91",
+      "bytes": 362,
+      "role": "author-system",
+      "readExtent": "identity/context excerpts"
+    },
+    {
+      "id": "S-warehouse-context",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/context.yaml",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/context.yaml",
+      "sha256": "b2e1efdc6e3389efdb38d1620298028593bef0de0c062bcf12f53153c5f660ad",
+      "bytes": 339,
+      "role": "author-context",
+      "readExtent": "identity excerpts"
+    },
+    {
+      "id": "S-warehouse-author",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/aggregate.yaml",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/aggregate.yaml",
+      "sha256": "007e0dd813f9400c72192a97313e91de068051992511ce8c2d921420f30588b9",
+      "bytes": 574,
+      "role": "author-aggregate",
+      "readExtent": "full"
+    },
+    {
+      "id": "S-warehouse-reserve",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/slices/reserve-sku-quantity.slice.yaml",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/slices/reserve-sku-quantity.slice.yaml",
+      "sha256": "b4c2caf53bbfe8bf62f3438dc5af04c855612e724113622feda3493d3f2391ee",
+      "bytes": 1962,
+      "role": "author-command-event",
+      "readExtent": "full"
+    },
+    {
+      "id": "S-warehouse-commit",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/slices/commit-sku-reservation.slice.yaml",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/slices/commit-sku-reservation.slice.yaml",
+      "sha256": "71f6f0f20943ee29ea6d44002887ec4b11d6477f240d765338f208625a8a3a90",
+      "bytes": 1615,
+      "role": "author-command-event",
+      "readExtent": "full"
+    },
+    {
+      "id": "S-warehouse-txid",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/tx-id.vo.yaml",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/tx-id.vo.yaml",
+      "sha256": "078e96185b7caa86be604df234adc3252edab6f02e54dd272a8d16f255b13c32",
+      "bytes": 213,
+      "role": "author-nominal-type",
+      "readExtent": "name/dataType excerpts"
+    },
+    {
+      "id": "S-warehouse-id",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/warehouse-id.vo.yaml",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/warehouse-id.vo.yaml",
+      "sha256": "d554389600ac30ff044ad84d33fae550d6f365c937f47794ebd2be0d3a62c579",
+      "bytes": 227,
+      "role": "author-nominal-type",
+      "readExtent": "name/dataType excerpts"
+    },
+    {
+      "id": "S-warehouse-skuid",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/sku-id.vo.yaml",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/sku-id.vo.yaml",
+      "sha256": "287ec071123ee799d74232873d962a4b6fd55397bd3726da89db25e45845ca53",
+      "bytes": 215,
+      "role": "author-nominal-type",
+      "readExtent": "name/dataType excerpts"
+    },
+    {
+      "id": "S-warehouse-reservationid",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/reservation-id.vo.yaml",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/reservation-id.vo.yaml",
+      "sha256": "88e3bc57cc0bfa4555b857d4c293a6954c71b44e9cf180e6ffe73134859ecc45",
+      "bytes": 231,
+      "role": "author-nominal-type",
+      "readExtent": "name/dataType excerpts"
+    },
+    {
+      "id": "S-warehouse-host",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/formal-products/host-computation/--inventory---reservation-identity--.formal.yaml",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/formal-products/host-computation/--inventory---reservation-identity--.formal.yaml",
+      "sha256": "16aa581f39bee008f7566fe8977e95145bfd538745d8763561175862897969ea",
+      "bytes": 2449,
+      "role": "author-host-computation",
+      "readExtent": "full"
+    },
+    {
+      "id": "S-warehouse-port",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/formal-products/technical-port/reservation-identity.formal.yaml",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/formal-products/technical-port/reservation-identity.formal.yaml",
+      "sha256": "a1bfd272dcf68c49eb7b81f7b11e7aea5b04961ac82c790139b4c6965f36a937",
+      "bytes": 332,
+      "role": "author-technical-port",
+      "readExtent": "full"
+    },
+    {
+      "id": "S-warehouse-state",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/WarehouseState.scala",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/WarehouseState.scala",
+      "sha256": "40af157f9b50fe29d84e845b610b89dac892aca666616a860381340095be2484",
+      "bytes": 223,
+      "role": "independent-HAND-reference",
+      "readExtent": "full"
+    },
+    {
+      "id": "S-warehouse-actor",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/reference/aggregate-core/project/modules/glue/src/main/scala/example/inventory/application/aggregates/WarehouseActorProtocol.scala",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/aggregate-core/project/modules/glue/src/main/scala/example/inventory/application/aggregates/WarehouseActorProtocol.scala",
+      "sha256": "12558f67c9b895f6a86ff057f40443c5ecebfd7be158a18ca29c8f11047b1d31",
+      "bytes": 606,
+      "role": "independent-HAND-reference",
+      "readExtent": "full"
+    },
+    {
+      "id": "S-warehouse-rules",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/invariant/WarehouseRules.scala",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/invariant/WarehouseRules.scala",
+      "sha256": "4375126ca5255fc19f5d19557376ef6a728521fa4364f863cef722fdaccf7a7b",
+      "bytes": 1506,
+      "role": "independent-HAND-reference",
+      "readExtent": "rule bodies excerpts"
+    },
+    {
+      "id": "S-warehouse-helpers",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/command/WarehouseCommandHelpers.scala",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/command/WarehouseCommandHelpers.scala",
+      "sha256": "66aaf99f4dc9848bd158eec1d6e06c5b1d088c8bd2ce44b7616f81c51661429a",
+      "bytes": 793,
+      "role": "independent-HAND-reference",
+      "readExtent": "emission helper excerpts"
+    },
+    {
+      "id": "S-warehouse-fold",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/entities/behaviors/WarehouseEventHandler.scala",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/entities/behaviors/WarehouseEventHandler.scala",
+      "sha256": "2d4e8869e3df5abba71b6d1355c5418fd65eb2b2ee7b15b7290badbf26d0655e",
+      "bytes": 514,
+      "role": "independent-HAND-reference",
+      "readExtent": "full"
+    },
+    {
+      "id": "S-warehouse-converter",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/reference/aggregate-core/project/modules/glue/src/main/scala/example/inventory/infrastructure/serialization/DomainConverters.scala",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/aggregate-core/project/modules/glue/src/main/scala/example/inventory/infrastructure/serialization/DomainConverters.scala",
+      "sha256": "f2f0ddb71e569f290bc152f02bddd7265773d4294d53bb987a99fd02efb534d4",
+      "bytes": 4247,
+      "role": "independent-HAND-reference",
+      "readExtent": "full"
+    },
+    {
+      "id": "S-warehouse-domain-proto",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/reference/aggregate-core/project/modules/glue/src/main/protobuf/inventory_domain.proto",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/aggregate-core/project/modules/glue/src/main/protobuf/inventory_domain.proto",
+      "sha256": "96640e3776a90246d777cd4a6dcdf0a7ef9835c23b317f9249bf4c91bfecb3d6",
+      "bytes": 726,
+      "role": "independent-HAND-reference",
+      "readExtent": "full"
+    },
+    {
+      "id": "S-warehouse-frame-proto",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/reference/persistence-readside/protobuf/warehouse_persistence_frame.proto",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/persistence-readside/protobuf/warehouse_persistence_frame.proto",
+      "sha256": "d92dff015172afeb8f06a7c305bae21c2139296b5b5a1cabf6d6c205d96b7456",
+      "bytes": 415,
+      "role": "independent-HAND-reference",
+      "readExtent": "full"
+    },
+    {
+      "id": "S-warehouse-persistence",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/reference/persistence-readside/scala/example/inventory/infrastructure/persistence/WarehousePersistence.scala",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/persistence-readside/scala/example/inventory/infrastructure/persistence/WarehousePersistence.scala",
+      "sha256": "3b1bd7cc953637d753dd2c4139463ae673db2ead4e38ff48f37bf8f27df7f422",
+      "bytes": 5781,
+      "role": "independent-HAND-reference",
+      "readExtent": "full"
+    },
+    {
+      "id": "S-warehouse-wire",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/reference/persistence-readside/scala/example/inventory/infrastructure/persistence/WarehouseWirePins.scala",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/persistence-readside/scala/example/inventory/infrastructure/persistence/WarehouseWirePins.scala",
+      "sha256": "e764ef3cf224bc45fd8839e0d33c05fcc2ed2bf11d5e8977d8dc7e3623744b8e",
+      "bytes": 595,
+      "role": "independent-HAND-explicit-pins",
+      "readExtent": "full"
+    },
+    {
+      "id": "S-warehouse-serializer-config",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/reference/persistence-readside/resources/reference.conf",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/persistence-readside/resources/reference.conf",
+      "sha256": "256bbcb4666f4b0b5199863f033f0ed2f032373e884e6e3485e9c6b58fe2e2f0",
+      "bytes": 219,
+      "role": "independent-HAND-serializer-binding",
+      "readExtent": "full"
+    },
+    {
+      "id": "S-warehouse-reference-contract",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/reference/persistence-readside/REFERENCE-CONTRACT.md",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/persistence-readside/REFERENCE-CONTRACT.md",
+      "sha256": "f8ddb2912b1d2c5b5cad22d18c0ee4296e92473518197045660693c218dc1b9c",
+      "bytes": 16771,
+      "role": "independent-reference-ABI-old-pending-text-not-current-verdict",
+      "readExtent": "full"
+    },
+    {
+      "id": "S-persistence-test-fixture",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "repositoryRelativePath": "test/persistence-readside-fixture.mjs",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/persistence-readside-fixture.mjs",
+      "sha256": "c3e7e7078ac798d4a62de0234f0e8075b322e25fd8d57342aef5d22e07b9f879",
+      "bytes": 2800,
+      "role": "synthetic-admission-fixture-not-runtime-input",
+      "readExtent": "full"
+    },
+    {
+      "id": "S-bc-file-adapter",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+      "repositoryRelativePath": "src/main/scala/net/imadz/meta/filesystem/SerialCanonicalAdapter.scala",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/meta/filesystem/SerialCanonicalAdapter.scala",
+      "sha256": "95a7e7d67f4e38b3a2e3b17b3b3797fa95cd67cda5b56739517f4f05f572d171",
+      "bytes": 25331,
+      "role": "current-file-input-adapter",
+      "readExtent": "185-224,320-389 and targeted reply/identity matches"
+    },
+    {
+      "id": "S-bc-helper-spec",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+      "repositoryRelativePath": "src/test/scala/net/imadz/codegen/scaffolding/cqrs/builder/CommandHelpersScaffoldSpec.scala",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/test/scala/net/imadz/codegen/scaffolding/cqrs/builder/CommandHelpersScaffoldSpec.scala",
+      "sha256": "4ee837d256d371ccd356f940a4d014b8f4ab1570167d920490ece73761c6f574",
+      "bytes": 3225,
+      "role": "test-read-as-spec-only",
+      "readExtent": "full"
+    },
+    {
+      "id": "S-bc-partition-spec",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+      "repositoryRelativePath": "src/test/scala/net/imadz/codegen/ProductConverterPartitionSpec.scala",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/test/scala/net/imadz/codegen/ProductConverterPartitionSpec.scala",
+      "sha256": "7a67203c524157a6d765cf0caeb4d219f162cbabed110e3669ecefb307df76a2",
+      "bytes": 2176,
+      "role": "test-read-as-spec-only-not-Warehouse",
+      "readExtent": "targeted fixture/assertions"
+    },
+    {
+      "id": "S-bc-shared-spec",
+      "repository": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+      "repositoryRelativePath": "src/test/scala/net/imadz/codegen/ProductSharedExternalTypeSpec.scala",
+      "absolutePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/test/scala/net/imadz/codegen/ProductSharedExternalTypeSpec.scala",
+      "sha256": "6d7064bef9082ab7099ae82565784470d26d8f2fafbeb84a13df1a0b0b7b871b",
+      "bytes": 1704,
+      "role": "test-read-as-spec-only-not-Warehouse",
+      "readExtent": "full"
+    }
+  ],
+  "sourceMatrixNotes": [
+    "baseline快照SHA和原仓映射从index取；工作副本逐文件SHA供主会话冻结，不冒充已冻结版本",
+    "命令形状来自实际dispatcher/manifest；本轮全未执行，不能据文档标题/旧PASS/测试名字宣称验收",
+    "JSON是文档证据矩阵，不是canonical/request/compiled/fixture输入"
+  ]
+}

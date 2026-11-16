@@ -1,0 +1,189 @@
+{
+  "schemaVersion": "truthsrc.product-generator/v1",
+  "name": "scala-cqrs-domain",
+  "version": "2",
+  "targetProfile": "scala-cqrs-domain@2",
+  "products": [
+    {
+      "id": "reference-layout",
+      "version": "1",
+      "payloadSchemaVersion": "truthsrc.reference-layout/v1",
+      "capabilities": [
+        {
+          "id": "qualified-reference-layout",
+          "version": "1"
+        }
+      ]
+    },
+    {
+      "id": "exact-value-types",
+      "version": "1",
+      "payloadSchemaVersion": "truthsrc.exact-value-types/v1",
+      "capabilities": [
+        {
+          "id": "exact-value-types",
+          "version": "1"
+        }
+      ]
+    },
+    {
+      "id": "domain-decision",
+      "version": "4",
+      "payloadSchemaVersion": "truthsrc.domain-decision/v4",
+      "capabilities": [
+        {
+          "id": "ordered-domain-decision",
+          "version": "4"
+        }
+      ]
+    },
+    {
+      "id": "domain-dependencies",
+      "version": "6",
+      "payloadSchemaVersion": "truthsrc.domain-dependencies/v6",
+      "capabilities": [
+        {
+          "id": "domain-dependencies",
+          "version": "6"
+        }
+      ]
+    },
+    {
+      "id": "domain-folds",
+      "version": "6",
+      "payloadSchemaVersion": "truthsrc.domain-folds/v6",
+      "capabilities": [
+        {
+          "id": "domain-folds",
+          "version": "6"
+        }
+      ]
+    },
+    {
+      "id": "domain-external-events",
+      "version": "2",
+      "payloadSchemaVersion": "truthsrc.domain-external-events/v2",
+      "capabilities": [
+        {
+          "id": "external-event-producers",
+          "version": "2"
+        }
+      ]
+    },
+    {
+      "id": "exact-value-codecs",
+      "version": "1",
+      "payloadSchemaVersion": "truthsrc.exact-value-codecs/v1",
+      "capabilities": [
+        {
+          "id": "exact-value-codecs",
+          "version": "1"
+        }
+      ]
+    }
+  ],
+  "producers": [
+    {
+      "id": "aggregate-dsl",
+      "version": "2",
+      "products": [
+        "reference-layout",
+        "domain-folds",
+        "exact-value-types"
+      ],
+      "artifactKinds": [
+        "state",
+        "aggregate"
+      ]
+    },
+    {
+      "id": "command-dsl",
+      "version": "2",
+      "products": [
+        "reference-layout",
+        "domain-dependencies",
+        "exact-value-types"
+      ],
+      "artifactKinds": [
+        "protocol",
+        "command-helpers",
+        "external-event-bridge"
+      ]
+    },
+    {
+      "id": "invariant-dsl",
+      "version": "2",
+      "products": [
+        "reference-layout",
+        "domain-decision",
+        "domain-folds",
+        "exact-value-types"
+      ],
+      "artifactKinds": [
+        "rules",
+        "event-handler"
+      ]
+    },
+    {
+      "id": "valueobject-dsl",
+      "version": "2",
+      "products": [
+        "reference-layout",
+        "exact-value-types"
+      ],
+      "artifactKinds": [
+        "value-object"
+      ]
+    },
+    {
+      "id": "proto-dsl",
+      "version": "2",
+      "products": [
+        "reference-layout",
+        "domain-dependencies",
+        "domain-folds",
+        "exact-value-types",
+        "exact-value-codecs"
+      ],
+      "artifactKinds": [
+        "proto",
+        "build",
+        "generated-test"
+      ]
+    },
+    {
+      "id": "converter-dsl",
+      "version": "2",
+      "products": [
+        "reference-layout",
+        "domain-dependencies",
+        "domain-folds",
+        "exact-value-types",
+        "exact-value-codecs"
+      ],
+      "artifactKinds": [
+        "converter",
+        "serialization-adapter"
+      ]
+    }
+  ],
+  "artifactKinds": [
+    "state",
+    "aggregate",
+    "protocol",
+    "command-helpers",
+    "external-event-bridge",
+    "rules",
+    "event-handler",
+    "value-object",
+    "proto",
+    "converter",
+    "serialization-adapter",
+    "build",
+    "generated-test"
+  ],
+  "options": [
+    "packages",
+    "verificationCases"
+  ]
+}

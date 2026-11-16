@@ -1,0 +1,386 @@
+{
+  "group": "aggregate-state-controller",
+  "artifactIds": [
+    "aggregate-state-controller"
+  ],
+  "diffs": [
+    {
+      "artifactId": "aggregate-state-controller",
+      "file": "diffs/aggregate-state-controller.diff.md",
+      "status": "decision-required",
+      "counterpartStatus": {
+        "formal": "missing-counterpart",
+        "legacy": "legacy-only/not-wired-to-formal",
+        "family": "receipt-query-controller-is-not-aggregate-state-controller"
+      },
+      "scalaVariants": [
+        {
+          "id": "single-enabled",
+          "condition": "multiProject=false；system.application.aggregates 中 repository.isDefined 且命令名等于 Get${a.name}State 的条目非空；scope 与领地允许写入",
+          "outputPaths": [
+            "<target>/app/controllers/AggregateStateApiController.scala"
+          ],
+          "cardinality": "一份控制器；每个 eligible aggregate 一个方法、一个 state writer、一个 reply writer",
+          "evidence": "source-inspected-not-exercised"
+        },
+        {
+          "id": "multi-enabled-root",
+          "condition": "multiProject=true，其余 eligible/scope/territory 条件同 single；controller kind 分配 root",
+          "outputPaths": [
+            "<target>/app/controllers/AggregateStateApiController.scala"
+          ],
+          "cardinality": "一份控制器，不进入 modules/kernel 或 modules/glue",
+          "evidence": "source-inspected-not-exercised"
+        },
+        {
+          "id": "suppressed-no-eligible-aggregate",
+          "condition": "repository/Get${a.name}State 过滤结果为空，dispatch 直接 return",
+          "outputPaths": [],
+          "cardinality": "零文件",
+          "evidence": "source-inspected-not-exercised"
+        },
+        {
+          "id": "scope-or-territory-suppressed",
+          "condition": "已构建模型，但 scope 不包含 attribution 或写入领地 KEEP/拒写；ledger 记录在 scope return 之前",
+          "outputPaths": [],
+          "cardinality": "不保证新文件落盘；不是零副作用预览",
+          "evidence": "source-inspected-not-exercised"
+        },
+        {
+          "id": "shared-writer-combinations",
+          "condition": "anyInstant 检查 state field signature 包含 Instant；anyId 检查 signature 包含 Id 且 typeRef.name != String；两条件独立",
+          "outputPaths": [
+            "<target>/app/controllers/AggregateStateApiController.scala"
+          ],
+          "cardinality": "各零或一个控制器级 private implicit val；Instant 在 Id 前，二者均在所有 state writers 前",
+          "evidence": "four-combinations-not-exercised"
+        }
+      ],
+      "scalaSources": [
+        {
+          "role": "model",
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/api/AggregateStateControllerModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/api/AggregateStateControllerModel.scala",
+          "lines": "1-40",
+          "bytes": 1839,
+          "sha256": "e82c7a61407d86ccfc945497d7d41ce83f16f6e0e59018ad65784d0e1bd20057",
+          "read": "full"
+        },
+        {
+          "role": "builder",
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/api/AggregateStateControllerBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/api/AggregateStateControllerBuilder.scala",
+          "lines": "1-72",
+          "bytes": 3681,
+          "sha256": "72ae20d5a0eca5356b9058077cea6d4d089a414680e48dbce73e2b4815848095",
+          "read": "full"
+        },
+        {
+          "role": "template",
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/AggregateStateControllerTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/AggregateStateControllerTemplate.scala",
+          "lines": "1-111",
+          "bytes": 5538,
+          "sha256": "12ec14b353d3682a5c9ef36d66520a02e42daa9c81331babae6b95a3f04a7195",
+          "read": "full"
+        },
+        {
+          "role": "dispatch-and-writer",
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+          "lines": "170-220,331-425,1004-1027"
+        }
+      ],
+      "jsSources": [
+        {
+          "file": "generators/scala-cqrs-play-service/generate.mjs",
+          "symbols": [
+            "registry.play-service-dsl.produce",
+            "generate",
+            "inherited.aggregate-dsl"
+          ],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "16-70",
+          "finding": "正式 producer 调用 renderService/JournalReadside/TestSupport/Configuration；没有接入 legacy state controller"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/render-service.mjs",
+          "symbols": [
+            "serviceSelection",
+            "renderService"
+          ],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "5-205",
+          "finding": "显式 service endpoint/port 合同，不是全聚合状态查询；需要保留当前业务 API，不能整段替换"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/render-service-pages.mjs",
+          "symbols": [
+            "renderPageLoader",
+            "pageRendererContract",
+            "pageRendererRequirement"
+          ],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "1-133",
+          "finding": "银行实际 hasPages 分支的 loader；路由、鉴权、CSRF、page/headers 不由本族静默删改"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es-api/templates/state_api.mjs",
+          "symbols": [
+            "renderStateApiController",
+            "stateRouteLines"
+          ],
+          "lane": "legacy",
+          "disposition": "adapt",
+          "lines": "12-139",
+          "finding": "本族近似完整 renderer；Model/Builder/Template 混合，固定 metarch 包、credential 排除、TAG，缺 BC gate；不是正式入口已支持"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es-api/generate.mjs",
+          "symbols": [
+            "generate",
+            "stateRoster",
+            "stateNoteIds",
+            "routesLines"
+          ],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "lines": "230-256",
+          "finding": "canonical.stateRoster 回退 aggregates，始终发控制器并将路由追加 E301；显式 legacy generate 可达，但 formal registry 不接此 producer"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es/builders/types.mjs",
+          "symbols": [
+            "scalaSig",
+            "parseType"
+          ],
+          "lane": "legacy",
+          "disposition": "replace",
+          "lines": "34-73",
+          "finding": "类型字符串解析不能代替目标共享 TypeRef/signature/import 模型"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es-projection/builders/views.mjs",
+          "symbols": [
+            "depsOf"
+          ],
+          "lane": "legacy",
+          "disposition": "replace",
+          "lines": "15-29",
+          "finding": "未知类型固定回退 net.imadz.metarch.domain.values，不能作为银行 nominal/import 解析器"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/generate.mjs",
+          "symbols": [
+            "generate",
+            "resolveApplicationTarget"
+          ],
+          "lane": "family",
+          "disposition": "not-wired",
+          "lines": "1-42",
+          "finding": "显式注册的新 family，要求 generate-project 外置实现捕获，不是本族正式 counterpart"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/render.mjs",
+          "symbols": [
+            "render"
+          ],
+          "lane": "family",
+          "disposition": "not-wired",
+          "lines": "16-46",
+          "finding": "controller/queryService/routes/codec jobs 已分工，但 query 是 receipts 读侧而非 actor state"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/templates/http.mjs",
+          "symbols": [
+            "controllerTemplate",
+            "routesTemplate"
+          ],
+          "lane": "family",
+          "disposition": "not-wired",
+          "lines": "21-110",
+          "finding": "secured/receipts/query/page/readiness 不能视为 Get<X>State HTTP 实现"
+        },
+        {
+          "file": "lib/products/generate-cli.mjs",
+          "symbols": [
+            "registeredProductProducer",
+            "generateProductCli",
+            "planCompiledProducts"
+          ],
+          "lane": "formal",
+          "disposition": "reuse",
+          "lines": "45-145",
+          "finding": "保留 public CLI 注册准入、runtime pins 与输出前置检查，公共文件由集成 owner 管理"
+        },
+        {
+          "file": "src/core/generate.mjs",
+          "symbols": [
+            "plan",
+            "applyEntries"
+          ],
+          "lane": "legacy",
+          "disposition": "reuse",
+          "lines": "23-42,246-269",
+          "finding": "legacy plan 可动态调用；applyEntries 同时被正式链复用，统一负责最终文件、ledger、anchors，不能复制第二套 writer"
+        },
+        {
+          "file": "lib/scala-target/naming.mjs",
+          "symbols": [
+            "resolveName",
+            "resolveNameSet",
+            "resolveArtifactPath"
+          ],
+          "lane": "family",
+          "disposition": "reuse",
+          "lines": "26-118",
+          "finding": "共享候选 API；使用前固定 BC 名称兼容与身份分离合同，不宣称现有 state renderer 已消费"
+        }
+      ],
+      "actualOutputSources": [
+        "baseline/actual-js/app/example/bankwealth/service/BankServiceLoader.scala#L1-L129",
+        "baseline/actual-js/app/example/bankwealth/service/BankServiceService.scala#L1-L99",
+        "baseline/actual-js/app/example/bankwealth/application/aggregates/CreditBalanceRepository.scala#L1-L30",
+        "baseline/actual-js/app/example/bankwealth/application/aggregates/CreditBalanceProtocol.scala#L1-L29",
+        "baseline/actual-js/app/example/bankwealth/application/aggregates/behaviors/CreditBalanceBehaviors.scala#L1-L47",
+        "baseline/actual-js/app/example/bankwealth/domain/CreditBalanceAggregate.scala#L1-L19",
+        "baseline/actual-js/app/example/bankwealth/domain/CreditBalanceState.scala#L1-L8"
+      ],
+      "comparison": {
+        "kind": "structural-not-same-input-byte-comparison",
+        "rawScala": "完整冻结 M/B/T 与逐构造/RHS 表；本轮没有新 raw 输出",
+        "approvedTarget": "raw 内容加明确布局/import/排版覆盖；D1-D6 未裁定，未生成完整目标字节",
+        "actualJs": "银行现有服务/聚合支撑输出及单列 legacy renderer；不是本族同输入输出",
+        "curatedReference": "相关 Endpoint/CommandDsl 参考已区分包名与部署供应；索引没有本族人工 controller",
+        "sameInputOutputsAvailable": false
+      },
+      "writeSet": [
+        "generators/scala-cqrs-play-service/models/aggregate-state-controller.mjs",
+        "generators/scala-cqrs-play-service/build-aggregate-state-controller.mjs",
+        "generators/scala-cqrs-play-service/templates/aggregate-state-controller.mjs",
+        "generators/scala-cqrs-play-service/generate.mjs",
+        "generators/scala-cqrs-play-service/generator.json",
+        "generators/scala-cqrs-play-service/render-service.mjs",
+        "generators/scala-cqrs-play-service/render-service-pages.mjs"
+      ],
+      "proposedNewFiles": [
+        "generators/scala-cqrs-play-service/models/aggregate-state-controller.mjs",
+        "generators/scala-cqrs-play-service/build-aggregate-state-controller.mjs",
+        "generators/scala-cqrs-play-service/templates/aggregate-state-controller.mjs"
+      ],
+      "writeSetStatus": "仅为第二阶段提案；当前没有上述生产写入；shared registry/manifest/loader 修改由集成 owner 单独批准执行",
+      "assemblyOwnership": {
+        "controller": "aggregate-state-controller 内容 owner 独占完整 AggregateStateApiController.scala 组装，所有 entries 合成一次",
+        "routes": "HTTP/routes 集成 owner 独占 conf/routes 或 runtime router 的完整组装，本族仅提供 route contribution",
+        "shared": "集成 owner 独占 shared names/types/layout/writer/registry/manifest/anchors",
+        "legacy": "兼容入口 owner 先核消费者；未授权不退役整个 legacy producer，也不从 formal import 整个 legacy producer"
+      },
+      "legacyMigrationCandidates": [
+        "generators/_deprecated/scala-cqrs-es-api/templates/state_api.mjs",
+        "generators/_deprecated/scala-cqrs-es-api/generate.mjs"
+      ],
+      "sharedDependencyPaths": [
+        "lib/scala-target/naming.mjs",
+        "lib/scala-target/model.mjs",
+        "lib/scala-target/profiles.mjs",
+        "lib/products/generate-cli.mjs",
+        "src/core/generate.mjs"
+      ],
+      "dependsOn": [
+        "shared-layout-types",
+        "shared-writer-anchors",
+        "application-protocol",
+        "domain-entity",
+        "aggregate-repository-port",
+        "aggregate-repository-implementation",
+        "command-endpoint-dsl",
+        "http-controller",
+        "route-definition",
+        "application-bootstrap"
+      ],
+      "glue": [
+        "net.imadz.common.auth.Endpoint",
+        "net.imadz.common.auth.ApiError",
+        "net.imadz.metarch.infrastructure.api.IdGuard.parse",
+        "net.imadz.common.CommonTypes.Id",
+        "net.imadz.common.Id.of",
+        "akka.cluster.sharding.typed.scaladsl.EntityRef",
+        "akka.actor.typed.ActorRef",
+        "akka.util.Timeout",
+        "play.api.libs.json.JsValue",
+        "play.api.libs.json.Json",
+        "play.api.libs.json.OWrites",
+        "play.api.libs.json.Writes",
+        "play.api.mvc.BaseController",
+        "play.api.mvc.ControllerComponents",
+        "play.api.mvc.Action",
+        "play.api.mvc.AnyContent",
+        "javax.inject.Inject",
+        "javax.inject.Singleton",
+        "java.time.Instant",
+        "scala.concurrent.ExecutionContext",
+        "scala.concurrent.Future",
+        "scala.concurrent.duration"
+      ],
+      "glueSupplyStatus": "只读源声明；scaffold 声明 common-core/auth-core 0.2、Akka 2.6.20、play-json 2.9.3，不证明当前消费 JAR 的 API 可用。精确 IdGuard FQN 有 frozen scaffold-static 源码；formal 接线和供给未验证。",
+      "openDecisions": [
+        "D1：确定 formal 显式状态 HTTP 面、eligible roster、排除集合的产品/版本；裁定 dispatch Get${a.name}State 与 Builder 去 Aggregate 后缀的差异，以及 readOnly/reply/state/repository 准入条件。",
+        "D2：裁定 sharding entityRef(String) 与银行 local get(K)/Handle 的适配、BC 带 Id 的 Reply envelope 与银行 GetState(replyTo: ActorRef[State]) 的接口；保护名义 Id、raw-string addressing 与 PID。",
+        "D3：明确状态 API 的管理/资源授权边界及 global.read 与 customer/operator 的区别；固定 Endpoint/ApiError 包名、实际 artifact API、鉴权和超时错误语义。",
+        "D4：明确 nominal/Map-key JSON writers、Instant/Id 类型识别、stateType=None 和 registry miss→Nil 的处置，以及成员/类型/literal 碰撞与空状态契约。",
+        "D5：确定 E301 marker 或 formal runtime router 的唯一承载、控制器 DI 与路由组合，保留现有业务查询、pages、CSRF 和安全 headers。",
+        "D6：确定 endpoint.noteId 的合法文件/成员回锚、共享 imports/排版/命名策略、同输入 fixture 适配与 common/auth 真实 JAR pins。"
+      ],
+      "explicitDebtSlots": [
+        "本族 M/B/T 不含 MANUAL 或 ???；共享 TypeResolver.resolveMetaRef 的 ??? 必须保留为未完成槽，不能制造假实现。",
+        "Model 文档 entityTypeKey 无对应字段；routeBase 和 endpoint.noteId 不被本 Template 使用；Model.noteIds 继承 Nil。",
+        "raw stateType=None 回退 replyType；entity registry miss 返回 Nil；不能把潜在空 JSON 解释成已正确读取状态。",
+        "legacy TAG 固定旧 CodegenMain/release，包名固定 metarch，schemaCategory/deps 与 BC 不同。"
+      ],
+      "fixtures": [
+        "拟议独立非银行单聚合显式 repository/GetState/reply.state/stateRef 正例与 gate 阴性、Aggregate 后缀冲突例",
+        "Instant/Id 四组合、null、超过 22 字段、关键字、同名类型、嵌套泛型与名义 Map key、stateType 缺失、registry miss、nature 排除矩阵",
+        "HTTP 鉴权/IdGuard 失败不 ask，成功一次 typed ask/reply，超时/错误折叠、JSON 平铺，只读不 persist/publish",
+        "若依赖迁移触及写命令，另验证 CommandHelper 三方法及失败不 persist、成功 thenReply 读更新 state、replyWith 不发布"
+      ],
+      "cliSpecification": {
+        "location": "diff 第 10.2 节",
+        "executed": false,
+        "fixtureRoot": "/tmp/codegen-parity-aggregate-state-controller/inputs",
+        "fixtureRootStatus": "proposed-not-created",
+        "bcEntry": "sbt -Dcodegen.systemFile=<absolute> -Dcodegen.systemBindings=<absolute> -Dcodegen.targetDir=<new-absolute> -Dcodegen.ledger=<isolated-absolute> -Dcodegen.multiProject=false runMain net.imadz.codegen.CodegenMain",
+        "formalEntry": "node /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/bin/truthsrc.js generate-products --request <absolute> --generator /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/generators/scala-cqrs-play-service --out <new-absolute> --options-json <absolute> --plan",
+        "scope": "通过小输入及依赖闭包限定；现有 CLI 没有本族 artifact-only flag；当前正式链没有本族接线",
+        "sideEffects": [
+          "BC 实跑启动 sbt/JVM，可能解析或下载依赖、写仓内/构建缓存 target，复制 scaffold 并生成小输入全闭包、proto、配置、ledger；本轮禁止执行。",
+          "formal generate-products --plan 仍做产品编译/renderer、manifest/JAR SHA 与 external source root 读取，不 apply；去掉 --plan 才通过统一 writer 写全计划文件、truthsrc.ledger.json、anchors.json。",
+          "legacy generate --plan 计划整个 API face 并两次调用 producer，不是本族专用；apply 涉及其他 controller/global support 和 E301 markers。",
+          "family 必须 generate-project 捕获实现；plan 前也可 verifyImplementationSources；实跑另外写 .truthsrc/canonical.json、request.json、compiled.json、inputs.json 和项目 SQLite graph/anchors。"
+        ]
+      },
+      "validation": {
+        "sameInputFullFiles": "not-run",
+        "constructRhsInspection": "源码逐项记录在 diff 第 4 节；不是产物验证结论",
+        "httpProtocolAndJsonBehavior": "not-run",
+        "formatNamingImports": "not-run",
+        "cyclomaticComplexity": "not-measured",
+        "cyclomaticComplexityTarget": "普通方法 <=5；6-10 逐方法说明；>10 重构或明确例外，不用 String/Any dispatcher 降分",
+        "determinismAndAnchors": "not-run"
+      },
+      "extraSources": []
+    }
+  ],
+  "fixedHeads": {
+    "js": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+    "bc": "cc335eb1e0d0fae17bf092fd61b126040196ea70"
+  },
+  "generatorsModified": false,
+  "runtimeExecuted": false,
+  "testsExecuted": false,
+  "generationExecuted": false,
+  "baselineModified": false,
+  "documentationOnly": true
+}

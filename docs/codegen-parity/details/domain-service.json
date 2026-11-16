@@ -1,0 +1,401 @@
+{
+  "group": "domain-service",
+  "artifactIds": ["domain-service"],
+  "diffs": [
+    {
+      "artifactId": "domain-service",
+      "file": "diffs/domain-service.diff.md",
+      "status": "decision-required",
+      "formalCounterpartStatus": "missing-counterpart",
+      "comparisonKind": "结构性对照，非同输入字节比较",
+      "sourceHeads": {
+        "js": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+        "bc": "cc335eb1e0d0fae17bf092fd61b126040196ea70"
+      },
+      "scalaVariants": [
+        {
+          "id": "service-object-single",
+          "condition": "传统 CodegenMain 分支遍历 system.domain.services；每个服务一个候选文件；writer scope/领地策略可抑制实际写入",
+          "outputPaths": ["<target>/app/<base-as-path>/domain/services/<resolvedName>.scala"],
+          "cardinality": "每个 DomainServiceMetadata 一个文件，methods 不改变文件数",
+          "state": "enabled-not-exercised",
+          "dispatch": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala#L584-L592"
+        },
+        {
+          "id": "service-object-multi-root-fallback",
+          "condition": "multiProject=true；targetModuleOf 对 domain-service 返回 None；writeArtifact 使用 app fallback，不是 kernel 模块",
+          "outputPaths": ["<target>/app/<base-as-path>/domain/services/<resolvedName>.scala"],
+          "cardinality": "每个服务一个候选文件",
+          "state": "enabled-not-exercised",
+          "dispatch": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala#L331-L378"
+        },
+        {
+          "id": "empty-services",
+          "condition": "system.domain.services 为空",
+          "outputPaths": [],
+          "cardinality": "0",
+          "state": "suppressed"
+        },
+        {
+          "id": "empty-methods",
+          "condition": "服务存在但 methods 为空；同一模板仍输出 extends DomainService 的空 object",
+          "outputPaths": ["<target>/app/<base-as-path>/domain/services/<resolvedName>.scala"],
+          "cardinality": "1 个候选文件",
+          "state": "enabled-not-exercised"
+        }
+      ],
+      "jsSources": [
+        {
+          "file": "generators/service-dsl/emit.mjs",
+          "symbols": ["emitDomainService", "kind === \"domain\"", "emitPort", "scalaId"],
+          "lane": "legacy",
+          "disposition": "adapt",
+          "lines": "14-26,176-204,206-294",
+          "note": "domain object renderer 可直接 CLI 调用但 formal 未接线；port trait/Bridge 是不同职责；同文件 application/query 分支不可覆盖"
+        },
+        {
+          "file": "generators/service-dsl/parse.mjs",
+          "symbols": ["binding 文件原字节复制"],
+          "lane": "legacy",
+          "disposition": "adapt",
+          "lines": "1-5",
+          "note": "不是 DomainServiceBuilder，不解析类型或 logic.fold"
+        },
+        {
+          "file": "generators/service-dsl/generator.json",
+          "symbols": ["entrypoint=emit.mjs", "version=0.1.0"],
+          "lane": "legacy",
+          "disposition": "adapt",
+          "lines": "1",
+          "note": "legacy manifest 不等于 registeredProductProducer allowlist"
+        },
+        {
+          "file": "generators/run-all.mjs",
+          "symbols": ["domainServices", "runGen", "runGen(\"service-dsl\", ...)"],
+          "lane": "legacy",
+          "disposition": "adapt",
+          "lines": "69,405-440,1781-1792",
+          "note": "canonical.domainServices 实际传 kind=port；输出包路径用 singular domain.service，spec.package 可取 ds.fq"
+        },
+        {
+          "file": "lib/products/generate-cli.mjs",
+          "symbols": ["generateProductCli", "registeredProductProducer", "planCapturedProducts", "planCompiledProducts"],
+          "lane": "formal",
+          "disposition": "not-wired",
+          "lines": "66-145",
+          "note": "正式 allowlist 无 service-dsl；只在批准独立 producer 时由集成者修改 allowlist"
+        },
+        {
+          "file": "generators/scala-cqrs-domain/generate.mjs",
+          "symbols": ["producerRegistry", "generate"],
+          "lane": "formal",
+          "disposition": "not-wired",
+          "lines": "1-20",
+          "note": "仅 aggregate/command/invariant/valueobject/proto/converter，无独立领域服务"
+        },
+        {
+          "file": "generators/scala-cqrs-domain/produce-v2.mjs",
+          "symbols": ["producerRegistryV2"],
+          "lane": "formal",
+          "disposition": "not-wired",
+          "lines": "10-17",
+          "note": "command-dsl 调用 renderCommand，而不是 emitDomainService"
+        },
+        {
+          "file": "generators/scala-cqrs-application/produce.mjs",
+          "symbols": ["applicationRegistry"],
+          "lane": "formal",
+          "disposition": "not-wired",
+          "lines": "17-30",
+          "note": "version=2 的正式应用闭包继承 renderCommand 的 Computations/emit helper"
+        },
+        {
+          "file": "generators/scala-cqrs-application/produce-effect.mjs",
+          "symbols": ["createEffectRegistry"],
+          "lane": "formal",
+          "disposition": "reuse",
+          "lines": "6-26",
+          "note": "明确追踪 Play 到 applicationRegistry 的调用，不据目录推断"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/generate.mjs",
+          "symbols": ["inherited", "registry", "generate"],
+          "lane": "formal",
+          "disposition": "not-wired",
+          "lines": "16-24,59-70",
+          "note": "替换 aggregate/invariant renderer，保留 command producer；本族独立 MBT 仍缺"
+        },
+        {
+          "file": "generators/scala-cqrs-domain/render-domain.mjs",
+          "symbols": ["renderCommand", "renderInvariant"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "20-56,57-133",
+          "note": "混合 Protocol/Computations/emit*/ExternalEvents；本族只记录关联，不拥有整个文件；拆分由集成者单 owner 装配"
+        },
+        {
+          "file": "generators/scala-cqrs-domain-kernel-v1/generate.mjs",
+          "symbols": ["generate"],
+          "lane": "family",
+          "disposition": "not-wired",
+          "lines": "12-26",
+          "note": "显式注册可调用的 family profile，不是 domain-service 生产者"
+        },
+        {
+          "file": "generators/scala-cqrs-domain-kernel-v1/build-models.mjs",
+          "symbols": ["buildModels", "computations.methods"],
+          "lane": "family",
+          "disposition": "not-wired",
+          "lines": "271-310",
+          "note": "inputDependencies 驱动参数，保存 host identity/version/source；没有逻辑体或 DomainService marker"
+        },
+        {
+          "file": "generators/scala-cqrs-domain-kernel-v1/templates/params.mjs",
+          "symbols": ["computationsTemplate", "paramsTemplate"],
+          "lane": "family",
+          "disposition": "not-wired",
+          "lines": "3-33",
+          "note": "抽象 Computations trait 与 RuleParams，不是 marker object"
+        },
+        {
+          "file": "generators/scala-cqrs-domain-kernel-v1/render.mjs",
+          "symbols": ["productionJobs", "renderJobs", "render"],
+          "lane": "family",
+          "disposition": "reuse",
+          "lines": "18-85",
+          "note": "借鉴来源/依赖和唯一文件作业装配，不据此声称本族实现"
+        },
+        {
+          "file": "lib/scala-target/naming.mjs",
+          "symbols": ["resolveName", "resolveNameSet", "resolveArtifactPath"],
+          "lane": "family",
+          "disposition": "reuse",
+          "lines": "26-118",
+          "note": "共享 owner 固定与 BC getBaseName 的兼容合同；重复 affix 在此是报错而非自动剥离"
+        },
+        {
+          "file": "src/core/generate.mjs",
+          "symbols": ["prepareEntries", "anchorInputs", "applyEntries"],
+          "lane": "formal",
+          "disposition": "reuse",
+          "lines": "91-105,134-232,246-268",
+          "note": "唯一最终字节写入口；写 source、truthsrc.ledger.json、anchors.json；本族不得自建旁路"
+        }
+      ],
+      "writeSet": [
+        "generators/service-dsl/model/domain-service.mjs",
+        "generators/service-dsl/builder/domain-service.mjs",
+        "generators/service-dsl/templates/domain-service.mjs",
+        "generators/service-dsl/produce-domain.mjs"
+      ],
+      "writeSetStatus": "全部 proposed，另行批准后才允许实施；本阶段零生产写入",
+      "sharedWriteSetConditional": [
+        "generators/service-dsl/emit.mjs",
+        "generators/service-dsl/generator.json",
+        "generators/service-dsl/parse.mjs",
+        "generators/scala-cqrs-domain/produce-v2.mjs",
+        "generators/scala-cqrs-domain-v2/generator.json",
+        "generators/scala-cqrs-application/produce.mjs",
+        "generators/scala-cqrs-play-service/generate.mjs",
+        "generators/scala-cqrs-play-service/generator.json",
+        "lib/products/generate-cli.mjs",
+        "generators/run-all.mjs",
+        "generators/scala-cqrs-domain/render-domain.mjs"
+      ],
+      "sharedWriteSetOwner": "集成者；由 D01/D04 裁定最小必要修改，不是本族生产修改许可",
+      "sharedDependenciesOwner": "shared-layout-types / shared-writer-anchors 由集成者独占",
+      "dependsOn": [
+        "shared-layout-types",
+        "shared-product-admission",
+        "shared-writer-anchors",
+        "value-object",
+        "invariant-rule",
+        "application-protocol",
+        "command-helper",
+        "aggregate-behavior",
+        "runtime-glue-supply-decision"
+      ],
+      "assemblyOwners": [
+        {
+          "physicalOutput": "app/<base-as-path>/domain/services/<resolvedName>.scala",
+          "owner": "domain-service",
+          "rule": "一个 profile 每完整文件仅一个 source-entry producer；formal/legacy 不得竞写"
+        },
+        {
+          "physicalOutput": "app/example/bankwealth/domain/CreditBalanceCommandHelpers.scala",
+          "owner": "集成者",
+          "members": [
+            "文件来源头/package/imports",
+            "CreditBalanceComputations trait",
+            "CreditBalanceComputations companion",
+            "CreditBalanceCommandHelpers 七个 emit 方法"
+          ],
+          "rule": "本族只记录 host 近邻；与 command-helper/protocol/invariant 工作包共同审定拆分，不单独移动或删除"
+        },
+        {
+          "physicalOutput": "legacy app/<base-as-path>/domain/service/<port>.scala",
+          "owner": "集成者协调 legacy port owner",
+          "rule": "trait 与 optional Bridge 共一文件；不能自动替为 DomainService object"
+        }
+      ],
+      "glue": [
+        "net.imadz.common.CommonTypes.DomainService",
+        "net.imadz.common.CommonTypes.Id",
+        "net.imadz.common.CommonTypes.iMadzError",
+        "net.imadz.common.CborSerializable",
+        "scala.Predef.???",
+        "net.imadz.codegen.scaffolding.cqrs.TypeRef",
+        "net.imadz.codegen.scaffolding.cqrs.FieldDef",
+        "net.imadz.codegen.scaffolding.cqrs.TypeResolver",
+        "net.imadz.codegen.scaffolding.cqrs.TypeResolverDSL.domainService",
+        "net.imadz.codegen.structure.PackageLayout",
+        "net.imadz.codegen.structure.NamingConventions",
+        "net.imadz.codegen.scaffolding.cqrs.dsl.CodeGenerationDSL"
+      ],
+      "glueSupply": {
+        "declaredCoordinate": "net.imadz:common-core_2.13:0.2（BC scaffold 声明）",
+        "sourceEvidence": "baseline/common/src/main/scala/net/imadz/common/CommonTypes.scala#L7-L21",
+        "buildEvidence": "baseline/bc/scaffold/build.sbt#L127-L135",
+        "jarInspected": false,
+        "note": "scaffold 还涉及本地 CommonTypes 源；须确定唯一 classpath 提供方，不能凭 sibling 源码证明所消费 JAR 有 API"
+      },
+      "observedSources": [
+        {
+          "file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/domain/DomainServiceModel.scala",
+          "bytes": 851,
+          "sha256": "7c08069ebc3b805ffda7dd944ebd2785aaac679bbfc072c98724d1766f51da20",
+          "read": "full",
+          "role": "raw-scala-model"
+        },
+        {
+          "file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/domain/DomainServiceBuilder.scala",
+          "bytes": 1562,
+          "sha256": "cec8e30e2929b0d309eada8d8a06e3d75c8d70f861dbfe11110de400cf627f28",
+          "read": "full",
+          "role": "raw-scala-builder"
+        },
+        {
+          "file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainServiceTemplate.scala",
+          "bytes": 1712,
+          "sha256": "89d8e550a486ee75c5b3179076c080619f57e3e90d12ad080989e080de662584",
+          "read": "full",
+          "role": "raw-scala-template"
+        },
+        {
+          "file": "baseline/curated-scala/net/imadz/domain/services/TransferValidatorDomainService.scala",
+          "bytes": 742,
+          "sha256": "c6b0ebb6031cf30d0ee46ddfcbcc755d4801cdf600ae488fc343197292272c85",
+          "read": "full",
+          "role": "curated-not-template-execution"
+        },
+        {
+          "file": "baseline/js/generators/service-dsl/emit.mjs",
+          "bytes": 10903,
+          "sha256": "b9a2989d7e6573747d628b16f9fb31d46abed4a3c2ec37c91d333d1f8844e069",
+          "read": "full",
+          "role": "legacy-renderer-with-separate-domain-and-port-branches"
+        },
+        {
+          "file": "baseline/js/generators/run-all.mjs",
+          "bytes": 117473,
+          "sha256": "8e6534b94d13415ff67fc41431939374d28e8077c1a9e61a51b71fe421ae0f62",
+          "read": "bounded sections 1-84,405-511,1773-1807 and targeted symbol search",
+          "role": "legacy-caller-actually-selects-port"
+        },
+        {
+          "file": "baseline/js/generators/scala-cqrs-domain/render-domain.mjs",
+          "bytes": 12461,
+          "sha256": "98181f044826dd2e45ec4179f030a2de2a47326601f3af9a153df2d96dc09e43",
+          "read": "full",
+          "role": "formal-neighbor-not-service-object"
+        },
+        {
+          "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/params.mjs",
+          "bytes": 2075,
+          "sha256": "24699f49680c3e02cb4116909adfdad5fbce48df80932554916508aba6da2d65",
+          "read": "full",
+          "role": "family-computation-port-not-service-object"
+        },
+        {
+          "file": "baseline/js/lib/products/generate-cli.mjs",
+          "bytes": 11644,
+          "sha256": "4b255346896f8f27534a90ed338d078b568c6f9d5a56a8b80f6e782001dd12f6",
+          "read": "full",
+          "role": "registered-routes-and-cli-side-effects"
+        },
+        {
+          "file": "baseline/actual-js/app/example/bankwealth/domain/CreditBalanceCommandHelpers.scala",
+          "bytes": 2124,
+          "sha256": "2ca13177769ec883420e90770ef16a8cdb68188311c4f31d6777fe6a80342203",
+          "read": "full",
+          "role": "existing-bank-composite-not-same-input-counterpart"
+        }
+      ],
+      "coverage": {
+        "model": "4 个主字段、4 个方法字段、6 个 FieldDef 字段、TypeRef 与 ArtifactModel 默认/派生成员逐项登记",
+        "builder": "B01-B08；logic Left/Right+Some/Right+None；类型解析委托、未消费字段与未实现 fallback",
+        "template": "T01-T11；package/import/object/方法全循环、完整注释和 ??? RHS、文件分段/尾换行/后置来源头",
+        "curated": "完整 validate 四分支；与 Examples referenceCode 的拒绝顺序和错误表示差异单列",
+        "actualBank": "完整文件；三 host 抽象方法、空 companion、七 emit RHS 及共用 imports/header",
+        "limits": "没有 fresh same-input raw/JS/expected 输出；未据文档存在作实现或行为认证"
+      },
+      "proposedFixtures": [
+        "transfer-validator",
+        "logic-slots",
+        "signature-order",
+        "input-loss-negative",
+        "names-and-paths",
+        "host-port-not-service"
+      ],
+      "cliContract": {
+        "legacy": "node /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/generators/service-dsl/emit.mjs <explicit-spec.json> <owned-directory>",
+        "formal": "node /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/bin/truthsrc.js generate-products --request <absolute-request.json> --generator /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/generators/scala-cqrs-domain-v2 --out <absolute-owned-new-target> --options-json <absolute-options.json> --plan",
+        "bc": "sbt -Dcodegen.systemFile=<absolute-bc-canonical.json> -Dcodegen.systemBindings=<absolute-bc-bindings.json> -Dcodegen.targetDir=<absolute-owned-new-target> -Dcodegen.ledger=<absolute-owned-ledger.json> \"runMain net.imadz.codegen.CodegenMain\"",
+        "scope": "服务及类型依赖最小输入；当前无专属 artifact flag；formal producer/input 及 BC file-adapter 承载能力尚未裁定",
+        "concreteProposedPaths": "见 diff §9.2-9.4；fixture 和目标目录本次均未创建",
+        "sideEffects": [
+          "legacy emitter 直接 mkdir/write source，不写 shared ledger/anchors，不具有 formal 所有权保证",
+          "formal --plan 捕获输入/manifest/options 并内存编译产品图和渲染，不 apply；不是 writer 完整预检",
+          "formal 去掉 --plan 可写 source、truthsrc.ledger.json、anchors.json，并读取已有目标进行策略合并",
+          "BC sbt/JVM 可写构建与依赖缓存、目标 scaffold/各层文件、ledger、knowledge manifest 和 formal-semantics.json，可能解析下载依赖",
+          "不允许通过 run-all 全项目生成或 Examples 全量生成冒充本族 scoped capture"
+        ],
+        "executed": false
+      },
+      "complexity": {
+        "status": "not-measured",
+        "ordinaryMethodGoal": "McCabe CC <=5",
+        "exceptions": "6-10逐方法说明；>10重构或逐方法明确批准；工具/版本/语法口径待固定"
+      },
+      "openDecisions": [
+        "D01：正式 versioned product 如何承载 service/method/TypeRef/logic/source，以及接 domain-v2/Play 还是独立 family；当前 formal counterpart missing。",
+        "D02：raw 注释+??? 的受保护业务实现方式；TransferValidator 的 Examples/curated 错误表示和重叠失败优先级选择。",
+        "D03：optional/optionalWhen、isPrivate、描述和 parameter noteId 的未消费输入采用 raw 保留、拒绝还是显式扩展，不能无声丢失。",
+        "D04：formal Computations、family inputDependencies port、legacy trait/Bridge 与独立领域服务的归属、纯参数适配和外置实现所有权。",
+        "D05：multi 的 app fallback 是否移 kernel，以及 DomainService/Id/iMadzError 唯一 source/JAR 供给及实际版本。",
+        "D06：共享类型/命名/import 冲突、Tuple/未知 MetaRef/Any fallback、method keyword 和 logicCode 注释终止符策略。",
+        "D07：仅服务及类型的同等 fixture 如何走真实 BC/JS CLI，配套离线供给/runner/副作用范围，不能以全量 Examples 替代。"
+      ],
+      "extraSources": [
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/AGENTS.md#sha256=8bfd761390a6fc90b09663157f9d35b23c0c58b20c9f6a41dd5698450015d601"
+      ],
+      "extraSourcesNote": "仅额外仓库操作指引；实现源码均使用固定 baseline，未复制或修改任何源文件。",
+      "protocolProtection": [
+        "业务根只 domain/application/infrastructure；CommandHelper 在 application.aggregates.behaviors 且有三个方法",
+        "仅 application Actor command 按回复合同条件增加 typed replyTo；domain params/events 不含 ActorRef",
+        "失败不 persist；成功先应用事件再 thenReply 新 state；replyWith 不等于 replyWithAndPublish",
+        "不改 PB/PID/serializer/名义类型/溢出与稳定业务身份"
+      ],
+      "sameInputOutputsAvailable": false,
+      "baselineModified": false,
+      "productionSourcesModified": false,
+      "generatedOutputsModified": false,
+      "testsExecuted": false,
+      "compileExecuted": false,
+      "generationExecuted": false,
+      "sourceContentInspectionOnly": true
+    }
+  ],
+  "generatorsModified": false,
+  "runtimeExecuted": false
+}

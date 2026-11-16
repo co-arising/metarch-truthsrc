@@ -1,0 +1,25 @@
+# ═══ truthsrc atom — hand-editable; contract: SCHEMA.md ═══
+
+kind: aggregate
+name: Warehouse
+context: inventory
+order:
+  commands: ["ReserveSkuQuantity","CommitSkuReservation"]
+  events: ["SkuQuantityReserved","SkuReservationCommitted"]
+payload:
+  {
+    "name": "Warehouse",
+    "entity": "WarehouseEntity",
+    "identifier": {
+      "name": "id",
+      "dataType": "WarehouseId",
+      "origin": "BUSINESS_INPUT"
+    },
+    "stateFields": [
+      {
+        "name": "receipts",
+        "dataType": "Map[TxId, String]",
+        "default": []
+      }
+    ]
+  }

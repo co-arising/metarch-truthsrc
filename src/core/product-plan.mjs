@@ -3,6 +3,7 @@ import { compileProductSet } from '../../lib/products/compile.mjs';
 import { at, detach, equal, fail, object, ProductError, text, unique } from '../../lib/products/request.mjs';
 import { PRODUCT_SET, COMPILER, profileFor } from '../../lib/products/registry.mjs';
 import { validateCodeMappings } from './code-mappings.mjs';
+import { isClassicScaffoldManifest, preservesClassicPlaceholders } from '../../lib/classic-architecture/target.mjs';
 
 const VERSION = 'truthsrc.product-generator/v1';
 const entryKeys = ['path', 'content', 'kind', 'deps', 'knowledgeIds', 'productFootprint', 'merge', 'codeMappings'];
@@ -37,7 +38,7 @@ function path(value) {
   if (['truthsrc.ledger.json', 'anchors.json'].includes(value)) fail('PRODUCT_PATH', 'source path collides with an apply receipt', at('entries'));
   return value;
 }
-function validateEntries(raw, producer, products) {
+function validateEntries(raw, producer, products, preservePlaceholders = false) {
   const entries = detach(raw);
   if (!Array.isArray(entries)) fail('PRODUCT_ENTRY', 'producer must return source entries', at('entries'));
   for (const entry of entries) {
@@ -51,7 +52,7 @@ function validateEntries(raw, producer, products) {
     catch (error) { fail('PRODUCT_ENTRY_MAPPING', error.message, at('entries')); }
     if (!entry.knowledgeIds.length || entry.merge !== null) fail('PRODUCT_ENTRY', 'source ownership and explicit default MANUAL merge policy required', at('entries'));
     if (!equal(entry.productFootprint, producer.products.map(id => ({ id, version: products.find(p => p.id === id).version })))) fail('PRODUCT_ENTRY', 'entire declared product footprint required', at('entries'));
-    if (/\?\?\?/u.test(entry.content)) fail('PRODUCT_ENTRY', 'declared source profile cannot contain unimplemented placeholders', at('entries'));
+    if (!preservePlaceholders && /\?\?\?/u.test(entry.content)) fail('PRODUCT_ENTRY', 'declared source profile cannot contain unimplemented placeholders', at('entries'));
   }
   const keys = entries.map(e => e.path.normalize('NFC').toLowerCase()); unique(keys, 'PRODUCT_PATH_ALIAS', at('entries'));
   return entries;
@@ -87,8 +88,9 @@ export function planProductSet({ compilation, manifest: rawManifest, options = {
     for (const producer of m.producers) {
       const implementation = producerRegistry?.[producer.id];
       if (!implementation || implementation.version !== producer.version || typeof implementation.produce !== 'function') fail('PRODUCT_PRODUCER', 'exact trusted producer implementation is required');
-      const first = validateEntries(implementation.produce(restricted(products, producer, o)), producer, products);
-      const second = validateEntries(implementation.produce(restricted(products, producer, o)), producer, products);
+      const preservePlaceholders = preservesClassicPlaceholders(m, implementation, products);
+      const first = validateEntries(implementation.produce(restricted(products, producer, o)), producer, products, preservePlaceholders);
+      const second = validateEntries(implementation.produce(restricted(products, producer, o)), producer, products, preservePlaceholders);
       if (!equal(first, second)) fail('PRODUCT_NONDETERMINISTIC', 'two independently detached source plans differ');
       entries.push(...first);
     }
@@ -96,7 +98,9 @@ export function planProductSet({ compilation, manifest: rawManifest, options = {
     const paths = new Set(entries.map(e => e.path));
     if (entries.some(e => e.deps.some(p => !paths.has(p)))) fail('PRODUCT_ENTRY_DEPENDENCY', 'all source entry dependencies must be generated in the same complete plan');
     return copyImmutableData({ plan: { schemaVersion: 'truthsrc.source-product-plan/v1', generator: { id: m.name, version: m.version },
-      targetProfile: m.targetProfile, manifest: m, entries: [...entries].sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0) }, diagnostics: [] });
+      targetProfile: m.targetProfile, manifest: m,
+      ...(isClassicScaffoldManifest(m) ? { readiness: { level: 'classic-scaffold-only', runnable: false } } : {}),
+      entries: [...entries].sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0) }, diagnostics: [] });
   } catch (error) {
     if (error instanceof ProductError) return copyImmutableData({ plan: null, diagnostics: [error.diagnostic] });
     if (error instanceof TypeError) return copyImmutableData({ plan: null, diagnostics: [{ code: 'PRODUCT_PRODUCER', message: 'producer violated the frozen source-plan boundary', source: at('producer'), related: [] }] });

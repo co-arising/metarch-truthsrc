@@ -1,0 +1,382 @@
+{
+  "group": "application-bootstrap",
+  "artifactIds": [
+    "application-bootstrap"
+  ],
+  "diffs": [
+    {
+      "artifactId": "application-bootstrap",
+      "file": "diffs/application-bootstrap.diff.md",
+      "status": "decision-required",
+      "scalaVariants": [
+        {
+          "id": "classic-empty-strict",
+          "condition": "传统 runCommon 到达 generateBootstraps 末尾且 strictEntries 为空；无条件构造一次总装配 Model。saga 注册按原顺序，非空时一个 engine，然后聚合、投影；scope 与 territorial writer 可阻止实际落盘。",
+          "outputPaths": [
+            "<target>/app/<base-path>/infrastructure/bootstrap/ApplicationBootstrap.scala"
+          ],
+          "plannedCardinality": 1,
+          "execution": "not-run"
+        },
+        {
+          "id": "strict-single",
+          "condition": "single-project，admitted strict plan 提供恰好一个 entry FQN；同一 class 追加 strictSagaCoordinator 和其后的 installEventSource。",
+          "outputPaths": [
+            "<target>/app/<base-path>/infrastructure/bootstrap/ApplicationBootstrap.scala"
+          ],
+          "plannedCardinality": 1,
+          "strictCoordinatorCount": 1,
+          "execution": "not-run"
+        },
+        {
+          "id": "strict-many",
+          "condition": "single-project，strictEntries.size=N>1；同一 class 顺序追加 strictSagaCoordinator0 至 strictSagaCoordinator(N-1)，每项 spawn 后立即 install；Builder 不去重。",
+          "outputPaths": [
+            "<target>/app/<base-path>/infrastructure/bootstrap/ApplicationBootstrap.scala"
+          ],
+          "plannedCardinality": 1,
+          "strictCoordinatorCount": "N",
+          "execution": "not-run"
+        },
+        {
+          "id": "multi-project",
+          "condition": "codegen.multiProject=true；kind=bootstrap 路由到 glue；仍生成总装配，但 runCommon 强制 strictEntryFqns=Seq.empty。",
+          "outputPaths": [
+            "<target>/modules/glue/src/main/scala/<base-path>/infrastructure/bootstrap/ApplicationBootstrap.scala"
+          ],
+          "plannedCardinality": 1,
+          "strictWiring": "suppressed",
+          "execution": "not-run"
+        },
+        {
+          "id": "empty-traits",
+          "condition": "aggregates、classic sagas、projections 均为空；strictEntries 不贡献 traits；raw 仍发 extends 后空串，产生非法 extends 子句。拒绝、抑制或省略 extends 待 D3 裁定。",
+          "outputPaths": [
+            "<target>/app/<base-path>/infrastructure/bootstrap/ApplicationBootstrap.scala",
+            "<target>/modules/glue/src/main/scala/<base-path>/infrastructure/bootstrap/ApplicationBootstrap.scala"
+          ],
+          "plannedCardinality": 1,
+          "status": "decision-required",
+          "execution": "not-run"
+        }
+      ],
+      "scalaSources": [
+        {
+          "role": "model",
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/bootstrap/ApplicationBootstrapModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/bootstrap/ApplicationBootstrapModel.scala",
+          "lines": "1-19",
+          "bytes": 1344,
+          "sha256": "50577fb1569708125144d23bfec3c1cd27b7476ce34dd1a6487f5a6f62368956",
+          "read": "full"
+        },
+        {
+          "role": "builder",
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/bootstrap/ApplicationBootstrapBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/bootstrap/ApplicationBootstrapBuilder.scala",
+          "lines": "1-135",
+          "bytes": 5024,
+          "sha256": "feb954ccf8c64e51b97c04291f5e6a2a30e6431c3588afa3c678d4a7f2fc9ca4",
+          "read": "full"
+        },
+        {
+          "role": "template",
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/bootstsrap/ApplicationBootstrapTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/bootstsrap/ApplicationBootstrapTemplate.scala",
+          "lines": "1-93",
+          "bytes": 3303,
+          "sha256": "532ee3182f6821420ae0eb6c1dd4373aca2b7be7087ebbd306721ae25842946f",
+          "read": "full"
+        }
+      ],
+      "jsSources": [
+        {
+          "file": "lib/products/generate-cli.mjs",
+          "symbols": [
+            "registeredProductProducer",
+            "generateProductCli",
+            "planCompiledProducts",
+            "implementationProducers"
+          ],
+          "lane": "formal",
+          "disposition": "reuse",
+          "lines": "45-145",
+          "note": "显式注册 play-service 与独立 family producer；legacy bootstrap-dsl 不在 formal 注册表。"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/generate.mjs",
+          "symbols": [
+            "registry.play-service-dsl.produce",
+            "generate"
+          ],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "59-70",
+          "note": "唯一集成者接入拟新增本族 renderer，不得遗漏原 service/readside/test/config entries。"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/render-service.mjs",
+          "symbols": [
+            "serviceSelection",
+            "renderService",
+            "renderService.startup",
+            "renderService.startupPath"
+          ],
+          "lane": "formal",
+          "disposition": "replace",
+          "lines": "5-31,79-92,101-119,164-204",
+          "sha256": "c8d92119b3e98dc868ea7bc17b018fef4372f24621206d2d00d1af365de160de",
+          "note": "只替换 ApplicationBootstrap.scala 的职责占用；原 load、pin 检查和关闭行为必须 split/move 到 service composition，不删除。"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/render-service-pages.mjs",
+          "symbols": [
+            "renderPageLoader"
+          ],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "20-52",
+          "note": "pages Loader 同样调用 ApplicationBootstrap.load，需同步迁移并保留 stop hook。"
+        },
+        {
+          "file": "generators/scala-cqrs-domain/naming.mjs",
+          "symbols": [
+            "packageFor",
+            "pathFor",
+            "entry"
+          ],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "6-31",
+          "note": "当前固定 scala-cqrs-domain:1 头不能证明 producer 身份；最终文件路径、来源与字节 spans 由共享 writer 处理。"
+        },
+        {
+          "file": "generators/bootstrap-dsl/emit.mjs",
+          "symbols": [
+            "emitApplicationBootstrap"
+          ],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "lines": "259-363",
+          "sha256": "ec3f06fa358b3ede2e98a660ba485228e09c4de26577db6b1f98fa8bd83dbb3a",
+          "note": "有 class/注入/init/strict 循环；formal 未调用；不得 import 有顶层 I/O 的 emitter 来复用。"
+        },
+        {
+          "file": "generators/run-all.mjs",
+          "symbols": [
+            "bootstrap-dsl dispatch block",
+            "appSpec"
+          ],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "lines": "1880-2030",
+          "note": "真实落 spec 后 execSync emitter；有 PHASE1 corpus tables、PauseProject 排除和 strictEntries 映射，不能推广为银行语义。"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es/builders/bootstrap.mjs",
+          "symbols": [
+            "applicationBootstrapModel",
+            "portFacesOf"
+          ],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "lines": "14-28,133-181",
+          "sha256": "3746535e4feb3c866abc5e6fefa1f18962a74352a477ce11fe55bcbe2c393500",
+          "note": "legacy core 可尝试动态加载，不因目录名断言不可达；固定 metarch package、字符串字段、无 classic saga/strict，不批准复活。"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es/templates/persistence.mjs",
+          "symbols": [
+            "renderApplicationBootstrap"
+          ],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "lines": "67-73",
+          "sha256": "ba8d292e09fcb121fd6b4da9e9e0e58642d9d72b4894534728478f4918fe1f01"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es/generate.mjs",
+          "symbols": [
+            "generate"
+          ],
+          "lane": "legacy",
+          "disposition": "not-wired",
+          "lines": "16,23,171-176",
+          "note": "真实 applicationBootstrapModel -> renderApplicationBootstrap -> entry；kind application-bootstrap 与 BC bootstrap/global 不同。"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/build-models.mjs",
+          "symbols": [
+            "buildModels",
+            "roles",
+            "resolveApplicationTarget"
+          ],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "9-116",
+          "sha256": "3588e1ac7cfb6ea5c9f0a180acd4446c9196556bd42a4c87b41e78454b6091e5",
+          "note": "独立 family owner 的三层迁移依赖；root composition 与 BC glue bootstrap 的物理/语义路由不同，不是本族现成对应。"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/generate.mjs",
+          "symbols": [
+            "generate"
+          ],
+          "lane": "family",
+          "disposition": "reuse",
+          "lines": "10-40",
+          "note": "exact ten-product closure、implementation capture 和 manifest admission；不切换银行默认 producer。"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/render.mjs",
+          "symbols": [
+            "render"
+          ],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "16-47",
+          "note": "family owner 保留 application-root/settings/lifecycle/components/loader 的独立输出与 directDeps。"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/templates/application.mjs",
+          "symbols": [
+            "settingsTemplate",
+            "applicationTemplate",
+            "closeReportTemplate"
+          ],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "3-159",
+          "sha256": "646169495ae5016a4bab809a7d85929d9b541a51d3abca4dfcdddcac7a21d095",
+          "note": "本地 ActorSystem/H2/LevelDB 和 ready/admit/close 不得用作银行传统 sharding 装配的无条件替换。"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/templates/loader.mjs",
+          "symbols": [
+            "loaderTemplate",
+            "componentsTemplate",
+            "configTemplate"
+          ],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "3-73",
+          "sha256": "abc95ad5d5bf341e6b8931881561c783b5200021d2f0acb8d08a145f1cec0c99",
+          "note": "family 独立关闭协议与明确 implementation symbols 仅作依赖合同，不在本族复制。"
+        }
+      ],
+      "writeSet": [
+        "generators/scala-cqrs-play-service/models/application-bootstrap.mjs",
+        "generators/scala-cqrs-play-service/build-application-bootstrap.mjs",
+        "generators/scala-cqrs-play-service/templates/application-bootstrap.mjs",
+        "generators/scala-cqrs-play-service/render-application-bootstrap.mjs",
+        "generators/scala-cqrs-play-service/render-service.mjs",
+        "generators/scala-cqrs-play-service/generate.mjs",
+        "generators/scala-cqrs-play-service/generator.json",
+        "generators/scala-cqrs-play-service/render-service-pages.mjs"
+      ],
+      "writeSetScope": "以上是下一阶段拟实施集合，不是当前写授权。前四个路径为 proposed；其余共享文件由 application-assembly-integrator 单一写者集成。",
+      "proposedFiles": [
+        "generators/scala-cqrs-play-service/models/application-bootstrap.mjs",
+        "generators/scala-cqrs-play-service/build-application-bootstrap.mjs",
+        "generators/scala-cqrs-play-service/templates/application-bootstrap.mjs",
+        "generators/scala-cqrs-play-service/render-application-bootstrap.mjs"
+      ],
+      "assemblyOwner": "application-assembly-integrator",
+      "dependsOn": [
+        "shared-layout-types",
+        "shared-naming",
+        "shared-writer-anchors",
+        "bootstrap",
+        "saga-context",
+        "saga-definition",
+        "saga-participant",
+        "aggregate-repository-port",
+        "projection-repository-port",
+        "service-composition",
+        "family-application-composition"
+      ],
+      "conflictsWith": [
+        "bootstrap owner 不得同时写 ApplicationBootstrap.scala 的组装入口",
+        "service/API owner 与本族共享 render-service.mjs，由集成者单写",
+        "pages owner 与服务装配共享 loader 调用迁移，由集成者单写",
+        "family owner 的 composition/lifecycle 不是银行 formal 默认切换范围"
+      ],
+      "glue": [
+        "akka.actor.ActorSystem",
+        "akka.actor.typed.ActorSystem",
+        "akka.actor.typed.scaladsl.adapter._",
+        "akka.actor.ExtendedActorSystem",
+        "akka.cluster.sharding.typed.scaladsl.ClusterSharding",
+        "javax.inject.Inject",
+        "javax.inject.Singleton",
+        "com.google.inject.AbstractModule",
+        "com.google.inject.Provides",
+        "scala.concurrent.ExecutionContext",
+        "akka.actor.typed.Scheduler",
+        "net.imadz.infra.saga.StepExecutor",
+        "net.imadz.infra.saga.SagaTransactionCoordinator",
+        "net.imadz.infra.saga.strict.StrictSagaCoordinator.Command",
+        "akka.actor.typed.ActorRef",
+        "akka.stream.UniqueKillSwitch",
+        "play.api.Application",
+        "play.api.ApplicationLoader",
+        "scala.util.control.NonFatal"
+      ],
+      "parameterizedGlue": [
+        "<base>.infrastructure.bootstrap.<AggregateBase>Bootstrap.init<AggregateName>(sharding)",
+        "<base>.infrastructure.bootstrap.<SagaName>Bootstrap.init<SagaName>(ec, system.scheduler)",
+        "<base>.infrastructure.bootstrap.SagaTransactionCoordinatorBootstrap.initSagaEngine[C](sharding, context, system, globalTimeout=5.minutes)",
+        "<base>.infrastructure.bootstrap.<ProjectionBase>Bootstrap.init<ProjectionBase>Projection(system, sharding, repository)",
+        "<entryFqn>.spawnClusterSingleton(system, sharding, reconcileToken)(implicit ec)",
+        "<entryFqn>.installEventSource(system, sharding, coordinator)(implicit ec)"
+      ],
+      "sourceContentEvidence": {
+        "modelFields": "M1-M7，包含 TypeRef、FieldDef 与 ArtifactModel 默认成员",
+        "builderRules": "B1-B12，覆盖每个循环、非空分支、head/get/throw、命名、依赖并集及 noteIds 默认",
+        "templateConstructs": "T1-T9，覆盖 package/imports/class/constructor/traits/implicit vals/initCalls/strict val+install/输出格式与 writer 边界",
+        "actualJsConstructs": "S1-S8，完整银行文件与所有 load RHS、try 边界、失败关闭次序和调用方",
+        "fullModelBuilderTemplateIncluded": true,
+        "comparison": "structural-not-same-input",
+        "freshRawScalaOutput": false,
+        "freshJsOutput": false,
+        "targetExample": "aggregate-only 单切片，非完整银行替换文件",
+        "curatedReference": "人工参考独立对账，注册/聚合/engine 顺序与 raw 不同",
+        "libraryAbiVerified": false,
+        "complexity": "not-measured",
+        "ccGoal": "普通函数/方法 <=5；6-10 逐方法解释；>10 重构或具体例外审批"
+      },
+      "openDecisions": [
+        "D1：选择传统 class/mixin 总装配与当前 object.load/Factory/Composition/object.create 的 ABI 和唯一构造 owner；保留 hosts、已有 ActorSystem 与 persistenceId，不能重复初始化或将 object 当 trait。",
+        "D2：裁定多 classic saga 的 first-saga/first-participant 单仓储 context、缺省 context resolver 与 inline name 分歧，以及 raw engine-before-aggregate 和人工 aggregate-before-engine 的顺序。",
+        "D3：空 traits 或 strict-only 输入应拒绝、抑制还是发无 extends 的合法 class；必须作为 raw 缺陷的显式目标差异。",
+        "D4：明确 strict kill switch 所有权和 partial startup 清理；保留或批准修正 factory/create 在 try 外、stop Future 未等待、close 遮盖异常的当前行为。",
+        "D5：确定泛型 signature/递归依赖、同短名 repo 参数冲突、aggregate 两种基名算法以及 FieldDef default/comment/noteId/description 的支持或拒绝范围。",
+        "D6：固定 formal 产品/技术绑定到有序 aggregates/sagas/projections/context/repository/strict entries 的映射，以及 service producer 增版或显式 profile；当前 CLI 不会自动发传统总装配。",
+        "D7：裁定真实来源并集、同包 trait directDeps、raw noteIds 注释与 Nil 实现分歧，以及旧路径受控退役和最终字节回锚迁移。",
+        "D8：核定实际 Guice/Inject、classic/strict Saga 及 repository ABI 和依赖 pin；scaffold 0.2、候选 JAR 与 formal pinned 0.3.0 不能仅凭 sibling 源码视为兼容。",
+        "D9：固定同输入 fixture 适配、共享 TypeRef/layout/writer 接口、实际编译/行为 suite selector、复杂度工具及口径；当前均未运行，不虚构测试类或 artifact flag。"
+      ],
+      "extraSources": [
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/project/implementation-evidence.mjs | sha256=da6889091818f35bac0e3a62e04a862ee4268fef6f7b94cad6fed80cb637aa76 | bytes=2794 | 当前工作副本，未复制或修改",
+        "/Users/zhongdj/Workspaces/mad-polaris/CLAUDE.md | sha256=d820979410916e446a0d4559fa8d3ca654468dab7459529fd919e49b38cb0ff3 | 工作区指引",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/AGENTS.md | sha256=8bfd761390a6fc90b09663157f9d35b23c0c58b20c9f6a41dd5698450015d601 | 仓库指引"
+      ]
+    }
+  ],
+  "sourceHeads": {
+    "js": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+    "bc": "cc335eb1e0d0fae17bf092fd61b126040196ea70"
+  },
+  "currentWrittenFiles": [
+    "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/application-bootstrap.diff.md",
+    "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/details/application-bootstrap.json"
+  ],
+  "generatorsModified": false,
+  "runtimeExecuted": false,
+  "testsExecuted": false,
+  "compilationExecuted": false,
+  "generationExecuted": false,
+  "truthModified": false,
+  "baselineModified": false,
+  "gitWrites": false
+}

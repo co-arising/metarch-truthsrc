@@ -11,3 +11,8 @@ canonical.json
 /project/target
 /.rounds
 /.truthsrc/
+
+# Keep local parity runtime evidence and sensitive historical snapshots out of commits.
+/docs/codegen-parity/.rounds/
+/docs/codegen-parity/baseline/js/generators/scaffold-static/application.conf
+/docs/codegen-parity/baseline/js/generators/scala-cqrs-application/render-host-verification.mjs

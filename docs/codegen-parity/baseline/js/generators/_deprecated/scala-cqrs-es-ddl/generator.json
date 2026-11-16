@@ -1,0 +1,17 @@
+{
+  "name": "scala-cqrs-es-ddl",
+  "inputSchema": "truthsrc/v0.3",
+  "products": [
+    "readmodels"
+  ],
+  "artifactKinds": [
+    "projection-ddl",
+    "vector-ddl"
+  ],
+  "output": {
+    "language": "sql",
+    "layout": "di-poc-modules"
+  },
+  "options": {},
+  "description": "Projection DDL face (V4-14): the dual-dialect conf/sql emitter, ported from the production gen_projection_ddl.mjs. conf/sql/2.sql = the ③-layer-gated DecisionViews minus graph cards (S2-65: graph has no SQL dialect) and minus mongo document views (2026-10-08 redesign: collections via MongoViewStore.ensureCollections, old tables not dropped = rollback-safe), the deterministic type map (String→VARCHAR(255), Integer→INT, Long→BIGINT, Boolean→TINYINT(1), BigDecimal→DECIMAL(19,2), Instant→BIGINT epoch-milli, List<*>→JSON TEXT; description/content/info→TEXT, payloadJson→MEDIUMTEXT) and faithful key metadata as PRIMARY KEY (sorted key names). conf/sql/5-pgvector.sql = the M3 vector dialect over the ①-layer vectorViews slot (CREATE EXTENSION + per-view table with camel→snake columns + declaration-order composite PK + tenant index + HNSW index via the distance→ops map). Byte-identical to live; consumes the canonical augmented by tools/augment-api-canonical.mjs."
+}

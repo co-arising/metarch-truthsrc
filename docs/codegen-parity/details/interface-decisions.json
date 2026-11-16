@@ -1,0 +1,480 @@
+{
+  "documentKind": "codegen-parity-interface-decision-register",
+  "documentFormatVersion": 1,
+  "status": "documentation-specification-only",
+  "root": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity",
+  "document": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/INTERFACE-DECISIONS.md",
+  "documentSha256": "e04088bf5e0f7616ece1ff6af8675fb7002d29ecbd61d617abce5cfe0563197f",
+  "initialAuthorWriteScope": "仅本稿初次作者的文件分工，不代表整个会话授权范围；后续文档勘误由集成者在用户docs-only边界内协调",
+  "initialAuthorWriteFiles": [
+    "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/INTERFACE-DECISIONS.md",
+    "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/details/interface-decisions.json"
+  ],
+  "interpretation": {
+    "recordsAreDocumentationPseudotypes": true,
+    "recordsArePublicProductSchema": false,
+    "newPublicFunctionsDeclared": [],
+    "publicBusinessSchemaChanged": false,
+    "generatorModified": false,
+    "baselineModified": false,
+    "externalSourcesCopied": false,
+    "implementationAuthorized": false,
+    "runtimeExecuted": false,
+    "sameInputAcceptanceExecuted": false,
+    "actualExpectedGenerated": false,
+    "cc": "not-measured",
+    "ccToolVersionAndCountingConvention": "not-selected",
+    "admissionChecks": "prospective-evidence-contracts-not-executed",
+    "staticChecksBoundary": "仅文档JSON解析、链接/行号及选定来源指纹，不等于生成或运行验收",
+    "sourceIdentityRule": "固定文件SHA-256是本次引用的字节身份；recordedSourceHead只记录索引上下文，不断言当前工作树或发布JAR等于该HEAD"
+  },
+  "sources": [
+    {
+      "id": "U1",
+      "identity": "user-boundary-quotes-and-main-agent-delegation-separated",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/INTERFACE-DECISIONS.md",
+      "lines": [[5, 13]],
+      "bytes": 35977,
+      "sha256": "e04088bf5e0f7616ece1ff6af8675fb7002d29ecbd61d617abce5cfe0563197f"
+    },
+    {
+      "id": "S1",
+      "identity": "fixed-scala-source",
+      "repository": "backkend-codegen",
+      "originalRelativePath": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/TypeSystem.scala",
+      "recordedSourceHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/TypeSystem.scala",
+      "lines": [[4, 85]],
+      "bytes": 3316,
+      "sha256": "fa1e36ca6dfaf884304e8badefd5793f57cf61091fb5125326c3a9ab977d194a",
+      "pinIndex": {"file": "baseline/index.json", "lines": [175, 182]}
+    },
+    {
+      "id": "S2",
+      "identity": "fixed-scala-source",
+      "repository": "backkend-codegen",
+      "originalRelativePath": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/ArtifactModel.scala",
+      "recordedSourceHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/ArtifactModel.scala",
+      "lines": [[5, 47]],
+      "bytes": 2579,
+      "sha256": "4fc493f59773c90f3bd0a0e194eac3f4913d60d4e764f205845b5bea630a9cf0",
+      "pinIndex": {"file": "baseline/index.json", "lines": [63, 70]}
+    },
+    {
+      "id": "S3",
+      "identity": "fixed-js-source",
+      "repository": "metarch-truthsrc",
+      "originalRelativePath": "lib/scala-target/naming.mjs",
+      "recordedSourceHead": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/lib/scala-target/naming.mjs",
+      "lines": [[26, 118]],
+      "bytes": 7631,
+      "sha256": "5689c149de746f029b556a506ca9404ab9595fdea1be0f83cd1ab72021c0ddd6",
+      "pinIndex": {"file": "baseline/index.json", "lines": [4927, 4934]}
+    },
+    {
+      "id": "S4",
+      "identity": "fixed-js-source",
+      "repository": "metarch-truthsrc",
+      "originalRelativePath": "lib/scala-target/profiles.mjs",
+      "recordedSourceHead": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/lib/scala-target/profiles.mjs",
+      "lines": [[4, 33]],
+      "bytes": 1701,
+      "sha256": "e9e18d487296abb8a4cc070227fecdf9f844c9a7f199cd9b3aa7cd747dab95b7",
+      "pinIndex": {"file": "baseline/index.json", "lines": [4935, 4942]}
+    },
+    {
+      "id": "S5",
+      "identity": "fixed-js-source",
+      "repository": "metarch-truthsrc",
+      "originalRelativePath": "lib/scala-target/model.mjs",
+      "recordedSourceHead": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/lib/scala-target/model.mjs",
+      "lines": [[9, 33], [46, 61], [99, 148], [151, 213]],
+      "bytes": 15971,
+      "sha256": "0a6e333ee4cdb666df3afc574d39f0975387b4e5fb3bc7e9402655339cfab44b",
+      "pinIndex": {"file": "baseline/index.json", "lines": [4919, 4926]}
+    },
+    {
+      "id": "S6",
+      "identity": "fixed-js-source",
+      "repository": "metarch-truthsrc",
+      "originalRelativePath": "src/core/product-plan.mjs",
+      "recordedSourceHead": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/src/core/product-plan.mjs",
+      "lines": [[8, 57], [70, 103]],
+      "bytes": 8772,
+      "sha256": "b67b68f75361914151d3c40263b2bce5db3bcad20ba9fc1daae6e1f43790d5c7",
+      "pinIndex": {"file": "baseline/index.json", "lines": [4983, 4990]}
+    },
+    {
+      "id": "S7",
+      "identity": "fixed-js-source",
+      "repository": "metarch-truthsrc",
+      "originalRelativePath": "src/core/generate.mjs",
+      "recordedSourceHead": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/src/core/generate.mjs",
+      "lines": [[89, 104], [115, 131], [134, 268]],
+      "bytes": 15602,
+      "sha256": "6a90185eb48eaa754dc57794c8bf02c5a518c5c3cb6d16e0ef8c336fcf59925c",
+      "pinIndex": {"file": "baseline/index.json", "lines": [4967, 4974]}
+    },
+    {
+      "id": "S8",
+      "identity": "supplemental-fixed-js-source-not-original-baseline",
+      "repository": "metarch-truthsrc",
+      "originalRelativePath": "src/core/code-mappings.mjs",
+      "recordedSourceHead": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/js/src/core/code-mappings.mjs",
+      "lines": [[1, 28]],
+      "bytes": 2028,
+      "sha256": "231c27fce2118a69aa5e67e5d688741da943c6f18167d9392175673583e37a1a",
+      "pinIndex": {"file": "supplemental/index.json", "lines": [8, 16]}
+    },
+    {
+      "id": "D1",
+      "identity": "existing-interface-specification-not-implementation",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/SHARED-SEAMS.md",
+      "lines": [[21, 152]],
+      "bytes": 13259,
+      "sha256": "7b05fff0252b62f89fe08bfe2d4081e92b2e16b7fe85a827a459cb2584ecd82c"
+    },
+    {
+      "id": "D2",
+      "identity": "recorded-user-quality-constraints-and-document-specification",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/layout-and-style.md",
+      "lines": [[14, 113], [150, 172]],
+      "bytes": 12934,
+      "sha256": "bc8d0f3325a0f67a7c23ff4af6bc5f5b9c23b6caaf8aa12d1f93189c7a911d13"
+    },
+    {
+      "id": "D3",
+      "identity": "existing-fixture-admission-specification-not-expected-bytes",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/FIXTURE-AND-EXPECTED-CONTRACT.md",
+      "lines": [[7, 50], [54, 80], [84, 115]],
+      "bytes": 9684,
+      "sha256": "cced314341408c7834bfdd8723aa55ac9ae39ea85c50e74a651b2052a7df2222"
+    },
+    {
+      "id": "D4",
+      "identity": "existing-document-authoring-contract",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/AUTHORING-CONTRACT.md",
+      "lines": [[3, 11], [20, 48], [73, 73]],
+      "bytes": 5941,
+      "sha256": "9c827000f1e864b6a86a04a855df4853a4457b854bd5b2f0bfff14b1ce9514a9"
+    },
+    {
+      "id": "D5",
+      "identity": "existing-proposed-owner-assignment-and-recorded-user-boundary",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/ASSIGNMENT-MAP.md",
+      "lines": [[9, 35]],
+      "bytes": 3455,
+      "sha256": "0134a2bd65ae4a2e13fcc966710de79384d15322eeeed504f530cc274ff00e1f",
+      "exclusion": "不继承缺稿计数，不把API转述作为发布字节调查"
+    },
+    {
+      "id": "D6",
+      "identity": "existing-partition-blocker-specification",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/js-partition.md",
+      "lines": [[84, 100]],
+      "bytes": 10995,
+      "sha256": "85e6a857879a51b0d9126a56c1f9403d34a3fe3b321d676c7895651117e51306"
+    },
+    {
+      "id": "D7",
+      "identity": "existing-target-ownership-proposal-not-executable-split",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/details/target-ownership-resolutions.md",
+      "lines": [[5, 7], [16, 20], [49, 59], [70, 85], [94, 118]],
+      "bytes": 14202,
+      "sha256": "52bb8c39b08942ae634b72b6b68429937e945be94e85e9d7aea14482c2daf7ef"
+    },
+    {
+      "id": "D8",
+      "identity": "user-relayed-unfinished-common-core-evolution-proposals-not-release-evidence",
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/COMMON-CORE-CONSUMPTION-HANDOFF.md",
+      "lines": [[1, 46]],
+      "bytes": 6437,
+      "sha256": "491805be5059b305a9c1c53b925c55e6ee849c7946b02ed251e88b891f506838",
+      "exclusion": "不是新版本已发布、已锁字节、已消费或本线发布授权的证明"
+    }
+  ],
+  "existingApiInventory": [
+    {"symbol": "TypeRef", "signature": "TypeRef(name: String, packageName: String, typeParams: Seq[TypeRef] = Nil)", "source": "S1", "lines": [4, 8]},
+    {"symbol": "TypeRef methods", "signature": "fqn: String; signature: String; collectAllDependencies: Set[TypeRef]; shouldImport(currentPackage: String): Boolean", "source": "S1", "lines": [9, 51]},
+    {"symbol": "FieldDef", "signature": "FieldDef(name: String, typeRef: TypeRef, defaultValue: Option[String] = None, comment: Option[String] = None, noteId: Option[String] = None, description: String = \"\")", "source": "S1", "lines": [76, 85]},
+    {"symbol": "ArtifactModel", "signature": "selfType: TypeRef; fqn: String; dependencies: Set[TypeRef]; registerTo(registry: ArtifactRegistry): ArtifactRegistry; morphisms: Seq[net.imadz.meta.MappingMorphism] = Nil; noteIds: Seq[String] = Nil", "source": "S2", "lines": [5, 47]},
+    {"symbol": "resolveName", "signature": "resolveName({profile, knowledgeId, scope, space, spelling, binding, prefix, suffix}) -> input members plus profile id, name, identifier", "source": "S3", "lines": [41, 82]},
+    {"symbol": "resolveNameSet", "signature": "resolveNameSet({profile, names, reserved}) -> ordered resolved names; names omit profile; reserved item={scope,space,name,reason}", "source": "S3", "lines": [87, 108]},
+    {"symbol": "resolveArtifactPath", "signature": "resolveArtifactPath({profile, module, packageName, typeName}) -> relative Scala path; module is module.id", "source": "S3", "lines": [111, 118]},
+    {"symbol": "targetProfile", "signature": "targetProfile(id) -> registered profile", "source": "S4", "lines": [30, 33]},
+    {"symbol": "buildTargetModel", "signature": "buildTargetModel(raw); raw keys=schemaVersion/profile/contexts/values/ports/components/bindings; only MODULAR_CANDIDATE", "source": "S5", "lines": [56, 61]},
+    {"symbol": "planProductSet", "signature": "planProductSet({compilation, manifest: rawManifest, options = {}}, producerRegistry) -> {plan,diagnostics}", "source": "S6", "lines": [70, 103]},
+    {"symbol": "validateCodeMappings", "signature": "validateCodeMappings(entry) -> codeMappings or []", "source": "S8", "lines": [8, 20]},
+    {"symbol": "finalMappingSpan", "signature": "finalMappingSpan(mapping, generated, finalBytes) -> {start,end,text} or null", "source": "S8", "lines": [22, 28]}
+  ],
+  "recordContracts": {
+    "scope": "拟定内部交接记录；不是新增公开API、可执行JS或公共产品schema",
+    "TypeRefDoc": {
+      "decision": "IF-02",
+      "form": ["named", "tuple", "parameter"],
+      "namedFields": {
+        "identity": "既有名义引用或明确技术符号身份；不得由目标源码名反推",
+        "name": "resolver返回的未转义完整类型名",
+        "packageName": "真实包名，不混入nested owner",
+        "owners": "按外到内排列的实际容器名[]，默认[]",
+        "typeParams": "有序TypeRefDoc[]，默认[]",
+        "definition": "generated(logicalOutputId,declarationKey) | supplied(fqn,supplyRef) | builtin"
+      },
+      "tupleFields": {"elements": "有序TypeRefDoc[]；首轮拟限2–22，不制造名义身份或FQN"},
+      "parameterFields": {"name": "已解析类型参数名", "declaringScope": "真实参数声明位置；不产生import；上下界留在族声明模型并收集依赖"},
+      "derivedOnly": ["fqn", "signature in file scope", "recursive dependencies"],
+      "additionalFamilyShapes": "继续沿该族固定模型合同，不能降级成任意源码字符串"
+    },
+    "FieldDefDoc": {
+      "decision": "IF-02",
+      "fields": [
+        {"name": "fieldKey", "type": "original field identity | scoped synthetic-role", "default": "required"},
+        {"name": "name", "type": "resolved member name", "default": "required"},
+        {"name": "typeRef", "type": "TypeRefDoc", "default": "required"},
+        {"name": "defaultValue", "type": "absent | structured(existingExpression,evidenceRef) | raw-reference(file,lines,sha256)", "default": "absent"},
+        {"name": "comment", "type": "Optional[String]", "default": "None"},
+        {"name": "noteId", "type": "Optional[existing knowledge ID]", "default": "None"},
+        {"name": "description", "type": "String", "default": ""},
+        {"name": "source", "type": "source locator | explicit synthetic reason", "default": "required"}
+      ],
+      "rawReferenceAdmission": "仅原Scala槽证据；须转已有结构表达或明确手写实现；无法转换则blocked，不创建raw-source产品入口",
+      "absenceSemantics": "absent、Scala None表达式、null不同；optional由typeRef表达"
+    },
+    "ArtifactModelDoc": {
+      "decision": "IF-02",
+      "requiredFields": ["artifactId", "logicalOutputId", "variantId", "selfType", "dependencies", "familyPayload"],
+      "selfType": "named TypeRefDoc",
+      "dependencies": "完整类型引用集合；import过滤后仍保留",
+      "orderedDefaultEmptyFields": ["fields", "nestedDeclarations", "morphisms", "noteIds"],
+      "fields": "有序FieldDefDoc[]",
+      "nestedDeclarations": "实际嵌套模型或声明引用[]",
+      "morphisms": "保留既有映射记录，不凭名字伪造codeMappings",
+      "noteIds": "既有知识ID[]",
+      "familyPayload": "该族固定Model/diff列出的结构字段，不是任意键袋或整文件content",
+      "nonTypeFiles": "routes/config/build不强加selfType，使用族模型和FileAssemblyInput"
+    },
+    "FileAssemblyInput": {
+      "decision": "IF-05",
+      "anonymousSignature": "FileAssemblyInput -> Either[带来源的阻断说明[], PlannedEntry]",
+      "fields": {
+        "path": "canonical relative path",
+        "profileSelection": "明确profile/variant及物理根",
+        "producer": "现有manifest准确id/version/声明",
+        "kind": "该producer已声明的一个artifact kind",
+        "packageName": "Scala文件真实包；非Scala按族合同",
+        "contributors": "ordered [{logicalOutputId,constructKey,declarationOwner,model,sourceEvidence}]",
+        "declarationOrder": "完整文件construct显式顺序",
+        "importDecisions": "IF-04文件作用域决议",
+        "generatedDependencyPaths": "同一完整plan实际生成的路径[]",
+        "knowledgeIds": "真实输入非空唯一ID[]",
+        "mappingIntents": "[{knowledgeKey,constructKey,scopeKey}]",
+        "layoutContract": "目标diff与有限覆盖定位"
+      },
+      "existingExitKeys": ["path", "content", "kind", "deps", "knowledgeIds", "productFootprint", "merge"],
+      "existingOptionalExitKeys": ["codeMappings"],
+      "merge": null,
+      "exitRules": "完整排版content；无???；完整有序producer产品footprint；不携带输入私有键；deps不能冒填JAR或外置实现路径"
+    },
+    "MethodSlot": {
+      "decision": "IF-07",
+      "fields": {
+        "slotKey": "(logicalOutputId,stable member identity)",
+        "declarationOwner": "one artifact owner",
+        "implementationOwner": "one business or adapter implementation owner",
+        "container": "actual declaration container reference",
+        "signature": "{name,typeParameters:ordered[{name,lowerBound?,upperBound?}],parameterLists:ordered[{mode:explicit|implicit,parameters:FieldDefDoc[]}],resultType:TypeRefDoc}",
+        "effectContract": "existing port effect and purity evidence",
+        "failureAndOrder": "rejection/error/event/effect-order contract",
+        "binding": "one supplied implementation identity/FQN and source locator, otherwise blocked",
+        "constructorLists": "actual ordered explicit/implicit dependency lists",
+        "oracleSource": "independent method-level use-case/BDD source, otherwise blocked"
+      },
+      "signaturePresentation": "def <name>[<given type parameters and bounds>](<first parameter list>)(<further or implicit parameters>): <actual result type>",
+      "existingSchemaDifference": "S5仅单parameters及result(effect,valueType)；多列表不冒充现有target-model输入",
+      "familyModifiers": "保留已存在的by-name/vararg等族修饰；缺语义不能伪装普通字段",
+      "bodyLaneProposal": "new classic prefers externally supplied handwritten implementation; existing MANUAL compatibility regions retain existing owner only"
+    },
+    "RetirementRow": {
+      "decision": "IF-10",
+      "fields": ["oldPath", "oldDeclarationOwner", "oldFqnsAndMembers", "newPathsAndDeclarations", "affectedCallersAndRegistrations", "oldOwnershipEvidence", "oldFingerprintEvidence", "stableIdentityDisposition", "knowledgeMappingDisposition", "disposition", "approvalEvidence"],
+      "stableIdentityDisposition": ["unchanged", "separately-blocked"],
+      "disposition": ["retain-for-compatibility", "candidate-replacement", "approved-retirement"],
+      "notALedgerSchemaChange": true
+    }
+  },
+  "decisions": [
+    {
+      "id": "IF-00",
+      "title": "写集合与供应边界",
+      "status": "user-required",
+      "documentLines": [40, 46],
+      "contract": "docs-only是用户边界；两新文档/不自行再派代理是本稿作者的初次分工，集成者可协调后续勘误。禁止生产/作者/生成/运行/Git写入；不补拷外部源码；peer正在占用则停止",
+      "sources": [{"source": "U1", "lines": [5, 13]}, {"source": "D4", "lines": [3, 11]}, {"source": "D5", "lines": [21, 35]}],
+      "affectedArtifacts": ["all A/B documentation"],
+      "owners": {"thisRound": "assigned document author coordinated by main-integrator", "futureSharedSourceSeams": "main-integrator", "logicalOutputAssembly": "preserve per-output target.assemblyOwner", "commonCoreEvolution": "common-core-post-validation"},
+      "invariants": ["documentation is not implementation approval", "no runtime/same-input/expected claims", "no overwrite of peer files"],
+      "admissionChecks": [{"check": "初次写前两路径不存在；后续勘误先核owner/字节；静态核文档写集合、JSON/链接/来源行与指纹", "evidenceScope": "documentation-only", "execution": "prospective contract; final static result belongs to delivery output"}]
+    },
+    {
+      "id": "IF-01",
+      "title": "现有API精确边界",
+      "status": "source-fact",
+      "documentLines": [48, 87],
+      "contract": "仅existingApiInventory为已存在签名；TypeRef无独立nested-owner字段；ArtifactModel.fqn与TypeRef空包处理不同；buildTargetModel仅candidate；两个profile approval均null",
+      "sources": [{"source": "S1", "lines": [4, 85]}, {"source": "S2", "lines": [5, 47]}, {"source": "S3", "lines": [41, 118]}, {"source": "S4", "lines": [4, 33]}, {"source": "S5", "lines": [56, 61]}, {"source": "S6", "lines": [70, 103]}, {"source": "S8", "lines": [8, 28]}],
+      "affectedArtifacts": ["all Scala type artifacts", "source product plans", "code mappings"],
+      "owners": {"existingApiIntegration": "main-integrator", "familyConsumers": "artifact owners"},
+      "invariants": ["draft records are not accepted current schema", "no new public export claimed", "fixed source difference is not asserted generated failure"],
+      "admissionChecks": [{"check": "逐调用核参数键、profile约束、返回形状及固定版本，特别核module是id而非对象", "execution": "not-run"}]
+    },
+    {
+      "id": "IF-02",
+      "title": "TypeRef FieldDef Model最小记录",
+      "status": "integrator-proposed",
+      "documentLines": [89, 109],
+      "contract": "采用recordContracts中的TypeRefDoc/FieldDefDoc/ArtifactModelDoc；类型身份与拼写/包/真实容器分离；保留有序字段、缺省与来源；族payload不装整文件",
+      "sources": [{"source": "S1", "lines": [4, 51]}, {"source": "S1", "lines": [76, 85]}, {"source": "S2", "lines": [9, 47]}, {"source": "D1", "lines": [52, 64]}, {"source": "D2", "lines": [77, 83]}, {"source": "D2", "lines": [166, 172]}, {"source": "D3", "lines": [28, 38]}, {"source": "D3", "lines": [57, 62]}],
+      "affectedArtifacts": ["value-object", "domain-entity", "event-handler", "invariant-rule", "application-protocol", "command-helper", "service/repository/connector families", "protobuf-schema", "proto-converter"],
+      "owners": {"recordSemantics": "main-integrator", "familyFields": "each artifact owner"},
+      "invariants": ["nominal identities remain distinct", "absent != Scala None expression != null", "nested events registered to actual owner", "no builder ledger/anchor writes", "raw-reference is evidence not arbitrary source input"],
+      "admissionChecks": [{"check": "F1字段逐项填记录并分raw/curated回复；F2四carrier保持名义差异；nested Event、tuple顺序、重复简名、两种默认逐项有预期", "execution": "not-run", "fixtureAvailability": "coverage required, not an assertion of executable fixtures"}]
+    },
+    {
+      "id": "IF-03",
+      "title": "名称与稳定身份",
+      "status": "user-required",
+      "documentLines": [111, 118],
+      "contract": "PascalCase类型/文件与lowerCamelCase成员，统一复用resolver；完整binding不加affix；稳定空间不能改名；Template不各自做后缀裁剪",
+      "sources": [{"source": "D2", "lines": [68, 75]}, {"source": "S3", "lines": [41, 74]}, {"source": "S3", "lines": [83, 118]}, {"source": "S4", "lines": [12, 26]}],
+      "affectedArtifacts": ["all A/B symbols, files and references"],
+      "owners": {"resolverAndReservedNames": "main-integrator", "businessSpellingAndScopes": "artifact owners"},
+      "invariants": ["knowledge/sql/protobuf/wire/persistence/operation/codec identities unchanged", "source rename cannot rewrite PID or manifest", "no file overwrite to resolve collision"],
+      "admissionChecks": [{"check": "保存完整文件resolver输入/结果；重复后缀、keyword、大小写碰撞和binding案例；源码改名后的稳定ID清单逐字不变", "execution": "not-run"}]
+    },
+    {
+      "id": "IF-04",
+      "title": "注册与imports的确定路线",
+      "status": "integrator-proposed",
+      "documentLines": [120, 133],
+      "contract": "实际声明注册一次；完整依赖先于import过滤；nested身份保留真实容器，A按目标/用户示例在无冲突时显式导入嵌套成员并用简名；仅歧义或该族明确要求保留Owner/FQN，不新增alias命名器；A按diff，B按三组确定排序",
+      "sources": [{"source": "S1", "lines": [31, 51]}, {"source": "S2", "lines": [18, 21]}, {"source": "D1", "lines": [54, 62]}, {"source": "D2", "lines": [77, 83]}],
+      "affectedArtifacts": ["IF-02 type-bearing families", "shared physical files", "protobuf-schema", "proto-converter"],
+      "owners": {"fileScopeResolution": "main-integrator", "referenceFacts": "artifact owners"},
+      "invariants": ["one real declaration owner", "imports do not erase dependency graph", "no fictitious EventFamily", "no blanket FQN/wildcard workaround"],
+      "admissionChecks": [{"check": "两包同名、同包、跨容器Event、泛型nested与RHS依赖产出依赖/声明/拼写/import四列表，无漏项或假owner", "execution": "not-run"}]
+    },
+    {
+      "id": "IF-05",
+      "title": "完整file assembler唯一owner",
+      "status": "integrator-proposed",
+      "documentLines": [135, 171],
+      "contract": "按FileAssemblyInput匿名交接；每canonical path沿用中央target.assemblyOwner组装一个完整entry；main-integrator只统一共享源写权/接线协调，不替换逐输出逻辑owner；族交结构而非可apply片段；出口仅既有键、merge=null、完整footprint、同plan deps、无???",
+      "sources": [{"source": "S5", "lines": [202, 213]}, {"source": "S6", "lines": [8, 8]}, {"source": "S6", "lines": [34, 57]}, {"source": "S6", "lines": [86, 99]}, {"source": "D1", "lines": [91, 116]}, {"source": "D5", "lines": [9, 23]}, {"source": "D7", "lines": [5, 7]}, {"source": "D7", "lines": [16, 20]}, {"source": "D7", "lines": [70, 85]}, {"source": "D7", "lines": [94, 118]}],
+      "affectedArtifacts": ["all shared physical output files", "formal-domain shared converters", "formal-service journal source/handler", "service and Play composition", "application-protocol", "command-helper"],
+      "owners": {"logicalOutputAssembly": "per-output target.assemblyOwner from central partition", "sharedSourceWritesAndIntegration": "main-integrator", "newFamilyModelsBuildersTemplates": "artifact owners", "handwrittenBodies": "implementation owners"},
+      "invariants": ["one path one entry one assembler owner", "every declaration/RHS/initializer/lifecycle has one owner", "A/B classification survives physical co-location", "JAR/handwritten path is not generated deps", "TOR retain proposals not silently split"],
+      "admissionChecks": [{"check": "选择A/B共文件给完整贡献/顺序/依赖/映射表，自package至最后一行逐construct唯一归属；完整plan沿用S6路径及footprint检查", "execution": "not-run"}]
+    },
+    {
+      "id": "IF-06",
+      "title": "结构表达式purity与evaluation order",
+      "status": "integrator-proposed",
+      "documentLines": [173, 185],
+      "contract": "使用既有族AST；每次改写记录来源/类型/快照/次数顺序/短路/异常；pure-total、pure-may-fail、effectful-or-unknown仅为审阅分类；不扩公共schema；保留旧state语义、短路、异常、精度和addExact",
+      "sources": [{"source": "D1", "lines": [76, 89]}, {"source": "D2", "lines": [94, 113]}, {"source": "S5", "lines": [137, 142]}, {"source": "S5", "lines": [163, 165]}, {"source": "D3", "lines": [70, 72]}],
+      "affectedArtifacts": ["event-handler", "invariant-rule", "domain-service", "command-helper", "aggregate-behavior", "B decision bodies"],
+      "owners": {"sharedRenderer": "main-integrator", "algorithmAndIndependentOracle": "domain/business owner"},
+      "invariants": ["pure != cannot throw", "no eager short-circuit RHS", "no duplicate evaluation or reordered failure", "state.copy reads original contracted old state", "no JS Number for exact Long/decimal", "no I/O or ActorRef in pure domain"],
+      "admissionChecks": [{"check": "false&&mayFail、true||mayFail、两失败RHS、put-all单次、跨字段旧state、Long边界及溢出逐例对照原/目标轨迹和独立oracle", "execution": "not-run", "cc": "not-measured"}]
+    },
+    {
+      "id": "IF-07",
+      "title": "手写槽单一body owner",
+      "status": "integrator-proposed",
+      "documentLines": [187, 220],
+      "contract": "新classic未完成算法优先外置手写；按MethodSlot交完整签名、ordered参数/构造列表、结果/效果/失败顺序、唯一binding、独立oracle；当前产品不能表达时局部blocked，不制造公开接线函数或fake success",
+      "sources": [{"source": "D1", "lines": [145, 150]}, {"source": "D2", "lines": [85, 98]}, {"source": "D2", "lines": [166, 172]}, {"source": "D3", "lines": [28, 38]}, {"source": "D3", "lines": [104, 115]}, {"source": "S5", "lines": [137, 148]}, {"source": "S5", "lines": [182, 195]}, {"source": "S6", "lines": [52, 54]}],
+      "affectedArtifacts": ["domain-service", "application-service", "query-service", "external-connector-port", "connector-implementation", "invariant-rule", "event-handler"],
+      "owners": {"declaration": "artifact owner", "bodyAndIndependentBDD": "business implementation owner", "bindingAndComposition": "main-integrator"},
+      "invariants": ["one selected body per slot and variant", "no generated overwrite of implementation", "no flattening curried/implicit signature", "existing MANUAL not expanded into second implementation surface", "raw F1 reply types are not complete reply algorithms"],
+      "admissionChecks": [{"check": "逐slot核声明/实现全部参数列表、类型、结果、构造依赖与唯一绑定；每方法用例/oracle有来源；缺实现或回复算法保持blocked", "execution": "not-run"}]
+    },
+    {
+      "id": "IF-08",
+      "title": "final-byte映射逐成员准入",
+      "status": "integrator-proposed",
+      "documentLines": [222, 230],
+      "contract": "命名/import/排版结束再计算UTF-8映射；沿用现有mapping出口和finalMappingSpan；每个预期mapping逐项核最终位置，文件fallback或同key仅剩部分成员不得算完整成功",
+      "sources": [{"source": "S8", "lines": [3, 28]}, {"source": "S7", "lines": [91, 104]}, {"source": "S7", "lines": [183, 215]}, {"source": "S7", "lines": [243, 267]}, {"source": "D1", "lines": [118, 132]}, {"source": "D2", "lines": [166, 172]}],
+      "affectedArtifacts": ["all knowledge-bearing generated members", "split/coalesced files", "MANUAL-merged files"],
+      "owners": {"finalContentAndConcreteMappings": "per-output target.assemblyOwner from central partition", "sharedWriterMappingSourceAndIntegration": "main-integrator", "constructProvenance": "artifact owners"},
+      "invariants": ["span/scope use UTF-8 [start,end) with exact text", "final fingerprints and offsets refer to same bytes", "no format after mapping", "no invented knowledge IDs or author @knowledge fields", "one-key partial span loss remains visible"],
+      "admissionChecks": [{"check": "非ASCII、重复scope、被编辑MANUAL、一key多成员逐项planned→final→exact/degraded；任一预期成员降级则成员级admission失败", "execution": "not-run"}]
+    },
+    {
+      "id": "IF-09",
+      "title": "classic保守profile路线",
+      "status": "integrator-proposed",
+      "documentLines": [232, 245],
+      "contract": "推荐未来新classic默认single(app/)，multi显式单列；不赋新profile ID，不改旧profile语义，不使用虚构--profile；业务根三层与物理构建根分开",
+      "sources": [{"source": "U1", "lines": [9, 13]}, {"source": "S4", "lines": [4, 33]}, {"source": "S5", "lines": [9, 14]}, {"source": "S5", "lines": [56, 61]}, {"source": "S5", "lines": [132, 148]}, {"source": "S5", "lines": [166, 168]}, {"source": "D1", "lines": [66, 74]}, {"source": "D1", "lines": [145, 148]}, {"source": "D2", "lines": [14, 64]}, {"source": "D3", "lines": [84, 109]}],
+      "affectedArtifacts": ["all output paths", "build/config/proto/routes/tests", "module dependencies"],
+      "owners": {"profileRegistryAndEntry": "main-integrator", "profileConsumers": "artifact owners"},
+      "invariants": ["single default is recommendation not approved switch", "two existing profile IDs unchanged", "no same-input substitution of multi for single", "no candidate composition fourth layer adopted as classic"],
+      "admissionChecks": [{"check": "记录真实generator/version/profile/variant及Scala/proto/conf/routes/build/test全路径；multi须实际模块图和框架根；profile注册另批，raw/curated/target/JS资产分开", "execution": "not-run"}],
+      "profileProposal": {"newClassicDefault": "single-recommended-not-approved", "singleScalaRoot": "app", "multiScalaRootTemplate": "modules/<module>/src/main/scala", "multiModuleGraph": "blocked-until-actual-fixture-build-contract", "newRegisteredIds": []}
+    },
+    {
+      "id": "IF-10",
+      "title": "旧路径显式迁移及非自动退役",
+      "status": "integrator-proposed",
+      "documentLines": [247, 268],
+      "contract": "按RetirementRow记录old→new路径/FQN/成员/引用/注册/知识映射及owner批准；先新target比较；现有RETAINED不删旧文件；没有新退役CLI或ledger schema",
+      "sources": [{"source": "S7", "lines": [183, 190]}, {"source": "S7", "lines": [223, 245]}, {"source": "D1", "lines": [109, 116]}, {"source": "D2", "lines": [172, 172]}, {"source": "D5", "lines": [21, 23]}, {"source": "D7", "lines": [94, 118]}],
+      "affectedArtifacts": ["application-protocol relocation", "command-helper relocation", "DI/bootstrap", "converters", "shared output splits", "legacy references and registrations"],
+      "owners": {"migrationCoordination": "main-integrator", "retirementApproval": "existing output/source owner"},
+      "invariants": ["new target cleanliness != old target retired", "RETAINED != deletion", "stable persistence/wire/serializer identities not renamed implicitly", "capture/recheck is not lock or rollback", "no manual ledger/generated cleanup"],
+      "admissionChecks": [{"check": "候选plan无旧owned依赖；每oldPath引用/注册/映射证据完整，RETAINED单列；ABI改变或缺旧owner批准不得标approved-retirement", "execution": "not-run"}]
+    },
+    {
+      "id": "IF-11",
+      "title": "三退休任意源码槽保持阻断",
+      "status": "blocked-supply-or-semantics",
+      "documentLines": [270, 276],
+      "contract": "support-controller任意path/content、projection-handler supplied manualBlocks、projection-repository-impl implOverrides整文件，均无法从模板推知；不以B或unknown兜底，不复活入口",
+      "sources": [{"source": "U1", "lines": [9, 13]}, {"source": "D6", "lines": [84, 92]}],
+      "affectedArtifacts": ["scala-cqrs-es-api/support-controller", "scala-cqrs-es-projection/projection-handler", "scala-cqrs-es-projection/projection-repository-impl"],
+      "owners": {"sourceBytesAndSemantics": "actual input supplier", "futureClassification": "retired-entry integration owner"},
+      "invariants": ["navigation is not complete content review", "no automatic B classification", "no full partition PASS claim", "unrelated documentation may proceed"],
+      "admissionChecks": [{"check": "未来实际fixture消费时供应完整选中input/sidecar/override字节、指纹、选择条件和逐construct owner；本轮无补拷授权，保持blocked", "execution": "not-run"}]
+    },
+    {
+      "id": "IF-12",
+      "title": "common-core制品交接归另线",
+      "status": "blocked-supply-or-semantics",
+      "documentLines": [278, 284],
+      "contract": "用户此前给定0.2对应源码身份，发布最新制品优先；0.2无withPost且保留rule。common-core-post-validation下一版post-validation/withPost建议尚未完成，新版本号/字节/最终API未提供；0.2限制不等永久禁止，不提前依赖。保留publish，不照搬第五公开字段；业务postconditions/MoneyOps/auth分账。详见COMMON-CORE-CONSUMPTION-HANDOFF.md；本线不接管演进或发布",
+      "sources": [{"source": "U1", "lines": [9, 13]}, {"source": "D5", "lines": [28, 29]}, {"source": "D8", "lines": [1, 46]}],
+      "affectedArtifacts": ["command-helper", "aggregate-behavior", "common-core-consuming service/composition artifacts"],
+      "owners": {"artifactEvolution": "common-core-post-validation", "artifactSupply": "pending exact release handoff", "consumerAdaptation": "main-integrator"},
+      "invariants": ["historical 0.2 source identity is given by user", "live directory may evolve after that ruling", "source snapshot != consumed JAR evidence", "unfinished proposal != released API", "no simultaneous same-FQN source/JAR definitions", "no invented glue API or version"],
+      "admissionChecks": [{"check": "等待准确坐标、SHA/取得来源、签名、post-persist-publish-reply顺序、case-class与旧overload策略、唯一owner和同FQN排除结论；实际供给锁定并另获实施授权前不准入", "execution": "not-run"}],
+      "artifact": {"knownBaselineCoordinate": "net.imadz:common-core_2.13:0.2", "coordinateAuthority": "user", "knownBaselineSha256": null, "selectedConsumptionCoordinate": null, "selectedConsumptionSha256": null, "evolutionOwner": "common-core-post-validation", "nextReleaseStatus": "reported-in-progress-not-completed", "nextReleaseCoordinate": null, "apiAbsentInKnown02": ["withPost", "policy-named-parameter"], "nextReleaseProposals": ["post-validation/withPost", "keep rule and existing publish", "do not copy public fifth case-class post field"], "outOfHelperMerge": ["business postconditions", "MoneyOps ownership", "auth-core contents"], "handoffDocument": "COMMON-CORE-CONSUMPTION-HANDOFF.md"}
+    }
+  ],
+  "remainingPackageSpecificSupply": [
+    {"item": "classic新profile批准/注册及multi实际构建合同", "decision": "IF-09"},
+    {"item": "F1逐命令回复/默认值、无损输入映射与各变体完整expected", "sources": [{"source": "D3", "lines": [28, 50]}, {"source": "D3", "lines": [111, 115]}]},
+    {"item": "实际手写实现与逐方法独立oracle", "decision": "IF-07"},
+    {"item": "另线common-core准确冻结制品与唯一供应owner", "decision": "IF-12"},
+    {"item": "三退休实际任意输入的完整字节与语义", "decision": "IF-11"},
+    {"item": "old path具体引用迁移、ABI裁定及旧owner退役批准", "decision": "IF-10"}
+  ]
+}

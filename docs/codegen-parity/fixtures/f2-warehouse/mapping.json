@@ -1,0 +1,2722 @@
+{
+  "schemaVersion": "codegen-parity.f2-input-mapping-document/v1",
+  "schemaScope": "documentation-only; not a truthsrc author/public schema, canonical, request, compiled product or runnable fixture",
+  "fixture": "F2-warehouse",
+  "status": "content-specification",
+  "adapterStatus": "missing-counterpart",
+  "authorization": {
+    "authority": "main-agent-assignment-relaying-user-constraints-not-verbatim-user-quote",
+    "onlyWrites": [
+      "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/f2-warehouse/INPUT-MAPPING.md",
+      "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/fixtures/f2-warehouse/mapping.json"
+    ],
+    "implementationApproved": false,
+    "sourceCopyAuthorized": false,
+    "newBusinessSemantics": "blocked",
+    "retiredArbitrarySourceSlots": "all-three-blocked-no-B-fallback",
+    "commonCore": "published net.imadz:common-core_2.13:0.2 per main-agent relay of user constraints, not a verbatim user quote; artifact bytes to lock before implementation; evolution owned elsewhere; glue not investigated",
+    "withPostAndPolicy": "not-assumed-published-API"
+  },
+  "execution": {
+    "generation": "not-run",
+    "validate": "not-run",
+    "roundtrip": "not-run",
+    "compilation": "not-run",
+    "tests": "not-run",
+    "typecheck": "not-run",
+    "services": "not-run",
+    "downloads": "not-run",
+    "publication": "not-run",
+    "cc": "all-unmeasured",
+    "sameInputEstablished": false,
+    "expectedGenerated": false,
+    "runtimeAcceptanceClaimed": false,
+    "staticChecksOnly": [
+      "JSON serialization/parse in memory",
+      "evidence line bounds and relative link targets",
+      "27 selected supplemental source SHA-256 and byte counts against fixture-index; 6 instruction/document hashes recorded"
+    ]
+  },
+  "sourceBoundary": {
+    "sourceRoot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity",
+    "fixedSourceCount": 27,
+    "instructionAndDocumentCount": 6,
+    "workingSourceFilesRead": false,
+    "note": "AGENTS is the required repository instruction; source content comes only from existing fixed supplemental. No baseline/common, mutable generator, application, bank, old process args/env or historical runtime output was investigated.",
+    "selectedFixedSourcesShaVerified": true,
+    "allSourceHashesAreAcceptance": false
+  },
+  "sources": [
+    {
+      "id": "S-warehouse-config",
+      "identity": "fixed-project-technical-input",
+      "role": "author-project-entry",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/truthsrc.project.json",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/truthsrc.project.json",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "scaffold/persistence-readside-project/truthsrc.project.json",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truthsrc.project.json",
+      "sourceSha256": "b3a427adbdcb63d69554328ba9f656af0dc5a0e6f35ce1d1fe5fba1afb49c02e",
+      "bytes": 2134,
+      "lineCount": 39,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-warehouse-binding",
+      "identity": "fixed-project-technical-input",
+      "role": "technical-binding",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/bindings/persistence.json",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/bindings/persistence.json",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "scaffold/persistence-readside-project/bindings/persistence.json",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/bindings/persistence.json",
+      "sourceSha256": "3f51cdce0bc99403b5abd0e8a52e59cd68542b54f7604e7282aee167ca4d9069",
+      "bytes": 1898,
+      "lineCount": 45,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-warehouse-system",
+      "identity": "fixed-author-input",
+      "role": "author-system",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/system.yaml",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/system.yaml",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/system.yaml",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/system.yaml",
+      "sourceSha256": "56ef46e0b177ae48f8db738be212bfbd4a7114a70f6fb847b508ca8d44711c91",
+      "bytes": 362,
+      "lineCount": 19,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-warehouse-context",
+      "identity": "fixed-author-input",
+      "role": "author-context",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/context.yaml",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/context.yaml",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/context.yaml",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/context.yaml",
+      "sourceSha256": "b2e1efdc6e3389efdb38d1620298028593bef0de0c062bcf12f53153c5f660ad",
+      "bytes": 339,
+      "lineCount": 7,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-warehouse-author",
+      "identity": "fixed-author-input",
+      "role": "author-aggregate",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/aggregate.yaml",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/aggregate.yaml",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/aggregate.yaml",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/aggregate.yaml",
+      "sourceSha256": "007e0dd813f9400c72192a97313e91de068051992511ce8c2d921420f30588b9",
+      "bytes": 574,
+      "lineCount": 25,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-warehouse-reserve",
+      "identity": "fixed-author-input",
+      "role": "author-command-event",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/slices/reserve-sku-quantity.slice.yaml",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/slices/reserve-sku-quantity.slice.yaml",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/slices/reserve-sku-quantity.slice.yaml",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/slices/reserve-sku-quantity.slice.yaml",
+      "sourceSha256": "b4c2caf53bbfe8bf62f3438dc5af04c855612e724113622feda3493d3f2391ee",
+      "bytes": 1962,
+      "lineCount": 84,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-warehouse-commit",
+      "identity": "fixed-author-input",
+      "role": "author-command-event",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/slices/commit-sku-reservation.slice.yaml",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/slices/commit-sku-reservation.slice.yaml",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/slices/commit-sku-reservation.slice.yaml",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/aggregates/warehouse/slices/commit-sku-reservation.slice.yaml",
+      "sourceSha256": "71f6f0f20943ee29ea6d44002887ec4b11d6477f240d765338f208625a8a3a90",
+      "bytes": 1615,
+      "lineCount": 74,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-warehouse-txid",
+      "identity": "fixed-author-input",
+      "role": "author-nominal-type",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/tx-id.vo.yaml",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/tx-id.vo.yaml",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/tx-id.vo.yaml",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/tx-id.vo.yaml",
+      "sourceSha256": "078e96185b7caa86be604df234adc3252edab6f02e54dd272a8d16f255b13c32",
+      "bytes": 213,
+      "lineCount": 12,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-warehouse-id",
+      "identity": "fixed-author-input",
+      "role": "author-nominal-type",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/warehouse-id.vo.yaml",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/warehouse-id.vo.yaml",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/warehouse-id.vo.yaml",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/warehouse-id.vo.yaml",
+      "sourceSha256": "d554389600ac30ff044ad84d33fae550d6f365c937f47794ebd2be0d3a62c579",
+      "bytes": 227,
+      "lineCount": 12,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-warehouse-skuid",
+      "identity": "fixed-author-input",
+      "role": "author-nominal-type",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/sku-id.vo.yaml",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/sku-id.vo.yaml",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/sku-id.vo.yaml",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/sku-id.vo.yaml",
+      "sourceSha256": "287ec071123ee799d74232873d962a4b6fd55397bd3726da89db25e45845ca53",
+      "bytes": 215,
+      "lineCount": 12,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-warehouse-reservationid",
+      "identity": "fixed-author-input",
+      "role": "author-nominal-type",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/reservation-id.vo.yaml",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/reservation-id.vo.yaml",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/reservation-id.vo.yaml",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/value-objects/reservation-id.vo.yaml",
+      "sourceSha256": "88e3bc57cc0bfa4555b857d4c293a6954c71b44e9cf180e6ffe73134859ecc45",
+      "bytes": 231,
+      "lineCount": 12,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-warehouse-host",
+      "identity": "fixed-author-input",
+      "role": "author-host-computation",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/formal-products/host-computation/--inventory---reservation-identity--.formal.yaml",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/formal-products/host-computation/--inventory---reservation-identity--.formal.yaml",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/formal-products/host-computation/--inventory---reservation-identity--.formal.yaml",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/formal-products/host-computation/--inventory---reservation-identity--.formal.yaml",
+      "sourceSha256": "16aa581f39bee008f7566fe8977e95145bfd538745d8763561175862897969ea",
+      "bytes": 2449,
+      "lineCount": 114,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-warehouse-port",
+      "identity": "fixed-author-input",
+      "role": "author-technical-port",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/formal-products/technical-port/reservation-identity.formal.yaml",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/formal-products/technical-port/reservation-identity.formal.yaml",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/formal-products/technical-port/reservation-identity.formal.yaml",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/scaffold/persistence-readside-project/truth/persistence-readside/contexts/inventory/formal-products/technical-port/reservation-identity.formal.yaml",
+      "sourceSha256": "a1bfd272dcf68c49eb7b81f7b11e7aea5b04961ac82c790139b4c6965f36a937",
+      "bytes": 332,
+      "lineCount": 14,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-warehouse-state",
+      "identity": "fixed-independent-HAND-reference",
+      "role": "independent-HAND-reference",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/WarehouseState.scala",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/WarehouseState.scala",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/WarehouseState.scala",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/WarehouseState.scala",
+      "sourceSha256": "40af157f9b50fe29d84e845b610b89dac892aca666616a860381340095be2484",
+      "bytes": 223,
+      "lineCount": 11,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-warehouse-actor",
+      "identity": "fixed-independent-HAND-reference",
+      "role": "independent-HAND-reference",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/test/reference/aggregate-core/project/modules/glue/src/main/scala/example/inventory/application/aggregates/WarehouseActorProtocol.scala",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/test/reference/aggregate-core/project/modules/glue/src/main/scala/example/inventory/application/aggregates/WarehouseActorProtocol.scala",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "test/reference/aggregate-core/project/modules/glue/src/main/scala/example/inventory/application/aggregates/WarehouseActorProtocol.scala",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/aggregate-core/project/modules/glue/src/main/scala/example/inventory/application/aggregates/WarehouseActorProtocol.scala",
+      "sourceSha256": "12558f67c9b895f6a86ff057f40443c5ecebfd7be158a18ca29c8f11047b1d31",
+      "bytes": 606,
+      "lineCount": 23,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-warehouse-rules",
+      "identity": "fixed-independent-HAND-reference",
+      "role": "independent-HAND-reference",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/invariant/WarehouseRules.scala",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/invariant/WarehouseRules.scala",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/invariant/WarehouseRules.scala",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/invariant/WarehouseRules.scala",
+      "sourceSha256": "4375126ca5255fc19f5d19557376ef6a728521fa4364f863cef722fdaccf7a7b",
+      "bytes": 1506,
+      "lineCount": 30,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-warehouse-helpers",
+      "identity": "fixed-independent-HAND-reference",
+      "role": "independent-HAND-reference",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/command/WarehouseCommandHelpers.scala",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/command/WarehouseCommandHelpers.scala",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/command/WarehouseCommandHelpers.scala",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/command/WarehouseCommandHelpers.scala",
+      "sourceSha256": "66aaf99f4dc9848bd158eec1d6e06c5b1d088c8bd2ce44b7616f81c51661429a",
+      "bytes": 793,
+      "lineCount": 22,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-warehouse-fold",
+      "identity": "fixed-independent-HAND-reference",
+      "role": "independent-HAND-reference",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/entities/behaviors/WarehouseEventHandler.scala",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/entities/behaviors/WarehouseEventHandler.scala",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/entities/behaviors/WarehouseEventHandler.scala",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/aggregate-core/project/modules/kernel/src/main/scala/example/inventory/domain/entities/behaviors/WarehouseEventHandler.scala",
+      "sourceSha256": "2d4e8869e3df5abba71b6d1355c5418fd65eb2b2ee7b15b7290badbf26d0655e",
+      "bytes": 514,
+      "lineCount": 13,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-warehouse-converter",
+      "identity": "fixed-independent-HAND-reference",
+      "role": "independent-HAND-reference",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/test/reference/aggregate-core/project/modules/glue/src/main/scala/example/inventory/infrastructure/serialization/DomainConverters.scala",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/test/reference/aggregate-core/project/modules/glue/src/main/scala/example/inventory/infrastructure/serialization/DomainConverters.scala",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "test/reference/aggregate-core/project/modules/glue/src/main/scala/example/inventory/infrastructure/serialization/DomainConverters.scala",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/aggregate-core/project/modules/glue/src/main/scala/example/inventory/infrastructure/serialization/DomainConverters.scala",
+      "sourceSha256": "f2f0ddb71e569f290bc152f02bddd7265773d4294d53bb987a99fd02efb534d4",
+      "bytes": 4247,
+      "lineCount": 101,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-warehouse-domain-proto",
+      "identity": "fixed-independent-HAND-reference",
+      "role": "independent-HAND-reference",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/test/reference/aggregate-core/project/modules/glue/src/main/protobuf/inventory_domain.proto",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/test/reference/aggregate-core/project/modules/glue/src/main/protobuf/inventory_domain.proto",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "test/reference/aggregate-core/project/modules/glue/src/main/protobuf/inventory_domain.proto",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/aggregate-core/project/modules/glue/src/main/protobuf/inventory_domain.proto",
+      "sourceSha256": "96640e3776a90246d777cd4a6dcdf0a7ef9835c23b317f9249bf4c91bfecb3d6",
+      "bytes": 726,
+      "lineCount": 48,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-warehouse-frame-proto",
+      "identity": "fixed-independent-HAND-reference",
+      "role": "independent-HAND-reference",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/test/reference/persistence-readside/protobuf/warehouse_persistence_frame.proto",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/test/reference/persistence-readside/protobuf/warehouse_persistence_frame.proto",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "test/reference/persistence-readside/protobuf/warehouse_persistence_frame.proto",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/persistence-readside/protobuf/warehouse_persistence_frame.proto",
+      "sourceSha256": "d92dff015172afeb8f06a7c305bae21c2139296b5b5a1cabf6d6c205d96b7456",
+      "bytes": 415,
+      "lineCount": 13,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-warehouse-persistence",
+      "identity": "fixed-independent-HAND-reference",
+      "role": "independent-HAND-reference",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/test/reference/persistence-readside/scala/example/inventory/infrastructure/persistence/WarehousePersistence.scala",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/test/reference/persistence-readside/scala/example/inventory/infrastructure/persistence/WarehousePersistence.scala",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "test/reference/persistence-readside/scala/example/inventory/infrastructure/persistence/WarehousePersistence.scala",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/persistence-readside/scala/example/inventory/infrastructure/persistence/WarehousePersistence.scala",
+      "sourceSha256": "3b1bd7cc953637d753dd2c4139463ae673db2ead4e38ff48f37bf8f27df7f422",
+      "bytes": 5781,
+      "lineCount": 85,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-warehouse-wire",
+      "identity": "fixed-independent-HAND-reference",
+      "role": "independent-HAND-explicit-pins",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/test/reference/persistence-readside/scala/example/inventory/infrastructure/persistence/WarehouseWirePins.scala",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/test/reference/persistence-readside/scala/example/inventory/infrastructure/persistence/WarehouseWirePins.scala",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "test/reference/persistence-readside/scala/example/inventory/infrastructure/persistence/WarehouseWirePins.scala",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/persistence-readside/scala/example/inventory/infrastructure/persistence/WarehouseWirePins.scala",
+      "sourceSha256": "e764ef3cf224bc45fd8839e0d33c05fcc2ed2bf11d5e8977d8dc7e3623744b8e",
+      "bytes": 595,
+      "lineCount": 10,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-warehouse-serializer-config",
+      "identity": "fixed-independent-HAND-reference",
+      "role": "independent-HAND-serializer-binding",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/test/reference/persistence-readside/resources/reference.conf",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/test/reference/persistence-readside/resources/reference.conf",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "test/reference/persistence-readside/resources/reference.conf",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/persistence-readside/resources/reference.conf",
+      "sourceSha256": "256bbcb4666f4b0b5199863f033f0ed2f032373e884e6e3485e9c6b58fe2e2f0",
+      "bytes": 219,
+      "lineCount": 2,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-warehouse-reference-contract",
+      "identity": "fixed-independent-HAND-reference",
+      "role": "independent-reference-ABI-old-pending-text-not-current-verdict",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/test/reference/persistence-readside/REFERENCE-CONTRACT.md",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/test/reference/persistence-readside/REFERENCE-CONTRACT.md",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "test/reference/persistence-readside/REFERENCE-CONTRACT.md",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/reference/persistence-readside/REFERENCE-CONTRACT.md",
+      "sourceSha256": "f8ddb2912b1d2c5b5cad22d18c0ee4296e92473518197045660693c218dc1b9c",
+      "bytes": 16771,
+      "lineCount": 184,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-persistence-test-fixture",
+      "identity": "fixed-synthetic-admission-source-not-wire-evidence",
+      "role": "synthetic-admission-fixture-not-runtime-input",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/metarch-truthsrc/test/persistence-readside-fixture.mjs",
+      "pathFromDocument": "../../supplemental/fixtures/metarch-truthsrc/test/persistence-readside-fixture.mjs",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc",
+      "originalRepositoryRelativePath": "test/persistence-readside-fixture.mjs",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/test/persistence-readside-fixture.mjs",
+      "sourceSha256": "c3e7e7078ac798d4a62de0234f0e8075b322e25fd8d57342aef5d22e07b9f879",
+      "bytes": 2800,
+      "lineCount": 41,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "S-bc-file-adapter",
+      "identity": "fixed-BC-adapter-source-not-output",
+      "role": "current-file-input-adapter",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixtures/backkend-codegen/src/main/scala/net/imadz/meta/filesystem/SerialCanonicalAdapter.scala",
+      "pathFromDocument": "../../supplemental/fixtures/backkend-codegen/src/main/scala/net/imadz/meta/filesystem/SerialCanonicalAdapter.scala",
+      "originalRepository": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+      "originalRepositoryRelativePath": "src/main/scala/net/imadz/meta/filesystem/SerialCanonicalAdapter.scala",
+      "originalPathNotReadThisRun": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen/src/main/scala/net/imadz/meta/filesystem/SerialCanonicalAdapter.scala",
+      "sourceSha256": "95a7e7d67f4e38b3a2e3b17b3b3797fa95cd67cda5b56739517f4f05f572d171",
+      "bytes": 25331,
+      "lineCount": 419,
+      "readExtent": "full",
+      "matchesSupplementalIndex": true
+    },
+    {
+      "id": "D-agents",
+      "identity": "instruction-or-document-bytes-pinned-at-this-authoring",
+      "role": "repository-agent-contract",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/AGENTS.md",
+      "pathFromDocument": "../../../../AGENTS.md",
+      "sourceSha256": "8bfd761390a6fc90b09663157f9d35b23c0c58b20c9f6a41dd5698450015d601",
+      "bytes": 6108,
+      "lineCount": 109,
+      "readExtent": "full",
+      "matchesSupplementalIndex": null
+    },
+    {
+      "id": "D-authoring",
+      "identity": "instruction-or-document-bytes-pinned-at-this-authoring",
+      "role": "documentation-authoring-contract",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/AUTHORING-CONTRACT.md",
+      "pathFromDocument": "../../AUTHORING-CONTRACT.md",
+      "sourceSha256": "9c827000f1e864b6a86a04a855df4853a4457b854bd5b2f0bfff14b1ce9514a9",
+      "bytes": 5941,
+      "lineCount": 73,
+      "readExtent": "full",
+      "matchesSupplementalIndex": null
+    },
+    {
+      "id": "D-fixture",
+      "identity": "instruction-or-document-bytes-pinned-at-this-authoring",
+      "role": "fixture-and-expected-contract",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/FIXTURE-AND-EXPECTED-CONTRACT.md",
+      "pathFromDocument": "../../FIXTURE-AND-EXPECTED-CONTRACT.md",
+      "sourceSha256": "cced314341408c7834bfdd8723aa55ac9ae39ea85c50e74a651b2052a7df2222",
+      "bytes": 9684,
+      "lineCount": 115,
+      "readExtent": "full",
+      "matchesSupplementalIndex": null
+    },
+    {
+      "id": "D-evidence-md",
+      "identity": "instruction-or-document-bytes-pinned-at-this-authoring",
+      "role": "prior-source-research-not-acceptance",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/details/fixture-source-evidence.md",
+      "pathFromDocument": "../../details/fixture-source-evidence.md",
+      "sourceSha256": "2e8298e923144376ff26f7a5551f762379b85fbd119bebfc41b5e4704f2a7ae9",
+      "bytes": 18352,
+      "lineCount": 162,
+      "readExtent": "full",
+      "matchesSupplementalIndex": null
+    },
+    {
+      "id": "D-evidence-json",
+      "identity": "instruction-or-document-bytes-pinned-at-this-authoring",
+      "role": "prior-source-research-machine-record",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/details/fixture-source-evidence.json",
+      "pathFromDocument": "../../details/fixture-source-evidence.json",
+      "sourceSha256": "0e7c861823141b2d603a341c475ae5913ff6b70090814aab66445cf2829bf0e4",
+      "bytes": 101028,
+      "lineCount": 1959,
+      "readExtent": "1-841 visible; F2/source records selected through JSON, not full document",
+      "matchesSupplementalIndex": null
+    },
+    {
+      "id": "D-index",
+      "identity": "instruction-or-document-bytes-pinned-at-this-authoring",
+      "role": "supplemental-copy-index",
+      "fixedPath": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/supplemental/fixture-index.json",
+      "pathFromDocument": "../../supplemental/fixture-index.json",
+      "sourceSha256": "006028d35f2d7850ada62558abd36fc853db8faffdfd32d8e05f801ff4d985a1",
+      "bytes": 28332,
+      "lineCount": 407,
+      "readExtent": "selected 27 source records; no broad baseline index read",
+      "matchesSupplementalIndex": null
+    }
+  ],
+  "inputIdentity": {
+    "systemId": "persistence-readside",
+    "workshop": "persistence-readside-reference",
+    "context": "inventory",
+    "canonicalId": "inventory-domain",
+    "aggregate": "Warehouse",
+    "entityNameDeclared": "WarehouseEntity",
+    "generatorConfigured": "scala-cqrs-persistence-readside-v1",
+    "productVersions": [
+      "reference-layout@1",
+      "exact-value-types@1",
+      "exact-value-codecs@1",
+      "domain-decision@4",
+      "domain-dependencies@6",
+      "domain-folds@6",
+      "domain-external-events@2",
+      "persistence-readside-contract@1"
+    ],
+    "evidence": [
+      {
+        "source": "S-warehouse-system",
+        "lines": [
+          3,
+          15
+        ]
+      },
+      {
+        "source": "S-warehouse-author",
+        "lines": [
+          11,
+          16
+        ]
+      },
+      {
+        "source": "S-warehouse-config",
+        "lines": [
+          2,
+          38
+        ]
+      }
+    ]
+  },
+  "slots": [
+    {
+      "id": "F2-01",
+      "title": "项目/context/package 与入口",
+      "originalInput": "system.id=persistence-readside；workshop=persistence-readside-reference；context=inventory；canonicalId=inventory-domain。项目选择 scala-cqrs-persistence-readside-v1 和八个显式 products。",
+      "jsAndHandEvidence": "options.packages 给 example.inventory；protobuf.package 给 example.inventory.protobuf；names/exactTypes/exactCodecs/assemblies 为空。配置是既有输入，不是本轮运行结果。",
+      "bcFixedAdapterDifference": "assemble 接 canonical + bindings；context/system 从 workshop 拆连字符转 PascalCase 推导，不读取此项目 packages/protobuf 配置。若投影保留该 workshop，则为 PersistenceReadsideReference / PersistenceReadsideReferenceSystem，而非显式 inventory/example.inventory。未制作该 canonical，非实跑输出。",
+      "losslessAdmission": "分别锁定业务 ref 的 context、Scala FQN、PB package 与系统/workshop 身份；不得只换包忽略输入差异。无已批准的 Warehouse→传统 runCommon 同输入投影。",
+      "status": "missing-counterpart",
+      "implementationApproved": false,
+      "evidence": [
+        {
+          "source": "S-warehouse-system",
+          "lines": [
+            3,
+            19
+          ]
+        },
+        {
+          "source": "S-warehouse-context",
+          "lines": [
+            3,
+            7
+          ]
+        },
+        {
+          "source": "S-warehouse-config",
+          "lines": [
+            2,
+            38
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            38,
+            38
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            397,
+            416
+          ]
+        },
+        {
+          "source": "D-fixture",
+          "lines": [
+            9,
+            16
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F2-02",
+      "title": "技术 binding 不可直接互换",
+      "originalInput": "documents[id=persistence].file=bindings/persistence.json；roles.persistenceReadsideBinding=persistence；binding 为 truthsrc.persistence-readside-binding/v1。",
+      "jsAndHandEvidence": "wire 三注册与 store/Receipt 配置是独立技术输入；不是业务作者的第二份 canonical。",
+      "bcFixedAdapterDifference": "BC 在 /bindings/sagas/*/types 读取 bound types，且要求至少一个；当前 Warehouse persistence binding 无此入口。不能称原 binding 可直接传入；未实际调用 assemble。",
+      "losslessAdmission": "若未来有有限 adapter，必须显式保存不同技术协议之间的投影来源；不伪造 saga/type 长度约束或手写 canonical/request/compiled 绕过入口。",
+      "status": "missing-counterpart",
+      "implementationApproved": false,
+      "evidence": [
+        {
+          "source": "S-warehouse-config",
+          "lines": [
+            16,
+            25
+          ]
+        },
+        {
+          "source": "S-warehouse-binding",
+          "lines": [
+            1,
+            45
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            69,
+            130
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F2-03",
+      "title": "名义类型 TxId",
+      "originalInput": "inventory/type/TxId，version=\"1\"，dataType=String，fields=[]；两命令 txid、commit 事件 txid 与 receipts 的 key。",
+      "jsAndHandEvidence": "DomainConverters.encodeTxId/decodeTxId 使用独立 domain TxId 与 PB TxIdValue，载体为 .value / f0；PB string f0=1。HAND 值类声明本身不在所选固定副本内，不能称定义闭包已齐。",
+      "bcFixedAdapterDifference": "现有 bound kind id/text 降成 StringType；dtype 按 bound.dataType 返回，最后只为 money 产生 valueObjects。把四类型补作 id/text 也会丢失 nominal，且要求原输入未给的 minLength/maxLength。",
+      "losslessAdmission": "保留 TxId 的 context/ref/version/FQN 与独立 encode/decode 边；不得 alias String、合并其它 ID、新增 UUID/格式/长度规则。相同 PB 形状不等于名义类型相同。",
+      "status": "missing-counterpart",
+      "implementationApproved": false,
+      "evidence": [
+        {
+          "source": "S-warehouse-txid",
+          "lines": [
+            3,
+            12
+          ]
+        },
+        {
+          "source": "S-warehouse-config",
+          "lines": [
+            29,
+            32
+          ]
+        },
+        {
+          "source": "S-warehouse-converter",
+          "lines": [
+            23,
+            27
+          ]
+        },
+        {
+          "source": "S-warehouse-domain-proto",
+          "lines": [
+            12,
+            14
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            89,
+            117
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            136,
+            159
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            394,
+            410
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F2-04",
+      "title": "名义类型 WarehouseId",
+      "originalInput": "inventory/type/WarehouseId，version=\"1\"，dataType=String，fields=[]；aggregate identifier id 与两命令 warehouseId；不在 HAND state 中。",
+      "jsAndHandEvidence": "DomainConverters.encodeWarehouseId/decodeWarehouseId 使用独立 domain WarehouseId 与 PB WarehouseIdValue，载体为 .value / f0；PB string f0=1。HAND 值类声明本身不在所选固定副本内，不能称定义闭包已齐。",
+      "bcFixedAdapterDifference": "现有 bound kind id/text 降成 StringType；dtype 按 bound.dataType 返回，最后只为 money 产生 valueObjects。把四类型补作 id/text 也会丢失 nominal，且要求原输入未给的 minLength/maxLength。",
+      "losslessAdmission": "保留 WarehouseId 的 context/ref/version/FQN 与独立 encode/decode 边；不得 alias String、合并其它 ID、新增 UUID/格式/长度规则。相同 PB 形状不等于名义类型相同。",
+      "status": "missing-counterpart",
+      "implementationApproved": false,
+      "evidence": [
+        {
+          "source": "S-warehouse-id",
+          "lines": [
+            3,
+            12
+          ]
+        },
+        {
+          "source": "S-warehouse-config",
+          "lines": [
+            29,
+            32
+          ]
+        },
+        {
+          "source": "S-warehouse-converter",
+          "lines": [
+            29,
+            33
+          ]
+        },
+        {
+          "source": "S-warehouse-domain-proto",
+          "lines": [
+            16,
+            18
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            89,
+            117
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            136,
+            159
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            394,
+            410
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F2-05",
+      "title": "名义类型 SkuId",
+      "originalInput": "inventory/type/SkuId，version=\"1\"，dataType=String，fields=[]；两命令 skuId 与 host 参数。",
+      "jsAndHandEvidence": "DomainConverters.encodeSkuId/decodeSkuId 使用独立 domain SkuId 与 PB SkuIdValue，载体为 .value / f0；PB string f0=1。HAND 值类声明本身不在所选固定副本内，不能称定义闭包已齐。",
+      "bcFixedAdapterDifference": "现有 bound kind id/text 降成 StringType；dtype 按 bound.dataType 返回，最后只为 money 产生 valueObjects。把四类型补作 id/text 也会丢失 nominal，且要求原输入未给的 minLength/maxLength。",
+      "losslessAdmission": "保留 SkuId 的 context/ref/version/FQN 与独立 encode/decode 边；不得 alias String、合并其它 ID、新增 UUID/格式/长度规则。相同 PB 形状不等于名义类型相同。",
+      "status": "missing-counterpart",
+      "implementationApproved": false,
+      "evidence": [
+        {
+          "source": "S-warehouse-skuid",
+          "lines": [
+            3,
+            12
+          ]
+        },
+        {
+          "source": "S-warehouse-config",
+          "lines": [
+            29,
+            32
+          ]
+        },
+        {
+          "source": "S-warehouse-converter",
+          "lines": [
+            35,
+            39
+          ]
+        },
+        {
+          "source": "S-warehouse-domain-proto",
+          "lines": [
+            20,
+            22
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            89,
+            117
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            136,
+            159
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            394,
+            410
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F2-06",
+      "title": "名义类型 ReservationId",
+      "originalInput": "inventory/type/ReservationId，version=\"1\"，dataType=String，fields=[]；reserve 事件 reservationId、commit 参数 reservationId 与 host 输出。",
+      "jsAndHandEvidence": "DomainConverters.encodeReservationId/decodeReservationId 使用独立 domain ReservationId 与 PB ReservationIdValue，载体为 .value / f0；PB string f0=1。HAND 值类声明本身不在所选固定副本内，不能称定义闭包已齐。",
+      "bcFixedAdapterDifference": "现有 bound kind id/text 降成 StringType；dtype 按 bound.dataType 返回，最后只为 money 产生 valueObjects。把四类型补作 id/text 也会丢失 nominal，且要求原输入未给的 minLength/maxLength。",
+      "losslessAdmission": "保留 ReservationId 的 context/ref/version/FQN 与独立 encode/decode 边；不得 alias String、合并其它 ID、新增 UUID/格式/长度规则。相同 PB 形状不等于名义类型相同。",
+      "status": "missing-counterpart",
+      "implementationApproved": false,
+      "evidence": [
+        {
+          "source": "S-warehouse-reservationid",
+          "lines": [
+            3,
+            12
+          ]
+        },
+        {
+          "source": "S-warehouse-config",
+          "lines": [
+            29,
+            32
+          ]
+        },
+        {
+          "source": "S-warehouse-converter",
+          "lines": [
+            41,
+            45
+          ]
+        },
+        {
+          "source": "S-warehouse-domain-proto",
+          "lines": [
+            24,
+            26
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            89,
+            117
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            136,
+            159
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            394,
+            410
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F2-07",
+      "title": "ReserveSkuQuantity 参数与决策顺序",
+      "originalInput": "有序参数 (txid:TxId, warehouseId:WarehouseId, skuId:SkuId, quantity:Long)，均 BUSINESS_INPUT。先 quantity>0，否则 quantity-positive/reject；然后 receipts 不含 txid，否则 succeed-empty；最后 emit。",
+      "jsAndHandEvidence": "HAND rules 先检查 >0L，再 receipts.contains，再 emit；helper 只在最后分支调用 reservationIdentity(txid,warehouseId,skuId,quantity)。Right(Vector.empty) 不调用 host。",
+      "bcFixedAdapterDifference": "BC ParameterMetadata 保留参数数组次序并用 dtype 解析，guard 原 JSON 保留在 FormalGuards；这不证明 guard 执行顺序/空成功已由传统目标实现，nominal 与 host 槽仍不通。",
+      "losslessAdmission": "不得交换两 guard：已有 receipt 的非正 quantity 仍拒绝。已有 receipt 的正 quantity 空成功，不按 receipt value 判定。不得新增库存可用量/warehouse-sku 归属/数量上限或默认 quantity。",
+      "status": "missing-counterpart",
+      "implementationApproved": false,
+      "evidence": [
+        {
+          "source": "S-warehouse-reserve",
+          "lines": [
+            8,
+            55
+          ]
+        },
+        {
+          "source": "S-warehouse-rules",
+          "lines": [
+            20,
+            24
+          ]
+        },
+        {
+          "source": "S-warehouse-helpers",
+          "lines": [
+            9,
+            15
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            207,
+            224
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            300,
+            305
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F2-08",
+      "title": "ReservationIdentity 两层输入合同",
+      "originalInput": "technical-port ReservationIdentity@1 声明 inputType=TxId/outputType=ReservationId；host-computation 同 ref@1 关联 ReserveSkuQuantity，明确四个 inputDependencies，stableIdentityContract=reservation-per-original-inputs@1 的 keys 也是四个原参数。",
+      "jsAndHandEvidence": "HAND helper 调用 hosts.reservationIdentity(command.txid,command.warehouseId,command.skuId,command.quantity)；这证明调用形状，所选副本未包含 WarehouseComputations trait/实现。",
+      "bcFixedAdapterDifference": "reserve binding.expr 是对象 {form:host,id,version}；BC emissions 用 _.str 提取 expr，不支持此对象。不能保证得到整理后的 Left；静态可见直接 .str 形状不匹配，未执行异常复现。",
+      "losslessAdmission": "保留 port 声明与 host-computation 四输入层次，不因 inputType=TxId 就删另外三参。稳定身份合同不是具体算法或实际 ReservationId；不得 randomUUID、拼接、hash、返回 txid 或造成功值。有限表达式/行为 port 接入仍 blocked。",
+      "status": "missing-counterpart",
+      "implementationApproved": false,
+      "evidence": [
+        {
+          "source": "S-warehouse-port",
+          "lines": [
+            3,
+            14
+          ]
+        },
+        {
+          "source": "S-warehouse-host",
+          "lines": [
+            10,
+            113
+          ]
+        },
+        {
+          "source": "S-warehouse-reserve",
+          "lines": [
+            67,
+            80
+          ]
+        },
+        {
+          "source": "S-warehouse-helpers",
+          "lines": [
+            9,
+            15
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            247,
+            267
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F2-09",
+      "title": "事件 SkuQuantityReserved 与 identity fold",
+      "originalInput": "只一个 payload reservationId:ReservationId，origin=COMPUTED；由 ReserveSkuQuantity 产生，host binding 赋值；foldAssignments=[]。没有 txid/warehouseId/skuId/quantity payload。",
+      "jsAndHandEvidence": "helper Vector(SkuQuantityReserved(hostResult))；HAND fold case _: SkuQuantityReserved => state。这里 identity 是状态不变，不是计算 ID，也不是库存扣减。",
+      "bcFixedAdapterDifference": "BC 空 fold 不产生 FormalFold；AST 对所有事件都放 referenceCode=Some(\"state\")。reserve 的 identity 只有作者+HAND 联合证据可认定，不能把所有 AST identity fallback 当真实业务 fold。",
+      "losslessAdmission": "必须保持无状态字段变更；若 receipt 仍不存在，重复 reserve 会再次调用 host 并 emit，不得增加 reserve 去重/预留表。host 的稳定性不等于空事件幂等。",
+      "status": "missing-counterpart",
+      "implementationApproved": false,
+      "evidence": [
+        {
+          "source": "S-warehouse-reserve",
+          "lines": [
+            31,
+            33
+          ]
+        },
+        {
+          "source": "S-warehouse-reserve",
+          "lines": [
+            56,
+            84
+          ]
+        },
+        {
+          "source": "S-warehouse-helpers",
+          "lines": [
+            9,
+            15
+          ]
+        },
+        {
+          "source": "S-warehouse-fold",
+          "lines": [
+            7,
+            12
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            268,
+            299
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            379,
+            388
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F2-10",
+      "title": "CommitSkuReservation 参数与决策",
+      "originalInput": "有序参数 (txid:TxId, warehouseId:WarehouseId, skuId:SkuId, reservationId:ReservationId)，均 BUSINESS_INPUT；仅 receipts map-absent guard，onFail=succeed-empty。",
+      "jsAndHandEvidence": "存在 key 就 Right(Vector.empty)；否则 emit SkuReservationCommitted(command.txid)。helper 不消费另外三参，但命令仍保留它们，且此分支不调用 host。",
+      "bcFixedAdapterDifference": "BC 保留参数/produces/guards 形状但 nominal 降格；未获同输入执行证明。不能用删掉未消费参数来假称无损。",
+      "losslessAdmission": "无 receipt 时可直接 emit，所选输入没有校验先 reserve、reservationId 匹配或库存算法。已有同 txid 即空成功，即使其它输入不同；新增一致性/先后规则属于新业务语义，blocked。",
+      "status": "missing-counterpart",
+      "implementationApproved": false,
+      "evidence": [
+        {
+          "source": "S-warehouse-commit",
+          "lines": [
+            8,
+            47
+          ]
+        },
+        {
+          "source": "S-warehouse-rules",
+          "lines": [
+            26,
+            29
+          ]
+        },
+        {
+          "source": "S-warehouse-helpers",
+          "lines": [
+            17,
+            21
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            207,
+            224
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            315,
+            330
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F2-11",
+      "title": "事件 SkuReservationCommitted 与 receipt fold",
+      "originalInput": "只一个 payload txid:TxId，PROPAGATED，binding expr=param.txid；fold 为 receipts put event.txid -> literal:SkuReservationCommitted。",
+      "jsAndHandEvidence": "HAND fold state.copy(receipts=state.receipts.updated(value.txid,\"SkuReservationCommitted\"))。保留其它键，对该键置固定文本；不是取 reservationId、receipt 对象或回复。",
+      "bcFixedAdapterDifference": "BC 可把 put 行存到 FormalFold；但 EntityBehavior AST 对 commit 仍是 identity fallback。丢弃 FormalSemantics 后仅比较 AST 会漏掉此唯一状态变化。",
+      "losslessAdmission": "显式区分 command guard 与 event fold：正常重复 commit guard 不发事件；直接 fold/replay commit 仍 updated 该键。不得用 state identity 代替 receipt fold，也不新增 UUID、库存、金额或时间字段。",
+      "status": "missing-counterpart",
+      "implementationApproved": false,
+      "evidence": [
+        {
+          "source": "S-warehouse-commit",
+          "lines": [
+            48,
+            74
+          ]
+        },
+        {
+          "source": "S-warehouse-helpers",
+          "lines": [
+            17,
+            21
+          ]
+        },
+        {
+          "source": "S-warehouse-fold",
+          "lines": [
+            8,
+            12
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            268,
+            299
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            378,
+            388
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F2-12",
+      "title": "state、identifier 与初值来源",
+      "originalInput": "aggregate identifier id:WarehouseId，origin=BUSINESS_INPUT；stateFields 恰为 receipts:Map[TxId,String]，author default=[]。entity 名为 WarehouseEntity。",
+      "jsAndHandEvidence": "HAND WarehouseState(receipts:Map[TxId,String]=Map())；WarehouseState.empty=WarehouseState()。作者 [] 是该 map 的表示，非 List 业务类型；identifier 不属于此 HAND state。",
+      "bcFixedAdapterDifference": "BC stateFields 只取 name/dataType/writtenBy，未读 default；stateVo 又把 identifier 加在首字段，改变构造参数及 PB 根布局。若 id/text 补绑定，receipts key 还变成 String。",
+      "losslessAdmission": "state 只保留 receipts 与明确空 map 初值；identifier 保留为聚合元数据/调用方输入，不注入 state、事件或 snapshot。不得猜 id/empty(id)/random UUID 或从 PID 反推。",
+      "status": "missing-counterpart",
+      "implementationApproved": false,
+      "evidence": [
+        {
+          "source": "S-warehouse-author",
+          "lines": [
+            11,
+            24
+          ]
+        },
+        {
+          "source": "S-warehouse-state",
+          "lines": [
+            5,
+            11
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            186,
+            204
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            89,
+            94
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F2-13",
+      "title": "receipt 不是持久化/回复身份",
+      "originalInput": "业务 receipts:Map[TxId,String] 与技术 index Receipt/table receipt/by_resource 引用同一 state-field；wire/storage binding 的 identity.kind=envelope-resource。",
+      "jsAndHandEvidence": "HAND receipt fold 仅固定文本；旧独立 ABI 规定 PID/resource/namespace 外部传入，projection 的 reserve event 可推进 checkpoint 而 state 不变；empty-success 不造投影步骤。这些是 ABI 文本，不是本轮 JDBC 行为结果。",
+      "bcFixedAdapterDifference": "BC 此 assemble 返回空 infrastructure projections/repositories；未消费 Warehouse store/Receipt binding，且自行设 ShardedTags(name.toLowerCase,1)。",
+      "losslessAdmission": "保留 TxId key、字面 receipt 与 index 映射；不能将 aggregate id、命令 warehouseId、resource、PID、namespace 互相猜值，也不以 receipt 文本替代 manifest/持久化回执。更完整读侧实现不纳入本轮覆盖。",
+      "status": "missing-counterpart",
+      "implementationApproved": false,
+      "evidence": [
+        {
+          "source": "S-warehouse-binding",
+          "lines": [
+            28,
+            44
+          ]
+        },
+        {
+          "source": "S-warehouse-fold",
+          "lines": [
+            8,
+            12
+          ]
+        },
+        {
+          "source": "S-warehouse-reference-contract",
+          "lines": [
+            9,
+            9
+          ]
+        },
+        {
+          "source": "S-warehouse-reference-contract",
+          "lines": [
+            134,
+            148
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            375,
+            375
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            411,
+            415
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F2-14",
+      "title": "Actor protocol 与回复非同构",
+      "originalInput": "作者仅两条业务命令，无额外 GetState slice、无 classic per-command replyFamily 定义；参考 actor API 是独立应用层接口。",
+      "jsAndHandEvidence": "Execute(domain Command,ActorRef[Reply])；GetState(ActorRef[WarehouseState])；Reply=Accepted(Vector[Event]) / Rejected(String)。纯领域输入/事件不注入 replyTo。",
+      "bcFixedAdapterDifference": "BC 为业务命令生成 typed CommandReplyRef(WarehouseReply)，族 WarehouseReplies 的 WarehouseReply(error:Option[iMadzError])。GetWarehouseStateReply(state) 只在存在 guard-less 且 produce-less query command 时加；F2 两命令不触发，不能声称 BC 已自动加 GetState。",
+      "losslessAdmission": "Accepted/Rejected/String code 与 error-only reply 不可互换；不得猜每命令 confirmation、reservationId/receipt/new-state 回复值，亦不为补接口新增作者命令。classic CommandHelper 目标需有限应用层 mapping 的另行裁定。",
+      "status": "missing-counterpart",
+      "implementationApproved": false,
+      "evidence": [
+        {
+          "source": "S-warehouse-author",
+          "lines": [
+            6,
+            8
+          ]
+        },
+        {
+          "source": "S-warehouse-reserve",
+          "lines": [
+            31,
+            54
+          ]
+        },
+        {
+          "source": "S-warehouse-commit",
+          "lines": [
+            31,
+            46
+          ]
+        },
+        {
+          "source": "S-warehouse-actor",
+          "lines": [
+            7,
+            22
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            217,
+            224
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            340,
+            361
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F2-15",
+      "title": "PB 名称、字段号与 required map",
+      "originalInput": "project 显式映射四个 *IdValue、WarehouseSnapshot、WarehouseSkuQuantityReserved、WarehouseSkuReservationCommitted；PB package=example.inventory.protobuf。",
+      "jsAndHandEvidence": "固定 proto 的三个 roots 与 map wrapper/entry 字段号见 pbLayouts；state.receipts 为 Some(wrapper(present=true,...))，缺 root/wrapper/key 消息或 present=false 拒绝，重复 decoded TxId key 拒绝。",
+      "bcFixedAdapterDifference": "BC assemble 不读取此 protobuf option；identifier 前插、StringType nominal 降格都不能视作保持该 layout。没有实际 BC Warehouse PB 输出。",
+      "losslessAdmission": "保留 message 名、字段号、required presence 和 map key nominal；不可把显式 wrapper 改成原生 protobuf map 或缺省空 map；layout pin 不是 proto 源文件 SHA。",
+      "status": "missing-counterpart",
+      "implementationApproved": false,
+      "evidence": [
+        {
+          "source": "S-warehouse-config",
+          "lines": [
+            25,
+            37
+          ]
+        },
+        {
+          "source": "S-warehouse-domain-proto",
+          "lines": [
+            1,
+            48
+          ]
+        },
+        {
+          "source": "S-warehouse-converter",
+          "lines": [
+            10,
+            11
+          ]
+        },
+        {
+          "source": "S-warehouse-converter",
+          "lines": [
+            47,
+            100
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            186,
+            204
+          ]
+        },
+        {
+          "source": "D-fixture",
+          "lines": [
+            52,
+            64
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F2-16",
+      "title": "map 字节序与名义转换边界",
+      "originalInput": "receipts 的 key 为 TxId，value 为 String；作者不规定 Map 迭代顺序或 String 格式增强。",
+      "jsAndHandEvidence": "encode entry 后以 encoded.copy(f1=\"\").toByteArray 取 keyBytes，用 unsigned byte 词典序排序；拒绝相同编码 key；decode 拒绝重复名义 key。四 value codec 直接用 value/f0，无新增 UUID/非空规则。",
+      "bcFixedAdapterDifference": "当前 BC nominal StringType 不满足这些独立 typed codec 边；本轮未定位 Warehouse 同输入 raw converter 产物。",
+      "losslessAdmission": "保留排序算法/单个 key 编码含义，不换成 Scala String 排序或 hashCode；typed API 与 raw PB wire 形状分开。同形字符串 wrapper 可有相同字节，不宣称 payload 自带名义认证。",
+      "status": "missing-counterpart",
+      "implementationApproved": false,
+      "evidence": [
+        {
+          "source": "S-warehouse-converter",
+          "lines": [
+            13,
+            70
+          ]
+        },
+        {
+          "source": "S-warehouse-domain-proto",
+          "lines": [
+            12,
+            47
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            89,
+            94
+          ]
+        },
+        {
+          "source": "D-evidence-md",
+          "lines": [
+            105,
+            108
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F2-17",
+      "title": "wire 注册、layout pins 与 synthetic 区分",
+      "originalInput": "serializerId=736401，envelopeVersion=1；event warehouse.reserved@1、event warehouse.committed@1、state warehouse.state@1 的三条 layoutSha256 来自 persistence binding。",
+      "jsAndHandEvidence": "HAND WirePins 三值与 binding 完全相同；注释自述历史 layout diagnostic，但本轮不读取 .rounds 或重算 PB。synthetic test 的 1/2/3.repeat(64) 明确不是 runtime layout。",
+      "bcFixedAdapterDifference": "BC 此 adapter 无 Warehouse wire registry/pins 消费入口；不能拿自动 proto 名或其它 profile 的 pin 替换。",
+      "losslessAdmission": "只把真实固定常量作为待实施输入 pin；来源文件 SHA、layout SHA、真实序列化 bytes SHA 三类分开。旧 REFERENCE-CONTRACT 第19行 pins pending 已被所选常量文本补齐，但运行/兼容性仍未测。",
+      "status": "missing-counterpart",
+      "implementationApproved": false,
+      "evidence": [
+        {
+          "source": "S-warehouse-binding",
+          "lines": [
+            7,
+            27
+          ]
+        },
+        {
+          "source": "S-warehouse-wire",
+          "lines": [
+            3,
+            9
+          ]
+        },
+        {
+          "source": "S-persistence-test-fixture",
+          "lines": [
+            7,
+            16
+          ]
+        },
+        {
+          "source": "S-warehouse-reference-contract",
+          "lines": [
+            19,
+            19
+          ]
+        },
+        {
+          "source": "S-warehouse-persistence",
+          "lines": [
+            17,
+            25
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F2-18",
+      "title": "Frame、manifest 与角色拒绝",
+      "originalInput": "独立技术 Frame package=example.inventory.persistence.protobuf；六个字段号固定；不修改 inventory_domain.proto。",
+      "jsAndHandEvidence": "HAND 检查 outer unknown fields/envelopeVersion、非空且有界 payload/serializedSize、完整 registry tuple，再校验 decoder role；manifest 精确 warehouse-frame/1/<role>/<typeId>/<wireVersion>/<layoutSha256>。parse 比对 manifest 后执行注册的一个 domain decoder。",
+      "bcFixedAdapterDifference": "没有此输入到传统目标 Frame/adapter 的无损对应证据；一般 PB parser 成功不是等价证明。",
+      "losslessAdmission": "event Frame 调 decodeState、state Frame 调 decodeEvent 必须拒绝；未知 type/version/layout/role/manifest 不回退。不能扩大此承诺为所有同 wire 形状错换或所有 nested PB unknown fields 都拒绝。",
+      "status": "missing-counterpart",
+      "implementationApproved": false,
+      "evidence": [
+        {
+          "source": "S-warehouse-frame-proto",
+          "lines": [
+            1,
+            13
+          ]
+        },
+        {
+          "source": "S-warehouse-persistence",
+          "lines": [
+            26,
+            60
+          ]
+        },
+        {
+          "source": "S-warehouse-converter",
+          "lines": [
+            23,
+            45
+          ]
+        },
+        {
+          "source": "D-evidence-md",
+          "lines": [
+            107,
+            108
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F2-19",
+      "title": "Serializer / EventAdapter / SnapshotAdapter 历史入口",
+      "originalInput": "技术配置只绑定 example.inventory.persistence.protobuf.Frame 到 warehouse-persistence serializer。",
+      "jsAndHandEvidence": "Serializer.fromBinary(bytes,manifest) 返回 parse 得到的 Frame；EventAdapter.fromJournal(Frame,manifest) 核 manifest 后 EventSeq.single(decodeEvent)；SnapshotAdapter.fromJournal(Any) 只收 state Frame；factory 原样传 pid/initial/hosts 与两 adapter。",
+      "bcFixedAdapterDifference": "BC 自带 PersistenceConfig(name,ShardedTags(lowercase,1)) 不是上述调用方 pid/initial/hosts/Frame ABI 的替代；无 Warehouse 同输入历史 bytes 证明。",
+      "losslessAdmission": "只绑定 Frame，不改成 AnyRef/GeneratedMessage，也不从类名推 wire identity；历史 decoder 必须读保存的 bytes+manifest，不用新 encoder 现场造输入冒充旧 bytes。factory 不能制造初始 id 或 host。",
+      "status": "missing-counterpart",
+      "implementationApproved": false,
+      "evidence": [
+        {
+          "source": "S-warehouse-serializer-config",
+          "lines": [
+            1,
+            2
+          ]
+        },
+        {
+          "source": "S-warehouse-persistence",
+          "lines": [
+            62,
+            85
+          ]
+        },
+        {
+          "source": "S-bc-file-adapter",
+          "lines": [
+            366,
+            375
+          ]
+        },
+        {
+          "source": "S-warehouse-reference-contract",
+          "lines": [
+            84,
+            84
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F2-20",
+      "title": "历史 bytes / readside 接口证据边界",
+      "originalInput": "binding 声明 source=warehouse-events@1、identity=envelope-resource；固定独立 ABI 声明 WarehouseEnvelope.capture(pid,resource,sequenceNr,manifest,bytes) 与 currentEvents(pid,after,limit)。",
+      "jsAndHandEvidence": "该 ABI 要求 capture/access 均复制 bytes，old duplicate 需 PID/resource/source/stream/manifest/bytes 一致；empty-success 不造事件；读取历史通过 source pages。所选 fixed 集合没有实际历史 bytes 文件或这些 readside 类的实现字节。",
+      "bcFixedAdapterDifference": "未有 BC/JS 新 candidate 或相同输入双端旧字节 decoder 结果；不得把文档条款/常量 pin 当运行回执。",
+      "losslessAdmission": "将历史 corpus、独立 oracle、旧 writer/new decoder 版本/制品 provenance 列为缺件；本轮无 .bin/.hex/base64 actual bytes，SHA=null。禁止访问旧运行产物来补猜，禁止新造数据声称历史。",
+      "status": "missing-counterpart",
+      "implementationApproved": false,
+      "evidence": [
+        {
+          "source": "S-warehouse-binding",
+          "lines": [
+            29,
+            38
+          ]
+        },
+        {
+          "source": "S-warehouse-reference-contract",
+          "lines": [
+            88,
+            138
+          ]
+        },
+        {
+          "source": "S-warehouse-reference-contract",
+          "lines": [
+            152,
+            182
+          ]
+        },
+        {
+          "source": "D-fixture",
+          "lines": [
+            40,
+            50
+          ]
+        }
+      ]
+    }
+  ],
+  "wire": {
+    "serializerId": 736401,
+    "envelopeVersion": 1,
+    "maxPayloadBytes": 1048576,
+    "evidence": [
+      {
+        "source": "S-warehouse-binding",
+        "lines": [
+          7,
+          27
+        ]
+      },
+      {
+        "source": "S-warehouse-binding",
+        "lines": [
+          37,
+          37
+        ]
+      },
+      {
+        "source": "S-warehouse-persistence",
+        "lines": [
+          19,
+          21
+        ]
+      }
+    ],
+    "pbLayouts": [
+      {
+        "message": "TxIdValue",
+        "fields": [
+          "1:string f0"
+        ],
+        "evidence": [
+          {
+            "source": "S-warehouse-domain-proto",
+            "lines": [
+              12,
+              14
+            ]
+          }
+        ]
+      },
+      {
+        "message": "WarehouseIdValue",
+        "fields": [
+          "1:string f0"
+        ],
+        "evidence": [
+          {
+            "source": "S-warehouse-domain-proto",
+            "lines": [
+              16,
+              18
+            ]
+          }
+        ]
+      },
+      {
+        "message": "SkuIdValue",
+        "fields": [
+          "1:string f0"
+        ],
+        "evidence": [
+          {
+            "source": "S-warehouse-domain-proto",
+            "lines": [
+              20,
+              22
+            ]
+          }
+        ]
+      },
+      {
+        "message": "ReservationIdValue",
+        "fields": [
+          "1:string f0"
+        ],
+        "evidence": [
+          {
+            "source": "S-warehouse-domain-proto",
+            "lines": [
+              24,
+              26
+            ]
+          }
+        ]
+      },
+      {
+        "message": "WarehouseSnapshot",
+        "fields": [
+          "1:WarehouseSnapshotField0 f0"
+        ],
+        "evidence": [
+          {
+            "source": "S-warehouse-domain-proto",
+            "lines": [
+              28,
+              30
+            ]
+          }
+        ]
+      },
+      {
+        "message": "WarehouseSnapshotField0",
+        "fields": [
+          "1:bool present",
+          "2:repeated WarehouseSnapshotField0Entry f0"
+        ],
+        "evidence": [
+          {
+            "source": "S-warehouse-domain-proto",
+            "lines": [
+              32,
+              35
+            ]
+          }
+        ]
+      },
+      {
+        "message": "WarehouseSnapshotField0Entry",
+        "fields": [
+          "1:TxIdValue f0",
+          "2:string f1"
+        ],
+        "evidence": [
+          {
+            "source": "S-warehouse-domain-proto",
+            "lines": [
+              37,
+              40
+            ]
+          }
+        ]
+      },
+      {
+        "message": "WarehouseSkuQuantityReserved",
+        "fields": [
+          "1:ReservationIdValue f0"
+        ],
+        "evidence": [
+          {
+            "source": "S-warehouse-domain-proto",
+            "lines": [
+              42,
+              44
+            ]
+          }
+        ]
+      },
+      {
+        "message": "WarehouseSkuReservationCommitted",
+        "fields": [
+          "1:TxIdValue f0"
+        ],
+        "evidence": [
+          {
+            "source": "S-warehouse-domain-proto",
+            "lines": [
+              46,
+              48
+            ]
+          }
+        ]
+      },
+      {
+        "message": "example.inventory.persistence.protobuf.Frame",
+        "fields": [
+          "1:uint32 envelope_version",
+          "2:string role",
+          "3:string type_id",
+          "4:uint32 wire_version",
+          "5:string layout_sha256",
+          "6:bytes payload"
+        ],
+        "evidence": [
+          {
+            "source": "S-warehouse-frame-proto",
+            "lines": [
+              6,
+              13
+            ]
+          }
+        ]
+      }
+    ],
+    "pins": [
+      {
+        "role": "event",
+        "typeId": "warehouse.reserved",
+        "wireVersion": 1,
+        "domainRoot": "SkuQuantityReserved",
+        "pbRoot": "example.inventory.protobuf.WarehouseSkuQuantityReserved",
+        "layoutSha256": "1eccd9ea9c05f5be946f4004559f989bcacdc380c543e4f8fd3c31888e8d7384",
+        "pinIdentity": "real-fixed-binding-and-HAND-constant-not-recomputed",
+        "sourceShaIsNotLayoutSha": true,
+        "historicalPayloadSha256": null,
+        "historicalFrameSha256": null,
+        "historicalBytesAvailableInSelectedSet": false,
+        "syntheticExcludedExpression": "'1'.repeat(64)",
+        "syntheticIsObservedWirePin": false,
+        "evidence": [
+          {
+            "source": "S-warehouse-binding",
+            "lines": [
+              12,
+              14
+            ]
+          },
+          {
+            "source": "S-warehouse-wire",
+            "lines": [
+              7,
+              7
+            ]
+          },
+          {
+            "source": "S-persistence-test-fixture",
+            "lines": [
+              14,
+              14
+            ]
+          }
+        ]
+      },
+      {
+        "role": "event",
+        "typeId": "warehouse.committed",
+        "wireVersion": 1,
+        "domainRoot": "SkuReservationCommitted",
+        "pbRoot": "example.inventory.protobuf.WarehouseSkuReservationCommitted",
+        "layoutSha256": "52f2395e2b6abfa6dafaaea866918efe3ec022ff5835981f6c18e80bbdaa8c80",
+        "pinIdentity": "real-fixed-binding-and-HAND-constant-not-recomputed",
+        "sourceShaIsNotLayoutSha": true,
+        "historicalPayloadSha256": null,
+        "historicalFrameSha256": null,
+        "historicalBytesAvailableInSelectedSet": false,
+        "syntheticExcludedExpression": "'2'.repeat(64)",
+        "syntheticIsObservedWirePin": false,
+        "evidence": [
+          {
+            "source": "S-warehouse-binding",
+            "lines": [
+              17,
+              19
+            ]
+          },
+          {
+            "source": "S-warehouse-wire",
+            "lines": [
+              8,
+              8
+            ]
+          },
+          {
+            "source": "S-persistence-test-fixture",
+            "lines": [
+              15,
+              15
+            ]
+          }
+        ]
+      },
+      {
+        "role": "state",
+        "typeId": "warehouse.state",
+        "wireVersion": 1,
+        "domainRoot": "WarehouseState",
+        "pbRoot": "example.inventory.protobuf.WarehouseSnapshot",
+        "layoutSha256": "fe21099de54414f4a08cdf8342f685ed8941569876f11f5ae3bfa54cda2b5ba7",
+        "pinIdentity": "real-fixed-binding-and-HAND-constant-not-recomputed",
+        "sourceShaIsNotLayoutSha": true,
+        "historicalPayloadSha256": null,
+        "historicalFrameSha256": null,
+        "historicalBytesAvailableInSelectedSet": false,
+        "syntheticExcludedExpression": "'3'.repeat(64)",
+        "syntheticIsObservedWirePin": false,
+        "evidence": [
+          {
+            "source": "S-warehouse-binding",
+            "lines": [
+              22,
+              24
+            ]
+          },
+          {
+            "source": "S-warehouse-wire",
+            "lines": [
+              9,
+              9
+            ]
+          },
+          {
+            "source": "S-persistence-test-fixture",
+            "lines": [
+              16,
+              16
+            ]
+          }
+        ]
+      }
+    ],
+    "historicalBytes": [],
+    "historicalBytesScope": "none supplied in selected fixed source set; not a workspace-wide absence claim"
+  },
+  "sourceDerivedObligations": [
+    {
+      "id": "reserve-nonpositive-existing-receipt",
+      "requiredObservation": "quantity<=0 且 key 已存在仍拒绝 quantity-positive；无 host/事件",
+      "evidence": [
+        {
+          "source": "S-warehouse-rules",
+          "lines": [
+            20,
+            24
+          ]
+        }
+      ],
+      "status": "source-derived-obligation-not-run",
+      "expectedDataBytes": null,
+      "actualOutputBytes": null
+    },
+    {
+      "id": "reserve-positive-existing-receipt",
+      "requiredObservation": "quantity>0 且 key 已存在：Right(Vector.empty)，无 host/事件；不检查已有 value",
+      "evidence": [
+        {
+          "source": "S-warehouse-rules",
+          "lines": [
+            20,
+            24
+          ]
+        }
+      ],
+      "status": "source-derived-obligation-not-run",
+      "expectedDataBytes": null,
+      "actualOutputBytes": null
+    },
+    {
+      "id": "reserve-no-receipt",
+      "requiredObservation": "quantity>0 且无 key：host 四原参一次，event 仅 host 返回的 ReservationId；fold state identity",
+      "evidence": [
+        {
+          "source": "S-warehouse-helpers",
+          "lines": [
+            9,
+            15
+          ]
+        },
+        {
+          "source": "S-warehouse-fold",
+          "lines": [
+            8,
+            11
+          ]
+        }
+      ],
+      "status": "source-derived-obligation-not-run",
+      "expectedDataBytes": null,
+      "actualOutputBytes": null
+    },
+    {
+      "id": "reserve-repeat-before-commit",
+      "requiredObservation": "identity fold 未记 receipt；相同原参再次 reserve 仍经 host 并 emit；不预填具体 ID",
+      "evidence": [
+        {
+          "source": "S-warehouse-rules",
+          "lines": [
+            20,
+            24
+          ]
+        },
+        {
+          "source": "S-warehouse-fold",
+          "lines": [
+            8,
+            11
+          ]
+        },
+        {
+          "source": "S-warehouse-host",
+          "lines": [
+            72,
+            113
+          ]
+        }
+      ],
+      "status": "source-derived-obligation-not-run",
+      "expectedDataBytes": null,
+      "actualOutputBytes": null
+    },
+    {
+      "id": "commit-no-receipt",
+      "requiredObservation": "仅 txid 发事件；不隐加先 reserve/库存/参数匹配检查；fold put 固定文本且保留其他 keys",
+      "evidence": [
+        {
+          "source": "S-warehouse-rules",
+          "lines": [
+            26,
+            29
+          ]
+        },
+        {
+          "source": "S-warehouse-helpers",
+          "lines": [
+            17,
+            21
+          ]
+        },
+        {
+          "source": "S-warehouse-fold",
+          "lines": [
+            10,
+            11
+          ]
+        }
+      ],
+      "status": "source-derived-obligation-not-run",
+      "expectedDataBytes": null,
+      "actualOutputBytes": null
+    },
+    {
+      "id": "commit-existing-key",
+      "requiredObservation": "任意已有 value 都空事件成功；正常 command 不再 fold；直接 event fold 则仍 updated",
+      "evidence": [
+        {
+          "source": "S-warehouse-rules",
+          "lines": [
+            26,
+            29
+          ]
+        },
+        {
+          "source": "S-warehouse-fold",
+          "lines": [
+            10,
+            11
+          ]
+        }
+      ],
+      "status": "source-derived-obligation-not-run",
+      "expectedDataBytes": null,
+      "actualOutputBytes": null
+    },
+    {
+      "id": "nominal-boundary",
+      "requiredObservation": "四个 ID 保留不同 typed API；不要求相同 carrier 生成不同 wire 字节",
+      "evidence": [
+        {
+          "source": "S-warehouse-converter",
+          "lines": [
+            23,
+            45
+          ]
+        },
+        {
+          "source": "S-warehouse-domain-proto",
+          "lines": [
+            12,
+            26
+          ]
+        }
+      ],
+      "status": "source-derived-obligation-not-run",
+      "expectedDataBytes": null,
+      "actualOutputBytes": null
+    },
+    {
+      "id": "map-empty-present",
+      "requiredObservation": "合法 empty state 的 map wrapper 必须 present=true；缺 root/wrapper/key 或 present=false 拒绝，不等同 Map.empty",
+      "evidence": [
+        {
+          "source": "S-warehouse-converter",
+          "lines": [
+            47,
+            80
+          ]
+        }
+      ],
+      "status": "source-derived-obligation-not-run",
+      "expectedDataBytes": null,
+      "actualOutputBytes": null
+    },
+    {
+      "id": "map-order-and-duplicates",
+      "requiredObservation": "key 编码 unsigned-byte 排序；重复 decoded key 或 ambiguous encoded key 拒绝",
+      "evidence": [
+        {
+          "source": "S-warehouse-converter",
+          "lines": [
+            13,
+            21
+          ]
+        },
+        {
+          "source": "S-warehouse-converter",
+          "lines": [
+            53,
+            69
+          ]
+        }
+      ],
+      "status": "source-derived-obligation-not-run",
+      "expectedDataBytes": null,
+      "actualOutputBytes": null
+    },
+    {
+      "id": "event-state-cross-role",
+      "requiredObservation": "有效 state Frame 给 decodeEvent、有效 event Frame 给 decodeState 均拒绝；snapshot 不靠 outer manifest 免检",
+      "evidence": [
+        {
+          "source": "S-warehouse-persistence",
+          "lines": [
+            30,
+            52
+          ]
+        },
+        {
+          "source": "S-warehouse-persistence",
+          "lines": [
+            78,
+            80
+          ]
+        }
+      ],
+      "status": "source-derived-obligation-not-run",
+      "expectedDataBytes": null,
+      "actualOutputBytes": null
+    },
+    {
+      "id": "frame-identity",
+      "requiredObservation": "错 typeId/version/layout/envelope/role/outer unknown fields 拒绝；错误 manifest 拒绝，不尝试别的 parser",
+      "evidence": [
+        {
+          "source": "S-warehouse-persistence",
+          "lines": [
+            30,
+            59
+          ]
+        }
+      ],
+      "status": "source-derived-obligation-not-run",
+      "expectedDataBytes": null,
+      "actualOutputBytes": null
+    },
+    {
+      "id": "frame-size-and-malformed",
+      "requiredObservation": "空/null/超 1048576 bytes/malformed frame/domain required message 拒绝；完整 frame 和 payload 分别有界",
+      "evidence": [
+        {
+          "source": "S-warehouse-persistence",
+          "lines": [
+            21,
+            38
+          ]
+        },
+        {
+          "source": "S-warehouse-persistence",
+          "lines": [
+            54,
+            59
+          ]
+        },
+        {
+          "source": "S-warehouse-converter",
+          "lines": [
+            10,
+            11
+          ]
+        }
+      ],
+      "status": "source-derived-obligation-not-run",
+      "expectedDataBytes": null,
+      "actualOutputBytes": null
+    },
+    {
+      "id": "serializer-allowlist",
+      "requiredObservation": "Serializer 只接受 Frame；SnapshotAdapter 只接受 state Frame；不扩 AnyRef 注册",
+      "evidence": [
+        {
+          "source": "S-warehouse-persistence",
+          "lines": [
+            62,
+            80
+          ]
+        },
+        {
+          "source": "S-warehouse-serializer-config",
+          "lines": [
+            1,
+            2
+          ]
+        }
+      ],
+      "status": "source-derived-obligation-not-run",
+      "expectedDataBytes": null,
+      "actualOutputBytes": null
+    },
+    {
+      "id": "historical-byte-read",
+      "requiredObservation": "旧 writer 实存 bytes+manifest 经 fromBinary → Frame → event/snapshot decoder；新编码自循环不替代该证据",
+      "evidence": [
+        {
+          "source": "S-warehouse-persistence",
+          "lines": [
+            54,
+            80
+          ]
+        },
+        {
+          "source": "S-warehouse-reference-contract",
+          "lines": [
+            182,
+            182
+          ]
+        }
+      ],
+      "status": "source-derived-obligation-not-run",
+      "expectedDataBytes": null,
+      "actualOutputBytes": null
+    },
+    {
+      "id": "readside-identity-fold",
+      "requiredObservation": "reserve event 可推进 checkpoint 而 state 不变；empty-success 没有 event/投影步；旧 duplicate 不再 fold 属 ABI 待验条款",
+      "evidence": [
+        {
+          "source": "S-warehouse-reference-contract",
+          "lines": [
+            136,
+            138
+          ]
+        }
+      ],
+      "status": "source-derived-obligation-not-run",
+      "expectedDataBytes": null,
+      "actualOutputBytes": null
+    }
+  ],
+  "expectedFileRoles": [
+    {
+      "id": "R01",
+      "fileRole": "四个独立 nominal 定义文件/角色：TxId、WarehouseId、SkuId、ReservationId",
+      "sourceIds": [
+        "S-warehouse-txid",
+        "S-warehouse-id",
+        "S-warehouse-skuid",
+        "S-warehouse-reservationid",
+        "S-warehouse-converter"
+      ],
+      "sourceIdentityNote": "作者和 codec 引用已固定；对应 HAND value 类声明未在所选 supplemental 记录中冻结；不能补拷。",
+      "targetPath": null,
+      "targetPathStatus": "not-frozen-do-not-invent-output",
+      "actualExpectedPath": null,
+      "actualExpectedSha256": null,
+      "generatedThisRun": false
+    },
+    {
+      "id": "R02",
+      "fileRole": "纯领域命令/事件声明：两条有序命令、两个单字段事件",
+      "sourceIds": [
+        "S-warehouse-reserve",
+        "S-warehouse-commit",
+        "S-warehouse-helpers"
+      ],
+      "sourceIdentityNote": "作者 payload 与 HAND 使用点可定位；WarehouseProtocol.scala 声明本身未在所选固定集合中；目标是否拆文件待明确。",
+      "targetPath": null,
+      "targetPathStatus": "not-frozen-do-not-invent-output",
+      "actualExpectedPath": null,
+      "actualExpectedSha256": null,
+      "generatedThisRun": false
+    },
+    {
+      "id": "R03",
+      "fileRole": "WarehouseState 与 empty/receipts 构造",
+      "sourceIds": [
+        "S-warehouse-state",
+        "S-warehouse-author"
+      ],
+      "sourceIdentityNote": "固定 HAND WarehouseState.scala 是独立参考，不是 raw BC 或 JS 新产物。",
+      "targetPath": null,
+      "targetPathStatus": "not-frozen-do-not-invent-output",
+      "actualExpectedPath": null,
+      "actualExpectedSha256": null,
+      "generatedThisRun": false
+    },
+    {
+      "id": "R04",
+      "fileRole": "WarehouseRules、WarehouseCommandHelpers、WarehouseEventHandler",
+      "sourceIds": [
+        "S-warehouse-rules",
+        "S-warehouse-helpers",
+        "S-warehouse-fold"
+      ],
+      "sourceIdentityNote": "三份 HAND 源码已固定；WarehouseRuleParams.scala 声明未固定；不得把 emit helper 当 classic CommandHelper ABI。",
+      "targetPath": null,
+      "targetPathStatus": "not-frozen-do-not-invent-output",
+      "actualExpectedPath": null,
+      "actualExpectedSha256": null,
+      "generatedThisRun": false
+    },
+    {
+      "id": "R05",
+      "fileRole": "ReservationIdentity/四参数 WarehouseComputations port 与独立 host oracle",
+      "sourceIds": [
+        "S-warehouse-host",
+        "S-warehouse-port",
+        "S-warehouse-helpers"
+      ],
+      "sourceIdentityNote": "只有声明/调用形状；trait 定义、实现与稳定 ID 预期值未冻结。算法/UUID 不可补猜。",
+      "targetPath": null,
+      "targetPathStatus": "not-frozen-do-not-invent-output",
+      "actualExpectedPath": null,
+      "actualExpectedSha256": null,
+      "generatedThisRun": false
+    },
+    {
+      "id": "R06",
+      "fileRole": "WarehouseActorProtocol；traditional protocol/helper 映射目标",
+      "sourceIds": [
+        "S-warehouse-actor",
+        "S-bc-file-adapter"
+      ],
+      "sourceIdentityNote": "固定 Execute/GetState/Accepted/Rejected 参考存在；classic 两臂/逐命令 typed reply 映射 blocked。",
+      "targetPath": null,
+      "targetPathStatus": "not-frozen-do-not-invent-output",
+      "actualExpectedPath": null,
+      "actualExpectedSha256": null,
+      "generatedThisRun": false
+    },
+    {
+      "id": "R07",
+      "fileRole": "inventory_domain.proto 全文件",
+      "sourceIds": [
+        "S-warehouse-domain-proto",
+        "S-warehouse-config"
+      ],
+      "sourceIdentityNote": "固定 HAND proto 原字节可用；ScalaPB 生成源码/descriptor bytes/新目标 expected 未生成。",
+      "targetPath": null,
+      "targetPathStatus": "not-frozen-do-not-invent-output",
+      "actualExpectedPath": null,
+      "actualExpectedSha256": null,
+      "generatedThisRun": false
+    },
+    {
+      "id": "R08",
+      "fileRole": "DomainConverters.scala 全文件",
+      "sourceIds": [
+        "S-warehouse-converter"
+      ],
+      "sourceIdentityNote": "固定 HAND converter 可用；按源码约束列拒绝项，不称已运行 codec。",
+      "targetPath": null,
+      "targetPathStatus": "not-frozen-do-not-invent-output",
+      "actualExpectedPath": null,
+      "actualExpectedSha256": null,
+      "generatedThisRun": false
+    },
+    {
+      "id": "R09",
+      "fileRole": "warehouse_persistence_frame.proto 全文件",
+      "sourceIds": [
+        "S-warehouse-frame-proto"
+      ],
+      "sourceIdentityNote": "独立 frame proto 已固定；PB 编译字节与历史 Frame corpus 未固定。",
+      "targetPath": null,
+      "targetPathStatus": "not-frozen-do-not-invent-output",
+      "actualExpectedPath": null,
+      "actualExpectedSha256": null,
+      "generatedThisRun": false
+    },
+    {
+      "id": "R10",
+      "fileRole": "WarehousePersistence.scala 中 registry/codec/Serializer/EventAdapter/SnapshotAdapter/factory",
+      "sourceIds": [
+        "S-warehouse-persistence"
+      ],
+      "sourceIdentityNote": "一个固定 HAND 文件承载多个逻辑角色，不是多个已生成 expected；未来目标分拆路径/owner 待冻结。",
+      "targetPath": null,
+      "targetPathStatus": "not-frozen-do-not-invent-output",
+      "actualExpectedPath": null,
+      "actualExpectedSha256": null,
+      "generatedThisRun": false
+    },
+    {
+      "id": "R11",
+      "fileRole": "WarehouseWirePins.scala 与 serializer reference.conf",
+      "sourceIds": [
+        "S-warehouse-wire",
+        "S-warehouse-serializer-config",
+        "S-warehouse-binding"
+      ],
+      "sourceIdentityNote": "真实固定常量/config 可用；不能替换为 synthetic repeat pin；制品与真实 wire bytes 未锁。",
+      "targetPath": null,
+      "targetPathStatus": "not-frozen-do-not-invent-output",
+      "actualExpectedPath": null,
+      "actualExpectedSha256": null,
+      "generatedThisRun": false
+    },
+    {
+      "id": "R12",
+      "fileRole": "WarehouseBootstrap/Factory 调用闭包及 readside Envelope/source 合同",
+      "sourceIds": [
+        "S-warehouse-persistence",
+        "S-warehouse-reference-contract"
+      ],
+      "sourceIdentityNote": "factory 调用点和独立 ABI 文本已固定；被调用 bootstrap/readside 实现未在所选集合冻结；不扩为完整 JDBC/42族交付。",
+      "targetPath": null,
+      "targetPathStatus": "not-frozen-do-not-invent-output",
+      "actualExpectedPath": null,
+      "actualExpectedSha256": null,
+      "generatedThisRun": false
+    },
+    {
+      "id": "R13",
+      "fileRole": "历史正向 event/state bytes、manifest 与独立语义期望",
+      "sourceIds": [
+        "S-warehouse-persistence",
+        "S-warehouse-reference-contract"
+      ],
+      "sourceIdentityNote": "应分别保留 reserved/committed、empty/nonempty state 和 writer/decoder provenance；无实际 .bin/.hex/base64 文件，输出 SHA=null。",
+      "targetPath": null,
+      "targetPathStatus": "not-frozen-do-not-invent-output",
+      "actualExpectedPath": null,
+      "actualExpectedSha256": null,
+      "generatedThisRun": false
+    },
+    {
+      "id": "R14",
+      "fileRole": "历史拒绝 corpus 与 raw→target / JS→target 完整文件 diff",
+      "sourceIds": [
+        "S-warehouse-persistence",
+        "S-warehouse-converter",
+        "D-fixture"
+      ],
+      "sourceIdentityNote": "应覆盖角色、版本、layout、manifest、required/duplicate 等；尚无拒绝 bytes、双端产物或统一 diff。",
+      "targetPath": null,
+      "targetPathStatus": "not-frozen-do-not-invent-output",
+      "actualExpectedPath": null,
+      "actualExpectedSha256": null,
+      "generatedThisRun": false
+    }
+  ],
+  "assetLanes": [
+    {
+      "id": "source-inputs",
+      "status": "fixed-existing-supplemental-not-new-fixture",
+      "description": "既有 author/project/binding 副本；不复制为第二作者树"
+    },
+    {
+      "id": "independent-HAND",
+      "status": "selected-source-bytes-available-not-complete-build-closure",
+      "description": "上表 11 份 HAND 源码/配置＋1 份旧 ABI 文档只作独立来源，不冒充传统 target"
+    },
+    {
+      "id": "BC-input-adapter",
+      "status": "missing-counterpart",
+      "description": "未创建同语义 canonical/SystemMetadata/finite adapter；raw 输出为空缺，不编造"
+    },
+    {
+      "id": "BC-raw-generated",
+      "status": "not-generated",
+      "description": "未来保存实际 raw 全文件，即使显示缺陷也不洗掉"
+    },
+    {
+      "id": "approved-target",
+      "status": "decision-required-not-generated",
+      "description": "有限映射、布局、reply/host 等裁定后才可冻结目标全文件"
+    },
+    {
+      "id": "JS-public-generated",
+      "status": "not-generated",
+      "description": "尚无本轮公共入口输出；固定 HAND 不是它"
+    },
+    {
+      "id": "historical-wire-corpus",
+      "status": "bytes-not-supplied-in-selected-fixed-set",
+      "description": "没有真实 event/state historical bytes/manifest 文件；三 layout 常量不填补此缺口"
+    },
+    {
+      "id": "comparison-and-manifest",
+      "status": "not-created",
+      "description": "应另锁输入 SHA/profile/variant/头部白名单/制品/命令/输出 SHA 与两份完整 unified diff；本轮无运行命令或输出 SHA"
+    }
+  ],
+  "historicalCorpusAdmission": {
+    "actualFiles": [],
+    "actualBytesSha256": null,
+    "requiredForEachFutureFile": [
+      "independent writer identity/version and artifact SHA",
+      "exact role/typeId/wireVersion/layout pin",
+      "original manifest",
+      "payload and full-frame bytes SHA/length",
+      "independent expected domain fields or specific rejection",
+      "old-writer/new-decoder provenance; no candidate-generated expected"
+    ],
+    "allowedNow": "document missing assets only, no creation/copy/run"
+  },
+  "incrementBeyondF1": [
+    {
+      "interface": "四同 carrier nominal 的独立 API/PB 边与 TxId map key",
+      "comparisonBoundary": "F1 主要为 Id/Money/余额，不能代替此四 nominal 组合",
+      "slots": [
+        "F2-03",
+        "F2-04",
+        "F2-05",
+        "F2-06",
+        "F2-16"
+      ],
+      "baselineEvidence": [
+        {
+          "source": "D-fixture",
+          "lines": [
+            18,
+            64
+          ]
+        },
+        {
+          "source": "D-evidence-md",
+          "lines": [
+            23,
+            28
+          ]
+        },
+        {
+          "source": "D-evidence-md",
+          "lines": [
+            85,
+            111
+          ]
+        }
+      ]
+    },
+    {
+      "interface": "显式 host-computation 四原输入及 stableIdentityContract",
+      "comparisonBoundary": "F1 不提供本 ReservationIdentity 调用/稳定身份原输入合同",
+      "slots": [
+        "F2-08"
+      ],
+      "baselineEvidence": [
+        {
+          "source": "D-fixture",
+          "lines": [
+            18,
+            64
+          ]
+        },
+        {
+          "source": "D-evidence-md",
+          "lines": [
+            23,
+            28
+          ]
+        },
+        {
+          "source": "D-evidence-md",
+          "lines": [
+            85,
+            111
+          ]
+        }
+      ]
+    },
+    {
+      "interface": "先 quantity reject 再 receipt succeed-empty；identity event 与 receipt put 分离",
+      "comparisonBoundary": "F1 的资金 fold 不证明此 Warehouse 的零状态变更与空成功边界",
+      "slots": [
+        "F2-07",
+        "F2-09",
+        "F2-10",
+        "F2-11"
+      ],
+      "baselineEvidence": [
+        {
+          "source": "D-fixture",
+          "lines": [
+            18,
+            64
+          ]
+        },
+        {
+          "source": "D-evidence-md",
+          "lines": [
+            23,
+            28
+          ]
+        },
+        {
+          "source": "D-evidence-md",
+          "lines": [
+            85,
+            111
+          ]
+        }
+      ]
+    },
+    {
+      "interface": "identifier 不在 HAND state 与显式 required nominal-key map wrapper",
+      "comparisonBoundary": "F1 raw state 本含 userId，不能暴露同一个 BC 前插 identifier 的 F2 差异",
+      "slots": [
+        "F2-12",
+        "F2-15"
+      ],
+      "baselineEvidence": [
+        {
+          "source": "D-fixture",
+          "lines": [
+            18,
+            64
+          ]
+        },
+        {
+          "source": "D-evidence-md",
+          "lines": [
+            23,
+            28
+          ]
+        },
+        {
+          "source": "D-evidence-md",
+          "lines": [
+            69,
+            69
+          ]
+        },
+        {
+          "source": "D-evidence-md",
+          "lines": [
+            85,
+            111
+          ]
+        }
+      ]
+    },
+    {
+      "interface": "显式 Frame role/type/version/layout、精确 manifest、Frame-only serializer 与 snapshot/event 双入口",
+      "comparisonBoundary": "F1 没有这组三个 Warehouse pins/框架 ABI；不是断言 F1 完全不涉及序列化",
+      "slots": [
+        "F2-17",
+        "F2-18",
+        "F2-19"
+      ],
+      "baselineEvidence": [
+        {
+          "source": "D-fixture",
+          "lines": [
+            18,
+            64
+          ]
+        },
+        {
+          "source": "D-evidence-md",
+          "lines": [
+            23,
+            28
+          ]
+        },
+        {
+          "source": "D-evidence-md",
+          "lines": [
+            85,
+            111
+          ]
+        }
+      ]
+    },
+    {
+      "interface": "historical bytes parse/fromBinary/fromJournal 与 Envelope/currentEvents 的接口合同",
+      "comparisonBoundary": "F2 补充所需接口来源，不等于历史 bytes 已取得或 F1 恢复测试已完成",
+      "slots": [
+        "F2-19",
+        "F2-20"
+      ],
+      "baselineEvidence": [
+        {
+          "source": "D-fixture",
+          "lines": [
+            18,
+            64
+          ]
+        },
+        {
+          "source": "D-evidence-md",
+          "lines": [
+            23,
+            28
+          ]
+        },
+        {
+          "source": "D-evidence-md",
+          "lines": [
+            85,
+            111
+          ]
+        }
+      ]
+    }
+  ],
+  "notCovered": [
+    "all 42 families",
+    "all nested/cross-context types",
+    "all Saga/projection/bootstrap variants",
+    "all same-wire-shape semantic substitutions",
+    "full JDBC/runner/recovery implementation or runtime",
+    "new inventory/accounting/UUID/reply semantics"
+  ],
+  "conservativeDefaults": [
+    "不新增业务事实，保持显式字段/顺序/nominal/default/guards/folds",
+    "遇到无法无损表示的槽停止准入，不降 String、不填成功、不回退任意源码槽",
+    "将 HAND、raw BC、JS candidate、批准 target、historical bytes 分列；缺件保持 null/not-generated",
+    "真实固定 layout 常量保留，但不推断新 decoder 已兼容历史 bytes"
+  ],
+  "blocked": [
+    {
+      "id": "B1",
+      "item": "Warehouse→传统 BC runCommon 有限无损 adapter 不存在于本次已固定映射；原技术 binding 不兼容，id/text 会丢 nominal，host expr 对象不适配。",
+      "slots": [
+        "F2-01",
+        "F2-02",
+        "F2-03",
+        "F2-04",
+        "F2-05",
+        "F2-06",
+        "F2-08"
+      ]
+    },
+    {
+      "id": "B2",
+      "item": "state 不加 identifier、保留 author default 与 commit FormalFold；传统目标必须明确消费语义附件而非 AST identity fallback。",
+      "slots": [
+        "F2-09",
+        "F2-11",
+        "F2-12"
+      ]
+    },
+    {
+      "id": "B3",
+      "item": "Actor 应用接口到 classic protocol/helper 的有限映射未裁定；不得合成 reply 数据或新增业务命令。",
+      "slots": [
+        "F2-14"
+      ]
+    },
+    {
+      "id": "B4",
+      "item": "ReservationIdentity 具体算法/trait 完整声明/独立期望值未冻结；四原参保持，新增 UUID/库存/一致性校验等业务语义仍 blocked。",
+      "slots": [
+        "F2-08",
+        "F2-10"
+      ]
+    },
+    {
+      "id": "B5",
+      "item": "实际历史 event/state bytes、独立 oracle、完整 HAND 编译闭包、双端产物/目标全文件及输出 SHA 均未建立。",
+      "slots": [
+        "F2-15",
+        "F2-19",
+        "F2-20"
+      ]
+    },
+    {
+      "id": "B6",
+      "item": "制品实施前另锁；common-core_2.13:0.2 的发布制品优先，另一会话负责演进；本轮未调查 glue，不推断 withPost/policy 为发布 API。",
+      "authority": "main-agent-assignment-relaying-user-constraints-not-verbatim-user-quote"
+    },
+    {
+      "id": "B7",
+      "item": "三退休任意源码槽全部 blocked，不转 B 兜底；本轮不改 public schema/作者/实现，不含外部源码补拷授权。",
+      "authority": "main-agent-assignment-relaying-user-constraints-not-verbatim-user-quote"
+    }
+  ]
+}

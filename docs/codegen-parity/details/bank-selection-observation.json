@@ -1,0 +1,19 @@
+{
+  "schemaVersion":"codegen-parity.bank-selection-observation/v1",
+  "scope":"固定银行产物的有限选择观察，不是新生成、新鲜度检查或运行验收",
+  "selectedGenerator":"scala-cqrs-play-service",
+  "sourceProject":"baseline/bank/truthsrc.project.json",
+  "ledger":{"file":"baseline/actual-js/truthsrc.ledger.json","sha256":"c8e128ba314ddb069cc81c463fba6650e0ac1faaa206cbbb22f08ddf649fee2e","entries":233},
+  "selectionRule":"中央bankSelectedLogicalIds意为所选producer可能输出的逻辑角色，不表示该银行实例已满足每个condition。需要用实际既有产物或明确输入条件另判materialized/suppressed。",
+  "observedHosts":[
+    {"file":"baseline/actual-js/app/example/bankwealth/application/bank_payment_hostHost.scala","sha256":"e74f76532abdadc384d4fda34cad3d8896d34898c5996b3e3fa85758afa986c4","kind":"pipeline-invocation","evidence":"14行Invoke(bank_cash_payment_v1Execution.State)；29-37行originalInput/invocationArgs及truthsrc-pipeline-invocation-v1身份框架"},
+    {"file":"baseline/actual-js/app/example/bankwealth/application/bank_refund_hostHost.scala","sha256":"d0f6cc1c6da5fc3fa134fd240b6a0ebb1387c73184340ca2c90cff513048755f","kind":"pipeline-invocation","evidence":"14行Invoke(bank_independent_refund_v1Execution.State)；29-34行同pipeline身份"}
+  ],
+  "knownSuppressedLogicalIds":["formal-service/invocation-host/direct","formal-service/direct-entry-mapping/partial"],
+  "suppressionReason":"固定ledger只有payment/refund两个invocation-host；两份实际源码均为pipeline变体。render-invocation-host.mjs:13先选pipeline、14才允许direct。不能把direct实现可达当银行实例已消费。",
+  "materializationNotExhaustivelyEvaluated":true,
+  "producerCandidatesNotSelected":["scala-cqrs-domain-kernel-v1","scala-cqrs-aggregate-core-v1","scala-cqrs-module-seams-v1","scala-cqrs-persistence-readside-v1","scala-cqrs-saga-monarch-v1","scala-cqrs-play-application-v1"],
+  "runtimeExecuted":false,
+  "sameInputGenerationExecuted":false,
+  "bankFilesModified":false
+}

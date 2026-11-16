@@ -1,0 +1,4412 @@
+{
+  "schemaVersion": "codegen-parity.partition-fragment/v1",
+  "group": "family-domain-aggregate",
+  "catalog": "baseline/js/docs/artifacts/catalog.json",
+  "producerIds": [
+    "scala-cqrs-domain-kernel-v1",
+    "scala-cqrs-aggregate-core-v1"
+  ],
+  "sources": [
+    {
+      "file": "baseline/bank/truthsrc.project.json",
+      "originalFile": "truthsrc.project.json",
+      "repo": "bank",
+      "sha256": "ae42876f8cd46d75372378fc993595ecff5dd65755e98adc045ff22597c3e691",
+      "bytes": 6434,
+      "readCoverage": "partial:270-301",
+      "symbols": [
+        {
+          "name": "generator/options",
+          "lines": "278-298"
+        }
+      ]
+    },
+    {
+      "file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+      "originalFile": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+      "repo": "bc",
+      "sha256": "af98d7ccb3f894fc0641096448d0508942900304a903dc682160a58724e90341",
+      "bytes": 56458,
+      "readCoverage": "partial:496-693",
+      "symbols": [
+        {
+          "name": "generateDomainLayer/generateApplicationLayer",
+          "lines": "508-693"
+        }
+      ]
+    },
+    {
+      "file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateBehaviorTemplate.scala",
+      "originalFile": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateBehaviorTemplate.scala",
+      "repo": "bc",
+      "sha256": "8e01fd549619334ed21a5eb78f5bbd2aa9889f93d8af94d18ea5233d3456410e",
+      "bytes": 8682,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "AggregateBehaviorTemplate.generate",
+          "lines": "1-183"
+        }
+      ]
+    },
+    {
+      "file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateFactoryTemplate.scala",
+      "originalFile": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateFactoryTemplate.scala",
+      "repo": "bc",
+      "sha256": "b54ab0387af9bb2d4c4e9ab66939a5462c7b55c532dc5dd6e486945506c6a52b",
+      "bytes": 2971,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "AggregateFactoryTemplate.generate",
+          "lines": "1-81"
+        }
+      ]
+    },
+    {
+      "file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateProtocolTemplate.scala",
+      "originalFile": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateProtocolTemplate.scala",
+      "repo": "bc",
+      "sha256": "25fd60e6c669ef03b4d0b3165f34c8629c758276cb70328831407a37835d313a",
+      "bytes": 4692,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "AggregateProtocolTemplate.generate",
+          "lines": "1-126"
+        }
+      ]
+    },
+    {
+      "file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRepositoryTemplate.scala",
+      "originalFile": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRepositoryTemplate.scala",
+      "repo": "bc",
+      "sha256": "c8b3bf0f17e7538325fb7d6bbe0166da8ed97bc8a34b7f12a463415ded60dbf6",
+      "bytes": 3199,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "AggregateRepositoryTemplate.generate",
+          "lines": "1-84"
+        }
+      ]
+    },
+    {
+      "file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRootTemplate.scala",
+      "originalFile": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRootTemplate.scala",
+      "repo": "bc",
+      "sha256": "a138a86cf3c4e72d5eaba650f8e3636082047a5b0fdc6f9fa9ad7c0c78befbd4",
+      "bytes": 5729,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "AggregateRootTemplate.generate",
+          "lines": "1-164"
+        }
+      ]
+    },
+    {
+      "file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRulesTemplate.scala",
+      "originalFile": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRulesTemplate.scala",
+      "repo": "bc",
+      "sha256": "b897db889faae4906846476d00078a164cab2974d6b61c805dd7d9949479ac12",
+      "bytes": 3488,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "AggregateRulesTemplate.generate",
+          "lines": "1-78"
+        }
+      ]
+    },
+    {
+      "file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/CommandHelpersTemplate.scala",
+      "originalFile": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/CommandHelpersTemplate.scala",
+      "repo": "bc",
+      "sha256": "999303df54f728e2096789493a7d07b3f8d41ed1b5d3f25b99b0589d02536d1c",
+      "bytes": 3284,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "CommandHelpersTemplate.generate",
+          "lines": "1-95"
+        }
+      ]
+    },
+    {
+      "file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainEntityTemplate.scala",
+      "originalFile": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainEntityTemplate.scala",
+      "repo": "bc",
+      "sha256": "b5d64f4d21e71e6eee41af8a2c7e9b1f1652de13b53ed324c335b782fb9a314d",
+      "bytes": 5962,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "DomainEntityTemplate.generate",
+          "lines": "1-122"
+        }
+      ]
+    },
+    {
+      "file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainServiceTemplate.scala",
+      "originalFile": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainServiceTemplate.scala",
+      "repo": "bc",
+      "sha256": "89d8e550a486ee75c5b3179076c080619f57e3e90d12ad080989e080de662584",
+      "bytes": 1712,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "DomainServiceTemplate.generate",
+          "lines": "1-56"
+        }
+      ]
+    },
+    {
+      "file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/EntityBehaviorTemplate.scala",
+      "originalFile": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/EntityBehaviorTemplate.scala",
+      "repo": "bc",
+      "sha256": "59725ae168286fa5a2d13bc7d2fc5f3078e68c875342b8a1b76aca4056093a51",
+      "bytes": 3711,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "EntityBehaviorTemplate.generate",
+          "lines": "1-100"
+        }
+      ]
+    },
+    {
+      "file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/InvariantRuleTemplate.scala",
+      "originalFile": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/InvariantRuleTemplate.scala",
+      "repo": "bc",
+      "sha256": "de5285cf72e959e415420ff0063d7f307b15f99fc06043e729e178314eaefd23",
+      "bytes": 2727,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "InvariantRuleTemplate.generate",
+          "lines": "1-89"
+        }
+      ]
+    },
+    {
+      "file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/ValueObjectTemplate.scala",
+      "originalFile": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/ValueObjectTemplate.scala",
+      "repo": "bc",
+      "sha256": "64f4560981077866ab3a0927c175648c9d36977e59bffb69c41493388f28b826",
+      "bytes": 7211,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "ValueObjectTemplate.generate",
+          "lines": "1-129"
+        }
+      ]
+    },
+    {
+      "file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/bootstsrap/BootstrapTemplate.scala",
+      "originalFile": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/bootstsrap/BootstrapTemplate.scala",
+      "repo": "bc",
+      "sha256": "951a9cfd7813b6b543af515d575fa0d7b954daa9ed3b422d4f78c45f07818b5d",
+      "bytes": 8930,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "BootstrapTemplate.generate",
+          "lines": "1-219"
+        }
+      ]
+    },
+    {
+      "file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/persistence/AggregateConverterTemplate.scala",
+      "originalFile": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/persistence/AggregateConverterTemplate.scala",
+      "repo": "bc",
+      "sha256": "92543a5f3bc821256596fc4b42faaf9c7391e4bea4bd0ce5b31aa3a8ac4e7a0e",
+      "bytes": 8202,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "AggregateConverterTemplate.generate",
+          "lines": "1-200"
+        }
+      ]
+    },
+    {
+      "file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/proto/ProtoTemplate.scala",
+      "originalFile": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/proto/ProtoTemplate.scala",
+      "repo": "bc",
+      "sha256": "f4222930400b194407f6815c8b4c76d9a9779950ad3d10c5d6063c99cb2f77b7",
+      "bytes": 2855,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "ProtoTemplate.generate",
+          "lines": "1-86"
+        }
+      ]
+    },
+    {
+      "file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/repository/AggregateRepositoryImplTemplate.scala",
+      "originalFile": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/repository/AggregateRepositoryImplTemplate.scala",
+      "repo": "bc",
+      "sha256": "96e0a18d3d388b971b4a76769043367f060dfd0abba0c1e8c1fb86e938090d02",
+      "bytes": 1822,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "AggregateRepositoryImplTemplate.generate",
+          "lines": "1-63"
+        }
+      ]
+    },
+    {
+      "file": "baseline/bc/src/main/scala/net/imadz/codegen/structure/NamingConventions.scala",
+      "originalFile": "src/main/scala/net/imadz/codegen/structure/NamingConventions.scala",
+      "repo": "bc",
+      "sha256": "d9b8cb3533ebd93866d86523086b4790f2de247cd6751c67d8ad644c31c80166",
+      "bytes": 21641,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "NamingConventions",
+          "lines": "5-643"
+        }
+      ]
+    },
+    {
+      "file": "baseline/bc/src/main/scala/net/imadz/codegen/structure/PackageLayout.scala",
+      "originalFile": "src/main/scala/net/imadz/codegen/structure/PackageLayout.scala",
+      "repo": "bc",
+      "sha256": "7ba30b939f8dd70d8a260d4a4e6afb58a4aefb93a573cce675b113286f275a8c",
+      "bytes": 4376,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "PackageLayout",
+          "lines": "7-143"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/build-models.mjs",
+      "originalFile": "generators/scala-cqrs-aggregate-core-v1/build-models.mjs",
+      "repo": "js",
+      "sha256": "a856e3ff09828d6bf802bfe85092c329816fc891adf476a0345393d6c8cc03de",
+      "bytes": 19567,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "guards",
+          "lines": "139-152"
+        },
+        {
+          "name": "emissions",
+          "lines": "153-181"
+        },
+        {
+          "name": "assignments",
+          "lines": "183-220"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/expression-model.mjs",
+      "originalFile": "generators/scala-cqrs-aggregate-core-v1/expression-model.mjs",
+      "repo": "js",
+      "sha256": "386e529dac509ce32580e1b9e8d8f7a2e55bec08cc7c3aca1b6891ed2a459555",
+      "bytes": 11770,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "expressionResolver",
+          "lines": "21-174"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/generate.mjs",
+      "originalFile": "generators/scala-cqrs-aggregate-core-v1/generate.mjs",
+      "repo": "js",
+      "sha256": "7527ce17510063655a05846d1f70dc37fed678fcf42a559ddfab56f41ea8a707",
+      "bytes": 1155,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "generate",
+          "lines": "11-24"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/generator.json",
+      "originalFile": "generators/scala-cqrs-aggregate-core-v1/generator.json",
+      "repo": "js",
+      "sha256": "b3f05a64e30c2292f2f4d05ea348ca5913b7ca50c7a79672e1f0f27200792c66",
+      "bytes": 2383,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "manifest",
+          "lines": "1-23"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/render.mjs",
+      "originalFile": "generators/scala-cqrs-aggregate-core-v1/render.mjs",
+      "repo": "js",
+      "sha256": "50ffa6fbea00f167cd353bdb98df1b2001cc55c0faf0f8b10769ccf1216da556",
+      "bytes": 2350,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "render inherited tests",
+          "lines": "30-31"
+        },
+        {
+          "name": "productionJobs/render",
+          "lines": "15-35"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/actor-protocol.mjs",
+      "originalFile": "generators/scala-cqrs-aggregate-core-v1/templates/actor-protocol.mjs",
+      "repo": "js",
+      "sha256": "66446bbe92ac8967eb56115e82d242c0d365dfdb8f862a225d2d4f77eb1c4fba",
+      "bytes": 1081,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "actorProtocolTemplate",
+          "lines": "3-12"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/aggregate.mjs",
+      "originalFile": "generators/scala-cqrs-aggregate-core-v1/templates/aggregate.mjs",
+      "repo": "js",
+      "sha256": "731bf3e5b158ec4158b9043072e2d9be97ad22ebd3065683bc6c3ef02f06417c",
+      "bytes": 1828,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "aggregateTemplate container/provider",
+          "lines": "3-13"
+        },
+        {
+          "name": "aggregateTemplate command handler lambda",
+          "lines": "13-16"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/bootstrap.mjs",
+      "originalFile": "generators/scala-cqrs-aggregate-core-v1/templates/bootstrap.mjs",
+      "repo": "js",
+      "sha256": "5e1203a55e5805219d90e8afb487fdb44c91f70ac02996ffd3bc0d1407c96a07",
+      "bytes": 1949,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "bootstrapTemplate",
+          "lines": "3-13"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/build.mjs",
+      "originalFile": "generators/scala-cqrs-aggregate-core-v1/templates/build.mjs",
+      "repo": "js",
+      "sha256": "fff9583928ebae59648b7f1b9061c72e483dd45dad3fcc7001a53b61b2384057",
+      "bytes": 2308,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "buildArtifacts/buildTemplate",
+          "lines": "1-25"
+        },
+        {
+          "name": "buildArtifacts/buildTemplate",
+          "lines": "26-26"
+        },
+        {
+          "name": "buildArtifacts/buildTemplate",
+          "lines": "27-29"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/command-helpers.mjs",
+      "originalFile": "generators/scala-cqrs-aggregate-core-v1/templates/command-helpers.mjs",
+      "repo": "js",
+      "sha256": "3178b2be12efb80a7af89970df2f72d21ccdd871110ff631ba29e84c0e747c3d",
+      "bytes": 1493,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "commandHelpersTemplate",
+          "lines": "3-27"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/event-handler.mjs",
+      "originalFile": "generators/scala-cqrs-aggregate-core-v1/templates/event-handler.mjs",
+      "repo": "js",
+      "sha256": "63fcd1b8f7fb99f428c41ad514ec03e7bb3b091a0a39ba1e1f56b3786502081a",
+      "bytes": 1562,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "eventHandlerTemplate",
+          "lines": "3-25"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/expressions.mjs",
+      "originalFile": "generators/scala-cqrs-aggregate-core-v1/templates/expressions.mjs",
+      "repo": "js",
+      "sha256": "3da674b23156e94831f2c697d734c6dca8a4d68dbd04fbab0b27b8d2424b55cc",
+      "bytes": 10671,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "expressionSyntax predicate",
+          "lines": "40-127"
+        },
+        {
+          "name": "expressionSyntax value",
+          "lines": "128-139"
+        },
+        {
+          "name": "expressionSyntax fold",
+          "lines": "140-155"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/factory.mjs",
+      "originalFile": "generators/scala-cqrs-aggregate-core-v1/templates/factory.mjs",
+      "repo": "js",
+      "sha256": "dd3226939a38e33ec587a6a970dbd67253957a69c4621ba48fc48cebfe8d41bb",
+      "bytes": 992,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "factoryTemplate",
+          "lines": "3-11"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/generated-tests.mjs",
+      "originalFile": "generators/scala-cqrs-aggregate-core-v1/templates/generated-tests.mjs",
+      "repo": "js",
+      "sha256": "be2aa9081275443608b99d7d5bb6f4966bec438bd9276f0d676f0a792aab31d6",
+      "bytes": 1733,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "generatedBehaviorArtifacts/generatedBehaviorTemplate",
+          "lines": "5-25"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/imports.mjs",
+      "originalFile": "generators/scala-cqrs-aggregate-core-v1/templates/imports.mjs",
+      "repo": "js",
+      "sha256": "773e480de0726b321ff8c78a1dd597ae77ab25cdff836796725f2062781f33f8",
+      "bytes": 1419,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "importsFor/named/library",
+          "lines": "3-25"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/repository.mjs",
+      "originalFile": "generators/scala-cqrs-aggregate-core-v1/templates/repository.mjs",
+      "repo": "js",
+      "sha256": "4df99f3bc570cf8cccf2c16d179d3f208c68bdb75bef897b172889dce37bb422",
+      "bytes": 3539,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "repositoryTemplate",
+          "lines": "3-9"
+        },
+        {
+          "name": "repositoryImplementationTemplate",
+          "lines": "11-20"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/rules.mjs",
+      "originalFile": "generators/scala-cqrs-aggregate-core-v1/templates/rules.mjs",
+      "repo": "js",
+      "sha256": "0aa6e200c2dbff13175d018c7573bdfd3ff7e096fece1857bfc56edb6ebd43df",
+      "bytes": 1888,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "rulesTemplate per-command rules",
+          "lines": "14-25"
+        },
+        {
+          "name": "rulesTemplate decide",
+          "lines": "3-13"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-application/produce-effect.mjs",
+      "originalFile": "generators/scala-cqrs-application/produce-effect.mjs",
+      "repo": "js",
+      "sha256": "5514c27bf7eca0becb8ed2b42a17ee4f40e971e8dcf7a2d12fcc7c2fb3ef4435",
+      "bytes": 1633,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "createEffectRegistry",
+          "lines": "6-29"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-application/produce.mjs",
+      "originalFile": "generators/scala-cqrs-application/produce.mjs",
+      "repo": "js",
+      "sha256": "1135f7d8ead9088f5908fede19d68d704cb3307d2cc269e707b8604ec7f6ad3a",
+      "bytes": 3127,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "applicationRegistry",
+          "lines": "17-33"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs",
+      "originalFile": "generators/scala-cqrs-domain-kernel-v1/build-models.mjs",
+      "repo": "js",
+      "sha256": "4a6d50c3c931e06f817843427e86567d2966c481f9c69b481777b515b98a44b5",
+      "bytes": 32296,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "buildModels values/exacts/codecs",
+          "lines": "124-142,198-230,312-341"
+        },
+        {
+          "name": "buildModels codec representation admission",
+          "lines": "312-340"
+        },
+        {
+          "name": "signature/nested",
+          "lines": "258-287"
+        },
+        {
+          "name": "defaults/state model",
+          "lines": "231-245,288-293"
+        },
+        {
+          "name": "ruleParams.params",
+          "lines": "305-309"
+        },
+        {
+          "name": "hosts/methods",
+          "lines": "168-185,294-304"
+        },
+        {
+          "name": "codec admission/model",
+          "lines": "312-346"
+        },
+        {
+          "name": "protoPath",
+          "lines": "347-373"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/converter-abi.mjs",
+      "originalFile": "generators/scala-cqrs-domain-kernel-v1/converter-abi.mjs",
+      "repo": "js",
+      "sha256": "e810acf41f734edc9ff377e581fdeb9f25debce2e801dff6b8126d0f705c95c6",
+      "bytes": 3691,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "converterAbi",
+          "lines": "7-52"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/entry.mjs",
+      "originalFile": "generators/scala-cqrs-domain-kernel-v1/entry.mjs",
+      "repo": "js",
+      "sha256": "b311399d39e381e95ead77038af5f69d28a89d209bd8bf4aafe23368002e46f5",
+      "bytes": 3535,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "sourceEntry/aggregateSourceEntry/mappedEntry",
+          "lines": "17-19,40-65"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/generate.mjs",
+      "originalFile": "generators/scala-cqrs-domain-kernel-v1/generate.mjs",
+      "repo": "js",
+      "sha256": "59b392ee7e8e71f714cb77180d3bb7aad0907986eed63e3bf230952c44d74f5e",
+      "bytes": 1325,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "generate",
+          "lines": "12-27"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/generator.json",
+      "originalFile": "generators/scala-cqrs-domain-kernel-v1/generator.json",
+      "repo": "js",
+      "sha256": "16f66be0f56118ab6b654159e68728f37272d0b629424dff18e67cd860d3275d",
+      "bytes": 2030,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "manifest",
+          "lines": "1-23"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/jvm-parameters.mjs",
+      "originalFile": "generators/scala-cqrs-domain-kernel-v1/jvm-parameters.mjs",
+      "repo": "js",
+      "sha256": "0e3b1f488dcc0c09a8a0e36eff5be6c49c17bb6c1d8d5fe29ed85a230b638572",
+      "bytes": 1242,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "kernelParameterSlots/checkJvmParameters",
+          "lines": "5-21"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/render.mjs",
+      "originalFile": "generators/scala-cqrs-domain-kernel-v1/render.mjs",
+      "repo": "js",
+      "sha256": "82d1577e686de7b0233116b66b4c186ee41e6a99070aa80157d5991a04d98c5c",
+      "bytes": 5258,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "productionJobs",
+          "lines": "18-48"
+        },
+        {
+          "name": "renderJobs",
+          "lines": "51-78"
+        },
+        {
+          "name": "render",
+          "lines": "80-86"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/serialization-model.mjs",
+      "originalFile": "generators/scala-cqrs-domain-kernel-v1/serialization-model.mjs",
+      "repo": "js",
+      "sha256": "0e2a78adf06e33e8fec7a6eac9556c3e8f9e7d2dd0ad7d16f459db7457bc5dbf",
+      "bytes": 10400,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "serializationModel",
+          "lines": "24-136"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/build.mjs",
+      "originalFile": "generators/scala-cqrs-domain-kernel-v1/templates/build.mjs",
+      "repo": "js",
+      "sha256": "9d4caa06dd175177711de2e396f79eec10cb9ac314cd40e263cb54a97544d463",
+      "bytes": 1857,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "buildArtifacts/buildTemplate",
+          "lines": "1-19"
+        },
+        {
+          "name": "buildArtifacts/buildTemplate",
+          "lines": "20-20"
+        },
+        {
+          "name": "buildArtifacts/buildTemplate",
+          "lines": "21-23"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/converters.mjs",
+      "originalFile": "generators/scala-cqrs-domain-kernel-v1/templates/converters.mjs",
+      "repo": "js",
+      "sha256": "1772f6da095792ae6905ed8202640909eaa4cf963000c81bd03f54e273783d4c",
+      "bytes": 10798,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "convertersTemplate",
+          "lines": "10-141"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/exact-codecs.mjs",
+      "originalFile": "generators/scala-cqrs-domain-kernel-v1/templates/exact-codecs.mjs",
+      "repo": "js",
+      "sha256": "188cceae981f0d39240a1389680703db45466278caa085992863cd154e1e7eee",
+      "bytes": 4272,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "exactCodecsTemplate",
+          "lines": "11-53"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/generated-tests.mjs",
+      "originalFile": "generators/scala-cqrs-domain-kernel-v1/templates/generated-tests.mjs",
+      "repo": "js",
+      "sha256": "e12d8eb110d8fdfa48e39fcb0847fce89170663a1ee4535793a2668e146ebfe8",
+      "bytes": 2321,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "generatedTestArtifacts/generatedTestsTemplate",
+          "lines": "3-32"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/params.mjs",
+      "originalFile": "generators/scala-cqrs-domain-kernel-v1/templates/params.mjs",
+      "repo": "js",
+      "sha256": "24699f49680c3e02cb4116909adfdad5fbce48df80932554916508aba6da2d65",
+      "bytes": 2075,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "paramsTemplate",
+          "lines": "15-34"
+        },
+        {
+          "name": "computationsTemplate",
+          "lines": "3-13"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/protobuf.mjs",
+      "originalFile": "generators/scala-cqrs-domain-kernel-v1/templates/protobuf.mjs",
+      "repo": "js",
+      "sha256": "c308afacbf56dda0b456b6a227fbfe55f7478d68bb1a5ce58d24fc63ded909b7",
+      "bytes": 2322,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "wireFields/protoNodes/protobufTemplate",
+          "lines": "1-43"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/protocol.mjs",
+      "originalFile": "generators/scala-cqrs-domain-kernel-v1/templates/protocol.mjs",
+      "repo": "js",
+      "sha256": "524888a60c2f20a05351781973889ed5171588fa46bd5152114edaa72b414082",
+      "bytes": 916,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "protocolTemplate",
+          "lines": "3-14"
+        },
+        {
+          "name": "protocolTemplate Event arm",
+          "lines": "7-12"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/state.mjs",
+      "originalFile": "generators/scala-cqrs-domain-kernel-v1/templates/state.mjs",
+      "repo": "js",
+      "sha256": "691e6aec724d1772b4772dbdf633b3660aa0e51f5e035678e36aed5f1ca5352c",
+      "bytes": 2983,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "prettyLiteral/stateTemplate",
+          "lines": "5-35"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/types.mjs",
+      "originalFile": "generators/scala-cqrs-domain-kernel-v1/templates/types.mjs",
+      "repo": "js",
+      "sha256": "48876b28fa7032f1025589995023d46e66a3dc021e97eadbd2ceb27f4e1b590e",
+      "bytes": 2536,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "scalaType/scalaLiteral",
+          "lines": "4-39"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/values.mjs",
+      "originalFile": "generators/scala-cqrs-domain-kernel-v1/templates/values.mjs",
+      "repo": "js",
+      "sha256": "0aa4f83e462e2c299de89aab254e6d56050ab1a0c73b17aecf2fc84af45a749c",
+      "bytes": 4256,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "valueTemplate",
+          "lines": "17-63"
+        },
+        {
+          "name": "valueTemplate non-exact",
+          "lines": "17-36"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/generators/scala-cqrs-play-service/generate.mjs",
+      "originalFile": "generators/scala-cqrs-play-service/generate.mjs",
+      "repo": "js",
+      "sha256": "2586f04d28833e9acd413a59bec9b559a02b0139470a1f48051d48f4e0882df7",
+      "bytes": 6076,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "inherited/registry/generate",
+          "lines": "16-71"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/lib/products/generate-cli.mjs",
+      "originalFile": "lib/products/generate-cli.mjs",
+      "repo": "js",
+      "sha256": "4b255346896f8f27534a90ed338d078b568c6f9d5a56a8b80f6e782001dd12f6",
+      "bytes": 11644,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "registeredProductProducer",
+          "lines": "92-102"
+        },
+        {
+          "name": "generateProductCli",
+          "lines": "66-89"
+        },
+        {
+          "name": "planCompiledProducts",
+          "lines": "110-146"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/src/core/anchors.mjs",
+      "originalFile": "src/core/anchors.mjs",
+      "repo": "js",
+      "sha256": "ac41a62d40ca73f913a2ec01125679b87f5429d714ae9edb8a0da2f5c3a15014",
+      "bytes": 33357,
+      "readCoverage": "partial:530-612",
+      "symbols": [
+        {
+          "name": "writeAnchorsIndex/materialize",
+          "lines": "539-612"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/src/core/generate.mjs",
+      "originalFile": "src/core/generate.mjs",
+      "repo": "js",
+      "sha256": "6a90185eb48eaa754dc57794c8bf02c5a518c5c3cb6d16e0ef8c336fcf59925c",
+      "bytes": 15602,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "rowOf/prepareEntries/applyEntries",
+          "lines": "49-60,134-232,246-269"
+        },
+        {
+          "name": "anchorInputs/applyEntries",
+          "lines": "91-105,211-215,263-267"
+        }
+      ]
+    },
+    {
+      "file": "baseline/js/src/core/product-plan.mjs",
+      "originalFile": "src/core/product-plan.mjs",
+      "repo": "js",
+      "sha256": "b67b68f75361914151d3c40263b2bce5db3bcad20ba9fc1daae6e1f43790d5c7",
+      "bytes": 8772,
+      "readCoverage": "full",
+      "symbols": [
+        {
+          "name": "planProductSet",
+          "lines": "71-105"
+        }
+      ]
+    }
+  ],
+  "producers": [
+    {
+      "id": "scala-cqrs-domain-kernel-v1",
+      "lifecycle": "current",
+      "registration": "product-profile",
+      "entrypoints": [
+        {
+          "file": "baseline/js/lib/products/generate-cli.mjs",
+          "symbol": "registeredProductProducer/generateProductCli",
+          "lines": "66-102",
+          "callability": "独立注册的shipped producer，显式目录realpath匹配；入口可达不代表本轮执行",
+          "conditions": [
+            "显式generator/request/options/out；--plan不apply"
+          ]
+        },
+        {
+          "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/generate.mjs",
+          "symbol": "generate",
+          "lines": "12-27",
+          "callability": "显式profile检查后调用唯一domain-kernel或aggregate-core子producer",
+          "conditions": [
+            "完整版本化编译产品，planProductSet重放比对与两次独立plan",
+            "packages/names/protobuf为有限技术选项"
+          ]
+        }
+      ],
+      "bankConsumption": {
+        "status": "not-selected",
+        "evidence": [
+          "baseline/bank/truthsrc.project.json:278 及 /Users/zhongdj/Workspaces/mad-polaris/bank-wealth-demo/truthsrc.project.json:278 选择scala-cqrs-play-service；实际文件SHA256=ae42876f8cd46d75372378fc993595ecff5dd65755e98adc045ff22597c3e691",
+          "baseline/js/generators/scala-cqrs-play-service/generate.mjs:16-23 通过createEffectRegistry('2')继承并覆盖aggregate-dsl/invariant-dsl",
+          "baseline/js/generators/scala-cqrs-application/produce-effect.mjs:6-26 → applicationRegistry(version)；produce.mjs:1-5,17-29调scala-cqrs-domain renderers，不调本组family1/2",
+          "baseline/js/lib/products/generate-cli.mjs:94-99 两family分别注册，不能从注册推断被service消费"
+        ]
+      },
+      "profileDifferences": [
+        "仅纯kernel+PB glue；不发rules/event fold/Actor层；接受external声明的一致产品但不授权或执行external事件"
+      ]
+    },
+    {
+      "id": "scala-cqrs-aggregate-core-v1",
+      "lifecycle": "current",
+      "registration": "product-profile",
+      "entrypoints": [
+        {
+          "file": "baseline/js/lib/products/generate-cli.mjs",
+          "symbol": "registeredProductProducer/generateProductCli",
+          "lines": "66-102",
+          "callability": "独立注册的shipped producer，显式目录realpath匹配；入口可达不代表本轮执行",
+          "conditions": [
+            "显式generator/request/options/out；--plan不apply"
+          ]
+        },
+        {
+          "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/generate.mjs",
+          "symbol": "generate",
+          "lines": "11-24",
+          "callability": "显式profile检查后调用唯一domain-kernel或aggregate-core子producer",
+          "conditions": [
+            "完整版本化编译产品，planProductSet重放比对与两次独立plan",
+            "packages/names/protobuf为有限技术选项",
+            "无external producer且所有event有本地command producer"
+          ]
+        }
+      ],
+      "bankConsumption": {
+        "status": "not-selected",
+        "evidence": [
+          "baseline/bank/truthsrc.project.json:278 及 /Users/zhongdj/Workspaces/mad-polaris/bank-wealth-demo/truthsrc.project.json:278 选择scala-cqrs-play-service；实际文件SHA256=ae42876f8cd46d75372378fc993595ecff5dd65755e98adc045ff22597c3e691",
+          "baseline/js/generators/scala-cqrs-play-service/generate.mjs:16-23 通过createEffectRegistry('2')继承并覆盖aggregate-dsl/invariant-dsl",
+          "baseline/js/generators/scala-cqrs-application/produce-effect.mjs:6-26 → applicationRegistry(version)；produce.mjs:1-5,17-29调scala-cqrs-domain renderers，不调本组family1/2",
+          "baseline/js/lib/products/generate-cli.mjs:94-99 两family分别注册，不能从注册推断被service消费"
+        ]
+      },
+      "profileDifferences": [
+        "调用buildKernelModels一次并继承kernel productionJobs、PB测试；不是调用kernel.generate/其build模板",
+        "aggregateSourceEntry统一将继承项header owner改为scala-cqrs-aggregate-core:1",
+        "新增rules/emission/fold/Actor/factory/bootstrap/repository与empty replay测试；独立Akka/protoc构建；严格拒绝external"
+      ]
+    }
+  ],
+  "logicalOutputs": [
+    {
+      "id": "family-domain-aggregate/value-object/domain",
+      "classification": "A",
+      "scalaArtifact": "value-object",
+      "role": "领域名义值、记录与exact数值不变式",
+      "variant": "非codec.wire.ref/codec.po.ref的value；普通/decimal/unit-decimal",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-domain-kernel-v1",
+          "outputId": "value-object",
+          "channel": "manifest"
+        },
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "value-object",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "modules/kernel/src/main/scala/<basePath>/domain/values/<value.name>.scala"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/values.mjs",
+            "symbol": "valueTemplate",
+            "lines": "17-63"
+          },
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs",
+            "symbol": "buildModels values/exacts/codecs",
+            "lines": "124-142,198-230,312-341"
+          }
+        ],
+        "constructs": [
+          "sourceEntry生成头；package；普通值无import，localType只缩短同包名义类型",
+          "普通record按字段顺序发final case class（≤2 primitive紧凑，其余多行）；scalar有value字段",
+          "exact case class构造时checkedAmount及units检查；isPositive、compareSameUnit、plus、minus",
+          "exact companion.checkedAmount：非null、setScale(UNNECESSARY)、precision上限、MathContext.UNLIMITED；无Play JSON companion"
+        ],
+        "conditions": [
+          "每个声明value一文件；exact来自显式descriptor"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "modules/kernel/src/main/scala/<basePath>/domain/values/<Value>.scala"
+        ],
+        "disposition": "adapt",
+        "constructDisposition": [
+          {
+            "current": "整个普通case class及字段",
+            "target": "domain/values/<Value>.scala",
+            "action": "retain",
+            "reason": "名义身份与字段顺序保留，不按结构合并类型"
+          },
+          {
+            "current": "exact构造校验、算术、companion及FQN",
+            "target": "同一<Value>.scala的具名方法与明确imports",
+            "action": "adapt",
+            "reason": "只改布局/导入；不能降低精度或删除unit验证"
+          },
+          {
+            "current": "缺少raw Scala implicit jsonFormat",
+            "target": "单列raw基准差距；纯kernel不自动引入Play",
+            "action": "retain",
+            "reason": "raw ValueObjectTemplate有Play JSON；是否另置glue必须裁决"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/value-file-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-values-v1",
+        "requiredConditions": [
+          "普通record/scalar、两种exact、非38 precision、非法scale/unit、同构不同名义值"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "shared-entry-writer"
+      ],
+      "openDecisions": [
+        "纯kernel与raw Scala VO内嵌Play JSON合同如何协调；不得假称字节一致"
+      ],
+      "scalaComparison": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/ValueObjectTemplate.scala:15-106"
+    },
+    {
+      "id": "family-domain-aggregate/representation/wire",
+      "classification": "B",
+      "scalaArtifact": null,
+      "role": "exact wire显式文本表示，不是领域业务值实现",
+      "variant": "codec descriptor.wire.ref精确引用；scalar text或amount/unit text record",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-domain-kernel-v1",
+          "outputId": "value-object",
+          "channel": "manifest"
+        },
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "value-object",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "modules/kernel/src/main/scala/<basePath>/domain/values/<codec.wire.resolvedName>.scala"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/values.mjs",
+            "symbol": "valueTemplate non-exact",
+            "lines": "17-36"
+          },
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs",
+            "symbol": "buildModels codec representation admission",
+            "lines": "312-340"
+          }
+        ],
+        "constructs": [
+          "生成头、package、无框架import",
+          "独立final case class；scalar字段value:String；unit-decimal按descriptor成员顺序输出两个String",
+          "没有exact运算、actor或PB继承；copy/apply等由case class产生"
+        ],
+        "conditions": [
+          "每个exact的wire/po声明均要求独立名义ref；不能与domain/另一representation合并"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "modules/glue/src/main/scala/<basePath>/infrastructure/serialization/values/<WireValue>.scala"
+        ],
+        "disposition": "move",
+        "constructDisposition": [
+          {
+            "current": "完整独立case class及package",
+            "target": "infrastructure/serialization/values/<WireValue>.scala",
+            "action": "move",
+            "reason": "将wire/PO职责从domain分离，保留同一名义定义不留永久转发壳"
+          },
+          {
+            "current": "原同包类型引用及codeMappings",
+            "target": "converter/codec依赖模型和最终新路径",
+            "action": "adapt",
+            "reason": "只有确认kernel没有引用这些表示后可搬；不得制造kernel→glue依赖"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/representation-file-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-exact-representations-v1",
+        "requiredConditions": [
+          "domain/wire/po不同ref；同字段结构；至少一项kernel签名引用检查；amount/unit字段重命名"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "family-domain-aggregate/exact-codecs/context"
+      ],
+      "openDecisions": [
+        "现准入允许所有value被引用，搬迁前需界定wire/PO是否允许出现在纯kernel签名；如存在需设计边界而非直接搬文件"
+      ]
+    },
+    {
+      "id": "family-domain-aggregate/representation/po",
+      "classification": "B",
+      "scalaArtifact": null,
+      "role": "exact po显式文本表示，不是领域业务值实现",
+      "variant": "codec descriptor.po.ref精确引用；scalar text或amount/unit text record",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-domain-kernel-v1",
+          "outputId": "value-object",
+          "channel": "manifest"
+        },
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "value-object",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "modules/kernel/src/main/scala/<basePath>/domain/values/<codec.po.resolvedName>.scala"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/values.mjs",
+            "symbol": "valueTemplate non-exact",
+            "lines": "17-36"
+          },
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs",
+            "symbol": "buildModels codec representation admission",
+            "lines": "312-340"
+          }
+        ],
+        "constructs": [
+          "生成头、package、无框架import",
+          "独立final case class；scalar字段value:String；unit-decimal按descriptor成员顺序输出两个String",
+          "没有exact运算、actor或PB继承；copy/apply等由case class产生"
+        ],
+        "conditions": [
+          "每个exact的wire/po声明均要求独立名义ref；不能与domain/另一representation合并"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "modules/glue/src/main/scala/<basePath>/infrastructure/serialization/values/<PoValue>.scala"
+        ],
+        "disposition": "move",
+        "constructDisposition": [
+          {
+            "current": "完整独立case class及package",
+            "target": "infrastructure/serialization/values/<PoValue>.scala",
+            "action": "move",
+            "reason": "将wire/PO职责从domain分离，保留同一名义定义不留永久转发壳"
+          },
+          {
+            "current": "原同包类型引用及codeMappings",
+            "target": "converter/codec依赖模型和最终新路径",
+            "action": "adapt",
+            "reason": "只有确认kernel没有引用这些表示后可搬；不得制造kernel→glue依赖"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/representation-file-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-exact-representations-v1",
+        "requiredConditions": [
+          "domain/wire/po不同ref；同字段结构；至少一项kernel签名引用检查；amount/unit字段重命名"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "family-domain-aggregate/exact-codecs/context"
+      ],
+      "openDecisions": [
+        "现准入允许所有value被引用，搬迁前需界定wire/PO是否允许出现在纯kernel签名；如存在需设计边界而非直接搬文件"
+      ]
+    },
+    {
+      "id": "family-domain-aggregate/payload/command",
+      "classification": "B",
+      "scalaArtifact": null,
+      "role": "纯领域决策输入ADT，绝非Actor命令协议",
+      "variant": "protocol.commands部分；不含ActorRef",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-domain-kernel-v1",
+          "outputId": "domain-protocol",
+          "channel": "manifest"
+        },
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "domain-protocol",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "modules/kernel/src/main/scala/<basePath>/domain/<protocol.name>.scala"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/protocol.mjs",
+            "symbol": "protocolTemplate",
+            "lines": "3-14"
+          },
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs",
+            "symbol": "signature/nested",
+            "lines": "258-287"
+          }
+        ],
+        "constructs": [
+          "共享生成头/package/values import由protocol-file-assembly独占",
+          "object <Protocol>中的sealed trait Command；每个command final case class按declaredSignature顺序扩展Command",
+          "字段包含BUSINESS_INPUT/PROPAGATED来源；没有replyTo、Effect、序列化父类、方法体或初始化"
+        ],
+        "conditions": [
+          "每聚合一个容器；与Event共享物理文件"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": "kernel:<context>/<aggregate>/protocol"
+      },
+      "target": {
+        "paths": [
+          "modules/kernel/src/main/scala/<basePath>/domain/invariant/params/<Aggregate>Commands.scala"
+        ],
+        "disposition": "split",
+        "constructDisposition": [
+          {
+            "current": "Command trait及所有纯command case classes",
+            "target": "domain/invariant/params/<Aggregate>Commands.scala",
+            "action": "move",
+            "reason": "明确纯输入所属，不注入ActorRef"
+          },
+          {
+            "current": "共享object/package/values imports",
+            "target": "命令文件和Entity文件各自Model.dependencies",
+            "action": "split",
+            "reason": "先分完Command/Event，再按各文件类型依赖确定imports；旧混合壳退役"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/protocol-file-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-payload-separation-v1",
+        "requiredConditions": [
+          "至少两个命令、两个事件、同名跨聚合字段类型冲突、传播参数顺序"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "family-domain-aggregate/value-object/domain"
+      ],
+      "openDecisions": [
+        "目标纯Command与formal Params是否保留两层，应按调用方/输入语义裁定；不得为少文件并入Actor协议"
+      ]
+    },
+    {
+      "id": "family-domain-aggregate/entity/events",
+      "classification": "A",
+      "scalaArtifact": "domain-entity",
+      "role": "领域Event sealed族和具名事件字段",
+      "variant": "protocol.events部分，与Command分离",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-domain-kernel-v1",
+          "outputId": "domain-protocol",
+          "channel": "manifest"
+        },
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "domain-protocol",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "modules/kernel/src/main/scala/<basePath>/domain/<protocol.name>.scala"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/protocol.mjs",
+            "symbol": "protocolTemplate Event arm",
+            "lines": "7-12"
+          }
+        ],
+        "constructs": [
+          "共享头/package/values import由protocol-file-assembly独占；此项只拥有Event trait和event case classes",
+          "sealed trait Event；所有事件按声明顺序、declaredSlots字段顺序输出；无ActorRef/状态/决策"
+        ],
+        "conditions": [
+          "每聚合；所有事件都有显式定义"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": "kernel:<context>/<aggregate>/protocol"
+      },
+      "target": {
+        "paths": [
+          "modules/kernel/src/main/scala/<basePath>/domain/entities/<Aggregate>Entity.scala"
+        ],
+        "disposition": "split",
+        "constructDisposition": [
+          {
+            "current": "sealed Event及事件case classes",
+            "target": "<Aggregate>Entity.scala的Events段",
+            "action": "move",
+            "reason": "与raw DomainEntity职责对应；不把纯Command一起挪入Entity"
+          },
+          {
+            "current": "混合Protocol容器/import",
+            "target": "Entity对象和类型依赖",
+            "action": "adapt",
+            "reason": "entity-file-assembly合并此项与State；不重复拥有共享头"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/entity-file-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-payload-separation-v1",
+        "requiredConditions": [
+          "事件字段与命令字段不等同；跨聚合同名事件"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "family-domain-aggregate/entity/state"
+      ],
+      "openDecisions": [
+        "迁移嵌套FQN需同步converter/event-handler调用，PB identity不变"
+      ],
+      "scalaComparison": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainEntityTemplate.scala:66-102"
+    },
+    {
+      "id": "family-domain-aggregate/entity/state",
+      "classification": "A",
+      "scalaArtifact": "domain-entity",
+      "role": "有显式初值的纯State和empty",
+      "variant": "独立顶层State，而非raw Entity中的嵌套State",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-domain-kernel-v1",
+          "outputId": "domain-state",
+          "channel": "manifest"
+        },
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "domain-state",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "modules/kernel/src/main/scala/<basePath>/domain/<state.name>.scala"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/state.mjs",
+            "symbol": "prettyLiteral/stateTemplate",
+            "lines": "5-35"
+          },
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs",
+            "symbol": "defaults/state model",
+            "lines": "231-245,288-293"
+          }
+        ],
+        "constructs": [
+          "生成头/package/values wildcard import；无Actor框架",
+          "final case class全字段都有authored default；optional/sequence/map/nominal递归字面量",
+          "companion val empty = State()；无fold，无recovery，无entity转发"
+        ],
+        "conditions": [
+          "每字段恰有一个显式default"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "modules/kernel/src/main/scala/<basePath>/domain/entities/<Aggregate>Entity.scala"
+        ],
+        "disposition": "move",
+        "constructDisposition": [
+          {
+            "current": "State class、字段/default与companion empty",
+            "target": "Entity的State段和empty入口",
+            "action": "adapt",
+            "reason": "合并Entity容器，但不得套raw按第一个字段推ID/猜neutral值"
+          },
+          {
+            "current": "package/import及字面量引用",
+            "target": "Entity统一dependencies",
+            "action": "adapt",
+            "reason": "entity-file-assembly拥有合并文件头和初始化顺序"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/entity-file-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-state-defaults-v1",
+        "requiredConditions": [
+          "Long.MinValue、嵌套record、None/Some、空非空Vector/Map、exact defaults"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "family-domain-aggregate/entity/events"
+      ],
+      "openDecisions": [
+        "raw empty(id)与当前empty无参显式default不等价；ID来源需明确合同后适配"
+      ],
+      "scalaComparison": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainEntityTemplate.scala:44-64"
+    },
+    {
+      "id": "family-domain-aggregate/formal-rules/parameters",
+      "classification": "A",
+      "scalaArtifact": "aggregate-rules-formal",
+      "role": "每命令规则参数容器",
+      "variant": "state/command/hosts三字段的显式参数产品",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-domain-kernel-v1",
+          "outputId": "rule-parameters",
+          "channel": "manifest"
+        },
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "rule-parameters",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "modules/kernel/src/main/scala/<basePath>/domain/invariant/params/<ruleParams.name>.scala"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/params.mjs",
+            "symbol": "paramsTemplate",
+            "lines": "15-34"
+          },
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs",
+            "symbol": "ruleParams.params",
+            "lines": "305-309"
+          }
+        ],
+        "constructs": [
+          "生成头/package；Protocol/State/Computations imports；同名冲突保留FQN",
+          "object RuleParams；逐命令final case class(state, command, hosts)，严格三字段顺序；无默认值、方法体、ActorRef"
+        ],
+        "conditions": [
+          "每聚合一个容器；没有命令时空容器"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "modules/kernel/src/main/scala/<basePath>/domain/invariant/<Aggregate>Rules.scala"
+        ],
+        "disposition": "move",
+        "constructDisposition": [
+          {
+            "current": "各Params case class",
+            "target": "<Aggregate>Rules.scala的参数段",
+            "action": "move",
+            "reason": "raw formal规则同样拥有params；此处不是Actor CommandHelper"
+          },
+          {
+            "current": "旧外层RuleParams与imports",
+            "target": "formal-rule-file-assembly的统一容器/imports",
+            "action": "adapt",
+            "reason": "去掉旧容器前迁移所有引用，保留hosts明确依赖"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/formal-rule-file-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-formal-decision-v1",
+        "requiredConditions": [
+          "零/多命令、host存在/不存在、参数类型同名冲突"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "family-domain-aggregate/payload/command",
+        "family-domain-aggregate/computations/port"
+      ],
+      "openDecisions": [
+        "raw paramFields与当前整State/Command/Hosts包裹的接口粒度需同输入裁决"
+      ],
+      "scalaComparison": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRulesTemplate.scala:41-74"
+    },
+    {
+      "id": "family-domain-aggregate/computations/port",
+      "classification": "B",
+      "scalaArtifact": null,
+      "role": "纯计算的typed宿主端口，不发业务实现",
+      "variant": "按domain-dependencies.hosts逐方法；允许空trait",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-domain-kernel-v1",
+          "outputId": "computation-port",
+          "channel": "manifest"
+        },
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "computation-port",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "modules/kernel/src/main/scala/<basePath>/domain/ports/<computations.name>.scala"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/params.mjs",
+            "symbol": "computationsTemplate",
+            "lines": "3-13"
+          },
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs",
+            "symbol": "hosts/methods",
+            "lines": "168-185,294-304"
+          }
+        ],
+        "constructs": [
+          "生成头/package及domain.values import（当前通过去.ports推包）",
+          "trait Computations；每个def参数严格inputDependencies顺序，returnType显式；不收全state",
+          "无default method、实现object、I/O或缓存；stableIdentityContract/version在模型中，不是trait执行保证"
+        ],
+        "conditions": [
+          "每聚合必发；零host时空接口"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "modules/kernel/src/main/scala/<basePath>/domain/services/<Aggregate>Computations.scala"
+        ],
+        "disposition": "move",
+        "constructDisposition": [
+          {
+            "current": "trait、逐方法参数和返回类型",
+            "target": "domain/services/<Aggregate>Computations.scala",
+            "action": "retain",
+            "reason": "保留纯计算端口合同；不能填true/empty假成功"
+          },
+          {
+            "current": "domain.ports包及模板反推valuesPackage",
+            "target": "显式services包与import模型",
+            "action": "adapt",
+            "reason": "按既有domain.services布局，不能继续正则反推依赖"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/computations-file-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-computations-v1",
+        "requiredConditions": [
+          "零host、多host、按(state-field,parameter)交错输入、重复调用同host观察调用次数"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "family-domain-aggregate/value-object/domain"
+      ],
+      "openDecisions": [
+        "未生成任何业务计算实现；需独立手写实现与逐方法BDD；源码trait存在不能当DomainService实现完成"
+      ],
+      "scalaComparison": "不映射domain-service：raw baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainServiceTemplate.scala:29-44 发实现object及???算法槽；这里仅端口声明"
+    },
+    {
+      "id": "family-domain-aggregate/exact-codecs/context",
+      "classification": "B",
+      "scalaArtifact": null,
+      "role": "domain↔wire/PO exact文本编码，非ProtoConverter",
+      "variant": "每context一个合并对象，内部每descriptor一个codec",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-domain-kernel-v1",
+          "outputId": "exact-value-codec",
+          "channel": "manifest"
+        },
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "exact-value-codec",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "modules/glue/src/main/scala/<basePath>/infrastructure/serialization/ExactValueCodecs.scala"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/exact-codecs.mjs",
+            "symbol": "exactCodecsTemplate",
+            "lines": "11-53"
+          },
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs",
+            "symbol": "codec admission/model",
+            "lines": "312-346"
+          }
+        ],
+        "constructs": [
+          "生成头/package/import domain.values；object ExactValueCodecs",
+          "private coefficient：长度、canonical负号/前导零/-0、precision检查；任一precision非38时参数化",
+          "条件private fixed：固定scale小数文本、拒负零与precision越界",
+          "每codec nested object；toWire/toPo走checkedAmount后unscaledValue或toPlainString；fromWire/fromPo重建UNLIMITED BigDecimal并保留unit",
+          "descriptor ID/version用于准入和模型身份；模板不发这些ID/version常量"
+        ],
+        "conditions": [
+          "仅有codec的context；固定小数scale>0才需要fixed"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "modules/glue/src/main/scala/<basePath>/infrastructure/serialization/ExactValueCodecs.scala"
+        ],
+        "disposition": "adapt",
+        "constructDisposition": [
+          {
+            "current": "coefficient/fixed与nested codec全部方法",
+            "target": "原ExactValueCodecs.scala",
+            "action": "retain",
+            "reason": "拒绝非canonical输入与精度/单位语义不可改变"
+          },
+          {
+            "current": "domain.values统一import及FQN",
+            "target": "显式domain类型与迁移后wire/po imports",
+            "action": "adapt",
+            "reason": "依赖由模型推导；不能合并三种nominal表示"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/exact-codec-file-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-exact-representations-v1",
+        "requiredConditions": [
+          "minor-units/fixed-decimal、scale=0/>0、precision=38/非38、-0/前导零/超界/unit不匹配"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "family-domain-aggregate/representation/wire",
+        "family-domain-aggregate/representation/po"
+      ],
+      "openDecisions": [
+        "是否公开codec descriptor身份常量是新API决定；不能根据catalog文字假称已经生成"
+      ]
+    },
+    {
+      "id": "family-domain-aggregate/protobuf/context",
+      "classification": "A",
+      "scalaArtifact": "protobuf-schema",
+      "role": "值/State/Event根及presence容器的实际PB schema",
+      "variant": "每context一文件，不是每聚合+shared的raw集合",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-domain-kernel-v1",
+          "outputId": "protobuf-schema",
+          "channel": "manifest"
+        },
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "protobuf-schema",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "modules/glue/src/main/protobuf/<context-id>_domain.proto"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/protobuf.mjs",
+            "symbol": "wireFields/protoNodes/protobufTemplate",
+            "lines": "1-43"
+          },
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/serialization-model.mjs",
+            "symbol": "serializationModel",
+            "lines": "24-136"
+          },
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs",
+            "symbol": "protoPath",
+            "lines": "347-373"
+          }
+        ],
+        "constructs": [
+          "生成头；syntax proto3；显式PB package；import scalapb.proto；flat_package/single_file选项",
+          "显式root binding顺序，紧跟structural children；每value/state/event一个root，Command不入PB",
+          "root字段f0/f1…且number=i+1；optional/sequence/map presence包装present=1/f0=2；map-entry f0=1/f1=2",
+          "无enum/oneof/java_multiple_files发射；递归与跨context nominal PB imports被拒绝；JVM slots包含unknownFields"
+        ],
+        "conditions": [
+          "每value/state/event须恰一个显式PB root名字；文件名来自context ID而非PB package"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "modules/glue/src/main/protobuf/<context-id>_domain.proto"
+        ],
+        "disposition": "retain",
+        "constructDisposition": [
+          {
+            "current": "schema header/options、所有message/field",
+            "target": "相同proto文件",
+            "action": "retain",
+            "reason": "保持PB package/name/field number/presence，不能按raw风格重编号"
+          },
+          {
+            "current": "raw每aggregate/shared文件分区差异",
+            "target": "单列proto内容diff后决定物理拆分",
+            "action": "adapt",
+            "reason": "若移动文件会改变ScalaPB descriptor名称，须ABI审定"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/protobuf-file-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-protobuf-v1",
+        "requiredConditions": [
+          "PB package与context ID不同、所有root、nested Option/Vector/Map、nominal map key、跨context拒绝/JVM slot边界"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "family-domain-aggregate/value-object/domain",
+        "family-domain-aggregate/entity/state",
+        "family-domain-aggregate/entity/events"
+      ],
+      "openDecisions": [
+        "catalog称文件名来自protobuf package，但源码明确context + _domain.proto；只记录漂移，不修改catalog",
+        "raw PB oneof/shared布局与当前有限presence schema不等价；不得以风格改wire ABI"
+      ],
+      "scalaComparison": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/proto/ProtoTemplate.scala:14-85"
+    },
+    {
+      "id": "family-domain-aggregate/converter/context",
+      "classification": "A",
+      "scalaArtifact": "proto-converter",
+      "role": "实际ScalaPB根与domain值/State/Event双向转换",
+      "variant": "合并context对象，公开encode/decode ABI",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-domain-kernel-v1",
+          "outputId": "proto-converter",
+          "channel": "manifest"
+        },
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "proto-converter",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "modules/glue/src/main/scala/<basePath>/infrastructure/serialization/DomainConverters.scala"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/converters.mjs",
+            "symbol": "convertersTemplate",
+            "lines": "10-141"
+          },
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/converter-abi.mjs",
+            "symbol": "converterAbi",
+            "lines": "7-52"
+          }
+        ],
+        "constructs": [
+          "生成头/package；事件重名alias、State import、values wildcard、PB package alias pb",
+          "object DomainConverters；private required[A]；所有root公开encode/decode成对方法，事件方法名字来自aggregate身份与event解析名",
+          "结构helpers依赖优先生成：optional检查present/空payload；sequence/map required presence；map-entry双参encode",
+          "string-key map按字符串排序；typed-key map按实际编码key bytes排序并拒碰撞；条件compareBytes局部var/while",
+          "decode map拒重复key；exact根调用ExactValueCodecs；record按PB field与domain accessor named args，scalar位置参数；无serializer注册"
+        ],
+        "conditions": [
+          "每context；typedMaps才发compareBytes；structural helpers去重"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "modules/glue/src/main/scala/<basePath>/infrastructure/persistence/converters/DomainConverters.scala"
+        ],
+        "disposition": "move",
+        "constructDisposition": [
+          {
+            "current": "完整object、required、结构helpers、root encode/decode",
+            "target": "persistence/converters/DomainConverters.scala",
+            "action": "adapt",
+            "reason": "目标包遵循BC；保留有限codec语义与现ABI，trait/ProtoConverter接口须另行裁定"
+          },
+          {
+            "current": "导入与所有跨容器引用",
+            "target": "解析后统一dependencies",
+            "action": "adapt",
+            "reason": "Entity与wire/PO迁移后重新解析；不通过广泛GeneratedMessage绑定消解类型差异"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/converter-file-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-protobuf-v1",
+        "requiredConditions": [
+          "空/非空容器、缺required、typed-key确定性/碰撞、duplicate map key、同名事件、exact往返"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "family-domain-aggregate/protobuf/context",
+        "family-domain-aggregate/exact-codecs/context"
+      ],
+      "openDecisions": [
+        "raw trait+ProtoConverter nested objects与当前encode/decode公开API不同；不能复制raw BigDecimal.doubleValue或None→空表有损转换"
+      ],
+      "scalaComparison": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/persistence/AggregateConverterTemplate.scala:31-99,119-150"
+    },
+    {
+      "id": "family-domain-aggregate/build/kernel-project",
+      "classification": "B",
+      "scalaArtifact": null,
+      "role": "独立kernel profile构建定义：project-build",
+      "variant": "profile独立模板，不按相同body合并",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-domain-kernel-v1",
+          "outputId": "project-build",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "build.sbt"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/build.mjs",
+            "symbol": "buildArtifacts/buildTemplate",
+            "lines": "1-19"
+          }
+        ],
+        "constructs": [
+          "生成头；ThisBuild scalaVersion=2.13.14/organization=首context.package/version=0.1.0-SNAPSHOT",
+          "lazy kernel、glue.dependsOn(kernel)、root.aggregate(kernel,glue)，root publish skip；无业务package",
+          "PB.targets sourceManaged；ScalaPB runtime0.11.14与ScalaTest3.2.15；无Akka依赖，未显式pin protocVersion",
+          "buildArtifacts.body直接承载sbt源码字符串，buildTemplate只append；不是完全结构化MBT"
+        ],
+        "conditions": [
+          "两个profile互斥目标目录；不得混合覆盖同一个build.sbt"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "build.sbt"
+        ],
+        "disposition": "adapt",
+        "constructDisposition": [
+          {
+            "current": "完整头/配置键/依赖和lazy project声明",
+            "target": "build.sbt",
+            "action": "retain",
+            "reason": "保留本profile构建语义，不能把直接编译证据当sbt运行"
+          },
+          {
+            "current": "body源码字符串槽",
+            "target": "build model字段与template分工",
+            "action": "adapt",
+            "reason": "仅建议后续MBT整改，本轮无生产写入"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/build-kernel-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-build-profiles-v1",
+        "requiredConditions": [
+          "至少一个context、多个context首项选择、kernel无glue依赖、纯kernel不引入Akka"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-entry-writer",
+        "shared-layout-types"
+      ],
+      "openDecisions": [
+        "构建内容未执行；kernel与core不能合并成一套宣称已验证的应用配置"
+      ]
+    },
+    {
+      "id": "family-domain-aggregate/build/kernel-properties",
+      "classification": "B",
+      "scalaArtifact": null,
+      "role": "独立kernel profile构建定义：build-properties",
+      "variant": "profile独立模板，不按相同body合并",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-domain-kernel-v1",
+          "outputId": "build-properties",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "project/build.properties"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/build.mjs",
+            "symbol": "buildArtifacts/buildTemplate",
+            "lines": "20-20"
+          }
+        ],
+        "constructs": [
+          "properties-safe # generated头",
+          "sbt.version=1.4.9；无Scala package或初始化"
+        ],
+        "conditions": [
+          "两个profile互斥目标目录；不得混合覆盖同一个build.sbt"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "project/build.properties"
+        ],
+        "disposition": "adapt",
+        "constructDisposition": [
+          {
+            "current": "完整头/配置键/依赖和lazy project声明",
+            "target": "project/build.properties",
+            "action": "retain",
+            "reason": "保留本profile构建语义，不能把直接编译证据当sbt运行"
+          },
+          {
+            "current": "body源码字符串槽",
+            "target": "build model字段与template分工",
+            "action": "adapt",
+            "reason": "仅建议后续MBT整改，本轮无生产写入"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/build-kernel-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-build-profiles-v1",
+        "requiredConditions": [
+          "#注释合法、末尾换行、profile头身份不同"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-entry-writer",
+        "shared-layout-types"
+      ],
+      "openDecisions": [
+        "构建内容未执行；kernel与core不能合并成一套宣称已验证的应用配置"
+      ]
+    },
+    {
+      "id": "family-domain-aggregate/build/kernel-plugins",
+      "classification": "B",
+      "scalaArtifact": null,
+      "role": "独立kernel profile构建定义：build-plugins",
+      "variant": "profile独立模板，不按相同body合并",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-domain-kernel-v1",
+          "outputId": "build-plugins",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "project/plugins.sbt"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/build.mjs",
+            "symbol": "buildArtifacts/buildTemplate",
+            "lines": "21-23"
+          }
+        ],
+        "constructs": [
+          "// generated头",
+          "addSbtPlugin(sbt-protoc1.0.6)与ScalaPB compilerplugin0.11.14；無Play plugin"
+        ],
+        "conditions": [
+          "两个profile互斥目标目录；不得混合覆盖同一个build.sbt"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "project/plugins.sbt"
+        ],
+        "disposition": "adapt",
+        "constructDisposition": [
+          {
+            "current": "完整头/配置键/依赖和lazy project声明",
+            "target": "project/plugins.sbt",
+            "action": "retain",
+            "reason": "保留本profile构建语义，不能把直接编译证据当sbt运行"
+          },
+          {
+            "current": "body源码字符串槽",
+            "target": "build model字段与template分工",
+            "action": "adapt",
+            "reason": "仅建议后续MBT整改，本轮无生产写入"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/build-kernel-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-build-profiles-v1",
+        "requiredConditions": [
+          "插件与runtime版本显式配对、无隐式升级"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-entry-writer",
+        "shared-layout-types"
+      ],
+      "openDecisions": [
+        "构建内容未执行；kernel与core不能合并成一套宣称已验证的应用配置"
+      ]
+    },
+    {
+      "id": "family-domain-aggregate/build/core-project",
+      "classification": "B",
+      "scalaArtifact": null,
+      "role": "独立core profile构建定义：project-build",
+      "variant": "profile独立模板，不按相同body合并",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "project-build",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "build.sbt"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/build.mjs",
+            "symbol": "buildArtifacts/buildTemplate",
+            "lines": "1-25"
+          }
+        ],
+        "constructs": [
+          "生成头；ThisBuild scalaVersion=2.13.14/organization=首context.package/version=0.1.0-SNAPSHOT",
+          "lazy kernel、glue.dependsOn(kernel)、root.aggregate(kernel,glue)，root publish skip；无业务package",
+          "PB.targets sourceManaged；ScalaPB runtime0.11.14与ScalaTest3.2.15；protoc3.21.9、Akka typed/persistence/testkits2.6.20、Test.parallelExecution=false",
+          "buildArtifacts.body直接承载sbt源码字符串，buildTemplate只append；不是完全结构化MBT"
+        ],
+        "conditions": [
+          "两个profile互斥目标目录；不得混合覆盖同一个build.sbt"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "build.sbt"
+        ],
+        "disposition": "adapt",
+        "constructDisposition": [
+          {
+            "current": "完整头/配置键/依赖和lazy project声明",
+            "target": "build.sbt",
+            "action": "retain",
+            "reason": "保留本profile构建语义，不能把直接编译证据当sbt运行"
+          },
+          {
+            "current": "body源码字符串槽",
+            "target": "build model字段与template分工",
+            "action": "adapt",
+            "reason": "仅建议后续MBT整改，本轮无生产写入"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/build-core-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-build-profiles-v1",
+        "requiredConditions": [
+          "至少一个context、多个context首项选择、kernel无glue依赖、Actor测试依赖/非并行设置"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-entry-writer",
+        "shared-layout-types"
+      ],
+      "openDecisions": [
+        "构建内容未执行；kernel与core不能合并成一套宣称已验证的应用配置"
+      ]
+    },
+    {
+      "id": "family-domain-aggregate/build/core-properties",
+      "classification": "B",
+      "scalaArtifact": null,
+      "role": "独立core profile构建定义：build-properties",
+      "variant": "profile独立模板，不按相同body合并",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "build-properties",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "project/build.properties"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/build.mjs",
+            "symbol": "buildArtifacts/buildTemplate",
+            "lines": "26-26"
+          }
+        ],
+        "constructs": [
+          "properties-safe # generated头",
+          "sbt.version=1.4.9；无Scala package或初始化"
+        ],
+        "conditions": [
+          "两个profile互斥目标目录；不得混合覆盖同一个build.sbt"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "project/build.properties"
+        ],
+        "disposition": "adapt",
+        "constructDisposition": [
+          {
+            "current": "完整头/配置键/依赖和lazy project声明",
+            "target": "project/build.properties",
+            "action": "retain",
+            "reason": "保留本profile构建语义，不能把直接编译证据当sbt运行"
+          },
+          {
+            "current": "body源码字符串槽",
+            "target": "build model字段与template分工",
+            "action": "adapt",
+            "reason": "仅建议后续MBT整改，本轮无生产写入"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/build-core-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-build-profiles-v1",
+        "requiredConditions": [
+          "#注释合法、末尾换行、profile头身份不同"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-entry-writer",
+        "shared-layout-types"
+      ],
+      "openDecisions": [
+        "构建内容未执行；kernel与core不能合并成一套宣称已验证的应用配置"
+      ]
+    },
+    {
+      "id": "family-domain-aggregate/build/core-plugins",
+      "classification": "B",
+      "scalaArtifact": null,
+      "role": "独立core profile构建定义：build-plugins",
+      "variant": "profile独立模板，不按相同body合并",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "build-plugins",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "project/plugins.sbt"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/build.mjs",
+            "symbol": "buildArtifacts/buildTemplate",
+            "lines": "27-29"
+          }
+        ],
+        "constructs": [
+          "// generated头",
+          "addSbtPlugin(sbt-protoc1.0.6)与ScalaPB compilerplugin0.11.14；無Play plugin"
+        ],
+        "conditions": [
+          "两个profile互斥目标目录；不得混合覆盖同一个build.sbt"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "project/plugins.sbt"
+        ],
+        "disposition": "adapt",
+        "constructDisposition": [
+          {
+            "current": "完整头/配置键/依赖和lazy project声明",
+            "target": "project/plugins.sbt",
+            "action": "retain",
+            "reason": "保留本profile构建语义，不能把直接编译证据当sbt运行"
+          },
+          {
+            "current": "body源码字符串槽",
+            "target": "build model字段与template分工",
+            "action": "adapt",
+            "reason": "仅建议后续MBT整改，本轮无生产写入"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/build-core-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-build-profiles-v1",
+        "requiredConditions": [
+          "插件与runtime版本显式配对、无隐式升级"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-entry-writer",
+        "shared-layout-types"
+      ],
+      "openDecisions": [
+        "构建内容未执行；kernel与core不能合并成一套宣称已验证的应用配置"
+      ]
+    },
+    {
+      "id": "family-domain-aggregate/tests/protobuf-roundtrip",
+      "classification": "B",
+      "scalaArtifact": null,
+      "role": "声明空State的真实PB字节往返测试源码",
+      "variant": "kernel模板被core真实继承；不是独立oracle",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-domain-kernel-v1",
+          "outputId": "generated-test",
+          "channel": "manifest"
+        },
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "generated-test",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "modules/glue/src/test/scala/<basePath>/infrastructure/serialization/<state.name>RoundTripSpec.scala"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/generated-tests.mjs",
+            "symbol": "generatedTestArtifacts/generatedTestsTemplate",
+            "lines": "3-32"
+          },
+          {
+            "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/render.mjs",
+            "symbol": "render inherited tests",
+            "lines": "30-31"
+          }
+        ],
+        "constructs": [
+          "生成头与package；State/PB imports，冲突时_root_；AnyWordSpec",
+          "final test class；val state=State.empty，encode.toByteArray，PB.parseFrom，decode，assert(decoded==state)",
+          "无非空业务期望、没有业务oracle、没有执行回执；body字符串由artifact承载"
+        ],
+        "conditions": [
+          "每聚合一个；core复用相同模板但generated头owner变化"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "modules/glue/src/test/scala/<basePath>/infrastructure/persistence/converters/<State>RoundTripSpec.scala"
+        ],
+        "disposition": "move",
+        "constructDisposition": [
+          {
+            "current": "完整suite、imports和四步字节往返",
+            "target": "新converter包下RoundTripSpec",
+            "action": "adapt",
+            "reason": "随converter路径迁移；坚持真正PB parse，不改为对象自比较"
+          },
+          {
+            "current": "空State用例",
+            "target": "保留为有限基线并由独立fixture追加非空/非法case",
+            "action": "retain",
+            "reason": "不能冒充已测业务语义"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/protobuf-test-file-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-protobuf-v1",
+        "requiredConditions": [
+          "每聚合默认state、State与PB同名冲突、exact和presence默认值"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "family-domain-aggregate/converter/context",
+        "family-domain-aggregate/protobuf/context"
+      ],
+      "openDecisions": [
+        "当前只测empty默认；非空根/畸形PB和独立业务oracle仍需单列"
+      ]
+    },
+    {
+      "id": "family-domain-aggregate/tests/replay",
+      "classification": "B",
+      "scalaArtifact": null,
+      "role": "空事件历史foldLeft回放测试源码",
+      "variant": "只aggregate-core，零事件不进入fold分支",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "generated-test",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "modules/glue/src/test/scala/<basePath>/domain/invariant/<aggregate.name>ReplaySpec.scala"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/generated-tests.mjs",
+            "symbol": "generatedBehaviorArtifacts/generatedBehaviorTemplate",
+            "lines": "5-25"
+          }
+        ],
+        "constructs": [
+          "生成头/package与State/Protocol/EventHandler/AnyFunSuite imports",
+          "final ReplaySpec；initial=State.empty；Vector.empty[Event]；foldLeft(initial)(handler.apply)；assert(recovered==initial)",
+          "无command输入、非空event或崩溃重启；零事件测试不是event-handler正确性证明"
+        ],
+        "conditions": [
+          "每聚合另一个测试；和继承PB测试分别计逻辑项"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "modules/glue/src/test/scala/<basePath>/domain/entities/behaviors/<Aggregate>ReplaySpec.scala"
+        ],
+        "disposition": "move",
+        "constructDisposition": [
+          {
+            "current": "完整test class和imports",
+            "target": "测试根下entities/behaviors/<Aggregate>ReplaySpec.scala",
+            "action": "adapt",
+            "reason": "按实际fold职责定位，不让无package测试规避布局"
+          },
+          {
+            "current": "空历史断言",
+            "target": "保留明示empty-history名称",
+            "action": "retain",
+            "reason": "不得把它升级标记为完整recovery oracle"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/replay-test-file-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-folds-v1",
+        "requiredConditions": [
+          "空历史基线；另立非空多事件、pre-state交叉字段、溢出拒绝独立期望"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "family-domain-aggregate/event-handler/pure"
+      ],
+      "openDecisions": [
+        "未发非空回放业务断言或真实JVM recovery试验"
+      ]
+    },
+    {
+      "id": "family-domain-aggregate/formal-rules/guards",
+      "classification": "A",
+      "scalaArtifact": "aggregate-rules-formal",
+      "role": "显式顺序guard与reject/succeed-empty语义",
+      "variant": "每命令纯规则函数，不是退役Policy模板",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "invariant-rule",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "modules/kernel/src/main/scala/<basePath>/domain/invariant/<rules.name>.scala"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/rules.mjs",
+            "symbol": "rulesTemplate per-command rules",
+            "lines": "14-25"
+          },
+          {
+            "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/build-models.mjs",
+            "symbol": "guards",
+            "lines": "139-152"
+          },
+          {
+            "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/expressions.mjs",
+            "symbol": "expressionSyntax predicate",
+            "lines": "40-127"
+          }
+        ],
+        "constructs": [
+          "rules-file-assembly独占整个文件头/package/import/object；此项拥有逐命令ruleMethod(params)",
+          "每guard按sourceOrdinal输出if/else if；not根直接去外壳，否则取否；reject Left(errCode)，succeed-empty Right(Vector.empty)；后续guard与emission不求值",
+          "全通过才Right(helpers.emit(state,command,hosts))；表达式保留checked-long、exact/unit及求值次序；有coreLeftN等临时名"
+        ],
+        "conditions": [
+          "只core无external finite模型；至少0个guard；不与invariant raw ???实现混淆"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": "kernel:<context>/<aggregate>/rules"
+      },
+      "target": {
+        "paths": [
+          "modules/kernel/src/main/scala/<basePath>/domain/invariant/<Aggregate>Rules.scala"
+        ],
+        "disposition": "adapt",
+        "constructDisposition": [
+          {
+            "current": "逐命令ruleMethod与全部guard/RHS",
+            "target": "raw formal风格具名InvariantRule对象.apply",
+            "action": "adapt",
+            "reason": "同职责A；String/Vector与iMadzError/List不是字节等价，需错误类型合同"
+          },
+          {
+            "current": "private无意义core<N>临时名与import",
+            "target": "有必要的业务名临时值及明确依赖",
+            "action": "adapt",
+            "reason": "不改变exact pair一次求值、异常次序或溢出"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/formal-rule-file-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-formal-decision-v1",
+        "requiredConditions": [
+          "0/多guard、首拒绝、succeed-empty、短路避免后续host、exact与Long溢出"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "family-domain-aggregate/formal-rules/parameters",
+        "family-domain-aggregate/formal-rules/event-construction"
+      ],
+      "openDecisions": [
+        "错误code→iMadzError的message来源、Vector→List和目标Rule接口必须裁决；不能推断业务描述"
+      ],
+      "scalaComparison": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRulesTemplate.scala:41-74"
+    },
+    {
+      "id": "family-domain-aggregate/decision/dispatch",
+      "classification": "B",
+      "scalaArtifact": null,
+      "role": "纯Command ADT到逐命令规则的类型化分发",
+      "variant": "同Rules.scala中的decide，非Actor行为",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "invariant-rule",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "modules/kernel/src/main/scala/<basePath>/domain/invariant/<rules.name>.scala"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/rules.mjs",
+            "symbol": "rulesTemplate decide",
+            "lines": "3-13"
+          }
+        ],
+        "constructs": [
+          "rules-file-assembly独占package/import/object；此项只拥有decide签名和command match",
+          "decide(state,command,hosts):Either[String,Vector[Event]]；每分支构建对应Params(state,value,hosts)并调用对应ruleMethod",
+          "无ActorRef/Effect/persistence；无String/Any dispatcher；无默认分支或mutable状态"
+        ],
+        "conditions": [
+          "core每聚合一个typed分发器；commands循环完全覆盖模型"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": "kernel:<context>/<aggregate>/rules"
+      },
+      "target": {
+        "paths": [
+          "modules/kernel/src/main/scala/<basePath>/domain/invariant/<Aggregate>Decision.scala"
+        ],
+        "disposition": "split",
+        "constructDisposition": [
+          {
+            "current": "decide与所有typed match臂",
+            "target": "domain/invariant/<Aggregate>Decision.scala",
+            "action": "move",
+            "reason": "保留有限纯决策入口而不伪装Actor协议"
+          },
+          {
+            "current": "共享Rules object/import与Params引用",
+            "target": "新Decision独立package/import/object；规则文件另行组装",
+            "action": "split",
+            "reason": "源头的文件assembly仍统一，不出现两个writer抢同一Rules.scala"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/rules-file-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-formal-decision-v1",
+        "requiredConditions": [
+          "多命令穷尽分发、Params名与导入冲突、返回拒绝/空成功/事件成功"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "family-domain-aggregate/formal-rules/guards",
+        "family-domain-aggregate/payload/command"
+      ],
+      "openDecisions": [
+        "是否最终保留独立纯dispatcher或由应用逐命令直调需同输入/调用方裁决；不影响当前B归属"
+      ]
+    },
+    {
+      "id": "family-domain-aggregate/formal-rules/event-construction",
+      "classification": "A",
+      "scalaArtifact": "aggregate-rules-formal",
+      "role": "纯规则成功臂的事件构造",
+      "variant": "catalog command-helper实际是event factory，不是三方法CommandHelper",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "command-helper",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "modules/kernel/src/main/scala/<basePath>/domain/command/<helpers.name>.scala"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/command-helpers.mjs",
+            "symbol": "commandHelpersTemplate",
+            "lines": "3-27"
+          },
+          {
+            "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/expressions.mjs",
+            "symbol": "expressionSyntax value",
+            "lines": "128-139"
+          },
+          {
+            "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/build-models.mjs",
+            "symbol": "emissions",
+            "lines": "153-181"
+          }
+        ],
+        "constructs": [
+          "生成头/package、protocol/state/computations及nested command/event imports由templateScope收集",
+          "object Helpers；每命令emitMethod(state,command,hosts):Vector[Event]",
+          "按row.events与event.fields顺序构造Vector/每event参数；ref/literal/host/member/map-get/checked arithmetic RHS",
+          "每host出现处调用hosts.method(inputDependencies顺序实参)；不按deps去重缓存；没有reply转换、persist或ActorRef"
+        ],
+        "conditions": [
+          "每declared event必须有本地command producer；零emission返回Vector()"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "modules/kernel/src/main/scala/<basePath>/domain/invariant/<Aggregate>Rules.scala"
+        ],
+        "disposition": "move",
+        "constructDisposition": [
+          {
+            "current": "所有emitMethod和event构造RHS",
+            "target": "formal rule成功臂或同文件具名私有event构造方法",
+            "action": "move",
+            "reason": "raw AggregateRulesTemplate.emission即此职责；不能误标command-helper A"
+          },
+          {
+            "current": "domain.command包/CommandHelpers误导名/imports",
+            "target": "formal-rule-file-assembly统一命名和imports",
+            "action": "adapt",
+            "reason": "应用三方法CommandHelper仍缺失；不以纯emit替代"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/formal-rule-file-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-formal-decision-v1",
+        "requiredConditions": [
+          "0/多事件、多个slot、同host多次出现、inputDependencies交错、算术失败"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "family-domain-aggregate/computations/port",
+        "family-domain-aggregate/entity/events"
+      ],
+      "openDecisions": [
+        "如保留独立event factory需明确同一formal规则文件集owner；没有应用toParam/createFailureReply/createSuccessReply实现"
+      ],
+      "scalaComparison": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRulesTemplate.scala:48-51,63-74"
+    },
+    {
+      "id": "family-domain-aggregate/event-handler/pure",
+      "classification": "A",
+      "scalaArtifact": "event-handler",
+      "role": "从一个pre-event State纯应用Event",
+      "variant": "所有七种fold操作",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "event-handler",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "modules/kernel/src/main/scala/<basePath>/domain/entities/behaviors/<eventHandler.name>.scala"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/event-handler.mjs",
+            "symbol": "eventHandlerTemplate",
+            "lines": "3-25"
+          },
+          {
+            "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/expressions.mjs",
+            "symbol": "expressionSyntax fold",
+            "lines": "140-155"
+          },
+          {
+            "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/build-models.mjs",
+            "symbol": "assignments",
+            "lines": "183-220"
+          }
+        ],
+        "constructs": [
+          "生成头/package/import state与event types（当前wildcard还收commands，需裁剪）",
+          "object EventHandler；apply(state,event):State；按event match；无assignments返回原state",
+          "单或多字段state.copy；所有RHS从旧state/value计算；不构造半更新state",
+          "set/put/remove/put-all/remove-all/money-apply/integer-apply；put-all即便keys空仍value一次求值；Long addExact/subtractExact，exact plus/minus；不重跑command/host"
+        ],
+        "conditions": [
+          "core按完整fold产品，每target最多一次；禁止external producers"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "modules/kernel/src/main/scala/<basePath>/domain/entities/behaviors/<Aggregate>EventHandler.scala"
+        ],
+        "disposition": "adapt",
+        "constructDisposition": [
+          {
+            "current": "完整apply/match/copy及算术",
+            "target": "EventHandler.apply和Entity.EventHandler alias",
+            "action": "adapt",
+            "reason": "向raw布局靠齐而不引入raw兜底case _=>state或???"
+          },
+          {
+            "current": "imports及coreKeysN/coreValueN局部值",
+            "target": "真实event依赖及业务名局部值",
+            "action": "adapt",
+            "reason": "必须保留pre-state与一次求值语义"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/event-handler-file-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-folds-v1",
+        "requiredConditions": [
+          "七fold、多字段交叉读pre-state、空put-all、Long溢出、same-unit拒绝、无assignments事件"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "family-domain-aggregate/entity/state",
+        "family-domain-aggregate/entity/events"
+      ],
+      "openDecisions": [
+        "raw EventHandler alias与当前二参方法的调用ABI迁移；ordinary CC与穷尽match需分别评定"
+      ],
+      "scalaComparison": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/EntityBehaviorTemplate.scala:31-87"
+    },
+    {
+      "id": "family-domain-aggregate/actor/protocol",
+      "classification": "A",
+      "scalaArtifact": "application-protocol",
+      "role": "Actor-facing命令与回复协议",
+      "variant": "Execute纯Command信封、GetState查询、Reply ADT",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "application-protocol",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "modules/glue/src/main/scala/<basePath>/application/aggregates/<actorProtocol.name>.scala"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/actor-protocol.mjs",
+            "symbol": "actorProtocolTemplate",
+            "lines": "3-12"
+          }
+        ],
+        "constructs": [
+          "生成头/package；ActorRef、pure Protocol、State的imports；object ActorProtocol",
+          "sealed Command；Execute(command:Pure.Command,replyTo:ActorRef[Reply])；GetState(replyTo:ActorRef[State])",
+          "sealed Reply；Accepted(events:Vector[Pure.Event])和Rejected(code:String)",
+          "没有Handler alias、逐业务command replies、CborSerializable或state/events内联"
+        ],
+        "conditions": [
+          "只core；typed ActorRef不泄漏kernel"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "modules/glue/src/main/scala/<basePath>/application/aggregates/<Aggregate>Protocol.scala"
+        ],
+        "disposition": "adapt",
+        "constructDisposition": [
+          {
+            "current": "Execute/GetState与Reply ADT",
+            "target": "Protocol的Commands/Replies段",
+            "action": "adapt",
+            "reason": "恢复用户要求的按业务命令typed回复需明确目标合同；不得把pure payload直接加replyTo"
+          },
+          {
+            "current": "缺Handler alias",
+            "target": "同一Protocol的Handler段",
+            "action": "adapt",
+            "reason": "与行为/根共同迁移，但不凭空扩大serializer绑定"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/actor-protocol-file-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-actor-v1",
+        "requiredConditions": [
+          "写命令typed Reply、只读State reply、同名Protocol/state冲突、拒绝/空/非空成功"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "family-domain-aggregate/payload/command",
+        "family-domain-aggregate/entity/state"
+      ],
+      "openDecisions": [
+        "Accepted(events)不是来自新State的业务回复；每命令回复类型/错误合同需明确"
+      ],
+      "scalaComparison": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateProtocolTemplate.scala:33-62,98-108"
+    },
+    {
+      "id": "family-domain-aggregate/aggregate/root-wiring",
+      "classification": "A",
+      "scalaArtifact": "aggregate-root",
+      "role": "对外命令处理器provider与聚合对象容器",
+      "variant": "同一Aggregate.scala含实际行为体；没有完整raw sharding元数据",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "aggregate-root",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "modules/glue/src/main/scala/<basePath>/application/aggregates/<aggregate.name>.scala"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/aggregate.mjs",
+            "symbol": "aggregateTemplate container/provider",
+            "lines": "3-13"
+          }
+        ],
+        "constructs": [
+          "aggregate-file-assembly独占生成头、package、Effect/actor wildcard/pure protocol/state/rules/hosts全部imports、object与闭合括号",
+          "commandHandler(hosts)返回(State,ActorCommand)=>Effect；工厂调用时require(hosts!=null)，不是每命令一次",
+          "返回lambda行为属于独立aggregate/behavior逻辑项；当前无entityTypeKey/tags、Handler alias或event fold装配"
+        ],
+        "conditions": [
+          "只core；fold真正接线位于Bootstrap而非此文件"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": "glue:<context>/<aggregate>/aggregate"
+      },
+      "target": {
+        "paths": [
+          "modules/glue/src/main/scala/<basePath>/application/aggregates/<Aggregate>Aggregate.scala"
+        ],
+        "disposition": "split",
+        "constructDisposition": [
+          {
+            "current": "object及commandHandler入口/hosts前置校验",
+            "target": "Aggregate.commandHandler转交Behaviors",
+            "action": "adapt",
+            "reason": "根保留装配入口，lambda移行为文件"
+          },
+          {
+            "current": "全文件imports和结束定界",
+            "target": "根与Behaviors各自文件头，统一assembly计划",
+            "action": "split",
+            "reason": "不让根/行为两个writer覆盖同一物理文件"
+          },
+          {
+            "current": "缺entityTypeKey/tags",
+            "target": "明确缺项，不推断新PID/标签",
+            "action": "retain",
+            "reason": "raw sharding合同不可由名字自动补齐"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/aggregate-file-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-actor-v1",
+        "requiredConditions": [
+          "非null/null hosts、handler构造与命令处理时序、外部显式PID"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "family-domain-aggregate/aggregate/behavior"
+      ],
+      "openDecisions": [
+        "缺raw entityTypeKey/tags；是否为有限本地profile保留差异或另加集群合同需裁决"
+      ],
+      "scalaComparison": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRootTemplate.scala:101-146"
+    },
+    {
+      "id": "family-domain-aggregate/aggregate/behavior",
+      "classification": "A",
+      "scalaArtifact": "aggregate-behavior",
+      "role": "命令决策、持久化与回复顺序",
+      "variant": "Aggregate.scala内部lambda实际承担行为职责",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "aggregate-root",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "modules/glue/src/main/scala/<basePath>/application/aggregates/<aggregate.name>.scala"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/aggregate.mjs",
+            "symbol": "aggregateTemplate command handler lambda",
+            "lines": "13-16"
+          }
+        ],
+        "constructs": [
+          "文件头/import/object/handler签名由aggregate-file-assembly/root-wiring独占；本项拥有lambda全部match/RHS",
+          "GetState→Effect.none.thenReply(_=>state)；Execute→rules.decide；Left→none.thenReply(Rejected)",
+          "Right(empty)→none.thenReply(Accepted(events))；Right(nonempty)→persist(events).thenReply(Accepted(events))",
+          "thenReply回调忽略新state，未调用runReplyingPolicy；无event publish、Helper三方法或业务行为组"
+        ],
+        "conditions": [
+          "core；非空事件先persist再thenReply，源码顺序不是运行证据"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": "glue:<context>/<aggregate>/aggregate"
+      },
+      "target": {
+        "paths": [
+          "modules/glue/src/main/scala/<basePath>/application/aggregates/behaviors/<Aggregate>Behaviors.scala"
+        ],
+        "disposition": "split",
+        "constructDisposition": [
+          {
+            "current": "lambda与嵌套Execute/decision match",
+            "target": "Behaviors.apply及实际业务group",
+            "action": "move",
+            "reason": "这是A坏代码/结构差距，不因为catalog缺aggregate-behavior键降为B"
+          },
+          {
+            "current": "none/persist/thenReply与回复RHS",
+            "target": "明确CommandHelper+runReplyingPolicy整合合同",
+            "action": "adapt",
+            "reason": "必须从成功新State生成回复；不能声称当前Accepted(events)等价replyWith或replyWithAndPublish"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/aggregate-file-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-actor-v1",
+        "requiredConditions": [
+          "reject不persist、empty-success不persist、非空先fold再reply、query不产事件、publish有/无单列"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "family-domain-aggregate/actor/protocol",
+        "family-domain-aggregate/formal-rules/guards"
+      ],
+      "openDecisions": [
+        "没有三方法应用CommandHelper；runReplyingPolicy所消费common artifact/API及回复新state语义均须实施前确认"
+      ],
+      "scalaComparison": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateBehaviorTemplate.scala:59-105,128-161"
+    },
+    {
+      "id": "family-domain-aggregate/aggregate/factory",
+      "classification": "A",
+      "scalaArtifact": "aggregate-factory",
+      "role": "typed Behavior工厂接口",
+      "variant": "当前只trait create[J]，不是raw sharding初始化工厂实现",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "aggregate-factory",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "modules/glue/src/main/scala/<basePath>/application/factories/<factory.name>.scala"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/factory.mjs",
+            "symbol": "factoryTemplate",
+            "lines": "3-11"
+          }
+        ],
+        "constructs": [
+          "生成头/package；Behavior/EventAdapter/PersistenceId/SnapshotAdapter/ActorProtocol/pure protocol/state/hosts imports",
+          "trait Factory；create[J](persistenceId,initial,hosts,eventAdapter:EventAdapter[Event,J],snapshotAdapter:SnapshotAdapter[State]):Behavior[Actor.Command]",
+          "参数顺序固定；无方法体、Inject、askTimeout、spawn或隐式默认adapter"
+        ],
+        "conditions": [
+          "core每聚合一个"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "modules/glue/src/main/scala/<basePath>/application/aggregates/factories/<Aggregate>AggregateFactory.scala"
+        ],
+        "disposition": "move",
+        "constructDisposition": [
+          {
+            "current": "trait与create[J]完整签名",
+            "target": "application.aggregates.factories下Factory",
+            "action": "adapt",
+            "reason": "目录按BC纠正；具体实现在Bootstrap，不能把接口存在称raw工厂完成"
+          },
+          {
+            "current": "显式PID/initial/hosts/adapters",
+            "target": "同签名显式构造依赖",
+            "action": "retain",
+            "reason": "不根据源码名反推PID或注入identity adapter"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/factory-file-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-actor-v1",
+        "requiredConditions": [
+          "不同J、显式PID/初态/host/适配器、无隐式default"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "family-domain-aggregate/actor/protocol"
+      ],
+      "openDecisions": [
+        "raw class @Inject ClusterSharding与当前Behavior factory trait职责子集差距；是否引入ask/create业务命令须有合同"
+      ],
+      "scalaComparison": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateFactoryTemplate.scala:39-75"
+    },
+    {
+      "id": "family-domain-aggregate/aggregate/bootstrap",
+      "classification": "A",
+      "scalaArtifact": "bootstrap",
+      "role": "聚合EventSourcedBehavior装配及typed adapters",
+      "variant": "aggregate bootstrap有限子集，无运行生命周期宿主",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "aggregate-bootstrap",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "modules/glue/src/main/scala/<basePath>/infrastructure/bootstrap/<bootstrap.name>.scala"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/bootstrap.mjs",
+            "symbol": "bootstrapTemplate",
+            "lines": "3-13"
+          }
+        ],
+        "constructs": [
+          "生成头/package与全部Actor/persistence/domain/应用factory依赖imports；object Bootstrap extends Factory",
+          "override create[J]；依次验证PID非空、initial/hosts/eventAdapter/snapshotAdapter非null",
+          "EventSourcedBehavior(persistenceId=传入,emptyState=initial,commandHandler=Aggregate.commandHandler(hosts),eventHandler=EventHandler.apply)",
+          "依次.eventAdapter(eventAdapter).snapshotAdapter(snapshotAdapter)；没有ActorSystem创建、spawn、sharding.init、tagger、retention、backoff或serializer注册"
+        ],
+        "conditions": [
+          "core；调用方拥有运行资源；不自动选journal"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "modules/glue/src/main/scala/<basePath>/infrastructure/bootstrap/<Aggregate>Bootstrap.scala"
+        ],
+        "disposition": "adapt",
+        "constructDisposition": [
+          {
+            "current": "完整create、require顺序、ESB及adapter链",
+            "target": "同一Bootstrap的明确Behavior构造方法",
+            "action": "retain",
+            "reason": "不改PID/事件类型/适配次序"
+          },
+          {
+            "current": "缺sharding/tagger/retention/backoff",
+            "target": "按profile明确缺口，不从raw机械复制",
+            "action": "adapt",
+            "reason": "runtime恢复与重试不是文档自动授权"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/bootstrap-file-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-actor-v1",
+        "requiredConditions": [
+          "非空PID、null各依赖拒绝、已声明event和snapshot adapters、纯fold接线"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "family-domain-aggregate/aggregate/factory",
+        "family-domain-aggregate/aggregate/root-wiring",
+        "family-domain-aggregate/event-handler/pure"
+      ],
+      "openDecisions": [
+        "raw aggregate bootstrap集群初始化/标签/保留/退避未实现；需要版本化生命周期合同，当前不宣称完整bootstrap等价"
+      ],
+      "scalaComparison": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/bootstsrap/BootstrapTemplate.scala:72-115"
+    },
+    {
+      "id": "family-domain-aggregate/repository/port",
+      "classification": "A",
+      "scalaArtifact": "aggregate-repository-port",
+      "role": "Actor句柄获取与本地仓库关闭接口",
+      "variant": "Repository[K]+Handle(PersistenceId,ActorRef)",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "aggregate-repository-port",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "modules/glue/src/main/scala/<basePath>/application/aggregates/<repository.name>.scala"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/repository.mjs",
+            "symbol": "repositoryTemplate",
+            "lines": "3-9"
+          }
+        ],
+        "constructs": [
+          "生成头/package、ActorRef和PersistenceId imports；ActorProtocol当前同包简名",
+          "trait Repository[K]：get(key):Repository.Handle及close():Unit",
+          "companion object Handle case class明确persistenceId与ref字段；无默认实现/资源分配"
+        ],
+        "conditions": [
+          "core Actor专用，不是后续family runtime-neutral业务Repository"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "modules/glue/src/main/scala/<basePath>/application/aggregates/repository/<Aggregate>Repository.scala"
+        ],
+        "disposition": "move",
+        "constructDisposition": [
+          {
+            "current": "trait、get/close与Handle companion",
+            "target": "aggregates.repository/<Aggregate>Repository.scala",
+            "action": "adapt",
+            "reason": "搬包必须补ActorProtocol import；保留名义Handle与PID"
+          },
+          {
+            "current": "raw @ImplementedBy/entityRef等差异",
+            "target": "单列差距，不能将本地接口假作cluster接口",
+            "action": "retain",
+            "reason": "生命周期和返回类型不可未经合同替换"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/repository-port-file-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-repository-v1",
+        "requiredConditions": [
+          "typed key与ActorRef、Handle PID一致、关闭合同"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "family-domain-aggregate/actor/protocol"
+      ],
+      "openDecisions": [
+        "raw sharded EntityRef接口与本地Handle/get/close API迁移需明确调用方"
+      ],
+      "scalaComparison": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRepositoryTemplate.scala:37-70"
+    },
+    {
+      "id": "family-domain-aggregate/repository/local-implementation",
+      "classification": "A",
+      "scalaArtifact": "aggregate-repository-implementation",
+      "role": "串行本地Actor句柄缓存与PID归属",
+      "variant": "非集群sharding、close不停止Actor",
+      "catalogRefs": [
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "aggregate-repository-implementation",
+          "channel": "manifest"
+        }
+      ],
+      "current": {
+        "paths": [
+          "modules/glue/src/main/scala/<basePath>/infrastructure/repositories/<repositoryImplementation.name>.scala"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/repository.mjs",
+            "symbol": "repositoryImplementationTemplate",
+            "lines": "11-20"
+          }
+        ],
+        "constructs": [
+          "生成头/package/import ActorRef/Behavior/PID/ActorProtocol/Repository/Handle；final class[K] extends Repository[K]",
+          "构造依赖identity、behavior、spawn；依次require非null；handles=Map.empty、pidOwners=Map.empty、closed=false、inOperation=false",
+          "serialized[A](by-name body)=synchronized；拒回调重入；置flag、try/finally复位",
+          "get：closed/key检查→同key命中复用→identity/PID检查→冲突PID拒绝→behavior→spawn→非nullref→Handle→双map更新；失败前无预留，可重试",
+          "close：serialized内幂等closed=true并清两个map；已交付ActorRef/ActorSystem归调用者；无stop/deathwatch/eviction/分布式去重"
+        ],
+        "conditions": [
+          "core每聚合一个；真实本地资源语义不得删除"
+        ],
+        "reachability": "registeredProductProducer → 对应 generate → planProductSet 的 domain-kernel@1 / aggregate-core@1 → buildModels → productionJobs/render → renderJobs → sourceEntry/aggregateSourceEntry → generateProductCli 非 --plan 分支 applyEntries；这里只读此链，未调用",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "modules/glue/src/main/scala/<basePath>/infrastructure/repositories/aggregate/Local<Aggregate>Repository.scala"
+        ],
+        "disposition": "move",
+        "constructDisposition": [
+          {
+            "current": "构造器、全部校验、私有状态、serialized/get/close及comments",
+            "target": "repositories.aggregate/Local<Aggregate>Repository.scala",
+            "action": "retain",
+            "reason": "local缓存本身是A仓库实现责任，不拆成无归属B；不以去var/降CC改变同步与重试"
+          },
+          {
+            "current": "package/import/名字",
+            "target": "集中layout与TypeRef",
+            "action": "adapt",
+            "reason": "保留与raw ClusterSharding实现的profile差异"
+          }
+        ],
+        "assemblyOwner": "family-domain-aggregate/repository-implementation-file-assembly",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-repository-v1",
+        "requiredConditions": [
+          "同key复用、异key同PID拒绝、identity/behavior/spawn失败重试、null返回、回调重入、get/close互斥、close不stopActor"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-layout-types",
+        "family-domain-aggregate/repository/port"
+      ],
+      "openDecisions": [
+        "是否增加deathwatch/淘汰/Actor停止或集群唯一性都超出现有合同；raw sharding不可作为直接替代"
+      ],
+      "scalaComparison": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/repository/AggregateRepositoryImplTemplate.scala:35-57"
+    },
+    {
+      "id": "family-domain-aggregate/apply-evidence/ledger",
+      "classification": "B",
+      "scalaArtifact": null,
+      "role": "最终apply来源/依赖/所有权台账",
+      "variant": "公共writer派生；并非manifest source entry",
+      "catalogRefs": [],
+      "current": {
+        "paths": [
+          "truthsrc.ledger.json"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/src/core/generate.mjs",
+            "symbol": "rowOf/prepareEntries/applyEntries",
+            "lines": "49-60,134-232,246-269"
+          }
+        ],
+        "constructs": [
+          "非Scala JSON，无package/import；generator与entries；依赖/productFootprint/knowledgeIds",
+          "prepareEntries合并旧行、生成outcomes/fingerprint/ownership（可选）；应用源码后writeFileSync ledger",
+          "可能源码或ledger已写而anchors失败；没有全局事务回滚"
+        ],
+        "conditions": [
+          "仅非--plan实际apply；两个profile共享writer；本轮绝不调用"
+        ],
+        "reachability": "generateProductCli:86-88（--plan返回不写）→applyEntries:246-269→writeFileSync(LEDGER):263",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "truthsrc.ledger.json"
+        ],
+        "disposition": "retain",
+        "constructDisposition": [
+          {
+            "current": "完整JSON结构、字段和写入顺序",
+            "target": "truthsrc.ledger.json",
+            "action": "retain",
+            "reason": "复用公共writer，不由family生成器复制或放进作者树"
+          },
+          {
+            "current": "final source bytes与ledger rows",
+            "target": "truthsrc.ledger.json公共writer组装责任",
+            "action": "retain",
+            "reason": "唯一写owner为shared-entry-writer；文档发现不是允许写账"
+          }
+        ],
+        "assemblyOwner": "shared-entry-writer",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-apply-evidence-v1",
+        "requiredConditions": [
+          "ADD/COVER/MERGE/IDENTICAL/KEEP、可选ownership、source失败/ledger失败"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-entry-writer"
+      ],
+      "openDecisions": [
+        "公共writer证据应由集成者跨组去重；不是新增传统Scala族或独立运行通过证据"
+      ]
+    },
+    {
+      "id": "family-domain-aggregate/apply-evidence/anchors",
+      "classification": "B",
+      "scalaArtifact": null,
+      "role": "最终源码位置回锚派生索引及独占临时写出",
+      "variant": "公共writer派生；并非manifest source entry",
+      "catalogRefs": [],
+      "current": {
+        "paths": [
+          "anchors.json",
+          ".anchors.json.tmp-<process.pid>-<randomUUID>"
+        ],
+        "sources": [
+          {
+            "file": "baseline/js/src/core/generate.mjs",
+            "symbol": "anchorInputs/applyEntries",
+            "lines": "91-105,211-215,263-267"
+          },
+          {
+            "file": "baseline/js/src/core/anchors.mjs",
+            "symbol": "writeAnchorsIndex/materialize",
+            "lines": "539-612"
+          }
+        ],
+        "constructs": [
+          "非Scala JSON，无package/import；索引由当前generator、knowledgeKey、repo/file/span与最终bytes对账得出",
+          "materialize重建plan、preflight/observe/reconcile/assertFresh；同目录.anchors.json.tmp-<pid>-<uuid>以wx 0600创建",
+          "writeFile→sync→close→二次fresh/原索引检查→inode检查→rename；失败只清理自己inode的临时文件",
+          "sourceEntry的UTF-8映射不能在最终format前确定；没有symbol parser时不能宣称符号解析通过"
+        ],
+        "conditions": [
+          "仅非--plan实际apply；两个profile共享writer；本轮绝不调用"
+        ],
+        "reachability": "generateProductCli:86-88（--plan返回不写）→applyEntries:246-269→writeAnchorsIndex:550-612",
+        "sharedPhysicalOutput": null
+      },
+      "target": {
+        "paths": [
+          "anchors.json"
+        ],
+        "disposition": "retain",
+        "constructDisposition": [
+          {
+            "current": "完整JSON结构、字段和写入顺序",
+            "target": "anchors.json",
+            "action": "retain",
+            "reason": "复用公共writer，不由family生成器复制或放进作者树"
+          },
+          {
+            "current": "临时文件/句柄生命周期及失败清理",
+            "target": "anchors.json公共writer组装责任",
+            "action": "retain",
+            "reason": "唯一写owner为shared-entry-writer；文档发现不是允许写账"
+          }
+        ],
+        "assemblyOwner": "shared-entry-writer",
+        "qualityRules": [
+          "layout-and-style.md §2：三层包与显式模块/测试/配置根",
+          "layout-and-style.md §3 N1/N2：名字不改稳定身份，依赖模型化并处理导入冲突",
+          "layout-and-style.md §4–5：明确职责、纯值与I/O边界，保留名义类型/精度/溢出",
+          "layout-and-style.md §7：普通方法CC目标≤5、B行宽120；当前not-measured",
+          "layout-and-style.md §8：最终字节确定后再计算fingerprint/manifest/anchor，不手改生成目录"
+        ]
+      },
+      "fixture": {
+        "id": "parity-family-apply-evidence-v1",
+        "requiredConditions": [
+          "UTF-8/多来源span、MANUAL最终bytes、旧index变化、临时inode被替换、rename失败"
+        ],
+        "status": "specified-not-executed"
+      },
+      "dependsOn": [
+        "shared-entry-writer"
+      ],
+      "openDecisions": [
+        "公共writer证据应由集成者跨组去重；不是新增传统Scala族或独立运行通过证据"
+      ]
+    }
+  ],
+  "catalogCoverage": [
+    {
+      "producerId": "scala-cqrs-domain-kernel-v1",
+      "outputId": "value-object",
+      "logicalIds": [
+        "family-domain-aggregate/value-object/domain",
+        "family-domain-aggregate/representation/wire",
+        "family-domain-aggregate/representation/po"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/values.mjs:17-63 valueTemplate",
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs:124-142,198-230,312-341 buildModels values/exacts/codecs",
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/values.mjs:17-36 valueTemplate non-exact",
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs:312-340 buildModels codec representation admission",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-domain-kernel-v1",
+      "outputId": "domain-protocol",
+      "logicalIds": [
+        "family-domain-aggregate/payload/command",
+        "family-domain-aggregate/entity/events"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/protocol.mjs:3-14 protocolTemplate",
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs:258-287 signature/nested",
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/protocol.mjs:7-12 protocolTemplate Event arm",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-domain-kernel-v1",
+      "outputId": "domain-state",
+      "logicalIds": [
+        "family-domain-aggregate/entity/state"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/state.mjs:5-35 prettyLiteral/stateTemplate",
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs:231-245,288-293 defaults/state model",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-domain-kernel-v1",
+      "outputId": "rule-parameters",
+      "logicalIds": [
+        "family-domain-aggregate/formal-rules/parameters"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/params.mjs:15-34 paramsTemplate",
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs:305-309 ruleParams.params",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-domain-kernel-v1",
+      "outputId": "computation-port",
+      "logicalIds": [
+        "family-domain-aggregate/computations/port"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/params.mjs:3-13 computationsTemplate",
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs:168-185,294-304 hosts/methods",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-domain-kernel-v1",
+      "outputId": "exact-value-codec",
+      "logicalIds": [
+        "family-domain-aggregate/exact-codecs/context"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/exact-codecs.mjs:11-53 exactCodecsTemplate",
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs:312-346 codec admission/model",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-domain-kernel-v1",
+      "outputId": "protobuf-schema",
+      "logicalIds": [
+        "family-domain-aggregate/protobuf/context"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/protobuf.mjs:1-43 wireFields/protoNodes/protobufTemplate",
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/serialization-model.mjs:24-136 serializationModel",
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs:347-373 protoPath",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-domain-kernel-v1",
+      "outputId": "proto-converter",
+      "logicalIds": [
+        "family-domain-aggregate/converter/context"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/converters.mjs:10-141 convertersTemplate",
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/converter-abi.mjs:7-52 converterAbi",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-domain-kernel-v1",
+      "outputId": "project-build",
+      "logicalIds": [
+        "family-domain-aggregate/build/kernel-project"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/build.mjs:1-19 buildArtifacts/buildTemplate",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-domain-kernel-v1",
+      "outputId": "build-properties",
+      "logicalIds": [
+        "family-domain-aggregate/build/kernel-properties"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/build.mjs:20-20 buildArtifacts/buildTemplate",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-domain-kernel-v1",
+      "outputId": "build-plugins",
+      "logicalIds": [
+        "family-domain-aggregate/build/kernel-plugins"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/build.mjs:21-23 buildArtifacts/buildTemplate",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-domain-kernel-v1",
+      "outputId": "generated-test",
+      "logicalIds": [
+        "family-domain-aggregate/tests/protobuf-roundtrip"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/generated-tests.mjs:3-32 generatedTestArtifacts/generatedTestsTemplate",
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/render.mjs:30-31 render inherited tests",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-aggregate-core-v1",
+      "outputId": "value-object",
+      "logicalIds": [
+        "family-domain-aggregate/value-object/domain",
+        "family-domain-aggregate/representation/wire",
+        "family-domain-aggregate/representation/po"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/values.mjs:17-63 valueTemplate",
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs:124-142,198-230,312-341 buildModels values/exacts/codecs",
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/values.mjs:17-36 valueTemplate non-exact",
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs:312-340 buildModels codec representation admission",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-aggregate-core-v1",
+      "outputId": "domain-protocol",
+      "logicalIds": [
+        "family-domain-aggregate/payload/command",
+        "family-domain-aggregate/entity/events"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/protocol.mjs:3-14 protocolTemplate",
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs:258-287 signature/nested",
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/protocol.mjs:7-12 protocolTemplate Event arm",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-aggregate-core-v1",
+      "outputId": "domain-state",
+      "logicalIds": [
+        "family-domain-aggregate/entity/state"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/state.mjs:5-35 prettyLiteral/stateTemplate",
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs:231-245,288-293 defaults/state model",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-aggregate-core-v1",
+      "outputId": "rule-parameters",
+      "logicalIds": [
+        "family-domain-aggregate/formal-rules/parameters"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/params.mjs:15-34 paramsTemplate",
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs:305-309 ruleParams.params",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-aggregate-core-v1",
+      "outputId": "computation-port",
+      "logicalIds": [
+        "family-domain-aggregate/computations/port"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/params.mjs:3-13 computationsTemplate",
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs:168-185,294-304 hosts/methods",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-aggregate-core-v1",
+      "outputId": "exact-value-codec",
+      "logicalIds": [
+        "family-domain-aggregate/exact-codecs/context"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/exact-codecs.mjs:11-53 exactCodecsTemplate",
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs:312-346 codec admission/model",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-aggregate-core-v1",
+      "outputId": "protobuf-schema",
+      "logicalIds": [
+        "family-domain-aggregate/protobuf/context"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/protobuf.mjs:1-43 wireFields/protoNodes/protobufTemplate",
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/serialization-model.mjs:24-136 serializationModel",
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs:347-373 protoPath",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-aggregate-core-v1",
+      "outputId": "proto-converter",
+      "logicalIds": [
+        "family-domain-aggregate/converter/context"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/converters.mjs:10-141 convertersTemplate",
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/converter-abi.mjs:7-52 converterAbi",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-aggregate-core-v1",
+      "outputId": "project-build",
+      "logicalIds": [
+        "family-domain-aggregate/build/core-project"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/build.mjs:1-25 buildArtifacts/buildTemplate",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-aggregate-core-v1",
+      "outputId": "build-properties",
+      "logicalIds": [
+        "family-domain-aggregate/build/core-properties"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/build.mjs:26-26 buildArtifacts/buildTemplate",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-aggregate-core-v1",
+      "outputId": "build-plugins",
+      "logicalIds": [
+        "family-domain-aggregate/build/core-plugins"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/build.mjs:27-29 buildArtifacts/buildTemplate",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-aggregate-core-v1",
+      "outputId": "generated-test",
+      "logicalIds": [
+        "family-domain-aggregate/tests/protobuf-roundtrip",
+        "family-domain-aggregate/tests/replay"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/generated-tests.mjs:3-32 generatedTestArtifacts/generatedTestsTemplate",
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/render.mjs:30-31 render inherited tests",
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/generated-tests.mjs:5-25 generatedBehaviorArtifacts/generatedBehaviorTemplate",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-aggregate-core-v1",
+      "outputId": "invariant-rule",
+      "logicalIds": [
+        "family-domain-aggregate/formal-rules/guards",
+        "family-domain-aggregate/decision/dispatch"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/rules.mjs:14-25 rulesTemplate per-command rules",
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/build-models.mjs:139-152 guards",
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/expressions.mjs:40-127 expressionSyntax predicate",
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/rules.mjs:3-13 rulesTemplate decide",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-aggregate-core-v1",
+      "outputId": "command-helper",
+      "logicalIds": [
+        "family-domain-aggregate/formal-rules/event-construction"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/command-helpers.mjs:3-27 commandHelpersTemplate",
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/expressions.mjs:128-139 expressionSyntax value",
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/build-models.mjs:153-181 emissions",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-aggregate-core-v1",
+      "outputId": "event-handler",
+      "logicalIds": [
+        "family-domain-aggregate/event-handler/pure"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/event-handler.mjs:3-25 eventHandlerTemplate",
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/expressions.mjs:140-155 expressionSyntax fold",
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/build-models.mjs:183-220 assignments",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-aggregate-core-v1",
+      "outputId": "application-protocol",
+      "logicalIds": [
+        "family-domain-aggregate/actor/protocol"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/actor-protocol.mjs:3-12 actorProtocolTemplate",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-aggregate-core-v1",
+      "outputId": "aggregate-root",
+      "logicalIds": [
+        "family-domain-aggregate/aggregate/root-wiring",
+        "family-domain-aggregate/aggregate/behavior"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/aggregate.mjs:3-13 aggregateTemplate container/provider",
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/aggregate.mjs:13-16 aggregateTemplate command handler lambda",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-aggregate-core-v1",
+      "outputId": "aggregate-factory",
+      "logicalIds": [
+        "family-domain-aggregate/aggregate/factory"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/factory.mjs:3-11 factoryTemplate",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-aggregate-core-v1",
+      "outputId": "aggregate-bootstrap",
+      "logicalIds": [
+        "family-domain-aggregate/aggregate/bootstrap"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/bootstrap.mjs:3-13 bootstrapTemplate",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-aggregate-core-v1",
+      "outputId": "aggregate-repository-port",
+      "logicalIds": [
+        "family-domain-aggregate/repository/port"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/repository.mjs:3-9 repositoryTemplate",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    },
+    {
+      "producerId": "scala-cqrs-aggregate-core-v1",
+      "outputId": "aggregate-repository-implementation",
+      "logicalIds": [
+        "family-domain-aggregate/repository/local-implementation"
+      ],
+      "declarationStatus": "implemented",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/repository.mjs:11-20 repositoryImplementationTemplate",
+        "implemented仅表示renderer有实际发射分支；条件见对应logicalOutputs，未证明银行消费或运行。"
+      ]
+    }
+  ],
+  "uncataloguedOutputs": [
+    {
+      "id": "family-domain-aggregate/uncatalogued/ledger",
+      "producerIds": [
+        "scala-cqrs-domain-kernel-v1",
+        "scala-cqrs-aggregate-core-v1"
+      ],
+      "logicalIds": [
+        "family-domain-aggregate/apply-evidence/ledger"
+      ],
+      "paths": [
+        "truthsrc.ledger.json"
+      ],
+      "classification": "B",
+      "owner": "shared-entry-writer",
+      "declarationStatus": "derived-evidence",
+      "evidence": [
+        "baseline/js/src/core/generate.mjs:262-263"
+      ],
+      "scope": "仅指本组33条producer-output清单没有此写出；并非声称整个catalog/其它分组完全没有，中央需去重"
+    },
+    {
+      "id": "family-domain-aggregate/uncatalogued/anchors",
+      "producerIds": [
+        "scala-cqrs-domain-kernel-v1",
+        "scala-cqrs-aggregate-core-v1"
+      ],
+      "logicalIds": [
+        "family-domain-aggregate/apply-evidence/anchors"
+      ],
+      "paths": [
+        "anchors.json"
+      ],
+      "classification": "B",
+      "owner": "shared-entry-writer",
+      "declarationStatus": "derived-evidence",
+      "evidence": [
+        "baseline/js/src/core/generate.mjs:265-267 → baseline/js/src/core/anchors.mjs:594"
+      ],
+      "scope": "仅指本组33条producer-output清单没有此写出；并非声称整个catalog/其它分组完全没有，中央需去重"
+    },
+    {
+      "id": "family-domain-aggregate/uncatalogued/anchors-temporary",
+      "producerIds": [
+        "scala-cqrs-domain-kernel-v1",
+        "scala-cqrs-aggregate-core-v1"
+      ],
+      "logicalIds": [
+        "family-domain-aggregate/apply-evidence/anchors"
+      ],
+      "paths": [
+        ".anchors.json.tmp-<process.pid>-<randomUUID>"
+      ],
+      "classification": "B",
+      "owner": "shared-entry-writer",
+      "declarationStatus": "derived-evidence",
+      "evidence": [
+        "baseline/js/src/core/anchors.mjs:574-607；瞬态独占wx写入/rename/按inode清理，不算额外业务制品"
+      ],
+      "scope": "仅指本组33条producer-output清单没有此写出；并非声称整个catalog/其它分组完全没有，中央需去重"
+    }
+  ],
+  "extraSources": [],
+  "unresolvedCoverage": [],
+  "generatorModified": false,
+  "runtimeExecuted": false,
+  "status": "content-specification",
+  "verificationStatus": "未运行任何应用/CLI/生成/编译/typecheck/测试；只做文档引用、文件字节SHA和集合对账，无fresh verification，无parity-PASS/behavior-PASS",
+  "pathNotation": {
+    "basePath": "packages显式Scala包以/替换.；每context独立",
+    "AngleBrackets": "当前路径用模型最终解析名，不根据后缀猜名；目标<Aggregate>/<Value>由集中naming解析，不改变业务ID",
+    "sourceRoot": "候选明确保留modules/kernel和modules/glue物理根；raw Scala app/<package>仅作为职责/布局基准，不宣称两种profile相同",
+    "outDir": "逻辑路径均相对显式生成目标outDir，非本次写目录"
+  },
+  "coverageSummary": {
+    "producerCount": 2,
+    "catalogOutputCount": 33,
+    "logicalOutputCount": 32,
+    "aLogicalOutputCount": 16,
+    "bLogicalOutputCount": 16,
+    "uncataloguedWriteCount": 3,
+    "logicalCountIncludesSharedWriterEvidence": true,
+    "traditionalScalaBaseline": "39+3，仅raw classic；products Scala不是gold"
+  },
+  "physicalAssemblies": [
+    {
+      "current": "kernel:<context>/<aggregate>/protocol",
+      "owner": "family-domain-aggregate/protocol-file-assembly",
+      "logicalIds": [
+        "family-domain-aggregate/payload/command",
+        "family-domain-aggregate/entity/events"
+      ],
+      "headerOwnership": "生成头/package/values imports/object braces统一拥有；command与event声明互斥切分，无初始化丢失",
+      "targetOwners": {
+        "domain/invariant/params/<Aggregate>Commands.scala": "family-domain-aggregate/protocol-file-assembly",
+        "domain/entities/<Aggregate>Entity.scala": "family-domain-aggregate/entity-file-assembly"
+      }
+    },
+    {
+      "current": "kernel:<context>/<aggregate>/rules",
+      "owner": "family-domain-aggregate/rules-file-assembly",
+      "logicalIds": [
+        "family-domain-aggregate/formal-rules/guards",
+        "family-domain-aggregate/decision/dispatch"
+      ],
+      "headerOwnership": "当前header/package/所有imports/object braces仅此owner；decide与ruleMethod区间互斥",
+      "targetOwners": {
+        "domain/invariant/<Aggregate>Rules.scala": "family-domain-aggregate/formal-rule-file-assembly",
+        "domain/invariant/<Aggregate>Decision.scala": "family-domain-aggregate/rules-file-assembly"
+      }
+    },
+    {
+      "current": "glue:<context>/<aggregate>/aggregate",
+      "owner": "family-domain-aggregate/aggregate-file-assembly",
+      "logicalIds": [
+        "family-domain-aggregate/aggregate/root-wiring",
+        "family-domain-aggregate/aggregate/behavior"
+      ],
+      "headerOwnership": "root-wiring拥有header/package/imports/object/handler签名和hosts校验；behavior拥有lambda/match/persist/reply体；单writer一次组装",
+      "targetOwners": {
+        "application/aggregates/<Aggregate>Aggregate.scala": "family-domain-aggregate/aggregate-file-assembly",
+        "application/aggregates/behaviors/<Aggregate>Behaviors.scala": "family-domain-aggregate/aggregate-file-assembly"
+      }
+    },
+    {
+      "current": "多个Params/guards/emit源文件迁入目标Rules时",
+      "owner": "family-domain-aggregate/formal-rule-file-assembly",
+      "logicalIds": [
+        "family-domain-aggregate/formal-rules/parameters",
+        "family-domain-aggregate/formal-rules/guards",
+        "family-domain-aggregate/formal-rules/event-construction"
+      ],
+      "headerOwnership": "目标Rules文件只有一个package/import/object owner，原三个容器不重复拼接；Entity另由entity-file-assembly合并State/Event"
+    }
+  ],
+  "missingImplementations": [
+    {
+      "responsibility": "application CommandHelper三方法与runReplyingPolicy接线",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/command-helpers.mjs:14-25 只产事件",
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/aggregate.mjs:13-15 直接Effect及Accepted(events)"
+      ],
+      "note": "33输出均有实现分支；这是内容缺项，不伪造第34个catalog合同。"
+    },
+    {
+      "responsibility": "Computations业务实现与逐方法BDD",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/params.mjs:3-13 仅trait def"
+      ],
+      "note": "接口发出不代表实现存在；本组不生成具体计算算法。"
+    },
+    {
+      "responsibility": "classic聚合集群生命周期完整接线",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/aggregate.mjs:3-16",
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/bootstrap.mjs:3-13"
+      ],
+      "note": "无entityTypeKey/tags/sharding.init/retention/backoff、无serializer注册或独立spawn宿主；仅与对应A子集对照。"
+    }
+  ],
+  "catalogContentDiscrepancies": [
+    {
+      "outputs": [
+        {
+          "producerId": "scala-cqrs-domain-kernel-v1",
+          "outputId": "protobuf-schema"
+        },
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "protobuf-schema"
+        }
+      ],
+      "fact": "实际protoPath由context ID形成；catalog shape声称来自protobuf package",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs:364-365"
+      ]
+    },
+    {
+      "outputs": [
+        {
+          "producerId": "scala-cqrs-domain-kernel-v1",
+          "outputId": "exact-value-codec"
+        },
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "exact-value-codec"
+        }
+      ],
+      "fact": "descriptor ID/version在模型准入；Scala codec对象没有显式ID/version常量",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/build-models.mjs:319-340",
+        "baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/exact-codecs.mjs:11-53"
+      ]
+    },
+    {
+      "outputs": [
+        {
+          "producerId": "scala-cqrs-aggregate-core-v1",
+          "outputId": "aggregate-root"
+        }
+      ],
+      "fact": "catalog描述aggregate组装pure fold；实际上Aggregate只有commandHandler，fold接线在Bootstrap",
+      "evidence": [
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/aggregate.mjs:13-15",
+        "baseline/js/generators/scala-cqrs-aggregate-core-v1/templates/bootstrap.mjs:12"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,272 @@
+{
+  "group": "projection",
+  "artifactIds": ["projection-repository-port", "projection-repository-implementation", "projection-apply-event", "projection", "projection-handler"],
+  "artifactCount": 5,
+  "documentCount": 6,
+  "status": "decision-required",
+  "baseline": {
+    "index": "baseline/index.json",
+    "inventory": "scala-artifacts.json",
+    "scalaHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+    "jsHead": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+    "scope": "traditional Scala CQRSApplicationGenerator.runCommon; not semantic-products design gold",
+    "pathConvention": "<base> denotes slash-separated configured business package; only domain/application/infrastructure below the business base; modules are physical source roots"
+  },
+  "diffs": [
+    {
+      "artifactId": "projection-repository-port",
+      "file": "diffs/projection-repository-port.diff.md",
+      "status": "decision-required",
+      "scalaVariants": [
+        {"id": "table-single", "condition": "ProjectionRepositoryMetadata; default/table storage; multiProject=false", "outputPaths": ["app/<base>/application/projection/repository/<View>Repository.scala"]},
+        {"id": "table-multi", "condition": "table/default storage; multiProject=true; omit ImplementedBy and implementation dependency", "outputPaths": ["modules/kernel/src/main/scala/<base>/application/projection/repository/<View>Repository.scala"]},
+        {"id": "mongo", "condition": "MongoDocumentMetadata; table-shape port with MongoRepositoryImpl binding; single/multi source root as above", "outputPaths": ["app/<base>/application/projection/repository/<View>Repository.scala", "modules/kernel/src/main/scala/<base>/application/projection/repository/<View>Repository.scala"]},
+        {"id": "graph", "condition": "Neo4jGraphMetadata; declared methods and schema DTO; single/multi are alternative roots", "outputPaths": ["app/<base>/application/projection/repository/<View>Repository.scala", "modules/kernel/src/main/scala/<base>/application/projection/repository/<View>Repository.scala"]},
+        {"id": "vector", "condition": "PgVectorTableMetadata; fixed upsert/findByIdentity/delete/search, not metadata.methods; alternative single/multi roots", "outputPaths": ["app/<base>/application/projection/repository/<View>Repository.scala", "modules/kernel/src/main/scala/<base>/application/projection/repository/<View>Repository.scala"]}
+      ],
+      "jsSources": [
+        {"file": "generators/scala-cqrs-play-service/render-journal-repository.mjs", "symbols": ["renderJournalRepository", "indexMethods"], "lane": "formal", "disposition": "adapt"},
+        {"file": "generators/scala-cqrs-play-service/render-journal-readside.mjs", "symbols": ["renderJournalReadside"], "lane": "formal", "disposition": "adapt"},
+        {"file": "generators/scala-cqrs-play-service/generate.mjs", "symbols": ["registry"], "lane": "formal", "disposition": "adapt"},
+        {"file": "generators/projection-dsl/viewrepo.mjs", "symbols": ["indexCanonical", "tableMethods", "graphMethods", "vectorMethods", "renderTrait", "generateViewRepos"], "lane": "legacy", "disposition": "not-wired"},
+        {"file": "generators/run-all.mjs", "symbols": ["generateViewRepos call at 2083"], "lane": "legacy", "disposition": "adapt"},
+        {"file": "generators/_deprecated/scala-cqrs-es-projection/templates/repository.mjs", "symbols": ["methodsOf", "renderRepository"], "lane": "legacy", "disposition": "not-wired"},
+        {"file": "generators/scala-cqrs-persistence-readside-v1/build-models.mjs", "symbols": ["buildModels", "checkedProduct"], "lane": "family", "disposition": "reuse"},
+        {"file": "generators/scala-cqrs-persistence-readside-v1/templates/repository.mjs", "symbols": ["repositoryTemplate"], "lane": "family", "disposition": "not-wired"}
+      ],
+      "writeSet": ["generators/scala-cqrs-projection-v1/build-repository-models.mjs", "generators/scala-cqrs-projection-v1/templates/repository-port.mjs", "generators/projection-dsl/viewrepo.mjs", "generators/run-all.mjs"],
+      "dependsOn": ["shared-layout-types", "shared-imports-naming", "shared-writer-registry", "projection-repository-implementation", "root-repository-binding", "projection-input-contract"],
+      "glue": ["scala.concurrent.Future", "com.google.inject.ImplementedBy", "javax.inject.Inject", "<base>.application.projection.repository.<View>Table.<View>", "<base>.infrastructure.repositories.projection.<View>RepositoryImpl"],
+      "openDecisions": ["D-P01: 明确 Akka Projection 应用读侧与银行 per-PID journal 的替换或并存及 ownership/offset/查询迁移合同", "D-P02: 单项目 ImplementedBy 反向依赖是否统一 root binding，以及 Query 容器返回型替换规则", "D-P03: vector 三键身份/两键删除全局唯一假设、graph props 类型、字段及身份键声明序与字母序的取舍"],
+      "extraSources": ["/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/products/journal-readside.mjs"]
+    },
+    {
+      "artifactId": "projection-repository-implementation",
+      "file": "diffs/projection-repository-implementation.diff.md",
+      "status": "decision-required",
+      "scalaVariants": [
+        {"id": "jdbc-table", "condition": "TableMetadata/default branch; one implementation per metadata; alternative single/multi roots", "outputPaths": ["app/<base>/infrastructure/repositories/projection/<View>RepositoryImpl.scala", "modules/glue/src/main/scala/<base>/infrastructure/repositories/projection/<View>RepositoryImpl.scala"]},
+        {"id": "graph", "condition": "Neo4jGraphMetadata; strict executor verbs; mergeLinkTolerant remains manual ???; unknown verbs fail", "outputPaths": ["app/<base>/infrastructure/repositories/projection/<View>RepositoryImpl.scala", "modules/glue/src/main/scala/<base>/infrastructure/repositories/projection/<View>RepositoryImpl.scala"]},
+        {"id": "vector", "condition": "PgVectorTableMetadata; injected PgVectorStore then embeddingClient; fixed methods and row mapper", "outputPaths": ["app/<base>/infrastructure/repositories/projection/<View>RepositoryImpl.scala", "modules/glue/src/main/scala/<base>/infrastructure/repositories/projection/<View>RepositoryImpl.scala"]},
+        {"id": "mongo", "condition": "MongoDocumentMetadata; injected MongoViewStore; JSON string API; optional kind discriminator", "outputPaths": ["app/<base>/infrastructure/repositories/projection/<View>MongoRepositoryImpl.scala", "modules/glue/src/main/scala/<base>/infrastructure/repositories/projection/<View>MongoRepositoryImpl.scala"]},
+        {"id": "unsupported-storage-fallback", "condition": "EsIndexMetadata/RedisKeyMetadata reach default table fallback; not genuine ES/Redis implementations", "outputPaths": ["app/<base>/infrastructure/repositories/projection/<View>RepositoryImpl.scala", "modules/glue/src/main/scala/<base>/infrastructure/repositories/projection/<View>RepositoryImpl.scala"]}
+      ],
+      "jsSources": [
+        {"file": "generators/scala-cqrs-play-service/render-journal-repository.mjs", "symbols": ["renderJournalRepository", "journalStatements", "indexMethods"], "lane": "formal", "disposition": "adapt"},
+        {"file": "generators/shared-jdbc/templates.mjs", "symbols": ["jdbcPrimitivesTemplate", "jdbcTransactionTemplate", "jdbcSessionTemplate"], "lane": "formal", "disposition": "reuse"},
+        {"file": "generators/shared-jdbc/model.mjs", "symbols": ["jdbcScalaType", "jdbcSqlType", "jdbcIndexReader"], "lane": "formal", "disposition": "reuse"},
+        {"file": "generators/projection-dsl/viewrepo.mjs", "symbols": ["renderImpl", "sqlBodies", "mongoBodies", "graphBodies", "vectorBodies", "generateViewDdl", "generateMongoIndexSpec"], "lane": "legacy", "disposition": "not-wired"},
+        {"file": "generators/_deprecated/scala-cqrs-es-projection/templates/impl.mjs", "symbols": ["renderImpl", "tableMethods", "mongoMethods", "graphMethods", "vectorMethods"], "lane": "legacy", "disposition": "not-wired"},
+        {"file": "generators/_deprecated/scala-cqrs-es-projection/builders/repoSpecs.mjs", "symbols": ["repoSpecModels"], "lane": "legacy", "disposition": "not-wired"},
+        {"file": "generators/scala-cqrs-persistence-readside-v1/templates/repository.mjs", "symbols": ["repositoryTemplate", "handlerTemplate"], "lane": "family", "disposition": "not-wired"},
+        {"file": "generators/scala-cqrs-persistence-readside-v1/schema-model.mjs", "symbols": ["readsideSchemaModel"], "lane": "family", "disposition": "reuse"},
+        {"file": "generators/scala-cqrs-persistence-readside-v1/templates/schema.mjs", "symbols": ["schemaTemplate", "sqlTemplate"], "lane": "family", "disposition": "not-wired"}
+      ],
+      "writeSet": ["generators/scala-cqrs-projection-v1/build-repository-models.mjs", "generators/scala-cqrs-projection-v1/templates/repository-implementation.mjs", "generators/projection-dsl/viewrepo.mjs", "generators/run-all.mjs"],
+      "dependsOn": ["shared-layout-types", "shared-writer-registry", "projection-repository-port", "projection-handler", "storage-schema-owner", "runtime-store-api"],
+      "glue": ["scalikejdbc.DB", "scalikejdbc.WrappedResultSet", "net.imadz.common.application.projection.ScalikeJdbcSession", "net.imadz.common.application.projection.ScalikeJdbcSetup", "net.imadz.common.Id", "play.api.libs.json.Json", "play.api.libs.json.JsString", "play.api.libs.json.JsNull", "javax.inject.Singleton", "javax.inject.Inject", "<base>.infrastructure.graph.GraphMutationExecutor", "<base>.infrastructure.persistence.vector.PgVectorStore", "<base>.infrastructure.persistence.vector.OllamaEmbeddingClient", "<base>.infrastructure.persistence.mongo.MongoViewStore"],
+      "openDecisions": ["D-P04: repository DB.localTx 与 offset session 是否同事务，以及非 JDBC sinks 的幂等/重放边界", "D-P05: table/port fallback、Long、nullable Instant、rsBigDecimal、List VO codecs 的类型和真实符号缺口", "D-P06: SQL JSON列/子表、Mongo JSON/BSON ABI与毒行/count语义，以及图/向量手写API和租户合同", "D-P07: 人工月度参考的 LCRO上界、day粒度和增量更新重放语义"],
+      "relatedDecisions": ["D-P01", "D-P02", "D-P03"],
+      "extraSources": ["/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/products/journal-readside.mjs"]
+    },
+    {
+      "artifactId": "projection-apply-event",
+      "file": "diffs/projection-apply-event.diff.md",
+      "status": "decision-required",
+      "scalaVariants": [
+        {"id": "absent", "condition": "model.applyEvents.isEmpty; ordinary single-project Builder returns Nil; no file", "outputPaths": []},
+        {"id": "create", "condition": "multiProject; nonempty applyEvents with create records; onEvent(Option[View],Event):View in one shared file", "outputPaths": ["modules/kernel/src/main/scala/<base>/application/projection/handlers/<View>ApplyEvent.scala"]},
+        {"id": "update-only", "condition": "multiProject; updateOnly form; onEvent(View,Event):View", "outputPaths": ["modules/kernel/src/main/scala/<base>/application/projection/handlers/<View>ApplyEvent.scala"]},
+        {"id": "delete", "condition": "multiProject; delete form; onEvent(Event):(String,String); incomplete key extraction must not be called exact", "outputPaths": ["modules/kernel/src/main/scala/<base>/application/projection/handlers/<View>ApplyEvent.scala"]},
+        {"id": "persistence-id-create", "condition": "multiProject; persistenceIdCreate; onEvent(Event,String):View; invalid existing fallback documented", "outputPaths": ["modules/kernel/src/main/scala/<base>/application/projection/handlers/<View>ApplyEvent.scala"]},
+        {"id": "degraded-records", "condition": "nonempty applyEvents whose degraded records are omitted as methods; all-degraded can still write an empty object/import file; graph dialect follows this path", "outputPaths": ["modules/kernel/src/main/scala/<base>/application/projection/handlers/<View>ApplyEvent.scala"]}
+      ],
+      "jsSources": [
+        {"file": "generators/scala-cqrs-play-service/render-journal-domain.mjs", "symbols": ["renderJournalDomain"], "lane": "formal", "disposition": "adapt"},
+        {"file": "generators/scala-cqrs-play-service/render-journal-readside.mjs", "symbols": ["renderJournalReadside"], "lane": "formal", "disposition": "adapt"},
+        {"file": "generators/projection-dsl/emit.mjs", "symbols": ["per-event handler emission"], "lane": "legacy", "disposition": "not-wired"},
+        {"file": "generators/projection-dsl/smviews.mjs", "symbols": ["translateGraph", "translateVector", "manualBodyFor"], "lane": "legacy", "disposition": "not-wired"},
+        {"file": "generators/_deprecated/scala-cqrs-es-projection/templates/handler.mjs", "symbols": ["tableManual", "vectorManual", "graphManual", "manualBlockFor"], "lane": "legacy", "disposition": "not-wired"},
+        {"file": "generators/scala-cqrs-persistence-readside-v1/templates/repository.mjs", "symbols": ["handlerTemplate"], "lane": "family", "disposition": "not-wired"}
+      ],
+      "writeSet": ["generators/scala-cqrs-projection-v1/build-apply-event-models.mjs", "generators/scala-cqrs-projection-v1/templates/apply-event.mjs", "generators/projection-dsl/smviews.mjs", "generators/projection-dsl/emit.mjs"],
+      "dependsOn": ["shared-layout-types", "shared-writer-registry", "projection-repository-port", "projection-handler", "domain-events", "explicit-fold-dialect-and-oracle"],
+      "glue": ["<base>.application.projection.repository.<View>Table.<View>", "<base>.domain.entities.<Aggregate>Entity.<Event>", "net.imadz.common.Id", "java.time.Instant", "<base>.application.projection.handlers.ViewMachine (call-site expectation; actual API/FQN unverified)"],
+      "openDecisions": ["D-P08: delete常量/表达式/键序与form/presence一致性，未知方言降级策略", "D-P09: None patch保留或清空、epoch0/null取now、emptyRow未知默认与全部Id取entityId是否符合业务", "D-P10: ViewMachine真实API/FQN、kernel依赖账与硬编码包/非法existing/nullable默认行的显式修正"],
+      "relatedDecisions": ["D-P01", "D-P03", "D-P05"],
+      "extraSources": ["/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/products/journal-readside.mjs"]
+    },
+    {
+      "artifactId": "projection",
+      "file": "diffs/projection.diff.md",
+      "status": "decision-required",
+      "scalaVariants": [
+        {"id": "single-handler", "condition": "aggregateSources empty and handlers.size=1; direct new Handler(repository)", "outputPaths": ["app/<base>/application/projection/<View>.scala", "modules/glue/src/main/scala/<base>/application/projection/<View>.scala"]},
+        {"id": "composite", "condition": "aggregateSources empty and handlers.size>1; all constructed, routable subset dispatched", "outputPaths": ["app/<base>/application/projection/<View>.scala", "modules/glue/src/main/scala/<base>/application/projection/<View>.scala"]},
+        {"id": "multi-source", "condition": "aggregateSources nonempty; per-active-source provider/factory/private composite inside one file; applies independently of single/multi physical source roots", "outputPaths": ["app/<base>/application/projection/<View>.scala", "modules/glue/src/main/scala/<base>/application/projection/<View>.scala"]},
+        {"id": "empty-handlers-rejected-by-head", "condition": "Template accesses model.handlers.head; no valid empty-handler projection output established", "outputPaths": []}
+      ],
+      "jsSources": [
+        {"file": "generators/scala-cqrs-play-service/generate.mjs", "symbols": ["registry", "generate"], "lane": "formal", "disposition": "adapt"},
+        {"file": "generators/scala-cqrs-play-service/render-journal-readside.mjs", "symbols": ["renderProjection", "renderJournalReadside"], "lane": "formal", "disposition": "adapt"},
+        {"file": "generators/projection-dsl/emit.mjs", "symbols": ["singleHandlerView", "m3View", "decisionView"], "lane": "legacy", "disposition": "not-wired"},
+        {"file": "generators/projection-dsl/smviews.mjs", "symbols": ["indexCanonical", "wiringOf", "singleSourceView", "multiSourceView", "generateSmViews"], "lane": "legacy", "disposition": "not-wired"},
+        {"file": "generators/run-all.mjs", "symbols": ["projection-dsl call at 1026-1086", "generateSmViews call at 2070"], "lane": "legacy", "disposition": "adapt"},
+        {"file": "generators/_deprecated/scala-cqrs-es-projection/builders/views.mjs", "symbols": ["deriveView"], "lane": "legacy", "disposition": "not-wired"},
+        {"file": "generators/_deprecated/scala-cqrs-es-projection/templates/projection.mjs", "symbols": ["renderProjectionDef", "singleHandlerSection", "compositeSection", "multiAggSection"], "lane": "legacy", "disposition": "not-wired"},
+        {"file": "generators/scala-cqrs-persistence-readside-v1/templates/runner.mjs", "symbols": ["sourceTemplate", "runnerTemplate"], "lane": "family", "disposition": "not-wired"},
+        {"file": "generators/scala-cqrs-persistence-readside-v1/build-models.mjs", "symbols": ["buildModels"], "lane": "family", "disposition": "reuse"},
+        {"file": "generators/scala-cqrs-persistence-readside-v1/render.mjs", "symbols": ["productionJobs", "render"], "lane": "family", "disposition": "reuse"},
+        {"file": "lib/products/persistence-readside.mjs", "symbols": ["compilePersistenceReadside"], "lane": "family", "disposition": "not-wired"}
+      ],
+      "writeSet": ["generators/scala-cqrs-projection-v1/build-projection-models.mjs", "generators/scala-cqrs-projection-v1/templates/projection.mjs", "generators/projection-dsl/emit.mjs", "generators/projection-dsl/smviews.mjs", "generators/run-all.mjs"],
+      "dependsOn": ["shared-layout-types", "shared-imports-naming", "shared-writer-registry", "projection-repository-port", "projection-handler", "projection-apply-event", "bootstrap", "proto-converter", "event-adapter", "runtime-session-and-source-api"],
+      "glue": ["akka.actor.typed.ActorSystem", "akka.cluster.sharding.typed.scaladsl.ClusterSharding", "akka.contrib.persistence.mongodb.MongoReadJournal", "akka.persistence.query.Offset", "akka.projection.eventsourced.EventEnvelope", "akka.projection.eventsourced.scaladsl.EventSourcedProvider", "akka.projection.jdbc.scaladsl.JdbcProjection", "akka.projection.jdbc.scaladsl.JdbcHandler", "akka.projection.scaladsl.ExactlyOnceProjection", "akka.projection.scaladsl.SourceProvider", "akka.projection.ProjectionId", "akka.projection.ProjectionBehavior", "akka.cluster.sharding.typed.scaladsl.ShardedDaemonProcess", "akka.cluster.sharding.typed.ShardedDaemonProcessSettings", "net.imadz.common.application.projection.ScalikeJdbcSession", "net.imadz.common.application.projection.ScalikeJdbcSetup"],
+      "openDecisions": ["D-P11: tag/ProjectionId/历史offset身份与多源空群/事件重名/主源选择的兼容性", "D-P12: factory+Bootstrap或自管PID runtime的生命周期、readiness、failure、freshness与unknown事件监控合同"],
+      "relatedDecisions": ["D-P01", "D-P04", "D-P10"],
+      "extraSources": ["/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/products/journal-readside.mjs"]
+    },
+    {
+      "artifactId": "projection-handler",
+      "file": "diffs/projection-handler.diff.md",
+      "status": "decision-required",
+      "scalaVariants": [
+        {"id": "single-manual", "condition": "multiProject=false; family-level event match with MANUAL ???; one file per nested handler", "outputPaths": ["app/<base>/application/projection/handlers/<Handler>.scala"]},
+        {"id": "multi-graph-manual", "condition": "multiProject=true and selfType.name contains GraphView; manual skeleton independent of actual storage type", "outputPaths": ["modules/glue/src/main/scala/<base>/application/projection/handlers/<Handler>.scala"]},
+        {"id": "multi-degraded-manual", "condition": "multiProject non-GraphView and missing/unrecognized refCode head; no ViewMachine call", "outputPaths": ["modules/glue/src/main/scala/<base>/application/projection/handlers/<Handler>.scala"]},
+        {"id": "multi-create", "condition": "recognized dialect; create/default; ViewMachine.run decode/identity/read/applyEvent/write", "outputPaths": ["modules/glue/src/main/scala/<base>/application/projection/handlers/<Handler>.scala"]},
+        {"id": "multi-update-only", "condition": "recognized dialect and applyForm=updateOnly; row-signature kernel callback", "outputPaths": ["modules/glue/src/main/scala/<base>/application/projection/handlers/<Handler>.scala"]},
+        {"id": "multi-delete", "condition": "recognized dialect and applyForm=delete; PO decode then pure keys then repo.delete", "outputPaths": ["modules/glue/src/main/scala/<base>/application/projection/handlers/<Handler>.scala"]},
+        {"id": "multi-persistence-id", "condition": "recognized dialect and applyForm=persistenceIdCreate; PID tail, fixed duplicate identity tuple, two-argument read", "outputPaths": ["modules/glue/src/main/scala/<base>/application/projection/handlers/<Handler>.scala"]}
+      ],
+      "jsSources": [
+        {"file": "generators/scala-cqrs-play-service/render-journal-readside.mjs", "symbols": ["renderProjection/project"], "lane": "formal", "disposition": "adapt"},
+        {"file": "generators/scala-cqrs-play-service/render-journal-domain.mjs", "symbols": ["renderJournalDomain/fold"], "lane": "formal", "disposition": "adapt"},
+        {"file": "generators/projection-dsl/emit.mjs", "symbols": ["per-event handler emission"], "lane": "legacy", "disposition": "not-wired"},
+        {"file": "generators/projection-dsl/smviews.mjs", "symbols": ["translateGraph", "translateVector", "manualBodyFor", "handlerFile"], "lane": "legacy", "disposition": "not-wired"},
+        {"file": "generators/_deprecated/scala-cqrs-es-projection/templates/handler.mjs", "symbols": ["manualBlockFor", "renderHandler", "tableManual", "vectorManual", "graphManual"], "lane": "legacy", "disposition": "not-wired"},
+        {"file": "generators/scala-cqrs-persistence-readside-v1/templates/repository.mjs", "symbols": ["handlerTemplate"], "lane": "family", "disposition": "not-wired"}
+      ],
+      "writeSet": ["generators/scala-cqrs-projection-v1/build-handler-models.mjs", "generators/scala-cqrs-projection-v1/templates/handler.mjs", "generators/projection-dsl/emit.mjs", "generators/projection-dsl/smviews.mjs", "generators/run-all.mjs"],
+      "dependsOn": ["shared-layout-types", "shared-imports-naming", "shared-writer-registry", "projection", "projection-apply-event", "projection-repository-port", "projection-repository-implementation", "proto-converter", "event-adapter", "runtime-view-machine-api"],
+      "glue": ["akka.projection.jdbc.scaladsl.JdbcHandler", "akka.projection.eventsourced.EventEnvelope", "net.imadz.common.application.projection.ScalikeJdbcSession", "javax.inject.Inject", "<base>.infrastructure.persistence.converters.<Aggregate>ProtoConverters.<Event>Conv.fromProto", "<base>.application.projection.handlers.<View>ApplyEvent", "<base>.application.projection.handlers.ViewMachine (inferred same-package call; definition not established)", "<base>.application.projection.repository.<View>Repository"],
+      "openDecisions": ["D-P13: 缺失identity空串/tenantId fallback、persistenceId固定双键、整族匹配、GraphView名称判别与MANUAL算法归属的明确合同"],
+      "relatedDecisions": ["D-P01", "D-P03", "D-P04", "D-P08", "D-P09", "D-P10", "D-P11", "D-P12"],
+      "extraSources": ["/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/products/journal-readside.mjs"]
+    }
+  ],
+  "assemblyOwner": "projection integrator; exactly one complete job graph/final-byte writer for the five logical artifact families",
+  "sharedAssemblyWriteSet": ["generators/scala-cqrs-projection-v1/build-models.mjs", "generators/scala-cqrs-projection-v1/render.mjs", "generators/scala-cqrs-projection-v1/generate.mjs", "generators/scala-cqrs-projection-v1/generator.json"],
+  "writeSetPolicy": "All generators/scala-cqrs-projection-v1 paths are proposed, not existing or approved production edits. Formal render-journal-* adaptation is conditional on D-P01. Registry, naming/types/layout, writer, bootstrap, source mapping and store schema changes belong to their integration owners; no generator or generated bank output was changed.",
+  "jsDispositionPolicy": "not-wired means not wired to the traditional projection target in the formal banking lane, not globally unused: legacy run-all and the independent persistence-readside family have their own callers. reuse denotes reusable discipline/finite helpers, not API or behavior equivalence.",
+  "sourceReview": {
+    "completeScalaMbt": [
+      "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/ProjectionRepositoryModel.scala",
+      "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/ProjectionRepositoryBuilder.scala",
+      "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionRepositoryTemplate.scala",
+      "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/repository/ProjectionRepositoryImplModel.scala",
+      "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/repository/ProjectionRepositoryImplBuilder.scala",
+      "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/repository/ProjectionRepositoryImplTemplate.scala",
+      "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/ProjectionModel.scala",
+      "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/ProjectionBuilder.scala",
+      "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionApplyEventTemplate.scala",
+      "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionTemplate.scala",
+      "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionHandlerTemplate.scala"
+    ],
+    "completeSharedScala": [
+      "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/AggregateRepositoryModel.scala",
+      "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/TypeSystem.scala",
+      "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/ArtifactModel.scala",
+      "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/GeneratorContext.scala",
+      "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/TypeResolver.scala",
+      "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/dsl/CodeGenerationDSL.scala",
+      "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/KnowledgeAnchorDoc.scala",
+      "baseline/bc/src/main/scala/net/imadz/codegen/structure/PackageLayout.scala",
+      "baseline/bc/scaffold/build.sbt",
+      "baseline/common/src/main/scala/net/imadz/common/application/projection/ScalikeJdbcSession.scala",
+      "baseline/common/src/main/scala/net/imadz/common/application/projection/ScalikeJdbcSetup.scala"
+    ],
+    "completeExamples": [
+      "baseline/curated-scala/net/imadz/application/projection/repository/MonthlyIncomeAndExpendsSummaryRepository.scala",
+      "baseline/curated-scala/net/imadz/infrastructure/repositories/projection/MonthlyIncomeAndExpenseSummaryRepositoryImpl.scala",
+      "baseline/curated-scala/net/imadz/application/projection/MonthlyIncomeAndExpenseSummaryProjection.scala",
+      "baseline/curated-scala/net/imadz/application/projection/MonthlyIncomeAndExpenseSummaryProjectionHandler.scala",
+      "baseline/actual-js/app/example/bankwealth/infrastructure/projection/BankJournalReadsideRepository.scala",
+      "baseline/actual-js/app/example/bankwealth/infrastructure/projection/BankJournalReadsideDomain.scala",
+      "baseline/actual-js/app/example/bankwealth/infrastructure/projection/BankJournalReadsideProjection.scala",
+      "baseline/actual-js/app/example/bankwealth/infrastructure/projection/BankJournalReadsideSchema.scala"
+    ],
+    "completeJsGroups": [
+      "baseline/js/generators/scala-cqrs-play-service/render-journal-domain.mjs",
+      "baseline/js/generators/scala-cqrs-play-service/render-journal-repository.mjs",
+      "baseline/js/generators/scala-cqrs-play-service/render-journal-readside.mjs",
+      "baseline/js/generators/scala-cqrs-play-service/generate.mjs",
+      "baseline/js/generators/shared-jdbc/model.mjs",
+      "baseline/js/generators/shared-jdbc/templates.mjs",
+      "baseline/js/generators/projection-dsl/parse.mjs",
+      "baseline/js/generators/projection-dsl/generator.json",
+      "baseline/js/generators/projection-dsl/emit.mjs",
+      "baseline/js/generators/projection-dsl/viewrepo.mjs",
+      "baseline/js/generators/projection-dsl/smviews.mjs",
+      "baseline/js/generators/_deprecated/scala-cqrs-es-projection/generate.mjs",
+      "baseline/js/generators/_deprecated/scala-cqrs-es-projection/builders/views.mjs",
+      "baseline/js/generators/_deprecated/scala-cqrs-es-projection/builders/repoSpecs.mjs",
+      "baseline/js/generators/_deprecated/scala-cqrs-es-projection/templates/repository.mjs",
+      "baseline/js/generators/_deprecated/scala-cqrs-es-projection/templates/impl.mjs",
+      "baseline/js/generators/_deprecated/scala-cqrs-es-projection/templates/projection.mjs",
+      "baseline/js/generators/_deprecated/scala-cqrs-es-projection/templates/handler.mjs",
+      "baseline/js/generators/scala-cqrs-persistence-readside-v1/generate.mjs",
+      "baseline/js/generators/scala-cqrs-persistence-readside-v1/generator.json",
+      "baseline/js/generators/scala-cqrs-persistence-readside-v1/build-models.mjs",
+      "baseline/js/generators/scala-cqrs-persistence-readside-v1/render.mjs",
+      "baseline/js/generators/scala-cqrs-persistence-readside-v1/schema-model.mjs",
+      "baseline/js/generators/scala-cqrs-persistence-readside-v1/wire-layout.mjs",
+      "baseline/js/generators/scala-cqrs-persistence-readside-v1/templates/repository.mjs",
+      "baseline/js/generators/scala-cqrs-persistence-readside-v1/templates/runner.mjs",
+      "baseline/js/generators/scala-cqrs-persistence-readside-v1/templates/envelope.mjs",
+      "baseline/js/generators/scala-cqrs-persistence-readside-v1/templates/persistence.mjs",
+      "baseline/js/generators/scala-cqrs-persistence-readside-v1/templates/schema.mjs",
+      "baseline/js/generators/scala-cqrs-persistence-readside-v1/templates/build.mjs",
+      "baseline/js/lib/products/persistence-readside.mjs"
+    ],
+    "supportExcerpts": [
+      {"file": "baseline/bc/src/main/scala/net/imadz/codegen/CodegenMain.scala", "lines": "181-255", "scope": "traditional route and scaffold/source-root handling"},
+      {"file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala", "lines": "327-425,798-905", "scope": "targetModule/writeArtifact/repository/projection/conditional apply-event/handler dispatch"},
+      {"file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/TypeResolverDSL.scala", "lines": "474-519,649-678,755-789,819-837,969-1003", "scope": "projection and repository naming/nested DTO/PO family/framework glue"},
+      {"file": "baseline/bc/src/main/scala/net/imadz/meta/ArchitectMetadata.scala", "lines": "584-811", "scope": "projection schema and storage/repository metadata"},
+      {"file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/proto/AggregateRootProtoBuilder.scala", "lines": "1-55", "scope": "public PO event-family/union helper delegation"},
+      {"file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/bootstrap/BootstrapBuilder.scala", "lines": "179-238", "scope": "complete buildProjection variant"},
+      {"file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/bootstsrap/BootstrapTemplate.scala", "lines": "125-219", "scope": "complete renderProjectionBootstrap variant and surrounding sibling code"},
+      {"file": "baseline/js/generators/run-all.mjs", "lines": "1026-1090,2060-2104", "scope": "legacy emit/smviews/viewrepo/DDL/index calls"}
+    ]
+  },
+  "extraSourceEvidence": [
+    {
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/products/journal-readside.mjs",
+      "repositoryRelativePath": "lib/products/journal-readside.mjs",
+      "readScope": "complete 171 lines",
+      "sha256": "d64eb49171b2ce6c468f788a8c8c921b8eb7e21d74c08c019ade9fb5f159362b",
+      "headAtRead": "bf104e16ab82ef39d7fa416d0997907d18a815ad",
+      "sourceKind": "mutable original workcopy, not a baseline snapshot",
+      "reason": "formal renderJournalReadside and pinned persistence-readside compiler import the closed v1/index gate; this source was not present among pinned files"
+    }
+  ],
+  "guidanceRead": ["/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/AGENTS.md", "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/AUTHORING-CONTRACT.md", "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/scala-artifacts.json"],
+  "unresolvedSemanticsCount": 13,
+  "unresolvedDecisionIds": ["D-P01", "D-P02", "D-P03", "D-P04", "D-P05", "D-P06", "D-P07", "D-P08", "D-P09", "D-P10", "D-P11", "D-P12", "D-P13"],
+  "execution": {
+    "documentationOnly": true,
+    "worktreeCreated": false,
+    "gitMutated": false,
+    "productionEdited": false,
+    "tasksModified": false,
+    "buildsExecuted": false,
+    "testsExecuted": false,
+    "generatorsRun": false,
+    "servicesRun": false,
+    "baselineModified": false,
+    "runtimeExecuted": false
+  },
+  "generatorsModified": false,
+  "runtimeExecuted": false
+}

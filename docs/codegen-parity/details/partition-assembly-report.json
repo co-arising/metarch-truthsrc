@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "codegen-parity.partition-document-check/v1",
+  "scope": "文档装配的ID、分类与覆盖关系机械核对；不是代码质量/行为验收",
+  "counts": {
+    "producerCount": 45,
+    "catalogOutputContracts": 641,
+    "logicalOccurrences": 591,
+    "classifications": {
+      "A": 283,
+      "B": 308
+    },
+    "traditionalScalaFamilies": 39,
+    "optionalExtensions": 3,
+    "familiesWithPartialCounterparts": 38,
+    "missingCounterpartFamilies": [
+      "saga-trigger-protocol",
+      "saga-trigger-entity",
+      "saga-trigger-root",
+      "saga-trigger-behaviors"
+    ],
+    "additionalWriterObservations": 53,
+    "unprovidedExternalContentSlots": 3
+  },
+  "catalogKeysExactlyCovered": true,
+  "logicalReferencesResolve": true,
+  "sourceFragmentsPreserved": true,
+  "classificationChanges": 50,
+  "externalContentBlockers": [
+    {
+      "sourceFragment": "retired-seven",
+      "producerId": "scala-cqrs-es-api",
+      "outputId": "support-controller",
+      "issue": "动态passthrough允许任意path/content；本片段按实读retired-controllers.json三键分类，未给未提供内容发明通用B桶。",
+      "requiredResolution": "今后新增sidecar键必须固定path/hash并内容拆分；当前三键不是动态合同全集证明。"
+    },
+    {
+      "sourceFragment": "retired-seven",
+      "producerId": "scala-cqrs-es-projection",
+      "outputId": "projection-handler",
+      "issue": "manualBlocks任意内容可覆盖推导体；本轮覆盖renderer/已定义槽职责，未将所有可能手写字节认定为纯ApplyEvent。",
+      "requiredResolution": "同输入比较前提供该输入完整MANUAL sidecar及选择结果，每个新增混合职责再拆分。"
+    },
+    {
+      "sourceFragment": "retired-seven",
+      "producerId": "scala-cqrs-es-projection",
+      "outputId": "projection-repository-impl",
+      "issue": "staleGenerations.implOverrides可整文件替换，模板四存储分支不能证明任意override内容。",
+      "requiredResolution": "后续对选定fixture固定override完整bytes/hash与构造范围，不能以历史戳宣称当前生成parity。"
+    }
+  ],
+  "fullContentPartitionCertified": false,
+  "generatorModified": false,
+  "runtimeExecuted": false
+}

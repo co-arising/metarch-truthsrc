@@ -1,0 +1,1257 @@
+{
+  "schemaVersion": "codegen-parity.scala-inventory/v1",
+  "countScope": "39 distinct traditional Template families; not enum count, file count, product-route count or runtime capability count",
+  "sourceHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+  "basePath": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+  "artifacts": [
+    {
+      "ordinal": 1,
+      "id": "value-object",
+      "role": "value-object",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/domain/ValueObjectModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/domain/ValueObjectModel.scala",
+          "sha256": "1d87201d2d6e5f4a4fdf8886df73ab968f7b9411e2c9e1a46a34592ced11bbfe",
+          "details": "model/domain/ValueObjectModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/domain/ValueObjectBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/domain/ValueObjectBuilder.scala",
+          "sha256": "28d8aae346b62e78feff857c9e831df3f32803bc43bf9c671c3ffb2486c55b01",
+          "details": "builder/domain/ValueObjectBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/ValueObjectTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/ValueObjectTemplate.scala",
+          "sha256": "64f4560981077866ab3a0927c175648c9d36977e59bffb69c41493388f28b826",
+          "details": "template/domain/ValueObjectTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "517"
+      },
+      "diff": "diffs/value-object.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 2,
+      "id": "domain-entity",
+      "role": "domain-entity（含State/Events）",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/domain/DomainEntityModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/domain/DomainEntityModel.scala",
+          "sha256": "54a0e602e4c98669b531851b598c8131ba1291a7bc86a3c717d17ddc34806dd8",
+          "details": "model/domain/DomainEntityModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/domain/DomainEntityBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/domain/DomainEntityBuilder.scala",
+          "sha256": "29f7d954afc5244ee33bbc5d64a4d4bd4915e5677b6902d6265ffb2490284563",
+          "details": "builder/domain/DomainEntityBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainEntityTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainEntityTemplate.scala",
+          "sha256": "b5d64f4d21e71e6eee41af8a2c7e9b1f1652de13b53ed324c335b782fb9a314d",
+          "details": "template/domain/DomainEntityTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "533"
+      },
+      "diff": "diffs/domain-entity.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 3,
+      "id": "event-handler",
+      "role": "event-handler",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/domain/EntityBehaviorModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/domain/EntityBehaviorModel.scala",
+          "sha256": "82ed1a0943a0fe4a2afd2f28513575ebf963967c5cae07e7ab95d4430f2b1207",
+          "details": "model/domain/EntityBehaviorModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/domain/EntityBehaviorBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/domain/EntityBehaviorBuilder.scala",
+          "sha256": "1f38a82acbfe56ccab91d18741f20eb911d6851153134264f9a55548d35e4a87",
+          "details": "builder/domain/EntityBehaviorBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/EntityBehaviorTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/EntityBehaviorTemplate.scala",
+          "sha256": "59725ae168286fa5a2d13bc7d2fc5f3078e68c875342b8a1b76aca4056093a51",
+          "details": "template/domain/EntityBehaviorTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "544"
+      },
+      "diff": "diffs/event-handler.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 4,
+      "id": "invariant-rule",
+      "role": "invariant-rule",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/domain/InvariantRuleModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/domain/InvariantRuleModel.scala",
+          "sha256": "f88b55bd4f45d64ec7e529e7063b89ddebd328107ec91e93e7942bfb73dd86a5",
+          "details": "model/domain/InvariantRuleModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/domain/InvariantRuleBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/domain/InvariantRuleBuilder.scala",
+          "sha256": "6d0f5e29e33fba5b6d8669c0c74577728b50095c7b9a7142b4b5123a97ece0d7",
+          "details": "builder/domain/InvariantRuleBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/InvariantRuleTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/InvariantRuleTemplate.scala",
+          "sha256": "de5285cf72e959e415420ff0063d7f307b15f99fc06043e729e178314eaefd23",
+          "details": "template/domain/InvariantRuleTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "560"
+      },
+      "diff": "diffs/invariant-rule.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 5,
+      "id": "domain-service",
+      "role": "domain-service",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/domain/DomainServiceModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/domain/DomainServiceModel.scala",
+          "sha256": "7c08069ebc3b805ffda7dd944ebd2785aaac679bbfc072c98724d1766f51da20",
+          "details": "model/domain/DomainServiceModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/domain/DomainServiceBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/domain/DomainServiceBuilder.scala",
+          "sha256": "cec8e30e2929b0d309eada8d8a06e3d75c8d70f861dbfe11110de400cf627f28",
+          "details": "builder/domain/DomainServiceBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainServiceTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainServiceTemplate.scala",
+          "sha256": "89d8e550a486ee75c5b3179076c080619f57e3e90d12ad080989e080de662584",
+          "details": "template/domain/DomainServiceTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "585"
+      },
+      "diff": "diffs/domain-service.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 6,
+      "id": "aggregate-root",
+      "role": "aggregate-root",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/AggregateRootModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/AggregateRootModel.scala",
+          "sha256": "20460e277768e97051dcb9ae695f00e35b7887948dfa05ec34f843a78f3cf6a9",
+          "details": "model/application/AggregateRootModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateRootBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateRootBuilder.scala",
+          "sha256": "f4ed19b6de318668c6b5815d030975835a53c1f8f5ac35e2e13f84d319b0a57e",
+          "details": "builder/application/AggregateRootBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRootTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRootTemplate.scala",
+          "sha256": "a138a86cf3c4e72d5eaba650f8e3636082047a5b0fdc6f9fa9ad7c0c78befbd4",
+          "details": "template/application/AggregateRootTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "611"
+      },
+      "diff": "diffs/aggregate-root.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 7,
+      "id": "application-protocol",
+      "role": "application-protocol（Commands/Replies）",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/AggregateProtocolModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/AggregateProtocolModel.scala",
+          "sha256": "e44c087828ac85d4feaf83a4d061d181b8098c01aba24bc54af4140113628fbe",
+          "details": "model/application/AggregateProtocolModel；AggregateRootModel内CommandFamily/Command/Reply"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateProtocolBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateProtocolBuilder.scala",
+          "sha256": "fef186e632228c930f3c9c5db177653e4609f4b8baf50f8aacae09736640596d",
+          "details": "builder/application/AggregateProtocolBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateProtocolTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateProtocolTemplate.scala",
+          "sha256": "25fd60e6c669ef03b4d0b3165f34c8629c758276cb70328831407a37835d313a",
+          "details": "template/application/AggregateProtocolTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "620"
+      },
+      "diff": "diffs/application-protocol.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 8,
+      "id": "aggregate-factory",
+      "role": "aggregate-factory",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/AggregateFactoryModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/AggregateFactoryModel.scala",
+          "sha256": "33e2bbb4fb5a44cc46694930e4f7582958080e2ff925137ea606f82547172ac7",
+          "details": "model/application/AggregateFactoryModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateFactoryBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateFactoryBuilder.scala",
+          "sha256": "4ab2b1f8dca64623b7b4dbfa8af7cb2289bbc9ca24e1fb8a0c7a0f5513c1163a",
+          "details": "builder/application/AggregateFactoryBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateFactoryTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateFactoryTemplate.scala",
+          "sha256": "b54ab0387af9bb2d4c4e9ab66939a5462c7b55c532dc5dd6e486945506c6a52b",
+          "details": "template/application/AggregateFactoryTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "636"
+      },
+      "diff": "diffs/aggregate-factory.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 9,
+      "id": "aggregate-behavior",
+      "role": "aggregate-behavior",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/AggregateBehaviorModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/AggregateBehaviorModel.scala",
+          "sha256": "db5dfd528c14edc01a1badc84bf64d49d3dbf4de054060fd55213c6c0d03b2dd",
+          "details": "model/application/AggregateBehaviorModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateBehaviorBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateBehaviorBuilder.scala",
+          "sha256": "18fbec829c7443ae61c17cc11e13d2ef394832d6066a515c3711a71b0937f341",
+          "details": "builder/application/AggregateBehaviorBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateBehaviorTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateBehaviorTemplate.scala",
+          "sha256": "8e01fd549619334ed21a5eb78f5bbd2aa9889f93d8af94d18ea5233d3456410e",
+          "details": "template/application/AggregateBehaviorTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "645"
+      },
+      "diff": "diffs/aggregate-behavior.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 10,
+      "id": "command-helper",
+      "role": "command-helper",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/CommandHelperModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/CommandHelperModel.scala",
+          "sha256": "28beb61c8e41ee35cb481eedeea2ca5004c73f7e7290f9d26584965621ab3fd0",
+          "details": "model/application/CommandHelperModel → CommandHelpersModel/CommandHelperModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/CommandHelpersBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/CommandHelpersBuilder.scala",
+          "sha256": "6a46c0d8420639ec87352e1c26f20f2ac5bea541d8fc7b1e15af5e9218db44fb",
+          "details": "builder/application/CommandHelpersBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/CommandHelpersTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/CommandHelpersTemplate.scala",
+          "sha256": "999303df54f728e2096789493a7d07b3f8d41ed1b5d3f25b99b0589d02536d1c",
+          "details": "template/application/CommandHelpersTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "662"
+      },
+      "diff": "diffs/command-helper.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 11,
+      "id": "aggregate-rules-formal",
+      "role": "aggregate-rules-formal（有formal语义才发）",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/AggregateRulesModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/AggregateRulesModel.scala",
+          "sha256": "8f5d54684e4f4abfbb9dade5a335f19ecd1cd5061e95bb722ebba48573cb2b05",
+          "details": "model/application/AggregateRulesModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateRulesBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateRulesBuilder.scala",
+          "sha256": "2a96b64a95eec149465147adfff3f34724fdbe33721e39c4b7a21fd4be2170d6",
+          "details": "builder/application/AggregateRulesBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRulesTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRulesTemplate.scala",
+          "sha256": "b897db889faae4906846476d00078a164cab2974d6b61c805dd7d9949479ac12",
+          "details": "template/application/AggregateRulesTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "671"
+      },
+      "diff": "diffs/aggregate-rules-formal.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 12,
+      "id": "aggregate-repository-port",
+      "role": "aggregate-repository-port",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/AggregateRepositoryModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/AggregateRepositoryModel.scala",
+          "sha256": "5a8d2b8f0c362af0b40a396dbdf22ab49a8225178ffda050b8edbf410ee75e50",
+          "details": "model/application/AggregateRepositoryModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateRepositoryBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateRepositoryBuilder.scala",
+          "sha256": "4eb9eb888695fa9777c203f5144677b098b07285e102c2899f9d0ad783de5eee",
+          "details": "builder/application/AggregateRepositoryBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRepositoryTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRepositoryTemplate.scala",
+          "sha256": "c8b3bf0f17e7538325fb7d6bbe0166da8ed97bc8a34b7f12a463415ded60dbf6",
+          "details": "template/application/AggregateRepositoryTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "685"
+      },
+      "diff": "diffs/aggregate-repository-port.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 13,
+      "id": "external-connector-port",
+      "role": "external-connector-port",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/ConnectorModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/ConnectorModel.scala",
+          "sha256": "c865504f1a744bac5793da4eb974d83c14abcb494933d8a093ffcaea9ac47d61",
+          "details": "model/application/ConnectorModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/ConnectorBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/ConnectorBuilder.scala",
+          "sha256": "be8c2cf7eb69dbb73ec2b86b910b93792766d0cc77e31d2d40935637f7caea7c",
+          "details": "builder/application/ConnectorBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ConnectorTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ConnectorTemplate.scala",
+          "sha256": "091fadf11eb1636c9f411794b8e9c16e90ce8a0c3ea9e4671fd51ff81b765811",
+          "details": "template/application/ConnectorTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "704"
+      },
+      "diff": "diffs/external-connector-port.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 14,
+      "id": "application-service",
+      "role": "application-service",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/ApplicationServiceModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/ApplicationServiceModel.scala",
+          "sha256": "19e673c7aa7de8964c4d82d7ca5ec0939bd7310142f4560a7c5d0bc162a6ee76",
+          "details": "model/application/ApplicationServiceModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/ApplicationServiceBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/ApplicationServiceBuilder.scala",
+          "sha256": "087675af9f553fda84533c3e226a87356260daed3a4bbf080cffab266f5bb06e",
+          "details": "builder/application/ApplicationServiceBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ApplicationServiceTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ApplicationServiceTemplate.scala",
+          "sha256": "afe3693dd25c9268d6ee11f0d02d981d264a6e050fa73bac233f6f96202ac548",
+          "details": "template/application/ApplicationServiceTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "715"
+      },
+      "diff": "diffs/application-service.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 15,
+      "id": "query-service",
+      "role": "query-service",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/QueryServiceModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/QueryServiceModel.scala",
+          "sha256": "13e8231b2f74b17ec2fa172089d53c3ef17dd5695b4642290d15e5e0ede120d2",
+          "details": "model/application/QueryServiceModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/QueryServiceBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/QueryServiceBuilder.scala",
+          "sha256": "da55f7371098efe9617e8fc01556fb4f88c5369a97f2cfb732a6aefd4fdf55ac",
+          "details": "builder/application/QueryServiceBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/QueryServiceTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/QueryServiceTemplate.scala",
+          "sha256": "ccb898355b2af33d930275f9eb9edaaedf89594255a8715fb68e0da033d4adc5",
+          "details": "template/application/QueryServiceTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "726"
+      },
+      "diff": "diffs/query-service.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 16,
+      "id": "saga-participant",
+      "role": "saga-participant（classic）",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/SagaParticipantModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/SagaParticipantModel.scala",
+          "sha256": "60a6f6023cfcf362244eb99fc562a5c7e86f4073c7c1aaa90e3c7410a816a28b",
+          "details": "model/application/transactor/SagaParticipantModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaParticipantBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaParticipantBuilder.scala",
+          "sha256": "073e6aefef7ec23a7baecb9d3a7671df1564658dfe4fc4aedeb6dbb75bca5ce4",
+          "details": "builder/application/transactor/SagaParticipantBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaParticipantTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaParticipantTemplate.scala",
+          "sha256": "6bdd9d0f65f2d7dfe2eb833fe1e87030f0e6fdd1f218ccab0e0d5a2053e249c4",
+          "details": "template/application/transactor/SagaParticipantTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "740"
+      },
+      "diff": "diffs/saga-participant.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 17,
+      "id": "saga-definition",
+      "role": "saga-definition（classic）",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/SagaDefinitionModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/SagaDefinitionModel.scala",
+          "sha256": "67123df05a8319b08d1b2da9647695933e517dfb8401c7a08fd3e7b9b4f7cf0a",
+          "details": "model/application/transactor/SagaDefinitionModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaDefinitionBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaDefinitionBuilder.scala",
+          "sha256": "44a6d730ca3eaad968067be3968a3b00a9cba4fc62166836c2a25fd3b2c8ecff",
+          "details": "builder/application/transactor/SagaDefinitionBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaDefinitionTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaDefinitionTemplate.scala",
+          "sha256": "0cc80e820075c8dd5c36330dc71a28fef69c3b0a0d7cdbd0c832df6cb691d263",
+          "details": "template/application/transactor/SagaDefinitionTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "749"
+      },
+      "diff": "diffs/saga-definition.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 18,
+      "id": "saga-trigger-protocol",
+      "role": "saga-trigger-protocol",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/SagaTriggerModels.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/SagaTriggerModels.scala",
+          "sha256": "c7331985fb13f32e0f8104fed9110893703eece551f03c7da031796a073db2f1",
+          "details": "model/application/transactor/SagaTriggerModels → SagaTriggerProtocolModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaTriggerBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaTriggerBuilder.scala",
+          "sha256": "43876918912c7a5c97e18a647821f1467c74f6ee0ed058906de4d76a25cfa664",
+          "details": "builder/application/transactor/SagaTriggerBuilder.buildProtocol"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerProtocolTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerProtocolTemplate.scala",
+          "sha256": "656729b7dda1265fa45e1d766c62a5a590ac68321d8202802107a63ea28b3055",
+          "details": "template/application/transactor/SagaTriggerProtocolTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "759"
+      },
+      "diff": "diffs/saga-trigger-protocol.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 19,
+      "id": "saga-trigger-entity",
+      "role": "saga-trigger-entity",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/SagaTriggerModels.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/SagaTriggerModels.scala",
+          "sha256": "c7331985fb13f32e0f8104fed9110893703eece551f03c7da031796a073db2f1",
+          "details": "model/application/transactor/SagaTriggerModels → SagaTriggerEntityModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaTriggerBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaTriggerBuilder.scala",
+          "sha256": "43876918912c7a5c97e18a647821f1467c74f6ee0ed058906de4d76a25cfa664",
+          "details": "builder/application/transactor/SagaTriggerBuilder.buildEntity"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerEntityTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerEntityTemplate.scala",
+          "sha256": "914c4d4dc1ca86a9c0d3533d3251468917e33c3108c3837534c18d95811ece39",
+          "details": "template/application/transactor/SagaTriggerEntityTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "762"
+      },
+      "diff": "diffs/saga-trigger-entity.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 20,
+      "id": "saga-trigger-root",
+      "role": "saga-trigger-root",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/SagaTriggerModels.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/SagaTriggerModels.scala",
+          "sha256": "c7331985fb13f32e0f8104fed9110893703eece551f03c7da031796a073db2f1",
+          "details": "model/application/transactor/SagaTriggerModels → SagaTriggerRootModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaTriggerBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaTriggerBuilder.scala",
+          "sha256": "43876918912c7a5c97e18a647821f1467c74f6ee0ed058906de4d76a25cfa664",
+          "details": "builder/application/transactor/SagaTriggerBuilder.buildRoot"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerRootTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerRootTemplate.scala",
+          "sha256": "f7d001fbe47ffbb3ba0e59c92f1e5341e4fbdfa558a98b9ac682779e56f1ad84",
+          "details": "template/application/transactor/SagaTriggerRootTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "765"
+      },
+      "diff": "diffs/saga-trigger-root.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 21,
+      "id": "saga-trigger-behaviors",
+      "role": "saga-trigger-behaviors",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/SagaTriggerModels.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/SagaTriggerModels.scala",
+          "sha256": "c7331985fb13f32e0f8104fed9110893703eece551f03c7da031796a073db2f1",
+          "details": "model/application/transactor/SagaTriggerModels → SagaTriggerBehaviorsModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaTriggerBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaTriggerBuilder.scala",
+          "sha256": "43876918912c7a5c97e18a647821f1467c74f6ee0ed058906de4d76a25cfa664",
+          "details": "builder/application/transactor/SagaTriggerBuilder.buildBehaviors"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerBehaviorsTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerBehaviorsTemplate.scala",
+          "sha256": "f478b038b386b60cd53c3cc42d0c683e92aefc57425a5830b88ef308ccb9c0e7",
+          "details": "template/application/transactor/SagaTriggerBehaviorsTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "768"
+      },
+      "diff": "diffs/saga-trigger-behaviors.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 22,
+      "id": "aggregate-repository-implementation",
+      "role": "aggregate-repository-implementation",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/repository/AggregateRepositoryImplModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/repository/AggregateRepositoryImplModel.scala",
+          "sha256": "e9fc2a296bcd78b21017c28ab6e37d81eb7734cf4d9c619adc390080416d0d0a",
+          "details": "model/infrastructure/repository/AggregateRepositoryImplModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/repository/AggregateRepositoryImplBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/repository/AggregateRepositoryImplBuilder.scala",
+          "sha256": "2ee4a5e708d144dcaa7254b1f23c27205e3578cc63f1a0819d3f94f954834ada",
+          "details": "builder/infrastructure/repository/AggregateRepositoryImplBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/repository/AggregateRepositoryImplTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/repository/AggregateRepositoryImplTemplate.scala",
+          "sha256": "96e0a18d3d388b971b4a76769043367f060dfd0abba0c1e8c1fb86e938090d02",
+          "details": "template/infrastructure/repository/AggregateRepositoryImplTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "789"
+      },
+      "diff": "diffs/aggregate-repository-implementation.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 23,
+      "id": "projection-repository-port",
+      "role": "projection-repository-port",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/ProjectionRepositoryModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/ProjectionRepositoryModel.scala",
+          "sha256": "cafecc494e38ffd935cc3303dd2671ea9ae5eab1810c8d80acb657fa51911294",
+          "details": "model/application/ProjectionRepositoryModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/ProjectionRepositoryBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/ProjectionRepositoryBuilder.scala",
+          "sha256": "399d5b15d99c2f404362743c7b32120b6864a2c8ff7ec7dda49feebecf31067a",
+          "details": "builder/application/ProjectionRepositoryBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionRepositoryTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionRepositoryTemplate.scala",
+          "sha256": "d60fdeee859ce52c095309c10757533bc0a0df83decbfa5ebd24bcafba59a1ab",
+          "details": "template/application/ProjectionRepositoryTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "812"
+      },
+      "diff": "diffs/projection-repository-port.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 24,
+      "id": "projection-repository-implementation",
+      "role": "projection-repository-implementation",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/repository/ProjectionRepositoryImplModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/repository/ProjectionRepositoryImplModel.scala",
+          "sha256": "e6340d687f91bb66618bd732903dffdf843d89a798d0d8a924a4b9be8419d79e",
+          "details": "model/infrastructure/repository/ProjectionRepositoryImplModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/repository/ProjectionRepositoryImplBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/repository/ProjectionRepositoryImplBuilder.scala",
+          "sha256": "c55ae88f32997a02bc0328fd3d16e3d3c938d0d5e7e718ccb041681ca52faea5",
+          "details": "builder/infrastructure/repository/ProjectionRepositoryImplBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/repository/ProjectionRepositoryImplTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/repository/ProjectionRepositoryImplTemplate.scala",
+          "sha256": "11da140441075e65238465acb59776a1032786935ea6315c1663baf27e20960c",
+          "details": "template/infrastructure/repository/ProjectionRepositoryImplTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "827"
+      },
+      "diff": "diffs/projection-repository-implementation.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 25,
+      "id": "connector-implementation",
+      "role": "connector-implementation",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/connector/ConnectorImplModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/connector/ConnectorImplModel.scala",
+          "sha256": "0bda07d63be7c2fb6902a54478a05ac48ba166022b5981b651697ab2908f282e",
+          "details": "model/infrastructure/connector/ConnectorImplModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/connector/ConnectorImplBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/connector/ConnectorImplBuilder.scala",
+          "sha256": "5ddff821d006b87baef80a16b24a6bf4e5409e4a45c413ba4a4badee21ba5412",
+          "details": "builder/infrastructure/connector/ConnectorImplBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/connector/ConnectorImplTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/connector/ConnectorImplTemplate.scala",
+          "sha256": "aed09862e1dc7c09f49a2f124d9ab9ec3d1a47f41732992e6bec0bd0b1f130e5",
+          "details": "template/infrastructure/connector/ConnectorImplTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "845"
+      },
+      "diff": "diffs/connector-implementation.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 26,
+      "id": "projection-apply-event",
+      "role": "projection-apply-event（条件子产物）",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/ProjectionModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/ProjectionModel.scala",
+          "sha256": "1e82b7872ce845b32a2ae88c2c1060498a4b90a1167abfdc53f0bb27c62ff4a5",
+          "details": "model/application/ProjectionModel（ApplyEventFunction）"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/ProjectionBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/ProjectionBuilder.scala",
+          "sha256": "322a4cb972a5a5e64875b4c6bb9b756d2e8346e32ce7b874a1d9daa30da9edb5",
+          "details": "builder/application/ProjectionBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionApplyEventTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionApplyEventTemplate.scala",
+          "sha256": "5bb8aeea91fb37d5ef7d24acb3c525ed36ff3392eaf24a6257cb73a8b8828cc1",
+          "details": "template/application/ProjectionApplyEventTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "856,864"
+      },
+      "diff": "diffs/projection-apply-event.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 27,
+      "id": "projection",
+      "role": "projection（source/provider/runtime装配）",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/ProjectionModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/ProjectionModel.scala",
+          "sha256": "1e82b7872ce845b32a2ae88c2c1060498a4b90a1167abfdc53f0bb27c62ff4a5",
+          "details": "model/application/ProjectionModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/ProjectionBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/ProjectionBuilder.scala",
+          "sha256": "322a4cb972a5a5e64875b4c6bb9b756d2e8346e32ce7b874a1d9daa30da9edb5",
+          "details": "builder/application/ProjectionBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionTemplate.scala",
+          "sha256": "4622d776d4152d2ade2daa42339e03e169ce600a6c08e2bd67e5ac07db1e2e77",
+          "details": "template/application/ProjectionTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "856,878"
+      },
+      "diff": "diffs/projection.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 28,
+      "id": "projection-handler",
+      "role": "projection-handler",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/ProjectionModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/ProjectionModel.scala",
+          "sha256": "1e82b7872ce845b32a2ae88c2c1060498a4b90a1167abfdc53f0bb27c62ff4a5",
+          "details": "model/application/ProjectionModel → ProjectionHandlerModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/ProjectionBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/ProjectionBuilder.scala",
+          "sha256": "322a4cb972a5a5e64875b4c6bb9b756d2e8346e32ce7b874a1d9daa30da9edb5",
+          "details": "builder/application/ProjectionBuilder.buildHandlers"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionHandlerTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionHandlerTemplate.scala",
+          "sha256": "8d308843e7eacfdb612ec3e4a7d12d97bb74943c833f00965c1421e2a99ce149",
+          "details": "template/application/ProjectionHandlerTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "890–896"
+      },
+      "diff": "diffs/projection-handler.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 29,
+      "id": "protobuf-schema",
+      "role": "protobuf-schema（aggregate/shared变体）",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/proto/ProtoFileModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/proto/ProtoFileModel.scala",
+          "sha256": "14f20b00d034f85ea1be446751bcd8b09cf464161835582d2ee55b6632653363",
+          "details": "model/infrastructure/proto/ProtoFileModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/proto/AggregateRootProtoBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/proto/AggregateRootProtoBuilder.scala",
+          "sha256": "aa6d7aa7e86d3fd372423ff1b4a2d616a2e59d6f2e98574efbe5ac2f9239149e",
+          "details": "builder/infrastructure/proto/AggregateRootProtoBuilder.build/buildShared"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/proto/ProtoTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/proto/ProtoTemplate.scala",
+          "sha256": "f4222930400b194407f6815c8b4c76d9a9779950ad3d10c5d6063c99cb2f77b7",
+          "details": "template/infrastructure/proto/ProtoTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "914,966"
+      },
+      "diff": "diffs/protobuf-schema.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 30,
+      "id": "proto-converter",
+      "role": "proto-converter",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/persistence/AggregateConverterModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/persistence/AggregateConverterModel.scala",
+          "sha256": "18e08f4d6acab862986f9dfc8fb8e9b95b84c60ec23ba4a4a8e17329f0d01e66",
+          "details": "model/infrastructure/persistence/AggregateConverterModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/persistence/AggregateConverterBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/persistence/AggregateConverterBuilder.scala",
+          "sha256": "fb8f1e35fb4000000d3c0a022b6a338122191f4526df77466ce919d80bdb928d",
+          "details": "builder/infrastructure/persistence/AggregateConverterBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/persistence/AggregateConverterTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/persistence/AggregateConverterTemplate.scala",
+          "sha256": "92543a5f3bc821256596fc4b42faaf9c7391e4bea4bd0ce5b31aa3a8ac4e7a0e",
+          "details": "template/infrastructure/persistence/AggregateConverterTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "930"
+      },
+      "diff": "diffs/proto-converter.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 31,
+      "id": "event-adapter",
+      "role": "event-adapter",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/persistence/AdapterModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/persistence/AdapterModel.scala",
+          "sha256": "78eabce88cb12fdb855bf4771821f60b5751ceed270d31dc36f1fd029b7561ab",
+          "details": "model/infrastructure/persistence/AdapterModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/persistence/AggregateAdapterBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/persistence/AggregateAdapterBuilder.scala",
+          "sha256": "54df76ca8a4213c09ffa1e0dca82b44580aa6bde2e6ebb81b702ed7437420293",
+          "details": "builder/infrastructure/persistence/AggregateAdapterBuilder.buildEventAdapter"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/persistence/EventAdapterTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/persistence/EventAdapterTemplate.scala",
+          "sha256": "fdc112cd12b9049ab1e037c6d76c5bd079e04dfba305d1eda3fe827f1c471d01",
+          "details": "template/infrastructure/persistence/EventAdapterTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "940"
+      },
+      "diff": "diffs/event-adapter.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 32,
+      "id": "snapshot-adapter",
+      "role": "snapshot-adapter",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/persistence/AdapterModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/persistence/AdapterModel.scala",
+          "sha256": "78eabce88cb12fdb855bf4771821f60b5751ceed270d31dc36f1fd029b7561ab",
+          "details": "model/infrastructure/persistence/AdapterModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/persistence/AggregateAdapterBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/persistence/AggregateAdapterBuilder.scala",
+          "sha256": "54df76ca8a4213c09ffa1e0dca82b44580aa6bde2e6ebb81b702ed7437420293",
+          "details": "builder/infrastructure/persistence/AggregateAdapterBuilder.buildSnapshotAdapter"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/persistence/SnapshotAdapterTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/persistence/SnapshotAdapterTemplate.scala",
+          "sha256": "7b2fc75f65bde694eb8704fe7fd770766429726f96bc56899c91315f2eb76b35",
+          "details": "template/infrastructure/persistence/SnapshotAdapterTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "951"
+      },
+      "diff": "diffs/snapshot-adapter.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 33,
+      "id": "saga-context",
+      "role": "saga-context（classic）",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/SagaContextModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/SagaContextModel.scala",
+          "sha256": "a2adb00e113f6214d8ab6c90d187375af89723dceb81ddddd1d2e00449a1d5d2",
+          "details": "model/application/transactor/SagaContextModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaContextBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaContextBuilder.scala",
+          "sha256": "fea772f9b21f1708013cafc378f6e13d0b926ab69baaddf2920c7c7f3e85d241",
+          "details": "builder/application/transactor/SagaContextBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaContextTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaContextTemplate.scala",
+          "sha256": "85b75575d7cc904b9a8a623bf78fd837e270eaa437c467792af0f41583061ec7",
+          "details": "template/application/transactor/SagaContextTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "979"
+      },
+      "diff": "diffs/saga-context.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 34,
+      "id": "aggregate-state-controller",
+      "role": "aggregate-state-controller",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/api/AggregateStateControllerModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/api/AggregateStateControllerModel.scala",
+          "sha256": "e82c7a61407d86ccfc945497d7d41ce83f16f6e0e59018ad65784d0e1bd20057",
+          "details": "model/infrastructure/api/AggregateStateControllerModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/api/AggregateStateControllerBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/api/AggregateStateControllerBuilder.scala",
+          "sha256": "72ae20d5a0eca5356b9058077cea6d4d089a414680e48dbce73e2b4815848095",
+          "details": "builder/infrastructure/api/AggregateStateControllerBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/AggregateStateControllerTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/AggregateStateControllerTemplate.scala",
+          "sha256": "12ec14b353d3682a5c9ef36d66520a02e42daa9c81331babae6b95a3f04a7195",
+          "details": "template/infrastructure/api/AggregateStateControllerTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "1020"
+      },
+      "diff": "diffs/aggregate-state-controller.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 35,
+      "id": "http-controller",
+      "role": "http-controller",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/api/ControllerModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/api/ControllerModel.scala",
+          "sha256": "299bf59238a3a160777201d594ebf7eba310d635399ac7b281280afd7e1a3f93",
+          "details": "model/infrastructure/api/ControllerModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/api/ControllerBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/api/ControllerBuilder.scala",
+          "sha256": "37fdb4322e229c55aa26540e8e8308cfe682c0af7f0bdea46ae5a1e91fdab430",
+          "details": "builder/infrastructure/api/ControllerBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/ControllerTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/ControllerTemplate.scala",
+          "sha256": "cce8e32e0139d8d447812498dad894130d10cbffe9d38df179be687dbd73e123",
+          "details": "template/infrastructure/api/ControllerTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "1035"
+      },
+      "diff": "diffs/http-controller.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 36,
+      "id": "command-endpoint-dsl",
+      "role": "command-endpoint-dsl",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/api/CommandDslModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/api/CommandDslModel.scala",
+          "sha256": "0bb312d15a29c0ff110c48315477446e04909f7787f29a27113e1172b41fe075",
+          "details": "model/infrastructure/api/CommandDslModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/api/CommandDslBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/api/CommandDslBuilder.scala",
+          "sha256": "4d27833e110839a15ac6e67b3e0dcda4280d3188fa5b9f3bbbcafc7a6b8a8589",
+          "details": "builder/infrastructure/api/CommandDslBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/CommandDslTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/CommandDslTemplate.scala",
+          "sha256": "49d83f977b5a7f707d47ecc4636bf8234f90924ea78f8041db83f3038aeedfa3",
+          "details": "template/infrastructure/api/CommandDslTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "1048"
+      },
+      "diff": "diffs/command-endpoint-dsl.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 37,
+      "id": "route-definition",
+      "role": "route-definition（marker片段）",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/api/RoutesFragmentModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/api/RoutesFragmentModel.scala",
+          "sha256": "653bbddf44270a31df19eb7a9088f47cf81213e8eaed87d44e33e62fc0091029",
+          "details": "model/infrastructure/api/RoutesFragmentModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/api/RoutesBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/api/RoutesBuilder.scala",
+          "sha256": "c23541b6df9720928fd90b0db9622dc84562130f98b85d55803f426aa8e9f6f3",
+          "details": "builder/infrastructure/api/RoutesBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/RoutesTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/RoutesTemplate.scala",
+          "sha256": "4272ced844752343f859338d64c6a9263874618bbc2f985b3c060539b1217708",
+          "details": "template/infrastructure/api/RoutesTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "1061,1082"
+      },
+      "diff": "diffs/route-definition.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 38,
+      "id": "bootstrap",
+      "role": "bootstrap（4个变体逐项子diff）",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/bootstrap/BootstrapModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/bootstrap/BootstrapModel.scala",
+          "sha256": "cc00cdae4801c8d27113c104783982c96aa4d8fe30edd2279f0f3c056bb987a9",
+          "details": "model/infrastructure/bootstrap/BootstrapModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/bootstrap/BootstrapBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/bootstrap/BootstrapBuilder.scala",
+          "sha256": "b5dbe31a3da1810e19d2110adc64174bed012da69bce86ad5822424f5df3dd63",
+          "details": "builder/infrastructure/bootstrap/BootstrapBuilder.buildAggregate/buildSagaCoordinator/buildSagaTransactor/buildProjection"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/bootstsrap/BootstrapTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/bootstsrap/BootstrapTemplate.scala",
+          "sha256": "951a9cfd7813b6b543af515d575fa0d7b954daa9ed3b422d4f78c45f07818b5d",
+          "details": "template/infrastructure/bootstsrap/BootstrapTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "1141–1175"
+      },
+      "diff": "diffs/bootstrap.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    },
+    {
+      "ordinal": 39,
+      "id": "application-bootstrap",
+      "role": "application-bootstrap",
+      "scala": {
+        "model": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/bootstrap/ApplicationBootstrapModel.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/bootstrap/ApplicationBootstrapModel.scala",
+          "sha256": "50577fb1569708125144d23bfec3c1cd27b7476ce34dd1a6487f5a6f62368956",
+          "details": "model/infrastructure/bootstrap/ApplicationBootstrapModel"
+        },
+        "builder": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/bootstrap/ApplicationBootstrapBuilder.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/bootstrap/ApplicationBootstrapBuilder.scala",
+          "sha256": "feb954ccf8c64e51b97c04291f5e6a2a30e6431c3588afa3c678d4a7f2fc9ca4",
+          "details": "builder/infrastructure/bootstrap/ApplicationBootstrapBuilder"
+        },
+        "template": {
+          "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/bootstsrap/ApplicationBootstrapTemplate.scala",
+          "snapshot": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/bootstsrap/ApplicationBootstrapTemplate.scala",
+          "sha256": "532ee3182f6821420ae0eb6c1dd4373aca2b7be7087ebbd306721ae25842946f",
+          "details": "template/infrastructure/bootstsrap/ApplicationBootstrapTemplate"
+        }
+      },
+      "dispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "1188"
+      },
+      "diff": "diffs/application-bootstrap.diff.md",
+      "status": "inventory-located-not-yet-content-reviewed"
+    }
+  ],
+  "excluded": [
+    {
+      "id": "policy-template",
+      "reason": "CQRSApplicationGenerator lines575-583 commented out; Node rules_domain_gen is separate"
+    },
+    {
+      "id": "semantic-products-route",
+      "reason": "CodegenMain semanticProductsFile -> Product* builders/templates is registered but not this style baseline; source snapshots preserve it"
+    },
+    {
+      "id": "static-scaffold",
+      "reason": "copied, not generated through per-artifact MBT"
+    }
+  ],
+  "optionalExtensions": [
+    {
+      "id": "strict-saga-module",
+      "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/StrictSagaModuleBuilder.scala",
+      "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/StrictSagaModuleModel.scala",
+      "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/StrictSagaModuleTemplate.scala",
+      "dispatch": "StrictSagaGenerationPlan and CQRSApplicationGenerator strict foreach",
+      "status": "separate-required-diff"
+    },
+    {
+      "id": "strict-fixture-host",
+      "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/FixtureHostBuilder.scala",
+      "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/FixtureHostModel.scala",
+      "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/FixtureHostTemplate.scala",
+      "dispatch": "CQRSApplicationGenerator:231-248",
+      "status": "separate-required-diff"
+    },
+    {
+      "id": "composition-invocation-host",
+      "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/CompositionHostBuilder.scala",
+      "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/CompositionHostBuilder.scala",
+      "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/InvocationHostTemplate.scala",
+      "dispatch": "CQRSApplicationGenerator:258-269",
+      "status": "separate-required-diff"
+    }
+  ]
+}

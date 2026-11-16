@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "truthsrc.product-input-files/v1",
+  "documents": [
+    {
+      "id": "classic-system",
+      "schemaVersion": "truthsrc.classic-architecture-input/v1",
+      "file": "baseline.json"
+    }
+  ],
+  "assemblies": [],
+  "requirements": [
+    {
+      "id": "classic-architecture",
+      "version": "1",
+      "payloadSchemaVersion": "truthsrc.classic-architecture/v1",
+      "capabilities": [{ "id": "classic-aggregate-scaffold", "version": "1" }],
+      "inputRoles": { "architecture": "classic-system" },
+      "requires": []
+    }
+  ],
+  "options": {}
+}

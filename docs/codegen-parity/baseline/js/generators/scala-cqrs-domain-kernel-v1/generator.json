@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "truthsrc.product-generator/v1",
+  "name": "scala-cqrs-domain-kernel",
+  "version": "1",
+  "targetProfile": "scala-cqrs-domain-kernel@1",
+  "products": [
+    { "id": "reference-layout", "version": "1", "payloadSchemaVersion": "truthsrc.reference-layout/v1", "capabilities": [{ "id": "qualified-reference-layout", "version": "1" }] },
+    { "id": "exact-value-types", "version": "1", "payloadSchemaVersion": "truthsrc.exact-value-types/v1", "capabilities": [{ "id": "exact-value-types", "version": "1" }] },
+    { "id": "domain-decision", "version": "4", "payloadSchemaVersion": "truthsrc.domain-decision/v4", "capabilities": [{ "id": "ordered-domain-decision", "version": "4" }] },
+    { "id": "domain-dependencies", "version": "6", "payloadSchemaVersion": "truthsrc.domain-dependencies/v6", "capabilities": [{ "id": "domain-dependencies", "version": "6" }] },
+    { "id": "domain-folds", "version": "6", "payloadSchemaVersion": "truthsrc.domain-folds/v6", "capabilities": [{ "id": "domain-folds", "version": "6" }] },
+    { "id": "domain-external-events", "version": "2", "payloadSchemaVersion": "truthsrc.domain-external-events/v2", "capabilities": [{ "id": "external-event-producers", "version": "2" }] },
+    { "id": "exact-value-codecs", "version": "1", "payloadSchemaVersion": "truthsrc.exact-value-codecs/v1", "capabilities": [{ "id": "exact-value-codecs", "version": "1" }] }
+  ],
+  "producers": [{
+    "id": "domain-kernel",
+    "version": "1",
+    "products": ["reference-layout", "exact-value-types", "domain-decision", "domain-dependencies", "domain-folds", "domain-external-events", "exact-value-codecs"],
+    "artifactKinds": ["value-object", "protocol", "state", "rule-parameters", "computation-port", "exact-value-codec", "proto", "converter", "build", "generated-test"]
+  }],
+  "artifactKinds": ["value-object", "protocol", "state", "rule-parameters", "computation-port", "exact-value-codec", "proto", "converter", "build", "generated-test"],
+  "options": ["packages", "names", "protobuf"]
+}

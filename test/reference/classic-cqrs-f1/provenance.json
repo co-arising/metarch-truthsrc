@@ -1,0 +1,1766 @@
+{
+  "schemaVersion": "truthsrc.classic-cqrs-f1-provenance/v1",
+  "purpose": "Archival F1 byte-parity inputs and complete raw Scala references; not a generated application, test execution, or business-readiness certificate.",
+  "pathBases": {
+    "savedPaths": "Repository-relative; portable with this checkout.",
+    "localEvidence": "Absolute historical source/receipt paths are local-only and NOT relocatable. Receipts, classes and the complete 108-file raw trees are not copied. A path plus SHA-256 is not a portable rerun receipt."
+  },
+  "originalSource": {
+    "repository": "/Users/zhongdj/Workspaces/mad-polaris/backkend-codegen",
+    "commit": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+    "sourceRoot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/bc-source",
+    "sourceClosure": {
+      "fileCount": 706,
+      "declaredSourcePaths": [
+        "build.sbt",
+        "project/**",
+        "src/**",
+        "scaffold/**"
+      ],
+      "manifest": {
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/bc-evidence/source-manifest.json",
+        "bytes": 211155,
+        "sha256": "2583d4ca4b8e636220a6ab851805de7d2361310dbca1b7e9ec1eb73c27c8da38"
+      },
+      "allListedBytesHashVerifiedAtPreservation": true
+    },
+    "baselineSnapshots": {
+      "fileCount": 283,
+      "index": {
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/index.json",
+        "bytes": 307606,
+        "sha256": "d60175f98077ef302df3765a08591ded41ad2b07c8bd62e6ce95e18569fed0fc"
+      },
+      "reconciliation": {
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/bc-evidence/baseline-reconciliation.json",
+        "bytes": 159177,
+        "sha256": "090085207b05e4737fb60c264f73590ea7e1cba5948989e40e8b80ac211c937f"
+      },
+      "overlayCount": 0,
+      "allListedBytesHashVerifiedAtPreservation": true,
+      "notCopied": "reference_project curated evidence: checked against index and git, not a compilation or generation input"
+    },
+    "checkpoint": {
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/bc-evidence/checkpoint-02.json",
+      "bytes": 139477,
+      "sha256": "6090a0cf2403a8e54c73c0041f6556b645551297ae590a44cb06693a468ee3ef"
+    },
+    "build": {
+      "operation": "build-05",
+      "receipt": {
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/bc-evidence/build-05.json",
+        "bytes": 3639,
+        "sha256": "3865ef5aa9ff8937f0a60441e6e700d0869e06f5477d1e23dbf0ed181cffd441"
+      },
+      "invocation": {
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/bc-evidence/build-05.invocation.json",
+        "bytes": 3690,
+        "sha256": "63a202427b14cd532c64c8e57037705ab63446967546ab9904fb70d1419d308e"
+      },
+      "recordedPassed": true,
+      "generatedApplicationCompiled": false
+    }
+  },
+  "inputCapture": {
+    "entrypoint": "truthsrc.codegenparity.ClassicMetadataExport.main",
+    "sourceSymbol": "net.imadz.meta.Examples.bankingSystem",
+    "exporter": {
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/tools/codegen-parity/ClassicMetadataExport.scala",
+      "bytes": 4379,
+      "sha256": "bc46d15c3f3538d609ce02f4bc807b8ff8b0cbddf39392970690183f8410da6a"
+    },
+    "exporterRepositoryPath": "tools/codegen-parity/ClassicMetadataExport.scala",
+    "originalToolPins": {
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/bc-evidence/tool-input-pins.json",
+      "bytes": 2888,
+      "sha256": "fbd19dbea331159a68266659f17222d99b9acaeffd97e5691a9d1d39cc18ecee"
+    },
+    "extent": "Complete SystemMetadata, lossless tagged Scala Product export with original field names and explicit defaults; not pruned, not reconstructed from generated Scala, and not builder output.",
+    "knowledgeExport": {
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/reference/knowledge-export.json",
+      "bytes": 40,
+      "sha256": "d838c2e86fa07381eb6e62bf58fff496b42c220be492e09870b95a32705dc243"
+    },
+    "optionsSource": {
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/js-input/options.json",
+      "bytes": 167,
+      "sha256": "84406bd393b3632c0789e432919fd9b8614cc99da67432723890700e14cf031f"
+    },
+    "requestTemplate": {
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/js-input/request.json",
+      "bytes": 591,
+      "sha256": "8c920ef0b6eb56b04241db7ad90db7a1aa4486ed044ba99f5d42084006124a43"
+    },
+    "requestAdaptation": "Only documents[0].file changes to baseline.json or timestamp-int.json; the existing single classic-architecture product contract is retained."
+  },
+  "timestampIntVariant": {
+    "sourceChange": {
+      "purpose": "Metadata type-input probe only; not a banking migration or generated application compilation",
+      "sourceCommit": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "sourceManifest": {
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/bc-evidence/source-manifest.json",
+        "bytes": 211155,
+        "sha256": "2583d4ca4b8e636220a6ab851805de7d2361310dbca1b7e9ec1eb73c27c8da38"
+      },
+      "original": {
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/bc-source/src/main/scala/net/imadz/meta/Examples.scala",
+        "bytes": 41607,
+        "sha256": "aaa4fbe90fa903e4e133014276506c2d18781c599a27385e8948ada9e8ebdeb3"
+      },
+      "variant": {
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/input-src/net/imadz/meta/Examples.scala",
+        "bytes": 41606,
+        "sha256": "172008be034ba6258a994f9a7be4f394e62d4ad2c08d8158cf89a36cdc645207"
+      },
+      "diff": {
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/Examples.scala.diff",
+        "bytes": 1544,
+        "sha256": "3feced759f79202c99600e8f659ac5b7e83ac34f88cf670a9b41d8782aced167"
+      },
+      "originalOccurrenceCount": 1,
+      "event": "BalanceChanged",
+      "field": "timestamp",
+      "line": 35,
+      "old": "FieldMetadata(\"timestamp\", LongType)",
+      "new": "FieldMetadata(\"timestamp\", IntType)",
+      "byteOffset": 2118,
+      "unchangedPrefixSha256": "a31eaf1e83df590ccb0e8f35a4d95da4191c1cb287f0bc3f20c6344eb47864c3",
+      "unchangedSuffixSha256": "a81d68252b531a5933e2fc75c5914302d8d9aa917d7813c36634252bd3ce4246",
+      "allOtherSourceBytesIdentical": true
+    },
+    "sourceChangeReceipt": {
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/source-change.json",
+      "bytes": 1687,
+      "sha256": "cce26cf5de87ec522229a81125b18bd7db6d8a25c7ebf93c208c463c97fc3439"
+    },
+    "metadataDifference": {
+      "baseline": {
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/reference/classic-input.json",
+        "bytes": 159364,
+        "sha256": "860aac654a4877fef37d933afb058424b6017efecd7becc0a5595f772b33dc02"
+      },
+      "variant": {
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/classic-input.json",
+        "bytes": 159363,
+        "sha256": "51c5cb9de55e99b04cf79c46b1cfa389305a1db63689a22ea072aca98d5b5954"
+      },
+      "differenceCount": 1,
+      "changes": [
+        {
+          "path": "/system/domain/entities/0/eventFamily/events/0/fields/1/fieldType/_type",
+          "before": "LongType",
+          "after": "IntType",
+          "field": "timestamp",
+          "event": "BalanceChanged",
+          "admitted": true
+        }
+      ],
+      "allChangesAreRequestedEventFieldType": true
+    },
+    "metadataDifferenceReceipt": {
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/metadata-structural-diff.json",
+      "bytes": 839,
+      "sha256": "039b2c81675bc246d9b5e5bedbc3f1d7b81f941aac709591f4770728e7ce629d"
+    },
+    "classIsolation": {
+      "manifest": {
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/class-isolation.json",
+        "bytes": 2101649,
+        "sha256": "8c456262063173d46155a07cc1c632b9da47ee22a00d4de97bfd5e9e41acc9da"
+      },
+      "baselineFreshBuild": "build-05",
+      "baselineManifestEntries": 2751,
+      "excludedExamplesClasses": 2,
+      "copiedEntries": 2749,
+      "copiedEntriesInclude": "2739 unchanged class files plus 10 unchanged classpath resources",
+      "variantClassManifest": {
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/variant-input-classes.manifest.json",
+        "bytes": 1953,
+        "sha256": "9a7ff8ad3773b07d1e7834303caedfaeca0399050e101637ba072d8f8fd106b4"
+      },
+      "examplesFqnOnlyFrom": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/variant-input-classes",
+      "dependencyJarsCopied": 0
+    },
+    "resultReceipt": {
+      "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/result.json",
+      "bytes": 16189,
+      "sha256": "81f53518247486e61d3d5a61869ec1d6957599c6d648007b7b4b2d8ae6b6e4f5"
+    },
+    "rawDifferencesAgainstBaseline": {
+      "changedPaths": [
+        "app/net/imadz/banking/domain/entities/CreditBalanceEntity.scala",
+        "app/protobuf/credit_balance.proto"
+      ],
+      "unchangedFileCount": 106,
+      "f1ChangedPaths": [
+        "app/net/imadz/banking/domain/entities/CreditBalanceEntity.scala"
+      ]
+    },
+    "meaning": "Only BalanceChanged.timestamp metadata type LongType -> IntType. This is not a banking time-semantics migration."
+  },
+  "rawRuns": [
+    {
+      "variant": "baseline",
+      "originalRawRoot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/reference/raw-a",
+      "savedComparisonRoot": "test/reference/classic-cqrs-f1/baseline",
+      "metadata": {
+        "savedFile": "test/fixtures/classic-cqrs-f1/baseline.json",
+        "source": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/reference/classic-input.json",
+          "bytes": 159364,
+          "sha256": "860aac654a4877fef37d933afb058424b6017efecd7becc0a5595f772b33dc02"
+        },
+        "export": {
+          "entrypoint": "truthsrc.codegenparity.ClassicMetadataExport.main",
+          "arguments": [
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/reference/classic-input.json"
+          ],
+          "invocation": {
+            "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/bc-evidence/export-a.invocation.json",
+            "bytes": 4433,
+            "sha256": "6bb955e6a209de22c67edfc81bd3fd77bc5e49942314969d1bb713d330b98c88"
+          },
+          "receipt": {
+            "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/bc-evidence/export-a.json",
+            "bytes": 4398,
+            "sha256": "40431dd990135c0319c212f91360ee4be6066a9f51025a23da309c9563aa51c6"
+          },
+          "completion": {
+            "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/bc-evidence/export-a.completion.json",
+            "bytes": 261,
+            "sha256": "9913dfc00ed4185faa82ebb68fae3fa996c039236eea838fdcfce256ff09ceef"
+          },
+          "stdout": {
+            "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/bc-evidence/export-a.stdout.log",
+            "bytes": 202,
+            "sha256": "4fb2cc794bd894cc3bff3f39033907dca762374df44ebe2b6e3227e4e04d47fe"
+          },
+          "stderr": {
+            "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/bc-evidence/export-a.stderr.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "recordedResult": {
+            "passed": true,
+            "status": "passed",
+            "code": 0,
+            "startedAt": "2026-11-16T06:01:29.263Z",
+            "endedAt": "2026-11-16T06:01:29.741Z",
+            "elapsedMs": 478,
+            "commandSha256": "c2acb98116f3fc98a2e894b825054b7319d1a18cb8b50f2c171a7d3f2a2d949e",
+            "directChildClosed": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false
+          }
+        }
+      },
+      "originalManifest": {
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/reference/raw-a.manifest.json",
+        "bytes": 43299,
+        "sha256": "d7e4405ea8d44e84d3fd3c95e3c245fdd85bb0385166c42c3a10225d3b89810b"
+      },
+      "generation": {
+        "entrypoint": "net.imadz.codegen.CodegenMain.main",
+        "arguments": [],
+        "invocation": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/bc-evidence/raw-a.invocation.json",
+          "bytes": 4645,
+          "sha256": "6b21745a0f97a2e415a688c2c774a47c0cf1fadaaacbf526e16d99485de60a03"
+        },
+        "receipt": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/bc-evidence/raw-a.json",
+          "bytes": 4238,
+          "sha256": "f0ea73cff7708c81ebe26c37690dcbc7f1ded4ad7e2841e82816a9478e8a5e0d"
+        },
+        "completion": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/bc-evidence/raw-a.completion.json",
+          "bytes": 259,
+          "sha256": "7d47673fb71d37ae4f9a6f41fdf21d2bbe5050c46465fa212d78b8cfac97e1dd"
+        },
+        "stdout": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/bc-evidence/raw-a.stdout.log",
+          "bytes": 11722,
+          "sha256": "1198eb6c5283f558c199db5a241afefc05f8174917c7ee46420c7127dff8165d"
+        },
+        "stderr": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/bc-evidence/raw-a.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "recordedResult": {
+          "passed": true,
+          "status": "passed",
+          "code": 0,
+          "startedAt": "2026-11-16T06:02:28.688Z",
+          "endedAt": "2026-11-16T06:02:29.915Z",
+          "elapsedMs": 1227,
+          "commandSha256": "2f81636da66dd021d7b6dbced895fcb27c0fd7ed7bb9fe52f6710acad0a10d91",
+          "directChildClosed": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false
+        },
+        "properties": {
+          "codegen.system": "Examples",
+          "codegen.targetDir": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/reference/raw-a",
+          "codegen.generatorVersion": "parity-f1-cc335eb1",
+          "codegen.noGit": "true",
+          "codegen.knowledge-export": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/reference/knowledge-export.json"
+        }
+      },
+      "regularFileCount": 108,
+      "copiedCompleteFileCount": 4,
+      "inventoryOnlyFileCount": 104,
+      "inventory": [
+        {
+          "relativePath": ".gitignore",
+          "bytes": 103,
+          "sha256": "9a7626100f8d1c09be9995b2dc711e0da42b41a6767815eaf1a4796319d70afd"
+        },
+        {
+          "relativePath": "app/controllers/CreditBalanceApiController.scala",
+          "bytes": 3831,
+          "sha256": "7c316b62d4e14f371b1c474b74c167a6c36e0b6971282bc3c7a0c1bf117a36f2"
+        },
+        {
+          "relativePath": "app/controllers/filter/LoggingFilter.scala",
+          "bytes": 812,
+          "sha256": "9922a44ece2a7c713378d70bbfa2481a30646dc6d4215b03488f2c49bd7406ed"
+        },
+        {
+          "relativePath": "app/controllers/HomeController.scala",
+          "bytes": 3595,
+          "sha256": "e23f01c51c1184c8a1f9dcd7cd766cab68fb5c866e61940ae565107ab024ea67"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceBehaviors.scala",
+          "bytes": 4989,
+          "sha256": "be1747471aaa7e313e6d4e7995d980294035d73933dece0bdb67cc996f2564bf"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceCommandHelpers.scala",
+          "bytes": 10155,
+          "sha256": "d31fc1c7b1236320786ad29023710fe10c079294473e146bdf810a5439405d0e"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/aggregates/CreditBalanceAggregate.scala",
+          "bytes": 1021,
+          "sha256": "2b06e99d1ccdb5903b259f04897c7c08859e863ea07dc48917bd7c54d8ea5121"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/aggregates/CreditBalanceProtocol.scala",
+          "bytes": 3675,
+          "sha256": "a87d6eb810e696d0fd0ed6a021038eb953ccf30ae1db0aee9c437f4b53504a50"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/aggregates/factories/CreditBalanceAggregateFactory.scala",
+          "bytes": 3314,
+          "sha256": "d7f457ba1e65825cde1008f515de765d67f64ed999d6b63cfd20960a775668df"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/aggregates/repository/CreditBalanceRepository.scala",
+          "bytes": 1425,
+          "sha256": "38bc1381a4531f67d07d7b6be20b46c7c0cede42dadb9a9d359082bfb4dd6d85"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/projection/handlers/MonthlyIncomeAndExpenseSummaryProjectionHandler.scala",
+          "bytes": 1956,
+          "sha256": "739c7ab3eb6fea62173e15db31b2ec8f0a7cb3ce0d00b86c9e425a11fa921d6c"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/projection/MonthlyIncomeAndExpenseSummaryProjection.scala",
+          "bytes": 3064,
+          "sha256": "c72cce4deb1cd5ddc5e43a798e7453c564eec6301d76370a55b991b9ffa3f3f1"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/projection/repository/MonthlyIncomeAndExpenseSummaryRepository.scala",
+          "bytes": 1551,
+          "sha256": "daa535852d1e1b5fda813df38f642e4104780a8e7f595c9813b6e42859017fde"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/queries/GetBalanceQuery.scala",
+          "bytes": 1378,
+          "sha256": "a0b17628d8bd4e5360dd2a47532d848873d7a001362a6d585ae12943ede247a4"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/queries/GetRecent12MonthsIncomeAndExpenseReportQuery.scala",
+          "bytes": 1799,
+          "sha256": "41e22fcd04d11cce147d96c44d645c28e7dce843461ff8107e0fa5966e643888"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/services/CreateCreditBalanceService.scala",
+          "bytes": 845,
+          "sha256": "878b475b033ed1757a1d35574eb612830f8752c86ef04cfe357cf1c2eb995530"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/services/DepositService.scala",
+          "bytes": 867,
+          "sha256": "dec46accc11a0ecb834f7ed0c5f723429644226b001599544d8cd4f7d8d9e772"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/services/MoneyTransferService.scala",
+          "bytes": 681,
+          "sha256": "5fcdf0eeaf5f5ccabbb0eeb4dae43ec0d0ce315b943658cc69ba80fd307c7219"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/services/transactor/behaviors/MoneyTransferSagaTransactorBehaviors.scala",
+          "bytes": 5414,
+          "sha256": "beca5d1bd6e85687330b2cedb3c2cafe94339d14d3495bb25a7429743cec0b75"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/services/transactor/FromAccountParticipant.scala",
+          "bytes": 3021,
+          "sha256": "77e1f91acd71eaea5193d8805c515970122f9c0f44fb2906a60b8b31aeb82414"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/services/transactor/MoneyTransferContext.scala",
+          "bytes": 278,
+          "sha256": "bb76d2e76101dcb3b46d8706df227abc4ef5050a7499751b78cd5b73581d4638"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/services/transactor/MoneyTransferSagaDefinition.scala",
+          "bytes": 3149,
+          "sha256": "1e6450ebd421ae8f90b2fb442f7d4313806fa7edaa4a69931b6827f9e89f0d95"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/services/transactor/MoneyTransferSagaTransactor.scala",
+          "bytes": 920,
+          "sha256": "d0dd8c00ce5ff6ecc0e9e673fc72f58da7c19595cb0f72865f1fdbbbe3bbed47"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/services/transactor/MoneyTransferSagaTransactorProtocol.scala",
+          "bytes": 1281,
+          "sha256": "db479d6af882cd3e75056aba2731740ba1ffa875d81877c9f68b50c4d3ff8414"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/services/transactor/ToAccountParticipant.scala",
+          "bytes": 3112,
+          "sha256": "d6bb3a62dcb65657964a29d39209a5bde28b81692a7c90e801556afb24b9ea2f"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/services/WithdrawService.scala",
+          "bytes": 870,
+          "sha256": "bc1ac09bd7c2d4e6d7b4e91b608805c092480af0a7ad3b0ae06d5968af6e96c3"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/entities/behaviors/CreditBalanceEventHandler.scala",
+          "bytes": 3019,
+          "sha256": "5078bc34dffde204ac4fb7e1e0f8eeffd05878e004a9432678c0e8c92c327cd3"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/entities/CreditBalanceEntity.scala",
+          "bytes": 1375,
+          "sha256": "a7a4e3e2566e40d93b54cab3c760ce0cf5787d917d19fe8bbcb9739f825d64a0"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/entities/MoneyTransferTransactionEntity.scala",
+          "bytes": 1766,
+          "sha256": "35bd9dd42a6ab3d57c487da480ac657ecf55578550aee38513449ad6bef5cf7b"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/invariant/AddInitialOnlyOnceRuleRule.scala",
+          "bytes": 1397,
+          "sha256": "39910486b541db52c5e0bb74a497b2b118a322e0f0a32b4192a562ca1d206564"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/invariant/CancelIncomingCreditRuleRule.scala",
+          "bytes": 1338,
+          "sha256": "18398519efe34883c9e81e9bf9e97847b7fc6e02355a81cb096b34e9e73f360c"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/invariant/CommitIncomingCreditsRuleRule.scala",
+          "bytes": 1339,
+          "sha256": "e31938a85bd1536902f526872638292bcd6b76b61aefbbcdef9bf33f855c6a55"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/invariant/DeductFundsRuleRule.scala",
+          "bytes": 1347,
+          "sha256": "1dc67d3709d16e04b03128eb8c044b17d3b1be6bfd4df05133c0e75016566bc0"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/invariant/DepositRuleRule.scala",
+          "bytes": 1349,
+          "sha256": "8e012d69181b328a588c09acbbf6b6759f4f7fd84a782e0288b939bc2147bb91"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/invariant/RecordIncomingCreditsRuleRule.scala",
+          "bytes": 1414,
+          "sha256": "51701862924110ac8c1e4b98a0232573766c03a3a2f1db7999bbde90c9860cc3"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/invariant/ReleaseReservedFundsRuleRule.scala",
+          "bytes": 1356,
+          "sha256": "848ec6e5314cba319ad680f6c740a151ca163be645e2999d38a7dacffc6c5943"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/invariant/ReserveFundsRuleRule.scala",
+          "bytes": 1527,
+          "sha256": "c6cf6a3e2906783e299d6dcc24674ffd74902c4eee2f0c131a29a6d87d769892"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/invariant/WithdrawRuleRule.scala",
+          "bytes": 1393,
+          "sha256": "86e4009a3abb3b2963239371b4cc2b4ec6687c766328fb83db7838860a04fbc4"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/services/TransferValidatorDomainService.scala",
+          "bytes": 811,
+          "sha256": "f86c77eabe9c55dc6ca48c88b1bbe992c104efc94b1f6217531ea4ada56d2251"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/values/Money.scala",
+          "bytes": 361,
+          "sha256": "3c04c8db45c656ea8d395efe76229e5b10cb023dd1d5469dbdb7b55d5692354c"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/infrastructure/bootstrap/ApplicationBootstrap.scala",
+          "bytes": 1847,
+          "sha256": "d92c383b51f7f132102ae4602a2a161ecb7053cce7e80d6b07a2d33a1634e3ae"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/infrastructure/bootstrap/CreditBalanceBootstrap.scala",
+          "bytes": 3099,
+          "sha256": "673ee447c9b9e8f73547eb70add7d0f9bc00f6cc67f6f329f8982f29eb091cfc"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/infrastructure/bootstrap/MoneyTransferSagaTransactorBootstrap.scala",
+          "bytes": 647,
+          "sha256": "37e14158d73184c9a2d043053b9638122691f20e087055b8aab1ff17eff42a87"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/infrastructure/bootstrap/MonthlyIncomeAndExpenseSummaryBootstrap.scala",
+          "bytes": 1370,
+          "sha256": "b00dfa433299569491c89e5862fdbc4b74a0d65ffb8549d567961e791de01e53"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/infrastructure/bootstrap/SagaTransactionCoordinatorBootstrap.scala",
+          "bytes": 2472,
+          "sha256": "771947eb9ec9cde4f4255aeffc41458e21fe876330c2c3505980f79dca8d1979"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/infrastructure/persistence/converters/CreditBalanceProtoConverters.scala",
+          "bytes": 7533,
+          "sha256": "1bc9901c020520fdd8cfb46e04c54aca19e0dfb45a1c3e1beb9d757a1569292a"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/infrastructure/persistence/CreditBalanceEventAdapter.scala",
+          "bytes": 3599,
+          "sha256": "849c2c9144bb41959bcfe3b350bb46403db819ee29f4ed6b3a0c3b38cdce51c9"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/infrastructure/persistence/CreditBalanceSnapshotAdapter.scala",
+          "bytes": 964,
+          "sha256": "eadd91369b60a6006a7db86877d4c9959eafb887fcca4df06064efe775935ef7"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/infrastructure/repositories/aggregate/CreditBalanceRepositoryImpl.scala",
+          "bytes": 1243,
+          "sha256": "07832102033229fada393dce533116c1ec06afee18a33a383feae831f23b2c1e"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/infrastructure/repositories/projection/MonthlyIncomeAndExpenseSummaryRepositoryImpl.scala",
+          "bytes": 3106,
+          "sha256": "c9760741e4d18ae0501683881f37c6832acbb0e290e843cf9ea60b917fc75675"
+        },
+        {
+          "relativePath": "app/net/imadz/common/application/CommandHandlerReplyingBehavior.scala",
+          "bytes": 4403,
+          "sha256": "d2499de5832333c39ef644da3094ef5b5cc023c69d4b43643e83de94c2973350"
+        },
+        {
+          "relativePath": "app/net/imadz/common/application/projection/ScalikeJdbcSession.scala",
+          "bytes": 849,
+          "sha256": "b1bf8f009ffbac056ab8c2db441bb81c225e80ec46a2d048e1ee8276a511f5f3"
+        },
+        {
+          "relativePath": "app/net/imadz/common/application/projection/ScalikeJdbcSetup.scala",
+          "bytes": 2472,
+          "sha256": "42f55a87236945218f950c38ad55f67b5498da46d64abe4bf4d3ea08ebb0e785"
+        },
+        {
+          "relativePath": "app/net/imadz/common/auth/ApiError.scala",
+          "bytes": 2181,
+          "sha256": "ffe12a6e8ebce83d3fc6f862c458b6465203d6999de42fca29ecd84bcaca06e8"
+        },
+        {
+          "relativePath": "app/net/imadz/common/auth/AuthAction.scala",
+          "bytes": 3574,
+          "sha256": "c9f3ee7d7b2ee99b07cee17ea73b38f04803d781897784d0e6cffca777f50604"
+        },
+        {
+          "relativePath": "app/net/imadz/common/auth/Endpoint.scala",
+          "bytes": 18229,
+          "sha256": "7ce7ab0e2a82c7545dd23859430c8c569ee692ba2f7f5787b13f724daeb530cc"
+        },
+        {
+          "relativePath": "app/net/imadz/common/auth/IdCodec.scala",
+          "bytes": 1454,
+          "sha256": "cac8f12d8243bef1b77e17da5ba2b8a7d26eb1fdf643f1dac18f6f45bc300577"
+        },
+        {
+          "relativePath": "app/net/imadz/common/auth/LoginRateLimiter.scala",
+          "bytes": 1259,
+          "sha256": "0afb6e4f47c287ad5c228e8c673ec5d6b1901c408eb9265b3d082e2120e91255"
+        },
+        {
+          "relativePath": "app/net/imadz/common/auth/PasswordHashing.scala",
+          "bytes": 1993,
+          "sha256": "550ca78362db92edaf6a90149da2e2171dc4f7ece1f99f3c01f1b3cf597fa697"
+        },
+        {
+          "relativePath": "app/net/imadz/common/auth/RoleGate.scala",
+          "bytes": 3413,
+          "sha256": "80cf2185d96262412ac4c7db6d486d7c978c98df91de4fce587129a94f639629"
+        },
+        {
+          "relativePath": "app/net/imadz/common/auth/RoleResolver.scala",
+          "bytes": 5105,
+          "sha256": "db50d27171fadf0090f71944477d52f431104f90d078d820412ef4d3a6e5c48d"
+        },
+        {
+          "relativePath": "app/net/imadz/common/auth/TokenService.scala",
+          "bytes": 2918,
+          "sha256": "7b80377928ac8d29408a3f11cf37782c8b87b6f06cee12b36f803be52ce3979d"
+        },
+        {
+          "relativePath": "app/net/imadz/common/CborSerializable.scala",
+          "bytes": 54,
+          "sha256": "93bc07b2a2d38163239bb1c4674bf16d249ce36fa7c186d0bcb3e9b2459e1036"
+        },
+        {
+          "relativePath": "app/net/imadz/common/CommonTypes.scala",
+          "bytes": 539,
+          "sha256": "a59f619abad7dda5d4e1e54d4fbd7b772db53fd4d015f0775800e12d725d85fe"
+        },
+        {
+          "relativePath": "app/net/imadz/common/MoneyOps.scala",
+          "bytes": 1058,
+          "sha256": "139558aaa1a28fdd929dddb504fe91572bd7a23600a0ae375a5315b40b66248d"
+        },
+        {
+          "relativePath": "app/net/imadz/common/serialization/ObjectIdOffsetSerializer.scala",
+          "bytes": 864,
+          "sha256": "5b3d0366f78a44a816885df493bf1fd0e83b435dedfe33543075b1da1d359ac1"
+        },
+        {
+          "relativePath": "app/net/imadz/common/serialization/PrimitiveConverter.scala",
+          "bytes": 2180,
+          "sha256": "206f35c18a9d097164046716c4881cdfae57687eefc7ff4daa47be7e0ef9c442"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/dsl/AskParticipant.scala",
+          "bytes": 3822,
+          "sha256": "c7200613c7b93e4d49fa6b35e8e3a658b47c459bfad612d91f0ec2039e67072e"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/dsl/package.scala",
+          "bytes": 300,
+          "sha256": "f920a71edbff6ff260b5478b34aec44dd03bcbb5f6747ac60f0fccfb83b3afd9"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/dsl/PhaseAsk.scala",
+          "bytes": 2497,
+          "sha256": "7a49f1723ef860462a764b6efbb89ec1f113f5895aec5423d39aada9d25d0da4"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/dsl/Resilience.scala",
+          "bytes": 3620,
+          "sha256": "3b50d30aa864105a83f6b3e97062720253d65c3166b06b22deb3997ae6777eef"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/dsl/SagaDefinition.scala",
+          "bytes": 5803,
+          "sha256": "cce4e3c85a2094c7ce9d8bcfdd34efad92d2f91ab5c6e12488ac1914f4149af3"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/dsl/SagaRunner.scala",
+          "bytes": 8756,
+          "sha256": "cbcf513643fbbc45a473711185e22507a2f458234d3dcab36f7bc2e56bcc4c53"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/handlers/StepExecutorCommandHandler.scala",
+          "bytes": 14505,
+          "sha256": "02b6c40613e38190b7e445330e7323b3d225b02057c0edf702f0b696fceee763"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/handlers/StepExecutorEventHandler.scala",
+          "bytes": 1141,
+          "sha256": "ecf98f2da283b628bf36301bc46fcefd5af09daa5a9208aa17a582fc8cf62ab7"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/persistence/SagaCoordinatorProtoConverters.scala",
+          "bytes": 6642,
+          "sha256": "48f34114ecf0359c3f0c4a634ec8e6b9f822b51d864566a5a5fdee904ea13456"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/persistence/SagaTransactionCoordinatorEventAdapter.scala",
+          "bytes": 4648,
+          "sha256": "c96cbe9d6b11c4313bf05e1c560e548661d7f1d49263cb27b601a7c805cc5704"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/persistence/StepExecutorEventAdapter.scala",
+          "bytes": 2222,
+          "sha256": "934fa436cf12d4032c9f32cfe25639fbefe6f5e039a229ffc3204bcac8b09fec"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/SagaParticipant.scala",
+          "bytes": 4620,
+          "sha256": "6e48d18e8ead1f9feb1b37b8de5a64b92d7b3816876a5b34493ab4d30fa5b4f7"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/SagaProgressEvent.scala",
+          "bytes": 1041,
+          "sha256": "1a60c96d719c06d8e68e828b42d801fdd3471809c22577d87c5275debc550a51"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/SagaTransactionCoordinator.scala",
+          "bytes": 52401,
+          "sha256": "7d4bbc26f1746e444f6ebcef8143de32827fb40a4a833fbd66cdcb5a65e098c1"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/serialization/SagaExecutorConverter.scala",
+          "bytes": 7447,
+          "sha256": "d46f92d19f31357035b3b686c840903eedf52afb87ee75be30bddda8a0789ef8"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/StepExecutor.scala",
+          "bytes": 9136,
+          "sha256": "d5d935cee51888e5b4b9bd5a5cafa7834406cf9273a77a959785294cad92eeb3"
+        },
+        {
+          "relativePath": "app/net/imadz/infrastructure/api/CommandDsl.scala",
+          "bytes": 3067,
+          "sha256": "cb49f3631c2d536bf77d01325e31910564c1ce5a9d46303f0bcabc676428f968"
+        },
+        {
+          "relativePath": "app/protobuf/credit_balance.proto",
+          "bytes": 1815,
+          "sha256": "6a6ea3cb1479ba2847448de34b272c9799b202891cb5d76bceddfedbccfe9e2b"
+        },
+        {
+          "relativePath": "app/protobuf/saga_v3.proto",
+          "bytes": 3776,
+          "sha256": "e537ae0bc44833295945f5b0fc6e49155685b89598a8d28d0ac8f38e67575ad4"
+        },
+        {
+          "relativePath": "app/protobuf/shared_value_objects.proto",
+          "bytes": 438,
+          "sha256": "4c78757e79a966391ff46ec55c831da4c711855ab11f0b97b7cd445ef48891e5"
+        },
+        {
+          "relativePath": "app/views/index.scala.html",
+          "bytes": 62,
+          "sha256": "bee29fc69385ae4514b87e38c571e40761b0d35e399d6f74f6797cb1eb581e39"
+        },
+        {
+          "relativePath": "app/views/main.scala.html",
+          "bytes": 899,
+          "sha256": "2b7261c1acacb03a86f111bcdc4325f858a5c213cb63c14f5334596b9279b157"
+        },
+        {
+          "relativePath": "build-multi-project.sbt.template",
+          "bytes": 840,
+          "sha256": "f283296f726bd2e30bff30424ba285c5b72c4146d0f4d1f50ac15d1f8b43e424"
+        },
+        {
+          "relativePath": "build.sbt",
+          "bytes": 9535,
+          "sha256": "106b0c8339374c459a0389dd202e2b99f0d64a7b70d78ca8da34f94606c6bfd2"
+        },
+        {
+          "relativePath": "conf/application.conf",
+          "bytes": 626,
+          "sha256": "d9846ca1d16a893dda3f7b27e8d20716838525d39fe2e9daa5dcfe0fc34ac1c9"
+        },
+        {
+          "relativePath": "conf/cluster.conf",
+          "bytes": 1098,
+          "sha256": "a69627d44f4f0968685a8d24ed02649991eb5e2c373a22d4901d21438b2f4a92"
+        },
+        {
+          "relativePath": "conf/messages",
+          "bytes": 63,
+          "sha256": "1bf2558ec70340dde369be242cea0a24f498c8232448ea9b2aaa1d12f4b99bbd"
+        },
+        {
+          "relativePath": "conf/persistence.conf",
+          "bytes": 873,
+          "sha256": "b4e30c395a03e8e3e427dff5bec29fab9751cf99f98aac48dc226cd78ccbdceb"
+        },
+        {
+          "relativePath": "conf/projection.conf",
+          "bytes": 1539,
+          "sha256": "64f7ba89389c01cd17e1f6f107371584304edae3d97663859310362bc78b23e2"
+        },
+        {
+          "relativePath": "conf/routes",
+          "bytes": 938,
+          "sha256": "b80a8072079e3c3473b97fc8dcc9c83ed62f773f0feb523d0b44ea481dd4be79"
+        },
+        {
+          "relativePath": "conf/serialization.conf",
+          "bytes": 849,
+          "sha256": "0385674e15954367e9620b1fa00d8babe00acbd8c7a0623314a985d41c55351a"
+        },
+        {
+          "relativePath": "conf/sql/1.sql",
+          "bytes": 2158,
+          "sha256": "749494cb12335da1f71d9b991e4272c49837bc8c42c5de0f98269caefa7a22e1"
+        },
+        {
+          "relativePath": "knowledge-release.json",
+          "bytes": 108,
+          "sha256": "2595d4dfe63fb623e6621a1f1687b73ac2c4c182eff37a291887934d4fa4b552"
+        },
+        {
+          "relativePath": "modules/ext/src/main/scala/.gitkeep",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "relativePath": "modules/glue/src/main/protobuf/.gitkeep",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "relativePath": "modules/glue/src/main/scala/.gitkeep",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "relativePath": "modules/kernel/src/main/scala/.gitkeep",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "relativePath": "project/build.properties",
+          "bytes": 18,
+          "sha256": "ef0027fa322ca439f465803fdfa777a1216a4ed32e8fcaea3e7b038b4510e632"
+        },
+        {
+          "relativePath": "project/plugins.sbt",
+          "bytes": 1472,
+          "sha256": "ff325cf01c0b712a42807448c25b75cce13ba90eee958a4a00a170ee68c43f9c"
+        },
+        {
+          "relativePath": "project_skeleton_zh.txt",
+          "bytes": 30278,
+          "sha256": "48433f4b79e073a5c27f193d2d6c239bcd1a9c71ccf22266be204c600995508b"
+        },
+        {
+          "relativePath": "prompt_chain_zh.txt",
+          "bytes": 11087,
+          "sha256": "a852c4c51d49cc166f5230f6b724904a1b514d09aca03f1babf0349a66b0c387"
+        }
+      ],
+      "copiedPaths": [
+        "app/net/imadz/banking/application/aggregates/CreditBalanceProtocol.scala",
+        "app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceCommandHelpers.scala",
+        "app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceBehaviors.scala",
+        "app/net/imadz/banking/domain/entities/CreditBalanceEntity.scala"
+      ],
+      "inventoryNote": "Every original regular file, including hidden files, is listed. Only the four copiedPaths have raw bytes archived here; the other 104 are inventory evidence, not parity coverage."
+    },
+    {
+      "variant": "timestamp-int",
+      "originalRawRoot": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/raw",
+      "savedComparisonRoot": "test/reference/classic-cqrs-f1/timestamp-int",
+      "metadata": {
+        "savedFile": "test/fixtures/classic-cqrs-f1/timestamp-int.json",
+        "source": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/classic-input.json",
+          "bytes": 159363,
+          "sha256": "51c5cb9de55e99b04cf79c46b1cfa389305a1db63689a22ea072aca98d5b5954"
+        },
+        "export": {
+          "entrypoint": "truthsrc.codegenparity.ClassicMetadataExport.main",
+          "arguments": [
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/classic-input.json"
+          ],
+          "invocation": {
+            "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/export.invocation.json",
+            "bytes": 4928,
+            "sha256": "6b508debadb69115ba6bc95f8cb017226c7dd419204aec324ed2fe822d7d9372"
+          },
+          "receipt": {
+            "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/export.json",
+            "bytes": 6093,
+            "sha256": "31ea64fde521c8e2b2c552c68c5ec66d34b44990486bd1b340cded19b33ad081"
+          },
+          "completion": {
+            "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/export.completion.json",
+            "bytes": 670,
+            "sha256": "de3daf8f5498241081b8a7d7b097f630353ac9d61978bdea1460a089b19005ff"
+          },
+          "stdout": {
+            "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/export.stdout.log",
+            "bytes": 200,
+            "sha256": "0de902a5847ee48eb0aa711f79143875c3d0a3aa1b97ffaafa911bbca7f0a490"
+          },
+          "stderr": {
+            "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/export.stderr.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "recordedResult": {
+            "passed": true,
+            "status": "passed",
+            "code": 0,
+            "startedAt": "2026-11-16T06:52:56.556Z",
+            "endedAt": "2026-11-16T06:52:57.088Z",
+            "elapsedMs": 532,
+            "commandSha256": "9ec0ff24e2e4015ee1d9a759cb5484e9d1fa6252af62bf1d8fa6061081b76fd1",
+            "directChildClosed": true,
+            "directChildReaped": true,
+            "groupAliveAfter": false
+          }
+        }
+      },
+      "originalManifest": {
+        "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/raw.manifest.json",
+        "bytes": 43179,
+        "sha256": "dab2d7f9f9adb1e7044a30cd17b96f2b8ad792a04641c8efae920c3b0fd73b71"
+      },
+      "generation": {
+        "entrypoint": "net.imadz.codegen.CodegenMain.main",
+        "arguments": [],
+        "invocation": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/raw.invocation.json",
+          "bytes": 5167,
+          "sha256": "b21550b4614e69c0b581a038c0a4d4ce6263ed9583f520826d509c299e94f28d"
+        },
+        "receipt": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/raw.json",
+          "bytes": 6323,
+          "sha256": "80a417edc359f6b344281243de039bddcb59b0d6453e195b965a7c4e430d5353"
+        },
+        "completion": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/raw.completion.json",
+          "bytes": 665,
+          "sha256": "e19a7b7e095bfbd578a8c02e2314955faf93f544ea79159adbcb9b15688e0d7a"
+        },
+        "stdout": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/raw.stdout.log",
+          "bytes": 11486,
+          "sha256": "4b40462a1600c29f3ef6f10096d04dbeaf610b7b22a3d4540e83fe84e809d2ed"
+        },
+        "stderr": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/raw.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "recordedResult": {
+          "passed": true,
+          "status": "passed",
+          "code": 0,
+          "startedAt": "2026-11-16T06:54:15.352Z",
+          "endedAt": "2026-11-16T06:54:16.581Z",
+          "elapsedMs": 1229,
+          "commandSha256": "707e5d615ba84bbe69f68570c47b980c9d2d19829a74f21dd68504883f78c34f",
+          "directChildClosed": true,
+          "directChildReaped": true,
+          "groupAliveAfter": false
+        },
+        "properties": {
+          "codegen.system": "Examples",
+          "codegen.targetDir": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/raw",
+          "codegen.generatorVersion": "parity-f1-cc335eb1",
+          "codegen.noGit": "true",
+          "codegen.knowledge-export": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/reference/knowledge-export.json"
+        }
+      },
+      "regularFileCount": 108,
+      "copiedCompleteFileCount": 4,
+      "inventoryOnlyFileCount": 104,
+      "inventory": [
+        {
+          "relativePath": ".gitignore",
+          "bytes": 103,
+          "sha256": "9a7626100f8d1c09be9995b2dc711e0da42b41a6767815eaf1a4796319d70afd"
+        },
+        {
+          "relativePath": "app/controllers/CreditBalanceApiController.scala",
+          "bytes": 3831,
+          "sha256": "7c316b62d4e14f371b1c474b74c167a6c36e0b6971282bc3c7a0c1bf117a36f2"
+        },
+        {
+          "relativePath": "app/controllers/filter/LoggingFilter.scala",
+          "bytes": 812,
+          "sha256": "9922a44ece2a7c713378d70bbfa2481a30646dc6d4215b03488f2c49bd7406ed"
+        },
+        {
+          "relativePath": "app/controllers/HomeController.scala",
+          "bytes": 3595,
+          "sha256": "e23f01c51c1184c8a1f9dcd7cd766cab68fb5c866e61940ae565107ab024ea67"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceBehaviors.scala",
+          "bytes": 4989,
+          "sha256": "be1747471aaa7e313e6d4e7995d980294035d73933dece0bdb67cc996f2564bf"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceCommandHelpers.scala",
+          "bytes": 10155,
+          "sha256": "d31fc1c7b1236320786ad29023710fe10c079294473e146bdf810a5439405d0e"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/aggregates/CreditBalanceAggregate.scala",
+          "bytes": 1021,
+          "sha256": "2b06e99d1ccdb5903b259f04897c7c08859e863ea07dc48917bd7c54d8ea5121"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/aggregates/CreditBalanceProtocol.scala",
+          "bytes": 3675,
+          "sha256": "a87d6eb810e696d0fd0ed6a021038eb953ccf30ae1db0aee9c437f4b53504a50"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/aggregates/factories/CreditBalanceAggregateFactory.scala",
+          "bytes": 3314,
+          "sha256": "d7f457ba1e65825cde1008f515de765d67f64ed999d6b63cfd20960a775668df"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/aggregates/repository/CreditBalanceRepository.scala",
+          "bytes": 1425,
+          "sha256": "38bc1381a4531f67d07d7b6be20b46c7c0cede42dadb9a9d359082bfb4dd6d85"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/projection/handlers/MonthlyIncomeAndExpenseSummaryProjectionHandler.scala",
+          "bytes": 1956,
+          "sha256": "739c7ab3eb6fea62173e15db31b2ec8f0a7cb3ce0d00b86c9e425a11fa921d6c"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/projection/MonthlyIncomeAndExpenseSummaryProjection.scala",
+          "bytes": 3064,
+          "sha256": "c72cce4deb1cd5ddc5e43a798e7453c564eec6301d76370a55b991b9ffa3f3f1"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/projection/repository/MonthlyIncomeAndExpenseSummaryRepository.scala",
+          "bytes": 1551,
+          "sha256": "daa535852d1e1b5fda813df38f642e4104780a8e7f595c9813b6e42859017fde"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/queries/GetBalanceQuery.scala",
+          "bytes": 1378,
+          "sha256": "a0b17628d8bd4e5360dd2a47532d848873d7a001362a6d585ae12943ede247a4"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/queries/GetRecent12MonthsIncomeAndExpenseReportQuery.scala",
+          "bytes": 1799,
+          "sha256": "41e22fcd04d11cce147d96c44d645c28e7dce843461ff8107e0fa5966e643888"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/services/CreateCreditBalanceService.scala",
+          "bytes": 845,
+          "sha256": "878b475b033ed1757a1d35574eb612830f8752c86ef04cfe357cf1c2eb995530"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/services/DepositService.scala",
+          "bytes": 867,
+          "sha256": "dec46accc11a0ecb834f7ed0c5f723429644226b001599544d8cd4f7d8d9e772"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/services/MoneyTransferService.scala",
+          "bytes": 681,
+          "sha256": "5fcdf0eeaf5f5ccabbb0eeb4dae43ec0d0ce315b943658cc69ba80fd307c7219"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/services/transactor/behaviors/MoneyTransferSagaTransactorBehaviors.scala",
+          "bytes": 5414,
+          "sha256": "beca5d1bd6e85687330b2cedb3c2cafe94339d14d3495bb25a7429743cec0b75"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/services/transactor/FromAccountParticipant.scala",
+          "bytes": 3021,
+          "sha256": "77e1f91acd71eaea5193d8805c515970122f9c0f44fb2906a60b8b31aeb82414"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/services/transactor/MoneyTransferContext.scala",
+          "bytes": 278,
+          "sha256": "bb76d2e76101dcb3b46d8706df227abc4ef5050a7499751b78cd5b73581d4638"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/services/transactor/MoneyTransferSagaDefinition.scala",
+          "bytes": 3149,
+          "sha256": "1e6450ebd421ae8f90b2fb442f7d4313806fa7edaa4a69931b6827f9e89f0d95"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/services/transactor/MoneyTransferSagaTransactor.scala",
+          "bytes": 920,
+          "sha256": "d0dd8c00ce5ff6ecc0e9e673fc72f58da7c19595cb0f72865f1fdbbbe3bbed47"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/services/transactor/MoneyTransferSagaTransactorProtocol.scala",
+          "bytes": 1281,
+          "sha256": "db479d6af882cd3e75056aba2731740ba1ffa875d81877c9f68b50c4d3ff8414"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/services/transactor/ToAccountParticipant.scala",
+          "bytes": 3112,
+          "sha256": "d6bb3a62dcb65657964a29d39209a5bde28b81692a7c90e801556afb24b9ea2f"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/application/services/WithdrawService.scala",
+          "bytes": 870,
+          "sha256": "bc1ac09bd7c2d4e6d7b4e91b608805c092480af0a7ad3b0ae06d5968af6e96c3"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/entities/behaviors/CreditBalanceEventHandler.scala",
+          "bytes": 3019,
+          "sha256": "5078bc34dffde204ac4fb7e1e0f8eeffd05878e004a9432678c0e8c92c327cd3"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/entities/CreditBalanceEntity.scala",
+          "bytes": 1374,
+          "sha256": "3d47dfc6bb177313c6d1a3e36390c94bd3d66b7b813e9723a0ed8948abb48a54"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/entities/MoneyTransferTransactionEntity.scala",
+          "bytes": 1766,
+          "sha256": "35bd9dd42a6ab3d57c487da480ac657ecf55578550aee38513449ad6bef5cf7b"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/invariant/AddInitialOnlyOnceRuleRule.scala",
+          "bytes": 1397,
+          "sha256": "39910486b541db52c5e0bb74a497b2b118a322e0f0a32b4192a562ca1d206564"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/invariant/CancelIncomingCreditRuleRule.scala",
+          "bytes": 1338,
+          "sha256": "18398519efe34883c9e81e9bf9e97847b7fc6e02355a81cb096b34e9e73f360c"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/invariant/CommitIncomingCreditsRuleRule.scala",
+          "bytes": 1339,
+          "sha256": "e31938a85bd1536902f526872638292bcd6b76b61aefbbcdef9bf33f855c6a55"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/invariant/DeductFundsRuleRule.scala",
+          "bytes": 1347,
+          "sha256": "1dc67d3709d16e04b03128eb8c044b17d3b1be6bfd4df05133c0e75016566bc0"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/invariant/DepositRuleRule.scala",
+          "bytes": 1349,
+          "sha256": "8e012d69181b328a588c09acbbf6b6759f4f7fd84a782e0288b939bc2147bb91"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/invariant/RecordIncomingCreditsRuleRule.scala",
+          "bytes": 1414,
+          "sha256": "51701862924110ac8c1e4b98a0232573766c03a3a2f1db7999bbde90c9860cc3"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/invariant/ReleaseReservedFundsRuleRule.scala",
+          "bytes": 1356,
+          "sha256": "848ec6e5314cba319ad680f6c740a151ca163be645e2999d38a7dacffc6c5943"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/invariant/ReserveFundsRuleRule.scala",
+          "bytes": 1527,
+          "sha256": "c6cf6a3e2906783e299d6dcc24674ffd74902c4eee2f0c131a29a6d87d769892"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/invariant/WithdrawRuleRule.scala",
+          "bytes": 1393,
+          "sha256": "86e4009a3abb3b2963239371b4cc2b4ec6687c766328fb83db7838860a04fbc4"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/services/TransferValidatorDomainService.scala",
+          "bytes": 811,
+          "sha256": "f86c77eabe9c55dc6ca48c88b1bbe992c104efc94b1f6217531ea4ada56d2251"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/domain/values/Money.scala",
+          "bytes": 361,
+          "sha256": "3c04c8db45c656ea8d395efe76229e5b10cb023dd1d5469dbdb7b55d5692354c"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/infrastructure/bootstrap/ApplicationBootstrap.scala",
+          "bytes": 1847,
+          "sha256": "d92c383b51f7f132102ae4602a2a161ecb7053cce7e80d6b07a2d33a1634e3ae"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/infrastructure/bootstrap/CreditBalanceBootstrap.scala",
+          "bytes": 3099,
+          "sha256": "673ee447c9b9e8f73547eb70add7d0f9bc00f6cc67f6f329f8982f29eb091cfc"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/infrastructure/bootstrap/MoneyTransferSagaTransactorBootstrap.scala",
+          "bytes": 647,
+          "sha256": "37e14158d73184c9a2d043053b9638122691f20e087055b8aab1ff17eff42a87"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/infrastructure/bootstrap/MonthlyIncomeAndExpenseSummaryBootstrap.scala",
+          "bytes": 1370,
+          "sha256": "b00dfa433299569491c89e5862fdbc4b74a0d65ffb8549d567961e791de01e53"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/infrastructure/bootstrap/SagaTransactionCoordinatorBootstrap.scala",
+          "bytes": 2472,
+          "sha256": "771947eb9ec9cde4f4255aeffc41458e21fe876330c2c3505980f79dca8d1979"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/infrastructure/persistence/converters/CreditBalanceProtoConverters.scala",
+          "bytes": 7533,
+          "sha256": "1bc9901c020520fdd8cfb46e04c54aca19e0dfb45a1c3e1beb9d757a1569292a"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/infrastructure/persistence/CreditBalanceEventAdapter.scala",
+          "bytes": 3599,
+          "sha256": "849c2c9144bb41959bcfe3b350bb46403db819ee29f4ed6b3a0c3b38cdce51c9"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/infrastructure/persistence/CreditBalanceSnapshotAdapter.scala",
+          "bytes": 964,
+          "sha256": "eadd91369b60a6006a7db86877d4c9959eafb887fcca4df06064efe775935ef7"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/infrastructure/repositories/aggregate/CreditBalanceRepositoryImpl.scala",
+          "bytes": 1243,
+          "sha256": "07832102033229fada393dce533116c1ec06afee18a33a383feae831f23b2c1e"
+        },
+        {
+          "relativePath": "app/net/imadz/banking/infrastructure/repositories/projection/MonthlyIncomeAndExpenseSummaryRepositoryImpl.scala",
+          "bytes": 3106,
+          "sha256": "c9760741e4d18ae0501683881f37c6832acbb0e290e843cf9ea60b917fc75675"
+        },
+        {
+          "relativePath": "app/net/imadz/common/application/CommandHandlerReplyingBehavior.scala",
+          "bytes": 4403,
+          "sha256": "d2499de5832333c39ef644da3094ef5b5cc023c69d4b43643e83de94c2973350"
+        },
+        {
+          "relativePath": "app/net/imadz/common/application/projection/ScalikeJdbcSession.scala",
+          "bytes": 849,
+          "sha256": "b1bf8f009ffbac056ab8c2db441bb81c225e80ec46a2d048e1ee8276a511f5f3"
+        },
+        {
+          "relativePath": "app/net/imadz/common/application/projection/ScalikeJdbcSetup.scala",
+          "bytes": 2472,
+          "sha256": "42f55a87236945218f950c38ad55f67b5498da46d64abe4bf4d3ea08ebb0e785"
+        },
+        {
+          "relativePath": "app/net/imadz/common/auth/ApiError.scala",
+          "bytes": 2181,
+          "sha256": "ffe12a6e8ebce83d3fc6f862c458b6465203d6999de42fca29ecd84bcaca06e8"
+        },
+        {
+          "relativePath": "app/net/imadz/common/auth/AuthAction.scala",
+          "bytes": 3574,
+          "sha256": "c9f3ee7d7b2ee99b07cee17ea73b38f04803d781897784d0e6cffca777f50604"
+        },
+        {
+          "relativePath": "app/net/imadz/common/auth/Endpoint.scala",
+          "bytes": 18229,
+          "sha256": "7ce7ab0e2a82c7545dd23859430c8c569ee692ba2f7f5787b13f724daeb530cc"
+        },
+        {
+          "relativePath": "app/net/imadz/common/auth/IdCodec.scala",
+          "bytes": 1454,
+          "sha256": "cac8f12d8243bef1b77e17da5ba2b8a7d26eb1fdf643f1dac18f6f45bc300577"
+        },
+        {
+          "relativePath": "app/net/imadz/common/auth/LoginRateLimiter.scala",
+          "bytes": 1259,
+          "sha256": "0afb6e4f47c287ad5c228e8c673ec5d6b1901c408eb9265b3d082e2120e91255"
+        },
+        {
+          "relativePath": "app/net/imadz/common/auth/PasswordHashing.scala",
+          "bytes": 1993,
+          "sha256": "550ca78362db92edaf6a90149da2e2171dc4f7ece1f99f3c01f1b3cf597fa697"
+        },
+        {
+          "relativePath": "app/net/imadz/common/auth/RoleGate.scala",
+          "bytes": 3413,
+          "sha256": "80cf2185d96262412ac4c7db6d486d7c978c98df91de4fce587129a94f639629"
+        },
+        {
+          "relativePath": "app/net/imadz/common/auth/RoleResolver.scala",
+          "bytes": 5105,
+          "sha256": "db50d27171fadf0090f71944477d52f431104f90d078d820412ef4d3a6e5c48d"
+        },
+        {
+          "relativePath": "app/net/imadz/common/auth/TokenService.scala",
+          "bytes": 2918,
+          "sha256": "7b80377928ac8d29408a3f11cf37782c8b87b6f06cee12b36f803be52ce3979d"
+        },
+        {
+          "relativePath": "app/net/imadz/common/CborSerializable.scala",
+          "bytes": 54,
+          "sha256": "93bc07b2a2d38163239bb1c4674bf16d249ce36fa7c186d0bcb3e9b2459e1036"
+        },
+        {
+          "relativePath": "app/net/imadz/common/CommonTypes.scala",
+          "bytes": 539,
+          "sha256": "a59f619abad7dda5d4e1e54d4fbd7b772db53fd4d015f0775800e12d725d85fe"
+        },
+        {
+          "relativePath": "app/net/imadz/common/MoneyOps.scala",
+          "bytes": 1058,
+          "sha256": "139558aaa1a28fdd929dddb504fe91572bd7a23600a0ae375a5315b40b66248d"
+        },
+        {
+          "relativePath": "app/net/imadz/common/serialization/ObjectIdOffsetSerializer.scala",
+          "bytes": 864,
+          "sha256": "5b3d0366f78a44a816885df493bf1fd0e83b435dedfe33543075b1da1d359ac1"
+        },
+        {
+          "relativePath": "app/net/imadz/common/serialization/PrimitiveConverter.scala",
+          "bytes": 2180,
+          "sha256": "206f35c18a9d097164046716c4881cdfae57687eefc7ff4daa47be7e0ef9c442"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/dsl/AskParticipant.scala",
+          "bytes": 3822,
+          "sha256": "c7200613c7b93e4d49fa6b35e8e3a658b47c459bfad612d91f0ec2039e67072e"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/dsl/package.scala",
+          "bytes": 300,
+          "sha256": "f920a71edbff6ff260b5478b34aec44dd03bcbb5f6747ac60f0fccfb83b3afd9"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/dsl/PhaseAsk.scala",
+          "bytes": 2497,
+          "sha256": "7a49f1723ef860462a764b6efbb89ec1f113f5895aec5423d39aada9d25d0da4"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/dsl/Resilience.scala",
+          "bytes": 3620,
+          "sha256": "3b50d30aa864105a83f6b3e97062720253d65c3166b06b22deb3997ae6777eef"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/dsl/SagaDefinition.scala",
+          "bytes": 5803,
+          "sha256": "cce4e3c85a2094c7ce9d8bcfdd34efad92d2f91ab5c6e12488ac1914f4149af3"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/dsl/SagaRunner.scala",
+          "bytes": 8756,
+          "sha256": "cbcf513643fbbc45a473711185e22507a2f458234d3dcab36f7bc2e56bcc4c53"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/handlers/StepExecutorCommandHandler.scala",
+          "bytes": 14505,
+          "sha256": "02b6c40613e38190b7e445330e7323b3d225b02057c0edf702f0b696fceee763"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/handlers/StepExecutorEventHandler.scala",
+          "bytes": 1141,
+          "sha256": "ecf98f2da283b628bf36301bc46fcefd5af09daa5a9208aa17a582fc8cf62ab7"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/persistence/SagaCoordinatorProtoConverters.scala",
+          "bytes": 6642,
+          "sha256": "48f34114ecf0359c3f0c4a634ec8e6b9f822b51d864566a5a5fdee904ea13456"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/persistence/SagaTransactionCoordinatorEventAdapter.scala",
+          "bytes": 4648,
+          "sha256": "c96cbe9d6b11c4313bf05e1c560e548661d7f1d49263cb27b601a7c805cc5704"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/persistence/StepExecutorEventAdapter.scala",
+          "bytes": 2222,
+          "sha256": "934fa436cf12d4032c9f32cfe25639fbefe6f5e039a229ffc3204bcac8b09fec"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/SagaParticipant.scala",
+          "bytes": 4620,
+          "sha256": "6e48d18e8ead1f9feb1b37b8de5a64b92d7b3816876a5b34493ab4d30fa5b4f7"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/SagaProgressEvent.scala",
+          "bytes": 1041,
+          "sha256": "1a60c96d719c06d8e68e828b42d801fdd3471809c22577d87c5275debc550a51"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/SagaTransactionCoordinator.scala",
+          "bytes": 52401,
+          "sha256": "7d4bbc26f1746e444f6ebcef8143de32827fb40a4a833fbd66cdcb5a65e098c1"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/serialization/SagaExecutorConverter.scala",
+          "bytes": 7447,
+          "sha256": "d46f92d19f31357035b3b686c840903eedf52afb87ee75be30bddda8a0789ef8"
+        },
+        {
+          "relativePath": "app/net/imadz/infra/saga/StepExecutor.scala",
+          "bytes": 9136,
+          "sha256": "d5d935cee51888e5b4b9bd5a5cafa7834406cf9273a77a959785294cad92eeb3"
+        },
+        {
+          "relativePath": "app/net/imadz/infrastructure/api/CommandDsl.scala",
+          "bytes": 3067,
+          "sha256": "cb49f3631c2d536bf77d01325e31910564c1ce5a9d46303f0bcabc676428f968"
+        },
+        {
+          "relativePath": "app/protobuf/credit_balance.proto",
+          "bytes": 1815,
+          "sha256": "6271e05dc6fccf7fa292b05316987cae24848f0a32372d57e2a2458ff185dc71"
+        },
+        {
+          "relativePath": "app/protobuf/saga_v3.proto",
+          "bytes": 3776,
+          "sha256": "e537ae0bc44833295945f5b0fc6e49155685b89598a8d28d0ac8f38e67575ad4"
+        },
+        {
+          "relativePath": "app/protobuf/shared_value_objects.proto",
+          "bytes": 438,
+          "sha256": "4c78757e79a966391ff46ec55c831da4c711855ab11f0b97b7cd445ef48891e5"
+        },
+        {
+          "relativePath": "app/views/index.scala.html",
+          "bytes": 62,
+          "sha256": "bee29fc69385ae4514b87e38c571e40761b0d35e399d6f74f6797cb1eb581e39"
+        },
+        {
+          "relativePath": "app/views/main.scala.html",
+          "bytes": 899,
+          "sha256": "2b7261c1acacb03a86f111bcdc4325f858a5c213cb63c14f5334596b9279b157"
+        },
+        {
+          "relativePath": "build-multi-project.sbt.template",
+          "bytes": 840,
+          "sha256": "f283296f726bd2e30bff30424ba285c5b72c4146d0f4d1f50ac15d1f8b43e424"
+        },
+        {
+          "relativePath": "build.sbt",
+          "bytes": 9535,
+          "sha256": "106b0c8339374c459a0389dd202e2b99f0d64a7b70d78ca8da34f94606c6bfd2"
+        },
+        {
+          "relativePath": "conf/application.conf",
+          "bytes": 626,
+          "sha256": "d9846ca1d16a893dda3f7b27e8d20716838525d39fe2e9daa5dcfe0fc34ac1c9"
+        },
+        {
+          "relativePath": "conf/cluster.conf",
+          "bytes": 1098,
+          "sha256": "a69627d44f4f0968685a8d24ed02649991eb5e2c373a22d4901d21438b2f4a92"
+        },
+        {
+          "relativePath": "conf/messages",
+          "bytes": 63,
+          "sha256": "1bf2558ec70340dde369be242cea0a24f498c8232448ea9b2aaa1d12f4b99bbd"
+        },
+        {
+          "relativePath": "conf/persistence.conf",
+          "bytes": 873,
+          "sha256": "b4e30c395a03e8e3e427dff5bec29fab9751cf99f98aac48dc226cd78ccbdceb"
+        },
+        {
+          "relativePath": "conf/projection.conf",
+          "bytes": 1539,
+          "sha256": "64f7ba89389c01cd17e1f6f107371584304edae3d97663859310362bc78b23e2"
+        },
+        {
+          "relativePath": "conf/routes",
+          "bytes": 938,
+          "sha256": "b80a8072079e3c3473b97fc8dcc9c83ed62f773f0feb523d0b44ea481dd4be79"
+        },
+        {
+          "relativePath": "conf/serialization.conf",
+          "bytes": 849,
+          "sha256": "0385674e15954367e9620b1fa00d8babe00acbd8c7a0623314a985d41c55351a"
+        },
+        {
+          "relativePath": "conf/sql/1.sql",
+          "bytes": 2158,
+          "sha256": "749494cb12335da1f71d9b991e4272c49837bc8c42c5de0f98269caefa7a22e1"
+        },
+        {
+          "relativePath": "knowledge-release.json",
+          "bytes": 108,
+          "sha256": "2595d4dfe63fb623e6621a1f1687b73ac2c4c182eff37a291887934d4fa4b552"
+        },
+        {
+          "relativePath": "modules/ext/src/main/scala/.gitkeep",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "relativePath": "modules/glue/src/main/protobuf/.gitkeep",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "relativePath": "modules/glue/src/main/scala/.gitkeep",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "relativePath": "modules/kernel/src/main/scala/.gitkeep",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "relativePath": "project/build.properties",
+          "bytes": 18,
+          "sha256": "ef0027fa322ca439f465803fdfa777a1216a4ed32e8fcaea3e7b038b4510e632"
+        },
+        {
+          "relativePath": "project/plugins.sbt",
+          "bytes": 1472,
+          "sha256": "ff325cf01c0b712a42807448c25b75cce13ba90eee958a4a00a170ee68c43f9c"
+        },
+        {
+          "relativePath": "project_skeleton_zh.txt",
+          "bytes": 30278,
+          "sha256": "48433f4b79e073a5c27f193d2d6c239bcd1a9c71ccf22266be204c600995508b"
+        },
+        {
+          "relativePath": "prompt_chain_zh.txt",
+          "bytes": 11087,
+          "sha256": "a852c4c51d49cc166f5230f6b724904a1b514d09aca03f1babf0349a66b0c387"
+        }
+      ],
+      "copiedPaths": [
+        "app/net/imadz/banking/application/aggregates/CreditBalanceProtocol.scala",
+        "app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceCommandHelpers.scala",
+        "app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceBehaviors.scala",
+        "app/net/imadz/banking/domain/entities/CreditBalanceEntity.scala"
+      ],
+      "inventoryNote": "Every original regular file, including hidden files, is listed. Only the four copiedPaths have raw bytes archived here; the other 104 are inventory evidence, not parity coverage."
+    }
+  ],
+  "scope": {
+    "file": "test/reference/classic-cqrs-f1/scope.json",
+    "pathsPerVariant": 4,
+    "savedScalaFilesTotal": 8,
+    "expectedOnly": [],
+    "actualOnly": [
+      "anchors.json",
+      "truthsrc.ledger.json"
+    ],
+    "comparison": "Exact whole-file bytes, no trim/format/decoding/header changes. Expected roots contain only the four Scala files; ancillary manifests and README stay in the parent.",
+    "notClaimed": [
+      "108-file application parity",
+      "42-template parity",
+      "raw application compilation",
+      "runnable business application"
+    ],
+    "preservedRawDefects": [
+      "Effect.reply(cmd.replyTo)(???)",
+      "wrong CreditBalanceConfirmation(param, Some(error)) / (param, None) construction",
+      "duplicate imports, comments, whitespace and generated headers"
+    ]
+  },
+  "preservation": {
+    "copiedOriginalByteCount": 359281,
+    "copyOperations": [
+      {
+        "path": "test/reference/classic-cqrs-f1/baseline/app/net/imadz/banking/application/aggregates/CreditBalanceProtocol.scala",
+        "source": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/reference/raw-a/app/net/imadz/banking/application/aggregates/CreditBalanceProtocol.scala",
+          "bytes": 3675,
+          "sha256": "a87d6eb810e696d0fd0ed6a021038eb953ccf30ae1db0aee9c437f4b53504a50"
+        },
+        "sourceManifest": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/reference/raw-a.manifest.json",
+          "bytes": 43299,
+          "sha256": "d7e4405ea8d44e84d3fd3c95e3c245fdd85bb0385166c42c3a10225d3b89810b"
+        },
+        "manifestRelativePath": "app/net/imadz/banking/application/aggregates/CreditBalanceProtocol.scala"
+      },
+      {
+        "path": "test/reference/classic-cqrs-f1/baseline/app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceCommandHelpers.scala",
+        "source": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/reference/raw-a/app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceCommandHelpers.scala",
+          "bytes": 10155,
+          "sha256": "d31fc1c7b1236320786ad29023710fe10c079294473e146bdf810a5439405d0e"
+        },
+        "sourceManifest": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/reference/raw-a.manifest.json",
+          "bytes": 43299,
+          "sha256": "d7e4405ea8d44e84d3fd3c95e3c245fdd85bb0385166c42c3a10225d3b89810b"
+        },
+        "manifestRelativePath": "app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceCommandHelpers.scala"
+      },
+      {
+        "path": "test/reference/classic-cqrs-f1/baseline/app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceBehaviors.scala",
+        "source": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/reference/raw-a/app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceBehaviors.scala",
+          "bytes": 4989,
+          "sha256": "be1747471aaa7e313e6d4e7995d980294035d73933dece0bdb67cc996f2564bf"
+        },
+        "sourceManifest": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/reference/raw-a.manifest.json",
+          "bytes": 43299,
+          "sha256": "d7e4405ea8d44e84d3fd3c95e3c245fdd85bb0385166c42c3a10225d3b89810b"
+        },
+        "manifestRelativePath": "app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceBehaviors.scala"
+      },
+      {
+        "path": "test/reference/classic-cqrs-f1/baseline/app/net/imadz/banking/domain/entities/CreditBalanceEntity.scala",
+        "source": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/reference/raw-a/app/net/imadz/banking/domain/entities/CreditBalanceEntity.scala",
+          "bytes": 1375,
+          "sha256": "a7a4e3e2566e40d93b54cab3c760ce0cf5787d917d19fe8bbcb9739f825d64a0"
+        },
+        "sourceManifest": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/reference/raw-a.manifest.json",
+          "bytes": 43299,
+          "sha256": "d7e4405ea8d44e84d3fd3c95e3c245fdd85bb0385166c42c3a10225d3b89810b"
+        },
+        "manifestRelativePath": "app/net/imadz/banking/domain/entities/CreditBalanceEntity.scala"
+      },
+      {
+        "path": "test/fixtures/classic-cqrs-f1/baseline.json",
+        "source": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/reference/classic-input.json",
+          "bytes": 159364,
+          "sha256": "860aac654a4877fef37d933afb058424b6017efecd7becc0a5595f772b33dc02"
+        },
+        "sourceManifest": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/reference/raw-a.manifest.json",
+          "bytes": 43299,
+          "sha256": "d7e4405ea8d44e84d3fd3c95e3c245fdd85bb0385166c42c3a10225d3b89810b"
+        },
+        "manifestField": "metadata"
+      },
+      {
+        "path": "test/reference/classic-cqrs-f1/timestamp-int/app/net/imadz/banking/application/aggregates/CreditBalanceProtocol.scala",
+        "source": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/raw/app/net/imadz/banking/application/aggregates/CreditBalanceProtocol.scala",
+          "bytes": 3675,
+          "sha256": "a87d6eb810e696d0fd0ed6a021038eb953ccf30ae1db0aee9c437f4b53504a50"
+        },
+        "sourceManifest": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/raw.manifest.json",
+          "bytes": 43179,
+          "sha256": "dab2d7f9f9adb1e7044a30cd17b96f2b8ad792a04641c8efae920c3b0fd73b71"
+        },
+        "manifestRelativePath": "app/net/imadz/banking/application/aggregates/CreditBalanceProtocol.scala"
+      },
+      {
+        "path": "test/reference/classic-cqrs-f1/timestamp-int/app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceCommandHelpers.scala",
+        "source": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/raw/app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceCommandHelpers.scala",
+          "bytes": 10155,
+          "sha256": "d31fc1c7b1236320786ad29023710fe10c079294473e146bdf810a5439405d0e"
+        },
+        "sourceManifest": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/raw.manifest.json",
+          "bytes": 43179,
+          "sha256": "dab2d7f9f9adb1e7044a30cd17b96f2b8ad792a04641c8efae920c3b0fd73b71"
+        },
+        "manifestRelativePath": "app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceCommandHelpers.scala"
+      },
+      {
+        "path": "test/reference/classic-cqrs-f1/timestamp-int/app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceBehaviors.scala",
+        "source": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/raw/app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceBehaviors.scala",
+          "bytes": 4989,
+          "sha256": "be1747471aaa7e313e6d4e7995d980294035d73933dece0bdb67cc996f2564bf"
+        },
+        "sourceManifest": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/raw.manifest.json",
+          "bytes": 43179,
+          "sha256": "dab2d7f9f9adb1e7044a30cd17b96f2b8ad792a04641c8efae920c3b0fd73b71"
+        },
+        "manifestRelativePath": "app/net/imadz/banking/application/aggregates/behaviors/CreditBalanceBehaviors.scala"
+      },
+      {
+        "path": "test/reference/classic-cqrs-f1/timestamp-int/app/net/imadz/banking/domain/entities/CreditBalanceEntity.scala",
+        "source": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/raw/app/net/imadz/banking/domain/entities/CreditBalanceEntity.scala",
+          "bytes": 1374,
+          "sha256": "3d47dfc6bb177313c6d1a3e36390c94bd3d66b7b813e9723a0ed8948abb48a54"
+        },
+        "sourceManifest": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/raw.manifest.json",
+          "bytes": 43179,
+          "sha256": "dab2d7f9f9adb1e7044a30cd17b96f2b8ad792a04641c8efae920c3b0fd73b71"
+        },
+        "manifestRelativePath": "app/net/imadz/banking/domain/entities/CreditBalanceEntity.scala"
+      },
+      {
+        "path": "test/fixtures/classic-cqrs-f1/timestamp-int.json",
+        "source": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/classic-input.json",
+          "bytes": 159363,
+          "sha256": "51c5cb9de55e99b04cf79c46b1cfa389305a1db63689a22ea072aca98d5b5954"
+        },
+        "sourceManifest": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/raw.manifest.json",
+          "bytes": 43179,
+          "sha256": "dab2d7f9f9adb1e7044a30cd17b96f2b8ad792a04641c8efae920c3b0fd73b71"
+        },
+        "manifestField": "metadata"
+      },
+      {
+        "path": "test/fixtures/classic-cqrs-f1/options.json",
+        "source": {
+          "file": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/js-input/options.json",
+          "bytes": 167,
+          "sha256": "84406bd393b3632c0789e432919fd9b8614cc99da67432723890700e14cf031f"
+        }
+      }
+    ],
+    "protectedTreesBefore": [
+      {
+        "root": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/reference/raw-a",
+        "files": 108,
+        "bytes": 361463,
+        "inventorySha256": "dd1e22289e13e71ed8c8ba479b795329e9c23a263a2e71a25ae0d6515def8854"
+      },
+      {
+        "root": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/reference/raw-b",
+        "files": 108,
+        "bytes": 361463,
+        "inventorySha256": "dd1e22289e13e71ed8c8ba479b795329e9c23a263a2e71a25ae0d6515def8854"
+      },
+      {
+        "root": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/raw",
+        "files": 108,
+        "bytes": 361462,
+        "inventorySha256": "18f3e8d31253a323deeb83aac6b3a303563b734397477d2aca5d39ffa39e59ee"
+      },
+      {
+        "root": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/variant/raw2",
+        "files": 108,
+        "bytes": 361462,
+        "inventorySha256": "18f3e8d31253a323deeb83aac6b3a303563b734397477d2aca5d39ffa39e59ee"
+      },
+      {
+        "root": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/js-before",
+        "files": 555,
+        "bytes": 4732871,
+        "inventorySha256": "c6b987872e70375c52f6ef92fc0a3bb33d9d2221d742200477a24e3b4b0b2c3c"
+      },
+      {
+        "root": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/js-actual-a",
+        "files": 6,
+        "bytes": 25529,
+        "inventorySha256": "66693c6b4eb057472ab0c5ea893fbd37ef609aae1d0990aacf5db972e091bd4a"
+      },
+      {
+        "root": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/js-actual-b",
+        "files": 6,
+        "bytes": 25529,
+        "inventorySha256": "19cbde58d57feed09002ae88bbb680306fada24d41bc03ed5945fc38fef4ae88"
+      },
+      {
+        "root": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/js-final-a",
+        "files": 6,
+        "bytes": 25525,
+        "inventorySha256": "a75c26c1ff47d0036a5c219ef4ca3f5e5e7a2546992ffd1df00a4af2660b4a09"
+      },
+      {
+        "root": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/js-final-b",
+        "files": 6,
+        "bytes": 25525,
+        "inventorySha256": "36e3b30739b70b3895e8b568a3313c493393484ad4ba6ebfd439e0b1af4b0f62"
+      },
+      {
+        "root": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/.rounds/f1-byte-parity-20261116/js-variant",
+        "files": 6,
+        "bytes": 25524,
+        "inventorySha256": "9c1d23db752b091db43eb0178cb25fae29de4fb880f53b826edf3e81ffd8b471"
+      }
+    ],
+    "protectedInventoryEncoding": "SHA-256 of UTF-8 json.dumps(sorted-by-path rows of {path,bytes,sha256}, sort_keys=True, separators=(comma,colon), ensure_ascii=False); no trailing newline.",
+    "verification": "Raw 108-file inventories, source 706, baseline 283 and all 11 byte copies checked against their source hashes. No generator, comparator CLI, tests, JVM or workflow/task executed for preservation.",
+    "neverUpdateGoldenFromJS": true,
+    "secretsPolicy": "Only selected path/hash/status provenance is embedded; process environment values and personal credential stores are not copied. Raw inputs are preserved verbatim, not sanitized or reformatted."
+  }
+}

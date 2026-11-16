@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "truthsrc.product-generator/v1",
+  "name": "scala-cqrs-classic",
+  "version": "1",
+  "targetProfile": "scala-cqrs-classic-scaffold@1",
+  "products": [
+    {
+      "id": "classic-architecture",
+      "version": "1",
+      "payloadSchemaVersion": "truthsrc.classic-architecture/v1",
+      "capabilities": [{ "id": "classic-aggregate-scaffold", "version": "1" }]
+    }
+  ],
+  "producers": [
+    {
+      "id": "classic-aggregate-scaffold",
+      "version": "1",
+      "products": ["classic-architecture"],
+      "artifactKinds": ["application-protocol", "command-helper", "aggregate-behavior", "domain-entity"]
+    }
+  ],
+  "artifactKinds": ["application-protocol", "command-helper", "aggregate-behavior", "domain-entity"],
+  "options": ["rootPackage", "frameworkPackage", "moduleName", "generatorVersion", "knowledgeRelease"]
+}

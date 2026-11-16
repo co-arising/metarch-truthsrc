@@ -1,0 +1,73 @@
+{
+  "schemaVersion":"codegen-parity.partition-review-overrides/v1",
+  "source":"details/partition-workflow-results.json",
+  "scope":"主集成复核后的精确内容归属修正，不修改生产代码",
+  "patches":[
+    {
+      "id":"formal-service/technical-port/external-connectors","resolution":"R08",
+      "currentConstructs":["TechnicalPorts trait中external-submission/external-query/deployment的typed input→Future[output]声明；只拥有接口及类型/Future imports需求","具体Installed中的参数校验/callback/结果关联与secretRef校验由独立connector-implementation A行拥有，不与安装表重复"],
+      "constructDisposition":[{"current":"外部提交/查询/部署能力方法声明及类型依赖","target":"app/<basePath>/application/connectors/<Host>ExternalConnector.scala","action":"split","reason":"接口声明独立；原注释无外部业务实现不等于没有具体委托适配实现"}]
+    },
+    {
+      "id":"formal-service/technical-bindings/installation","resolution":"R08",
+      "currentConstructs":["非external-submission/query/deployment技术能力声明：phase、entry、association、authority、delivery、resource-policy、readside；接口由本文件assembly协调，不代表业务实现算法","required/requireInstalled、BindingOwnership/bindingOwnership、secretReferences、OperationNotExecuted、CompletionContext、Implementation/Bindings安装记录；逐id/version/run及专用callback检查与new Installed","Installed容器/私有bindings/declarations及剩余角色委托；phase Operation、Completion和readside关联检查留技术支撑；external-submission/query/deployment方法体移交独立A adapter行，不重复声明"],
+      "targetPaths":["app/<basePath>/infrastructure/bootstrap/<Host>TechnicalBindings.scala","app/<basePath>/infrastructure/connectors/<Host>InstalledTechnicalPorts.scala"],
+      "constructDisposition":[{"current":"required/ownership/secretReferences/Implementation/Bindings/requireInstalled/install及其初始化和构造调用","target":"app/<basePath>/infrastructure/bootstrap/<Host>TechnicalBindings.scala","action":"split","reason":"安装/元数据/版本检查唯一归装配；应用层不依赖基础设施安装对象"},{"current":"Installed容器、bindings/declarations和非外部connector角色委托","target":"app/<basePath>/infrastructure/connectors/<Host>InstalledTechnicalPorts.scala","action":"split","reason":"唯一容器assembler汇总A外部委托方法与B技术方法，避免duplicate body"}],
+      "appendOpenDecisions":["方法签名必须从应用能力面引用；当前Installed同容器混合多角色，拆分前冻结构造可见性及Host消费接口，不能造成application→infrastructure类型依赖。"]
+    },
+    {
+      "id":"formal-application/technical-bindings/shared","resolution":"R08",
+      "currentConstructs":["共享package/Future/identity imports与companion；required/requireInstalled、BindingOwnership/bindingOwnership、secretReferences、Implementation[I,O]/Bindings","Installed私有bindings/declarations与非external-submission/query/deployment的typed/Operation/Completion委托；readside关联校验及全部install检查/new Installed；外部connector方法体由独立A行拥有"],
+      "constructDisposition":[{"current":"required/ownership/secretReferences/Implementation/Bindings/requireInstalled/install和new Installed","target":"app/<basePath>/infrastructure/bootstrap/<Host>TechnicalBindings.scala","action":"split","reason":"安装元数据及创建独占在装配端"},{"current":"Installed私有bindings/declarations、非外部connector角色的委托；外部connector A贡献同容器中的独占方法区间","target":"app/<basePath>/infrastructure/connectors/<Host>InstalledTechnicalPorts.scala","action":"split","reason":"实现容器只有一个组装者，不复制A方法或扩充接受域"}]
+    },
+    {
+      "id":"formal-application/build/shared","resolution":"R09",
+      "currentConstructs":["build.sbt：Scala2.13.14、Compile app/proto roots、PB.targets、Akka/ScalaPB/testkit/ScalaTest依赖、Test parallel=false；applicationBuild追加file resolver/saga-core0.3.0及按pipeline条件的monarch-persistence0.3.0","project/plugins.sbt：sbt-protoc与scalapb compilerplugin；不是运行库resolver/依赖","project/build.properties：sbt.version=1.11.7；与formal service改为1.4.9分开"],
+      "constructDisposition":[{"current":"应用主构建及applicationBuild运行库resolver/saga/Monarch依赖","target":"build.sbt","action":"adapt","reason":"运行库依赖属于应用classpath而非元构建"},{"current":"sbt-protoc与ScalaPB compilerplugin声明","target":"project/plugins.sbt","action":"retain","reason":"插件属于sbt元构建"},{"current":"sbt.version=1.11.7","target":"project/build.properties","action":"retain","reason":"launcher版本独立归属"}]
+    },
+    {
+      "id":"formal-service/build/play-service","resolution":"R09",
+      "constructDisposition":[{"current":"Scala/Akka/ScalaPB/runtime resolver/saga/Monarch和PlayScala/guice/jdbc/Mongo/MySQL、source roots、fork/unit runner、testOnly拒绝、overrides/excludes","target":"build.sbt","action":"adapt","reason":"保持主构建settings求值顺序和运行依赖classpath"},{"current":"sbt-protoc/ScalaPB compilerplugin及Play2.8.18插件声明","target":"project/plugins.sbt","action":"retain","reason":"插件元构建独立；不放应用运行库"},{"current":"sbt.version=1.4.9","target":"project/build.properties","action":"retain","reason":"service的显式launcher版本不与standalone混签"}]
+    },
+    {
+      "id":"formal-application/child-protobuf/child","resolution":"R09",
+      "constructDisposition":[{"current":"每child-plan的planversion/input/output、对应package/ScalaPB import和完整field编号","target":"app/protobuf/<child_plan_stem>_execution.proto","action":"retain","reason":"逐plan一个execution schema，保持身份和输入输出映射"},{"current":"每context唯一ChildHostEventPB：kind1/parent2/initial3/operation4/childpid5/version6及该host package/import","target":"app/protobuf/<base_underscored>_child_host.proto","action":"retain","reason":"按context去重，与execution不同基数，不能丢或重复"}],
+      "appendFixtureConditions":["同context多个child plan：多个execution文件、一个child-host schema；全部字段号/package各自不变"]
+    },
+    {
+      "id":"formal-application/effect-bindings/effect","resolution":"R09",
+      "currentConstructs":["bindingOwnership元组、Implementation[I,O]、Bindings三个typed callback、Installed私有bindings/execute/query/reconcile委托、install逐pin/run/非空检查→new Installed；当前全部在EffectHost object内","目标需分离能力签名与安装实现：不是已存在EffectPorts trait；拟提取trait和Installed implements必须标接口迁移而非纯搬包"],
+      "targetPaths":["app/<basePath>/application/connectors/<Effect>EffectPorts.scala","app/<basePath>/infrastructure/bootstrap/<Effect>EffectBindings.scala"],
+      "constructDisposition":[{"current":"Installed.execute/query/reconcile三个公开typed签名（现有方法的能力面，不复制方法体）","target":"app/<basePath>/application/connectors/<Effect>EffectPorts.scala::trait signatures","action":"extract","reason":"拟新增应用能力面，使Host不依赖基础设施Installed具体类；需显式接口裁定"},{"current":"bindingOwnership、Implementation、Bindings、Installed私有bindings/三个委托方法体/declarations及install/new Installed全部元数据和初始化","target":"app/<basePath>/infrastructure/bootstrap/<Effect>EffectBindings.scala","action":"split","reason":"同一object拥有安装与其私有限定Installed，保留pin/可见性/构造顺序，不造第二状态机"}],
+      "appendOpenDecisions":["Host.apply installed:Installed须显式迁为应用EffectPorts，Installed实现该trait；构造私有限定迁到新EffectBindings owner。未获接口批准前不得实施。"]
+    }
+  ],
+  "splitRoles":[
+    {
+      "from":"formal-service/technical-bindings/installation","newId":"formal-service/external-connector-implementation/installed","resolution":"R08",
+      "classification":"A","scalaArtifact":"connector-implementation","coverage":"delegating-adapter-not-external-business-algorithm",
+      "role":"external-submission/query/deployment的具体typed委托适配及输入/结果关联校验","variant":"installed-external-adapter",
+      "constructs":["role=external-submission/query：输入及association keys非空校验→bindings.method.run(input)→Future非空→parasitic map校验返回原关联→结果返回","role=deployment：input/secretRef必须为声明symbolic reference才callback；不声称真实外部后台算法由生成器实现","共同Installed继承/构造/私有bindings和imports由technical assembly单owner；本行只拥有上述typed方法实现，不与port声明/安装B重复"],
+      "sources":[{"file":"baseline/js/generators/scala-cqrs-application/render-technical-ports.mjs","symbol":"installedRun external roles / Installed method emission","lines":"16-26,43-49"}],
+      "targetPaths":["app/<basePath>/infrastructure/connectors/<Host>InstalledTechnicalPorts.scala"],
+      "assemblyOwner":"formal-service/technical-assembly",
+      "fixtureId":"formal-service/external-connector-delegation-v1",
+      "fixtureConditions":["submission/query返回关联一致","null输入/回调Future/结果拒绝与顺序","deployment只接受声明secretRef，不读取真实秘密"],
+      "openDecisions":["与raw注入ConnectorImpl/MANUAL形状不同，但具体委托职责属于A；外部业务实现仍按手写所有权。","Host仅消费应用trait，Installed混合角色拆分/构造可见性须统一owner确认。"]
+    },
+    {
+      "from":"formal-application/technical-bindings/shared","newId":"formal-application/external-connector-implementation/shared","resolution":"R08",
+      "classification":"A","scalaArtifact":"connector-implementation","coverage":"delegating-adapter-not-external-business-algorithm",
+      "role":"外部提交/查询/部署的Installed具体方法，而非只是静态安装记录","variant":"installed-external-adapter",
+      "constructs":["Installed external-submission/query：完整输入关联→callback→Future非空→结果原关联校验，失败不吞异常","Installed deployment：校验symbolic secretRef在声明集合内才委托；没有读取秘密、没有生成真实外部后台","接口和Installed容器/元数据分别由port/B owner贡献；本A只拥有具体外部方法，单assembler组合"],
+      "sources":[{"file":"baseline/js/generators/scala-cqrs-application/render-technical-ports.mjs","symbol":"installedRun external roles / Installed method emission","lines":"16-26,43-49"}],
+      "targetPaths":["app/<basePath>/infrastructure/connectors/<Host>InstalledTechnicalPorts.scala"],
+      "assemblyOwner":"formal-application/technical-assembly",
+      "fixtureId":"formal-application/external-connector-delegation-v1",
+      "fixtureConditions":["三个角色及关联正反例","v1/v2的类型/pin保持","declaration/interface vs implementation vs metadata成员不重复"],
+      "openDecisions":["raw ConnectorImpl机械委托与此处guarded callback均属实现职责；Guice/MANUAL和方法/构造合同须对齐，不因此调用外部服务。"]
+    }
+  ],
+  "generatorModified":false,
+  "runtimeExecuted":false
+}

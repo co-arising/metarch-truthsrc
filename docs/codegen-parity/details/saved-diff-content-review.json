@@ -1,0 +1,166 @@
+{
+  "schemaVersion": "codegen-parity.content-review/v1",
+  "workflowRunId": "wf_86e1c6e5-2c2",
+  "sourceResultSha256": "3012798086f4bc911ef27d599f958ef56b7d97706ddcd8b50512d2102d290462",
+  "scope": "Original15 static content review, no code/runtime certification",
+  "results": [
+    {
+      "group": "value-object/domain-entity/aggregate-root",
+      "issues": [
+        {
+          "artifactId": "value-object",
+          "blocksImplementation": true,
+          "documentLine": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/value-object.diff.md:45",
+          "problem": "把生成器字符串的转义写法当作生成后 RHS：文档写 `(json \\\\ \"field\")`，固定 Scala 的 s 插值字符串实际表达单反斜杠查找。照规格输出双反斜杠会改成 Play JSON 递归搜索，后续 `.toOption/.as` 不再是原查找结果的调用链。",
+          "sourceEvidence": [
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/ValueObjectTemplate.scala:64–69：readsArgs 使用 s 插值字符串，其中双反斜杠是字符串层转义。",
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/valueobject-dsl/render.mjs:135–140：对应 JS 模板也在字符串层使用双反斜杠，而非要求输出递归搜索运算符。"
+          ],
+          "docCorrection": "将输出账改为 `(json \\ \"field\").toOption.map(_.as[T]).getOrElse(default)` / `(json \\ \"field\").as[T]`，另注明生成器源码需转义。此结论是静态字符串核对，不是生成或 Play ABI 实测。"
+        },
+        {
+          "artifactId": "value-object",
+          "blocksImplementation": true,
+          "documentLine": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/value-object.diff.md:55",
+          "problem": "formal exact 分支被概括为统一的 amount＋unit、单位 Set 校验，遗漏无单位 decimal 分支。银行固定产物已有 AmountDecimal(value: BigDecimal)，并非只有 Money 这一种 exact 形状；按当前概括建立模型会错误要求单位字段或丢失已有标量 API。",
+          "sourceEvidence": [
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-domain/render-values.mjs:11–22：amountMember 缺失时名称为 value；unit 字段、unitCheck、同单位 require、构造器第二参数均以 unitMember 是否存在为条件。",
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/actual-js/app/example/bankwealth/domain/values/AmountDecimal.scala:4–17：单字段 value，保留 compareSameUnit/plus/minus/checkedAmount，没有单位校验。",
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-domain-kernel-v1/templates/values.mjs:38–56：family 同样明确区分 unit-decimal 与无单位分支。"
+          ],
+          "docCorrection": "分列 decimal 与 unit-decimal 的字段、构造参数及方法 RHS；说明 compareSameUnit 在无单位分支仍存在但不执行单位校验。不得合并 AmountDecimal 与 Money，也不得把银行 precision/scale 当所有 exact 类型的默认值。"
+        },
+        {
+          "artifactId": "domain-entity",
+          "blocksImplementation": false,
+          "documentLine": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/domain-entity.diff.md:45",
+          "problem": "“全部输出”账把每个事件写死为 extends Family，未交代 EventModel.superTypes 的实际发射分支。普通 Builder 确实给 Seq(family)，但 Template 独立消费每个事件的列表：空列表不继承，非空列表按序用 with 连接。当前文字会误导实现者忽略这个已列出的模型字段。",
+          "sourceEvidence": [
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/domain/DomainEntityModel.scala:55–60：EventModel.superTypes 默认 Nil。",
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainEntityTemplate.scala:73–79：读取 evt.superTypes，非空渲染 signatures.mkString(\" with \")，空列表省略 extends。",
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/domain/DomainEntityBuilder.scala:241–249：普通 Builder 才固定 superTypes=Seq(familyTypeRef)。"
+          ],
+          "docCorrection": "区分“普通 Builder 产物继承 Family”与“Template 接口按 evt.superTypes 条件发射”。若目标仅支持普通 Builder 范围，显式注明限制，不把它描述为原模板的全部分支。"
+        },
+        {
+          "artifactId": "domain-entity",
+          "blocksImplementation": true,
+          "documentLine": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/domain-entity.diff.md:67",
+          "problem": "legacy empty 的数值默认总结漏掉重要例外：非首字段 order:Int 为 1，并非所概括的非 version 数值零值。它与 raw 的普通 Int 中性值相同，不能在适配时被统一归零；该例外未列入现有未决项。",
+          "sourceEvidence": [
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/aggregate-dsl/render.mjs:218–242：optional 优先 None；Int 使用 f.name === \"order\" ? \"1\" : \"0\"；Long 为 0L、Double 为 0.0、BigDecimal 为 BigDecimal(\"0\")，且仅 rest 字段调用 emptyDefault。",
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/domain/DomainEntityBuilder.scala:197–209：raw Int/Integer 中性值为 1。",
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainEntityTemplate.scala:49–63：raw 首字段透传，数值 version 单独置零。"
+          ],
+          "docCorrection": "补齐 legacy 的按类型、字段名及 optional 优先级的默认表，至少明确 order:Int→1、其余 Int→0；与 raw 对照时分别列出首字段、version、order，不使用统一数值默认描述。"
+        },
+        {
+          "artifactId": "aggregate-root",
+          "blocksImplementation": false,
+          "documentLine": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/aggregate-root.diff.md:117",
+          "problem": "把 `sbt compile` / `sbt test` 称为“运行接口检验”，混淆未来构建/测试与真实应用接口证据。文档没有虚报已运行，但按此验收定义仍可能仅凭编译或单测关闭 key、typed wiring、分片接线的真实验证。",
+          "sourceEvidence": [
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/generators/scala-cqrs-play-service/generate.mjs:41–44：当前 formal 构建把 test 接到 UnitTestMain，并明确 integration tests require their explicit runner。",
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRootTemplate.scala:110–132：root 仅定义 handler/key/tags，不启动或验证分片服务。",
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/glue-dependencies.md:250–256：真实公开 CLI 产物及最小应用接口观察与 tests/typecheck 明确分账。"
+          ],
+          "docCorrection": "将这两条命令归入编译/测试验证；另列待授权、待确定入口的真实 fixture 观察要求，并按最终选定的 local/sharding profile 定义验收。未取得运行观察前保持 runtime/ABI 未验证，不臆造 CLI 或 suite。"
+        }
+      ],
+      "limitations": [
+        "全程只读；未写文件、操作 Git/worktree、使用任务工具或执行测试、编译、生成、运行服务。原稿及固定副本未由本审阅修改。",
+        "已通读三组九份 Scala Model/Builder/Template，并核对文档引用的 formal、legacy、family JS 相关范围及人工/银行示例；未进行同输入生成或字节实测。",
+        "所有 runtime/ABI、实际消费 JAR/classpath 均未核验。共享胶水的三份同 FQN 源码及 source-local/scaffold 所有权问题仍是已知前置，不另造新缺陷。",
+        "JSON profile、raw 默认兼容、nested owner/序列化身份、key/tags 与分片 profile 等已明列决策仍需裁定；本次发现不替代这些决策。",
+        "固定快照未包含 /Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/js/lib/value-products/exact-types.mjs，未转读可变生产源码；无单位 exact 结论由固定 renderer 和实际 AmountDecimal 源码直接支持。"
+      ],
+      "reviewed": [
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/value-object.diff.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/domain-entity.diff.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/aggregate-root.diff.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/AUTHORING-CONTRACT.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/SHARED-SEAMS.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/glue-dependencies.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/PARTITION-RESOLUTIONS.md"
+      ],
+      "summary": "三份规格及对应九份固定 MBT 已完成只读核对，发现五项需修正文档内容：JSON 查找 RHS 转义、无单位 exact 分支、事件父类型分支、legacy order 默认值，以及编译/测试与真实接口验收的混称。其余已明确列出的设计决策不重复报错；不能据此宣告实现、parity 或运行验收通过。"
+    },
+    {
+      "group": "serialization",
+      "issues": [],
+      "limitations": [
+        "仅作静态内容审阅；未执行生成、测试、编译、内部模块调用、运行或服务操作，所有运行行为及实际消费JAR/ScalaPB ABI仍未验证。",
+        "银行实物核对覆盖三份完整adapter、66个state根字段及直接容器、Money与AccountInitialized转换片段、serializer façade及Part2；未逐字审阅全部converter/serializer分片及整份银行proto。",
+        "PB与oneof身份、字段改名、presence/int64差异、精确codec、历史回放、class注入及胶水唯一owner，均已诚实列为待裁决事项，仍阻断相应实施，不重复算作新缺陷。",
+        "未进行任何写入、Git或worktree操作；未改动原15份草稿。"
+      ],
+      "reviewed": [
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/protobuf-schema.diff.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/proto-converter.diff.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/event-adapter.diff.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/snapshot-adapter.diff.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/AUTHORING-CONTRACT.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/SHARED-SEAMS.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/glue-dependencies.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/PARTITION-RESOLUTIONS.md"
+      ],
+      "summary": "已完整阅读四族固定Scala Model/Builder/Template，逐项核对模型字段、模板分支与RHS，并对照formal、legacy及family序列化JS。已核内容未发现达到报告阈值的新增实质错误。raw、人工参考、目标提案与银行实物保持区分；未把计划命令当成已完成验证。四份仍为decision-required，本结论不是实施准入或运行通过。"
+    },
+    {
+      "group": "projection",
+      "issues": [],
+      "limitations": [
+        "五份仍为 decision-required；D-P01–D-P13 涉及投影路线、DI、事务、身份键、默认值、ViewMachine、offset 与生命周期，不能因文档审阅完成而解除实施阻断。",
+        "仅静态审阅；未运行测试、编译、生成或实际接口验证，全部 runtime/ABI 与实际消费 JAR 仍未验证。",
+        "遵循胶水证据边界：同 FQN helper 的三种源码及 source-local scaffold copying 不构成统一已发布 API；ViewMachine 的真实定义仍未确证。",
+        "未执行写入、Git、worktree 或任务工具操作，未修改 original15 原稿。未据可变工作副本或建议命令补造固定证据。"
+      ],
+      "reviewed": [
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/projection-repository-port.diff.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/projection-repository-implementation.diff.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/projection-apply-event.diff.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/projection.diff.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/projection-handler.diff.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/AUTHORING-CONTRACT.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/SHARED-SEAMS.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/glue-dependencies.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/PARTITION-RESOLUTIONS.md"
+      ],
+      "summary": "已全文核对五族固定 Scala Model/Builder/Template 的字段及输出分支，覆盖四存储、单/多项目、单/多源、四种 ApplyEvent/handler 形态与降级；并对照所引 formal、legacy、deprecated、family JS 和固定人工/银行输出。未发现需新增报告的实质内容缺陷。文档已诚实列出的源码缺口与未决语义不重复报错；此结论不代表可实施或运行通过。"
+    },
+    {
+      "group": "classic-saga",
+      "issues": [
+        {
+          "artifactId": "saga-definition",
+          "blocksImplementation": true,
+          "documentLine": "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/saga-definition.diff.md:27-32",
+          "problem": "“输出全账”把嵌套参数类型及 definition/register/runner/codec 的类型参数统一写成 Args，却未说明它是 argsType.name 的占位符。固定 Builder 实际保留 args metadata 的名称，Template 在所有这些位置都使用该名称。按文档硬编码 Args 会改变非 Args 输入的公开类型与调用接口；这不是已列出的 args 字段导入决策。",
+          "docCorrection": "补明 argsType = TypeRef(argsMeta.name, pkg)，将全账中的 Args 明确写为 <argsType.name>，并贯穿 case class、companion、Format/Json、ArgsCodec、definition/register/runner。第34行人工参考的 helper owner 应准确标为 TransferArgs，且继续与 raw 模板分账。",
+          "sourceEvidence": [
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaDefinitionBuilder.scala:25-33,81-90 — args 必填，argsType 来自 TypeRef(argsMeta.name, pkg)，并传入模型。",
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaDefinitionTemplate.scala:63-72,84-93 — 嵌套声明、JSON format、codec 及三个公开方法均插值 ${argsType.name}，没有固定 Args 名称。",
+            "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/baseline/curated-scala/net/imadz/application/services/transactor/MoneyTransferSagaDefinition.scala:23-38,61-70 — 人工例实际使用 TransferArgs；仅作独立参考，不作为同输入 raw 产物证据。"
+          ]
+        }
+      ],
+      "limitations": [
+        "仅做静态只读审查；未写文件，未触碰原15份草稿，未执行 Git、任务工具、生成、构建、测试、运行或服务操作。",
+        "运行时、实际消费 JAR、classpath 与 ABI 全部未验证；共享胶水中同 FQN 三种源码及 source-local scaffold 所有权问题仍保持未决。",
+        "已完整阅读三族全部9个固定 Model/Builder/Template，并核对所引用 JS 的相关实现与三个人工例；未扩展审查其他制品族。",
+        "三份规格已诚实记录 classic/strict 范围、context 命名、仓库去重、首字段寻址、Money 特判及业务槽等决策阻塞，本次不重复报为新缺陷。未发现把拟议命令或编译/测试称为已完成实际验证的表述。"
+      ],
+      "reviewed": [
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/saga-participant.diff.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/saga-definition.diff.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/diffs/saga-context.diff.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/AUTHORING-CONTRACT.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/SHARED-SEAMS.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/glue-dependencies.md",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/docs/codegen-parity/PARTITION-RESOLUTIONS.md"
+      ],
+      "summary": "三份规格核对完成，发现1项会误导实现的内容问题：saga-definition 未准确保留动态 args 类型名。saga-participant 与 saga-context 未发现新增实质内容错误；既有 missing-counterpart 和决策阻塞仍成立，不代表实现或运行验收通过。"
+    }
+  ],
+  "originalDocumentsModified": false
+}

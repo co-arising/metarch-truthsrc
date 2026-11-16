@@ -1,0 +1,681 @@
+{
+  "group": "application-service",
+  "documentationCorrection": {
+    "scope": "仅纠正本会话已分配的两份既存文档；未修改其它 diff、中央分区、baseline/supplemental 或任何生产/生成/作者树文件",
+    "reviewSource": "details/fixture-design-workflow-results.json",
+    "reviewSelections": ["result.results[0].primary", "result.results[1].primary"],
+    "findingCount": 6,
+    "editAuthority": "主集成者分工的 docs-only 编辑权；agent 分派不是用户逐字原话，也不是实施授权",
+    "provenanceBoundary": "source-fact 固定源码、user-required 既定质量要求、proposed 候选实现分账",
+    "beforeFiles": [
+      {"path": "diffs/application-service.diff.md", "bytes": 56684, "sha256": "569b7721b8b9083a9b389b8412b3a6b1815c36cda9d1530e4cd3293219efc6ec"},
+      {"path": "details/application-service.json", "bytes": 38645, "sha256": "64e8b995c261cea9b5acf82f9c46f0c58c629cfa04c8cf8676a184a8a884c5ff"}
+    ],
+    "scopeBeforeAndAfter": {
+      "proposedCount": 6,
+      "sharedCount": 32,
+      "proposedOrderedJsonSha256": "86f0c61c683e00bd79fe3994ff8431a9a8ad653294d13cf0cf149b3434bc4541",
+      "sharedOrderedJsonSha256": "57ef89f20b1b0c4d8a723a12cc7b85a144c1ba248133ee9aacbde6ae0cf195e2",
+      "encoding": "SHA-256 of UTF-8 compact JSON array, original order, unescaped Unicode",
+      "unchanged": true
+    },
+    "outputEvidence": "最终 bytes/SHA-256 返回主集成者，不在文件内生成自引用输出摘要",
+    "staticInspectionOnly": true,
+    "implementationAuthorized": false
+  },
+  "artifactIds": ["application-service"],
+  "diffs": [
+    {
+      "artifactId": "application-service",
+      "ordinal": 14,
+      "file": "diffs/application-service.diff.md",
+      "status": "decision-required",
+      "formalCounterpartStatus": "missing-counterpart",
+      "comparisonKind": "结构性对照，非同输入字节比较；raw Scala/curated/actual JS 的 source-fact、user-required 质量要求与 proposed 实现分账",
+      "sameInputOutputsAvailable": false,
+      "implementationAuthorized": false,
+      "sourceHead": "cc335eb1e0d0fae17bf092fd61b126040196ea70",
+      "scalaVariants": [
+        {
+          "id": "classic-single",
+          "condition": "传统 runCommon -> generateApplicationLayer 遍历 app.services；每个 ApplicationServiceMetadata 调 Builder/Template/writeArtifact；scope 与领地可抑制实际写入",
+          "outputPaths": ["<target>/app/<basePath>/application/services/<ResolvedServiceName>.scala"],
+          "outputRoot": "<target>/app",
+          "modulePrefix": "",
+          "relativePath": "<basePath>/application/services/<ResolvedServiceName>.scala",
+          "ledgerPaths": ["app/<basePath>/application/services/<ResolvedServiceName>.scala"],
+          "cardinality": "每服务一个候选完整文件，不等于实际写成数；重复解析名可能撞路径",
+          "dispatch": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala#L713-L721",
+          "state": "enabled-not-exercised"
+        },
+        {
+          "id": "classic-multi-root-fallback",
+          "condition": "multiProject=true；targetModuleOf 没有 application-service，返回 None；writeArtifact 使用 app fallback，非 kernel/glue",
+          "outputPaths": ["<target>/app/<basePath>/application/services/<ResolvedServiceName>.scala"],
+          "outputRoot": "<target>",
+          "modulePrefix": "app",
+          "relativePath": "app/<basePath>/application/services/<ResolvedServiceName>.scala",
+          "ledgerPaths": ["app/app/<basePath>/application/services/<ResolvedServiceName>.scala"],
+          "rawDefect": "非 strict-saga-module 的 ledgerPath 再加 app/，导致 multi 台账多一层 app；实际输出仍为 target/app/...，不是目标布局要求，不修改 raw/target/ledger",
+          "cardinality": "每服务一个候选文件",
+          "dispatch": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala#L331-L378",
+          "state": "enabled-not-exercised"
+        },
+        {
+          "id": "empty-services",
+          "condition": "app.services.isEmpty",
+          "outputPaths": [],
+          "cardinality": "0",
+          "state": "suppressed"
+        },
+        {
+          "id": "empty-methods",
+          "condition": "服务存在但 methods.isEmpty；仍输出带注入构造器的空 class",
+          "outputPaths": ["<target>/app/<basePath>/application/services/<ResolvedServiceName>.scala"],
+          "cardinality": "1",
+          "state": "enabled-not-exercised"
+        },
+        {
+          "id": "actor-system-member",
+          "condition": "model.dependencies.exists(_.name == ActorSystem)；同文件发 private val system = classicSystem.toTyped；constructor 另有过滤条件，二者不完全等价",
+          "outputPaths": ["<target>/app/<basePath>/application/services/<ResolvedServiceName>.scala"],
+          "cardinality": "不增加文件数",
+          "state": "enabled-not-exercised"
+        }
+      ],
+      "rawWriterCoverage": {
+        "provenance": "source-fact",
+        "sources": [
+          "baseline/bc/src/main/scala/net/imadz/codegen/CodegenMain.scala#L232-L241",
+          "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala#L366-L400",
+          "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala#L461-L505",
+          "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/WriteTerritory.scala#L109-L179"
+        ],
+        "pathAccounting": "outputPaths 是候选实际路径；single ledgerPath 为 app/...，multi fallback 为 app/app/...；record/recordMorphisms 共用 ledgerPath，均先于 scope/领地写入；empty-methods/actor-system-member 沿所选 single/multi 规则",
+        "mergeManual": {
+          "preconditions": "existing 无完整 MANUAL 块拒写；incoming 完全失去 MANUAL 块也拒写",
+          "anchor": "块前最近匹配 DefAnchorRegex 的 def 名字；不是参数签名、重载身份或 Scala AST 作用域",
+          "namedMatching": "旧块按名字分桶，同名按出现序消费；incoming 按块顺序遍历",
+          "anonymousMatching": "没有匹配 def 前缀的块另按匿名桶出现序消费",
+          "newBlocks": "没有可用旧块时保留 incoming 原块；本族新块仍为 ???，不是自动业务实现",
+          "preservedBytes": "匹配区间取 existing；块外和新块取 incoming",
+          "orphanRejection": "旧具名或匿名块任何剩余无落点即抛 IllegalStateException；普通方法删除/改名造成孤块已有拒写保护",
+          "overloadLimit": "同名重载重排可能按出现序错配业务体，不保证签名安全",
+          "writeOrder": "mergeManual 返回后才写文件；拒写不撤销此前 ledger 记录"
+        },
+        "executed": false
+      },
+      "jsSources": [
+        {
+          "file": "generators/service-dsl/emit.mjs",
+          "symbols": ["emitApplicationService", "firstLower", "scalaId", "kind dispatch", "writeFileSync"],
+          "lane": "legacy",
+          "disposition": "adapt",
+          "lines": "14-88,270-294",
+          "note": "近似 classic renderer；普通 spec 字符串类型、过滤注入、MANUAL ???；未接 formal 银行；同文件 query/domain/port 不属于本组整文件写权"
+        },
+        {
+          "file": "generators/service-dsl/parse.mjs",
+          "symbols": ["readFileSync/writeFileSync binding copy"],
+          "lane": "legacy",
+          "disposition": "adapt",
+          "lines": "1-5",
+          "note": "原字节复制不是 Builder/类型解析"
+        },
+        {
+          "file": "generators/service-dsl/generator.json",
+          "symbols": ["entrypoint=emit.mjs", "version=0.1.0"],
+          "lane": "legacy",
+          "disposition": "adapt",
+          "note": "legacy manifest 不等于公共 product producer allowlist"
+        },
+        {
+          "file": "generators/run-all.mjs",
+          "symbols": ["runGen(service-dsl)", "generatePolicyExec"],
+          "lane": "legacy",
+          "disposition": "adapt",
+          "lines": "1781-1792,2055-2065",
+          "note": "service 调用传 kind=port，不触发应用分支；policy execution 是另一路直接写文件"
+        },
+        {
+          "file": "lib/products/generate-cli.mjs",
+          "symbols": ["registeredProductProducer", "generateProductCli", "planCompiledProducts"],
+          "lane": "formal",
+          "disposition": "reuse",
+          "lines": "66-145",
+          "note": "正式注册包括 Play service 与 family8，不包括 service-dsl；family8/module-seams 需要 live capture；现 Play 核冻结 jar/外置根，本文未运行"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/generate.mjs",
+          "symbols": ["inherited", "registry", "play-service-dsl", "generate"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "16-70",
+          "note": "formal 银行入口，继承 effect/application registry 并覆盖 aggregate/invariant；没有调用 legacy application renderer 或 family8 commandServiceTemplate"
+        },
+        {
+          "file": "generators/scala-cqrs-application/produce-effect.mjs",
+          "symbols": ["createEffectRegistry"],
+          "lane": "formal",
+          "disposition": "reuse",
+          "lines": "6-26",
+          "note": "真实继承路径，非独立 classic 应用服务 producer"
+        },
+        {
+          "file": "generators/scala-cqrs-application/produce.mjs",
+          "symbols": ["applicationRegistry"],
+          "lane": "formal",
+          "disposition": "not-wired",
+          "lines": "17-30",
+          "note": "command-dsl 是 renderCommand；有限宿主/计算/协议职责不能整体认领为本族"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/render-service.mjs",
+          "symbols": ["serviceSelection", "renderService", "contract", "loader", "startup"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "5-205",
+          "note": "HTTP contract/endpoint bindings/composition B；Controller/routes/Bootstrap.load A 与 formal-service/play-loader/lifecycle B 分开；本族独立 counterpart 缺失，play-http-assembly 唯一完整文件装配"
+        },
+        {
+          "file": "generators/scala-cqrs-play-service/render-service-pages.mjs",
+          "symbols": ["pageRendererContract", "pageRendererRequirement", "renderPageLoader"],
+          "lane": "formal",
+          "disposition": "adapt",
+          "lines": "2-133",
+          "note": "pages=None/完整 requireInstalled 留 Composition；Response/parser callback 留 Controller；Loader/Components/EC/httpFilters/stop hook/pageRenderer 初始化属 B formal-service/play-loader/lifecycle；页面呈现 B 不复制它们"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/build-models.mjs",
+          "symbols": ["productIds", "roles", "buildModels", "carrier", "named", "resolveApplicationTarget"],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "9-116",
+          "note": "完整模型与重新 lowering 检查；commandService 当前在 glue/infrastructure.web，Commands 当前 kernel/application.api；目标移包不等已实施"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/templates/services.mjs",
+          "symbols": ["commandServiceTemplate", "queryServiceTemplate"],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "3-43",
+          "note": "本族只取 commandService；typed Execute ask/NoChange/Applied/DomainRejected/OutcomeUnknown/Unavailable 逐臂保留；query 同源不同 owner"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/templates/api.mjs",
+          "symbols": ["commandsTemplate", "apiTemplate", "queriesTemplate"],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "3-55",
+          "note": "Commands 声明为本族部分 A；API DTO/Outcome 与 query port 各自承接，不能重复复制"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/templates/syntax.mjs",
+          "symbols": ["scalarType", "unwrap", "scalaFields"],
+          "lane": "family",
+          "disposition": "reuse",
+          "lines": "4-15",
+          "note": "保留名义 carrier 外层类型与 accessor 顺序；不降为 String/Any"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/render.mjs",
+          "symbols": ["render", "named(commands)", "named(commandService)"],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "16-46",
+          "note": "一个完整文件一个 job；commands 与 commandService 有独立 kind/deps"
+        },
+        {
+          "file": "generators/scala-cqrs-play-application-v1/generate.mjs",
+          "symbols": ["generate", "implementationBuildInputs"],
+          "lane": "family",
+          "disposition": "reuse",
+          "lines": "10-40",
+          "note": "固定 manifest/ten-product closure/live capture；注册存在不证明现银行触发"
+        },
+        {
+          "file": "generators/scala-cqrs-module-seams-v1/build-models.mjs",
+          "symbols": ["buildModels", "ports"],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "104-111,193-195",
+          "note": "role=flow 声明级 A；非按 QuoteFlow 字面名生成"
+        },
+        {
+          "file": "generators/scala-cqrs-module-seams-v1/templates/scala.mjs",
+          "symbols": ["resultType", "method", "portTemplate", "bridgeTemplate", "rootTemplate"],
+          "lane": "family",
+          "disposition": "adapt",
+          "lines": "19-34,53-97",
+          "note": "flow 方法 pure/future 返回与无 RHS；bridge/root 为独立 B，不假装生成业务算法"
+        },
+        {
+          "file": "generators/scala-cqrs-module-seams-v1/generate.mjs",
+          "symbols": ["generate"],
+          "lane": "family",
+          "disposition": "reuse",
+          "lines": "13-44",
+          "note": "固定 contract/composition 和 live capture 的真实可达入口；本次仅辅助只读定位"
+        },
+        {
+          "file": "generators/policy-dsl/policyexec.mjs",
+          "symbols": ["runnerPolicies", "mechanicsFile", "handlerFile", "policyFile", "generatePolicyExec"],
+          "lane": "legacy",
+          "disposition": "adapt",
+          "lines": "98-129,152-265,355-366",
+          "note": "mechanics R07 部分 A；delivery/decision B；按 dataType ActorRef 前缀排参，reply 名拼 CmdReply，不与退休 emitter 混同"
+        },
+        {
+          "file": "generators/_deprecated/scala-cqrs-es-policy-exec/generate.mjs",
+          "symbols": ["policyExecModels", "renderMechanics", "renderHandler", "renderPolicy", "generate"],
+          "lane": "legacy",
+          "disposition": "adapt",
+          "lines": "29-177,253-258",
+          "note": "retired 显式 legacy plan 可达，不授权复活；按 name!=replyTo 排参、reply 用 cmd.reply.name；未知任意源码槽保持 blocked"
+        },
+        {
+          "file": "lib/scala-target/naming.mjs",
+          "symbols": ["resolveName", "resolveNameSet", "resolveArtifactPath"],
+          "lane": "family",
+          "disposition": "reuse",
+          "lines": "41-118",
+          "note": "shared main-integrator；冗余 affix 拒绝，不是自动去重"
+        },
+        {
+          "file": "generators/scala-cqrs-domain-kernel-v1/entry.mjs",
+          "symbols": ["applicationSourceEntry", "mappedEntry"],
+          "lane": "family",
+          "disposition": "reuse",
+          "lines": "28-64",
+          "note": "最终 UTF-8 字节 chunk 回锚，模板不得在之后再格式化"
+        },
+        {
+          "file": "src/core/product-plan.mjs",
+          "symbols": ["validateEntries", "planProductSet"],
+          "lane": "formal",
+          "disposition": "reuse",
+          "lines": "40-104",
+          "note": "两次 detached plan、deps/identity/路径守卫及 ??? 拒绝均不能为 raw stub 关闭"
+        },
+        {
+          "file": "src/core/generate.mjs",
+          "symbols": ["plan", "anchorInputs", "prepareEntries", "previewEntries", "applyEntries"],
+          "lane": "formal",
+          "disposition": "reuse",
+          "lines": "23-42,91-105,134-268",
+          "note": "final bytes/ownership/MANUAL/RETAINED；唯一写入口，不是锁或回滚"
+        },
+        {
+          "file": "src/core/code-mappings.mjs",
+          "symbols": ["validateCodeMappings", "finalMappingSpan"],
+          "lane": "formal",
+          "disposition": "reuse",
+          "lines": "1-28",
+          "snapshot": "supplemental/js/src/core/code-mappings.mjs",
+          "note": "只读固定 supplemental，未读当前工作副本"
+        }
+      ],
+      "writeSet": [
+        "generators/application-service/model.mjs",
+        "generators/application-service/build-models.mjs",
+        "generators/application-service/templates/application-service.mjs",
+        "generators/application-service/render.mjs",
+        "generators/scala-cqrs-play-application-v1/templates/command-service.mjs",
+        "generators/scala-cqrs-play-application-v1/templates/commands.mjs"
+      ],
+      "writeSetStatus": "全部 proposed；沿 query-service 的 model/build-models/templates/render 命名；另获实施许可及接口审定后才可写，不新建公共 producer manifest 冒充接线完成",
+      "sharedIntegrationWriteSet": [
+        "generators/service-dsl/emit.mjs",
+        "generators/service-dsl/parse.mjs",
+        "generators/service-dsl/generator.json",
+        "generators/run-all.mjs",
+        "generators/scala-cqrs-play-application-v1/build-models.mjs",
+        "generators/scala-cqrs-play-application-v1/render.mjs",
+        "generators/scala-cqrs-play-application-v1/generate.mjs",
+        "generators/scala-cqrs-play-application-v1/generator.json",
+        "generators/scala-cqrs-play-application-v1/templates/services.mjs",
+        "generators/scala-cqrs-play-application-v1/templates/api.mjs",
+        "generators/scala-cqrs-play-application-v1/templates/application.mjs",
+        "generators/scala-cqrs-play-service/render-service.mjs",
+        "generators/scala-cqrs-play-service/render-service-pages.mjs",
+        "generators/scala-cqrs-play-service/generate.mjs",
+        "generators/scala-cqrs-play-service/generator.json",
+        "generators/scala-cqrs-application/produce.mjs",
+        "generators/scala-cqrs-application/produce-effect.mjs",
+        "generators/scala-cqrs-module-seams-v1/build-models.mjs",
+        "generators/scala-cqrs-module-seams-v1/templates/scala.mjs",
+        "generators/scala-cqrs-module-seams-v1/render.mjs",
+        "generators/policy-dsl/policyexec.mjs",
+        "generators/_deprecated/scala-cqrs-es-policy-exec/generate.mjs",
+        "lib/scala-target/naming.mjs",
+        "lib/scala-target/profiles.mjs",
+        "lib/scala-target/model.mjs",
+        "lib/products/generate-cli.mjs",
+        "lib/products/registry.mjs",
+        "src/core/product-plan.mjs",
+        "src/core/generate.mjs",
+        "src/core/code-mappings.mjs",
+        "generators/scala-cqrs-domain-kernel-v1/entry.mjs",
+        "generators/scala-cqrs-domain-kernel-v1/render.mjs"
+      ],
+      "sharedIntegrationWriteOwner": "main-integrator",
+      "sharedIntegrationWriteSetCondition": "仅列接线/共享合同/消费者协调面，按最终 D01-D09 方案选最小必要改动；不要求全改、不授权本组修改任何 existing/lib/src/registry/shared renderer；退休项不授权复活",
+      "dependsOn": [
+        "shared-layout-types",
+        "shared-entry-writer",
+        "shared-source-mappings",
+        "selected-runtime-abi",
+        "fixture-adapters",
+        "explicit-reply-contract",
+        "application-protocol",
+        "aggregate-repository-port",
+        "aggregate-repository-implementation",
+        "aggregate-factory",
+        "aggregate-behavior",
+        "command-helper",
+        "query-service",
+        "http-controller",
+        "route-definition",
+        "application-bootstrap",
+        "external-connector-port",
+        "domain-service",
+        "family-readside-play/resource-directory"
+      ],
+      "dependsOnSemantics": "文档中的 artifact family / logical id 接口协同引用，不直接转换为生成 artifact deps；resource-directory 引用既有 B owner，不建立反向依赖环、不增加新 trait 或生产写路径",
+      "consumerCoordination": [
+        "query-service",
+        "http-controller",
+        "route-definition",
+        "application-bootstrap",
+        "saga-definition",
+        "aggregate-repository-port",
+        "aggregate-factory"
+      ],
+      "assemblyOwners": [
+        {
+          "logicalId": "legacy-application/service/application",
+          "classification": "A",
+          "physicalOutput": "app/<basePath>/application/services/<ResolvedServiceName>.scala",
+          "owner": "application-service-file",
+          "members": ["header/package/imports", "inject constructor", "class/implicit EC", "conditional typed system", "ordered methods and MANUAL slots"],
+          "rule": "一个 profile 一个完整 source entry；不能以 legacy emitter 与新 formal producer 同时写同路径"
+        },
+        {
+          "logicalId": "family-readside-play/command-service",
+          "classification": "A",
+          "physicalOutput": "modules/glue/src/main/scala/<basePath>/application/services/<Aggregate>CommandService.scala",
+          "owner": "family-readside-play/command-service/assembly",
+          "members": ["package/imports/final class", "constructor require", "EC/Scheduler/Timeout", "generic curried execute and every result/exception branch", "ordered typed business methods"],
+          "rule": "目标位置，非当前位置；Directory 已分配 family-readside-play/resource-directory -> kernel/application.services/ResourceDirectory，精确 owner 为 family-readside-play/resource-directory/assembly；最终 ABI/所有消费者闭合待 D05 审定，不可只搬 CommandService"
+        },
+        {
+          "logicalId": "family-readside-play/resource-directory",
+          "classification": "B",
+          "currentPhysicalOutput": "modules/glue/src/main/scala/<basePath>/infrastructure/web/<Aggregate>Directory.scala",
+          "physicalOutput": "modules/kernel/src/main/scala/<basePath>/application/services/<Aggregate>ResourceDirectory.scala",
+          "owner": "family-readside-play/resource-directory/assembly",
+          "centralSource": "js-partition.json logicalOutputs[id=family-readside-play/resource-directory].target",
+          "coordinationOnly": true,
+          "members": ["ResourceBinding 三标识与 bounded require", "非空最多八项且三列唯一的 bindings", "find/byPid", "按 composition.resources 声明序构造 declared"],
+          "rule": "既有中央 B 布局/装配归属，不新增 Directory 能力 trait 或写路径；最终 ABI/FQN/构造接线与所有消费者闭合仍待审，不能视为本族生成 artifact 的反向依赖"
+        },
+        {
+          "logicalId": "family-readside-play/command-service-port",
+          "classification": "A",
+          "physicalOutput": "modules/kernel/src/main/scala/<basePath>/application/services/<Aggregate>Commands.scala",
+          "owner": "family-readside-play/command-service-port/assembly",
+          "members": ["package/imports/trait", "ordered abstract Request to Future Outcome signatures"],
+          "rule": "不再声明 API DTO/Failure/Outcome/query port；不是 Actor command protocol"
+        },
+        {
+          "logicalId": "family-seams-saga/seams-port/flow",
+          "classification": "A",
+          "physicalOutput": "modules/kernel/src/main/scala/<basePath>/application/services/<FlowPortName>.scala",
+          "owner": "family-seams-saga.seams-port-assembly",
+          "coverage": "declaration-only",
+          "rule": "bridge/root 分别由其 B assembler 承接，无生成算法的推论"
+        },
+        {
+          "logicalId": "legacy-orchestration/policy/sharding-mechanics",
+          "classification": "A",
+          "physicalOutput": "app/<basePath>/application/projection/policy/<Command>Mechanics.scala",
+          "owner": "legacy-orchestration/policy/sharding-mechanics/assembler",
+          "rule": "中央暂定位置如实保留，services 收敛需 D07；delivery handler/decision-disposal B 不重复声明 mechanics"
+        },
+        {
+          "logicalId": "retired-seven/policy-exec/command-dispatch",
+          "classification": "A",
+          "physicalOutput": "app/<basePath>/application/services/<Cmd>PolicyCommandService.scala",
+          "owner": "retired-seven/policy-exec/command-dispatch-assembler",
+          "rule": "内容职责目标，不复活 retired producer"
+        },
+        {
+          "physicalOutput": "baseline/actual-js/app/example/bankwealth/service/BankServiceService.scala and related generated Loader/Components/Bootstrap",
+          "owner": "play-http-assembly",
+          "applicationServiceClaim": false,
+          "members": [
+            {"construct": "Principal/Authority/Failure objects/Outcome/decodeBody", "classification": "B", "logicalOwner": "formal-service/http-contract/security-json", "target": "app/<basePath>/infrastructure/connectors/http/<Service>HttpContract.scala"},
+            {"construct": "Endpoint five fields and fourteen Bindings members", "classification": "B", "logicalOwner": "formal-service/http-contract/endpoint-bindings", "target": "app/<basePath>/infrastructure/connectors/http/<Service>EndpointBindings.scala"},
+            {"construct": "PageRenderer interface only", "classification": "B", "logicalOwner": "formal-service/page-contract/renderer", "target": "app/<basePath>/infrastructure/connectors/http/<Service>PageRenderer.scala"},
+            {"construct": "Composition/Factory/pages=None/full requireInstalled including renderer pin", "classification": "B", "logicalOwner": "formal-service/service-composition/factory-contract", "target": "app/<basePath>/infrastructure/bootstrap/<Service>Composition.scala"},
+            {"construct": "Bootstrap.load/config/reflect factory/pin/create；try requireInstalled/Components.application；catch lifecycle.stop/close/rethrow，factory.create 仍在 try 外", "classification": "A", "artifactId": "application-bootstrap", "logicalOwner": "formal-service/application-bootstrap/play", "assemblyOwner": "play-http-assembly", "target": "app/<basePath>/infrastructure/bootstrap/ApplicationBootstrap.scala"},
+            {"construct": "Loader.load delegation；Components extends BuiltInComponentsFromContext 壳；implicit EC/empty httpFilters/stop hook；pages 时 requireInstalled -> pages.get 的 pageRenderer 初始化", "classification": "B", "logicalOwner": "formal-service/play-loader/lifecycle", "assemblyOwner": "play-http-assembly", "targets": ["app/<basePath>/infrastructure/bootstrap/<Service>Loader.scala", "app/<basePath>/infrastructure/bootstrap/<Service>Components.scala"], "centralSource": "js-partition.json logicalOutputs[id=formal-service/play-loader/lifecycle].target", "rule": "action/router 属其它 A owner；不重复拥有，private 可见性和最终 ABI 仍待审"},
+            {"construct": "Response/failure/invoke/action/parser error callback", "classification": "A", "artifactId": "http-controller", "target": "app/controllers/<Service>Controller.scala"},
+            {"construct": "Route rows/apiActions/pageActions/actions/router", "classification": "A", "artifactId": "route-definition", "target": "conf/routes and app/controllers/<Service>Controller.scala"},
+            {"construct": "staticHeaders/htmlHeaders/unavailableHtml/response/staticPage", "classification": "B", "logicalOwner": "formal-service/page-delivery/http-presentation", "target": "app/controllers/<Service>Pages.scala"}
+          ],
+          "rule": "每个当前/目标完整文件只有一个 assembler；逻辑职责分割不批准嵌套 private 可见性/public ABI 迁移，不复制 Response/parser/renderer 初始化"
+        }
+      ],
+      "glue": [
+        "javax.inject.Inject",
+        "javax.inject.Singleton",
+        "scala.concurrent.ExecutionContext",
+        "scala.concurrent.Future",
+        "scala.PartialFunction",
+        "scala.Predef.???",
+        "akka.actor.ActorSystem",
+        "akka.actor.typed.ActorSystem",
+        "akka.actor.typed.Scheduler",
+        "akka.actor.typed.scaladsl.adapter._",
+        "akka.actor.typed.scaladsl.AskPattern._",
+        "akka.cluster.sharding.typed.scaladsl.ClusterSharding",
+        "akka.cluster.sharding.typed.scaladsl.EntityRef",
+        "akka.util.Timeout",
+        "java.util.concurrent.TimeoutException",
+        "scala.util.control.NonFatal",
+        "net.imadz.common.CommonTypes.ApplicationService",
+        "net.imadz.common.CommonTypes.Id",
+        "net.imadz.common.CommonTypes.iMadzError",
+        "net.imadz.common.Id",
+        "net.imadz.common.application.CommandHandlerReplyingBehavior",
+        "net.imadz.codegen.scaffolding.cqrs.TypeRef",
+        "net.imadz.codegen.scaffolding.cqrs.FieldDef",
+        "net.imadz.codegen.scaffolding.cqrs.ArtifactModel",
+        "net.imadz.codegen.scaffolding.cqrs.TypeResolver",
+        "net.imadz.codegen.scaffolding.cqrs.TypeResolverDSL",
+        "net.imadz.codegen.scaffolding.cqrs.dsl.CodeGenerationDSL",
+        "net.imadz.meta.ServiceMethod",
+        "net.imadz.meta.ParameterMetadata",
+        "net.imadz.meta.BusinessLogic",
+        "play.api.ApplicationLoader",
+        "play.api.libs.json.Reads",
+        "play.api.libs.json.Writes",
+        "play.api.mvc.RequestHeader",
+        "play.api.mvc.Result",
+        "com.fasterxml.jackson.core.JsonFactory"
+      ],
+      "glueSupply": {
+        "publishedCoordinate": "net.imadz:common-core_2.13:0.2",
+        "sourceIdentity": "用户裁定 common-core/ 为该发布制品对应源码；发布制品优先",
+        "sourceSnapshot": "baseline/common/src/main/scala/net/imadz/common/CommonTypes.scala",
+        "jarInspected": false,
+        "artifactBytesLocked": false,
+        "evolutionOwner": "用户另派 agent，本组不调查演进或修改 glue",
+        "evolutionInvestigated": false,
+        "glueModified": false,
+        "forbiddenTargetApi": ["BC scaffold withPost/post", "BC scaffold policy named argument as if published API"],
+        "sourceCopyIssue": "CodegenMain 199-228 复制 scaffold 并在 multi 搬 common 源；须消除同 FQN helper 与发布 jar 的遮蔽，不拼两套 API",
+        "applicationServiceMarker": "raw Template 未继承，只有部分 curated 参考使用；是否统一是 D03",
+        "behaviorBoundary": "服务不复制 CommandHelper；replyWith 不等 replyWithAndPublish；事件应用后新 state 成功回复属于 aggregate owner"
+      },
+      "modelCoverage": {
+        "ApplicationServiceModel": [
+          {"name": "selfType", "type": "TypeRef", "default": null},
+          {"name": "methods", "type": "Seq[ApplicationServiceMethodModel]", "default": null},
+          {"name": "dependencies", "type": "Set[TypeRef]", "default": null}
+        ],
+        "ApplicationServiceMethodModel": [
+          {"name": "name", "type": "String", "default": null},
+          {"name": "parameters", "type": "Seq[FieldDef]", "default": null},
+          {"name": "returnType", "type": "TypeRef", "default": null},
+          {"name": "bodyLogic", "type": "String", "default": "???", "templateConsumed": false},
+          {"name": "invokesCommands", "type": "Seq[TypeRef]", "default": null, "templateConsumed": false}
+        ],
+        "defaultEncoding": "null 表示源码无默认值，不是 Scala null 默认",
+        "sharedCoverage": ["ArtifactModel selfType/fqn/dependencies/registerTo/morphisms=Nil/noteIds=Nil", "TypeRef name/packageName/typeParams=Nil/fqn/signature/recursive dependencies/shouldImport", "FieldDef 六字段及默认", "ApplicationServiceMetadata 四字段", "ServiceMethod 五字段及 invokes=Nil", "BusinessLogic 三字段", "ParameterMetadata 六字段"],
+        "functionBoundary": "ServiceMethod -> ApplicationServiceMethodModel、ParameterMetadata -> FieldDef 的现有调用链完整；TypeRef 对 FunctionN 仅通用泛型分支；独立 Function API 不是本族必需支撑，D10 属非阻塞澄清，不声称支持未指定 API"
+      },
+      "knownCuratedInterfaces": {
+        "provenance": "source-fact",
+        "repository": {
+          "source": "baseline/curated-scala/net/imadz/application/aggregates/repository/CreditBalanceRepository.scala#L9-L12",
+          "signature": "findCreditBalanceByUserId(userId: Id): EntityRef[CreditBalanceCommand]"
+        },
+        "factory": {
+          "source": "baseline/curated-scala/net/imadz/application/aggregates/factories/CreditBalanceAggregateFactory.scala#L19-L30",
+          "withoutBalance": "createCreditBalanceWithoutBalance(userId: Id): EntityRef[CreditBalanceCommand]",
+          "withoutBalanceBody": "clusterSharding.entityRefFor(CreditBalanceEntityTypeKey, userId.toString)",
+          "withDefaultBalance": "createCreditBalanceWithDefaultBalance(userId: Id, initial: Money): Future[Either[iMadzError, EntityRef[CreditBalanceCommand]]]",
+          "withDefaultBalanceBody": "取得 EntityRef 后 ask(AddInitial(initial, _))；confirmation.error -> Left，否则 Right(entityRef)"
+        },
+        "examplesMismatch": "baseline/bc/src/main/scala/net/imadz/meta/Examples.scala#L185-L189 的 find(...).flatMap(_.ask...) 与 curated bare EntityRef repository 合同不一致；raw Template 又不消费 referenceCode",
+        "remainingDecision": "D07 待决目标合同选择/适配，不是 curated 源码或返回类型未定位；不拼成已验证实现"
+      },
+      "resolvedClarifications": [
+        {
+          "id": "D10",
+          "status": "non-blocking",
+          "clarification": "现有 ServiceMethod -> ApplicationServiceMethodModel、ParameterMetadata -> FieldDef 支撑完整；独立 Function AST 不在本族调用链中，不计入 openDecisions。除非另有明确指定的 Function API 需求，无需补拷或继续寻找；不构成实现批准。",
+          "sources": ["baseline/bc/src/main/scala/net/imadz/meta/ArchitectMetadata.scala#L435-L465", "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/ApplicationServiceBuilder.scala#L26-L45"]
+        }
+      ],
+      "coverage": {
+        "authoringContract": ["scope/status/sources", "raw Model/Builder/Template/shared", "ordered constructs/RHS", "formal/legacy/family/output distinction", "real minus and explicit plus with non-same-input disclosure", "glue/source-copy/MANUAL", "concrete proposed/shared write sets and consumers", "future full-file/interface/complexity/anchors acceptance and decisions"],
+        "builder": "B01-B08：self type、explicit dependencies、parameters、returnType、invokes、referenceCode/TODO、method recursive dependencies、Inject/Singleton、提前 shouldImport 过滤",
+        "template": "T01-T11：package、完整 import 构造与 DSL 最终排序、Set 注入顺序/白名单/classic system、annotation/class/implicit ctor、条件字段、每方法参数/返回/固定 MANUAL ???、空集合与后置头/writer",
+        "writer": "rawWriterCoverage / M01-M05：single/multi 实际路径与 ledgerPath 分账，multi app/app 为 raw 缺陷；mergeManual 最近匹配 def 名/同名及匿名出现序，新块 incoming，无 markers/旧块孤立拒写，重载重排仍可能错配；静态源码覆盖不是运行验收",
+        "curated": "四文件全部方法/RHS、Create overload/private fetch/global EC、Deposit/Withdraw direct ask、MoneyTransfer submission/runner/start window/status；repository/无余额 factory bare EntityRef、有初始余额 factory Future[Either] 固定 API 与 Examples flatMap 不一致已明示，目标选择仍未决",
+        "formalBank": "完整 BankServiceService 文件，十四 bindings、decodeBody 和全部 requireInstalled；Bootstrap.load A 与 Loader/Components/lifecycle B 按中央精确 logical id/assemblyOwner 分开，B 两目标 Loader.scala/Components.scala，不批准 private ABI 迁移",
+        "family8": "完整 build-models/services/api/generate/render；commands 模型字段/类型绑定、generic execute 所有成功拒绝异常臂、ordered domain command arguments、port 无 RHS；resource-directory 已有 B 目标 kernel/application.services/ResourceDirectory 及唯一 assembly owner，最终 ABI/消费者闭合待审",
+        "otherProducers": "module-seams flow、legacy policy mechanics、retired command-dispatch 及相邻 B，通过只读辅助定位；三 arbitrary source slots 不作全称覆盖",
+        "sourceInspectionNotExecution": true
+      },
+      "observedSources": [
+        {"file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/WriteTerritory.scala", "bytes": 12087, "sha256": "03d52b6dee8c7870aa16fb6e38fb96755de2fa111e0e0e985aacd5eb0030ec20", "read": "full; correction focused on 109-179", "role": "raw-manual-matching-and-rejection"},
+        {"file": "baseline/curated-scala/net/imadz/application/aggregates/repository/CreditBalanceRepository.scala", "bytes": 518, "sha256": "e3cd76eab166ce2eb17128e3e5b6377198a15bfd10f16bd8e94a5c48c3a60a00", "read": "full", "role": "known-curated-EntityRef-return-contract"},
+        {"file": "baseline/curated-scala/net/imadz/application/aggregates/factories/CreditBalanceAggregateFactory.scala", "bytes": 1510, "sha256": "693b1a9844f06b437fdf9b4986028b21205c698dbe1c592aabd0fa6c4053d0a3", "read": "full", "role": "known-curated-bare-and-initialize-return-contracts"},
+        {"file": "baseline/js/generators/scala-cqrs-play-service/render-service.mjs", "bytes": 12954, "sha256": "c8d92119b3e98dc868ea7bc17b018fef4372f24621206d2d00d1af365de160de", "read": "correction 101-190", "role": "bootstrap-A-versus-loader-lifecycle-B"},
+        {"file": "baseline/js/generators/scala-cqrs-play-service/render-service-pages.mjs", "bytes": 7624, "sha256": "6c76511c60b1f79510526c3f7ea7642ba8c22870f06e446dd044467e90274c6f", "read": "correction 30-55", "role": "pages-loader-components-lifecycle-B"},
+        {"file": "baseline/js/generators/scala-cqrs-play-application-v1/templates/authority.mjs", "bytes": 2211, "sha256": "bfde78f70be9df941a001705dae6613da20deaf8bb77f9e76e4abfdab9fc2873", "read": "18-38", "role": "existing-resource-directory-capability-not-new-trait"},
+        {"file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/ApplicationServiceModel.scala", "bytes": 986, "sha256": "19e673c7aa7de8964c4d82d7ca5ec0939bd7310142f4560a7c5d0bc162a6ee76", "read": "full", "role": "raw-scala-model"},
+        {"file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/ApplicationServiceBuilder.scala", "bytes": 2119, "sha256": "087675af9f553fda84533c3e226a87356260daed3a4bbf080cffab266f5bb06e", "read": "full", "role": "raw-scala-builder"},
+        {"file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ApplicationServiceTemplate.scala", "bytes": 3228, "sha256": "afe3693dd25c9268d6ee11f0d02d981d264a6e050fa73bac233f6f96202ac548", "read": "full", "role": "raw-scala-template"},
+        {"file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/TypeSystem.scala", "read": "full", "role": "type-and-field-support"},
+        {"file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/ArtifactModel.scala", "read": "full", "role": "model-inheritance"},
+        {"file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/TypeResolver.scala", "read": "full", "role": "type-resolution"},
+        {"file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/TypeResolverDSL.scala", "read": "522-551,1135-1151 and targeted resolve declarations", "role": "service-and-parameter-resolution"},
+        {"file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/GeneratorContext.scala", "read": "full", "role": "framework-types-and-context"},
+        {"file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/dsl/CodeGenerationDSL.scala", "read": "full", "role": "package-import-final-order"},
+        {"file": "baseline/bc/src/main/scala/net/imadz/meta/ArchitectMetadata.scala", "read": "1-85,115-204,405-489 plus targeted names", "role": "service-method-logic-parameter-metadata"},
+        {"file": "baseline/bc/src/main/scala/net/imadz/meta/Examples.scala", "read": "targeted ApplicationServiceMetadata/ServiceMethod source lines 185-194,290", "role": "raw-input-not-executed"},
+        {"file": "baseline/bc/src/main/scala/net/imadz/codegen/structure/NamingConventions.scala", "read": "153-243 and service suffix declaration", "role": "raw-names"},
+        {"file": "baseline/bc/src/main/scala/net/imadz/codegen/structure/PackageLayout.scala", "read": "1-75", "role": "raw-layer-layout"},
+        {"file": "baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala", "read": "108-119,170-209,325-416,458-506,700-729", "role": "dispatch-path-fingerprint-territory-writer"},
+        {"file": "baseline/bc/src/main/scala/net/imadz/codegen/CodegenMain.scala", "read": "175-252", "role": "traditional-entry-source-copy"},
+        {"file": "baseline/common/src/main/scala/net/imadz/common/CommonTypes.scala", "read": "full", "role": "published-source-identity-given-by-user-not-jar-inspection"},
+        {"file": "baseline/curated-scala/net/imadz/application/services/CreateCreditBalanceService.scala", "read": "full", "role": "curated"},
+        {"file": "baseline/curated-scala/net/imadz/application/services/DepositService.scala", "read": "full", "role": "curated"},
+        {"file": "baseline/curated-scala/net/imadz/application/services/WithdrawService.scala", "read": "full", "role": "curated"},
+        {"file": "baseline/curated-scala/net/imadz/application/services/MoneyTransferService.scala", "read": "full", "role": "curated"},
+        {"file": "baseline/js/generators/service-dsl/emit.mjs", "bytes": 10903, "sha256": "b9a2989d7e6573747d628b16f9fb31d46abed4a3c2ec37c91d333d1f8844e069", "read": "full", "role": "legacy"},
+        {"file": "baseline/js/generators/scala-cqrs-play-application-v1/templates/services.mjs", "bytes": 3994, "sha256": "2be4378ff0cc163625e83c9a3b614563ab7a1f9ecb0331deea89ebfe3e86e493", "read": "full", "role": "family8"},
+        {"file": "baseline/actual-js/app/example/bankwealth/service/BankServiceService.scala", "bytes": 11451, "sha256": "a7e1c39c8211cc197b11d23b7b7d0faecbcb9a4b409d6bd30283b1a64c30e297", "read": "full", "role": "actual-js-not-same-input"},
+        {"file": "baseline/bank/truthsrc.project.json", "read": "generator/products/options extraction only", "role": "fixed-formal-selection"},
+        {"file": "supplemental/js/src/core/code-mappings.mjs", "read": "full", "role": "fixed-supplemental-source-mapping"},
+        {"file": "supplemental/js/lib/products/module-seams-contract.mjs", "read": "136-162 by read-only locator", "role": "fixed-supplemental-flow-admission"}
+      ],
+      "extraSources": [
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/src/core/code-mappings.mjs",
+        "/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/products/module-seams-contract.mjs"
+      ],
+      "extraSourcesNote": "以上原仓路径仅作来源身份：实际读取固定 supplemental/js 对应副本，未读取这些可变工作副本、未新增副本；操作指引另读 AGENTS.md；所有其余实现源码来自 baseline。",
+      "proposedFixtures": [
+        "classic zero/one/many services and methods; single/multi actual paths versus ledgerPath, retaining raw multi app/app defect",
+        "parameter keyword/generic/tuple/FunctionN/optional/source-note/default/overload",
+        "referenceCode absent/empty/present versus fixed MANUAL body",
+        "same-package/generic/conflicting injected dependencies and ActorSystem variants",
+        "family8 typed ask accepted-empty/accepted-one/mismatch/many/rejected/timeout/failure/closed-repository",
+        "DTO-to-domain-field reordering and nominal carrier preservation",
+        "module-seams pure/future flow declarations and implementation ownership",
+        "legacy versus retired reply and parameter filters",
+        "formal Play pages/no-pages composite members and private visibility",
+        "full-file stability; MANUAL nearest matching def name and occurrence/anonymous order, incoming new blocks, missing-marker/orphan rejection, overload-reorder mismatch; public member-level code lookup"
+      ],
+      "cliContract": {
+        "project": "node /absolute/tool/bin/truthsrc.js generate-project --project /absolute/owned-project/truthsrc.project.json --out /absolute/new-target --plan",
+        "product": "node /absolute/tool/bin/truthsrc.js generate-products --request /absolute/derived-request-manifest.json --generator /absolute/tool/generators/scala-cqrs-play-service --out /absolute/new-target --options-json /absolute/options.json --plan",
+        "legacy": "node /absolute/tool/generators/service-dsl/emit.mjs /absolute/owned-application-service-spec.json /absolute/new-legacy-output",
+        "bc": "JAVA_OPTS=\"-Dcodegen.system=Examples -Dcodegen.targetDir=/absolute/new-target\" sbt \"runMain net.imadz.codegen.CodegenMain\"",
+        "note": "仅已知命令形状，未执行。新 classic producer/无损双端 fixture/runner 未定；不虚构 profile flag 或测试名。family8/module-seams 需 project live capture，product plan 也不准绕过。",
+        "sideEffects": [
+          "project plan live capture/内存编译及 roundtrip 临时树，不是零工作",
+          "现 Play product plan 读冻结 runtime jar/外置根；本次未读 jar 或捕获外置源",
+          "legacy 直接 mkdir/write，不具公共所有权与 MANUAL 合并保证",
+          "BC 可写 scaffold/source/ledger/manifest/formal-semantics 与 sbt/依赖缓存，可能解析下载",
+          "实跑公共 apply 写源和 ledger/anchors，失败无跨文件回滚保证；旧文件 RETAINED 不自动退役"
+        ],
+        "executed": false,
+        "assignmentAssemblerExecuted": false
+      },
+      "complexity": {
+        "status": "not-measured",
+        "ordinaryMethodGoal": "CC <= 5",
+        "sixToTen": "逐方法解释",
+        "aboveTen": "重构或逐方法明确批准例外",
+        "toolVersionAndDialect": "未固定",
+        "namedReviewTargets": ["family8 execute", "formal decodeBody", "formal requireInstalled"],
+        "forbiddenShortcuts": ["String/Any dispatcher", "反射业务分发表", "helper1/nextN 碎片化刷分", "删校验或放宽数值/身份合同"]
+      },
+      "openDecisions": [
+        "D01：经典 application-service 的 formal product/无损输入适配/producer 接线及 typed 实现准入；当前正式银行 counterpart 缺失，legacy 注册不等接线。",
+        "D02：bodyLogic/referenceCode、MANUAL/外置实现的单一所有权；raw 最近匹配 def 名/同名出现序及孤块拒写已知，待决未来 overload/改名唯一身份与回锚保护；正式产品不得含 ???，不得用空成功或 curated 银行体兜底。",
+        "D03：raw 未继承 ApplicationService、未消费 optional/default/description/invariants/notes、方法名转义缺口如何逐项有限覆盖；raw 与 target 分开。",
+        "D04：提前 shouldImport 导致同包注入/结构依赖丢失、Set 顺序、显式依赖子类型递归、constructor 泛型、同名冲突、前缀过滤和 ActorSystem 双判断的共享修正合同。",
+        "D05：classic multi 的 root fallback 目标模块归属；family-readside-play/resource-directory 已定 kernel/application.services/<Aggregate>ResourceDirectory，assemblyOwner=family-readside-play/resource-directory/assembly，仅最终 ABI/所有消费者闭合待审；不能只搬 CommandService、另造 Directory trait 或改变 typed timeout/Unknown 语义。",
+        "D06：Play 私有嵌套类型/成员拆分后的可见性、唯一 HttpContract/EndpointBindings/Composition/Response 与所有调用方接线及旧路径退役；owner 已定不等 ABI 已准。",
+        "D07：legacy Mechanics 暂定 projection.policy 与目标 services 的有限迁移、单 error Reply 假设；curated repo/无余额 factory bare EntityRef、有初始余额 factory Future[Either] 均已知，待决的是与 Examples flatMap 不一致时的目标合同选择/适配及 curated Saga 返回体差异，不是接口源码未定位。",
+        "D08：发布 common-core:0.2 优先下消除 scaffold 同 FQN 遮蔽，实际 classpath/字节未核；不调查演进、不改胶水/发布接口。",
+        "D09：service 专属双端无损 fixture、每变体完整 expected、真实接口 runner 与 CC 工具/版本/口径未冻结；当前仅结构对照。",
+        "R-blocked：退休 support-controller 任意 path/content、projection manualBlocks、implOverrides 三槽仍全部 blocked，固定样本不能作全称覆盖，不用 B 兜底。"
+      ],
+      "retiredArbitrarySourceSlots": [
+        {"slot": "support-controller path/content", "status": "blocked", "source": "baseline/js/generators/_deprecated/scala-cqrs-es-api/generate.mjs#L262-L264"},
+        {"slot": "projection manualBlocks", "status": "blocked", "source": "baseline/js/generators/_deprecated/scala-cqrs-es-projection/templates/handler.mjs#L177-L188"},
+        {"slot": "implOverrides", "status": "blocked", "source": "baseline/js/generators/_deprecated/scala-cqrs-es-projection/generate.mjs#L33-L35"}
+      ],
+      "baselineModified": false,
+      "productionSourcesModified": false,
+      "generatedOutputsModified": false,
+      "generationExecuted": false,
+      "compileExecuted": false,
+      "testsExecuted": false,
+      "typecheckExecuted": false,
+      "runtimeExecuted": false,
+      "ccMeasured": false,
+      "sourceContentInspectionOnly": true
+    }
+  ],
+  "generatorsModified": false,
+  "runtimeExecuted": false
+}
