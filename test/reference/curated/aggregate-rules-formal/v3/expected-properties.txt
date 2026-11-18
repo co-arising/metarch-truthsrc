@@ -1,0 +1,79 @@
+aggregate-rules-formal.stock-reservation.v1.reserve: mixed cases have exact outcomes, payloads, order and dependency calls
+aggregate-rules-formal.stock-reservation.v1.reserve: directed NonPositive
+aggregate-rules-formal.stock-reservation.v1.reserve: directed SeveralFailures
+aggregate-rules-formal.stock-reservation.v1.reserve: directed DuplicateRequest
+aggregate-rules-formal.stock-reservation.v1.reserve: directed DuplicateWithMissingLocation
+aggregate-rules-formal.stock-reservation.v1.reserve: directed MissingLocation
+aggregate-rules-formal.stock-reservation.v1.reserve: directed ShortStock
+aggregate-rules-formal.stock-reservation.v1.reserve: directed MissingSku
+aggregate-rules-formal.stock-reservation.v1.reserve: directed CanReserve
+aggregate-rules-formal.stock-reservation.v1.confirm: directed MissingReservation
+aggregate-rules-formal.stock-reservation.v1.confirm: directed WrongIdentity
+aggregate-rules-formal.stock-reservation.v1.confirm: directed WrongIdentityAlreadyConfirmed
+aggregate-rules-formal.stock-reservation.v1.confirm: directed AlreadyConfirmed
+aggregate-rules-formal.stock-reservation.v1.confirm: directed CanConfirm
+aggregate-rules-formal.stock-reservation.v1.payload: directed NoNotes
+aggregate-rules-formal.stock-reservation.v1.payload: directed EmptyNotes
+aggregate-rules-formal.stock-reservation.v1.payload: directed NestedNotes
+aggregate-rules-formal.stock-reservation.v1.coverage: directed NoLocations
+aggregate-rules-formal.stock-reservation.v1.coverage: directed DistinctLocations
+aggregate-rules-formal.stock-reservation.v1.coverage: directed RepeatedLocations
+aggregate-rules-formal.stock-reservation.v1.payload: unregistered opaque note keys are not filtered
+aggregate-rules-formal.stock-reservation.v1.state: successful reservation with 0 unrelated historical records
+aggregate-rules-formal.stock-reservation.v1.state: successful reservation with 1 unrelated historical records
+aggregate-rules-formal.stock-reservation.v1.state: successful reservation with 4 unrelated historical records
+aggregate-rules-formal.stock-reservation.v1.stock: exactly sufficient admits rather than requiring surplus
+aggregate-rules-formal.stock-reservation.v1.compute: throwing dependency propagates the very same exception after one call
+aggregate-rules-formal.stock-reservation.v1.compute: rejecting branches never evaluate even a throwing dependency
+aggregate-rules-formal.stock-reservation.v1.pure: repeated decisions return identical values without changing the snapshot
+aggregate-rules-formal.stock-reservation.v1.confirm: reference projection makes a correct repeated confirmation empty
+aggregate-rules-formal.stock-reservation.v1.shrinker: reserve preserves premise, branch, categories and a strictly decreasing measure
+aggregate-rules-formal.stock-reservation.v1.shrinker: confirm keeps the missing, mismatching or confirmed relation
+aggregate-rules-formal.stock-reservation.v1.boundaries: signed Long endpoints, exact stock and short by one
+aggregate-rules-formal.stock-reservation.v1.boundaries: absence at either end, empty and repeated collection semantics
+aggregate-rules-formal.stock-reservation.v1.identity: fixed independent encoding vector
+aggregate-rules-formal.stock-reservation.v1.identity: deterministic reversible framing including maximum ID lengths
+aggregate-rules-formal.stock-reservation.v1.identity: adjacent argument boundaries cannot collide
+aggregate-rules-formal.stock-reservation.v1.identity: full legal identifier alphabet and independent argument order
+aggregate-rules-formal.stock-reservation.v1.shrinker: identity retains nominal nonempty IDs and strict decrease
+aggregate-rules-formal.stock-reservation.v1.payload: maximum-length special notes and a completely fresh snapshot
+aggregate-rules-formal.stock-reservation.v1.negative: drop-second-event
+aggregate-rules-formal.stock-reservation.v1.negative: reverse-events
+aggregate-rules-formal.stock-reservation.v1.negative: eager-identity
+aggregate-rules-formal.stock-reservation.v1.negative: double-identity
+aggregate-rules-formal.stock-reservation.v1.negative: swallow-identity-exception
+aggregate-rules-formal.stock-reservation.v1.negative: duplicate-before-quantity
+aggregate-rules-formal.stock-reservation.v1.negative: strictly-greater-stock
+aggregate-rules-formal.stock-reservation.v1.negative: exists-instead-of-forall
+aggregate-rules-formal.stock-reservation.v1.negative: some-empty-to-none
+aggregate-rules-formal.stock-reservation.v1.negative: confirmed-before-identity
+aggregate-rules-formal.stock-reservation.v1.negative: location-before-duplicate
+aggregate-rules-formal.stock-reservation.v1.negative: filter-opaque-notes
+aggregate-rules-formal.stock-reservation.v1.negative: require-historical-reservation
+aggregate-rules-formal.technical-money.v1.money: exact value, matching currency and guard order
+aggregate-rules-formal.technical-money.v1.money: directed NonPositiveAmount
+aggregate-rules-formal.technical-money.v1.money: directed MissingCurrency
+aggregate-rules-formal.technical-money.v1.money: directed ShortBalance
+aggregate-rules-formal.technical-money.v1.money: directed SufficientBalance
+aggregate-rules-formal.technical-money.v1.money: shrink closure and strict decrease
+aggregate-rules-formal.technical-money.v1.money: fixed arbitrary-precision endpoints and equality
+aggregate-rules-formal.technical-money.v1.money: nonpositive guard precedes absent-currency rejection
+aggregate-rules-formal.source-quality.v2.AST: generated if chains have independently known complexity
+aggregate-rules-formal.source-quality.v2.AST: generated short-circuit operators are counted
+aggregate-rules-formal.source-quality.v2.AST: comments and branch-like literal text add no decisions
+aggregate-rules-formal.source-quality.v2.AST: else-if is one control nesting level
+aggregate-rules-formal.source-quality.v2.AST: nested then branches retain real depth
+aggregate-rules-formal.source-quality.v2.AST: HOF closure decisions count both in parent and closure
+aggregate-rules-formal.source-quality.v2.AST: partial functions and pattern alternatives are explicit paths
+aggregate-rules-formal.source-quality.v2.AST: match guards and nonexhaustive exits are counted
+aggregate-rules-formal.source-quality.v2.AST: for generators and guards are not invisible
+aggregate-rules-formal.source-quality.v2.AST: while and do loops are counted once each
+aggregate-rules-formal.source-quality.v2.AST: defaults and initialization are registered
+aggregate-rules-formal.source-quality.v2.negative: invalid syntax cannot become an empty successful report
+aggregate-rules-formal.source-quality.v2.negative: mutable domain state is rejected
+aggregate-rules-formal.source-quality.v2.negative: outer dependencies and time are rejected
+aggregate-rules-formal.source-quality.v2.negative: HOF cannot hide a scope exceeding five
+aggregate-rules-formal.source-quality.v2.negative: parent by-name arguments cannot hide branches
+aggregate-rules-formal.source-quality.v2.negative: qualified clock and mutable arrays are rejected
+aggregate-rules-formal.source-quality.v2.source: every admitted file has executable scopes and obeys the fixed quality policy
+aggregate-rules-formal.source-quality.v2.source: exception list is precise, justified and cannot relax domain methods

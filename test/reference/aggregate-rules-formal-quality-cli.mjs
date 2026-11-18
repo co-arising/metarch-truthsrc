@@ -9,7 +9,9 @@ import { runVerifiedProcess, processFailureState } from '../../lib/verification/
 import { artifactStem, declaredPom } from './compiler-pom.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const V2 = path.join(ROOT, 'test/reference/curated/aggregate-rules-formal/v2');
+const CANDIDATE = process.env.QUALITY_CANDIDATE
+  ? path.resolve(process.env.QUALITY_CANDIDATE)
+  : path.join(ROOT, 'test/reference/curated/aggregate-rules-formal/v2');
 const DEFAULT_ROUND = path.join(ROOT, '.rounds/aggregate-rules-formal-quality-20261118-01');
 const CACHE = '/Users/zhongdj/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2';
 const JAVA_HOME = '/Library/Java/JavaVirtualMachines/adoptopenjdk-11.jdk/Contents/Home';
@@ -129,9 +131,9 @@ async function main() {
   if (mode === 'prepare') {
     const round = process.argv[3] ? path.resolve(process.argv[3]) : DEFAULT_ROUND;
     const resources = supply();
-    const sources = SOURCES.map(relative => ({ relative, ...pin(path.join(V2, relative)) }));
+    const sources = SOURCES.map(relative => ({ relative, ...pin(path.join(CANDIDATE, relative)) }));
     const metadata = ['quality-policy.json', 'scope-exceptions.tsv', 'expected-properties.txt']
-      .map(relative => pin(path.join(V2, relative)));
+      .map(relative => pin(path.join(CANDIDATE, relative)));
     const controls = ['lib/verification/process.mjs', 'lib/verification/files.mjs', 'lib/immutable-data.mjs',
       'lib/strict-json.mjs', 'lib/verification/callbacks.mjs',
       'test/reference/compiler-pom.mjs', 'test/reference/compiler-tools.mjs'].map(relative => pin(path.join(ROOT, relative)));
@@ -160,14 +162,14 @@ async function main() {
   for (const dir of [home, tmp, domainClasses, testClasses, path.join(attempt, 'logs'), path.join(attempt, 'results')]) fs.mkdirSync(dir);
   const listing = path.join(attempt, 'sources.tsv');
   write(listing, prepared.sources.map(row => `${row.relative}\t${row.file}\t${row.relative.startsWith('app/') ? 'domain' : 'support'}`).join('\n') + '\n');
-  const exceptions = path.join(V2, 'scope-exceptions.tsv');
+  const exceptions = path.join(CANDIDATE, 'scope-exceptions.tsv');
   const fixedPins = [...prepared.resources.pins, ...prepared.sources, ...prepared.metadata, ...prepared.controls, pin(listing)];
   const sandboxFile = path.join(attempt, 'sandbox.sb');
   write(sandboxFile, profile([...fixedPins.map(row => row.file)], [home, tmp, domainClasses, testClasses, path.join(attempt, 'results')]));
   const jvmArgs = ['-Xmx512m', '-XX:ActiveProcessorCount=2', '-XX:-UsePerfData', '-Dfile.encoding=UTF-8',
     '-Dscala.usejavacp=false', `-Duser.home=${home}`, `-Djava.io.tmpdir=${tmp}`,
     `-XX:ErrorFile=${tmp}/hs_err_pid%p.log`, `-XX:HeapDumpPath=${tmp}`, `-Dquality.sources=${listing}`,
-    `-Dquality.exceptions=${exceptions}`, `-Dquality.expected=${path.join(V2, 'expected-properties.txt')}`];
+    `-Dquality.exceptions=${exceptions}`, `-Dquality.expected=${path.join(CANDIDATE, 'expected-properties.txt')}`];
   const artifacts = prepared.resources.artifacts;
   const compilerCp = artifacts.slice(0, 6).map(row => row.jar).join(':');
   const domainCp = [artifacts[1].jar, artifacts[6].jar];
@@ -213,7 +215,7 @@ async function main() {
       assert.equal(result.passed, true);
       assert(result.results.length > 0 && result.results.every(row => row.passed));
       assert.equal(result.results.filter(row => row.name.includes('negative:')).length, 19);
-      const expected = captureEvidenceFile(path.join(V2, 'expected-properties.txt')).value.toString().trim().split('\n').sort();
+      const expected = captureEvidenceFile(path.join(CANDIDATE, 'expected-properties.txt')).value.toString().trim().split('\n').sort();
       assert.deepEqual(result.results.map(row => row.name).sort(), expected);
     }
     write(path.join(attempt, 'completion.json'), { status: 'QUALITY_EXECUTION_COMPLETE', records,

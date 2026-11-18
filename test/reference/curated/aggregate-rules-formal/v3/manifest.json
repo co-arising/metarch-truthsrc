@@ -1,0 +1,125 @@
+{
+  "schemaVersion": "curated.aggregate-rules-formal.manifest/v3",
+  "artifactType": "aggregate-rules-formal",
+  "candidateVersion": "v3",
+  "status": "PENDING_QUALITY_EXECUTION",
+  "baseHead": "8a5e11c",
+  "derivedFrom": {
+    "version": "v2",
+    "bundleSha256": "c9cd72511390aa74b6fe533b4464968ded0100b281671954ca95010ec37fbbe1"
+  },
+  "payloadFileCount": 18,
+  "payloadBytes": 107422,
+  "payload": [
+    {
+      "bytes": 1637,
+      "path": "README.md",
+      "sha256": "53bd30f9b5691fef02073d8d8808e9f6c5d34926b9b5fdc7f28293c9e91c645a"
+    },
+    {
+      "bytes": 1503,
+      "path": "app/example/stockreservation/domain/entities/StockReservationEntity.scala",
+      "sha256": "138d3eaae32c73cb2e924baaf5a25895b7123e8d00cbf9513e19b744d1475348"
+    },
+    {
+      "bytes": 5137,
+      "path": "app/example/stockreservation/domain/invariant/StockReservationRules.scala",
+      "sha256": "635a522485fdaacf15f2acfa342c0dc8898f5e728e0d560c5e7ea38e6cdcf9e9"
+    },
+    {
+      "bytes": 841,
+      "path": "app/example/stockreservation/domain/services/ReservationIdentity.scala",
+      "sha256": "b8c93db6d18b1d3cf2b75cd84c6d29caefdf57cc98b61fb9a84b8c8f90164645"
+    },
+    {
+      "bytes": 1536,
+      "path": "app/example/stockreservation/domain/values/ReservationValues.scala",
+      "sha256": "48f29020c0edc9b2f8f6a7c72a457f8108873233f8ca83c4fcdd108f18c4b67b"
+    },
+    {
+      "bytes": 7244,
+      "path": "expected-properties.txt",
+      "sha256": "0dd4b4937f0a2bb0ed57e85b7c7afb65d52341c60bf3e421fc2dda0370dade5a"
+    },
+    {
+      "bytes": 2279,
+      "path": "quality-policy.json",
+      "sha256": "75e4e79c5b2181e48e75e13d1477621baac3562fb3e3f8c7fd740d7f756df606"
+    },
+    {
+      "bytes": 950,
+      "path": "quality/JsonOutput.scala",
+      "sha256": "ec3e5053c389b1eabd6a258363b9bb43346f4ce9c05bec8eee524546f0762833"
+    },
+    {
+      "bytes": 2461,
+      "path": "quality/QualityInputs.scala",
+      "sha256": "05ef8317b8a0650c3838c6faea7371bb77c1374bf7005a38dd0121caa37e5b7a"
+    },
+    {
+      "bytes": 4007,
+      "path": "quality/QualityMain.scala",
+      "sha256": "81d9c7f1be9c79d7cd7a56b639590e1636857be44d66937f1e4eb910229c207e"
+    },
+    {
+      "bytes": 8779,
+      "path": "quality/ScalaSourceMetrics.scala",
+      "sha256": "c4b83b2a1ac8923d166b7f8695e78f87a9457e8d197aaa15914ffb56df0b123d"
+    },
+    {
+      "bytes": 2659,
+      "path": "scope-exceptions.tsv",
+      "sha256": "96b68dc3fcfce46552859a71c4526e8150bc0e5da40af1d187195b7bd6cea5df"
+    },
+    {
+      "bytes": 14392,
+      "path": "technical-input.json",
+      "sha256": "e26e3541975c0c87dc1a6d2f17f151c0a83d068b35c6d5dcbcedc712896e42f8"
+    },
+    {
+      "bytes": 7121,
+      "path": "test/example/stockreservation/reference/FormalGuardExamples.scala",
+      "sha256": "9b5071c18f577a00a5f192ade2d3f66f640b3112e3829625ff9c58a5ceaf470c"
+    },
+    {
+      "bytes": 15310,
+      "path": "test/example/stockreservation/reference/StockReservationCases.scala",
+      "sha256": "09fda1deff8974995b3e788859253607a8f6fa7290cabb3c4011d447b306403a"
+    },
+    {
+      "bytes": 7016,
+      "path": "test/example/stockreservation/reference/StockReservationOracle.scala",
+      "sha256": "c64168909b9bb6ce4c103127a6c91b6784ac3ed1cc5dfc2d7867d057c916cdf6"
+    },
+    {
+      "bytes": 17942,
+      "path": "test/example/stockreservation/reference/StockReservationProperties.scala",
+      "sha256": "975177ef03cbf97e43f0a6e133c421662503e9ed07b4eac81e98261a00ab575f"
+    },
+    {
+      "bytes": 6608,
+      "path": "test/example/stockreservation/reference/StockReservationQualityProperties.scala",
+      "sha256": "40c55bc9b49704edc402404a84c44fdd97de823048fac52a6ffbfe6d650a94ed"
+    }
+  ],
+  "bundle": {
+    "algorithm": "SHA-256",
+    "encoding": "Sorted relative-path rows, JSON sort_keys=true, UTF-8 literal Unicode, compact separators and one LF; complete unnormalized file hashes",
+    "canonicalRowsBytes": 2633,
+    "sha256": "34f694ad4698b6d9a652153c9fee5589984fa5f79c53a1927fbdbe32a8f41933"
+  },
+  "excludedFromPayload": [
+    "manifest.json",
+    "review-status.json"
+  ],
+  "change": "ReserveUnitsRule only: if-chain (CC=5) replaced by named guard objects with a fixed evaluation machine (apply CC=2); OCP open-for-guards closed-for-machine shape; all other files byte-identical to v2",
+  "quality": {
+    "v2GatePassed": true,
+    "v3GateExecuted": false,
+    "scalaCheckExecutedForV3": false
+  },
+  "userApproval": "NOT_REQUESTED_UNTIL_V3_QUALITY_PASSES",
+  "jsImplementation": "NOT_STARTED",
+  "rawAcceptanceChanged": false,
+  "all31Closed": false
+}

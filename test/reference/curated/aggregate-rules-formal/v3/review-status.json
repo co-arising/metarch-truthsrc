@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "curated.aggregate-rules-formal.review-status/v1",
+  "artifactType": "aggregate-rules-formal",
+  "candidateVersion": "v3",
+  "status": "QUALITY_EXECUTION_PASSED_AWAITING_USER_APPROVAL",
+  "bundleSha256": "34f694ad4698b6d9a652153c9fee5589984fa5f79c53a1927fbdbe32a8f41933",
+  "manifest": {
+    "path": "manifest.json",
+    "bytes": 4545,
+    "sha256": "c7b106b9485e7cf1ad087a91c86a6e58de2dd327686f7254277b9036311980da"
+  },
+  "payload": {
+    "files": 18,
+    "bytes": 107422,
+    "wholeBytesVerified": true
+  },
+  "lineage": {
+    "userRuling": "v2 presentation accepted overall; guard shape B (OCP) chosen over for-comprehension A",
+    "v2QualityRun": "window 20261118-02 all six stages exit 0"
+  },
+  "v3QualityRun": {
+    "round": ".rounds/aggregate-rules-formal-quality-20261118-03",
+    "prepared": {
+      "file": ".rounds/aggregate-rules-formal-quality-20261118-03/prepared.json",
+      "sha256": "4db86e5b986fbeb539970e482d9d0a0ba877d8eafd03291e45c38976bfdeea2a"
+    },
+    "attempt": {
+      "id": "attempt-01",
+      "actualJvmCalls": 6,
+      "pids": [
+        61723,
+        61793,
+        61802,
+        61836,
+        61843,
+        61853
+      ],
+      "allExit0": true,
+      "timeouts": 0,
+      "signals": 0
+    },
+    "metrics": {
+      "passed": true,
+      "files": 13,
+      "scopes": 662,
+      "violations": 0,
+      "excess": 0,
+      "guardShapeConfirmed": {
+        "guardRejectionsCC2": 4,
+        "applyCC": 2
+      },
+      "file": ".rounds/aggregate-rules-formal-quality-20261118-03/attempt-01/results/metrics.json",
+      "sha256": "f6a669775a113ca9b25e12914ecae331cebc0f0745d25e06b7f3993d664dcd4c"
+    },
+    "properties": {
+      "seeds": [
+        740001,
+        740002,
+        740003
+      ],
+      "results": 79,
+      "negatives": 19,
+      "proved": 36,
+      "passedAll": true
+    },
+    "diffVsV2": "Only StockReservationRules.scala changed; other 12 files byte-identical to v2",
+    "independentEvidenceReview": {
+      "kind": "READ_ONLY_AUTHENTICATION",
+      "conclusion": "Pins/receipts/metrics/guard shape/three-seed results all consistent; zero drift; not final golden acceptance"
+    }
+  },
+  "userGoldenApproval": "PENDING_USER_APPROVAL_OF_V3_BUNDLE_34f694ad",
+  "jsImplementation": "NOT_STARTED",
+  "v1v2Preserved": true,
+  "rawAcceptanceChanged": false,
+  "all31Closed": false
+}
