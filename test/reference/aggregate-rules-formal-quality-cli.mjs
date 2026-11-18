@@ -10,7 +10,7 @@ import { artifactStem, declaredPom } from './compiler-pom.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const V2 = path.join(ROOT, 'test/reference/curated/aggregate-rules-formal/v2');
-const ROUND = path.join(ROOT, '.rounds/aggregate-rules-formal-quality-20261118-01');
+const DEFAULT_ROUND = path.join(ROOT, '.rounds/aggregate-rules-formal-quality-20261118-01');
 const CACHE = '/Users/zhongdj/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2';
 const JAVA_HOME = '/Library/Java/JavaVirtualMachines/adoptopenjdk-11.jdk/Contents/Home';
 const JAVA = path.join(JAVA_HOME, 'bin/java');
@@ -127,6 +127,7 @@ function profile(reads, writes) {
 async function main() {
   const mode = process.argv[2];
   if (mode === 'prepare') {
+    const round = process.argv[3] ? path.resolve(process.argv[3]) : DEFAULT_ROUND;
     const resources = supply();
     const sources = SOURCES.map(relative => ({ relative, ...pin(path.join(V2, relative)) }));
     const metadata = ['quality-policy.json', 'scope-exceptions.tsv', 'expected-properties.txt']
@@ -137,21 +138,22 @@ async function main() {
     controls.push(pin(fileURLToPath(import.meta.url)));
     const prepared = { resources, sources, metadata, controls, expectedSeeds: [740001, 740002, 740003],
       statement: 'Prepared finite source/supply only, no JVM execution, no quality verdict' };
-    write(path.join(ROUND, 'prepared-05.json'), prepared);
-    console.log(JSON.stringify({ prepared: pin(path.join(ROUND, 'prepared-05.json')), sources: sources.length, artifacts: resources.artifacts.length }));
+    write(path.join(round, 'prepared.json'), prepared);
+    console.log(JSON.stringify({ prepared: pin(path.join(round, 'prepared.json')), sources: sources.length, artifacts: resources.artifacts.length }));
     return;
   }
   assert.equal(mode, 'run');
-  const prepared = document(path.join(ROUND, 'prepared-05.json')).value;
-  const attemptId = process.argv[3];
+  const round = process.argv[3] ? path.resolve(process.argv[3]) : DEFAULT_ROUND;
+  const prepared = document(path.join(round, 'prepared.json')).value;
+  const attemptId = process.argv[4];
   assert(/^attempt-0[1-3]$/.test(attemptId), 'Fixed attempt ID required');
-  const budgetFile = path.join(ROUND, 'budget.json');
+  const budgetFile = path.join(round, 'budget.json');
   if (!fs.existsSync(budgetFile)) {
     assert.equal(attemptId, 'attempt-01');
     write(budgetFile, { started: Date.now(), monotonicStarted: monotonic(), wallMs: 900000, extended: false });
   }
   const budget = document(budgetFile).value;
-  const attempt = path.join(ROUND, attemptId);
+  const attempt = path.join(round, attemptId);
   fs.mkdirSync(attempt);
   const home = path.join(attempt, 'home'), tmp = path.join(attempt, 'tmp');
   const domainClasses = path.join(attempt, 'domain-classes'), testClasses = path.join(attempt, 'test-classes');

@@ -5,34 +5,109 @@
   "status": "BLOCKED_NOT_QUALITY_ACCEPTED",
   "baseHead": "fd1cf2134fb22bcd88e1685cab6b4096dcd1fcb1",
   "payloadFileCount": 18,
-  "payloadBytes": 108610,
+  "payloadBytes": 108236,
   "payload": [
-    {"path":"README.md","bytes":3832,"sha256":"e3d0001119d169c6244f3c33a7eedda3e4987e1621b961cda30ed79bf7039213"},
-    {"path":"app/example/stockreservation/domain/entities/StockReservationEntity.scala","bytes":1503,"sha256":"138d3eaae32c73cb2e924baaf5a25895b7123e8d00cbf9513e19b744d1475348"},
-    {"path":"app/example/stockreservation/domain/invariant/StockReservationRules.scala","bytes":3756,"sha256":"c47f0467174fef5cfa1ccfdc023eeea2b16a01e8a3815b6352c04ffb9f1a15a1"},
-    {"path":"app/example/stockreservation/domain/services/ReservationIdentity.scala","bytes":841,"sha256":"b8c93db6d18b1d3cf2b75cd84c6d29caefdf57cc98b61fb9a84b8c8f90164645"},
-    {"path":"app/example/stockreservation/domain/values/ReservationValues.scala","bytes":1536,"sha256":"48f29020c0edc9b2f8f6a7c72a457f8108873233f8ca83c4fcdd108f18c4b67b"},
-    {"path":"expected-properties.txt","bytes":7244,"sha256":"0dd4b4937f0a2bb0ed57e85b7c7afb65d52341c60bf3e421fc2dda0370dade5a"},
-    {"path":"quality/JsonOutput.scala","bytes":950,"sha256":"ec3e5053c389b1eabd6a258363b9bb43346f4ce9c05bec8eee524546f0762833"},
-    {"path":"quality/QualityInputs.scala","bytes":2461,"sha256":"05ef8317b8a0650c3838c6faea7371bb77c1374bf7005a38dd0121caa37e5b7a"},
-    {"path":"quality/QualityMain.scala","bytes":4007,"sha256":"81d9c7f1be9c79d7cd7a56b639590e1636857be44d66937f1e4eb910229c207e"},
-    {"path":"quality/ScalaSourceMetrics.scala","bytes":8779,"sha256":"c4b83b2a1ac8923d166b7f8695e78f87a9457e8d197aaa15914ffb56df0b123d"},
-    {"path":"quality-policy.json","bytes":2279,"sha256":"75e4e79c5b2181e48e75e13d1477621baac3562fb3e3f8c7fd740d7f756df606"},
-    {"path":"scope-exceptions.tsv","bytes":3033,"sha256":"1ab73e0d411a7c269f8989040ee3dc5faaf898fb1a79d99de834919642d9875f"},
-    {"path":"technical-input.json","bytes":14392,"sha256":"e26e3541975c0c87dc1a6d2f17f151c0a83d068b35c6d5dcbcedc712896e42f8"},
-    {"path":"test/example/stockreservation/reference/FormalGuardExamples.scala","bytes":7121,"sha256":"9b5071c18f577a00a5f192ade2d3f66f640b3112e3829625ff9c58a5ceaf470c"},
-    {"path":"test/example/stockreservation/reference/StockReservationCases.scala","bytes":15310,"sha256":"09fda1deff8974995b3e788859253607a8f6fa7290cabb3c4011d447b306403a"},
-    {"path":"test/example/stockreservation/reference/StockReservationOracle.scala","bytes":7016,"sha256":"c64168909b9bb6ce4c103127a6c91b6784ac3ed1cc5dfc2d7867d057c916cdf6"},
-    {"path":"test/example/stockreservation/reference/StockReservationProperties.scala","bytes":17942,"sha256":"975177ef03cbf97e43f0a6e133c421662503e9ed07b4eac81e98261a00ab575f"},
-    {"path":"test/example/stockreservation/reference/StockReservationQualityProperties.scala","bytes":6608,"sha256":"40c55bc9b49704edc402404a84c44fdd97de823048fac52a6ffbfe6d650a94ed"}
+    {
+      "bytes": 3832,
+      "path": "README.md",
+      "sha256": "e3d0001119d169c6244f3c33a7eedda3e4987e1621b961cda30ed79bf7039213"
+    },
+    {
+      "bytes": 1503,
+      "path": "app/example/stockreservation/domain/entities/StockReservationEntity.scala",
+      "sha256": "138d3eaae32c73cb2e924baaf5a25895b7123e8d00cbf9513e19b744d1475348"
+    },
+    {
+      "bytes": 3756,
+      "path": "app/example/stockreservation/domain/invariant/StockReservationRules.scala",
+      "sha256": "c47f0467174fef5cfa1ccfdc023eeea2b16a01e8a3815b6352c04ffb9f1a15a1"
+    },
+    {
+      "bytes": 841,
+      "path": "app/example/stockreservation/domain/services/ReservationIdentity.scala",
+      "sha256": "b8c93db6d18b1d3cf2b75cd84c6d29caefdf57cc98b61fb9a84b8c8f90164645"
+    },
+    {
+      "bytes": 1536,
+      "path": "app/example/stockreservation/domain/values/ReservationValues.scala",
+      "sha256": "48f29020c0edc9b2f8f6a7c72a457f8108873233f8ca83c4fcdd108f18c4b67b"
+    },
+    {
+      "bytes": 7244,
+      "path": "expected-properties.txt",
+      "sha256": "0dd4b4937f0a2bb0ed57e85b7c7afb65d52341c60bf3e421fc2dda0370dade5a"
+    },
+    {
+      "bytes": 2279,
+      "path": "quality-policy.json",
+      "sha256": "75e4e79c5b2181e48e75e13d1477621baac3562fb3e3f8c7fd740d7f756df606"
+    },
+    {
+      "bytes": 950,
+      "path": "quality/JsonOutput.scala",
+      "sha256": "ec3e5053c389b1eabd6a258363b9bb43346f4ce9c05bec8eee524546f0762833"
+    },
+    {
+      "bytes": 2461,
+      "path": "quality/QualityInputs.scala",
+      "sha256": "05ef8317b8a0650c3838c6faea7371bb77c1374bf7005a38dd0121caa37e5b7a"
+    },
+    {
+      "bytes": 4007,
+      "path": "quality/QualityMain.scala",
+      "sha256": "81d9c7f1be9c79d7cd7a56b639590e1636857be44d66937f1e4eb910229c207e"
+    },
+    {
+      "bytes": 8779,
+      "path": "quality/ScalaSourceMetrics.scala",
+      "sha256": "c4b83b2a1ac8923d166b7f8695e78f87a9457e8d197aaa15914ffb56df0b123d"
+    },
+    {
+      "bytes": 2659,
+      "path": "scope-exceptions.tsv",
+      "sha256": "96b68dc3fcfce46552859a71c4526e8150bc0e5da40af1d187195b7bd6cea5df"
+    },
+    {
+      "bytes": 14392,
+      "path": "technical-input.json",
+      "sha256": "e26e3541975c0c87dc1a6d2f17f151c0a83d068b35c6d5dcbcedc712896e42f8"
+    },
+    {
+      "bytes": 7121,
+      "path": "test/example/stockreservation/reference/FormalGuardExamples.scala",
+      "sha256": "9b5071c18f577a00a5f192ade2d3f66f640b3112e3829625ff9c58a5ceaf470c"
+    },
+    {
+      "bytes": 15310,
+      "path": "test/example/stockreservation/reference/StockReservationCases.scala",
+      "sha256": "09fda1deff8974995b3e788859253607a8f6fa7290cabb3c4011d447b306403a"
+    },
+    {
+      "bytes": 7016,
+      "path": "test/example/stockreservation/reference/StockReservationOracle.scala",
+      "sha256": "c64168909b9bb6ce4c103127a6c91b6784ac3ed1cc5dfc2d7867d057c916cdf6"
+    },
+    {
+      "bytes": 17942,
+      "path": "test/example/stockreservation/reference/StockReservationProperties.scala",
+      "sha256": "975177ef03cbf97e43f0a6e133c421662503e9ed07b4eac81e98261a00ab575f"
+    },
+    {
+      "bytes": 6608,
+      "path": "test/example/stockreservation/reference/StockReservationQualityProperties.scala",
+      "sha256": "40c55bc9b49704edc402404a84c44fdd97de823048fac52a6ffbfe6d650a94ed"
+    }
   ],
   "bundle": {
     "algorithm": "SHA-256",
     "encoding": "Sorted relative-path rows, JSON sort_keys=true, UTF-8 literal Unicode, compact separators and one LF; complete unnormalized file hashes",
-    "canonicalRowsBytes": 2653,
-    "sha256": "b3201f0b2eed203005e638d05642ab26dba8255f39d064c0394ae1dedc6e052d"
+    "canonicalRowsBytes": 2633,
+    "sha256": "c9cd72511390aa74b6fe533b4464968ded0100b281671954ca95010ec37fbbe1"
   },
-  "excludedFromPayload": ["manifest.json", "review-status.json"],
+  "excludedFromPayload": [
+    "manifest.json",
+    "review-status.json"
+  ],
   "quality": {
     "priorCandidateCompiled": true,
     "latestSpecificationCompiled": false,

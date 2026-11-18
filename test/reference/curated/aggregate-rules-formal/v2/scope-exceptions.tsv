@@ -1,16 +1,14 @@
-quality/ScalaSourceMetrics.scala	root.ScalaSourceMetrics.ownDecisions	method	18	2	Closed syntax-node decision classification; each arm is a short direct count, measured raw value reported.
-quality/ScalaSourceMetrics.scala	root.ScalaSourceMetrics.control	method	10	2	Closed control-node classification, no business logic or hidden side effects.
-quality/ScalaSourceMetrics.scala	root.ScalaSourceMetrics.declaredScopes	method	16	2	Closed declaration-shape dispatch; each declaration becomes an explicitly measured scope.
-quality/ScalaSourceMetrics.scala	root.ScalaSourceMetrics.forbidden	method	20	2	Closed structural prohibition classification; all forbidden categories are retained and separately exercised.
-quality/ScalaSourceMetrics.scala	root.ScalaSourceMetrics.isDeclaration	method	10	2	Closed declaration classification including abstract declarations, raw count reported.
-quality/ScalaSourceMetrics.scala	root.ScalaSourceMetrics.memberName	method	8	2	Closed named-declaration classification, no business policy.
-test/example/stockreservation/reference/StockReservationCases.scala	root.StockReservationCases.reserveGen	method	18	2	Joint test generator has explicit generators preserving related values; no production implementation.
-test/example/stockreservation/reference/StockReservationOracle.scala	root.StockReservationOracle.expectedReserve	method	12	2	Closed independent expected-outcome dispatch for eight scenario labels.
-test/example/stockreservation/reference/StockReservationOracle.scala	root.StockReservationOracle.expectedConfirm	method	10	2	Closed independent expected-confirmation dispatch, not production algorithm.
-quality/JsonOutput.scala	root.JsonOutput.escape	method	10	2	Closed JSON character-escape dispatch required to preserve raw error and Unicode report text.
-quality/ScalaSourceMetrics.scala	root.ScalaSourceMetrics.nestedDefinition	method	8	2	Closed declaration classifier used to avoid double-counting nested named methods.
-test/example/stockreservation/reference/StockReservationCases.scala	root.StockReservationCases.ReserveCase.<init:7>	initialization	6	2	Five closed location-vector scenarios, directly measured rather than hidden in a dispatch table.
-test/example/stockreservation/reference/StockReservationCases.scala	root.StockReservationCases.ReserveCase.locations	value	6	2	Same five scenario alternatives in the named location value; wildcard nonexhaustive exit is conservatively included.
-test/example/stockreservation/reference/FormalGuardExamples.scala	root.FormalGuardExamples.moneyGen	method	6	2	Two joint generators plus a closed balance category selection preserve legal money scenarios.
-test/example/stockreservation/reference/FormalGuardExamples.scala	root.FormalGuardExamples.premise	method	9	2	Four closed independent money scenario premises and exact balance margin; no production decisions.
-test/example/stockreservation/reference/FormalGuardExamples.scala	root.FormalGuardExamples.matches	method	6	2	Independent expected-result dispatch across four money scenario categories.
+quality/ScalaSourceMetrics.scala	root.ScalaSourceMetrics.ownDecisions	method	16	2	Closed syntax-node decision dispatch; every arm is a direct count and the raw measured value is reported unchanged.
+quality/ScalaSourceMetrics.scala	root.ScalaSourceMetrics.control	method	7	2	Closed control-node classification; no business logic or hidden effects.
+quality/ScalaSourceMetrics.scala	root.ScalaSourceMetrics.declaredScopes	method	13	2	Closed declaration-shape dispatch; each declaration becomes an explicitly measured scope.
+quality/ScalaSourceMetrics.scala	root.ScalaSourceMetrics.forbidden	method	16	2	Closed structural prohibition classification; every category is exercised by a negative property.
+quality/ScalaSourceMetrics.scala	root.ScalaSourceMetrics.isDeclaration	method	7	2	Closed declaration classification including abstract declarations; raw count reported.
+test/example/stockreservation/reference/StockReservationCases.scala	root.StockReservationCases.ReserveCase.<init:7>	initialization	6	2	Five closed location-vector scenarios measured directly, not hidden in a dispatch table.
+test/example/stockreservation/reference/StockReservationCases.scala	root.StockReservationCases.ReserveCase.locations	value	6	2	The same five scenario alternatives in the named location value; conservative unmatched exit included.
+test/example/stockreservation/reference/StockReservationCases.scala	root.StockReservationCases.identityPremise	method	7	2	Closed confirmation identity premise across the five confirm branches.
+test/example/stockreservation/reference/StockReservationOracle.scala	root.StockReservationOracle.expectedReserve	method	9	2	Closed independent expected-outcome dispatch for eight reserve scenario labels.
+test/example/stockreservation/reference/StockReservationOracle.scala	root.StockReservationOracle.expectedConfirm	method	6	2	Closed independent expected-confirmation dispatch, never the production algorithm.
+quality/JsonOutput.scala	root.JsonOutput.escape	method	9	2	Closed JSON character-escape dispatch preserving raw error and Unicode report text; the named final binding is a conservative unmatched exit.
+test/example/stockreservation/reference/FormalGuardExamples.scala	root.FormalGuardExamples.moneyGen	method	6	2	Joint amount and balance generation over four closed money branches.
+test/example/stockreservation/reference/FormalGuardExamples.scala	root.FormalGuardExamples.premise	method	9	2	Four closed independent money premises with exact balance margin.
+test/example/stockreservation/reference/FormalGuardExamples.scala	root.FormalGuardExamples.matches	method	6	2	Independent expected-result dispatch across four money categories.
