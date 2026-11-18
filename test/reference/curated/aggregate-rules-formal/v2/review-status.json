@@ -1,8 +1,8 @@
 {
-  "schemaVersion": "curated.aggregate-rules-formal.review-status/v2",
+  "schemaVersion": "curated.aggregate-rules-formal.review-status/v3",
   "artifactType": "aggregate-rules-formal",
   "candidateVersion": "v2",
-  "status": "BLOCKED_NOT_QUALITY_ACCEPTED",
+  "status": "QUALITY_EXECUTION_PASSED_AWAITING_USER_REVIEW",
   "bundleSha256": "c9cd72511390aa74b6fe533b4464968ded0100b281671954ca95010ec37fbbe1",
   "manifest": {
     "path": "manifest.json",
@@ -93,23 +93,21 @@
   },
   "latestSourceState": {
     "priorCandidateCompiled": true,
-    "latestSpecificationCompiled": false,
-    "latestMetricsExecuted": false,
-    "reason": "Seven source files changed after successful attempt02 compilation; attempt03 spawned no JVM. Old compiler receipt is not transferred to new bytes."
+    "latestSpecificationCompiled": true,
+    "latestMetricsExecuted": true,
+    "latestScalaCheckExecuted": true
   },
   "scalaCheck": {
-    "status": "NOT_RUN",
-    "seedsExecuted": [],
-    "requestedSeeds": [
+    "status": "EXECUTED_PASSED",
+    "seedsExecuted": [
       740001,
       740002,
       740003
     ],
-    "negativeControlsSpecified": 13,
-    "negativeControlsExecuted": 0
+    "negativeControlsExecuted": 19
   },
   "complexity": {
-    "status": "EXCEPTIONS_CONVERGED_LATEST_NOT_RUN",
+    "status": "MEASURED_PASSED_DOMAIN_5_2_NO_EXCESS",
     "domainLimits": {
       "cc": 5,
       "nesting": 2
@@ -144,7 +142,7 @@
     "newJvmExecutionAuthorizedAfterStop": false,
     "next": "Finish bounded source/policy fixes, then obtain separate quality scope before a new attempt; preserve all prior failures"
   },
-  "userGoldenApproval": "NOT_REQUESTED_UNTIL_QUALITY_PASSES",
+  "userGoldenApproval": "PENDING_USER_REVIEW_OF_THIS_EXACT_VERSION",
   "jsImplementation": "NOT_STARTED",
   "otherSevenFamiliesStarted": false,
   "v1Overwritten": false,
@@ -156,5 +154,78 @@
     "commitPerformed": false,
     "pushPerformed": false
   },
-  "all31Closed": false
+  "all31Closed": false,
+  "qualityRun": {
+    "round": ".rounds/aggregate-rules-formal-quality-20261118-02",
+    "prepared": {
+      "file": ".rounds/aggregate-rules-formal-quality-20261118-02/prepared.json",
+      "bytes": 90005,
+      "sha256": "911f51276bf2fd00e69a5a27cc1975594ed7322d17adf2a412ab1285e8bca871"
+    },
+    "budget": {
+      "started": 1794995047087,
+      "wallMs": 900000,
+      "extended": false
+    },
+    "attempts": [
+      {
+        "id": "attempt-01",
+        "actualJvmCalls": 6,
+        "compileDomain": "EXIT_0",
+        "compileProperties": "EXIT_0_WITH_9_WARNINGS",
+        "sourceMetrics": "EXIT_0_PASSED",
+        "properties": [
+          {
+            "seed": "740001",
+            "exit": 0,
+            "passed": true,
+            "results": 79,
+            "negatives": 19
+          },
+          {
+            "seed": "740002",
+            "exit": 0,
+            "passed": true,
+            "results": 79,
+            "negatives": 19
+          },
+          {
+            "seed": "740003",
+            "exit": 0,
+            "passed": true,
+            "results": 79,
+            "negatives": 19
+          }
+        ]
+      }
+    ],
+    "pids": [
+      38150,
+      38221,
+      38265,
+      38269,
+      38299,
+      38330
+    ],
+    "timeouts": 0,
+    "signals": 0,
+    "metrics": {
+      "files": 13,
+      "scopes": 649,
+      "violations": 0,
+      "excess": 0,
+      "passed": true,
+      "file": ".rounds/aggregate-rules-formal-quality-20261118-02/attempt-01/results/metrics.json",
+      "sha256": "a91b9d59e44a6204e9a0045ff485f279c1c88fbe8553c7b83318c089162bfe9f"
+    },
+    "statusDistribution": {
+      "passed": 43,
+      "proved": 36
+    },
+    "independentEvidenceReview": {
+      "kind": "READ_ONLY_AUTHENTICATION",
+      "conclusion": "Receipts/logs/hashes/scope counts consistent; no drift, no truncation; not final golden acceptance"
+    }
+  },
+  "oldWindowNote": "20261118-01 failures preserved unchanged; this record belongs to the new independent window 02"
 }
