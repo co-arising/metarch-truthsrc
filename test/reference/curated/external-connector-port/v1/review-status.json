@@ -2,7 +2,7 @@
   "schemaVersion": "curated.external-connector-port.review-status/v1",
   "artifactType": "external-connector-port",
   "candidateVersion": "v1",
-  "status": "QUALITY_EXECUTION_PASSED_AWAITING_USER_APPROVAL",
+  "status": "GOLDEN_APPROVED_AWAITING_JS_IMPLEMENTATION",
   "bundleSha256": "725e03a1fba1e7cb6fd6bbc90550ca0e2635ae2b211b19132beffcb722ed0b9c",
   "manifest": {
     "path": "manifest.json",
@@ -68,7 +68,8 @@
     "finalBytesNote": "Executed on the exact committed candidate bytes; prepared pin sha equals the round-01 prepared sha, confirming zero source drift between the two executions",
     "discoveryRounds": "Round 20261118-01 (three attempts) and round 20261119-01 discovery fixed: Future.fromTry arity, split trailing-empty semantics, boundary Await admission, anonymous-module unsupported-term, direction-aware import policy refactors, and the Guice runtime closure expansion; every fix is in the committed sources and re-verified by this attempt"
   },
-  "userGoldenApproval": "PENDING_USER_APPROVAL_OF_V1_BUNDLE_725e03a1",
+  "userGoldenApproval": "APPROVED_V1_BUNDLE_725e03a1_20261119",
   "rawAcceptanceUnchanged": true,
-  "all31Closed": false
+  "all31Closed": false,
+  "userRuling": "2026-11-19 walkthrough: no @ImplementedBy (kernel isolation, infrastructure-owned assembly); sealed-ADT result shape confirmed; direction-aware gate confirmed"
 }
