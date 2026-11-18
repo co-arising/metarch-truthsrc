@@ -1,0 +1,1141 @@
+{
+  "schemaVersion": "truthsrc.artifact-type-alignment-checkpoint/v1",
+  "createdAtUtc": "2026-11-18T00:23:34.032283+00:00",
+  "repository": "metarch-truthsrc",
+  "branch": "fix/classic-cqrs-f1-byte-parity",
+  "candidateBaseHead": "2a06dd319690dcb6c8907821ea2bdaa942e293f1",
+  "countingRule": "42 unique generated-family keys=39 traditional+3 extensions; not file counts or Scala enum values",
+  "counts": {
+    "total": 42,
+    "traditional": 39,
+    "extensions": 3,
+    "COMPLETED_SCOPED_RAW": 11,
+    "IMPLEMENTED_PENDING_ACCEPTANCE": 23,
+    "NOT_STARTED_CURATED_GOLDEN": 8
+  },
+  "rows": [
+    {
+      "ordinal": 1,
+      "artifactTypeKey": "value-object",
+      "category": "traditional",
+      "role": "值对象",
+      "state": "COMPLETED_SCOPED_RAW",
+      "label": "已完成限定 raw 验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": "2",
+      "newV5FinalAcceptance": false,
+      "owner": "prior classic @1–4",
+      "independentExpected": "independent authentic Scala full files; old scoped acceptance preserved",
+      "newV5ExpectedPaths": null,
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/domain/ValueObjectModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/domain/ValueObjectBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/ValueObjectTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "517"
+      },
+      "nextAction": "按已有登记范围保留接受；不补签质量/runtime",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 2,
+      "artifactTypeKey": "domain-entity",
+      "category": "traditional",
+      "role": "领域实体与State/Events",
+      "state": "COMPLETED_SCOPED_RAW",
+      "label": "已完成限定 raw 验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": "1",
+      "newV5FinalAcceptance": false,
+      "owner": "prior classic @1–4",
+      "independentExpected": "independent authentic Scala full files; old scoped acceptance preserved",
+      "newV5ExpectedPaths": null,
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/domain/DomainEntityModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/domain/DomainEntityBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainEntityTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "533"
+      },
+      "nextAction": "按已有登记范围保留接受；不补签质量/runtime",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 3,
+      "artifactTypeKey": "event-handler",
+      "category": "traditional",
+      "role": "纯事件应用",
+      "state": "COMPLETED_SCOPED_RAW",
+      "label": "已完成限定 raw 验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": "2",
+      "newV5FinalAcceptance": false,
+      "owner": "prior classic @1–4",
+      "independentExpected": "independent authentic Scala full files; old scoped acceptance preserved",
+      "newV5ExpectedPaths": null,
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/domain/EntityBehaviorModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/domain/EntityBehaviorBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/EntityBehaviorTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "544"
+      },
+      "nextAction": "按已有登记范围保留接受；不补签质量/runtime",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 4,
+      "artifactTypeKey": "invariant-rule",
+      "category": "traditional",
+      "role": "不变量规则",
+      "state": "COMPLETED_SCOPED_RAW",
+      "label": "已完成限定 raw 验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": "2",
+      "newV5FinalAcceptance": false,
+      "owner": "prior classic @1–4",
+      "independentExpected": "independent authentic Scala full files; old scoped acceptance preserved",
+      "newV5ExpectedPaths": null,
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/domain/InvariantRuleModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/domain/InvariantRuleBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/InvariantRuleTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "560"
+      },
+      "nextAction": "按已有登记范围保留接受；不补签质量/runtime",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 5,
+      "artifactTypeKey": "domain-service",
+      "category": "traditional",
+      "role": "领域服务",
+      "state": "IMPLEMENTED_PENDING_ACCEPTANCE",
+      "label": "已实现／待最终验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "domain-rules",
+      "independentExpected": "SEALED_FULL_CUSTODY",
+      "newV5ExpectedPaths": [
+        "app/net/imadz/banking/domain/services/TransferValidatorDomainService.scala"
+      ],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/domain/DomainServiceModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/domain/DomainServiceBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/domain/DomainServiceTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "585"
+      },
+      "nextAction": "完成批准的新5项精确观察与综合独立审计；原失败不洗绿，不重跑57项",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 6,
+      "artifactTypeKey": "aggregate-root",
+      "category": "traditional",
+      "role": "聚合根",
+      "state": "COMPLETED_SCOPED_RAW",
+      "label": "已完成限定 raw 验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": "3",
+      "newV5FinalAcceptance": false,
+      "owner": "prior classic @1–4",
+      "independentExpected": "independent authentic Scala full files; old scoped acceptance preserved",
+      "newV5ExpectedPaths": null,
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/AggregateRootModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateRootBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRootTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "611"
+      },
+      "nextAction": "按已有登记范围保留接受；不补签质量/runtime",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 7,
+      "artifactTypeKey": "application-protocol",
+      "category": "traditional",
+      "role": "Commands/Replies协议",
+      "state": "COMPLETED_SCOPED_RAW",
+      "label": "已完成限定 raw 验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": "1",
+      "newV5FinalAcceptance": false,
+      "owner": "prior classic @1–4",
+      "independentExpected": "independent authentic Scala full files; old scoped acceptance preserved",
+      "newV5ExpectedPaths": null,
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/AggregateProtocolModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateProtocolBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateProtocolTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "620"
+      },
+      "nextAction": "按已有登记范围保留接受；不补签质量/runtime",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 8,
+      "artifactTypeKey": "aggregate-factory",
+      "category": "traditional",
+      "role": "聚合工厂",
+      "state": "COMPLETED_SCOPED_RAW",
+      "label": "已完成限定 raw 验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": "3",
+      "newV5FinalAcceptance": false,
+      "owner": "prior classic @1–4",
+      "independentExpected": "independent authentic Scala full files; old scoped acceptance preserved",
+      "newV5ExpectedPaths": null,
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/AggregateFactoryModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateFactoryBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateFactoryTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "636"
+      },
+      "nextAction": "按已有登记范围保留接受；不补签质量/runtime",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 9,
+      "artifactTypeKey": "aggregate-behavior",
+      "category": "traditional",
+      "role": "聚合行为",
+      "state": "COMPLETED_SCOPED_RAW",
+      "label": "已完成限定 raw 验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": "1",
+      "newV5FinalAcceptance": false,
+      "owner": "prior classic @1–4",
+      "independentExpected": "independent authentic Scala full files; old scoped acceptance preserved",
+      "newV5ExpectedPaths": null,
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/AggregateBehaviorModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateBehaviorBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateBehaviorTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "645"
+      },
+      "nextAction": "按已有登记范围保留接受；不补签质量/runtime",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 10,
+      "artifactTypeKey": "command-helper",
+      "category": "traditional",
+      "role": "命令参数与回复胶水",
+      "state": "COMPLETED_SCOPED_RAW",
+      "label": "已完成限定 raw 验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": "1",
+      "newV5FinalAcceptance": false,
+      "owner": "prior classic @1–4",
+      "independentExpected": "independent authentic Scala full files; old scoped acceptance preserved",
+      "newV5ExpectedPaths": null,
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/CommandHelperModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/CommandHelpersBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/CommandHelpersTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "662"
+      },
+      "nextAction": "按已有登记范围保留接受；不补签质量/runtime",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 11,
+      "artifactTypeKey": "aggregate-rules-formal",
+      "category": "traditional",
+      "role": "formal聚合规则",
+      "state": "NOT_STARTED_CURATED_GOLDEN",
+      "label": "待逐族Scala金样，认可后才JS",
+      "alignmentImplemented": false,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "domain-rules",
+      "independentExpected": "BLOCKED_NO_QUALIFYING_PUBLIC_ORACLE",
+      "newV5ExpectedPaths": [],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/AggregateRulesModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateRulesBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRulesTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "671"
+      },
+      "nextAction": "一次一族先手写优秀Plain FP+OO Scala及ScalaCheck性质规格，回报讲解、用户认可具体版本后才实施对应JS",
+      "scopeLimit": "curated新质量路线；原八族公开Scala raw expected缺口仍未补签，不能用curated填旧raw库存"
+    },
+    {
+      "ordinal": 12,
+      "artifactTypeKey": "aggregate-repository-port",
+      "category": "traditional",
+      "role": "聚合仓储端口",
+      "state": "COMPLETED_SCOPED_RAW",
+      "label": "已完成限定 raw 验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": "4",
+      "newV5FinalAcceptance": false,
+      "owner": "prior classic @1–4",
+      "independentExpected": "independent authentic Scala full files; old scoped acceptance preserved",
+      "newV5ExpectedPaths": null,
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/AggregateRepositoryModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/AggregateRepositoryBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/AggregateRepositoryTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "685"
+      },
+      "nextAction": "按已有登记范围保留接受；不补签质量/runtime",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 13,
+      "artifactTypeKey": "external-connector-port",
+      "category": "traditional",
+      "role": "外部连接器端口",
+      "state": "NOT_STARTED_CURATED_GOLDEN",
+      "label": "待逐族Scala金样，认可后才JS",
+      "alignmentImplemented": false,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "services-connectors",
+      "independentExpected": "BLOCKED_NO_QUALIFYING_PUBLIC_ORACLE",
+      "newV5ExpectedPaths": [],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/ConnectorModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/ConnectorBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ConnectorTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "704"
+      },
+      "nextAction": "一次一族先手写优秀Plain FP+OO Scala及ScalaCheck性质规格，回报讲解、用户认可具体版本后才实施对应JS",
+      "scopeLimit": "curated新质量路线；原八族公开Scala raw expected缺口仍未补签，不能用curated填旧raw库存"
+    },
+    {
+      "ordinal": 14,
+      "artifactTypeKey": "application-service",
+      "category": "traditional",
+      "role": "应用服务",
+      "state": "IMPLEMENTED_PENDING_ACCEPTANCE",
+      "label": "已实现／待最终验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "services-connectors",
+      "independentExpected": "SEALED_FULL_CUSTODY",
+      "newV5ExpectedPaths": [
+        "app/net/imadz/banking/application/services/CreateCreditBalanceService.scala",
+        "app/net/imadz/banking/application/services/DepositService.scala",
+        "app/net/imadz/banking/application/services/WithdrawService.scala",
+        "app/net/imadz/banking/application/services/MoneyTransferService.scala"
+      ],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/ApplicationServiceModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/ApplicationServiceBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ApplicationServiceTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "715"
+      },
+      "nextAction": "完成批准的新5项精确观察与综合独立审计；原失败不洗绿，不重跑57项",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 15,
+      "artifactTypeKey": "query-service",
+      "category": "traditional",
+      "role": "查询服务",
+      "state": "IMPLEMENTED_PENDING_ACCEPTANCE",
+      "label": "已实现／待最终验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "services-connectors",
+      "independentExpected": "SEALED_FULL_CUSTODY",
+      "newV5ExpectedPaths": [
+        "app/net/imadz/banking/application/queries/GetBalanceQuery.scala",
+        "app/net/imadz/banking/application/queries/GetRecent12MonthsIncomeAndExpenseReportQuery.scala"
+      ],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/QueryServiceModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/QueryServiceBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/QueryServiceTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "726"
+      },
+      "nextAction": "完成批准的新5项精确观察与综合独立审计；原失败不洗绿，不重跑57项",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 16,
+      "artifactTypeKey": "saga-participant",
+      "category": "traditional",
+      "role": "classic Saga参与者",
+      "state": "IMPLEMENTED_PENDING_ACCEPTANCE",
+      "label": "已实现／待最终验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "classic-saga",
+      "independentExpected": "SEALED_FULL_CUSTODY",
+      "newV5ExpectedPaths": [
+        "app/net/imadz/banking/application/services/transactor/FromAccountParticipant.scala",
+        "app/net/imadz/banking/application/services/transactor/ToAccountParticipant.scala"
+      ],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/SagaParticipantModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaParticipantBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaParticipantTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "740"
+      },
+      "nextAction": "完成批准的新5项精确观察与综合独立审计；原失败不洗绿，不重跑57项",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 17,
+      "artifactTypeKey": "saga-definition",
+      "category": "traditional",
+      "role": "classic Saga定义",
+      "state": "IMPLEMENTED_PENDING_ACCEPTANCE",
+      "label": "已实现／待最终验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "classic-saga",
+      "independentExpected": "SEALED_FULL_CUSTODY",
+      "newV5ExpectedPaths": [
+        "app/net/imadz/banking/application/services/transactor/MoneyTransferSagaDefinition.scala"
+      ],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/SagaDefinitionModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaDefinitionBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaDefinitionTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "749"
+      },
+      "nextAction": "完成批准的新5项精确观察与综合独立审计；原失败不洗绿，不重跑57项",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 18,
+      "artifactTypeKey": "saga-trigger-protocol",
+      "category": "traditional",
+      "role": "Saga触发协议",
+      "state": "IMPLEMENTED_PENDING_ACCEPTANCE",
+      "label": "已实现／待最终验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "classic-trigger",
+      "independentExpected": "SEALED_FULL_CUSTODY",
+      "newV5ExpectedPaths": [
+        "app/net/imadz/banking/application/services/transactor/MoneyTransferSagaTransactorProtocol.scala"
+      ],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/SagaTriggerModels.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaTriggerBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerProtocolTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "759"
+      },
+      "nextAction": "完成批准的新5项精确观察与综合独立审计；原失败不洗绿，不重跑57项",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 19,
+      "artifactTypeKey": "saga-trigger-entity",
+      "category": "traditional",
+      "role": "Saga交易实体",
+      "state": "IMPLEMENTED_PENDING_ACCEPTANCE",
+      "label": "已实现／待最终验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "classic-trigger",
+      "independentExpected": "SEALED_FULL_CUSTODY",
+      "newV5ExpectedPaths": [
+        "app/net/imadz/banking/domain/entities/MoneyTransferTransactionEntity.scala"
+      ],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/SagaTriggerModels.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaTriggerBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerEntityTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "762"
+      },
+      "nextAction": "完成批准的新5项精确观察与综合独立审计；原失败不洗绿，不重跑57项",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 20,
+      "artifactTypeKey": "saga-trigger-root",
+      "category": "traditional",
+      "role": "Saga触发根/Transactor",
+      "state": "IMPLEMENTED_PENDING_ACCEPTANCE",
+      "label": "已实现／待最终验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "classic-trigger",
+      "independentExpected": "SEALED_FULL_CUSTODY",
+      "newV5ExpectedPaths": [
+        "app/net/imadz/banking/application/services/transactor/MoneyTransferSagaTransactor.scala"
+      ],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/SagaTriggerModels.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaTriggerBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerRootTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "765"
+      },
+      "nextAction": "完成批准的新5项精确观察与综合独立审计；原失败不洗绿，不重跑57项",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 21,
+      "artifactTypeKey": "saga-trigger-behaviors",
+      "category": "traditional",
+      "role": "Saga触发Behaviors",
+      "state": "IMPLEMENTED_PENDING_ACCEPTANCE",
+      "label": "已实现／待最终验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "classic-trigger",
+      "independentExpected": "SEALED_FULL_CUSTODY",
+      "newV5ExpectedPaths": [
+        "app/net/imadz/banking/application/services/transactor/behaviors/MoneyTransferSagaTransactorBehaviors.scala"
+      ],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/SagaTriggerModels.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaTriggerBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaTriggerBehaviorsTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "768"
+      },
+      "nextAction": "完成批准的新5项精确观察与综合独立审计；原失败不洗绿，不重跑57项",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 22,
+      "artifactTypeKey": "aggregate-repository-implementation",
+      "category": "traditional",
+      "role": "聚合仓储实现",
+      "state": "COMPLETED_SCOPED_RAW",
+      "label": "已完成限定 raw 验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": "4",
+      "newV5FinalAcceptance": false,
+      "owner": "prior classic @1–4",
+      "independentExpected": "independent authentic Scala full files; old scoped acceptance preserved",
+      "newV5ExpectedPaths": null,
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/repository/AggregateRepositoryImplModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/repository/AggregateRepositoryImplBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/repository/AggregateRepositoryImplTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "789"
+      },
+      "nextAction": "按已有登记范围保留接受；不补签质量/runtime",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 23,
+      "artifactTypeKey": "projection-repository-port",
+      "category": "traditional",
+      "role": "投影仓储端口",
+      "state": "IMPLEMENTED_PENDING_ACCEPTANCE",
+      "label": "已实现／待最终验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "projection-repositories",
+      "independentExpected": "SEALED_FULL_CUSTODY",
+      "newV5ExpectedPaths": [
+        "app/net/imadz/banking/application/projection/repository/MonthlyIncomeAndExpenseSummaryRepository.scala"
+      ],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/ProjectionRepositoryModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/ProjectionRepositoryBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionRepositoryTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "812"
+      },
+      "nextAction": "完成批准的新5项精确观察与综合独立审计；原失败不洗绿，不重跑57项",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 24,
+      "artifactTypeKey": "projection-repository-implementation",
+      "category": "traditional",
+      "role": "投影仓储实现",
+      "state": "IMPLEMENTED_PENDING_ACCEPTANCE",
+      "label": "已实现／待最终验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "projection-repositories",
+      "independentExpected": "SEALED_FULL_CUSTODY",
+      "newV5ExpectedPaths": [
+        "app/net/imadz/banking/infrastructure/repositories/projection/MonthlyIncomeAndExpenseSummaryRepositoryImpl.scala"
+      ],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/repository/ProjectionRepositoryImplModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/repository/ProjectionRepositoryImplBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/repository/ProjectionRepositoryImplTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "827"
+      },
+      "nextAction": "完成批准的新5项精确观察与综合独立审计；原失败不洗绿，不重跑57项",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 25,
+      "artifactTypeKey": "connector-implementation",
+      "category": "traditional",
+      "role": "外部连接器实现",
+      "state": "NOT_STARTED_CURATED_GOLDEN",
+      "label": "待逐族Scala金样，认可后才JS",
+      "alignmentImplemented": false,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "services-connectors",
+      "independentExpected": "BLOCKED_NO_QUALIFYING_PUBLIC_ORACLE",
+      "newV5ExpectedPaths": [],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/connector/ConnectorImplModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/connector/ConnectorImplBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/connector/ConnectorImplTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "845"
+      },
+      "nextAction": "一次一族先手写优秀Plain FP+OO Scala及ScalaCheck性质规格，回报讲解、用户认可具体版本后才实施对应JS",
+      "scopeLimit": "curated新质量路线；原八族公开Scala raw expected缺口仍未补签，不能用curated填旧raw库存"
+    },
+    {
+      "ordinal": 26,
+      "artifactTypeKey": "projection-apply-event",
+      "category": "traditional",
+      "role": "条件性ApplyEvent",
+      "state": "NOT_STARTED_CURATED_GOLDEN",
+      "label": "待逐族Scala金样，认可后才JS",
+      "alignmentImplemented": false,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "projection-execution",
+      "independentExpected": "BLOCKED_NO_QUALIFYING_PUBLIC_ORACLE",
+      "newV5ExpectedPaths": [],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/ProjectionModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/ProjectionBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionApplyEventTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "856,864"
+      },
+      "nextAction": "一次一族先手写优秀Plain FP+OO Scala及ScalaCheck性质规格，回报讲解、用户认可具体版本后才实施对应JS",
+      "scopeLimit": "curated新质量路线；原八族公开Scala raw expected缺口仍未补签，不能用curated填旧raw库存"
+    },
+    {
+      "ordinal": 27,
+      "artifactTypeKey": "projection",
+      "category": "traditional",
+      "role": "投影运行装配",
+      "state": "IMPLEMENTED_PENDING_ACCEPTANCE",
+      "label": "已实现／待最终验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "projection-execution",
+      "independentExpected": "SEALED_FULL_CUSTODY",
+      "newV5ExpectedPaths": [
+        "app/net/imadz/banking/application/projection/MonthlyIncomeAndExpenseSummaryProjection.scala"
+      ],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/ProjectionModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/ProjectionBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "856,878"
+      },
+      "nextAction": "完成批准的新5项精确观察与综合独立审计；原失败不洗绿，不重跑57项",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 28,
+      "artifactTypeKey": "projection-handler",
+      "category": "traditional",
+      "role": "投影事件处理",
+      "state": "IMPLEMENTED_PENDING_ACCEPTANCE",
+      "label": "已实现／待最终验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "projection-execution",
+      "independentExpected": "SEALED_FULL_CUSTODY",
+      "newV5ExpectedPaths": [
+        "app/net/imadz/banking/application/projection/handlers/MonthlyIncomeAndExpenseSummaryProjectionHandler.scala"
+      ],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/ProjectionModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/ProjectionBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ProjectionHandlerTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "890–896"
+      },
+      "nextAction": "完成批准的新5项精确观察与综合独立审计；原失败不洗绿，不重跑57项",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 29,
+      "artifactTypeKey": "protobuf-schema",
+      "category": "traditional",
+      "role": "aggregate/shared Proto schema",
+      "state": "IMPLEMENTED_PENDING_ACCEPTANCE",
+      "label": "已实现／待最终验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "serialization",
+      "independentExpected": "SEALED_FULL_CUSTODY",
+      "newV5ExpectedPaths": [
+        "app/protobuf/credit_balance.proto",
+        "app/protobuf/shared_value_objects.proto"
+      ],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/proto/ProtoFileModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/proto/AggregateRootProtoBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/proto/ProtoTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "914,966"
+      },
+      "nextAction": "完成批准的新5项精确观察与综合独立审计；原失败不洗绿，不重跑57项",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 30,
+      "artifactTypeKey": "proto-converter",
+      "category": "traditional",
+      "role": "Proto转换器",
+      "state": "IMPLEMENTED_PENDING_ACCEPTANCE",
+      "label": "已实现／待最终验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "serialization",
+      "independentExpected": "SEALED_FULL_CUSTODY",
+      "newV5ExpectedPaths": [
+        "app/net/imadz/banking/infrastructure/persistence/converters/CreditBalanceProtoConverters.scala"
+      ],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/persistence/AggregateConverterModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/persistence/AggregateConverterBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/persistence/AggregateConverterTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "930"
+      },
+      "nextAction": "完成批准的新5项精确观察与综合独立审计；原失败不洗绿，不重跑57项",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 31,
+      "artifactTypeKey": "event-adapter",
+      "category": "traditional",
+      "role": "事件序列化适配",
+      "state": "IMPLEMENTED_PENDING_ACCEPTANCE",
+      "label": "已实现／待最终验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "serialization",
+      "independentExpected": "SEALED_FULL_CUSTODY",
+      "newV5ExpectedPaths": [
+        "app/net/imadz/banking/infrastructure/persistence/CreditBalanceEventAdapter.scala"
+      ],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/persistence/AdapterModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/persistence/AggregateAdapterBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/persistence/EventAdapterTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "940"
+      },
+      "nextAction": "完成批准的新5项精确观察与综合独立审计；原失败不洗绿，不重跑57项",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 32,
+      "artifactTypeKey": "snapshot-adapter",
+      "category": "traditional",
+      "role": "快照序列化适配",
+      "state": "IMPLEMENTED_PENDING_ACCEPTANCE",
+      "label": "已实现／待最终验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "serialization",
+      "independentExpected": "SEALED_FULL_CUSTODY",
+      "newV5ExpectedPaths": [
+        "app/net/imadz/banking/infrastructure/persistence/CreditBalanceSnapshotAdapter.scala"
+      ],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/persistence/AdapterModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/persistence/AggregateAdapterBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/persistence/SnapshotAdapterTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "951"
+      },
+      "nextAction": "完成批准的新5项精确观察与综合独立审计；原失败不洗绿，不重跑57项",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 33,
+      "artifactTypeKey": "saga-context",
+      "category": "traditional",
+      "role": "classic Saga上下文",
+      "state": "IMPLEMENTED_PENDING_ACCEPTANCE",
+      "label": "已实现／待最终验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "classic-saga",
+      "independentExpected": "SEALED_FULL_CUSTODY",
+      "newV5ExpectedPaths": [
+        "app/net/imadz/banking/application/services/transactor/MoneyTransferContext.scala"
+      ],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/SagaContextModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/SagaContextBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/SagaContextTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "979"
+      },
+      "nextAction": "完成批准的新5项精确观察与综合独立审计；原失败不洗绿，不重跑57项",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 34,
+      "artifactTypeKey": "aggregate-state-controller",
+      "category": "traditional",
+      "role": "聚合状态查询控制器",
+      "state": "NOT_STARTED_CURATED_GOLDEN",
+      "label": "待逐族Scala金样，认可后才JS",
+      "alignmentImplemented": false,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "api",
+      "independentExpected": "BLOCKED_NO_QUALIFYING_PUBLIC_ORACLE",
+      "newV5ExpectedPaths": [],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/api/AggregateStateControllerModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/api/AggregateStateControllerBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/AggregateStateControllerTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "1020"
+      },
+      "nextAction": "一次一族先手写优秀Plain FP+OO Scala及ScalaCheck性质规格，回报讲解、用户认可具体版本后才实施对应JS",
+      "scopeLimit": "curated新质量路线；原八族公开Scala raw expected缺口仍未补签，不能用curated填旧raw库存"
+    },
+    {
+      "ordinal": 35,
+      "artifactTypeKey": "http-controller",
+      "category": "traditional",
+      "role": "HTTP控制器",
+      "state": "IMPLEMENTED_PENDING_ACCEPTANCE",
+      "label": "已实现／待最终验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "api",
+      "independentExpected": "SEALED_FULL_CUSTODY",
+      "newV5ExpectedPaths": [
+        "app/controllers/HomeController.scala",
+        "app/controllers/CreditBalanceApiController.scala"
+      ],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/api/ControllerModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/api/ControllerBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/ControllerTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "1035"
+      },
+      "nextAction": "完成批准的新5项精确观察与综合独立审计；原失败不洗绿，不重跑57项",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 36,
+      "artifactTypeKey": "command-endpoint-dsl",
+      "category": "traditional",
+      "role": "命令端点DSL",
+      "state": "IMPLEMENTED_PENDING_ACCEPTANCE",
+      "label": "已实现／待最终验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "api",
+      "independentExpected": "SEALED_FULL_CUSTODY",
+      "newV5ExpectedPaths": [
+        "app/net/imadz/infrastructure/api/CommandDsl.scala"
+      ],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/api/CommandDslModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/api/CommandDslBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/CommandDslTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "1048"
+      },
+      "nextAction": "完成批准的新5项精确观察与综合独立审计；原失败不洗绿，不重跑57项",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 37,
+      "artifactTypeKey": "route-definition",
+      "category": "traditional",
+      "role": "完整routes文件与writer",
+      "state": "IMPLEMENTED_PENDING_ACCEPTANCE",
+      "label": "已实现／待最终验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "api",
+      "independentExpected": "SEALED_FULL_CUSTODY",
+      "newV5ExpectedPaths": [
+        "conf/routes"
+      ],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/api/RoutesFragmentModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/api/RoutesBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/api/RoutesTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "1061,1082"
+      },
+      "nextAction": "完成批准的新5项精确观察与综合独立审计；原失败不洗绿，不重跑57项",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 38,
+      "artifactTypeKey": "bootstrap",
+      "category": "traditional",
+      "role": "组件启动（四变体仍一族）",
+      "state": "IMPLEMENTED_PENDING_ACCEPTANCE",
+      "label": "已实现／待最终验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "bootstrap",
+      "independentExpected": "SEALED_FULL_CUSTODY",
+      "newV5ExpectedPaths": [
+        "app/net/imadz/banking/infrastructure/bootstrap/CreditBalanceBootstrap.scala",
+        "app/net/imadz/banking/infrastructure/bootstrap/SagaTransactionCoordinatorBootstrap.scala",
+        "app/net/imadz/banking/infrastructure/bootstrap/MoneyTransferSagaTransactorBootstrap.scala",
+        "app/net/imadz/banking/infrastructure/bootstrap/MonthlyIncomeAndExpenseSummaryBootstrap.scala"
+      ],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/bootstrap/BootstrapModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/bootstrap/BootstrapBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/bootstsrap/BootstrapTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "1141–1175"
+      },
+      "nextAction": "完成批准的新5项精确观察与综合独立审计；原失败不洗绿，不重跑57项",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 39,
+      "artifactTypeKey": "application-bootstrap",
+      "category": "traditional",
+      "role": "全局应用启动",
+      "state": "IMPLEMENTED_PENDING_ACCEPTANCE",
+      "label": "已实现／待最终验收",
+      "alignmentImplemented": true,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "bootstrap",
+      "independentExpected": "SEALED_FULL_CUSTODY",
+      "newV5ExpectedPaths": [
+        "app/net/imadz/banking/infrastructure/bootstrap/ApplicationBootstrap.scala"
+      ],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/bootstrap/ApplicationBootstrapModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/bootstrap/ApplicationBootstrapBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/bootstsrap/ApplicationBootstrapTemplate.scala"
+      },
+      "catalogDispatch": {
+        "file": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/CQRSApplicationGenerator.scala",
+        "lines": "1188"
+      },
+      "nextAction": "完成批准的新5项精确观察与综合独立审计；原失败不洗绿，不重跑57项",
+      "scopeLimit": "完整已登记输入上的限定raw路径/字节及准入，不表示Scala编译/type closure/ABI/质量/业务runtime"
+    },
+    {
+      "ordinal": 40,
+      "artifactTypeKey": "strict-saga-module",
+      "category": "strict/composition extension",
+      "role": "严格Saga模块",
+      "state": "NOT_STARTED_CURATED_GOLDEN",
+      "label": "待逐族Scala金样，认可后才JS",
+      "alignmentImplemented": false,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "strict-module",
+      "independentExpected": "BLOCKED_NO_QUALIFYING_PUBLIC_ORACLE",
+      "newV5ExpectedPaths": [],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/StrictSagaModuleModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/StrictSagaModuleBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/StrictSagaModuleTemplate.scala"
+      },
+      "catalogDispatch": "StrictSagaGenerationPlan and CQRSApplicationGenerator strict foreach",
+      "nextAction": "一次一族先手写优秀Plain FP+OO Scala及ScalaCheck性质规格，回报讲解、用户认可具体版本后才实施对应JS",
+      "scopeLimit": "curated新质量路线；原八族公开Scala raw expected缺口仍未补签，不能用curated填旧raw库存"
+    },
+    {
+      "ordinal": 41,
+      "artifactTypeKey": "strict-fixture-host",
+      "category": "strict/composition extension",
+      "role": "严格fixture生产/测试宿主",
+      "state": "NOT_STARTED_CURATED_GOLDEN",
+      "label": "待逐族Scala金样，认可后才JS",
+      "alignmentImplemented": false,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "strict-fixture",
+      "independentExpected": "BLOCKED_NO_QUALIFYING_PUBLIC_ORACLE",
+      "newV5ExpectedPaths": [],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/transactor/FixtureHostModel.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/FixtureHostBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/FixtureHostTemplate.scala"
+      },
+      "catalogDispatch": "CQRSApplicationGenerator:231-248",
+      "nextAction": "一次一族先手写优秀Plain FP+OO Scala及ScalaCheck性质规格，回报讲解、用户认可具体版本后才实施对应JS",
+      "scopeLimit": "curated新质量路线；原八族公开Scala raw expected缺口仍未补签，不能用curated填旧raw库存"
+    },
+    {
+      "ordinal": 42,
+      "artifactTypeKey": "composition-invocation-host",
+      "category": "strict/composition extension",
+      "role": "组合调用宿主",
+      "state": "NOT_STARTED_CURATED_GOLDEN",
+      "label": "待逐族Scala金样，认可后才JS",
+      "alignmentImplemented": false,
+      "acceptedClassicVersion": null,
+      "newV5FinalAcceptance": false,
+      "owner": "composition",
+      "independentExpected": "BLOCKED_NO_QUALIFYING_PUBLIC_ORACLE",
+      "newV5ExpectedPaths": [],
+      "scalaSourceRelativePaths": {
+        "model": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/CompositionHostBuilder.scala",
+        "builder": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/application/transactor/CompositionHostBuilder.scala",
+        "template": "src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/transactor/InvocationHostTemplate.scala"
+      },
+      "catalogDispatch": "CQRSApplicationGenerator:258-269",
+      "nextAction": "一次一族先手写优秀Plain FP+OO Scala及ScalaCheck性质规格，回报讲解、用户认可具体版本后才实施对应JS",
+      "scopeLimit": "curated新质量路线；原八族公开Scala raw expected缺口仍未补签，不能用curated填旧raw库存"
+    }
+  ],
+  "all31Closed": false,
+  "checkpointIsFinalAcceptance": false,
+  "priorStatusProjection": {
+    "file": ".rounds/classic-cqrs-v5-20261117-01/handoff/ARTIFACT-TYPE-STATUS-08.json",
+    "bytes": 89800,
+    "sha256": "9e4a2ad82a43c9bac891071c0ac8d9f9882a195f9d407ca4afa4b153fde383f4"
+  },
+  "excluded": [
+    {
+      "id": "policy-template",
+      "reason": "CQRSApplicationGenerator lines575-583 commented out; Node rules_domain_gen is separate"
+    },
+    {
+      "id": "semantic-products-route",
+      "reason": "CodegenMain semanticProductsFile -> Product* builders/templates is registered but not this style baseline; source snapshots preserve it"
+    },
+    {
+      "id": "static-scaffold",
+      "reason": "copied, not generated through per-artifact MBT"
+    }
+  ],
+  "currentRuntime": {
+    "core": "CORE_COMPLETE; independently audited raw bytes/paths",
+    "supplement": "BLOCKED,43actual42accepted1failed4unexecuted; independently audited42, not complete47",
+    "fiveFinish": "NOT_STARTED, no budget/run; adapter and budget fix14 independent static reviews passed"
+  }
+}

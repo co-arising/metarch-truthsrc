@@ -1,6 +1,12 @@
 # Scala → JavaScript 生成器内容级对齐
 
-最新实施：classic `@3` 在原十五件基础上增加 **aggregate-root／aggregate-factory**，两输入A/B各17/17完整原字节、两次源码确定性、37项有效接口观察和`@1/@2`两输入回归均完成，**独立源码及证据核对已闭合**。见 [@3实施收口](CLASSIC-V3-IMPLEMENTATION-CLOSEOUT.md)、[@3范围](CLASSIC-V3-SCOPE.md) 和 [@3反馈](CLASSIC-V3-FEEDBACK.md)。结论只指non-runnable scaffold；不修改原raw名字、回复或`???`，不迁银行，未提交／推送。
+当前交付：classic `@4/@5` **实现检查点**，见 [检查点说明](CLASSIC-V5-CHECKPOINT.md) 和 [完整42族状态表](ARTIFACT-TYPE-STATUS.md)。11族已有限定raw接受、23族已实现待综合最终验收、8族待逐族Plain FP+OO及ScalaCheck性质金样；不是23族已最终完成。现有10项core完整字节观察及42项补充事实已独立审计，最后5项公开观察尚未启动。按用户要求本地提交此检查点，不推送；真实SHA由Git及本机压缩窗口15的提交后记录绑定。
+
+以下 `@4` 的“未提交”及各收口状态保留其写成时点，不代表当前检查点仍未交付，也不改签原始验收事实。
+
+最新完成：classic `@4` 新增 **aggregate-repository-port／aggregate-repository-implementation**，独立十九件范围及38Scala86073bytes资产、MBT/精确公开版本接线已完成；四套真实public实产各19/19完整raw bytes一致，50正式LIVE接口观察exit0/1/2＝26/7/17，旧@1/@2/@3各4/15/17回归。独立源码、执行材料静态复核与最终证据审计均已闭合，结论 **PASS_SCOPED_RAW_BYTE_AND_BOUNDED_INTERFACE**。见 [@4实施收口](CLASSIC-V4-IMPLEMENTATION-CLOSEOUT.md)、[@4范围](CLASSIC-V4-SCOPE.md) 和 [@4反馈](CLASSIC-V4-FEEDBACK.md)。原默认CommandFamily缺陷保留，十九件**不是type-closed**；不把源码复刻称为Scala编译／业务runtime／用户target通过。未提交／推送。
+
+已完成：classic `@3` 在原十五件基础上增加 **aggregate-root／aggregate-factory**，两输入A/B各17/17完整原字节、两次源码确定性、37项有效接口观察和`@1/@2`两输入回归均完成，**独立源码及证据核对已闭合**。见 [@3实施收口](CLASSIC-V3-IMPLEMENTATION-CLOSEOUT.md)、[@3范围](CLASSIC-V3-SCOPE.md) 和 [@3反馈](CLASSIC-V3-FEEDBACK.md)。结论只指non-runnable scaffold；不修改原raw名字、回复或`???`，不迁银行。@3已本地提交`2a06dd3`未push；原收口记录的“未提交”只表示写成时点，不改历史验收。
 
 已完成基线：**classic `@2` 已承接 F1 并扩展 value-object／invariant-rule／event-handler：两份完整同输入各15文件实际逐字节一致，重复生成、六文件负对照及有界准入均已闭合**，见 [@2实施收口](CLASSIC-V2-IMPLEMENTATION-CLOSEOUT.md) 与 [反馈裁定](CLASSIC-V2-FEEDBACK.md)。旧`@1`仍两套4/4回归；新增目标不改变其四族含义。本包独立核对及汇总元数据补正已闭合；原失败和原plan不改，不用运行包装的PASS替代该复核。最终来源见 [限定验收结论](../../.rounds/classic-cqrs-v2-closeout-20261116-01/final-completion.json)。此前 [F1实施收口](F1-IMPLEMENTATION-CLOSEOUT.md) 保留原四件历史证据。[验收与反馈合同](ACCEPTANCE-AND-FEEDBACK-CONTRACT.md)优先于旧“允许差异”口径；[common 0.2.1消费核对](COMMON-CORE-021-CONSUMPTION.md)替代历史等发布状态。
 

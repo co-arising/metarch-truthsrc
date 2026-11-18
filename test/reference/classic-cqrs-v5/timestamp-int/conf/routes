@@ -1,0 +1,16 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# https://www.playframework.com/documentation/latest/ScalaRouting
+# ~~~~
+
+# An example controller showing a sample home page
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file                   controllers.Assets.versioned(path="/public", file: Asset)
+# >>> gen_api_layer (E301) >>> (generated block placeholder; idempotent replace)
+# <<< gen_api_layer <<<
+
+# The codegen:controllers block below is managed by CodegenMain (inside markers = generated; outside = manual).
+# >>> codegen:controllers (do not edit inside; regenerated) >>>
+POST     /api/v1/credit-balances/deposit  controllers.CreditBalanceApiController.deposit
+GET      /api/v1/credit-balances/monthly-income-expense-summaries  controllers.CreditBalanceApiController.monthlySummaries(page: Int ?= 1, pageSize: Int ?= 20)
+# <<< codegen:controllers <<<

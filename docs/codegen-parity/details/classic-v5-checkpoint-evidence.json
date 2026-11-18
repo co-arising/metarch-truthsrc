@@ -1,0 +1,153 @@
+{
+  "schemaVersion": "truthsrc.classic-v5-checkpoint-evidence/v1",
+  "kind": "IMPLEMENTATION_CHECKPOINT_NOT_FINAL_ACCEPTANCE",
+  "candidateBaseHead": "2a06dd319690dcb6c8907821ea2bdaa942e293f1",
+  "branch": "fix/classic-cqrs-f1-byte-parity",
+  "candidateFiles": 258,
+  "candidateBytes": 1798771,
+  "statusCounts": {
+    "total": 42,
+    "traditional": 39,
+    "extensions": 3,
+    "COMPLETED_SCOPED_RAW": 11,
+    "IMPLEMENTED_PENDING_ACCEPTANCE": 23,
+    "NOT_STARTED_CURATED_GOLDEN": 8
+  },
+  "new23FinalAcceptance": false,
+  "all31Closed": false,
+  "core": {
+    "actualCalls": 10,
+    "parentObservedExitCode": 0,
+    "completeEqualComparisons": [
+      52,
+      52,
+      52,
+      52,
+      52,
+      52
+    ],
+    "independentAudit": "PASS_SCOPED_NEW_CORE_EVIDENCE"
+  },
+  "supplement": {
+    "actualCalls": 43,
+    "acceptedObservations": 42,
+    "parentObservedExitCode": 2,
+    "failedObservations": [
+      "supp.plan.saga-phase-command-owner"
+    ],
+    "unexecuted": [
+      "supp.plan.resolved-service-path-collision",
+      "supp.plan.projection-source-aggregate",
+      "supp.plan.projection-identity-scheme",
+      "supp.plan.no-api-endpoint-gates"
+    ],
+    "independentAudit": "PASS_SCOPED_SETTLED_42_EVIDENCE; whole original run BLOCKED"
+  },
+  "fiveFinish": {
+    "budgetExists": false,
+    "runExists": false,
+    "newRuntimeExecutions": 0,
+    "adapterStaticReview": "PASS_SCOPED_FINISH_STATIC",
+    "budgetReview": "PASS_SCOPED_FINISH_BUDGET_STATIC",
+    "conditionalCarryApproved": 52,
+    "fixedNewCases": 5
+  },
+  "localEvidencePins": [
+    {
+      "file": ".rounds/classic-cqrs-v5-formal-core-10/completion.json",
+      "bytes": 251355,
+      "sha256": "516d8a3391f8e45033d3eb168cf11e66449758389075dbdbd7cac01619c50b27"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-formal-core-10/closeout.json",
+      "bytes": 80069,
+      "sha256": "62e80d2e3131749de5668db097b7aecfa996a591f1993a0b64f2e928b68aec9f"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-20261117-02/formal/observations-10/evidence/completion-failure.json",
+      "bytes": 13356930,
+      "sha256": "617a473d391688b88c1823e6419b32decf56022471bc7868462d8512b5d4b2d1"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-20261117-02/formal/observations-10/evidence/source-before.json",
+      "bytes": 468288,
+      "sha256": "fd55db9ea0a1682abf53cef95a8db81656c43bcbe7f7673e38ce7ea686801d22"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-20261117-02/formal/observations-10/evidence/source-after.json",
+      "bytes": 468288,
+      "sha256": "fd55db9ea0a1682abf53cef95a8db81656c43bcbe7f7673e38ce7ea686801d22"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-20261117-02/audit/new-core-actual-evidence-review-10.json",
+      "bytes": 2626,
+      "sha256": "b694126adfe2600c8b61db1af288c4431ab5170c8794934b11bb93524644badc"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-20261117-02/audit/new-supplement-settled-42-review-12.json",
+      "bytes": 2298,
+      "sha256": "593fab06eae82a1d6ffb3cde861a6a85a4740b0dbca67abe7c13fa3369cf72a7"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-20261117-02/audit/frozen-scala-phase-owner-review-12.json",
+      "bytes": 2584,
+      "sha256": "a084f3446d0f191e4a930b344c6d4972adbf5ec14219f9e33f11f3d2491fe81a"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-20261117-02/audit/last-four-static-reachability-review-12.json",
+      "bytes": 2456,
+      "sha256": "081b86b0fc6dde199a04bd1648e88fbddd711956e27b1efc0dd6a60a1a747a94"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-20261117-02/audit/performance-source-analysis-01.json",
+      "bytes": 3260,
+      "sha256": "4192c883370cc5882c2ed44276a55a579eaf93963bda68c1afa77e8839391b4b"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-20261117-02/formal/final-freeze-10/source-freeze.json",
+      "bytes": 197880,
+      "sha256": "0a3ec72f36084bd06e9cc1f257224bf3cd92dcc06fe197638e7e0dc86001103b"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-20261117-02/formal/final-freeze-10/asset-recheck.json",
+      "bytes": 79088,
+      "sha256": "66900171c6fc1bbdfd9b9352dc9ed688919d90b6298f80e994be51bac651bfc2"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-finish-20261118-01/prepared/contract.json",
+      "bytes": 1268647,
+      "sha256": "8c15cb8a4fa7780eaba23bbddfc553d8d99341db4e88af999609b3fdb4024138"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-finish-20261118-01/adapter.mjs",
+      "bytes": 24103,
+      "sha256": "d8564175dbfee2e8a0adfac68eb027876c45801fbb8ec64d4dce350cdeeede35"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-finish-20261118-01/prepared/start.py",
+      "bytes": 6027,
+      "sha256": "cdc1a5dc48819b8ed18b586688074857beefe78088694cfa282d3a77b1c2f49f"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-finish-20261118-01/audit/budget-review.json",
+      "bytes": 1842,
+      "sha256": "c887b8da37eda78480a98331353e92c50a1b68f0a44cd2b12154084261151d61"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-finish-20261118-01/audit/static-review.json",
+      "bytes": 1131,
+      "sha256": "d1ef913fdb372504715e00d28d2287c326481f1301f833b5ea94d3f1c55f20ad"
+    }
+  ],
+  "runtimeEvidenceIsPortable": false,
+  "prohibitedClaims": [
+    "new23 final acceptance",
+    "all31 closed",
+    "original47 complete",
+    "ScalaCompilation",
+    "type closure",
+    "PlainFP+OO curated quality",
+    "ScalaCheck execution",
+    "business runtime"
+  ]
+}

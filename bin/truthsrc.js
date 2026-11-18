@@ -185,7 +185,10 @@ switch (cmd) {
     try {
       const { generateProductCli } = await import('../lib/products/generate-cli.mjs');
       console.log(JSON.stringify(await generateProductCli(process.argv.slice(3))));
-    } catch (error) { die(`[FAIL] ${error.message}`); }
+    } catch (error) {
+      const code = error.diagnostic?.code;
+      die(`[FAIL] ${typeof code === 'string' && code.length ? code + ': ' : ''}${error.message}`);
+    }
     break;
   }
   case 'compile-products': {

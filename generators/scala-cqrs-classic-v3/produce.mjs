@@ -6,7 +6,7 @@ import { buildClassicAggregateFactory } from '../scala-cqrs-play-service/build-c
 import { renderClassicAggregateFactory } from '../scala-cqrs-play-service/templates/classic-aggregate-factory.mjs';
 
 export const version = '3';
-function buildAggregateSourceArtifacts(product, ctx) {
+export function buildAggregateSourceArtifacts(product, ctx) {
   const { system, source } = product;
   return [...buildSourceArtifacts(product, ctx), ...system.application.aggregates.flatMap((meta, i) => {
     const location = { document: source.document, pointer: source.pointer + '/application/aggregates/' + i };

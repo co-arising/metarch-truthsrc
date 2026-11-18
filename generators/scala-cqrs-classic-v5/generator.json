@@ -1,0 +1,117 @@
+{
+  "schemaVersion": "truthsrc.product-generator/v1",
+  "name": "scala-cqrs-classic-v5",
+  "version": "5",
+  "targetProfile": "scala-cqrs-classic-scaffold@5",
+  "products": [
+    {
+      "id": "classic-architecture",
+      "version": "5",
+      "payloadSchemaVersion": "truthsrc.classic-architecture/v5",
+      "capabilities": [
+        {
+          "id": "classic-source-scaffold",
+          "version": "5"
+        }
+      ]
+    }
+  ],
+  "producers": [
+    {
+      "id": "classic-source-scaffold",
+      "version": "5",
+      "products": [
+        "classic-architecture"
+      ],
+      "artifactKinds": [
+        "application-protocol",
+        "command-helper",
+        "aggregate-behavior",
+        "domain-entity",
+        "value-object",
+        "invariant-rule",
+        "event-handler",
+        "aggregate-root",
+        "aggregate-factory",
+        "aggregate-repository-port",
+        "aggregate-repository-implementation",
+        "domain-service",
+        "aggregate-rules-formal",
+        "external-connector-port",
+        "application-service",
+        "query-service",
+        "saga-participant",
+        "saga-definition",
+        "saga-trigger-protocol",
+        "saga-trigger-entity",
+        "saga-trigger-root",
+        "saga-trigger-behaviors",
+        "projection-repository-port",
+        "projection-repository-implementation",
+        "connector-implementation",
+        "projection-apply-event",
+        "projection",
+        "projection-handler",
+        "protobuf-schema",
+        "proto-converter",
+        "event-adapter",
+        "snapshot-adapter",
+        "saga-context",
+        "aggregate-state-controller",
+        "http-controller",
+        "command-endpoint-dsl",
+        "route-definition",
+        "bootstrap",
+        "application-bootstrap"
+      ]
+    }
+  ],
+  "artifactKinds": [
+    "application-protocol",
+    "command-helper",
+    "aggregate-behavior",
+    "domain-entity",
+    "value-object",
+    "invariant-rule",
+    "event-handler",
+    "aggregate-root",
+    "aggregate-factory",
+    "aggregate-repository-port",
+    "aggregate-repository-implementation",
+    "domain-service",
+    "aggregate-rules-formal",
+    "external-connector-port",
+    "application-service",
+    "query-service",
+    "saga-participant",
+    "saga-definition",
+    "saga-trigger-protocol",
+    "saga-trigger-entity",
+    "saga-trigger-root",
+    "saga-trigger-behaviors",
+    "projection-repository-port",
+    "projection-repository-implementation",
+    "connector-implementation",
+    "projection-apply-event",
+    "projection",
+    "projection-handler",
+    "protobuf-schema",
+    "proto-converter",
+    "event-adapter",
+    "snapshot-adapter",
+    "saga-context",
+    "aggregate-state-controller",
+    "http-controller",
+    "command-endpoint-dsl",
+    "route-definition",
+    "bootstrap",
+    "application-bootstrap"
+  ],
+  "options": [
+    "rootPackage",
+    "frameworkPackage",
+    "moduleName",
+    "generatorVersion",
+    "knowledgeRelease"
+  ]
+}
