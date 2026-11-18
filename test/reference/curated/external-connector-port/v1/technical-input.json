@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "curated.external-connector-port.technical-input/v1",
+  "artifactType": "external-connector-port",
+  "candidateVersion": "v1",
+  "status": "SOURCES_PREPARED_AWAITING_QUALITY_EXECUTION",
+  "scope": {
+    "sample": "StockCatalog",
+    "basePackage": "example.stockreservation",
+    "layout": "single-project-app",
+    "purpose": "Independent small connector sample: typed async capability face, optional script slot, distinguishable refusal/failure outcomes and delegation-only infrastructure.",
+    "notClaims": ["banking business", "complete warehouse application", "raw Scala oracle replacement", "bank TechnicalPorts semantics", "formal composite port migration", "connector-implementation family contract", "generator implementation", "Guice runtime assembly"],
+    "rawAcceptanceUnchanged": true,
+    "all31Closed": false
+  },
+  "origins": [
+    {"id": "source-family-contract", "kind": "existing-source-contract", "path": "docs/codegen-parity/diffs/external-connector-port.diff.md", "sections": ["1", "2", "3", "4", "6", "8.3", "9"]},
+    {"id": "source-connector-model", "kind": "existing-interface-source", "path": "docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/ConnectorModel.scala", "symbols": ["ConnectorModel", "ConnectorMethodModel"]},
+    {"id": "source-connector-template", "kind": "existing-interface-source", "path": "docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ConnectorTemplate.scala", "symbols": ["ConnectorTemplate"]},
+    {"id": "source-style", "kind": "user-quality-contract", "path": "docs/codegen-parity/layout-and-style.md"},
+    {"id": "source-curated-analogy", "kind": "curated-structure-analogy-only", "path": "docs/codegen-parity/baseline/curated-scala/net/imadz/application/aggregates/repository/CreditBalanceRepository.scala", "note": "App-port with @ImplementedBy(infrastructure impl) analogy only; not a connector algorithm source."},
+    {"id": "source-stock-values", "kind": "approved-frozen-reuse", "path": "test/reference/curated/aggregate-rules-formal/v3/app/example/stockreservation/domain/values/ReservationValues.scala", "note": "Byte-identical frozen copy of the approved first-family values; nominal vocabulary reused, never re-edited here."},
+    {"id": "decision-catalog-v1", "kind": "new-candidate-design", "description": "This input explicitly defines the sample connector, protocol, results and delegation contract. Not historical truth, not approved production business semantics."}
+  ],
+  "legalDomain": {
+    "identifiers": "WarehouseId, SkuId and LocationId reuse the frozen first-family nominal domain: ASCII [A-Za-z0-9._-], length 1..64; illegal texts fail decoding, never coerce.",
+    "probeProtocol": "Exactly one line, no LF or CR. ANSWER|<sku>|<nonnegative Long> or REFUSED|<code>|<message>. Exact three-field arity; separator characters are structurally excluded by the arity check.",
+    "refusalFields": "code and message are nonempty; a refusal is a typed business result on the success channel, never a failure-channel conversion.",
+    "directoryProtocol": "Exactly one line, no LF or CR. DIRECTORY|<warehouseId>|<loc1>,<loc2,...>; an empty tail decodes to the empty vector; a trailing location separator is malformed; repeated locations stay verbatim in declared order.",
+    "failureChannels": "Transport failures and ProtocolViolation values live on the Future failure channel; refusals and answers live on the success channel. No shape is ever synthesized from a failure.",
+    "runner": "NodeSubprocessRunner.run performs exactly one subprocess execution per call; no retry, no timeout semantics declared in this sample.",
+    "dependency": "The implementation delegates only: one runner call per port call, verbatim script, typed lifting. ExecutionContext is injected explicitly and used only for Future transformation."
+  },
+  "types": [
+    {"name": "WarehouseId", "kind": "frozen-reuse", "underlying": "String"},
+    {"name": "SkuId", "kind": "frozen-reuse", "underlying": "String"},
+    {"name": "LocationId", "kind": "frozen-reuse", "underlying": "String"}
+  ],
+  "connector": {
+    "name": "StockCatalogConnector",
+    "packageName": "example.stockreservation.application.connectors",
+    "implementedBy": {
+      "name": "StockCatalogConnectorImpl",
+      "packageName": "example.stockreservation.infrastructure.connectors",
+      "mechanism": "com.google.inject.ImplementedBy classOf reference; the application-to-infrastructure import is the recorded D2 traditional exception",
+      "role": "sample-support reference implementation; the production implementation contract belongs to connector-implementation"
+    },
+    "methods": [
+      {"ordinal": 0, "name": "probeAvailability", "scriptParam": "script", "returnType": "AvailabilityOutcome", "intent": "Run the availability probe script against the external catalog and return the typed outcome."},
+      {"ordinal": 1, "name": "locationDirectory", "scriptParam": null, "returnType": "LocationDirectory", "intent": "Fetch the registered location directory snapshot of the warehouse from the external catalog.", "boundScript": "stockreservation/location-directory.v1"}
+    ],
+    "results": [
+      {"name": "AvailabilityOutcome", "kind": "sealed-adt", "package": "example.stockreservation.application.connectors", "variants": [
+        {"name": "Answer", "fields": [{"name": "sku", "type": "SkuId"}, {"name": "available", "type": "Long", "constraint": "nonnegative"}]},
+        {"name": "Refused", "fields": [{"name": "code", "type": "String", "constraint": "nonempty"}, {"name": "message", "type": "String", "constraint": "nonempty"}]}
+      ], "codec": "companion decode: String to Try[AvailabilityOutcome], total and deterministic"},
+      {"name": "LocationDirectory", "kind": "case-class", "package": "example.stockreservation.application.connectors", "fields": [
+        {"name": "warehouseId", "type": "WarehouseId"},
+        {"name": "locations", "type": {"kind": "sequence", "container": "Vector", "element": "LocationId"}}
+      ], "codec": "companion decode: String to Try[LocationDirectory], total and deterministic"}
+    ],
+    "protocolViolation": {"name": "ProtocolViolation", "kind": "final-case-class-exception-value", "note": "Constructed as a value and placed on the failure channel; never thrown, never converted into a business result."},
+    "runner": {"name": "NodeSubprocessRunner", "packageName": "example.stockreservation.infrastructure.connectors", "contract": "def run(script: String): Future[String] yielding one output line", "role": "handwritten injection seam; concrete subprocess mechanics belong to connector-implementation"},
+    "delegationGuarantees": ["exactly one runner call per port call", "script argument passed verbatim", "no retry after any failure", "no exception swallowing", "no synthesized success", "typed lifting only"]
+  },
+  "decisions": [
+    {"id": "D2", "choice": "Keep the traditional @ImplementedBy(classOf[infrastructure Impl]) annotation with its application-to-infrastructure import, matching the curated CreditBalanceRepository analogy; bootstrap-binding alternative not taken."},
+    {"id": "D3", "choice": "The sample implementation matches the port ABI exactly: both methods, both parameter shapes, shared typed lifting; the impl-family debt of first-method-only/parameters-Nil is not reproduced."},
+    {"id": "D6", "choice": "Drop the unused javax.inject._ wildcard, import scala.concurrent.Future as a short name, and use a single alphabetically sorted import block per file; recorded as an explicit formatting exception against the raw template."},
+    {"id": "D7", "choice": "Malformed payloads, illegal identifiers and non-single-line inputs always fail with a named ProtocolViolation on the failure channel; nothing is silently defaulted, truncated or coerced."},
+    {"id": "D1", "choice": "This sample migrates the traditional Node-tool connector capability face only; formal typed TechnicalPorts mapping stays out of scope."}
+  ]
+}
