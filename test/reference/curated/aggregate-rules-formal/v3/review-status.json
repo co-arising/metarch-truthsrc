@@ -2,7 +2,7 @@
   "schemaVersion": "curated.aggregate-rules-formal.review-status/v1",
   "artifactType": "aggregate-rules-formal",
   "candidateVersion": "v3",
-  "status": "QUALITY_EXECUTION_PASSED_AWAITING_USER_APPROVAL",
+  "status": "GOLDEN_APPROVED_JS_BYTE_PARITY_COMPLETE",
   "bundleSha256": "34f694ad4698b6d9a652153c9fee5589984fa5f79c53a1927fbdbe32a8f41933",
   "manifest": {
     "path": "manifest.json",
@@ -70,7 +70,36 @@
     }
   },
   "userGoldenApproval": "APPROVED_V3_BUNDLE_34f694ad_20261118",
-  "jsImplementation": "NOT_STARTED",
+  "jsImplementation": {
+    "status": "BYTE_PARITY_COMPLETE",
+    "generator": {
+      "path": "tools/gen-aggregate-rules-formal.mjs",
+      "commit": "040c626"
+    },
+    "inputContract": {
+      "path": "test/fixtures/aggregate-rules-formal-v1/input.json",
+      "commit": "040c626"
+    },
+    "acceptance": "Same-input JS generation byte-compared against the approved v3 golden: 4/4 production files sha256-identical, generation deterministic across runs",
+    "producedFiles": [
+      {
+        "path": "app/example/stockreservation/domain/values/ReservationValues.scala",
+        "sha256": "48f29020c0edc9b2f8f6a7c72a457f8108873233f8ca83c4fcdd108f18c4b67b"
+      },
+      {
+        "path": "app/example/stockreservation/domain/entities/StockReservationEntity.scala",
+        "sha256": "138d3eaae32c73cb2e924baaf5a25895b7123e8d00cbf9513e19b744d1475348"
+      },
+      {
+        "path": "app/example/stockreservation/domain/services/ReservationIdentity.scala",
+        "sha256": "b8c93db6d18b1d3cf2b75cd84c6d29caefdf57cc98b61fb9a84b8c8f90164645"
+      },
+      {
+        "path": "app/example/stockreservation/domain/invariant/StockReservationRules.scala",
+        "sha256": "635a522485fdaacf15f2acfa342c0dc8898f5e728e0d560c5e7ea38e6cdcf9e9"
+      }
+    ]
+  },
   "v1v2Preserved": true,
   "rawAcceptanceChanged": false,
   "all31Closed": false
