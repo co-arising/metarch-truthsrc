@@ -1,0 +1,184 @@
+{
+  "schemaVersion": "truthsrc.aggregate-rules-formal-input/v1",
+  "artifactType": "aggregate-rules-formal",
+  "goldenVersion": "v3",
+  "goldenBundle": "34f694ad4698b6d9a652153c9fee5589984fa5f79c53a1927fbdbe32a8f41933",
+  "basePackage": "example.stockreservation",
+  "values": {
+    "file": "app/example/stockreservation/domain/values/ReservationValues.scala",
+    "checker": {
+      "objectName": "ValueChecks",
+      "scope": "values",
+      "identifierAlphabet": {"ranges": [["a", "z"], ["A", "Z"], ["0", "9"]], "extra": [".", "_", "-"]},
+      "identifierMaximum": 64,
+      "reservationMaximum": 384
+    },
+    "nominal": [
+      {"name": "WarehouseId", "check": "identifier", "requireMessage": "WarehouseId must be a nonempty bounded ASCII identifier"},
+      {"name": "RequestId", "check": "identifier", "requireMessage": "RequestId must be a nonempty bounded ASCII identifier"},
+      {"name": "SkuId", "check": "identifier", "requireMessage": "SkuId must be a nonempty bounded ASCII identifier"},
+      {"name": "LocationId", "check": "identifier", "requireMessage": "LocationId must be a nonempty bounded ASCII identifier"},
+      {"name": "ReservationId", "check": "reservation", "requireMessage": "ReservationId must be nonempty bounded printable ASCII"},
+      {"name": "ReservationNote", "check": "nonNullBounded", "maximum": 256, "requireMessage": "ReservationNote must be a bounded non-null string"}
+    ]
+  },
+  "entity": {
+    "file": "app/example/stockreservation/domain/entities/StockReservationEntity.scala",
+    "objectName": "StockReservationEntity",
+    "storedRecord": {
+      "name": "StoredReservation",
+      "fields": [
+        {"name": "reservationId", "type": "ReservationId"},
+        {"name": "sku", "type": "SkuId"},
+        {"name": "quantity", "type": "Long"},
+        {"name": "locations", "type": "Vector[LocationId]"},
+        {"name": "locationNotes", "type": "Option[Map[LocationId, Vector[ReservationNote]]]"}
+      ],
+      "requires": ["quantity > 0L|Stored reservations must have a positive quantity"]
+    },
+    "state": {
+      "name": "StockReservationState",
+      "fields": [
+        {"name": "warehouseId", "type": "WarehouseId"},
+        {"name": "available", "type": "Map[SkuId, Long]"},
+        {"name": "registeredLocations", "type": "Set[LocationId]"},
+        {"name": "reservations", "type": "Map[RequestId, StoredReservation]"},
+        {"name": "confirmedRequests", "type": "Set[RequestId]"}
+      ],
+      "requires": [
+        "available.values.forall(_ >= 0L)|Available quantities must be nonnegative",
+        "confirmedRequests.subsetOf(reservations.keySet)|Confirmed requests must have reservations"
+      ]
+    },
+    "events": {
+      "trait": "StockReservationEvents",
+      "cases": [
+        {"name": "UnitsReserved", "fields": [
+          {"name": "requestId", "type": "RequestId"},
+          {"name": "reservationId", "type": "ReservationId"},
+          {"name": "sku", "type": "SkuId"},
+          {"name": "quantity", "type": "Long"},
+          {"name": "locations", "type": "Vector[LocationId]"},
+          {"name": "locationNotes", "type": "Option[Map[LocationId, Vector[ReservationNote]]]"}
+        ]},
+        {"name": "ReservationReceiptIssued", "fields": [
+          {"name": "requestId", "type": "RequestId"},
+          {"name": "reservationId", "type": "ReservationId"}
+        ]},
+        {"name": "ReservationConfirmed", "fields": [
+          {"name": "requestId", "type": "RequestId"},
+          {"name": "reservationId", "type": "ReservationId"}
+        ]}
+      ]
+    }
+  },
+  "identity": {
+    "file": "app/example/stockreservation/domain/services/ReservationIdentity.scala",
+    "traitName": "ReservationIdentity",
+    "docComment": "/** A pure computation. Implementations must not read clocks, randomness, I/O or mutable registries. */",
+    "methodName": "reservationId",
+    "arguments": [
+      {"name": "warehouseId", "type": "WarehouseId"},
+      {"name": "requestId", "type": "RequestId"},
+      {"name": "sku", "type": "SkuId"},
+      {"name": "quantity", "type": "Long"}
+    ],
+    "resultType": "ReservationId",
+    "implementation": {
+      "objectName": "LengthPrefixedReservationIdentity",
+      "formatVersion": "stock-reservation:v1",
+      "segmentSeparator": "|"
+    }
+  },
+  "rules": {
+    "file": "app/example/stockreservation/domain/invariant/StockReservationRules.scala",
+    "objectName": "StockReservationRules",
+    "productionInterface": "net.imadz.common.CommonTypes.{InvariantRule, iMadzError}",
+    "rejectionAdt": {
+      "sealedAbstract": "ReservationRejection",
+      "adapterMethod": "toError",
+      "cases": [
+        {"name": "QuantityNotPositive", "code": "STOCK_QUANTITY_NONPOSITIVE", "message": "Requested quantity must be greater than zero."},
+        {"name": "RequestAlreadyReserved", "code": "STOCK_REQUEST_ALREADY_RESERVED", "message": "The request already has a reservation."},
+        {"name": "UnknownLocation", "code": "STOCK_LOCATION_UNKNOWN", "message": "Every requested location must be registered."},
+        {"name": "StockUnavailable", "code": "STOCK_UNAVAILABLE", "message": "The SKU must exist with sufficient available quantity."},
+        {"name": "ReservationMissing", "code": "STOCK_RESERVATION_MISSING", "message": "The request has no reservation."},
+        {"name": "ReservationIdentityMismatch", "code": "STOCK_RESERVATION_ID_MISMATCH", "message": "The reservation identity does not match the request."}
+      ]
+    },
+    "commands": [
+      {
+        "name": "ReserveUnits",
+        "params": {
+          "name": "ReserveUnitsParams",
+          "fields": [
+            {"name": "requestId", "type": "RequestId"},
+            {"name": "sku", "type": "SkuId"},
+            {"name": "quantity", "type": "Long"},
+            {"name": "locations", "type": "Vector[LocationId]"},
+            {"name": "locationNotes", "type": "Option[Map[LocationId, Vector[ReservationNote]]]"}
+          ]
+        },
+        "rule": {
+          "name": "ReserveUnitsRule",
+          "kind": "class",
+          "constructorDependency": {"type": "ReservationIdentity", "parameterName": "identity"},
+          "guardTrait": "ReserveGuard",
+          "guardTraitDoc": "/** One named single-responsibility admission check; the rule body never changes when guards are added. */",
+          "guardsVector": "reserveGuards",
+          "guardsVectorDoc": "/** Guard order is declared data; the first rejection wins and rejected params never compute an identity. */",
+          "guards": [
+            {"objectName": "QuantityGuard", "predicate": {"kind": "positive-long", "field": "quantity"}, "rejection": "QuantityNotPositive"},
+            {"objectName": "FreshRequestGuard", "predicate": {"kind": "map-absent", "map": "reservations", "key": "requestId"}, "rejection": "RequestAlreadyReserved"},
+            {"objectName": "RegisteredLocationsGuard", "predicate": {"kind": "collection-covered", "collection": "locations", "container": "registeredLocations"}, "rejection": "UnknownLocation"},
+            {"objectName": "SufficientStockGuard", "predicate": {"kind": "quantity-sufficient", "map": "available", "key": "sku", "quantity": "quantity"}, "rejection": "StockUnavailable"}
+          ]
+        },
+        "success": {
+          "method": "reserve",
+          "computation": {"portMethod": "identity.reservationId", "arguments": ["state.warehouseId", "p.requestId", "p.sku", "p.quantity"]},
+          "emissions": [
+            {"owner": "StockReservationEntity", "event": "UnitsReserved", "slots": [
+              {"field": "requestId", "value": "p.requestId"},
+              {"field": "reservationId", "value": "reservationId"},
+              {"field": "sku", "value": "p.sku"},
+              {"field": "quantity", "value": "p.quantity"},
+              {"field": "locations", "value": "p.locations"},
+              {"field": "locationNotes", "value": "p.locationNotes"}
+            ]},
+            {"owner": "StockReservationEntity", "event": "ReservationReceiptIssued", "slots": [
+              {"field": "requestId", "value": "p.requestId"},
+              {"field": "reservationId", "value": "reservationId"}
+            ]}
+          ]
+        }
+      },
+      {
+        "name": "ConfirmReservation",
+        "params": {
+          "name": "ConfirmReservationParams",
+          "fields": [
+            {"name": "requestId", "type": "RequestId"},
+            {"name": "reservationId", "type": "ReservationId"}
+          ]
+        },
+        "rule": {
+          "name": "ConfirmReservationRule",
+          "kind": "object",
+          "shape": "match",
+          "guards": [
+            {"predicate": {"kind": "map-contains", "map": "reservations", "key": "requestId"}, "onFail": {"kind": "reject", "rejection": "ReservationMissing"}},
+            {"predicate": {"kind": "record-identity-equal", "record": "state.reservations.get(p.requestId)", "identity": "p.reservationId"}, "onFail": {"kind": "reject", "rejection": "ReservationIdentityMismatch"}},
+            {"predicate": {"kind": "set-absent", "set": "confirmedRequests", "key": "requestId"}, "onFail": {"kind": "succeed-empty"}}
+          ],
+          "emissions": [
+            {"owner": "StockReservationEntity", "event": "ReservationConfirmed", "slots": [
+              {"field": "requestId", "value": "p.requestId"},
+              {"field": "reservationId", "value": "p.reservationId"}
+            ]}
+          ]
+        }
+      }
+    ]
+  }
+}
