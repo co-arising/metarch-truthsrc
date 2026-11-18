@@ -2,7 +2,7 @@
   "schemaVersion": "curated.connector-implementation.review-status/v1",
   "artifactType": "connector-implementation",
   "candidateVersion": "v1",
-  "status": "QUALITY_EXECUTION_COMPLETE_AWAITING_WALKTHROUGH",
+  "status": "GOLDEN_CANDIDATE_COMPLETE_AWAITING_WALKTHROUGH",
   "bundleSha256": "ee8482aa7b14b365e522f33f7fe763b7ebba4ca61049101fb3a1b680a816673a",
   "manifest": {
     "path": "manifest.json",
@@ -19,21 +19,21 @@
     "frozenReuse": "Twelve files byte-identical to the approved external-connector-port v1 bundle or the family it froze: port trait b46ae9bd, AvailabilityOutcome fd70662a, ConnectorProtocol b159df4b, LocationDirectory 7b98d957, StockCatalogModule e1a32442, ReservationValues 48f29020, CatalogOracle fecc6bba, ScalaSourceMetrics f5c66788, JsonOutput d622f3db, QualityInputs eb95be93, QualityMain 74c8358a, scope-exceptions e901e444"
   },
   "v1QualityRun": {
-    "round": ".rounds/connector-implementation-quality-20261119-01",
+    "round": ".rounds/connector-implementation-quality-20261119-02",
     "prepared": {
-      "file": ".rounds/connector-implementation-quality-20261119-01/prepared.json",
+      "file": ".rounds/connector-implementation-quality-20261119-02/prepared.json",
       "sha256": "67104d36adfd22abbd0d026c3df5b0fdf1211d3ee1f1da1d907f582b06c60512"
     },
     "attempt": {
       "id": "attempt-01",
       "actualJvmCalls": 6,
       "pids": [
-        84086,
-        84094,
-        84119,
-        84127,
-        84134,
-        84155
+        84291,
+        84299,
+        84324,
+        84330,
+        84338,
+        84358
       ],
       "allExit0": true,
       "timeouts": 0,
@@ -46,7 +46,7 @@
       "violations": 0,
       "excess": 0,
       "engineCoreUnchanged": "ownDecisions 16, control 7, declaredScopes 13, forbidden 16, isDeclaration 7 match the aggregate-rules-formal v3 exceptions for the identical engine core; import direction rules are named per-layer predicates",
-      "file": ".rounds/connector-implementation-quality-20261119-01/attempt-01/results/metrics.json"
+      "file": ".rounds/connector-implementation-quality-20261119-02/attempt-01/results/metrics.json"
     },
     "properties": {
       "seeds": [
@@ -66,7 +66,8 @@
       "guiceVariant": "4.2.1 no_aop (AOP interception machinery unused by the sample)",
       "runtimeInjectorVerified": true
     },
-    "discoveryNote": "Attempt-01 of the same round first failed compile-properties on Scala infix precedence (a eq b && c parses as a eq (b && c)); fixed by parenthesizing the synchronous-throw assertion and re-preparing the round; every other stage passed on first execution"
+    "discoveryNote": "Attempt-01 of the same round first failed compile-properties on Scala infix precedence (a eq b && c parses as a eq (b && c)); fixed by parenthesizing the synchronous-throw assertion and re-preparing the round; every other stage passed on first execution",
+    "finalBytesNote": "Executed on the exact committed candidate bytes (f34d93f); prepared pin sha equals the discovery-round prepared sha, confirming zero source drift between the two executions"
   },
   "rawAcceptanceUnchanged": true,
   "all31Closed": false
