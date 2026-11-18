@@ -3,16 +3,16 @@
   "artifactType": "external-connector-port",
   "candidateVersion": "v1",
   "status": "PENDING_QUALITY_EXECUTION",
-  "baseHead": "dc0fba9",
-  "bundleSha256": "40feef95d9d2732020a0b705c62152a1b2c6059cc32df230d3ef80d6bf499057",
+  "baseHead": "ee1e869",
+  "bundleSha256": "725e03a1fba1e7cb6fd6bbc90550ca0e2635ae2b211b19132beffcb722ed0b9c",
   "bundleSha256Recipe": "sha256 over the concatenation of the payload files UTF-8 bytes in sorted relative path order",
-  "payloadFileCount": 20,
-  "payloadBytes": 72394,
+  "payloadFileCount": 21,
+  "payloadBytes": 76182,
   "payload": [
     {
       "path": "README.md",
-      "bytes": 2735,
-      "sha256": "1e34629d630fe725f2d7c3178e8bc785eb8d96baedec312cd031d7bbc6eacc8b"
+      "bytes": 3232,
+      "sha256": "67954765353c470d773f6b84482c29943aa56a4bae8886d5880dbe87c9694322"
     },
     {
       "path": "app/example/stockreservation/application/connectors/AvailabilityOutcome.scala",
@@ -31,13 +31,18 @@
     },
     {
       "path": "app/example/stockreservation/application/connectors/StockCatalogConnector.scala",
-      "bytes": 828,
-      "sha256": "b5ffdbca01c4cafcdeb07bfaded2364fc89a606cafdd860293ca73c94275f2cf"
+      "bytes": 768,
+      "sha256": "b46ae9bd70ec7edd564e5723a2ddb80c587eb06889377f81ecf268855efe2db4"
     },
     {
       "path": "app/example/stockreservation/domain/values/ReservationValues.scala",
       "bytes": 1536,
       "sha256": "48f29020c0edc9b2f8f6a7c72a457f8108873233f8ca83c4fcdd108f18c4b67b"
+    },
+    {
+      "path": "app/example/stockreservation/infrastructure/bootstrap/StockCatalogModule.scala",
+      "bytes": 638,
+      "sha256": "e1a324428d4c5ced9a2807eb05ca384c4fb64bfbe9daa3a67b057303cecd0bae"
     },
     {
       "path": "app/example/stockreservation/infrastructure/connectors/NodeSubprocessRunner.scala",
@@ -51,13 +56,13 @@
     },
     {
       "path": "expected-properties.txt",
-      "bytes": 3603,
-      "sha256": "3730b5ab11d5e66c93817775d600b6881321a6cba47867091f7cbcd54ed8b8b7"
+      "bytes": 3844,
+      "sha256": "7443bb8025630bd31ddd47fbb6ac649ad543326dddabf6023479fb0461ace4b9"
     },
     {
       "path": "quality-policy.json",
-      "bytes": 3693,
-      "sha256": "53e0745eff182052e70807b293198935b443dff0698a7110001e6d5efcb4c0d6"
+      "bytes": 3933,
+      "sha256": "5808f2dc3a370e5171623db5fa6f02a8e06d16f0fa3b7b26a41305c2cebde40c"
     },
     {
       "path": "quality/JsonOutput.scala",
@@ -66,8 +71,8 @@
     },
     {
       "path": "quality/QualityInputs.scala",
-      "bytes": 2795,
-      "sha256": "2c235c6eb3093722f0d29cd6a175291b8c526647c14497c54b55864b79719cc7"
+      "bytes": 2807,
+      "sha256": "eb95be930033831eace775cf5f4794785a3c39043fa6dec70c82a9ef3ff7af99"
     },
     {
       "path": "quality/QualityMain.scala",
@@ -76,23 +81,23 @@
     },
     {
       "path": "quality/ScalaSourceMetrics.scala",
-      "bytes": 9801,
-      "sha256": "f40f6cd6cfa93cd7a6948aaa62e9f25d3ba718d7f96a7493a705fd566d85935e"
+      "bytes": 10668,
+      "sha256": "f5c66788d7b4480d9e25c9786e235acaca8d466af75c6190e041bb3886229f14"
     },
     {
       "path": "scope-exceptions.tsv",
-      "bytes": 3013,
-      "sha256": "fa5d17e230af57c26fa02298edb580a0ff90eabd72c8039df3e24f960072a0f4"
+      "bytes": 1935,
+      "sha256": "e901e44409715f0d44715c97846283be43626aa22a57796047aac26ab7cd6343"
     },
     {
       "path": "technical-input.json",
-      "bytes": 8075,
-      "sha256": "7bcb9dcdc8a9c1880f33f11db6afecf8c3087a910469b53314ba3c959b6145e5"
+      "bytes": 8463,
+      "sha256": "a5baed8df9b22d36f653596c3cdd7c832c2fcb9050a01c7548952e564edca238"
     },
     {
       "path": "test/example/stockreservation/connectors/CatalogCases.scala",
-      "bytes": 6816,
-      "sha256": "5d1f76b656ddc47e68adecb7b3913f857648ad53ec6560dab826d41a7440d24e"
+      "bytes": 7345,
+      "sha256": "41bd5b3caf397960de34c1e5b7b653c7c4e24188e9f7fe8212b37cb322d61f0b"
     },
     {
       "path": "test/example/stockreservation/connectors/CatalogOracle.scala",
@@ -101,13 +106,13 @@
     },
     {
       "path": "test/example/stockreservation/connectors/CatalogProperties.scala",
-      "bytes": 6519,
-      "sha256": "1b6e474472808d7a27e857466ea8e92b1da10c5ddf01b7ded8d7faf93b8c7296"
+      "bytes": 7303,
+      "sha256": "0951995a8caf6cee0d947cb0681954dfde2d5ddb6ee777a081254a7745710951"
     },
     {
       "path": "test/example/stockreservation/connectors/CatalogQualityProperties.scala",
-      "bytes": 7154,
-      "sha256": "2242e1fea68a28545c97c7bd3bf5f9efdf1744b609fc2657f350f22232260537"
+      "bytes": 7884,
+      "sha256": "9f813be3c9c4e6d94553ead4a91c3f37ba9810281fc917ab88a5c83699929b63"
     }
   ]
 }

@@ -8,6 +8,13 @@ import example.stockreservation.connectors.quality.ScalaSourceMetrics.Layer
 object QualityInputs {
   final case class Input(relative: String, path: Path, layer: Layer)
 
+  def layerOf(column: String): Layer = column match {
+    case "domain" => Layer.Domain
+    case "boundary" => Layer.Boundary
+    case "support" => Layer.Support
+    case other => throw new IllegalArgumentException("Unknown source layer: " + other)
+  }
+
   def sources(): Vector[Input] = {
     val listing = Paths.get(sys.props("quality.sources"))
     val rows = Files.readAllLines(listing, StandardCharsets.UTF_8)
@@ -15,13 +22,7 @@ object QualityInputs {
     val inputs = rows.asScala.toVector.map { row =>
       val columns = row.split("\t", -1)
       require(columns.length == 3, "Exact source listing required")
-      val layer = columns(2) match {
-        case "domain" => Layer.Domain
-        case "boundary" => Layer.Boundary
-        case "support" => Layer.Support
-        case other => throw new IllegalArgumentException("Unknown source layer: " + other)
-      }
-      Input(columns(0), Paths.get(columns(1)), layer)
+      Input(columns(0), Paths.get(columns(1)), layerOf(columns(2)))
     }
     require(inputs.nonEmpty && inputs.map(_.relative).distinct.size == inputs.size, "Nonempty unique sources required")
     inputs

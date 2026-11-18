@@ -25,12 +25,12 @@
     },
     "boundary": {
       "appliesTo": "app/**/application/** and app/**/infrastructure/**",
-      "description": "Connector port contract layer: the async capability face needs the Future vocabulary, and the traditional @ImplementedBy annotation imports the implementation type (D2 exception recorded in the family diff).",
+      "description": "Connector port contract layer: the async capability face needs the Future vocabulary. Per the user ruling of 2026-11-18, the port carries no implementation reference (the multi-module kernel form has no implementation classes), so assembly lives in infrastructure.bootstrap and import policy is direction-aware.",
       "forbiddenDelta": [
         "Term name Future is admitted as the declared async contract; Await stays banned.",
-        "Imports of application/infrastructure packages are admitted for the port-implementation binding clause; every other banned import prefix stays banned."
+        "Direction-aware imports: an application file must not import infrastructure packages (kernel isolation); an infrastructure file may import application and infrastructure packages; every other banned import prefix stays banned in both directions."
       ],
-      "stillRejected": ["var/assignment", "throw/catch", "Any/AnyRef", "reflection names", "Await", "mutable collection names and mutation term names", "akka/play/java.io/java.nio/java.time/java.util/scala.collection.mutable/java.sql imports"],
+      "stillRejected": ["var/assignment", "throw/catch", "Any/AnyRef", "reflection names", "Await", "mutable collection names and mutation term names", "akka/play/java.io/java.nio/java.time/java.util/scala.collection.mutable/java.sql imports", "application-to-infrastructure imports"],
       "maximumComplexity": 5,
       "maximumControlNesting": 2,
       "exceptions": "Exact file/owner/kind with finite maxima and justification. No whole-file exemption or project average."

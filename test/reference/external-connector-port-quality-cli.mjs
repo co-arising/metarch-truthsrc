@@ -20,7 +20,10 @@ const COORDINATES = [
   `org.scala-lang:scala-compiler:${SCALA}`, `org.scala-lang:scala-library:${SCALA}`,
   `org.scala-lang:scala-reflect:${SCALA}`, 'io.github.java-diff-utils:java-diff-utils:4.12',
   'org.jline:jline:3.25.1', 'net.java.dev.jna:jna:5.14.0',
-  'com.google.inject:guice:4.2.3', 'javax.inject:javax.inject:1',
+  'com.google.inject:guice:4.2.1', 'javax.inject:javax.inject:1',
+  'com.google.guava:guava:25.1-android', 'com.google.code.findbugs:jsr305:3.0.2',
+  'org.checkerframework:checker-compat-qual:2.0.0', 'com.google.errorprone:error_prone_annotations:2.1.3',
+  'com.google.j2objc:j2objc-annotations:1.1', 'org.codehaus.mojo:animal-sniffer-annotations:1.14',
   'org.scalacheck:scalacheck_2.13:1.16.0', 'org.scala-sbt:test-interface:1.0',
   'org.scalameta:parsers_2.13:4.7.7', 'org.scalameta:trees_2.13:4.7.7',
   'org.scalameta:common_2.13:4.7.7', 'org.scalameta:fastparse-v2_2.13:2.3.1',
@@ -31,15 +34,21 @@ const COORDINATES = [
 ];
 const PARENTS = [
   'io.github.java-diff-utils:java-diff-utils-parent:4.12', 'org.jline:jline-parent:3.25.1',
-  'com.google.inject:guice-parent:4.2.3', 'com.google.protobuf:protobuf-parent:3.19.2',
+  'com.google.inject:guice-parent:4.2.1', 'com.google.guava:guava-parent:25.1-android',
+  'com.google.protobuf:protobuf-parent:3.19.2',
   'com.google.protobuf:protobuf-bom:3.19.2',
 ];
-// guice declares these compile dependencies without versions (managed by its
-// parent POM). The sample uses only the annotation classes, so the runtime
-// injector closure is never constructed and stays out of the pinned supply.
+// guice declares aopalliance for AOP method interception only; the sample never
+// binds interceptors, so that library stays off the loaded path and out of the
+// pinned supply. Every other declared compile dependency is selected above.
 const unconsumedLibraryDeps = new Map([
-  ['aopalliance:aopalliance', 'Annotation-only compile supply; runtime injector closure never constructed'],
-  ['com.google.guava:guava', 'Annotation-only compile supply; runtime injector closure never constructed'],
+  ['aopalliance:aopalliance', 'Declared for AOP method interception only; the sample never binds interceptors'],
+]);
+// The pinned guice artifact is the published no_aop variant: identical core
+// binding and Injector machinery, without the AOP interception machinery the
+// sample never uses. Its declared POM is the base guice POM.
+const CLASSIFIERS = new Map([
+  ['com.google.inject:guice:4.2.1', 'no_aop'],
 ]);
 const SOURCES = [
   'app/example/stockreservation/application/connectors/StockCatalogConnector.scala',
@@ -47,6 +56,7 @@ const SOURCES = [
   'app/example/stockreservation/application/connectors/ConnectorProtocol.scala',
   'app/example/stockreservation/application/connectors/LocationDirectory.scala',
   'app/example/stockreservation/domain/values/ReservationValues.scala',
+  'app/example/stockreservation/infrastructure/bootstrap/StockCatalogModule.scala',
   'app/example/stockreservation/infrastructure/connectors/NodeSubprocessRunner.scala',
   'app/example/stockreservation/infrastructure/connectors/StockCatalogConnectorImpl.scala',
   'test/example/stockreservation/connectors/CatalogCases.scala',
@@ -74,17 +84,23 @@ const sourceLayer = relative =>
 function supply() {
   const artifacts = COORDINATES.map(coordinate => {
     const stem = artifactStem(CACHE, coordinate);
+    const classifier = CLASSIFIERS.get(coordinate);
+    const jar = classifier ? `${stem}-${classifier}.jar` : `${stem}.jar`;
     let pom;
     try {
       const original = captureEvidenceFile(stem + '.pom').value.toString();
-      // The existing finite reader stops its identity header at <name>. This POM
-      // puts that descriptive element before its coordinates; omit only the name
-      // from the parsing view, while retaining the original POM bytes in pins.
-      pom = declaredPom(original.replace(/<name>[\s\S]*?<\/name>/g, ''));
+      // The existing finite reader stops its identity header at <name> and
+      // <licenses>. Some pinned POMs (jna lineage; checker-compat-qual) put
+      // those descriptive elements before their coordinates, so omit them
+      // from the parsing view only, while retaining the original POM bytes
+      // in pins.
+      pom = declaredPom(original
+        .replace(/<name>[\s\S]*?<\/name>/g, '')
+        .replace(/<licenses>[\s\S]*?<\/licenses>/g, ''));
     }
     catch (error) { throw new Error(`${coordinate}: ${error.message}`); }
     assert.equal(pom.coordinate, coordinate);
-    return { coordinate, jar: stem + '.jar', pom: stem + '.pom', declared: pom };
+    return { coordinate, jar, pom: stem + '.pom', declared: pom };
   });
   const selected = new Map(artifacts.map(row => [row.coordinate.split(':').slice(0, 2).join(':'), row.coordinate]));
   const edges = [], omitted = [];

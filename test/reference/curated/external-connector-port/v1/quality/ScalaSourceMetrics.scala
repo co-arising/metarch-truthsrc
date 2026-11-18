@@ -158,12 +158,31 @@ object ScalaSourceMetrics {
     case _ => None
   }
 
-  private def unsafeImport(tree: Tree, layer: Layer): Option[String] = tree match {
+  // Import direction rules per layer, one named predicate each. Domain sources
+  // admit no application or infrastructure imports. Boundary sources are
+  // direction-aware: an application (kernel-facing) file must not import
+  // infrastructure — the kernel isolation the multi-module form requires — while
+  // an infrastructure file may import application and infrastructure. Support
+  // sources are unrestricted.
+  private def domainOutward(path: String): Boolean =
+    path.contains(".application") || path.contains(".infrastructure")
+
+  private def boundaryOutward(file: String, path: String): Boolean =
+    file.contains("/application/") && path.contains(".infrastructure")
+
+  private def outwardImport(file: String, layer: Layer, path: String): Boolean = layer match {
+    case Layer.Domain => domainOutward(path)
+    case Layer.Boundary => boundaryOutward(file, path)
+    case Layer.Support => false
+  }
+
+  private def unsafeImport(tree: Tree, file: String, layer: Layer): Option[String] = tree match {
     case importer: Importer if layer != Layer.Support =>
       val path = importer.ref.syntax
-      val outside = layer == Layer.Domain && (path.contains(".application") || path.contains(".infrastructure"))
       val prefixes = Vector("akka", "play", "java.io", "java.nio", "java.time", "java.util", "scala.collection.mutable", "java.sql")
-      if (outside || prefixes.exists(path.startsWith)) Some("outside-or-effectful-domain-import") else None
+      if (outwardImport(file, layer, path) || prefixes.exists(path.startsWith))
+        Some("outside-or-effectful-domain-import")
+      else None
     case _ => None
   }
 
@@ -181,7 +200,7 @@ object ScalaSourceMetrics {
         val currentOwner = memberName(tree).map(name => owner + "." + name).getOrElse(owner)
         val childReports = tree.children.map(child => visit(child, currentOwner))
         val unsupportedNode = unsupported(tree).toVector
-        val structural = if (layer != Layer.Support) forbidden(tree, layer).toVector ++ unsafeImport(tree, layer).toVector else Vector.empty
+        val structural = if (layer != Layer.Support) forbidden(tree, layer).toVector ++ unsafeImport(tree, file, layer).toVector else Vector.empty
         val violations = (unsupportedNode ++ structural).map(reason => Violation(file, position(tree)._1, reason))
         Report(
           declaredScopes(file, currentOwner, tree) ++ childReports.flatMap(_.scopes),

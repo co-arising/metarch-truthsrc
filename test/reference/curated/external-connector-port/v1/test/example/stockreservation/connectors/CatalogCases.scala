@@ -2,6 +2,7 @@ package example.stockreservation.connectors
 
 import org.scalacheck.Gen
 
+import com.google.inject.AbstractModule
 import example.stockreservation.infrastructure.connectors.NodeSubprocessRunner
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.{ExecutionContext, Future}
@@ -154,5 +155,15 @@ object CatalogCases {
     }
 
     def invocations: Vector[String] = requested.toVector
+  }
+
+  /** Test seam module: supplies the sample-owned seams (runner, execution context)
+    * that the production binding does not fix, so the assembly property resolves the
+    * infrastructure port binding exactly. */
+  final class CatalogSeamModule(runner: NodeSubprocessRunner, ec: ExecutionContext) extends AbstractModule {
+    override def configure(): Unit = {
+      bind(classOf[NodeSubprocessRunner]).toInstance(runner)
+      bind(classOf[ExecutionContext]).toInstance(ec)
+    }
   }
 }

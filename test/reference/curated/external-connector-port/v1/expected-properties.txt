@@ -11,6 +11,7 @@ external-connector-port.stock-catalog.v1.delegation: negative: a runner failure 
 external-connector-port.stock-catalog.v1.delegation: negative: a malformed payload lands on the failure channel, never a synthesized outcome
 external-connector-port.stock-catalog.v1.delegation: a refusal stays on the success channel as a typed value distinct from failure
 external-connector-port.stock-catalog.v1.delegation: the bound directory script is used verbatim for the parameterless method
+external-connector-port.stock-catalog.v1.assembly: the infrastructure module binds the port to its implementation
 external-connector-port.source-quality.v1.AST: generated if chains have independently known complexity
 external-connector-port.source-quality.v1.AST: generated short-circuit operators are counted
 external-connector-port.source-quality.v1.AST: comments and branch-like literal text add no decisions
@@ -26,7 +27,8 @@ external-connector-port.source-quality.v1.AST: abstract declarations register wi
 external-connector-port.source-quality.v1.AST: overflow complexity is measured exactly, never clamped
 external-connector-port.source-quality.v1.AST: boundary mode admits the Future contract that domain mode rejects
 external-connector-port.source-quality.v1.AST: boundary mode still rejects Await and reflection
-external-connector-port.source-quality.v1.AST: boundary mode admits port-implementation imports but rejects effectful prefixes
+external-connector-port.source-quality.v1.AST: boundary infrastructure files admit application imports; application files reject them
+external-connector-port.source-quality.v1.AST: boundary mode still rejects effectful import prefixes in both directions
 external-connector-port.source-quality.v1.AST: domain mode still rejects application and infrastructure imports
 external-connector-port.source-quality.v1.negative: invalid syntax cannot become an empty successful report
 external-connector-port.source-quality.v1.negative: mutable domain state is rejected

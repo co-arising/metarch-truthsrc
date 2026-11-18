@@ -41,7 +41,7 @@
     "implementedBy": {
       "name": "StockCatalogConnectorImpl",
       "packageName": "example.stockreservation.infrastructure.connectors",
-      "mechanism": "com.google.inject.ImplementedBy classOf reference; the application-to-infrastructure import is the recorded D2 traditional exception",
+      "mechanism": "No annotation on the port. Infrastructure-owned assembly: infrastructure.bootstrap.StockCatalogModule binds the port to the implementation with an explicit Guice binding; the kernel-facing face carries no implementation reference.",
       "role": "sample-support reference implementation; the production implementation contract belongs to connector-implementation"
     },
     "methods": [
@@ -63,7 +63,7 @@
     "delegationGuarantees": ["exactly one runner call per port call", "script argument passed verbatim", "no retry after any failure", "no exception swallowing", "no synthesized success", "typed lifting only"]
   },
   "decisions": [
-    {"id": "D2", "choice": "Keep the traditional @ImplementedBy(classOf[infrastructure Impl]) annotation with its application-to-infrastructure import, matching the curated CreditBalanceRepository analogy; bootstrap-binding alternative not taken."},
+    {"id": "D2", "choice": "USER RULING 2026-11-18: the traditional @ImplementedBy(classOf[infrastructure Impl]) annotation is rejected — the multi-module (隔离区) form has no implementation classes in the kernel module, so the annotation would not compile there. The port carries no implementation reference; injection is completed separately by the infrastructure layer through infrastructure.bootstrap.StockCatalogModule (explicit Guice binding). The gate enforces kernel isolation with a direction-aware boundary import policy."},
     {"id": "D3", "choice": "The sample implementation matches the port ABI exactly: both methods, both parameter shapes, shared typed lifting; the impl-family debt of first-method-only/parameters-Nil is not reproduced."},
     {"id": "D6", "choice": "Drop the unused javax.inject._ wildcard, import scala.concurrent.Future as a short name, and use a single alphabetically sorted import block per file; recorded as an explicit formatting exception against the raw template."},
     {"id": "D7", "choice": "Malformed payloads, illegal identifiers and non-single-line inputs always fail with a named ProtocolViolation on the failure channel; nothing is silently defaulted, truncated or coerced."},

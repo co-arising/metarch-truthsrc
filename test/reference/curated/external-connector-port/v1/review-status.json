@@ -3,56 +3,71 @@
   "artifactType": "external-connector-port",
   "candidateVersion": "v1",
   "status": "QUALITY_EXECUTION_PASSED_AWAITING_USER_APPROVAL",
-  "bundleSha256": "40feef95d9d2732020a0b705c62152a1b2c6059cc32df230d3ef80d6bf499057",
+  "bundleSha256": "725e03a1fba1e7cb6fd6bbc90550ca0e2635ae2b211b19132beffcb722ed0b9c",
   "manifest": {
     "path": "manifest.json",
-    "bytes": 4172,
-    "sha256": "dff8e49deca4fe55f4a8019dcebf7ef3a7ad9712f6af122a5c136b031c2b3736"
+    "bytes": 4385,
+    "sha256": "f77e51efd7eb9613c987fb5f9bbdc387fc95b933f817cb5ce339c5da0d1fa685"
   },
   "payload": {
-    "files": 20,
-    "bytes": 72394,
+    "files": 21,
+    "bytes": 76182,
     "wholeBytesVerified": true
   },
   "lineage": {
-    "familyContract": "docs/codegen-parity/diffs/external-connector-port.diff.md; open decisions D1-D8 recorded with explicit sample choices (D2 keep @ImplementedBy, D3 exact ABI, D6 clean imports, D7 named ProtocolViolation, D1 traditional face only)",
+    "familyContract": "docs/codegen-parity/diffs/external-connector-port.diff.md; D1-D8 recorded with explicit sample choices (D2 USER RULING: no @ImplementedBy, infrastructure.bootstrap binding, direction-aware gate; D3 exact ABI; D6 clean imports; D7 named ProtocolViolation; D1 traditional face only)",
     "frozenReuse": "app/example/stockreservation/domain/values/ReservationValues.scala is byte-identical to the approved aggregate-rules-formal v3 golden (sha256 48f29020c0edc9b2f8f6a7c72a457f8108873233f8ca83c4fcdd108f18c4b67b)"
   },
   "v1QualityRun": {
-    "round": ".rounds/external-connector-port-quality-20261118-01",
+    "round": ".rounds/external-connector-port-quality-20261119-01",
     "prepared": {
-      "file": ".rounds/external-connector-port-quality-20261118-01/prepared.json",
-      "sha256": "b915a355d92a2ec1586c8773e4447f18d5507c4ffffc88813937966472d93f6d"
+      "file": ".rounds/external-connector-port-quality-20261119-01/prepared.json",
+      "sha256": "5720f6b9f64c0bfa68e4e004e4533353d5561be5edd55c872370a8bad2ad1c26"
     },
     "attempt": {
       "id": "attempt-01",
       "actualJvmCalls": 6,
-      "pids": [77306, 77332, 77383, 77413, 77427, 77455],
+      "pids": [
+        81811,
+        81838,
+        81883,
+        81892,
+        81918,
+        81929
+      ],
       "allExit0": true,
       "timeouts": 0,
       "signals": 0
     },
     "metrics": {
       "passed": true,
-      "files": 15,
-      "scopes": 411,
+      "files": 16,
+      "scopes": 431,
       "violations": 0,
       "excess": 0,
-      "layers": {"domain": 1, "boundary": 6, "support": 8},
-      "engineCoreUnchanged": "ownDecisions 16, control 7, declaredScopes 13, forbidden 16, isDeclaration 7 match the aggregate-rules-formal v3 exceptions for the identical core; only unsafeImport (7) differs by the layer clause",
-      "file": ".rounds/external-connector-port-quality-20261118-01/attempt-01/results/metrics.json"
+      "engineCoreUnchanged": "ownDecisions 16, control 7, declaredScopes 13, forbidden 16, isDeclaration 7 match the aggregate-rules-formal v3 exceptions for the identical core; import direction rules are named per-layer predicates",
+      "file": ".rounds/external-connector-port-quality-20261119-01/attempt-01/results/metrics.json"
     },
     "properties": {
-      "seeds": [740001, 740002, 740003],
-      "results": 34,
+      "seeds": [
+        740001,
+        740002,
+        740003
+      ],
+      "results": 36,
       "negatives": 8,
-      "proved": 23,
+      "proved": 25,
       "passedAll": true,
       "minimumSuccessfulRandomCases": 1000
     },
-    "discoveryRounds": "Two earlier discovery rounds fixed one compile error (Future.fromTry EC arity) and two contract-vs-implementation mismatches (split trailing-empty semantics, boundary Await admission); every fix is in the committed sources and re-verified by this attempt"
+    "supply": {
+      "artifacts": 26,
+      "guiceVariant": "4.2.1 no_aop (AOP interception machinery unused by the sample)",
+      "runtimeInjectorVerified": true
+    },
+    "discoveryRounds": "Round 20261118-01 (three attempts) and round 20261119-01 discovery fixed: Future.fromTry arity, split trailing-empty semantics, boundary Await admission, anonymous-module unsupported-term, direction-aware import policy refactors, and the Guice runtime closure expansion; every fix is in the committed sources and re-verified by this attempt"
   },
-  "userGoldenApproval": "PENDING_USER_APPROVAL_OF_V1_BUNDLE_40feef95",
+  "userGoldenApproval": "PENDING_USER_APPROVAL_OF_V1_BUNDLE_725e03a1",
   "rawAcceptanceUnchanged": true,
   "all31Closed": false
 }

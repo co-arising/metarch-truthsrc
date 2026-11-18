@@ -1,14 +1,12 @@
 package example.stockreservation.application.connectors
 
-import com.google.inject.ImplementedBy
-import example.stockreservation.infrastructure.connectors.StockCatalogConnectorImpl
 import scala.concurrent.Future
 
 /**
  * StockCatalogConnector: Application Layer Connector Interface
  * 调外部工具（Node 子进程）的能力面——子进程机械在 infrastructure impl 里（注入手写基建）。
+ * 内核隔离：本能力面不引用任何实现类；装配由 infrastructure.bootstrap 显式绑定完成。
  */
-@ImplementedBy(classOf[StockCatalogConnectorImpl])
 trait StockCatalogConnector {
 
   def probeAvailability(script: String): Future[AvailabilityOutcome]

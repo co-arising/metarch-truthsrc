@@ -20,8 +20,8 @@ object CatalogQualityProperties extends Properties("external-connector-port.sour
 
   private def complexity(body: String): Int = method(body).counts.complexity
 
-  private def violations(text: String, layer: Layer): Set[String] =
-    ScalaSourceMetrics.analyze("sample.scala", text, layer).toOption.get.violations.map(_.reason).toSet
+  private def violations(text: String, layer: Layer, file: String = "sample.scala"): Set[String] =
+    ScalaSourceMetrics.analyze(file, text, layer).toOption.get.violations.map(_.reason).toSet
 
   private val lengths = Gen.choose(0, 7)
 
@@ -90,11 +90,20 @@ object CatalogQualityProperties extends Properties("external-connector-port.sour
     violations(awaiting, Layer.Boundary).contains("implicit-domain-time-randomness-or-mutation") &&
       violations(reflecting, Layer.Boundary).contains("reflection-or-global-domain-effect")
   }
-  property("AST: boundary mode admits port-implementation imports but rejects effectful prefixes") = Prop.secure {
-    val portImport = "import example.stockreservation.infrastructure.connectors.Impl; object Sample { def face(): Int = 1 }"
+  property("AST: boundary infrastructure files admit application imports; application files reject them") = Prop.secure {
+    val portImport = "import example.stockreservation.application.connectors.Port; object Sample { def face(): Int = 1 }"
+    val implImport = "import example.stockreservation.infrastructure.connectors.Impl; object Sample { def face(): Int = 1 }"
+    val infrastructureFile = "app/x/infrastructure/connectors/Impl.scala"
+    val applicationFile = "app/x/application/connectors/Port.scala"
+    violations(portImport, Layer.Boundary, infrastructureFile).isEmpty &&
+      violations(implImport, Layer.Boundary, applicationFile).contains("outside-or-effectful-domain-import")
+  }
+  property("AST: boundary mode still rejects effectful import prefixes in both directions") = Prop.secure {
     val effectful = "import java.util.HashMap; object Sample { def face(): Int = 1 }"
-    violations(portImport, Layer.Boundary).isEmpty &&
-      violations(effectful, Layer.Boundary).contains("outside-or-effectful-domain-import")
+    violations(effectful, Layer.Boundary, "app/x/infrastructure/connectors/Impl.scala")
+      .contains("outside-or-effectful-domain-import") &&
+      violations(effectful, Layer.Boundary, "app/x/application/connectors/Port.scala")
+        .contains("outside-or-effectful-domain-import")
   }
   property("AST: domain mode still rejects application and infrastructure imports") = Prop.secure {
     val source = "import example.stockreservation.infrastructure.connectors.Impl; object Sample { def face(): Int = 1 }"
