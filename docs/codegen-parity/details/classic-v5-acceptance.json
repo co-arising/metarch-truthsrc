@@ -1,0 +1,346 @@
+{
+  "schemaVersion": "truthsrc.classic-v5-scoped-raw-acceptance/v1",
+  "registeredAtUtc": "2026-11-18T01:11:38.608762+00:00",
+  "verdict": "PASS_SCOPED_RAW_BYTE_AND_BOUNDED_INTERFACE",
+  "new23FinalAcceptance": true,
+  "acceptanceSigned": true,
+  "repository": "metarch-truthsrc",
+  "candidateHead": "3bdd8d9ea8978dd88a104cd4d4a213622aec1fdb",
+  "branch": "fix/classic-cqrs-f1-byte-parity",
+  "acceptanceMeaning": "Final only for the registered two-input raw-byte/path and approved bounded-interface scope. Not compilation, type closure, curated quality or runtime acceptance.",
+  "acceptedNewArtifactKeys": [
+    "domain-service",
+    "application-service",
+    "query-service",
+    "saga-participant",
+    "saga-definition",
+    "saga-trigger-protocol",
+    "saga-trigger-entity",
+    "saga-trigger-root",
+    "saga-trigger-behaviors",
+    "projection-repository-port",
+    "projection-repository-implementation",
+    "projection",
+    "projection-handler",
+    "protobuf-schema",
+    "proto-converter",
+    "event-adapter",
+    "snapshot-adapter",
+    "saga-context",
+    "http-controller",
+    "command-endpoint-dsl",
+    "route-definition",
+    "bootstrap",
+    "application-bootstrap"
+  ],
+  "familyCounts": {
+    "total": 42,
+    "traditional": 39,
+    "extensions": 3,
+    "previouslyAccepted": 11,
+    "newlyAccepted": 23,
+    "scopedRawAccepted": 34,
+    "curatedNotStarted": 8
+  },
+  "rawCore": {
+    "inputs": [
+      "baseline",
+      "timestamp-int"
+    ],
+    "pathsPerInput": 52,
+    "expectedFiles": 104,
+    "expectedBytes": 228241,
+    "equalComparisonPathCounts": [
+      52,
+      52,
+      52,
+      52,
+      52,
+      52
+    ],
+    "threeWayByteComparisons": 208,
+    "ledgerABEqual": true,
+    "source": "Unchanged independent prior core evidence authenticated and carried; no replay"
+  },
+  "observationCounts": {
+    "carriedCore": 10,
+    "carriedSupplement": 42,
+    "newFinish": 5,
+    "effective": 57,
+    "actualCore": 10,
+    "actualSupplement": 43,
+    "actualFinish": 5,
+    "actualTotal": 58,
+    "preservedHistoricalFailedOracle": 1,
+    "freshAllGreen57": false,
+    "original47Complete": false
+  },
+  "effectiveObservationMapping": {
+    "core10": [
+      "baseline.a.compare",
+      "baseline.a.generate",
+      "baseline.b.compare",
+      "baseline.b.generate",
+      "baseline.sources.compare",
+      "timestamp-int.a.compare",
+      "timestamp-int.a.generate",
+      "timestamp-int.b.compare",
+      "timestamp-int.b.generate",
+      "timestamp-int.sources.compare"
+    ],
+    "settled42": [
+      "supp.neg.api-controllers-dsl",
+      "supp.neg.api-routes",
+      "supp.neg.bootstraps",
+      "supp.neg.domain-service",
+      "supp.neg.eof",
+      "supp.neg.extra",
+      "supp.neg.import-multiplicity",
+      "supp.neg.missing",
+      "supp.neg.placeholder-repair",
+      "supp.neg.projection-and-handler",
+      "supp.neg.projection-repositories",
+      "supp.neg.saga-participants-definition-context",
+      "supp.neg.serialization-converter-adapters",
+      "supp.neg.serialization-proto",
+      "supp.neg.services-and-queries",
+      "supp.neg.trigger-four",
+      "supp.plan.controller-gate-reference",
+      "supp.plan.copied-target-changed",
+      "supp.plan.copied-target-unchanged",
+      "supp.plan.projection-empty-handlers",
+      "supp.plan.projection-repository-reference",
+      "supp.plan.query-typed-reference",
+      "supp.plan.service-dependency",
+      "supp.plan.storage-es",
+      "supp.plan.storage-redis",
+      "supp.plan.version-mix",
+      "supp.v1.baseline.compare",
+      "supp.v1.baseline.generate",
+      "supp.v1.timestamp-int.compare",
+      "supp.v1.timestamp-int.generate",
+      "supp.v2.baseline.compare",
+      "supp.v2.baseline.generate",
+      "supp.v2.timestamp-int.compare",
+      "supp.v2.timestamp-int.generate",
+      "supp.v3.baseline.compare",
+      "supp.v3.baseline.generate",
+      "supp.v3.timestamp-int.compare",
+      "supp.v3.timestamp-int.generate",
+      "supp.v4.baseline.compare",
+      "supp.v4.baseline.generate",
+      "supp.v4.timestamp-int.compare",
+      "supp.v4.timestamp-int.generate"
+    ],
+    "finish5": [
+      "finish.plan.unknown-saga-command",
+      "finish.plan.resolved-service-path-collision",
+      "finish.plan.projection-source-aggregate",
+      "finish.plan.projection-identity-scheme",
+      "finish.plan.no-api-endpoint-gates"
+    ],
+    "uniqueEffective": 57,
+    "actualIncludingHistoricalFailure": 58,
+    "freshAllGreen57": false,
+    "replayPerformed": false,
+    "original47Complete": false
+  },
+  "newFinish": {
+    "parentObservedExit": 0,
+    "harnessTask": "bdi9w71qo",
+    "actual": 5,
+    "accepted": 5,
+    "exitCodes": [
+      2,
+      2,
+      2,
+      2,
+      0
+    ],
+    "rawPassed": [
+      false,
+      false,
+      false,
+      false,
+      true
+    ],
+    "elapsedMs": [
+      1517,
+      2464,
+      1217,
+      1151,
+      1503
+    ],
+    "elapsedSumMs": 7852,
+    "legalSuppressionCompletePaths": 50,
+    "legalSuppressionDependenciesClosed": true,
+    "allOutputsAbsent": true,
+    "fixedBudgetMs": 900000,
+    "extended": false,
+    "retried": false,
+    "completion": {
+      "file": ".rounds/classic-cqrs-v5-finish-20261118-01/run-01/completion.json",
+      "bytes": 853691,
+      "sha256": "a40822dbdefe300745694787647be2921dac51dd3ae30f49796f603b5a5c3333"
+    },
+    "closeout": {
+      "file": ".rounds/classic-cqrs-v5-finish-20261118-01/run-01/closeout.json",
+      "bytes": 6775,
+      "sha256": "72d52e86db9256fec8be075b1b4606542dbaae343dc8d0f4b667e9698d3f6dc5"
+    },
+    "budget": {
+      "file": ".rounds/classic-cqrs-v5-finish-20261118-01/prepared/budget.json",
+      "bytes": 3023,
+      "sha256": "080dfa7c5a38ff807b77442fb23a340f2f4dfa2e567d2bdef697fdc93df5fd03"
+    }
+  },
+  "originalFailure": {
+    "id": "supp.plan.saga-phase-command-owner",
+    "expectedDiagnostic": "CLASSIC_OWNER_MISSING",
+    "actualDiagnostic": "CLASSIC_REFERENCE",
+    "accepted": false,
+    "oldFailurePromoted": false,
+    "originalContract": {
+      "file": ".rounds/classic-cqrs-v5-20261117-02/formal/contract-10/preparedcases05.json",
+      "bytes": 223519,
+      "sha256": "f457758e892a6b026ff763e7d4c96619e87505348e52c6896ea6c515d1e3a8ea"
+    },
+    "originalSupplementStatus": "BLOCKED",
+    "originalSupplementOuterExit": 2,
+    "originalSupplementActual": 43,
+    "originalSupplementAccepted": 42,
+    "originalSupplementUnexecuted": 4,
+    "originalCompletionAndCloseoutAbsent": true,
+    "newObservationMeaning": "Separately approved exact unknown-command rejection, not retroacceptance of the failed ownership oracle"
+  },
+  "independentReview": {
+    "file": ".rounds/classic-cqrs-v5-finish-20261118-01/audit/combined-review.json",
+    "bytes": 11832,
+    "sha256": "2cc9a833f1e416abe448546cb357dbcf9bde25fac5d67f9509df0a61695819c5"
+  },
+  "independentDetailedEvidenceTranscription": {
+    "file": ".rounds/classic-cqrs-v5-finish-20261118-01/audit/detail-authentication-transcription.json",
+    "bytes": 5537,
+    "sha256": "5c79ce4611201ac22c73bdbacaa77ee76d383f2d77019140336c08323bd56559"
+  },
+  "independentPrimaryEvidence": [
+    {
+      "file": ".rounds/classic-cqrs-v5-finish-20261118-01/run-01/completion.json",
+      "bytes": 853691,
+      "sha256": "a40822dbdefe300745694787647be2921dac51dd3ae30f49796f603b5a5c3333"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-finish-20261118-01/run-01/closeout.json",
+      "bytes": 6775,
+      "sha256": "72d52e86db9256fec8be075b1b4606542dbaae343dc8d0f4b667e9698d3f6dc5"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-finish-20261118-01/prepared/budget.json",
+      "bytes": 3023,
+      "sha256": "080dfa7c5a38ff807b77442fb23a340f2f4dfa2e567d2bdef697fdc93df5fd03"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-finish-20261118-01/prepared/contract.json",
+      "bytes": 1268647,
+      "sha256": "8c15cb8a4fa7780eaba23bbddfc553d8d99341db4e88af999609b3fdb4024138"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-finish-20261118-01/audit/parent-observation.json",
+      "bytes": 2041,
+      "sha256": "285aa4747577b2caa06c2674c6c9e86c2dba565ebcb245f3ebf133e1f25462d0"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-finish-20261118-01/audit/static-review.json",
+      "bytes": 1131,
+      "sha256": "d1ef913fdb372504715e00d28d2287c326481f1301f833b5ea94d3f1c55f20ad"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-finish-20261118-01/audit/budget-review-postcommit.json",
+      "bytes": 4532,
+      "sha256": "b3fbcea35daa0089862809f841868e4cfbedd89a992001f92f72dfd689d7028c"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-finish-20261118-01/prepared/start-postcommit.py",
+      "bytes": 6038,
+      "sha256": "a6091c46e8c05e49cf015b335656e06e8991da5c621ca4839f6e55a1e2f849b7"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-finish-20261118-01/adapter.mjs",
+      "bytes": 24103,
+      "sha256": "d8564175dbfee2e8a0adfac68eb027876c45801fbb8ec64d4dce350cdeeede35"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-20261117-02/audit/new-core-actual-evidence-review-10.json",
+      "bytes": 2626,
+      "sha256": "b694126adfe2600c8b61db1af288c4431ab5170c8794934b11bb93524644badc"
+    },
+    {
+      "file": ".rounds/classic-cqrs-v5-20261117-02/audit/new-supplement-settled-42-review-12.json",
+      "bytes": 2298,
+      "sha256": "593fab06eae82a1d6ffb3cde861a6a85a4740b0dbca67abe7c13fa3369cf72a7"
+    },
+    {
+      "file": "docs/codegen-parity/details/artifact-type-status.json",
+      "bytes": 60142,
+      "sha256": "28a513725eb087840d606de437743dd388c555170b7b5eb82b55acd6a51086d4"
+    }
+  ],
+  "evidenceAuthentication": {
+    "files": 2533,
+    "bytes": 165283977,
+    "rawReceipts": 58,
+    "rawLogs": 116,
+    "fileDirectoryAncestorFailures": 0,
+    "sourceFiles": 615,
+    "sourceDirectories": 118,
+    "assets": 261,
+    "method": "Detailed independent complete pin/capture authentication plus separate definitive primary-bound synthesis; reviews are transcriptions, not process receipts"
+  },
+  "reviewMechanicsDisclosure": {
+    "detailedReviewHeadlineToolTruncated": true,
+    "omittedVerdictNotInferred": true,
+    "definitiveSynthesisVerdictReturned": true,
+    "ancillarySynthesisWrongHistoricalDiagnosticLiteralCorrectedAgainstOriginalPinnedContract": true,
+    "originalReturnedLiteralPreservedInLocalTranscription": true
+  },
+  "historicalCheckpoint": {
+    "file": "docs/codegen-parity/details/artifact-type-status.json",
+    "bytes": 60142,
+    "sha256": "28a513725eb087840d606de437743dd388c555170b7b5eb82b55acd6a51086d4"
+  },
+  "residual8ArtifactKeys": [
+    "aggregate-rules-formal",
+    "external-connector-port",
+    "connector-implementation",
+    "projection-apply-event",
+    "aggregate-state-controller",
+    "strict-saga-module",
+    "strict-fixture-host",
+    "composition-invocation-host"
+  ],
+  "curatedRule": "One family at a time: independent full Scala PlainFP+OO and genuine ScalaCheck specifications; explain and obtain user approval of exact version before corresponding JS. No curated acceptance yet.",
+  "productReadiness": {
+    "level": "classic-scaffold-only",
+    "runnable": false
+  },
+  "notCertified": [
+    "Scala compilation",
+    "type closure",
+    "ABI",
+    "curated PlainFP/OO quality",
+    "ScalaCheck execution",
+    "complexity/CC",
+    "financial/business runtime",
+    "bank consumption",
+    "residual8 raw-oracle closure"
+  ],
+  "all31Closed": false,
+  "runtimeEvidencePortable": false,
+  "newRuntimeExecutionsByReview": 0,
+  "gitDelivery": {
+    "productionCheckpointCommitted": true,
+    "productionCheckpointHead": "3bdd8d9ea8978dd88a104cd4d4a213622aec1fdb",
+    "thisRecordCommitStatusAtRegistration": "Not yet committed; use actual Git outcome, not a prefilled SHA",
+    "pushAuthorized": false
+  }
+}

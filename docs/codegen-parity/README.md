@@ -1,6 +1,8 @@
 # Scala → JavaScript 生成器内容级对齐
 
-当前交付：classic `@4/@5` **实现检查点**，见 [检查点说明](CLASSIC-V5-CHECKPOINT.md) 和 [完整42族状态表](ARTIFACT-TYPE-STATUS.md)。11族已有限定raw接受、23族已实现待综合最终验收、8族待逐族Plain FP+OO及ScalaCheck性质金样；不是23族已最终完成。现有10项core完整字节观察及42项补充事实已独立审计，最后5项公开观察尚未启动。按用户要求本地提交此检查点，不推送；真实SHA由Git及本机压缩窗口15的提交后记录绑定。
+最新完成：classic `@5` 新增 **23族限定raw最终验收**，结论 **PASS_SCOPED_RAW_BYTE_AND_BOUNDED_INTERFACE**。原11＋新23＝**34族已限定raw接受、8族待逐族Scala金样**，`all31Closed=false`。见 [@5实施收口](CLASSIC-V5-IMPLEMENTATION-CLOSEOUT.md)、[@5范围](CLASSIC-V5-SCOPE.md)、[@5反馈](CLASSIC-V5-FEEDBACK.md)、[最终接受记录](details/classic-v5-acceptance.json)及[最新42族状态](details/classic-v5-artifact-status.json)。承接已审计10＋42，新增5项真实公开观察；57有效义务来自58实际执行，原错误oracle失败1及原补充轮BLOCKED不改。raw通过不表示Scala编译、type closure、优秀FP/OO、ScalaCheck或业务runtime。
+
+此前交付：classic `@4/@5` **实现检查点**，见 [检查点说明](CLASSIC-V5-CHECKPOINT.md) 和 [检查点42族状态表](ARTIFACT-TYPE-STATUS.md)。其11/23/8及“最后5项尚未启动”保留为当时事实；不能倒签检查点为最终验收。最新结果由上述独立新记录给出。
 
 以下 `@4` 的“未提交”及各收口状态保留其写成时点，不代表当前检查点仍未交付，也不改签原始验收事实。
 

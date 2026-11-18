@@ -1,5 +1,7 @@
 # artifactType对齐清单 — 实现检查点15
 
+> **最新结果：34族已限定raw验收、8族待逐族Scala金样。** 新增23族最终接受见[实施收口](CLASSIC-V5-IMPLEMENTATION-CLOSEOUT.md)和[最新42族机器状态](details/classic-v5-artifact-status.json)。以下11/23/8表与未启动描述保留为检查点时点，不倒签历史记录；`all31Closed=false`。
+
 **42个唯一生成族key＝39传统族＋3扩展族。不是生成文件数。**
 
 | 状态 | 族数 |
