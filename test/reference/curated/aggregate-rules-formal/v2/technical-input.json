@@ -1,0 +1,162 @@
+{
+  "schemaVersion": "curated.aggregate-rules-formal.technical-input/v1",
+  "artifactType": "aggregate-rules-formal",
+  "candidateVersion": "v2",
+  "previousVersion": "v1",
+  "status": "QUALITY_EXECUTION_BLOCKED_NOT_APPROVED",
+  "scope": {
+    "sample": "StockReservation",
+    "basePackage": "example.stockreservation",
+    "layout": "single-project-app",
+    "purpose": "Independent small rule sample: ordered guards, typed payloads, ordered multiple events and pure constructor-injected computation.",
+    "notClaims": ["banking business", "complete inventory application", "raw Scala oracle replacement", "existing Helper or actor integration", "ScalaCheck executed", "generator implementation"],
+    "rawAcceptanceUnchanged": true,
+    "all31Closed": false
+  },
+  "origins": [
+    {"id": "source-formal-contract", "kind": "existing-source-contract", "path": "docs/codegen-parity/diffs/aggregate-rules-formal.diff.md", "sections": ["3", "4", "6.1", "7", "10"]},
+    {"id": "source-invariant-rule", "kind": "existing-interface-source", "path": "docs/codegen-parity/baseline/common/src/main/scala/net/imadz/common/CommonTypes.scala", "symbols": ["InvariantRule", "iMadzError"]},
+    {"id": "source-style", "kind": "user-quality-contract", "path": "docs/codegen-parity/layout-and-style.md"},
+    {"id": "source-pure-probe", "kind": "test-design-reference-not-business-oracle", "path": "test/reference/aggregate-core/oracle/PureDecisionSpec.scala"},
+    {"id": "source-predicate-boundaries", "kind": "test-design-reference-not-business-oracle", "path": "test/reference/aggregate-core-ops/AggregatePredicatesSpec.scala"},
+    {"id": "decision-stock-v1", "kind": "new-candidate-design", "description": "This input explicitly defines the sample policy and messages. Not historical truth, not approved production business semantics."}
+  ],
+  "legalDomain": {
+    "nulls": "Excluded. Invalid constructors or malformed snapshots are not converted to business rejection or empty success.",
+    "identifiers": "WarehouseId, RequestId, SkuId and LocationId: ASCII [A-Za-z0-9._-], length 1..64.",
+    "reservationId": "Printable ASCII, length 1..384. Length-prefixed identity format is specified separately.",
+    "notes": "Non-null Unicode String, length at most 256 UTF-16 code units; empty, quotes, backslashes and newline are legal.",
+    "availableQuantity": "Long, nonnegative. This state already denotes currently available stock, not original total stock.",
+    "storedReservation": "Positive Long quantity, valid nominal IDs and non-null payload collections.",
+    "stateRelations": "confirmedRequests is a subset of reservations.keySet. Unrelated entries remain legal and observable.",
+    "requestedQuantity": "All Long values. Nonpositive quantity is a declared business rejection.",
+    "locations": "Vector[LocationId], including empty and repeated elements. Coverage is membership, not multiplicity or inventory allocation.",
+    "locationNotes": "Option[Map[LocationId, Vector[ReservationNote]]], including None, Some(empty map) and nested nonempty values. Opaque payload; keys need not be requested locations.",
+    "routing": "Warehouse identity is obtained from State; application routing and actor lifecycle are outside this rule sample.",
+    "dependency": "ReservationIdentity promises deterministic pure output for legal arguments; exceptional violations propagate unchanged. No I/O, clock, random or global registry."
+  },
+  "types": [
+    {"name": "WarehouseId", "kind": "nominal", "underlying": "String"},
+    {"name": "RequestId", "kind": "nominal", "underlying": "String"},
+    {"name": "SkuId", "kind": "nominal", "underlying": "String"},
+    {"name": "LocationId", "kind": "nominal", "underlying": "String"},
+    {"name": "ReservationId", "kind": "nominal", "underlying": "String"},
+    {"name": "ReservationNote", "kind": "nominal", "underlying": "String"},
+    {"name": "LocationNotes", "kind": "inline-structural-type-not-alias", "type": {"kind": "optional", "element": {"kind": "map", "key": "LocationId", "value": {"kind": "sequence", "container": "Vector", "element": "ReservationNote"}}}}
+  ],
+  "state": {
+    "owner": "StockReservationEntity",
+    "name": "StockReservationState",
+    "fields": [
+      {"ordinal": 0, "name": "warehouseId", "type": "WarehouseId"},
+      {"ordinal": 1, "name": "available", "type": {"kind": "map", "key": "SkuId", "value": "Long"}},
+      {"ordinal": 2, "name": "registeredLocations", "type": {"kind": "sequence", "container": "Set", "element": "LocationId"}},
+      {"ordinal": 3, "name": "reservations", "type": {"kind": "map", "key": "RequestId", "value": "StoredReservation"}},
+      {"ordinal": 4, "name": "confirmedRequests", "type": {"kind": "sequence", "container": "Set", "element": "RequestId"}}
+    ],
+    "storedReservationFields": ["reservationId", "sku", "quantity", "locations", "locationNotes"]
+  },
+  "errors": [
+    {"name": "QuantityNotPositive", "code": "STOCK_QUANTITY_NONPOSITIVE", "message": "Requested quantity must be greater than zero.", "origin": "decision-stock-v1"},
+    {"name": "RequestAlreadyReserved", "code": "STOCK_REQUEST_ALREADY_RESERVED", "message": "The request already has a reservation.", "origin": "decision-stock-v1"},
+    {"name": "UnknownLocation", "code": "STOCK_LOCATION_UNKNOWN", "message": "Every requested location must be registered.", "origin": "decision-stock-v1"},
+    {"name": "StockUnavailable", "code": "STOCK_UNAVAILABLE", "message": "The SKU must exist with sufficient available quantity.", "origin": "decision-stock-v1"},
+    {"name": "ReservationMissing", "code": "STOCK_RESERVATION_MISSING", "message": "The request has no reservation.", "origin": "decision-stock-v1"},
+    {"name": "ReservationIdentityMismatch", "code": "STOCK_RESERVATION_ID_MISMATCH", "message": "The reservation identity does not match the request.", "origin": "decision-stock-v1"}
+  ],
+  "commands": [
+    {
+      "ordinal": 0,
+      "name": "ReserveUnits",
+      "paramsOwner": "StockReservationRules",
+      "paramsName": "ReserveUnitsParams",
+      "fields": [
+        {"ordinal": 0, "name": "requestId", "type": "RequestId"},
+        {"ordinal": 1, "name": "sku", "type": "SkuId"},
+        {"ordinal": 2, "name": "quantity", "type": "Long"},
+        {"ordinal": 3, "name": "locations", "type": {"kind": "sequence", "container": "Vector", "element": "LocationId"}},
+        {"ordinal": 4, "name": "locationNotes", "type": {"kind": "optional", "element": {"kind": "map", "key": "LocationId", "value": {"kind": "sequence", "container": "Vector", "element": "ReservationNote"}}}}
+      ],
+      "rule": {"name": "ReserveUnitsRule", "kind": "class", "constructorDependency": "ReservationIdentity", "return": "Either[iMadzError, List[StockReservationEvents]]"},
+      "guards": [
+        {"ordinal": 0, "predicate": {"kind": "positive-long", "argument": "param.quantity"}, "onFail": {"kind": "reject", "error": "QuantityNotPositive"}},
+        {"ordinal": 1, "predicate": {"kind": "map-absent", "map": "state.reservations", "key": "param.requestId"}, "onFail": {"kind": "reject", "error": "RequestAlreadyReserved"}},
+        {"ordinal": 2, "predicate": {"kind": "collection-covered", "collection": "param.locations", "container": "state.registeredLocations"}, "onFail": {"kind": "reject", "error": "UnknownLocation"}},
+        {"ordinal": 3, "predicate": {"kind": "quantity-sufficient", "map": "state.available", "key": "param.sku", "quantity": "param.quantity", "missingKey": false, "comparison": "greater-or-equal"}, "onFail": {"kind": "reject", "error": "StockUnavailable"}}
+      ],
+      "successComputation": {"name": "reservationId", "port": "ReservationIdentity.reservationId", "arguments": ["state.warehouseId", "param.requestId", "param.sku", "param.quantity"], "occurrences": 1, "evaluation": "after all guards, before event constructors"},
+      "emissions": [
+        {"ordinal": 0, "owner": "StockReservationEntity", "event": "UnitsReserved", "slots": [
+          {"ordinal": 0, "field": "requestId", "value": "param.requestId"},
+          {"ordinal": 1, "field": "reservationId", "value": "computed.reservationId"},
+          {"ordinal": 2, "field": "sku", "value": "param.sku"},
+          {"ordinal": 3, "field": "quantity", "value": "param.quantity"},
+          {"ordinal": 4, "field": "locations", "value": "param.locations"},
+          {"ordinal": 5, "field": "locationNotes", "value": "param.locationNotes"}
+        ]},
+        {"ordinal": 1, "owner": "StockReservationEntity", "event": "ReservationReceiptIssued", "slots": [
+          {"ordinal": 0, "field": "requestId", "value": "param.requestId"},
+          {"ordinal": 1, "field": "reservationId", "value": "computed.reservationId"}
+        ]}
+      ]
+    },
+    {
+      "ordinal": 1,
+      "name": "ConfirmReservation",
+      "paramsOwner": "StockReservationRules",
+      "paramsName": "ConfirmReservationParams",
+      "fields": [{"ordinal": 0, "name": "requestId", "type": "RequestId"}, {"ordinal": 1, "name": "reservationId", "type": "ReservationId"}],
+      "rule": {"name": "ConfirmReservationRule", "kind": "object", "return": "Either[iMadzError, List[StockReservationEvents]]"},
+      "guards": [
+        {"ordinal": 0, "predicate": {"kind": "map-contains", "map": "state.reservations", "key": "param.requestId"}, "onFail": {"kind": "reject", "error": "ReservationMissing"}},
+        {"ordinal": 1, "predicate": {"kind": "reservation-identity-equal", "record": "state.reservations[param.requestId]", "identity": "param.reservationId"}, "onFail": {"kind": "reject", "error": "ReservationIdentityMismatch"}},
+        {"ordinal": 2, "predicate": {"kind": "set-absent", "set": "state.confirmedRequests", "key": "param.requestId"}, "onFail": {"kind": "succeed-empty"}}
+      ],
+      "emissions": [{"ordinal": 0, "owner": "StockReservationEntity", "event": "ReservationConfirmed", "slots": [
+        {"ordinal": 0, "field": "requestId", "value": "param.requestId"},
+        {"ordinal": 1, "field": "reservationId", "value": "param.reservationId"}
+      ]}]
+    }
+  ],
+  "identity": {
+    "name": "ReservationIdentity",
+    "implementation": "LengthPrefixedReservationIdentity",
+    "arguments": ["WarehouseId", "RequestId", "SkuId", "Long"],
+    "result": "ReservationId",
+    "formatVersion": "stock-reservation:v1",
+    "encoding": "Version prefix, then four pipe-separated segments in argument order. Each segment is decimal UTF-16 length, colon, raw ASCII value. Quantity uses canonical Long.toString. No trailing separator.",
+    "fixedVector": {"warehouseId": "WH", "requestId": "RQ", "sku": "SK", "quantity": 17, "expected": "stock-reservation:v1|2:WH|2:RQ|2:SK|2:17"},
+    "purity": "No time, randomness, I/O, UUID generation or registry. This new format is not a migration of an old receipt identity."
+  },
+  "technicalMoneyExample": {
+    "scope": "TEST_REFERENCE_CAPABILITY_ONLY_NOT_STOCK_BUSINESS",
+    "types": ["Currency(String)", "GuardMoney(BigInt minorUnits, Currency currency)", "GuardBalanceState(Map[Currency, BigInt])", "GuardAmountParams(GuardMoney)"],
+    "errors": [
+      {"name": "AmountNotPositive", "code": "GUARD_AMOUNT_NONPOSITIVE", "message": "Technical example amount must be positive."},
+      {"name": "BalanceInsufficient", "code": "GUARD_BALANCE_INSUFFICIENT", "message": "Technical example requires a sufficient balance in the same currency."}
+    ],
+    "guardOrder": ["money-positive", "money-sufficient"],
+    "success": "List(AmountAdmitted())",
+    "notes": "Exact BigInt values. No MoneyOps String ABI claim, no rounding or balance-change algorithm. Legal balance values are nonnegative."
+  },
+  "properties": {
+    "implementation": "Genuine ScalaCheck Properties/Gen/Shrink source",
+    "oracle": "Named scenarios with independent expected error records and full typed event observations; no calls to production rules, error adapters or identity implementation to compute expectations.",
+    "samplingDomain": "Joint bounded recipes, not exhaustive quantification: full signed Long ranges; nominal ASCII alphabet and ID lengths; note text up to 256 UTF-16 units; histories 0/1/2/4; nested vectors 0..5; opaque unregistered note keys; money magnitudes from up to 512 random input bits (the added one can produce a 513-bit result) plus fixed boundaries. Directed properties supplement random sampling.",
+    "guardOrderWitness": "Positive quantity plus duplicate request plus missing location must reject duplicate before location. Nonpositive quantity plus both failures must reject quantity first.",
+    "shrinking": "Scenario-specific constraints and failure category preserved; strict measure decrease, no self candidate. Joint state/parameter shrinking retains relations and collection/Option classes, opaque-note-key flag and 0/1/many count categories.",
+    "fixedBoundaries": ["Long.MinValue", "-1", "0", "1", "Long.MaxValue", "exactly sufficient", "short by one", "missing SKU", "empty locations", "repeated locations", "missing first/last location", "None", "Some(empty map)", "Unicode/quote/backslash/newline notes", "BigInt beyond Long range"],
+    "proposedExecution": {"seeds": [740001, 740002, 740003], "workers": 1, "minimumSuccessfulMixedCases": 1000, "status": "NOT_RUN_BUDGET_STOP_BEFORE_SCALACHECK"},
+    "negativeControls": ["drop-second-event", "reverse-events", "eager-identity", "double-identity", "swallow-identity-exception", "duplicate-before-quantity", "confirmed-before-identity", "strictly-greater-stock", "exists-instead-of-forall", "some-empty-to-none", "location-before-duplicate", "filter-opaque-notes", "require-historical-reservation"],
+    "negativeControlResult": "NOT_RUN"
+  },
+  "dependencies": {
+    "productionSignature": "net.imadz.common.CommonTypes.InvariantRule/iMadzError",
+    "productionSupply": "Real net.imadz:common-core_2.13:0.2.1 JAR used by actual domain compilation; CommonTypes-only consumption, not whole application closure.",
+    "scalaVersion": "2.13.14",
+    "scalaCheckCandidate": "org.scalacheck:scalacheck_2.13:1.16.0",
+    "scalaCheckSupply": "Finite offline JARs used by successful prior-candidate specification compilation; properties not executed, latest revisions not recompiled.",
+    "sharedToolchainChanged": false
+  },
+  "approval": {"userGoldenApproval": "NOT_REQUESTED_UNTIL_QUALITY_PASSES", "jsImplementation": "NOT_STARTED", "qualityExecution": "BLOCKED", "planApprovalIsNotGoldenApproval": true}
+}

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "curated.scala-source-quality-policy/v1",
+  "artifactType": "aggregate-rules-formal",
+  "dialect": "Scala213",
+  "parser": "org.scalameta:parsers_2.13:4.7.7",
+  "measurement": {
+    "name": "source-structural-mccabe-v1",
+    "notClaim": "Not a full control-flow graph proof or equivalence to every compiler plugin.",
+    "base": 1,
+    "increment": ["if", "while", "do", "for generator", "for guard", "case guard", "short-circuit &&", "short-circuit ||"],
+    "match": "Expanded pattern paths minus one; add conservative unmatched exit unless unconditional wildcard/default exists.",
+    "catch": "Same path rule when catch cases are present.",
+    "nestedClosures": "Include decisions in owning body; report lambda/partial function separately; do not add closure base twice.",
+    "namedNestedDefinitions": "Report separately, no nested body counted twice.",
+    "initialization": "Report each primary/object initializer and field independently. Abstract declarations have no executable body.",
+    "nesting": "Control constructs only; an else-if continuation retains the enclosing if level."
+  },
+  "domain": {"maximumComplexity": 5, "maximumControlNesting": 2, "exceptionsAllowed": false},
+  "support": {
+    "defaultMaximumComplexity": 5,
+    "defaultMaximumControlNesting": 2,
+    "exceptions": "Exact file/owner/kind with finite maxima and justification. No whole-file exemption or project average. Sealed syntax or scenario dispatch is reported separately with original counts."
+  },
+  "plainFpOo": {
+    "rejectDomain": ["var", "assignment", "nonlocal return", "throw/catch", "Any/AnyRef", "reflection", "implicit time/randomness/concurrency", "mutable collections", "application/infrastructure imports", "Actor/Play/JDBC/I/O imports"],
+    "allow": ["explicit nominal constructor require for illegal value domain", "immutable field initialization", "named sealed ADT", "constructor-injected pure computation"],
+    "qualification": "Syntactic checks do not alone prove semantic purity or OO responsibility. Exact injected implementation and behavior properties are also reviewed."
+  },
+  "execution": {"seeds": [740001, 740002, 740003], "workers": 1, "minimumSuccessfulRandomCases": 1000},
+  "rawAcceptanceUnchanged": true,
+  "all31Closed": false
+}

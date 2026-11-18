@@ -1,0 +1,86 @@
+{
+  "schemaVersion": "curated.aggregate-rules-formal.review-status/v1",
+  "artifactType": "aggregate-rules-formal",
+  "candidateVersion": "v1",
+  "status": "CANDIDATE_READY_FOR_USER_REVIEW_WITH_NOT_RUN_LIMITATIONS",
+  "bundleSha256": "8d9556c342c13e4fbee6b7ca7e513e0f4dbc8dc6891430179a711ab9f7f58b46",
+  "manifest": {"path": "manifest.json", "bytes": 4116, "sha256": "41349a74298a0085bc127062fb2179fc41807eae00e3cd151ec82c524a9b5fe5"},
+  "sourceAndSpecification": {
+    "payloadFiles": 10,
+    "payloadBytes": 77191,
+    "productionScalaFiles": 4,
+    "propertyAndReferenceScalaFiles": 4,
+    "technicalInputFiles": 1,
+    "explanationFiles": 1,
+    "wholeBytePinsVerified": true,
+    "encoding": "UTF-8 without BOM, LF with final newline",
+    "scalaLinesAtMost120Characters": true,
+    "placeholdersOrAnyFallback": false
+  },
+  "staticReviews": [
+    {
+      "agent": "a6ee8181f0d8594b1",
+      "kind": "READ_ONLY_STATIC_FULL_10_FILES",
+      "verdictAsReturned": "STATIC_REVIEW_NEEDS_REVISION",
+      "bytesReviewedThen": 68848,
+      "blockingFindings": [
+        {"id": "B1", "finding": "No positive-quantity duplicate-request plus missing-location witness to detect guard reordering.", "subsequentDisposition": "New DuplicateWithMissingLocation recipe, directed property, independent expected rejection and typed LocationBeforeDuplicate negative control."},
+        {"id": "B2", "finding": "Recipes always included one historical record and registered-only note keys.", "subsequentDisposition": "History 0/1/2/4, independent opaque note keys, vector counts, broader legal identifiers/text/numbers, preserving joint shrinkers and fresh/opaque directed properties plus negative controls."}
+      ],
+      "nonblockingFindings": ["A tautological snapshot comparison was replaced by a snapshot captured before observation.", "Manifest and status were intentionally created after the review; completed bundle links are checked separately."],
+      "runtimeExecuted": false,
+      "originalFailureRewritten": false
+    },
+    {
+      "agent": "a849bbf4eb1b07f7e",
+      "kind": "READ_ONLY_STATIC_6_REVISED_FILES",
+      "verdictAsReturned": "STATIC_REVIEW_NEEDS_REVISION",
+      "bytesReviewedThen": 68153,
+      "closedPreviousFindings": ["B1", "B2"],
+      "blockingFindings": [
+        {"id": "B3", "finding": "Independent identity forAll(String,String,String,Long) used default String shrinking which can leave the legal nonempty-ID domain.", "subsequentDisposition": "IdentityCase with typed nominal IDs, explicit Shrink[IdentityCase], one-case forAll and closure property. No default String shrink path."}
+      ],
+      "nonblockingFindings": ["Money generator uses up to 512 input bits plus one; documents now explicitly allow a 513-bit result."],
+      "runtimeExecuted": false,
+      "originalFailureRewritten": false
+    },
+    {
+      "agent": "a2f395dc509edc3ed",
+      "kind": "READ_ONLY_STATIC_IDENTITY_DELTA_2_FILES",
+      "verdictAsReturned": "STATIC_REVIEW_IDENTITY_DELTA_READY",
+      "closedPreviousFindings": ["B3"],
+      "findings": ["Typed single-case forAll uses the explicit identity shrinker; nonempty take(1) preserves the identifier domain and strict BigInt measure decrease excludes self cycles."],
+      "limits": ["No rerun of previous full review.", "No new check of external nominal constructor artifacts or actual ScalaCheck overload/implicit resolution."],
+      "runtimeExecuted": false
+    }
+  ],
+  "parentCloseout": {
+    "kind": "BYTE_FORMAT_SCOPE_CHECK_ONLY",
+    "completeCandidatePinsRechecked": true,
+    "sourcePinsRechecked": true,
+    "manifestCanonicalBundleRecomputed": true,
+    "remainingReportedStaticBlockingFindings": [],
+    "postReviewChange": "Only two line-wrap edits in Cases and Properties to respect the 120-character Scala limit; no semantic change claimed.",
+    "staticReviewIsNotCompilationOrPropertyPass": true,
+    "trackedFilesOutsideCandidateChanged": false,
+    "oldRuntimeEvidenceReexecuted": false
+  },
+  "actualExecution": {
+    "scalaCompilation": "NOT_RUN",
+    "typeClosure": "NOT_RUN",
+    "scalaCheck": "NOT_RUN",
+    "negativeControls": "NOT_RUN",
+    "negativeControlCountSpecified": 13,
+    "complexityMeasurement": "NOT_MEASURED",
+    "dependencySupply": "UNADMITTED",
+    "reason": "Approved scope creates a hand-written candidate and genuine specifications with static review only. Quality execution needs its own supply, interface and bounded authorization; no old verify budget is reused."
+  },
+  "userApproval": {"state": "PENDING", "approvedBundleSha256": null, "approvedManifestSha256": null, "planApprovalIsNotGoldenApproval": true},
+  "jsImplementation": "NOT_STARTED",
+  "otherSevenCuratedFamiliesStarted": false,
+  "rawAcceptedFamilies": 34,
+  "rawAcceptanceChanged": false,
+  "oldEightRawOracleGap": "OPEN_NOT_BACKFILLED_BY_CURATED",
+  "git": {"head": "fd1cf2134fb22bcd88e1685cab6b4096dcd1fcb1", "commitPerformed": false, "pushPerformed": false},
+  "all31Closed": false
+}

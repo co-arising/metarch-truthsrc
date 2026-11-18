@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "curated.aggregate-rules-formal.manifest/v1",
+  "artifactType": "aggregate-rules-formal",
+  "candidateVersion": "v1",
+  "repositoryBaseHead": "fd1cf2134fb22bcd88e1685cab6b4096dcd1fcb1",
+  "status": "CANDIDATE_NOT_APPROVED_NOT_EXECUTED",
+  "payloadFileCount": 10,
+  "payloadBytes": 77191,
+  "payload": [
+    {"path": "README.md", "bytes": 12889, "sha256": "9eb0348d75e6316506ea2f9559c715356664061f27bcfc873a8c6f230e326d02"},
+    {"path": "app/example/stockreservation/domain/entities/StockReservationEntity.scala", "bytes": 1503, "sha256": "138d3eaae32c73cb2e924baaf5a25895b7123e8d00cbf9513e19b744d1475348"},
+    {"path": "app/example/stockreservation/domain/invariant/StockReservationRules.scala", "bytes": 3756, "sha256": "c47f0467174fef5cfa1ccfdc023eeea2b16a01e8a3815b6352c04ffb9f1a15a1"},
+    {"path": "app/example/stockreservation/domain/services/ReservationIdentity.scala", "bytes": 841, "sha256": "b8c93db6d18b1d3cf2b75cd84c6d29caefdf57cc98b61fb9a84b8c8f90164645"},
+    {"path": "app/example/stockreservation/domain/values/ReservationValues.scala", "bytes": 1312, "sha256": "d28f320a28116490a17ffc4b35aee1d9fd2259fd9e4171cce5d717215a47e55c"},
+    {"path": "technical-input.json", "bytes": 14187, "sha256": "bd38253d35ef6a8a6e8f2052dc7bc1cfe5bc80e66387c9959210b98f7a27e437"},
+    {"path": "test/example/stockreservation/reference/FormalGuardExamples.scala", "bytes": 6901, "sha256": "f317b5e9f63c649f325db6fcf3163cc202174c176098bd0e1026d7883c156470"},
+    {"path": "test/example/stockreservation/reference/StockReservationCases.scala", "bytes": 12863, "sha256": "fbcfdfa6a6416da5f38cb062b91458aa0c1f3466255b9b5aaaa1d24b1cffdf8b"},
+    {"path": "test/example/stockreservation/reference/StockReservationOracle.scala", "bytes": 6944, "sha256": "28bbf293ac6325389d7f4b88caae41755e1b3f886982b75ea0db95bec27d6585"},
+    {"path": "test/example/stockreservation/reference/StockReservationProperties.scala", "bytes": 15995, "sha256": "6d33525a750e17cef13149de21cffa960f9bfccac3ce715e52c54e719db93c34"}
+  ],
+  "bundle": {
+    "algorithm": "SHA-256",
+    "encoding": "UTF-8 JSON array of payload rows sorted by relative path; each row key order bytes,path,sha256; compact separators; literal Unicode; one trailing LF. File hashes capture full unnormalized bytes.",
+    "canonicalPinRowsBytes": 1598,
+    "sha256": "8d9556c342c13e4fbee6b7ca7e513e0f4dbc8dc6891430179a711ab9f7f58b46"
+  },
+  "sourcePins": [
+    {"path": "docs/codegen-parity/diffs/aggregate-rules-formal.diff.md", "bytes": 88366, "sha256": "32e5f2fd187b1f4662a881569a247941079a65f5b5eea20d3442801eda85709a"},
+    {"path": "docs/codegen-parity/baseline/common/src/main/scala/net/imadz/common/CommonTypes.scala", "bytes": 539, "sha256": "a59f619abad7dda5d4e1e54d4fbd7b772db53fd4d015f0775800e12d725d85fe"},
+    {"path": "docs/codegen-parity/layout-and-style.md", "bytes": 12934, "sha256": "bc8d0f3325a0f67a7c23ff4af6bc5f5b9c23b6caaf8aa12d1f93189c7a911d13"},
+    {"path": "test/reference/aggregate-core/oracle/PureDecisionSpec.scala", "bytes": 5782, "sha256": "10fa78307cf865c586a4f733521ec672953129d4d3f2e88e1eb68c06b76e4b4f"},
+    {"path": "test/reference/aggregate-core-ops/AggregatePredicatesSpec.scala", "bytes": 10987, "sha256": "f95f66534a55b038f85f1d0d925ca6b4796ae0e477426794831dc45b4f492d6d"},
+    {"path": "test/reference/jvm-toolchain.mjs", "bytes": 6705, "sha256": "4cbfbeca23db3cc7db0bd679f226f74efbc6735a79ee2036a773d3168d1abd8f"}
+  ],
+  "excludedFromPayload": ["manifest.json", "review-status.json"],
+  "manifestIdentity": "Full manifest bytes/SHA-256 are recorded externally in review-status and the user handoff, not in this manifest itself.",
+  "approvalRule": "User approval must name this bundle SHA-256 and manifest SHA-256. No source, property, input or README byte change inherits approval. Plan approval is not golden approval.",
+  "execution": {
+    "scalaCompilation": "NOT_RUN",
+    "scalaCheck": "NOT_RUN",
+    "negativeControls": "NOT_RUN",
+    "complexity": "NOT_MEASURED",
+    "dependencySupply": "UNADMITTED"
+  },
+  "jsImplementation": "NOT_STARTED",
+  "rawAcceptanceChanged": false,
+  "all31Closed": false
+}
