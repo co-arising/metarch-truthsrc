@@ -19,21 +19,21 @@
     "frozenReuse": "app/example/stockreservation/domain/values/ReservationValues.scala is byte-identical to the approved aggregate-rules-formal v3 golden (sha256 48f29020c0edc9b2f8f6a7c72a457f8108873233f8ca83c4fcdd108f18c4b67b)"
   },
   "v1QualityRun": {
-    "round": ".rounds/external-connector-port-quality-20261119-01",
+    "round": ".rounds/external-connector-port-quality-20261119-02",
     "prepared": {
-      "file": ".rounds/external-connector-port-quality-20261119-01/prepared.json",
+      "file": ".rounds/external-connector-port-quality-20261119-02/prepared.json",
       "sha256": "5720f6b9f64c0bfa68e4e004e4533353d5561be5edd55c872370a8bad2ad1c26"
     },
     "attempt": {
       "id": "attempt-01",
       "actualJvmCalls": 6,
       "pids": [
-        81811,
-        81838,
-        81883,
-        81892,
-        81918,
-        81929
+        82064,
+        82074,
+        82096,
+        82102,
+        82111,
+        82133
       ],
       "allExit0": true,
       "timeouts": 0,
@@ -46,7 +46,7 @@
       "violations": 0,
       "excess": 0,
       "engineCoreUnchanged": "ownDecisions 16, control 7, declaredScopes 13, forbidden 16, isDeclaration 7 match the aggregate-rules-formal v3 exceptions for the identical core; import direction rules are named per-layer predicates",
-      "file": ".rounds/external-connector-port-quality-20261119-01/attempt-01/results/metrics.json"
+      "file": ".rounds/external-connector-port-quality-20261119-02/attempt-01/results/metrics.json"
     },
     "properties": {
       "seeds": [
@@ -65,6 +65,7 @@
       "guiceVariant": "4.2.1 no_aop (AOP interception machinery unused by the sample)",
       "runtimeInjectorVerified": true
     },
+    "finalBytesNote": "Executed on the exact committed candidate bytes; prepared pin sha equals the round-01 prepared sha, confirming zero source drift between the two executions",
     "discoveryRounds": "Round 20261118-01 (three attempts) and round 20261119-01 discovery fixed: Future.fromTry arity, split trailing-empty semantics, boundary Await admission, anonymous-module unsupported-term, direction-aware import policy refactors, and the Guice runtime closure expansion; every fix is in the committed sources and re-verified by this attempt"
   },
   "userGoldenApproval": "PENDING_USER_APPROVAL_OF_V1_BUNDLE_725e03a1",
