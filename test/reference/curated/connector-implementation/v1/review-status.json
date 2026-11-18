@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "curated.connector-implementation.review-status/v1",
+  "artifactType": "connector-implementation",
+  "candidateVersion": "v1",
+  "status": "QUALITY_EXECUTION_COMPLETE_AWAITING_WALKTHROUGH",
+  "bundleSha256": "ee8482aa7b14b365e522f33f7fe763b7ebba4ca61049101fb3a1b680a816673a",
+  "manifest": {
+    "path": "manifest.json",
+    "bytes": 4385,
+    "sha256": "212a1445e7a6b04ca7a3d289259e94cf3ade8d41dc26727e652973620a90d1c1"
+  },
+  "payload": {
+    "files": 21,
+    "bytes": 82697,
+    "wholeBytesVerified": true
+  },
+  "lineage": {
+    "familyContract": "docs/codegen-parity/diffs/connector-implementation.diff.md; D1-D7 recorded with explicit candidate choices (D1 candidate ruling pending walkthrough ratification: full approved port ABI, raw first-method/Nil-params debt not reproduced, no-helper and multi-helper shapes deferred to generator fixtures; D2 single run(String) overload, bound script constant, no live process in gate; D3 USER RULING 2026-11-18 carried over: no @ImplementedBy, explicit bootstrap binding; D6 infrastructure.process handwritten outer domain with recorded divergence from the frozen port bundle; D7 MANUAL marker grammar pinned as structural property with directed negative; D4/D5 deferred to owners)",
+    "frozenReuse": "Twelve files byte-identical to the approved external-connector-port v1 bundle or the family it froze: port trait b46ae9bd, AvailabilityOutcome fd70662a, ConnectorProtocol b159df4b, LocationDirectory 7b98d957, StockCatalogModule e1a32442, ReservationValues 48f29020, CatalogOracle fecc6bba, ScalaSourceMetrics f5c66788, JsonOutput d622f3db, QualityInputs eb95be93, QualityMain 74c8358a, scope-exceptions e901e444"
+  },
+  "v1QualityRun": {
+    "round": ".rounds/connector-implementation-quality-20261119-01",
+    "prepared": {
+      "file": ".rounds/connector-implementation-quality-20261119-01/prepared.json",
+      "sha256": "67104d36adfd22abbd0d026c3df5b0fdf1211d3ee1f1da1d907f582b06c60512"
+    },
+    "attempt": {
+      "id": "attempt-01",
+      "actualJvmCalls": 6,
+      "pids": [
+        84086,
+        84094,
+        84119,
+        84127,
+        84134,
+        84155
+      ],
+      "allExit0": true,
+      "timeouts": 0,
+      "signals": 0
+    },
+    "metrics": {
+      "passed": true,
+      "files": 16,
+      "scopes": 461,
+      "violations": 0,
+      "excess": 0,
+      "engineCoreUnchanged": "ownDecisions 16, control 7, declaredScopes 13, forbidden 16, isDeclaration 7 match the aggregate-rules-formal v3 exceptions for the identical engine core; import direction rules are named per-layer predicates",
+      "file": ".rounds/connector-implementation-quality-20261119-01/attempt-01/results/metrics.json"
+    },
+    "properties": {
+      "seeds": [
+        740001,
+        740002,
+        740003
+      ],
+      "results": 34,
+      "negatives": 8,
+      "proved": 25,
+      "passed": 9,
+      "passedAll": true,
+      "minimumSuccessfulRandomCases": 1000
+    },
+    "supply": {
+      "artifacts": 26,
+      "guiceVariant": "4.2.1 no_aop (AOP interception machinery unused by the sample)",
+      "runtimeInjectorVerified": true
+    },
+    "discoveryNote": "Attempt-01 of the same round first failed compile-properties on Scala infix precedence (a eq b && c parses as a eq (b && c)); fixed by parenthesizing the synchronous-throw assertion and re-preparing the round; every other stage passed on first execution"
+  },
+  "rawAcceptanceUnchanged": true,
+  "all31Closed": false
+}

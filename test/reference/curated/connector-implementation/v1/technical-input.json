@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "curated.connector-implementation.technical-input/v1",
+  "artifactType": "connector-implementation",
+  "candidateVersion": "v1",
+  "status": "SOURCES_PREPARED_AWAITING_QUALITY_EXECUTION",
+  "scope": {
+    "sample": "StockCatalog connector implementation side",
+    "basePackage": "example.stockreservation",
+    "layout": "single-project-app",
+    "purpose": "Independent small sample of the traditional family-25 artifact: the infrastructure.connectors implementation class that closes the approved application-layer connector port — constructor-injected handwritten helpers, one MANUAL block per method carrying the mechanical delegation, typed lifting of raw subprocess output, and explicit infrastructure.bootstrap assembly. Demonstrates the three infrastructure pieces: generated impl (infrastructure.connectors), handwritten helper machinery seam (infrastructure.process outer domain), assembly (infrastructure.bootstrap).",
+    "notClaims": ["banking business", "complete warehouse application", "port codec correctness (owned by the approved external-connector-port golden)", "real subprocess execution inside the quality gate", "writer mergeManual or ledger/anchor mechanics (owned by shared writers and the connector-assembly integrator)", "connector-assembly-integrator product registration", "raw Builder fallback shapes (no-helper ???, multi-helper routing) as produced artifacts", "generator implementation"],
+    "rawAcceptanceUnchanged": true,
+    "all31Closed": false
+  },
+  "origins": [
+    {"id": "source-family-contract", "kind": "existing-source-contract", "path": "docs/codegen-parity/diffs/connector-implementation.diff.md", "sections": ["2", "3", "4", "5", "6", "8.1", "9", "11"]},
+    {"id": "source-impl-model", "kind": "existing-interface-source", "path": "docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/infrastructure/connector/ConnectorImplModel.scala", "symbols": ["ConnectorImplModel", "ConnectorImplMethodModel"]},
+    {"id": "source-impl-builder", "kind": "existing-interface-source", "path": "docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/builder/infrastructure/connector/ConnectorImplBuilder.scala", "symbols": ["ConnectorImplBuilder.build"], "note": "B1-B12 rule accounting; the first-method-only/parameters-Nil defect (5.1) is documented, not reproduced."},
+    {"id": "source-impl-template", "kind": "existing-interface-source", "path": "docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/infrastructure/connector/ConnectorImplTemplate.scala", "symbols": ["ConnectorImplTemplate.generate"], "note": "T1-T15 output order; MANUAL markers T12/T14 and body slot T13 define the marker grammar fixed here."},
+    {"id": "source-approved-port", "kind": "approved-frozen-reuse", "path": "test/reference/curated/external-connector-port/v1", "note": "Byte-identical frozen reuse of six approved production files (ReservationValues, port trait, AvailabilityOutcome, ConnectorProtocol, LocationDirectory, StockCatalogModule) plus the independent oracle; the implementation ABI must match this approved port exactly (D3)."},
+    {"id": "source-runner-handoff", "kind": "approved-handoff-note", "path": "test/reference/curated/external-connector-port/v1/app/example/stockreservation/infrastructure/connectors/NodeSubprocessRunner.scala", "note": "The approved port sample explicitly deferred concrete process mechanics to the connector-implementation family; this candidate takes over that ownership decision."},
+    {"id": "source-style", "kind": "user-quality-contract", "path": "docs/codegen-parity/layout-and-style.md"},
+    {"id": "decision-impl-v1", "kind": "new-candidate-design", "description": "This input explicitly defines the implementation shape, MANUAL marker grammar, helper injection contract and delegation guarantees. Not historical truth, not approved production business semantics."}
+  ],
+  "legalDomain": {
+    "manualMarkers": "Exact four-space comment lines '// ==== BEGIN MANUAL ====' and '// ==== END MANUAL ===='; exactly one pair per override method; BEGIN sits on the line after the def opening brace, the delegation body on the single following line, END followed by the method closing brace. Pairing is pinned as a structural property with a directed negative.",
+    "delegationContract": "Exactly one runner call per port call; the script argument or the bound script constant is passed to the runner verbatim — never escaped, rewritten, defaulted or trimmed; the raw output line is lifted through the companion decode into the typed result; no retry, no exception swallowing, no synthesized success, no timeout or recovery logic in the generated class.",
+    "failureChannels": "A failed runner Future propagates unchanged as the port call's failed Future; a runner failure thrown synchronously propagates out of the port call itself unchanged (same exception instance, exactly one invocation recorded); a malformed runner output becomes a named ProtocolViolation on the failure channel through the codec; a refusal stays a typed value on the success channel.",
+    "helperInjection": "The single handwritten helper NodeSubprocessRunner is a constructor parameter of the generated class under @Inject(); helpers live in the infrastructure.process handwritten outer domain and are never created by the generator; parameterless port methods use the bound script constant \"stockreservation/location-directory.v1\" verbatim.",
+    "runner": "NodeSubprocessRunner.run performs exactly one subprocess execution per call and yields one output line; concrete spawn/timeout/exit-code mechanics are handwritten in infrastructure.process and are outside the quality gate's executable surface (the sandbox denies process-exec); the gate verifies compile, seam contract via scripted and throwing doubles, and delegation behavior — never a live process.",
+    "assembly": "infrastructure.bootstrap.StockCatalogModule binds the port to the implementation with an explicit Guice binding; the kernel-facing application layer carries no implementation reference; the test seam module supplies runner and ExecutionContext instances so the assembly property resolves the real binding.",
+    "unusedSlot": "The raw no-helper branch (defaultBody '???') is a synchronous unimplemented slot, not a constructed failed Future; its generated shape is deferred to generator-phase fixtures and is not claimed by this sample."
+  },
+  "types": [
+    {"name": "WarehouseId", "kind": "frozen-reuse", "underlying": "String"},
+    {"name": "SkuId", "kind": "frozen-reuse", "underlying": "String"},
+    {"name": "LocationId", "kind": "frozen-reuse", "underlying": "String"}
+  ],
+  "implementation": {
+    "name": "StockCatalogConnectorImpl",
+    "packageName": "example.stockreservation.infrastructure.connectors",
+    "port": {"name": "StockCatalogConnector", "packageName": "example.stockreservation.application.connectors", "approvedBundle": "725e03a1fba1e7cb6fd6bbc90550ca0e2635ae2b211b19132beffcb722ed0b9c"},
+    "di": "No annotation on the port; @Singleton on the class; @Inject() constructor with (runner: NodeSubprocessRunner, ec: ExecutionContext) in declared order; no implicit EC, no empty legacy ctor",
+    "helpers": [
+      {"parameter": "runner", "type": "NodeSubprocessRunner", "packageName": "example.stockreservation.infrastructure.process", "handwritten": true, "kind": "handwritten-outer-domain-seam"}
+    ],
+    "manualBlocks": [
+      {"method": "probeAvailability", "body": "lift(runner.run(script))(AvailabilityOutcome.decode)", "source": "script parameter passthrough (port scriptParam shape)"},
+      {"method": "locationDirectory", "body": "lift(runner.run(locationDirectoryScript))(LocationDirectory.decode)", "source": "bound script constant, parameterless port method"}
+    ],
+    "sharedPrivate": {"name": "lift", "signature": "[T](pending: Future[String])(decode: String => Try[T]): Future[T]", "semantics": "flatMap + Future.fromTry; decode require-violations become ProtocolViolation on the failure channel; ExecutionContext is the injected ec only"}
+  },
+  "decisions": [
+    {"id": "D1", "choice": "CANDIDATE RULING for walkthrough ratification: the implementation mirrors the FULL approved port ABI — both methods, both parameter shapes — fixing the raw Builder's first-method-only/parameters-Nil defect (diff 5.1) that is type-incompatible with the approved port; the no-helper '???' and multi-helper profiles are documented as raw shapes and deferred to generator-phase fixtures, never faked into this sample."},
+    {"id": "D2", "choice": "Runner ABI is run(script: String): Future[String] as the single overload; parameterless methods pass the bound script constant verbatim; the script argument is never escaped or rewritten; concrete subprocess mechanics (spawn, timeouts, exit codes) are handwritten in infrastructure.process and explicitly NOT executed inside the quality gate — gate coverage is compile plus seam-contract doubles (scripted success/failure queue and synchronous thrower), never a live process (diff 11.3)."},
+    {"id": "D3", "choice": "USER RULING 2026-11-18 carried over: no @ImplementedBy — the multi-module (隔离区) kernel form has no implementation classes in the kernel module. The impl name is connectorName + 'Impl' and assembly is the explicit infrastructure.bootstrap.StockCatalogModule Guice binding, byte-identical with the approved port bundle."},
+    {"id": "D6", "choice": "Multi-module isolation form: generated impl in infrastructure.connectors, handwritten helper source in infrastructure.process (手写外域, BC PackageLayout L105-L111 — the generator never creates that file), assembly in infrastructure.bootstrap; the direction-aware boundary import gate enforces kernel isolation. Recorded divergence: the approved port bundle kept its runner seam inside infrastructure.connectors as a port-sample support file; this family moves the helper to infrastructure.process per this family's own contract — the port bundle stays frozen as approved."},
+    {"id": "D7", "choice": "MANUAL block ownership: the marker grammar and pairing are frozen as a structural property with a directed negative; the block content is the delegation body and regeneration byte-preservation is a writer contract verified at the generator phase, not claimed by this Scala sample; a helper's synchronous failure and a failed runner Future both propagate unchanged, never converted."},
+    {"id": "D4", "choice": "Deferred to owners: connector-assembly-integrator owns the product registration and iface+impl plan; shared writers own mergeManual/ledger/anchors; the single noteId/method-anchor mapping (D5) stays out of this sample — no @knowledge comment is fabricated here."}
+  ]
+}
