@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "curated.projection-apply-event.review-status/v1",
+  "artifactType": "projection-apply-event",
+  "candidateVersion": "v1",
+  "status": "GOLDEN_AWAITING_USER_APPROVAL",
+  "bundleSha256": "73942d0fc435a4e3ff51b2f75e386eb7d8b1537c12862d22b8a5fbc5ba6c653d",
+  "manifest": {
+    "path": "manifest.json",
+    "bytes": 3949,
+    "sha256": "9e3af5f3626784bf00f7062b35d9dbaa41d18b0af62ab59e661ff4540e4ba14f"
+  },
+  "payload": {
+    "files": 19,
+    "bytes": 79130,
+    "wholeBytesVerified": true
+  },
+  "lineage": {
+    "familyContract": "docs/codegen-parity/diffs/projection-apply-event.diff.md; conditional multi-project sub-artifact, one <View>ApplyEvent per view; D-P08-FAIL-CLOSED / D-P09-ORACLE / D-P10-KERNEL-GLUE candidate rulings recorded in technical-input.json awaiting walkthrough ratification; E1-ENGINE-DELTA boundary delta (Instant/UUID declared face + named-argument admission) pinned by meta properties; SCOPE-SUPPLY covers the zero-scope requirement via Table column inventories and event require guards",
+    "frozenReuse": "Engine core derived from the approved connector-family byte (f5c66788) with package retargeting and the two documented boundary delta arms; core measurement methods (ownDecisions 16/2, control 7, declaredScopes 13, isDeclaration 7, JsonOutput.escape 9) measure identically; forbidden measures 17 (the one guarded delta arm) with an exact exception row",
+    "dispatch": "CQRSApplicationGenerator L855-875 conditional emission honored by the sample's two-view shape; single-project base 0 documented, never faked"
+  },
+  "qualityRun": {
+    "discoveryRound": ".rounds/projection-apply-event-quality-20261119-03",
+    "round": ".rounds/projection-apply-event-quality-20261119-04",
+    "prepared": {
+      "file": ".rounds/projection-apply-event-quality-20261119-04/prepared.json",
+      "sha256": "3ff7b4322f7013f66e7c34ffd78dd5e0d8a69786ff9b65b5a4ac01dda394b84d",
+      "zeroDriftProof": "prepared pin sha equals the discovery-round prepared sha byte for byte (same value 3ff7b432…), proving zero source drift between discovery and final-bytes rounds"
+    },
+    "attempt": {
+      "id": "attempt-01",
+      "actualJvmCalls": 6,
+      "pids": [
+        44180,
+        44186,
+        44195,
+        44215,
+        44230,
+        44259
+      ],
+      "allExit0": true,
+      "timeouts": 0,
+      "signals": 0,
+      "firstAttemptClean": true
+    },
+    "metrics": {
+      "passed": true,
+      "files": 14,
+      "scopes": 348,
+      "violations": 0,
+      "excess": 0
+    },
+    "properties": {
+      "seeds": [
+        740001,
+        740002,
+        740003
+      ],
+      "results": 37,
+      "negatives": 6,
+      "passed": true,
+      "passedAll": true,
+      "minimumSuccessfulRandomCases": 1000,
+      "totalRandomEvaluations": 15022
+    },
+    "supply": {
+      "artifacts": 26,
+      "guiceVariant": "4.2.1 no_aop carried unchanged from the pinned family supply (unused by this sample; kept so the derivation shares one verified closure)",
+      "runtimeInjectorVerified": false,
+      "note": "No Guice assembly exists in this family — the kernel pure-function object carries no DI surface; the coordinate closure is the shared pinned supply"
+    },
+    "finalBytesNote": "Executed on the exact committed candidate bytes (commit 599c385); prepared pin sha equals the discovery-round prepared sha, confirming zero source drift"
+  },
+  "rawAcceptanceUnchanged": true,
+  "all31Closed": false,
+  "userGoldenApproval": null,
+  "userRuling": null
+}
