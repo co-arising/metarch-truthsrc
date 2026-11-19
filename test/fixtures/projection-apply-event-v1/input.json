@@ -1,0 +1,222 @@
+{
+  "schemaVersion": "truthsrc.projection-apply-event-input/v1",
+  "basePackage": "example.stockreservation",
+  "moduleName": "StockLedgerProjectionModule",
+  "views": [
+    {
+      "viewLabel": "台账视图",
+      "viewName": "StockLedgerView",
+      "tableObject": "StockLedgerTable",
+      "kernelClass": "StockLedgerApplyEvent",
+      "semanticsFace": "StockLedgerApplyEventSemantics",
+      "semanticsImpl": "StockLedgerApplyEventSemanticsImpl",
+      "identityScheme": null,
+      "hooks": [
+        "emptyRow",
+        "stamped",
+        "text"
+      ],
+      "kernelHelpers": [
+        "upsertBy"
+      ],
+      "events": [
+        {
+          "name": "Reserved",
+          "fqn": "example.stockreservation.domain.entities.ReservationEntity.Reserved",
+          "applyForm": "create",
+          "columns": [
+            {
+              "name": "skuId",
+              "value": "e.skuId"
+            },
+            {
+              "name": "label",
+              "value": "sem.text(e.label)"
+            },
+            {
+              "name": "quantity",
+              "value": "e.quantity"
+            },
+            {
+              "name": "reserved",
+              "value": "true"
+            },
+            {
+              "name": "lastEventAt",
+              "value": "sem.stamped(e.occurredAt)"
+            },
+            {
+              "name": "type",
+              "value": "\"reserved\""
+            },
+            {
+              "name": "tenantId",
+              "value": "e.tenantId"
+            }
+          ]
+        },
+        {
+          "name": "QuantityAdjusted",
+          "fqn": "example.stockreservation.domain.entities.ReservationEntity.QuantityAdjusted",
+          "applyForm": "updateOnly",
+          "columns": [
+            {
+              "name": "quantity",
+              "value": "row.quantity + e.delta"
+            },
+            {
+              "name": "lastEventAt",
+              "value": "sem.stamped(e.occurredAt)"
+            }
+          ]
+        },
+        {
+          "name": "TagUpserted",
+          "fqn": "example.stockreservation.domain.entities.ReservationEntity.TagUpserted",
+          "applyForm": "updateOnly",
+          "columns": [
+            {
+              "name": "tags",
+              "value": "upsertBy(row.tags, e.tag)(t => t)"
+            }
+          ]
+        },
+        {
+          "name": "LedgerSettled",
+          "fqn": "example.stockreservation.domain.entities.ReservationEntity.LedgerSettled",
+          "applyForm": "updateOnly",
+          "columns": [
+            {
+              "name": "reserved",
+              "value": "false"
+            },
+            {
+              "name": "settledAt",
+              "value": "Some(e.occurredAt)"
+            },
+            {
+              "name": "lastEventAt",
+              "value": "sem.stamped(e.occurredAt)"
+            }
+          ]
+        },
+        {
+          "name": "LedgerReopened",
+          "fqn": "example.stockreservation.domain.entities.ReservationEntity.LedgerReopened",
+          "applyForm": "updateOnly",
+          "docNote": "None patch＝清列判例",
+          "columns": [
+            {
+              "name": "reserved",
+              "value": "true"
+            },
+            {
+              "name": "settledAt",
+              "value": "None"
+            },
+            {
+              "name": "lastEventAt",
+              "value": "sem.stamped(e.occurredAt)"
+            }
+          ]
+        },
+        {
+          "name": "ReservationCancelled",
+          "fqn": "example.stockreservation.domain.entities.ReservationEntity.ReservationCancelled",
+          "applyForm": "delete",
+          "deletePairs": [
+            {
+              "name": "sourceType",
+              "expr": "\"ledger-root\""
+            },
+            {
+              "name": "sourceId",
+              "expr": "e.cancelledId.toString"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "viewLabel": "快照视图",
+      "viewName": "StockLedgerSnapshotView",
+      "tableObject": "StockLedgerSnapshotTable",
+      "kernelClass": "StockLedgerSnapshotApplyEvent",
+      "semanticsFace": "StockLedgerSnapshotApplyEventSemantics",
+      "semanticsImpl": "StockLedgerSnapshotApplyEventSemanticsImpl",
+      "identityScheme": "persistenceId",
+      "hooks": [
+        "emptyRow",
+        "stamped"
+      ],
+      "kernelHelpers": [],
+      "events": [
+        {
+          "name": "SnapshotRecorded",
+          "fqn": "example.stockreservation.domain.entities.ReservationEntity.SnapshotRecorded",
+          "applyForm": "persistenceIdCreate",
+          "tenantEventField": "e.tenantId",
+          "columns": [
+            {
+              "name": "totalAmount",
+              "value": "e.totalAmount"
+            },
+            {
+              "name": "occurredAt",
+              "value": "sem.stamped(e.occurredAt)"
+            }
+          ]
+        },
+        {
+          "name": "SnapshotAmended",
+          "fqn": "example.stockreservation.domain.entities.ReservationEntity.SnapshotAmended",
+          "applyForm": "updateOnly",
+          "columns": [
+            {
+              "name": "totalAmount",
+              "value": "row.totalAmount + e.delta"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "supplied": [
+    {
+      "role": "semantics-impl",
+      "path": "app/example/stockreservation/infrastructure/projection/StockLedgerApplyEventSemanticsImpl.scala",
+      "owner": "handwritten isolation-zone impl, generator never creates or overwrites it",
+      "sha256": "ccd8b5b54fde55bac56205950e3a16bc18c97bbdfed95ead5adfe3421bf40915"
+    },
+    {
+      "role": "semantics-impl",
+      "path": "app/example/stockreservation/infrastructure/projection/StockLedgerSnapshotApplyEventSemanticsImpl.scala",
+      "owner": "handwritten isolation-zone impl, generator never creates or overwrites it",
+      "sha256": "00c7c89b8d8fa3a666efaaf524528b8f3033318c7ea5e1e7c457241771eca7c7"
+    },
+    {
+      "role": "entity-events",
+      "path": "app/example/stockreservation/domain/entities/ReservationEntity.scala",
+      "owner": "handwritten nominal sealed event family (CreditBalanceEntity precedent), emission belongs to the entity-side family",
+      "sha256": "862f2e900e5d96f0577a05ed746443c12f88d4fc69ecc6f8cb4aaefc0d9f8ab1"
+    },
+    {
+      "role": "view-table",
+      "path": "app/example/stockreservation/application/projection/repository/StockLedgerTable.scala",
+      "owner": "handwritten nominal shell repository contract",
+      "sha256": "4249e094b47546008eadd2547788ed7f2130f11f52bfb9bd6522d5277c821c52"
+    },
+    {
+      "role": "view-table",
+      "path": "app/example/stockreservation/application/projection/repository/StockLedgerSnapshotTable.scala",
+      "owner": "handwritten nominal shell repository contract",
+      "sha256": "e5ccd9f42c04c78f20b85cbbf879de960a20f5173654c173a442bc4dc3850373"
+    },
+    {
+      "role": "common-id-supply",
+      "path": "app/net/imadz/common/Id.scala",
+      "owner": "trimmed shared-common identity supply, random face excluded",
+      "sha256": "bd5246d2da6887302bbac87c4196ced49bebf9242eb7b6ae35065c739f0712f9"
+    }
+  ]
+}

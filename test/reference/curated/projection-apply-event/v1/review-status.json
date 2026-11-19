@@ -2,7 +2,7 @@
   "schemaVersion": "curated.projection-apply-event.review-status/v1",
   "artifactType": "projection-apply-event",
   "candidateVersion": "v1",
-  "status": "GOLDEN_APPROVED_AWAITING_JS_BYTE_PARITY",
+  "status": "GOLDEN_APPROVED_JS_BYTE_PARITY_COMPLETE",
   "revision": {
     "history": [
       "draft 599c385 rejected at walkthrough (raw single-line layout, missing sealed supply idiom, missing ruling-to-code traceability)",
@@ -89,5 +89,28 @@
   "rawAcceptanceUnchanged": true,
   "all31Closed": false,
   "userGoldenApproval": "APPROVED_V1_BUNDLE_c803bbe7_20261120",
-  "userRuling": "2026-11-20 walkthrough: the semantics-face shape is approved (user proposal, V1 class injection) — per-view generated semantics traits, handwritten impls in the infrastructure.projection isolation zone owning the business defaults (empty row, named untimestamped timestamp default, text default), generated bootstrap module bindings; the inline getOrElse(Instant.now()) patch and the raw eight-type default derivation table dissolve into impl ownership; D-P09 D1 (None patch = clears the column) approved; E2b context-based Term.Assign rule approved after the live scalameta 4.7.7 probe (named args parent = Term.ArgClause, statement assignments parent = Term.Block); E supply-face scope approved (Instant/UUID admission confined to the handwritten supply files); D-LAYOUT-100 (C2) and D-SUPPLY-SEALED approved; D-P08 fail-closed direction approved with rejection guards enforced at the generator phase."
+  "userRuling": "2026-11-20 walkthrough: the semantics-face shape is approved (user proposal, V1 class injection) — per-view generated semantics traits, handwritten impls in the infrastructure.projection isolation zone owning the business defaults (empty row, named untimestamped timestamp default, text default), generated bootstrap module bindings; the inline getOrElse(Instant.now()) patch and the raw eight-type default derivation table dissolve into impl ownership; D-P09 D1 (None patch = clears the column) approved; E2b context-based Term.Assign rule approved after the live scalameta 4.7.7 probe (named args parent = Term.ArgClause, statement assignments parent = Term.Block); E supply-face scope approved (Instant/UUID admission confined to the handwritten supply files); D-LAYOUT-100 (C2) and D-SUPPLY-SEALED approved; D-P08 fail-closed direction approved with rejection guards enforced at the generator phase.",
+  "jsImplementation": {
+    "status": "BYTE_PARITY_COMPLETE",
+    "generator": {
+      "path": "tools/gen-projection-apply-event.mjs"
+    },
+    "inputContract": {
+      "path": "test/fixtures/projection-apply-event-v1/input.json",
+      "schemaVersion": "truthsrc.projection-apply-event-input/v1"
+    },
+    "scope": "The generator emits the five generated family artifacts: two kernel pure-function classes (four judged forms, one column-list per event, the fixed kernel-local upsertBy helper), two per-view semantics traits (the honest minimal hook face), and the bootstrap module binding each face to its isolation-zone impl. The eleven other production files are supplied and never emitted: the two handwritten semantics impls (isolation zone), the sealed ReservationEntity event family, the two Table view contracts, and the trimmed net.imadz.common.Id supply.",
+    "guards": [
+      "degraded/unknown applyForm rejected fail-closed (no ??? function, no imports-only empty object)",
+      "duplicate event names rejected",
+      "a persistenceId view rejects plain create-form events (raw mixed-shape nonexistent-existing defect unreachable)",
+      "delete requires exactly two judged pairs (raw positional fill unreachable)",
+      "raw-debt tokens (???/Await/Instant.now/UUID/System/Thread/asInstanceOf/getClass/metarch) rejected in judged values — inline clock/identity semantics unreachable",
+      "declared hooks must exactly equal the hooks the judged bodies reference (honest minimal face, dead hooks rejected)",
+      "declared kernel helpers must exactly equal the referenced helpers (fixed library)",
+      "raw-only Builder slots (applyExpr/fieldPairs/literalPairs/droppedColumns/body) rejected at the input boundary"
+    ],
+    "acceptance": "Same-input JS generation byte-compared against the approved golden: 5/5 generated files sha256-identical (kernel 6e0952d0/1aac8d60, traits c8bc7583/1f8632cb, module 3e64a4bc), generation deterministic across two runs.",
+    "negativeCheck": "Seven directed negatives verified, all rejected with FORMAL_INPUT and exit 1: degraded form, duplicate event, persistenceId-mixed create, one-key delete, ??? body, dead text hook, inline Instant.now value."
+  }
 }
