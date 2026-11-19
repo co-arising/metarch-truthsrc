@@ -2,7 +2,7 @@
   "schemaVersion": "curated.external-connector-port.review-status/v2",
   "artifactType": "external-connector-port",
   "candidateVersion": "v2",
-  "status": "GOLDEN_APPROVED_AWAITING_JS_IMPLEMENTATION",
+  "status": "GOLDEN_APPROVED_JS_BYTE_PARITY_COMPLETE",
   "revises": {
     "approvedV1Bundle": "725e03a1fba1e7cb6fd6bbc90550ca0e2635ae2b211b19132beffcb722ed0b9c",
     "note": "v1 stays frozen as approved; v2 carries the 2026-11-19 user rulings (toolgate vocabulary, business-only signatures, runner seam externalization to infrastructure.process fixed lib, three runner contract clauses, scriptParam raw-only). The superseded connector-implementation draft (f34d93f/b41c6ba) reproduced the raw scriptParam shape and was rejected before approval."
@@ -75,5 +75,23 @@
   "rawAcceptanceUnchanged": true,
   "all31Closed": false,
   "userGoldenApproval": "APPROVED_V2_BUNDLE_f50c9f35_20261119",
-  "userRuling": "2026-11-19 walkthrough: toolgate vocabulary approved; business-only signatures approved; LocalProcessRunner fixed lib with three contract clauses approved; scriptParam raw-only approved; security chain ownership (encode-side value types / runner argv-direct / codec framing / runner pinning+resources) approved; hardening tiers bind at the runner seam alone"
+  "userRuling": "2026-11-19 walkthrough: toolgate vocabulary approved; business-only signatures approved; LocalProcessRunner fixed lib with three contract clauses approved; scriptParam raw-only approved; security chain ownership (encode-side value types / runner argv-direct / codec framing / runner pinning+resources) approved; hardening tiers bind at the runner seam alone",
+  "jsImplementation": {
+    "status": "BYTE_PARITY_COMPLETE",
+    "generator": {
+      "path": "tools/gen-external-tool-gate.mjs"
+    },
+    "inputContract": {
+      "path": "test/fixtures/external-connector-port-v2/input.json",
+      "schemaVersion": "truthsrc.external-tool-gate-input/v1"
+    },
+    "scope": "The generator emits the three family-artifact files (gate face, sealed sample-support implementation, bootstrap assembly). The five supplied files are not emitted: three handwritten nominal result classes (traditional contract), ReservationValues (approved aggregate-rules-formal output, sha 48f29020…), LocalProcessRunner (handwritten fixed lib, sha 45b2b8c8… — a generator emitting it would contradict its own never-created-by-a-generator contract clause).",
+    "guards": [
+      "mechanism vocabulary in param names/types rejected (scriptParam raw-only ruling)",
+      "every method requires a sealed binding with positive integer timeoutMs",
+      "argument source must reference an existing parameter or be empty"
+    ],
+    "acceptance": "Same-input JS generation byte-compared against the approved v2 golden: 3/3 family-artifact files sha256-identical (gate 2b7f0280…, impl b9f737a7…, module 922d451e…), generation deterministic across two runs",
+    "negativeCheck": "An input adding a script:String parameter fails with FORMAL_INPUT and exit 1"
+  }
 }

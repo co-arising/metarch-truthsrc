@@ -1,0 +1,109 @@
+{
+  "schemaVersion": "truthsrc.external-tool-gate-input/v1",
+  "basePackage": "example.stockreservation",
+  "gate": {
+    "traitName": "StockCatalogToolGate",
+    "implName": "StockCatalogToolGateImpl",
+    "moduleName": "StockCatalogModule",
+    "doc": {
+      "title": "Local Tool Gate Interface",
+      "notes": [
+        "问封死的外部工具一个业务问题——工具绑定（脚本、超时、协议翻译）密封在实现侧，",
+        "本面只收业务参数、只还类型化裁决。只读纪律：gate 回答问题，不改域状态。",
+        "内核隔离：本面不引用任何实现类；装配由 infrastructure.bootstrap 显式绑定完成。"
+      ]
+    },
+    "runner": {
+      "trait": "LocalProcessRunner",
+      "request": "ProcessRequest",
+      "runMethod": "run",
+      "paramName": "runner"
+    },
+    "methods": [
+      {
+        "name": "probeAvailability",
+        "params": [
+          {
+            "name": "sku",
+            "typeRef": {
+              "name": "SkuId",
+              "packageName": "example.stockreservation.domain.values"
+            }
+          }
+        ],
+        "resultType": "AvailabilityOutcome",
+        "intent": "Consult the sealed availability probe tool for the current stock of the SKU and return the typed verdict.",
+        "binding": {
+          "script": "stockreservation/availability-probe.v1",
+          "argument": {
+            "source": "param",
+            "param": "sku",
+            "field": "value"
+          },
+          "timeoutMs": 10000,
+          "vals": {
+            "script": "probeScript",
+            "timeoutMs": "probeTimeoutMs"
+          }
+        },
+        "decoder": {
+          "owner": "AvailabilityOutcome",
+          "method": "decode"
+        }
+      },
+      {
+        "name": "locationDirectory",
+        "params": [],
+        "resultType": "LocationDirectory",
+        "intent": "Fetch the registered location directory snapshot of the warehouse from the sealed directory tool.",
+        "binding": {
+          "script": "stockreservation/location-directory.v1",
+          "argument": {
+            "source": "empty"
+          },
+          "timeoutMs": 10000,
+          "vals": {
+            "script": "directoryScript",
+            "timeoutMs": "directoryTimeoutMs"
+          }
+        },
+        "decoder": {
+          "owner": "LocationDirectory",
+          "method": "decode"
+        }
+      }
+    ]
+  },
+  "supplied": [
+    {
+      "role": "domain-values",
+      "path": "app/example/stockreservation/domain/values/ReservationValues.scala",
+      "sha256": "48f29020c0edc9b2f8f6a7c72a457f8108873233f8ca83c4fcdd108f18c4b67b",
+      "owner": "aggregate-rules-formal approved golden"
+    },
+    {
+      "role": "runner-lib",
+      "path": "app/example/stockreservation/infrastructure/process/LocalProcessRunner.scala",
+      "sha256": "45b2b8c8617a36370e3f7a16fac508bc65a0578f53a235a452daf2bfaaf0fa38",
+      "owner": "handwritten outer domain, never emitted by any generator"
+    },
+    {
+      "role": "result-type",
+      "path": "app/example/stockreservation/application/toolgates/AvailabilityOutcome.scala",
+      "sha256": "be8395f72bab15d56d11e5508f7fc0b6681b470f85ec71ef0a482b6523fdf0ce",
+      "owner": "handwritten nominal result class per the traditional contract"
+    },
+    {
+      "role": "result-type",
+      "path": "app/example/stockreservation/application/toolgates/ConnectorProtocol.scala",
+      "sha256": "9d877224987b73e1e4436a8c7f5f9ab2e54aab00504bebced3eab947f5020ab1",
+      "owner": "handwritten nominal result class per the traditional contract"
+    },
+    {
+      "role": "result-type",
+      "path": "app/example/stockreservation/application/toolgates/LocationDirectory.scala",
+      "sha256": "2a57230bfb72f2ecdc868e3539b711a268996f629d13014f8621794bbfdde4b0",
+      "owner": "handwritten nominal result class per the traditional contract"
+    }
+  ]
+}
