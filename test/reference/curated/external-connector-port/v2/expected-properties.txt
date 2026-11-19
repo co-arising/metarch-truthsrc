@@ -1,0 +1,36 @@
+external-connector-port.stock-catalog.v2.probe: answer lines decode to the exact typed answer
+external-connector-port.stock-catalog.v2.probe: refusal lines decode to the exact typed refusal
+external-connector-port.stock-catalog.v2.probe: decoding is total and deterministic for arbitrary payloads
+external-connector-port.stock-catalog.v2.probe: negative: directed malformed shapes never decode to an answer or refusal
+external-connector-port.stock-catalog.v2.directory: directory lines decode to the exact warehouse and location vector
+external-connector-port.stock-catalog.v2.directory: empty location tail decodes to the empty vector
+external-connector-port.stock-catalog.v2.directory: negative: directed malformed shapes never decode to a directory
+external-connector-port.stock-catalog.v2.delegation: each gate call invokes the runner exactly once with the sealed probe binding
+external-connector-port.stock-catalog.v2.delegation: runner success lifts to the exact typed outcome
+external-connector-port.stock-catalog.v2.delegation: negative: a runner failure propagates unchanged and is never retried
+external-connector-port.stock-catalog.v2.delegation: negative: a malformed payload lands on the failure channel, never a synthesized outcome
+external-connector-port.stock-catalog.v2.delegation: a refusal stays on the success channel as a typed value distinct from failure
+external-connector-port.stock-catalog.v2.delegation: the parameterless gate method uses its sealed directory binding verbatim
+external-connector-port.stock-catalog.v2.assembly: the infrastructure module binds the gate to its implementation
+external-connector-port.source-quality.v1.AST: generated if chains have independently known complexity
+external-connector-port.source-quality.v1.AST: generated short-circuit operators are counted
+external-connector-port.source-quality.v1.AST: comments and branch-like literal text add no decisions
+external-connector-port.source-quality.v1.AST: else-if is one control nesting level
+external-connector-port.source-quality.v1.AST: nested then branches retain real depth
+external-connector-port.source-quality.v1.AST: HOF closure decisions count both in parent and closure
+external-connector-port.source-quality.v1.AST: partial functions and pattern alternatives are explicit paths
+external-connector-port.source-quality.v1.AST: match guards and nonexhaustive exits are counted
+external-connector-port.source-quality.v1.AST: for generators and guards are not invisible
+external-connector-port.source-quality.v1.AST: while and do loops are counted once each
+external-connector-port.source-quality.v1.AST: defaults and initialization are registered
+external-connector-port.source-quality.v1.AST: abstract declarations register with no executable body
+external-connector-port.source-quality.v1.AST: overflow complexity is measured exactly, never clamped
+external-connector-port.source-quality.v1.AST: boundary mode admits the Future contract that domain mode rejects
+external-connector-port.source-quality.v1.AST: boundary mode still rejects Await and reflection
+external-connector-port.source-quality.v1.AST: boundary infrastructure files admit application imports; application files reject them
+external-connector-port.source-quality.v1.AST: boundary mode still rejects effectful import prefixes in both directions
+external-connector-port.source-quality.v1.AST: domain mode still rejects application and infrastructure imports
+external-connector-port.source-quality.v1.negative: invalid syntax cannot become an empty successful report
+external-connector-port.source-quality.v1.negative: mutable domain state is rejected
+external-connector-port.source-quality.v1.negative: outer dependencies and time are rejected
+external-connector-port.source-quality.v1.negative: boundary mode still rejects mutable collection and mutation term names

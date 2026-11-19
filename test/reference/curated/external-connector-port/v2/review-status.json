@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "curated.external-connector-port.review-status/v2",
+  "artifactType": "external-connector-port",
+  "candidateVersion": "v2",
+  "status": "QUALITY_EXECUTION_COMPLETE_AWAITING_WALKTHROUGH",
+  "revises": {
+    "approvedV1Bundle": "725e03a1fba1e7cb6fd6bbc90550ca0e2635ae2b211b19132beffcb722ed0b9c",
+    "note": "v1 stays frozen as approved; v2 carries the 2026-11-19 user rulings (toolgate vocabulary, business-only signatures, runner seam externalization to infrastructure.process fixed lib, three runner contract clauses, scriptParam raw-only). The superseded connector-implementation draft (f34d93f/b41c6ba) reproduced the raw scriptParam shape and was rejected before approval."
+  },
+  "bundleSha256": "f50c9f35aa8f2ad94e555df127845cde95d035b43d8bf6363e66b650dcbc663f",
+  "manifest": {
+    "path": "manifest.json",
+    "bytes": 4375,
+    "sha256": "272d1b7701d94dce902d6d9c3a6dd69168c26d579619073c11e5035c7b5110a3"
+  },
+  "payload": {
+    "files": 21,
+    "bytes": 83845,
+    "wholeBytesVerified": true
+  },
+  "lineage": {
+    "familyContract": "docs/codegen-parity/diffs/external-connector-port.diff.md; v2 decisions: V2-RULING vocabulary rename, V2-SIGNATURE business-only signatures with scriptParam raw-only, V2-RUNNER fixed-lib runner in infrastructure.process with three contract clauses and named violations, D2 no live process in gate, D3 no @ImplementedBy (carried), D6 clean imports (carried), D7 named ProtocolViolation (carried)",
+    "frozenReuse": "Engine four files (ScalaSourceMetrics f5c66788, JsonOutput d622f3db, QualityInputs eb95be93, QualityMain 74c8358a), scope-exceptions e901e444, CatalogQualityProperties 9f813be3, ReservationValues 48f29020 — byte-identical with the v1 approved bundle; codec bodies and oracle logic carried over unchanged with the package moved to application.toolgates"
+  },
+  "v1QualityRun": {
+    "round": ".rounds/external-connector-port-v2-quality-20261119-01",
+    "prepared": {
+      "file": ".rounds/external-connector-port-v2-quality-20261119-01/prepared.json",
+      "sha256": "b557c86048739fb506faeef43879b666aaea7fe28f2c2abc951f2ecd78bb1e9e"
+    },
+    "attempt": {
+      "id": "attempt-01",
+      "actualJvmCalls": 6,
+      "pids": [
+        32069,
+        32075,
+        32101,
+        32104,
+        32110,
+        32117
+      ],
+      "allExit0": true,
+      "timeouts": 0,
+      "signals": 0,
+      "firstAttemptClean": true
+    },
+    "metrics": {
+      "passed": true,
+      "files": 16,
+      "scopes": 446,
+      "violations": 0,
+      "excess": 0,
+      "engineCoreUnchanged": "ownDecisions 16, control 7, declaredScopes 13, forbidden 16, isDeclaration 7 match the aggregate-rules-formal v3 exceptions for the identical engine core; import direction rules are named per-layer predicates"
+    },
+    "properties": {
+      "seeds": [
+        740001,
+        740002,
+        740003
+      ],
+      "results": 36,
+      "negatives": 8,
+      "proved": 25,
+      "passed": 11,
+      "passedAll": true,
+      "minimumSuccessfulRandomCases": 1000
+    },
+    "supply": {
+      "artifacts": 26,
+      "guiceVariant": "4.2.1 no_aop (AOP interception machinery unused by the sample)",
+      "runtimeInjectorVerified": true
+    }
+  },
+  "rawAcceptanceUnchanged": true,
+  "all31Closed": false
+}

@@ -1,0 +1,98 @@
+{
+  "schemaVersion": "curated.external-connector-port.technical-input/v2",
+  "artifactType": "external-connector-port",
+  "candidateVersion": "v2",
+  "status": "SOURCES_PREPARED_AWAITING_QUALITY_EXECUTION",
+  "revises": {
+    "approvedBundle": "725e03a1fba1e7cb6fd6bbc90550ca0e2635ae2b211b19132beffcb722ed0b9c",
+    "note": "v1 stays frozen as approved; v2 carries the 2026-11-19 user rulings (toolgate vocabulary, business-only signatures, runner seam externalization, runner contract clauses, scriptParam raw-only).",
+    "supersedes": "curated/connector-implementation draft v1 (commits f34d93f/b41c6ba), which reproduced the raw scriptParam shape and was rejected before approval"
+  },
+  "scope": {
+    "sample": "StockCatalog local tool gate",
+    "basePackage": "example.stockreservation",
+    "layout": "single-project-app",
+    "purpose": "Independent small sample of the traditional Node-tool connector face revised to the four-layer shape the user ruled on 2026-11-19: application service asks a business question; toolgate port (application.toolgates) speaks business language only; generated sample-support implementation (infrastructure.toolgates) seals one tool binding per method (pinned script, timeout budget, typed lifting); LocalProcessRunner is a handwritten fixed lib in infrastructure.process owning bounded process mechanics; infrastructure.bootstrap binds. Transport-agnostic at the gate face: swapping the runner binding for a sandboxed or daemon-client runner changes nothing above the seam.",
+    "notClaims": ["banking business", "complete warehouse application", "raw Scala oracle replacement", "bank TechnicalPorts semantics", "real subprocess execution inside the quality gate", "tool-gate-implementation family contract (owned by the next family)", "generator implementation", "scriptParam target validity"],
+    "rawAcceptanceUnchanged": true,
+    "all31Closed": false
+  },
+  "origins": [
+    {"id": "source-family-contract", "kind": "existing-source-contract", "path": "docs/codegen-parity/diffs/external-connector-port.diff.md", "sections": ["1", "2", "3", "4", "6", "8.3", "9"]},
+    {"id": "source-connector-model", "kind": "existing-interface-source", "path": "docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/model/application/ConnectorModel.scala", "symbols": ["ConnectorModel", "ConnectorMethodModel"]},
+    {"id": "source-connector-template", "kind": "existing-interface-source", "path": "docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/codegen/scaffolding/cqrs/template/application/ConnectorTemplate.scala", "symbols": ["ConnectorTemplate"]},
+    {"id": "source-connector-metadata", "kind": "existing-interface-source", "path": "docs/codegen-parity/baseline/bc/src/main/scala/net/imadz/meta/ArchitectMetadata.scala", "symbols": ["ConnectorMetadata", "ConnectorMethodMetadata", "ConnectorImplMetadata", "HandwrittenInfraMetadata"], "note": "kind=read read-only discipline, script/scriptParam semantics, timeoutMs declared-but-unconsumed; the raw gaps are documented and ruled on here, not reproduced."},
+    {"id": "source-style", "kind": "user-quality-contract", "path": "docs/codegen-parity/layout-and-style.md"},
+    {"id": "source-stock-values", "kind": "approved-frozen-reuse", "path": "test/reference/curated/aggregate-rules-formal/v3/app/example/stockreservation/domain/values/ReservationValues.scala", "note": "Byte-identical frozen copy (sha256 48f29020…); the value-type identifier charset is the encode-side injection guard of the security chain."},
+    {"id": "source-v1-bundle", "kind": "approved-revision-base", "path": "test/reference/curated/external-connector-port/v1", "note": "v2 revises the approved v1 bundle: codec bodies and oracle logic are carried over unchanged (package moved to application.toolgates); engine four files and scope exceptions are byte-identical frozen copies."},
+    {"id": "decision-vocabulary-v2", "kind": "new-candidate-design", "description": "This input defines the revised gate shape, sealed-binding contract and runner-lib clauses per the explicit user rulings recorded in decisions. Not historical truth."}
+  ],
+  "legalDomain": {
+    "toolBinding": "One sealed binding per gate method, owned by the implementation side: script constant, timeout budget, argument encoding, result codec. The gate face never exposes script, process, or timeout vocabulary; callers pass business values only (SkuId or nothing).",
+    "probeProtocol": "Exactly one line, no LF or CR. ANSWER|<sku>|<nonnegative Long> or REFUSED|<code>|<message>. Exact three-field arity; separator characters are structurally excluded by the arity check. The codec is the decode-side framing guard of the security chain.",
+    "refusalFields": "code and message are nonempty; a refusal is a typed business result on the success channel, never a failure-channel conversion.",
+    "directoryProtocol": "Exactly one line, no LF or CR. DIRECTORY|<warehouseId>|<loc1>,<loc2,...>; an empty tail decodes to the empty vector; a trailing location separator is malformed; repeated locations stay verbatim in declared order.",
+    "failureChannels": "Transport failures, TimeoutViolation, ConcurrencyRejected, ScriptRejected and ProtocolViolation live on the Future failure channel; refusals and answers live on the success channel. No shape is ever synthesized from a failure.",
+    "runnerLib": "LocalProcessRunner.run(request) performs exactly one bounded subprocess execution per call and yields one output line; the three contract clauses (argv-direct delivery, exclusive bounded lifecycle with kill, script-pinning hook) are the hardening seam. Concrete spawn/timeout/concurrency mechanics are handwritten in infrastructure.process and stay outside the gate's executable surface; the sandbox denies process-exec, so the gate verifies compile plus seam-contract doubles — never a live process. Deployment hardening tiers (bounded lib, pinned scripts, sandboxed spawn, daemon-client transport) swap at this one binding.",
+    "delegation": "Exactly one runner call per gate call; ProcessRequest(script, argument, timeoutMs) passed through verbatim — the sealed script constant, the business value as a single argument element (sku.value), the sealed timeout; no retry, no exception swallowing, no synthesized success; ExecutionContext injected explicitly, used only for Future transformation.",
+    "assembly": "infrastructure.bootstrap.StockCatalogModule binds the gate to the sample-support implementation with an explicit Guice binding; the kernel-facing face carries no implementation reference; the test seam module supplies runner and ExecutionContext instances."
+  },
+  "types": [
+    {"name": "WarehouseId", "kind": "frozen-reuse", "underlying": "String"},
+    {"name": "SkuId", "kind": "frozen-reuse", "underlying": "String"},
+    {"name": "LocationId", "kind": "frozen-reuse", "underlying": "String"}
+  ],
+  "gate": {
+    "name": "StockCatalogToolGate",
+    "packageName": "example.stockreservation.application.toolgates",
+    "implementation": {
+      "name": "StockCatalogToolGateImpl",
+      "packageName": "example.stockreservation.infrastructure.toolgates",
+      "mechanism": "No annotation on the gate. Infrastructure-owned assembly: infrastructure.bootstrap.StockCatalogModule binds the gate to the implementation with an explicit Guice binding; the kernel-facing face carries no implementation reference.",
+      "role": "sample-support reference implementation; the production implementation contract belongs to the tool-gate-implementation family"
+    },
+    "methods": [
+      {"ordinal": 0, "name": "probeAvailability", "parameters": [{"name": "sku", "type": "SkuId"}], "returnType": "AvailabilityOutcome", "sealedBinding": {"script": "stockreservation/availability-probe.v1", "argumentSource": "sku.value", "timeoutMs": 10000}, "intent": "Consult the sealed availability probe tool for the current stock of the SKU and return the typed verdict."},
+      {"ordinal": 1, "name": "locationDirectory", "parameters": [], "returnType": "LocationDirectory", "sealedBinding": {"script": "stockreservation/location-directory.v1", "argumentSource": "empty", "timeoutMs": 10000}, "intent": "Fetch the registered location directory snapshot of the warehouse from the sealed directory tool."}
+    ],
+    "results": [
+      {"name": "AvailabilityOutcome", "kind": "sealed-adt", "package": "example.stockreservation.application.toolgates", "variants": [
+        {"name": "Answer", "fields": [{"name": "sku", "type": "SkuId"}, {"name": "available", "type": "Long", "constraint": "nonnegative"}]},
+        {"name": "Refused", "fields": [{"name": "code", "type": "String", "constraint": "nonempty"}, {"name": "message", "type": "String", "constraint": "nonempty"}]}
+      ], "codec": "companion decode: String to Try[AvailabilityOutcome], total and deterministic"},
+      {"name": "LocationDirectory", "kind": "case-class", "package": "example.stockreservation.application.toolgates", "fields": [
+        {"name": "warehouseId", "type": "WarehouseId"},
+        {"name": "locations", "type": {"kind": "sequence", "container": "Vector", "element": "LocationId"}}
+      ], "codec": "companion decode: String to Try[LocationDirectory], total and deterministic"}
+    ],
+    "protocolViolation": {"name": "ProtocolViolation", "kind": "final-case-class-exception-value", "note": "Constructed as a value and placed on the failure channel; never thrown, never converted into a business result."},
+    "runnerLib": {
+      "name": "LocalProcessRunner",
+      "packageName": "example.stockreservation.infrastructure.process",
+      "request": {"name": "ProcessRequest", "fields": ["script: String", "argument: String", "timeoutMs: Long"]},
+      "violations": ["TimeoutViolation", "ConcurrencyRejected", "ScriptRejected"],
+      "contractClauses": ["argv-direct: argument handed verbatim as a single argv element, never shell-interpreted, never concatenated", "bounded lifecycle: exclusive spawn/await/destroy, timeout or failure kills the process group, no orphans", "pinning hook: script validated against a runner-owned pinned manifest; unpinned scripts fail with ScriptRejected"],
+      "role": "handwritten fixed lib shared by both connector families (byte-identical copies), never created by the generator; hardening tiers bind here and nowhere else"
+    },
+    "delegationGuarantees": ["exactly one runner call per gate call", "sealed binding and business argument passed verbatim", "no retry after any failure", "no exception swallowing", "no synthesized success", "typed lifting only"]
+  },
+  "securityChain": {
+    "note": "Raising the security level is confined to the runner seam by design; the chain has four links and the runner owns the process-level ones.",
+    "links": [
+      {"link": "encode-side input charset (no separator, no newline, no metacharacters)", "owner": "domain value types (frozen ReservationValues require)"},
+      {"link": "transport-level injection (shell metacharacters)", "owner": "runner contract clause 1 (argv-direct, no shell)"},
+      {"link": "protocol-level framing (payload shape, LF/CR)", "owner": "application codec decode (frozen from v1)"},
+      {"link": "tool identity and process resources (pinning, timeout, concurrency, lifecycle)", "owner": "runner contract clauses 2-3 plus deployment hardening tiers"}
+    ],
+    "outsideScope": "Caller authorization is an application-policy concern, never the runner's."
+  },
+  "decisions": [
+    {"id": "V2-RULING", "choice": "USER RULING 2026-11-19: the connector vocabulary is too large a name for a local-process tool face — generated vocabulary becomes toolgate (application.toolgates / infrastructure.toolgates, StockCatalogToolGate), the runner becomes LocalProcessRunner with ProcessRequest(script, argument, timeoutMs); registry family IDs (#13/#25) stay unchanged as the ledger of which raw artifacts are being migrated."},
+    {"id": "V2-SIGNATURE", "choice": "USER RULING 2026-11-19: gate methods take business parameters only; the raw scriptParam shape (caller picks the executed script) is rejected as a target form and recorded raw-only for generator observation fixtures. Tool scripts are sealed generation-time constants."},
+    {"id": "V2-RUNNER", "choice": "USER RULING 2026-11-19: the runner is a fixed handwritten lib (infrastructure.process outer domain), not a family artifact; its contract carries the three hardening clauses and named violations (TimeoutViolation, ConcurrencyRejected, ScriptRejected) on the failure channel; security upgrades bind at the runner seam alone. Divergence resolution of v1 D6: the runner copy moves to infrastructure.process in both families; the v1 bundle stays frozen as approved."},
+    {"id": "D2", "choice": "Runner ABI is run(ProcessRequest): Future[String]; parameterless gate methods pass the empty argument with their sealed binding; no live process inside the quality gate (sandbox denies process-exec) — coverage is compile plus seam-contract doubles, per the diff 11.3 honesty boundary."},
+    {"id": "D3", "choice": "USER RULING 2026-11-18 carried over: no @ImplementedBy — kernel isolation; assembly is the explicit infrastructure.bootstrap Guice binding."},
+    {"id": "D6", "choice": "Formatting carried from v1: short Future name, single alphabetically sorted import block per file; v2 adds the toolgates package moves."},
+    {"id": "D7", "choice": "Malformed payloads, illegal identifiers and non-single-line inputs always fail with a named ProtocolViolation on the failure channel; runner violations are named values, never thrown; nothing is silently defaulted, truncated or coerced."}
+  ]
+}
