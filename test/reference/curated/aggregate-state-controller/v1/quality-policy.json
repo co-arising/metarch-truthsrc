@@ -1,0 +1,88 @@
+{
+  "schemaVersion": "curated.scala-source-quality-policy/v1",
+  "artifactType": "aggregate-state-controller",
+  "dialect": "Scala213",
+  "parser": "org.scalameta:parsers_2.13:4.7.7",
+  "measurement": {
+    "name": "source-structural-mccabe-v1",
+    "notClaim": "Not a full control-flow graph proof or equivalence to every compiler plugin.",
+    "base": 1,
+    "increment": ["if", "while", "do", "for generator", "for guard", "case guard", "short-circuit &&", "short-circuit ||"],
+    "match": "Expanded pattern paths minus one; add conservative unmatched exit unless unconditional wildcard/default exists.",
+    "catch": "Same path rule when catch cases are present.",
+    "nestedClosures": "Include decisions in owning body; report lambda/partial function separately; do not add closure base twice.",
+    "namedNestedDefinitions": "Report separately, no nested body counted twice.",
+    "initialization": "Report each primary/object initializer and field independently. Abstract declarations have no executable body.",
+    "nesting": "Control constructs only; an else-if continuation retains the enclosing if level."
+  },
+  "layers": {
+    "domain": {
+      "appliesTo": "app/**/domain/**",
+      "description": "Same full forbidden set as the aggregate-rules-formal v3 policy, unchanged; application/infrastructure imports are banned; fixed 5/2 maxima without exceptions. The write-side states are plain records over the common Id alias — zero play/akka/java imports.",
+      "maximumComplexity": 5,
+      "maximumControlNesting": 2,
+      "exceptionsAllowed": false
+    },
+    "boundary": {
+      "appliesTo": "app/controllers/** and app/**/application/** and app/**/infrastructure/** and app/net/** (the shared-common and frozen-static supply)",
+      "description": "Aggregate-state-controller contract layer: the generated controller artifact translates authenticated HTTP requests into typed ask round trips against aggregate entity refs, with serialization folded at the controller layer (per-field hand-written OWrites, no macros) and all error folding in the platform Endpoint supply. Per the rulings of 2026-11-20 (S1/O1/Y2/T1) the boundary face admits play and akka import prefixes as the declared family face — the play/akka file whitelist (controller + ApiError + Endpoint; zero akka import statements anywhere, fully-qualified akka type references only) is pinned by structural properties, not by the engine; every other banned prefix (java.io/java.nio/java.time/java.util, scala.collection.mutable, java.sql) stays banned with fully-qualified references as the sanctioned zero-import form. Clock reads are confined to the platform auth supply and identity parsing to the IdGuard static plus the common Id supply by structural properties. Term.Assign is judged by context (E2b ruling): named arguments are admitted in BOTH layers, assignment targets in neither; kernel isolation and the direction-aware import policy are unchanged.",
+      "forbiddenDelta": [
+        "Import prefixes play and akka are removed from the boundary banned list (Y2 ruling, 2026-11-20): the controller artifact imports play.api.libs.json and play.api.mvc, the platform Endpoint/ApiError supplies import play, and akka stays a fully-qualified type face matching the raw zero-akka-import face. Structural properties pin the play/akka whitelist (play imports only in AggregateStateApiController, ApiError, Endpoint; zero `import akka` statements anywhere).",
+        "Term.Assign is judged by context, not by layer (E2b ruling): scalameta parses named arguments and assignment targets into the same node, but a named argument always sits in an argument clause (Term.ArgClause parent) while an assignment target never does — named arguments are admitted in BOTH layers, Term.Assign in any other position is a violation in BOTH layers, and Defn.Var stays banned in both layers.",
+        "Direction-aware imports: an application file must not import infrastructure packages (kernel isolation); an infrastructure file may import application and infrastructure packages; every other banned import prefix stays banned in both directions with fully-qualified references as the sanctioned zero-import form."
+      ],
+      "stillRejected": [
+        "var declarations (Defn.Var in both layers)",
+        "assignment targets (Term.Assign outside an argument clause, in both layers)",
+        "throw/catch",
+        "Any/AnyRef",
+        "reflection names (getClass included — the frozen IdGuard message fallback is adapted to a named constant)",
+        "Await",
+        "Random/Clock/LocalDateTime/Date term names",
+        "mutable collection names and mutation term names",
+        "java.io/java.nio/java.time/java.util/scala.collection.mutable/java.sql import statements",
+        "application-to-infrastructure imports"
+      ],
+      "maximumComplexity": 5,
+      "maximumControlNesting": 2,
+      "exceptions": "Exact file/owner/kind with finite maxima and justification. No whole-file exemption or project average."
+    },
+    "support": {
+      "appliesTo": "test/** and quality/**",
+      "description": "No forbidden structural checks; 5/2 default with exact closed-dispatch exceptions. The behavior fixture constructs the real play Action stack, a local typed ActorSystem, and official akka TestEntityRef seams.",
+      "defaultMaximumComplexity": 5,
+      "defaultMaximumControlNesting": 2,
+      "exceptions": "Exact file/owner/kind with finite maxima and justification."
+    }
+  },
+  "plainFpOo": {
+    "rejectDomain": [
+      "var",
+      "assignment",
+      "nonlocal return",
+      "throw/catch",
+      "Any/AnyRef",
+      "reflection",
+      "implicit time/randomness/concurrency",
+      "mutable collections",
+      "Actor/Play/JDBC/I/O imports in domain sources"
+    ],
+    "allow": [
+      "explicit nominal constructor require for illegal value domain",
+      "immutable field initialization",
+      "named sealed ADT",
+      "constructor-injected platform seams (the controller injects Endpoint and aggregate repository ports)",
+      "private implicit JSON writers owned by the controller artifact face (the serialization ruling keeps play-json out of domain/application)",
+      "fully-qualified java.time.Instant and akka type references with zero java.*/akka import statements",
+      "named-argument syntax in argument position (the Json.obj field emission idiom)"
+    ],
+    "qualification": "Syntactic checks do not alone prove semantic purity or OO responsibility. Exact injected implementation and behavior properties are also reviewed."
+  },
+  "execution": {
+    "seeds": [740001, 740002, 740003],
+    "workers": 1,
+    "minimumSuccessfulRandomCases": 1000
+  },
+  "rawAcceptanceUnchanged": true,
+  "all31Closed": false
+}

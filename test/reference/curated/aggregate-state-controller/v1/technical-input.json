@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "truthsrc.aggregate-state-controller-input/v1",
+  "family": "aggregate-state-controller",
+  "recordedAt": "2026-11-20",
+  "rulings": {
+    "F1-supply-pin": {
+      "choice": "S1",
+      "statement": "Pin the full declared compile closure of the family platform face: play_2.13 2.8.18 (MVC), play-json_2.13 2.9.3 (the BC build.sbt override of play's declared 2.8.2, recorded as a requested/selected edge), and akka 2.6.20 typed cluster-sharding closure. 88 coordinates total including the engine/test set and akka-actor-testkit-typed as a test-supply coordinate. Every jar exists in the local coursier cache; the CLI prepare round proves every declared compile dependency of every pinned artifact is pinned (zero network, zero omissions)."
+    },
+    "F2-auth-seam": {
+      "choice": "O1",
+      "statement": "TokenService is trimmed to its consumption face (the verifyAccess trait plus the curated VerifiedToken/TenantIdentity records verbatim). The JWT issue/verify implementation and its pdi.jwt dependency belong to the platform common/auth-core jar and never enter the golden bundle. The Endpoint supply is the curated reference trimmed to the global door (the raw S1 face only ever calls api.global.read()); the authenticate pipeline and finishImpl error folding are kept verbatim, with the verify segment split out solely to satisfy the CC<=5 gate (branch set unchanged)."
+    },
+    "F3-engine-Y2": {
+      "choice": "Y2",
+      "statement": "Boundary layer drops play and akka from the banned import prefix list as the declared family face; domain is untouched; every other prefix (java.io/java.nio/java.time/java.util, scala.collection.mutable, java.sql) stays banned with fully-qualified references as the sanctioned zero-import form. The play/akka file whitelist (play imports only in the controller plus the two auth supplies; akka imports only in the four protocol/repository supplies while the controller stays fully-qualified) is pinned by structural properties, not by the engine."
+    },
+    "F5-id-guard": {
+      "choice": "T1",
+      "statement": "The frozen scaffold-static CommandDsl is trimmed to the IdGuard object only. The frozen message fallback t.getClass.getName is adapted to the named constant \"unparseable identifier\" because the structural gate bans reflection names; the 400 shape, the PARAM_INVALID key, and the message body text are verbatim identical, and the fallback only fires when the exception message is null."
+    },
+    "F6-behavior-face": {
+      "choice": "TestEntityRef-executable",
+      "statement": "The user's testkit lead proved decisive: akka.cluster.sharding.typed.testkit.scaladsl.TestEntityRef (in the pinned cluster-sharding-typed jar) constructs a real EntityRef over a probe actor, so the ask round trip, the private OWrites JSON face, and the real 5-second ask timeout folding are all executable behavior properties. Declaration-order facts (shared writers before state writers before reply writers before endpoints, constructor order) stay structural. EventSourcedBehaviorTestKit was checked and is absent from the cached akka-persistence-typed 2.6.20 jar; it also tests behaviors directly and cannot produce an EntityRef."
+    }
+  },
+  "probes": [
+    "javap + compile probe: akka 2.6.20 EntityRef.ask source signature is ask[Res](resolveTo)(implicit timeout: Timeout) with no Scheduler parameter, so the raw template's ask call has no compile defect (hypothesis withdrawn before it could become a ruling)",
+    "javap: InternalRecipientRef is private[akka], so a hand-rolled EntityRef implementation is impossible; the official TestEntityRef seam is the sanctioned construction path",
+    "sandbox profile denies network*, so real cluster sharding cannot start inside the gate; TestEntityRef over a local typed ActorSystem is the honest executable substitute"
+  ],
+  "rawDebts": [
+    "stateType=None falls back to replyType in the raw template (T8); the curated face always carries a real state type and the fallback stays a generator-phase negative",
+    "dispatch gate matches Get${a.name}State while the builder strips the Aggregate suffix before composing Get${base}State; suffixed aggregates can pass the gate and resolve a different command; golden inputs carry no suffix and the conflict stays a generator-phase negative",
+    "registry miss maps stateFields to Nil silently; the curated face documents the exclusion set at build time and rejects it at generator input",
+    "the raw controller is not final (T2), keeps the unused-JsValue import debt in its fixed import list (curated drops it), and does not write routes (E301 block owned by the Node gen_api_layer)"
+  ],
+  "layout": {
+    "rule": "D-LAYOUT-100 (C2, 2026-11-20 continuation): 100-column discipline on all app sources with import lines exempt; constructor parameters and Json.obj field pairs one per line; signature continuation wraps keep the declaration order."
+  },
+  "supplies": {
+    "platform": [
+      "app/net/imadz/common/Id.scala (CommonTypes.Id alias + deterministic Id.of, zero-import consumption face)",
+      "app/net/imadz/common/auth/ApiError.scala (package-adapted curated reference, trimmed to writes/toResult)",
+      "app/net/imadz/common/auth/Endpoint.scala (package-adapted curated reference, trimmed to the zero-role global door)",
+      "app/net/imadz/common/auth/TokenService.scala (verifyAccess trait face + curated token records)",
+      "app/net/imadz/metarch/infrastructure/api/IdGuard.scala (frozen scaffold-static, IdGuard-only)"
+    ],
+    "business": [
+      "app/example/stockreservation/domain/entities/ReservationEntity.scala (ReservationState record with a nominal require)",
+      "app/example/stockreservation/domain/entities/StockEntity.scala (StockState record with a nominal require)",
+      "app/example/stockreservation/application/aggregates/ReservationProtocol.scala (sealed ReservationCommand + GetReservationState/Reply)",
+      "app/example/stockreservation/application/aggregates/StockProtocol.scala (sealed StockCommand + GetStockState/Reply)",
+      "app/example/stockreservation/application/aggregates/repository/ReservationRepository.scala (entityRef port)",
+      "app/example/stockreservation/application/aggregates/repository/StockRepository.scala (entityRef port)"
+    ]
+  },
+  "emitted": {
+    "artifact": "app/controllers/AggregateStateApiController.scala",
+    "two-aggregate face": "entries order preserved in constructor repositories, state writers, reply writers, and endpoint methods; shared writers declared once before all state writers"
+  },
+  "rawAcceptanceUnchanged": true,
+  "all31Closed": false
+}

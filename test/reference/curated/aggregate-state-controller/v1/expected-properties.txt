@@ -1,0 +1,46 @@
+aggregate-state-controller.behavior.v1.determinism: repeated happy path bodies are byte identical
+aggregate-state-controller.behavior.v1.negative: a fixed invalid id is rejected 400 with the exact param shape and never reaches the entity
+aggregate-state-controller.behavior.v1.negative: a silent entity folds the real ask timeout into 500 internal error
+aggregate-state-controller.behavior.v1.negative: expired token is rejected 401 and never reaches the entity
+aggregate-state-controller.behavior.v1.negative: invalid token is rejected 401 and never reaches the entity
+aggregate-state-controller.behavior.v1.negative: malformed authorization header is rejected 401 and never reaches the entity
+aggregate-state-controller.behavior.v1.negative: missing bearer token is rejected 401 and never reaches the entity
+aggregate-state-controller.behavior.v1.negative: random invalid ids are rejected 400 with the echoed param shape and never reach the entity
+aggregate-state-controller.behavior.v1.negative: stock invalid id is rejected 400 and never reaches the stock entity
+aggregate-state-controller.behavior.v1.state: reservation happy path records the parsed id and returns the flattened state json
+aggregate-state-controller.behavior.v1.state: settled reservation happy path serializes the timestamp as an iso string
+aggregate-state-controller.behavior.v1.state: stock happy path returns its own flattened state json
+aggregate-state-controller.behavior.v1.state: the response body carries no envelope key
+aggregate-state-controller.quality.v1.AST: HOF closure decisions count both in parent and closure
+aggregate-state-controller.quality.v1.AST: boundary mode admits the play and akka declared face
+aggregate-state-controller.quality.v1.AST: boundary mode still rejects Await reflection Random and Clock
+aggregate-state-controller.quality.v1.AST: comments and branch-like literal text add no decisions
+aggregate-state-controller.quality.v1.AST: defaults and initialization are registered
+aggregate-state-controller.quality.v1.AST: else-if is one control nesting level
+aggregate-state-controller.quality.v1.AST: if chains have independently known complexity
+aggregate-state-controller.quality.v1.AST: match alternatives and guards are explicit paths
+aggregate-state-controller.quality.v1.AST: named arguments sit in argument position and are admitted in both layers
+aggregate-state-controller.quality.v1.AST: overflow complexity is measured exactly, never clamped
+aggregate-state-controller.quality.v1.AST: short-circuit operators are counted
+aggregate-state-controller.quality.v1.negative: application-to-infrastructure imports stay rejected
+aggregate-state-controller.quality.v1.negative: assignment targets stay rejected in both layers
+aggregate-state-controller.quality.v1.negative: domain-to-application imports stay rejected
+aggregate-state-controller.quality.v1.negative: invalid syntax cannot become an empty successful report
+aggregate-state-controller.quality.v1.negative: java.time import statements stay rejected with the fully-qualified form sanctioned
+aggregate-state-controller.quality.v1.negative: java.util import statements stay rejected in boundary
+aggregate-state-controller.quality.v1.negative: reordered members fail the order check
+aggregate-state-controller.quality.v1.structure: akka imports stay in the protocol and repository supplies only
+aggregate-state-controller.quality.v1.structure: app sources carry no mechanism tokens
+aggregate-state-controller.quality.v1.structure: app sources carry no random identity generation
+aggregate-state-controller.quality.v1.structure: app sources hold the 100-column layout discipline
+aggregate-state-controller.quality.v1.structure: boundary id translation stays confined to the guard
+aggregate-state-controller.quality.v1.structure: clock reads stay confined to the platform auth supply
+aggregate-state-controller.quality.v1.structure: controller member order is shared writers then state writers then reply writers then endpoints
+aggregate-state-controller.quality.v1.structure: domain states import only the common identity supply
+aggregate-state-controller.quality.v1.structure: each ask records the parsed cid before the reply channel
+aggregate-state-controller.quality.v1.structure: each endpoint parses its own idParam label and asks with the raw string id
+aggregate-state-controller.quality.v1.structure: identity string parsing stays confined to the common supply
+aggregate-state-controller.quality.v1.structure: play imports stay in the controller and the two auth supplies only
+aggregate-state-controller.quality.v1.structure: repositories are ports without ask implementations
+aggregate-state-controller.quality.v1.structure: the constructor carries the endpoint then entries-order repositories then controller components
+aggregate-state-controller.quality.v1.structure: the controller import face is the judged dynamic and fixed order

@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "curated.aggregate-state-controller.review-status/v1",
+  "artifactType": "aggregate-state-controller",
+  "candidateVersion": "v1",
+  "status": "CANDIDATE_GOLDEN_WALKTHROUGH_PENDING",
+  "revision": {
+    "history": [
+      "candidate built 2026-11-20 directly on the pre-build ruling chain (S1/O1/Y2/T1/F6 — the user ruled the supply pin, the auth seam, the engine prefix delta, the IdGuard trim, and the TestEntityRef-executable behavior face before the first line of the bundle was written)",
+      "gate iterations -01..-09 were mechanical compile/property convergence: missing global-root door wrapper, missing sealed-extends on the protocol commands, play BodyParsers/AnyContent/RequestTarget/DefaultControllerComponents 2.8 constructor shapes, the anonymous-stub-classes engine rule (three named stub classes), the two-collect identity property split (CC 6 over the limit), zero-scope domain state files (nominal constructor require guards), and the suite-prefixed property inventory format"
+    ]
+  },
+  "bundleSha256": "a6d6b883639eb3d5c1b3a16be36a0bbef8b857f021d1c8a4b45c5ac4cfc83a11",
+  "manifest": {
+    "path": "manifest.json",
+    "bytes": 5230,
+    "sha256": "8e58bec89f4ec791c8054f663e65d4f80b3170978c1edf65ca3de0bce8191f38"
+  },
+  "payload": {
+    "files": 26,
+    "bytes": 93338,
+    "wholeBytesVerified": true
+  },
+  "lineage": {
+    "familyContract": "docs/codegen-parity/diffs/aggregate-state-controller.diff.md; one shared controller artifact for N eligible aggregates (repository defined AND a Get${name}State command), D1-D6 open rulings carried as raw debts or generator-phase negatives per the 2026-11-20 pre-build rulings (S1/O1/Y2/T1/F6)",
+    "frozenReuse": "Engine core methods (ownDecisions 16/2, control 7, declaredScopes 13, isDeclaration 7, JsonOutput.escape 9) measure identically to the approved projection-family byte; the only family delta is the Y2 import-prefix list (play/akka removed from the boundary banned set) with the play/akka file whitelist pinned by structural properties",
+    "dispatch": "CQRSApplicationGenerator L1004-1027 conditional emission honored by the two-aggregate shape (N>0); the N=0 suppressed variant is the single-project base and is documented, never faked"
+  },
+  "qualityRun": {
+    "discoveryRound": ".rounds/aggregate-state-controller-quality-20261120-10",
+    "rounds": [
+      ".rounds/aggregate-state-controller-quality-20261120-10",
+      ".rounds/aggregate-state-controller-quality-20261120-11"
+    ],
+    "prepared": {
+      "file": ".rounds/aggregate-state-controller-quality-20261120-11/prepared.json",
+      "sha256": "dccbf5ca0c9c1063f11ba24613c2fd31a1e66a1e492b15256b7f537965955ba",
+      "zeroDriftProof": "rounds -10 and -11 both executed with byte-identical prepared pins (dccbf5ca…); the only edits between the discovery round and this review-status are the unpinned README.md and technical-input.json narrative files"
+    },
+    "attempt": {
+      "id": "attempt-01",
+      "round": ".rounds/aggregate-state-controller-quality-20261120-11",
+      "actualJvmCalls": 6,
+      "allExit0": true,
+      "timeouts": 0,
+      "signals": 0,
+      "firstAttemptClean": true
+    },
+    "metrics": {
+      "passed": true,
+      "files": 21,
+      "scopes": 508,
+      "violations": 0,
+      "excess": 0
+    },
+    "properties": {
+      "seeds": [
+        740001,
+        740002,
+        740003
+      ],
+      "results": 46,
+      "negatives": 15,
+      "passed": true,
+      "passedAll": true,
+      "minimumSuccessfulRandomCases": 1000,
+      "totalRandomEvaluations": 15123
+    },
+    "supply": {
+      "artifacts": 88,
+      "frameworkRoots": "play_2.13 2.8.18, play-json_2.13 2.9.3 (BC override of play's declared 2.8.2), akka 2.6.20 typed cluster-sharding closure",
+      "closureVerified": true,
+      "note": "The CLI prepare round proves every declared compile dependency of every pinned artifact is pinned; akka-actor-testkit-typed enters as the test-supply coordinate backing the official TestEntityRef seam"
+    },
+    "finalBytesNote": "Executed on the exact candidate bytes; rounds -10 and -11 pins equal, zero drift"
+  },
+  "rawAcceptanceUnchanged": true,
+  "all31Closed": false,
+  "userGoldenApproval": null,
+  "userRuling": "2026-11-20 pre-build rulings: F1=S1 (framework pin), F2=O1 (TokenService verifyAccess trait face), F3=Y2 (boundary play/akka prefix delta with structural whitelist), F5=T1 (IdGuard-only trim), F6=TestEntityRef-executable behavior face (the user's testkit lead; the AskPattern Scheduler compile-defect hypothesis was withdrawn after the javap+compile probe). Walkthrough ruling pending."
+}
