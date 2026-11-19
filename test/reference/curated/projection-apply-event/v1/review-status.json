@@ -3,40 +3,55 @@
   "artifactType": "projection-apply-event",
   "candidateVersion": "v1",
   "status": "GOLDEN_AWAITING_USER_APPROVAL",
-  "bundleSha256": "fa6179f9384c8989c33a2d929604a03e68c4fab37844c193cca9c5094018aff5",
+  "revision": {
+    "history": [
+      "draft 599c385 rejected at walkthrough (raw single-line layout, missing sealed supply idiom, missing ruling-to-code traceability)",
+      "revision 4e0209c addressed those three (100-column layout, sealed event supply, None-patch demonstration)",
+      "revision 9063ad2 rebuilt on the semantics-face shape per the 2026-11-20 user proposal: per-view generated semantics traits, handwritten impls in the infrastructure.projection isolation zone owning the business defaults (empty row, named untimestamped timestamp default, text default), generated bootstrap module bindings; the inline getOrElse(Instant.now()) patch and the raw eight-type default derivation table dissolve into impl ownership; UUID admission re-scoped to the common supply; E2b context-based Term.Assign rule replaces the layer-based admission after a live scalameta 4.7.7 probe (named args parent = Term.ArgClause, statement assignments parent = Term.Block)"
+    ]
+  },
+  "bundleSha256": "c803bbe7dde6d5e1fc2e290795dda22e87a42077ce9a7fce15a2057e6de5e8da",
   "manifest": {
     "path": "manifest.json",
-    "bytes": 3949,
-    "sha256": "ae23ac2021ef9292f8997380bbde61b137cdfbb8ca82b8214063481912d8350c"
+    "bytes": 5109,
+    "sha256": "2d537a8fa611375d0bc8d95aa64802779adfe91a43ad52bf562a06a612aa3001"
   },
   "payload": {
-    "files": 19,
-    "bytes": 87833,
+    "files": 24,
+    "bytes": 96973,
     "wholeBytesVerified": true
   },
   "lineage": {
-    "familyContract": "docs/codegen-parity/diffs/projection-apply-event.diff.md; conditional multi-project sub-artifact, one <View>ApplyEvent per view; D-P08-FAIL-CLOSED / D-P09-ORACLE / D-P10-KERNEL-GLUE candidate rulings recorded in technical-input.json awaiting walkthrough ratification; E1-ENGINE-DELTA boundary delta (Instant/UUID declared face + named-argument admission) pinned by meta properties; SCOPE-SUPPLY covers the zero-scope requirement via Table column inventories and event require guards",
-    "frozenReuse": "Engine core derived from the approved connector-family byte (f5c66788) with package retargeting and the two documented boundary delta arms; core measurement methods (ownDecisions 16/2, control 7, declaredScopes 13, isDeclaration 7, JsonOutput.escape 9) measure identically; forbidden measures 17 (the one guarded delta arm) with an exact exception row",
-    "dispatch": "CQRSApplicationGenerator L855-875 conditional emission honored by the sample's two-view shape; single-project base 0 documented, never faked"
+    "familyContract": "docs/codegen-parity/diffs/projection-apply-event.diff.md; conditional multi-project sub-artifact, one kernel class per view; D-SEMANTICS-FACE (user proposal, V1 class injection), E2B-CONTEXT-RULE, E-SUPPLY-FACE, D-P08-FAIL-CLOSED direction, D-P09-ORACLE (D1 None patch + named untimestamped), D-P10-KERNEL-GLUE, SCOPE-SUPPLY, D-LAYOUT-100 (C2), D-SUPPLY-SEALED recorded in technical-input.json",
+    "frozenReuse": "Engine core methods (ownDecisions 16/2, control 7, declaredScopes 13, isDeclaration 7, JsonOutput.escape 9) measure identically to the approved connector-family byte (f5c66788); the E2b context rule adds the one-decision argumentClause predicate (cc=1) and the forbidden guard arm (measured 17/2, exact exception row); bannedTermNames carries the boundary supply-face delta (no UUID/Instant at boundary) with meta properties in both directions",
+    "dispatch": "CQRSApplicationGenerator L855-875 conditional emission honored by the two-view shape; single-project base 0 documented, never faked"
   },
   "qualityRun": {
-    "discoveryRound": ".rounds/projection-apply-event-quality-20261119-07",
-    "round": ".rounds/projection-apply-event-quality-20261119-08",
+    "discoveryRounds": [
+      ".rounds/projection-apply-event-quality-20261120-09",
+      ".rounds/projection-apply-event-quality-20261120-10",
+      ".rounds/projection-apply-event-quality-20261120-11"
+    ],
+    "rounds": [
+      ".rounds/projection-apply-event-quality-20261120-12",
+      ".rounds/projection-apply-event-quality-20261120-13"
+    ],
     "prepared": {
-      "file": ".rounds/projection-apply-event-quality-20261119-08/prepared.json",
-      "sha256": "728362f943bac660ff8e1736a2ea03ea0a6a2ab685a44dd39e32f1928fc91e2d",
-      "zeroDriftProof": "prepared pin sha equals the revised discovery-round prepared sha byte for byte (same value 728362f9…), proving zero source drift between discovery and final-bytes rounds"
+      "file": ".rounds/projection-apply-event-quality-20261120-13/prepared.json",
+      "sha256": "1ef18f173a04add183982b543ebd18d1e6dbde2c11667d957d25ca1c4232db4f",
+      "zeroDriftProof": "rounds -12 and -13 both executed on the exact committed candidate bytes (commit 9063ad2) with byte-identical prepared pins (1ef18f17…), proving zero source drift between the two executions; round -11 was the last discovery iteration before the contract-document wording updates"
     },
     "attempt": {
       "id": "attempt-01",
+      "round": ".rounds/projection-apply-event-quality-20261120-13",
       "actualJvmCalls": 6,
       "pids": [
-        58616,
-        58628,
-        58660,
-        58664,
-        58696,
-        58730
+        16527,
+        16537,
+        16571,
+        16585,
+        16610,
+        16642
       ],
       "allExit0": true,
       "timeouts": 0,
@@ -45,8 +60,8 @@
     },
     "metrics": {
       "passed": true,
-      "files": 14,
-      "scopes": 373,
+      "files": 19,
+      "scopes": 442,
       "violations": 0,
       "excess": 0
     },
@@ -56,27 +71,23 @@
         740002,
         740003
       ],
-      "results": 40,
-      "negatives": 7,
+      "results": 51,
+      "negatives": 8,
       "passed": true,
       "passedAll": true,
       "minimumSuccessfulRandomCases": 1000,
-      "totalRandomEvaluations": 51069
+      "totalRandomEvaluations": 63090
     },
     "supply": {
       "artifacts": 26,
-      "guiceVariant": "4.2.1 no_aop carried unchanged from the pinned family supply (unused by this sample; kept so the derivation shares one verified closure)",
-      "runtimeInjectorVerified": false,
-      "note": "No Guice assembly exists in this family — the kernel pure-function object carries no DI surface; the coordinate closure is the shared pinned supply"
+      "guiceVariant": "4.2.1 no_aop",
+      "runtimeInjectorVerified": true,
+      "note": "The assembly property resolves both semantics impls through a real Guice Injector built from the generated StockLedgerProjectionModule"
     },
-    "finalBytesNote": "Executed on the exact committed revised candidate bytes (commit 4e0209c); prepared pin sha equals the discovery-round prepared sha, confirming zero source drift"
+    "finalBytesNote": "Executed on the exact committed candidate bytes (commit 9063ad2); rounds -12 and -13 pins equal, zero drift"
   },
   "rawAcceptanceUnchanged": true,
   "all31Closed": false,
   "userGoldenApproval": null,
-  "userRuling": null,
-  "revision": {
-    "supersededDraft": "commits 599c385/61df65d — quality mechanics valid, walkthrough raised three corrections: raw single-line layout outside industry line-width norms, nominal event supply missing the real-source sealed-trait family idiom, ruling-to-code traceability missing and the D-P09 None-patch ruling not demonstrated in code",
-    "note": "This revision adds D-LAYOUT-100 (one named argument per line for emptyRow/copy argument lists, 100-column structural property with imports exempt), D-SUPPLY-SEALED (sealed ReservationEvent family per the CreditBalanceEntity precedent, emission still out of family scope), the settledAt column with LedgerSettled/LedgerReopened events (executable None-patch demonstration), and the ruling-to-code traceability map in the walkthrough."
-  }
+  "userRuling": null
 }
