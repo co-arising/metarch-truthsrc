@@ -27,6 +27,8 @@ object ApplyEventQualityProperties extends Properties("projection-apply-event.qu
     "example.stockreservation.domain.entities.ReservationEntity.Reserved",
     "example.stockreservation.domain.entities.ReservationEntity.QuantityAdjusted",
     "example.stockreservation.domain.entities.ReservationEntity.TagUpserted",
+    "example.stockreservation.domain.entities.ReservationEntity.LedgerSettled",
+    "example.stockreservation.domain.entities.ReservationEntity.LedgerReopened",
     "example.stockreservation.domain.entities.ReservationEntity.ReservationCancelled")
 
   private val snapshotImports = Vector(
@@ -36,7 +38,8 @@ object ApplyEventQualityProperties extends Properties("projection-apply-event.qu
 
   private val ledgerHelpers = Vector("emptyRow", "ts", "strOr", "upsertBy")
   private val snapshotHelpers = Vector("emptyRow", "ts")
-  private val ledgerFunctions = Vector("onReserved", "onQuantityAdjusted", "onTagUpserted", "onReservationCancelled")
+  private val ledgerFunctions = Vector("onReserved", "onQuantityAdjusted", "onTagUpserted",
+    "onLedgerSettled", "onLedgerReopened", "onReservationCancelled")
   private val snapshotFunctions = Vector("onSnapshotRecorded", "onSnapshotAmended")
 
   private val zeroMechanismTokens =
@@ -110,6 +113,12 @@ object ApplyEventQualityProperties extends Properties("projection-apply-event.qu
     texts.forall { case (path, text) =>
       if (path.endsWith("ApplyEvent.scala")) clockReads(text) == 1 else clockReads(text) == 0
     } && !texts.values.exists(_.contains("randomUUID"))
+  }
+
+  property("structure: kernel and supply sources hold the 100-column layout discipline") = secure {
+    appTexts.forall { case (_, text) =>
+      text.split("\n").toVector.filterNot(line => line.trim.startsWith("import ")).forall(_.length <= 100)
+    }
   }
 
   property("structure: negative: reordered faces fail their order checks") = secure {

@@ -2,6 +2,8 @@ package example.stockreservation.projections
 
 import example.stockreservation.application.projection.repository.StockLedgerSnapshotTable.StockLedgerSnapshotView
 import example.stockreservation.application.projection.repository.StockLedgerTable.StockLedgerView
+import example.stockreservation.domain.entities.ReservationEntity.LedgerReopened
+import example.stockreservation.domain.entities.ReservationEntity.LedgerSettled
 import example.stockreservation.domain.entities.ReservationEntity.QuantityAdjusted
 import example.stockreservation.domain.entities.ReservationEntity.Reserved
 import example.stockreservation.domain.entities.ReservationEntity.SnapshotAmended
@@ -13,7 +15,9 @@ import example.stockreservation.domain.entities.ReservationEntity.TagUpserted
 object ApplyEventOracle {
 
   def expectedReserved(existing: Option[StockLedgerView], e: Reserved): StockLedgerView = {
-    val base = existing.getOrElse(StockLedgerView(net.imadz.common.Id.of("00000000-0000-0000-0000-000000000000"), "", 0, false, 0L, Nil, None, "", ""))
+    val base = existing.getOrElse(
+      StockLedgerView(net.imadz.common.Id.of("00000000-0000-0000-0000-000000000000"),
+        "", 0, false, 0L, Nil, None, None, "", ""))
     base.copy(skuId = e.skuId, label = orEmpty(e.label), quantity = e.quantity, reserved = true,
       lastEventAt = Some(e.occurredAt), `type` = "reserved", tenantId = e.tenantId)
   }
@@ -26,6 +30,13 @@ object ApplyEventOracle {
     val next = if (index >= 0) row.tags.updated(index, e.tag) else row.tags :+ e.tag
     row.copy(tags = next)
   }
+
+  def expectedSettled(row: StockLedgerView, e: LedgerSettled): StockLedgerView =
+    row.copy(reserved = false, settledAt = Some(e.occurredAt), lastEventAt = Some(e.occurredAt))
+
+  /** None patch＝清列：reopen 抹去 settled 戳、其余列原样保留（D-P09 判例）。 */
+  def expectedReopened(row: StockLedgerView, e: LedgerReopened): StockLedgerView =
+    row.copy(reserved = true, settledAt = None, lastEventAt = Some(e.occurredAt))
 
   def expectedSnapshotRecorded(e: SnapshotRecorded, entityId: String): StockLedgerSnapshotView =
     StockLedgerSnapshotView(net.imadz.common.Id.of(entityId), e.tenantId, e.totalAmount, 0, false, Some(e.occurredAt))

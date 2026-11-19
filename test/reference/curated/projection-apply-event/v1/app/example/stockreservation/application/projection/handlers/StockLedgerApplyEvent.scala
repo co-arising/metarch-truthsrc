@@ -4,6 +4,8 @@ import example.stockreservation.application.projection.repository.StockLedgerTab
 import example.stockreservation.domain.entities.ReservationEntity.Reserved
 import example.stockreservation.domain.entities.ReservationEntity.QuantityAdjusted
 import example.stockreservation.domain.entities.ReservationEntity.TagUpserted
+import example.stockreservation.domain.entities.ReservationEntity.LedgerSettled
+import example.stockreservation.domain.entities.ReservationEntity.LedgerReopened
 import example.stockreservation.domain.entities.ReservationEntity.ReservationCancelled
 
 /** StockLedgerView 投影纯函数族（referenceCode 直译·方言判定已定）。
@@ -11,7 +13,18 @@ import example.stockreservation.domain.entities.ReservationEntity.ReservationCan
 object StockLedgerApplyEvent {
 
   /** 族共享空行：全列字面默认——Id 列＝零 UUID 惯例·copy 覆写即时补真实键。 */
-  private def emptyRow: StockLedgerView = StockLedgerView(skuId = net.imadz.common.Id.of("00000000-0000-0000-0000-000000000000"), label = "", quantity = 0, reserved = false, totalAmount = 0, tags = Nil, lastEventAt = None, `type` = "", tenantId = "")
+  private def emptyRow: StockLedgerView = StockLedgerView(
+    skuId = net.imadz.common.Id.of("00000000-0000-0000-0000-000000000000"),
+    label = "",
+    quantity = 0,
+    reserved = false,
+    totalAmount = 0,
+    tags = Nil,
+    lastEventAt = None,
+    settledAt = None,
+    `type` = "",
+    tenantId = ""
+  )
 
   /** epoch0/null → now（「无时间戳」语义·本族唯一许可的时钟读取）。 */
   private def ts(i: java.time.Instant): Option[java.time.Instant] =
@@ -29,15 +42,44 @@ object StockLedgerApplyEvent {
 
   /** Reserved → StockLedgerView（referenceCode 直译·方言 create） */
   def onReserved(existing: Option[StockLedgerView], e: Reserved): StockLedgerView =
-    existing.getOrElse(emptyRow).copy(skuId = e.skuId, label = strOr(e.label), quantity = e.quantity, reserved = true, lastEventAt = ts(e.occurredAt), `type` = "reserved", tenantId = e.tenantId)
+    existing.getOrElse(emptyRow).copy(
+      skuId = e.skuId,
+      label = strOr(e.label),
+      quantity = e.quantity,
+      reserved = true,
+      lastEventAt = ts(e.occurredAt),
+      `type` = "reserved",
+      tenantId = e.tenantId
+    )
 
   /** QuantityAdjusted → StockLedgerView（referenceCode 直译·方言 updateOnly） */
   def onQuantityAdjusted(row: StockLedgerView, e: QuantityAdjusted): StockLedgerView =
-    row.copy(quantity = row.quantity + e.delta, lastEventAt = ts(e.occurredAt))
+    row.copy(
+      quantity = row.quantity + e.delta,
+      lastEventAt = ts(e.occurredAt)
+    )
 
   /** TagUpserted → StockLedgerView（referenceCode 直译·方言 updateOnly） */
   def onTagUpserted(row: StockLedgerView, e: TagUpserted): StockLedgerView =
-    row.copy(tags = upsertBy(row.tags, e.tag)(t => t))
+    row.copy(
+      tags = upsertBy(row.tags, e.tag)(t => t)
+    )
+
+  /** LedgerSettled → StockLedgerView（referenceCode 直译·方言 updateOnly） */
+  def onLedgerSettled(row: StockLedgerView, e: LedgerSettled): StockLedgerView =
+    row.copy(
+      reserved = false,
+      settledAt = Some(e.occurredAt),
+      lastEventAt = ts(e.occurredAt)
+    )
+
+  /** LedgerReopened → StockLedgerView（referenceCode 直译·方言 updateOnly·None patch＝清列判例） */
+  def onLedgerReopened(row: StockLedgerView, e: LedgerReopened): StockLedgerView =
+    row.copy(
+      reserved = true,
+      settledAt = None,
+      lastEventAt = ts(e.occurredAt)
+    )
 
   /** ReservationCancelled → StockLedgerView（referenceCode 直译·方言 delete） */
   def onReservationCancelled(e: ReservationCancelled): (String, String) =

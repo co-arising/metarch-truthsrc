@@ -8,6 +8,8 @@ import org.scalacheck.Prop.secure
 
 import example.stockreservation.application.projection.handlers.StockLedgerApplyEvent
 import example.stockreservation.application.projection.handlers.StockLedgerSnapshotApplyEvent
+import example.stockreservation.domain.entities.ReservationEntity.LedgerReopened
+import example.stockreservation.domain.entities.ReservationEntity.LedgerSettled
 import example.stockreservation.domain.entities.ReservationEntity.QuantityAdjusted
 import example.stockreservation.domain.entities.ReservationEntity.Reserved
 import example.stockreservation.domain.entities.ReservationEntity.TagUpserted
@@ -53,6 +55,19 @@ object ApplyEventProperties extends Properties("projection-apply-event.stock-led
     forAll(ledgerRows, tagUpsertedEvents) { (row, e) =>
       val seeded = row.copy(tags = row.tags.filter(_ != e.tag))
       StockLedgerApplyEvent.onTagUpserted(seeded, e).tags == seeded.tags :+ e.tag
+    }
+
+  property("update-only: settle and reopen patch their columns exactly") =
+    forAll(ledgerRows, settledEvents, reopenedEvents) { (row, settled, reopened) =>
+      StockLedgerApplyEvent.onLedgerSettled(row, settled) == ApplyEventOracle.expectedSettled(row, settled) &&
+        StockLedgerApplyEvent.onLedgerReopened(row, reopened) == ApplyEventOracle.expectedReopened(row, reopened)
+    }
+
+  property("update-only: negative: a None patch clears the column and preserves the rest") =
+    forAll(ledgerRows, reopenedEvents) { (row, reopened) =>
+      val next = StockLedgerApplyEvent.onLedgerReopened(row, reopened)
+      next.settledAt == None && next.quantity == row.quantity && next.tags == row.tags &&
+        next.totalAmount == row.totalAmount && next.`type` == row.`type`
     }
 
   property("delete: emits the literal partition key and the id string key") =

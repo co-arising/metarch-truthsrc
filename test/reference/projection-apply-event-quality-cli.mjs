@@ -66,7 +66,7 @@ const SOURCES = [
   "quality/JsonOutput.scala",
   "quality/QualityMain.scala",
 ];
-const EXPECTED_NEGATIVES = 6;
+const EXPECTED_NEGATIVES = 7;
 const monotonic = () => Number(process.hrtime.bigint() / 1000000n);
 const document = p => captureEvidenceFile(p, { parse: bytes => JSON.parse(bytes.toString('utf8')) });
 const write = (p, value) => {

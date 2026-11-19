@@ -14,10 +14,14 @@ object StockLedgerTable {
     totalAmount: Long,
     tags: List[String],
     lastEventAt: Option[java.time.Instant],
+    settledAt: Option[java.time.Instant],
     `type`: String,
     tenantId: String
   )
 
   /** 列账（原名列——`type` 的反引号补缀是发射面规则，账面存原状）。 */
-  val columns: Vector[String] = Vector("skuId", "label", "quantity", "reserved", "totalAmount", "tags", "lastEventAt", "type", "tenantId")
+  val columns: Vector[String] = Vector(
+    "skuId", "label", "quantity", "reserved", "totalAmount",
+    "tags", "lastEventAt", "settledAt", "type", "tenantId"
+  )
 }

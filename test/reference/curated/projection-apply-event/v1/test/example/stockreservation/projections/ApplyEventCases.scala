@@ -38,6 +38,10 @@ object ApplyEventCases {
 
   val tagUpsertedEvents: Gen[TagUpserted] = tags.map(TagUpserted)
 
+  val settledEvents: Gen[LedgerSettled] = instants.map(LedgerSettled)
+
+  val reopenedEvents: Gen[LedgerReopened] = instants.map(LedgerReopened)
+
   val cancellationEvents: Gen[ReservationCancelled] = ids.map(ReservationCancelled)
 
   val snapshotRecordedEvents: Gen[SnapshotRecorded] = for {
@@ -50,9 +54,10 @@ object ApplyEventCases {
 
   val ledgerRows: Gen[StockLedgerView] =
     Gen.zip(ids, labels, Gen.chooseNum(0, 9999), Gen.frequency(1 -> true, 3 -> false),
-      Gen.chooseNum(-1000000L, 1000000L), Gen.listOf(tags), Gen.option(instants), labels, labels)
-      .map { case (skuId, label, quantity, reservedFlag, totalAmount, tagList, stamp, kind, tenantId) =>
-        StockLedgerView(skuId, label, quantity, reservedFlag, totalAmount, tagList, stamp, kind, tenantId)
+      Gen.chooseNum(-1000000L, 1000000L), Gen.listOf(tags), Gen.option(instants), Gen.option(instants),
+      labels, labels)
+      .map { case (skuId, label, quantity, reservedFlag, totalAmount, tagList, stamp, settledStamp, kind, tenantId) =>
+        StockLedgerView(skuId, label, quantity, reservedFlag, totalAmount, tagList, stamp, settledStamp, kind, tenantId)
       }
 
   val snapshotRows: Gen[StockLedgerSnapshotView] =

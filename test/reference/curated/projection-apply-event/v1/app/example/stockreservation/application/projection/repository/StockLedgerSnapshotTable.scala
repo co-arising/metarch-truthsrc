@@ -16,5 +16,7 @@ object StockLedgerSnapshotTable {
   )
 
   /** 列账（原名列）。 */
-  val columns: Vector[String] = Vector("snapshotId", "tenantId", "totalAmount", "eventCount", "open", "occurredAt")
+  val columns: Vector[String] = Vector(
+    "snapshotId", "tenantId", "totalAmount", "eventCount", "open", "occurredAt"
+  )
 }
