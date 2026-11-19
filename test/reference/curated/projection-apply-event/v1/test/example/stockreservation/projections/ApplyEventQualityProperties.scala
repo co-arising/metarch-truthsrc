@@ -13,16 +13,22 @@ import example.stockreservation.projections.quality.ScalaSourceMetrics
 import example.stockreservation.projections.quality.ScalaSourceMetrics.Layer
 
 /** 结构性质（真实提交源面）＋度量器元性质（合成源）。
-  * 结构面钉住：import 面（表视图先行、判定事件序）、helper 定序与条件缺席、
-  * 函数判定序、kernel 零机制 token、时钟读取只在 ts、身份解析零随机；
-  * directed negative 用合成文本验证检查器判别力。
-  * 元性质钉住引擎核心计数语义与本族边界增量（Instant/UUID 面、命名实参习语）。 */
+  * 结构面钉住：生成面四件套形态（kernel class＋语义面 trait＋模块绑定）、
+  * import 面、kernel 委托而非内联业务语义、时钟/身份解析的归属 confinement、
+  * 100 列版式；directed negative 用合成文本验证检查器判别力。
+  * 元性质钉住引擎核心计数语义与本族边界增量（Instant/UUID 供给面、
+  * E2b 命名实参上下文规则）。 */
 object ApplyEventQualityProperties extends Properties("projection-apply-event.quality.v1") {
 
   private val ledgerPath = "app/example/stockreservation/application/projection/handlers/StockLedgerApplyEvent.scala"
   private val snapshotPath = "app/example/stockreservation/application/projection/handlers/StockLedgerSnapshotApplyEvent.scala"
+  private val ledgerImplPath = "app/example/stockreservation/infrastructure/projection/StockLedgerApplyEventSemanticsImpl.scala"
+  private val snapshotImplPath = "app/example/stockreservation/infrastructure/projection/StockLedgerSnapshotApplyEventSemanticsImpl.scala"
+  private val modulePath = "app/example/stockreservation/infrastructure/bootstrap/StockLedgerProjectionModule.scala"
+  private val idSupplyPath = "app/net/imadz/common/Id.scala"
 
   private val ledgerImports = Vector(
+    "javax.inject.{Inject, Singleton}",
     "example.stockreservation.application.projection.repository.StockLedgerTable.StockLedgerView",
     "example.stockreservation.domain.entities.ReservationEntity.Reserved",
     "example.stockreservation.domain.entities.ReservationEntity.QuantityAdjusted",
@@ -32,12 +38,13 @@ object ApplyEventQualityProperties extends Properties("projection-apply-event.qu
     "example.stockreservation.domain.entities.ReservationEntity.ReservationCancelled")
 
   private val snapshotImports = Vector(
+    "javax.inject.{Inject, Singleton}",
     "example.stockreservation.application.projection.repository.StockLedgerSnapshotTable.StockLedgerSnapshotView",
     "example.stockreservation.domain.entities.ReservationEntity.SnapshotRecorded",
     "example.stockreservation.domain.entities.ReservationEntity.SnapshotAmended")
 
-  private val ledgerHelpers = Vector("emptyRow", "ts", "strOr", "upsertBy")
-  private val snapshotHelpers = Vector("emptyRow", "ts")
+  private val ledgerHelpers = Vector("upsertBy")
+  private val snapshotHelpers = Vector.empty[String]
   private val ledgerFunctions = Vector("onReserved", "onQuantityAdjusted", "onTagUpserted",
     "onLedgerSettled", "onLedgerReopened", "onReservationCancelled")
   private val snapshotFunctions = Vector("onSnapshotRecorded", "onSnapshotAmended")
@@ -60,9 +67,6 @@ object ApplyEventQualityProperties extends Properties("projection-apply-event.qu
     source.split("\n").toVector.map(_.trim).filter(_.startsWith(keyword))
       .map(line => line.stripPrefix(keyword).takeWhile(ch => ch != '(' && ch != '[' && ch != ':').trim)
 
-  private def clockReads(source: String): Int =
-    source.split("Instant.now").length - 1
-
   private def importFaceIs(source: String, expected: Vector[String]): Boolean =
     importsOf(source) == expected
 
@@ -82,12 +86,12 @@ object ApplyEventQualityProperties extends Properties("projection-apply-event.qu
 
   private val lengths = Gen.choose(0, 7)
 
-  property("structure: the import face is the table view first then judged event order") = secure {
+  property("structure: the import face is javax.inject then table view then judged event order") = secure {
     val texts = appTexts
     importFaceIs(texts(ledgerPath), ledgerImports) && importFaceIs(texts(snapshotPath), snapshotImports)
   }
 
-  property("structure: helpers are emitted in fixed order per file") = secure {
+  property("structure: kernel-local helpers are the pure mechanics only") = secure {
     val texts = appTexts
     defsOf(texts(ledgerPath), "private def ") == ledgerHelpers &&
       defsOf(texts(snapshotPath), "private def ") == snapshotHelpers
@@ -99,20 +103,53 @@ object ApplyEventQualityProperties extends Properties("projection-apply-event.qu
       defsOf(texts(snapshotPath), "def ") == snapshotFunctions
   }
 
-  property("structure: untriggered helpers stay absent in the snapshot family") = secure {
-    val snapshot = appTexts(snapshotPath)
-    !snapshot.contains("strOr(") && !snapshot.contains("upsertBy(")
+  property("structure: the ledger kernel delegates all three hooks") = secure {
+    val ledger = appTexts(ledgerPath)
+    ledger.contains("sem.emptyRow") && ledger.contains("sem.stamped") && ledger.contains("sem.text")
   }
 
-  property("structure: kernel files carry zero mechanism and no raw debt tokens") = secure {
+  property("structure: the snapshot kernel delegates exactly its two hooks") = secure {
+    val snapshot = appTexts(snapshotPath)
+    snapshot.contains("sem.emptyRow") && snapshot.contains("sem.stamped") && !snapshot.contains("sem.text")
+  }
+
+  property("structure: generated kernels inline no identity time or default-literal semantics") = secure {
+    val texts = appTexts
+    texts.filter { case (path, _) => path.endsWith("ApplyEvent.scala") }.values.forall { text =>
+      !text.contains("Id.of") && !text.contains("Instant.now") && !text.contains(".getOrElse(\"\")")
+    }
+  }
+
+  property("structure: app sources carry zero mechanism and no raw debt tokens") = secure {
     appTexts.forall { case (_, text) => zeroMechanismTokens.forall(token => !text.contains(token)) }
   }
 
-  property("structure: the clock read stays confined to ts and identity stays deterministic") = secure {
-    val texts = appTexts
-    texts.forall { case (path, text) =>
-      if (path.endsWith("ApplyEvent.scala")) clockReads(text) == 1 else clockReads(text) == 0
-    } && !texts.values.exists(_.contains("randomUUID"))
+  property("structure: clock reads stay confined to the two impl files") = secure {
+    val clockPaths = appTexts.toVector
+      .collect { case (path, text) if text.split("Instant.now").length > 1 => path }.sorted
+    clockPaths == Vector(ledgerImplPath, snapshotImplPath)
+  }
+
+  property("structure: identity parsing stays confined to the common supply") = secure {
+    val idPaths = appTexts.toVector
+      .collect { case (path, text) if text.contains("UUID.fromString") => path }
+    idPaths == Vector(idSupplyPath)
+  }
+
+  property("structure: app sources carry no random identity generation") = secure {
+    !appTexts.values.exists(_.contains("randomUUID"))
+  }
+
+  property("structure: the module binds the ledger semantics face to its impl") = secure {
+    val module = appTexts(modulePath)
+    module.contains("bind(classOf[StockLedgerApplyEventSemantics])") &&
+      module.contains("to(classOf[StockLedgerApplyEventSemanticsImpl])")
+  }
+
+  property("structure: the module binds the snapshot semantics face to its impl") = secure {
+    val module = appTexts(modulePath)
+    module.contains("bind(classOf[StockLedgerSnapshotApplyEventSemantics])") &&
+      module.contains("to(classOf[StockLedgerSnapshotApplyEventSemanticsImpl])")
   }
 
   property("structure: kernel and supply sources hold the 100-column layout discipline") = secure {
@@ -123,9 +160,9 @@ object ApplyEventQualityProperties extends Properties("projection-apply-event.qu
 
   property("structure: negative: reordered faces fail their order checks") = secure {
     val syntheticImports = "package p\n\nimport b.B\nimport a.A\n\nobject X"
-    val syntheticHelpers = "object X {\n  private def strOr(s: String): String = s\n  private def ts(i: java.time.Instant): Option[java.time.Instant] = None\n}"
+    val syntheticHelpers = "object X {\n  private def ts(i: java.time.Instant): Option[java.time.Instant] = None\n  private def upsertBy[A](list: List[A], item: A)(key: A => String): List[A] = list\n}"
     !importFaceIs(syntheticImports, Vector("a.A", "b.B")) &&
-      defsOf(syntheticHelpers, "private def ") == Vector("strOr", "ts") &&
+      defsOf(syntheticHelpers, "private def ") == Vector("ts", "upsertBy") &&
       defsOf(syntheticHelpers, "private def ") != ledgerHelpers
   }
 
@@ -171,16 +208,21 @@ object ApplyEventQualityProperties extends Properties("projection-apply-event.qu
     method(body).counts.complexity == 7
   }
 
+  property("AST: named arguments sit in argument position and are admitted in both layers") = secure {
+    val source = "object Sample { case class R(x: Int); def face(r: R): R = r.copy(x = 1); def make(): R = new R(x = 1) }"
+    violations(source, Layer.Boundary).isEmpty && violations(source, Layer.Domain).isEmpty
+  }
+
+  property("AST: negative: assignment targets stay rejected in both layers") = secure {
+    val source = "object Bad { var y = 0; def face(): Unit = { y = 1; () } }"
+    violations(source, Layer.Boundary).contains("mutable-domain-state") &&
+      violations(source, Layer.Domain).contains("mutable-domain-state")
+  }
+
   property("AST: boundary mode admits the projection Instant and UUID declared face") = secure {
     val source = "object Sample { def face(i: java.time.Instant): java.util.UUID = java.util.UUID.fromString(i.toString) }"
     scopes(source, Layer.Boundary).nonEmpty &&
       violations(source, Layer.Domain).contains("implicit-domain-time-randomness-or-mutation")
-  }
-
-  property("AST: named-argument syntax is the admitted boundary idiom that domain rejects") = secure {
-    val source = "object Sample { case class R(x: Int); def face(): R = R(x = 1) }"
-    scopes(source, Layer.Boundary).nonEmpty &&
-      violations(source, Layer.Domain).contains("mutable-domain-state")
   }
 
   property("AST: boundary mode still rejects Await reflection Random and Clock") = secure {
@@ -213,11 +255,5 @@ object ApplyEventQualityProperties extends Properties("projection-apply-event.qu
 
   property("negative: invalid syntax cannot become an empty successful report") = secure {
     ScalaSourceMetrics.analyze("broken.scala", "object {", Layer.Domain).isLeft
-  }
-
-  property("negative: mutable var and assignment stay rejected at the boundary") = secure {
-    val source = "object Bad { var state = 0; def face(): Unit = { state = 1; () } }"
-    violations(source, Layer.Boundary).contains("mutable-domain-state") &&
-      violations(source, Layer.Domain).contains("mutable-domain-state")
   }
 }

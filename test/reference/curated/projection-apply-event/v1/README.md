@@ -1,78 +1,67 @@
-# projection-apply-event v1 — StockLedger 投影纯函数族金样候选
+# projection-apply-event v1 — StockLedger 投影纯函数族金样候选（语义面形态）
 
 > 传统清单第 26 族（条件子产物）：multi 项目下每投影 0/1 个
-> `<View>ApplyEvent.scala` kernel 纯函数族文件；单项目基数 0。本样用两个视图
-> 把四形函数、四个条件 helper、两种 emptyRow 变体一次性钉死。
+> `<View>ApplyEvent.scala` kernel 纯函数族文件；单项目基数 0。
 >
-> 修订史：首版候选（`599c385`）讲解中被提出三处修正——(1) raw 单行实参表带进
-> 目标形，超业界行宽惯例；(2) 名义事件供给丢了真源 sealed 事件家族惯例；
-> (3) 判定点到代码对照缺失、D-P09 None-patch 裁定无代码演示。本版修订：100 列
-> 版式纪律＋sealed ReservationEvent 供给家族（CreditBalanceEntity 判例；发射
-> 仍不属本族）＋settledAt 列与 LedgerSettled/LedgerReopened 事件（None patch
-> ＝清列可执行判例）＋逐裁定代码对照（见讲解）。
+> 形态演进史：首版（`599c385`）被指出 raw 单行版式/sealed 供给缺失/对照缺失；
+> 修订一（`4e0209c`）补 100 列版式＋sealed 供给＋None-patch 判例；讲解中用户
+> 提出 **业务语义接口＋注入＋隔离区** 方案（A/B 裁决）、指出 inline
+> `getOrElse(Instant.now())` 是"未经思考的补丁"、UUID 准入应归属 common 供给、
+> `skuId = e.skuId` 命中是我们 AST 检查器的粒度问题（经 scalameta 实探证实）——
+> 本版按 **语义面形态＋E2b 上下文规则** 重建。
 
 ## 本族制品解决什么问题
 
-读族按事件流把行维护成视图。本族制品是**视图行的纯函数翻译层**：把已判定的
-域事件翻译成 `Option[View]×E→View` / `(String,String)` 键元组，kernel 侧零机制——
-PO 解包、Await、repo IO 全部留在 glue 壳 ViewMachine，壳按函数 presence/form/signature
-路由。它钉住五件事：
+读侧按事件流维护视图行。本族制品是**视图行的 kernel 纯函数翻译层**：
+`on<Event>(旧行, 事件) → 新行`——**零机制**（PO 解包、Await、repo IO 全在 glue
+壳 ViewMachine）。raw 里它只在 multi 项目、`applyEvents` 非空时发射。
 
-1. **四形发射合同**：create（`existing.getOrElse(emptyRow).copy`）／updateOnly
-   （`row.copy`，空 body 渲染 `row`）／delete（两 judged 键对，位置 0/1）／
-   persistenceIdCreate（`emptyRow(entityId, …)` 参数化基座）——函数序＝判定序。
-2. **helper 触发与定序**：emptyRow → ts → strOr → upsertBy 按需发射、顺序固定；
-   未触发的 helper 诚实缺席（快照族无 strOr/upsertBy，结构性质钉住）。
-3. **两种 emptyRow**：普通族全列字面默认（Id 列＝零 UUID）；persistenceId 族
-   identity 列全取 `Id.of(entityId)`、tenantId 列取参数（Park 判例）——
-   directed negative 钉住「persistenceId 身份永不落回零 UUID」。
-4. **fail-closed 输入合同**（D-P08 候选裁定）：raw degraded（空/`???`/未知方言）
-   事件不进目标文件；delete 恰两键对；persistenceId 视图禁 create 形事件
-   （raw 混排会生成引用不存在的 `existing` 的坏函数）；裸 Instant 列拒绝而非
-   raw 的静默降级。kernel 文件零 `???`、零 MANUAL 区、零 metarch 硬编码 import。
-5. **版式纪律**（D-LAYOUT-100）：100 列上限（import 豁免），emptyRow/copy 实参
-   每行一个命名实参——性质 `structure: kernel and supply sources hold the
-   100-column layout discipline` 钉住。
-6. **时钟单点**：ts 的 epoch0/null→now 是本族唯一许可的时钟读取（本阶段不改成
-   时间常量），结构性质把 `Instant.now` 钉在 ts 一处；identity 解析零随机。
+本版的关键结构决定（用户 2026-11-20 提案）：**视图的业务默认值不是生成器逻辑**——
+白纸行长什么样、"没盖时间戳"是什么意思、缺省文本是什么意思，是这本台账的业务
+决定。生成器只发射**语义面**（per-view trait：`emptyRow / stamped / text` 三个
+业务问句钩子），实现是**手写隔离区**（`infrastructure.projection`，生成器永不
+创建或覆写），装配模块显式绑定——与 toolgate 族"生成面＋手写实现＋装配绑定"
+完全同构。这顺手溶解了 raw 的八型默认推导表、可推导性降级、inline ts/strOr
+模板习语全部三坨机制。
 
-## 范围（19 payload）
+## 范围（19 payload，19 源文件进门）
 
-- 生产 6 文件：**本族制品** 2 件（`StockLedgerApplyEvent`：create+updateOnly×4
-  +delete，含 keyword 列 `` `type` `` 反引号判例与 `settledAt = None` 清列判例；
-  `StockLedgerSnapshotApplyEvent`：persistenceIdCreate+updateOnly）＋供给 4 件
-  （ReservationEntity sealed 事件家族＝域名义供给、两个 Table 视图＋列账＝壳
-  repository 契约、net.imadz.common.Id 裁剪公共供给＝别名＋确定性 of，随机面排除）。
-- 测试 4 文件：独立 oracle（期望行以数据直陈）＋事件/行生成器＋16 条行为性质
-  ＋24 条结构/引擎元性质（合计 40，7 负对照）。
+- 生产 11 文件＝**生成五件**（两 kernel 类＋两语义面 trait＋装配模块）＋
+  **手写隔离区与供给六件**（两语义 impl、sealed ReservationEntity 事件家族、
+  两个 Table 视图＋列账、net.imadz.common.Id 裁剪供给）。
+- 测试 4 文件：闭式输入形状＋命名桩语义类（kernel 行为完全确定）、独立 oracle
+  （期望行数据直陈）、行为 21 条（kernel 桩语义 14＋impl 语义 6＋装配 1）、
+  结构/引擎元 30 条（合计 51，8 负对照）。
 - 质量骨架 4 文件＋政策/清单/输入/回执。
 
-## 关键合同点（候选裁定，待讲解批准）
+## 关键合同点（裁定状态）
 
-| 项 | 本样例的显式选择 |
-|---|---|
-| D-P08-FAIL-CLOSED | judged 输入只收可执行事件（四形）；degraded 拒收；delete 恰两键对；重复事件名拒收；persistenceId 视图禁 create 形；裸 Instant/不可推导列拒收——raw 的 `existing.getOrElse(???)` 降级与空对象文件永不出现 |
-| D-P09-ORACLE | None patch＝清列（raw 注释的「不改列」是错的，已修正；可执行判例＝LedgerReopened 的 `settledAt = None`）；epoch0/null→now 保留（唯一许可时钟点）；默认值＝八型表；persistenceId 全 Id 列取 entityId。全部有业务 oracle 性质钉住 |
-| D-P10-KERNEL-GLUE | 首 import 用配置业务 base（raw 硬编码 metarch 前缀显式修正）；kernel 零机制结构钉住；壳 ViewMachine 合同归 projection-handler 族，本样不伪造；viewColumns 按判定原签名发射 |
-| E1-ENGINE-DELTA | 引擎从 connector 族字节（f5c66788 核心）派生本族字节，边界层增量两处且全被元性质钉住：Instant/UUID 项名准入（声明的时间/身份面；Random/Clock/LocalDateTime/Date/Await 仍禁）；命名实参准入（scalameta 把命名实参解析为 Term.Assign——Defn.Var 两层仍禁，边界层无赋值目标，活下来的 Term.Assign 只能是 emptyRow/copy 习语）。upsert 键从 raw `A => Any` 显式修正为 `A => String`（Any 两层禁入） |
-| SCOPE-SUPPLY | 纯 case class 文件零 scope 会挂门：Table 对象带列账 val（viewColumns 概念的家）、事件构造带 require（curated 域纪律）；common 供给按 boundary 分类 |
-| D-LAYOUT-100 | 目标发射版式＝100 列纪律：emptyRow/copy 实参每行一个命名实参、超宽 def 参数表逐参换行、import 豁免——取代 raw 的单行实参发射（首版候选被否的点） |
-| D-SUPPLY-SEALED | 事件供给按真源惯例（CreditBalanceEntity 判例）组织为 sealed ReservationEvent 家族；事件类型**发射**仍不属本族——本族只按 eventFqn import 消费，发射归实体侧族 |
+| 项 | 状态 | 一句话 |
+|---|---|---|
+| A+B 语义面 | ✅ 用户提案采纳（V1 类注入） | 面生成／impl 手写隔离区／模块绑定；八型表溶解 |
+| 时间语义 | ✅ | epoch0/null → **命名默认值 `untimestamped`**（现在），impl 内唯一时钟点；kernel 用桩语义全确定 |
+| C 版式 | ✅ C2 | 100 列纪律，每实参一行，import 豁免，性质钉住 |
+| D None patch | ✅ D1 | `settledAt = None`＝清列（LedgerReopened 可执行判例） |
+| E2b 引擎 | ✅ 用户确认 | `Term.Assign` 按**上下文**判（实参位置＝命名实参两层准入／语句位置＝赋值两层违规）——scalameta 4.7.7 实探证据：copy/new 命名实参父节点＝`Term.ArgClause`、语句赋值父节点＝`Term.Block` |
+| E 供给面 | ✅ | Instant/UUID 准入只覆盖手写供给文件（两 impl 各一次时钟、common 供给解析 UUID）；生成 kernel 内联为零 |
+| D-P08 fail-closed | 方向已认 | degraded/重复/persistenceId 混 create/缺键拒收——拒收动作在生成器负测实现 |
+| D-SUPPLY-SEALED | ✅ | sealed ReservationEvent 家族（CreditBalanceEntity 判例）；事件发射不属本族 |
 
-## 行为合同（ScalaCheck 实测，全走公开函数面）
+## 行为合同（ScalaCheck 实测）
 
-from-None create 全列投影 oracle 相等／over-existing 保留未投影列（totalAmount/tags）／
-existing 实参永不变异（负对照）／updateOnly 投影＋盖时间戳／settle-reopen 双 patch
-oracle 相等／None patch 清列且余列原样（负对照，D-P09 判例）／upsert 命中原位替换、
-未命中保序追加／delete 键＝字面量＋Id 字符串（小写 uuid）／ts normal 直译、
-epoch0/null 永不产出 epoch0（负对照）／strOr null→空／persistenceIdCreate 把
-entityId 织入身份列、tenant 参数到位（负对照：身份永不落零 UUID）／快照 amend
-保身份与计数／重复调用确定性。
+kernel 14 条全走桩语义（emptyRow＝零 UUID 白纸、stamped＝原样入账、text＝原样）：
+from-None create oracle 相等／over-existing 保留未投影列／负：existing 永不变异／
+updateOnly 投影＋盖戳／settle-reopen 双 patch／负：None patch 清列且余列原样／
+upsert 命中原位替换、未命中保序追加／delete 键对／ts 桩直译／persistenceId 身份
+织入＋tenant 参数／负：身份永不落零 UUID／快照 amend／重复调用确定性。
+impl 6 条走真实 Injector 解析的手写实现：白纸行十列字面相等／快照白纸参数化／
+负：快照身份永不零 UUID／stamped 正常直译／负：epoch0/null 归一非 epoch0／
+text null→空。装配 1 条：真实 Guice Injector 双绑定类型验证。
 
 ## 质量状态
 
-- discovery 轮（`.rounds/projection-apply-event-quality-20261119-07`）：两段编译
-  exit 0，度量门 14 文件 373 scope 0 violation 0 excess，40 性质三 seed
-  740001-740003 全过（随机性质各 ≥1000 次，合计 51069）。
+- discovery 轮（`.rounds/projection-apply-event-quality-20261120-11`）：两段编译
+  exit 0，度量门 19 文件 442 scope 0 violation 0 excess，51 性质三 seed
+  740001-740003 全过（随机性质各 ≥1000 次，合计 63090）。
 - final-bytes 轮在本候选提交字节上执行；prepared pin 与 discovery 轮相等即证零漂移。
   本目录只是候选；认可以 bundle sha＋讲解裁定为准。

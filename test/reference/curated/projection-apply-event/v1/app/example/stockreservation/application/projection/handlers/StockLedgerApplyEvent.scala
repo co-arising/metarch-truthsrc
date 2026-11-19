@@ -1,5 +1,7 @@
 package example.stockreservation.application.projection.handlers
 
+import javax.inject.{Inject, Singleton}
+
 import example.stockreservation.application.projection.repository.StockLedgerTable.StockLedgerView
 import example.stockreservation.domain.entities.ReservationEntity.Reserved
 import example.stockreservation.domain.entities.ReservationEntity.QuantityAdjusted
@@ -9,29 +11,9 @@ import example.stockreservation.domain.entities.ReservationEntity.LedgerReopened
 import example.stockreservation.domain.entities.ReservationEntity.ReservationCancelled
 
 /** StockLedgerView 投影纯函数族（referenceCode 直译·方言判定已定）。
-  * kernel 侧零机制依赖（PO 解包/IO 全在 glue 壳 ViewMachine.run）。 */
-object StockLedgerApplyEvent {
-
-  /** 族共享空行：全列字面默认——Id 列＝零 UUID 惯例·copy 覆写即时补真实键。 */
-  private def emptyRow: StockLedgerView = StockLedgerView(
-    skuId = net.imadz.common.Id.of("00000000-0000-0000-0000-000000000000"),
-    label = "",
-    quantity = 0,
-    reserved = false,
-    totalAmount = 0,
-    tags = Nil,
-    lastEventAt = None,
-    settledAt = None,
-    `type` = "",
-    tenantId = ""
-  )
-
-  /** epoch0/null → now（「无时间戳」语义·本族唯一许可的时钟读取）。 */
-  private def ts(i: java.time.Instant): Option[java.time.Instant] =
-    Some(Option(i).filterNot(_.toEpochMilli == 0L).getOrElse(java.time.Instant.now()))
-
-  /** PO String 缺省 null 守卫。 */
-  private def strOr(s: String): String = Option(s).getOrElse("")
+  * 业务语义（默认行/时间戳/文本）经构造注入的语义面委托——kernel 侧零机制。 */
+@Singleton
+final class StockLedgerApplyEvent @Inject()(sem: StockLedgerApplyEventSemantics) {
 
   /** keyed upsert：命中原位替换（slot 保留）·否则追加。 */
   private def upsertBy[A](list: List[A], item: A)(key: A => String): List[A] = {
@@ -42,12 +24,12 @@ object StockLedgerApplyEvent {
 
   /** Reserved → StockLedgerView（referenceCode 直译·方言 create） */
   def onReserved(existing: Option[StockLedgerView], e: Reserved): StockLedgerView =
-    existing.getOrElse(emptyRow).copy(
+    existing.getOrElse(sem.emptyRow).copy(
       skuId = e.skuId,
-      label = strOr(e.label),
+      label = sem.text(e.label),
       quantity = e.quantity,
       reserved = true,
-      lastEventAt = ts(e.occurredAt),
+      lastEventAt = sem.stamped(e.occurredAt),
       `type` = "reserved",
       tenantId = e.tenantId
     )
@@ -56,7 +38,7 @@ object StockLedgerApplyEvent {
   def onQuantityAdjusted(row: StockLedgerView, e: QuantityAdjusted): StockLedgerView =
     row.copy(
       quantity = row.quantity + e.delta,
-      lastEventAt = ts(e.occurredAt)
+      lastEventAt = sem.stamped(e.occurredAt)
     )
 
   /** TagUpserted → StockLedgerView（referenceCode 直译·方言 updateOnly） */
@@ -70,7 +52,7 @@ object StockLedgerApplyEvent {
     row.copy(
       reserved = false,
       settledAt = Some(e.occurredAt),
-      lastEventAt = ts(e.occurredAt)
+      lastEventAt = sem.stamped(e.occurredAt)
     )
 
   /** LedgerReopened → StockLedgerView（referenceCode 直译·方言 updateOnly·None patch＝清列判例） */
@@ -78,7 +60,7 @@ object StockLedgerApplyEvent {
     row.copy(
       reserved = true,
       settledAt = None,
-      lastEventAt = ts(e.occurredAt)
+      lastEventAt = sem.stamped(e.occurredAt)
     )
 
   /** ReservationCancelled → StockLedgerView（referenceCode 直译·方言 delete） */

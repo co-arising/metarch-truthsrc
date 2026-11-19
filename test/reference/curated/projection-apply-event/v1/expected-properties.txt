@@ -9,30 +9,41 @@ projection-apply-event.quality.v1.AST: effectful import prefixes stay rejected i
 projection-apply-event.quality.v1.AST: else-if is one control nesting level
 projection-apply-event.quality.v1.AST: if chains have independently known complexity
 projection-apply-event.quality.v1.AST: match alternatives and guards are explicit paths
-projection-apply-event.quality.v1.AST: named-argument syntax is the admitted boundary idiom that domain rejects
+projection-apply-event.quality.v1.AST: named arguments sit in argument position and are admitted in both layers
+projection-apply-event.quality.v1.AST: negative: assignment targets stay rejected in both layers
 projection-apply-event.quality.v1.AST: overflow complexity is measured exactly, never clamped
 projection-apply-event.quality.v1.AST: short-circuit operators are counted
 projection-apply-event.quality.v1.negative: invalid syntax cannot become an empty successful report
-projection-apply-event.quality.v1.negative: mutable var and assignment stay rejected at the boundary
+projection-apply-event.quality.v1.structure: app sources carry no random identity generation
+projection-apply-event.quality.v1.structure: app sources carry zero mechanism and no raw debt tokens
+projection-apply-event.quality.v1.structure: clock reads stay confined to the two impl files
 projection-apply-event.quality.v1.structure: functions follow judged order per file
-projection-apply-event.quality.v1.structure: helpers are emitted in fixed order per file
+projection-apply-event.quality.v1.structure: generated kernels inline no identity time or default-literal semantics
+projection-apply-event.quality.v1.structure: identity parsing stays confined to the common supply
 projection-apply-event.quality.v1.structure: kernel and supply sources hold the 100-column layout discipline
-projection-apply-event.quality.v1.structure: kernel files carry zero mechanism and no raw debt tokens
+projection-apply-event.quality.v1.structure: kernel-local helpers are the pure mechanics only
 projection-apply-event.quality.v1.structure: negative: reordered faces fail their order checks
-projection-apply-event.quality.v1.structure: the clock read stays confined to ts and identity stays deterministic
-projection-apply-event.quality.v1.structure: the import face is the table view first then judged event order
-projection-apply-event.quality.v1.structure: untriggered helpers stay absent in the snapshot family
-projection-apply-event.stock-ledger.v1.create: from-None create projects all event columns onto the shared empty row
+projection-apply-event.quality.v1.structure: the import face is javax.inject then table view then judged event order
+projection-apply-event.quality.v1.structure: the ledger kernel delegates all three hooks
+projection-apply-event.quality.v1.structure: the module binds the ledger semantics face to its impl
+projection-apply-event.quality.v1.structure: the module binds the snapshot semantics face to its impl
+projection-apply-event.quality.v1.structure: the snapshot kernel delegates exactly its two hooks
+projection-apply-event.stock-ledger.v1.assembly: the module binds each semantics face to its handwritten impl
+projection-apply-event.stock-ledger.v1.create: from-None create projects all event columns onto the stub empty row
 projection-apply-event.stock-ledger.v1.create: negative: the existing row argument is never mutated
 projection-apply-event.stock-ledger.v1.create: over-existing preserves unprojected columns
 projection-apply-event.stock-ledger.v1.delete: emits the literal partition key and the id string key
+projection-apply-event.stock-ledger.v1.impl: negative: epoch-zero and null normalize to the named untimestamped default
+projection-apply-event.stock-ledger.v1.impl: negative: the snapshot identity never falls back to the zero uuid
+projection-apply-event.stock-ledger.v1.impl: stamped passes normal timestamps through unchanged
+projection-apply-event.stock-ledger.v1.impl: text defaults null to empty and passes normal text
+projection-apply-event.stock-ledger.v1.impl: the ledger empty row carries the ten business defaults
+projection-apply-event.stock-ledger.v1.impl: the snapshot empty row threads entityId into identity and the tenant param
 projection-apply-event.stock-ledger.v1.persistence-id: create threads entityId into identity and the tenant param
 projection-apply-event.stock-ledger.v1.persistence-id: negative: identity never falls back to the zero uuid
 projection-apply-event.stock-ledger.v1.purity: repeated application with the same input is deterministic
 projection-apply-event.stock-ledger.v1.snapshot-amend: preserves identity and count
-projection-apply-event.stock-ledger.v1.str-or: null labels default to empty
-projection-apply-event.stock-ledger.v1.ts: negative: epoch-zero and null timestamps never yield an epoch-zero instant
-projection-apply-event.stock-ledger.v1.ts: normal timestamps pass through exactly
+projection-apply-event.stock-ledger.v1.ts: normal timestamps pass through the semantics hook unchanged
 projection-apply-event.stock-ledger.v1.update-only: negative: a None patch clears the column and preserves the rest
 projection-apply-event.stock-ledger.v1.update-only: projects the delta and stamps the event time
 projection-apply-event.stock-ledger.v1.update-only: settle and reopen patch their columns exactly

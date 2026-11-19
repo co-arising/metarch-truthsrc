@@ -3,20 +3,30 @@
   "artifactType": "projection-apply-event",
   "candidateVersion": "v1",
   "status": "PENDING_QUALITY_EXECUTION",
-  "bundleSha256": "fa6179f9384c8989c33a2d929604a03e68c4fab37844c193cca9c5094018aff5",
+  "bundleSha256": "c803bbe7dde6d5e1fc2e290795dda22e87a42077ce9a7fce15a2057e6de5e8da",
   "bundleSha256Recipe": "sha256 over the concatenation of the payload files UTF-8 bytes in sorted relative path order",
-  "payloadFileCount": 19,
-  "payloadBytes": 87833,
+  "payloadFileCount": 24,
+  "payloadBytes": 96973,
   "payload": [
     {
       "path": "app/example/stockreservation/application/projection/handlers/StockLedgerApplyEvent.scala",
-      "bytes": 3652,
-      "sha256": "655022c79f5f2fca07eb5e51ce66ac1a238975f85ed7f97c329a56df74c7d009"
+      "bytes": 3042,
+      "sha256": "6ec79cfcb0a868064c6f8f48a101f4c31fa9724dabf9cae36f6b5ffba46c5cf7"
+    },
+    {
+      "path": "app/example/stockreservation/application/projection/handlers/StockLedgerApplyEventSemantics.scala",
+      "bytes": 526,
+      "sha256": "c8bc7583d6b896ab1d876b7693aded76e8639ec7575ffd1e4a43c0db1445b327"
     },
     {
       "path": "app/example/stockreservation/application/projection/handlers/StockLedgerSnapshotApplyEvent.scala",
-      "bytes": 1864,
-      "sha256": "e05bbcd83339839a686114537553aa65f08d57efa787830593191faa0a9618e3"
+      "bytes": 1299,
+      "sha256": "c9571a32966615a8eedb396072b7b5aba1a09745a6e833e07d122219971c4141"
+    },
+    {
+      "path": "app/example/stockreservation/application/projection/handlers/StockLedgerSnapshotApplyEventSemantics.scala",
+      "bytes": 604,
+      "sha256": "1f8632cb8efd0a6c46aaab2f347dca9f2fda9c36f536b9d4afd0ae66d95392d1"
     },
     {
       "path": "app/example/stockreservation/application/projection/repository/StockLedgerSnapshotTable.scala",
@@ -34,19 +44,34 @@
       "sha256": "862f2e900e5d96f0577a05ed746443c12f88d4fc69ecc6f8cb4aaefc0d9f8ab1"
     },
     {
+      "path": "app/example/stockreservation/infrastructure/bootstrap/StockLedgerProjectionModule.scala",
+      "bytes": 1029,
+      "sha256": "3e64a4bca01ea24480c8ff36d6edff77280c9790afd070b8ae7d778fa962d1cc"
+    },
+    {
+      "path": "app/example/stockreservation/infrastructure/projection/StockLedgerApplyEventSemanticsImpl.scala",
+      "bytes": 1660,
+      "sha256": "ccd8b5b54fde55bac56205950e3a16bc18c97bbdfed95ead5adfe3421bf40915"
+    },
+    {
+      "path": "app/example/stockreservation/infrastructure/projection/StockLedgerSnapshotApplyEventSemanticsImpl.scala",
+      "bytes": 1517,
+      "sha256": "00c7c89b8d8fa3a666efaaf524528b8f3033318c7ea5e1e7c457241771eca7c7"
+    },
+    {
       "path": "app/net/imadz/common/Id.scala",
       "bytes": 465,
       "sha256": "bd5246d2da6887302bbac87c4196ced49bebf9242eb7b6ae35065c739f0712f9"
     },
     {
       "path": "expected-properties.txt",
-      "bytes": 3899,
-      "sha256": "673d4aa66f5609aab64240356be797c69bbb2545ad608a5b217a8943278c4274"
+      "bytes": 5059,
+      "sha256": "33a46683f051b37055800554b15fb85ad0327c21dfc787435711b58d7c107bac"
     },
     {
       "path": "quality-policy.json",
-      "bytes": 5416,
-      "sha256": "b9fb03c81f27be73f98408aa04fd55ad4f2125cdab3e702f8dd73480c8043595"
+      "bytes": 6155,
+      "sha256": "6bd08a54f7688c278d277eb9538542b3676bb896b8100c212980f4216151a284"
     },
     {
       "path": "quality/JsonOutput.scala",
@@ -65,23 +90,23 @@
     },
     {
       "path": "quality/ScalaSourceMetrics.scala",
-      "bytes": 11129,
-      "sha256": "cbe87ea0a154a70096c3b4c6666a459a505bd28b2d1dc0a639c980d35f0001c6"
+      "bytes": 11722,
+      "sha256": "383987279184b3b4803bf6ea36727b68007e4bd61c5d8b4f7c76634a188390c1"
     },
     {
       "path": "README.md",
-      "bytes": 6842,
-      "sha256": "6246965ff3cf3b3054bddac589e9a4e92357f80da2b92e511129e4d781f0cdfb"
+      "bytes": 4933,
+      "sha256": "36586828054ee22b09da0de435ffc606e487835366f084bf772c0da8d8fad170"
     },
     {
       "path": "scope-exceptions.tsv",
-      "bytes": 1132,
-      "sha256": "9bac308bcebe1eef1a26833b9c13296fa44003b75d2b18d22facdf4919eff4e7"
+      "bytes": 1224,
+      "sha256": "5568db6ef29524df2e4e3d4c0367375c16237b8834499da2103c0e5322bf7129"
     },
     {
       "path": "technical-input.json",
-      "bytes": 18555,
-      "sha256": "81e91bd49bd8f833f48f90d3ed1e948ec468cf485f6a3264ab117c860db31ff1"
+      "bytes": 17966,
+      "sha256": "8f478754668429b72ef022f2882f0065abf204b70339d1b78ba67da78cab4018"
     },
     {
       "path": "test/example/stockreservation/projections/ApplyEventCases.scala",
@@ -90,18 +115,18 @@
     },
     {
       "path": "test/example/stockreservation/projections/ApplyEventOracle.scala",
-      "bytes": 2828,
-      "sha256": "8068a8050c94afe8a6de69766dc12058691e414192d80142d27bc4c0ac35ed67"
+      "bytes": 3763,
+      "sha256": "d71480bc9f0b786fe6f5873c51069c866c02435df2c6b8c14679188996677ee4"
     },
     {
       "path": "test/example/stockreservation/projections/ApplyEventProperties.scala",
-      "bytes": 6170,
-      "sha256": "1d1660c86b7a4c7446e28330eed44b0fd1116c0e2731a4e43e45c3642aec9b60"
+      "bytes": 8108,
+      "sha256": "ac36e2d14c4dca755a7e144c405447fb1dd736126fc36e6bb253e96f371e9303"
     },
     {
       "path": "test/example/stockreservation/projections/ApplyEventQualityProperties.scala",
-      "bytes": 11935,
-      "sha256": "e89eb3a44845aee5bd1b27c9c7848314b4771205ca80f537ba8a313dabe1d776"
+      "bytes": 13955,
+      "sha256": "bcc52d3ab4319e6fbcc5e15e7fefe0748b7a7f0bb6bdb28af0b20e991ce7e1a7"
     }
   ]
 }

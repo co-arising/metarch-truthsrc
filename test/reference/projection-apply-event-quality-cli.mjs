@@ -52,10 +52,15 @@ const CLASSIFIERS = new Map([
 ]);
 const SOURCES = [
   "app/example/stockreservation/application/projection/handlers/StockLedgerApplyEvent.scala",
+  "app/example/stockreservation/application/projection/handlers/StockLedgerApplyEventSemantics.scala",
   "app/example/stockreservation/application/projection/handlers/StockLedgerSnapshotApplyEvent.scala",
+  "app/example/stockreservation/application/projection/handlers/StockLedgerSnapshotApplyEventSemantics.scala",
   "app/example/stockreservation/application/projection/repository/StockLedgerTable.scala",
   "app/example/stockreservation/application/projection/repository/StockLedgerSnapshotTable.scala",
   "app/example/stockreservation/domain/entities/ReservationEntity.scala",
+  "app/example/stockreservation/infrastructure/bootstrap/StockLedgerProjectionModule.scala",
+  "app/example/stockreservation/infrastructure/projection/StockLedgerApplyEventSemanticsImpl.scala",
+  "app/example/stockreservation/infrastructure/projection/StockLedgerSnapshotApplyEventSemanticsImpl.scala",
   "app/net/imadz/common/Id.scala",
   "test/example/stockreservation/projections/ApplyEventCases.scala",
   "test/example/stockreservation/projections/ApplyEventOracle.scala",
@@ -66,7 +71,7 @@ const SOURCES = [
   "quality/JsonOutput.scala",
   "quality/QualityMain.scala",
 ];
-const EXPECTED_NEGATIVES = 7;
+const EXPECTED_NEGATIVES = 8;
 const monotonic = () => Number(process.hrtime.bigint() / 1000000n);
 const document = p => captureEvidenceFile(p, { parse: bytes => JSON.parse(bytes.toString('utf8')) });
 const write = (p, value) => {

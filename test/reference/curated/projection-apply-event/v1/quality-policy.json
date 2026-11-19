@@ -34,14 +34,15 @@
     },
     "boundary": {
       "appliesTo": "app/**/application/** and app/**/infrastructure/** and app/net/** (the shared-common supply)",
-      "description": "Projection apply-event contract layer: the generated kernel pure-function family translates judged events into view rows with zero mechanism — PO unpacking, Await and all IO stay in the glue shell (ViewMachine), which never back-flows into kernel. Per the candidate ruling of 2026-11-19 the boundary face admits exactly the projection family's declared time and identity vocabulary (java.time.Instant as the projection time type and java.util.UUID through the net.imadz.common.Id alias) and named-argument syntax as the emptyRow/copy idiom; kernel isolation and the direction-aware import policy are unchanged.",
+      "description": "Projection apply-event contract layer: the generated kernel pure-function classes translate judged events into view rows with zero mechanism, delegating the view's business semantics (empty row / timestamp / text hooks) through constructor-injected per-view semantics faces whose handwritten implementations live in the infrastructure.projection isolation zone; PO unpacking, Await and all IO stay in the glue shell (ViewMachine), which never back-flows into kernel. Per the rulings of 2026-11-19/20 the boundary face admits exactly the declared supply vocabulary (java.time.Instant as the projection time type and java.util.UUID through the net.imadz.common.Id alias — the generated kernel files inline none of them) and Term.Assign is judged by context: named arguments (argument-clause position) are admitted in BOTH layers, assignment targets in neither; kernel isolation and the direction-aware import policy are unchanged.",
       "forbiddenDelta": [
-        "Term names Instant and UUID are admitted as the declared projection time/identity face; Random, Clock, LocalDateTime, Date and Await stay banned — the single sanctioned clock read is the ts epoch0 normalization, pinned by a structural property to that helper alone.",
-        "Named-argument syntax is admitted at the boundary: scalameta parses it as Term.Assign, so the Term.Assign mutable-state violation fires in domain mode only; Defn.Var stays banned in both layers, so no assignment target can exist at the boundary and the surviving Term.Assign shape is the emptyRow/copy named-argument idiom.",
+        "Term names Instant and UUID are admitted at the boundary as the declared supply face of the handwritten semantics impls and the common Id supply; Random, Clock, LocalDateTime, Date and Await stay banned — clock reads are confined to the two impl files and identity parsing to the common supply by structural properties.",
+        "Term.Assign is judged by context, not by layer (E2b ruling): scalameta parses named arguments and assignment targets into the same node, but a named argument always sits in an argument clause (Term.ArgClause parent) while an assignment target never does — named arguments are admitted in BOTH layers, Term.Assign in any other position is a violation in BOTH layers, and Defn.Var stays banned in both layers.",
         "Direction-aware imports: an application file must not import infrastructure packages (kernel isolation); an infrastructure file may import application and infrastructure packages; every other banned import prefix (including java.time/java.util as import statements — fully-qualified type references are the sanctioned zero-import form) stays banned in both directions."
       ],
       "stillRejected": [
-        "var/assignment-to-target (Defn.Var in both layers)",
+        "var declarations (Defn.Var in both layers)",
+        "assignment targets (Term.Assign outside an argument clause, in both layers)",
         "throw/catch",
         "Any/AnyRef",
         "reflection names",
@@ -79,9 +80,10 @@
       "explicit nominal constructor require for illegal value domain",
       "immutable field initialization",
       "named sealed ADT",
-      "constructor-injected pure computation",
-      "the sanctioned ts epoch0-normalization clock read inside the projection boundary ts helper",
-      "fully-qualified java.time.Instant and net.imadz.common.Id references with zero java.* import statements"
+      "constructor-injected pure computation (the kernel classes inject their semantics face)",
+      "named business-semantic default slots (the untimestamped named default inside the handwritten semantics impls — the family's single sanctioned clock read)",
+      "fully-qualified java.time.Instant and net.imadz.common.Id references with zero java.* import statements",
+      "named-argument syntax in argument position (the emptyRow/copy emission idiom)"
     ],
     "qualification": "Syntactic checks do not alone prove semantic purity or OO responsibility. Exact injected implementation and behavior properties are also reviewed."
   },

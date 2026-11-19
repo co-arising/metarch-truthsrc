@@ -14,8 +14,8 @@ object ScalaSourceMetrics {
   final case class Report(scopes: Vector[Scope], violations: Vector[Violation])
 
   /** Source layer for the structural policy: pure domain, application/infrastructure
-    * boundary (the projection apply-event contract plus the shared-common supply),
-    * or support (tests and quality harness). */
+    * boundary (the projection apply-event contract plus the handwritten semantics
+    * impls and the shared-common supply), or support (tests and quality harness). */
   sealed trait Layer
   object Layer {
     case object Domain extends Layer
@@ -136,12 +136,15 @@ object ScalaSourceMetrics {
 
   // Domain mode keeps the family aggregate-rules-formal v3 forbidden set unchanged.
   // Boundary mode admits exactly the declared projection family face: the time and
-  // identity term names (Instant/UUID) of the epoch0-normalization helper and the
-  // net.imadz.common.Id supply, and named-argument syntax (scalameta parses it as
-  // Term.Assign) — with Defn.Var banned in both layers, no assignment target can
-  // exist at the boundary, so the surviving Term.Assign shape is the emptyRow/copy
-  // named-argument idiom. Await, Random, Clock, LocalDateTime, Date and everything
-  // else stay banned in both layers.
+  // identity term names (Instant/UUID) of the handwritten semantics impls and the
+  // net.imadz.common.Id supply — the generated kernel files inline none of them.
+  // Term.Assign is judged by context, not by layer (the E2b ruling): scalameta
+  // parses named arguments and assignment targets into the same node, but a named
+  // argument always sits in an argument clause of a call while an assignment
+  // target never does — so Term.Assign under Term.ArgClause is admitted in BOTH
+  // layers and Term.Assign in any other position is a violation in BOTH layers.
+  // Defn.Var stays banned in both layers. Await, Random, Clock, LocalDateTime,
+  // Date and everything else stay banned in both layers.
   private def bannedTermNames(layer: Layer): Set[String] =
     if (layer == Layer.Boundary)
       Set("Await", "Random", "LocalDateTime", "Clock", "Date", "Array",
@@ -150,9 +153,13 @@ object ScalaSourceMetrics {
       Set("Await", "Future", "Random", "UUID", "Instant", "LocalDateTime", "Clock", "Date",
         "Array", "ArrayBuffer", "ListBuffer", "HashMap", "HashSet", "update", "set", "clear", "append")
 
-  private def forbidden(tree: Tree, layer: Layer): Option[String] = tree match {
+  // Named arguments (scalameta parses them as Term.Assign) sit in the argument
+  // clause of a call; a Term.Assign anywhere else is a real assignment target.
+  private def argumentClause(parent: Tree): Boolean = parent.isInstanceOf[Term.ArgClause]
+
+  private def forbidden(tree: Tree, parent: Tree, layer: Layer): Option[String] = tree match {
     case _: Defn.Var => Some("mutable-domain-state")
-    case _: Term.Assign if layer == Layer.Domain => Some("mutable-domain-state")
+    case _: Term.Assign if !argumentClause(parent) => Some("mutable-domain-state")
     case _: Term.Return => Some("nonlocal-domain-return")
     case _: Term.Throw | _: Term.Try | _: Term.TryWithHandler => Some("domain-exception-control")
     case name: Type.Name if name.value == "Any" || name.value == "AnyRef" => Some("untyped-domain-value")
@@ -203,17 +210,17 @@ object ScalaSourceMetrics {
 
   def analyze(file: String, text: String, layer: Layer): Either[String, Report] =
     parseSource(text).map { source =>
-      def visit(tree: Tree, owner: String): Report = {
+      def visit(tree: Tree, parent: Tree, owner: String): Report = {
         val currentOwner = memberName(tree).map(name => owner + "." + name).getOrElse(owner)
-        val childReports = tree.children.map(child => visit(child, currentOwner))
+        val childReports = tree.children.map(child => visit(child, tree, currentOwner))
         val unsupportedNode = unsupported(tree).toVector
-        val structural = if (layer != Layer.Support) forbidden(tree, layer).toVector ++ unsafeImport(tree, file, layer).toVector else Vector.empty
+        val structural = if (layer != Layer.Support) forbidden(tree, parent, layer).toVector ++ unsafeImport(tree, file, layer).toVector else Vector.empty
         val violations = (unsupportedNode ++ structural).map(reason => Violation(file, position(tree)._1, reason))
         Report(
           declaredScopes(file, currentOwner, tree) ++ childReports.flatMap(_.scopes),
           violations ++ childReports.flatMap(_.violations)
         )
       }
-      visit(source, "root")
+      visit(source, source, "root")
     }
 }
