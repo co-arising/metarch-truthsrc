@@ -2,7 +2,7 @@
   "schemaVersion": "curated.external-connector-port.review-status/v2",
   "artifactType": "external-connector-port",
   "candidateVersion": "v2",
-  "status": "QUALITY_EXECUTION_COMPLETE_AWAITING_WALKTHROUGH",
+  "status": "GOLDEN_CANDIDATE_COMPLETE_AWAITING_WALKTHROUGH",
   "revises": {
     "approvedV1Bundle": "725e03a1fba1e7cb6fd6bbc90550ca0e2635ae2b211b19132beffcb722ed0b9c",
     "note": "v1 stays frozen as approved; v2 carries the 2026-11-19 user rulings (toolgate vocabulary, business-only signatures, runner seam externalization to infrastructure.process fixed lib, three runner contract clauses, scriptParam raw-only). The superseded connector-implementation draft (f34d93f/b41c6ba) reproduced the raw scriptParam shape and was rejected before approval."
@@ -23,21 +23,21 @@
     "frozenReuse": "Engine four files (ScalaSourceMetrics f5c66788, JsonOutput d622f3db, QualityInputs eb95be93, QualityMain 74c8358a), scope-exceptions e901e444, CatalogQualityProperties 9f813be3, ReservationValues 48f29020 — byte-identical with the v1 approved bundle; codec bodies and oracle logic carried over unchanged with the package moved to application.toolgates"
   },
   "v1QualityRun": {
-    "round": ".rounds/external-connector-port-v2-quality-20261119-01",
+    "round": ".rounds/external-connector-port-v2-quality-20261119-02",
     "prepared": {
-      "file": ".rounds/external-connector-port-v2-quality-20261119-01/prepared.json",
+      "file": ".rounds/external-connector-port-v2-quality-20261119-02/prepared.json",
       "sha256": "b557c86048739fb506faeef43879b666aaea7fe28f2c2abc951f2ecd78bb1e9e"
     },
     "attempt": {
       "id": "attempt-01",
       "actualJvmCalls": 6,
       "pids": [
-        32069,
-        32075,
-        32101,
-        32104,
-        32110,
-        32117
+        32215,
+        32221,
+        32245,
+        32263,
+        32269,
+        32275
       ],
       "allExit0": true,
       "timeouts": 0,
@@ -69,7 +69,8 @@
       "artifacts": 26,
       "guiceVariant": "4.2.1 no_aop (AOP interception machinery unused by the sample)",
       "runtimeInjectorVerified": true
-    }
+    },
+    "finalBytesNote": "Executed on the exact committed candidate bytes; prepared pin sha equals the discovery-round prepared sha, confirming zero source drift"
   },
   "rawAcceptanceUnchanged": true,
   "all31Closed": false
