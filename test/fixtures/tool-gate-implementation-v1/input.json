@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "truthsrc.tool-gate-implementation-input/v1",
+  "basePackage": "example.stockreservation",
+  "impl": {
+    "name": "StockCatalogToolGateImpl",
+    "gate": {"name": "StockCatalogToolGate"},
+    "runner": {"trait": "LocalProcessRunner", "request": "ProcessRequest", "runMethod": "run", "paramName": "runner"},
+    "doc": {
+      "title": "Tool Gate Implementation",
+      "notes": [
+        "机械委托给注入的手写基建——进程机械坐在 infrastructure.process 手写外域，本文件不承载进程机制。",
+        "每个方法体是一个 MANUAL 块：块内的密封绑定委托体可由手写演化，重生成字节级保留；",
+        "BEGIN/END 标记必须成对（四空格，BEGIN 紧随 def 开括号，END 后即方法闭括号）。"
+      ]
+    },
+    "methods": [
+      {
+        "name": "probeAvailability",
+        "params": [{"name": "sku", "typeRef": {"name": "SkuId", "packageName": "example.stockreservation.domain.values"}}],
+        "resultType": "AvailabilityOutcome",
+        "manual": {
+          "body": "sealed-binding",
+          "script": "stockreservation/availability-probe.v1",
+          "argument": {"source": "param", "param": "sku", "field": "value"},
+          "timeoutMs": 10000,
+          "vals": {"script": "probeScript", "timeoutMs": "probeTimeoutMs"},
+          "decoder": {"owner": "AvailabilityOutcome", "method": "decode"}
+        }
+      },
+      {
+        "name": "locationDirectory",
+        "params": [],
+        "resultType": "LocationDirectory",
+        "manual": {
+          "body": "sealed-binding",
+          "script": "stockreservation/location-directory.v1",
+          "argument": {"source": "empty"},
+          "timeoutMs": 10000,
+          "vals": {"script": "directoryScript", "timeoutMs": "directoryTimeoutMs"},
+          "decoder": {"owner": "LocationDirectory", "method": "decode"}
+        }
+      }
+    ]
+  }
+}

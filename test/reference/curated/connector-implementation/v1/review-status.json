@@ -2,7 +2,7 @@
   "schemaVersion": "curated.connector-implementation.review-status/v1",
   "artifactType": "connector-implementation",
   "candidateVersion": "v1",
-  "status": "GOLDEN_APPROVED_AWAITING_JS_IMPLEMENTATION",
+  "status": "GOLDEN_APPROVED_JS_BYTE_PARITY_COMPLETE",
   "rebuild": {
     "supersededDraft": "commits f34d93f/b41c6ba — quality mechanics valid, shape rejected before approval (raw scriptParam signature, unbounded runner contract)",
     "note": "This candidate is the rebuilt implementation family on the approved external-connector-port v2 toolgate vocabulary (bundle f50c9f35), per the user ruling of 2026-11-19."
@@ -75,5 +75,25 @@
   "rawAcceptanceUnchanged": true,
   "all31Closed": false,
   "userGoldenApproval": "APPROVED_V1_BUNDLE_a8112304_20261119",
-  "userRuling": "2026-11-19 walkthrough: D1 approved — the implementation mirrors the full approved gate ABI (both methods, business parameter shapes), the raw first-method-only/Nil-params debt is not reproduced, no-helper and multi-helper shapes are raw-only deferred to generator fixtures; MANUAL blocks carry the sealed-binding delegation (lift(runner.run(ProcessRequest(...)))) as the generator-target shape; ThrowingRunner synchronous-failure contract approved"
+  "userRuling": "2026-11-19 walkthrough: D1 approved — the implementation mirrors the full approved gate ABI (both methods, business parameter shapes), the raw first-method-only/Nil-params debt is not reproduced, no-helper and multi-helper shapes are raw-only deferred to generator fixtures; MANUAL blocks carry the sealed-binding delegation (lift(runner.run(ProcessRequest(...)))) as the generator-target shape; ThrowingRunner synchronous-failure contract approved",
+  "jsImplementation": {
+    "status": "BYTE_PARITY_COMPLETE",
+    "generator": {
+      "path": "tools/gen-tool-gate-implementation.mjs"
+    },
+    "inputContract": {
+      "path": "test/fixtures/tool-gate-implementation-v1/input.json",
+      "schemaVersion": "truthsrc.tool-gate-implementation-input/v1"
+    },
+    "scope": "The generator emits the single family artifact: the infrastructure.toolgates implementation class with one paired MANUAL block per override method carrying the sealed-binding delegation. The seven other production files are supplied: gate face, three nominal handwritten result classes and bootstrap assembly from the approved external-connector-port v2 bundle, ReservationValues (aggregate-rules-formal), LocalProcessRunner (handwritten fixed lib) — none is emitted.",
+    "guards": [
+      "defaultBody/fallback fields rejected as raw-only slots",
+      "manual.body must be sealed-binding (the ??? slot is raw-only)",
+      "mechanism vocabulary in param names/types rejected (business-only signatures)",
+      "methods must be nonempty (full gate ABI, raw first-method-only defect not reproduced)",
+      "rendered output self-checks one paired MANUAL block per override"
+    ],
+    "acceptance": "Same-input JS generation byte-compared against the approved golden: 1/1 family-artifact file sha256-identical (cf90010c…), generation deterministic across two runs",
+    "negativeCheck": "Four directed negatives verified: defaultBody slot, ??? body, script:String param, empty method set — all rejected with FORMAL_INPUT and exit 1"
+  }
 }
