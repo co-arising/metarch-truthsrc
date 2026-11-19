@@ -2,7 +2,7 @@
   "schemaVersion": "curated.external-connector-port.review-status/v2",
   "artifactType": "external-connector-port",
   "candidateVersion": "v2",
-  "status": "GOLDEN_CANDIDATE_COMPLETE_AWAITING_WALKTHROUGH",
+  "status": "GOLDEN_APPROVED_AWAITING_JS_IMPLEMENTATION",
   "revises": {
     "approvedV1Bundle": "725e03a1fba1e7cb6fd6bbc90550ca0e2635ae2b211b19132beffcb722ed0b9c",
     "note": "v1 stays frozen as approved; v2 carries the 2026-11-19 user rulings (toolgate vocabulary, business-only signatures, runner seam externalization to infrastructure.process fixed lib, three runner contract clauses, scriptParam raw-only). The superseded connector-implementation draft (f34d93f/b41c6ba) reproduced the raw scriptParam shape and was rejected before approval."
@@ -73,5 +73,7 @@
     "finalBytesNote": "Executed on the exact committed candidate bytes; prepared pin sha equals the discovery-round prepared sha, confirming zero source drift"
   },
   "rawAcceptanceUnchanged": true,
-  "all31Closed": false
+  "all31Closed": false,
+  "userGoldenApproval": "APPROVED_V2_BUNDLE_f50c9f35_20261119",
+  "userRuling": "2026-11-19 walkthrough: toolgate vocabulary approved; business-only signatures approved; LocalProcessRunner fixed lib with three contract clauses approved; scriptParam raw-only approved; security chain ownership (encode-side value types / runner argv-direct / codec framing / runner pinning+resources) approved; hardening tiers bind at the runner seam alone"
 }
