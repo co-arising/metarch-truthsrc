@@ -2,51 +2,55 @@
   "schemaVersion": "curated.connector-implementation.review-status/v1",
   "artifactType": "connector-implementation",
   "candidateVersion": "v1",
-  "status": "REJECTED_BEFORE_APPROVAL_SUPERSEDED_BY_TOOLGATE_RULING",
-  "bundleSha256": "ee8482aa7b14b365e522f33f7fe763b7ebba4ca61049101fb3a1b680a816673a",
+  "status": "QUALITY_EXECUTION_COMPLETE_AWAITING_WALKTHROUGH",
+  "rebuild": {
+    "supersededDraft": "commits f34d93f/b41c6ba — quality mechanics valid, shape rejected before approval (raw scriptParam signature, unbounded runner contract)",
+    "note": "This candidate is the rebuilt implementation family on the approved external-connector-port v2 toolgate vocabulary (bundle f50c9f35), per the user ruling of 2026-11-19."
+  },
+  "bundleSha256": "a81123048f1a925158dda79a84677bf21c0d274b92ef6a79da8c8b053fd56a57",
   "manifest": {
     "path": "manifest.json",
-    "bytes": 4385,
-    "sha256": "212a1445e7a6b04ca7a3d289259e94cf3ade8d41dc26727e652973620a90d1c1"
+    "bytes": 4377,
+    "sha256": "513432b6abb67774df89f8a37af61e80c05a97ed017a898972e4313d2126b681"
   },
   "payload": {
     "files": 21,
-    "bytes": 82697,
+    "bytes": 83647,
     "wholeBytesVerified": true
   },
   "lineage": {
-    "familyContract": "docs/codegen-parity/diffs/connector-implementation.diff.md; D1-D7 recorded with explicit candidate choices (D1 candidate ruling pending walkthrough ratification: full approved port ABI, raw first-method/Nil-params debt not reproduced, no-helper and multi-helper shapes deferred to generator fixtures; D2 single run(String) overload, bound script constant, no live process in gate; D3 USER RULING 2026-11-18 carried over: no @ImplementedBy, explicit bootstrap binding; D6 infrastructure.process handwritten outer domain with recorded divergence from the frozen port bundle; D7 MANUAL marker grammar pinned as structural property with directed negative; D4/D5 deferred to owners)",
-    "frozenReuse": "Twelve files byte-identical to the approved external-connector-port v1 bundle or the family it froze: port trait b46ae9bd, AvailabilityOutcome fd70662a, ConnectorProtocol b159df4b, LocationDirectory 7b98d957, StockCatalogModule e1a32442, ReservationValues 48f29020, CatalogOracle fecc6bba, ScalaSourceMetrics f5c66788, JsonOutput d622f3db, QualityInputs eb95be93, QualityMain 74c8358a, scope-exceptions e901e444"
+    "familyContract": "docs/codegen-parity/diffs/connector-implementation.diff.md; V2-CARRIED rulings apply unchanged; D1 candidate ruling (full approved gate ABI, raw debt not reproduced, no-helper/multi-helper deferred to generator fixtures); D2 no live process in gate with synchronous-thrower double; D7 MANUAL marker grammar pinned as structural property with directed negative; D4/D5 deferred to owners",
+    "frozenReuse": "Eleven files byte-identical with the approved external-connector-port v2 bundle or its frozen chain: gate trait 2b7f0280, AvailabilityOutcome/ConnectorProtocol/LocationDirectory (toolgates package), StockCatalogModule, ReservationValues 48f29020, LocalProcessRunner 45b2b8c8, CatalogOracle 4059e21c, CatalogQualityProperties 9f813be3, engine four files f5c66788/d622f3db/eb95be93/74c8358a, scope-exceptions e901e444"
   },
   "v1QualityRun": {
-    "round": ".rounds/connector-implementation-quality-20261119-02",
+    "round": ".rounds/connector-implementation-quality-20261119-03",
     "prepared": {
-      "file": ".rounds/connector-implementation-quality-20261119-02/prepared.json",
-      "sha256": "67104d36adfd22abbd0d026c3df5b0fdf1211d3ee1f1da1d907f582b06c60512"
+      "file": ".rounds/connector-implementation-quality-20261119-03/prepared.json",
+      "sha256": "5435bb1ee1c39f75212b72c37523fe8a3a2fdea90f2866d7b6b32bcc21086b1f"
     },
     "attempt": {
       "id": "attempt-01",
       "actualJvmCalls": 6,
       "pids": [
-        84291,
-        84299,
-        84324,
-        84330,
-        84338,
-        84358
+        32902,
+        32908,
+        32930,
+        32936,
+        32942,
+        32948
       ],
       "allExit0": true,
       "timeouts": 0,
-      "signals": 0
+      "signals": 0,
+      "firstAttemptClean": true
     },
     "metrics": {
       "passed": true,
       "files": 16,
-      "scopes": 461,
+      "scopes": 476,
       "violations": 0,
       "excess": 0,
-      "engineCoreUnchanged": "ownDecisions 16, control 7, declaredScopes 13, forbidden 16, isDeclaration 7 match the aggregate-rules-formal v3 exceptions for the identical engine core; import direction rules are named per-layer predicates",
-      "file": ".rounds/connector-implementation-quality-20261119-02/attempt-01/results/metrics.json"
+      "engineCoreUnchanged": "ownDecisions 16, control 7, declaredScopes 13, forbidden 16, isDeclaration 7 match the aggregate-rules-formal v3 exceptions for the identical engine core"
     },
     "properties": {
       "seeds": [
@@ -65,11 +69,8 @@
       "artifacts": 26,
       "guiceVariant": "4.2.1 no_aop (AOP interception machinery unused by the sample)",
       "runtimeInjectorVerified": true
-    },
-    "discoveryNote": "Attempt-01 of the same round first failed compile-properties on Scala infix precedence (a eq b && c parses as a eq (b && c)); fixed by parenthesizing the synchronous-throw assertion and re-preparing the round; every other stage passed on first execution",
-    "finalBytesNote": "Executed on the exact committed candidate bytes (f34d93f); prepared pin sha equals the discovery-round prepared sha, confirming zero source drift between the two executions"
+    }
   },
   "rawAcceptanceUnchanged": true,
-  "all31Closed": false,
-  "supersededBy": "USER RULING 2026-11-19: the raw scriptParam shape (caller-supplied script) and unbounded runner contract were rejected; the candidate must be rebuilt on the approved external-connector-port v2 toolgate vocabulary (bundle f50c9f35). Quality receipts in .rounds/ remain valid evidence of the gate mechanics only, not of an approved golden shape."
+  "all31Closed": false
 }

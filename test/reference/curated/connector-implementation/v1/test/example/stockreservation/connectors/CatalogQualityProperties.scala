@@ -6,7 +6,7 @@ import org.scalacheck.Prop.forAll
 import example.stockreservation.connectors.quality.ScalaSourceMetrics
 import example.stockreservation.connectors.quality.ScalaSourceMetrics.Layer
 
-object CatalogQualityProperties extends Properties("connector-implementation.source-quality.v1") {
+object CatalogQualityProperties extends Properties("external-connector-port.source-quality.v1") {
   private def scopes(text: String, layer: Layer): Vector[ScalaSourceMetrics.Scope] = {
     val report = ScalaSourceMetrics.analyze("sample.scala", text, layer)
       .fold(error => throw new IllegalArgumentException(error), identity)

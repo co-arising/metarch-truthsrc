@@ -7,7 +7,16 @@
     "name": "source-structural-mccabe-v1",
     "notClaim": "Not a full control-flow graph proof or equivalence to every compiler plugin.",
     "base": 1,
-    "increment": ["if", "while", "do", "for generator", "for guard", "case guard", "short-circuit &&", "short-circuit ||"],
+    "increment": [
+      "if",
+      "while",
+      "do",
+      "for generator",
+      "for guard",
+      "case guard",
+      "short-circuit &&",
+      "short-circuit ||"
+    ],
     "match": "Expanded pattern paths minus one; add conservative unmatched exit unless unconditional wildcard/default exists.",
     "catch": "Same path rule when catch cases are present.",
     "nestedClosures": "Include decisions in owning body; report lambda/partial function separately; do not add closure base twice.",
@@ -24,13 +33,22 @@
       "exceptionsAllowed": false
     },
     "boundary": {
-      "appliesTo": "app/**/application/** and app/**/infrastructure/** (including infrastructure/process, the handwritten outer domain)",
-      "description": "Connector implementation contract layer: the generated implementation class delegates to injected handwritten helpers and needs the Future vocabulary. Per the user rulings of 2026-11-18 the port carries no implementation reference (kernel isolation), so assembly lives in infrastructure.bootstrap and import policy is direction-aware; the handwritten helper source sits in infrastructure.process and is never created by the generator.",
+      "appliesTo": "app/**/application/** and app/**/infrastructure/** (including infrastructure/process, the handwritten runner lib outer domain)",
+      "description": "Tool gate implementation contract layer: the generated implementation class seals one tool binding per gate method and delegates through MANUAL blocks to the injected handwritten runner lib. Per the user rulings of 2026-11-19 the gate face carries business parameters only, the runner is a fixed lib in infrastructure.process owning bounded process mechanics, and hardening tiers bind at that seam alone; kernel isolation and the direction-aware import policy are unchanged.",
       "forbiddenDelta": [
         "Term name Future is admitted as the declared async contract; Await stays banned.",
         "Direction-aware imports: an application file must not import infrastructure packages (kernel isolation); an infrastructure file may import application and infrastructure packages; every other banned import prefix stays banned in both directions."
       ],
-      "stillRejected": ["var/assignment", "throw/catch", "Any/AnyRef", "reflection names", "Await", "mutable collection names and mutation term names", "akka/play/java.io/java.nio/java.time/java.util/scala.collection.mutable/java.sql imports", "application-to-infrastructure imports"],
+      "stillRejected": [
+        "var/assignment",
+        "throw/catch",
+        "Any/AnyRef",
+        "reflection names",
+        "Await",
+        "mutable collection names and mutation term names",
+        "akka/play/java.io/java.nio/java.time/java.util/scala.collection.mutable/java.sql imports",
+        "application-to-infrastructure imports"
+      ],
       "maximumComplexity": 5,
       "maximumControlNesting": 2,
       "exceptions": "Exact file/owner/kind with finite maxima and justification. No whole-file exemption or project average."
@@ -44,11 +62,36 @@
     }
   },
   "plainFpOo": {
-    "rejectDomain": ["var", "assignment", "nonlocal return", "throw/catch", "Any/AnyRef", "reflection", "implicit time/randomness/concurrency", "mutable collections", "Actor/Play/JDBC/I/O imports in domain sources"],
-    "allow": ["explicit nominal constructor require for illegal value domain", "immutable field initialization", "named sealed ADT", "constructor-injected pure computation", "Future-valued capability declarations and lifting at the boundary layer", "MANUAL-delimited delegation bodies inside the generated implementation class"],
+    "rejectDomain": [
+      "var",
+      "assignment",
+      "nonlocal return",
+      "throw/catch",
+      "Any/AnyRef",
+      "reflection",
+      "implicit time/randomness/concurrency",
+      "mutable collections",
+      "Actor/Play/JDBC/I/O imports in domain sources"
+    ],
+    "allow": [
+      "explicit nominal constructor require for illegal value domain",
+      "immutable field initialization",
+      "named sealed ADT",
+      "constructor-injected pure computation",
+      "Future-valued capability declarations and lifting at the boundary layer",
+      "MANUAL-delimited sealed-binding delegation bodies inside the generated implementation class"
+    ],
     "qualification": "Syntactic checks do not alone prove semantic purity or OO responsibility. Exact injected implementation and behavior properties are also reviewed."
   },
-  "execution": {"seeds": [740001, 740002, 740003], "workers": 1, "minimumSuccessfulRandomCases": 1000},
+  "execution": {
+    "seeds": [
+      740001,
+      740002,
+      740003
+    ],
+    "workers": 1,
+    "minimumSuccessfulRandomCases": 1000
+  },
   "rawAcceptanceUnchanged": true,
   "all31Closed": false
 }

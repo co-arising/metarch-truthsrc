@@ -1,34 +1,34 @@
-connector-implementation.stock-catalog-impl.v1.delegation: each port call invokes the runner exactly once with the script verbatim
+connector-implementation.stock-catalog-impl.v1.delegation: each gate call invokes the runner exactly once with the sealed probe binding
 connector-implementation.stock-catalog-impl.v1.delegation: runner success lifts to the exact typed outcome
 connector-implementation.stock-catalog-impl.v1.delegation: repeated calls with the same runner output yield identical outcomes
 connector-implementation.stock-catalog-impl.v1.delegation: negative: a runner failure propagates unchanged and is never retried
 connector-implementation.stock-catalog-impl.v1.delegation: negative: a synchronous helper failure propagates unchanged from the call itself
 connector-implementation.stock-catalog-impl.v1.delegation: negative: a malformed payload lands on the failure channel, never a synthesized outcome
 connector-implementation.stock-catalog-impl.v1.delegation: a refusal stays on the success channel as a typed value distinct from failure
-connector-implementation.stock-catalog-impl.v1.delegation: the bound directory script is used verbatim for the parameterless method
+connector-implementation.stock-catalog-impl.v1.delegation: the parameterless gate method uses its sealed directory binding verbatim
 connector-implementation.stock-catalog-impl.v1.delegation: directory success lifts to the exact typed directory
-connector-implementation.stock-catalog-impl.v1.assembly: the infrastructure module binds the port to its implementation
+connector-implementation.stock-catalog-impl.v1.assembly: the infrastructure module binds the gate to its implementation
 connector-implementation.stock-catalog-impl.v1.manual: the implementation artifact keeps one paired MANUAL block per method
 connector-implementation.stock-catalog-impl.v1.manual: negative: unpaired or duplicated markers fail the structural check
-connector-implementation.source-quality.v1.AST: generated if chains have independently known complexity
-connector-implementation.source-quality.v1.AST: generated short-circuit operators are counted
-connector-implementation.source-quality.v1.AST: comments and branch-like literal text add no decisions
-connector-implementation.source-quality.v1.AST: else-if is one control nesting level
-connector-implementation.source-quality.v1.AST: nested then branches retain real depth
-connector-implementation.source-quality.v1.AST: HOF closure decisions count both in parent and closure
-connector-implementation.source-quality.v1.AST: partial functions and pattern alternatives are explicit paths
-connector-implementation.source-quality.v1.AST: match guards and nonexhaustive exits are counted
-connector-implementation.source-quality.v1.AST: for generators and guards are not invisible
-connector-implementation.source-quality.v1.AST: while and do loops are counted once each
-connector-implementation.source-quality.v1.AST: defaults and initialization are registered
-connector-implementation.source-quality.v1.AST: abstract declarations register with no executable body
-connector-implementation.source-quality.v1.AST: overflow complexity is measured exactly, never clamped
-connector-implementation.source-quality.v1.AST: boundary mode admits the Future contract that domain mode rejects
-connector-implementation.source-quality.v1.AST: boundary mode still rejects Await and reflection
-connector-implementation.source-quality.v1.AST: boundary infrastructure files admit application imports; application files reject them
-connector-implementation.source-quality.v1.AST: boundary mode still rejects effectful import prefixes in both directions
-connector-implementation.source-quality.v1.AST: domain mode still rejects application and infrastructure imports
-connector-implementation.source-quality.v1.negative: invalid syntax cannot become an empty successful report
-connector-implementation.source-quality.v1.negative: mutable domain state is rejected
-connector-implementation.source-quality.v1.negative: outer dependencies and time are rejected
-connector-implementation.source-quality.v1.negative: boundary mode still rejects mutable collection and mutation term names
+external-connector-port.source-quality.v1.AST: generated if chains have independently known complexity
+external-connector-port.source-quality.v1.AST: generated short-circuit operators are counted
+external-connector-port.source-quality.v1.AST: comments and branch-like literal text add no decisions
+external-connector-port.source-quality.v1.AST: else-if is one control nesting level
+external-connector-port.source-quality.v1.AST: nested then branches retain real depth
+external-connector-port.source-quality.v1.AST: HOF closure decisions count both in parent and closure
+external-connector-port.source-quality.v1.AST: partial functions and pattern alternatives are explicit paths
+external-connector-port.source-quality.v1.AST: match guards and nonexhaustive exits are counted
+external-connector-port.source-quality.v1.AST: for generators and guards are not invisible
+external-connector-port.source-quality.v1.AST: while and do loops are counted once each
+external-connector-port.source-quality.v1.AST: defaults and initialization are registered
+external-connector-port.source-quality.v1.AST: abstract declarations register with no executable body
+external-connector-port.source-quality.v1.AST: overflow complexity is measured exactly, never clamped
+external-connector-port.source-quality.v1.AST: boundary mode admits the Future contract that domain mode rejects
+external-connector-port.source-quality.v1.AST: boundary mode still rejects Await and reflection
+external-connector-port.source-quality.v1.AST: boundary infrastructure files admit application imports; application files reject them
+external-connector-port.source-quality.v1.AST: boundary mode still rejects effectful import prefixes in both directions
+external-connector-port.source-quality.v1.AST: domain mode still rejects application and infrastructure imports
+external-connector-port.source-quality.v1.negative: invalid syntax cannot become an empty successful report
+external-connector-port.source-quality.v1.negative: mutable domain state is rejected
+external-connector-port.source-quality.v1.negative: outer dependencies and time are rejected
+external-connector-port.source-quality.v1.negative: boundary mode still rejects mutable collection and mutation term names

@@ -3,12 +3,12 @@ package example.stockreservation.connectors
 import org.scalacheck.Gen
 
 import com.google.inject.AbstractModule
-import example.stockreservation.infrastructure.process.NodeSubprocessRunner
+import example.stockreservation.infrastructure.process.{LocalProcessRunner, ProcessRequest}
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
-/** Closed payload shapes and generators for the stock-catalog connector sample. */
+/** Closed payload shapes and generators for the stock-catalog tool gate implementation sample. */
 object CatalogCases {
 
   sealed trait ProbeShape
@@ -23,7 +23,10 @@ object CatalogCases {
   val answerVerb: String = "ANSWER"
   val refusedVerb: String = "REFUSED"
   val directoryVerb: String = "DIRECTORY"
-  val boundDirectoryScript: String = "stockreservation/location-directory.v1"
+  val probeScript: String = "stockreservation/availability-probe.v1"
+  val probeTimeoutMs: Long = 10000L
+  val directoryScript: String = "stockreservation/location-directory.v1"
+  val directoryTimeoutMs: Long = 10000L
 
   def probeLine(shape: ProbeShape): String = shape match {
     case AnswerLine(skuText, available) => s"$answerVerb|$skuText|$available"
@@ -142,40 +145,40 @@ object CatalogCases {
       DirectoryIllegalLocation, DirectoryTrailingLocationSeparator, DirectoryMultilinePayload)
   } yield malformedDirectory(shape, warehouseText, locationText)
 
-  /** Scripted runner: records every requested script verbatim and plays a fixed response queue. */
-  final class ScriptedRunner(responses: Vector[Try[String]]) extends NodeSubprocessRunner {
-    private val requested: ListBuffer[String] = ListBuffer.empty
+  /** Scripted runner: records every requested binding verbatim and plays a fixed response queue. */
+  final class ScriptedRunner(responses: Vector[Try[String]]) extends LocalProcessRunner {
+    private val requested: ListBuffer[ProcessRequest] = ListBuffer.empty
     private var served: Int = 0
 
-    override def run(script: String): Future[String] = {
-      requested += script
+    override def run(request: ProcessRequest): Future[String] = {
+      requested += request
       val response = responses(served min (responses.length - 1))
       served += 1
       Future.fromTry(response)
     }
 
-    def invocations: Vector[String] = requested.toVector
+    def invocations: Vector[ProcessRequest] = requested.toVector
   }
 
   /** Throwing runner: models a helper whose machinery fails synchronously at
     * invocation — the call itself throws, no Future is ever constructed. */
-  final class ThrowingRunner(error: RuntimeException) extends NodeSubprocessRunner {
-    private val requested: ListBuffer[String] = ListBuffer.empty
+  final class ThrowingRunner(error: RuntimeException) extends LocalProcessRunner {
+    private val requested: ListBuffer[ProcessRequest] = ListBuffer.empty
 
-    override def run(script: String): Future[String] = {
-      requested += script
+    override def run(request: ProcessRequest): Future[String] = {
+      requested += request
       throw error
     }
 
-    def invocations: Vector[String] = requested.toVector
+    def invocations: Vector[ProcessRequest] = requested.toVector
   }
 
   /** Test seam module: supplies the sample-owned seams (runner, execution context)
     * that the production binding does not fix, so the assembly property resolves the
-    * infrastructure port binding exactly. */
-  final class CatalogSeamModule(runner: NodeSubprocessRunner, ec: ExecutionContext) extends AbstractModule {
+    * infrastructure gate binding exactly. */
+  final class CatalogSeamModule(runner: LocalProcessRunner, ec: ExecutionContext) extends AbstractModule {
     override def configure(): Unit = {
-      bind(classOf[NodeSubprocessRunner]).toInstance(runner)
+      bind(classOf[LocalProcessRunner]).toInstance(runner)
       bind(classOf[ExecutionContext]).toInstance(ec)
     }
   }

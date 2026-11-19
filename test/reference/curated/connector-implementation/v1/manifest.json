@@ -3,36 +3,36 @@
   "artifactType": "connector-implementation",
   "candidateVersion": "v1",
   "status": "PENDING_QUALITY_EXECUTION",
-  "baseHead": "9ef6bde",
-  "bundleSha256": "ee8482aa7b14b365e522f33f7fe763b7ebba4ca61049101fb3a1b680a816673a",
+  "baseHead": "18a97a8",
+  "bundleSha256": "a81123048f1a925158dda79a84677bf21c0d274b92ef6a79da8c8b053fd56a57",
   "bundleSha256Recipe": "sha256 over the concatenation of the payload files UTF-8 bytes in sorted relative path order",
   "payloadFileCount": 21,
-  "payloadBytes": 82697,
+  "payloadBytes": 83647,
   "payload": [
     {
       "path": "README.md",
-      "bytes": 5166,
-      "sha256": "8beb6bb1c6016c30f80ce3ada51316027ec6dd7aab6e41f6a4164e453cac4061"
+      "bytes": 4165,
+      "sha256": "5eeb4b0217a09e0c3075d7f841f04941675b7c5d3840b9f675fec048e9b70a84"
     },
     {
-      "path": "app/example/stockreservation/application/connectors/AvailabilityOutcome.scala",
-      "bytes": 3270,
-      "sha256": "fd70662afe1ca00f2e996ead0caef094bb48c53ecd0426f73a3ff3493454d111"
+      "path": "app/example/stockreservation/application/toolgates/AvailabilityOutcome.scala",
+      "bytes": 3269,
+      "sha256": "be8395f72bab15d56d11e5508f7fc0b6681b470f85ec71ef0a482b6523fdf0ce"
     },
     {
-      "path": "app/example/stockreservation/application/connectors/ConnectorProtocol.scala",
-      "bytes": 396,
-      "sha256": "b159df4b434c64ffcace4b73692adcaec84cb44d633a6f202172d943dbddd861"
+      "path": "app/example/stockreservation/application/toolgates/ConnectorProtocol.scala",
+      "bytes": 395,
+      "sha256": "9d877224987b73e1e4436a8c7f5f9ab2e54aab00504bebced3eab947f5020ab1"
     },
     {
-      "path": "app/example/stockreservation/application/connectors/LocationDirectory.scala",
-      "bytes": 2510,
-      "sha256": "7b98d9576252809b2ccbb0b9883bc38928f8e396d1625b1d441ef08935f76fd6"
+      "path": "app/example/stockreservation/application/toolgates/LocationDirectory.scala",
+      "bytes": 2509,
+      "sha256": "2a57230bfb72f2ecdc868e3539b711a268996f629d13014f8621794bbfdde4b0"
     },
     {
-      "path": "app/example/stockreservation/application/connectors/StockCatalogConnector.scala",
-      "bytes": 768,
-      "sha256": "b46ae9bd70ec7edd564e5723a2ddb80c587eb06889377f81ecf268855efe2db4"
+      "path": "app/example/stockreservation/application/toolgates/StockCatalogToolGate.scala",
+      "bytes": 916,
+      "sha256": "2b7f0280e58295f5ebd49f6cec25180c91b87d520baae84593db4c68b956adbc"
     },
     {
       "path": "app/example/stockreservation/domain/values/ReservationValues.scala",
@@ -41,28 +41,28 @@
     },
     {
       "path": "app/example/stockreservation/infrastructure/bootstrap/StockCatalogModule.scala",
-      "bytes": 638,
-      "sha256": "e1a324428d4c5ced9a2807eb05ca384c4fb64bfbe9daa3a67b057303cecd0bae"
+      "bytes": 626,
+      "sha256": "922d451e3da8a33f9b645ffb96ed4fd0fdcf8eb1199294d1770e414d64b5593c"
     },
     {
-      "path": "app/example/stockreservation/infrastructure/connectors/StockCatalogConnectorImpl.scala",
-      "bytes": 1480,
-      "sha256": "2823b5699489446cfcd0b1a1ee4ab3eafacf6f26903be43b929bdaa5346b356e"
+      "path": "app/example/stockreservation/infrastructure/process/LocalProcessRunner.scala",
+      "bytes": 2053,
+      "sha256": "45b2b8c8617a36370e3f7a16fac508bc65a0578f53a235a452daf2bfaaf0fa38"
     },
     {
-      "path": "app/example/stockreservation/infrastructure/process/NodeSubprocessRunner.scala",
-      "bytes": 721,
-      "sha256": "bf4ff16c4061547947b6e89df44fcddc3efd1d0f3f0bd4df5765f7fccdce682d"
+      "path": "app/example/stockreservation/infrastructure/toolgates/StockCatalogToolGateImpl.scala",
+      "bytes": 1846,
+      "sha256": "cf90010c9cf99bff06a5b8e3c03212627a805f50dc567feea4d0789674610603"
     },
     {
       "path": "expected-properties.txt",
-      "bytes": 3781,
-      "sha256": "732213b9ed72d6839c317735a4dcdbf57ccd20bc96e0a9d5d62e5e1f35de5d22"
+      "bytes": 3764,
+      "sha256": "09beca4d344d9a4b51a7462a0b474906778d825a56756d274dc85e30837307e4"
     },
     {
       "path": "quality-policy.json",
-      "bytes": 4202,
-      "sha256": "517e2c470108aa8bbc99e5a6a6820c2a31b6078eaf6a6e4af5a7862b5740d17d"
+      "bytes": 4536,
+      "sha256": "feaf4f0c3e8ccb2533eea97c968ade5ffa5d8c6c5ed9d26840c30684f68428ac"
     },
     {
       "path": "quality/JsonOutput.scala",
@@ -91,28 +91,28 @@
     },
     {
       "path": "technical-input.json",
-      "bytes": 10824,
-      "sha256": "c705562c26c9066430ef0df2c2a21e06ef901760221666ef5c072f57aeda87e2"
+      "bytes": 10065,
+      "sha256": "7c7bb00d3ec33e912cce6e548572838283ebf26501147a32d0c24c8f7ce6cf72"
     },
     {
       "path": "test/example/stockreservation/connectors/CatalogCases.scala",
-      "bytes": 7820,
-      "sha256": "55d9e165e0a21ec030a58199c1177934ce2cd45d0cfab6941d98cd28eb0f18b9"
+      "bytes": 8036,
+      "sha256": "63499f9a320c47b5de0674257c51a6f5fe0d87f21df16ecf3e684f434652d96f"
     },
     {
       "path": "test/example/stockreservation/connectors/CatalogOracle.scala",
-      "bytes": 3066,
-      "sha256": "fecc6bba5dda9e569678f6ccef89ea805ff16708d33574facf1e5486fd10a654"
+      "bytes": 3065,
+      "sha256": "4059e21c5030248d09d41bc5e21d5c3bdc5cb333c8a219724441508dda7ccc04"
     },
     {
       "path": "test/example/stockreservation/connectors/CatalogProperties.scala",
-      "bytes": 8323,
-      "sha256": "2708addcf406a444d6be1e711cebfc712b5ab9cb457a92001cc80b8dda274307"
+      "bytes": 8671,
+      "sha256": "12740798a6c1ae814c0aeb49f6cc8f7e6c98855ecf3c44d20f09fe7856873328"
     },
     {
       "path": "test/example/stockreservation/connectors/CatalogQualityProperties.scala",
-      "bytes": 7885,
-      "sha256": "a5273e89a153c9db24d21bf73ef489fc28c1cf12bcf392a342fb55b4cdadff55"
+      "bytes": 7884,
+      "sha256": "9f813be3c9c4e6d94553ead4a91c3f37ba9810281fc917ab88a5c83699929b63"
     }
   ]
 }

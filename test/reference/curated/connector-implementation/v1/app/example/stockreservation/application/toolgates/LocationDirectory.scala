@@ -1,4 +1,4 @@
-package example.stockreservation.application.connectors
+package example.stockreservation.application.toolgates
 
 import example.stockreservation.domain.values.{LocationId, WarehouseId}
 import scala.util.{Failure, Success, Try}

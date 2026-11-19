@@ -11,7 +11,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const CANDIDATE = process.env.QUALITY_CANDIDATE
   ? path.resolve(process.env.QUALITY_CANDIDATE)
   : path.join(ROOT, 'test/reference/curated/connector-implementation/v1');
-const DEFAULT_ROUND = path.join(ROOT, '.rounds/connector-implementation-quality-20261119-01');
+const DEFAULT_ROUND = path.join(ROOT, '.rounds/connector-implementation-quality-20261119-03');
 const CACHE = '/Users/zhongdj/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2';
 const JAVA_HOME = '/Library/Java/JavaVirtualMachines/adoptopenjdk-11.jdk/Contents/Home';
 const JAVA = path.join(JAVA_HOME, 'bin/java');
@@ -51,14 +51,14 @@ const CLASSIFIERS = new Map([
   ['com.google.inject:guice:4.2.1', 'no_aop'],
 ]);
 const SOURCES = [
-  'app/example/stockreservation/application/connectors/StockCatalogConnector.scala',
-  'app/example/stockreservation/application/connectors/AvailabilityOutcome.scala',
-  'app/example/stockreservation/application/connectors/ConnectorProtocol.scala',
-  'app/example/stockreservation/application/connectors/LocationDirectory.scala',
+  'app/example/stockreservation/application/toolgates/StockCatalogToolGate.scala',
+  'app/example/stockreservation/application/toolgates/AvailabilityOutcome.scala',
+  'app/example/stockreservation/application/toolgates/ConnectorProtocol.scala',
+  'app/example/stockreservation/application/toolgates/LocationDirectory.scala',
   'app/example/stockreservation/domain/values/ReservationValues.scala',
   'app/example/stockreservation/infrastructure/bootstrap/StockCatalogModule.scala',
-  'app/example/stockreservation/infrastructure/process/NodeSubprocessRunner.scala',
-  'app/example/stockreservation/infrastructure/connectors/StockCatalogConnectorImpl.scala',
+  'app/example/stockreservation/infrastructure/process/LocalProcessRunner.scala',
+  'app/example/stockreservation/infrastructure/toolgates/StockCatalogToolGateImpl.scala',
   'test/example/stockreservation/connectors/CatalogCases.scala',
   'test/example/stockreservation/connectors/CatalogOracle.scala',
   'test/example/stockreservation/connectors/CatalogProperties.scala',

@@ -2,7 +2,7 @@ package example.stockreservation.connectors
 
 import scala.util.Try
 
-import example.stockreservation.application.connectors.{AvailabilityOutcome, LocationDirectory, ProtocolViolation}
+import example.stockreservation.application.toolgates.{AvailabilityOutcome, LocationDirectory, ProtocolViolation}
 import example.stockreservation.domain.values.{LocationId, SkuId, WarehouseId}
 
 /** Independent expected outcomes for the closed payload dispatch. Expectations are
