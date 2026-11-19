@@ -3,15 +3,15 @@
   "artifactType": "projection-apply-event",
   "candidateVersion": "v1",
   "status": "GOLDEN_AWAITING_USER_APPROVAL",
-  "bundleSha256": "73942d0fc435a4e3ff51b2f75e386eb7d8b1537c12862d22b8a5fbc5ba6c653d",
+  "bundleSha256": "fa6179f9384c8989c33a2d929604a03e68c4fab37844c193cca9c5094018aff5",
   "manifest": {
     "path": "manifest.json",
     "bytes": 3949,
-    "sha256": "9e3af5f3626784bf00f7062b35d9dbaa41d18b0af62ab59e661ff4540e4ba14f"
+    "sha256": "ae23ac2021ef9292f8997380bbde61b137cdfbb8ca82b8214063481912d8350c"
   },
   "payload": {
     "files": 19,
-    "bytes": 79130,
+    "bytes": 87833,
     "wholeBytesVerified": true
   },
   "lineage": {
@@ -20,23 +20,23 @@
     "dispatch": "CQRSApplicationGenerator L855-875 conditional emission honored by the sample's two-view shape; single-project base 0 documented, never faked"
   },
   "qualityRun": {
-    "discoveryRound": ".rounds/projection-apply-event-quality-20261119-03",
-    "round": ".rounds/projection-apply-event-quality-20261119-04",
+    "discoveryRound": ".rounds/projection-apply-event-quality-20261119-07",
+    "round": ".rounds/projection-apply-event-quality-20261119-08",
     "prepared": {
-      "file": ".rounds/projection-apply-event-quality-20261119-04/prepared.json",
-      "sha256": "3ff7b4322f7013f66e7c34ffd78dd5e0d8a69786ff9b65b5a4ac01dda394b84d",
-      "zeroDriftProof": "prepared pin sha equals the discovery-round prepared sha byte for byte (same value 3ff7b432…), proving zero source drift between discovery and final-bytes rounds"
+      "file": ".rounds/projection-apply-event-quality-20261119-08/prepared.json",
+      "sha256": "728362f943bac660ff8e1736a2ea03ea0a6a2ab685a44dd39e32f1928fc91e2d",
+      "zeroDriftProof": "prepared pin sha equals the revised discovery-round prepared sha byte for byte (same value 728362f9…), proving zero source drift between discovery and final-bytes rounds"
     },
     "attempt": {
       "id": "attempt-01",
       "actualJvmCalls": 6,
       "pids": [
-        44180,
-        44186,
-        44195,
-        44215,
-        44230,
-        44259
+        58616,
+        58628,
+        58660,
+        58664,
+        58696,
+        58730
       ],
       "allExit0": true,
       "timeouts": 0,
@@ -46,7 +46,7 @@
     "metrics": {
       "passed": true,
       "files": 14,
-      "scopes": 348,
+      "scopes": 373,
       "violations": 0,
       "excess": 0
     },
@@ -56,12 +56,12 @@
         740002,
         740003
       ],
-      "results": 37,
-      "negatives": 6,
+      "results": 40,
+      "negatives": 7,
       "passed": true,
       "passedAll": true,
       "minimumSuccessfulRandomCases": 1000,
-      "totalRandomEvaluations": 15022
+      "totalRandomEvaluations": 51069
     },
     "supply": {
       "artifacts": 26,
@@ -69,10 +69,14 @@
       "runtimeInjectorVerified": false,
       "note": "No Guice assembly exists in this family — the kernel pure-function object carries no DI surface; the coordinate closure is the shared pinned supply"
     },
-    "finalBytesNote": "Executed on the exact committed candidate bytes (commit 599c385); prepared pin sha equals the discovery-round prepared sha, confirming zero source drift"
+    "finalBytesNote": "Executed on the exact committed revised candidate bytes (commit 4e0209c); prepared pin sha equals the discovery-round prepared sha, confirming zero source drift"
   },
   "rawAcceptanceUnchanged": true,
   "all31Closed": false,
   "userGoldenApproval": null,
-  "userRuling": null
+  "userRuling": null,
+  "revision": {
+    "supersededDraft": "commits 599c385/61df65d — quality mechanics valid, walkthrough raised three corrections: raw single-line layout outside industry line-width norms, nominal event supply missing the real-source sealed-trait family idiom, ruling-to-code traceability missing and the D-P09 None-patch ruling not demonstrated in code",
+    "note": "This revision adds D-LAYOUT-100 (one named argument per line for emptyRow/copy argument lists, 100-column structural property with imports exempt), D-SUPPLY-SEALED (sealed ReservationEvent family per the CreditBalanceEntity precedent, emission still out of family scope), the settledAt column with LedgerSettled/LedgerReopened events (executable None-patch demonstration), and the ruling-to-code traceability map in the walkthrough."
+  }
 }
