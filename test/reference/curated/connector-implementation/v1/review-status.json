@@ -2,7 +2,7 @@
   "schemaVersion": "curated.connector-implementation.review-status/v1",
   "artifactType": "connector-implementation",
   "candidateVersion": "v1",
-  "status": "QUALITY_EXECUTION_COMPLETE_AWAITING_WALKTHROUGH",
+  "status": "GOLDEN_CANDIDATE_COMPLETE_AWAITING_WALKTHROUGH",
   "rebuild": {
     "supersededDraft": "commits f34d93f/b41c6ba — quality mechanics valid, shape rejected before approval (raw scriptParam signature, unbounded runner contract)",
     "note": "This candidate is the rebuilt implementation family on the approved external-connector-port v2 toolgate vocabulary (bundle f50c9f35), per the user ruling of 2026-11-19."
@@ -23,21 +23,21 @@
     "frozenReuse": "Eleven files byte-identical with the approved external-connector-port v2 bundle or its frozen chain: gate trait 2b7f0280, AvailabilityOutcome/ConnectorProtocol/LocationDirectory (toolgates package), StockCatalogModule, ReservationValues 48f29020, LocalProcessRunner 45b2b8c8, CatalogOracle 4059e21c, CatalogQualityProperties 9f813be3, engine four files f5c66788/d622f3db/eb95be93/74c8358a, scope-exceptions e901e444"
   },
   "v1QualityRun": {
-    "round": ".rounds/connector-implementation-quality-20261119-03",
+    "round": ".rounds/connector-implementation-quality-20261119-04",
     "prepared": {
-      "file": ".rounds/connector-implementation-quality-20261119-03/prepared.json",
+      "file": ".rounds/connector-implementation-quality-20261119-04/prepared.json",
       "sha256": "5435bb1ee1c39f75212b72c37523fe8a3a2fdea90f2866d7b6b32bcc21086b1f"
     },
     "attempt": {
       "id": "attempt-01",
       "actualJvmCalls": 6,
       "pids": [
-        32902,
-        32908,
-        32930,
-        32936,
-        32942,
-        32948
+        33046,
+        33055,
+        33076,
+        33082,
+        33089,
+        33096
       ],
       "allExit0": true,
       "timeouts": 0,
@@ -69,7 +69,8 @@
       "artifacts": 26,
       "guiceVariant": "4.2.1 no_aop (AOP interception machinery unused by the sample)",
       "runtimeInjectorVerified": true
-    }
+    },
+    "finalBytesNote": "Executed on the exact committed candidate bytes; prepared pin sha equals the discovery-round prepared sha, confirming zero source drift"
   },
   "rawAcceptanceUnchanged": true,
   "all31Closed": false
