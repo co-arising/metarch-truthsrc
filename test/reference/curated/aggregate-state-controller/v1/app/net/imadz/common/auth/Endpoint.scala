@@ -1,9 +1,12 @@
 // 来源：curated 参考件 net/imadz/infrastructure/auth/Endpoint.scala
 // （包适配：net.imadz.infrastructure.auth → net.imadz.common.auth，与 raw import 对齐）。
-// 裁剪到本样消费面：仅 global 门（raw S1 只消费 api.global.read() 零角色档），
-// authenticate 验签管线与 finishImpl 错误折叠/崩溃护栏逐字保真（认证段拆出 verify
-// 仅为 CC 门 5 收敛，分支集合不变）；tenant/anonymous/dispatchView 门、角色阶梯
-// （RoleGate/Roles 词表）与 body 解码面属平台面，不入本族。
+// 裁剪到本样消费面：仅 global 门（raw S1 只消费 api.global.read() 零角色档）。
+// API 形状保真（2026-11-20 walkthrough R-A 修订）：read 恢复 curated 的 varargs 签名
+// read(roles: String*)，零参调用即零声明角色＝任何已验签登录者（缺省 User）；声明角色
+// 须命中用户身份（curated 的 Nil/declared/forbidden 三分支原样），仅删 migration gate
+// 分支——那一支依赖平台 RoleGate.fromConfig 机制。authenticate/verify 段与 finishImpl
+// 错误折叠/崩溃护栏逐字保真（verify 拆出仅为 CC 门 5 收敛，分支集合不变）。
+// tenant/anonymous/dispatchView 门、RoleGate 词表与 body 解码面属平台面，不入本族。
 package net.imadz.common.auth
 
 import javax.inject.{Inject, Singleton}
@@ -27,18 +30,19 @@ final class Endpoint @Inject() (
   /** 全局身份缺省：任何已验签登录者恒有 User 基础身份（curated 词表 Global 层）。 */
   private val DefaultGlobalRole: String = "User"
 
-  // ---------- 域根：api.global（零角色档＝raw S1 消费面；raw 调用面 api.global.read()） ----------
+  // ---------- 域根：api.global（curated varargs 签名原样；raw 调用面＝零参） ----------
 
   final class GlobalRoot {
-    final class GReader {
+    final class GReader(roles: Seq[String]) {
       def apply[T](handler: GlobalCtx => Future[Either[ApiError, T]])
                   (implicit w: OWrites[T]): Action[AnyContent] =
         defaultAction(anyParser).async { raw =>
-          authenticate(raw).fold(f => f, vt => finishImpl(handler(toGlobal(vt))))
+          authenticate(raw).fold(f => f, vt =>
+            toGlobal(vt, roles).fold(f => f, gs => finishImpl(handler(gs))))
         }
     }
 
-    def read(): GReader = new GReader
+    def read(roles: String*): GReader = new GReader(roles)
   }
 
   val global: GlobalRoot = new GlobalRoot
@@ -72,8 +76,20 @@ final class Endpoint @Inject() (
         Json.obj("errorCode" -> "INVALID_TOKEN", "message" -> "token verification failed"))))
     }
 
-  /** 全局段：globalRole 缺省 User（词表 Global 层；S1 状态门零角色声明）。 */
-  private def toGlobal(vt: VerifiedToken): GlobalCtx = GlobalCtx(vt.userId, DefaultGlobalRole)
+  /** 全局段：零声明角色＝任何已验签登录者（缺省 User）；声明角色须命中用户身份
+    * （curated 三分支原样；migration gate 分支收归平台）。 */
+  private def toGlobal(vt: VerifiedToken, roles: Seq[String]): Either[Future[Result], GlobalCtx] =
+    roles match {
+      case Nil => Right(GlobalCtx(vt.userId, DefaultGlobalRole))
+      case declared if declared.contains(DefaultGlobalRole) =>
+        Right(GlobalCtx(vt.userId, DefaultGlobalRole))
+      case _ => Left(forbiddenRoles(roles))
+    }
+
+  private def forbiddenRoles(declared: Seq[String]): Future[Result] =
+    Future.successful(Results.Forbidden(
+      Json.obj("errorCode" -> "ROLE_REQUIRED",
+        "message" -> s"requires one of: ${declared.mkString(",")}")))
 
   /** 统一出口：错误折叠 + 防崩 recover（R1 固化；M3 语义锚点=INTERNAL_ERROR 形状单点） */
   private def finishImpl[T](fut: Future[Either[ApiError, T]])

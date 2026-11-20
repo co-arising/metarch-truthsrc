@@ -34,12 +34,13 @@ OWrites 序列化）。**零机制**：不发事件、不落库、不持久化�
 | 项 | 状态 | 一句话 |
 |---|---|---|
 | F1 供给 S1 | ✅ | 88 坐标＝play 2.8.18/play-json 2.9.3（BC override）/akka 2.6.20 全闭包，全在本地缓存，prepare 闭包断言零缺件 |
-| F2 auth O1 | ✅ | TokenService＝验签读取 trait 面；VerifiedToken/TenantIdentity curated 原样；pdi.jwt 面不入金样 |
+| F2 auth O1＋R-A 修订 | ✅ | TokenService＝验签读取 trait 面；Endpoint 恢复 curated varargs 签名 `read(roles: String*)`（零参＝零声明角色＝缺省 User，声明角色须命中；migration gate 分支收归平台）——auth-core API 形状不被本族改写 |
 | F3 引擎 Y2 | ✅ | boundary 禁前缀表去 play/akka；domain 层零改动；play/akka 文件白名单由结构性质钉住 |
 | F5 IdGuard T1 | ✅ | 冻结 scaffold-static 裁到 IdGuard 单件；消息回退位 getClass→具名常量（结构门禁反射名，正文/键位/400 形状逐字一致） |
 | F6 行为面 | ✅ | TestEntityRef 官方测试缝让 ask 往返/私有 writer JSON/超时折叠全部真实可执行；声明序走结构面 |
 | E2b 引擎 | ✅ 沿用 | Term.Assign 按上下文判（实参位两层准入／语句位两层违规），元性质 2 条 |
 | D-LAYOUT-100 | ✅ 沿用 | 100 列纪律，import 豁免，结构性质钉住 |
+| R-D 已知债 | ✅ 本轮修 | stateType 必填／gate-builder 统一去后缀 base／registry miss 拒收／noteId 删除——合同层修正＋生成器 fail-closed；D-P08 族留待下轮 |
 
 ## 行为合同（ScalaCheck 实测，13 条全真实 HTTP 管线）
 

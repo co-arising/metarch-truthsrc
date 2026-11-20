@@ -136,6 +136,13 @@ object ControllerQualityProperties extends Properties("aggregate-state-controlle
       !controller.split("\n").exists(_.trim.startsWith("import akka"))
   }
 
+  property("structure: the global door declares the curated varargs role face") = secure {
+    val endpoint = appTexts(endpointPath)
+    endpoint.contains("def read(roles: String*): GReader") &&
+      endpoint.contains("ROLE_REQUIRED") &&
+      endpoint.contains("case Nil => Right(GlobalCtx(vt.userId, DefaultGlobalRole))")
+  }
+
   property("structure: clock reads stay confined to the platform auth supply") = secure {
     val clockPaths = appTexts.toVector
       .collect { case (path, text) if text.split("Instant.now").length > 1 => path }.sorted

@@ -29,11 +29,16 @@
     "javap: InternalRecipientRef is private[akka], so a hand-rolled EntityRef implementation is impossible; the official TestEntityRef seam is the sanctioned construction path",
     "sandbox profile denies network*, so real cluster sharding cannot start inside the gate; TestEntityRef over a local typed ActorSystem is the honest executable substitute"
   ],
-  "rawDebts": [
-    "stateType=None falls back to replyType in the raw template (T8); the curated face always carries a real state type and the fallback stays a generator-phase negative",
-    "dispatch gate matches Get${a.name}State while the builder strips the Aggregate suffix before composing Get${base}State; suffixed aggregates can pass the gate and resolve a different command; golden inputs carry no suffix and the conflict stays a generator-phase negative",
-    "registry miss maps stateFields to Nil silently; the curated face documents the exclusion set at build time and rejects it at generator input",
-    "the raw controller is not final (T2), keeps the unused-JsValue import debt in its fixed import list (curated drops it), and does not write routes (E301 block owned by the Node gen_api_layer)"
+  "curatedFixes": {
+    "ruling": "R-D (2026-11-20 walkthrough, user directive): the four known raw debts are fixed as curated contract decisions this round, with enforcement at the generator phase; the D-P08 fail-closed family (degraded/???/unknown-dialect inputs) remains scheduled for a later round",
+    "stateTypeRequired": "stateType is mandatory in the curated endpoint model; the raw None→replyType fallback is unreachable by construction (generator input rejects a missing stateType)",
+    "consistentBaseName": "the eligible-aggregate gate and the builder both compose from the de-suffixed base name (raw stripped the Aggregate suffix only in the builder while dispatch matched Get${a.name}State — suffixed aggregates could pass the gate and resolve a different command); the curated face composes Get${base}State on both sides and the generator adds a consistency negative",
+    "registryMissRejected": "a DomainEntityMetadata registry miss no longer silently maps stateFields to Nil — the aggregate is rejected at generator input with a diagnostic",
+    "noteIdDropped": "the raw endpoint model's unconsumed noteId slot is dropped from the curated endpoint model (generator input schema carries no such key)",
+    "rawDebtRecorded": "the raw controller is not final (T2) and its fixed import list carries the unused JsValue import — the curated face keeps the class non-final (raw-verbatim) and drops the unused import (import-face judgment, user-approved R-C)"
+  },
+  "platformSuggestions": [
+    "the deployed scaffold-static CommandDsl (IdGuard) could adopt the named-constant message fallback platform-side, removing the reflection name from the deployed static — a platform change outside this family's gate, recorded per the 2026-11-20 walkthrough B1 discussion"
   ],
   "layout": {
     "rule": "D-LAYOUT-100 (C2, 2026-11-20 continuation): 100-column discipline on all app sources with import lines exempt; constructor parameters and Json.obj field pairs one per line; signature continuation wraps keep the declaration order."
