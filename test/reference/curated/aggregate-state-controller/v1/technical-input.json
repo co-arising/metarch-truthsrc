@@ -40,6 +40,15 @@
   "platformSuggestions": [
     "the deployed scaffold-static CommandDsl (IdGuard) could adopt the named-constant message fallback platform-side, removing the reflection name from the deployed static — a platform change outside this family's gate, recorded per the 2026-11-20 walkthrough B1 discussion"
   ],
+  "serializationFace": {
+    "ruling": "R-F (2026-11-20 walkthrough, user directive): ALL serialization writers are private implicit val — the raw template's non-implicit state writers (T8) are recorded as a raw defect fixed by this family (user: 不排除 raw 也有问题也需要改)",
+    "implicitFace": "shared field writers (Writes[Instant], Writes[Id]), per-state-type writers (OWrites[XState]), reply writers (OWrites[Get<X>StateReply]) and ApiError.writes form the full implicit face; the reply writers consume the state writers by named ascribed reference (raw T9 verbatim)",
+    "generatorContract": [
+      "dedup: one writer per DISTINCT serialization state type, not per aggregate entry — two aggregates sharing a state type emit the writer once (the implicit-ambiguity hazard of duplicate same-type implicit vals is dissolved at the source)",
+      "dependency order: the emission order is the topological order of the serialization type dependency graph — shared Writes for the field types (Instant/Id) first, state writers before the reply writers that reference them, reply writers before the endpoint methods; this is the same recursive collectAllDependencies discipline the BC builder's B8 applies to imports, applied to the writer face (user requirement raised previously, now pinned)",
+      "the golden pins the order and the implicit face through the member-order structural property (markers are the implicit declarations themselves)"
+    ]
+  },
   "layout": {
     "rule": "D-LAYOUT-100 (C2, 2026-11-20 continuation): 100-column discipline on all app sources with import lines exempt; constructor parameters and Json.obj field pairs one per line; signature continuation wraps keep the declaration order."
   },

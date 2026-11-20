@@ -41,6 +41,7 @@ OWrites 序列化）。**零机制**：不发事件、不落库、不持久化�
 | E2b 引擎 | ✅ 沿用 | Term.Assign 按上下文判（实参位两层准入／语句位两层违规），元性质 2 条 |
 | D-LAYOUT-100 | ✅ 沿用 | 100 列纪律，import 豁免，结构性质钉住 |
 | R-D 已知债 | ✅ 本轮修 | stateType 必填／gate-builder 统一去后缀 base／registry miss 拒收／noteId 删除——合同层修正＋生成器 fail-closed；D-P08 族留待下轮 |
+| R-F 序列化面 | ✅ 用户裁定 | 全部 writer 改 private implicit val（raw 非 implicit T8 记为本族修掉的缺陷）；生成器契约＝同类型去重发射＋递归拓扑序（共享 Writes→状态 writer→回执 writer→方法） |
 
 ## 行为合同（ScalaCheck 实测，13 条全真实 HTTP 管线）
 

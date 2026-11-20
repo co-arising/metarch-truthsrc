@@ -40,7 +40,7 @@ class AggregateStateApiController @Inject() (
     (i: Id) => Json.toJson(Option(i).map(_.toString))
 
   /** S1 聚合面：ReservationState → JSON（逐字段手写·无字段数上限） */
-  private val writesReservationState: OWrites[ReservationState] =
+  private implicit val writesReservationState: OWrites[ReservationState] =
     (st: ReservationState) => Json.obj(
       "reservationId" -> Json.toJson[Id](st.reservationId),
       "skuId" -> Json.toJson[Id](st.skuId),
@@ -52,7 +52,7 @@ class AggregateStateApiController @Inject() (
       "settledAt" -> Json.toJson[java.time.Instant](st.settledAt))
 
   /** S1 聚合面：StockState → JSON（逐字段手写·无字段数上限） */
-  private val writesStockState: OWrites[StockState] =
+  private implicit val writesStockState: OWrites[StockState] =
     (st: StockState) => Json.obj(
       "stockId" -> Json.toJson[Id](st.stockId),
       "skuId" -> Json.toJson[Id](st.skuId),

@@ -97,7 +97,7 @@ object ControllerQualityProperties extends Properties("aggregate-state-controlle
   property("structure: controller member order is shared writers then state writers then reply writers then endpoints") = secure {
     orderedMarkers(appTexts(controllerPath), Vector(
       "private implicit val s1InstantWrites", "private implicit val s1IdWrites",
-      "private val writesReservationState", "private val writesStockState",
+      "private implicit val writesReservationState", "private implicit val writesStockState",
       "private implicit val writesGetReservationStateReply", "private implicit val writesGetStockStateReply",
       "def reservation(", "def stock("))
   }
