@@ -2,7 +2,7 @@
   "schemaVersion": "curated.aggregate-state-controller.review-status/v1",
   "artifactType": "aggregate-state-controller",
   "candidateVersion": "v1",
-  "status": "GOLDEN_APPROVED",
+  "status": "GOLDEN_APPROVED_JS_BYTE_PARITY_COMPLETE",
   "revision": {
     "history": [
       "candidate built 2026-11-20 directly on the pre-build ruling chain (S1/O1/Y2/T1/F6 — the user ruled the supply pin, the auth seam, the engine prefix delta, the IdGuard trim, and the TestEntityRef-executable behavior face before the first line of the bundle was written)",
@@ -78,5 +78,28 @@
   "rawAcceptanceUnchanged": true,
   "all31Closed": false,
   "userGoldenApproval": "APPROVED_V1_BUNDLE_ee3adc5e_20261120",
-  "userRuling": "2026-11-20 pre-build rulings F1=S1 (88-coordinate framework pin), F2=O1 (TokenService verifyAccess trait face), F3=Y2 (boundary play/akka prefix delta with structural whitelist), F5=T1 (IdGuard-only trim), F6=TestEntityRef-executable behavior face (user testkit lead; the AskPattern Scheduler compile-defect hypothesis withdrawn after the javap+compile probe). Walkthrough rulings: R-A the Endpoint signature restored to the curated varargs read(roles: String*) face with Nil/declared/forbidden branches (migration gate platform-side) after the user flagged the auth-core API reshaping concern; R-B the IdGuard message fallback adapted to a named constant (user-approved); R-C the import face judged (unused JsValue dropped, FQN java/akka references, alphabetical fixed block); R-D the four known raw debts fixed as curated contract decisions with generator-phase enforcement (stateType required, gate/builder consistent de-suffixed base, registry-miss reject, noteId dropped) per user directive, D-P08 family scheduled later; R-E the 120s caps explained as anti-hang guards with the gate at the minute-level commit loop (user: no objection); R-F all serialization writers private implicit val per user directive with generator contract = per-distinct-state-type dedup + topological emission over the serialization type dependency graph (the B8 collectAllDependencies discipline applied to the writer face); raw non-implicit T8 recorded as a raw defect fixed by this family. Feedback-loop tiering (second-level generator byte-compare / minute-level golden gate / nightly drift guard) accepted."
+  "userRuling": "2026-11-20 pre-build rulings F1=S1 (88-coordinate framework pin), F2=O1 (TokenService verifyAccess trait face), F3=Y2 (boundary play/akka prefix delta with structural whitelist), F5=T1 (IdGuard-only trim), F6=TestEntityRef-executable behavior face (user testkit lead; the AskPattern Scheduler compile-defect hypothesis withdrawn after the javap+compile probe). Walkthrough rulings: R-A the Endpoint signature restored to the curated varargs read(roles: String*) face with Nil/declared/forbidden branches (migration gate platform-side) after the user flagged the auth-core API reshaping concern; R-B the IdGuard message fallback adapted to a named constant (user-approved); R-C the import face judged (unused JsValue dropped, FQN java/akka references, alphabetical fixed block); R-D the four known raw debts fixed as curated contract decisions with generator-phase enforcement (stateType required, gate/builder consistent de-suffixed base, registry-miss reject, noteId dropped) per user directive, D-P08 family scheduled later; R-E the 120s caps explained as anti-hang guards with the gate at the minute-level commit loop (user: no objection); R-F all serialization writers private implicit val per user directive with generator contract = per-distinct-state-type dedup + topological emission over the serialization type dependency graph (the B8 collectAllDependencies discipline applied to the writer face); raw non-implicit T8 recorded as a raw defect fixed by this family. Feedback-loop tiering (second-level generator byte-compare / minute-level golden gate / nightly drift guard) accepted.",
+  "jsImplementation": {
+    "status": "BYTE_PARITY_COMPLETE",
+    "generator": {
+      "path": "tools/gen-aggregate-state-controller.mjs"
+    },
+    "inputContract": {
+      "path": "test/fixtures/aggregate-state-controller-v1/input.json",
+      "schemaVersion": "truthsrc.aggregate-state-controller-input/v1"
+    },
+    "scope": "The generator emits the single family artifact: the shared AggregateStateApiController (per-aggregate endpoint methods, shared Instant/Id writers, per-distinct-state-type OWriters, reply envelope writers, controllerComponents/timeout wiring). The eleven other production files are supplies and never emitted (registered with real sha256 in input.supplied): five platform faces (common Id, ApiError, Endpoint varargs door, TokenService verifyAccess face, frozen IdGuard trim) and six business faces (two domain states, two sealed protocols, two entityRef repository ports).",
+    "guards": [
+      "stateType required (R-D stateTypeRequired: the raw None→replyType fallback is unreachable by construction)",
+      "command/reply composition checked against the de-suffixed base (R-D consistentBaseName: Get${base}State on gate and builder sides)",
+      "stateFields must be nonempty (R-D: a registry miss is rejected with a diagnostic, never silently Nil)",
+      "noteId and the raw builder-name entries key are raw-only slots rejected at the input boundary (R-D noteIdDropped)",
+      "duplicate controller method names / route segments rejected (E1/E2 collisions)",
+      "field signatures must be play-json builtins or the shared Instant/Id library, exact nominal match (D4/R-F: the raw substring heuristic and silent String/Any fallback unreachable)",
+      "unknown top-level schema keys rejected (strict schema)"
+    ],
+    "emissionOrder": "R-F serialization face: shared Writes for the field types present → one state writer per DISTINCT state type in first-reference order → reply writers → endpoint methods; the only length-conditional emission is the endpoint Left branch (100-column judgment).",
+    "acceptance": "Same-input JS generation byte-compared against the approved golden: 1/1 emitted artifact sha256-identical (66c82bfb52d089f3d53abe1f95b98ca75eaaf77e7f67f744a8dc01d8f3de20d8), generation deterministic across two runs (double-run byte identical).",
+    "negativeCheck": "Eight directed negatives verified, all rejected FORMAL_INPUT: missing stateType, command/composition mismatch, empty stateFields (registry miss), raw noteId slot, base-collision duplicate method, duplicate-method (exact collision), uncovered signature (Money), unknown schema key (raw entries name). The suppressed N=0 variant is the legal zero-emission face (produced: [])."
+  }
 }

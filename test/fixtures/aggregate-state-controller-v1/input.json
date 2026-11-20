@@ -1,0 +1,146 @@
+{
+  "schemaVersion": "truthsrc.aggregate-state-controller-input/v1",
+  "controllerPackage": "controllers",
+  "controllerName": "AggregateStateApiController",
+  "routeBase": "/api/state",
+  "aggregates": [
+    {
+      "aggregateName": "Reservation",
+      "repositoryName": "reservationRepository",
+      "repositoryType": "example.stockreservation.application.aggregates.repository.ReservationRepository",
+      "commandType": "example.stockreservation.application.aggregates.GetReservationState",
+      "replyType": "example.stockreservation.application.aggregates.GetReservationStateReply",
+      "stateType": "example.stockreservation.domain.entities.ReservationState",
+      "idParam": "reservationId",
+      "stateFields": [
+        {
+          "name": "reservationId",
+          "signature": "net.imadz.common.CommonTypes.Id"
+        },
+        {
+          "name": "skuId",
+          "signature": "net.imadz.common.CommonTypes.Id"
+        },
+        {
+          "name": "quantity",
+          "signature": "Int"
+        },
+        {
+          "name": "reserved",
+          "signature": "Boolean"
+        },
+        {
+          "name": "label",
+          "signature": "String"
+        },
+        {
+          "name": "tenantId",
+          "signature": "String"
+        },
+        {
+          "name": "occurredAt",
+          "signature": "java.time.Instant"
+        },
+        {
+          "name": "settledAt",
+          "signature": "java.time.Instant"
+        }
+      ]
+    },
+    {
+      "aggregateName": "Stock",
+      "repositoryName": "stockRepository",
+      "repositoryType": "example.stockreservation.application.aggregates.repository.StockRepository",
+      "commandType": "example.stockreservation.application.aggregates.GetStockState",
+      "replyType": "example.stockreservation.application.aggregates.GetStockStateReply",
+      "stateType": "example.stockreservation.domain.entities.StockState",
+      "idParam": "stockId",
+      "stateFields": [
+        {
+          "name": "stockId",
+          "signature": "net.imadz.common.CommonTypes.Id"
+        },
+        {
+          "name": "skuId",
+          "signature": "net.imadz.common.CommonTypes.Id"
+        },
+        {
+          "name": "available",
+          "signature": "Int"
+        },
+        {
+          "name": "updatedAt",
+          "signature": "java.time.Instant"
+        }
+      ]
+    }
+  ],
+  "supplied": [
+    {
+      "role": "platform-id",
+      "path": "app/net/imadz/common/Id.scala",
+      "owner": "trimmed common supply, CommonTypes.Id alias + deterministic Id.of",
+      "sha256": "4b59827b85347f604dc92e24697740eaaf123fb8564f4ce39e5a94850f4af393"
+    },
+    {
+      "role": "platform-auth",
+      "path": "app/net/imadz/common/auth/ApiError.scala",
+      "owner": "package-adapted curated error-shape single point",
+      "sha256": "83b03bf79c39c2c73a3ad6b2278bacd8bc28b3024b568cc71418993d26ce50c7"
+    },
+    {
+      "role": "platform-auth",
+      "path": "app/net/imadz/common/auth/Endpoint.scala",
+      "owner": "package-adapted curated global door (varargs role face), generator never touches",
+      "sha256": "0c4e06304510655e0ae017fd14e448a21b6cd2ac0da71b147e539f4113065ae6"
+    },
+    {
+      "role": "platform-auth",
+      "path": "app/net/imadz/common/auth/TokenService.scala",
+      "owner": "verifyAccess trait face, JWT impl is platform jar business",
+      "sha256": "59b5cc3de44fedb4bb18245b3760adce1610204ec0f39a3ee7d8e129cb924f03"
+    },
+    {
+      "role": "platform-static",
+      "path": "app/net/imadz/metarch/infrastructure/api/IdGuard.scala",
+      "owner": "frozen scaffold-static IdGuard-only trim",
+      "sha256": "e594b75af8aac76370bebd97e41336a1e310e802068d6d46c1e23d994c1e1c5f"
+    },
+    {
+      "role": "entity-state",
+      "path": "app/example/stockreservation/domain/entities/ReservationEntity.scala",
+      "owner": "handwritten domain state record",
+      "sha256": "9b9d9d13478d5ddbbdc8e930b8bc2a89055a05636f46008fbf1b1e095142d844"
+    },
+    {
+      "role": "entity-state",
+      "path": "app/example/stockreservation/domain/entities/StockEntity.scala",
+      "owner": "handwritten domain state record",
+      "sha256": "25fb7f0f6deae84108c0831299530ce328f270a973d76bb39dfb8c242685ecb0"
+    },
+    {
+      "role": "protocol",
+      "path": "app/example/stockreservation/application/aggregates/ReservationProtocol.scala",
+      "owner": "sealed command family + reply envelope",
+      "sha256": "e0c48187102199932b6bf173de7aca6b2e0c8649b97bcad71cffb268ac2af489"
+    },
+    {
+      "role": "protocol",
+      "path": "app/example/stockreservation/application/aggregates/StockProtocol.scala",
+      "owner": "sealed command family + reply envelope",
+      "sha256": "22c8d35dce25ddba5901f2d861606216b39c4a22342abca4ae7ae5215fcf492f"
+    },
+    {
+      "role": "repository-port",
+      "path": "app/example/stockreservation/application/aggregates/repository/ReservationRepository.scala",
+      "owner": "BC entityRef port",
+      "sha256": "c4e3fc60c358203af2473e2f44376a8866830f1e5ee304c8a9b90de9a98482d0"
+    },
+    {
+      "role": "repository-port",
+      "path": "app/example/stockreservation/application/aggregates/repository/StockRepository.scala",
+      "owner": "BC entityRef port",
+      "sha256": "97cf09d0b440001218086f758867d728a2764088749b7405b09eb994e3b92b21"
+    }
+  ]
+}
