@@ -197,10 +197,15 @@ delivery）＋round 响应新鲜度关联＋RecoveryCompleted 重查询自愈＋
   EffectHostSerializer）。
 - **N1 缝宽更新**：host 类名由 host id kebab→Pascal＋suffix 去重派生
   （`bank-payment-host`→`BankPaymentHost`），无需 truth 侧补名——✅ 可派生。
-- **N2 细化（2026-11-21 二次修正）**：端口成员名来源改为**参与者步名**
-  （`reserve-investor-funds`／`credit-fund-collection`／`reserve-cash-fund-order`——
-  参与者动词组，比 participantId 更是领域语言），形如
-  `reserveInvestorFundsPrepareExecute`；实施绑定 id 保持经典拼写不变（手写区零迁移）。
+- **N2 落地（2026-11-21 用户指令执行）**：领域语言改名已入 truth——payment/refund 两个
+  protocol structure 的参与者记录与端口身份全部去序数（`BankPayment0Prepare*` →
+  `ReserveInvestorFundsPrepare*`，`BankPayment1*` → `CreditFundCollection*`，
+  `BankPayment2*` → `ReserveCashFundOrder*`；`BankRefund0*` → `DebitFundCollection*`，
+  `BankRefund1*` → `CreditOriginalInvestor*`；kebab 物化文件身份同步）。手写绑定记录、
+  发射器金样同步。门全绿：validate hard 0／roundtrip ok／compile exit 0／显式更新流
+  再生 233 件（45 个改名值对象退休）／verify 12/12。
+  **F7 修正记档**：truth 冻结因用户显式领域语言指令解除一次（作者面正当编辑，
+  本文件与计划 §7.5 同步记档）。金样与 classic 再生产物现在引用同一套领域名。
 - **金样完整性裁定（2026-11-21，用户打回后确立）**：金样内**禁止出现任何 classic
   风格类型名**（如 `bank_cash_payment_v1Execution.pay_cash_purchaseResult`）——
   编译闭包内的类型名一步到位；「wave 2 再改名」不成立。同时 TechnicalPorts 单文件

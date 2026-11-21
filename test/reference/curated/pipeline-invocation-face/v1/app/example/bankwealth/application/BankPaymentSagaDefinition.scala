@@ -36,15 +36,15 @@ object BankPaymentSagaDefinition {
     * (evidence) plus one checked phase port per participant phase. */
   trait Ports {
     def declarations: Map[String, (String, String)]
-    def reserveInvestorFundsPrepare: PhasePort[Args, BankPayment0PrepareReceipt]
-    def reserveInvestorFundsCommit: PhasePort[Args, BankPayment0CommitReceipt]
-    def reserveInvestorFundsCompensate: PhasePort[Args, BankPayment0CompensateReceipt]
-    def creditFundCollectionPrepare: PhasePort[Args, BankPayment1PrepareReceipt]
-    def creditFundCollectionCommit: PhasePort[Args, BankPayment1CommitReceipt]
-    def creditFundCollectionCompensate: PhasePort[Args, BankPayment1CompensateReceipt]
-    def reserveCashFundOrderPrepare: PhasePort[Args, BankPayment2PrepareReceipt]
-    def reserveCashFundOrderCommit: PhasePort[Args, BankPayment2CommitReceipt]
-    def reserveCashFundOrderCompensate: PhasePort[Args, BankPayment2CompensateReceipt]
+    def reserveInvestorFundsPrepare: PhasePort[Args, ReserveInvestorFundsPrepareReceipt]
+    def reserveInvestorFundsCommit: PhasePort[Args, ReserveInvestorFundsCommitReceipt]
+    def reserveInvestorFundsCompensate: PhasePort[Args, ReserveInvestorFundsCompensateReceipt]
+    def creditFundCollectionPrepare: PhasePort[Args, CreditFundCollectionPrepareReceipt]
+    def creditFundCollectionCommit: PhasePort[Args, CreditFundCollectionCommitReceipt]
+    def creditFundCollectionCompensate: PhasePort[Args, CreditFundCollectionCompensateReceipt]
+    def reserveCashFundOrderPrepare: PhasePort[Args, ReserveCashFundOrderPrepareReceipt]
+    def reserveCashFundOrderCommit: PhasePort[Args, ReserveCashFundOrderCommitReceipt]
+    def reserveCashFundOrderCompensate: PhasePort[Args, ReserveCashFundOrderCompensateReceipt]
   }
 
   // ---------------------------------------------------------------- knowledge
@@ -92,42 +92,42 @@ object BankPaymentSagaDefinition {
 
   // ---- reserve-investor-funds (investorCreditBalance, CreditBalance) --------
 
-  val ReserveInvestorFundsPrepareCodec: PayloadCodec[BankPayment0PrepareReceipt] = payloadCodec(
+  val ReserveInvestorFundsPrepareCodec: PayloadCodec[ReserveInvestorFundsPrepareReceipt] = payloadCodec(
     CodecPin("bank-payment-reserve-investor-funds-prepare", 1),
-    receipt => example.bankwealth.infrastructure.serialization.DomainConverters.encodeBankPayment0PrepareReceiptPB(receipt).toByteString,
-    bytes => Try(example.bankwealth.infrastructure.serialization.DomainConverters.decodeBankPayment0PrepareReceiptPB(
-      example.bankwealth.infrastructure.proto.BankPayment0PrepareReceiptPB.parseFrom(bytes.toByteArray))),
+    receipt => example.bankwealth.infrastructure.serialization.DomainConverters.encodeReserveInvestorFundsPrepareReceiptPB(receipt).toByteString,
+    bytes => Try(example.bankwealth.infrastructure.serialization.DomainConverters.decodeReserveInvestorFundsPrepareReceiptPB(
+      example.bankwealth.infrastructure.proto.ReserveInvestorFundsPrepareReceiptPB.parseFrom(bytes.toByteArray))),
   )
 
-  private def checkReserveInvestorFundsPrepare(request: OperationRequest[Args], receipt: BankPayment0PrepareReceipt): Unit =
+  private def checkReserveInvestorFundsPrepare(request: OperationRequest[Args], receipt: ReserveInvestorFundsPrepareReceipt): Unit =
     requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
   def reserveInvestorFundsPrepareCommand(request: OperationRequest[Args]): CreditBalanceProtocol.ReserveFunds =
     CreditBalanceProtocol.ReserveFunds(TxId(request.identity.transaction.transactionId), request.args.investorAccountId, request.args.amount)
 
-  val ReserveInvestorFundsCommitCodec: PayloadCodec[BankPayment0CommitReceipt] = payloadCodec(
+  val ReserveInvestorFundsCommitCodec: PayloadCodec[ReserveInvestorFundsCommitReceipt] = payloadCodec(
     CodecPin("bank-payment-reserve-investor-funds-commit", 1),
-    receipt => example.bankwealth.infrastructure.serialization.DomainConverters.encodeBankPayment0CommitReceiptPB(receipt).toByteString,
-    bytes => Try(example.bankwealth.infrastructure.serialization.DomainConverters.decodeBankPayment0CommitReceiptPB(
-      example.bankwealth.infrastructure.proto.BankPayment0CommitReceiptPB.parseFrom(bytes.toByteArray))),
+    receipt => example.bankwealth.infrastructure.serialization.DomainConverters.encodeReserveInvestorFundsCommitReceiptPB(receipt).toByteString,
+    bytes => Try(example.bankwealth.infrastructure.serialization.DomainConverters.decodeReserveInvestorFundsCommitReceiptPB(
+      example.bankwealth.infrastructure.proto.ReserveInvestorFundsCommitReceiptPB.parseFrom(bytes.toByteArray))),
   )
 
-  private def checkReserveInvestorFundsCommit(request: OperationRequest[Args], receipt: BankPayment0CommitReceipt): Unit =
+  private def checkReserveInvestorFundsCommit(request: OperationRequest[Args], receipt: ReserveInvestorFundsCommitReceipt): Unit =
     requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
   def reserveInvestorFundsCommitCommand(request: OperationRequest[Args]): CreditBalanceProtocol.DeductFunds =
     CreditBalanceProtocol.DeductFunds(TxId(request.identity.transaction.transactionId), request.args.investorAccountId, request.args.amount)
 
-  val ReserveInvestorFundsCompensateCodec: PayloadCodec[BankPayment0CompensateReceipt] = payloadCodec(
+  val ReserveInvestorFundsCompensateCodec: PayloadCodec[ReserveInvestorFundsCompensateReceipt] = payloadCodec(
     CodecPin("bank-payment-reserve-investor-funds-compensate", 1),
-    receipt => example.bankwealth.infrastructure.serialization.DomainConverters.encodeBankPayment0CompensateReceiptPB(receipt).toByteString,
-    bytes => Try(example.bankwealth.infrastructure.serialization.DomainConverters.decodeBankPayment0CompensateReceiptPB(
-      example.bankwealth.infrastructure.proto.BankPayment0CompensateReceiptPB.parseFrom(bytes.toByteArray))),
+    receipt => example.bankwealth.infrastructure.serialization.DomainConverters.encodeReserveInvestorFundsCompensateReceiptPB(receipt).toByteString,
+    bytes => Try(example.bankwealth.infrastructure.serialization.DomainConverters.decodeReserveInvestorFundsCompensateReceiptPB(
+      example.bankwealth.infrastructure.proto.ReserveInvestorFundsCompensateReceiptPB.parseFrom(bytes.toByteArray))),
   )
 
-  private def checkReserveInvestorFundsCompensate(request: OperationRequest[Args], receipt: BankPayment0CompensateReceipt): Unit =
+  private def checkReserveInvestorFundsCompensate(request: OperationRequest[Args], receipt: ReserveInvestorFundsCompensateReceipt): Unit =
     requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
@@ -136,42 +136,42 @@ object BankPaymentSagaDefinition {
 
   // ---- credit-fund-collection (collectionCreditBalance, CreditBalance) ------
 
-  val CreditFundCollectionPrepareCodec: PayloadCodec[BankPayment1PrepareReceipt] = payloadCodec(
+  val CreditFundCollectionPrepareCodec: PayloadCodec[CreditFundCollectionPrepareReceipt] = payloadCodec(
     CodecPin("bank-payment-credit-fund-collection-prepare", 1),
-    receipt => example.bankwealth.infrastructure.serialization.DomainConverters.encodeBankPayment1PrepareReceiptPB(receipt).toByteString,
-    bytes => Try(example.bankwealth.infrastructure.serialization.DomainConverters.decodeBankPayment1PrepareReceiptPB(
-      example.bankwealth.infrastructure.proto.BankPayment1PrepareReceiptPB.parseFrom(bytes.toByteArray))),
+    receipt => example.bankwealth.infrastructure.serialization.DomainConverters.encodeCreditFundCollectionPrepareReceiptPB(receipt).toByteString,
+    bytes => Try(example.bankwealth.infrastructure.serialization.DomainConverters.decodeCreditFundCollectionPrepareReceiptPB(
+      example.bankwealth.infrastructure.proto.CreditFundCollectionPrepareReceiptPB.parseFrom(bytes.toByteArray))),
   )
 
-  private def checkCreditFundCollectionPrepare(request: OperationRequest[Args], receipt: BankPayment1PrepareReceipt): Unit =
+  private def checkCreditFundCollectionPrepare(request: OperationRequest[Args], receipt: CreditFundCollectionPrepareReceipt): Unit =
     requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
   def creditFundCollectionPrepareCommand(request: OperationRequest[Args]): CreditBalanceProtocol.RecordIncomingCredits =
     CreditBalanceProtocol.RecordIncomingCredits(TxId(request.identity.transaction.transactionId), request.args.fundCollectionAccountId, request.args.amount)
 
-  val CreditFundCollectionCommitCodec: PayloadCodec[BankPayment1CommitReceipt] = payloadCodec(
+  val CreditFundCollectionCommitCodec: PayloadCodec[CreditFundCollectionCommitReceipt] = payloadCodec(
     CodecPin("bank-payment-credit-fund-collection-commit", 1),
-    receipt => example.bankwealth.infrastructure.serialization.DomainConverters.encodeBankPayment1CommitReceiptPB(receipt).toByteString,
-    bytes => Try(example.bankwealth.infrastructure.serialization.DomainConverters.decodeBankPayment1CommitReceiptPB(
-      example.bankwealth.infrastructure.proto.BankPayment1CommitReceiptPB.parseFrom(bytes.toByteArray))),
+    receipt => example.bankwealth.infrastructure.serialization.DomainConverters.encodeCreditFundCollectionCommitReceiptPB(receipt).toByteString,
+    bytes => Try(example.bankwealth.infrastructure.serialization.DomainConverters.decodeCreditFundCollectionCommitReceiptPB(
+      example.bankwealth.infrastructure.proto.CreditFundCollectionCommitReceiptPB.parseFrom(bytes.toByteArray))),
   )
 
-  private def checkCreditFundCollectionCommit(request: OperationRequest[Args], receipt: BankPayment1CommitReceipt): Unit =
+  private def checkCreditFundCollectionCommit(request: OperationRequest[Args], receipt: CreditFundCollectionCommitReceipt): Unit =
     requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
   def creditFundCollectionCommitCommand(request: OperationRequest[Args]): CreditBalanceProtocol.CommitIncomingCredits =
     CreditBalanceProtocol.CommitIncomingCredits(TxId(request.identity.transaction.transactionId), request.args.fundCollectionAccountId, request.args.amount)
 
-  val CreditFundCollectionCompensateCodec: PayloadCodec[BankPayment1CompensateReceipt] = payloadCodec(
+  val CreditFundCollectionCompensateCodec: PayloadCodec[CreditFundCollectionCompensateReceipt] = payloadCodec(
     CodecPin("bank-payment-credit-fund-collection-compensate", 1),
-    receipt => example.bankwealth.infrastructure.serialization.DomainConverters.encodeBankPayment1CompensateReceiptPB(receipt).toByteString,
-    bytes => Try(example.bankwealth.infrastructure.serialization.DomainConverters.decodeBankPayment1CompensateReceiptPB(
-      example.bankwealth.infrastructure.proto.BankPayment1CompensateReceiptPB.parseFrom(bytes.toByteArray))),
+    receipt => example.bankwealth.infrastructure.serialization.DomainConverters.encodeCreditFundCollectionCompensateReceiptPB(receipt).toByteString,
+    bytes => Try(example.bankwealth.infrastructure.serialization.DomainConverters.decodeCreditFundCollectionCompensateReceiptPB(
+      example.bankwealth.infrastructure.proto.CreditFundCollectionCompensateReceiptPB.parseFrom(bytes.toByteArray))),
   )
 
-  private def checkCreditFundCollectionCompensate(request: OperationRequest[Args], receipt: BankPayment1CompensateReceipt): Unit =
+  private def checkCreditFundCollectionCompensate(request: OperationRequest[Args], receipt: CreditFundCollectionCompensateReceipt): Unit =
     requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
@@ -180,42 +180,42 @@ object BankPaymentSagaDefinition {
 
   // ---- reserve-cash-fund-order (orderFundOrderTCC, FundOrder) ---------------
 
-  val ReserveCashFundOrderPrepareCodec: PayloadCodec[BankPayment2PrepareReceipt] = payloadCodec(
+  val ReserveCashFundOrderPrepareCodec: PayloadCodec[ReserveCashFundOrderPrepareReceipt] = payloadCodec(
     CodecPin("bank-payment-reserve-cash-fund-order-prepare", 1),
-    receipt => example.bankwealth.infrastructure.serialization.DomainConverters.encodeBankPayment2PrepareReceiptPB(receipt).toByteString,
-    bytes => Try(example.bankwealth.infrastructure.serialization.DomainConverters.decodeBankPayment2PrepareReceiptPB(
-      example.bankwealth.infrastructure.proto.BankPayment2PrepareReceiptPB.parseFrom(bytes.toByteArray))),
+    receipt => example.bankwealth.infrastructure.serialization.DomainConverters.encodeReserveCashFundOrderPrepareReceiptPB(receipt).toByteString,
+    bytes => Try(example.bankwealth.infrastructure.serialization.DomainConverters.decodeReserveCashFundOrderPrepareReceiptPB(
+      example.bankwealth.infrastructure.proto.ReserveCashFundOrderPrepareReceiptPB.parseFrom(bytes.toByteArray))),
   )
 
-  private def checkReserveCashFundOrderPrepare(request: OperationRequest[Args], receipt: BankPayment2PrepareReceipt): Unit =
+  private def checkReserveCashFundOrderPrepare(request: OperationRequest[Args], receipt: ReserveCashFundOrderPrepareReceipt): Unit =
     requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
   def reserveCashFundOrderPrepareCommand(request: OperationRequest[Args]): FundOrderProtocol.ReserveFundSubscription =
     FundOrderProtocol.ReserveFundSubscription(TxId(request.identity.transaction.transactionId), request.args.fundOrderId, request.args.amount)
 
-  val ReserveCashFundOrderCommitCodec: PayloadCodec[BankPayment2CommitReceipt] = payloadCodec(
+  val ReserveCashFundOrderCommitCodec: PayloadCodec[ReserveCashFundOrderCommitReceipt] = payloadCodec(
     CodecPin("bank-payment-reserve-cash-fund-order-commit", 1),
-    receipt => example.bankwealth.infrastructure.serialization.DomainConverters.encodeBankPayment2CommitReceiptPB(receipt).toByteString,
-    bytes => Try(example.bankwealth.infrastructure.serialization.DomainConverters.decodeBankPayment2CommitReceiptPB(
-      example.bankwealth.infrastructure.proto.BankPayment2CommitReceiptPB.parseFrom(bytes.toByteArray))),
+    receipt => example.bankwealth.infrastructure.serialization.DomainConverters.encodeReserveCashFundOrderCommitReceiptPB(receipt).toByteString,
+    bytes => Try(example.bankwealth.infrastructure.serialization.DomainConverters.decodeReserveCashFundOrderCommitReceiptPB(
+      example.bankwealth.infrastructure.proto.ReserveCashFundOrderCommitReceiptPB.parseFrom(bytes.toByteArray))),
   )
 
-  private def checkReserveCashFundOrderCommit(request: OperationRequest[Args], receipt: BankPayment2CommitReceipt): Unit =
+  private def checkReserveCashFundOrderCommit(request: OperationRequest[Args], receipt: ReserveCashFundOrderCommitReceipt): Unit =
     requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
   def reserveCashFundOrderCommitCommand(request: OperationRequest[Args]): FundOrderProtocol.ConfirmFundSubscriptionPayment =
     FundOrderProtocol.ConfirmFundSubscriptionPayment(TxId(request.identity.transaction.transactionId), request.args.fundOrderId, request.args.amount)
 
-  val ReserveCashFundOrderCompensateCodec: PayloadCodec[BankPayment2CompensateReceipt] = payloadCodec(
+  val ReserveCashFundOrderCompensateCodec: PayloadCodec[ReserveCashFundOrderCompensateReceipt] = payloadCodec(
     CodecPin("bank-payment-reserve-cash-fund-order-compensate", 1),
-    receipt => example.bankwealth.infrastructure.serialization.DomainConverters.encodeBankPayment2CompensateReceiptPB(receipt).toByteString,
-    bytes => Try(example.bankwealth.infrastructure.serialization.DomainConverters.decodeBankPayment2CompensateReceiptPB(
-      example.bankwealth.infrastructure.proto.BankPayment2CompensateReceiptPB.parseFrom(bytes.toByteArray))),
+    receipt => example.bankwealth.infrastructure.serialization.DomainConverters.encodeReserveCashFundOrderCompensateReceiptPB(receipt).toByteString,
+    bytes => Try(example.bankwealth.infrastructure.serialization.DomainConverters.decodeReserveCashFundOrderCompensateReceiptPB(
+      example.bankwealth.infrastructure.proto.ReserveCashFundOrderCompensateReceiptPB.parseFrom(bytes.toByteArray))),
   )
 
-  private def checkReserveCashFundOrderCompensate(request: OperationRequest[Args], receipt: BankPayment2CompensateReceipt): Unit =
+  private def checkReserveCashFundOrderCompensate(request: OperationRequest[Args], receipt: ReserveCashFundOrderCompensateReceipt): Unit =
     requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
@@ -288,15 +288,15 @@ object BankPaymentSagaDefinition {
     new Ports {
       val declarations: Map[String, (String, String)] = technical.declarations
 
-      val reserveInvestorFundsPrepare: PhasePort[Args, BankPayment0PrepareReceipt] =
+      val reserveInvestorFundsPrepare: PhasePort[Args, ReserveInvestorFundsPrepareReceipt] =
         checkedPhasePort(phasePort(technical, ReserveInvestorFundsPrepareCodec) { (ports, request) =>
           val command = reserveInvestorFundsPrepareCommand(request)
           ports.reserveInvestorFundsPrepareExecute(
-            BankPayment0PrepareInput(command.txid, command.resource, command.amount), request.identity)
+            ReserveInvestorFundsPrepareInput(command.txid, command.resource, command.amount), request.identity)
             .map(r => ConfirmedReceipt(request.identity, r))
         } { (ports, request) =>
           ports.reserveInvestorFundsPrepareQuery(
-            BankPayment0PrepareQuery(TxId(request.identity.transaction.transactionId),
+            ReserveInvestorFundsPrepareQuery(TxId(request.identity.transaction.transactionId),
               request.identity.transaction.definitionVersion.toString, request.identity.transaction.argsDigest,
               request.identity.participantId, AccountId(request.identity.resource), request.identity.stepId, phaseLower(request)),
             request.identity)
@@ -304,15 +304,15 @@ object BankPaymentSagaDefinition {
                    case None => Unknown(request.identity, "typed query returned no authoritative evidence") }
         }, ReserveInvestorFundsPrepareCodec, checkReserveInvestorFundsPrepare)
 
-      val reserveInvestorFundsCommit: PhasePort[Args, BankPayment0CommitReceipt] =
+      val reserveInvestorFundsCommit: PhasePort[Args, ReserveInvestorFundsCommitReceipt] =
         checkedPhasePort(phasePort(technical, ReserveInvestorFundsCommitCodec) { (ports, request) =>
           val command = reserveInvestorFundsCommitCommand(request)
           ports.reserveInvestorFundsCommitExecute(
-            BankPayment0CommitInput(command.txid, command.resource, command.amount), request.identity)
+            ReserveInvestorFundsCommitInput(command.txid, command.resource, command.amount), request.identity)
             .map(r => ConfirmedReceipt(request.identity, r))
         } { (ports, request) =>
           ports.reserveInvestorFundsCommitQuery(
-            BankPayment0CommitQuery(TxId(request.identity.transaction.transactionId),
+            ReserveInvestorFundsCommitQuery(TxId(request.identity.transaction.transactionId),
               request.identity.transaction.definitionVersion.toString, request.identity.transaction.argsDigest,
               request.identity.participantId, AccountId(request.identity.resource), request.identity.stepId, phaseLower(request)),
             request.identity)
@@ -320,15 +320,15 @@ object BankPaymentSagaDefinition {
                    case None => Unknown(request.identity, "typed query returned no authoritative evidence") }
         }, ReserveInvestorFundsCommitCodec, checkReserveInvestorFundsCommit)
 
-      val reserveInvestorFundsCompensate: PhasePort[Args, BankPayment0CompensateReceipt] =
+      val reserveInvestorFundsCompensate: PhasePort[Args, ReserveInvestorFundsCompensateReceipt] =
         checkedPhasePort(phasePort(technical, ReserveInvestorFundsCompensateCodec) { (ports, request) =>
           val command = reserveInvestorFundsCompensateCommand(request)
           ports.reserveInvestorFundsCompensateExecute(
-            BankPayment0CompensateInput(command.txid, command.resource, command.amount), request.identity)
+            ReserveInvestorFundsCompensateInput(command.txid, command.resource, command.amount), request.identity)
             .map(r => ConfirmedReceipt(request.identity, r))
         } { (ports, request) =>
           ports.reserveInvestorFundsCompensateQuery(
-            BankPayment0CompensateQuery(TxId(request.identity.transaction.transactionId),
+            ReserveInvestorFundsCompensateQuery(TxId(request.identity.transaction.transactionId),
               request.identity.transaction.definitionVersion.toString, request.identity.transaction.argsDigest,
               request.identity.participantId, AccountId(request.identity.resource), request.identity.stepId, phaseLower(request)),
             request.identity)
@@ -336,15 +336,15 @@ object BankPaymentSagaDefinition {
                    case None => Unknown(request.identity, "typed query returned no authoritative evidence") }
         }, ReserveInvestorFundsCompensateCodec, checkReserveInvestorFundsCompensate)
 
-      val creditFundCollectionPrepare: PhasePort[Args, BankPayment1PrepareReceipt] =
+      val creditFundCollectionPrepare: PhasePort[Args, CreditFundCollectionPrepareReceipt] =
         checkedPhasePort(phasePort(technical, CreditFundCollectionPrepareCodec) { (ports, request) =>
           val command = creditFundCollectionPrepareCommand(request)
           ports.creditFundCollectionPrepareExecute(
-            BankPayment1PrepareInput(command.txid, command.resource, command.amount), request.identity)
+            CreditFundCollectionPrepareInput(command.txid, command.resource, command.amount), request.identity)
             .map(r => ConfirmedReceipt(request.identity, r))
         } { (ports, request) =>
           ports.creditFundCollectionPrepareQuery(
-            BankPayment1PrepareQuery(TxId(request.identity.transaction.transactionId),
+            CreditFundCollectionPrepareQuery(TxId(request.identity.transaction.transactionId),
               request.identity.transaction.definitionVersion.toString, request.identity.transaction.argsDigest,
               request.identity.participantId, AccountId(request.identity.resource), request.identity.stepId, phaseLower(request)),
             request.identity)
@@ -352,15 +352,15 @@ object BankPaymentSagaDefinition {
                    case None => Unknown(request.identity, "typed query returned no authoritative evidence") }
         }, CreditFundCollectionPrepareCodec, checkCreditFundCollectionPrepare)
 
-      val creditFundCollectionCommit: PhasePort[Args, BankPayment1CommitReceipt] =
+      val creditFundCollectionCommit: PhasePort[Args, CreditFundCollectionCommitReceipt] =
         checkedPhasePort(phasePort(technical, CreditFundCollectionCommitCodec) { (ports, request) =>
           val command = creditFundCollectionCommitCommand(request)
           ports.creditFundCollectionCommitExecute(
-            BankPayment1CommitInput(command.txid, command.resource, command.amount), request.identity)
+            CreditFundCollectionCommitInput(command.txid, command.resource, command.amount), request.identity)
             .map(r => ConfirmedReceipt(request.identity, r))
         } { (ports, request) =>
           ports.creditFundCollectionCommitQuery(
-            BankPayment1CommitQuery(TxId(request.identity.transaction.transactionId),
+            CreditFundCollectionCommitQuery(TxId(request.identity.transaction.transactionId),
               request.identity.transaction.definitionVersion.toString, request.identity.transaction.argsDigest,
               request.identity.participantId, AccountId(request.identity.resource), request.identity.stepId, phaseLower(request)),
             request.identity)
@@ -368,15 +368,15 @@ object BankPaymentSagaDefinition {
                    case None => Unknown(request.identity, "typed query returned no authoritative evidence") }
         }, CreditFundCollectionCommitCodec, checkCreditFundCollectionCommit)
 
-      val creditFundCollectionCompensate: PhasePort[Args, BankPayment1CompensateReceipt] =
+      val creditFundCollectionCompensate: PhasePort[Args, CreditFundCollectionCompensateReceipt] =
         checkedPhasePort(phasePort(technical, CreditFundCollectionCompensateCodec) { (ports, request) =>
           val command = creditFundCollectionCompensateCommand(request)
           ports.creditFundCollectionCompensateExecute(
-            BankPayment1CompensateInput(command.txid, command.resource, command.amount), request.identity)
+            CreditFundCollectionCompensateInput(command.txid, command.resource, command.amount), request.identity)
             .map(r => ConfirmedReceipt(request.identity, r))
         } { (ports, request) =>
           ports.creditFundCollectionCompensateQuery(
-            BankPayment1CompensateQuery(TxId(request.identity.transaction.transactionId),
+            CreditFundCollectionCompensateQuery(TxId(request.identity.transaction.transactionId),
               request.identity.transaction.definitionVersion.toString, request.identity.transaction.argsDigest,
               request.identity.participantId, AccountId(request.identity.resource), request.identity.stepId, phaseLower(request)),
             request.identity)
@@ -384,15 +384,15 @@ object BankPaymentSagaDefinition {
                    case None => Unknown(request.identity, "typed query returned no authoritative evidence") }
         }, CreditFundCollectionCompensateCodec, checkCreditFundCollectionCompensate)
 
-      val reserveCashFundOrderPrepare: PhasePort[Args, BankPayment2PrepareReceipt] =
+      val reserveCashFundOrderPrepare: PhasePort[Args, ReserveCashFundOrderPrepareReceipt] =
         checkedPhasePort(phasePort(technical, ReserveCashFundOrderPrepareCodec) { (ports, request) =>
           val command = reserveCashFundOrderPrepareCommand(request)
           ports.reserveCashFundOrderPrepareExecute(
-            BankPayment2PrepareInput(command.txid, command.resource, command.amount), request.identity)
+            ReserveCashFundOrderPrepareInput(command.txid, command.resource, command.amount), request.identity)
             .map(r => ConfirmedReceipt(request.identity, r))
         } { (ports, request) =>
           ports.reserveCashFundOrderPrepareQuery(
-            BankPayment2PrepareQuery(TxId(request.identity.transaction.transactionId),
+            ReserveCashFundOrderPrepareQuery(TxId(request.identity.transaction.transactionId),
               request.identity.transaction.definitionVersion.toString, request.identity.transaction.argsDigest,
               request.identity.participantId, FundOrderId(request.identity.resource), request.identity.stepId, phaseLower(request)),
             request.identity)
@@ -400,15 +400,15 @@ object BankPaymentSagaDefinition {
                    case None => Unknown(request.identity, "typed query returned no authoritative evidence") }
         }, ReserveCashFundOrderPrepareCodec, checkReserveCashFundOrderPrepare)
 
-      val reserveCashFundOrderCommit: PhasePort[Args, BankPayment2CommitReceipt] =
+      val reserveCashFundOrderCommit: PhasePort[Args, ReserveCashFundOrderCommitReceipt] =
         checkedPhasePort(phasePort(technical, ReserveCashFundOrderCommitCodec) { (ports, request) =>
           val command = reserveCashFundOrderCommitCommand(request)
           ports.reserveCashFundOrderCommitExecute(
-            BankPayment2CommitInput(command.txid, command.resource, command.amount), request.identity)
+            ReserveCashFundOrderCommitInput(command.txid, command.resource, command.amount), request.identity)
             .map(r => ConfirmedReceipt(request.identity, r))
         } { (ports, request) =>
           ports.reserveCashFundOrderCommitQuery(
-            BankPayment2CommitQuery(TxId(request.identity.transaction.transactionId),
+            ReserveCashFundOrderCommitQuery(TxId(request.identity.transaction.transactionId),
               request.identity.transaction.definitionVersion.toString, request.identity.transaction.argsDigest,
               request.identity.participantId, FundOrderId(request.identity.resource), request.identity.stepId, phaseLower(request)),
             request.identity)
@@ -416,15 +416,15 @@ object BankPaymentSagaDefinition {
                    case None => Unknown(request.identity, "typed query returned no authoritative evidence") }
         }, ReserveCashFundOrderCommitCodec, checkReserveCashFundOrderCommit)
 
-      val reserveCashFundOrderCompensate: PhasePort[Args, BankPayment2CompensateReceipt] =
+      val reserveCashFundOrderCompensate: PhasePort[Args, ReserveCashFundOrderCompensateReceipt] =
         checkedPhasePort(phasePort(technical, ReserveCashFundOrderCompensateCodec) { (ports, request) =>
           val command = reserveCashFundOrderCompensateCommand(request)
           ports.reserveCashFundOrderCompensateExecute(
-            BankPayment2CompensateInput(command.txid, command.resource, command.amount), request.identity)
+            ReserveCashFundOrderCompensateInput(command.txid, command.resource, command.amount), request.identity)
             .map(r => ConfirmedReceipt(request.identity, r))
         } { (ports, request) =>
           ports.reserveCashFundOrderCompensateQuery(
-            BankPayment2CompensateQuery(TxId(request.identity.transaction.transactionId),
+            ReserveCashFundOrderCompensateQuery(TxId(request.identity.transaction.transactionId),
               request.identity.transaction.definitionVersion.toString, request.identity.transaction.argsDigest,
               request.identity.participantId, FundOrderId(request.identity.resource), request.identity.stepId, phaseLower(request)),
             request.identity)
