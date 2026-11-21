@@ -2,7 +2,7 @@
   "schemaVersion": "curated.strict-saga-module.review-status/v1",
   "artifactType": "strict-saga-module",
   "candidateVersion": "v1",
-  "status": "GOLDEN_APPROVED_WALKTHROUGH_COMPLETE",
+  "status": "GOLDEN_APPROVED_JS_BYTE_PARITY_COMPLETE",
   "approvedAt": "2026-11-20",
   "walkthroughRulings": {
     "W1": "named-port-class (E1) accepted",
@@ -21,8 +21,20 @@
     "pinEquality": true
   },
   "jsImplementation": {
-    "registered": false,
-    "byteParity": "pending"
+    "registered": true,
+    "tool": "tools/gen-strict-saga-module.mjs",
+    "inputSchema": "truthsrc.strict-saga-module-input/v1",
+    "fixture": "test/fixtures/strict-saga-module-v1/input.json",
+    "byteParity": true,
+    "producedSha256": "74ea17451219916e6158ff1bce1e5665ad6d2a148b55f55946e0fb69b2b8c13f",
+    "goldenSha256": "74ea17451219916e6158ff1bce1e5665ad6d2a148b55f55946e0fb69b2b8c13f",
+    "bytes": 47795,
+    "deterministic": true,
+    "negatives": {
+      "expected": 13,
+      "rejected": 13
+    },
+    "layoutContract": "per-pattern frozen emission shapes matching the approved golden; wire-identity vectors split after the resource element; case-class param group table keyed by field type signature; InputContract inline threshold 90; case-class decl inline threshold 98"
   },
   "rawAcceptanceUnchanged": true,
   "all31Closed": false

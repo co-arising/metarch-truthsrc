@@ -69,6 +69,17 @@ completion 只做显式 map。**零机制**：不发事件、不落库；持久�
   （E1 依据）、Y2 准入＋禁前缀、Support 豁免结构不豁免 unsupported-term、
   domain 方向负、全 app 面分层净检。
 
+## JS 生成器（字节比对验收）
+
+`tools/gen-strict-saga-module.mjs`（输入合同 `truthsrc.strict-saga-module-input/v1`，
+fixture `test/fixtures/strict-saga-module-v1/input.json`）：同一输入重现金样
+**逐字节**（produced sha256 = golden sha256 = `74ea1745…`，47795 字节），双跑
+确定；13 条 fail-closed 负对照（重复槽位/未知 typeId/缺相位/pin 缺失或归零/
+不支持源/未知生产者/String 资源/非法完成源/非规范 digest/非法模块名/重复
+step/非正超时）全部拒收且诊断逐字匹配。发射布局按金样冻结：wire 向量在
+resource 元后断行、case-class 参数组按类型签名表、内联阈值 90/98——永不自
+declare 通过，比对报告由 verify 模式打印。
+
 ## 质量状态
 
 - discovery 轮（`.rounds/strict-saga-module-quality-20261120-01`）：两段编译
