@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "truthsrc.strict-saga-module-input/v1",
+  "family": "strict-saga-module",
+  "recordedAt": "2026-11-20",
+  "rulings": {
+    "F1-supply-pin": {
+      "choice": "S1a-prime",
+      "statement": "Pin the Maven Central release net.imadz:saga-core_2.13:0.3.0 (published 2026-11-12, built from the freeze tag v0.3.0 = commit 4352a31 of the local saga-core repo), staged byte-identically into the candidate supply directory (jar sha256 550fbd5c…, released POM sha256 105f2c4d…, provenance bank-wealth-demo/.local/truthsrc-runtime-0.3.0/receipt.json: source=maven-central, runtimeRebuilt=false). The user's 0.3.0 migration-gap investigation withdrew the earlier p23/p15 candidate-jar options; the p23 local-delivery jar 0.2.1-p23.20261027.1 and the p15 SNAPSHOT 0.2+1-cf26cd7a are retired from supply. The declared compile closure is pinned from the released POM plus the common-core 0.2 POM; prepare walks and asserts every declared compile dependency."
+    },
+    "F2-D1-module-placement": {
+      "choice": "O1",
+      "statement": "The golden lands on the approved three-layer target path example.stockreservation.application.services.transactor.StockTransferSagaModule (base example.stockreservation carried over from the aggregate-state-controller family). The raw binding.module independent namespace and the TypeResolverDSL admission conflict stay platform-side (D1 integration memo); the golden records the raw FQN difference without changing stable persistence identities."
+    },
+    "F3-naming": {
+      "choice": "N1",
+      "statement": "Approved-target naming: types PascalCase (strictPascal stems: ReserveSourceStockPrepare), members lowerCamel (reserveSourceStockPrepareBinding/Contract/Port), the raw Name/Version/DefinitionDigest/…/RequiredHost constant row maps to the lowerCamel row per the §9 symbol table (values unchanged). Every wire ID (stepId, participantId, codec pin ids, contract ids, digest) is verbatim raw."
+    },
+    "F4-engine-Y2": {
+      "choice": "Y2-continuation",
+      "statement": "The banned import prefix list (java.io/java.nio/java.time/java.util, scala.collection.mutable, java.sql) is unchanged from the aggregate-state-controller family; akka is admitted in boundary as the declared family face and the akka/strict-runtime file whitelist (module file alone) is pinned by structural properties."
+    },
+    "F5-host-codec-face": {
+      "choice": "H1",
+      "statement": "The golden keeps the raw face: nested final case class Args, abstract trait Host with every obligation unimplemented (requireImplemented/requireIndependentNamespace/addresses/bindings), codec pin contract declared but the codec itself a host obligation. The test supply implements the obligations with probe codecs (canonical length-prefixed framing) and armable bindings; no mapper or codec implementation is fabricated into the golden."
+    },
+    "F6-behavior-face": {
+      "choice": "B2-full-coordinator",
+      "statement": "The behavior face is executable at full strength: akka-persistence-testkit drives StrictSagaCoordinator through module.behavior over the persistence-testkit journal, whose events ride the real strict-saga protobuf serializer chain. Properties cover the full serial transfer (prepare receipts consumed through the real private[strict] StrictReceiptContext), auto-abort on a safe-absent prepare with real compensation, authorized reconciliation after an Unknown outcome, denied/unbudgeted reconcile, the pinned interaction timeout folding into RecoveryRequired, and the interaction-time codec-swap/contract-drift fences. Caller-level fail-closed faces (checkedArgsCodec, memberStart canonical roundtrip, memberEvent identity, behavior pin) are direct. Port identity-guard negatives are honest structural pins: the runtime always sends correct identities and re-materializes bindings per dispatch, so a Start-time swap is absorbed; the deterministic fence proof flips the binding mid-interaction, which is exactly the drift window the runtime fences."
+    },
+    "F7-D4-raw-debts": {
+      "choice": "D4a-raw-accepted",
+      "statement": "D4 raw gaps are accepted verbatim and recorded: deps are not recursively collected (the emitted import face is the approved target face instead), Money shapes keep the fixed ISO-4217/minor-unit-string wire, FieldDef defaults/comments are not emitted, and the plan reserved-name list does not include SequenceShape/ManifestRefShape (no collection/manifest shape is exercised by the serial-two fixture, so the conditional shapes are correctly absent). The BC plan-side reserved-name gap is a platform admission concern."
+    },
+    "F8-fixture-serial-two": {
+      "choice": "serial-two",
+      "statement": "The instance is the diff §10.1 prescribed first fixture: saga stock-transfer-v1, two participants (source-warehouse reserve-source-stock, target-warehouse commit-target-stock) each with all three TCC phases; step-two prepare reads two slots from one producer receipt (B04 dedup); step-one prepare carries a TransactionId input; receipt pins frozen with one non-one version (stock-transfer-commit-target-stock-prepare v2); shapes cover Id/Text/Integer/Enumeration with a non-String resource type (CommonTypes.Id = java.util.UUID); one command trigger and one event trigger cover both B06 branches; one completion with TransactionId+Args inputs covers both T24 expression branches; upstream flags honest (runnable/runtimeBindingVerified true, blocked empty); definitionDigest = sha256 of the frozen semantic-payload.json bytes (6d7dbbcf…)."
+    },
+    "F9-supply-gap-exclusion": {
+      "choice": "G1-recorded-exclusion",
+      "statement": "org.apache.geronimo.specs:geronimo-jta_1.1_spec:1.1.1 is compile-declared three levels deep (common-core 0.2 → scalikejdbc_2.13:3.5.0 → scalikejdbc-core → commons-dbcp2 2.7.0 → geronimo-jta) and is absent from every local cache host, so the declared closure cannot be completed offline. The user approved a recorded exclusion (G1) over a one-time network fetch (G2): the CLI supply() registers the coordinate as an explicit omitted edge with reason supply-gap-excluded and the full declaration chain; the closure assertion stays strict for every other declared compile dependency. Evidence: the full quality gate (63 properties × 3 seeds, real StrictSagaCoordinator roundtrips) ran green on a runtime classpath containing neither scalikejdbc nor dbcp2 nor geronimo — the common-core declared closure is strictly wider than its executable load face."
+    },
+    "W8-digest-verification": {
+      "choice": "a-property",
+      "statement": "User-approved 2026-11-20 walkthrough ruling: a structural property recomputes sha256 over the frozen semantic-payload.json bytes and compares with the emitted definitionDigest constant byte-for-byte, making the digest provenance machine-checked inside the gate (the hash computation itself stays in the admission + the runtime; the module pins and fences)."
+    }
+  },
+  "probes": [
+    "saga-core 0.2 (BC scaffold default) has no net.imadz.infra.saga.strict package — the strict runtime exists only from commit cf26cd7; the released 0.3.0 is the first published strict coordinate (user-directed investigation, 2026-11-20)",
+    "the released 0.3.0 API face was verified source-level against the freeze tag (CodecPin/PayloadCodec/Phase/PhasePort/StrictParticipant/StrictSagaDefinition/StrictSagaCoordinator/ReconcileAuthorizer); StrictSagaDefinition requires definitionDigest to match sha256:[0-9a-f]{64}",
+    "StrictReceiptContext.fromPersistedIntent is private[strict] — the receipt happy path is only reachable through the real coordinator, which settles the B2 choice",
+    "the frozen engine rejects Term.NewAnonymous at every layer (ScalaSourceMetrics unrecognizedTerm), forcing the named-port-class rendering E1; Term.New is whitelisted and the companion-apply form Try{...} never parses as Term.Try",
+    "the migration gap is real: Central has 0.3.0 (2026-11-12) but no project has resolved it through coursier; bank-wealth-demo staged it as a local file-URL repo while its saga-runtime-binding documents still say unpublished-candidate; banking-app/metarch-app/playAkkaCQRS still declare 0.2",
+    "runtime closure of the fixture: saga-core's reference.conf binds StrictDurable to the strict protobuf serializer and CborSerializable to jackson-cbor, and common-core 0.2's reference.conf binds akka.contrib.persistence.mongodb.ObjectIdOffset, pulling akka-serialization-jackson + the jackson stack + akka-persistence-mongo-common into the executable face",
+    "geronimo-jta_1.1_spec:1.1.1 has zero traces across all five local cache hosts (repo1/huawei/aliyun/sonatype×2/bintray); the G1 recorded exclusion is the user-approved resolution (2026-11-20)"
+  ],
+  "curatedFixes": {
+    "ruling": "E1 (2026-11-20 build ruling, user-approved F-block + walkthrough): the raw template emits the phase port as an anonymous new PhasePort[Args,R]{...}; the frozen engine flags Term.NewAnonymous as an unsupported term at every layer, so the golden renders a named private final <Stem>Port(host, binding, codec)(implicit ec) class with every guard, capture and per-read re-check verbatim. The raw memberPort body is otherwise unchanged.",
+    "idempotencyContractMapperFqn": "the raw IdempotencyContract carries mapperFqn as its first field; the golden declaration keeps the four-field shape",
+    "portClassImplicitEc": "the named port class takes (implicit ec: ExecutionContext) exactly like the raw anonymous object's enclosing memberPort scope, preserving flatMap resolution semantics",
+    "layoutRule": "D-LAYOUT-100 rendering: greedy argument packing at +2 for calls, +4 for declaration parameters, one operand per line for overflowing && chains, receipt-read OperationIdentity and definition participant Map entries one argument per line; imports exempt",
+    "mapperFqnNamespace": "mapper/codec FQNs are fixture-declared host-obligation strings under example.stockreservation.saga.mapper/codec (ports keep example.stockreservation.infrastructure.saga); shortening the namespace segment keeps every 100-column line legal and changes no identity-bearing value"
+  },
+  "integrationMemos": [
+    "0.3.0 migration gap: no local project has resolved saga-core 0.3.0 through coursier; bank-wealth-demo's saga-runtime-binding/v2 documents still declare artifactStatus unpublished-candidate eight days after the release (platform binding-document debt, not a golden blocker)",
+    "banking-app/metarch-app/playAkkaCQRS still declare saga-core 0.2; the formal generate-cli already expects the 0.3.0 file-URL supply form that bank-wealth-demo staged",
+    "D5/D6 (fixture reachability through FixtureHostBuilder; public wiring/execution write surfaces) stay integration-layer memos; they do not gate the golden"
+  ],
+  "supplies": {
+    "runtime": [
+      "supply/net/imadz/saga-core_2.13/0.3.0/saga-core_2.13-0.3.0.jar (sha256 550fbd5c…, Maven Central release, staged byte-identical)",
+      "supply/net/imadz/saga-core_2.13/0.3.0/saga-core_2.13-0.3.0.pom (sha256 105f2c4d…, released POM, closure-walk source)"
+    ],
+    "platform": [
+      "app/net/imadz/common/Id.scala (CommonTypes.Id alias + deterministic Id.of, carried over verbatim from the aggregate-state-controller family)"
+    ],
+    "business": [
+      "app/example/stockreservation/application/aggregates/StockOrderProtocol.scala (TransferStockCommand trigger source)",
+      "app/example/stockreservation/domain/events/StockWarehouseEvents.scala (StockReceivedEvent event-trigger source + StockTransferCompletedEvent completion target)"
+    ],
+    "semantic": [
+      "semantic-payload.json (canonical semantic payload; definitionDigest = sha256 of these bytes)"
+    ]
+  },
+  "emitted": {
+    "artifact": "app/example/stockreservation/application/services/transactor/StockTransferSagaModule.scala",
+    "face": "one module object per admitted saga: identity constants, Args/TriggerStart/address contracts, technical contract case classes, ValueShape family (five exercised shapes), requiredTypes/requiredArgsCodec/requiredHost, abstract trait Host, checkedArgsCodec guard chain, six per-phase blocks (Input/Receipt/contract/binding/port/port-def), two trigger blocks, one completion block, definition and behavior"
+  },
+  "rawAcceptanceUnchanged": true,
+  "all31Closed": false,
+  "testMirror": "test/ tree mirrors the module package path example.stockreservation/application/services/transactor; the quality skeleton is the subpackage ...transactor.quality in the bundle-root quality/ directory."
+}

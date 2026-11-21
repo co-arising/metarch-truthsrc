@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "curated.strict-saga-module.review-status/v1",
+  "artifactType": "strict-saga-module",
+  "candidateVersion": "v1",
+  "status": "GOLDEN_APPROVED_WALKTHROUGH_COMPLETE",
+  "approvedAt": "2026-11-20",
+  "walkthroughRulings": {
+    "W1": "named-port-class (E1) accepted",
+    "W2": "mapper/codec FQN namespace shortened to example.stockreservation.saga.mapper/codec accepted",
+    "W3": "candidateArtifact = artifact name accepted",
+    "W4": "mid-interaction self-flip fence trigger accepted",
+    "W5": "cold-start warmup + 5s tight per-ask budget accepted (was 30s)",
+    "W6": "compiler-pom.mjs strictly-strengthening refinements (reporting strip / ${project.*} identity / managed-scope inheritance) accepted",
+    "W7": "G1 supply-gap exclusion as omitted-edge rows accepted",
+    "W8": "digest verification property (sha256 of semantic-payload.json vs module constant) added and Proved"
+  },
+  "gate": {
+    "discovery": "strict-saga-module-quality-20261120-07",
+    "finalBytes": "strict-saga-module-quality-20261120-08",
+    "preparedPin": "fb23fe763cb302ee8ed8a61bbb6ac5b1c6b0c1536dfdb17595f0a8593cd69cc8",
+    "pinEquality": true
+  },
+  "jsImplementation": {
+    "registered": false,
+    "byteParity": "pending"
+  },
+  "rawAcceptanceUnchanged": true,
+  "all31Closed": false
+}

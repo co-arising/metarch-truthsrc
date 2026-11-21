@@ -1,0 +1,64 @@
+strict-saga-module.behavior.v1.behavior assembles a coordinator behavior for pinned settings
+strict-saga-module.behavior.v1.command trigger start round-trips canonical args into the coordinator start
+strict-saga-module.behavior.v1.completion maps identity and args through the host binding only
+strict-saga-module.behavior.v1.coordinator aborts and compensates the confirmed reservation
+strict-saga-module.behavior.v1.coordinator completes the serial transfer through both prepare receipts
+strict-saga-module.behavior.v1.coordinator requires authorized reconciliation after an unknown outcome
+strict-saga-module.behavior.v1.coordinator start is idempotent for identical input and conflicting otherwise
+strict-saga-module.behavior.v1.definition builds participants in prepare order with exact identities and phases
+strict-saga-module.behavior.v1.definition installs the host canonical codec and the frozen definition identity
+strict-saga-module.behavior.v1.event trigger start maps the whole typed event into the coordinator start
+strict-saga-module.behavior.v1.negative: a binding contract drift is fenced during the interaction
+strict-saga-module.behavior.v1.negative: a hanging interaction folds into recovery after the pinned timeout
+strict-saga-module.behavior.v1.negative: a receipt codec swap is fenced during the interaction
+strict-saga-module.behavior.v1.negative: behavior fails closed on coordinator timeout pin mismatch
+strict-saga-module.behavior.v1.negative: behavior fails closed on null persistence id or authorizer
+strict-saga-module.behavior.v1.negative: completion fails closed on completion binding contract drift
+strict-saga-module.behavior.v1.negative: completion fails closed on definition digest drift
+strict-saga-module.behavior.v1.negative: completion fails closed on definition name drift
+strict-saga-module.behavior.v1.negative: completion fails closed on definition version drift
+strict-saga-module.behavior.v1.negative: definition fails closed on a null host
+strict-saga-module.behavior.v1.negative: definition fails closed on address contract drift
+strict-saga-module.behavior.v1.negative: definition fails closed on args codec pin drift
+strict-saga-module.behavior.v1.negative: definition fails closed when the host rejects requireImplemented
+strict-saga-module.behavior.v1.negative: reconciliation without authorization or budget is denied
+strict-saga-module.behavior.v1.negative: trigger start fails closed on args codec pin drift
+strict-saga-module.behavior.v1.negative: trigger start fails closed on non-canonical args encoding
+strict-saga-module.behavior.v1.negative: trigger start fails closed on trigger binding contract drift
+strict-saga-module.behavior.v1.negative: trigger start fails closed when the host rejects requireImplemented
+strict-saga-module.behavior.v1.negative: trigger start requires a stable host idempotency transaction id
+strict-saga-module.quality.v1.engine: anonymous implementations are unsupported terms at every layer
+strict-saga-module.quality.v1.engine: domain layer rejects outward imports and future and uuid term names
+strict-saga-module.quality.v1.engine: e2b admits named arguments in call clauses and rejects real assignments
+strict-saga-module.quality.v1.engine: infix conjunction adds one decision per operator and match adds one per case
+strict-saga-module.quality.v1.engine: support sources skip structural checks but never skip the unsupported-term gate
+strict-saga-module.quality.v1.engine: the whole committed app face analyzes clean at its declared layers
+strict-saga-module.quality.v1.engine: y2 boundary admits the module face and still bans the effectful prefixes
+strict-saga-module.quality.v1.structure: akka and the strict runtime import only in the module file
+strict-saga-module.quality.v1.structure: app sources carry no reflection or global effect tokens
+strict-saga-module.quality.v1.structure: Args and TriggerStart carry the raw shapes with camelized slots
+strict-saga-module.quality.v1.structure: behavior guards pid and authorizer then namespace then timeout pin
+strict-saga-module.quality.v1.structure: checkedArgsCodec guards host, implementation, addresses and pin in order
+strict-saga-module.quality.v1.structure: definition builds participants in prepare order with phase maps in TCC order
+strict-saga-module.quality.v1.structure: each phase block orders input, receipt, contract, binding, port and def
+strict-saga-module.quality.v1.structure: every app source line stays inside the 100 column layout
+strict-saga-module.quality.v1.structure: every phase port re-checks codec identity and contract drift on each read
+strict-saga-module.quality.v1.structure: no app source imports a banned prefix and the identity face is fully qualified
+strict-saga-module.quality.v1.structure: requiredArgsCodec and requiredHost equal the frozen oracle contracts
+strict-saga-module.quality.v1.structure: requiredTypes is emitted in the declared type registry order
+strict-saga-module.quality.v1.structure: step-two prepare reads one producer receipt for two input slots
+strict-saga-module.quality.v1.structure: the address contracts are emitted in payload participant order
+strict-saga-module.quality.v1.structure: the camelCase member composition keeps raw wire ids untouched
+strict-saga-module.quality.v1.structure: the completion block is map-only with the explicit publication comment
+strict-saga-module.quality.v1.structure: the domain supply stays pure and the command supply imports only the identity face
+strict-saga-module.quality.v1.structure: the frozen definition digest is the sha256 of the semantic payload bytes
+strict-saga-module.quality.v1.structure: the honest candidate header comment is preserved verbatim
+strict-saga-module.quality.v1.structure: the host declares addresses then phase bindings then triggers then completion
+strict-saga-module.quality.v1.structure: the module import face is the judged dynamic and fixed order
+strict-saga-module.quality.v1.structure: the module lands on the approved three-layer transactor path
+strict-saga-module.quality.v1.structure: the phase blocks are emitted in schedule prepare order
+strict-saga-module.quality.v1.structure: the receipt pins are frozen with one non-one version
+strict-saga-module.quality.v1.structure: the technical contract case classes are emitted in raw order
+strict-saga-module.quality.v1.structure: the upstream identity constants are emitted in raw order with frozen values
+strict-saga-module.quality.v1.structure: the value shape family emits exactly the five exercised shapes
+strict-saga-module.quality.v1.structure: trigger blocks keep the whole-typed-trigger comment and start guard order
