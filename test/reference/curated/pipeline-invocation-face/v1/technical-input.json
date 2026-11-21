@@ -4,15 +4,17 @@
   "names": {
     "hostClass": "BankPaymentHost",
     "hostIoObject": "BankPaymentHostIO",
-    "technicalPortsObject": "BankPaymentTechnicalPorts",
+    "portsTrait": "BankPaymentPorts",
+    "portBindingsObject": "BankPaymentPortBindings",
     "serializerClass": "BankPaymentHostSerializer",
-    "executionClass": "bank_cash_payment_v1Execution",
-    "definitionClass": "bank_payment_hostDefinition",
+    "executionClass": "BankCashPaymentExecution",
+    "sagaDefinitionObject": "BankPaymentSagaDefinition",
     "package": "example.bankwealth.application",
     "nameSources": {
-      "hostClass": "N1: host id bank-payment-host, kebab-to-Pascal with stem/suffix dedup",
-      "executionClass": "classic name until the execution-plan family replacement (wave 2 golden will carry the Pascal name)",
-      "definitionClass": "classic name until the saga-definition family replacement"
+      "rule": "N1: kebab-to-Pascal with stem/suffix dedup; type names carry no version suffix (versions live in contract slots and codecs)",
+      "hostClass": "host id bank-payment-host",
+      "executionClass": "saga id bank-cash-payment-v1 (the durable plan face of that saga)",
+      "sagaDefinitionObject": "host id bank-payment-host"
     }
   },
   "saga": {
@@ -40,11 +42,11 @@
     "source": "knowledge: RESULT_KINDS frozen set (saga-hosts product); terminal set from the saga completion contract"
   },
   "participants": [
-    { "ordinal": 0, "id": "investorCreditBalance", "aggregate": "CreditBalance" },
-    { "ordinal": 1, "id": "collectionCreditBalance", "aggregate": "CreditBalance" },
-    { "ordinal": 2, "id": "orderFundOrderTcc", "aggregate": "FundOrder" }
+    { "stepId": "reserve-investor-funds", "participantId": "investorCreditBalance", "aggregate": "CreditBalance", "resourceType": "AccountId" },
+    { "stepId": "credit-fund-collection", "participantId": "collectionCreditBalance", "aggregate": "CreditBalance", "resourceType": "AccountId" },
+    { "stepId": "reserve-cash-fund-order", "participantId": "orderFundOrderTCC", "aggregate": "FundOrder", "resourceType": "FundOrderId" }
   ],
-  "participantsSource": "knowledge: saga payload participants[] in declaration order; N2 composes port member names from the ids",
+  "participantsSource": "knowledge: saga binding steps + payload participants in declaration order; N2 composes port member names from stepIds (camelCase), not ordinals; domain value types (BankPayment0PrepareInput and friends) keep knowledge-side names",
   "portBindings": {
     "artifact": "bank-payment-technical",
     "implementationVersion": "bank-v1-1",
@@ -62,14 +64,19 @@
   },
   "runtime": {
     "admission": {
-      "contract": "R2(b): in-memory coalescing; replies derived from durable state on re-invoke; caller owns ask timeout + retry"
+      "contract": "R2(b): in-memory coalescing; replies derived from durable state on re-invoke; caller owns ask timeout + retry; admission IO failure surfaces as 'admission unavailable', never as a denial"
     },
     "retry": {
       "initialMillis": 100,
       "factor": 2,
       "maxMillis": 5000,
       "deadlineSeconds": 60,
-      "source": "judged slot (R1): lands in the execution-face golden (wave 2) where the 20ms poll lives"
+      "source": "judged slot (R1): consumed by the execution-face bridge (BankCashPaymentExecution)"
+    },
+    "coordinator": {
+      "askMillis": 1000,
+      "capacity": 32,
+      "source": "judged slots, carried from classic semantics"
     },
     "logging": "R4: debug points at associate/observe/deliver/admission-denial/retry"
   },

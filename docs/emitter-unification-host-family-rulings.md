@@ -197,10 +197,20 @@ delivery）＋round 响应新鲜度关联＋RecoveryCompleted 重查询自愈＋
   EffectHostSerializer）。
 - **N1 缝宽更新**：host 类名由 host id kebab→Pascal＋suffix 去重派生
   （`bank-payment-host`→`BankPaymentHost`），无需 truth 侧补名——✅ 可派生。
-- **N2 细化**：端口成员名去掉 saga stem 前缀（成员已在 `BankPaymentTechnicalPorts`
-  对象作用域内），形如 `InvestorCreditBalancePrepareExecute`——参与者业务名来自
-  saga payload 的 `participants[].id`（investorCreditBalance/collectionCreditBalance/
-  orderFundOrderTCC，实测）。
+- **N2 细化（2026-11-21 二次修正）**：端口成员名来源改为**参与者步名**
+  （`reserve-investor-funds`／`credit-fund-collection`／`reserve-cash-fund-order`——
+  参与者动词组，比 participantId 更是领域语言），形如
+  `reserveInvestorFundsPrepareExecute`；实施绑定 id 保持经典拼写不变（手写区零迁移）。
+- **金样完整性裁定（2026-11-21，用户打回后确立）**：金样内**禁止出现任何 classic
+  风格类型名**（如 `bank_cash_payment_v1Execution.pay_cash_purchaseResult`）——
+  编译闭包内的类型名一步到位；「wave 2 再改名」不成立。同时 TechnicalPorts 单文件
+  过杂打回，拆为**端口面**（`BankPaymentPorts` trait——消费者视角）与
+  **绑定装配**（`BankPaymentPortBindings`——知识侧绑定义务的可执行形，非通用 DI
+  容器）两文件；classic Implementation 的 run/operation/completion 三面合一 null
+  缺省改为**按角色的三种 record**（RunBinding/OperationBinding/CompletionBinding），
+  Option 与 `.get` 全部消失；Definition 的 9×4 同形复制（codec/check/command/bind）
+  收敛为四个泛型 helper（`payloadCodec`／`requireReceiptIdentity`／`safeOutcome`／
+  `checkedPhasePort`）。
 - **金样分波**：第一波＝Host／HostIO／TechnicalPorts／Serializer 四面（审查已吃透）；
   第二波＝Execution／Definition（需先专注核 monarch strict 运行时的
   OperationRequest/PhaseOutcome 契约）；两波齐后才进沙箱三轮。

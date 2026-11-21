@@ -14,7 +14,7 @@ object BankPaymentHostIO {
     * reports it as "admission unavailable", never as a denial. */
   def admit(
     original: BankPaymentOriginal,
-    technical: BankPaymentTechnicalPorts.Installed,
+    technical: BankPaymentPorts,
   )(implicit ec: ExecutionContext): Future[Boolean] =
     technical.entry(original).flatMap {
       case true => technical.association(original)
@@ -28,9 +28,9 @@ object BankPaymentHostIO {
     kind: ResultKind,
     original: BankPaymentOriginal,
     identity: TransactionIdentity,
-    technical: BankPaymentTechnicalPorts.Installed,
+    technical: BankPaymentPorts,
   )(implicit ec: ExecutionContext): Future[Boolean] = {
-    val context = BankPaymentTechnicalPorts.CompletionContext(original, identity)
+    val context = BankPaymentPorts.CompletionContext(original, identity)
     val expected = BankPaymentResult(example.bankwealth.domain.values.TxId(identity.transactionId))
     val (authority, delivery) = completionFace(kind, technical)
     authority(original, context).flatMap { actual =>
@@ -40,14 +40,14 @@ object BankPaymentHostIO {
   }
 
   private type AuthorityFace =
-    (BankPaymentOriginal, BankPaymentTechnicalPorts.CompletionContext) => Future[BankPaymentResult]
+    (BankPaymentOriginal, BankPaymentPorts.CompletionContext) => Future[BankPaymentResult]
   private type DeliveryFace =
-    (BankPaymentResult, BankPaymentTechnicalPorts.CompletionContext) => Future[Boolean]
+    (BankPaymentResult, BankPaymentPorts.CompletionContext) => Future[Boolean]
 
   /** The completion faces of each result kind; exhaustive by construction. */
   private def completionFace(
     kind: ResultKind,
-    technical: BankPaymentTechnicalPorts.Installed,
+    technical: BankPaymentPorts,
   ): (AuthorityFace, DeliveryFace) =
     kind match {
       case ResultKind.Succeeded => (technical.succeededAuthorityCompletion, technical.succeededDeliveryCompletion)

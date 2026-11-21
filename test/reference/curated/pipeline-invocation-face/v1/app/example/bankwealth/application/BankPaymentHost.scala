@@ -41,13 +41,13 @@ object BankPaymentHost {
   }
 
   sealed trait Request
-  final case class Invoke(state: bank_cash_payment_v1Execution.State, replyTo: ActorRef[Reply]) extends Request
+  final case class Invoke(state: BankCashPaymentExecution.State, replyTo: ActorRef[Reply]) extends Request
   private final case class Observed(reply: StrictSagaCoordinator.Reply, replyTo: ActorRef[Reply]) extends Request
   private final case class Delivered(kind: ResultKind, ok: Boolean, replyTo: ActorRef[Reply]) extends Request
   private final case class Admitted(operation: String, outcome: Either[String, Unit]) extends Request
 
   sealed trait Reply
-  final case class Completed(result: bank_cash_payment_v1Execution.pay_cash_purchaseResult) extends Reply
+  final case class Completed(result: BankCashPaymentExecution.PayCashPurchaseResult) extends Reply
   final case class Pending(reason: String) extends Reply
   final case class Conflict(reason: String) extends Reply
 
@@ -77,7 +77,7 @@ object BankPaymentHost {
   private val InvocationScheme = "truthsrc-pipeline-invocation-v1"
   private val InvocationMarkers = Vector("iteration", "absent", "chunk", "absent")
 
-  def originalInput(state: bank_cash_payment_v1Execution.State): BankPaymentOriginal =
+  def originalInput(state: BankCashPaymentExecution.State): BankPaymentOriginal =
     BankPaymentOriginal(
       state.inputs.operation,
       state.inputs.fundOrderId,
@@ -87,7 +87,7 @@ object BankPaymentHost {
       state.inputs.amount,
     )
 
-  def invocationArgs(state: bank_cash_payment_v1Execution.State): BankPaymentArgs =
+  def invocationArgs(state: BankCashPaymentExecution.State): BankPaymentArgs =
     BankPaymentArgs(
       state.inputs.investorAccountId,
       state.inputs.fundOrderId,
@@ -97,7 +97,7 @@ object BankPaymentHost {
 
   /** Durable operation identity: the scheme, saga and invocation markers plus
     * the request's own keys, length-prefixed and SHA-256 digested. */
-  def operationIdentity(state: bank_cash_payment_v1Execution.State): String = {
+  def operationIdentity(state: BankCashPaymentExecution.State): String = {
     val input = state.inputs
     fingerprint(Vector(
       InvocationScheme,
@@ -147,7 +147,7 @@ object BankPaymentHost {
       identity.definitionName == SagaId &&
       identity.definitionVersion == SagaDefinitionVersion &&
       identity.definitionDigest == SagaDefinitionDigest &&
-      identity.argsCodec == bank_payment_hostDefinition.argsCodec.pin &&
+      identity.argsCodec == BankPaymentSagaDefinition.argsCodec.pin &&
       identity.argsDigest == sha256Hex(state.args.toByteArray) &&
       state.identity.forall(_ == identity) &&
       scala.util.Try(StrictSagaProtoConverters.stateToProto(status)).isSuccess
@@ -162,9 +162,9 @@ object BankPaymentHost {
       case None => Pending("identity not yet observed") // unreachable: kinds answer only after observation; fail closed
       case Some(identity) =>
         kind match {
-          case ResultKind.Succeeded => Completed(bank_cash_payment_v1Execution.pay_cash_purchase_Succeeded(example.bankwealth.domain.values.TxId(identity.transactionId)))
-          case ResultKind.RejectedBeforeEffects => Completed(bank_cash_payment_v1Execution.pay_cash_purchase_Rejected)
-          case ResultKind.Compensated => Completed(bank_cash_payment_v1Execution.pay_cash_purchase_Compensated)
+          case ResultKind.Succeeded => Completed(BankCashPaymentExecution.PayCashPurchaseSucceeded(example.bankwealth.domain.values.TxId(identity.transactionId)))
+          case ResultKind.RejectedBeforeEffects => Completed(BankCashPaymentExecution.PayCashPurchaseRejected)
+          case ResultKind.Compensated => Completed(BankCashPaymentExecution.PayCashPurchaseCompensated)
           case ResultKind.RecoveryRequired | ResultKind.OutcomeUnknown => Pending(kind.wire)
         }
     }
@@ -172,7 +172,7 @@ object BankPaymentHost {
   def apply(
     persistenceId: String,
     coordinator: ActorRef[StrictSagaCoordinator.Command],
-    technical: BankPaymentTechnicalPorts.Installed,
+    technical: BankPaymentPorts,
   ): Behavior[Request] = Behaviors.setup { context =>
     require(persistenceId != null && persistenceId.nonEmpty && coordinator != null && technical != null,
       "explicit owned host identity, coordinator and installed technical ports required")
@@ -196,8 +196,8 @@ object BankPaymentHost {
       }
     }
 
-    def parent(state: State): bank_cash_payment_v1Execution.State =
-      bank_cash_payment_v1Execution.codec.decode(state.original.toByteArray)
+    def parent(state: State): BankCashPaymentExecution.State =
+      BankCashPaymentExecution.codec.decode(state.original.toByteArray)
 
     def observe(state: State, replyTo: ActorRef[Reply]): Unit =
       if (!state.admitted) {
@@ -228,8 +228,8 @@ object BankPaymentHost {
       State(),
       (state, request) => request match {
         case Invoke(input, replyTo) =>
-          val original = ByteString.copyFrom(bank_cash_payment_v1Execution.codec.encode(input))
-          val args = bank_payment_hostDefinition.argsCodec.encode(invocationArgs(input))
+          val original = ByteString.copyFrom(BankCashPaymentExecution.codec.encode(input))
+          val args = BankPaymentSagaDefinition.argsCodec.encode(invocationArgs(input))
           val operation = operationIdentity(input)
           if (state.operation.nonEmpty && (state.operation != operation || state.original != original || state.args != args)) {
             Effect.none.thenRun(_ => replyTo ! Conflict("different complete parent input or args under existing invocation"))
