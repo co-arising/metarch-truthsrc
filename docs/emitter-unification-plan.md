@@ -155,6 +155,40 @@ Pages 上引用旧生成器 id／文件头的句子同步刷新。
 | 收据溯源 id 变化引发 Pages/文档漂移 | Phase 5 统一刷新；期间 Pages 命令行不受影响（F7） |
 | 34 族战线过长 | 每族独立提交独立验收，随时可暂停；顺序表允许用户插队改序 |
 
+## 7.5 开工登记（Phase 0 完成）
+
+- 2026-11-21：分支 `emitter-unification` 自 `98748e7` 建立；工作树干净（HEAD ≥ c350bb8 ✅）。
+- bank-wealth 五步门基线复跑全绿：doctor ✅／validate hard 0 ✅／compile exit 0 errors 0 ✅／
+  generate written=0，identical 233/233 全 IDENTICAL ✅／verify 12 项全 true ✅。
+- JSON 台账在位（`generated/current/truthsrc.ledger.json`，generator=`scala-cqrs-play-service`，
+  33 类 kind 与 §5 聚类吻合）。注：md 账本 `second-family-v2-toolgate-approved.md`
+  未在仓库内落盘（上会话会话内账本），其关键内容（8 族收口＋D-P08＋单发射器决定）
+  已由本计划全文承载，不构成阻塞。
+
+### Phase 1 完成登记（2026-11-21，同会话）
+
+- `emitter/` 骨架就位：`registry.mjs`（fail-closed 注册表＋唯一发射封套 renderFamily）＋
+  `families/` 8 族模块（自 `tools/gen-*.mjs` 逐字移植，注册块自带出处）＋
+  `parity.mjs`（验收 harness）＋ `cli.mjs`（families/generate/verify/negatives/parity/diff）＋
+  `diff-report.mjs`（F5 逐文件差异呈报件）＋ `test/emitter-unification.test.mjs`（4 测试入套件）。
+- **Phase 1 验收全绿**：8 族 fixture 输入下 emitter 与 `tools/gen-*.mjs` 逐字节一致
+  （toolsParity 8/8）＋curated 金样逐字节等值（goldenParity 8/8，27 件产物）＋双跑确定
+  （8/8）＋内嵌电池全清（12/12、40/40、20/20、13/13）。
+- **登记债务（呈报用户，不自裁）**：#11/#13/#25/#26 四族 curated 模块无负测电池
+  （`battery: none`，parity 报告 `batteriesDebt=4`，测试断言债务集恒等于这四族）。
+  是否按族门序补电池、何时补，待用户裁定；不阻塞 Phase 2（试点族 #42 电池齐全）。
+- **顺带发现（参考件缺陷，未修，呈报）**：`tools/gen-aggregate-state-controller.mjs`
+  的 CLI generate 模式参数错位（`inputPath=args[1]`＋`target=undefined`，历史上只跑过
+  verify/negatives 门）；emitter 侧不受影响（纯函数路径）。
+- aggregate-rules-formal 金样代次勘误：curated 树有 v1/v2/v3 三代，fixture 声明
+  `goldenVersion: v3`，family.goldenRoot 锚定 v3（v1 为旧形，发射字节与之不等属预期）。
+- **工具指纹范围发现（Phase 2 排期输入）**：bank-wealth `.truthsrc/inputs.json` 的工具链
+  指纹覆盖 `lib/ src/ generators/ schema/ scaffold/ + bin/truthsrc.js + package.json`
+  （`lib/project/cli.mjs` toolEvidence）。emitter/ 不在指纹内；但 Phase 2 起每次族替换
+  动 `generators/` 必翻指纹 → bank-wealth 必须「显式 update 重生成→再 verify」作为族替换
+  节拍的一环（本次曾因 package.json 加一行 emitter/ 触发 fail-closed 拒写，已撤回——
+  emitter 打包进 npm files 的事宜推迟到 Phase 4 收口一并处理）。
+
 ## 8. 新会话开工指引（Phase 0 即做）
 
 ```bash
