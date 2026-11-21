@@ -77,11 +77,30 @@ finalize），父宿主经 CompositionChildJournal 端口观察其 journal。
 
 ## 质量状态
 
-- 沙箱 discovery 轮（`.rounds/composition-invocation-host-quality-20261121-01`）：
-  两段编译＋度量门（27 文件 2222 scope 0 violation 0 excess；16 行闭式
-  例外＝引擎 6＋R/D 模板成员 10）＋43 性质三 seed 全过。
-- final-bytes 轮与同字节复跑在裁定后执行。本目录只是候选；认可以
-  bundle sha＋讲解裁定为准。
+- 沙箱三轮（discovery `-01` / final-bytes `-02` / 同字节复跑 `-03`，均
+  QUALITY_EXECUTION_COMPLETE）：两段编译＋度量门（27 文件 2222 scope
+  0 violation 0 excess；16 行闭式例外＝引擎 6＋R/D 模板成员 10）＋43 性质
+  三 seed 全过；prepared pin `ae52e6b4…` 三轮逐字节等值（零漂移）。
+- bundle sha `2d82a60f…`（41 件 payload，6,524,020 字节）与讲解裁定
+  （F1–F14＋F11 修订＋G1–G4，2026-11-21 全批）见 manifest/review-status。
+
+## JS 生成器（字节比对验收）
+
+`tools/gen-composition-invocation-host.mjs`（输入合同
+`truthsrc.composition-invocation-host-input/v1`，fixture
+`test/fixtures/composition-invocation-host-v1/input.json`）：同一输入重现
+七件族工件**逐字节**（端口 1285 / 子计划 3037 / Mongo 适配器 1983 / 装配
+847 / 组合宿主 30854 / R 套件 31467 / D 套件 27067 字节，produced sha256 =
+golden sha256 逐文件相等），双跑确定；40 条 fail-closed 负对照（schema 版本/
+非法符号/计划步数/await 位次/非法 step id/六字段表/op- 派生前缀/两 pid 前缀/
+非正时序/检查点键缺失/阶段数与三变换/1..8 界/子计划状态形/端口信号与映射表/
+offset 0/触发器六槽与 to←from 换向/child-wafers 源/终态映射面/prepare-confirmed
+规则/sys-error 面/四钩子/套件 db 前缀与命名空间/种子资金/游标-阶段链一致/
+两崩溃模式/部署前缀/打印标签/E0 探针批/E6 标签数）全部拒收。全部名字、
+包面、字段表、状态字段、派生格式、码串、护栏/日志消息、阶段链、事件映射表、
+时序常量、窗口表、配置键、db 前缀、打印标签与期望值出自输入合同——发射器
+只冻结逐处记档的排版形（多参声明的冻结行拆分表、96/100 列打包、CJK doc
+手工平衡断行、D 模板证据文件名与 JSON 键等模板力学）。
 
 ## 沙箱门家族修订（本族登记）
 

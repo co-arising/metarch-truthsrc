@@ -1,0 +1,352 @@
+{
+  "schemaVersion": "truthsrc.composition-invocation-host-input/v1",
+  "family": "composition-invocation-host",
+  "supply": {
+    "monarchVersion": "0.3.0",
+    "sagaCoreVersion": "0.3.0",
+    "akkaMongoVersion": "3.0.8"
+  },
+  "packages": {
+    "transactor": "example.stockreservation.application.services.transactor",
+    "aggregates": "example.stockreservation.application.aggregates",
+    "domainEntities": "example.stockreservation.domain.entities",
+    "infrastructurePersistence": "example.stockreservation.infrastructure.persistence",
+    "infrastructureBootstrap": "example.stockreservation.infrastructure.bootstrap"
+  },
+  "names": {
+    "host": "WaferTransferHost",
+    "childPlan": "WaferChildPlan",
+    "port": "CompositionChildJournal",
+    "signal": "ChildJournalSignal",
+    "mongoAdapter": "MongoCompositionChildJournal",
+    "bootstrap": "CompositionBootstrap",
+    "rSuite": "FixtureCompositionSpec",
+    "dFacts": "CompositionDeploymentFacts",
+    "dNode": "FixtureCompositionDeploymentNode",
+    "dSuite": "FixtureCompositionDeploymentSpec",
+    "lotProtocol": "LotProtocol",
+    "lotEntity": "LotEntity",
+    "splitModule": "WaferSplitSagaModule",
+    "mergeModule": "WaferMergeSagaModule",
+    "splitHost": "SplitFixtureHost",
+    "mergeHost": "MergeFixtureHost",
+    "splitEntry": "WaferSplitSagaEntry",
+    "mergeEntry": "WaferMergeSagaEntry"
+  },
+  "composition": {
+    "strictSagaPidPrefix": "strict-saga/",
+    "pidPrefix": "wafer-transfer",
+    "childPidPrefix": "wafer-child",
+    "singletonPrefix": "composition-",
+    "steps": ["split-transfer", "await-child-run", "merge-transfer"],
+    "splitStep": "split-transfer",
+    "awaitStep": "await-child-run",
+    "mergeStep": "merge-transfer",
+    "childCompletedCode": "ChildCompleted",
+    "concludedCode": "AllStepsSucceeded",
+    "rejectedCode": "Rejected",
+    "hostFaces": {
+      "beginCommand": "BeginOperation",
+      "getProgress": "GetProgress",
+      "operationReply": "OperationReply",
+      "progressReport": "ProgressReport",
+      "operationStarted": "OperationStarted",
+      "invocationIntent": "InvocationIntentPersisted",
+      "identityObserved": "IdentityObserved",
+      "stepCheckpointed": "StepCheckpointed",
+      "childProgressMirrored": "ChildProgressMirrored",
+      "operationConcluded": "OperationConcluded",
+      "composedState": "ComposedState"
+    },
+    "identityFields": [
+      { "name": "stepId", "type": "String", "identity": null },
+      { "name": "transactionId", "type": "String", "identity": "transactionId" },
+      { "name": "definitionName", "type": "String", "identity": "definitionName" },
+      { "name": "definitionVersion", "type": "Int", "identity": "definitionVersion" },
+      { "name": "argsDigest", "type": "String", "identity": "argsDigest" },
+      { "name": "definitionDigest", "type": "String", "identity": "definitionDigest" },
+      { "name": "argsCodecId", "type": "String", "identity": "argsCodec.id" },
+      { "name": "argsCodecVersion", "type": "Int", "identity": "argsCodec.version" },
+      { "name": "planDigest", "type": "String", "identity": "planDigest" }
+    ],
+    "startReplyFields": [
+      { "name": "operation", "type": "String" },
+      { "name": "occurrence", "type": "String" },
+      { "name": "from", "type": "String" },
+      { "name": "to", "type": "String" },
+      { "name": "wafers", "type": "Vector[String]" },
+      { "name": "manifest", "type": "String" }
+    ],
+    "derivations": {
+      "txid": { "prefix": "op-", "join": "-", "parts": ["operation", "stepId", "occurrence"] },
+      "childRunKey": { "prefix": "op-", "join": "-", "parts": ["operation", "awaitStep", "occurrence"] },
+      "childPersistenceId": { "prefix": "wafer-child/", "base": "childRunKey" },
+      "persistenceId": { "prefix": "wafer-transfer/", "parts": ["operation", "occurrence"], "join": "-" },
+      "singleton": { "prefix": "composition-", "hash": "sha256-of-persistenceId" }
+    },
+    "timings": {
+      "pollIntervalMs": 200,
+      "pollAskSeconds": 2,
+      "childAskSeconds": 5
+    },
+    "messages": {
+      "persistenceIdGuard": "explicit operation and occurrence required",
+      "pidMismatch": "operation does not match this persistence identity",
+      "alreadyStarted": "operation already started (single-writer)",
+      "sagaStartWithoutOperation": "step start without a started operation",
+      "childStartWithoutOperation": "child start without a started operation",
+      "conflictingIdentity": "ConflictingIdentity",
+      "attachGuard": "already in state",
+      "childRejectedCode": "ChildRejected",
+      "unmappedStatus": "unmapped coordinator terminal status: ",
+      "unansweredPoll": "An unanswered poll is never a failure verdict — poll again.",
+      "unansweredChild": ["An unanswered StartRun is unknown, not absent — the durable journal",
+        "remains the reconciliation face; observation decides, never a timeout."]
+    },
+    "childCheckpointOutputs": [
+      { "key": "wafers", "source": "child-completed-csv" },
+      { "key": "childRun", "source": "await-run-key" }
+    ],
+    "sagaCheckpointOutput": { "key": "txid", "source": "transactionId" }
+  },
+  "childPlan": {
+    "stages": [
+      { "id": "Receive", "name": "receive", "transform": "absorb-start-state" },
+      { "id": "Process", "name": "process", "transform": "mark-processed" },
+      { "id": "Finalize", "name": "finalize", "transform": "fixture-no-op" }
+    ],
+    "state": {
+      "name": "ChildPlanState",
+      "fields": [
+        { "name": "wafers", "type": "Vector[String]" },
+        { "name": "processedCount", "type": "Int" }
+      ],
+      "codec": {
+        "wireExample": "w-101,w-102:2",
+        "comment": "ids carry no colons/commas (bounded ids)",
+        "separator": ":",
+        "listSeparator": ",",
+        "countConverter": "String.valueOf",
+        "emptyList": "Vector.empty[String]"
+      }
+    },
+    "runtime": {
+      "behavior": "net.imadz.monarch.persistence.PersistentMonarch.behavior",
+      "events": ["RunStarted", "StageDone", "RunCompleted", "RunFailedEvt"],
+      "stageCountBounds": [1, 8]
+    }
+  },
+  "port": {
+    "signals": [
+      { "name": "RunFinished", "kind": "object" },
+      { "name": "RunFailed", "kind": "case", "fields": [{ "name": "reason", "type": "String" }] },
+      { "name": "StageReached", "kind": "case", "fields": [{ "name": "cursor", "type": "String" }] }
+    ],
+    "mappings": [
+      { "monarch": "RunCompleted", "binding": null, "signal": "RunFinished", "args": [] },
+      { "monarch": "RunFailedEvt", "binding": "failed", "signal": "RunFailed", "args": ["failed.reason"] },
+      { "monarch": "StageDone", "binding": "stage", "signal": "StageReached", "args": ["stage.cursor"] }
+    ],
+    "adapter": {
+      "offset": "0L",
+      "maxOffset": "Long.MaxValue",
+      "readJournal": "MongoReadJournal.Identifier"
+    }
+  },
+  "trigger": {
+    "member": "waferTransferRequestedTriggerStart",
+    "payload": "LotProtocol.StartTransfer",
+    "args": [
+      { "slot": "txid", "source": "derived-txid" },
+      { "slot": "from", "source": "start-field:from" },
+      { "slot": "to", "source": "start-field:to" },
+      { "slot": "wafers", "source": "start-wafers" },
+      { "slot": "manifest", "source": "start-field:manifest" },
+      { "slot": "replyTo", "source": "lot-reply-sink" }
+    ],
+    "mergeArgs": [
+      { "slot": "txid", "source": "derived-txid" },
+      { "slot": "from", "source": "start-field:to" },
+      { "slot": "to", "source": "start-field:from" },
+      { "slot": "wafers", "source": "child-wafers" },
+      { "slot": "manifest", "source": "start-field:manifest" },
+      { "slot": "replyTo", "source": "lot-reply-sink" }
+    ]
+  },
+  "statusMapping": [
+    { "status": "Succeeded", "code": "Succeeded" },
+    { "status": "Aborted", "code": { "kind": "prepare-confirmed", "confirmed": "Compensated", "otherwise": "Rejected" } },
+    { "status": "RecoveryRequired", "code": "RecoveryRequired" },
+    { "status": null, "code": { "kind": "sys-error" } }
+  ],
+  "testHooks": [
+    { "name": "beforeEffect", "signature": "(String, String) => Boolean", "default": "(_, _) => true" },
+    { "name": "beforeChildCheckpoint", "signature": "() => Boolean", "default": "() => true" },
+    { "name": "recovered", "signature": "(Long, ComposedState) => Unit", "default": "(_, _) => ()" },
+    { "name": "stopped", "signature": "() => Unit", "default": "() => ()" }
+  ],
+  "rSuite": {
+    "className": "FixtureCompositionSpec",
+    "occurrence": "occ-1",
+    "mongo": {
+      "envVar": "SAGA_MONGO_HOSTPORT",
+      "defaultHostPort": "127.0.0.1:27017",
+      "dbPrefix": "p16_composition_",
+      "journalPlugin": "akka-contrib-mongodb-persistence-journal",
+      "snapshotPlugin": "akka-contrib-mongodb-persistence-snapshot",
+      "readJournalId": "akka-contrib-mongodb-persistence-readjournal"
+    },
+    "token": "composition-reconcile-token",
+    "seedWafers": ["w-001", "w-002", "w-003", "w-004"],
+    "splitWafers": ["w-001", "w-002"],
+    "childBaseWafers": ["w-101"],
+    "manifestSeed": "manifest-seed-v1",
+    "fromLot": "parent-lot",
+    "toLot": "child-lot",
+    "timings": {
+      "clusterDeadlineSeconds": 20,
+      "defaultAskSeconds": 10,
+      "askSeconds": 15,
+      "concludeSeconds": 60,
+      "concludeSleepMs": 150,
+      "clusterSleepMs": 100,
+      "socketTimeoutMs": 2000,
+      "journalAwaitSeconds": 10,
+      "e5TerminalSeconds": 40,
+      "e5PollMillis": 500,
+      "e4bProbeSeconds": 15
+    },
+    "printLabels": {
+      "prefix": "P16_PREFIX ",
+      "effects": "P16_EFFECTS ",
+      "intent": "P16_INTENT_BEFORE_EFFECT ",
+      "barrier": "P16_FIRST_START_NOT_SENT "
+    },
+    "windows": {
+      "e0": {
+        "name": "CompositionE0",
+        "title": "E0 journal injection: crossing batch, tail removal and fail-closed guards",
+        "probePid": "p16-prefix-probe",
+        "protectedPid": "p16-protected-pid",
+        "malformedPid": "p16-malformed-pid",
+        "collection": "p16_probe_journal",
+        "probeBatches": [[1, 2], [3, 5], [6, 7]],
+        "protectedBatches": [[1, 2]],
+        "keep": 4,
+        "unownedUri": "mongodb://127.0.0.1:27017/unowned",
+        "expectedSurvivors": [[1, 2], [3, 4]],
+        "malformedSn": 2,
+        "malformedKeep": 1
+      },
+      "e1": {
+        "name": "CompositionE1",
+        "title": "E1 composition full chain: every intent precedes its effect",
+        "operation": "op-e1",
+        "seedFrom": "seed-e1-from",
+        "seedTo": "seed-e1-to"
+      },
+      "e2": {
+        "name": "CompositionE2",
+        "title": "E2 saga terminal stored, checkpoint missing: reattach with zero new events",
+        "operation": "op-e2",
+        "cut": { "event": "IdentityObserved", "step": "split-transfer" },
+        "keep": 3
+      },
+      "e3": {
+        "name": "CompositionE3",
+        "title": "E3 await intent stored, all mirrors and child checkpoint missing: authoritative reconciliation",
+        "operation": "op-e3",
+        "cut": { "event": "InvocationIntentPersisted", "step": "await-child-run" },
+        "keep": 5
+      },
+      "e4": {
+        "name": "CompositionE4",
+        "title": "E4 intent stored, identity lost after completed Start: same identity reissue",
+        "operation": "op-e4",
+        "cut": { "event": "InvocationIntentPersisted", "step": "split-transfer" },
+        "keep": 2
+      },
+      "e4b": {
+        "name": "CompositionE4b",
+        "title": "E4b intent stored, first Start not sent: deterministic barrier",
+        "operation": "op-e4b",
+        "seedFrom": "seed-e4b-from",
+        "seedTo": "seed-e4b-to"
+      },
+      "e6": [
+        { "label": "child-checkpoint", "cut": { "event": "StepCheckpointed", "step": "await-child-run" } },
+        { "label": "merge-intent", "cut": { "event": "InvocationIntentPersisted", "step": "merge-transfer" } },
+        { "label": "merge-identity", "cut": { "event": "IdentityObserved", "step": "merge-transfer" } }
+      ],
+      "e6TitlePrefix": "E6 confirmed-prefix boundary ",
+      "e6TitleSuffix": ": no second effects",
+      "e6SuitePrefix": "CompositionE6",
+      "e6OperationPrefix": "op-e6-",
+      "e5": {
+        "name": "CompositionE5",
+        "title": "E5 same txid with different args: fail closed on the occupied terminal",
+        "operation": "op-e5",
+        "seedFrom": "seed-e5-from",
+        "seedTo": "seed-e5-to",
+        "occupierWafers": ["w-901", "w-902"],
+        "expectedCode": "Rejected"
+      }
+    },
+    "cursorExpectation": ["receive#0", "process#1", "finalize#2"],
+    "tccEffectOrder": ["WaferAdditionCommitted", "WaferAdditionReserved", "WaferRemovalCommitted",
+      "WaferRemovalReserved"]
+  },
+  "dSuite": {
+    "factsName": "CompositionDeploymentFacts",
+    "nodeName": "FixtureCompositionDeploymentNode",
+    "suiteName": "FixtureCompositionDeploymentSpec",
+    "mongo": {
+      "dbPrefix": "p17_composition_",
+      "journalPlugin": "akka-contrib-mongodb-persistence-journal",
+      "snapshotPlugin": "akka-contrib-mongodb-persistence-snapshot"
+    },
+    "printLabels": {
+      "frozen": "P17_FROZEN ",
+      "ownerRecovered": "P17_OWNER_RECOVERED ",
+      "ownerStopped": "P17_OWNER_STOPPED ",
+      "result": "P17_RESULT ",
+      "accepted": "P17_ACCEPTED "
+    },
+    "usage": "usage: node owner|successor port seedAddr mongoUri operation mode evidenceDir",
+    "operationPrefix": "op-p17-",
+    "nodeSeedFrom": "p17-seed-from",
+    "nodeSeedTo": "p17-seed-to",
+    "modes": ["first-start", "child-completed"],
+    "roles": ["owner", "successor"],
+    "clusterName": "CompositionP17",
+    "portExclusions": [9000, 2551],
+    "timings": {
+      "socketTimeoutMs": 2000,
+      "journalAwaitSeconds": 10,
+      "askSeconds": 15,
+      "clusterUpSeconds": 40,
+      "clusterSleepMs": 100,
+      "fileSleepMs": 50,
+      "ownerRecoveredWaitSeconds": 50,
+      "nodeRecoveredWaitSeconds": 40,
+      "readyToTerminateWaitSeconds": 100,
+      "frozenWaitOwnerSeconds": 90,
+      "frozenWaitSuccessorSeconds": 60,
+      "duplicateWaitSeconds": 20,
+      "successorRecoveredWaitSeconds": 90,
+      "destroyWaitSeconds": 30,
+      "ownerExitWaitSeconds": 45,
+      "successorWaitSeconds": 180
+    },
+    "resultExpectations": {
+      "concluded": "AllStepsSucceeded",
+      "sagaStarted": [1, 1],
+      "childStarted": 1,
+      "childStages": 3,
+      "businessEffects": [4, 4]
+    },
+    "ownerExitCodes": [0, 143]
+  },
+  "rawAcceptanceUnchanged": true,
+  "all31Closed": false
+}

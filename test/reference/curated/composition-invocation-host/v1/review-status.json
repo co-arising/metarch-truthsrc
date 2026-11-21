@@ -2,7 +2,7 @@
   "schemaVersion": "curated.composition-invocation-host.review-status/v1",
   "artifactType": "composition-invocation-host",
   "candidateVersion": "v1",
-  "status": "GOLDEN_APPROVED_WALKTHROUGH_COMPLETE",
+  "status": "GOLDEN_APPROVED_JS_BYTE_PARITY_COMPLETE",
   "approvedAt": "2026-11-21",
   "walkthroughRulings": {
     "F1": "supply (D2 landed): monarch-persistence 0.3.0 + monarch-core 0.3.0 staged byte-identically from bank-wealth-demo/.local/truthsrc-runtime-0.3.0, saga-core 0.3.0 reusing the #40/#41 staged jar; the formal CLI pins the same 0.3.0 coordinates with fixed SHA; closure adds the scalatest 3.2.11 family and scala-xml 2.0.1; the 0.3.0 behavior seven-explicit-param shape matches raw C05 parameter-for-parameter (probe-certified) accepted",
@@ -36,10 +36,57 @@
     "countsNote": "the gate-measured property split is 25 behavior (17 positive + 8 negative:) and 18 quality/structure (14 positive + 4 negative:) — 43 total, 12 negatives; the technical-input engineMeta.counts hand-count (31/12) predates the gate results and stays as delivered (prepared-pin equality), with the manifest recording the gate-truth numbers"
   },
   "jsImplementation": {
-    "registered": false,
-    "byteParity": "pending",
-    "plan": "tools/gen-composition-invocation-host.mjs over test/fixtures/composition-invocation-host-v1/input.json (schema truthsrc.composition-invocation-host-input/v1), emitting the seven family artifacts; the input contract carries every name, field list, state field, derivation format, code string, guard/log message, stage chain, event mapping, timing constant, scenario window table and config key; no golden bytes embedded",
-    "hardcodingBan": "the user mandated the generator must not hardcode golden bytes (structural emitter deriving everything from the input contract)"
+    "registered": true,
+    "tool": "tools/gen-composition-invocation-host.mjs",
+    "inputSchema": "truthsrc.composition-invocation-host-input/v1",
+    "fixture": "test/fixtures/composition-invocation-host-v1/input.json",
+    "byteParity": true,
+    "emissionSet": "the seven family artifacts (composition port, monarch child plan, Mongo observation adapter, bootstrap assembly, composition host, and the two compile-face suites); the 9 business supplies stay handwritten outside the emission set",
+    "files": [
+      {
+        "file": "CompositionChildJournal.scala",
+        "goldenSha256": "e3e4fa5b798808cac325da78c9fd69b43e2539c9eeb7d46005de202d838ebdb9",
+        "bytes": 1285
+      },
+      {
+        "file": "WaferChildPlan.scala",
+        "goldenSha256": "5b25e38952efc7ef549f06caad1e16527db72a9dbeb3cfdf6e1a2ed79f428e96",
+        "bytes": 3037
+      },
+      {
+        "file": "MongoCompositionChildJournal.scala",
+        "goldenSha256": "a0d29b1bad73f0b7c1349cdaa9f88cad5498bacfe353a35e65f5fb45126fb44e",
+        "bytes": 1983
+      },
+      {
+        "file": "CompositionBootstrap.scala",
+        "goldenSha256": "ca004f8e81ef3b2ff7ae5e6cc328dbd00484e305e11abd893b2449cea05c5880",
+        "bytes": 847
+      },
+      {
+        "file": "WaferTransferHost.scala",
+        "goldenSha256": "6ea74e68b72a52b0f8728a85d17fca475b4d4875f706cf2e4f4aeef789885027",
+        "bytes": 30854
+      },
+      {
+        "file": "FixtureCompositionSpec.scala",
+        "goldenSha256": "00b2b3096733e8962d031f999d9ea67bfba5ad6925d29903e4dcb68a4a54bdb8",
+        "bytes": 31467
+      },
+      {
+        "file": "FixtureCompositionDeploymentSpec.scala",
+        "goldenSha256": "aa612225b5eeaaca4ea26597ee4b950b18c3cfafd5117d4cf4684aab910501a5",
+        "bytes": 27067
+      }
+    ],
+    "producedSha256EqualsGoldenSha256PerFile": true,
+    "deterministic": true,
+    "hardcodingAudit": "no golden bytes embedded: names, packages, step ids, field lists, state fields, derivation formats, code strings, guard/log messages, stage chains, event mapping tables, timing constants, scenario window tables, config keys, db prefixes, print labels, result expectations, the fixture occurrence token and the strict-saga pid prefix all flow from the input contract; only documented emission layout shapes are frozen per pattern (frozen declaration row tables, 96/100-column packing, hand-balanced CJK doc breaks, D-template evidence filenames and JSON keys)",
+    "negatives": {
+      "expected": 40,
+      "rejected": 40
+    },
+    "layoutContract": "multi-param declarations carry frozen row tables (BeginOperation/OperationStarted 3/3(/1), IdentityObserved 3/2/2/2, ComposedState 2/1/1/1, ProgressReport 2/2) with continuations aligned under the first parameter; single-param declarations render inline at <= 100; the strict import and call/arg packs run at 100 columns with +2 continuations; the IdentityObserved persist packs stepId+2 then 3/3; the merge source packs the swapped short slots, the durable child-wafers CSV and the manifest+sink as three frozen rows; the E0 insertMany packs two probe batches per line at 100; the CJK doc paragraphs freeze their hand-balanced break positions with contract names interpolated"
   },
   "rawAcceptanceUnchanged": true,
   "all31Closed": false
