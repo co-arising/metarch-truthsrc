@@ -40,7 +40,7 @@ OWrites 序列化）。**零机制**：不发事件、不落库、不持久化�
 | F6 行为面 | ✅ | TestEntityRef 官方测试缝让 ask 往返/私有 writer JSON/超时折叠全部真实可执行；声明序走结构面 |
 | E2b 引擎 | ✅ 沿用 | Term.Assign 按上下文判（实参位两层准入／语句位两层违规），元性质 2 条 |
 | D-LAYOUT-100 | ✅ 沿用 | 100 列纪律，import 豁免，结构性质钉住 |
-| R-D 已知债 | ✅ 本轮修 | stateType 必填／gate-builder 统一去后缀 base／registry miss 拒收／noteId 删除——合同层修正＋生成器 fail-closed；D-P08 族留待下轮 |
+| R-D 已知债 | ✅ 本轮修 | stateType 必填／gate-builder 统一去后缀 base／registry miss 拒收／noteId 删除——合同层修正＋生成器 fail-closed；D-P08 族 2026-11-21 闭环（见下节） |
 | R-F 序列化面 | ✅ 用户裁定 | 全部 writer 改 private implicit val（raw 非 implicit T8 记为本族修掉的缺陷）；生成器契约＝同类型去重发射＋递归拓扑序（共享 Writes→状态 writer→回执 writer→方法） |
 
 ## 行为合同（ScalaCheck 实测，13 条全真实 HTTP 管线）
@@ -62,3 +62,38 @@ null-safe JSON＋settledAt ISO 串＋stock 独立字段形状）／无信封键�
   （随机性质各 ≥1000 次，合计 15123 次评估）。
 - final-bytes 轮在本候选提交字节上执行；prepared pin 与 discovery 轮相等即证零漂移。
   本目录只是候选；认可以 bundle sha＋讲解裁定为准。
+
+## JS 生成器与 D-P08 修复轮（2026-11-21）
+
+`tools/gen-aggregate-state-controller.mjs`（输入合同
+`truthsrc.aggregate-state-controller-input/v1`，fixture
+`test/fixtures/aggregate-state-controller-v1/input.json`）同一输入逐字节重现族工件
+（`66c82bfb…`，produced sha = golden sha，双跑确定）；供给 11 件不发射、只带真
+sha256 登记。verify 三合一＝字节等值＋双跑确定＋12 条负测电池（另有独立
+`negatives` 模式），全部 exit 0。
+
+**D-P08 fail-closed 族债闭环（R-D 当年按用户指示排后的唯一遗留）**，金样字节
+零改动：
+
+- **DP08-1 strict-schema 通吃**：通用未知键拒收落到四层（input／aggregates[i]／
+  stateFields[j]／supplied[k]）。登记的 strict-schema guard 此前超前于代码——
+  探针实证杂键（含 degraded 标记）能一路滑进发射，现在为真话。
+- **DP08-2 raw-debt token 深扫**：输入全部字符串叶禁 `???`（占位债）与
+  `degraded`（raw degraded 形标记，不分大小写），拒在输入边界、不论是否可达发射；
+  token 集故意最小（`net.imadz.metarch` 在本族是合法 import 前缀，#26 内核 token
+  表不转移）。
+- **DP08-3 unknown-dialect 面归位**：FIELD_SIGNATURES 精确名义匹配（play-json
+  builtins ∪ 共享 Instant/Id）即序列化方言准入，已在岗，登记归位，零新代码。
+- **DP08-4 负测电池进工具**：8→12 条（新增两条通用未知键＋routeBase 携 `???`＋
+  值携 degraded 标记），修复「登记说 verified 但 repo 无 runner 可重放」的缺口，
+  与 #40/#41/#42 的内置电池纪律拉齐。
+
+**writer-face 质疑（用户 2026-11-21）探针裁定**：要求把状态 writer 换成
+`Json.format` 风格宏声明（此前确有依赖序＋去重的 formats 生成代码——本族金样的
+去重＋拓扑序正是该要求的落地）。探针（pinned 栈 scala 2.13.14＋play-json 2.9.3
+离线编译）：`Json.writes` 8 字段编译运行成功（共享 null-safe Instant writer 被宏
+吸收，null→JsNull），**23/30 字段均炸 `No unapply or unapplySeq function found`**
+（2.13 超 22 字段 case class 无元组形 unapply 供宏消费）。结论：手写逐字段面维持
+——宏面会给「无字段数上限」性质塞 22 字段硬帽；reply 信封也不能宏派生（wire 平铺
+`r.state`，宏会套 `state` 键）。去重＋依赖序本来就在；合同行 497「没做版本能力
+实测」的豁免缺口由本探针回执闭合（technical-input.probes）。

@@ -44,6 +44,27 @@ const fieldsOf = (record, names, what) => {
 const bannedField = (record, name, what, why) => {
   if (name in record) fail('FORMAL_INPUT', `${what}.${name} is a raw-only slot and is not a target form (${why})`);
 };
+// DP08-1: strict schema — unknown keys reject at every declared object level.
+// The registered guard already claimed this; the generic scan makes it true.
+// Named raw-only slots keep their sharper bannedField diagnostics (checked first).
+const strictKeys = (record, names, what) => {
+  const extra = Object.keys(record).filter(name => !names.includes(name));
+  if (extra.length) fail('FORMAL_INPUT', `${what} carries unknown schema key(s): ${extra.join(', ')} (strict schema, D-P08)`);
+};
+// DP08-2: raw-debt tokens (the D-P08 fail-closed family). The raw tree carries
+// placeholder debt (`???`) and raw-degraded faces; neither may enter the
+// curated input in ANY string slot, rejected at the input boundary regardless
+// of whether the slot reaches emission bytes. Case-insensitive on the degraded
+// marker. The set is deliberately minimal: `net.imadz.metarch` is a legitimate
+// import prefix in THIS family, so the #26 kernel token list does not transfer.
+const BANNED_INPUT_TOKENS = ['???', 'degraded'];
+const walkDebtTokens = (node, what) => {
+  if (typeof node === 'string') {
+    const hit = BANNED_INPUT_TOKENS.find(token => node.toLowerCase().includes(token));
+    if (hit) fail('FORMAL_INPUT', `${what} carries the raw-debt token ${JSON.stringify(hit)}; raw placeholder/degraded input shapes are rejected fail-closed (D-P08)`);
+  } else if (Array.isArray(node)) node.forEach((item, index) => walkDebtTokens(item, `${what}[${index}]`));
+  else if (node !== null && typeof node === 'object') for (const key of Object.keys(node)) walkDebtTokens(node[key], `${what}.${key}`);
+};
 const pascal = (value, what) => {
   if (!/^[A-Z][A-Za-z0-9]*$/.test(value)) fail('FORMAL_INPUT', `${what} must be PascalCase`);
   return value;
@@ -77,11 +98,13 @@ function checkInput(input) {
   fieldsOf(input, ['schemaVersion', 'controllerPackage', 'controllerName', 'routeBase', 'aggregates', 'supplied'], 'input');
   if (input.schemaVersion !== 'truthsrc.aggregate-state-controller-input/v1')
     fail('FORMAL_INPUT', 'unsupported schemaVersion');
+  walkDebtTokens(input, 'input');
   ident(input.controllerPackage, 'input.controllerPackage');
   pascal(input.controllerName, 'input.controllerName');
   text(input.routeBase, 'input.routeBase');
   bannedField(input, 'noteId', 'input', 'the raw model carries an unconsumed noteId slot (R-D: dropped from the curated model)');
   bannedField(input, 'entries', 'input', 'the raw builder name; the curated schema composes from aggregates (R-D)');
+  strictKeys(input, ['schemaVersion', 'controllerPackage', 'controllerName', 'routeBase', 'aggregates', 'supplied'], 'input');
   if (!Array.isArray(input.aggregates)) fail('FORMAL_INPUT', 'input.aggregates must be an array (empty = the suppressed N=0 variant)');
   if (!Array.isArray(input.supplied)) fail('FORMAL_INPUT', 'input.supplied must be an array');
 
@@ -91,6 +114,7 @@ function checkInput(input) {
     fieldsOf(aggregate, ['aggregateName', 'repositoryName', 'repositoryType', 'commandType', 'replyType', 'stateType', 'idParam', 'stateFields'], what);
     bannedField(aggregate, 'noteId', what, 'the raw model carries an unconsumed noteId slot (R-D: dropped from the curated model)');
     bannedField(aggregate, 'stateFieldsDefaulted', what, 'the raw registry-miss→Nil debt is unreachable (R-D: a miss is rejected, not defaulted)');
+    strictKeys(aggregate, ['aggregateName', 'repositoryName', 'repositoryType', 'commandType', 'replyType', 'stateType', 'idParam', 'stateFields'], what);
     pascal(aggregate.aggregateName, `${what}.aggregateName`);
     ident(aggregate.repositoryName, `${what}.repositoryName`);
     dotted(aggregate.repositoryType, `${what}.repositoryType`);
@@ -114,6 +138,7 @@ function checkInput(input) {
     const seenFields = new Set();
     for (const [fieldIndex, field] of aggregate.stateFields.entries()) {
       fieldsOf(field, ['name', 'signature'], `${what}.stateFields[${fieldIndex}]`);
+      strictKeys(field, ['name', 'signature'], `${what}.stateFields[${fieldIndex}]`);
       if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(field.name))
         fail('FORMAL_INPUT', `${what}.stateFields[${fieldIndex}].name must be a bare identifier`);
       if (seenFields.has(field.name)) fail('FORMAL_INPUT', `${what} repeats the field name ${field.name}`);
@@ -130,6 +155,7 @@ function checkInput(input) {
   const seenSupply = new Set();
   for (const [index, supply] of input.supplied.entries()) {
     fieldsOf(supply, ['role', 'path', 'owner', 'sha256'], `input.supplied[${index}]`);
+    strictKeys(supply, ['role', 'path', 'owner', 'sha256'], `input.supplied[${index}]`);
     if (seenSupply.has(supply.path)) fail('FORMAL_INPUT', `duplicate supplied path ${supply.path}`);
     seenSupply.add(supply.path);
     if (!/^[0-9a-f]{64}$/.test(supply.sha256)) fail('FORMAL_INPUT', `input.supplied[${index}].sha256 must be a hex sha256`);
@@ -294,6 +320,64 @@ function renderAll(input) {
   return outputs;
 }
 
+// ---------- D-P08 negatives battery (DP08-4) ----------
+//
+// Twelve directed negatives: each mutates the input and must be rejected with
+// a FORMAL_INPUT error whose message carries the expected substring. The two
+// collision negatives reshape aggregates[1] to satisfy the earlier R-D checks
+// so the targeted check is the one that fires (the #42 battery calibration
+// discipline). Entries that cannot apply to a given input shape are skipped.
+const NEGATIVES = [
+  { name: 'missing stateType (R-D stateTypeRequired)', expect: 'missing fields: stateType',
+    mutate: i => { delete i.aggregates[0].stateType; } },
+  { name: 'command composition mismatch (R-D consistentBaseName)', expect: 'must compose as GetStockState',
+    mutate: i => { i.aggregates[1].commandType = i.aggregates[1].commandType.replace('GetStockState', 'GetStockAggregateState'); } },
+  { name: 'empty stateFields (registry miss)', expect: 'nonempty array',
+    mutate: i => { i.aggregates[0].stateFields = []; } },
+  { name: 'raw noteId slot', expect: 'raw-only slot',
+    mutate: i => { i.aggregates[0].noteId = 'raw'; } },
+  { name: 'base-collision duplicate method', expect: 'duplicate controller method name',
+    mutate: i => { i.aggregates[1].aggregateName = 'ReservationAggregate';
+      i.aggregates[1].commandType = i.aggregates[0].commandType;
+      i.aggregates[1].replyType = i.aggregates[0].replyType; } },
+  { name: 'duplicate-method (exact collision)', expect: 'duplicate controller method name',
+    mutate: i => { i.aggregates[1] = JSON.parse(JSON.stringify(i.aggregates[0])); } },
+  { name: 'uncovered signature (Money)', expect: 'has no judged writer',
+    mutate: i => { i.aggregates[0].stateFields.push({ name: 'money', signature: 'Money' }); } },
+  { name: 'unknown schema key (raw entries name)', expect: 'raw-only slot',
+    mutate: i => { i.entries = []; } },
+  { name: 'unknown top-level schema key (generic scan)', expect: 'unknown schema key',
+    mutate: i => { i.someUnknownTopKey = 'x'; } },
+  { name: 'unknown aggregate-level schema key (generic scan)', expect: 'unknown schema key',
+    mutate: i => { i.aggregates[0].rawUnknownSlot = 'x'; } },
+  { name: 'routeBase carries the ??? placeholder', expect: 'raw-debt token "???"',
+    mutate: i => { i.routeBase = '/???'; } },
+  { name: 'degraded marker in a value', expect: 'raw-debt token "degraded"',
+    mutate: i => { i.routeBase = '/api/degraded-state'; } },
+];
+
+function runNegatives(input) {
+  const failures = [];
+  let applied = 0;
+  for (const negative of NEGATIVES) {
+    let candidate;
+    try {
+      candidate = JSON.parse(JSON.stringify(input));
+      negative.mutate(candidate);
+    } catch { continue; }
+    applied += 1;
+    try {
+      checkInput(candidate);
+      renderAll(candidate);
+      failures.push(`${negative.name}: ACCEPTED (expected rejection)`);
+    } catch (error) {
+      if (!(error && typeof error.message === 'string' && error.message.includes(negative.expect)))
+        failures.push(`${negative.name}: rejected with an unexpected message — got ${JSON.stringify(String(error.message).slice(0, 160))}, expected substring ${JSON.stringify(negative.expect)}`);
+    }
+  }
+  return { expected: applied, rejected: applied - failures.length, failures };
+}
+
 export function generateAggregateStateController(inputJson) {
   const input = JSON.parse(JSON.stringify(inputJson));
   checkInput(input);
@@ -307,12 +391,15 @@ function parseStrictJson(raw) {
 // Public CLI:
 //   node tools/gen-aggregate-state-controller.mjs <input.json> <output-dir>
 //   node tools/gen-aggregate-state-controller.mjs verify <input.json> <golden-file>
+//     (byte parity + double-run determinism + the D-P08 negatives battery)
+//   node tools/gen-aggregate-state-controller.mjs negatives <input.json>
 if (process.argv[1] && process.argv[1].endsWith('gen-aggregate-state-controller.mjs')) {
   const args = process.argv.slice(2);
-  const mode = args[0] === 'verify' ? 'verify' : 'generate';
-  const [inputPath, target] = mode === 'verify' ? args.slice(1) : args;
-  if (!inputPath || !target) fail('FORMAL_USAGE',
-    'usage: gen-aggregate-state-controller.mjs <input.json> <output-dir> | verify <input.json> <golden-file>');
+  const mode = args[0] === 'verify' || args[0] === 'negatives' ? args[0] : 'generate';
+  const inputPath = args[1];
+  const target = mode === 'verify' ? args[2] : undefined;
+  if (!inputPath || (mode === 'verify' && !target)) fail('FORMAL_USAGE',
+    'usage: gen-aggregate-state-controller.mjs <input.json> <output-dir> | verify <input.json> <golden-file> | negatives <input.json>');
   const input = parseStrictJson(fs.readFileSync(inputPath));
   checkInput(input);
   const outputs = renderAll(input);
@@ -323,8 +410,13 @@ if (process.argv[1] && process.argv[1].endsWith('gen-aggregate-state-controller.
     const producedSha = createHash('sha256').update(produced).digest('hex');
     const goldenSha = createHash('sha256').update(golden).digest('hex');
     const rerendered = createHash('sha256').update(Buffer.from(renderAll(input)[Object.keys(outputs)[0]], 'utf8')).digest('hex');
-    process.stdout.write(JSON.stringify({ producedSha, goldenSha, byteParity: producedSha === goldenSha, deterministic: rerendered === producedSha }) + '\n');
-    if (producedSha !== goldenSha || rerendered !== producedSha) process.exitCode = 1;
+    const negatives = runNegatives(input);
+    process.stdout.write(JSON.stringify({ producedSha, goldenSha, byteParity: producedSha === goldenSha, deterministic: rerendered === producedSha, negatives }) + '\n');
+    if (producedSha !== goldenSha || rerendered !== producedSha || negatives.failures.length > 0) process.exitCode = 1;
+  } else if (mode === 'negatives') {
+    const negatives = runNegatives(input);
+    process.stdout.write(JSON.stringify({ negatives }) + '\n');
+    if (negatives.failures.length > 0) process.exitCode = 1;
   } else {
     fs.mkdirSync(target, { recursive: true });
     const produced = [];
