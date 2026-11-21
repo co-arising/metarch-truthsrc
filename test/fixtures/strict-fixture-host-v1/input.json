@@ -1,0 +1,754 @@
+{
+  "schemaVersion": "truthsrc.strict-fixture-host-input/v1",
+  "family": "strict-fixture-host",
+  "module": {
+    "packageName": "example.stockreservation.application.services.transactor",
+    "objectName": "StockTransferSagaModule",
+    "runtimeName": "stock-transfer"
+  },
+  "upstream": {
+    "argsPin": {
+      "id": "stock-transfer-args",
+      "version": 1
+    }
+  },
+  "argsCodec": {
+    "mapperFqn": "example.stockreservation.saga.codec.StockTransferArgsCodec",
+    "codecVersion": "1.0.0",
+    "decodePattern": [
+      "sourceId",
+      "targetId",
+      "skuText",
+      "quantityText",
+      "modeText"
+    ]
+  },
+  "args": {
+    "slots": [
+      {
+        "slot": "source-warehouse-id",
+        "typeId": "warehouse-id"
+      },
+      {
+        "slot": "target-warehouse-id",
+        "typeId": "warehouse-id"
+      },
+      {
+        "slot": "sku",
+        "typeId": "sku"
+      },
+      {
+        "slot": "quantity",
+        "typeId": "quantity"
+      },
+      {
+        "slot": "transfer-mode",
+        "typeId": "transfer-mode"
+      }
+    ],
+    "types": [
+      {
+        "id": "transaction-id",
+        "canonicalType": "TransactionId",
+        "implementationFqn": "java.lang.String",
+        "dataType": {
+          "name": "String",
+          "packageName": ""
+        },
+        "shape": {
+          "kind": "Text",
+          "minLength": 1,
+          "maxLength": 64
+        }
+      },
+      {
+        "id": "warehouse-id",
+        "canonicalType": "WarehouseId",
+        "implementationFqn": "net.imadz.common.CommonTypes.Id",
+        "dataType": {
+          "name": "UUID",
+          "packageName": "java.util"
+        },
+        "shape": {
+          "kind": "Id",
+          "minLength": 36,
+          "maxLength": 36
+        }
+      },
+      {
+        "id": "sku",
+        "canonicalType": "Sku",
+        "implementationFqn": "java.lang.String",
+        "dataType": {
+          "name": "String",
+          "packageName": ""
+        },
+        "shape": {
+          "kind": "Text",
+          "minLength": 1,
+          "maxLength": 40
+        }
+      },
+      {
+        "id": "quantity",
+        "canonicalType": "Quantity",
+        "implementationFqn": "scala.Int",
+        "dataType": {
+          "name": "Int",
+          "packageName": ""
+        },
+        "shape": {
+          "kind": "Integer",
+          "minimum": 1,
+          "maximum": 1000000
+        }
+      },
+      {
+        "id": "transfer-mode",
+        "canonicalType": "TransferMode",
+        "implementationFqn": "java.lang.String",
+        "dataType": {
+          "name": "String",
+          "packageName": ""
+        },
+        "shape": {
+          "kind": "Enumeration",
+          "values": [
+            "STANDARD",
+            "URGENT"
+          ]
+        }
+      },
+      {
+        "id": "transfer-id",
+        "canonicalType": "TransferId",
+        "implementationFqn": "net.imadz.common.CommonTypes.Id",
+        "dataType": {
+          "name": "UUID",
+          "packageName": "java.util"
+        },
+        "shape": {
+          "kind": "Id",
+          "minLength": 36,
+          "maxLength": 36
+        }
+      }
+    ]
+  },
+  "participants": [
+    {
+      "id": "source-warehouse",
+      "aggregate": "warehouse",
+      "resourceSlot": "source-warehouse-id",
+      "resourceTypeId": "warehouse-id",
+      "addressing": {
+        "resolverFqn": "example.stockreservation.domain.warehouse.WarehouseRegistry",
+        "mode": "exact-resource"
+      }
+    },
+    {
+      "id": "target-warehouse",
+      "aggregate": "warehouse",
+      "resourceSlot": "target-warehouse-id",
+      "resourceTypeId": "warehouse-id",
+      "addressing": {
+        "resolverFqn": "example.stockreservation.domain.warehouse.WarehouseRegistry",
+        "mode": "exact-resource"
+      }
+    }
+  ],
+  "steps": [
+    {
+      "stepId": "reserve-source-stock",
+      "participantId": "source-warehouse",
+      "phases": {
+        "prepare": {
+          "inputs": [
+            {
+              "slot": "transaction-id",
+              "typeId": "transaction-id",
+              "source": {
+                "kind": "transaction-id"
+              }
+            },
+            {
+              "slot": "source-warehouse-id",
+              "typeId": "warehouse-id",
+              "source": {
+                "kind": "args",
+                "slot": "source-warehouse-id"
+              }
+            },
+            {
+              "slot": "sku",
+              "typeId": "sku",
+              "source": {
+                "kind": "args",
+                "slot": "sku"
+              }
+            },
+            {
+              "slot": "quantity",
+              "typeId": "quantity",
+              "source": {
+                "kind": "args",
+                "slot": "quantity"
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "slot": "reservation-id",
+              "typeId": "warehouse-id"
+            },
+            {
+              "slot": "reserved-quantity",
+              "typeId": "quantity"
+            }
+          ],
+          "receiptPin": {
+            "id": "stock-transfer-reserve-source-stock-prepare",
+            "version": 1
+          },
+          "command": {
+            "aggregate": "warehouse",
+            "contractName": "reserve-stock"
+          },
+          "commandPayload": [
+            {
+              "source": {
+                "kind": "input-slot",
+                "slot": "transaction-id"
+              }
+            },
+            {
+              "source": {
+                "kind": "input-slot",
+                "slot": "sku"
+              }
+            },
+            {
+              "source": {
+                "kind": "input-slot",
+                "slot": "quantity"
+              }
+            }
+          ],
+          "evidence": {
+            "mapField": "reserved",
+            "label": "reserve",
+            "markExtraction": [
+              {
+                "receiptSlot": "reservation-id",
+                "markField": "reservationId"
+              },
+              {
+                "receiptSlot": "reserved-quantity",
+                "markField": "quantity"
+              }
+            ]
+          }
+        },
+        "commit": {
+          "inputs": [
+            {
+              "slot": "reservation-id",
+              "typeId": "warehouse-id",
+              "source": {
+                "kind": "step-receipt",
+                "step": "reserve-source-stock",
+                "phase": "prepare",
+                "slot": "reservation-id"
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "slot": "committed-quantity",
+              "typeId": "quantity"
+            }
+          ],
+          "receiptPin": {
+            "id": "stock-transfer-reserve-source-stock-commit",
+            "version": 1
+          },
+          "command": {
+            "aggregate": "warehouse",
+            "contractName": "commit-stock"
+          },
+          "commandPayload": [
+            {
+              "source": {
+                "kind": "identity-transaction"
+              }
+            },
+            {
+              "source": {
+                "kind": "input-slot",
+                "slot": "reservation-id"
+              }
+            }
+          ],
+          "evidence": {
+            "mapField": "committed",
+            "label": "commit",
+            "markExtraction": [
+              {
+                "receiptSlot": "committed-quantity",
+                "markField": "quantity"
+              }
+            ]
+          }
+        },
+        "compensate": {
+          "inputs": [
+            {
+              "slot": "reservation-id",
+              "typeId": "warehouse-id",
+              "source": {
+                "kind": "step-receipt",
+                "step": "reserve-source-stock",
+                "phase": "prepare",
+                "slot": "reservation-id"
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "slot": "released-quantity",
+              "typeId": "quantity"
+            }
+          ],
+          "receiptPin": {
+            "id": "stock-transfer-reserve-source-stock-compensate",
+            "version": 1
+          },
+          "command": {
+            "aggregate": "warehouse",
+            "contractName": "release-stock"
+          },
+          "commandPayload": [
+            {
+              "source": {
+                "kind": "identity-transaction"
+              }
+            },
+            {
+              "source": {
+                "kind": "input-slot",
+                "slot": "reservation-id"
+              }
+            }
+          ],
+          "evidence": {
+            "mapField": "released",
+            "label": "release",
+            "markExtraction": [
+              {
+                "receiptSlot": "released-quantity",
+                "markField": "quantity"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "stepId": "commit-target-stock",
+      "participantId": "target-warehouse",
+      "phases": {
+        "prepare": {
+          "inputs": [
+            {
+              "slot": "transaction-id",
+              "typeId": "transaction-id",
+              "source": {
+                "kind": "transaction-id"
+              }
+            },
+            {
+              "slot": "target-warehouse-id",
+              "typeId": "warehouse-id",
+              "source": {
+                "kind": "args",
+                "slot": "target-warehouse-id"
+              }
+            },
+            {
+              "slot": "sku",
+              "typeId": "sku",
+              "source": {
+                "kind": "args",
+                "slot": "sku"
+              }
+            },
+            {
+              "slot": "reserved-quantity",
+              "typeId": "quantity",
+              "source": {
+                "kind": "step-receipt",
+                "step": "reserve-source-stock",
+                "phase": "prepare",
+                "slot": "reserved-quantity"
+              }
+            },
+            {
+              "slot": "reservation-id",
+              "typeId": "warehouse-id",
+              "source": {
+                "kind": "step-receipt",
+                "step": "reserve-source-stock",
+                "phase": "prepare",
+                "slot": "reservation-id"
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "slot": "order-id",
+              "typeId": "warehouse-id"
+            },
+            {
+              "slot": "confirmed-quantity",
+              "typeId": "quantity"
+            }
+          ],
+          "receiptPin": {
+            "id": "stock-transfer-commit-target-stock-prepare",
+            "version": 2
+          },
+          "command": {
+            "aggregate": "warehouse",
+            "contractName": "place-stock-order"
+          },
+          "commandPayload": [
+            {
+              "source": {
+                "kind": "input-slot",
+                "slot": "transaction-id"
+              }
+            },
+            {
+              "source": {
+                "kind": "input-slot",
+                "slot": "sku"
+              }
+            },
+            {
+              "source": {
+                "kind": "input-slot",
+                "slot": "reserved-quantity"
+              }
+            }
+          ],
+          "evidence": {
+            "mapField": "orders",
+            "label": "order",
+            "markExtraction": [
+              {
+                "receiptSlot": "order-id",
+                "markField": "orderId"
+              },
+              {
+                "receiptSlot": "confirmed-quantity",
+                "markField": "quantity"
+              }
+            ]
+          }
+        },
+        "commit": {
+          "inputs": [
+            {
+              "slot": "order-id",
+              "typeId": "warehouse-id",
+              "source": {
+                "kind": "step-receipt",
+                "step": "commit-target-stock",
+                "phase": "prepare",
+                "slot": "order-id"
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "slot": "settled-quantity",
+              "typeId": "quantity"
+            }
+          ],
+          "receiptPin": {
+            "id": "stock-transfer-commit-target-stock-commit",
+            "version": 1
+          },
+          "command": {
+            "aggregate": "warehouse",
+            "contractName": "settle-stock-order"
+          },
+          "commandPayload": [
+            {
+              "source": {
+                "kind": "identity-transaction"
+              }
+            },
+            {
+              "source": {
+                "kind": "input-slot",
+                "slot": "order-id"
+              }
+            }
+          ],
+          "evidence": {
+            "mapField": "settled",
+            "label": "settlement",
+            "markExtraction": [
+              {
+                "receiptSlot": "settled-quantity",
+                "markField": "quantity"
+              }
+            ]
+          }
+        },
+        "compensate": {
+          "inputs": [
+            {
+              "slot": "order-id",
+              "typeId": "warehouse-id",
+              "source": {
+                "kind": "step-receipt",
+                "step": "commit-target-stock",
+                "phase": "prepare",
+                "slot": "order-id"
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "slot": "cancelled-quantity",
+              "typeId": "quantity"
+            }
+          ],
+          "receiptPin": {
+            "id": "stock-transfer-commit-target-stock-compensate",
+            "version": 1
+          },
+          "command": {
+            "aggregate": "warehouse",
+            "contractName": "cancel-stock-order"
+          },
+          "commandPayload": [
+            {
+              "source": {
+                "kind": "identity-transaction"
+              }
+            },
+            {
+              "source": {
+                "kind": "input-slot",
+                "slot": "order-id"
+              }
+            }
+          ],
+          "evidence": {
+            "mapField": "cancelled",
+            "label": "cancellation",
+            "markExtraction": [
+              {
+                "receiptSlot": "cancelled-quantity",
+                "markField": "quantity"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "triggers": [
+    {
+      "id": "transfer-stock-requested",
+      "aggregate": "stock-order",
+      "kind": "command",
+      "sourceType": {
+        "name": "TransferStockCommand",
+        "packageName": "example.stockreservation.application.aggregates"
+      },
+      "idempotency": {
+        "sourceSlot": "transfer-id",
+        "typeId": "transfer-id",
+        "derivation": {
+          "kind": "source-slot"
+        }
+      },
+      "argMappings": [
+        {
+          "slot": "source-warehouse-id",
+          "mapping": {
+            "kind": "source-slot"
+          }
+        },
+        {
+          "slot": "target-warehouse-id",
+          "mapping": {
+            "kind": "source-slot"
+          }
+        },
+        {
+          "slot": "sku",
+          "mapping": {
+            "kind": "source-slot"
+          }
+        },
+        {
+          "slot": "quantity",
+          "mapping": {
+            "kind": "source-slot"
+          }
+        },
+        {
+          "slot": "transfer-mode",
+          "mapping": {
+            "kind": "source-slot"
+          }
+        }
+      ]
+    },
+    {
+      "id": "warehouse-stock-received",
+      "aggregate": "warehouse",
+      "kind": "event",
+      "sourceType": {
+        "name": "StockReceivedEvent",
+        "packageName": "example.stockreservation.domain.events"
+      },
+      "idempotency": {
+        "sourceSlot": "transfer-id",
+        "typeId": "transfer-id",
+        "derivation": {
+          "kind": "derived-hash",
+          "prefix": "warehouse-stock-received",
+          "fields": [
+            "warehouseId",
+            "sku",
+            "receivedQuantity"
+          ],
+          "bounds": [
+            1,
+            64
+          ]
+        }
+      },
+      "argMappings": [
+        {
+          "slot": "source-warehouse-id",
+          "mapping": {
+            "kind": "source-field",
+            "field": "warehouseId"
+          }
+        },
+        {
+          "slot": "target-warehouse-id",
+          "mapping": {
+            "kind": "same-as",
+            "slot": "source-warehouse-id"
+          }
+        },
+        {
+          "slot": "sku",
+          "mapping": {
+            "kind": "source-slot"
+          }
+        },
+        {
+          "slot": "quantity",
+          "mapping": {
+            "kind": "source-field",
+            "field": "receivedQuantity"
+          }
+        },
+        {
+          "slot": "transfer-mode",
+          "mapping": {
+            "kind": "literal",
+            "value": "STANDARD"
+          }
+        }
+      ]
+    }
+  ],
+  "completions": [
+    {
+      "kind": {
+        "wire": "succeeded"
+      },
+      "aggregate": "stock-order",
+      "event": "stock-transfer-completed",
+      "eventType": {
+        "name": "StockTransferCompletedEvent",
+        "packageName": "example.stockreservation.domain.events"
+      },
+      "inputs": [
+        {
+          "slot": "transaction-id",
+          "typeId": "transaction-id",
+          "source": {
+            "kind": "transaction-id"
+          }
+        },
+        {
+          "slot": "source-warehouse-id",
+          "typeId": "warehouse-id",
+          "source": {
+            "kind": "args",
+            "slot": "source-warehouse-id"
+          }
+        }
+      ]
+    }
+  ],
+  "host": {
+    "capabilities": [
+      "durable-receipt",
+      "exact-resource-addressing",
+      "read-only-evidence-query"
+    ],
+    "durableManifest": true,
+    "businessInvariants": [
+      "reservation-conservation"
+    ],
+    "safety": [
+      "durable-before-commit",
+      "durable-before-compensate",
+      "forward-recovery",
+      "reconcile-before-resume",
+      "confirmed-reservations",
+      "empty-release-and-fence",
+      "stable-operation",
+      "authorized-reconciliation-evidence"
+    ]
+  },
+  "coordinator": {
+    "interactionTimeoutMs": 1000,
+    "maxReconcileInteractions": 32
+  },
+  "aggregate": {
+    "protocolObject": {
+      "packageName": "example.stockreservation.application.aggregates",
+      "name": "WarehouseProtocol"
+    },
+    "stateType": {
+      "packageName": "example.stockreservation.domain.entities",
+      "name": "WarehouseState"
+    },
+    "commandRoot": "WarehouseCommand",
+    "phaseReply": "PhaseReply",
+    "readQuery": "GetWarehouseState",
+    "publicationCommand": "RecordTransferCompleted",
+    "completionAck": "CompletionAcknowledgement",
+    "errorType": "OperationError",
+    "replyResultField": "result"
+  },
+  "deployment": {
+    "namespacePrefix": "strict-saga",
+    "entryName": "StockTransferSagaEntry",
+    "reconcilePrincipal": "fixture-reconciler",
+    "reconcileTokenMismatch": "reconciliation token mismatch"
+  }
+}

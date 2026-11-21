@@ -76,6 +76,27 @@ codec 类、pin 逐字，目标侧 Prepare 走 pin v2）、合同/能力/护栏 
   八事件逐字、命名类清单、能力/护栏字面量、entry 全构造、引擎计数语义/
   E2b/NewAnonymous/Y2/域方向/全 app 面分层净检。
 
+## JS 生成器（字节比对验收）
+
+`tools/gen-strict-fixture-host.mjs`（输入合同
+`truthsrc.strict-fixture-host-input/v1`，fixture
+`test/fixtures/strict-fixture-host-v1/input.json`）：同一输入重现五个族工件
+**逐字节**（types.scala 852 / StrictWire.scala 3132 / StockTransferArgsCodec.scala
+1928 / FixtureHost.scala 26954 / StockTransferSagaEntry.scala 9560 字节，
+produced sha256 = golden sha256 逐文件相等），双跑确定；20 条 fail-closed
+负对照（重复槽位/未知 typeId/缺相位/pin 归零/重复 step/String 资源/命令载荷
+未知槽或非法源/证据提取未知收据槽/事件触发器非派生哈希/映射不覆盖
+args 槽/same-as 未知引用/解码模式名长度或重复/能力集重叠固定十项/空不变量/
+安全表缺项/非正超时/完成数非一/非法命名空间前缀）全部拒收且诊断逐字匹配。
+全部名字、pin、载荷映射、证据图、护栏串、触发器派生出自输入合同——发射器
+不嵌金样字节；布局按金样冻结并逐处记录：统一 pack 限 96（收尾括号/尾逗号
+计数，续行 +2）、平语句 ≤100 单行、八条 HostRequirements 接线检查逐字段
+断行表、TriggerStart/Args 首行两参、identity 形证据先断 `NotExecuted(identity,`
+再以 100 限打包、绑定类声明恒两行、派生哈希触发器声明两行、
+publishCompletion 签名与 FixtureHost 类头为冻结模板、args-codec 与宿主
+收据解码的 Failure 续行缩进分别为 +4/+2。永不自 declare 通过，比对报告由
+verify 模式打印。
+
 ## 质量状态
 
 - discovery 轮（`.rounds/strict-fixture-host-quality-20261120-01`）：两段

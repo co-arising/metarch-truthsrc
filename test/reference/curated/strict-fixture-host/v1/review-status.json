@@ -2,7 +2,7 @@
   "schemaVersion": "curated.strict-fixture-host.review-status/v1",
   "artifactType": "strict-fixture-host",
   "candidateVersion": "v1",
-  "status": "GOLDEN_APPROVED_WALKTHROUGH_COMPLETE",
+  "status": "GOLDEN_APPROVED_JS_BYTE_PARITY_COMPLETE",
   "approvedAt": "2026-11-20",
   "walkthroughRulings": {
     "W1": "supply closure = 125 coordinates (S1a-prime reuse plus the sharding runtime face: agrona/lmdbjava/lz4/reactive-streams/scala-java8-compat 1.0.2/slf4j-simple) accepted",
@@ -27,8 +27,47 @@
     "bundleSha256": "14bcedcd392f2e8aa8a609361d4c60922f0a368440feadd75cde928b3da82b91"
   },
   "jsImplementation": {
-    "registered": false,
-    "byteParity": "pending"
+    "registered": true,
+    "tool": "tools/gen-strict-fixture-host.mjs",
+    "inputSchema": "truthsrc.strict-fixture-host-input/v1",
+    "fixture": "test/fixtures/strict-fixture-host-v1/input.json",
+    "byteParity": true,
+    "emissionSet": "the five family artifacts (types/StrictWire/StockTransferArgsCodec/FixtureHost/StockTransferSagaEntry); business supplies and the upstream module are handwritten supplies outside the emission set",
+    "files": [
+      {
+        "file": "types.scala",
+        "goldenSha256": "c1b61dd6e1021e95acf429fae3dafe7d088475334bd361de8b3b141b9b6f43ae",
+        "bytes": 852
+      },
+      {
+        "file": "StrictWire.scala",
+        "goldenSha256": "d4f0fadcd032ac36c986fc2266cda23f2a0d4c0f7ab6239c6a44a641eb46bdaa",
+        "bytes": 3132
+      },
+      {
+        "file": "StockTransferArgsCodec.scala",
+        "goldenSha256": "320bed0e69ef72a76aee78e12bb6b56256d19a53826f728b0557606bca813a8a",
+        "bytes": 1928
+      },
+      {
+        "file": "FixtureHost.scala",
+        "goldenSha256": "93749211c65ccf563fc9342662a7a84ffcf495efc2ee167d0912eb6f9bd3d080",
+        "bytes": 26954
+      },
+      {
+        "file": "StockTransferSagaEntry.scala",
+        "goldenSha256": "f2d116d99b1f336803d152b4bf1e1d6952254d9cd48d612d55eecae366c57c03",
+        "bytes": 9560
+      }
+    ],
+    "producedSha256EqualsGoldenSha256PerFile": true,
+    "deterministic": true,
+    "hardcodingAudit": "no golden bytes embedded: names, pins, payload mappings, evidence maps, guard messages, trigger derivations, aggregate stems and output paths all flow from the input contract; only documented emission layout shapes are frozen per pattern",
+    "negatives": {
+      "expected": 20,
+      "rejected": 20
+    },
+    "layoutContract": "unified call/value packer at 96 columns (closing paren and trailing comma counted, continuations +2); plain statements single-line at <=100; frozen per-pattern shapes documented at each site: the eight HostRequirements wiring checks carry a per-field break table, TriggerStart/Args renders the first two arg mappings on its first line, identity-txid evidence breaks after NotExecuted(identity, and packs the remainder at 100, binding class declarations are always two-line, the derived-hash trigger declaration is two-line while the command trigger is inline-if-fitting, the publishCompletion signature and the FixtureHost class head are frozen templates, and the args-codec vs host receipt decode Failure continuations indent +4/+2 respectively"
   },
   "rawAcceptanceUnchanged": true,
   "all31Closed": false
