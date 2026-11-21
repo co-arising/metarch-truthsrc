@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "truthsrc.pipeline-invocation-face-input/v1",
+  "case": "payment",
+  "names": {
+    "hostClass": "BankPaymentHost",
+    "hostIoObject": "BankPaymentHostIO",
+    "technicalPortsObject": "BankPaymentTechnicalPorts",
+    "serializerClass": "BankPaymentHostSerializer",
+    "executionClass": "bank_cash_payment_v1Execution",
+    "definitionClass": "bank_payment_hostDefinition",
+    "package": "example.bankwealth.application",
+    "nameSources": {
+      "hostClass": "N1: host id bank-payment-host, kebab-to-Pascal with stem/suffix dedup",
+      "executionClass": "classic name until the execution-plan family replacement (wave 2 golden will carry the Pascal name)",
+      "definitionClass": "classic name until the saga-definition family replacement"
+    }
+  },
+  "saga": {
+    "id": "bank-cash-payment-v1",
+    "context": "bankwealth",
+    "definitionVersion": 1,
+    "definitionDigest": "sha256:c13f703e76eaee9bfceeff701ecc5f41dd011d6db6890c6820a7faa944538f64",
+    "artifactVersion": "bank-v1-1",
+    "source": "knowledge: saga payload + strict runtime binding"
+  },
+  "invocation": {
+    "scheme": "truthsrc-pipeline-invocation-v1",
+    "pipelineStep": "pay-cash-purchase",
+    "markers": ["iteration", "absent", "chunk", "absent"],
+    "source": "knowledge: pipeline invocation binding"
+  },
+  "results": {
+    "kinds": [
+      { "kind": "Succeeded", "wire": "succeeded", "terminal": true },
+      { "kind": "RejectedBeforeEffects", "wire": "rejected-before-effects", "terminal": true },
+      { "kind": "Compensated", "wire": "compensated", "terminal": true },
+      { "kind": "RecoveryRequired", "wire": "recovery-required", "terminal": false },
+      { "kind": "OutcomeUnknown", "wire": "outcome-unknown", "terminal": false }
+    ],
+    "source": "knowledge: RESULT_KINDS frozen set (saga-hosts product); terminal set from the saga completion contract"
+  },
+  "participants": [
+    { "ordinal": 0, "id": "investorCreditBalance", "aggregate": "CreditBalance" },
+    { "ordinal": 1, "id": "collectionCreditBalance", "aggregate": "CreditBalance" },
+    { "ordinal": 2, "id": "orderFundOrderTcc", "aggregate": "FundOrder" }
+  ],
+  "participantsSource": "knowledge: saga payload participants[] in declaration order; N2 composes port member names from the ids",
+  "portBindings": {
+    "artifact": "bank-payment-technical",
+    "implementationVersion": "bank-v1-1",
+    "boundary": "handwritten-composition-root",
+    "declaredIdStem": "bankwealth.BankPayment",
+    "declaredIdNote": "implementation identity strings keep the classic spelling (stable across member renames) — the handwritten composition root never retypes them",
+    "source": "knowledge: artifact-contract port pins + roles"
+  },
+  "serializer": {
+    "identifier": 742000,
+    "manifest": "event-v1",
+    "eventPb": "example.bankwealth.infrastructure.hostproto.bankpaymenthostHostEventPB",
+    "resultKindSlot": "pb.operation (dedicated kind slot lands with the proto-family replacement, ruling T4)",
+    "source": "judged: identifier allocation; knowledge: proto face schema"
+  },
+  "runtime": {
+    "admission": {
+      "contract": "R2(b): in-memory coalescing; replies derived from durable state on re-invoke; caller owns ask timeout + retry"
+    },
+    "retry": {
+      "initialMillis": 100,
+      "factor": 2,
+      "maxMillis": 5000,
+      "deadlineSeconds": 60,
+      "source": "judged slot (R1): lands in the execution-face golden (wave 2) where the 20ms poll lives"
+    },
+    "logging": "R4: debug points at associate/observe/deliver/admission-denial/retry"
+  },
+  "layout": {
+    "columnLimit": 100,
+    "discipline": "L1: hand-balanced breaks, each frozen shape documented at its site"
+  }
+}

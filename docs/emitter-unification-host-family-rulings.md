@@ -124,19 +124,22 @@ delivery）＋round 响应新鲜度关联＋RecoveryCompleted 重查询自愈＋
   （v1Execution.scala:45）。
   提案：有界指数退避（初值/倍率/上限/deadline 四参数进合同 technical-input 槽，
   裁定值随门序定）。
-- **R2 等待者队列持久化或契约化**（二选一，用户裁定）
+- **R2 等待者队列契约化**——已裁定 (b)，依据记档
   现状：`var admissionReplies`／`var waiters` 纯内存队列，crash 恢复即丢、
   排队调用方永久悬挂（hostHost.scala:73-80；effectHost.scala:83-87）。
-  提案 (a)：等待者入事件流（PendingRegistered/PendingReleased），重启后可答复；
-  提案 (b)：保持内存队列，但合同明确 caller 重试契约（Invoke 幂等＋caller 侧超时重试），
-  发射面注释与 Conflict/Waiting 语义文档化。
-- **R3 retry 保留证据**
-  现状：`RetryAuthorized` 事件清空 `observation`，前次外部证据只存事件流不存状态
-  （effectHost.scala:148）。
-  提案：状态保留前次证据（如 `previousObservation` 字段），审计面闭合。
+  备选 (a) 等待者入事件流：**否决**——ActorRef 跨 actor 系统重启无效，把 reply-to
+  持久化进事件流是 Akka 反模式；持久态只存业务事实。
+  裁定 (b)：保持内存合并队列；宿主对重复 Invoke 的答复必须**纯由持久状态推导**
+  （Completed/Conflict/Pending 语义幂等，重新 Invoke 即自愈）；合同固化 caller 契约
+  （幂等 Invoke＋caller 侧 ask 超时重试），发射面注释声明。
+- **R3 retry 证据语义（原提案修正）**
+  现状：`RetryAuthorized` 事件清空 `observation`（effectHost.scala:148）。
+  修正裁定：**清空在功能上正确**（防陈旧证据在 retry 窗口期作答），事件流本身即
+  审计面（ObservationStored 全历史留存，journal 可查）——撤回「状态复制前次证据」
+  原案；补 R4 的 retry 结构化日志钩子即闭合审计语义。
 - **R4 最小可观测性**
   现状：13 件 0 条日志、无 supervision、coordinator Attach/Start 无 host 侧超时。
-  提案：宿主/效果宿主发射结构化 debug 日志点（状态迁移/observe/deliver/admit）；
+  提案：宿主/效果宿主发射结构化 debug 日志点（状态迁移/observe/deliver/admit/retry）；
   coordinator 交互带 host 侧 ask timeout（technical-input 槽）。
 - **R5 死代码不发射**
   现状：空 `trait PureStages {}` 无条件发射（v1Execution.scala:28-30）。
@@ -180,8 +183,26 @@ delivery）＋round 响应新鲜度关联＋RecoveryCompleted 重查询自愈＋
 
 ## 6. 状态
 
-- **全部条款待用户逐条裁定**（准／改／否；改动即改写本文件再入册）。
-- 裁定通过后门序启动：手写金样（按 §3 基线）→ 沙箱三轮 → 讲解 → 逐条裁定 →
-  emitter 模块（字节等值＋双跑确定＋负测电池）→ bank-wealth 接入＋classic 摘除 →
-  五步门＋diff 呈报 → 删除。
-- 纪律重申（计划 §6）：裁定前不动 classic 模板、不写发射器、不改 bank-wealth 任何产物。
+- **裁定授权（2026-11-21，用户）**：不再逐条裁定——单一验收标准
+  「正确／工业生产级／优雅／Plain FP＋OO」，条款裁决权下放至门序执行侧，
+  每条裁决与依据在本文件记档（R2/R3 已记，见 §3）。
+- **编译闭包改判（§2 修正，门序执行侧依据引用图实测裁定）**：18 件 monarch 应用面
+  构成封闭引用簇（Execution↔Host 互引、Definition→TechnicalPorts、EffectHost↔Execution；
+  簇外零引用；手写区仅 7 行 import 别名）。族模块保持两个（合同来源不同），但
+  **替换以业务案为单位联动翻转**（payment→refund→dispatch→ta 各一提交，
+  每次翻转应用整体可编译，F4 渐进语义保持）；classic 模板在末案翻转后整体摘除。
+  §2 表的「8 件/4 件」改为按编译闭包计数：pipeline-invocation-face
+  （payment/refund 各 6 件：Execution＋Definition＋Host＋HostIO＋TechnicalPorts＋
+  HostSerializer）＋effect-face（dispatch/ta 各 3 件：Execution＋EffectHost＋
+  EffectHostSerializer）。
+- **N1 缝宽更新**：host 类名由 host id kebab→Pascal＋suffix 去重派生
+  （`bank-payment-host`→`BankPaymentHost`），无需 truth 侧补名——✅ 可派生。
+- **N2 细化**：端口成员名去掉 saga stem 前缀（成员已在 `BankPaymentTechnicalPorts`
+  对象作用域内），形如 `InvestorCreditBalancePrepareExecute`——参与者业务名来自
+  saga payload 的 `participants[].id`（investorCreditBalance/collectionCreditBalance/
+  orderFundOrderTCC，实测）。
+- **金样分波**：第一波＝Host／HostIO／TechnicalPorts／Serializer 四面（审查已吃透）；
+  第二波＝Execution／Definition（需先专注核 monarch strict 运行时的
+  OperationRequest/PhaseOutcome 契约）；两波齐后才进沙箱三轮。
+- 纪律重申（计划 §6）：classic 模板未摘除前不动 bank-wealth 任何产物；
+  金样在 curated 目录为新规格，不触碰 classic 产物字节。
