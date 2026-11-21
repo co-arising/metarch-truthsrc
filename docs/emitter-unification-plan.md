@@ -189,6 +189,20 @@ Pages 上引用旧生成器 id／文件头的句子同步刷新。
   节拍的一环（本次曾因 package.json 加一行 emitter/ 触发 fail-closed 拒写，已撤回——
   emitter 打包进 npm files 的事宜推迟到 Phase 4 收口一并处理）。
 
+### Phase 2 试点审计登记（2026-11-21）
+
+- 产地核对结论：§5「调用宿主簇（#42 族）」映射**不成立**——12 件全部出自
+  `generators/scala-cqrs-application/render-*`（saga-hosts/effect-hosts 产品驱动），
+  #42 v1 合同语义级钉死于 wafer 场景，0/12 可表达，且 bank-wealth 无 #42 classic
+  对应物。计划 §7「族映射误判」风险按设计触发并核对完毕。
+- 缝宽结论：该簇真实派生缝**窄**（saga-hosts/effect-hosts 产品＝知识图→类型化合同
+  完整派生；参与者业务名 source/target 可派生；判定槽集中在 R 组三处）。
+- 13 件 1,210 行代码审查完成：骨架合格，命名/类型化/抽象/排版不达标，5 处工业级隐患。
+- **裁定底稿已入册**：`docs/emitter-unification-host-family-rulings.md`
+  （重聚类提案：pipeline-invocation-host(8 件)＋effect-host(4 件)；#42 归 extension；
+  风格裁定基线 N/T/L/R/D 五组逐条待用户裁定）。裁定前不动 classic／不写金样／
+  不建派生层。Phase 2 试点目标随裁定改写（§4）。
+
 ## 8. 新会话开工指引（Phase 0 即做）
 
 ```bash
