@@ -1,0 +1,264 @@
+{
+  "schemaVersion": "curated.composition-invocation-host.manifest/v1",
+  "artifactType": "composition-invocation-host",
+  "candidateVersion": "v1",
+  "status": "GOLDEN_APPROVED_WALKTHROUGH_COMPLETE",
+  "bundleSha256": "2d82a60f5685630b1cb84ed665dff94e4793e06514ab8e55c68eaba61a2d21dd",
+  "bundleSha256Recipe": "sha256 over the concatenation of the payload files UTF-8 bytes in sorted relative path order",
+  "payloadFileCount": 41,
+  "payloadBytes": 6524020,
+  "payload": [
+    {
+      "path": "README.md",
+      "bytes": 6373,
+      "sha256": "25c4a12415f931760b1c91a56d7c3ad9f361082de7d55093f594543bd96afd68"
+    },
+    {
+      "path": "app/example/stockreservation/application/aggregates/LotProtocol.scala",
+      "bytes": 10123,
+      "sha256": "87419777b3fcbfa54fd33a25c33b7d6117192c31180317543169c426a2e2151b"
+    },
+    {
+      "path": "app/example/stockreservation/application/services/transactor/CompositionChildJournal.scala",
+      "bytes": 1285,
+      "sha256": "e3e4fa5b798808cac325da78c9fd69b43e2539c9eeb7d46005de202d838ebdb9"
+    },
+    {
+      "path": "app/example/stockreservation/application/services/transactor/MergeFixtureHost.scala",
+      "bytes": 25198,
+      "sha256": "cfad820fadb1abfe8395f3a9fbf6418f4689ffdec5960b368af6d8f7f807d2c2"
+    },
+    {
+      "path": "app/example/stockreservation/application/services/transactor/SplitFixtureHost.scala",
+      "bytes": 25198,
+      "sha256": "05e8df6f9913d1cfd65518cdfaa6e439cf830098d4a029ebea3e92dc4300d21b"
+    },
+    {
+      "path": "app/example/stockreservation/application/services/transactor/StrictWire.scala",
+      "bytes": 3132,
+      "sha256": "d4f0fadcd032ac36c986fc2266cda23f2a0d4c0f7ab6239c6a44a641eb46bdaa"
+    },
+    {
+      "path": "app/example/stockreservation/application/services/transactor/WaferChildPlan.scala",
+      "bytes": 3037,
+      "sha256": "5b25e38952efc7ef549f06caad1e16527db72a9dbeb3cfdf6e1a2ed79f428e96"
+    },
+    {
+      "path": "app/example/stockreservation/application/services/transactor/WaferMergeSagaEntry.scala",
+      "bytes": 1650,
+      "sha256": "88f9de30a009c98c38db64644c5183e00f92d978c05061b1f9e7c7547c3aa5bd"
+    },
+    {
+      "path": "app/example/stockreservation/application/services/transactor/WaferMergeSagaModule.scala",
+      "bytes": 41873,
+      "sha256": "d3126aa0f34cb4156d4ae9665976dcec345e570ed44993f5d849e989ad34b920"
+    },
+    {
+      "path": "app/example/stockreservation/application/services/transactor/WaferSplitSagaEntry.scala",
+      "bytes": 2671,
+      "sha256": "4b04b4fbf650b0c819bc11cdda917fb4edda2cec1e9dfafdb9998e6fa76f104d"
+    },
+    {
+      "path": "app/example/stockreservation/application/services/transactor/WaferSplitSagaModule.scala",
+      "bytes": 41873,
+      "sha256": "6af9477ed57a7f80b31d713f97956cbfb1fce70c039536b609d8f9f10da1cd09"
+    },
+    {
+      "path": "app/example/stockreservation/application/services/transactor/WaferTransferHost.scala",
+      "bytes": 30854,
+      "sha256": "6ea74e68b72a52b0f8728a85d17fca475b4d4875f706cf2e4f4aeef789885027"
+    },
+    {
+      "path": "app/example/stockreservation/domain/entities/LotEntity.scala",
+      "bytes": 3049,
+      "sha256": "28d6aeb9610b9925d124d4df64c19642ca87e15ff0a7bdaa7c563c6774745553"
+    },
+    {
+      "path": "app/example/stockreservation/domain/events/LotEvents.scala",
+      "bytes": 2541,
+      "sha256": "4be20dae8beb71e0d5bc5430dfded7ad00a478d697fa9dd131b34f4e4466b571"
+    },
+    {
+      "path": "app/example/stockreservation/infrastructure/bootstrap/CompositionBootstrap.scala",
+      "bytes": 847,
+      "sha256": "ca004f8e81ef3b2ff7ae5e6cc328dbd00484e305e11abd893b2449cea05c5880"
+    },
+    {
+      "path": "app/example/stockreservation/infrastructure/persistence/MongoCompositionChildJournal.scala",
+      "bytes": 1983,
+      "sha256": "a0d29b1bad73f0b7c1349cdaa9f88cad5498bacfe353a35e65f5fb45126fb44e"
+    },
+    {
+      "path": "app/net/imadz/common/Id.scala",
+      "bytes": 483,
+      "sha256": "4b59827b85347f604dc92e24697740eaaf123fb8564f4ce39e5a94850f4af393"
+    },
+    {
+      "path": "expected-properties.txt",
+      "bytes": 4557,
+      "sha256": "2102516ac97fcb7b83f29fecf65d6af63e50f36c5ca130c7f3bc404535f80968"
+    },
+    {
+      "path": "quality-policy.json",
+      "bytes": 8156,
+      "sha256": "9b15daac900eb05c3b5f9697edd51da4ae06c9e23ee8c56287848e53c5e4e8b2"
+    },
+    {
+      "path": "quality/JsonOutput.scala",
+      "bytes": 982,
+      "sha256": "49754cb5e73efe3ae332385f9cc3d2937bc625175ca27c588b4e42bd4fa952c1"
+    },
+    {
+      "path": "quality/QualityInputs.scala",
+      "bytes": 3064,
+      "sha256": "cd9e33e62981a16eeb794dfdc1363de631f18ef2ae10093fd74191177a48bd01"
+    },
+    {
+      "path": "quality/QualityMain.scala",
+      "bytes": 3998,
+      "sha256": "4cf9456bb9bb88e0cd543b223b5750aaeaec4488268b92127fc97f8e8d298039"
+    },
+    {
+      "path": "quality/ScalaSourceMetrics.scala",
+      "bytes": 12242,
+      "sha256": "465203a5f233fc5fdd2ea35f61725c348be3881a5ca3b3790aa6b068e77dbd38"
+    },
+    {
+      "path": "scope-exceptions.tsv",
+      "bytes": 3248,
+      "sha256": "c023dda96a8dec239a1cf978947c409ced4ab32587e46a15311a83f9a4ed7bed"
+    },
+    {
+      "path": "semantic-payload-wafer-merge.json",
+      "bytes": 3596,
+      "sha256": "42a80323e7a97b74ebb60f17cc990af25609c32857f27b3bbe499326b820f449"
+    },
+    {
+      "path": "semantic-payload-wafer-split.json",
+      "bytes": 3596,
+      "sha256": "341f1a82f50a18db167f3d639c758e0e6979d4ff8105cc3dc1385a03d3387213"
+    },
+    {
+      "path": "semantic-payload.json",
+      "bytes": 11582,
+      "sha256": "47a539177b22bba8f15f0e048c28c34dab4a4548ae00e942f23c3db60fc74614"
+    },
+    {
+      "path": "supply/net/imadz/monarch-core_2.13/0.3.0/monarch-core_2.13-0.3.0.jar",
+      "bytes": 63800,
+      "sha256": "0c7a25eecae28d6f4b14a36c887511ffca5d2a755a5a618b281a271a66310b3b"
+    },
+    {
+      "path": "supply/net/imadz/monarch-core_2.13/0.3.0/monarch-core_2.13-0.3.0.pom",
+      "bytes": 1832,
+      "sha256": "b0c9c4ce03c5904730a87866862483bc6172049b15e1ba72c37047381192e844"
+    },
+    {
+      "path": "supply/net/imadz/monarch-persistence_2.13/0.3.0/monarch-persistence_2.13-0.3.0.jar",
+      "bytes": 4284007,
+      "sha256": "f42f1b9946be8f5a659ef067a731eee093e81b7c2df9b3e1ad8abefef4971c55"
+    },
+    {
+      "path": "supply/net/imadz/monarch-persistence_2.13/0.3.0/monarch-persistence_2.13-0.3.0.pom",
+      "bytes": 3695,
+      "sha256": "7692d1f5681f305646ce04fcb438e67240be5a6282132287ecb3f9fadabb1f98"
+    },
+    {
+      "path": "supply/net/imadz/saga-core_2.13/0.3.0/saga-core_2.13-0.3.0.jar",
+      "bytes": 1766108,
+      "sha256": "550fbd5cdb18a50d71a62f8f743d59f24ac1daa03f0aeb07c23c8355c2c0d862"
+    },
+    {
+      "path": "supply/net/imadz/saga-core_2.13/0.3.0/saga-core_2.13-0.3.0.pom",
+      "bytes": 4369,
+      "sha256": "105f2c4d0aab1ca5df41f07933ec417438acb4ba9ddd9f3af4a9d89bb83ea923"
+    },
+    {
+      "path": "technical-input.json",
+      "bytes": 11468,
+      "sha256": "cb12caa9c8cf55d01355ea6cfc804f186ac865217198b95c451e447156edb655"
+    },
+    {
+      "path": "test/example/stockreservation/application/services/transactor/CompositionCases.scala",
+      "bytes": 815,
+      "sha256": "3ac51f90f29bbd42b42925c20f0aeec10143451704e6daf9dbb055cc7faaa2e0"
+    },
+    {
+      "path": "test/example/stockreservation/application/services/transactor/CompositionFixture.scala",
+      "bytes": 12514,
+      "sha256": "eeb86b3a379bfea3562c7d7928656c3e79375051588b23e1f6ad37e82a22514e"
+    },
+    {
+      "path": "test/example/stockreservation/application/services/transactor/CompositionOracle.scala",
+      "bytes": 2809,
+      "sha256": "ef59f11d2982cd23ccb7e55026456b72f609b8af9e2de36dd4d299cf0e490ee6"
+    },
+    {
+      "path": "test/example/stockreservation/application/services/transactor/CompositionProperties.scala",
+      "bytes": 39340,
+      "sha256": "ecc90e0cefa737c3b1bab2179b429a5d472a32ff60bb0a3024f7bc63d1b177f0"
+    },
+    {
+      "path": "test/example/stockreservation/application/services/transactor/CompositionQualityProperties.scala",
+      "bytes": 17538,
+      "sha256": "c27e6e537c96adfcffe865737f7de15b65494fcbf02998a96844e44143b01676"
+    },
+    {
+      "path": "test/example/stockreservation/application/services/transactor/FixtureCompositionDeploymentSpec.scala",
+      "bytes": 27067,
+      "sha256": "aa612225b5eeaaca4ea26597ee4b950b18c3cfafd5117d4cf4684aab910501a5"
+    },
+    {
+      "path": "test/example/stockreservation/application/services/transactor/FixtureCompositionSpec.scala",
+      "bytes": 31467,
+      "sha256": "00b2b3096733e8962d031f999d9ea67bfba5ad6925d29903e4dcb68a4a54bdb8"
+    }
+  ],
+  "rounds": {
+    "discovery": "composition-invocation-host-quality-20261121-01",
+    "finalBytes": "composition-invocation-host-quality-20261121-02",
+    "sameBytesRecurrence": "composition-invocation-host-quality-20261121-03",
+    "preparedPin": "ae52e6b46103dc84842d4af3da0fc2af2350fb1f1ff7ab91ee0dfb14548d81c8",
+    "pinEquality": "final-bytes == sameBytesRecurrence (zero drift on the committed bytes)"
+  },
+  "metrics": {
+    "files": 27,
+    "scopes": 2222,
+    "violations": 0,
+    "excess": 0,
+    "complexityLimit": 5,
+    "nestingLimit": 2
+  },
+  "properties": {
+    "total": 43,
+    "behavior": 25,
+    "quality": 18,
+    "negatives": 12,
+    "evalsPerSeed": 3040,
+    "propertyCountNote": "the gate-measured split: 25 behavior (17 positive + 8 negative:) and 18 quality/structure (14 positive + 4 negative:); the technical-input engineMeta.counts line hand-counts 31/12 — the manifest records the gate-truth numbers",
+    "seeds": [
+      740001,
+      740002,
+      740003
+    ]
+  },
+  "supply": {
+    "runtime": "net.imadz:saga-core_2.13:0.3.0 (staged, #40/#41 jar reuse) + net.imadz:monarch-persistence_2.13:0.3.0 + net.imadz:monarch-core_2.13:0.3.0 (staged byte-identically from bank-wealth-demo/.local/truthsrc-runtime-0.3.0)",
+    "closureCoordinates": 144,
+    "familyDelta": [
+      "org.scalatest:scalatest 3.2.11 family (fifteen artifacts incl. scalatest-compatible/shouldmatchers — probe-discovered split)",
+      "org.scala-lang.modules:scala-xml_2.13:2.0.1 (scalatest transitive)"
+    ],
+    "recordedExclusions": [
+      "org.apache.geronimo.specs:geronimo-jta_1.1_spec:1.1.1 (G1, supply-gap-excluded, carried from #40/#41)"
+    ]
+  },
+  "sandbox": {
+    "network": "port-scoped loopback rules (\"*:25551\") because SBPL rejects numeric ip hosts and the name form does not match JVM socket ops (BindProbe/ConnProbe empirical, carried from #41); all external ports stay denied",
+    "wallBudgetMs": 2400000,
+    "propertiesCapMs": 420000,
+    "reason": "D-deployment-grade fixture: real single-node cluster join + shard region/entity warmup + three-seed real composition flows (E1 full chain, E4b barrier, E2 Attach, E3 injection, E5 occupier per seed)"
+  },
+  "rawAcceptanceUnchanged": true,
+  "all31Closed": false
+}

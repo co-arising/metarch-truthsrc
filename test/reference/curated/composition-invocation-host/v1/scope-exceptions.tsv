@@ -1,0 +1,16 @@
+quality/JsonOutput.scala	root.JsonOutput.escape	method	9	1	engine-json-escape：字面量转义分类器，闭式分支面（#40 族沿用）
+quality/ScalaSourceMetrics.scala	root.ScalaSourceMetrics.ownDecisions	method	16	2	engine-decision-classifier：AST 决策分类闭式分派（#40 族沿用）
+quality/ScalaSourceMetrics.scala	root.ScalaSourceMetrics.control	method	7	1	engine-decision-classifier：控制节点判定闭式分派（#40 族沿用）
+quality/ScalaSourceMetrics.scala	root.ScalaSourceMetrics.declaredScopes	method	13	1	engine-scope-declaration：scope 声明分派闭式面（#40 族沿用）
+quality/ScalaSourceMetrics.scala	root.ScalaSourceMetrics.isDeclaration	method	7	1	engine-decision-classifier：声明判定闭式分派（#40 族沿用）
+quality/ScalaSourceMetrics.scala	root.ScalaSourceMetrics.forbidden	method	19	2	engine-forbidden-classifier：分层禁令判定；本族 F11 修订扩充 var/assign 白名单分支
+test/example/stockreservation/application/services/transactor/FixtureCompositionSpec.scala	root.FixtureCompositionSpec.truncateJournal	method	6	1	raw-recovery-template-member：R 模板成员方法体原样（合同 F9/§4.6 记档）
+test/example/stockreservation/application/services/transactor/FixtureCompositionSpec.scala	root.FixtureCompositionSpec.assertExactlyOnce	method	8	0	raw-recovery-template-member：R 模板 oracle（F9 重定目标后仍保留 R 形状）
+test/example/stockreservation/application/services/transactor/FixtureCompositionSpec.scala	root.FixtureCompositionSpec.assertHostTrace	method	19	1	raw-recovery-template-member：R 模板逐事件 trace 断言
+test/example/stockreservation/application/services/transactor/FixtureCompositionSpec.scala	root.FixtureCompositionSpec.assertHostTrace.lambda@341	lambda	13	1	raw-recovery-template-member：R 模板 merge-intent 定位 lambda
+test/example/stockreservation/application/services/transactor/FixtureCompositionDeploymentSpec.scala	root.CompositionDeploymentFacts.assertHostTrace	method	10	0	raw-deployment-template-member：D 模板 facts trace 断言
+test/example/stockreservation/application/services/transactor/FixtureCompositionDeploymentSpec.scala	root.CompositionDeploymentFacts.assertHostTrace.lambda@108	lambda	7	0	raw-deployment-template-member：D 模板 facts lambda
+test/example/stockreservation/application/services/transactor/FixtureCompositionDeploymentSpec.scala	root.CompositionDeploymentFacts.freeze	method	9	1	raw-deployment-template-member：D 模板 freeze 双模式断言（owner 冻结窗）
+test/example/stockreservation/application/services/transactor/FixtureCompositionDeploymentSpec.scala	root.FixtureCompositionDeploymentNode.main	method	22	3	raw-deployment-template-member：D 模板双角色 main（owner/successor 全分支）
+test/example/stockreservation/application/services/transactor/FixtureCompositionDeploymentSpec.scala	root.FixtureCompositionDeploymentNode.main.hooks	value	9	1	raw-deployment-template-member：D 模板 TestHooks 四钩子装配
+test/example/stockreservation/application/services/transactor/FixtureCompositionDeploymentSpec.scala	root.FixtureCompositionDeploymentSpec.<init:1>	initialization	8	2	raw-deployment-template-member：D 模板双模式测试注册循环

@@ -1,0 +1,101 @@
+{
+  "schemaVersion": "curated.scala-source-quality-policy/v1",
+  "artifactType": "composition-invocation-host",
+  "dialect": "Scala213",
+  "parser": "org.scalameta:parsers_2.13:4.7.7",
+  "measurement": {
+    "name": "source-structural-mccabe-v1",
+    "notClaim": "Not a full control-flow graph proof or equivalence to every compiler plugin.",
+    "base": 1,
+    "increment": [
+      "if",
+      "while",
+      "do",
+      "for generator",
+      "for guard",
+      "case guard",
+      "short-circuit &&",
+      "short-circuit ||"
+    ],
+    "match": "Expanded pattern paths minus one; add conservative unmatched exit unless unconditional wildcard/default exists.",
+    "catch": "Same path rule when catch cases are present.",
+    "nestedClosures": "Include decisions in owning body; report lambda/partial function separately; do not add closure base twice.",
+    "namedNestedDefinitions": "Report separately, no nested body counted twice.",
+    "initialization": "Report each primary/object initializer and field independently. Abstract declarations have no executable body.",
+    "nesting": "Control constructs only; an else-if continuation retains the enclosing if level."
+  },
+  "layers": {
+    "domain": {
+      "appliesTo": "app/**/domain/**",
+      "description": "Same full forbidden set as the strict-fixture-host policy, unchanged; application/infrastructure imports are banned; fixed 5/2 maxima without exceptions. The domain supplies carry the wafer lot event family (over the CborSerializable marker) and the lot phase-mark state with its pure event application — zero akka/strict-runtime/monarch imports.",
+      "maximumComplexity": 5,
+      "maximumControlNesting": 2,
+      "exceptionsAllowed": false
+    },
+    "boundary": {
+      "appliesTo": "app/**/application/** and app/**/infrastructure/** and app/net/** (the shared-common supply)",
+      "description": "composition-invocation-host contract layer: the seven family artifacts project the raw bounded-composition family for the two admitted wafer modules — the composition host (intent-before-start, IdentityObserved-Attach recovery, child journal as the only authoritative terminal), the monarch child plan, the CompositionChildJournal observation port, the Mongo adapter, the bootstrap assembly, plus the lot protocol/behavior supply and the two wafer module/fixture-host/entry supplies. Per the rulings of 2026-11-20/21 (F1–F14 plus the F11 revision) the boundary face admits akka, net.imadz.infra.saga and net.imadz.monarch.persistence import prefixes as the declared family face — the per-file import whitelist is pinned by structural properties, not by the engine; every other banned prefix (java.io/java.nio/java.time/java.util, scala.collection.mutable, java.sql) stays banned with fully-qualified references as the sanctioned zero-import form. Throw/return keyword forms stay banned — the raw template's failure faces render as call-form require/sys.error with verbatim messages (recorded deviation). The F11 revision (user-ruled 2026-11-21) ELIMINATES the raw template's four mutable resource slots algorithmically: keyed timers via Behaviors.withTimers (same-key replacement, structural stop cancellation), the child plan actor and the child observation stream are established once at Behaviors.setup as immutable vals bound to the host's fixed derived child pid, and the observation callback carries the raw signal only (the wafers CSV is read from the event-sourced state at handling time — started-wafers are immutable, semantics preserved). The application tree carries ZERO Defn.Var/Term.Assign outside argument clauses; the engine keeps the shared both-layer ban with no family delta.",
+      "forbiddenDelta": [
+        "Import prefixes akka, net.imadz.infra.saga and net.imadz.monarch.persistence are admitted in boundary as the declared family face (F1/F11 rulings, 2026-11-20/21): structural properties pin the whitelist (monarch only in the child plan, the composition host and the Mongo adapter; the strict runtime only in the module/fixture-host/entry/host faces; org.mongodb.scala in no app file — the mongo compile face lives in the two suites).",
+        "F11 revision (user-ruled 2026-11-21): the raw four mutable resource slots are algorithmically eliminated — keyed timers (PollTick), setup-time child spawn and setup-time observation stream with deferred CSV read. The application tree carries zero Defn.Var/Term.Assign outside argument clauses; the engine ban is the shared both-layer shape with NO family delta.",
+        "Direction-aware imports: an application file must not import infrastructure packages (kernel isolation; D1 split makes the port the application face and the adapter the infrastructure face); every other banned import prefix stays banned with fully-qualified references as the sanctioned zero-import form."
+      ],
+      "stillRejected": [
+        "var declarations and assignment targets (Defn.Var / Term.Assign in both layers)",
+        "throw/return keyword forms in both layers (call-form require/sys.error is the sanctioned failure face)",
+        "Any/AnyRef",
+        "reflection names (getClass included)",
+        "Await",
+        "Random/Clock/LocalDateTime/Date term names",
+        "mutable collection names and mutation term names",
+        "java.io/java.nio/java.time/java.util/scala.collection.mutable/java.sql import statements",
+        "application-to-infrastructure imports"
+      ],
+      "maximumComplexity": 5,
+      "maximumControlNesting": 2,
+      "exceptions": "Exact file/owner/kind with finite maxima and justification. No whole-file exemption or project average."
+    },
+    "support": {
+      "appliesTo": "test/** and quality/**",
+      "description": "No forbidden structural checks; 5/2 default with exact closed-dispatch exceptions. The behavior fixture boots a single-node real cluster (self-join) with real ClusterSharding over the persistence-testkit journal, real LotEntity TCC behaviors, real wafer coordinators and the real composition host; the child journal is observed through the CompositionChildJournal port bound to a persistence-testkit read-journal adapter (the D1 split's test face). Recovery windows are constructed by rejectNextPersisted (deterministic crash, PostStop face verified) and host-journal prefix injection; the E2 attach face drives authorized Reconcile like the deployment successor. The Mongo surgery and two-JVM deployment suites are compile-face only (no mongod in the gate environment, F8 ruling): their raw-template members carry exact closed-dispatch exceptions with the raw-recovery/deployment-template justification.",
+      "defaultMaximumComplexity": 5,
+      "defaultMaximumControlNesting": 2,
+      "exceptions": "Exact file/owner/kind with finite maxima and justification."
+    }
+  },
+  "plainFpOo": {
+    "rejectDomain": [
+      "var",
+      "assignment",
+      "nonlocal return",
+      "throw/catch",
+      "Any/AnyRef",
+      "reflection",
+      "implicit time/randomness/concurrency",
+      "mutable collections",
+      "Actor/Play/JDBC/I/O imports in domain sources"
+    ],
+    "allow": [
+      "explicit nominal constructor require for illegal value domain",
+      "immutable field initialization",
+      "named sealed ADT",
+      "named private final binding/receipt-codec classes implementing the module host interface (E1 continuation; all guards verbatim)",
+      "abstract Host/binding trait obligations implemented by the technical fixture hosts",
+      "fully-qualified java.util.UUID references with zero java.*/akka import statements in domain faces",
+      "named-argument syntax in argument position",
+      "deterministic nameUUIDFromBytes-free identity derivation (txid keys are operation+step+occurrence strings, no random face)"
+    ],
+    "qualification": "Syntactic checks do not alone prove semantic purity or OO responsibility. Exact injected implementation and behavior properties are also reviewed."
+  },
+  "execution": {
+    "seeds": [
+      740001,
+      740002,
+      740003
+    ],
+    "workers": 1,
+    "minimumSuccessfulRandomCases": 1000
+  },
+  "rawAcceptanceUnchanged": true,
+  "all31Closed": false
+}

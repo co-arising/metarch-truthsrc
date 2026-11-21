@@ -1,0 +1,43 @@
+composition-invocation-host.behavior.v1.ComposedState terminal and activeStep follow the journal order
+composition-invocation-host.behavior.v1.TestHooks defaults admit every effect and keep recovery silent
+composition-invocation-host.behavior.v1.child journal is the only authoritative terminal with exactly-once faces
+composition-invocation-host.behavior.v1.child plan StartRun persists RunStarted, three stage cursors and RunCompleted
+composition-invocation-host.behavior.v1.child plan codec freezes the wafer:count wire form
+composition-invocation-host.behavior.v1.child plan codec roundtrips every bounded wafer set
+composition-invocation-host.behavior.v1.composition full chain concludes AllStepsSucceeded with conserved lots
+composition-invocation-host.behavior.v1.crash runs PostStop: the stopped hook fires and polls observe the closed owner
+composition-invocation-host.behavior.v1.durable derivation keys are stable and occurrence-scoped
+composition-invocation-host.behavior.v1.each saga starts exactly once with its stable transaction identity
+composition-invocation-host.behavior.v1.host journal trace: every intent precedes its checkpoint, child precedes merge
+composition-invocation-host.behavior.v1.lot TCC add reserves and commits through the real sharded entity
+composition-invocation-host.behavior.v1.negative: BeginOperation on a mismatched operation writes nothing
+composition-invocation-host.behavior.v1.negative: child plan StartRun on a live run key is Rejected with the in-state reason
+composition-invocation-host.behavior.v1.negative: duplicate BeginOperation is rejected by the single-writer guard
+composition-invocation-host.behavior.v1.negative: lot commit without a reservation is refused fail-closed
+composition-invocation-host.behavior.v1.negative: lot removal refuses wafers outside carried without persisting
+composition-invocation-host.behavior.v1.negative: persistenceIdFor rejects empty operation or occurrence
+composition-invocation-host.behavior.v1.negative: the barrier blocks the first saga Start; saga and child journals stay empty
+composition-invocation-host.behavior.v1.negative: the occupier terminal folds a same-txid different-args host into Rejected (E5)
+composition-invocation-host.behavior.v1.per-txid business filtering recovers exactly the four TCC effects
+composition-invocation-host.behavior.v1.recovery attaches the carried identity; the split saga re-drives without a second Start (E2)
+composition-invocation-host.behavior.v1.recovery reissues the same-key Start after a crash before the first effect (E4b)
+composition-invocation-host.behavior.v1.recovery replays an injected await-intent prefix into the authoritative child run (E3)
+composition-invocation-host.behavior.v1.singleton name is the sha-256 composition prefix of the persistence id
+composition-invocation-host.quality.v1.both suites carry the frozen composition entry faces
+composition-invocation-host.quality.v1.composition tree layout matches the composed family paths
+composition-invocation-host.quality.v1.domain lot supply carries zero mechanism imports
+composition-invocation-host.quality.v1.engine counting semantics: if, else-if, match and short-circuit counters
+composition-invocation-host.quality.v1.monarch imports appear only in the three declared faces
+composition-invocation-host.quality.v1.mongo faces stay in the persistence adapter and the two suites
+composition-invocation-host.quality.v1.negative: Defn.Var stays flagged in every boundary file
+composition-invocation-host.quality.v1.negative: boundary source importing infrastructure is rejected
+composition-invocation-host.quality.v1.negative: the engine bans anonymous implementations at every layer
+composition-invocation-host.quality.v1.negative: wafer args codec rejects trailing bytes and short framing
+composition-invocation-host.quality.v1.receipt codec pins lock every phase face of both hosts
+composition-invocation-host.quality.v1.strict runtime imports stay in the module and host faces
+composition-invocation-host.quality.v1.the application tree carries zero mutable slots (F11 revised)
+composition-invocation-host.quality.v1.the composition host imports no infrastructure and no mongo face
+composition-invocation-host.quality.v1.the host depends on the child journal port, not any adapter
+composition-invocation-host.quality.v1.the two wafer modules are identity twins
+composition-invocation-host.quality.v1.wafer args codec frames the five-slot canonical order
+composition-invocation-host.quality.v1.wafer module digests match the frozen semantic payloads

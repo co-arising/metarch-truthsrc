@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "curated.composition-invocation-host.review-status/v1",
+  "artifactType": "composition-invocation-host",
+  "candidateVersion": "v1",
+  "status": "GOLDEN_APPROVED_WALKTHROUGH_COMPLETE",
+  "approvedAt": "2026-11-21",
+  "walkthroughRulings": {
+    "F1": "supply (D2 landed): monarch-persistence 0.3.0 + monarch-core 0.3.0 staged byte-identically from bank-wealth-demo/.local/truthsrc-runtime-0.3.0, saga-core 0.3.0 reusing the #40/#41 staged jar; the formal CLI pins the same 0.3.0 coordinates with fixed SHA; closure adds the scalatest 3.2.11 family and scala-xml 2.0.1; the 0.3.0 behavior seven-explicit-param shape matches raw C05 parameter-for-parameter (probe-certified) accepted",
+    "F2": "layout (D1): three-layer binding — host + child plan + observation port in application/services/transactor, MongoCompositionChildJournal in infrastructure/persistence, CompositionBootstrap in infrastructure/bootstrap; no fourth .composition layer accepted",
+    "F3": "observation port: the host consumes CompositionChildJournal (watch(pid) → ChildJournalSignal observer → UniqueKillSwitch) with the ctor/factory signatures gaining the port parameter (raw ctor-shape deviation recorded); production binding = Mongo adapter via bootstrap; test binding = testkit read-journal adapter accepted",
+    "F4": "business supplies (9 handwritten files): Lot aggregate TCC protocol/entity/events + two wafer strict saga modules (verified identity twins) + two #41-family fixture hosts + two compact entries; two modules REQUIRED (a shared module would share the entry pid and singleton name, making the exactly-once oracle unconstructible) accepted",
+    "F5": "composition identity: binding module wafer-transfer → WaferTransferHost, planId wafer-child → WaferChildPlan (avoids the redundant-affix collision); stepIds split-transfer/await-child-run/merge-transfer; childCompletedCode ChildCompleted; merge funding slot verbatim to accepted",
+    "F6": "D3 contract faces resolved: reply family head = LotReply; source ctors take a final replyTo (positional); query replies with the state; seed commands expose error fields; the deployment face consumes the same resolved names accepted",
+    "F7": "E5 probe-driven: saga-core 0.3.0 folds a same-identity different-args Start on an occupied terminal into the existing transaction's terminal state (probe-certified 2026-11-20) — the host concludes Rejected with zero effects from its own args; the raw E5 assertion carries over verbatim with the probe note accepted",
+    "F8": "behavior-gate scope: real = E1 full chain, trace faces, exactly-once Started + four TCC effects per saga, Begin guards, GetProgress, E4b barrier + crash-recovery, E3 injection window, E2 Attach + authorized-Reconcile re-drive, E5 occupier, PostStop face, child-plan StartRun/cursors/codec, lot TCC faces, derivation-key forAll; compile-face only = E0 Mongo surgery suite and the E-D two-JVM SIGTERM deployment suite; the E4 truncation window stays recorded (D6 open, not fabricated) accepted",
+    "F9": "oracle retarget: the raw snapshot decode has NO API counterpart in 0.2.1 OR 0.3.0 (StageDone carries only cursor — speculative raw code caught by the gate order); the child oracle asserts the real 0.3.0 cursor sequence receive#0/process#1/finalize#2 plus RunStarted/RunCompleted counts; the business oracle uses this family's event names with per-txid four-effect filtering accepted",
+    "F10": "H18 tautology simplification: raw s.identity.exists(_ => true) && s.identity.isDefined && !contains collapses to s.identity.isDefined && !contains — an explicit recorded deviation (the contract forbids silent simplification) accepted",
+    "F11-revised": "Defn.Var REVISED (user challenge 2026-11-21: 'can F11 be solved algorithmically with immutable vals?'): the raw four mutable resource slots are eliminated — (a) scheduledPolls + ownerClosed become Behaviors.withTimers keyed single timers (PollTick internal command; same-key replacement = the raw cancel-and-reschedule; structural stop cancellation replaces the volatile ownerClosed guard, strictly stronger); (b) childActor becomes a setup-time ctx.spawn held as an immutable val (the child pid is constructor-fixed); (c) childWatch becomes a setup-time port watch held as an immutable val, the observer carries the raw ChildJournalSignal only and the wafers CSV is read from event-sourced state at handling time (started-wafers immutable — semantics preserved); the application tree carries ZERO Defn.Var/Term.Assign outside argument clauses; the engine family delta is DELETED (shared both-layer ban restored); the PollOnce named class is superseded by the PollTick timer face; three recorded deviations from the raw wiring (withTimers polling, setup-time spawns, deferred CSV read) are each strictly-semantics-preserving accepted",
+    "F12": "import face: same-package references need no imports; SplitFixtureHost/MergeFixtureHost named directly (B03's fixed FixtureHost constant generalizes to the resolved host class name); unused raw imports dropped; the host imports no infrastructure and no mongo face (property-pinned) accepted",
+    "F13": "CC restructure: the raw 9-branch onCommand/onSagaState/onRecovered bodies extract into named methods (orchestration/observation dispatch, terminalSagaState/abortedCode/prepareConfirmed, the four-level recovery tree), preserving every guard, log line, persist batch, post-persist effect, error and cancellation point accepted",
+    "F14": "emission set = 7 files (host, child plan, port, Mongo adapter, bootstrap, two suites); 9 supplies are handwritten and outside the emission set; wall 2400s, properties cap 420s, -Dquality.candidate, port-scoped 25551 sandbox rules carried from #41 accepted",
+    "G1": "E3 injection window lot consistency lands through REAL TCC commands (Reserve/Commit × removal on the from-lot + addition on the to-lot) because warm entities do not re-read appended journals; the inject-before-spawn discipline (reserve pid → inject → spawnSplitCoordinatorAt) applies to coordinator windows accepted",
+    "G2": "recovery windows: rejectNextPersisted (deterministic persist failure → EventSourcedBehavior fails → PostStop face fires → same-PID respawn) + host-journal prefix injection via persistForRecovery; the persistence-testkit cannot truncate journals and stopping persistence-backed actors hangs (#41 empirical) accepted",
+    "G3": "engine counting semantics pinned by engine-measured measurement: else-if chains measure at the enclosing if level (nesting 1, complexity 3); a two-case match with default counts one decision (complexity 2, nesting 1) accepted",
+    "G4": "the upstream sha re-check property is deleted; the digest re-check spirit is carried by the wafer payload digest properties (payload digests pinned against module constants) accepted",
+    "approval": "wholesale approval registered from the user's message 全批 (2026-11-21) against the delivered walkthrough — F1–F14 with the F11 revision plus the in-gate emergence points G1–G4, all accepted"
+  },
+  "gate": {
+    "discovery": "composition-invocation-host-quality-20261121-01",
+    "finalBytes": "composition-invocation-host-quality-20261121-02",
+    "sameBytesRecurrence": "composition-invocation-host-quality-20261121-03",
+    "preparedPin": "ae52e6b46103dc84842d4af3da0fc2af2350fb1f1ff7ab91ee0dfb14548d81c8",
+    "pinEquality": true,
+    "bundleSha256": "2d82a60f5685630b1cb84ed665dff94e4793e06514ab8e55c68eaba61a2d21dd",
+    "phases": "compile-domain, compile-properties, source-metrics, properties-740001, properties-740002, properties-740003 — all exit 0 in all three rounds",
+    "countsNote": "the gate-measured property split is 25 behavior (17 positive + 8 negative:) and 18 quality/structure (14 positive + 4 negative:) — 43 total, 12 negatives; the technical-input engineMeta.counts hand-count (31/12) predates the gate results and stays as delivered (prepared-pin equality), with the manifest recording the gate-truth numbers"
+  },
+  "jsImplementation": {
+    "registered": false,
+    "byteParity": "pending",
+    "plan": "tools/gen-composition-invocation-host.mjs over test/fixtures/composition-invocation-host-v1/input.json (schema truthsrc.composition-invocation-host-input/v1), emitting the seven family artifacts; the input contract carries every name, field list, state field, derivation format, code string, guard/log message, stage chain, event mapping, timing constant, scenario window table and config key; no golden bytes embedded",
+    "hardcodingBan": "the user mandated the generator must not hardcode golden bytes (structural emitter deriving everything from the input contract)"
+  },
+  "rawAcceptanceUnchanged": true,
+  "all31Closed": false
+}
