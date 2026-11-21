@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "curated.technical-input/v1",
+  "family": "strict-fixture-host",
+  "sequence": 41,
+  "recordedAt": "2026-11-20",
+  "sourceContract": "docs/codegen-parity/diffs/strict-fixture-host.diff.md (481 lines, read in full)",
+  "upstream": {
+    "admittedModule": "strict-saga-module/v1 StockTransferSagaModule.scala (byte-identical copy, sha256 74ea17451219916e6158ff1bce1e5665ad6d2a148b55f55946e0fb69b2b8c13f, quality property pins the full digest)",
+    "businessSuppliesCarried": [
+      "app/example/stockreservation/application/aggregates/StockOrderProtocol.scala (byte-identical)",
+      "app/example/stockreservation/domain/events/StockWarehouseEvents.scala (byte-identical)",
+      "app/net/imadz/common/Id.scala (byte-identical)"
+    ],
+    "newBusinessSupplies": [
+      "app/example/stockreservation/domain/events/WarehousePhaseEvents.scala (eight journal records; WarehouseEvent extends net.imadz.common.CborSerializable so events ride the real jackson-cbor chain)",
+      "app/example/stockreservation/domain/entities/WarehouseEntity.scala (phase-mark state keyed by txid + pure event application)",
+      "app/example/stockreservation/application/aggregates/WarehouseProtocol.scala (six phase commands verbatim from PhaseContract.command, read-only state query, idempotent publication command, deterministic nameUUIDFromBytes identities)"
+    ]
+  },
+  "rulings": {
+    "F1": "supply = reuse S1a': Maven Central release net.imadz:saga-core_2.13:0.3.0 staged byte-identically (jar 550fbd5c..., pom 105f2c4d...) with the #40 declared closure plus the runtime-discovered sharding closure (org.agrona:agrona:1.15.1, org.lmdbjava:lmdbjava:0.7.0, org.lz4:lz4-java:1.8.0, org.reactivestreams:reactive-streams:1.0.3 already present, org.scala-lang.modules:scala-java8-compat_2.13:1.0.2 replacing the unverified 1.0.0 coordinate because akka-cluster-sharding needs scala.compat.java8.OptionConverters at runtime)",
+    "F2": "layout = O1-consistent: the five production files land in the module package example.stockreservation.application.services.transactor (raw packagePath = module.selfType.packageName); protocol in application/aggregates; entity state in domain/entities; events in domain/events; raw-admission conflict stays platform debt (same as #40 F2)",
+    "F3": "naming = PascalCase stems + lowerCamel members (N1 continuation); wire ids/pins/step/participant ids verbatim; PID prefix strict-saga/ fixed; object types stays raw lowercase; entry named StockTransferSagaEntry",
+    "F4": "boundary = Y2 continuation (banned prefixes + import-face structure properties)",
+    "F5": "aggregate obligation = new handwritten warehouse supply; commands verbatim from the module PhaseContract.command values",
+    "F6": "behavior face = B2-real: single-node self-joined cluster, real ClusterSharding, real WarehouseEntity (EventSourcedBehavior over the persistence-testkit journal), real coordinator through the module behavior, publication through the real publication command",
+    "F7": "wire-shape extension: the raw shapeOf fails closed on IntegerShape and EnumerationShape; the curated profile maps Integer and Enumeration to Text (decimal/member string), UUID and Int ride text via toString/fromString and toString/toInt (#40 probe framing precedent); the raw rejection behavior is recorded, not extended silently",
+    "F8": "receipt source deviation: raw B06 requires receipt output slots to be echoable from inputs, which fails closed for this module (receipts carry aggregate-generated reservation/order ids); the curated host builds receipts from the aggregate reply payload and re-reads them from the durable phase-mark maps (real evidence semantics, echo would be fabrication)",
+    "F9": "aggregate reply shape: raw single-Option error reply replaced by per-command two-state typed PhaseReply(result: Either[OperationError, R]) because receipt values must flow",
+    "F10": "evidence profile: raw no-money ports feed evidenceMapField = None and every evidence query fails degraded; the curated host wires the six durable phase-mark maps and re-reads exact receipts, honoring the module's read-only-evidence-query capability; deviation recorded",
+    "F11": "raw test emission unreachable for this profile (renderSafetySpec demands a unique Money FQN); the money FixtureSafetySpec/FixtureDeploymentNode emission (cluster + Mongo + ProcessBuilder D3/D4 faces) stays out of the golden; the test tree is the curated quality suite",
+    "F12": "entry event source is compile-face only (installEventSource needs a reachable Mongo deployment); the trigger dispatch and status mapping logic is exercised through direct ask paths",
+    "F13": "SupportedCapabilities amendment: the fixed raw ten are joined by the three capability names the admitted module demands (durable-receipt, exact-resource-addressing, read-only-evidence-query) because requireImplemented filters the requirement against this set (discovered by the warmup guard chain)"
+  },
+  "probes": {
+    "strictRuntimeApi": "PhaseOutcome/ConfirmedReceipt/NotExecuted(identity, evidence, safeToRetry)/Unknown/Rejected, OperationIdentity(transaction, participantId, resource, stepId, phase), TransactionIdentity seven components, StrictStatus {Empty, Preparing, Committing, Aborting, RecoveryRequired, Succeeded, Aborted}, StrictState.terminal, coordinator Start/Attach/GetStatus/Abort/Reconcile + Status/Denied/ConflictingIdentity, Settings(interactionTimeout, maxReconcileInteractions), ReconcileAuthorizer.authorize(identity, token): Either[String, String]",
+    "coordinatorReconcileSemantics": "Reconcile on a terminal state short-circuits to Status(state) before authorization (StrictSagaCoordinator.scala:250) - pinned by property",
+    "mongoReadJournal": "ScalaDslMongoReadJournal lives in akka-persistence-mongo-common 3.0.8; its companion carries no Identifier in 3.0.8 - the id moved to MongoReadJournal.Identifier = akka-contrib-mongodb-persistence-readjournal",
+    "fixtureDeadlock": "a shard entity factory lambda inside the fixture object deadlocks class initialization (warmup ask waits on clinit while the shard thread waits on clinit); split into SagaEntryKit/SagaEntrySharding/SagaEntryFixture",
+    "shardingStoreMode": "the 2.6.20 key is akka.cluster.sharding.state-store-mode (not store-mode); journal-plugin-id pins the coordinator journal",
+    "entryPidUniqueness": "entry.spawn pins the fixed module pid; flow coordinators use unique pids in the strict namespace because the shared in-memory journal would collide across flow properties in one JVM",
+    "persistenceTestKit": "PID-scoped failNextPersisted gives a deterministic first-persist failure folding the host ask into Unknown and the coordinator into RecoveryRequired; PersistTestKit obtained via akka.persistence.testkit.scaladsl.PersistenceTestKit(system)",
+    "stopHazard": "testKit.stop on a persistence-backed coordinator hangs past 30s in the testkit; flow coordinators idle for the daemonic JVM lifetime instead"
+  },
+  "engineMeta": {
+    "newAnonymousBan": "raw anonymous binding implementations rendered as nine named private final classes (six bindings, two trigger bindings under the module trait names, one completion mapper)",
+    "varBan": "raw var/while wire bodies rendered as tail recursion over ByteString slices with identical checks in identical order",
+    "optionFoldBInference": "Option.fold needs the explicit type parameter annotation when both branches build Effect values; Either.fold curried form conflicts with multi-lambda parsing at some shapes, so the execute paths use match with two cases",
+    "counts": "86 properties (58 behavior incl. 25 negative:, 28 structure/engine-meta); zero complexity or nesting excess across all 22 sources; scope-exceptions.tsv carries the six closed engine-dispatch rows copied from #40"
+  },
+  "generator": {
+    "hardcodingBan": "the user mandated the generator must not hardcode golden bytes; the emitter derives names, field lists, contracts, guards and bodies structurally from the input contract",
+    "status": "pending after golden approval"
+  },
+  "rawAcceptanceUnchanged": true,
+  "all31Closed": false
+}

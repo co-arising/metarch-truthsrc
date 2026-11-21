@@ -1,0 +1,86 @@
+strict-fixture-host.behavior.v1.ArgsCodec canonical roundtrip equals original bytes
+strict-fixture-host.behavior.v1.ArgsCodec frame order follows the declared args slots
+strict-fixture-host.behavior.v1.StrictWire bounded collection roundtrips under the 64 cap
+strict-fixture-host.behavior.v1.StrictWire frozen wire vector matches the oracle hex
+strict-fixture-host.behavior.v1.StrictWire length-prefixed single field roundtrips exactly
+strict-fixture-host.behavior.v1.StrictWire multi-field readPrefixed returns fields and remainder
+strict-fixture-host.behavior.v1.cluster singleton spawn exposes the same coordinator face
+strict-fixture-host.behavior.v1.command trigger maps the whole typed command with transfer-id txid
+strict-fixture-host.behavior.v1.completion binding contract equals the module contract verbatim
+strict-fixture-host.behavior.v1.completion mapper builds the declared module event
+strict-fixture-host.behavior.v1.completionEvent maps only the declared succeeded outcome
+strict-fixture-host.behavior.v1.coordinator settings pin interaction timeout and reconcile budget
+strict-fixture-host.behavior.v1.duplicate start with identical args stays idempotent
+strict-fixture-host.behavior.v1.entry persistence id lives in the strict namespace
+strict-fixture-host.behavior.v1.entry status maps the Status reply
+strict-fixture-host.behavior.v1.event trigger distinct events derive distinct txids
+strict-fixture-host.behavior.v1.event trigger maps the fixture restock shape
+strict-fixture-host.behavior.v1.event trigger txid is deterministic 64-hex sha-256
+strict-fixture-host.behavior.v1.exact-resource addressing renders canonical uuid text
+strict-fixture-host.behavior.v1.first-persist failure folds to Unknown and recovers under authorization
+strict-fixture-host.behavior.v1.full stock-transfer saga settles both warehouses and publishes
+strict-fixture-host.behavior.v1.insufficient source stock aborts with untouched reservations
+strict-fixture-host.behavior.v1.namespace guard accepts strict-saga persistence ids
+strict-fixture-host.behavior.v1.negative: ArgsCodec rejects malformed quantity text fail-closed
+strict-fixture-host.behavior.v1.negative: ArgsCodec rejects malformed uuid text fail-closed
+strict-fixture-host.behavior.v1.negative: ArgsCodec rejects short field counts fail-closed
+strict-fixture-host.behavior.v1.negative: ArgsCodec rejects trailing bytes with the verbatim wire message
+strict-fixture-host.behavior.v1.negative: StrictWire bounded collection above the cap is rejected
+strict-fixture-host.behavior.v1.negative: StrictWire negative field length fails closed
+strict-fixture-host.behavior.v1.negative: StrictWire readPrefixedAll requires a 4-byte count header
+strict-fixture-host.behavior.v1.negative: StrictWire truncated field body fails closed
+strict-fixture-host.behavior.v1.negative: StrictWire truncated header fails closed
+strict-fixture-host.behavior.v1.negative: command trigger rejects empty sku
+strict-fixture-host.behavior.v1.negative: command trigger rejects oversized sku
+strict-fixture-host.behavior.v1.negative: entry status fails closed on unexpected replies
+strict-fixture-host.behavior.v1.negative: namespace guard rejects foreign persistence ids
+strict-fixture-host.behavior.v1.negative: publishCompletion refuses non-terminal states
+strict-fixture-host.behavior.v1.negative: reconcile authorizer rejects null expected token
+strict-fixture-host.behavior.v1.negative: reconcile authorizer rejects null tokens
+strict-fixture-host.behavior.v1.negative: reconcile authorizer rejects wrong tokens
+strict-fixture-host.behavior.v1.negative: requireImplemented refuses non-durable manifests
+strict-fixture-host.behavior.v1.negative: requireImplemented rejects args codec pin drift
+strict-fixture-host.behavior.v1.negative: requireImplemented rejects compensation wiring drift
+strict-fixture-host.behavior.v1.negative: requireImplemented rejects decision wiring drift
+strict-fixture-host.behavior.v1.negative: requireImplemented rejects declared type identity drift
+strict-fixture-host.behavior.v1.negative: requireImplemented rejects non-positive budgets
+strict-fixture-host.behavior.v1.negative: requireImplemented rejects undeclared invariants
+strict-fixture-host.behavior.v1.negative: requireImplemented rejects unsupported capabilities
+strict-fixture-host.behavior.v1.publication acks idempotently and records the completion once
+strict-fixture-host.behavior.v1.reconcile authorizer accepts the expected token
+strict-fixture-host.behavior.v1.reconcile short-circuits a healthy terminal state with its status
+strict-fixture-host.behavior.v1.requireImplemented accepts the module requirements verbatim
+strict-fixture-host.behavior.v1.reserve commit receipt codec roundtrips with pin v1
+strict-fixture-host.behavior.v1.reserve compensate receipt codec roundtrips with pin v1
+strict-fixture-host.behavior.v1.reserve prepare receipt codec roundtrips with pin v1
+strict-fixture-host.behavior.v1.target commit receipt codec roundtrips with pin v1
+strict-fixture-host.behavior.v1.target compensate receipt codec roundtrips with pin v1
+strict-fixture-host.behavior.v1.target prepare receipt codec roundtrips with pin v2
+strict-fixture-host.quality.v1.engine: anonymous implementations are unsupported terms at every layer
+strict-fixture-host.quality.v1.engine: domain layer rejects outward imports and future and uuid term names
+strict-fixture-host.quality.v1.engine: e2b admits named arguments in call clauses and rejects real assignments
+strict-fixture-host.quality.v1.engine: infix conjunction adds one decision per operator and match adds one per case
+strict-fixture-host.quality.v1.engine: support sources skip structural checks but never skip the unsupported-term gate
+strict-fixture-host.quality.v1.engine: the boundary face admits akka and strict while banning effectful prefixes
+strict-fixture-host.quality.v1.engine: the whole committed app face analyzes clean at its declared layers
+strict-fixture-host.quality.v1.structure: akka imports appear only in module, protocol, host and entry faces
+strict-fixture-host.quality.v1.structure: every app source line stays inside the 100 column layout
+strict-fixture-host.quality.v1.structure: host interactions derive every ask from the identity resource
+strict-fixture-host.quality.v1.structure: no app source carries reflection or global effect tokens
+strict-fixture-host.quality.v1.structure: six named binding classes and named trigger and completion classes
+strict-fixture-host.quality.v1.structure: six named receipt codec classes pin the frozen codec ids in order
+strict-fixture-host.quality.v1.structure: the app tree lands on the approved fixture paths exactly
+strict-fixture-host.quality.v1.structure: the args codec pins the module pin literal with five text slots
+strict-fixture-host.quality.v1.structure: the domain supplies stay pure with zero akka and runtime imports
+strict-fixture-host.quality.v1.structure: the entry declares namespace, spawn faces, event source and authorizer
+strict-fixture-host.quality.v1.structure: the entry publication resolves the first-step resource via the host
+strict-fixture-host.quality.v1.structure: the host declares the ten fixed capabilities and one invariant
+strict-fixture-host.quality.v1.structure: the host guards the eight safety wiring literals
+strict-fixture-host.quality.v1.structure: the identity supply stays in the shared common path
+strict-fixture-host.quality.v1.structure: the mongo read journal and stream face live only in the entry
+strict-fixture-host.quality.v1.structure: the protobuf ByteString import stays in the wire faces
+strict-fixture-host.quality.v1.structure: the strict runtime imports only in module, codec, host and entry faces
+strict-fixture-host.quality.v1.structure: the upstream module is consumed byte-identical to the approved golden
+strict-fixture-host.quality.v1.structure: the warehouse event family carries the eight journal records
+strict-fixture-host.quality.v1.structure: the wire object carries the raw no-money branch constructs
+strict-fixture-host.quality.v1.structure: warehouse commands name the six module phase commands verbatim

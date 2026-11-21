@@ -1,0 +1,102 @@
+{
+  "schemaVersion": "curated.scala-source-quality-policy/v1",
+  "artifactType": "strict-fixture-host",
+  "dialect": "Scala213",
+  "parser": "org.scalameta:parsers_2.13:4.7.7",
+  "measurement": {
+    "name": "source-structural-mccabe-v1",
+    "notClaim": "Not a full control-flow graph proof or equivalence to every compiler plugin.",
+    "base": 1,
+    "increment": [
+      "if",
+      "while",
+      "do",
+      "for generator",
+      "for guard",
+      "case guard",
+      "short-circuit &&",
+      "short-circuit ||"
+    ],
+    "match": "Expanded pattern paths minus one; add conservative unmatched exit unless unconditional wildcard/default exists.",
+    "catch": "Same path rule when catch cases are present.",
+    "nestedClosures": "Include decisions in owning body; report lambda/partial function separately; do not add closure base twice.",
+    "namedNestedDefinitions": "Report separately, no nested body counted twice.",
+    "initialization": "Report each primary/object initializer and field independently. Abstract declarations have no executable body.",
+    "nesting": "Control constructs only; an else-if continuation retains the enclosing if level."
+  },
+  "layers": {
+    "domain": {
+      "appliesTo": "app/**/domain/**",
+      "description": "Same full forbidden set as the aggregate-state-controller policy, unchanged; application/infrastructure imports are banned; fixed 5/2 maxima without exceptions. The domain supplies carry the warehouse event family (over the CborSerializable marker, so journal events ride the real jackson-cbor chain), the warehouse phase-mark state with its pure event application, and the frozen trigger-source / completion event records over the common Id alias — zero akka/strict-runtime imports.",
+      "maximumComplexity": 5,
+      "maximumControlNesting": 2,
+      "exceptionsAllowed": false
+    },
+    "boundary": {
+      "appliesTo": "app/**/application/** and app/**/infrastructure/** and app/net/** (the shared-common supply)",
+      "description": "strict-fixture-host contract layer: the five production files project the raw fixture-host family for the admitted stock-transfer module — the types alias surface, the no-money StrictWire text framing, the canonical ArgsCodec, the technical FixtureHost (six named binding classes with named receipt codecs, exact-resource addressing, durable per-phase mark re-reads), and the deployment entry with the reconcile authorizer — plus the warehouse protocol/behavior supply. Per the rulings of 2026-11-20 (S1a-prime reuse/O1/N1/Y2/H1/B2/F7–F13) the boundary face admits akka and net.imadz.infra.saga import prefixes as the declared family face — the per-file akka/strict/mongo/stream whitelist is pinned by structural properties, not by the engine; every other banned prefix (java.io/java.nio/java.time/java.util, scala.collection.mutable, java.sql) stays banned with fully-qualified references as the sanctioned zero-import form (java.util.UUID is fully qualified in every boundary face). The raw anonymous binding implementations are rendered as named private final classes (E1 continuation; the frozen engine rejects Term.NewAnonymous at every layer). The raw mutable-iteration wire bodies (var/while) are rendered as tail recursion over ByteString slices with identical checks in identical order (D5-class recorded deviation). Term.Assign is judged by context (E2b continuation); kernel isolation and the direction-aware import policy are unchanged.",
+      "forbiddenDelta": [
+        "Import prefixes akka and net.imadz.infra.saga are admitted in boundary as the declared family face (Y2 continuation ruling, 2026-11-20): structural properties pin the whitelist (akka only in the copied module, WarehouseProtocol, FixtureHost and the entry; the strict runtime only in the module, the args codec, FixtureHost and the entry; the mongo read journal, akka.stream and akka.cluster.typed only in the entry; com.google.protobuf.ByteString only in the three wire faces).",
+        "Term.Assign is judged by context, not by layer (E2b continuation): named arguments are admitted in BOTH layers, Term.Assign in any other position is a violation in BOTH layers, and Defn.Var stays banned in both layers.",
+        "Direction-aware imports: an application file must not import infrastructure packages (kernel isolation); net.imadz.infra.saga is not an infrastructure path; every other banned import prefix stays banned with fully-qualified references as the sanctioned zero-import form."
+      ],
+      "stillRejected": [
+        "var declarations (Defn.Var in both layers)",
+        "assignment targets (Term.Assign outside an argument clause, in both layers)",
+        "throw/catch keyword form (the canonical Future.fromTry(Try{...}) companion apply is admitted)",
+        "Any/AnyRef",
+        "reflection names (getClass included)",
+        "Await",
+        "Random/Clock/LocalDateTime/Date term names",
+        "mutable collection names and mutation term names",
+        "java.io/java.nio/java.time/java.util/scala.collection.mutable/java.sql import statements",
+        "application-to-infrastructure imports"
+      ],
+      "maximumComplexity": 5,
+      "maximumControlNesting": 2,
+      "exceptions": "Exact file/owner/kind with finite maxima and justification. No whole-file exemption or project average."
+    },
+    "support": {
+      "appliesTo": "test/** and quality/**",
+      "description": "No forbidden structural checks; 5/2 default with exact closed-dispatch exceptions. The behavior fixture boots a single-node real cluster (self-join) with real ClusterSharding over the persistence-testkit journal (state-store-mode persistence; shard coordinator rides the same journal), seeds warehouses through persistForRecovery before first spawn, boots the real FixtureHost against real WarehouseEntity behaviors, drives full transaction flows through the module behavior with unique per-flow journal pids in the strict namespace, and injects the first-persist failure through the PID-scoped failNextPersisted to fold a real interaction into Unknown, RecoveryRequired and authorized re-drive. The fixture initialization is split across SagaEntryKit/SagaEntrySharding/SagaEntryFixture objects so the shard entity factory never waits on the fixture's own class initialization (empirical deadlock).",
+      "defaultMaximumComplexity": 5,
+      "defaultMaximumControlNesting": 2,
+      "exceptions": "Exact file/owner/kind with finite maxima and justification."
+    }
+  },
+  "plainFpOo": {
+    "rejectDomain": [
+      "var",
+      "assignment",
+      "nonlocal return",
+      "throw/catch",
+      "Any/AnyRef",
+      "reflection",
+      "implicit time/randomness/concurrency",
+      "mutable collections",
+      "Actor/Play/JDBC/I/O imports in domain sources"
+    ],
+    "allow": [
+      "explicit nominal constructor require for illegal value domain",
+      "immutable field initialization",
+      "named sealed ADT",
+      "named private final binding/receipt-codec classes implementing the module host interface (E1 continuation; all guards verbatim)",
+      "abstract Host/binding trait obligations implemented by the technical fixture host",
+      "fully-qualified java.util.UUID references with zero java.*/akka import statements in boundary faces",
+      "named-argument syntax in argument position",
+      "deterministic nameUUIDFromBytes derived reservation and order identities (no random face)"
+    ],
+    "qualification": "Syntactic checks do not alone prove semantic purity or OO responsibility. Exact injected implementation and behavior properties are also reviewed."
+  },
+  "execution": {
+    "seeds": [
+      740001,
+      740002,
+      740003
+    ],
+    "workers": 1,
+    "minimumSuccessfulRandomCases": 1000
+  },
+  "rawAcceptanceUnchanged": true,
+  "all31Closed": false
+}
