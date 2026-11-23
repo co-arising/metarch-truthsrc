@@ -9,8 +9,9 @@ import { packageFor } from '../scala-cqrs-domain/naming.mjs';
 import { renderInvariant } from '../scala-cqrs-domain/render-domain.mjs';
 import { renderAggregateLayers } from './render-aggregate-layers.mjs';
 import { renderJournalReadside } from './render-journal-readside.mjs';
-import { withFlippedInvocationHosts, withFlippedExecutionPipelines } from '../../lib/derivation/pipeline-invocation-emission.mjs';
+import { withFlippedInvocationHosts, withFlippedExecutionPipelines, withFlippedEffectHosts, withFlippedEffectPipelines } from '../../lib/derivation/pipeline-invocation-emission.mjs';
 import { PIPELINE_INVOCATION_FLIPS, flipHostBase } from '../../lib/derivation/pipeline-invocation-face.mjs';
+import { EFFECT_FACE_FLIPS, effectFlipHostClass } from '../../lib/derivation/effect-face.mjs';
 
 // The akka serializer registry binds the flipped face event journal by class name,
 // so the two conf lines per flipped host must spell the golden names. Each
@@ -26,6 +27,14 @@ function flippedSerializerConfContent(content, context) {
     const base = flipHostBase(flip.host);
     next = replaceExactlyOnce(next, stem + 'HostSerializer"', base + 'HostSerializer"', 'conf serializer binding for ' + flip.host);
     next = replaceExactlyOnce(next, stem + 'Host$Event"', base + 'Host$Event"', 'conf event binding for ' + flip.host);
+  }
+  const effectHosts = context.products['effect-host-contract'].hosts;
+  for (const flip of EFFECT_FACE_FLIPS) {
+    if (!effectHosts.some(h => h.id === flip.host)) continue;
+    const stem = flip.host.replaceAll('-', '_');
+    const base = effectFlipHostClass(flip.host);
+    next = replaceExactlyOnce(next, stem + 'EffectHostSerializer"', base + 'Serializer"', 'conf serializer binding for ' + flip.host);
+    next = replaceExactlyOnce(next, stem + 'EffectHost$Event"', base + '$Event"', 'conf event binding for ' + flip.host);
   }
   return next;
 }
@@ -48,8 +57,10 @@ const inherited = Object.fromEntries(Object.entries(createEffectRegistry('2')).m
         : id === 'finite-host-dsl'
           ? withFlippedInvocationHosts(implementation.produce.bind(implementation), context)
           : id === 'finite-execution-dsl'
-            ? withFlippedExecutionPipelines(implementation.produce.bind(implementation), context)
-            : implementation.produce(context);
+            ? withFlippedEffectPipelines(effectContext => withFlippedExecutionPipelines(inner => implementation.produce(inner), effectContext), context)
+            : id === 'durable-effect-host-dsl'
+              ? withFlippedEffectHosts(implementation.produce.bind(implementation), context)
+              : implementation.produce(context);
     return produced.map(entry => {
       const pins = entry.productFootprint.map(p => ({ ...p, version: version(p.id) ?? p.version }));
       if (['proto-dsl', 'finite-execution-dsl', 'finite-host-dsl'].includes(id) && !pins.some(p => p.id === 'effect-host-contract')) pins.push({ id: 'effect-host-contract', version: '2' });
