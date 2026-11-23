@@ -63,7 +63,8 @@ object BankPaymentPortBindings {
 
     def requireExact(expectedId: String, expectedVersion: String): Unit = {
       require(id == expectedId, s"implementation identity mismatch: expected $expectedId, got $id")
-      require(version == expectedVersion, s"implementation version mismatch: $id expected $expectedVersion, got $version")
+      require(version == expectedVersion,
+          s"implementation version mismatch: $id expected $expectedVersion, got $version")
     }
   }
 
@@ -72,10 +73,12 @@ object BankPaymentPortBindings {
   final case class RunBinding[I, O](id: String, version: String, run: I => Future[O]) extends PortBinding[I, O] {
     require(run != null, s"implementation $id carries no run face")
   }
-  final case class OperationBinding[I, O](id: String, version: String, run: (I, OperationIdentity) => Future[O]) extends PortBinding[I, O] {
+  final case class OperationBinding[I,
+      O](id: String, version: String, run: (I, OperationIdentity) => Future[O]) extends PortBinding[I, O] {
     require(run != null, s"implementation $id carries no operation face")
   }
-  final case class CompletionBinding[I, O](id: String, version: String, run: (I, CompletionContext) => Future[O]) extends PortBinding[I, O] {
+  final case class CompletionBinding[I,
+      O](id: String, version: String, run: (I, CompletionContext) => Future[O]) extends PortBinding[I, O] {
     require(run != null, s"implementation $id carries no completion face")
   }
 
@@ -84,24 +87,42 @@ object BankPaymentPortBindings {
   final case class Bindings(
     entry: RunBinding[BankPaymentOriginal, Boolean],
     association: RunBinding[BankPaymentOriginal, Boolean],
-    reserveInvestorFundsPrepareExecute: OperationBinding[ReserveInvestorFundsPrepareInput, ReserveInvestorFundsPrepareReceipt],
-    reserveInvestorFundsPrepareQuery: OperationBinding[ReserveInvestorFundsPrepareQuery, Option[ReserveInvestorFundsPrepareReceipt]],
-    reserveInvestorFundsCommitExecute: OperationBinding[ReserveInvestorFundsCommitInput, ReserveInvestorFundsCommitReceipt],
-    reserveInvestorFundsCommitQuery: OperationBinding[ReserveInvestorFundsCommitQuery, Option[ReserveInvestorFundsCommitReceipt]],
-    reserveInvestorFundsCompensateExecute: OperationBinding[ReserveInvestorFundsCompensateInput, ReserveInvestorFundsCompensateReceipt],
-    reserveInvestorFundsCompensateQuery: OperationBinding[ReserveInvestorFundsCompensateQuery, Option[ReserveInvestorFundsCompensateReceipt]],
-    creditFundCollectionPrepareExecute: OperationBinding[CreditFundCollectionPrepareInput, CreditFundCollectionPrepareReceipt],
-    creditFundCollectionPrepareQuery: OperationBinding[CreditFundCollectionPrepareQuery, Option[CreditFundCollectionPrepareReceipt]],
-    creditFundCollectionCommitExecute: OperationBinding[CreditFundCollectionCommitInput, CreditFundCollectionCommitReceipt],
-    creditFundCollectionCommitQuery: OperationBinding[CreditFundCollectionCommitQuery, Option[CreditFundCollectionCommitReceipt]],
-    creditFundCollectionCompensateExecute: OperationBinding[CreditFundCollectionCompensateInput, CreditFundCollectionCompensateReceipt],
-    creditFundCollectionCompensateQuery: OperationBinding[CreditFundCollectionCompensateQuery, Option[CreditFundCollectionCompensateReceipt]],
-    reserveCashFundOrderPrepareExecute: OperationBinding[ReserveCashFundOrderPrepareInput, ReserveCashFundOrderPrepareReceipt],
-    reserveCashFundOrderPrepareQuery: OperationBinding[ReserveCashFundOrderPrepareQuery, Option[ReserveCashFundOrderPrepareReceipt]],
-    reserveCashFundOrderCommitExecute: OperationBinding[ReserveCashFundOrderCommitInput, ReserveCashFundOrderCommitReceipt],
-    reserveCashFundOrderCommitQuery: OperationBinding[ReserveCashFundOrderCommitQuery, Option[ReserveCashFundOrderCommitReceipt]],
-    reserveCashFundOrderCompensateExecute: OperationBinding[ReserveCashFundOrderCompensateInput, ReserveCashFundOrderCompensateReceipt],
-    reserveCashFundOrderCompensateQuery: OperationBinding[ReserveCashFundOrderCompensateQuery, Option[ReserveCashFundOrderCompensateReceipt]],
+    reserveInvestorFundsPrepareExecute: OperationBinding[ReserveInvestorFundsPrepareInput,
+        ReserveInvestorFundsPrepareReceipt],
+    reserveInvestorFundsPrepareQuery: OperationBinding[ReserveInvestorFundsPrepareQuery,
+        Option[ReserveInvestorFundsPrepareReceipt]],
+    reserveInvestorFundsCommitExecute: OperationBinding[ReserveInvestorFundsCommitInput,
+        ReserveInvestorFundsCommitReceipt],
+    reserveInvestorFundsCommitQuery: OperationBinding[ReserveInvestorFundsCommitQuery,
+        Option[ReserveInvestorFundsCommitReceipt]],
+    reserveInvestorFundsCompensateExecute: OperationBinding[ReserveInvestorFundsCompensateInput,
+        ReserveInvestorFundsCompensateReceipt],
+    reserveInvestorFundsCompensateQuery: OperationBinding[ReserveInvestorFundsCompensateQuery,
+        Option[ReserveInvestorFundsCompensateReceipt]],
+    creditFundCollectionPrepareExecute: OperationBinding[CreditFundCollectionPrepareInput,
+        CreditFundCollectionPrepareReceipt],
+    creditFundCollectionPrepareQuery: OperationBinding[CreditFundCollectionPrepareQuery,
+        Option[CreditFundCollectionPrepareReceipt]],
+    creditFundCollectionCommitExecute: OperationBinding[CreditFundCollectionCommitInput,
+        CreditFundCollectionCommitReceipt],
+    creditFundCollectionCommitQuery: OperationBinding[CreditFundCollectionCommitQuery,
+        Option[CreditFundCollectionCommitReceipt]],
+    creditFundCollectionCompensateExecute: OperationBinding[CreditFundCollectionCompensateInput,
+        CreditFundCollectionCompensateReceipt],
+    creditFundCollectionCompensateQuery: OperationBinding[CreditFundCollectionCompensateQuery,
+        Option[CreditFundCollectionCompensateReceipt]],
+    reserveCashFundOrderPrepareExecute: OperationBinding[ReserveCashFundOrderPrepareInput,
+        ReserveCashFundOrderPrepareReceipt],
+    reserveCashFundOrderPrepareQuery: OperationBinding[ReserveCashFundOrderPrepareQuery,
+        Option[ReserveCashFundOrderPrepareReceipt]],
+    reserveCashFundOrderCommitExecute: OperationBinding[ReserveCashFundOrderCommitInput,
+        ReserveCashFundOrderCommitReceipt],
+    reserveCashFundOrderCommitQuery: OperationBinding[ReserveCashFundOrderCommitQuery,
+        Option[ReserveCashFundOrderCommitReceipt]],
+    reserveCashFundOrderCompensateExecute: OperationBinding[ReserveCashFundOrderCompensateInput,
+        ReserveCashFundOrderCompensateReceipt],
+    reserveCashFundOrderCompensateQuery: OperationBinding[ReserveCashFundOrderCompensateQuery,
+        Option[ReserveCashFundOrderCompensateReceipt]],
     succeededAuthority: CompletionBinding[BankPaymentOriginal, BankPaymentResult],
     succeededDelivery: CompletionBinding[BankPaymentResult, Boolean],
     rejectedBeforeEffectsAuthority: CompletionBinding[BankPaymentOriginal, BankPaymentResult],
@@ -125,62 +146,85 @@ object BankPaymentPortBindings {
     def entry(input: BankPaymentOriginal): Future[Boolean] = bindings.entry.run(input)
     def association(input: BankPaymentOriginal): Future[Boolean] = bindings.association.run(input)
 
-    def reserveInvestorFundsPrepareExecute(input: ReserveInvestorFundsPrepareInput, identity: OperationIdentity): Future[ReserveInvestorFundsPrepareReceipt] =
+    def reserveInvestorFundsPrepareExecute(input: ReserveInvestorFundsPrepareInput,
+        identity: OperationIdentity): Future[ReserveInvestorFundsPrepareReceipt] =
       bindings.reserveInvestorFundsPrepareExecute.run(input, identity)
-    def reserveInvestorFundsPrepareQuery(input: ReserveInvestorFundsPrepareQuery, identity: OperationIdentity): Future[Option[ReserveInvestorFundsPrepareReceipt]] =
+    def reserveInvestorFundsPrepareQuery(input: ReserveInvestorFundsPrepareQuery,
+        identity: OperationIdentity): Future[Option[ReserveInvestorFundsPrepareReceipt]] =
       bindings.reserveInvestorFundsPrepareQuery.run(input, identity)
-    def reserveInvestorFundsCommitExecute(input: ReserveInvestorFundsCommitInput, identity: OperationIdentity): Future[ReserveInvestorFundsCommitReceipt] =
+    def reserveInvestorFundsCommitExecute(input: ReserveInvestorFundsCommitInput,
+        identity: OperationIdentity): Future[ReserveInvestorFundsCommitReceipt] =
       bindings.reserveInvestorFundsCommitExecute.run(input, identity)
-    def reserveInvestorFundsCommitQuery(input: ReserveInvestorFundsCommitQuery, identity: OperationIdentity): Future[Option[ReserveInvestorFundsCommitReceipt]] =
+    def reserveInvestorFundsCommitQuery(input: ReserveInvestorFundsCommitQuery,
+        identity: OperationIdentity): Future[Option[ReserveInvestorFundsCommitReceipt]] =
       bindings.reserveInvestorFundsCommitQuery.run(input, identity)
-    def reserveInvestorFundsCompensateExecute(input: ReserveInvestorFundsCompensateInput, identity: OperationIdentity): Future[ReserveInvestorFundsCompensateReceipt] =
+    def reserveInvestorFundsCompensateExecute(input: ReserveInvestorFundsCompensateInput,
+        identity: OperationIdentity): Future[ReserveInvestorFundsCompensateReceipt] =
       bindings.reserveInvestorFundsCompensateExecute.run(input, identity)
-    def reserveInvestorFundsCompensateQuery(input: ReserveInvestorFundsCompensateQuery, identity: OperationIdentity): Future[Option[ReserveInvestorFundsCompensateReceipt]] =
+    def reserveInvestorFundsCompensateQuery(input: ReserveInvestorFundsCompensateQuery,
+        identity: OperationIdentity): Future[Option[ReserveInvestorFundsCompensateReceipt]] =
       bindings.reserveInvestorFundsCompensateQuery.run(input, identity)
 
-    def creditFundCollectionPrepareExecute(input: CreditFundCollectionPrepareInput, identity: OperationIdentity): Future[CreditFundCollectionPrepareReceipt] =
+    def creditFundCollectionPrepareExecute(input: CreditFundCollectionPrepareInput,
+        identity: OperationIdentity): Future[CreditFundCollectionPrepareReceipt] =
       bindings.creditFundCollectionPrepareExecute.run(input, identity)
-    def creditFundCollectionPrepareQuery(input: CreditFundCollectionPrepareQuery, identity: OperationIdentity): Future[Option[CreditFundCollectionPrepareReceipt]] =
+    def creditFundCollectionPrepareQuery(input: CreditFundCollectionPrepareQuery,
+        identity: OperationIdentity): Future[Option[CreditFundCollectionPrepareReceipt]] =
       bindings.creditFundCollectionPrepareQuery.run(input, identity)
-    def creditFundCollectionCommitExecute(input: CreditFundCollectionCommitInput, identity: OperationIdentity): Future[CreditFundCollectionCommitReceipt] =
+    def creditFundCollectionCommitExecute(input: CreditFundCollectionCommitInput,
+        identity: OperationIdentity): Future[CreditFundCollectionCommitReceipt] =
       bindings.creditFundCollectionCommitExecute.run(input, identity)
-    def creditFundCollectionCommitQuery(input: CreditFundCollectionCommitQuery, identity: OperationIdentity): Future[Option[CreditFundCollectionCommitReceipt]] =
+    def creditFundCollectionCommitQuery(input: CreditFundCollectionCommitQuery,
+        identity: OperationIdentity): Future[Option[CreditFundCollectionCommitReceipt]] =
       bindings.creditFundCollectionCommitQuery.run(input, identity)
-    def creditFundCollectionCompensateExecute(input: CreditFundCollectionCompensateInput, identity: OperationIdentity): Future[CreditFundCollectionCompensateReceipt] =
+    def creditFundCollectionCompensateExecute(input: CreditFundCollectionCompensateInput,
+        identity: OperationIdentity): Future[CreditFundCollectionCompensateReceipt] =
       bindings.creditFundCollectionCompensateExecute.run(input, identity)
-    def creditFundCollectionCompensateQuery(input: CreditFundCollectionCompensateQuery, identity: OperationIdentity): Future[Option[CreditFundCollectionCompensateReceipt]] =
+    def creditFundCollectionCompensateQuery(input: CreditFundCollectionCompensateQuery,
+        identity: OperationIdentity): Future[Option[CreditFundCollectionCompensateReceipt]] =
       bindings.creditFundCollectionCompensateQuery.run(input, identity)
 
-    def reserveCashFundOrderPrepareExecute(input: ReserveCashFundOrderPrepareInput, identity: OperationIdentity): Future[ReserveCashFundOrderPrepareReceipt] =
+    def reserveCashFundOrderPrepareExecute(input: ReserveCashFundOrderPrepareInput,
+        identity: OperationIdentity): Future[ReserveCashFundOrderPrepareReceipt] =
       bindings.reserveCashFundOrderPrepareExecute.run(input, identity)
-    def reserveCashFundOrderPrepareQuery(input: ReserveCashFundOrderPrepareQuery, identity: OperationIdentity): Future[Option[ReserveCashFundOrderPrepareReceipt]] =
+    def reserveCashFundOrderPrepareQuery(input: ReserveCashFundOrderPrepareQuery,
+        identity: OperationIdentity): Future[Option[ReserveCashFundOrderPrepareReceipt]] =
       bindings.reserveCashFundOrderPrepareQuery.run(input, identity)
-    def reserveCashFundOrderCommitExecute(input: ReserveCashFundOrderCommitInput, identity: OperationIdentity): Future[ReserveCashFundOrderCommitReceipt] =
+    def reserveCashFundOrderCommitExecute(input: ReserveCashFundOrderCommitInput,
+        identity: OperationIdentity): Future[ReserveCashFundOrderCommitReceipt] =
       bindings.reserveCashFundOrderCommitExecute.run(input, identity)
-    def reserveCashFundOrderCommitQuery(input: ReserveCashFundOrderCommitQuery, identity: OperationIdentity): Future[Option[ReserveCashFundOrderCommitReceipt]] =
+    def reserveCashFundOrderCommitQuery(input: ReserveCashFundOrderCommitQuery,
+        identity: OperationIdentity): Future[Option[ReserveCashFundOrderCommitReceipt]] =
       bindings.reserveCashFundOrderCommitQuery.run(input, identity)
-    def reserveCashFundOrderCompensateExecute(input: ReserveCashFundOrderCompensateInput, identity: OperationIdentity): Future[ReserveCashFundOrderCompensateReceipt] =
+    def reserveCashFundOrderCompensateExecute(input: ReserveCashFundOrderCompensateInput,
+        identity: OperationIdentity): Future[ReserveCashFundOrderCompensateReceipt] =
       bindings.reserveCashFundOrderCompensateExecute.run(input, identity)
-    def reserveCashFundOrderCompensateQuery(input: ReserveCashFundOrderCompensateQuery, identity: OperationIdentity): Future[Option[ReserveCashFundOrderCompensateReceipt]] =
+    def reserveCashFundOrderCompensateQuery(input: ReserveCashFundOrderCompensateQuery,
+        identity: OperationIdentity): Future[Option[ReserveCashFundOrderCompensateReceipt]] =
       bindings.reserveCashFundOrderCompensateQuery.run(input, identity)
 
-    def succeededAuthorityCompletion(input: BankPaymentOriginal, context: CompletionContext): Future[BankPaymentResult] =
+    def succeededAuthorityCompletion(input: BankPaymentOriginal,
+        context: CompletionContext): Future[BankPaymentResult] =
       bindings.succeededAuthority.run(input, context)
     def succeededDeliveryCompletion(input: BankPaymentResult, context: CompletionContext): Future[Boolean] =
       bindings.succeededDelivery.run(input, context)
-    def rejectedBeforeEffectsAuthorityCompletion(input: BankPaymentOriginal, context: CompletionContext): Future[BankPaymentResult] =
+    def rejectedBeforeEffectsAuthorityCompletion(input: BankPaymentOriginal,
+        context: CompletionContext): Future[BankPaymentResult] =
       bindings.rejectedBeforeEffectsAuthority.run(input, context)
     def rejectedBeforeEffectsDeliveryCompletion(input: BankPaymentResult, context: CompletionContext): Future[Boolean] =
       bindings.rejectedBeforeEffectsDelivery.run(input, context)
-    def compensatedAuthorityCompletion(input: BankPaymentOriginal, context: CompletionContext): Future[BankPaymentResult] =
+    def compensatedAuthorityCompletion(input: BankPaymentOriginal,
+        context: CompletionContext): Future[BankPaymentResult] =
       bindings.compensatedAuthority.run(input, context)
     def compensatedDeliveryCompletion(input: BankPaymentResult, context: CompletionContext): Future[Boolean] =
       bindings.compensatedDelivery.run(input, context)
-    def recoveryRequiredAuthorityCompletion(input: BankPaymentOriginal, context: CompletionContext): Future[BankPaymentResult] =
+    def recoveryRequiredAuthorityCompletion(input: BankPaymentOriginal,
+        context: CompletionContext): Future[BankPaymentResult] =
       bindings.recoveryRequiredAuthority.run(input, context)
     def recoveryRequiredDeliveryCompletion(input: BankPaymentResult, context: CompletionContext): Future[Boolean] =
       bindings.recoveryRequiredDelivery.run(input, context)
-    def outcomeUnknownAuthorityCompletion(input: BankPaymentOriginal, context: CompletionContext): Future[BankPaymentResult] =
+    def outcomeUnknownAuthorityCompletion(input: BankPaymentOriginal,
+        context: CompletionContext): Future[BankPaymentResult] =
       bindings.outcomeUnknownAuthority.run(input, context)
     def outcomeUnknownDeliveryCompletion(input: BankPaymentResult, context: CompletionContext): Future[Boolean] =
       bindings.outcomeUnknownDelivery.run(input, context)

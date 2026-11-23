@@ -108,6 +108,11 @@ object BankCashPaymentExecution {
   private val RetryMax = 5.seconds
   private val StageDeadline = 60.seconds
 
+  /** R1 bounded backoff schedule: attempt 0 waits RetryInitial, doubling per
+    * attempt and capped at RetryMax — the poll loop is finite by construction. */
+  def backoffMillis(attempt: Int): Long =
+    math.min(RetryMax.toMillis, math.round(RetryInitial.toMillis * math.pow(RetryFactor, attempt.toDouble)))
+
   def behavior(
     persistenceId: String,
     installed: Installed,
@@ -116,19 +121,22 @@ object BankCashPaymentExecution {
     require(persistenceId != null && persistenceId.nonEmpty && installed != null && observer != null,
       "explicit owned finite execution and installed objects required")
 
-    final case class InvocationCall(state: State, attempt: Int, deadline: scala.concurrent.duration.Deadline, promise: Promise[PayCashPurchaseResult])
+    final case class InvocationCall(state: State,
+        attempt: Int, deadline: scala.concurrent.duration.Deadline, promise: Promise[PayCashPurchaseResult])
     val invocationBridge = context.spawnAnonymous(Behaviors.setup[InvocationCall] { bridgeContext =>
       Behaviors.receiveMessage[InvocationCall] { call =>
         bridgeContext.spawnAnonymous(Behaviors.setup[BankPaymentHost.Reply] { replyContext =>
           installed.payCashPurchaseHost ! BankPaymentHost.Invoke(call.state, replyContext.self)
           Behaviors.receiveMessage[BankPaymentHost.Reply] {
             case BankPaymentHost.Completed(result) => call.promise.trySuccess(result); Behaviors.stopped
-            case BankPaymentHost.Conflict(reason) => call.promise.tryFailure(new IllegalArgumentException(reason)); Behaviors.stopped
+            case BankPaymentHost.Conflict(reason) =>
+                call.promise.tryFailure(new IllegalArgumentException(reason)); Behaviors.stopped
             case BankPaymentHost.Pending(_) if call.deadline.isOverdue() =>
-              call.promise.tryFailure(new IllegalStateException("pay-cash-purchase stage deadline exceeded")); Behaviors.stopped
+              call.promise
+                  .tryFailure(new IllegalStateException("pay-cash-purchase stage deadline exceeded")); Behaviors.stopped
             case BankPaymentHost.Pending(_) =>
-              val delayMillis = math.min(RetryMax.toMillis, math.round(RetryInitial.toMillis * math.pow(RetryFactor, call.attempt.toDouble)))
-              replyContext.scheduleOnce(delayMillis.millis, bridgeContext.self, call.copy(attempt = call.attempt + 1))
+              replyContext.scheduleOnce(backoffMillis(call.attempt).millis, bridgeContext.self,
+                call.copy(attempt = call.attempt + 1))
               Behaviors.same
           }.receiveSignal { case (_, PostStop) =>
             call.promise.tryFailure(new IllegalStateException("owned invocation observer stopped")); Behaviors.same
@@ -151,10 +159,15 @@ object BankCashPaymentExecution {
       (step, state) => step match {
         case StageId => invokePayCashPurchase(state).map {
           case PayCashPurchaseSucceeded(paymentTxid) => state.copy(paymentTxid = Some(paymentTxid))
-          case PayCashPurchaseRejected => throw StageFailedException(StageError(StageId, Some("Rejected"), "business-rejection", "business-rejection:Rejected:stop"))
-          case PayCashPurchaseCompensated => throw StageFailedException(StageError(StageId, Some("Compensated"), "business-rejection", "business-rejection:Compensated:stop"))
-          case PayCashPurchaseRecoveryRequired => throw StageFailedException(StageError(StageId, Some("RecoveryRequired"), "infrastructure-failure", "infrastructure-failure:RecoveryRequired:manual-recovery"))
-          case PayCashPurchaseUnknown => throw StageFailedException(StageError(StageId, Some("Unknown"), "unknown-effect", "unknown-effect:Unknown:manual-recovery"))
+          case PayCashPurchaseRejected => throw StageFailedException(StageError(StageId,
+              Some("Rejected"), "business-rejection", "business-rejection:Rejected:stop"))
+          case PayCashPurchaseCompensated => throw StageFailedException(StageError(StageId,
+              Some("Compensated"), "business-rejection", "business-rejection:Compensated:stop"))
+          case PayCashPurchaseRecoveryRequired => throw StageFailedException(StageError(StageId,
+            Some("RecoveryRequired"), "infrastructure-failure",
+            "infrastructure-failure:RecoveryRequired:manual-recovery"))
+          case PayCashPurchaseUnknown => throw StageFailedException(StageError(StageId,
+              Some("Unknown"), "unknown-effect", "unknown-effect:Unknown:manual-recovery"))
         }
         case _ => Future.failed(new IllegalArgumentException("unknown static step"))
       },

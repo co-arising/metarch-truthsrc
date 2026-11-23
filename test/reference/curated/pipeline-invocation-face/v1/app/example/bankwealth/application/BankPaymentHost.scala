@@ -35,7 +35,8 @@ object BankPaymentHost {
     case object RecoveryRequired extends ResultKind { val wire = "recovery-required" }
     case object OutcomeUnknown extends ResultKind { val wire = "outcome-unknown" }
 
-    val all: Vector[ResultKind] = Vector(Succeeded, RejectedBeforeEffects, Compensated, RecoveryRequired, OutcomeUnknown)
+    val all: Vector[ResultKind] = Vector(Succeeded,
+        RejectedBeforeEffects, Compensated, RecoveryRequired, OutcomeUnknown)
     val terminal: Set[ResultKind] = Set(Succeeded, RejectedBeforeEffects, Compensated)
 
     def fromWire(wire: String): Option[ResultKind] = all.find(_.wire == wire)
@@ -125,17 +126,26 @@ object BankPaymentHost {
   }
 
   private def sha256Hex(bytes: Array[Byte]): String =
-    "sha256:" + java.security.MessageDigest.getInstance("SHA-256").digest(bytes).iterator.map(b => f"${b & 0xff}%02x").mkString
+    "sha256:" + hexSha256(bytes)
+
+  /** The coordinator's per-args digest is the bare hex form; the scheme
+    * prefix belongs to definition digests and the operation fingerprint only. */
+  private def hexSha256(bytes: Array[Byte]): String =
+    java.security.MessageDigest.getInstance("SHA-256").digest(bytes).iterator
+      .map(b => f"${b & 0xff}%02x").mkString
 
   /** Classify an authoritative strict-saga status into a result kind. */
   def classify(status: StrictState): Option[ResultKind] =
     status.status match {
       case StrictStatus.Succeeded => Some(ResultKind.Succeeded)
       case StrictStatus.Aborted =>
-        Some(if (status.evidence.values.exists { case Evidence.Confirmed(id, _) => id.phase == Phase.Prepare; case _ => false })
+        Some(if (status.evidence.values.exists { case Evidence.Confirmed(id,
+            _) => id.phase == Phase.Prepare; case _ => false })
           ResultKind.Compensated else ResultKind.RejectedBeforeEffects)
       case StrictStatus.RecoveryRequired =>
-        Some(if (status.evidence.values.exists(_.isInstanceOf[Evidence.Uncertain])) ResultKind.OutcomeUnknown else ResultKind.RecoveryRequired)
+        Some(if (status
+            .evidence.values
+                .exists(_.isInstanceOf[Evidence.Uncertain])) ResultKind.OutcomeUnknown else ResultKind.RecoveryRequired)
       case _ => None
     }
 
@@ -149,7 +159,7 @@ object BankPaymentHost {
       identity.definitionVersion == SagaDefinitionVersion &&
       identity.definitionDigest == SagaDefinitionDigest &&
       identity.argsCodec == BankPaymentSagaDefinition.argsCodec.pin &&
-      identity.argsDigest == sha256Hex(state.args.toByteArray) &&
+      identity.argsDigest == hexSha256(state.args.toByteArray) &&
       state.identity.forall(_ == identity) &&
       scala.util.Try(StrictSagaProtoConverters.stateToProto(status)).isSuccess
     }
@@ -163,7 +173,9 @@ object BankPaymentHost {
       case None => Pending("identity not yet observed") // unreachable: kinds answer only after observation; fail closed
       case Some(identity) =>
         kind match {
-          case ResultKind.Succeeded => Completed(BankCashPaymentExecution.PayCashPurchaseSucceeded(example.bankwealth.domain.values.TxId(identity.transactionId)))
+          case ResultKind.Succeeded =>
+              Completed(BankCashPaymentExecution
+                  .PayCashPurchaseSucceeded(example.bankwealth.domain.values.TxId(identity.transactionId)))
           case ResultKind.RejectedBeforeEffects => Completed(BankCashPaymentExecution.PayCashPurchaseRejected)
           case ResultKind.Compensated => Completed(BankCashPaymentExecution.PayCashPurchaseCompensated)
           case ResultKind.RecoveryRequired | ResultKind.OutcomeUnknown => Pending(kind.wire)
@@ -193,7 +205,8 @@ object BankPaymentHost {
       state.identity match {
         case None => context.log.error("delivery attempted without observed identity, operation {}", state.operation)
         case Some(identity) =>
-          context.pipeToSelf(BankPaymentHostIO.deliver(kind, original, identity, technical))(ok => Delivered(kind, ok.getOrElse(false), replyTo))
+          context.pipeToSelf(BankPaymentHostIO.deliver(kind,
+              original, identity, technical))(ok => Delivered(kind, ok.getOrElse(false), replyTo))
       }
     }
 
@@ -212,7 +225,8 @@ object BankPaymentHost {
               case scala.util.Success(false) => scala.util.Success(Left("entry or association not admitted"))
               case scala.util.Failure(error) => scala.util.Success(Left("admission unavailable: " + error.getMessage))
             }
-          context.pipeToSelf(verdict)(admitted => Admitted(state.operation, admitted.getOrElse(Left("admission unavailable"))))
+          context.pipeToSelf(verdict)(admitted => Admitted(state.operation,
+              admitted.getOrElse(Left("admission unavailable"))))
         }
       } else {
         val adapter = context.spawnAnonymous(Behaviors.receiveMessage[StrictSagaCoordinator.Reply] { reply =>
@@ -232,8 +246,10 @@ object BankPaymentHost {
           val original = ByteString.copyFrom(BankCashPaymentExecution.codec.encode(input))
           val args = BankPaymentSagaDefinition.argsCodec.encode(invocationArgs(input))
           val operation = operationIdentity(input)
-          if (state.operation.nonEmpty && (state.operation != operation || state.original != original || state.args != args)) {
-            Effect.none.thenRun(_ => replyTo ! Conflict("different complete parent input or args under existing invocation"))
+          if (state.operation.nonEmpty &&
+              (state.operation != operation || state.original != original || state.args != args)) {
+            Effect.none.thenRun(_ =>
+                replyTo ! Conflict("different complete parent input or args under existing invocation"))
           } else if (state.delivered && state.result.exists(ResultKind.terminal)) {
             Effect.none.thenRun(s => replyTo ! completed(s, s.result.getOrElse(ResultKind.OutcomeUnknown)))
           } else if (state.operation.nonEmpty) {
@@ -261,7 +277,8 @@ object BankPaymentHost {
             }
           }
 
-        case Admitted(operation, Right(())) if state.operation.nonEmpty && state.operation == operation && !state.admitted =>
+        case Admitted(operation,
+            Right(())) if state.operation.nonEmpty && state.operation == operation && !state.admitted =>
           Effect.persist(AdmissionGranted).thenRun { s: State =>
             val waiters = admission.waiters
             admission = admissionIdle
@@ -291,7 +308,8 @@ object BankPaymentHost {
           Effect.none.thenRun(_ => replyTo ! Pending("delivery unacknowledged"))
       },
       (state, event) => event match {
-        case Associated(original, args, operation) => state.copy(original = original, args = args, operation = operation)
+        case Associated(original,
+            args, operation) => state.copy(original = original, args = args, operation = operation)
         case IdentityObserved(identity) => state.copy(identity = Some(identity))
         case ResultIntent(kind) => state.copy(result = Some(kind), delivered = false)
         case DeliveryAcknowledged(_) => state.copy(delivered = true)

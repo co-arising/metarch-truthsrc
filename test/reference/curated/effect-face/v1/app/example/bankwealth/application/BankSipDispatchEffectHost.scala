@@ -89,7 +89,8 @@ object BankSipDispatchEffectHost {
     require(bindings != null, "complete effect callback bindings required")
     for ((declaredId, role, bound) <- obligations) {
       val b = bound(bindings)
-      require(b.id == "bankwealth." + declaredId, s"effect implementation identity mismatch for $role: expected bankwealth.$declaredId, got ${b.id}")
+      require(b.id == "bankwealth." + declaredId,
+          s"effect implementation identity mismatch for $role: expected bankwealth.$declaredId, got ${b.id}")
       require(b.version == ImplementationVersion, s"effect implementation version mismatch for $role")
     }
     new Installed(bindings)
@@ -103,9 +104,13 @@ object BankSipDispatchEffectHost {
 
   sealed trait Request
   final case class Invoke(input: BankSipDispatchExecution.State, replyTo: ActorRef[Reply]) extends Request
-  final case class Reconcile(input: BankSipDispatchExecution.State, decision: ReconcileDecision, authorization: String, replyTo: ActorRef[Reply]) extends Request
-  private final case class Observed(operation: String, round: Long, value: Option[BankSipDispatchObservation], fromQuery: Boolean) extends Request
-  private final case class Authorized(operation: String, round: Long, allowed: Boolean, decision: ReconcileDecision, authorization: String, proof: ByteString) extends Request
+  final case class Reconcile(input: BankSipDispatchExecution.State,
+      decision: ReconcileDecision, authorization: String, replyTo: ActorRef[Reply]) extends Request
+  private final case class Observed(operation: String,
+      round: Long, value: Option[BankSipDispatchObservation], fromQuery: Boolean) extends Request
+  private final case class Authorized(operation: String,
+      round: Long, allowed: Boolean, decision: ReconcileDecision, authorization: String,
+      proof: ByteString) extends Request
 
   sealed trait Reply
   final case class Completed(result: BankSipDispatchExecution.DispatchCashResult) extends Reply
@@ -117,7 +122,8 @@ object BankSipDispatchEffectHost {
   final case class ObservationStored(value: ByteString) extends Event
   final case class RetryAuthorized(authorization: String, evidence: ByteString) extends Event
 
-  final case class State(original: ByteString = ByteString.EMPTY, operation: String = "", observation: ByteString = ByteString.EMPTY)
+  final case class State(original: ByteString = ByteString.EMPTY,
+      operation: String = "", observation: ByteString = ByteString.EMPTY)
 
   def request(input: BankSipDispatchExecution.State): BankSipDispatchRequest =
     BankSipDispatchRequest(input.inputs.occurrenceId, input.inputs.occurrence)
@@ -151,19 +157,26 @@ object BankSipDispatchEffectHost {
       example.bankwealth.infrastructure.proto.BankSipDispatchObservationPB.parseFrom(bytes.toByteArray)))
 
   private def encode(value: BankSipDispatchObservation): ByteString =
-    example.bankwealth.infrastructure.serialization.DomainConverters.encodeBankSipDispatchObservationPB(value).toByteString
+    example.bankwealth
+        .infrastructure.serialization.DomainConverters.encodeBankSipDispatchObservationPB(value).toByteString
 
   private def statusOf(value: BankSipDispatchObservation): ObservationStatus =
-    ObservationStatus.fromWire(value.status).getOrElse(throw new IllegalArgumentException("unknown external observation status"))
+    ObservationStatus
+        .fromWire(value.status).getOrElse(throw new IllegalArgumentException("unknown external observation status"))
 
   /** Full same-operation same-request observation with status-consistent
     * evidence; anything else refuses. */
-  private def checked(value: BankSipDispatchObservation, expected: BankSipDispatchOperation): BankSipDispatchObservation = {
+  private def checked(value: BankSipDispatchObservation,
+      expected: BankSipDispatchOperation): BankSipDispatchObservation = {
     require(value != null && value.operation == expected.operation && value.request == expected.request &&
-      value.result != null && value.evidence != null, "complete same-operation same-request effect observation required")
+      value.result != null &&
+          value.evidence != null, "complete same-operation same-request effect observation required")
     statusOf(value) match {
-      case ObservationStatus.Confirmed => require(value.result.nonEmpty && value.result.get != null && value.evidence.nonEmpty, "full durable result and evidence required")
-      case ObservationStatus.Rejected | ObservationStatus.Failed | ObservationStatus.Absent => require(value.result.isEmpty && value.evidence.nonEmpty, "authoritative non-success or absent evidence required")
+      case ObservationStatus.Confirmed => require(value.result.nonEmpty &&
+          value.result.get != null && value.evidence.nonEmpty, "full durable result and evidence required")
+      case ObservationStatus.Rejected | ObservationStatus.Failed | ObservationStatus.Absent =>
+          require(value.result.isEmpty && value.evidence.nonEmpty,
+              "authoritative non-success or absent evidence required")
       case ObservationStatus.Unknown => require(value.result.isEmpty, "unknown is not a result")
     }
     value
@@ -172,7 +185,8 @@ object BankSipDispatchEffectHost {
   private def terminal(state: State): Option[BankSipDispatchExecution.DispatchCashResult] =
     decode(state.observation).flatMap { value =>
       statusOf(value) match {
-        case ObservationStatus.Confirmed => Some(BankSipDispatchExecution.DispatchCashDispatched(value.result.get.operationId))
+        case ObservationStatus.Confirmed =>
+            Some(BankSipDispatchExecution.DispatchCashDispatched(value.result.get.operationId))
         case ObservationStatus.Rejected => Some(BankSipDispatchExecution.DispatchCashRefused)
         case ObservationStatus.Failed => Some(BankSipDispatchExecution.DispatchCashUnavailable)
         case ObservationStatus.Absent | ObservationStatus.Unknown => None
@@ -180,7 +194,8 @@ object BankSipDispatchEffectHost {
     }
 
   def apply(persistenceId: String, installed: Installed): Behavior[Request] = Behaviors.setup { context =>
-    require(persistenceId != null && persistenceId.nonEmpty && installed != null, "owned effect persistence and all installed callbacks required")
+    require(persistenceId != null && persistenceId.nonEmpty && installed != null,
+        "owned effect persistence and all installed callbacks required")
     implicit val ec: ExecutionContext = context.executionContext
 
     // In-memory coalescing of pending waiters; never persisted (R2). A caller
@@ -196,7 +211,8 @@ object BankSipDispatchEffectHost {
       catch { case NonFatal(e) => Future.failed(e) }
 
     def operation(state: State): BankSipDispatchOperation =
-      BankSipDispatchOperation(state.operation, request(BankSipDispatchExecution.codec.decode(state.original.toByteArray)))
+      BankSipDispatchOperation(state.operation,
+          request(BankSipDispatchExecution.codec.decode(state.original.toByteArray)))
 
     def execute(state: State): Unit = {
       pending = true
@@ -248,22 +264,34 @@ object BankSipDispatchEffectHost {
             }
           }
 
-        case Observed(op, observedRound, value, fromQuery) if pending && op == state.operation && observedRound == round =>
+        case Observed(op,
+            observedRound, value, fromQuery) if pending && op == state.operation && observedRound == round =>
           pending = false
           val bytes = value.map(encode).getOrElse(ByteString.EMPTY)
-          if (bytes != state.observation) Effect.persist(ObservationStored(bytes)).thenRun(completed(_, fromQuery))
-          else Effect.none.thenRun(completed(_, fromQuery))
+          // A no-answer callback (None) never wipes the durable observation —
+          // the evidence chain is cleared only by an authorized retry (R3).
+          if (value.isDefined && bytes != state.observation) {
+            Effect.persist(ObservationStored(bytes)).thenRun(completed(_, fromQuery))
+          } else {
+            Effect.none.thenRun(completed(_, fromQuery))
+          }
 
         case Reconcile(input, decision, authorization, replyTo) =>
           val original = ByteString.copyFrom(BankSipDispatchExecution.codec.encode(input))
           val op = operationIdentity(input)
           val proof = decode(state.observation)
-          val retryPermitted = decision == ReconcileDecision.Retry &&
-            proof.exists(v => statusOf(v) == ObservationStatus.Absent && v.evidence.nonEmpty)
+          val authorizedFor = (decision, proof) match {
+            case (ReconcileDecision.Retry, Some(value))
+                 if statusOf(value) == ObservationStatus.Absent && value.evidence.nonEmpty => true
+            case (ReconcileDecision.Query, Some(value)) if statusOf(value) == ObservationStatus.Unknown => true
+            case _ => false
+          }
           if (state.operation != op || state.original != original) {
             Effect.none.thenRun(_ => replyTo ! Conflict("reconcile must retain exact durable original and operation"))
-          } else if (pending || terminal(state).nonEmpty || authorization == null || authorization.isEmpty || !retryPermitted) {
-            Effect.none.thenRun(_ => replyTo ! Pending("reconcile requires authority and durable absent evidence before retry"))
+          } else if (pending ||
+              terminal(state).nonEmpty || authorization == null || authorization.isEmpty || !authorizedFor) {
+            Effect.none.thenRun(_ =>
+                replyTo ! Pending("reconcile requires authority and durable absent or unknown evidence"))
           } else {
             waiters :+= replyTo
             pending = true
@@ -278,7 +306,9 @@ object BankSipDispatchEffectHost {
             Effect.none
           }
 
-        case Authorized(op, observedRound, allowed, decision, authorization, proof) if pending && op == state.operation && observedRound == round =>
+        case Authorized(op,
+            observedRound, allowed, decision, authorization, proof) if pending &&
+                op == state.operation && observedRound == round =>
           pending = false
           if (!allowed || proof != state.observation) {
             context.log.debug("reconciliation denied for operation {}", state.operation)
@@ -297,6 +327,7 @@ object BankSipDispatchEffectHost {
         case ObservationStored(value) => state.copy(observation = value)
         case RetryAuthorized(_, _) => state.copy(observation = ByteString.EMPTY)
       },
-    ).receiveSignal { case (state, RecoveryCompleted) if state.operation.nonEmpty && terminal(state).isEmpty => query(state) }
+    ).receiveSignal { case (state, RecoveryCompleted) if state.operation.nonEmpty &&
+        terminal(state).isEmpty => query(state) }
   }
 }

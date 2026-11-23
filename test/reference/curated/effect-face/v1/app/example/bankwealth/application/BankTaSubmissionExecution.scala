@@ -83,6 +83,11 @@ object BankTaSubmissionExecution {
   private val RetryMax = 5.seconds
   private val StageDeadline = 60.seconds
 
+  /** R1 bounded backoff schedule: attempt 0 waits RetryInitial, doubling per
+    * attempt and capped at RetryMax — the poll loop is finite by construction. */
+  def backoffMillis(attempt: Int): Long =
+    math.min(RetryMax.toMillis, math.round(RetryInitial.toMillis * math.pow(RetryFactor, attempt.toDouble)))
+
   def behavior(
     persistenceId: String,
     installed: Installed,
@@ -91,19 +96,21 @@ object BankTaSubmissionExecution {
     require(persistenceId != null && persistenceId.nonEmpty && installed != null && observer != null,
       "explicit owned finite execution and installed objects required")
 
-    final case class EffectCall(state: State, attempt: Int, deadline: scala.concurrent.duration.Deadline, promise: Promise[SubmitTaResult])
+    final case class EffectCall(state: State,
+        attempt: Int, deadline: scala.concurrent.duration.Deadline, promise: Promise[SubmitTaResult])
     val effectBridge = context.spawnAnonymous(Behaviors.setup[EffectCall] { bridgeContext =>
       Behaviors.receiveMessage[EffectCall] { call =>
         bridgeContext.spawnAnonymous(Behaviors.setup[BankTaEffectHost.Reply] { replyContext =>
           installed.submitTaHost ! BankTaEffectHost.Invoke(call.state, replyContext.self)
           Behaviors.receiveMessage[BankTaEffectHost.Reply] {
             case BankTaEffectHost.Completed(result) => call.promise.trySuccess(result); Behaviors.stopped
-            case BankTaEffectHost.Conflict(reason) => call.promise.tryFailure(new IllegalArgumentException(reason)); Behaviors.stopped
+            case BankTaEffectHost.Conflict(reason) =>
+                call.promise.tryFailure(new IllegalArgumentException(reason)); Behaviors.stopped
             case BankTaEffectHost.Pending(_) if call.deadline.isOverdue() =>
               call.promise.tryFailure(new IllegalStateException("submit-ta stage deadline exceeded")); Behaviors.stopped
             case BankTaEffectHost.Pending(_) =>
-              val delayMillis = math.min(RetryMax.toMillis, math.round(RetryInitial.toMillis * math.pow(RetryFactor, call.attempt.toDouble)))
-              replyContext.scheduleOnce(delayMillis.millis, bridgeContext.self, call.copy(attempt = call.attempt + 1))
+              replyContext.scheduleOnce(backoffMillis(call.attempt).millis, bridgeContext.self,
+                call.copy(attempt = call.attempt + 1))
               Behaviors.same
           }.receiveSignal { case (_, PostStop) =>
             call.promise.tryFailure(new IllegalStateException("owned invocation observer stopped")); Behaviors.same
@@ -126,9 +133,12 @@ object BankTaSubmissionExecution {
       (step, state) => step match {
         case StageId => invokeSubmitTa(state).map {
           case SubmitTaObserved(taRequestId) => state.copy(taRequestId = Some(taRequestId))
-          case SubmitTaRefused => throw StageFailedException(StageError(StageId, Some("Refused"), "business-rejection", "business-rejection:Refused:stop"))
-          case SubmitTaUnavailable => throw StageFailedException(StageError(StageId, Some("Unavailable"), "infrastructure-failure", "infrastructure-failure:Unavailable:manual-recovery"))
-          case SubmitTaUnknown => throw StageFailedException(StageError(StageId, Some("Unknown"), "unknown-effect", "unknown-effect:Unknown:manual-recovery"))
+          case SubmitTaRefused => throw StageFailedException(StageError(StageId,
+              Some("Refused"), "business-rejection", "business-rejection:Refused:stop"))
+          case SubmitTaUnavailable => throw StageFailedException(StageError(StageId,
+              Some("Unavailable"), "infrastructure-failure", "infrastructure-failure:Unavailable:manual-recovery"))
+          case SubmitTaUnknown => throw StageFailedException(StageError(StageId,
+              Some("Unknown"), "unknown-effect", "unknown-effect:Unknown:manual-recovery"))
         }
         case _ => Future.failed(new IllegalArgumentException("unknown static step"))
       },

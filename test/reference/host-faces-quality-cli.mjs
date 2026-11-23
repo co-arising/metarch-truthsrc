@@ -16,6 +16,15 @@
 // Usage:
 //   node test/reference/host-faces-quality-cli.mjs prepare [roundDir]
 //   node test/reference/host-faces-quality-cli.mjs run [roundDir] attempt-0N
+//
+// Round 2 (quality gate): the run adds the closure quality phases after the
+// compile — compile-properties (the per-face property suites plus the shared
+// quality harness in the pipeline-face candidate), source-metrics (structural
+// McCabe + forbidden-node gate over the 23 listed sources), and
+// quality-properties per seed (ScalaCheck, inventory-equality against the
+// frozen expected-properties.txt). The quality contract (policy, exceptions,
+// inventory) is anchored at the pipeline-invocation-face candidate — the
+// closure's verification unit.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -87,6 +96,8 @@ const STAGED_SUPPLIES = [
     dir: 'supply/net/imadz/monarch-core_2.13/0.3.0', jar: 'monarch-core_2.13-0.3.0.jar' },
 ];
 const SUPPLY_COORDINATE = 'net.imadz:saga-core_2.13:0.3.0';
+// Frozen property contract: 83 properties, 27 of them directed negatives.
+const EXPECTED_NEGATIVES = 27;
 const SUPPLY_GAP_EXCLUSIONS = [
   {
     key: 'org.apache.geronimo.specs:geronimo-jta_1.1_spec',
@@ -232,23 +243,26 @@ const treeFiles = dir => fs.readdirSync(dir).flatMap(name => {
   return s.isDirectory() ? treeFiles(p) : s.isFile() && !p.endsWith('/src.zip') ? [p] : [];
 });
 
-// Golden sources: every .scala under the two curated faces' app trees, with
-// their golden-relative paths; supply sources: every .scala of the staged
-// bank-wealth application tree, absolute-pinned (the tree is an external,
-// byte-pinned input at prepare time — the run phases refuse any drift).
-function goldenSources() {
+// Candidate sources: every .scala under the two curated faces' app trees
+// (kind 'app', the emission spec), the pipeline-face quality harness (kind
+// 'quality', the closure machinery) and both faces' property suites (kind
+// 'test'); supply sources: every .scala of the staged bank-wealth application
+// tree, absolute-pinned (the tree is an external, byte-pinned input at prepare
+// time — the run phases refuse any drift).
+function candidateSources() {
   const rows = [];
   for (const [face, dir] of [['pipeline-invocation-face', FACE_PIPELINE], ['effect-face', FACE_EFFECT]]) {
-    const app = path.join(dir, 'app');
-    const visit = (current, relative) => {
+    const visit = (current, relative, kind) => {
       for (const name of fs.readdirSync(current)) {
         const child = path.join(current, name);
         const childRelative = relative ? relative + '/' + name : name;
-        if (fs.lstatSync(child).isDirectory()) visit(child, childRelative);
-        else if (name.endsWith('.scala')) rows.push({ face, relative: `${face}/${childRelative}`, file: child });
+        if (fs.lstatSync(child).isDirectory()) visit(child, childRelative, kind);
+        else if (name.endsWith('.scala')) rows.push({ face, kind, relative: `${face}/${childRelative}`, file: child });
       }
     };
-    visit(app, 'app');
+    visit(path.join(dir, 'app'), 'app', 'app');
+    if (face === 'pipeline-invocation-face') visit(path.join(dir, 'quality'), 'quality', 'quality');
+    visit(path.join(dir, 'test'), 'test', 'test');
   }
   return rows.sort((a, b) => a.relative < b.relative ? -1 : 1);
 }
@@ -370,8 +384,10 @@ async function main() {
       .map(name => ({ relative: `protobuf/${name}`, file: path.join(PROTO_DIR, name) }));
     const pbToolchain = [PROTOC, SCALAPB_RUNTIME_JAR, ...PLUGIN_CLASSPATH.split(':'), path.join(WELL_KNOWN_PROTOS, 'google/protobuf/descriptor.proto')]
       .map(file => ({ pbToolchain: true, file, ...pin(file) }));
-    const sources = [...goldenSources(), ...supplySources(), ...protoSources].map(row => ({ ...row, ...pin(row.file) }));
+    const sources = [...candidateSources(), ...supplySources(), ...protoSources].map(row => ({ ...row, ...pin(row.file) }));
     const metadata = [path.join(FACE_PIPELINE, 'technical-input.json'), path.join(FACE_EFFECT, 'technical-input.json'),
+      path.join(FACE_PIPELINE, 'quality-policy.json'), path.join(FACE_PIPELINE, 'scope-exceptions.tsv'),
+      path.join(FACE_PIPELINE, 'expected-properties.txt'),
       path.join(includeDir, 'scalapb/scalapb.proto')].map(pin);
     const controls = ['lib/verification/process.mjs', 'lib/verification/files.mjs', 'lib/immutable-data.mjs',
       'lib/strict-json.mjs', 'lib/verification/callbacks.mjs',
@@ -381,7 +397,10 @@ async function main() {
       statement: 'Prepared finite source/supply only, no JVM execution, no compile verdict' };
     write(path.join(round, 'prepared.json'), prepared);
     console.log(JSON.stringify({ prepared: pin(path.join(round, 'prepared.json')),
-      goldenSources: sources.filter(row => row.face).length, supplySources: sources.filter(row => row.supply).length,
+      appSources: sources.filter(row => row.kind === 'app').length,
+      qualitySources: sources.filter(row => row.kind === 'quality').length,
+      testSources: sources.filter(row => row.kind === 'test').length,
+      supplySources: sources.filter(row => row.supply).length,
       artifacts: resources.artifacts.length }));
     return;
   }
@@ -401,7 +420,8 @@ async function main() {
   fs.mkdirSync(attempt);
   const home = path.join(attempt, 'home'), tmp = path.join(attempt, 'tmp');
   const outClasses = path.join(attempt, 'classes'), pbOut = path.join(attempt, 'pb-out');
-  for (const dir of [home, tmp, outClasses, pbOut, path.join(attempt, 'logs'), path.join(attempt, 'results')]) fs.mkdirSync(dir);
+  const propClasses = path.join(attempt, 'prop-classes');
+  for (const dir of [home, tmp, outClasses, pbOut, propClasses, path.join(attempt, 'logs'), path.join(attempt, 'results')]) fs.mkdirSync(dir);
   // The single-file JDK plugin launcher and its protoc wrapper script live in
   // the attempt and are pinned before the sandbox profile is built.
   const pluginJava = path.join(tmp, 'GenPlugin.java'), pluginWrapper = path.join(tmp, 'protoc-gen-scala');
@@ -412,12 +432,26 @@ async function main() {
   // the sandbox read access to the attempt directory itself (the JVM's CWD
   // probe needs it) and keeps the fixed-pin discipline over the source set.
   const listing = path.join(attempt, 'sources.tsv');
-  write(listing, prepared.sources.map(row => `${row.face ? row.face : (row.pbToolchain ? 'pb-toolchain' : 'supply')}\t${row.file}`).join('\n') + '\n');
+  write(listing, prepared.sources.map(row =>
+    `${row.face ? row.face : (row.pbToolchain ? 'pb-toolchain' : 'supply')}\t${row.file}`).join('\n') + '\n');
+  // The metrics listing carries the structural layer per source: the golden
+  // app trees split host/serializer, the quality harness and suites are support.
+  const qualityListing = path.join(attempt, 'quality-sources.tsv');
+  const sourceLayer = row => row.kind === 'app'
+    ? (row.relative.endsWith('Serializer.scala') ? 'serializer' : 'host') : 'support';
+  write(qualityListing, prepared.sources.filter(row => row.kind)
+    .map(row => `${row.relative}\t${row.file}\t${sourceLayer(row)}`).join('\n') + '\n');
+  const qualityContract = { policy: prepared.metadata.find(row => row.file.endsWith('quality-policy.json')),
+    exceptions: prepared.metadata.find(row => row.file.endsWith('scope-exceptions.tsv')),
+    expected: prepared.metadata.find(row => row.file.endsWith('expected-properties.txt')) };
+  assert(qualityContract.policy && qualityContract.exceptions && qualityContract.expected,
+    'quality contract artifacts must be pinned');
   const fixedPins = [...prepared.resources.pins, ...(prepared.pbToolchain ?? []), ...prepared.sources,
-    ...prepared.metadata, ...prepared.controls, pin(listing), pin(pluginJava), pin(pluginWrapper)];
+    ...prepared.metadata, ...prepared.controls, pin(listing), pin(qualityListing), pin(pluginJava), pin(pluginWrapper)];
   const attemptPins = [pin(listing), pin(pluginJava), pin(pluginWrapper)];
   const sandboxFile = path.join(attempt, 'sandbox.sb');
-  write(sandboxFile, profile([...fixedPins.map(row => row.file)], [home, tmp, outClasses, pbOut, path.join(attempt, 'results')], [tmp]));
+  write(sandboxFile, profile([...fixedPins.map(row => row.file)],
+    [home, tmp, outClasses, pbOut, propClasses, path.join(attempt, 'results')], [tmp]));
   const jvmArgs = ['-Xmx2048m', '-XX:ActiveProcessorCount=2', '-XX:-UsePerfData', '-Dfile.encoding=UTF-8',
     '-Dscala.usejavacp=false', `-Duser.home=${home}`, `-Djava.io.tmpdir=${tmp}`,
     `-XX:ErrorFile=${tmp}/hs_err_pid%p.log`, `-XX:HeapDumpPath=${tmp}`];
@@ -450,8 +484,10 @@ async function main() {
     // PB faces first: the cached protoc drives the scalapb compilerplugin over
     // the nine ledger .proto sources; the generated Scala joins the compile as
     // attempt-produced sources and is pinned into the attempt pin set.
+    const scalapbInclude = prepared.metadata.find(row => row.file.endsWith('scalapb/scalapb.proto'));
+    assert(scalapbInclude, 'scalapb include must be pinned');
     await launch('pb-generate', [`-I${WELL_KNOWN_PROTOS}`,
-      `-I${path.join(path.dirname(prepared.metadata[2].file), '..')}`,
+      `-I${path.join(path.dirname(scalapbInclude.file), '..')}`,
       `-I${PROTO_DIR}`, `--plugin=protoc-gen-scala=${pluginWrapper}`,
       `--scala_out=${pbOut}`, ...prepared.sources.filter(row => row.relative?.startsWith('protobuf/')).map(row => row.file)], 120000, PROTOC);
     const pbSources = treeFiles(pbOut).filter(p => p.endsWith('.scala'));
@@ -459,14 +495,59 @@ async function main() {
     const pbListing = path.join(attempt, 'results', 'pb-sources.tsv');
     write(pbListing, pbSources.map(file => `pb-generated\t${file}`).join('\n') + '\n');
     for (const file of [pbListing, ...pbSources]) attemptPins.push(pin(file));
-    const scalaSources = [...prepared.sources.filter(row => row.face || row.supply).map(row => row.file), ...pbSources];
+    const scalaSources = [
+      ...prepared.sources.filter(row => row.kind === 'app' || row.supply).map(row => row.file), ...pbSources];
     await launch('compile-joint', ['-cp', compilerCp, 'scala.tools.nsc.Main', '-encoding', 'UTF-8',
       '-deprecation', '-feature', '-unchecked', '-classpath', familyCp.join(':'), '-d', outClasses,
       ...scalaSources], 1500000);
-    const completion = { status: 'COMPILE_GATE_COMPLETE', records,
-      goldenSources: prepared.sources.filter(row => row.face).length,
+    // Quality gate: the suites compile against the joint classes, the metrics
+    // engine measures the listed sources, ScalaCheck runs per frozen seed.
+    const propSources = prepared.sources.filter(row => row.kind === 'quality' || row.kind === 'test').map(row => row.file);
+    assert(propSources.length > 0, 'quality harness sources missing');
+    await launch('compile-properties', ['-cp', compilerCp, 'scala.tools.nsc.Main', '-encoding', 'UTF-8',
+      '-deprecation', '-feature', '-unchecked', '-classpath', [...familyCp, outClasses].join(':'),
+      '-d', propClasses, ...propSources], 300000);
+    const runtimeCp = [outClasses, propClasses, ...familyCp].join(':');
+    const qualityJvmArgs = [...jvmArgs, `-Dquality.sources=${qualityListing}`,
+      `-Dquality.exceptions=${qualityContract.exceptions.file}`, `-Dquality.expected=${qualityContract.expected.file}`];
+    const launchQuality = async (label, args, cap) => {
+      assert(remaining() >= cap + 120000 + 20000, 'Quality budget cannot fit next phase');
+      unchanged(fixedPins);
+      const receipt = await runVerifiedProcess({ executable: JAVA, args: [...qualityJvmArgs, ...args], cwd: attempt,
+        env: { HOME: home, TMPDIR: tmp, JAVA_HOME, PATH: '/usr/bin:/bin', LANG: 'en_US.UTF-8', LC_ALL: 'en_US.UTF-8' },
+        base: path.join(attempt, 'logs', label), timeoutMs: cap,
+        sandbox: { executable: '/usr/bin/sandbox-exec', profile: sandboxFile, profileSha256: pin(sandboxFile).sha256 } });
+      records.push({ label, receipt });
+      unchanged(fixedPins);
+      assert(remaining() > 0, 'Quality wall budget expired');
+      assert(receipt.passed, `${label} failed: ${receipt.paths.stderr}`);
+      console.log(`${label}: exit=${receipt.code}`);
+    };
+    const metricsResult = path.join(attempt, 'results', 'metrics.json');
+    fs.rmSync(metricsResult, { force: true });
+    await launchQuality('source-metrics',
+      [`-Dquality.result=${metricsResult}`, '-cp', runtimeCp,
+        'example.bankwealth.application.quality.QualityMain', 'metrics'], 120000);
+    assert.equal(document(metricsResult).value.passed, true, 'source metrics gate failed');
+    for (const seed of [740001, 740002, 740003]) {
+      const resultFile = path.join(attempt, 'results', `properties-${seed}.json`);
+      fs.rmSync(resultFile, { force: true });
+      await launchQuality(`properties-${seed}`,
+        [`-Dquality.result=${resultFile}`, '-cp', runtimeCp,
+          'example.bankwealth.application.quality.QualityMain', 'properties', String(seed)], 900000);
+      const result = document(resultFile).value;
+      assert.equal(result.passed, true);
+      assert(result.results.length > 0 && result.results.every(row => row.passed));
+      assert.equal(result.results.filter(row => row.name.includes('negative:')).length, EXPECTED_NEGATIVES);
+      const expected = captureEvidenceFile(qualityContract.expected.file).value.toString().trim().split('\n').sort();
+      assert.deepEqual(result.results.map(row => row.name).sort(), expected);
+    }
+    const completion = { status: 'HOST_FACES_QUALITY_GATE_COMPLETE', records,
+      appSources: prepared.sources.filter(row => row.kind === 'app').length,
       supplySources: prepared.sources.filter(row => row.supply).length,
-      pbSources: pbSources.length,
+      pbSources: pbSources.length, qualitySources: propSources.length,
+      properties: document(path.join(attempt, 'results', 'properties-740001.json')).value.results.length,
+      seeds: [740001, 740002, 740003],
       rawAcceptanceChanged: false, all31Closed: false };
     write(path.join(attempt, 'completion.json'), completion);
   } catch (error) {

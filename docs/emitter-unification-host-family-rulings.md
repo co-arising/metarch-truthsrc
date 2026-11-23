@@ -231,3 +231,41 @@ delivery）＋round 响应新鲜度关联＋RecoveryCompleted 重查询自愈＋
   编译验证在沙箱轮。
 - 纪律重申（计划 §6）：classic 模板未摘除前不动 bank-wealth 任何产物；
   金样在 curated 目录为新规格，不触碰 classic 产物字节。
+- **质量轮裁定与记档（2026-11-22，门序执行侧按单一验收标准裁定）**：
+  「沙箱三轮」完整门闭合——compile 门之上加 metrics 门与 properties 门，官方证据
+  `.rounds/host-faces-quality-20261122-02/attempt-0{1,2,3}/completion.json`
+  （`HOST_FACES_QUALITY_GATE_COMPLETE`：seatbelt 断网内 pb 293 生成 → 联合编译
+  202 供给＋13 金样 → 套件编译 10 件 → 结构度量 1,819 scopes 零违例零超额 →
+  ScalaCheck 83 性质（27 directed negatives）× 3 种子 740001-3 全绿）。
+  记档如下：
+  - **验证单元＝编译闭包**：质量合同（`quality-policy.json`／`scope-exceptions.tsv`／
+    `expected-properties.txt`／`quality/` 四件引擎）锚在 pipeline-invocation-face
+    候选；effect-face 携带自己的 `test/` 套件并引用共享引擎。族模块仍为两个，
+    质量门以闭包为单元（§6 编译闭包改判的质量轮延伸）。
+  - **引擎裁定（host-face 层增量）**：var 字段禁、**局部 var/赋值宿**（R2(b)
+    内存合并面，逐文件 pinned）；throw＝失闭值域拒绝面（宿主＋序列化层，逐文件
+    pinned）；try 只住效果宿 safe 缝（序列化层禁）；`Array` 类型仅 `Array[Byte]`
+    形（字节指纹＋akka wire 面，结构性质钉其余形态为零）；`AnyRef` 仅序列化层
+    （akka SerializerWithStringManifest 固定签名）；`Term.NewAnonymous` 宿（匿名
+    端口实现面）。层上限：host 45/5（44→45 的修订随 R3 guard 落地冻结期记档）、
+    serializer 11/2、support 5/2＋35 行逐 scope 精确例外表。
+  - **L1 版式定案：闭包硬界 ≤120 列（import 行豁免）**，两套件各一条结构性质
+    机械执行；392 行超界全部手工断行（空白断行，编译等价）；effect-face
+    technical-input 的 columnLimit 由误记的 100 改为 120（规格件修正记档）。
+  - **质量轮揪出并修复的金样语义缺陷（四件，全部经真实协调器/持久化轮验证）**：
+    ① `validStatus` 的 argsDigest 误用带前缀摘要——协调器口径是裸十六进制
+    （定义摘要带前缀、逐 args 摘要不带）；② Reconcile 的 Query 决策不可达死分支
+    ——门放宽为 Retry 需 durable Absent 证据、Query 需 durable Unknown 证据，
+    ADT 两决策皆活；③ **无答案观测擦除既有证据**——查询返回 None 曾持久化空
+    观测，抹掉 durable Absent 证据链，违反 R3；改为 None 永不覆写，证据链只由
+    授权重试（RetryAuthorized）清除；④ R1 退避公式提升为命名纯函数
+    `backoffMillis`（有界性质可测）。
+  - **装置裁定**：persistence-testkit journal（`serialize=false`——序列化正确性
+    由 serializer 性质独立证明，journal 断言只看事件事实）；宿主单次 ask 可答
+    瞬态「awaiting authoritative result」（协调器以 Start 态即时作答），故装置
+    以**有界轮询 ask** 收敛——这正是 R1/R2 的 caller 契约本身；权威状态正例基座
+    由**真实协调器亲授**（Start 回答的 Preparing 态），逐槽漂移以 copy 注入。
+  - **固件口径**：协调器权威身份的 TransactionIdentity 七元组序为
+    (transactionId, definitionName, definitionVersion, argsDigest, definitionDigest,
+    argsCodec, planDigest)，argsDigest 裸十六进制、definition/plan 摘要带
+    `sha256:` 前缀——金样、套件判例、裁定文档三处对齐。

@@ -53,9 +53,12 @@ object BankPaymentHostIO {
   ): (AuthorityFace, DeliveryFace) =
     kind match {
       case ResultKind.Succeeded => (technical.succeededAuthorityCompletion, technical.succeededDeliveryCompletion)
-      case ResultKind.RejectedBeforeEffects => (technical.rejectedBeforeEffectsAuthorityCompletion, technical.rejectedBeforeEffectsDeliveryCompletion)
+      case ResultKind.RejectedBeforeEffects => (technical.rejectedBeforeEffectsAuthorityCompletion,
+          technical.rejectedBeforeEffectsDeliveryCompletion)
       case ResultKind.Compensated => (technical.compensatedAuthorityCompletion, technical.compensatedDeliveryCompletion)
-      case ResultKind.RecoveryRequired => (technical.recoveryRequiredAuthorityCompletion, technical.recoveryRequiredDeliveryCompletion)
-      case ResultKind.OutcomeUnknown => (technical.outcomeUnknownAuthorityCompletion, technical.outcomeUnknownDeliveryCompletion)
+      case ResultKind.RecoveryRequired => (technical.recoveryRequiredAuthorityCompletion,
+          technical.recoveryRequiredDeliveryCompletion)
+      case ResultKind.OutcomeUnknown => (technical.outcomeUnknownAuthorityCompletion,
+          technical.outcomeUnknownDeliveryCompletion)
     }
 }

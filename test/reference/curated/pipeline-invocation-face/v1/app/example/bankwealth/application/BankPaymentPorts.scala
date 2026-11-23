@@ -29,42 +29,63 @@ trait BankPaymentPorts {
 
   // ---- reserve-investor-funds (investorCreditBalance) ------------------------
 
-  def reserveInvestorFundsPrepareExecute(input: ReserveInvestorFundsPrepareInput, identity: OperationIdentity): Future[ReserveInvestorFundsPrepareReceipt]
-  def reserveInvestorFundsPrepareQuery(input: ReserveInvestorFundsPrepareQuery, identity: OperationIdentity): Future[Option[ReserveInvestorFundsPrepareReceipt]]
-  def reserveInvestorFundsCommitExecute(input: ReserveInvestorFundsCommitInput, identity: OperationIdentity): Future[ReserveInvestorFundsCommitReceipt]
-  def reserveInvestorFundsCommitQuery(input: ReserveInvestorFundsCommitQuery, identity: OperationIdentity): Future[Option[ReserveInvestorFundsCommitReceipt]]
-  def reserveInvestorFundsCompensateExecute(input: ReserveInvestorFundsCompensateInput, identity: OperationIdentity): Future[ReserveInvestorFundsCompensateReceipt]
-  def reserveInvestorFundsCompensateQuery(input: ReserveInvestorFundsCompensateQuery, identity: OperationIdentity): Future[Option[ReserveInvestorFundsCompensateReceipt]]
+  def reserveInvestorFundsPrepareExecute(input: ReserveInvestorFundsPrepareInput,
+      identity: OperationIdentity): Future[ReserveInvestorFundsPrepareReceipt]
+  def reserveInvestorFundsPrepareQuery(input: ReserveInvestorFundsPrepareQuery,
+      identity: OperationIdentity): Future[Option[ReserveInvestorFundsPrepareReceipt]]
+  def reserveInvestorFundsCommitExecute(input: ReserveInvestorFundsCommitInput,
+      identity: OperationIdentity): Future[ReserveInvestorFundsCommitReceipt]
+  def reserveInvestorFundsCommitQuery(input: ReserveInvestorFundsCommitQuery,
+      identity: OperationIdentity): Future[Option[ReserveInvestorFundsCommitReceipt]]
+  def reserveInvestorFundsCompensateExecute(input: ReserveInvestorFundsCompensateInput,
+      identity: OperationIdentity): Future[ReserveInvestorFundsCompensateReceipt]
+  def reserveInvestorFundsCompensateQuery(input: ReserveInvestorFundsCompensateQuery,
+      identity: OperationIdentity): Future[Option[ReserveInvestorFundsCompensateReceipt]]
 
   // ---- credit-fund-collection (collectionCreditBalance) ----------------------
 
-  def creditFundCollectionPrepareExecute(input: CreditFundCollectionPrepareInput, identity: OperationIdentity): Future[CreditFundCollectionPrepareReceipt]
-  def creditFundCollectionPrepareQuery(input: CreditFundCollectionPrepareQuery, identity: OperationIdentity): Future[Option[CreditFundCollectionPrepareReceipt]]
-  def creditFundCollectionCommitExecute(input: CreditFundCollectionCommitInput, identity: OperationIdentity): Future[CreditFundCollectionCommitReceipt]
-  def creditFundCollectionCommitQuery(input: CreditFundCollectionCommitQuery, identity: OperationIdentity): Future[Option[CreditFundCollectionCommitReceipt]]
-  def creditFundCollectionCompensateExecute(input: CreditFundCollectionCompensateInput, identity: OperationIdentity): Future[CreditFundCollectionCompensateReceipt]
-  def creditFundCollectionCompensateQuery(input: CreditFundCollectionCompensateQuery, identity: OperationIdentity): Future[Option[CreditFundCollectionCompensateReceipt]]
+  def creditFundCollectionPrepareExecute(input: CreditFundCollectionPrepareInput,
+      identity: OperationIdentity): Future[CreditFundCollectionPrepareReceipt]
+  def creditFundCollectionPrepareQuery(input: CreditFundCollectionPrepareQuery,
+      identity: OperationIdentity): Future[Option[CreditFundCollectionPrepareReceipt]]
+  def creditFundCollectionCommitExecute(input: CreditFundCollectionCommitInput,
+      identity: OperationIdentity): Future[CreditFundCollectionCommitReceipt]
+  def creditFundCollectionCommitQuery(input: CreditFundCollectionCommitQuery,
+      identity: OperationIdentity): Future[Option[CreditFundCollectionCommitReceipt]]
+  def creditFundCollectionCompensateExecute(input: CreditFundCollectionCompensateInput,
+      identity: OperationIdentity): Future[CreditFundCollectionCompensateReceipt]
+  def creditFundCollectionCompensateQuery(input: CreditFundCollectionCompensateQuery,
+      identity: OperationIdentity): Future[Option[CreditFundCollectionCompensateReceipt]]
 
   // ---- reserve-cash-fund-order (orderFundOrderTCC) ---------------------------
 
-  def reserveCashFundOrderPrepareExecute(input: ReserveCashFundOrderPrepareInput, identity: OperationIdentity): Future[ReserveCashFundOrderPrepareReceipt]
-  def reserveCashFundOrderPrepareQuery(input: ReserveCashFundOrderPrepareQuery, identity: OperationIdentity): Future[Option[ReserveCashFundOrderPrepareReceipt]]
-  def reserveCashFundOrderCommitExecute(input: ReserveCashFundOrderCommitInput, identity: OperationIdentity): Future[ReserveCashFundOrderCommitReceipt]
-  def reserveCashFundOrderCommitQuery(input: ReserveCashFundOrderCommitQuery, identity: OperationIdentity): Future[Option[ReserveCashFundOrderCommitReceipt]]
-  def reserveCashFundOrderCompensateExecute(input: ReserveCashFundOrderCompensateInput, identity: OperationIdentity): Future[ReserveCashFundOrderCompensateReceipt]
-  def reserveCashFundOrderCompensateQuery(input: ReserveCashFundOrderCompensateQuery, identity: OperationIdentity): Future[Option[ReserveCashFundOrderCompensateReceipt]]
+  def reserveCashFundOrderPrepareExecute(input: ReserveCashFundOrderPrepareInput,
+      identity: OperationIdentity): Future[ReserveCashFundOrderPrepareReceipt]
+  def reserveCashFundOrderPrepareQuery(input: ReserveCashFundOrderPrepareQuery,
+      identity: OperationIdentity): Future[Option[ReserveCashFundOrderPrepareReceipt]]
+  def reserveCashFundOrderCommitExecute(input: ReserveCashFundOrderCommitInput,
+      identity: OperationIdentity): Future[ReserveCashFundOrderCommitReceipt]
+  def reserveCashFundOrderCommitQuery(input: ReserveCashFundOrderCommitQuery,
+      identity: OperationIdentity): Future[Option[ReserveCashFundOrderCommitReceipt]]
+  def reserveCashFundOrderCompensateExecute(input: ReserveCashFundOrderCompensateInput,
+      identity: OperationIdentity): Future[ReserveCashFundOrderCompensateReceipt]
+  def reserveCashFundOrderCompensateQuery(input: ReserveCashFundOrderCompensateQuery,
+      identity: OperationIdentity): Future[Option[ReserveCashFundOrderCompensateReceipt]]
 
   // ---- result-kind completion pairs ------------------------------------------
 
   def succeededAuthorityCompletion(input: BankPaymentOriginal, context: CompletionContext): Future[BankPaymentResult]
   def succeededDeliveryCompletion(input: BankPaymentResult, context: CompletionContext): Future[Boolean]
-  def rejectedBeforeEffectsAuthorityCompletion(input: BankPaymentOriginal, context: CompletionContext): Future[BankPaymentResult]
+  def rejectedBeforeEffectsAuthorityCompletion(input: BankPaymentOriginal,
+      context: CompletionContext): Future[BankPaymentResult]
   def rejectedBeforeEffectsDeliveryCompletion(input: BankPaymentResult, context: CompletionContext): Future[Boolean]
   def compensatedAuthorityCompletion(input: BankPaymentOriginal, context: CompletionContext): Future[BankPaymentResult]
   def compensatedDeliveryCompletion(input: BankPaymentResult, context: CompletionContext): Future[Boolean]
-  def recoveryRequiredAuthorityCompletion(input: BankPaymentOriginal, context: CompletionContext): Future[BankPaymentResult]
+  def recoveryRequiredAuthorityCompletion(input: BankPaymentOriginal,
+      context: CompletionContext): Future[BankPaymentResult]
   def recoveryRequiredDeliveryCompletion(input: BankPaymentResult, context: CompletionContext): Future[Boolean]
-  def outcomeUnknownAuthorityCompletion(input: BankPaymentOriginal, context: CompletionContext): Future[BankPaymentResult]
+  def outcomeUnknownAuthorityCompletion(input: BankPaymentOriginal,
+      context: CompletionContext): Future[BankPaymentResult]
   def outcomeUnknownDeliveryCompletion(input: BankPaymentResult, context: CompletionContext): Future[Boolean]
 }
 

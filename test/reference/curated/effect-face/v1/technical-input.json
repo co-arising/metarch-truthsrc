@@ -18,12 +18,29 @@
         "stageId": "dispatch-cash",
         "planVersion": "bank-v1-1",
         "executionStatePb": "example.bankwealth.infrastructure.executionproto.banksipdispatchv1ExecutionStatePB",
-        "codecSlots": ["input0:OccurrenceId", "input1:SipOccurrence", "output0:OperationId"],
+        "codecSlots": [
+          "input0:OccurrenceId",
+          "input1:SipOccurrence",
+          "output0:OperationId"
+        ],
         "resultCases": [
-          { "case": "DispatchCashDispatched", "slot": "operationId", "terminal": "stage-success" },
-          { "case": "DispatchCashRefused", "stageError": "business-rejection:Refused:stop" },
-          { "case": "DispatchCashUnavailable", "stageError": "infrastructure-failure:Unavailable:manual-recovery" },
-          { "case": "DispatchCashUnknown", "stageError": "unknown-effect:Unknown:manual-recovery" }
+          {
+            "case": "DispatchCashDispatched",
+            "slot": "operationId",
+            "terminal": "stage-success"
+          },
+          {
+            "case": "DispatchCashRefused",
+            "stageError": "business-rejection:Refused:stop"
+          },
+          {
+            "case": "DispatchCashUnavailable",
+            "stageError": "infrastructure-failure:Unavailable:manual-recovery"
+          },
+          {
+            "case": "DispatchCashUnknown",
+            "stageError": "unknown-effect:Unknown:manual-recovery"
+          }
         ],
         "source": "knowledge: pipeline declaration + execution plan product"
       },
@@ -39,8 +56,16 @@
         "observationValue": "BankSipDispatchObservation",
         "reconcileValue": "BankSipDispatchReconcile",
         "bindings": {
-          "declaredIds": ["bankwealth.BankSipDispatchExecute", "bankwealth.BankSipDispatchQuery", "bankwealth.BankSipDispatchReconcilePort"],
-          "roles": ["execute", "query", "reconcile"],
+          "declaredIds": [
+            "bankwealth.BankSipDispatchExecute",
+            "bankwealth.BankSipDispatchQuery",
+            "bankwealth.BankSipDispatchReconcilePort"
+          ],
+          "roles": [
+            "execute",
+            "query",
+            "reconcile"
+          ],
           "artifact": "BankSipTechnical",
           "implementationVersion": "bank-v1-1",
           "boundary": "handwritten-composition-root",
@@ -68,12 +93,30 @@
         "stageId": "submit-ta",
         "planVersion": "bank-v1-1",
         "executionStatePb": "example.bankwealth.infrastructure.executionproto.banktasubmissionv1ExecutionStatePB",
-        "codecSlots": ["input0:TaRequestId", "input1:FundOrderId", "input2:TxId", "output0:TaRequestId"],
+        "codecSlots": [
+          "input0:TaRequestId",
+          "input1:FundOrderId",
+          "input2:TxId",
+          "output0:TaRequestId"
+        ],
         "resultCases": [
-          { "case": "SubmitTaObserved", "slot": "taRequestId", "terminal": "stage-success" },
-          { "case": "SubmitTaRefused", "stageError": "business-rejection:Refused:stop" },
-          { "case": "SubmitTaUnavailable", "stageError": "infrastructure-failure:Unavailable:manual-recovery" },
-          { "case": "SubmitTaUnknown", "stageError": "unknown-effect:Unknown:manual-recovery" }
+          {
+            "case": "SubmitTaObserved",
+            "slot": "taRequestId",
+            "terminal": "stage-success"
+          },
+          {
+            "case": "SubmitTaRefused",
+            "stageError": "business-rejection:Refused:stop"
+          },
+          {
+            "case": "SubmitTaUnavailable",
+            "stageError": "infrastructure-failure:Unavailable:manual-recovery"
+          },
+          {
+            "case": "SubmitTaUnknown",
+            "stageError": "unknown-effect:Unknown:manual-recovery"
+          }
         ],
         "source": "knowledge: saga declaration + execution plan product"
       },
@@ -89,8 +132,16 @@
         "observationValue": "BankTaEffectObservation",
         "reconcileValue": "BankTaEffectReconcile",
         "bindings": {
-          "declaredIds": ["bankwealth.BankTaEffectExecute", "bankwealth.BankTaEffectQuery", "bankwealth.BankTaEffectReconcilePort"],
-          "roles": ["execute", "query", "reconcile"],
+          "declaredIds": [
+            "bankwealth.BankTaEffectExecute",
+            "bankwealth.BankTaEffectQuery",
+            "bankwealth.BankTaEffectReconcilePort"
+          ],
+          "roles": [
+            "execute",
+            "query",
+            "reconcile"
+          ],
           "artifact": "BankTaTechnical",
           "implementationVersion": "bank-v1-1",
           "boundary": "handwritten-composition-root",
@@ -105,7 +156,13 @@
   "faceShape": {
     "shared": "one effect-host shape, per-case knowledge: ObservationStatus ADT (confirmed/rejected/failed/absent/unknown wires), ReconcileDecision ADT (query/retry), per-role EffectBinding records, obligation-table install, round-counted observation freshness, RecoveryCompleted re-query, two-phase result delivery into the execution stage",
     "observationStatus": {
-      "wires": ["confirmed", "rejected", "failed", "absent", "unknown"],
+      "wires": [
+        "confirmed",
+        "rejected",
+        "failed",
+        "absent",
+        "unknown"
+      ],
       "source": "knowledge: observation domain value status slot"
     },
     "retry": {
@@ -120,7 +177,7 @@
     },
     "logging": "R4: debug points at execute-attempt/observation-stored/retry-authorized/reconcile-denied",
     "layout": {
-      "columnLimit": 100,
+      "columnLimit": 120,
       "discipline": "L1: hand-balanced breaks, each frozen shape documented at its site"
     }
   }

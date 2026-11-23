@@ -19,11 +19,14 @@ final class BankSipDispatchEffectHostSerializer extends SerializerWithStringMani
     manifest(value)
     val event = value match {
       case BankSipDispatchEffectHost.Intent(original, operation) =>
-        example.bankwealth.infrastructure.effectproto.banksipdispatchEffectHostEventPB(version = Manifest, kind = "intent", original = original, operation = operation)
+        example.bankwealth.infrastructure.effectproto.banksipdispatchEffectHostEventPB(version = Manifest,
+            kind = "intent", original = original, operation = operation)
       case BankSipDispatchEffectHost.ObservationStored(observation) =>
-        example.bankwealth.infrastructure.effectproto.banksipdispatchEffectHostEventPB(version = Manifest, kind = "observation", observation = observation)
+        example.bankwealth.infrastructure.effectproto.banksipdispatchEffectHostEventPB(version = Manifest,
+            kind = "observation", observation = observation)
       case BankSipDispatchEffectHost.RetryAuthorized(authorization, evidence) =>
-        example.bankwealth.infrastructure.effectproto.banksipdispatchEffectHostEventPB(version = Manifest, kind = "retry", authorization = authorization, observation = evidence)
+        example.bankwealth.infrastructure.effectproto.banksipdispatchEffectHostEventPB(version = Manifest,
+            kind = "retry", authorization = authorization, observation = evidence)
     }
     event.toByteArray
   }

@@ -1,0 +1,83 @@
+effect-face.behavior.v1.identity: the dispatch effect identity is stable and occurrence-sensitive
+effect-face.behavior.v1.negative: a denied dispatch retry keeps the observation and never re-executes
+effect-face.behavior.v1.negative: an invalid dispatch observation never lands; the query face re-derives
+effect-face.behavior.v1.negative: an unobserved dispatch effect answers Pending without implicit retry
+effect-face.behavior.v1.negative: dispatch reconcile demands authorization and durable evidence
+effect-face.behavior.v1.negative: effect bindings fail closed at construction and at install
+effect-face.behavior.v1.negative: the dispatch serializer refuses foreign kinds and manifests
+effect-face.behavior.v1.negative: the plan codecs refuse foreign versions and missing slots
+effect-face.behavior.v1.negative: the same dispatch input re-answers from durable state; a different input conflicts
+effect-face.behavior.v1.negative: the ta serializer refuses foreign kinds and manifests
+effect-face.behavior.v1.state: a fresh dispatch host executes once and completes on the confirmed observation
+effect-face.behavior.v1.state: an authorized dispatch query re-derives an unknown observation without re-executing
+effect-face.behavior.v1.state: an authorized dispatch retry clears the observation and re-executes
+effect-face.behavior.v1.state: an authorized ta retry re-executes from durable absent evidence
+effect-face.behavior.v1.state: both plan codecs are fail-closed finite round trips
+effect-face.behavior.v1.state: foreign reconcile decision wires answer None
+effect-face.behavior.v1.state: foreign status and decision wires answer None
+effect-face.behavior.v1.state: recovery re-queries an unobserved dispatch effect
+effect-face.behavior.v1.state: rejected and failed dispatch observations fold into their declared stage results
+effect-face.behavior.v1.state: status and decision wire sets are the declared sets
+effect-face.behavior.v1.state: the ta effect host completes on the confirmed observation
+effect-face.behavior.v1.state: the ta plan codec is a fail-closed finite round trip
+effect-face.quality.v1.negative: a var field is rejected while the local coalescing var is admitted
+effect-face.quality.v1.negative: java import statements stay rejected in the host layer
+effect-face.quality.v1.structure: binding artifacts and versions are pinned per case
+effect-face.quality.v1.structure: fail-closed throws stay in the executions, effect hosts and serializers only
+effect-face.quality.v1.structure: golden sources carry no mechanism tokens
+effect-face.quality.v1.structure: golden sources hold the 120-column layout discipline
+effect-face.quality.v1.structure: java and mutable-collection imports stay banned everywhere
+effect-face.quality.v1.structure: local var coalescing lives only in the two effect hosts
+effect-face.quality.v1.structure: the R1 retry constants are pinned in both executions
+effect-face.quality.v1.structure: the effect host import face is the judged exact list
+effect-face.quality.v1.structure: the obligation tables carry exactly the declared ids per case
+effect-face.quality.v1.structure: the serializer identities and shared manifest are pinned
+effect-face.quality.v1.structure: try-catch stays confined to the effect hosts' safe seam
+pipeline-invocation-face.behavior.v1.identity: the durable operation identity keys on the caller operation and occurrence
+pipeline-invocation-face.behavior.v1.negative: a delivery implementation failure folds into delivery unacknowledged
+pipeline-invocation-face.behavior.v1.negative: a delivery that fails the two-phase authority stays unacknowledged
+pipeline-invocation-face.behavior.v1.negative: a different input under the same operation is a Conflict; the same input re-answers from durable state
+pipeline-invocation-face.behavior.v1.negative: a provably not-executed prepare aborts and compensates the payment
+pipeline-invocation-face.behavior.v1.negative: an admission implementation failure answers unavailable, never a denial
+pipeline-invocation-face.behavior.v1.negative: an entry denial answers Pending and never starts the saga
+pipeline-invocation-face.behavior.v1.negative: an unknown prepare folds into recovery and reconciliation completes the payment
+pipeline-invocation-face.behavior.v1.negative: authoritative status checks are exact in every slot
+pipeline-invocation-face.behavior.v1.negative: the pending poll backoff doubles and stays capped
+pipeline-invocation-face.behavior.v1.negative: the plan codec refuses foreign versions and missing slots
+pipeline-invocation-face.behavior.v1.state: a completed payment answers identically from durable state with no new facts
+pipeline-invocation-face.behavior.v1.state: admission composes the entry and association gates exactly
+pipeline-invocation-face.behavior.v1.state: classify folds authoritative statuses into the declared kinds
+pipeline-invocation-face.behavior.v1.state: delivery dispatches each kind through its own completion pair
+pipeline-invocation-face.behavior.v1.state: foreign result wires answer None
+pipeline-invocation-face.behavior.v1.state: result kinds answer exactly the declared wire set
+pipeline-invocation-face.behavior.v1.state: the payment completes through prepare, commit and receipt delivery
+pipeline-invocation-face.behavior.v1.state: the plan codec is a fail-closed finite round trip
+pipeline-invocation-face.quality.v1.AST: HOF closure decisions count both in parent and closure
+pipeline-invocation-face.quality.v1.AST: comments and branch-like literal text add no decisions
+pipeline-invocation-face.quality.v1.AST: defaults and initialization are registered
+pipeline-invocation-face.quality.v1.AST: else-if is one control nesting level
+pipeline-invocation-face.quality.v1.AST: fail-closed throw and the anonymous port face are admitted
+pipeline-invocation-face.quality.v1.AST: if chains have independently known complexity
+pipeline-invocation-face.quality.v1.AST: match alternatives and guards are explicit paths
+pipeline-invocation-face.quality.v1.AST: named arguments sit in argument position and are admitted
+pipeline-invocation-face.quality.v1.AST: overflow complexity is measured exactly, never clamped
+pipeline-invocation-face.quality.v1.AST: short-circuit operators are counted
+pipeline-invocation-face.quality.v1.negative: a var field is rejected while the local coalescing var is admitted
+pipeline-invocation-face.quality.v1.negative: invalid syntax cannot become an empty successful report
+pipeline-invocation-face.quality.v1.negative: java import statements stay rejected with the fully-qualified form sanctioned
+pipeline-invocation-face.quality.v1.negative: nonlocal returns stay rejected in both golden layers
+pipeline-invocation-face.quality.v1.negative: timers randomness and stdout stay rejected as plain names
+pipeline-invocation-face.quality.v1.negative: try stays banned in the serializer layer only
+pipeline-invocation-face.quality.v1.structure: assignment stays inside the sanctioned coalescing files
+pipeline-invocation-face.quality.v1.structure: fail-closed throws stay in the executions, effect hosts and serializers only
+pipeline-invocation-face.quality.v1.structure: golden sources carry no mechanism tokens
+pipeline-invocation-face.quality.v1.structure: golden sources hold the 120-column layout discipline
+pipeline-invocation-face.quality.v1.structure: java and mutable-collection imports stay banned everywhere
+pipeline-invocation-face.quality.v1.structure: local var coalescing lives only in the three hosts
+pipeline-invocation-face.quality.v1.structure: the R1 retry constants are pinned in all three executions
+pipeline-invocation-face.quality.v1.structure: the definition identity is pinned in host and definition alike
+pipeline-invocation-face.quality.v1.structure: the host import face is the judged exact list
+pipeline-invocation-face.quality.v1.structure: the obligation table carries exactly the declared ids in order
+pipeline-invocation-face.quality.v1.structure: the port surface owns declarations only, no ask implementations
+pipeline-invocation-face.quality.v1.structure: the serializer identity and manifest are pinned
+pipeline-invocation-face.quality.v1.structure: try-catch stays confined to the effect hosts' safe seam

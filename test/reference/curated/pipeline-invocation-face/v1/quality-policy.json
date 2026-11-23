@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "curated.scala-source-quality-policy/v1",
+  "artifactType": "host-faces-closure",
+  "closure": {
+    "members": ["pipeline-invocation-face/v1", "effect-face/v1"],
+    "anchor": "pipeline-invocation-face/v1 (this file, scope-exceptions.tsv, expected-properties.txt and the quality/ harness)",
+    "statement": "The 18-artifact monarch application face is one compile closure (rulings 2026-11-21): quality is therefore verified once for the closure, by the shared host-faces-quality CLI. The effect-face candidate carries its property suites under its own test/ tree and imports this harness."
+  },
+  "dialect": "Scala213",
+  "parser": "org.scalameta:parsers_2.13:4.7.7",
+  "measurement": {
+    "name": "source-structural-mccabe-v1",
+    "notClaim": "Not a full control-flow graph proof or equivalence to every compiler plugin.",
+    "base": 1,
+    "increment": ["if", "while", "do", "for generator", "for guard", "case guard", "short-circuit &&", "short-circuit ||"],
+    "match": "Expanded pattern paths minus one; add conservative unmatched exit unless unconditional wildcard/default exists.",
+    "nestedClosures": "Include decisions in owning body; report lambda/partial function separately; do not add closure base twice.",
+    "nesting": "Control constructs only; an else-if continuation retains the enclosing if level."
+  },
+  "layers": {
+    "host": {
+      "appliesTo": "the nine golden application sources (hosts, executions, ports, bindings, definition, host IO)",
+      "description": "The family face is akka typed + CQRS by declaration. The sanctioned mutation face is exactly the R2(b) in-memory waiter coalescing: local var/assignment inside the behavior setup blocks of the three hosts — a var FIELD, a nonlocal return, reflection, timers, randomness, stdout and mutable collections stay banned by the engine. throw is the sanctioned fail-closed value-domain refusal (codec slots, unrepresentable observations, stage errors); try is admitted only for the effect hosts' callback-boundary seam; both are pinned site-by-site by structural properties, not by the engine. The engine admits Term.NewAnonymous (the anonymous port-implementation face of the definition). java import statements stay banned; fully-qualified java references are the sanctioned zero-import form. The Array type is admitted solely as Array[Byte] (the byte-digest and akka wire faces); structural properties pin that no other array form appears, and AnyRef is admitted in the serializer layer only (the fixed akka SerializerWithStringManifest signature).",
+      "maximumComplexity": 45,
+      "maximumControlNesting": 5,
+      "exceptionsAllowed": false,
+      "note": "Maxima are judged frozen bounds on the hand-balanced golden shapes (the host maximum grew 44 to 45 when the R3 no-answer-never-wipes-evidence guard landed; the revision is recorded here at freeze time) (event-sourced command handlers are legitimately large but bounded); a scope that outgrows them is a shape-rewrite signal, never a bound bump."
+    },
+    "serializer": {
+      "appliesTo": "the three golden journal serializers",
+      "appliesToDelta": "same banned set as host, plus Term.Try stays banned — the serializer is a total function; its wire refusals are throws",
+      "maximumComplexity": 11,
+      "maximumControlNesting": 2,
+      "exceptionsAllowed": false
+    },
+    "support": {
+      "appliesTo": "quality/** and test/**",
+      "description": "No forbidden structural checks; 5/2 default maxima with exact closed-dispatch exceptions in scope-exceptions.tsv. The fixture constructs a local typed ActorSystem with the persistence-testkit journal (serialize=false: the journal assertions look at event facts, while the serializers prove the wire independently).",
+      "defaultMaximumComplexity": 5,
+      "defaultMaximumControlNesting": 2,
+      "exceptions": "Exact file/owner/kind with finite maxima and justification. No whole-file exemption or project average."
+    }
+  },
+  "plainFpOo": {
+    "reject": [
+      "var fields and any assignment outside the R2(b) coalescing blocks",
+      "nonlocal return",
+      "reflection (asInstanceOf/getClass/Class/System/Thread)",
+      "implicit time/randomness beyond the judged R1 deadline slots",
+      "mutable collections",
+      "stdout/printStackTrace in place of structured logging",
+      "java import statements"
+    ],
+    "allow": [
+      "sealed ADTs over every dispatch face (T1): result kinds, observation statuses, reconcile decisions",
+      "fail-closed require/throw for illegal value domains, and the akka-serializer wire-refusal throw",
+      "local var/assignment only inside the R2(b) in-memory waiter coalescing blocks",
+      "obligation-table-driven port wiring with per-role binding records (no Option/null faces)",
+      "constructor-injected ports and explicit composition (install or refuse)"
+    ],
+    "qualification": "Syntactic checks do not alone prove semantic purity or OO responsibility. Exact behavior properties are also reviewed (real coordinator rounds, persistence-testkit journal, probe technical ports)."
+  },
+  "execution": {
+    "seeds": [740001, 740002, 740003],
+    "workers": 1,
+    "minimumSuccessfulRandomCases": 1000
+  },
+  "rawAcceptanceUnchanged": true,
+  "all31Closed": false
+}

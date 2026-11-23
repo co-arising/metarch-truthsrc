@@ -19,11 +19,14 @@ final class BankTaEffectHostSerializer extends SerializerWithStringManifest {
     manifest(value)
     val event = value match {
       case BankTaEffectHost.Intent(original, operation) =>
-        example.bankwealth.infrastructure.effectproto.banktaeffectEffectHostEventPB(version = Manifest, kind = "intent", original = original, operation = operation)
+        example.bankwealth.infrastructure.effectproto.banktaeffectEffectHostEventPB(version = Manifest,
+            kind = "intent", original = original, operation = operation)
       case BankTaEffectHost.ObservationStored(observation) =>
-        example.bankwealth.infrastructure.effectproto.banktaeffectEffectHostEventPB(version = Manifest, kind = "observation", observation = observation)
+        example.bankwealth.infrastructure.effectproto.banktaeffectEffectHostEventPB(version = Manifest,
+            kind = "observation", observation = observation)
       case BankTaEffectHost.RetryAuthorized(authorization, evidence) =>
-        example.bankwealth.infrastructure.effectproto.banktaeffectEffectHostEventPB(version = Manifest, kind = "retry", authorization = authorization, observation = evidence)
+        example.bankwealth.infrastructure.effectproto.banktaeffectEffectHostEventPB(version = Manifest,
+            kind = "retry", authorization = authorization, observation = evidence)
     }
     event.toByteArray
   }

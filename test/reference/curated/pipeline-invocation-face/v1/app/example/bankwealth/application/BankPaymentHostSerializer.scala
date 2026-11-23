@@ -26,13 +26,16 @@ final class BankPaymentHostSerializer extends SerializerWithStringManifest {
       case BankPaymentHost.AdmissionGranted =>
         example.bankwealth.infrastructure.hostproto.bankpaymenthostHostEventPB(kind = "admitted")
       case BankPaymentHost.Associated(original, args, operation) =>
-        example.bankwealth.infrastructure.hostproto.bankpaymenthostHostEventPB(kind = "associated", original = original, args = args, operation = operation)
+        example.bankwealth.infrastructure.hostproto.bankpaymenthostHostEventPB(kind = "associated",
+            original = original, args = args, operation = operation)
       case BankPaymentHost.IdentityObserved(identity) =>
-        example.bankwealth.infrastructure.hostproto.bankpaymenthostHostEventPB(kind = "identity", identity = StrictSagaProtoConverters.identityToProto(identity).toByteString)
+        example.bankwealth.infrastructure.hostproto.bankpaymenthostHostEventPB(kind = "identity",
+            identity = StrictSagaProtoConverters.identityToProto(identity).toByteString)
       case BankPaymentHost.ResultIntent(kind) =>
         example.bankwealth.infrastructure.hostproto.bankpaymenthostHostEventPB(kind = "result", operation = kind.wire)
       case BankPaymentHost.DeliveryAcknowledged(kind) =>
-        example.bankwealth.infrastructure.hostproto.bankpaymenthostHostEventPB(kind = "delivered", operation = kind.wire)
+        example.bankwealth.infrastructure.hostproto.bankpaymenthostHostEventPB(kind = "delivered",
+            operation = kind.wire)
     }
     pb.toByteArray
   }
@@ -43,7 +46,10 @@ final class BankPaymentHostSerializer extends SerializerWithStringManifest {
     pb.kind match {
       case "admitted" => BankPaymentHost.AdmissionGranted
       case "associated" => BankPaymentHost.Associated(pb.original, pb.args, pb.operation)
-      case "identity" => BankPaymentHost.IdentityObserved(StrictSagaProtoConverters.identityFromProto(TransactionIdentityPO.parseFrom(pb.identity.toByteArray)))
+      case "identity" =>
+          BankPaymentHost
+              .IdentityObserved(StrictSagaProtoConverters
+                  .identityFromProto(TransactionIdentityPO.parseFrom(pb.identity.toByteArray)))
       case "result" =>
         resultKind(pb.operation) match {
           case Some(kind) => BankPaymentHost.ResultIntent(kind)

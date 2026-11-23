@@ -203,6 +203,25 @@ Pages 上引用旧生成器 id／文件头的句子同步刷新。
   风格裁定基线 N/T/L/R/D 五组逐条待用户裁定）。裁定前不动 classic／不写金样／
   不建派生层。Phase 2 试点目标随裁定改写（§4）。
 
+### 两宿主面门序登记（2026-11-22）
+
+- **金样 13 件入册＋compile 门三轮绿**（提交 `0908738`…`751787b`）：
+  `test/reference/curated/pipeline-invocation-face/v1/`（payment 案 7 件）＋
+  `test/reference/curated/effect-face/v1/`（dispatch／ta 各 3 件）。
+- **DDD 改名同步**（用户指令，F7 修正一次）：truth 两 structure 去 0/1/2 序数 →
+  `ReserveInvestorFunds*/CreditFundCollection*/ReserveCashFundOrder*`＋refund 侧
+  `DebitFundCollection*/CreditOriginalInvestor*`；bank-wealth 显式 update 重生
+  233/233、verify 12/12（bank-wealth-demo 提交 `a87d2dc`）。
+- **质量性质门三轮绿（2026-11-22，完整「沙箱三轮」闭合）**：结构度量引擎
+  （source-structural McCabe＋host-face 层增量禁令）＋83 条 ScalaCheck 性质
+  （27 directed negatives）×3 种子；官方证据
+  `.rounds/host-faces-quality-20261122-02/attempt-0{1,2,3}/completion.json`
+  （`HOST_FACES_QUALITY_GATE_COMPLETE`）。质量合同锚在 pipeline-face 候选
+  （`quality-policy.json`＋`scope-exceptions.tsv`＋`expected-properties.txt`＋
+  `quality/` 四件），闭包即验证单元；引擎与装置裁定、金样语义缺陷四件修复、
+  L1 ≤120 列定案——全量记档见裁定文档 §6 质量轮记档。金样发射器模块
+  （字节等值＋双跑确定＋负测电池）为下一步（emitter/families 两族）。
+
 ## 8. 新会话开工指引（Phase 0 即做）
 
 ```bash
