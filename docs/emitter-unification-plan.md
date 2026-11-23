@@ -221,6 +221,18 @@ Pages 上引用旧生成器 id／文件头的句子同步刷新。
   `quality/` 四件），闭包即验证单元；引擎与装置裁定、金样语义缺陷四件修复、
   L1 ≤120 列定案——全量记档见裁定文档 §6 质量轮记档。金样发射器模块
   （字节等值＋双跑确定＋负测电池）为下一步（emitter/families 两族）。
+- **发射器模块两族入册（2026-11-23，统一发射器 8→10 族）**：
+  `emitter/families/pipeline-invocation-face.mjs`（#43）＋`effect-face.mjs`（#44）
+  ——13/13 金样逐字节等值＋双跑确定＋36＋33 条负测电池全拒（零电池债）；
+  出处裁定 `handwritten-golden`（toolsRef null，registry/parity 契约扩展记档）；
+  两 face `technical-input.json` 扩为发射完备合同（逐工件 doc 行逐字入合同，
+  发射器零金样字节内嵌），fixture `test/fixtures/{pipeline-invocation-face-v1,
+  effect-face-v1}/input.json` 落盘；金样三件后冻结整理（重复 import 去重、
+  未用匹配绑定、columnLimit 100→120 补记）后本地重基线全绿。
+  `node emitter/parity.mjs` 十族全绿、`node --test test/emitter-unification.test.mjs`
+  5/5 绿。全量记档见裁定文档 §6 发射器模块两族入册。
+  下一节拍：bank-wealth 接入（per-business-case 翻转 payment→refund→dispatch→ta，
+  每翻转一提交且应用整体可编译；classic 模板摘除前逐文件 diff 呈报用户）。
 
 ## 8. 新会话开工指引（Phase 0 即做）
 

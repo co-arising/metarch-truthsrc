@@ -14,7 +14,14 @@
 //   goldenRoot    repo-relative curated golden tree (the family spec, F3)
 //   fixtureDir    repo-relative fixture directory carrying input.json
 //   toolsRef      repo-relative byte-parity reference generator (until classic
-//                 retirement; provenance of the port, see families/*.mjs)
+//                 retirement; provenance of the port, see families/*.mjs) — or
+//                 null for a handwritten-golden family (ruling 2026-11-22:
+//                 goldens curated by hand before any generator existed have no
+//                 classic reference; the golden tree IS the spec, F3, and a
+//                 duplicate byte-parity generator would break the one-generator
+//                 program — such a family must declare
+//                 provenance: 'handwritten-golden' and carries no tools-parity
+//                 leg in the parity harness)
 //   checkInput(input)             fail-closed validation, throws coded errors
 //   renderAll(input) → map       byte-deterministic { relativePath: content }
 //   runNegatives(input)|null      directed rejection battery; null = the ported
@@ -62,11 +69,14 @@ export function registerFamily(family) {
     fail('EMITTER_REGISTRY', `family ${family.id}: renderAll must be a function`);
   if (family.runNegatives !== undefined && family.runNegatives !== null && typeof family.runNegatives !== 'function')
     fail('EMITTER_REGISTRY', `family ${family.id}: runNegatives must be a function or null (a missing battery is a declared debt, not an omission)`);
-  if (typeof family.toolsRef !== 'string' || !family.toolsRef.startsWith('tools/'))
-    fail('EMITTER_REGISTRY', `family ${family.id}: toolsRef must point at the byte-parity reference generator under tools/`);
+  if (family.toolsRef === null) {
+    if (family.provenance !== 'handwritten-golden')
+      fail('EMITTER_REGISTRY', `family ${family.id}: toolsRef null requires provenance 'handwritten-golden' (a family without a reference generator must declare its golden provenance)`);
+  } else if (typeof family.toolsRef !== 'string' || !family.toolsRef.startsWith('tools/'))
+    fail('EMITTER_REGISTRY', `family ${family.id}: toolsRef must point at the byte-parity reference generator under tools/ (or be null with provenance 'handwritten-golden')`);
   repoPathExists(family.goldenRoot, `family ${family.id} goldenRoot`);
   repoPathExists(family.fixtureDir, `family ${family.id} fixtureDir`);
-  repoPathExists(family.toolsRef, `family ${family.id} toolsRef`);
+  if (family.toolsRef !== null) repoPathExists(family.toolsRef, `family ${family.id} toolsRef`);
   if (families.has(family.id))
     fail('EMITTER_REGISTRY', `family id ${family.id} is already registered (one generator, one registry entry per family)`);
   families.set(family.id, family);

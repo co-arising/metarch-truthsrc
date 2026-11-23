@@ -14,8 +14,14 @@
       "rule": "N1: kebab-to-Pascal with stem/suffix dedup; type names carry no version suffix (versions live in contract slots and codecs)",
       "hostClass": "host id bank-payment-host",
       "executionClass": "saga id bank-cash-payment-v1 (the durable plan face of that saga)",
-      "sagaDefinitionObject": "host id bank-payment-host"
-    }
+      "sagaDefinitionObject": "host id bank-payment-host",
+      "originalValue": "knowledge: payment original request value (domain values tree)",
+      "argsValue": "knowledge: strict-saga payload args value",
+      "resultValue": "knowledge: result kind value (RESULT_KINDS carrier)"
+    },
+    "originalValue": "BankPaymentOriginal",
+    "argsValue": "BankPaymentArgs",
+    "resultValue": "BankPaymentResult"
   },
   "saga": {
     "id": "bank-cash-payment-v1",
@@ -23,37 +29,142 @@
     "definitionVersion": 1,
     "definitionDigest": "sha256:c13f703e76eaee9bfceeff701ecc5f41dd011d6db6890c6820a7faa944538f64",
     "artifactVersion": "bank-v1-1",
-    "source": "knowledge: saga payload + strict runtime binding"
+    "source": "knowledge: saga payload + strict runtime binding",
+    "argsPinVersion": 1,
+    "argsPinSource": "judged: args codec pin version (the payload pin stays at 1)",
+    "argsFields": [
+      "investorAccountId",
+      "fundOrderId",
+      "fundCollectionAccountId",
+      "amount"
+    ],
+    "argsFieldsSource": "knowledge: payload args value composition (saga payload)"
   },
   "invocation": {
     "scheme": "truthsrc-pipeline-invocation-v1",
     "pipelineStep": "pay-cash-purchase",
-    "markers": ["iteration", "absent", "chunk", "absent"],
+    "markers": [
+      "iteration",
+      "absent",
+      "chunk",
+      "absent"
+    ],
     "source": "knowledge: pipeline invocation binding"
   },
   "results": {
     "kinds": [
-      { "kind": "Succeeded", "wire": "succeeded", "terminal": true },
-      { "kind": "RejectedBeforeEffects", "wire": "rejected-before-effects", "terminal": true },
-      { "kind": "Compensated", "wire": "compensated", "terminal": true },
-      { "kind": "RecoveryRequired", "wire": "recovery-required", "terminal": false },
-      { "kind": "OutcomeUnknown", "wire": "outcome-unknown", "terminal": false }
+      {
+        "kind": "Succeeded",
+        "wire": "succeeded",
+        "terminal": true,
+        "executionCase": "PayCashPurchaseSucceeded",
+        "stageError": null
+      },
+      {
+        "kind": "RejectedBeforeEffects",
+        "wire": "rejected-before-effects",
+        "terminal": true,
+        "executionCase": "PayCashPurchaseRejected",
+        "stageError": {
+          "label": "Rejected",
+          "category": "business-rejection",
+          "discipline": "stop"
+        }
+      },
+      {
+        "kind": "Compensated",
+        "wire": "compensated",
+        "terminal": true,
+        "executionCase": "PayCashPurchaseCompensated",
+        "stageError": {
+          "label": "Compensated",
+          "category": "business-rejection",
+          "discipline": "stop"
+        }
+      },
+      {
+        "kind": "RecoveryRequired",
+        "wire": "recovery-required",
+        "terminal": false,
+        "executionCase": "PayCashPurchaseRecoveryRequired",
+        "stageError": {
+          "label": "RecoveryRequired",
+          "category": "infrastructure-failure",
+          "discipline": "manual-recovery"
+        }
+      },
+      {
+        "kind": "OutcomeUnknown",
+        "wire": "outcome-unknown",
+        "terminal": false,
+        "executionCase": "PayCashPurchaseUnknown",
+        "stageError": {
+          "label": "Unknown",
+          "category": "unknown-effect",
+          "discipline": "manual-recovery"
+        }
+      }
     ],
     "source": "knowledge: RESULT_KINDS frozen set (saga-hosts product); terminal set from the saga completion contract"
   },
   "participants": [
-    { "stepId": "reserve-investor-funds", "participantId": "investorCreditBalance", "aggregate": "CreditBalance", "resourceType": "AccountId" },
-    { "stepId": "credit-fund-collection", "participantId": "collectionCreditBalance", "aggregate": "CreditBalance", "resourceType": "AccountId" },
-    { "stepId": "reserve-cash-fund-order", "participantId": "orderFundOrderTCC", "aggregate": "FundOrder", "resourceType": "FundOrderId" }
+    {
+      "stepId": "reserve-investor-funds",
+      "participantId": "investorCreditBalance",
+      "aggregate": "CreditBalance",
+      "resourceType": "AccountId",
+      "protocol": "CreditBalanceProtocol",
+      "argsField": "investorAccountId",
+      "commands": {
+        "prepare": "ReserveFunds",
+        "commit": "DeductFunds",
+        "compensate": "ReleaseReservedFunds"
+      }
+    },
+    {
+      "stepId": "credit-fund-collection",
+      "participantId": "collectionCreditBalance",
+      "aggregate": "CreditBalance",
+      "resourceType": "AccountId",
+      "protocol": "CreditBalanceProtocol",
+      "argsField": "fundCollectionAccountId",
+      "commands": {
+        "prepare": "RecordIncomingCredits",
+        "commit": "CommitIncomingCredits",
+        "compensate": "CancelIncomingCredit"
+      }
+    },
+    {
+      "stepId": "reserve-cash-fund-order",
+      "participantId": "orderFundOrderTCC",
+      "aggregate": "FundOrder",
+      "resourceType": "FundOrderId",
+      "protocol": "FundOrderProtocol",
+      "argsField": "fundOrderId",
+      "commands": {
+        "prepare": "ReserveFundSubscription",
+        "commit": "ConfirmFundSubscriptionPayment",
+        "compensate": "CancelCashFundSubscription"
+      }
+    }
   ],
-  "participantsSource": "knowledge: saga binding steps + payload participants in declaration order; N2 composes port member names from stepIds (camelCase), not ordinals; domain value types (BankPayment0PrepareInput and friends) keep knowledge-side names",
+  "participantsSource": "knowledge: saga binding steps + payload participants in declaration order; N2 composes port member names from stepIds (camelCase), not ordinals; domain value types (BankPayment0PrepareInput and friends) keep knowledge-side names; per-participant protocol command composition is knowledge (which domain command each phase issues)",
+  "admission": {
+    "gates": [
+      "entry",
+      "association"
+    ],
+    "source": "knowledge: R2(b) admission contract members (HostIO.admit asks entry then association)"
+  },
   "portBindings": {
     "artifact": "bank-payment-technical",
     "implementationVersion": "bank-v1-1",
     "boundary": "handwritten-composition-root",
     "declaredIdStem": "bankwealth.BankPayment",
     "declaredIdNote": "implementation identity strings keep the classic spelling (stable across member renames) — the handwritten composition root never retypes them",
-    "source": "knowledge: artifact-contract port pins + roles"
+    "source": "knowledge: artifact-contract port pins + roles; judged: codec-pin prefix + version",
+    "codecPinPrefix": "bank-payment",
+    "codecPinVersion": 1
   },
   "serializer": {
     "identifier": 742000,
@@ -61,6 +172,112 @@
     "eventPb": "example.bankwealth.infrastructure.hostproto.bankpaymenthostHostEventPB",
     "resultKindSlot": "pb.operation (dedicated kind slot lands with the proto-family replacement, ruling T4)",
     "source": "judged: identifier allocation; knowledge: proto face schema"
+  },
+  "execution": {
+    "stageId": "pay-cash-purchase",
+    "planVersion": "bank-v1-1",
+    "inputs": [
+      {
+        "name": "operation",
+        "type": "OperationId"
+      },
+      {
+        "name": "occurrence",
+        "type": "OperationId"
+      },
+      {
+        "name": "investorAccountId",
+        "type": "AccountId"
+      },
+      {
+        "name": "fundOrderId",
+        "type": "FundOrderId"
+      },
+      {
+        "name": "fundCollectionAccountId",
+        "type": "AccountId"
+      },
+      {
+        "name": "amount",
+        "type": "Money"
+      },
+      {
+        "name": "fundCode",
+        "type": "String"
+      }
+    ],
+    "requestInputs": [
+      "operation",
+      "occurrence",
+      "investorAccountId",
+      "fundOrderId",
+      "fundCollectionAccountId",
+      "amount"
+    ],
+    "output": {
+      "field": "paymentTxid",
+      "type": "TxId"
+    },
+    "codecSlots": [
+      {
+        "slot": "input0",
+        "field": "operation",
+        "type": "OperationId",
+        "optional": false
+      },
+      {
+        "slot": "input1",
+        "field": "occurrence",
+        "type": "OperationId",
+        "optional": false
+      },
+      {
+        "slot": "input2",
+        "field": "investorAccountId",
+        "type": "AccountId",
+        "optional": false
+      },
+      {
+        "slot": "input3",
+        "field": "fundOrderId",
+        "type": "FundOrderId",
+        "optional": false
+      },
+      {
+        "slot": "input4",
+        "field": "fundCollectionAccountId",
+        "type": "AccountId",
+        "optional": false
+      },
+      {
+        "slot": "input5",
+        "field": "amount",
+        "type": "Money",
+        "optional": false
+      },
+      {
+        "slot": "input6",
+        "field": "fundCode",
+        "type": "String",
+        "optional": false
+      },
+      {
+        "slot": "output0",
+        "field": "paymentTxid",
+        "type": "TxId",
+        "optional": true
+      }
+    ],
+    "executionStatePb": "example.bankwealth.infrastructure.executionproto.bankcashpaymentv1ExecutionStatePB",
+    "source": "knowledge: pipeline declaration + execution plan product (the plan face of the saga); originalFields compose the original request value over the execution inputs",
+    "originalFields": [
+      "operation",
+      "fundOrderId",
+      "investorAccountId",
+      "fundCollectionAccountId",
+      "fundCode",
+      "amount"
+    ]
   },
   "runtime": {
     "admission": {
@@ -80,8 +297,139 @@
     },
     "logging": "R4: debug points at associate/observe/deliver/admission-denial/retry"
   },
+  "supply": {
+    "domainPackage": "example.bankwealth.domain",
+    "domainValuesPackage": "example.bankwealth.domain.values",
+    "protoPackage": "example.bankwealth.infrastructure.proto",
+    "serializationPackage": "example.bankwealth.infrastructure.serialization",
+    "serializationObject": "DomainConverters",
+    "executionProtoPackage": "example.bankwealth.infrastructure.executionproto",
+    "hostProtoPackage": "example.bankwealth.infrastructure.hostproto",
+    "strictRuntimePackage": "net.imadz.infra.saga.strict",
+    "monarchPersistencePackage": "net.imadz.monarch.persistence",
+    "source": "knowledge: bankwealth supply tree (proven by the compile-face rounds)"
+  },
+  "messages": {
+    "authorityResultDiffers": "authority result differs from the original-identity-derived expectation",
+    "hostEventRequired": "host event required",
+    "hostEventVersionRequired": "host event version required",
+    "unknownHostEventKind": "unknown host event kind",
+    "unconfirmedPredecessorOutput": "unconfirmed predecessor output",
+    "exactPlanVersionRequired": "exact finite plan version required",
+    "missingDurableInput": "missing durable input $name",
+    "exactHostActorRequired": "the exact invocation host actor is required",
+    "stageDeadlineExceeded": "stage deadline exceeded",
+    "ownedInvocationObserverStopped": "owned invocation observer stopped",
+    "explicitOwnedFiniteExecutionRequired": "explicit owned finite execution and installed objects required",
+    "unknownStaticStep": "unknown static step",
+    "identityMismatch": "implementation identity mismatch: expected $expectedId, got $id",
+    "versionMismatch": "implementation version mismatch: $id expected $expectedVersion, got $version",
+    "carriesNoRunFace": "implementation $id carries no run face",
+    "carriesNoOperationFace": "implementation $id carries no operation face",
+    "carriesNoCompletionFace": "implementation $id carries no completion face",
+    "completeBindingsRequired": "complete technical port bindings required",
+    "identityNotYetObserved": "identity not yet observed",
+    "conflictDifferentInput": "different complete parent input or args under existing invocation",
+    "authoritativeIdentityConflict": "authoritative identity conflict",
+    "awaitingAuthoritativeResult": "awaiting authoritative result",
+    "notAdmitted": "entry or association not admitted",
+    "admissionUnavailablePrefix": "admission unavailable: ",
+    "admissionUnavailable": "admission unavailable",
+    "coordinatorIdentityConflict": "coordinator identity conflict",
+    "deliveryUnacknowledged": "delivery unacknowledged",
+    "durableIdentityTokenRequired": "durable identity token required",
+    "receiptTxidDiffers": "receipt txid differs from durable operation",
+    "receiptDefinitionVersionDiffers": "receipt definition-version differs from durable operation",
+    "receiptArgsDigestDiffers": "receipt args-digest differs from durable operation",
+    "receiptParticipantDiffers": "receipt participant differs from durable operation",
+    "receiptResourceDiffers": "receipt resource differs from durable operation",
+    "receiptStepDiffers": "receipt step differs from durable operation",
+    "receiptPhaseDiffers": "receipt phase differs from durable operation",
+    "readOnlyPhasePortRequired": "required read-only phase port and exact codec implementation",
+    "operationIdentityMismatch": "operation identity mismatch",
+    "technicalFaceFailedPrefix": "technical $face failed: ",
+    "typedQueryNoEvidence": "typed query returned no authoritative evidence",
+    "boundTechnicalPortsRequired": "bound technical ports required",
+    "boundPhasePortsRequired": "bound phase ports required",
+    "identityAndAuthorizerRequired": "explicit identity and reconciliation authorizer required",
+    "explicitHostIdentityRequired": "explicit owned host identity, coordinator and installed technical ports required"
+  },
+  "messagesSource": "knowledge: reply reasons, require guards and refusal texts of the face (every message flows from the contract, none embedded in the emitter)",
   "layout": {
-    "columnLimit": 100,
+    "columnLimit": 120,
     "discipline": "L1: hand-balanced breaks, each frozen shape documented at its site"
-  }
+  },
+  "docs": {
+    "ports": [
+      "/** Technical port surface of the payment pipeline invocation face — the one",
+      "  * file that says what this face depends on. Grouped by role: the admission",
+      "  * gates, the three participant phase pairs, the result-kind completion",
+      "  * pairs. Implementations are supplied exclusively by the handwritten",
+      "  * composition root through `BankPaymentPortBindings.install`; this surface",
+      "  * owns declarations only.",
+      "  *",
+      "  * Phase member names compose from the saga payload's participant step ids",
+      "  * (reserve-investor-funds / credit-fund-collection / reserve-cash-fund-order);",
+      "  * the domain value types keep their knowledge-side names. */"
+    ],
+    "hostIo": [
+      "/** Input/output wiring of the payment invocation face: the admission gate and",
+      "  * the two-phase receipt delivery. Every dispatch is over the typed result",
+      "  * kind — the compiler, not a string match, closes the case set. */"
+    ],
+    "serializer": [
+      "/** Wire codec of the host event journal. Event identities stay the declared",
+      "  * protobuf shapes (the proto face owns the schema); the `operation` field of",
+      "  * the PB carries the result-kind wire for result events until the proto face",
+      "  * gains a dedicated kind slot (proto-family replacement). Unknown event",
+      "  * kinds refuse to deserialize. */"
+    ],
+    "execution": [
+      "/** Durable execution plan of the cash purchase payment pipeline: one stage,",
+      "  * `pay-cash-purchase`, which delegates to the invocation host and folds its",
+      "  * authoritative result into the plan state. Stage outcomes are the monarch",
+      "  * contract: business rejections stop the stage, unknown effects demand",
+      "  * manual recovery — never an implicit retry. */"
+    ],
+    "bindings": [
+      "/** Exact bindings of the handwritten implementations to the declared ports.",
+      "  *",
+      "  * This is NOT a dependency-injection container: it is the executable form of",
+      "  * the binding obligations declared in the truth/artifact contract. The",
+      "  * composition root fills one record per port, `install` verifies every",
+      "  * declared identity and returns the `BankPaymentPorts` surface — or refuses.",
+      "  * Each port role exposes exactly the one face its consumers call, so a",
+      "  * binding record carries no optional faces and no nulls. Implementation",
+      "  * identity strings keep the knowledge-side spelling; renaming members never",
+      "  * retypes them. */"
+    ],
+    "host": [
+      "/** Pipeline invocation host for the cash purchase payment: owns the durable",
+      "  * association of one business request to its saga run, the admission gate,",
+      "  * authoritative result observation and receipt delivery.",
+      "  *",
+      "  * Semantics contracts:",
+      "  * - Invoke is idempotent: the same complete input under the same operation",
+      "  *   identity is coalesced; a different input under a live invocation is a",
+      "  *   Conflict. Every reply is derived from durable state, so a caller that",
+      "  *   re-invokes after any crash recovers its answer (caller-side ask timeout",
+      "  *   and retry are part of the contract — reply targets are never persisted).",
+      "  * - Admission is a runtime gate, not an event-sourced fact; only the granted",
+      "  *   admission is persisted.",
+      "  * - Receipt delivery is two-phase (authority completion, then delivery",
+      "  *   completion) and acknowledged by a persisted event. */"
+    ],
+    "definition": [
+      "/** Strict-saga definition of the cash purchase payment: the args codec, the",
+      "  * three participants' phase ports and the coordinator assembly.",
+      "  *",
+      "  * The per-phase business content — which domain command each phase issues,",
+      "  * which receipt each phase accepts — is knowledge and stays explicit. The",
+      "  * mechanics (codec records, receipt-identity checks, port wrapping) are",
+      "  * written once as generic helpers below. Phase names compose from the",
+      "  * participant step ids of the saga payload",
+      "  * (reserve-investor-funds / credit-fund-collection / reserve-cash-fund-order). */"
+    ]
+  },
+  "docsSource": "knowledge: the face doc prose, verbatim per artifact (hand-balanced lines; the emitter emits them as data)"
 }

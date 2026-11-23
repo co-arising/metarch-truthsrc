@@ -269,3 +269,42 @@ delivery）＋round 响应新鲜度关联＋RecoveryCompleted 重查询自愈＋
     (transactionId, definitionName, definitionVersion, argsDigest, definitionDigest,
     argsCodec, planDigest)，argsDigest 裸十六进制、definition/plan 摘要带
     `sha256:` 前缀——金样、套件判例、裁定文档三处对齐。
+- **发射器模块两族入册（2026-11-23，门序执行侧按单一验收标准裁定）**：
+  「金样发射器模块（字节等值＋双跑确定＋负测电池）」节拍闭合——
+  `emitter/families/pipeline-invocation-face.mjs`（#43，7 件）＋
+  `emitter/families/effect-face.mjs`（#44，6 件，双案循环）注册进统一发射器
+  （index 8→10）；parity 官方 harness 全绿（13/13 逐字节等值＋双跑确定＋
+  36＋33 条负测电池全拒，零电池债）。记档如下：
+  - **出处裁定＝handwritten-golden**：两族金样先于发射器手写而成（无 classic
+    tools/gen-*.mjs 参考件）；再造一份字节等值参考生成器违背「metarch-truthsrc
+    只留一个代码生成器」的程序本体。registry 契约扩展：`toolsRef: null` 必须携
+    `provenance: 'handwritten-golden'`（缺出处声明拒注册）；parity 报告以
+    `toolsParity: null`/`toolsDeterministic: null` 表达「结构性不适用」，验收
+    由 golden parity＋双跑确定＋电池三腿承载——显式 null，绝非静默绿。
+  - **契约补全（F2 发射完备）**：两 face 的 `technical-input.json` 扩为唯一发射
+    输入——supply 坐标、execution 计划（inputs/requestInputs/output/codecSlots/
+    executionStatePb/originalFields）、participants 逐参与者 protocol/argsField/
+    commands、admission 门、portBindings.codecPinPrefix/codecPinVersion、
+    saga.argsFields/argsPinVersion、results.kinds.executionCase/stageError、
+    faceShape.reconcileDecisions/serializerManifest/messages（21 条）＋
+    executionMessages（8 条）、effect.identityKeyNoun、逐工件文件头 doc 行逐字
+    入合同（docs/）。发射器零金样字节内嵌：名字/字段/消息/布局数据全部出自合同
+    （计划「不硬编码」纪律的发射轮落实）。fixture 新增
+    `test/fixtures/{pipeline-invocation-face-v1,effect-face-v1}/input.json`
+    ＝technical-input.json 逐字节副本（F2 唯一输入）。
+  - **金样后冻结整理（三件，编译等价，逐件记档）**：① BankPaymentPorts 重复
+    import 去重（`OperationIdentity` 单行与打包行并存→只留打包行）；②
+    BankSipDispatchEffectHost 未用匹配绑定 `(declaredId, role, bound)`→
+    `(_, role, bound)`（对齐 ta 侧同形）；③ pipeline-face technical-input
+    columnLimit 100→120（质量轮 L1 定案的规格件补记，effect-face 已改）。
+    整理后本地重基线：联合编译＋结构度量（1,819 scopes 零违例零超额）＋
+    83 性质×3 种子全绿；官方三轮证据（c91f490）仍为语义闭合记录，本轮为
+    字节级重基线。
+  - **布局形状裁定（发射器冻结形，packer 机械复现）**：段头右填 `-` 至
+    81/80 列；声明行仅在超 120 时断（尾词续行 +2/+4/+6/+8）；ResultKind
+    all/terminal 首项断行＋+8 贪心续行；StageError 尾参单行装不进时 12 列
+    贪心重排（支付 RecoveryRequired 三行形）；效果宿 encode 装不进时前两段
+    包名独行的两行梯；义务表 id 裸形（`bankwealth.` 前缀在 install 检查处
+    拼接）；import 行豁免 120 列界（与质量引擎同口径）。金样里所有长度敏感
+    断点（dispatch 124 断／ta 恰 120 单行的 Pending 行等）由「>120 才断」
+    规则机械复现——版式不再逐案手记。

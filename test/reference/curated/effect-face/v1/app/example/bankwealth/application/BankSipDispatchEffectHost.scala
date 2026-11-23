@@ -80,7 +80,7 @@ object BankSipDispatchEffectHost {
     * version, boundary). Ownership is a static binding obligation, not proof
     * of business authorization, replay or deployment. */
   def bindingOwnership(bindings: Bindings): Vector[(String, String, String, String, String)] =
-    obligations.map { case (declaredId, role, bound) =>
+    obligations.map { case (_, role, bound) =>
       val b = bound(bindings)
       (b.id, role, Artifact, ImplementationVersion, "handwritten-composition-root")
     }

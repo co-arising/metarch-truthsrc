@@ -1,0 +1,372 @@
+{
+  "schemaVersion": "truthsrc.effect-face-input/v1",
+  "cases": [
+    {
+      "case": "dispatch",
+      "names": {
+        "executionClass": "BankSipDispatchExecution",
+        "effectHostClass": "BankSipDispatchEffectHost",
+        "serializerClass": "BankSipDispatchEffectHostSerializer",
+        "package": "example.bankwealth.application",
+        "nameSources": {
+          "executionClass": "pipeline id bank-sip-dispatch-v1 (the durable plan face of that pipeline)",
+          "effectHostClass": "host id bank-sip-dispatch + EffectHost suffix (N1 dedup)",
+          "serializerClass": "host class + Serializer"
+        }
+      },
+      "execution": {
+        "stageId": "dispatch-cash",
+        "planVersion": "bank-v1-1",
+        "executionStatePb": "example.bankwealth.infrastructure.executionproto.banksipdispatchv1ExecutionStatePB",
+        "codecSlots": [
+          {
+            "slot": "input0",
+            "field": "occurrenceId",
+            "type": "OccurrenceId",
+            "optional": false
+          },
+          {
+            "slot": "input1",
+            "field": "occurrence",
+            "type": "SipOccurrence",
+            "optional": false
+          },
+          {
+            "slot": "output0",
+            "field": "operationId",
+            "type": "OperationId",
+            "optional": true
+          }
+        ],
+        "resultCases": [
+          {
+            "case": "DispatchCashDispatched",
+            "slot": "operationId",
+            "terminal": "stage-success"
+          },
+          {
+            "case": "DispatchCashRefused",
+            "stageError": "business-rejection:Refused:stop"
+          },
+          {
+            "case": "DispatchCashUnavailable",
+            "stageError": "infrastructure-failure:Unavailable:manual-recovery"
+          },
+          {
+            "case": "DispatchCashUnknown",
+            "stageError": "unknown-effect:Unknown:manual-recovery"
+          }
+        ],
+        "source": "knowledge: pipeline declaration + execution plan product",
+        "inputs": [
+          {
+            "name": "occurrenceId",
+            "type": "OccurrenceId"
+          },
+          {
+            "name": "occurrence",
+            "type": "SipOccurrence"
+          }
+        ]
+      },
+      "effect": {
+        "sagaId": "bank-sip-dispatch-v1",
+        "artifactVersion": "bank-v1-1",
+        "hostId": "bank-sip-dispatch",
+        "stepId": "dispatch-cash",
+        "participantStep": "DispatchSipCash",
+        "identityKeySlot": "inputs.occurrenceId",
+        "requestValue": "BankSipDispatchRequest",
+        "operationValue": "BankSipDispatchOperation",
+        "observationValue": "BankSipDispatchObservation",
+        "reconcileValue": "BankSipDispatchReconcile",
+        "bindings": {
+          "declaredIds": [
+            "bankwealth.BankSipDispatchExecute",
+            "bankwealth.BankSipDispatchQuery",
+            "bankwealth.BankSipDispatchReconcilePort"
+          ],
+          "roles": [
+            "execute",
+            "query",
+            "reconcile"
+          ],
+          "artifact": "BankSipTechnical",
+          "implementationVersion": "bank-v1-1",
+          "boundary": "handwritten-composition-root",
+          "source": "knowledge: effect-hosts product obligations"
+        },
+        "eventPb": "example.bankwealth.infrastructure.effectproto.banksipdispatchEffectHostEventPB",
+        "serializerIdentifier": 744000,
+        "source": "knowledge: effect proto face schema; judged: identifier allocation",
+        "context": "bankwealth",
+        "contextSource": "knowledge: bounded-context token of the durable operation identity",
+        "identityKeyNoun": "occurrence",
+        "identityKeyNounSource": "knowledge: the doc-facing key word of the operation identity"
+      },
+      "docs": {
+        "execution": [
+          "/** Durable execution plan of the SIP dispatch pipeline: one stage,",
+          "  * `dispatch-cash`, which hands a durable SIP occurrence to the effect host",
+          "  * and folds its authoritative result into the plan state. Stage outcomes are",
+          "  * the monarch contract: Refused is a business rejection, Unavailable and",
+          "  * Unknown demand manual recovery — never an implicit retry. */"
+        ],
+        "host": [
+          "/** Durable external-effect host of the SIP dispatch pipeline: owns the intent,",
+          "  * the observed external evidence and the authorized retry, for exactly one",
+          "  * dispatch operation.",
+          "  *",
+          "  * Semantics contracts:",
+          "  * - Invoke is idempotent: the same complete input under the same operation",
+          "  *   identity is coalesced; a different input under a live effect is a",
+          "  *   Conflict. Every reply is derived from durable state, so a caller that",
+          "  *   re-invokes after any crash recovers its answer (R2: reply targets are",
+          "  *   in-memory coalesced and never persisted; caller-side ask timeout and",
+          "  *   retry are part of the contract).",
+          "  * - No implicit retry: an unobserved effect answers Pending. A retry happens",
+          "    * only through Reconcile with explicit authorization and durable absent",
+          "    * evidence; the observation is cleared on the authorized retry (the journal",
+          "    * keeps the full evidence history) so stale evidence can never answer",
+          "    * during the retry window (R3).",
+          "  * - Observation validation is fail-closed: an unknown status wire refuses. */"
+        ],
+        "serializer": [
+          "/** Wire codec of the effect-host event journal. Event identities stay the",
+          "  * declared protobuf shapes (the proto face owns the schema). Unknown event",
+          "  * kinds refuse to deserialize; the payload version is pinned. */"
+        ]
+      }
+    },
+    {
+      "case": "ta",
+      "names": {
+        "executionClass": "BankTaSubmissionExecution",
+        "effectHostClass": "BankTaEffectHost",
+        "serializerClass": "BankTaEffectHostSerializer",
+        "package": "example.bankwealth.application",
+        "nameSources": {
+          "executionClass": "saga id bank-ta-submission-v1",
+          "effectHostClass": "host id bank-ta-effect + EffectHost suffix with stem/suffix dedup (N1: BankTaEffectEffectHost stutters)",
+          "serializerClass": "host class + Serializer"
+        }
+      },
+      "execution": {
+        "stageId": "submit-ta",
+        "planVersion": "bank-v1-1",
+        "executionStatePb": "example.bankwealth.infrastructure.executionproto.banktasubmissionv1ExecutionStatePB",
+        "codecSlots": [
+          {
+            "slot": "input0",
+            "field": "taRequestId",
+            "type": "TaRequestId",
+            "optional": false
+          },
+          {
+            "slot": "input1",
+            "field": "fundOrderId",
+            "type": "FundOrderId",
+            "optional": false
+          },
+          {
+            "slot": "input2",
+            "field": "paymentTxId",
+            "type": "TxId",
+            "optional": false
+          },
+          {
+            "slot": "output0",
+            "field": "taRequestId",
+            "type": "TaRequestId",
+            "optional": true
+          }
+        ],
+        "resultCases": [
+          {
+            "case": "SubmitTaObserved",
+            "slot": "taRequestId",
+            "terminal": "stage-success"
+          },
+          {
+            "case": "SubmitTaRefused",
+            "stageError": "business-rejection:Refused:stop"
+          },
+          {
+            "case": "SubmitTaUnavailable",
+            "stageError": "infrastructure-failure:Unavailable:manual-recovery"
+          },
+          {
+            "case": "SubmitTaUnknown",
+            "stageError": "unknown-effect:Unknown:manual-recovery"
+          }
+        ],
+        "source": "knowledge: saga declaration + execution plan product",
+        "inputs": [
+          {
+            "name": "taRequestId",
+            "type": "TaRequestId"
+          },
+          {
+            "name": "fundOrderId",
+            "type": "FundOrderId"
+          },
+          {
+            "name": "paymentTxId",
+            "type": "TxId"
+          }
+        ]
+      },
+      "effect": {
+        "sagaId": "bank-ta-submission-v1",
+        "artifactVersion": "bank-v1-1",
+        "hostId": "bank-ta-effect",
+        "stepId": "submit-ta",
+        "participantStep": "SubmitPaidTaRequest",
+        "identityKeySlot": "inputs.taRequestId",
+        "requestValue": "BankTaEffectRequest",
+        "operationValue": "BankTaEffectOperation",
+        "observationValue": "BankTaEffectObservation",
+        "reconcileValue": "BankTaEffectReconcile",
+        "bindings": {
+          "declaredIds": [
+            "bankwealth.BankTaEffectExecute",
+            "bankwealth.BankTaEffectQuery",
+            "bankwealth.BankTaEffectReconcilePort"
+          ],
+          "roles": [
+            "execute",
+            "query",
+            "reconcile"
+          ],
+          "artifact": "BankTaTechnical",
+          "implementationVersion": "bank-v1-1",
+          "boundary": "handwritten-composition-root",
+          "source": "knowledge: effect-hosts product obligations"
+        },
+        "eventPb": "example.bankwealth.infrastructure.effectproto.banktaeffectEffectHostEventPB",
+        "serializerIdentifier": 744001,
+        "source": "knowledge: effect proto face schema; judged: identifier allocation",
+        "context": "bankwealth",
+        "contextSource": "knowledge: bounded-context token of the durable operation identity",
+        "identityKeyNoun": "request",
+        "identityKeyNounSource": "knowledge: the doc-facing key word of the operation identity"
+      },
+      "docs": {
+        "execution": [
+          "/** Durable execution plan of the TA submission pipeline: one stage,",
+          "  * `submit-ta`, which hands a paid fund order to the TA effect host and folds",
+          "  * its authoritative result into the plan state. Stage outcomes are the",
+          "  * monarch contract: Refused is a business rejection, Unavailable and Unknown",
+          "  * demand manual recovery — never an implicit retry. */"
+        ],
+        "host": [
+          "/** Durable external-effect host of the TA submission pipeline: owns the",
+          "  * intent, the observed TA evidence and the authorized retry, for exactly one",
+          "  * submission operation.",
+          "  *",
+          "  * Semantics contracts (identical to the dispatch effect host — the effect",
+          "  * face's one shape, per-case knowledge):",
+          "  * - Invoke is idempotent; every reply derives from durable state (R2:",
+          "    * waiters are in-memory coalesced, never persisted; callers own ask",
+          "    * timeout and retry).",
+          "  * - No implicit retry; Reconcile demands explicit authorization and durable",
+          "    * absent evidence; the authorized retry clears the observation (the",
+          "    * journal keeps the evidence history) so stale evidence cannot answer",
+          "    * during the retry window (R3).",
+          "  * - Observation validation is fail-closed: an unknown status wire refuses. */"
+        ],
+        "serializer": [
+          "/** Wire codec of the effect-host event journal. Event identities stay the",
+          "  * declared protobuf shapes (the proto face owns the schema). Unknown event",
+          "  * kinds refuse to deserialize; the payload version is pinned. */"
+        ]
+      }
+    }
+  ],
+  "faceShape": {
+    "shared": "one effect-host shape, per-case knowledge: ObservationStatus ADT (confirmed/rejected/failed/absent/unknown wires), ReconcileDecision ADT (query/retry), per-role EffectBinding records, obligation-table install, round-counted observation freshness, RecoveryCompleted re-query, two-phase result delivery into the execution stage",
+    "observationStatus": {
+      "wires": [
+        "confirmed",
+        "rejected",
+        "failed",
+        "absent",
+        "unknown"
+      ],
+      "source": "knowledge: observation domain value status slot"
+    },
+    "retry": {
+      "initialMillis": 100,
+      "factor": 2,
+      "maxMillis": 5000,
+      "deadlineSeconds": 60,
+      "source": "judged slot (R1), shared with the invocation face"
+    },
+    "admission": {
+      "contract": "R2(b): in-memory waiter coalescing; replies derived from durable state on re-invoke; caller owns ask timeout + retry"
+    },
+    "logging": "R4: debug points at execute-attempt/observation-stored/retry-authorized/reconcile-denied",
+    "layout": {
+      "columnLimit": 120,
+      "discipline": "L1: hand-balanced breaks, each frozen shape documented at its site"
+    },
+    "serializerManifest": "effect-event-v1",
+    "serializerManifestSource": "judged: the shared manifest token of the two effect serializers",
+    "messages": {
+      "completeExternalInputRequired": "complete durable external input required",
+      "stableIdentityRequired": "stable initial external identity required",
+      "unknownObservationStatus": "unknown external observation status",
+      "completeObservationRequired": "complete same-operation same-request effect observation required",
+      "fullResultAndEvidenceRequired": "full durable result and evidence required",
+      "authoritativeEvidenceRequired": "authoritative non-success or absent evidence required",
+      "unknownIsNotAResult": "unknown is not a result",
+      "carriesNoRunFace": "effect implementation $id carries no run face",
+      "completeBindingsRequired": "complete effect callback bindings required",
+      "identityMismatchFor": "effect implementation identity mismatch for",
+      "versionMismatchFor": "effect implementation version mismatch for",
+      "conflictDifferentInput": "different complete original input under effect identity",
+      "outcomeUnknownPending": "effect outcome remains unknown or absent; no implicit retry",
+      "optionalQueryObservationRequired": "optional query observation required",
+      "reconcileRetainsDurable": "reconcile must retain exact durable original and operation",
+      "reconcileRequiresAuthority": "reconcile requires authority and durable absent or unknown evidence",
+      "reconciliationNotAuthorized": "reconciliation not authorized",
+      "effectHostEventRequired": "effect host event required",
+      "exactManifestRequired": "exact effect event manifest required",
+      "exactPayloadVersionRequired": "exact effect event payload version required",
+      "unknownEffectEventKind": "unknown effect event kind"
+    },
+    "messagesSource": "knowledge: reply reasons, require guards and refusal texts of the one effect-host shape",
+    "executionMessages": {
+      "unconfirmedPredecessorOutput": "unconfirmed predecessor output",
+      "exactPlanVersionRequired": "exact finite plan version required",
+      "missingDurableInput": "missing durable input $name",
+      "exactEffectHostActorRequired": "the exact effect host actor is required",
+      "stageDeadlineExceeded": "stage deadline exceeded",
+      "ownedInvocationObserverStopped": "owned invocation observer stopped",
+      "explicitOwnedFiniteExecutionRequired": "explicit owned finite execution and installed objects required",
+      "unknownStaticStep": "unknown static step"
+    },
+    "reconcileDecisions": [
+      {
+        "decision": "Query",
+        "wire": "query"
+      },
+      {
+        "decision": "Retry",
+        "wire": "retry"
+      }
+    ],
+    "reconcileDecisionsSource": "knowledge: the authorized reconcile commands of the effect-host shape"
+  },
+  "supply": {
+    "domainValuesPackage": "example.bankwealth.domain.values",
+    "protoPackage": "example.bankwealth.infrastructure.proto",
+    "serializationPackage": "example.bankwealth.infrastructure.serialization",
+    "serializationObject": "DomainConverters",
+    "executionProtoPackage": "example.bankwealth.infrastructure.executionproto",
+    "effectProtoPackage": "example.bankwealth.infrastructure.effectproto",
+    "monarchPersistencePackage": "net.imadz.monarch.persistence",
+    "source": "knowledge: bankwealth supply tree (proven by the compile-face rounds)"
+  },
+  "docsSource": "knowledge: the face doc prose, verbatim per artifact per case (hand-balanced lines; the emitter emits them as data)"
+}

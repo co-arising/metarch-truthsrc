@@ -46,7 +46,11 @@ const readTreeBytes = root => {
 // families are run as subprocesses and compared through the files they write
 // (a single-file writer via toolsSingleFile, else a whole tree). Byte parity
 // is decided on utf8 buffers, never on string equality alone.
+// Handwritten-golden families (toolsRef null, ruling 2026-11-22) have no
+// reference generator to agree with — the golden-parity leg carries their
+// acceptance alone, and the report says so with toolsParity: null.
 const runToolsReference = async (family, fixtureAbsolute, input, workDir, emitterRun) => {
+  if (family.toolsRef === null) return null;
   if (family.toolsMode === 'generate') {
     const outDir = fs.mkdtempSync(path.join(workDir, `${family.id}-tools-`));
     const target = family.toolsSingleFile === true
@@ -91,18 +95,21 @@ const checkFamily = async (family, workDir) => {
   const deterministic = JSON.stringify(emitterRun1) === JSON.stringify(emitterRun2);
 
   // Tools reference render, twice (same-input-same-bytes on both sides).
+  // null = handwritten-golden provenance: no reference generator exists, the
+  // golden-parity leg below carries the acceptance alone (ruling 2026-11-22).
   const toolsRun1 = await runToolsReference(family, fixtureAbsolute, input, workDir, emitterRun1);
-  const toolsRun2 = await runToolsReference(family, fixtureAbsolute, input, workDir, emitterRun1);
-  const toolsDeterministic = toolsRun1.size === toolsRun2.size &&
+  const hasTools = toolsRun1 !== null;
+  const toolsRun2 = hasTools ? await runToolsReference(family, fixtureAbsolute, input, workDir, emitterRun1) : null;
+  const toolsDeterministic = !hasTools ? null : toolsRun1.size === toolsRun2.size &&
     [...toolsRun1].every(([relative, bytes]) => toolsRun2.get(relative)?.equals(bytes));
 
   // Byte parity: same input, same relative paths, same bytes (同输入同字节).
   const emitterKeys = Object.keys(emitterRun1).sort();
-  const toolsKeys = [...toolsRun1.keys()].sort();
-  const sameKeySet = JSON.stringify(emitterKeys) === JSON.stringify(toolsKeys);
+  const toolsKeys = hasTools ? [...toolsRun1.keys()].sort() : [];
+  const sameKeySet = !hasTools ? null : JSON.stringify(emitterKeys) === JSON.stringify(toolsKeys);
   const files = emitterKeys.map(relative => {
     const emitterBytes = Buffer.from(emitterRun1[relative], 'utf8');
-    const toolsBytes = toolsRun1.get(relative);
+    const toolsBytes = hasTools ? toolsRun1.get(relative) : null;
     const goldenAbsolute = path.join(ROOT, family.goldenRoot, relative);
     const goldenBytes = fs.existsSync(goldenAbsolute) ? fs.readFileSync(goldenAbsolute) : null;
     return {
@@ -111,11 +118,11 @@ const checkFamily = async (family, workDir) => {
       emitterSha256: sha256(emitterBytes),
       toolsSha256: toolsBytes ? sha256(toolsBytes) : null,
       goldenSha256: goldenBytes ? sha256(goldenBytes) : null,
-      toolsParity: Boolean(toolsBytes) && emitterBytes.equals(toolsBytes),
+      toolsParity: !hasTools ? null : Boolean(toolsBytes) && emitterBytes.equals(toolsBytes),
       goldenParity: Boolean(goldenBytes) && emitterBytes.equals(goldenBytes),
     };
   });
-  const toolsParity = sameKeySet && files.every(file => file.toolsParity);
+  const toolsParity = !hasTools ? null : sameKeySet && files.every(file => file.toolsParity);
   const goldenParity = files.length > 0 && files.every(file => file.goldenParity);
 
   // Negatives battery where the family carries one; otherwise a declared debt.
@@ -135,12 +142,17 @@ const checkFamily = async (family, workDir) => {
     battery = { kind: 'none', expected: 0, rejected: 0, failures: [], clean: null };
   }
 
-  const allGreen = deterministic && toolsDeterministic && toolsParity && goldenParity &&
+  // A handwritten-golden family carries toolsParity/toolsDeterministic null —
+  // not failures, and never silently green: the report shows the nulls and the
+  // family's provenance so the golden-parity leg is visibly load-bearing.
+  const allGreen = deterministic && (toolsDeterministic === null || toolsDeterministic) &&
+    (toolsParity === null || toolsParity) && goldenParity &&
     (battery.clean === true || battery.kind === 'none');
   return {
     family: family.id,
     familyNumber: family.familyNumber,
     inputSchema: family.inputSchema,
+    provenance: family.toolsRef === null ? 'handwritten-golden' : 'ported-tools-reference',
     files: files.length,
     deterministic,
     toolsDeterministic,

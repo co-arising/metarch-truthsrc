@@ -3,7 +3,6 @@ package example.bankwealth.application
 import scala.concurrent.Future
 
 import example.bankwealth.domain.values._
-import net.imadz.infra.saga.strict.OperationIdentity
 import net.imadz.infra.saga.strict.{OperationIdentity, TransactionIdentity}
 
 /** Technical port surface of the payment pipeline invocation face — the one
