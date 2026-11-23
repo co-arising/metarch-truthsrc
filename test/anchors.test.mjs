@@ -184,8 +184,11 @@ test('rename/delete do not delete human files; old location stays unmapped and n
   assert.equal(result.anchors['domain:key'].find(item => item.file === 'new.mjs').status, 'source-verified');
   await fs.unlink(path.join(owned.root, 'new.mjs'));
   const deleted = await verifyAnchorsPlan(makePlan([], [], { priorIndex: result }), owned);
-  assert.equal(deleted.anchors['domain:key'].length, 2);
-  assert.ok(deleted.anchors['domain:key'].every(item => item.status === 'unmapped'));
+  // A location whose file is gone from disk with no plan outcome at all is
+  // dead state and retires (ruling 2026-11-23), tombstone status regardless —
+  // an empty authoritative plan over deleted files empties the key entirely.
+  // Human files still on disk keep their stale/unmapped classifications.
+  assert.equal(deleted.anchors['domain:key'], undefined);
 });
 
 test('stale prior fingerprint is never reused, including after legacy migration', async t => {

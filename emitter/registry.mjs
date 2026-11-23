@@ -74,12 +74,23 @@ export function registerFamily(family) {
       fail('EMITTER_REGISTRY', `family ${family.id}: toolsRef null requires provenance 'handwritten-golden' (a family without a reference generator must declare its golden provenance)`);
   } else if (typeof family.toolsRef !== 'string' || !family.toolsRef.startsWith('tools/'))
     fail('EMITTER_REGISTRY', `family ${family.id}: toolsRef must point at the byte-parity reference generator under tools/ (or be null with provenance 'handwritten-golden')`);
-  repoPathExists(family.goldenRoot, `family ${family.id} goldenRoot`);
-  repoPathExists(family.fixtureDir, `family ${family.id} fixtureDir`);
-  if (family.toolsRef !== null) repoPathExists(family.toolsRef, `family ${family.id} toolsRef`);
   if (families.has(family.id))
     fail('EMITTER_REGISTRY', `family id ${family.id} is already registered (one generator, one registry entry per family)`);
   families.set(family.id, family);
+  return family;
+}
+
+// Spec-tree existence is enforced at SPEC-USE time, not at registration
+// (ruling 2026-11-23): the flip wiring makes the classic play-service generate
+// path transitively import the family index, and the installed npm package
+// contractually excludes test/reference/ (offline-tarball suites assert it) —
+// while generation itself never reads the spec trees (they are F3 acceptance
+// material for the parity harness and the diff/verify surfaces, both of which
+// call this first and stay fail-closed with the same diagnostics).
+export function requireFamilySpecPaths(family) {
+  repoPathExists(family.goldenRoot, `family ${family.id} goldenRoot`);
+  repoPathExists(family.fixtureDir, `family ${family.id} fixtureDir`);
+  if (family.toolsRef !== null) repoPathExists(family.toolsRef, `family ${family.id} toolsRef`);
   return family;
 }
 

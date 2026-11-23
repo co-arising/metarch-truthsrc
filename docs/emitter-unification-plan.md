@@ -233,6 +233,31 @@ Pages 上引用旧生成器 id／文件头的句子同步刷新。
   5/5 绿。全量记档见裁定文档 §6 发射器模块两族入册。
   下一节拍：bank-wealth 接入（per-business-case 翻转 payment→refund→dispatch→ta，
   每翻转一提交且应用整体可编译；classic 模板摘除前逐文件 diff 呈报用户）。
+- **F2 派生层落位＋payment 翻转接线（2026-11-23，统一发射器工具侧）**：
+  `lib/derivation/pipeline-invocation-face.mjs`（知识图→族输入合同，案变槽位全
+  派生、族面恒定槽位记档为已裁定族面知识，fail-closed）＋
+  `lib/derivation/pipeline-invocation-emission.mjs`（三 producer 包装：finite-host-dsl
+  −5 classic＋6 金样形、finite-execution-dsl −1＋1、conf 序列化绑定类名翻转；
+  精确匹配拒绝一切非预期形态）。验收即等值：派生合同深等值 curated 技术合同、
+  7/7 金样字节等值（夹层 fixture knowledge-products.json＋4 测试）；
+  `PIPELINE_INVOCATION_FLIPS` 单一翻转清单（payment 首案）。
+  `generate --plan` 234 件（+1 净增）全通过双跑确定性与全部入口校验，翻转件与
+  金样逐字节等值。classic 模板摘除待 diff 呈报（F5/F6.6）。
+  下一节拍：bank-wealth 手写绑定改名同步（6 文件）＋五步门＋翻转提交；
+  随后 refund→dispatch→ta。
+- **payment 案翻转完成（2026-11-23，bank-wealth 提交 980708f，F4 首例）**：
+  六件 classic 面文件退役、七件金样形产物落盘（TechnicalPorts 拆为 Ports＋
+  PortBindings＝端口面/绑定装配分离落地）、conf 序列化注册表两行类名翻转、
+  六件手写文件按金样 ABI 改名同步（Cash.install 去 PureStages）。五步门全绿：
+  doctor／validate hard 0／compile exit 0／显式 update 干净 234 件（6 RETIRED
+  显式回执）／generate written=0 identical 234/234／verify 12/12。途中修复
+  apply/verify 机器两处退役语义缺口（所有权台账＋锚点索引的退役裁定，见裁定
+  文档 §6 翻转节拍两件机器裁定）——翻转流程首次触发「产物退役」场景。
+  工具侧 npm files 补 `emitter/`（lib/derivation 运行时引用发射器所致；
+  离线 tarball 套件验证），spec-tree 存在性检查移至 spec-use 时点
+  （requireFamilySpecPaths，包合同禁止 test/reference/ 入包，见
+  emitter-unification.test 契约测试）。refund/dispatch/ta 仍 classic；
+  payment classic 模板成为死路——摘除待用户过目逐文件 diff（F5/F6.6）。
 
 ## 8. 新会话开工指引（Phase 0 即做）
 

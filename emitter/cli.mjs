@@ -17,7 +17,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import './families/index.mjs';
-import { getFamily, listFamilies, renderFamily } from './registry.mjs';
+import { getFamily, listFamilies, renderFamily, requireFamilySpecPaths } from './registry.mjs';
 import { parseStrictJson } from '../lib/strict-json.mjs';
 import { runDiffCli } from './diff-report.mjs';
 
@@ -54,6 +54,7 @@ const commandFamilies = () => {
 
 const commandGenerate = (familyId, inputPath, outDir) => {
   const family = getFamily(familyId);
+  requireFamilySpecPaths(family);
   const input = loadInput(inputPath);
   const outputs = renderFamily(family, input);
   writeOutputs(family.id, outputs, outDir);
@@ -61,6 +62,7 @@ const commandGenerate = (familyId, inputPath, outDir) => {
 
 const commandVerify = (familyId, inputPath) => {
   const family = getFamily(familyId);
+  requireFamilySpecPaths(family);
   const input = loadInput(inputPath);
   const run1 = renderFamily(family, input);
   const run2 = renderFamily(family, input);

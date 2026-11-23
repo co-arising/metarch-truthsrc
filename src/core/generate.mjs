@@ -112,7 +112,7 @@ export function apply({ canonicalFile, generatorDir, outDir, options = {}, conce
     } }));
 }
 
-function ownershipRows(priorRows, actions, ownership, generator, finalBytes) {
+function ownershipRows(priorRows, actions, ownership, generator, finalBytes, captured) {
   const rows = new Map(priorRows.map(row => [row.path, row]));
   for (const { entry, outcome } of actions) {
     // noLedger remains shared territory; neither KEEP nor MISSING is an ownership claim.
@@ -128,7 +128,15 @@ function ownershipRows(priorRows, actions, ownership, generator, finalBytes) {
       fingerprint: fingerprint(bytes), generatedFingerprint: generatedFingerprint(bytes, entry.path),
     } });
   }
-  return [...rows.values()];
+  // Retirement (ruling 2026-11-23): a prior row whose path the current plan
+  // dropped AND whose file is absent from disk is dead ledger state — the apply
+  // flow has no other pruning step, and retaining it would leave verification
+  // permanently red with no recovery path. A row whose file still exists on
+  // disk stays retained: an unplanned but present file is never silently
+  // abandoned out of the ownership ledger.
+  return [...rows.values()].filter(row => row.ownership?.id !== ownership.id ||
+    row.ownership.generator !== generator.id || finalBytes.has(row.path) ||
+    !captured.has(row.path) || captured.get(row.path) !== null);
 }
 
 /** Shared synchronous, read-only preparation for both preview and the only apply channel. */
@@ -182,10 +190,15 @@ function prepareEntries({ entries, outDir, generator, concern, anchorPolicy = 'f
   const actions = preflightApply({ entries, targets, priorByPath, scope, captured, ownership, generator, update });
   const finalBytes = new Map(actions.map(action => [action.entry.path,
     action.changed ? Buffer.from(action.content) : captured.get(action.entry.path)]));
-  const ledgerRows = ownership ? ownershipRows(priorRows, actions, ownership, generator, finalBytes) : plannedRows;
+  const ledgerRows = ownership ? ownershipRows(priorRows, actions, ownership, generator, finalBytes, captured) : plannedRows;
   const plannedPaths = new Set(entryPaths);
+  const isGone = row => captured.has(row.path) && captured.get(row.path) === null;
+  const retired = ownership ? priorRows.filter(row => row.ownership?.id === ownership.id &&
+    row.ownership.generator === generator.id && !plannedPaths.has(row.path) && isGone(row)).map(row => ({
+    path: row.path, kind: row.kind, outcome: 'RETIRED', changed: false, exists: false,
+  })) : [];
   const retained = ownership ? priorRows.filter(row => row.ownership?.id === ownership.id &&
-    row.ownership.generator === generator.id && !plannedPaths.has(row.path)).map(row => ({
+    row.ownership.generator === generator.id && !plannedPaths.has(row.path) && !isGone(row)).map(row => ({
     path: row.path, kind: row.kind, outcome: 'RETAINED', changed: false, exists: captured.get(row.path) !== null,
   })) : [];
   let written = 0, identical = 0, kept = 0, globalFlowed = 0, merged = 0, routesNoTarget = 0;
@@ -221,6 +234,7 @@ function prepareEntries({ entries, outDir, generator, concern, anchorPolicy = 'f
       ...(outcomes[i].fingerprint ? { fingerprint: outcomes[i].fingerprint } : {}),
     })),
     retained,
+    retired,
     // A caller can pass these back as expectedFiles to pin a separately approved preview.
     expectedFiles: [...captured].map(([path, bytes]) => ({ path, fingerprint: bytes === null ? null : fingerprint(bytes) })),
     inScope: scope ? scope.set.size : null,

@@ -288,17 +288,22 @@ test('removed owned outputs stay physically and in ledger, classified retained r
   const preview = f.preview(entries, { update: true });
   assert.deepEqual(preview.retained, [
     { path: removed, kind: 'source', outcome: 'RETAINED', changed: false, exists: true },
-    { path: missing, kind: 'source', outcome: 'RETAINED', changed: false, exists: false },
+  ]);
+  assert.deepEqual(preview.retired, [
+    { path: missing, kind: 'source', outcome: 'RETIRED', changed: false, exists: false },
   ]);
   assert.deepEqual(preview.actions.map(item => item.path), [sourcePath]);
   const result = await f.run(entries, { update: true });
   assert.deepEqual(result, preview);
-  assert.deepEqual(f.ledger().entries.filter(row => row.path !== sourcePath), rows);
+  // The deleted-before-update row retired out of the ledger; the removed-but-
+  // present row stays retained verbatim (never silently abandoned).
+  assert.deepEqual(f.ledger().entries.filter(row => row.path !== sourcePath), rows.filter(row => row.path !== missing));
   assert.deepEqual(snapshot(join(f.outDir, removed)), removedSource);
   assert.equal(existsSync(join(f.outDir, missing)), false);
   const empty = await f.run([], { update: true });
   assert.equal(empty.actions.length, 0);
-  assert.deepEqual(empty.retained.map(item => item.path), [sourcePath, removed, missing]);
+  assert.deepEqual(empty.retained.map(item => item.path), [sourcePath, removed]);
+  assert.deepEqual(empty.retired.map(item => item.path), []);
   assert.equal(empty.retained.some(item => item.path === other), false);
 });
 

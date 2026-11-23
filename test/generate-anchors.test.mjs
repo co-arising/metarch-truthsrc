@@ -314,8 +314,11 @@ test('core generated anchors query edits/deletion/rename as stale or unmapped wi
   assert.equal(result.identical, 1);
   const index = f.index();
   noCertification(at(index, KEY, changed), 'stale');
-  noCertification(at(index, KEY, deleted), 'unmapped');
-  noCertification(at(index, KEY, renamed), 'unmapped');
+  // The deleted-before-run locations retired out of the index (ruling
+  // 2026-11-23: gone from disk, unplanned, no apply outcome = dead state);
+  // the human-edited file stays on disk, stale but never deleted or covered.
+  assert.equal((index.anchors[KEY] ?? []).some(item => item.file === deleted && item.generator === OWNER), false);
+  assert.equal((index.anchors[KEY] ?? []).some(item => item.file === renamed && item.generator === OWNER), false);
   fileVerified(at(index, KEY, after), renamedBytes, { file: after });
   assert.equal(existsSync(join(f.out, deleted)), false);
   assert.equal(existsSync(join(f.out, renamed)), false);

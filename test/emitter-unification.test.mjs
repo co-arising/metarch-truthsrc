@@ -15,7 +15,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import '../emitter/families/index.mjs';
-import { registerFamily, getFamily, listFamilyIds, renderFamily } from '../emitter/registry.mjs';
+import { registerFamily, getFamily, listFamilyIds, renderFamily, requireFamilySpecPaths } from '../emitter/registry.mjs';
 import { parseStrictJson } from '../lib/strict-json.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -58,6 +58,22 @@ test('a toolsRef null family without the handwritten-golden provenance is reject
   const known = getFamily('pipeline-invocation-face');
   assert.throws(() => registerFamily({ ...known, id: 'unproven-face', provenance: 'ported' }),
     /handwritten-golden/);
+});
+
+test('spec-tree existence is enforced at spec-use time, not at registration', () => {
+  // The installed npm package contractually excludes test/reference/ (offline
+  // tarball suites), and the flip wiring makes classic generate load the family
+  // index — registration must not require the spec trees. Generation never
+  // reads them; the parity/diff/verify surfaces call requireFamilySpecPaths
+  // first and stay fail-closed with the same diagnostics.
+  const known = getFamily('aggregate-state-controller');
+  assert.throws(() => requireFamilySpecPaths({ ...known, goldenRoot: 'test/reference/curated/no-such-family/v1' }),
+    /does not exist in the repository/);
+  assert.throws(() => requireFamilySpecPaths({ ...known, fixtureDir: 'test/fixtures/no-such-family-v1' }),
+    /does not exist in the repository/);
+  assert.throws(() => requireFamilySpecPaths({ ...known, toolsRef: 'tools/gen-no-such-reference.mjs' }),
+    /does not exist in the repository/);
+  requireFamilySpecPaths(known); // in-repo spec trees pass
 });
 
 test('a family whose renderAll returns a non-relative path is rejected before any byte is written', () => {

@@ -454,6 +454,7 @@ function reconcile(plan, observations, indexLocation) {
       // Replacement is confined to checked application AND this generator AND this path.
       if (applied && work.length) continue;
       if (excluded(plan, old, indexLocation)) put(key, downgrade(old, 'unmapped', 'derived-artifact-excluded'));
+      else if (!observation?.bytes && !work.length && !outcome) continue; // retired (ruling 2026-11-23): the file is gone from disk and no longer planned — dead anchor state under a still-planned key, dropped with the same semantics as the ownership-ledger retirement
       else if (!observation?.bytes) put(key, downgrade(old, 'unmapped', 'source-missing', observation));
       else if (['FAILED', 'MISSING'].includes(outcome?.outcome)) {
         put(key, downgrade(old, 'stale', `apply-${outcome.outcome.toLowerCase()}`, observation));

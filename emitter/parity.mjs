@@ -17,6 +17,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
+import { requireFamilySpecPaths } from './registry.mjs';
 import './families/index.mjs';
 import { getFamily, listFamilyIds, renderFamily } from './registry.mjs';
 import { parseStrictJson } from '../lib/strict-json.mjs';
@@ -84,6 +85,7 @@ const runToolsReference = async (family, fixtureAbsolute, input, workDir, emitte
 };
 
 const checkFamily = async (family, workDir) => {
+  requireFamilySpecPaths(family);
   const fixtureAbsolute = path.join(ROOT, family.fixtureDir, 'input.json');
   if (!fs.existsSync(fixtureAbsolute))
     fail('EMITTER_PARITY', `family ${family.id}: fixture input.json missing at ${family.fixtureDir}/input.json`);

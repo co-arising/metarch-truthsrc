@@ -9,6 +9,31 @@ import { packageFor } from '../scala-cqrs-domain/naming.mjs';
 import { renderInvariant } from '../scala-cqrs-domain/render-domain.mjs';
 import { renderAggregateLayers } from './render-aggregate-layers.mjs';
 import { renderJournalReadside } from './render-journal-readside.mjs';
+import { withFlippedInvocationHosts, withFlippedExecutionPipelines } from '../../lib/derivation/pipeline-invocation-emission.mjs';
+import { PIPELINE_INVOCATION_FLIPS, flipHostBase } from '../../lib/derivation/pipeline-invocation-face.mjs';
+
+// The akka serializer registry binds the flipped face event journal by class name,
+// so the two conf lines per flipped host must spell the golden names. Each
+// replacement is exact-match and must occur exactly once (fail-closed). The
+// golden names come from the flip manifest via flipHostBase — the derivation
+// cross-checks that spelling against the technical artifact at the host producer.
+function flippedSerializerConfContent(content, context) {
+  const hosts = context.products['saga-host-contract'].hosts;
+  let next = content;
+  for (const flip of PIPELINE_INVOCATION_FLIPS) {
+    if (!hosts.some(h => h.id === flip.host)) continue;
+    const stem = flip.host.replaceAll('-', '_');
+    const base = flipHostBase(flip.host);
+    next = replaceExactlyOnce(next, stem + 'HostSerializer"', base + 'HostSerializer"', 'conf serializer binding for ' + flip.host);
+    next = replaceExactlyOnce(next, stem + 'Host$Event"', base + 'Host$Event"', 'conf event binding for ' + flip.host);
+  }
+  return next;
+}
+function replaceExactlyOnce(content, from, to, what) {
+  const parts = content.split(from);
+  if (parts.length !== 2) fail(what + ' must occur exactly once in the configuration, found ' + (parts.length - 1));
+  return parts[0] + to + parts[1];
+}
 
 const version = id => id === 'artifact-contract' ? '3' : ['saga-host-contract', 'effect-host-contract'].includes(id) ? '2' : null;
 const serviceProducts = ['reference-layout', 'artifact-contract', 'exact-value-types', 'exact-value-codecs'];
@@ -20,7 +45,11 @@ const inherited = Object.fromEntries(Object.entries(createEffectRegistry('2')).m
       ? renderAggregateLayers(context, ['reference-layout','domain-folds','exact-value-types','domain-dependencies'].map(id=>({id,version:['domain-folds','domain-dependencies'].includes(id)?'6':'1'})))
       : id === 'invariant-dsl'
         ? renderInvariant(context, ['reference-layout','domain-decision','domain-folds','exact-value-types'].map(id=>({id,version:id==='domain-decision'?'4':id==='domain-folds'?'6':'1'})), true)
-        : implementation.produce(context);
+        : id === 'finite-host-dsl'
+          ? withFlippedInvocationHosts(implementation.produce.bind(implementation), context)
+          : id === 'finite-execution-dsl'
+            ? withFlippedExecutionPipelines(implementation.produce.bind(implementation), context)
+            : implementation.produce(context);
     return produced.map(entry => {
       const pins = entry.productFootprint.map(p => ({ ...p, version: version(p.id) ?? p.version }));
       if (['proto-dsl', 'finite-execution-dsl', 'finite-host-dsl'].includes(id) && !pins.some(p => p.id === 'effect-host-contract')) pins.push({ id: 'effect-host-contract', version: '2' });
@@ -50,7 +79,10 @@ const inherited = Object.fromEntries(Object.entries(createEffectRegistry('2')).m
       if (entry.path === 'project/plugins.sbt') next.content += '\naddSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.8.18")\n';
       if (entry.path === 'src/main/resources/application.conf') {
         next.path = 'conf/serialization.conf';
-
+        // The serializer registry lines are emitted by the build producer, whose
+        // view declares the host contract — patch only when this project carries
+        // a flipped host (fixture services without it stay byte-identical).
+        if (id === 'proto-dsl') next.content = flippedSerializerConfContent(next.content, context);
       }
       return next;
     });

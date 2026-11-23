@@ -308,3 +308,85 @@ delivery）＋round 响应新鲜度关联＋RecoveryCompleted 重查询自愈＋
     拼接）；import 行豁免 120 列界（与质量引擎同口径）。金样里所有长度敏感
     断点（dispatch 124 断／ta 恰 120 单行的 Pending 行等）由「>120 才断」
     规则机械复现——版式不再逐案手记。
+- **F2 派生层落位＋payment 翻转接线（2026-11-23，门序执行侧按单一验收标准裁定）**：
+  「bank-wealth 接入」节拍的工具侧闭合——知识图→族输入合同的派生层首次落地，
+  翻转开关与 producer 接线入 play-service registry。记档如下：
+  - **派生层落位 `lib/derivation/pipeline-invocation-face.mjs`**（知识机侧，非生成器
+    侧）：案变槽位全部从产品载荷派生——names（N1：面基名来自 technical 工件
+    `BankPaymentTechnical`→`BankPayment`，与 host id kebab→Pascal 交叉校验；execution
+    类名来自 saga id 去 `-vN` 后缀）、saga（digest/definitionVersion=runtimeIdentity
+    .version/argsPinVersion=args.runtimeCodec.version/argsFields=args.slots）、invocation
+    （markers 来自 transactionIdentity 的 iteration/chunk 缺省，present 形 fail-closed
+    拒绝——v1 合同不带 token）、results（Pascal kind 来自冻结五集；executionCase=
+    pascal(step)+outcome.code；terminal=action≠manual-recovery；stageError=
+    {label=code, category=kind, discipline=action}——全部载荷直推）、participants
+    （commands=phases[].command.id 有序三元、argsField=resourceInput.id、
+    resourceType=layout event-slot valueType、protocol=aggregate+Protocol）、
+    portBindings（工件=逐端口「选中工件×实现身份」唯一归属；declaredIdStem=context+
+    面基名，与 entry/association 实现身份前缀交叉校验；codecPinPrefix=工件 id 去
+    `-technical`）、serializer（identifier=742000+hosts 序位，eventPb=host id 去
+    连字符+HostEventPB）、execution（inputs/requestInputs=名类型入子集/output 恰一/
+    codecSlots=输入序槽+唯一 write 落 output0/executionStatePb=saga id 去连字符+
+    ExecutionStatePB/originalFields=原值成员映射执行输入，`operationId`→`operation`
+    去尾 Id 规则，成员不落输入即拒）、supply（options.packages 派生包坐标）、类型
+    解析（layout 名声明→runtime 标量描述符→拒，与 execution 面同构）。族面恒定槽位
+    （messages 44 条、docs prose 模板、R 组运行时槽、排版纪律、出处注记）作为已裁定
+    族面知识随模块记档——classic 模板语义的迁移件；发射器零金样字节约束不受影响
+    （这些字节只经由派生合同进入发射器）。
+  - **验收即等值**：派生合同对 curated 技术合同 JSON 深等值（含全部出处注记，
+    payment 案实测）；经 renderFamily 后 7/7 金样字节等值。知识夹层 fixture
+    `test/fixtures/pipeline-invocation-face-v1/knowledge-products.json`（派生所需
+    载荷切片：host＋execution pipeline＋双 saga 运行时描述符〔Text 标量解析跨 saga〕
+    ＋五选中工件〔归属唯一性〕＋九条 layout 声明）＋`test/derivation-pipeline-
+    invocation-face.test.mjs` 4 测试（等值/字节/fail-closed 负测/清单不变量）。
+    派生读取超出切片即以「exactly one layout declaration required」显式失败，
+    不以陈旧知识静默绿。
+  - **F4 翻转开关＝`PIPELINE_INVOCATION_FLIPS` 单一清单**（每业务案一条，携
+    docShort/docLong 业务短语槽；每翻转一提交增一条）。`lib/derivation/
+    pipeline-invocation-emission.mjs` 三个 producer 包装接入 play-service registry：
+    finite-host-dsl（classic 五件移除＋金样形六件加入）、finite-execution-dsl
+    （classic Execution 移除＋金样形加入）、conf/serialization.conf（host 序列化器
+    与 Event 绑定两行类名翻转——render-build 模板产 `bank_payment_hostHostSerializer`
+    /`bank_payment_hostHost$Event`，翻转后拼 `BankPaymentHostSerializer`/
+    `BankPaymentHost$Event`）。全部精确匹配 fail-closed：classic 面不恰为五文件、
+    Execution 不恰为一文件、conf 行不恰为一次出现，即拒翻转。kinds/knowledgeIds/
+    productFootprint 沿用 classic 约定（host 件 source:bank-v1#/sagaHosts/0、
+    execution 件 #/pipelines/0）；deps 沿金样内实引（参与者共享 aggregate 时
+    Protocol 路径去重——PRODUCT_ENTRY duplicate identity 教训记档）。
+  - **金样字节无生成头（呈报项，F5）**：翻转件按金样逐字节落盘（无
+    `// @generated` 头）——「金样即规格」优先于树内样式一致性；头部属装饬性
+    溯源，所有权/锚点机器以路径＋knowledgeIds 为准，不受影响。
+  - **generate --plan 实测（翻转后工具链）**：234 件（net +1：−6 classic＋7 金样）
+    全部通过双跑确定性、kinds 声明、footprint 全集、依赖闭合、无占位符五道入口
+    校验；七件翻转件与金样逐字节等值；conf 两行翻转到位；refund/dispatch/ta
+    classic 件不受影响。classic 模板（render-host*.mjs 面函数）仍为其余三案服务，
+    payment classic 路径自翻转起不再产出——模板摘除待用户过目逐文件 diff 后进行
+    （F5/F6.6）。
+- **翻转节拍两件机器裁定＋payment 案翻转完成（2026-11-23，门序执行侧按单一验收标准裁定）**：
+  payment 案按 F4 翻转计划全绿收官，途中揪出并修复 apply/verify 机器两处退役语义缺口。记档：
+  - **退役裁定（所有权台账＋锚点索引，翻转流程首次触发）**：plan 丢弃的产物路径、
+    其文件又已从盘上删除的 prior 行，此前被 apply 原样保留（ledger 240 行／anchors
+    遗留 stale location），verify 的集合恒等检查永远红且无任何恢复路径——翻转流程
+    是第一个「产物退役」场景，暴露了机器只有「保留」没有「退役」的缺口。裁定：
+    ① `ownershipRows` 丢弃「plan 已弃该路径 ＋ 盘上无文件（captured 显式 null）」
+    的本 owner＋generator 行；盘上仍在的 unplanned 文件一律保留（绝不静默抛弃
+    可能含手工编辑的文件）；② anchors reconcile 对同形（文件缺失＋无声明＋无
+    MISSING/FAILED outcome）的 prior location 直接丢弃（indexFrom 本就剔除空键）；
+    ③ 结果回执新增 `retired: [{path, kind, outcome: 'RETIRED', exists: false}]`
+    ——退役是显式报告事件，绝不静默。 Retirement 是两步流：文件离盘 → 显式
+    update → verify；与 DDD 改名轮「45 值对象退休、clean 233、verify 12/12」的
+    记录自洽。
+  - **payment 翻转实测（bank-wealth 提交 980708f）**：六件 classic 面文件退役
+    （execution/definition/host/hostIO/serializer/technicalPorts），七件金样形
+    产物落盘（Ports＋PortBindings 两文件拆分＝金样质量裁定「端口面/绑定装配」
+    分离的落地），conf 序列化注册表两行类名翻转；六件手写文件改名同步
+    （BankPaymentBindings 按金样 ABI 重写为 RunBinding/OperationBinding/
+    CompletionBinding 记录构造、N2 camel 绑定成员、install 返回
+    `BankPaymentPorts`；BankRuntimeDirectory/BankRuntime/BankCashRequests/
+    BankSipDispatchBindings/BankSipTerminalBridge 跟随改 import 别名；
+    `Cash.install(host.ref)` 去掉 PureStages——payment 管线无纯段）。五步门
+    全绿：doctor／validate hard 0／compile exit 0／显式 update 干净 234 件
+    （6 RETIRED 显式回执）／generate written=0 identical 234/234／verify
+    12/12。翻转速记：金样字节无生成头落盘（金样即规格优先）；翻转件
+    knowledgeIds 沿 classic 约定（host 件 #/sagaHosts/0、execution 件
+    #/pipelines/0），anchors 全部 source-verified。
