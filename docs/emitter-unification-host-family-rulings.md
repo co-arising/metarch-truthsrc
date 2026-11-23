@@ -219,5 +219,15 @@ delivery）＋round 响应新鲜度关联＋RecoveryCompleted 重查询自愈＋
 - **金样分波**：第一波＝Host／HostIO／TechnicalPorts／Serializer 四面（审查已吃透）；
   第二波＝Execution／Definition（需先专注核 monarch strict 运行时的
   OperationRequest/PhaseOutcome 契约）；两波齐后才进沙箱三轮。
+- **金样分波完成（2026-11-22）**：pipeline-invocation-face（payment 案 7 件）＋
+  effect-face（dispatch／ta 两案各 3 件：Execution＋EffectHost＋Serializer）全部入册
+  （`test/reference/curated/effect-face/v1/`，合同 `technical-input.json` 两案一档）。
+  effect 面新增裁定记档：ObservationStatus ADT（confirmed/rejected/failed/absent/unknown
+  wire，fail-closed 拒未知 wire）＋ReconcileDecision ADT（query/retry）替代 String 分发；
+  EffectBinding 按 run 单面构造期校验（无 Option/无 null）；N1 去重裁定：
+  `bank-ta-effect`＋EffectHost → `BankTaEffectHost`（BankTaEffectEffectHost 结巴）；
+  R1 退避桥入两案 Execution；R4 日志点四类；R3 修正语义落地（清 observation＋
+  journal 全历史＋日志钩子）。13 文件括号平衡自检过；金样仍为规格件，
+  编译验证在沙箱轮。
 - 纪律重申（计划 §6）：classic 模板未摘除前不动 bank-wealth 任何产物；
   金样在 curated 目录为新规格，不触碰 classic 产物字节。

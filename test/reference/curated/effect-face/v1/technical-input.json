@@ -1,0 +1,127 @@
+{
+  "schemaVersion": "truthsrc.effect-face-input/v1",
+  "cases": [
+    {
+      "case": "dispatch",
+      "names": {
+        "executionClass": "BankSipDispatchExecution",
+        "effectHostClass": "BankSipDispatchEffectHost",
+        "serializerClass": "BankSipDispatchEffectHostSerializer",
+        "package": "example.bankwealth.application",
+        "nameSources": {
+          "executionClass": "pipeline id bank-sip-dispatch-v1 (the durable plan face of that pipeline)",
+          "effectHostClass": "host id bank-sip-dispatch + EffectHost suffix (N1 dedup)",
+          "serializerClass": "host class + Serializer"
+        }
+      },
+      "execution": {
+        "stageId": "dispatch-cash",
+        "planVersion": "bank-v1-1",
+        "executionStatePb": "example.bankwealth.infrastructure.executionproto.banksipdispatchv1ExecutionStatePB",
+        "codecSlots": ["input0:OccurrenceId", "input1:SipOccurrence", "output0:OperationId"],
+        "resultCases": [
+          { "case": "DispatchCashDispatched", "slot": "operationId", "terminal": "stage-success" },
+          { "case": "DispatchCashRefused", "stageError": "business-rejection:Refused:stop" },
+          { "case": "DispatchCashUnavailable", "stageError": "infrastructure-failure:Unavailable:manual-recovery" },
+          { "case": "DispatchCashUnknown", "stageError": "unknown-effect:Unknown:manual-recovery" }
+        ],
+        "source": "knowledge: pipeline declaration + execution plan product"
+      },
+      "effect": {
+        "sagaId": "bank-sip-dispatch-v1",
+        "artifactVersion": "bank-v1-1",
+        "hostId": "bank-sip-dispatch",
+        "stepId": "dispatch-cash",
+        "participantStep": "DispatchSipCash",
+        "identityKeySlot": "inputs.occurrenceId",
+        "requestValue": "BankSipDispatchRequest",
+        "operationValue": "BankSipDispatchOperation",
+        "observationValue": "BankSipDispatchObservation",
+        "reconcileValue": "BankSipDispatchReconcile",
+        "bindings": {
+          "declaredIds": ["bankwealth.BankSipDispatchExecute", "bankwealth.BankSipDispatchQuery", "bankwealth.BankSipDispatchReconcilePort"],
+          "roles": ["execute", "query", "reconcile"],
+          "artifact": "BankSipTechnical",
+          "implementationVersion": "bank-v1-1",
+          "boundary": "handwritten-composition-root",
+          "source": "knowledge: effect-hosts product obligations"
+        },
+        "eventPb": "example.bankwealth.infrastructure.effectproto.banksipdispatchEffectHostEventPB",
+        "serializerIdentifier": 744000,
+        "source": "knowledge: effect proto face schema; judged: identifier allocation"
+      }
+    },
+    {
+      "case": "ta",
+      "names": {
+        "executionClass": "BankTaSubmissionExecution",
+        "effectHostClass": "BankTaEffectHost",
+        "serializerClass": "BankTaEffectHostSerializer",
+        "package": "example.bankwealth.application",
+        "nameSources": {
+          "executionClass": "saga id bank-ta-submission-v1",
+          "effectHostClass": "host id bank-ta-effect + EffectHost suffix with stem/suffix dedup (N1: BankTaEffectEffectHost stutters)",
+          "serializerClass": "host class + Serializer"
+        }
+      },
+      "execution": {
+        "stageId": "submit-ta",
+        "planVersion": "bank-v1-1",
+        "executionStatePb": "example.bankwealth.infrastructure.executionproto.banktasubmissionv1ExecutionStatePB",
+        "codecSlots": ["input0:TaRequestId", "input1:FundOrderId", "input2:TxId", "output0:TaRequestId"],
+        "resultCases": [
+          { "case": "SubmitTaObserved", "slot": "taRequestId", "terminal": "stage-success" },
+          { "case": "SubmitTaRefused", "stageError": "business-rejection:Refused:stop" },
+          { "case": "SubmitTaUnavailable", "stageError": "infrastructure-failure:Unavailable:manual-recovery" },
+          { "case": "SubmitTaUnknown", "stageError": "unknown-effect:Unknown:manual-recovery" }
+        ],
+        "source": "knowledge: saga declaration + execution plan product"
+      },
+      "effect": {
+        "sagaId": "bank-ta-submission-v1",
+        "artifactVersion": "bank-v1-1",
+        "hostId": "bank-ta-effect",
+        "stepId": "submit-ta",
+        "participantStep": "SubmitPaidTaRequest",
+        "identityKeySlot": "inputs.taRequestId",
+        "requestValue": "BankTaEffectRequest",
+        "operationValue": "BankTaEffectOperation",
+        "observationValue": "BankTaEffectObservation",
+        "reconcileValue": "BankTaEffectReconcile",
+        "bindings": {
+          "declaredIds": ["bankwealth.BankTaEffectExecute", "bankwealth.BankTaEffectQuery", "bankwealth.BankTaEffectReconcilePort"],
+          "roles": ["execute", "query", "reconcile"],
+          "artifact": "BankTaTechnical",
+          "implementationVersion": "bank-v1-1",
+          "boundary": "handwritten-composition-root",
+          "source": "knowledge: effect-hosts product obligations"
+        },
+        "eventPb": "example.bankwealth.infrastructure.effectproto.banktaeffectEffectHostEventPB",
+        "serializerIdentifier": 744001,
+        "source": "knowledge: effect proto face schema; judged: identifier allocation"
+      }
+    }
+  ],
+  "faceShape": {
+    "shared": "one effect-host shape, per-case knowledge: ObservationStatus ADT (confirmed/rejected/failed/absent/unknown wires), ReconcileDecision ADT (query/retry), per-role EffectBinding records, obligation-table install, round-counted observation freshness, RecoveryCompleted re-query, two-phase result delivery into the execution stage",
+    "observationStatus": {
+      "wires": ["confirmed", "rejected", "failed", "absent", "unknown"],
+      "source": "knowledge: observation domain value status slot"
+    },
+    "retry": {
+      "initialMillis": 100,
+      "factor": 2,
+      "maxMillis": 5000,
+      "deadlineSeconds": 60,
+      "source": "judged slot (R1), shared with the invocation face"
+    },
+    "admission": {
+      "contract": "R2(b): in-memory waiter coalescing; replies derived from durable state on re-invoke; caller owns ask timeout + retry"
+    },
+    "logging": "R4: debug points at execute-attempt/observation-stored/retry-authorized/reconcile-denied",
+    "layout": {
+      "columnLimit": 100,
+      "discipline": "L1: hand-balanced breaks, each frozen shape documented at its site"
+    }
+  }
+}
