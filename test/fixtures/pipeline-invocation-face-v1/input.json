@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "truthsrc.pipeline-invocation-face-input/v1",
+  "schemaVersion": "truthsrc.pipeline-invocation-face-input/v2",
   "case": "payment",
   "names": {
     "hostClass": "BankPaymentHost",
@@ -43,6 +43,8 @@
   "invocation": {
     "scheme": "truthsrc-pipeline-invocation-v1",
     "pipelineStep": "pay-cash-purchase",
+    "identitySource": "operation",
+    "identityStageOccurrence": "occurrence",
     "markers": [
       "iteration",
       "absent",

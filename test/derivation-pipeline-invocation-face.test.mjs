@@ -40,7 +40,7 @@ test('the derived contract renders the curated golden bytes through the family e
 
 test('derivation is fail-closed on unknown hosts and broken runtime identity', () => {
   const f = fixture();
-  assert.throws(() => derivePipelineInvocationFace(f.products, f.options, 'bank-refund-host'), /flip manifest entry/);
+  assert.throws(() => derivePipelineInvocationFace(f.products, f.options, 'bank-refund-host'), /exactly one saga host bank-refund-host required/);
   assert.throws(() => derivePipelineInvocationFace(f.products, f.options, 'no-such-host'), /flip manifest entry/);
   const broken = fixture();
   broken.products['saga-runtime-contract'].sagas[0].definitionDigest = 'c13f703e';
@@ -51,9 +51,13 @@ test('derivation is fail-closed on unknown hosts and broken runtime identity', (
 });
 
 test('the flip manifest is the single flip switch and carries the base-name invariant', () => {
-  assert.deepEqual([...PIPELINE_INVOCATION_FLIPS], [{ pipeline: 'bank-cash-payment-v1', host: 'bank-payment-host', case: 'payment', docShort: 'payment', docLong: 'cash purchase payment' }]);
+  assert.deepEqual([...PIPELINE_INVOCATION_FLIPS], [
+    { pipeline: 'bank-cash-payment-v1', host: 'bank-payment-host', case: 'payment', docShort: 'payment', docLong: 'cash purchase payment' },
+    { pipeline: 'bank-independent-refund-v1', host: 'bank-refund-host', case: 'refund', docShort: 'refund', docLong: 'independent refund' },
+  ]);
   assert.equal(isFlipped('bank-payment-host'), true);
-  assert.equal(isFlipped('bank-refund-host'), false);
+  assert.equal(isFlipped('bank-refund-host'), true);
   assert.equal(flipHostBase('bank-payment-host'), 'BankPayment');
+  assert.equal(flipHostBase('bank-refund-host'), 'BankRefund');
   assert.throws(() => flipHostBase('bank-cash-payment-v1'), /must end in -host/);
 });

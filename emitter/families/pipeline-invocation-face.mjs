@@ -111,7 +111,7 @@ const sha256Hex = text => crypto.createHash('sha256').update(text, 'utf8').diges
 
 // ---------- fail-closed input validation ----------
 function validate(input) {
-  if (input.schemaVersion !== 'truthsrc.pipeline-invocation-face-input/v1') {
+  if (input.schemaVersion !== 'truthsrc.pipeline-invocation-face-input/v2') {
     throw new Error('unexpected input schema version: ' + input.schemaVersion);
   }
   if (!/^[a-z][a-z0-9-]*$/.test(input.case)) throw new Error('unsafe business case: ' + input.case);
@@ -168,8 +168,10 @@ function validate(input) {
   }
   if (new Set(kindNames).size !== kindNames.length) throw new Error('duplicate result kind');
   const participants = input.participants;
-  if (participants.length !== 3) {
-    throw new Error('the strict-saga definition requires exactly three participants');
+  // The participant COUNT is case-varying (payment carries three, refund two);
+  // the frozen shapes are the per-participant uniformity checks below, not the count.
+  if (participants.length < 1) {
+    throw new Error('the strict-saga definition requires at least one participant');
   }
   const inputNames = input.execution.inputs.map(f => f.name);
   for (const p of participants) {
@@ -186,7 +188,7 @@ function validate(input) {
       symbol(p.commands[phase]);
     }
   }
-  if (new Set(participants.map(p => p.stepId)).size !== 3) throw new Error('duplicate participant step id');
+  if (new Set(participants.map(p => p.stepId)).size !== participants.length) throw new Error('duplicate participant step id');
   const admission = input.admission;
   if (admission.gates.length !== 2 || !admission.gates.includes('entry') ||
     !admission.gates.includes('association')) {
@@ -222,8 +224,11 @@ function validate(input) {
   }
   if (execution.inputs.length < 3) throw new Error('the execution carries at least three durable inputs');
   for (const f of execution.inputs) symbol(f.name);
-  if (execution.inputs[0].name !== 'operation' || execution.inputs[1].name !== 'occurrence') {
-    throw new Error('the first two durable inputs are the operation and occurrence keys');
+  // The durable identity keys are contract data (v2): refund derives both from
+  // refundOperationId, payment from operation + occurrence (the golden token
+  // table consumes exactly these two field names).
+  if (!inputNames.includes(invocation.identitySource) || !inputNames.includes(invocation.identityStageOccurrence)) {
+    throw new Error('identity keys must be declared execution inputs: ' + invocation.identitySource + ', ' + invocation.identityStageOccurrence);
   }
   if (new Set(inputNames).size !== inputNames.length) throw new Error('duplicate execution input field');
   for (const name of execution.requestInputs) {
@@ -684,8 +689,11 @@ function emitExecution(md) {
     '    new Installed(' + hostParam + ')',
     '  }',
     '',
-    '  final class Installed private[' + md.execution + '] (val ' + hostParam + ': ActorRef[' + md.host +
-      '.Request])',
+    // Length-conditional (ruling 2026-11-23): payment fits in one row; longer
+    // case spellings break after the actor ref's object with a +6 continuation
+    // (the dispatch golden's identical shape).
+    ...wrapDef('  final class Installed private[' + md.execution + '] (val ' + hostParam + ': ActorRef[' + md.host,
+      '.Request])', 6),
     '',
     '  // ----------------------------------------------------------------- knowledge',
     '  private val PlanVersion = "' + stage.planVersion + '"',
@@ -943,8 +951,8 @@ function emitHost(md) {
     '      SagaId, SagaVersion,',
     '      SagaId, SagaVersion,',
     '      PipelineStep,',
-    '      input.operation.value,',
-    '      input.occurrence.value,',
+    '      input.' + md.invocation.identitySource + '.value,',
+    '      input.' + md.invocation.identityStageOccurrence + '.value,',
   ];
   const classifyLines = [
     '      case StrictStatus.Succeeded => Some(ResultKind.Succeeded)',
@@ -1559,7 +1567,7 @@ const NEGATIVES = [
   { name: 'result-kind set is not the frozen five', mutate: i => { i.results.kinds.pop(); }, expect: 'frozen five kinds' },
   { name: 'duplicate result kind', mutate: i => { i.results.kinds[1].kind = i.results.kinds[0].kind; }, expect: 'duplicate result kind' },
   { name: 'stage error tuple loses its discipline', mutate: i => { i.results.kinds[1].stageError.discipline = 'STOP'; }, expect: 'unsafe stage error tuple' },
-  { name: 'participant count not three', mutate: i => { i.participants.pop(); }, expect: 'exactly three participants' },
+  { name: 'participant list empty', mutate: i => { i.participants.splice(0, i.participants.length); }, expect: 'at least one participant' },
   { name: 'participant args field outside the execution inputs', mutate: i => { i.participants[0].argsField = 'walletId'; }, expect: 'must be an execution input' },
   { name: 'participant command is not a symbol', mutate: i => { i.participants[0].commands.prepare = 'reserve-funds'; }, expect: 'unsafe symbol' },
   { name: 'admission loses a gate', mutate: i => { i.admission.gates = ['entry']; }, expect: 'entry + association' },
@@ -1570,7 +1578,7 @@ const NEGATIVES = [
   { name: 'unsafe serializer manifest', mutate: i => { i.serializer.manifest = 'event v1'; }, expect: 'unsafe serializer manifest' },
   { name: 'host event PB loses its face suffix', mutate: i => { i.serializer.eventPb = 'example.bankwealth.infrastructure.hostproto.bankpaymenthostEventPB'; }, expect: 'HostEventPB face' },
   { name: 'execution stage drifts from the pipeline step', mutate: i => { i.execution.stageId = 'refund-cash'; }, expect: 'execution stage is the pipeline step' },
-  { name: 'execution loses the operation key', mutate: i => { i.execution.inputs[0].name = 'txn'; }, expect: 'operation and occurrence keys' },
+  { name: 'identity key outside the durable inputs', mutate: i => { i.invocation.identitySource = 'txn'; }, expect: 'identity keys must be declared execution inputs' },
   { name: 'duplicate execution input', mutate: i => { i.execution.inputs[2].name = i.execution.inputs[1].name; }, expect: 'participant args field must be an execution input' },
   { name: 'request input outside the durable inputs', mutate: i => { i.execution.requestInputs.push('phantom'); }, expect: 'must be an execution input' },
   { name: 'output field collides with a durable input', mutate: i => { i.execution.output.field = 'amount'; }, expect: 'must not collide' },
