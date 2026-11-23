@@ -258,6 +258,29 @@ Pages 上引用旧生成器 id／文件头的句子同步刷新。
   （requireFamilySpecPaths，包合同禁止 test/reference/ 入包，见
   emitter-unification.test 契约测试）。refund/dispatch/ta 仍 classic；
   payment classic 模板成为死路——摘除待用户过目逐文件 diff（F5/F6.6）。
+- **refund 案翻转完成（2026-11-23，bank-wealth 提交 a845fc3，F4 案 2/4）**：
+  面合同升 v2——durable identity 键升为合同槽（refundOperationId 双键派生自
+  transactionIdentity.source/stageOccurrence；payment 回填 operation/occurrence，
+  金样字节不变、parity 全绿）；参与者数冻结泛化为逐参与者一致性检查
+  （payment 三、refund 二）；Installed 声明行并入长度条件断行族（dispatch 金样
+  同形 +6 续行）。refund 案七件金样形产物（BankIndependentRefundExecution／
+  BankRefundSagaDefinition／BankRefundHost／BankRefundHostIO／BankRefundPorts＋
+  BankRefundPortBindings／BankRefundHostSerializer）落盘，conf host1 两行翻转，
+  五件手写文件改名同步（Refund.install 去 PureStages）。五步门全绿：显式 update
+  干净 235 件（6 RETIRED）／generate written=0 identical 235/235／verify 12/12。
+  工具提交 86bedbc。
+- **dispatch＋ta 案翻转完成（2026-11-23，bank-wealth 提交 a0d958c，F4 案 3/4＝
+  效果面发射单元）**：`lib/derivation/effect-face.mjs` 派生
+  truthsrc.effect-face-input/v1（深等值 curated 效果合同＋6/6 金样字节），
+  双案一次提交同翻（族合同承载两案＝发射单元，裁定记档）；六件金样形产物、
+  akka effect 序列化注册表四行翻转、六件手写文件按金样 ABI 改名同步
+  （EffectBinding 逐角色命名、install 只收效果宿主 actor）。五步门全绿：
+  显式 update 干净 235 件（6 RETIRED）／generate written=0 identical 235/235／
+  verify 12/12。工具提交 e31d95e。
+  **四个 monarch 闭包业务案自此全部出自统一发射器**——classic 面模板死路，
+  摘除待用户过目逐文件 diff（F5/F6.6；材料 /private/tmp/bw-flip-diff/：
+  17 份逐文件 diff＋conf diff，classic 侧 c91f490 worktree 全树重现、行数与
+  翻转前磁盘文件逐一致）。
 
 ## 8. 新会话开工指引（Phase 0 即做）
 

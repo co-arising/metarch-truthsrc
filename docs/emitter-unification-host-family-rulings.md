@@ -390,3 +390,27 @@ delivery）＋round 响应新鲜度关联＋RecoveryCompleted 重查询自愈＋
     12/12。翻转速记：金样字节无生成头落盘（金样即规格优先）；翻转件
     knowledgeIds 沿 classic 约定（host 件 #/sagaHosts/0、execution 件
     #/pipelines/0），anchors 全部 source-verified。
+- **效果面派生层＋双案翻转完成（2026-11-23，门序执行侧按单一验收标准裁定）**：
+  「dispatch／ta」节拍闭合——`lib/derivation/effect-face.mjs` 从 effect-host／
+  execution／reference-layout 载荷＋options.packages 派生
+  `truthsrc.effect-face-input/v1`（identity 键、四 outcome 的 resultCases、codec
+  槽、execute/query/reconcile 义务身份、744xxx 序列化器带、效果 proto 面——全部
+  载荷直推；单形面常量与逐案 doc 散文〔两案皆金样背书〕为记档族面知识）。
+  **派生合同深等值 curated 效果合同＋6/6 金样字节等值**（知识夹层 fixture＋4
+  测试）。**双案即发射单元（裁定）**：族合同本身承载两案（validate 要求恰两
+  case；单形宿主服务两案、逐案知识），故 dispatch＋ta 一次提交同翻——F4 的
+  「每业务案一提交」在合同单元处适配为「每发射单元一提交」。效果输入按构造
+  皆为领域值——派生不落 saga-runtime 回退（durable-effect-host producer 视图
+  不声明该产品；fail-closed 落在『complete nominal type declaration
+  required』）。实测（bank-wealth 提交 a0d958c）：六件 classic 效果文件退役、
+  六件金样形产物落盘、akka effect 序列化注册表四行类名翻转（effect0/effect1
+  序列化器＋Event 绑定）、手写 BankSipDispatchBindings/BankTaEffectBindings
+  按金样 ABI 重写（逐角色命名 EffectBinding、义务表 install）、BankRuntime
+  ensureTa/ensureSip 去 PureStages（Ta.install/Dispatch.install 只收效果宿主
+  actor）、SipApplication/ta 退款应用跟随改名。五步门全绿：validate hard 0／
+  compile exit 0／显式 update 干净 235 件（6 RETIRED）／generate written=0
+  identical 235/235／verify 12/12。
+  **四个 monarch 闭包业务案自此全部出自统一发射器**；classic 面模板成死路，
+  摘除待用户过目逐文件 diff（F5/F6.6，材料齐 /private/tmp/bw-flip-diff/：
+  17 份逐文件 diff＋conf diff，classic 侧以 c91f490 工具提交的 worktree 全树
+  重现，行数与翻转前磁盘文件逐一致）。
