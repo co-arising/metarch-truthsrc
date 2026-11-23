@@ -1,0 +1,3701 @@
+{
+ "schemaVersion": "truthsrc.aggregate-invariant-rules-input/v1",
+ "aggregates": [
+  {
+   "context": "bankwealth",
+   "aggregate": "CreditBalance",
+   "package": "example.bankwealth",
+   "name": "CreditBalance",
+   "source": {
+    "document": "bank-v1",
+    "pointer": "/aggregates/0"
+   },
+   "commands": [
+    {
+     "command": "InitializeAccount",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/0/commands/0"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/0/guards/0"
+       },
+       "text": "(p.resource == state.id)",
+       "outcome": {
+        "kind": "reject",
+        "code": "ACCOUNT_ID"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/0/guards/1"
+       },
+       "text": "((p.currency == \"CNY\") && ((p.amount).currency == p.currency))",
+       "outcome": {
+        "kind": "reject",
+        "code": "ACCOUNT_CURRENCY"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/0/guards/2"
+       },
+       "text": "(!(state.initialized) || ((state.accountBalance).get(p.currency)).contains(p.amount))",
+       "outcome": {
+        "kind": "reject",
+        "code": "ACCOUNT_INIT_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/0/guards/3"
+       },
+       "text": "!(state.initialized)",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/0/guards/4"
+       },
+       "text": "((p.amount).amount >= BigDecimal(\"0.00\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "ACCOUNT_SEED_NONNEGATIVE"
+       }
+      }
+     ]
+    },
+    {
+     "command": "ReserveFunds",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/0/commands/1"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/1/guards/0"
+       },
+       "text": "(state.initialized && (p.resource == state.id))",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_RESOURCE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/1/guards/1"
+       },
+       "text": "((p.amount).currency == \"CNY\")",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_CNY"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/1/guards/2"
+       },
+       "text": "((p.amount).amount > BigDecimal(\"0.00\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_POSITIVE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/1/guards/3"
+       },
+       "text": "(!((state.committedOutgoing).contains(p.txid)) || { require(((state.committedOutgoing)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.committedOutgoing)(p.txid)).amount == (p.amount).amount) })",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_COMMITTEDOUTGOING_MATCH"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/1/guards/4"
+       },
+       "text": "(!((state.compensatedOutgoing).contains(p.txid)) || { require(((state.compensatedOutgoing)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.compensatedOutgoing)(p.txid)).amount == (p.amount).amount) })",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_COMPENSATEDOUTGOING_MATCH"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/1/guards/5"
+       },
+       "text": "(!((state.reservedAmount).contains(p.txid)) || { require(((state.reservedAmount)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.reservedAmount)(p.txid)).amount == (p.amount).amount) })",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_RESERVEDAMOUNT_MATCH"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/1/guards/6"
+       },
+       "text": "!((state.committedOutgoing).contains(p.txid))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/1/guards/7"
+       },
+       "text": "!((state.compensatedOutgoing).contains(p.txid))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/1/guards/8"
+       },
+       "text": "!((state.reservedAmount).contains(p.txid))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/1/guards/9"
+       },
+       "text": "(state.accountBalance).get((p.amount).currency).exists(_.compareSameUnit(p.amount) >= 0)",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_SUFFICIENT"
+       }
+      }
+     ]
+    },
+    {
+     "command": "DeductFunds",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/0/commands/2"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/2/guards/0"
+       },
+       "text": "(state.initialized && (p.resource == state.id))",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_RESOURCE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/2/guards/1"
+       },
+       "text": "((p.amount).currency == \"CNY\")",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_CNY"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/2/guards/2"
+       },
+       "text": "((p.amount).amount > BigDecimal(\"0.00\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_POSITIVE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/2/guards/3"
+       },
+       "text": "(!((state.committedOutgoing).contains(p.txid)) || { require(((state.committedOutgoing)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.committedOutgoing)(p.txid)).amount == (p.amount).amount) })",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_COMMITTEDOUTGOING_MATCH"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/2/guards/4"
+       },
+       "text": "!((state.committedOutgoing).contains(p.txid))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/2/guards/5"
+       },
+       "text": "!((state.compensatedOutgoing).contains(p.txid))",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_NOT_COMPENSATED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/2/guards/6"
+       },
+       "text": "(state.reservedAmount).contains(p.txid)",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_PREPARED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/2/guards/7"
+       },
+       "text": "(!((state.reservedAmount).contains(p.txid)) || { require(((state.reservedAmount)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.reservedAmount)(p.txid)).amount == (p.amount).amount) })",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_RESERVEDAMOUNT_MATCH"
+       }
+      }
+     ]
+    },
+    {
+     "command": "ReleaseReservedFunds",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/0/commands/3"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/3/guards/0"
+       },
+       "text": "(state.initialized && (p.resource == state.id))",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_RESOURCE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/3/guards/1"
+       },
+       "text": "((p.amount).currency == \"CNY\")",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_CNY"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/3/guards/2"
+       },
+       "text": "((p.amount).amount > BigDecimal(\"0.00\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_POSITIVE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/3/guards/3"
+       },
+       "text": "(!((state.compensatedOutgoing).contains(p.txid)) || { require(((state.compensatedOutgoing)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.compensatedOutgoing)(p.txid)).amount == (p.amount).amount) })",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_COMPENSATEDOUTGOING_MATCH"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/3/guards/4"
+       },
+       "text": "!((state.compensatedOutgoing).contains(p.txid))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/3/guards/5"
+       },
+       "text": "!((state.committedOutgoing).contains(p.txid))",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_NOT_COMMITTED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/3/guards/6"
+       },
+       "text": "(!((state.reservedAmount).contains(p.txid)) || { require(((state.reservedAmount)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.reservedAmount)(p.txid)).amount == (p.amount).amount) })",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_RESERVEDAMOUNT_MATCH"
+       }
+      }
+     ]
+    },
+    {
+     "command": "RecordIncomingCredits",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/0/commands/4"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/4/guards/0"
+       },
+       "text": "(state.initialized && (p.resource == state.id))",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_RESOURCE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/4/guards/1"
+       },
+       "text": "((p.amount).currency == \"CNY\")",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_CNY"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/4/guards/2"
+       },
+       "text": "((p.amount).amount > BigDecimal(\"0.00\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_POSITIVE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/4/guards/3"
+       },
+       "text": "(!((state.committedIncoming).contains(p.txid)) || { require(((state.committedIncoming)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.committedIncoming)(p.txid)).amount == (p.amount).amount) })",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_COMMITTEDINCOMING_MATCH"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/4/guards/4"
+       },
+       "text": "(!((state.compensatedIncoming).contains(p.txid)) || { require(((state.compensatedIncoming)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.compensatedIncoming)(p.txid)).amount == (p.amount).amount) })",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_COMPENSATEDINCOMING_MATCH"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/4/guards/5"
+       },
+       "text": "(!((state.incomingCredits).contains(p.txid)) || { require(((state.incomingCredits)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.incomingCredits)(p.txid)).amount == (p.amount).amount) })",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_INCOMINGCREDITS_MATCH"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/4/guards/6"
+       },
+       "text": "!((state.committedIncoming).contains(p.txid))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/4/guards/7"
+       },
+       "text": "!((state.compensatedIncoming).contains(p.txid))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/4/guards/8"
+       },
+       "text": "!((state.incomingCredits).contains(p.txid))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      }
+     ]
+    },
+    {
+     "command": "CommitIncomingCredits",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/0/commands/5"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/5/guards/0"
+       },
+       "text": "(state.initialized && (p.resource == state.id))",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_RESOURCE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/5/guards/1"
+       },
+       "text": "((p.amount).currency == \"CNY\")",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_CNY"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/5/guards/2"
+       },
+       "text": "((p.amount).amount > BigDecimal(\"0.00\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_POSITIVE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/5/guards/3"
+       },
+       "text": "(!((state.committedIncoming).contains(p.txid)) || { require(((state.committedIncoming)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.committedIncoming)(p.txid)).amount == (p.amount).amount) })",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_COMMITTEDINCOMING_MATCH"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/5/guards/4"
+       },
+       "text": "!((state.committedIncoming).contains(p.txid))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/5/guards/5"
+       },
+       "text": "!((state.compensatedIncoming).contains(p.txid))",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_NOT_COMPENSATED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/5/guards/6"
+       },
+       "text": "(state.incomingCredits).contains(p.txid)",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_PREPARED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/5/guards/7"
+       },
+       "text": "(!((state.incomingCredits).contains(p.txid)) || { require(((state.incomingCredits)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.incomingCredits)(p.txid)).amount == (p.amount).amount) })",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_INCOMINGCREDITS_MATCH"
+       }
+      }
+     ]
+    },
+    {
+     "command": "CancelIncomingCredit",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/0/commands/6"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/6/guards/0"
+       },
+       "text": "(state.initialized && (p.resource == state.id))",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_RESOURCE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/6/guards/1"
+       },
+       "text": "((p.amount).currency == \"CNY\")",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_CNY"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/6/guards/2"
+       },
+       "text": "((p.amount).amount > BigDecimal(\"0.00\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_POSITIVE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/6/guards/3"
+       },
+       "text": "(!((state.compensatedIncoming).contains(p.txid)) || { require(((state.compensatedIncoming)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.compensatedIncoming)(p.txid)).amount == (p.amount).amount) })",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_COMPENSATEDINCOMING_MATCH"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/6/guards/4"
+       },
+       "text": "!((state.compensatedIncoming).contains(p.txid))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/6/guards/5"
+       },
+       "text": "!((state.committedIncoming).contains(p.txid))",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_NOT_COMMITTED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0/commands/6/guards/6"
+       },
+       "text": "(!((state.incomingCredits).contains(p.txid)) || { require(((state.incomingCredits)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.incomingCredits)(p.txid)).amount == (p.amount).amount) })",
+       "outcome": {
+        "kind": "reject",
+        "code": "LEDGER_INCOMINGCREDITS_MATCH"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "context": "bankwealth",
+   "aggregate": "FundOrder",
+   "package": "example.bankwealth",
+   "name": "FundOrder",
+   "source": {
+    "document": "bank-v1",
+    "pointer": "/aggregates/1"
+   },
+   "commands": [
+    {
+     "command": "RequestFundPurchaseSettlement",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/1/commands/0"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/0/guards/0"
+       },
+       "text": "((state.cashRequestSource).isEmpty || (((((((state.cashRequestOriginals).contains(\"original\") && (p.operationId == (((state.cashRequestOriginals)(\"original\")).payment).operationId)) && (p.fundOrderId == (((state.cashRequestOriginals)(\"original\")).payment).fundOrderId)) && (p.investorAccountId == (((state.cashRequestOriginals)(\"original\")).payment).investorAccountId)) && (p.fundCollectionAccountId == (((state.cashRequestOriginals)(\"original\")).payment).fundCollectionAccountId)) && (p.fundCode == (((state.cashRequestOriginals)(\"original\")).payment).fundCode)) && { require((p.amount).currency == ((((state.cashRequestOriginals)(\"original\")).payment).amount).currency, \"exact units differ\"); ((p.amount).amount == ((((state.cashRequestOriginals)(\"original\")).payment).amount).amount) }))",
+       "outcome": {
+        "kind": "reject",
+        "code": "CASH_ADMITTED_PAYMENT_MATCH"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/0/guards/1"
+       },
+       "text": "(p.fundOrderId == state.id)",
+       "outcome": {
+        "kind": "reject",
+        "code": "ORDER_RESOURCE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/0/guards/2"
+       },
+       "text": "((state.status == \"new\") || (((((p.operationId == state.operationId) && (p.investorAccountId == state.investorAccountId)) && (p.fundCollectionAccountId == state.fundCollectionAccountId)) && (p.fundCode == state.fundCode)) && { require((p.amount).currency == (state.amount).currency, \"exact units differ\"); ((p.amount).amount == (state.amount).amount) }))",
+       "outcome": {
+        "kind": "reject",
+        "code": "ORDER_REPLAY_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/0/guards/3"
+       },
+       "text": "(state.status == \"new\")",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/0/guards/4"
+       },
+       "text": "(p.investorAccountId != p.fundCollectionAccountId)",
+       "outcome": {
+        "kind": "reject",
+        "code": "ORDER_ACCOUNTS"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/0/guards/5"
+       },
+       "text": "(((p.amount).currency == \"CNY\") && ((p.amount).amount > BigDecimal(\"0.00\")))",
+       "outcome": {
+        "kind": "reject",
+        "code": "ORDER_AMOUNT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/0/guards/6"
+       },
+       "text": "(((p.operationId).value).nonEmpty && (p.fundCode).nonEmpty)",
+       "outcome": {
+        "kind": "reject",
+        "code": "ORDER_OPERATION"
+       }
+      }
+     ]
+    },
+    {
+     "command": "ReserveFundSubscription",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/1/commands/1"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/1/guards/0"
+       },
+       "text": "(p.resource == state.id)",
+       "outcome": {
+        "kind": "reject",
+        "code": "ORDER_PHASE_RESOURCE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/1/guards/1"
+       },
+       "text": "(((p.amount).currency == \"CNY\") && ((p.amount).amount > BigDecimal(\"0.00\")))",
+       "outcome": {
+        "kind": "reject",
+        "code": "ORDER_PHASE_POSITIVE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/1/guards/2"
+       },
+       "text": "(!((state.committedSubscriptions).contains(p.txid)) || { require(((state.committedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.committedSubscriptions)(p.txid)).amount == (p.amount).amount) })",
+       "outcome": {
+        "kind": "reject",
+        "code": "ORDER_COMMITTEDSUBSCRIPTIONS_MATCH"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/1/guards/3"
+       },
+       "text": "(!((state.compensatedSubscriptions).contains(p.txid)) || { require(((state.compensatedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.compensatedSubscriptions)(p.txid)).amount == (p.amount).amount) })",
+       "outcome": {
+        "kind": "reject",
+        "code": "ORDER_COMPENSATEDSUBSCRIPTIONS_MATCH"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/1/guards/4"
+       },
+       "text": "(!((state.reservedSubscriptions).contains(p.txid)) || { require(((state.reservedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.reservedSubscriptions)(p.txid)).amount == (p.amount).amount) })",
+       "outcome": {
+        "kind": "reject",
+        "code": "ORDER_RESERVEDSUBSCRIPTIONS_MATCH"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/1/guards/5"
+       },
+       "text": "!((state.committedSubscriptions).contains(p.txid))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/1/guards/6"
+       },
+       "text": "!((state.compensatedSubscriptions).contains(p.txid))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/1/guards/7"
+       },
+       "text": "!((state.reservedSubscriptions).contains(p.txid))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/1/guards/8"
+       },
+       "text": "((state.status == \"payment-requested\") && { require((p.amount).currency == (state.amount).currency, \"exact units differ\"); ((p.amount).amount == (state.amount).amount) })",
+       "outcome": {
+        "kind": "reject",
+        "code": "ORDER_REQUEST_AMOUNT"
+       }
+      }
+     ]
+    },
+    {
+     "command": "ConfirmFundSubscriptionPayment",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/1/commands/2"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/2/guards/0"
+       },
+       "text": "(p.resource == state.id)",
+       "outcome": {
+        "kind": "reject",
+        "code": "ORDER_PHASE_RESOURCE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/2/guards/1"
+       },
+       "text": "(((p.amount).currency == \"CNY\") && ((p.amount).amount > BigDecimal(\"0.00\")))",
+       "outcome": {
+        "kind": "reject",
+        "code": "ORDER_PHASE_POSITIVE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/2/guards/2"
+       },
+       "text": "(!((state.committedSubscriptions).contains(p.txid)) || { require(((state.committedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.committedSubscriptions)(p.txid)).amount == (p.amount).amount) })",
+       "outcome": {
+        "kind": "reject",
+        "code": "ORDER_COMMITTEDSUBSCRIPTIONS_MATCH"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/2/guards/3"
+       },
+       "text": "!((state.committedSubscriptions).contains(p.txid))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/2/guards/4"
+       },
+       "text": "!((state.compensatedSubscriptions).contains(p.txid))",
+       "outcome": {
+        "kind": "reject",
+        "code": "ORDER_NOT_CANCELED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/2/guards/5"
+       },
+       "text": "(state.reservedSubscriptions).contains(p.txid)",
+       "outcome": {
+        "kind": "reject",
+        "code": "ORDER_PREPARED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/2/guards/6"
+       },
+       "text": "(!((state.reservedSubscriptions).contains(p.txid)) || { require(((state.reservedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.reservedSubscriptions)(p.txid)).amount == (p.amount).amount) })",
+       "outcome": {
+        "kind": "reject",
+        "code": "ORDER_RESERVEDSUBSCRIPTIONS_MATCH"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/2/guards/7"
+       },
+       "text": "{ require((p.amount).currency == (state.amount).currency, \"exact units differ\"); ((p.amount).amount == (state.amount).amount) }",
+       "outcome": {
+        "kind": "reject",
+        "code": "ORDER_COMMIT_AMOUNT"
+       }
+      }
+     ]
+    },
+    {
+     "command": "CancelCashFundSubscription",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/1/commands/3"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/3/guards/0"
+       },
+       "text": "(p.resource == state.id)",
+       "outcome": {
+        "kind": "reject",
+        "code": "ORDER_PHASE_RESOURCE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/3/guards/1"
+       },
+       "text": "(((p.amount).currency == \"CNY\") && ((p.amount).amount > BigDecimal(\"0.00\")))",
+       "outcome": {
+        "kind": "reject",
+        "code": "ORDER_PHASE_POSITIVE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/3/guards/2"
+       },
+       "text": "(!((state.compensatedSubscriptions).contains(p.txid)) || { require(((state.compensatedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.compensatedSubscriptions)(p.txid)).amount == (p.amount).amount) })",
+       "outcome": {
+        "kind": "reject",
+        "code": "ORDER_COMPENSATEDSUBSCRIPTIONS_MATCH"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/3/guards/3"
+       },
+       "text": "!((state.compensatedSubscriptions).contains(p.txid))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/3/guards/4"
+       },
+       "text": "!((state.committedSubscriptions).contains(p.txid))",
+       "outcome": {
+        "kind": "reject",
+        "code": "ORDER_CANCEL_NOT_COMMITTED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/3/guards/5"
+       },
+       "text": "(!((state.reservedSubscriptions).contains(p.txid)) || { require(((state.reservedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.reservedSubscriptions)(p.txid)).amount == (p.amount).amount) })",
+       "outcome": {
+        "kind": "reject",
+        "code": "ORDER_RESERVEDSUBSCRIPTIONS_MATCH"
+       }
+      }
+     ]
+    },
+    {
+     "command": "RecordFundCashPaymentSucceeded",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/1/commands/4"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/4/guards/0"
+       },
+       "text": "(!((state.cashPaymentFinalResults).contains(p.txid)) || ((state.cashPaymentFinalResults)(p.txid) == \"succeeded\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "PAYMENT_TERMINAL_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/4/guards/1"
+       },
+       "text": "!((state.cashPaymentFinalResults).contains(p.txid))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/4/guards/2"
+       },
+       "text": "((state.committedSubscriptions).contains(p.txid) && (p.txid == state.selectedPaymentTxId))",
+       "outcome": {
+        "kind": "reject",
+        "code": "PAYMENT_COMMIT_PROOF"
+       }
+      }
+     ]
+    },
+    {
+     "command": "RecordFundCashPaymentRejectedBeforeEffects",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/1/commands/5"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/5/guards/0"
+       },
+       "text": "(!((state.cashPaymentFinalResults).contains(p.txid)) || ((state.cashPaymentFinalResults)(p.txid) == \"rejected-before-effects\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "PAYMENT_TERMINAL_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/5/guards/1"
+       },
+       "text": "!((state.cashPaymentFinalResults).contains(p.txid))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      }
+     ]
+    },
+    {
+     "command": "RecordFundCashPaymentCompensated",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/1/commands/6"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/6/guards/0"
+       },
+       "text": "(!((state.cashPaymentFinalResults).contains(p.txid)) || ((state.cashPaymentFinalResults)(p.txid) == \"compensated\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "PAYMENT_TERMINAL_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/6/guards/1"
+       },
+       "text": "!((state.cashPaymentFinalResults).contains(p.txid))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      }
+     ]
+    },
+    {
+     "command": "RecordFundCashPaymentRecoveryRequired",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/1/commands/7"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/7/guards/0"
+       },
+       "text": "!((state.cashPaymentFinalResults).contains(p.txid))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/7/guards/1"
+       },
+       "text": "!(((state.cashPaymentResults).get(p.txid)).contains(\"recovery-required\"))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      }
+     ]
+    },
+    {
+     "command": "RecordFundCashPaymentOutcomeUnknown",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/1/commands/8"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/8/guards/0"
+       },
+       "text": "!((state.cashPaymentFinalResults).contains(p.txid))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/8/guards/1"
+       },
+       "text": "!(((state.cashPaymentResults).get(p.txid)).contains(\"outcome-unknown\"))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      }
+     ]
+    },
+    {
+     "command": "RegisterFundTASubmission",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/1/commands/9"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/9/guards/0"
+       },
+       "text": "(p.fundOrderId == state.id)",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_SUBMIT_RESOURCE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/9/guards/1"
+       },
+       "text": "((p.paymentTxId == state.selectedPaymentTxId) && ((state.cashPaymentFinalResults).get(p.paymentTxId)).contains(\"succeeded\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_PAID"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/9/guards/2"
+       },
+       "text": "((state.taRequestId).value).isEmpty",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      }
+     ]
+    },
+    {
+     "command": "RecordFundTAAccepted",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/1/commands/10"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/10/guards/0"
+       },
+       "text": "(p.fundOrderId == state.id)",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_ORDER"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/10/guards/1"
+       },
+       "text": "((p.paymentTxId == state.selectedPaymentTxId) && ((state.cashPaymentFinalResults).get(p.paymentTxId)).contains(\"succeeded\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_PAYMENT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/10/guards/2"
+       },
+       "text": "((p.taRequestId == state.taRequestId) && ((p.taRequestId).value).nonEmpty)",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_REQUEST"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/10/guards/3"
+       },
+       "text": "((p.taReference).nonEmpty && ((state.taReference).isEmpty || (state.taReference == p.taReference)))",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_REFERENCE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/10/guards/4"
+       },
+       "text": "((p.fundCode == state.fundCode) && (p.currency == (state.amount).currency))",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_FUND"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/10/guards/5"
+       },
+       "text": "((p.receiptId).nonEmpty && (p.receiptBody).nonEmpty)",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_RECEIPT_PRESENT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/10/guards/6"
+       },
+       "text": "(!((state.taReceipts).contains(p.receiptId)) || (((state.taReceipts)(p.receiptId) == p.receiptBody) && ((state.taReceiptOutcomes).get(p.receiptId)).contains(\"accepted\")))",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_RECEIPT_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/10/guards/7"
+       },
+       "text": "!((state.taReceipts).contains(p.receiptId))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/10/guards/8"
+       },
+       "text": "((state.taStatus != \"confirmed\") && (state.taStatus != \"rejected\"))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      }
+     ]
+    },
+    {
+     "command": "RecordFundTAConfirmed",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/1/commands/11"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/11/guards/0"
+       },
+       "text": "(p.fundOrderId == state.id)",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_ORDER"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/11/guards/1"
+       },
+       "text": "((p.paymentTxId == state.selectedPaymentTxId) && ((state.cashPaymentFinalResults).get(p.paymentTxId)).contains(\"succeeded\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_PAYMENT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/11/guards/2"
+       },
+       "text": "((p.taRequestId == state.taRequestId) && ((p.taRequestId).value).nonEmpty)",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_REQUEST"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/11/guards/3"
+       },
+       "text": "((p.taReference).nonEmpty && ((state.taReference).isEmpty || (state.taReference == p.taReference)))",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_REFERENCE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/11/guards/4"
+       },
+       "text": "((p.fundCode == state.fundCode) && (p.currency == (state.amount).currency))",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_FUND"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/11/guards/5"
+       },
+       "text": "((p.receiptId).nonEmpty && (p.receiptBody).nonEmpty)",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_RECEIPT_PRESENT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/11/guards/6"
+       },
+       "text": "(!((state.taReceipts).contains(p.receiptId)) || (((state.taReceipts)(p.receiptId) == p.receiptBody) && ((state.taReceiptOutcomes).get(p.receiptId)).contains(\"confirmed\")))",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_RECEIPT_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/11/guards/7"
+       },
+       "text": "!((state.taReceipts).contains(p.receiptId))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/11/guards/8"
+       },
+       "text": "((state.taStatus != \"confirmed\") && (state.taStatus != \"rejected\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_TERMINAL_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/11/guards/9"
+       },
+       "text": "((((p.shares).fundCode == state.fundCode) && (((p.shares).shares).value).nonEmpty) && (((p.shares).nav).value).nonEmpty)",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_SHARE_FUND"
+       }
+      }
+     ]
+    },
+    {
+     "command": "RecordFundTARejected",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/1/commands/12"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/12/guards/0"
+       },
+       "text": "(p.fundOrderId == state.id)",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_ORDER"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/12/guards/1"
+       },
+       "text": "((p.paymentTxId == state.selectedPaymentTxId) && ((state.cashPaymentFinalResults).get(p.paymentTxId)).contains(\"succeeded\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_PAYMENT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/12/guards/2"
+       },
+       "text": "((p.taRequestId == state.taRequestId) && ((p.taRequestId).value).nonEmpty)",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_REQUEST"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/12/guards/3"
+       },
+       "text": "((p.taReference).nonEmpty && ((state.taReference).isEmpty || (state.taReference == p.taReference)))",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_REFERENCE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/12/guards/4"
+       },
+       "text": "((p.fundCode == state.fundCode) && (p.currency == (state.amount).currency))",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_FUND"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/12/guards/5"
+       },
+       "text": "((p.receiptId).nonEmpty && (p.receiptBody).nonEmpty)",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_RECEIPT_PRESENT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/12/guards/6"
+       },
+       "text": "(!((state.taReceipts).contains(p.receiptId)) || (((state.taReceipts)(p.receiptId) == p.receiptBody) && ((state.taReceiptOutcomes).get(p.receiptId)).contains(\"rejected\")))",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_RECEIPT_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/12/guards/7"
+       },
+       "text": "!((state.taReceipts).contains(p.receiptId))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/12/guards/8"
+       },
+       "text": "((state.taStatus != \"confirmed\") && (state.taStatus != \"rejected\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_TERMINAL_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/12/guards/9"
+       },
+       "text": "(p.reason).nonEmpty",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_REJECTION_REASON"
+       }
+      }
+     ]
+    },
+    {
+     "command": "RecordFundTAUnknown",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/1/commands/13"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/13/guards/0"
+       },
+       "text": "(p.fundOrderId == state.id)",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_ORDER"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/13/guards/1"
+       },
+       "text": "((p.paymentTxId == state.selectedPaymentTxId) && ((state.cashPaymentFinalResults).get(p.paymentTxId)).contains(\"succeeded\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_PAYMENT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/13/guards/2"
+       },
+       "text": "((p.taRequestId == state.taRequestId) && ((p.taRequestId).value).nonEmpty)",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_REQUEST"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/13/guards/3"
+       },
+       "text": "((p.taReference).nonEmpty && ((state.taReference).isEmpty || (state.taReference == p.taReference)))",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_REFERENCE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/13/guards/4"
+       },
+       "text": "((p.fundCode == state.fundCode) && (p.currency == (state.amount).currency))",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_FUND"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/13/guards/5"
+       },
+       "text": "((p.receiptId).nonEmpty && (p.receiptBody).nonEmpty)",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_RECEIPT_PRESENT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/13/guards/6"
+       },
+       "text": "(!((state.taReceipts).contains(p.receiptId)) || (((state.taReceipts)(p.receiptId) == p.receiptBody) && ((state.taReceiptOutcomes).get(p.receiptId)).contains(\"unknown\")))",
+       "outcome": {
+        "kind": "reject",
+        "code": "TA_RECEIPT_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/13/guards/7"
+       },
+       "text": "!((state.taReceipts).contains(p.receiptId))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/13/guards/8"
+       },
+       "text": "((state.taStatus != \"confirmed\") && (state.taStatus != \"rejected\"))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      }
+     ]
+    },
+    {
+     "command": "RequestFundPurchaseRefund",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/1/commands/14"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/14/guards/0"
+       },
+       "text": "(p.fundOrderId == state.id)",
+       "outcome": {
+        "kind": "reject",
+        "code": "REFUND_RESOURCE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/14/guards/1"
+       },
+       "text": "((p.paymentTxId == state.selectedPaymentTxId) && ((state.cashPaymentFinalResults).get(p.paymentTxId)).contains(\"succeeded\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "REFUND_PAYMENT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/14/guards/2"
+       },
+       "text": "(state.taStatus == \"rejected\")",
+       "outcome": {
+        "kind": "reject",
+        "code": "REFUND_TA_REJECTED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/14/guards/3"
+       },
+       "text": "((state.refundOperationId).value).isEmpty",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      }
+     ]
+    },
+    {
+     "command": "RecordFundRefundSucceeded",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/1/commands/15"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/15/guards/0"
+       },
+       "text": "((p.refundOperationId == state.refundOperationId) && ((p.refundOperationId).value).nonEmpty)",
+       "outcome": {
+        "kind": "reject",
+        "code": "REFUND_RESULT_ASSOCIATION"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/15/guards/1"
+       },
+       "text": "((((p.refundTxId).value).nonEmpty && (p.receiptId).nonEmpty) && (p.receiptBody).nonEmpty)",
+       "outcome": {
+        "kind": "reject",
+        "code": "REFUND_RECEIPT_PRESENT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/15/guards/2"
+       },
+       "text": "(!((state.refundResultReceipts).contains(p.receiptId)) || ((state.refundResultReceipts)(p.receiptId) == p.receiptBody))",
+       "outcome": {
+        "kind": "reject",
+        "code": "REFUND_RECEIPT_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/15/guards/3"
+       },
+       "text": "(!((state.refundFinalResults).contains(p.refundTxId)) || ((state.refundFinalResults)(p.refundTxId) == \"succeeded\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "REFUND_TERMINAL_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/15/guards/4"
+       },
+       "text": "!((state.refundResultReceipts).contains(p.receiptId))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/15/guards/5"
+       },
+       "text": "!((state.refundFinalResults).contains(p.refundTxId))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      }
+     ]
+    },
+    {
+     "command": "RecordFundRefundRejectedBeforeEffects",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/1/commands/16"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/16/guards/0"
+       },
+       "text": "((p.refundOperationId == state.refundOperationId) && ((p.refundOperationId).value).nonEmpty)",
+       "outcome": {
+        "kind": "reject",
+        "code": "REFUND_RESULT_ASSOCIATION"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/16/guards/1"
+       },
+       "text": "((((p.refundTxId).value).nonEmpty && (p.receiptId).nonEmpty) && (p.receiptBody).nonEmpty)",
+       "outcome": {
+        "kind": "reject",
+        "code": "REFUND_RECEIPT_PRESENT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/16/guards/2"
+       },
+       "text": "(!((state.refundResultReceipts).contains(p.receiptId)) || ((state.refundResultReceipts)(p.receiptId) == p.receiptBody))",
+       "outcome": {
+        "kind": "reject",
+        "code": "REFUND_RECEIPT_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/16/guards/3"
+       },
+       "text": "(!((state.refundFinalResults).contains(p.refundTxId)) || ((state.refundFinalResults)(p.refundTxId) == \"rejected-before-effects\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "REFUND_TERMINAL_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/16/guards/4"
+       },
+       "text": "!((state.refundResultReceipts).contains(p.receiptId))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/16/guards/5"
+       },
+       "text": "!((state.refundFinalResults).contains(p.refundTxId))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      }
+     ]
+    },
+    {
+     "command": "RecordFundRefundCompensated",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/1/commands/17"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/17/guards/0"
+       },
+       "text": "((p.refundOperationId == state.refundOperationId) && ((p.refundOperationId).value).nonEmpty)",
+       "outcome": {
+        "kind": "reject",
+        "code": "REFUND_RESULT_ASSOCIATION"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/17/guards/1"
+       },
+       "text": "((((p.refundTxId).value).nonEmpty && (p.receiptId).nonEmpty) && (p.receiptBody).nonEmpty)",
+       "outcome": {
+        "kind": "reject",
+        "code": "REFUND_RECEIPT_PRESENT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/17/guards/2"
+       },
+       "text": "(!((state.refundResultReceipts).contains(p.receiptId)) || ((state.refundResultReceipts)(p.receiptId) == p.receiptBody))",
+       "outcome": {
+        "kind": "reject",
+        "code": "REFUND_RECEIPT_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/17/guards/3"
+       },
+       "text": "(!((state.refundFinalResults).contains(p.refundTxId)) || ((state.refundFinalResults)(p.refundTxId) == \"compensated\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "REFUND_TERMINAL_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/17/guards/4"
+       },
+       "text": "!((state.refundResultReceipts).contains(p.receiptId))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/17/guards/5"
+       },
+       "text": "!((state.refundFinalResults).contains(p.refundTxId))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      }
+     ]
+    },
+    {
+     "command": "RecordFundRefundRecoveryRequired",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/1/commands/18"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/18/guards/0"
+       },
+       "text": "((p.refundOperationId == state.refundOperationId) && ((p.refundOperationId).value).nonEmpty)",
+       "outcome": {
+        "kind": "reject",
+        "code": "REFUND_RESULT_ASSOCIATION"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/18/guards/1"
+       },
+       "text": "((((p.refundTxId).value).nonEmpty && (p.receiptId).nonEmpty) && (p.receiptBody).nonEmpty)",
+       "outcome": {
+        "kind": "reject",
+        "code": "REFUND_RECEIPT_PRESENT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/18/guards/2"
+       },
+       "text": "(!((state.refundResultReceipts).contains(p.receiptId)) || ((state.refundResultReceipts)(p.receiptId) == p.receiptBody))",
+       "outcome": {
+        "kind": "reject",
+        "code": "REFUND_RECEIPT_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/18/guards/3"
+       },
+       "text": "!((state.refundResultReceipts).contains(p.receiptId))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/18/guards/4"
+       },
+       "text": "!((state.refundFinalResults).contains(p.refundTxId))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      }
+     ]
+    },
+    {
+     "command": "RecordFundRefundOutcomeUnknown",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/1/commands/19"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/19/guards/0"
+       },
+       "text": "((p.refundOperationId == state.refundOperationId) && ((p.refundOperationId).value).nonEmpty)",
+       "outcome": {
+        "kind": "reject",
+        "code": "REFUND_RESULT_ASSOCIATION"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/19/guards/1"
+       },
+       "text": "((((p.refundTxId).value).nonEmpty && (p.receiptId).nonEmpty) && (p.receiptBody).nonEmpty)",
+       "outcome": {
+        "kind": "reject",
+        "code": "REFUND_RECEIPT_PRESENT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/19/guards/2"
+       },
+       "text": "(!((state.refundResultReceipts).contains(p.receiptId)) || ((state.refundResultReceipts)(p.receiptId) == p.receiptBody))",
+       "outcome": {
+        "kind": "reject",
+        "code": "REFUND_RECEIPT_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/19/guards/3"
+       },
+       "text": "!((state.refundResultReceipts).contains(p.receiptId))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/19/guards/4"
+       },
+       "text": "!((state.refundFinalResults).contains(p.refundTxId))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      }
+     ]
+    },
+    {
+     "command": "RecordCashRequestSource",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/1/commands/20"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/20/guards/0"
+       },
+       "text": "(p.source).contains(p.original)",
+       "outcome": {
+        "kind": "reject",
+        "code": "CASH_SOURCE_OPTION"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/20/guards/1"
+       },
+       "text": "(((p.original).payment).fundOrderId == state.id)",
+       "outcome": {
+        "kind": "reject",
+        "code": "CASH_SOURCE_RESOURCE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/20/guards/2"
+       },
+       "text": "(((((((p.original).principalId).nonEmpty && ((p.original).clientRequestId).nonEmpty) && ((p.original).authorityVersion).nonEmpty) && ((p.original).clientRequestId == ((p.original).request).clientRequestId)) && (((p.original).request).fundCode == ((p.original).payment).fundCode)) && ((((p.original).request).amount).currency == (((p.original).payment).amount).currency))",
+       "outcome": {
+        "kind": "reject",
+        "code": "CASH_SOURCE_BODY"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/20/guards/3"
+       },
+       "text": "((state.cashRequestSource).isEmpty || (state.cashRequestSource).contains(p.original))",
+       "outcome": {
+        "kind": "reject",
+        "code": "CASH_SOURCE_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/20/guards/4"
+       },
+       "text": "((state.status == \"new\") || (((((((p.original).payment).operationId == state.operationId) && (((p.original).payment).investorAccountId == state.investorAccountId)) && (((p.original).payment).fundCollectionAccountId == state.fundCollectionAccountId)) && (((p.original).payment).fundCode == state.fundCode)) && { require((((p.original).payment).amount).currency == (state.amount).currency, \"exact units differ\"); ((((p.original).payment).amount).amount == (state.amount).amount) }))",
+       "outcome": {
+        "kind": "reject",
+        "code": "CASH_SOURCE_PAYMENT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/20/guards/5"
+       },
+       "text": "(state.cashRequestSource).isEmpty",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1/commands/20/guards/6"
+       },
+       "text": "(state.status == \"new\")",
+       "outcome": {
+        "kind": "reject",
+        "code": "CASH_SOURCE_BEFORE_SETTLEMENT"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "context": "bankwealth",
+   "aggregate": "SipPlan",
+   "package": "example.bankwealth",
+   "name": "SipPlan",
+   "source": {
+    "document": "bank-v1",
+    "pointer": "/aggregates/2"
+   },
+   "commands": [
+    {
+     "command": "CreateSipPlan",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/2/commands/0"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/0/guards/0"
+       },
+       "text": "((state.createIntent).isEmpty || (((state.sipCreateIntents).contains(\"original\") && (p.planId == ((state.sipCreateIntents)(\"original\")).planId)) && (p.config == ((state.sipCreateIntents)(\"original\")).config)))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_ADMITTED_CREATE_MATCH"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/0/guards/1"
+       },
+       "text": "((p.planId).value).nonEmpty",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_PLAN_ID"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/0/guards/2"
+       },
+       "text": "(!(state.initialized) || (((p.planId == state.id) && (state.revisions).contains((p.config).revision)) && ((state.revisions)((p.config).revision) == p.config)))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_CREATE_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/0/guards/3"
+       },
+       "text": "!(state.initialized)",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/0/guards/4"
+       },
+       "text": "(((p.config).revision).value).nonEmpty",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_REVISION_ID"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/0/guards/5"
+       },
+       "text": "((p.config).effectiveSlot >= java.lang.Long.parseLong(\"0\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_EFFECTIVE_SLOT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/0/guards/6"
+       },
+       "text": "(((((p.config).investorAccountId).value).nonEmpty && (((p.config).fundCollectionAccountId).value).nonEmpty) && ((p.config).investorAccountId != (p.config).fundCollectionAccountId))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_CONFIG_ACCOUNTS"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/0/guards/7"
+       },
+       "text": "((p.config).fundCode).nonEmpty",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_CONFIG_FUND"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/0/guards/8"
+       },
+       "text": "((((p.config).amount).currency == \"CNY\") && (((p.config).amount).amount > BigDecimal(\"0.00\")))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_CONFIG_AMOUNT"
+       }
+      }
+     ]
+    },
+    {
+     "command": "AppendSipDueSlot",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/2/commands/1"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/1/guards/0"
+       },
+       "text": "((state.createIntent).isEmpty || (state.createIntentDueSlots).contains(p.dueSlot))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_ADMITTED_SLOT_MEMBER"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/1/guards/1"
+       },
+       "text": "state.initialized",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_INITIALIZED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/1/guards/2"
+       },
+       "text": "(!((state.slots).contains(p.position)) || ((state.slots)(p.position) == p.dueSlot))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_SLOT_REPLAY_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/1/guards/3"
+       },
+       "text": "!((state.slots).contains(p.position))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/1/guards/4"
+       },
+       "text": "!(state.scheduleSealed)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_SCHEDULE_OPEN"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/1/guards/5"
+       },
+       "text": "((p.position == state.scheduleCount) && (p.position < java.lang.Long.parseLong(\"9223372036854775807\")))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_SLOT_POSITION"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/1/guards/6"
+       },
+       "text": "((p.dueSlot > state.lastDueSlot) && (p.dueSlot >= state.latestEffectiveSlot))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_SLOT_ORDER"
+       }
+      }
+     ]
+    },
+    {
+     "command": "SealSipSchedule",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/2/commands/2"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/2/guards/0"
+       },
+       "text": "(state.createIntentDueSlots).forall((state.intentAppendedDueSlots).contains)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_ADMITTED_SCHEDULE_COVERED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/2/guards/1"
+       },
+       "text": "state.initialized",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_INITIALIZED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/2/guards/2"
+       },
+       "text": "!(state.scheduleSealed)",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/2/guards/3"
+       },
+       "text": "(state.scheduleCount > java.lang.Long.parseLong(\"0\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_FINITE_SCHEDULE"
+       }
+      }
+     ]
+    },
+    {
+     "command": "ReviseSipPlan",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/2/commands/3"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/3/guards/0"
+       },
+       "text": "state.initialized",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_INITIALIZED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/3/guards/1"
+       },
+       "text": "(!((state.revisions).contains((p.config).revision)) || ((state.revisions)((p.config).revision) == p.config))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_REVISION_REPLAY_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/3/guards/2"
+       },
+       "text": "!((state.revisions).contains((p.config).revision))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/3/guards/3"
+       },
+       "text": "(((p.config).revision).value).nonEmpty",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_REVISION_ID"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/3/guards/4"
+       },
+       "text": "((p.config).effectiveSlot >= java.lang.Long.parseLong(\"0\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_EFFECTIVE_SLOT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/3/guards/5"
+       },
+       "text": "(((((p.config).investorAccountId).value).nonEmpty && (((p.config).fundCollectionAccountId).value).nonEmpty) && ((p.config).investorAccountId != (p.config).fundCollectionAccountId))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_CONFIG_ACCOUNTS"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/3/guards/6"
+       },
+       "text": "((p.config).fundCode).nonEmpty",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_CONFIG_FUND"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/3/guards/7"
+       },
+       "text": "((((p.config).amount).currency == \"CNY\") && (((p.config).amount).amount > BigDecimal(\"0.00\")))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_CONFIG_AMOUNT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/3/guards/8"
+       },
+       "text": "(((p.config).effectiveSlot > state.currentTick) && ((p.config).effectiveSlot > state.latestEffectiveSlot))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_REVISION_FUTURE"
+       }
+      }
+     ]
+    },
+    {
+     "command": "AdvanceSipClock",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/2/commands/4"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/4/guards/0"
+       },
+       "text": "state.initialized",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_INITIALIZED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/4/guards/1"
+       },
+       "text": "state.scheduleSealed",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_SCHEDULE_SEALED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/4/guards/2"
+       },
+       "text": "((p.tick >= state.currentTick) && (p.tick >= java.lang.Long.parseLong(\"0\")))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_CLOCK_MONOTONE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/4/guards/3"
+       },
+       "text": "(p.tick != state.currentTick)",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      }
+     ]
+    },
+    {
+     "command": "PauseSipPlan",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/2/commands/5"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/5/guards/0"
+       },
+       "text": "state.initialized",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_INITIALIZED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/5/guards/1"
+       },
+       "text": "state.scheduleSealed",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_SCHEDULE_SEALED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/5/guards/2"
+       },
+       "text": "(!(state.paused) || (p.tick == state.pauseTick))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_PAUSE_REPLAY_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/5/guards/3"
+       },
+       "text": "!(state.paused)",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/5/guards/4"
+       },
+       "text": "((p.tick == state.currentTick) && (p.tick >= java.lang.Long.parseLong(\"0\")))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_PAUSE_CLOCK"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/5/guards/5"
+       },
+       "text": "!((state.pauseIntervals).contains(p.tick))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_PAUSE_INTERVAL_ONCE"
+       }
+      }
+     ]
+    },
+    {
+     "command": "ResumeSipPlan",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/2/commands/6"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/6/guards/0"
+       },
+       "text": "state.initialized",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_INITIALIZED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/6/guards/1"
+       },
+       "text": "state.scheduleSealed",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_SCHEDULE_SEALED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/6/guards/2"
+       },
+       "text": "(p.tick == state.currentTick)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_RESUME_CLOCK"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/6/guards/3"
+       },
+       "text": "state.paused",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/6/guards/4"
+       },
+       "text": "((state.observedCount == state.scheduleCount) || ((state.slots).contains(state.observedCount) && ((state.slots)(state.observedCount) > state.currentTick)))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_RESUME_CLASSIFIED"
+       }
+      }
+     ]
+    },
+    {
+     "command": "ObserveSipDueSlot",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/2/commands/7"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/7/guards/0"
+       },
+       "text": "state.initialized",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_INITIALIZED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/7/guards/1"
+       },
+       "text": "state.scheduleSealed",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_SCHEDULE_SEALED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/7/guards/2"
+       },
+       "text": "(state.slots).contains(p.position)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_SLOT_DECLARED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/7/guards/3"
+       },
+       "text": "((state.slots)(p.position) == p.dueSlot)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_SLOT_MATCH"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/7/guards/4"
+       },
+       "text": "(!((state.slotDisposition).contains(p.dueSlot)) || ((state.slotDisposition)(p.dueSlot) == \"backlog\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_OBSERVATION_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/7/guards/5"
+       },
+       "text": "!((state.slotDisposition).contains(p.dueSlot))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/7/guards/6"
+       },
+       "text": "(p.position == state.observedCount)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_OBSERVATION_ORDER"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/7/guards/7"
+       },
+       "text": "(p.dueSlot <= state.currentTick)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_SLOT_DUE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/7/guards/8"
+       },
+       "text": "(!(state.paused) || (p.dueSlot < state.pauseTick))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_PAUSE_CLASSIFICATION"
+       }
+      }
+     ]
+    },
+    {
+     "command": "SkipPausedSipDueSlot",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/2/commands/8"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/8/guards/0"
+       },
+       "text": "state.initialized",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_INITIALIZED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/8/guards/1"
+       },
+       "text": "state.scheduleSealed",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_SCHEDULE_SEALED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/8/guards/2"
+       },
+       "text": "(state.slots).contains(p.position)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_SLOT_DECLARED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/8/guards/3"
+       },
+       "text": "((state.slots)(p.position) == p.dueSlot)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_SLOT_MATCH"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/8/guards/4"
+       },
+       "text": "(!((state.slotDisposition).contains(p.dueSlot)) || ((state.slotDisposition)(p.dueSlot) == \"skipped\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_OBSERVATION_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/8/guards/5"
+       },
+       "text": "!((state.slotDisposition).contains(p.dueSlot))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/8/guards/6"
+       },
+       "text": "(p.position == state.observedCount)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_OBSERVATION_ORDER"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/8/guards/7"
+       },
+       "text": "(p.dueSlot <= state.currentTick)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_SLOT_DUE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/8/guards/8"
+       },
+       "text": "(state.paused && (p.dueSlot >= state.pauseTick))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_PAUSE_CLASSIFICATION"
+       }
+      }
+     ]
+    },
+    {
+     "command": "AdvanceSkippedSipSlot",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/2/commands/9"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/9/guards/0"
+       },
+       "text": "state.initialized",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_INITIALIZED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/9/guards/1"
+       },
+       "text": "state.scheduleSealed",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_SCHEDULE_SEALED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/9/guards/2"
+       },
+       "text": "(state.slots).contains(p.position)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_SLOT_DECLARED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/9/guards/3"
+       },
+       "text": "((state.slots)(p.position) == p.dueSlot)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_SLOT_MATCH"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/9/guards/4"
+       },
+       "text": "((state.slotDisposition).get(p.dueSlot)).contains(\"skipped\")",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_SKIP_RECORDED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/9/guards/5"
+       },
+       "text": "(p.position >= state.startCount)",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/9/guards/6"
+       },
+       "text": "(p.position == state.startCount)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_SKIP_CURSOR_ORDER"
+       }
+      }
+     ]
+    },
+    {
+     "command": "TriggerSipInstallment",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/2/commands/10"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/10/guards/0"
+       },
+       "text": "state.initialized",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_INITIALIZED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/10/guards/1"
+       },
+       "text": "state.scheduleSealed",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_SCHEDULE_SEALED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/10/guards/2"
+       },
+       "text": "(state.slots).contains(p.position)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_SLOT_DECLARED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/10/guards/3"
+       },
+       "text": "((state.slots)(p.position) == p.dueSlot)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_SLOT_MATCH"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/10/guards/4"
+       },
+       "text": "(!((state.occurrences).contains(p.dueSlot)) || ((((state.occurrences)(p.dueSlot)).revision == p.revision) && (((state.occurrences)(p.dueSlot)).config == p.config)))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_OCCURRENCE_REPLAY_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/10/guards/5"
+       },
+       "text": "!((state.occurrences).contains(p.dueSlot))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/10/guards/6"
+       },
+       "text": "!(state.paused)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_ACTIVE_START"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/10/guards/7"
+       },
+       "text": "(p.position == state.startCount)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_START_ORDER"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/10/guards/8"
+       },
+       "text": "((state.slotDisposition).get(p.dueSlot)).contains(\"backlog\")",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_BACKLOG_REQUIRED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/10/guards/9"
+       },
+       "text": "(state.revisions).contains(p.revision)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_REVISION_DECLARED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/10/guards/10"
+       },
+       "text": "(((state.revisions)(p.revision) == p.config) && ((p.config).revision == p.revision))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_RETAINED_CONFIG"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/10/guards/11"
+       },
+       "text": "((p.dueSlot >= (p.config).effectiveSlot) && (!((state.revisionEnds).contains(p.revision)) || (p.dueSlot < (state.revisionEnds)(p.revision))))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_REVISION_INTERVAL"
+       }
+      }
+     ]
+    },
+    {
+     "command": "RecordSipInstallmentPending",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/2/commands/11"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/11/guards/0"
+       },
+       "text": "state.initialized",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_INITIALIZED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/11/guards/1"
+       },
+       "text": "(state.occurrences).contains((p.occurrence).dueSlot)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_OCCURRENCE_KNOWN"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/11/guards/2"
+       },
+       "text": "(((state.occurrences)((p.occurrence).dueSlot) == p.occurrence) && ((p.occurrence).planId == state.id))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_ORIGINAL_ASSOCIATION"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/11/guards/3"
+       },
+       "text": "!((state.firstTerminals).contains((p.occurrence).occurrenceId))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/11/guards/4"
+       },
+       "text": "!(((state.occurrenceProgress).get((p.occurrence).occurrenceId)).contains(\"pending\"))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      }
+     ]
+    },
+    {
+     "command": "RecordSipInstallmentOutcomeUnknown",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/2/commands/12"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/12/guards/0"
+       },
+       "text": "state.initialized",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_INITIALIZED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/12/guards/1"
+       },
+       "text": "(state.occurrences).contains((p.occurrence).dueSlot)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_OCCURRENCE_KNOWN"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/12/guards/2"
+       },
+       "text": "(((state.occurrences)((p.occurrence).dueSlot) == p.occurrence) && ((p.occurrence).planId == state.id))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_ORIGINAL_ASSOCIATION"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/12/guards/3"
+       },
+       "text": "!((state.firstTerminals).contains((p.occurrence).occurrenceId))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/12/guards/4"
+       },
+       "text": "!(((state.occurrenceProgress).get((p.occurrence).occurrenceId)).contains(\"outcome-unknown\"))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      }
+     ]
+    },
+    {
+     "command": "RecordSipInstallmentRecoveryRequired",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/2/commands/13"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/13/guards/0"
+       },
+       "text": "state.initialized",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_INITIALIZED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/13/guards/1"
+       },
+       "text": "(state.occurrences).contains((p.occurrence).dueSlot)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_OCCURRENCE_KNOWN"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/13/guards/2"
+       },
+       "text": "(((state.occurrences)((p.occurrence).dueSlot) == p.occurrence) && ((p.occurrence).planId == state.id))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_ORIGINAL_ASSOCIATION"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/13/guards/3"
+       },
+       "text": "!((state.firstTerminals).contains((p.occurrence).occurrenceId))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/13/guards/4"
+       },
+       "text": "!(((state.occurrenceProgress).get((p.occurrence).occurrenceId)).contains(\"recovery-required\"))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      }
+     ]
+    },
+    {
+     "command": "RecordSipInstallmentRefundInProgress",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/2/commands/14"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/14/guards/0"
+       },
+       "text": "state.initialized",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_INITIALIZED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/14/guards/1"
+       },
+       "text": "(state.occurrences).contains((p.occurrence).dueSlot)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_OCCURRENCE_KNOWN"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/14/guards/2"
+       },
+       "text": "(((state.occurrences)((p.occurrence).dueSlot) == p.occurrence) && ((p.occurrence).planId == state.id))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_ORIGINAL_ASSOCIATION"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/14/guards/3"
+       },
+       "text": "!((state.firstTerminals).contains((p.occurrence).occurrenceId))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/14/guards/4"
+       },
+       "text": "!(((state.occurrenceProgress).get((p.occurrence).occurrenceId)).contains(\"refund-in-progress\"))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      }
+     ]
+    },
+    {
+     "command": "RecordSipInstallmentSucceeded",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/2/commands/15"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/15/guards/0"
+       },
+       "text": "state.initialized",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_INITIALIZED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/15/guards/1"
+       },
+       "text": "(state.occurrences).contains((p.occurrence).dueSlot)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_OCCURRENCE_KNOWN"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/15/guards/2"
+       },
+       "text": "(((state.occurrences)((p.occurrence).dueSlot) == p.occurrence) && ((p.occurrence).planId == state.id))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_ORIGINAL_ASSOCIATION"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/15/guards/3"
+       },
+       "text": "(p.evidence == \"ta-confirmed\")",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_TERMINAL_EVIDENCE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/15/guards/4"
+       },
+       "text": "((p.receiptId).nonEmpty && (p.receiptBody).nonEmpty)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_TERMINAL_RECEIPT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/15/guards/5"
+       },
+       "text": "(!((state.terminalReceiptBodies).contains(p.receiptId)) || ((state.terminalReceiptBodies)(p.receiptId) == p.receiptBody))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_TERMINAL_RECEIPT_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/15/guards/6"
+       },
+       "text": "(!((state.firstTerminals).contains((p.occurrence).occurrenceId)) || ((state.firstTerminals)((p.occurrence).occurrenceId) == \"succeeded\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_TERMINAL_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/15/guards/7"
+       },
+       "text": "!((state.firstTerminals).contains((p.occurrence).occurrenceId))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/15/guards/8"
+       },
+       "text": "(state.successTotal < java.lang.Long.parseLong(\"9223372036854775807\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_TOTAL_CAPACITY"
+       }
+      }
+     ]
+    },
+    {
+     "command": "RecordSipInstallmentFailed",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/2/commands/16"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/16/guards/0"
+       },
+       "text": "state.initialized",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_INITIALIZED"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/16/guards/1"
+       },
+       "text": "(state.occurrences).contains((p.occurrence).dueSlot)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_OCCURRENCE_KNOWN"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/16/guards/2"
+       },
+       "text": "(((state.occurrences)((p.occurrence).dueSlot) == p.occurrence) && ((p.occurrence).planId == state.id))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_ORIGINAL_ASSOCIATION"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/16/guards/3"
+       },
+       "text": "(((p.evidence == \"payment-rejected-before-effects\") || (p.evidence == \"payment-compensated\")) || (p.evidence == \"ta-rejected-refund-completed\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_TERMINAL_EVIDENCE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/16/guards/4"
+       },
+       "text": "((p.receiptId).nonEmpty && (p.receiptBody).nonEmpty)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_TERMINAL_RECEIPT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/16/guards/5"
+       },
+       "text": "(!((state.terminalReceiptBodies).contains(p.receiptId)) || ((state.terminalReceiptBodies)(p.receiptId) == p.receiptBody))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_TERMINAL_RECEIPT_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/16/guards/6"
+       },
+       "text": "(!((state.firstTerminals).contains((p.occurrence).occurrenceId)) || ((state.firstTerminals)((p.occurrence).occurrenceId) == \"failed\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_TERMINAL_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/16/guards/7"
+       },
+       "text": "!((state.firstTerminals).contains((p.occurrence).occurrenceId))",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/16/guards/8"
+       },
+       "text": "(state.failureTotal < java.lang.Long.parseLong(\"9223372036854775807\"))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_TOTAL_CAPACITY"
+       }
+      }
+     ]
+    },
+    {
+     "command": "RecordSipCreateIntent",
+     "source": {
+      "document": "bank-v1",
+      "pointer": "/aggregates/2/commands/17"
+     },
+     "guards": [
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/17/guards/0"
+       },
+       "text": "(p.source).contains(p.intent)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_INTENT_OPTION"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/17/guards/1"
+       },
+       "text": "((p.intent).planId == state.id)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_INTENT_RESOURCE"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/17/guards/2"
+       },
+       "text": "(((((((((p.intent).principalId).nonEmpty && ((p.intent).clientRequestId).nonEmpty) && ((p.intent).authorityVersion).nonEmpty) && ((p.intent).clientRequestId == ((p.intent).request).clientRequestId)) && (((p.intent).request).fundCode == ((p.intent).config).fundCode)) && (((p.intent).request).effectiveSlot == ((p.intent).config).effectiveSlot)) && ((((p.intent).request).amount).currency == (((p.intent).config).amount).currency)) && (((p.intent).request).dueSlots).nonEmpty)",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_INTENT_BODY"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/17/guards/3"
+       },
+       "text": "((state.createIntent).isEmpty || (state.createIntent).contains(p.intent))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_INTENT_CONFLICT"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/17/guards/4"
+       },
+       "text": "(!(state.initialized) || ((((p.intent).planId == state.id) && (state.revisions).contains(((p.intent).config).revision)) && ((state.revisions)(((p.intent).config).revision) == (p.intent).config)))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_INTENT_EXISTING_CONFIG"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/17/guards/5"
+       },
+       "text": "(state.createIntent).isEmpty",
+       "outcome": {
+        "kind": "succeed-empty"
+       }
+      },
+      {
+       "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2/commands/17/guards/6"
+       },
+       "text": "((!(state.initialized) && (state.scheduleCount == java.lang.Long.parseLong(\"0\"))) && !(state.scheduleSealed))",
+       "outcome": {
+        "kind": "reject",
+        "code": "SIP_INTENT_BEFORE_CREATE"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

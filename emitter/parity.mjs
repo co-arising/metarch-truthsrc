@@ -154,7 +154,7 @@ const checkFamily = async (family, workDir) => {
     family: family.id,
     familyNumber: family.familyNumber,
     inputSchema: family.inputSchema,
-    provenance: family.toolsRef === null ? 'handwritten-golden' : 'ported-tools-reference',
+    provenance: family.toolsRef === null ? (family.provenance ?? 'handwritten-golden') : 'ported-tools-reference',
     files: files.length,
     deterministic,
     toolsDeterministic,

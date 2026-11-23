@@ -20,7 +20,7 @@ import { parseStrictJson } from '../lib/strict-json.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
-const FAMILY_COUNT = 10;
+const FAMILY_COUNT = 11;
 const BATTERY_DEBT_FAMILIES = [
   'aggregate-rules-formal',
   'external-connector-port',
@@ -28,13 +28,14 @@ const BATTERY_DEBT_FAMILIES = [
   'projection-apply-event',
 ].sort();
 const HANDWRITTEN_GOLDEN_FAMILIES = ['pipeline-invocation-face', 'effect-face'].sort();
+const CLASSIC_REPRODUCTION_FAMILIES = ['aggregate-invariant-rules'].sort();
 
-test('the unified emitter registers exactly the ten curated families', () => {
+test('the unified emitter registers exactly the eleven curated families', () => {
   assert.equal(listFamilyIds().length, FAMILY_COUNT);
   for (const id of ['aggregate-rules-formal', 'external-connector-port', 'connector-implementation',
     'projection-apply-event', 'aggregate-state-controller', 'strict-saga-module',
     'strict-fixture-host', 'composition-invocation-host', 'pipeline-invocation-face',
-    'effect-face']) {
+    'effect-face', 'aggregate-invariant-rules']) {
     const family = getFamily(id);
     assert.equal(typeof family.checkInput, 'function', id + ' checkInput');
     assert.equal(typeof family.renderAll, 'function', id + ' renderAll');
@@ -44,6 +45,13 @@ test('the unified emitter registers exactly the ten curated families', () => {
     const family = getFamily(id);
     assert.equal(family.toolsRef, null, id + ' toolsRef');
     assert.equal(family.provenance, 'handwritten-golden', id + ' provenance');
+  }
+  // The classic-reproduction rules family pins the bank rules cluster's classic
+  // production bytes as its golden receipt (ruling 2026-11-23).
+  for (const id of CLASSIC_REPRODUCTION_FAMILIES) {
+    const family = getFamily(id);
+    assert.equal(family.toolsRef, null, id + ' toolsRef');
+    assert.equal(family.provenance, 'classic-reproduction', id + ' provenance');
   }
 });
 
@@ -95,6 +103,10 @@ test('phase-1 acceptance: emitter parity against goldens (and tools references w
     if (family.battery.kind === 'embedded') assert.equal(family.battery.clean, true, family.family + ' battery clean');
     if (HANDWRITTEN_GOLDEN_FAMILIES.includes(family.family)) {
       assert.equal(family.provenance, 'handwritten-golden', family.family + ' provenance');
+      assert.equal(family.toolsParity, null, family.family + ' tools parity is structurally inapplicable');
+      assert.equal(family.toolsDeterministic, null, family.family + ' tools determinism is structurally inapplicable');
+    } else if (CLASSIC_REPRODUCTION_FAMILIES.includes(family.family)) {
+      assert.equal(family.provenance, 'classic-reproduction', family.family + ' provenance');
       assert.equal(family.toolsParity, null, family.family + ' tools parity is structurally inapplicable');
       assert.equal(family.toolsDeterministic, null, family.family + ' tools determinism is structurally inapplicable');
     } else {

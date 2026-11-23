@@ -1,0 +1,3543 @@
+{
+ "schemaVersion": "receipt.aggregate-invariant-rules-anchor-spans/v1",
+ "note": "Guard- and command-level byte spans for the rules cluster as verified by the classic-computed anchors of bank-wealth generated/current (2026-11-23). Independent reproduction receipt: the unified emitter family must land every mapping on exactly these byte spans.",
+ "spans": [
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/0",
+   "file": "app/example/bankwealth/domain/CreditBalanceRules.scala",
+   "span": {
+    "start": 141,
+    "end": 467,
+    "text": "  def InitializeAccount(state: CreditBalanceState, p: InitializeAccount, hosts: CreditBalanceComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.CreditBalanceRules.InitializeAccount(example.bankwealth.domain.invariant.params.CreditBalanceRuleParams.InitializeAccountParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/1",
+   "file": "app/example/bankwealth/domain/CreditBalanceRules.scala",
+   "span": {
+    "start": 467,
+    "end": 773,
+    "text": "  def ReserveFunds(state: CreditBalanceState, p: ReserveFunds, hosts: CreditBalanceComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.CreditBalanceRules.ReserveFunds(example.bankwealth.domain.invariant.params.CreditBalanceRuleParams.ReserveFundsParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/2",
+   "file": "app/example/bankwealth/domain/CreditBalanceRules.scala",
+   "span": {
+    "start": 773,
+    "end": 1075,
+    "text": "  def DeductFunds(state: CreditBalanceState, p: DeductFunds, hosts: CreditBalanceComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.CreditBalanceRules.DeductFunds(example.bankwealth.domain.invariant.params.CreditBalanceRuleParams.DeductFundsParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/3",
+   "file": "app/example/bankwealth/domain/CreditBalanceRules.scala",
+   "span": {
+    "start": 1075,
+    "end": 1413,
+    "text": "  def ReleaseReservedFunds(state: CreditBalanceState, p: ReleaseReservedFunds, hosts: CreditBalanceComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.CreditBalanceRules.ReleaseReservedFunds(example.bankwealth.domain.invariant.params.CreditBalanceRuleParams.ReleaseReservedFundsParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/4",
+   "file": "app/example/bankwealth/domain/CreditBalanceRules.scala",
+   "span": {
+    "start": 1413,
+    "end": 1755,
+    "text": "  def RecordIncomingCredits(state: CreditBalanceState, p: RecordIncomingCredits, hosts: CreditBalanceComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.CreditBalanceRules.RecordIncomingCredits(example.bankwealth.domain.invariant.params.CreditBalanceRuleParams.RecordIncomingCreditsParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/5",
+   "file": "app/example/bankwealth/domain/CreditBalanceRules.scala",
+   "span": {
+    "start": 1755,
+    "end": 2097,
+    "text": "  def CommitIncomingCredits(state: CreditBalanceState, p: CommitIncomingCredits, hosts: CreditBalanceComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.CreditBalanceRules.CommitIncomingCredits(example.bankwealth.domain.invariant.params.CreditBalanceRuleParams.CommitIncomingCreditsParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/6",
+   "file": "app/example/bankwealth/domain/CreditBalanceRules.scala",
+   "span": {
+    "start": 2097,
+    "end": 2435,
+    "text": "  def CancelIncomingCredit(state: CreditBalanceState, p: CancelIncomingCredit, hosts: CreditBalanceComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.CreditBalanceRules.CancelIncomingCredit(example.bankwealth.domain.invariant.params.CreditBalanceRuleParams.CancelIncomingCreditParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/0",
+   "file": "app/example/bankwealth/domain/FundOrderRules.scala",
+   "span": {
+    "start": 133,
+    "end": 491,
+    "text": "  def RequestFundPurchaseSettlement(state: FundOrderState, p: RequestFundPurchaseSettlement, hosts: FundOrderComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.FundOrderRules.RequestFundPurchaseSettlement(example.bankwealth.domain.invariant.params.FundOrderRuleParams.RequestFundPurchaseSettlementParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/1",
+   "file": "app/example/bankwealth/domain/FundOrderRules.scala",
+   "span": {
+    "start": 491,
+    "end": 825,
+    "text": "  def ReserveFundSubscription(state: FundOrderState, p: ReserveFundSubscription, hosts: FundOrderComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.FundOrderRules.ReserveFundSubscription(example.bankwealth.domain.invariant.params.FundOrderRuleParams.ReserveFundSubscriptionParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/2",
+   "file": "app/example/bankwealth/domain/FundOrderRules.scala",
+   "span": {
+    "start": 825,
+    "end": 1187,
+    "text": "  def ConfirmFundSubscriptionPayment(state: FundOrderState, p: ConfirmFundSubscriptionPayment, hosts: FundOrderComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.FundOrderRules.ConfirmFundSubscriptionPayment(example.bankwealth.domain.invariant.params.FundOrderRuleParams.ConfirmFundSubscriptionPaymentParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/3",
+   "file": "app/example/bankwealth/domain/FundOrderRules.scala",
+   "span": {
+    "start": 1187,
+    "end": 1533,
+    "text": "  def CancelCashFundSubscription(state: FundOrderState, p: CancelCashFundSubscription, hosts: FundOrderComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.FundOrderRules.CancelCashFundSubscription(example.bankwealth.domain.invariant.params.FundOrderRuleParams.CancelCashFundSubscriptionParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/4",
+   "file": "app/example/bankwealth/domain/FundOrderRules.scala",
+   "span": {
+    "start": 1533,
+    "end": 1895,
+    "text": "  def RecordFundCashPaymentSucceeded(state: FundOrderState, p: RecordFundCashPaymentSucceeded, hosts: FundOrderComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.FundOrderRules.RecordFundCashPaymentSucceeded(example.bankwealth.domain.invariant.params.FundOrderRuleParams.RecordFundCashPaymentSucceededParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/5",
+   "file": "app/example/bankwealth/domain/FundOrderRules.scala",
+   "span": {
+    "start": 1895,
+    "end": 2305,
+    "text": "  def RecordFundCashPaymentRejectedBeforeEffects(state: FundOrderState, p: RecordFundCashPaymentRejectedBeforeEffects, hosts: FundOrderComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.FundOrderRules.RecordFundCashPaymentRejectedBeforeEffects(example.bankwealth.domain.invariant.params.FundOrderRuleParams.RecordFundCashPaymentRejectedBeforeEffectsParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/6",
+   "file": "app/example/bankwealth/domain/FundOrderRules.scala",
+   "span": {
+    "start": 2305,
+    "end": 2675,
+    "text": "  def RecordFundCashPaymentCompensated(state: FundOrderState, p: RecordFundCashPaymentCompensated, hosts: FundOrderComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.FundOrderRules.RecordFundCashPaymentCompensated(example.bankwealth.domain.invariant.params.FundOrderRuleParams.RecordFundCashPaymentCompensatedParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/7",
+   "file": "app/example/bankwealth/domain/FundOrderRules.scala",
+   "span": {
+    "start": 2675,
+    "end": 3065,
+    "text": "  def RecordFundCashPaymentRecoveryRequired(state: FundOrderState, p: RecordFundCashPaymentRecoveryRequired, hosts: FundOrderComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.FundOrderRules.RecordFundCashPaymentRecoveryRequired(example.bankwealth.domain.invariant.params.FundOrderRuleParams.RecordFundCashPaymentRecoveryRequiredParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/8",
+   "file": "app/example/bankwealth/domain/FundOrderRules.scala",
+   "span": {
+    "start": 3065,
+    "end": 3447,
+    "text": "  def RecordFundCashPaymentOutcomeUnknown(state: FundOrderState, p: RecordFundCashPaymentOutcomeUnknown, hosts: FundOrderComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.FundOrderRules.RecordFundCashPaymentOutcomeUnknown(example.bankwealth.domain.invariant.params.FundOrderRuleParams.RecordFundCashPaymentOutcomeUnknownParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/9",
+   "file": "app/example/bankwealth/domain/FundOrderRules.scala",
+   "span": {
+    "start": 3447,
+    "end": 3785,
+    "text": "  def RegisterFundTASubmission(state: FundOrderState, p: RegisterFundTASubmission, hosts: FundOrderComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.FundOrderRules.RegisterFundTASubmission(example.bankwealth.domain.invariant.params.FundOrderRuleParams.RegisterFundTASubmissionParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/10",
+   "file": "app/example/bankwealth/domain/FundOrderRules.scala",
+   "span": {
+    "start": 3785,
+    "end": 4107,
+    "text": "  def RecordFundTAAccepted(state: FundOrderState, p: RecordFundTAAccepted, hosts: FundOrderComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.FundOrderRules.RecordFundTAAccepted(example.bankwealth.domain.invariant.params.FundOrderRuleParams.RecordFundTAAcceptedParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/11",
+   "file": "app/example/bankwealth/domain/FundOrderRules.scala",
+   "span": {
+    "start": 4107,
+    "end": 4433,
+    "text": "  def RecordFundTAConfirmed(state: FundOrderState, p: RecordFundTAConfirmed, hosts: FundOrderComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.FundOrderRules.RecordFundTAConfirmed(example.bankwealth.domain.invariant.params.FundOrderRuleParams.RecordFundTAConfirmedParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/12",
+   "file": "app/example/bankwealth/domain/FundOrderRules.scala",
+   "span": {
+    "start": 4433,
+    "end": 4755,
+    "text": "  def RecordFundTARejected(state: FundOrderState, p: RecordFundTARejected, hosts: FundOrderComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.FundOrderRules.RecordFundTARejected(example.bankwealth.domain.invariant.params.FundOrderRuleParams.RecordFundTARejectedParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/13",
+   "file": "app/example/bankwealth/domain/FundOrderRules.scala",
+   "span": {
+    "start": 4755,
+    "end": 5073,
+    "text": "  def RecordFundTAUnknown(state: FundOrderState, p: RecordFundTAUnknown, hosts: FundOrderComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.FundOrderRules.RecordFundTAUnknown(example.bankwealth.domain.invariant.params.FundOrderRuleParams.RecordFundTAUnknownParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/14",
+   "file": "app/example/bankwealth/domain/FundOrderRules.scala",
+   "span": {
+    "start": 5073,
+    "end": 5415,
+    "text": "  def RequestFundPurchaseRefund(state: FundOrderState, p: RequestFundPurchaseRefund, hosts: FundOrderComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.FundOrderRules.RequestFundPurchaseRefund(example.bankwealth.domain.invariant.params.FundOrderRuleParams.RequestFundPurchaseRefundParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/15",
+   "file": "app/example/bankwealth/domain/FundOrderRules.scala",
+   "span": {
+    "start": 5415,
+    "end": 5757,
+    "text": "  def RecordFundRefundSucceeded(state: FundOrderState, p: RecordFundRefundSucceeded, hosts: FundOrderComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.FundOrderRules.RecordFundRefundSucceeded(example.bankwealth.domain.invariant.params.FundOrderRuleParams.RecordFundRefundSucceededParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/16",
+   "file": "app/example/bankwealth/domain/FundOrderRules.scala",
+   "span": {
+    "start": 5757,
+    "end": 6147,
+    "text": "  def RecordFundRefundRejectedBeforeEffects(state: FundOrderState, p: RecordFundRefundRejectedBeforeEffects, hosts: FundOrderComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.FundOrderRules.RecordFundRefundRejectedBeforeEffects(example.bankwealth.domain.invariant.params.FundOrderRuleParams.RecordFundRefundRejectedBeforeEffectsParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/17",
+   "file": "app/example/bankwealth/domain/FundOrderRules.scala",
+   "span": {
+    "start": 6147,
+    "end": 6497,
+    "text": "  def RecordFundRefundCompensated(state: FundOrderState, p: RecordFundRefundCompensated, hosts: FundOrderComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.FundOrderRules.RecordFundRefundCompensated(example.bankwealth.domain.invariant.params.FundOrderRuleParams.RecordFundRefundCompensatedParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/18",
+   "file": "app/example/bankwealth/domain/FundOrderRules.scala",
+   "span": {
+    "start": 6497,
+    "end": 6867,
+    "text": "  def RecordFundRefundRecoveryRequired(state: FundOrderState, p: RecordFundRefundRecoveryRequired, hosts: FundOrderComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.FundOrderRules.RecordFundRefundRecoveryRequired(example.bankwealth.domain.invariant.params.FundOrderRuleParams.RecordFundRefundRecoveryRequiredParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/19",
+   "file": "app/example/bankwealth/domain/FundOrderRules.scala",
+   "span": {
+    "start": 6867,
+    "end": 7229,
+    "text": "  def RecordFundRefundOutcomeUnknown(state: FundOrderState, p: RecordFundRefundOutcomeUnknown, hosts: FundOrderComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.FundOrderRules.RecordFundRefundOutcomeUnknown(example.bankwealth.domain.invariant.params.FundOrderRuleParams.RecordFundRefundOutcomeUnknownParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/20",
+   "file": "app/example/bankwealth/domain/FundOrderRules.scala",
+   "span": {
+    "start": 7229,
+    "end": 7563,
+    "text": "  def RecordCashRequestSource(state: FundOrderState, p: RecordCashRequestSource, hosts: FundOrderComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.FundOrderRules.RecordCashRequestSource(example.bankwealth.domain.invariant.params.FundOrderRuleParams.RecordCashRequestSourceParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/0",
+   "file": "app/example/bankwealth/domain/SipPlanRules.scala",
+   "span": {
+    "start": 129,
+    "end": 415,
+    "text": "  def CreateSipPlan(state: SipPlanState, p: CreateSipPlan, hosts: SipPlanComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.SipPlanRules.CreateSipPlan(example.bankwealth.domain.invariant.params.SipPlanRuleParams.CreateSipPlanParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/1",
+   "file": "app/example/bankwealth/domain/SipPlanRules.scala",
+   "span": {
+    "start": 415,
+    "end": 713,
+    "text": "  def AppendSipDueSlot(state: SipPlanState, p: AppendSipDueSlot, hosts: SipPlanComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.SipPlanRules.AppendSipDueSlot(example.bankwealth.domain.invariant.params.SipPlanRuleParams.AppendSipDueSlotParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/2",
+   "file": "app/example/bankwealth/domain/SipPlanRules.scala",
+   "span": {
+    "start": 713,
+    "end": 1007,
+    "text": "  def SealSipSchedule(state: SipPlanState, p: SealSipSchedule, hosts: SipPlanComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.SipPlanRules.SealSipSchedule(example.bankwealth.domain.invariant.params.SipPlanRuleParams.SealSipScheduleParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/3",
+   "file": "app/example/bankwealth/domain/SipPlanRules.scala",
+   "span": {
+    "start": 1007,
+    "end": 1293,
+    "text": "  def ReviseSipPlan(state: SipPlanState, p: ReviseSipPlan, hosts: SipPlanComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.SipPlanRules.ReviseSipPlan(example.bankwealth.domain.invariant.params.SipPlanRuleParams.ReviseSipPlanParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/4",
+   "file": "app/example/bankwealth/domain/SipPlanRules.scala",
+   "span": {
+    "start": 1293,
+    "end": 1587,
+    "text": "  def AdvanceSipClock(state: SipPlanState, p: AdvanceSipClock, hosts: SipPlanComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.SipPlanRules.AdvanceSipClock(example.bankwealth.domain.invariant.params.SipPlanRuleParams.AdvanceSipClockParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/5",
+   "file": "app/example/bankwealth/domain/SipPlanRules.scala",
+   "span": {
+    "start": 1587,
+    "end": 1869,
+    "text": "  def PauseSipPlan(state: SipPlanState, p: PauseSipPlan, hosts: SipPlanComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.SipPlanRules.PauseSipPlan(example.bankwealth.domain.invariant.params.SipPlanRuleParams.PauseSipPlanParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/6",
+   "file": "app/example/bankwealth/domain/SipPlanRules.scala",
+   "span": {
+    "start": 1869,
+    "end": 2155,
+    "text": "  def ResumeSipPlan(state: SipPlanState, p: ResumeSipPlan, hosts: SipPlanComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.SipPlanRules.ResumeSipPlan(example.bankwealth.domain.invariant.params.SipPlanRuleParams.ResumeSipPlanParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/7",
+   "file": "app/example/bankwealth/domain/SipPlanRules.scala",
+   "span": {
+    "start": 2155,
+    "end": 2457,
+    "text": "  def ObserveSipDueSlot(state: SipPlanState, p: ObserveSipDueSlot, hosts: SipPlanComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.SipPlanRules.ObserveSipDueSlot(example.bankwealth.domain.invariant.params.SipPlanRuleParams.ObserveSipDueSlotParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/8",
+   "file": "app/example/bankwealth/domain/SipPlanRules.scala",
+   "span": {
+    "start": 2457,
+    "end": 2771,
+    "text": "  def SkipPausedSipDueSlot(state: SipPlanState, p: SkipPausedSipDueSlot, hosts: SipPlanComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.SipPlanRules.SkipPausedSipDueSlot(example.bankwealth.domain.invariant.params.SipPlanRuleParams.SkipPausedSipDueSlotParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/9",
+   "file": "app/example/bankwealth/domain/SipPlanRules.scala",
+   "span": {
+    "start": 2771,
+    "end": 3089,
+    "text": "  def AdvanceSkippedSipSlot(state: SipPlanState, p: AdvanceSkippedSipSlot, hosts: SipPlanComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.SipPlanRules.AdvanceSkippedSipSlot(example.bankwealth.domain.invariant.params.SipPlanRuleParams.AdvanceSkippedSipSlotParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/10",
+   "file": "app/example/bankwealth/domain/SipPlanRules.scala",
+   "span": {
+    "start": 3089,
+    "end": 3407,
+    "text": "  def TriggerSipInstallment(state: SipPlanState, p: TriggerSipInstallment, hosts: SipPlanComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.SipPlanRules.TriggerSipInstallment(example.bankwealth.domain.invariant.params.SipPlanRuleParams.TriggerSipInstallmentParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/11",
+   "file": "app/example/bankwealth/domain/SipPlanRules.scala",
+   "span": {
+    "start": 3407,
+    "end": 3749,
+    "text": "  def RecordSipInstallmentPending(state: SipPlanState, p: RecordSipInstallmentPending, hosts: SipPlanComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.SipPlanRules.RecordSipInstallmentPending(example.bankwealth.domain.invariant.params.SipPlanRuleParams.RecordSipInstallmentPendingParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/12",
+   "file": "app/example/bankwealth/domain/SipPlanRules.scala",
+   "span": {
+    "start": 3749,
+    "end": 4119,
+    "text": "  def RecordSipInstallmentOutcomeUnknown(state: SipPlanState, p: RecordSipInstallmentOutcomeUnknown, hosts: SipPlanComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.SipPlanRules.RecordSipInstallmentOutcomeUnknown(example.bankwealth.domain.invariant.params.SipPlanRuleParams.RecordSipInstallmentOutcomeUnknownParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/13",
+   "file": "app/example/bankwealth/domain/SipPlanRules.scala",
+   "span": {
+    "start": 4119,
+    "end": 4497,
+    "text": "  def RecordSipInstallmentRecoveryRequired(state: SipPlanState, p: RecordSipInstallmentRecoveryRequired, hosts: SipPlanComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.SipPlanRules.RecordSipInstallmentRecoveryRequired(example.bankwealth.domain.invariant.params.SipPlanRuleParams.RecordSipInstallmentRecoveryRequiredParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/14",
+   "file": "app/example/bankwealth/domain/SipPlanRules.scala",
+   "span": {
+    "start": 4497,
+    "end": 4875,
+    "text": "  def RecordSipInstallmentRefundInProgress(state: SipPlanState, p: RecordSipInstallmentRefundInProgress, hosts: SipPlanComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.SipPlanRules.RecordSipInstallmentRefundInProgress(example.bankwealth.domain.invariant.params.SipPlanRuleParams.RecordSipInstallmentRefundInProgressParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/15",
+   "file": "app/example/bankwealth/domain/SipPlanRules.scala",
+   "span": {
+    "start": 4875,
+    "end": 5225,
+    "text": "  def RecordSipInstallmentSucceeded(state: SipPlanState, p: RecordSipInstallmentSucceeded, hosts: SipPlanComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.SipPlanRules.RecordSipInstallmentSucceeded(example.bankwealth.domain.invariant.params.SipPlanRuleParams.RecordSipInstallmentSucceededParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/16",
+   "file": "app/example/bankwealth/domain/SipPlanRules.scala",
+   "span": {
+    "start": 5225,
+    "end": 5563,
+    "text": "  def RecordSipInstallmentFailed(state: SipPlanState, p: RecordSipInstallmentFailed, hosts: SipPlanComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.SipPlanRules.RecordSipInstallmentFailed(example.bankwealth.domain.invariant.params.SipPlanRuleParams.RecordSipInstallmentFailedParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/17",
+   "file": "app/example/bankwealth/domain/SipPlanRules.scala",
+   "span": {
+    "start": 5563,
+    "end": 5881,
+    "text": "  def RecordSipCreateIntent(state: SipPlanState, p: RecordSipCreateIntent, hosts: SipPlanComputations): Either[String, Vector[Event]] =\n    example.bankwealth.domain.invariant.SipPlanRules.RecordSipCreateIntent(example.bankwealth.domain.invariant.params.SipPlanRuleParams.RecordSipCreateIntentParams(state, p, hosts))\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/0",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 288,
+    "end": 1002,
+    "text": "  def InitializeAccount(input: InitializeAccountParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!((p.resource == state.id))) return Left(\"ACCOUNT_ID\")\n    if (!(((p.currency == \"CNY\") && ((p.amount).currency == p.currency)))) return Left(\"ACCOUNT_CURRENCY\")\n    if (!((!(state.initialized) || ((state.accountBalance).get(p.currency)).contains(p.amount)))) return Left(\"ACCOUNT_INIT_CONFLICT\")\n    if (!(!(state.initialized))) return Right(Vector.empty)\n    if (!(((p.amount).amount >= BigDecimal(\"0.00\")))) return Left(\"ACCOUNT_SEED_NONNEGATIVE\")\n    Right(CreditBalanceCommandHelpers.emitInitializeAccount(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/0/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 461,
+    "end": 524,
+    "text": "    if (!((p.resource == state.id))) return Left(\"ACCOUNT_ID\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/0/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 524,
+    "end": 631,
+    "text": "    if (!(((p.currency == \"CNY\") && ((p.amount).currency == p.currency)))) return Left(\"ACCOUNT_CURRENCY\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/0/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 631,
+    "end": 766,
+    "text": "    if (!((!(state.initialized) || ((state.accountBalance).get(p.currency)).contains(p.amount)))) return Left(\"ACCOUNT_INIT_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/0/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 766,
+    "end": 826,
+    "text": "    if (!(!(state.initialized))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/0/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 826,
+    "end": 920,
+    "text": "    if (!(((p.amount).amount >= BigDecimal(\"0.00\")))) return Left(\"ACCOUNT_SEED_NONNEGATIVE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/1",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 1002,
+    "end": 2707,
+    "text": "  def ReserveFunds(input: ReserveFundsParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!((state.initialized && (p.resource == state.id)))) return Left(\"LEDGER_RESOURCE\")\n    if (!(((p.amount).currency == \"CNY\"))) return Left(\"LEDGER_CNY\")\n    if (!(((p.amount).amount > BigDecimal(\"0.00\")))) return Left(\"LEDGER_POSITIVE\")\n    if (!((!((state.committedOutgoing).contains(p.txid)) || { require(((state.committedOutgoing)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.committedOutgoing)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_COMMITTEDOUTGOING_MATCH\")\n    if (!((!((state.compensatedOutgoing).contains(p.txid)) || { require(((state.compensatedOutgoing)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.compensatedOutgoing)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_COMPENSATEDOUTGOING_MATCH\")\n    if (!((!((state.reservedAmount).contains(p.txid)) || { require(((state.reservedAmount)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.reservedAmount)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_RESERVEDAMOUNT_MATCH\")\n    if (!(!((state.committedOutgoing).contains(p.txid)))) return Right(Vector.empty)\n    if (!(!((state.compensatedOutgoing).contains(p.txid)))) return Right(Vector.empty)\n    if (!(!((state.reservedAmount).contains(p.txid)))) return Right(Vector.empty)\n    if (!((state.accountBalance).get((p.amount).currency).exists(_.compareSameUnit(p.amount) >= 0))) return Left(\"LEDGER_SUFFICIENT\")\n    Right(CreditBalanceCommandHelpers.emitReserveFunds(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/1/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 1165,
+    "end": 1256,
+    "text": "    if (!((state.initialized && (p.resource == state.id)))) return Left(\"LEDGER_RESOURCE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/1/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 1256,
+    "end": 1325,
+    "text": "    if (!(((p.amount).currency == \"CNY\"))) return Left(\"LEDGER_CNY\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/1/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 1325,
+    "end": 1409,
+    "text": "    if (!(((p.amount).amount > BigDecimal(\"0.00\")))) return Left(\"LEDGER_POSITIVE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/1/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 1409,
+    "end": 1688,
+    "text": "    if (!((!((state.committedOutgoing).contains(p.txid)) || { require(((state.committedOutgoing)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.committedOutgoing)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_COMMITTEDOUTGOING_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/1/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 1688,
+    "end": 1975,
+    "text": "    if (!((!((state.compensatedOutgoing).contains(p.txid)) || { require(((state.compensatedOutgoing)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.compensatedOutgoing)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_COMPENSATEDOUTGOING_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/1/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 1975,
+    "end": 2242,
+    "text": "    if (!((!((state.reservedAmount).contains(p.txid)) || { require(((state.reservedAmount)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.reservedAmount)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_RESERVEDAMOUNT_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/1/guards/6",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 2242,
+    "end": 2327,
+    "text": "    if (!(!((state.committedOutgoing).contains(p.txid)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/1/guards/7",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 2327,
+    "end": 2414,
+    "text": "    if (!(!((state.compensatedOutgoing).contains(p.txid)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/1/guards/8",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 2414,
+    "end": 2496,
+    "text": "    if (!(!((state.reservedAmount).contains(p.txid)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/1/guards/9",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 2496,
+    "end": 2630,
+    "text": "    if (!((state.accountBalance).get((p.amount).currency).exists(_.compareSameUnit(p.amount) >= 0))) return Left(\"LEDGER_SUFFICIENT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/2",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 2707,
+    "end": 4000,
+    "text": "  def DeductFunds(input: DeductFundsParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!((state.initialized && (p.resource == state.id)))) return Left(\"LEDGER_RESOURCE\")\n    if (!(((p.amount).currency == \"CNY\"))) return Left(\"LEDGER_CNY\")\n    if (!(((p.amount).amount > BigDecimal(\"0.00\")))) return Left(\"LEDGER_POSITIVE\")\n    if (!((!((state.committedOutgoing).contains(p.txid)) || { require(((state.committedOutgoing)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.committedOutgoing)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_COMMITTEDOUTGOING_MATCH\")\n    if (!(!((state.committedOutgoing).contains(p.txid)))) return Right(Vector.empty)\n    if (!(!((state.compensatedOutgoing).contains(p.txid)))) return Left(\"LEDGER_NOT_COMPENSATED\")\n    if (!((state.reservedAmount).contains(p.txid))) return Left(\"LEDGER_PREPARED\")\n    if (!((!((state.reservedAmount).contains(p.txid)) || { require(((state.reservedAmount)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.reservedAmount)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_RESERVEDAMOUNT_MATCH\")\n    Right(CreditBalanceCommandHelpers.emitDeductFunds(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/2/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 2868,
+    "end": 2959,
+    "text": "    if (!((state.initialized && (p.resource == state.id)))) return Left(\"LEDGER_RESOURCE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/2/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 2959,
+    "end": 3028,
+    "text": "    if (!(((p.amount).currency == \"CNY\"))) return Left(\"LEDGER_CNY\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/2/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 3028,
+    "end": 3112,
+    "text": "    if (!(((p.amount).amount > BigDecimal(\"0.00\")))) return Left(\"LEDGER_POSITIVE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/2/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 3112,
+    "end": 3391,
+    "text": "    if (!((!((state.committedOutgoing).contains(p.txid)) || { require(((state.committedOutgoing)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.committedOutgoing)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_COMMITTEDOUTGOING_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/2/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 3391,
+    "end": 3476,
+    "text": "    if (!(!((state.committedOutgoing).contains(p.txid)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/2/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 3476,
+    "end": 3574,
+    "text": "    if (!(!((state.compensatedOutgoing).contains(p.txid)))) return Left(\"LEDGER_NOT_COMPENSATED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/2/guards/6",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 3574,
+    "end": 3657,
+    "text": "    if (!((state.reservedAmount).contains(p.txid))) return Left(\"LEDGER_PREPARED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/2/guards/7",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 3657,
+    "end": 3924,
+    "text": "    if (!((!((state.reservedAmount).contains(p.txid)) || { require(((state.reservedAmount)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.reservedAmount)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_RESERVEDAMOUNT_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/3",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 4000,
+    "end": 5243,
+    "text": "  def ReleaseReservedFunds(input: ReleaseReservedFundsParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!((state.initialized && (p.resource == state.id)))) return Left(\"LEDGER_RESOURCE\")\n    if (!(((p.amount).currency == \"CNY\"))) return Left(\"LEDGER_CNY\")\n    if (!(((p.amount).amount > BigDecimal(\"0.00\")))) return Left(\"LEDGER_POSITIVE\")\n    if (!((!((state.compensatedOutgoing).contains(p.txid)) || { require(((state.compensatedOutgoing)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.compensatedOutgoing)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_COMPENSATEDOUTGOING_MATCH\")\n    if (!(!((state.compensatedOutgoing).contains(p.txid)))) return Right(Vector.empty)\n    if (!(!((state.committedOutgoing).contains(p.txid)))) return Left(\"LEDGER_NOT_COMMITTED\")\n    if (!((!((state.reservedAmount).contains(p.txid)) || { require(((state.reservedAmount)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.reservedAmount)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_RESERVEDAMOUNT_MATCH\")\n    Right(CreditBalanceCommandHelpers.emitReleaseReservedFunds(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/3/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 4179,
+    "end": 4270,
+    "text": "    if (!((state.initialized && (p.resource == state.id)))) return Left(\"LEDGER_RESOURCE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/3/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 4270,
+    "end": 4339,
+    "text": "    if (!(((p.amount).currency == \"CNY\"))) return Left(\"LEDGER_CNY\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/3/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 4339,
+    "end": 4423,
+    "text": "    if (!(((p.amount).amount > BigDecimal(\"0.00\")))) return Left(\"LEDGER_POSITIVE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/3/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 4423,
+    "end": 4710,
+    "text": "    if (!((!((state.compensatedOutgoing).contains(p.txid)) || { require(((state.compensatedOutgoing)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.compensatedOutgoing)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_COMPENSATEDOUTGOING_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/3/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 4710,
+    "end": 4797,
+    "text": "    if (!(!((state.compensatedOutgoing).contains(p.txid)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/3/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 4797,
+    "end": 4891,
+    "text": "    if (!(!((state.committedOutgoing).contains(p.txid)))) return Left(\"LEDGER_NOT_COMMITTED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/3/guards/6",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 4891,
+    "end": 5158,
+    "text": "    if (!((!((state.reservedAmount).contains(p.txid)) || { require(((state.reservedAmount)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.reservedAmount)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_RESERVEDAMOUNT_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/4",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 5243,
+    "end": 6846,
+    "text": "  def RecordIncomingCredits(input: RecordIncomingCreditsParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!((state.initialized && (p.resource == state.id)))) return Left(\"LEDGER_RESOURCE\")\n    if (!(((p.amount).currency == \"CNY\"))) return Left(\"LEDGER_CNY\")\n    if (!(((p.amount).amount > BigDecimal(\"0.00\")))) return Left(\"LEDGER_POSITIVE\")\n    if (!((!((state.committedIncoming).contains(p.txid)) || { require(((state.committedIncoming)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.committedIncoming)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_COMMITTEDINCOMING_MATCH\")\n    if (!((!((state.compensatedIncoming).contains(p.txid)) || { require(((state.compensatedIncoming)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.compensatedIncoming)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_COMPENSATEDINCOMING_MATCH\")\n    if (!((!((state.incomingCredits).contains(p.txid)) || { require(((state.incomingCredits)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.incomingCredits)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_INCOMINGCREDITS_MATCH\")\n    if (!(!((state.committedIncoming).contains(p.txid)))) return Right(Vector.empty)\n    if (!(!((state.compensatedIncoming).contains(p.txid)))) return Right(Vector.empty)\n    if (!(!((state.incomingCredits).contains(p.txid)))) return Right(Vector.empty)\n    Right(CreditBalanceCommandHelpers.emitRecordIncomingCredits(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/4/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 5424,
+    "end": 5515,
+    "text": "    if (!((state.initialized && (p.resource == state.id)))) return Left(\"LEDGER_RESOURCE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/4/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 5515,
+    "end": 5584,
+    "text": "    if (!(((p.amount).currency == \"CNY\"))) return Left(\"LEDGER_CNY\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/4/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 5584,
+    "end": 5668,
+    "text": "    if (!(((p.amount).amount > BigDecimal(\"0.00\")))) return Left(\"LEDGER_POSITIVE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/4/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 5668,
+    "end": 5947,
+    "text": "    if (!((!((state.committedIncoming).contains(p.txid)) || { require(((state.committedIncoming)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.committedIncoming)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_COMMITTEDINCOMING_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/4/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 5947,
+    "end": 6234,
+    "text": "    if (!((!((state.compensatedIncoming).contains(p.txid)) || { require(((state.compensatedIncoming)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.compensatedIncoming)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_COMPENSATEDINCOMING_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/4/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 6234,
+    "end": 6505,
+    "text": "    if (!((!((state.incomingCredits).contains(p.txid)) || { require(((state.incomingCredits)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.incomingCredits)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_INCOMINGCREDITS_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/4/guards/6",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 6505,
+    "end": 6590,
+    "text": "    if (!(!((state.committedIncoming).contains(p.txid)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/4/guards/7",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 6590,
+    "end": 6677,
+    "text": "    if (!(!((state.compensatedIncoming).contains(p.txid)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/4/guards/8",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 6677,
+    "end": 6760,
+    "text": "    if (!(!((state.incomingCredits).contains(p.txid)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/5",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 6846,
+    "end": 8174,
+    "text": "  def CommitIncomingCredits(input: CommitIncomingCreditsParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!((state.initialized && (p.resource == state.id)))) return Left(\"LEDGER_RESOURCE\")\n    if (!(((p.amount).currency == \"CNY\"))) return Left(\"LEDGER_CNY\")\n    if (!(((p.amount).amount > BigDecimal(\"0.00\")))) return Left(\"LEDGER_POSITIVE\")\n    if (!((!((state.committedIncoming).contains(p.txid)) || { require(((state.committedIncoming)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.committedIncoming)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_COMMITTEDINCOMING_MATCH\")\n    if (!(!((state.committedIncoming).contains(p.txid)))) return Right(Vector.empty)\n    if (!(!((state.compensatedIncoming).contains(p.txid)))) return Left(\"LEDGER_NOT_COMPENSATED\")\n    if (!((state.incomingCredits).contains(p.txid))) return Left(\"LEDGER_PREPARED\")\n    if (!((!((state.incomingCredits).contains(p.txid)) || { require(((state.incomingCredits)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.incomingCredits)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_INCOMINGCREDITS_MATCH\")\n    Right(CreditBalanceCommandHelpers.emitCommitIncomingCredits(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/5/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 7027,
+    "end": 7118,
+    "text": "    if (!((state.initialized && (p.resource == state.id)))) return Left(\"LEDGER_RESOURCE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/5/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 7118,
+    "end": 7187,
+    "text": "    if (!(((p.amount).currency == \"CNY\"))) return Left(\"LEDGER_CNY\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/5/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 7187,
+    "end": 7271,
+    "text": "    if (!(((p.amount).amount > BigDecimal(\"0.00\")))) return Left(\"LEDGER_POSITIVE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/5/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 7271,
+    "end": 7550,
+    "text": "    if (!((!((state.committedIncoming).contains(p.txid)) || { require(((state.committedIncoming)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.committedIncoming)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_COMMITTEDINCOMING_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/5/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 7550,
+    "end": 7635,
+    "text": "    if (!(!((state.committedIncoming).contains(p.txid)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/5/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 7635,
+    "end": 7733,
+    "text": "    if (!(!((state.compensatedIncoming).contains(p.txid)))) return Left(\"LEDGER_NOT_COMPENSATED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/5/guards/6",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 7733,
+    "end": 7817,
+    "text": "    if (!((state.incomingCredits).contains(p.txid))) return Left(\"LEDGER_PREPARED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/5/guards/7",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 7817,
+    "end": 8088,
+    "text": "    if (!((!((state.incomingCredits).contains(p.txid)) || { require(((state.incomingCredits)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.incomingCredits)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_INCOMINGCREDITS_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/6",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 8174,
+    "end": 9421,
+    "text": "  def CancelIncomingCredit(input: CancelIncomingCreditParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!((state.initialized && (p.resource == state.id)))) return Left(\"LEDGER_RESOURCE\")\n    if (!(((p.amount).currency == \"CNY\"))) return Left(\"LEDGER_CNY\")\n    if (!(((p.amount).amount > BigDecimal(\"0.00\")))) return Left(\"LEDGER_POSITIVE\")\n    if (!((!((state.compensatedIncoming).contains(p.txid)) || { require(((state.compensatedIncoming)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.compensatedIncoming)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_COMPENSATEDINCOMING_MATCH\")\n    if (!(!((state.compensatedIncoming).contains(p.txid)))) return Right(Vector.empty)\n    if (!(!((state.committedIncoming).contains(p.txid)))) return Left(\"LEDGER_NOT_COMMITTED\")\n    if (!((!((state.incomingCredits).contains(p.txid)) || { require(((state.incomingCredits)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.incomingCredits)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_INCOMINGCREDITS_MATCH\")\n    Right(CreditBalanceCommandHelpers.emitCancelIncomingCredit(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/6/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 8353,
+    "end": 8444,
+    "text": "    if (!((state.initialized && (p.resource == state.id)))) return Left(\"LEDGER_RESOURCE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/6/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 8444,
+    "end": 8513,
+    "text": "    if (!(((p.amount).currency == \"CNY\"))) return Left(\"LEDGER_CNY\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/6/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 8513,
+    "end": 8597,
+    "text": "    if (!(((p.amount).amount > BigDecimal(\"0.00\")))) return Left(\"LEDGER_POSITIVE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/6/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 8597,
+    "end": 8884,
+    "text": "    if (!((!((state.compensatedIncoming).contains(p.txid)) || { require(((state.compensatedIncoming)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.compensatedIncoming)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_COMPENSATEDINCOMING_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/6/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 8884,
+    "end": 8971,
+    "text": "    if (!(!((state.compensatedIncoming).contains(p.txid)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/6/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 8971,
+    "end": 9065,
+    "text": "    if (!(!((state.committedIncoming).contains(p.txid)))) return Left(\"LEDGER_NOT_COMMITTED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/0/commands/6/guards/6",
+   "file": "app/example/bankwealth/domain/invariant/CreditBalanceRules.scala",
+   "span": {
+    "start": 9065,
+    "end": 9336,
+    "text": "    if (!((!((state.incomingCredits).contains(p.txid)) || { require(((state.incomingCredits)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.incomingCredits)(p.txid)).amount == (p.amount).amount) }))) return Left(\"LEDGER_INCOMINGCREDITS_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/0",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 276,
+    "end": 2259,
+    "text": "  def RequestFundPurchaseSettlement(input: RequestFundPurchaseSettlementParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!(((state.cashRequestSource).isEmpty || (((((((state.cashRequestOriginals).contains(\"original\") && (p.operationId == (((state.cashRequestOriginals)(\"original\")).payment).operationId)) && (p.fundOrderId == (((state.cashRequestOriginals)(\"original\")).payment).fundOrderId)) && (p.investorAccountId == (((state.cashRequestOriginals)(\"original\")).payment).investorAccountId)) && (p.fundCollectionAccountId == (((state.cashRequestOriginals)(\"original\")).payment).fundCollectionAccountId)) && (p.fundCode == (((state.cashRequestOriginals)(\"original\")).payment).fundCode)) && { require((p.amount).currency == ((((state.cashRequestOriginals)(\"original\")).payment).amount).currency, \"exact units differ\"); ((p.amount).amount == ((((state.cashRequestOriginals)(\"original\")).payment).amount).amount) })))) return Left(\"CASH_ADMITTED_PAYMENT_MATCH\")\n    if (!((p.fundOrderId == state.id))) return Left(\"ORDER_RESOURCE\")\n    if (!(((state.status == \"new\") || (((((p.operationId == state.operationId) && (p.investorAccountId == state.investorAccountId)) && (p.fundCollectionAccountId == state.fundCollectionAccountId)) && (p.fundCode == state.fundCode)) && { require((p.amount).currency == (state.amount).currency, \"exact units differ\"); ((p.amount).amount == (state.amount).amount) })))) return Left(\"ORDER_REPLAY_CONFLICT\")\n    if (!((state.status == \"new\"))) return Right(Vector.empty)\n    if (!((p.investorAccountId != p.fundCollectionAccountId))) return Left(\"ORDER_ACCOUNTS\")\n    if (!((((p.amount).currency == \"CNY\") && ((p.amount).amount > BigDecimal(\"0.00\"))))) return Left(\"ORDER_AMOUNT\")\n    if (!((((p.operationId).value).nonEmpty && (p.fundCode).nonEmpty))) return Left(\"ORDER_OPERATION\")\n    Right(FundOrderCommandHelpers.emitRequestFundPurchaseSettlement(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/0/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 473,
+    "end": 1319,
+    "text": "    if (!(((state.cashRequestSource).isEmpty || (((((((state.cashRequestOriginals).contains(\"original\") && (p.operationId == (((state.cashRequestOriginals)(\"original\")).payment).operationId)) && (p.fundOrderId == (((state.cashRequestOriginals)(\"original\")).payment).fundOrderId)) && (p.investorAccountId == (((state.cashRequestOriginals)(\"original\")).payment).investorAccountId)) && (p.fundCollectionAccountId == (((state.cashRequestOriginals)(\"original\")).payment).fundCollectionAccountId)) && (p.fundCode == (((state.cashRequestOriginals)(\"original\")).payment).fundCode)) && { require((p.amount).currency == ((((state.cashRequestOriginals)(\"original\")).payment).amount).currency, \"exact units differ\"); ((p.amount).amount == ((((state.cashRequestOriginals)(\"original\")).payment).amount).amount) })))) return Left(\"CASH_ADMITTED_PAYMENT_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/0/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 1319,
+    "end": 1389,
+    "text": "    if (!((p.fundOrderId == state.id))) return Left(\"ORDER_RESOURCE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/0/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 1389,
+    "end": 1793,
+    "text": "    if (!(((state.status == \"new\") || (((((p.operationId == state.operationId) && (p.investorAccountId == state.investorAccountId)) && (p.fundCollectionAccountId == state.fundCollectionAccountId)) && (p.fundCode == state.fundCode)) && { require((p.amount).currency == (state.amount).currency, \"exact units differ\"); ((p.amount).amount == (state.amount).amount) })))) return Left(\"ORDER_REPLAY_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/0/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 1793,
+    "end": 1856,
+    "text": "    if (!((state.status == \"new\"))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/0/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 1856,
+    "end": 1949,
+    "text": "    if (!((p.investorAccountId != p.fundCollectionAccountId))) return Left(\"ORDER_ACCOUNTS\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/0/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 1949,
+    "end": 2066,
+    "text": "    if (!((((p.amount).currency == \"CNY\") && ((p.amount).amount > BigDecimal(\"0.00\"))))) return Left(\"ORDER_AMOUNT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/0/guards/6",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 2066,
+    "end": 2169,
+    "text": "    if (!((((p.operationId).value).nonEmpty && (p.fundCode).nonEmpty))) return Left(\"ORDER_OPERATION\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/1",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 2259,
+    "end": 4114,
+    "text": "  def ReserveFundSubscription(input: ReserveFundSubscriptionParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!((p.resource == state.id))) return Left(\"ORDER_PHASE_RESOURCE\")\n    if (!((((p.amount).currency == \"CNY\") && ((p.amount).amount > BigDecimal(\"0.00\"))))) return Left(\"ORDER_PHASE_POSITIVE\")\n    if (!((!((state.committedSubscriptions).contains(p.txid)) || { require(((state.committedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.committedSubscriptions)(p.txid)).amount == (p.amount).amount) }))) return Left(\"ORDER_COMMITTEDSUBSCRIPTIONS_MATCH\")\n    if (!((!((state.compensatedSubscriptions).contains(p.txid)) || { require(((state.compensatedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.compensatedSubscriptions)(p.txid)).amount == (p.amount).amount) }))) return Left(\"ORDER_COMPENSATEDSUBSCRIPTIONS_MATCH\")\n    if (!((!((state.reservedSubscriptions).contains(p.txid)) || { require(((state.reservedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.reservedSubscriptions)(p.txid)).amount == (p.amount).amount) }))) return Left(\"ORDER_RESERVEDSUBSCRIPTIONS_MATCH\")\n    if (!(!((state.committedSubscriptions).contains(p.txid)))) return Right(Vector.empty)\n    if (!(!((state.compensatedSubscriptions).contains(p.txid)))) return Right(Vector.empty)\n    if (!(!((state.reservedSubscriptions).contains(p.txid)))) return Right(Vector.empty)\n    if (!(((state.status == \"payment-requested\") && { require((p.amount).currency == (state.amount).currency, \"exact units differ\"); ((p.amount).amount == (state.amount).amount) }))) return Left(\"ORDER_REQUEST_AMOUNT\")\n    Right(FundOrderCommandHelpers.emitReserveFundSubscription(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/1/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 2444,
+    "end": 2517,
+    "text": "    if (!((p.resource == state.id))) return Left(\"ORDER_PHASE_RESOURCE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/1/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 2517,
+    "end": 2642,
+    "text": "    if (!((((p.amount).currency == \"CNY\") && ((p.amount).amount > BigDecimal(\"0.00\"))))) return Left(\"ORDER_PHASE_POSITIVE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/1/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 2642,
+    "end": 2940,
+    "text": "    if (!((!((state.committedSubscriptions).contains(p.txid)) || { require(((state.committedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.committedSubscriptions)(p.txid)).amount == (p.amount).amount) }))) return Left(\"ORDER_COMMITTEDSUBSCRIPTIONS_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/1/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 2940,
+    "end": 3246,
+    "text": "    if (!((!((state.compensatedSubscriptions).contains(p.txid)) || { require(((state.compensatedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.compensatedSubscriptions)(p.txid)).amount == (p.amount).amount) }))) return Left(\"ORDER_COMPENSATEDSUBSCRIPTIONS_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/1/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 3246,
+    "end": 3540,
+    "text": "    if (!((!((state.reservedSubscriptions).contains(p.txid)) || { require(((state.reservedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.reservedSubscriptions)(p.txid)).amount == (p.amount).amount) }))) return Left(\"ORDER_RESERVEDSUBSCRIPTIONS_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/1/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 3540,
+    "end": 3630,
+    "text": "    if (!(!((state.committedSubscriptions).contains(p.txid)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/1/guards/6",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 3630,
+    "end": 3722,
+    "text": "    if (!(!((state.compensatedSubscriptions).contains(p.txid)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/1/guards/7",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 3722,
+    "end": 3811,
+    "text": "    if (!(!((state.reservedSubscriptions).contains(p.txid)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/1/guards/8",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 3811,
+    "end": 4030,
+    "text": "    if (!(((state.status == \"payment-requested\") && { require((p.amount).currency == (state.amount).currency, \"exact units differ\"); ((p.amount).amount == (state.amount).amount) }))) return Left(\"ORDER_REQUEST_AMOUNT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/2",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 4114,
+    "end": 5647,
+    "text": "  def ConfirmFundSubscriptionPayment(input: ConfirmFundSubscriptionPaymentParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!((p.resource == state.id))) return Left(\"ORDER_PHASE_RESOURCE\")\n    if (!((((p.amount).currency == \"CNY\") && ((p.amount).amount > BigDecimal(\"0.00\"))))) return Left(\"ORDER_PHASE_POSITIVE\")\n    if (!((!((state.committedSubscriptions).contains(p.txid)) || { require(((state.committedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.committedSubscriptions)(p.txid)).amount == (p.amount).amount) }))) return Left(\"ORDER_COMMITTEDSUBSCRIPTIONS_MATCH\")\n    if (!(!((state.committedSubscriptions).contains(p.txid)))) return Right(Vector.empty)\n    if (!(!((state.compensatedSubscriptions).contains(p.txid)))) return Left(\"ORDER_NOT_CANCELED\")\n    if (!((state.reservedSubscriptions).contains(p.txid))) return Left(\"ORDER_PREPARED\")\n    if (!((!((state.reservedSubscriptions).contains(p.txid)) || { require(((state.reservedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.reservedSubscriptions)(p.txid)).amount == (p.amount).amount) }))) return Left(\"ORDER_RESERVEDSUBSCRIPTIONS_MATCH\")\n    if (!({ require((p.amount).currency == (state.amount).currency, \"exact units differ\"); ((p.amount).amount == (state.amount).amount) })) return Left(\"ORDER_COMMIT_AMOUNT\")\n    Right(FundOrderCommandHelpers.emitConfirmFundSubscriptionPayment(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/2/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 4313,
+    "end": 4386,
+    "text": "    if (!((p.resource == state.id))) return Left(\"ORDER_PHASE_RESOURCE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/2/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 4386,
+    "end": 4511,
+    "text": "    if (!((((p.amount).currency == \"CNY\") && ((p.amount).amount > BigDecimal(\"0.00\"))))) return Left(\"ORDER_PHASE_POSITIVE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/2/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 4511,
+    "end": 4809,
+    "text": "    if (!((!((state.committedSubscriptions).contains(p.txid)) || { require(((state.committedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.committedSubscriptions)(p.txid)).amount == (p.amount).amount) }))) return Left(\"ORDER_COMMITTEDSUBSCRIPTIONS_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/2/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 4809,
+    "end": 4899,
+    "text": "    if (!(!((state.committedSubscriptions).contains(p.txid)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/2/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 4899,
+    "end": 4998,
+    "text": "    if (!(!((state.compensatedSubscriptions).contains(p.txid)))) return Left(\"ORDER_NOT_CANCELED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/2/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 4998,
+    "end": 5087,
+    "text": "    if (!((state.reservedSubscriptions).contains(p.txid))) return Left(\"ORDER_PREPARED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/2/guards/6",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 5087,
+    "end": 5381,
+    "text": "    if (!((!((state.reservedSubscriptions).contains(p.txid)) || { require(((state.reservedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.reservedSubscriptions)(p.txid)).amount == (p.amount).amount) }))) return Left(\"ORDER_RESERVEDSUBSCRIPTIONS_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/2/guards/7",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 5381,
+    "end": 5556,
+    "text": "    if (!({ require((p.amount).currency == (state.amount).currency, \"exact units differ\"); ((p.amount).amount == (state.amount).amount) })) return Left(\"ORDER_COMMIT_AMOUNT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/3",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 5647,
+    "end": 6920,
+    "text": "  def CancelCashFundSubscription(input: CancelCashFundSubscriptionParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!((p.resource == state.id))) return Left(\"ORDER_PHASE_RESOURCE\")\n    if (!((((p.amount).currency == \"CNY\") && ((p.amount).amount > BigDecimal(\"0.00\"))))) return Left(\"ORDER_PHASE_POSITIVE\")\n    if (!((!((state.compensatedSubscriptions).contains(p.txid)) || { require(((state.compensatedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.compensatedSubscriptions)(p.txid)).amount == (p.amount).amount) }))) return Left(\"ORDER_COMPENSATEDSUBSCRIPTIONS_MATCH\")\n    if (!(!((state.compensatedSubscriptions).contains(p.txid)))) return Right(Vector.empty)\n    if (!(!((state.committedSubscriptions).contains(p.txid)))) return Left(\"ORDER_CANCEL_NOT_COMMITTED\")\n    if (!((!((state.reservedSubscriptions).contains(p.txid)) || { require(((state.reservedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.reservedSubscriptions)(p.txid)).amount == (p.amount).amount) }))) return Left(\"ORDER_RESERVEDSUBSCRIPTIONS_MATCH\")\n    Right(FundOrderCommandHelpers.emitCancelCashFundSubscription(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/3/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 5838,
+    "end": 5911,
+    "text": "    if (!((p.resource == state.id))) return Left(\"ORDER_PHASE_RESOURCE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/3/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 5911,
+    "end": 6036,
+    "text": "    if (!((((p.amount).currency == \"CNY\") && ((p.amount).amount > BigDecimal(\"0.00\"))))) return Left(\"ORDER_PHASE_POSITIVE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/3/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 6036,
+    "end": 6342,
+    "text": "    if (!((!((state.compensatedSubscriptions).contains(p.txid)) || { require(((state.compensatedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.compensatedSubscriptions)(p.txid)).amount == (p.amount).amount) }))) return Left(\"ORDER_COMPENSATEDSUBSCRIPTIONS_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/3/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 6342,
+    "end": 6434,
+    "text": "    if (!(!((state.compensatedSubscriptions).contains(p.txid)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/3/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 6434,
+    "end": 6539,
+    "text": "    if (!(!((state.committedSubscriptions).contains(p.txid)))) return Left(\"ORDER_CANCEL_NOT_COMMITTED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/3/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 6539,
+    "end": 6833,
+    "text": "    if (!((!((state.reservedSubscriptions).contains(p.txid)) || { require(((state.reservedSubscriptions)(p.txid)).currency == (p.amount).currency, \"exact units differ\"); (((state.reservedSubscriptions)(p.txid)).amount == (p.amount).amount) }))) return Left(\"ORDER_RESERVEDSUBSCRIPTIONS_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/4",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 6920,
+    "end": 7607,
+    "text": "  def RecordFundCashPaymentSucceeded(input: RecordFundCashPaymentSucceededParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!((!((state.cashPaymentFinalResults).contains(p.txid)) || ((state.cashPaymentFinalResults)(p.txid) == \"succeeded\")))) return Left(\"PAYMENT_TERMINAL_CONFLICT\")\n    if (!(!((state.cashPaymentFinalResults).contains(p.txid)))) return Right(Vector.empty)\n    if (!(((state.committedSubscriptions).contains(p.txid) && (p.txid == state.selectedPaymentTxId)))) return Left(\"PAYMENT_COMMIT_PROOF\")\n    Right(FundOrderCommandHelpers.emitRecordFundCashPaymentSucceeded(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/4/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 7119,
+    "end": 7286,
+    "text": "    if (!((!((state.cashPaymentFinalResults).contains(p.txid)) || ((state.cashPaymentFinalResults)(p.txid) == \"succeeded\")))) return Left(\"PAYMENT_TERMINAL_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/4/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 7286,
+    "end": 7377,
+    "text": "    if (!(!((state.cashPaymentFinalResults).contains(p.txid)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/4/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 7377,
+    "end": 7516,
+    "text": "    if (!(((state.committedSubscriptions).contains(p.txid) && (p.txid == state.selectedPaymentTxId)))) return Left(\"PAYMENT_COMMIT_PROOF\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/5",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 7607,
+    "end": 8205,
+    "text": "  def RecordFundCashPaymentRejectedBeforeEffects(input: RecordFundCashPaymentRejectedBeforeEffectsParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!((!((state.cashPaymentFinalResults).contains(p.txid)) || ((state.cashPaymentFinalResults)(p.txid) == \"rejected-before-effects\")))) return Left(\"PAYMENT_TERMINAL_CONFLICT\")\n    if (!(!((state.cashPaymentFinalResults).contains(p.txid)))) return Right(Vector.empty)\n    Right(FundOrderCommandHelpers.emitRecordFundCashPaymentRejectedBeforeEffects(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/5/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 7830,
+    "end": 8011,
+    "text": "    if (!((!((state.cashPaymentFinalResults).contains(p.txid)) || ((state.cashPaymentFinalResults)(p.txid) == \"rejected-before-effects\")))) return Left(\"PAYMENT_TERMINAL_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/5/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 8011,
+    "end": 8102,
+    "text": "    if (!(!((state.cashPaymentFinalResults).contains(p.txid)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/6",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 8205,
+    "end": 8761,
+    "text": "  def RecordFundCashPaymentCompensated(input: RecordFundCashPaymentCompensatedParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!((!((state.cashPaymentFinalResults).contains(p.txid)) || ((state.cashPaymentFinalResults)(p.txid) == \"compensated\")))) return Left(\"PAYMENT_TERMINAL_CONFLICT\")\n    if (!(!((state.cashPaymentFinalResults).contains(p.txid)))) return Right(Vector.empty)\n    Right(FundOrderCommandHelpers.emitRecordFundCashPaymentCompensated(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/6/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 8408,
+    "end": 8577,
+    "text": "    if (!((!((state.cashPaymentFinalResults).contains(p.txid)) || ((state.cashPaymentFinalResults)(p.txid) == \"compensated\")))) return Left(\"PAYMENT_TERMINAL_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/6/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 8577,
+    "end": 8668,
+    "text": "    if (!(!((state.cashPaymentFinalResults).contains(p.txid)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/7",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 8761,
+    "end": 9276,
+    "text": "  def RecordFundCashPaymentRecoveryRequired(input: RecordFundCashPaymentRecoveryRequiredParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!(!((state.cashPaymentFinalResults).contains(p.txid)))) return Right(Vector.empty)\n    if (!(!(((state.cashPaymentResults).get(p.txid)).contains(\"recovery-required\")))) return Right(Vector.empty)\n    Right(FundOrderCommandHelpers.emitRecordFundCashPaymentRecoveryRequired(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/7/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 8974,
+    "end": 9065,
+    "text": "    if (!(!((state.cashPaymentFinalResults).contains(p.txid)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/7/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 9065,
+    "end": 9178,
+    "text": "    if (!(!(((state.cashPaymentResults).get(p.txid)).contains(\"recovery-required\")))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/8",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 9276,
+    "end": 9783,
+    "text": "  def RecordFundCashPaymentOutcomeUnknown(input: RecordFundCashPaymentOutcomeUnknownParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!(!((state.cashPaymentFinalResults).contains(p.txid)))) return Right(Vector.empty)\n    if (!(!(((state.cashPaymentResults).get(p.txid)).contains(\"outcome-unknown\")))) return Right(Vector.empty)\n    Right(FundOrderCommandHelpers.emitRecordFundCashPaymentOutcomeUnknown(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/8/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 9485,
+    "end": 9576,
+    "text": "    if (!(!((state.cashPaymentFinalResults).contains(p.txid)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/8/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 9576,
+    "end": 9687,
+    "text": "    if (!(!(((state.cashPaymentResults).get(p.txid)).contains(\"outcome-unknown\")))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/9",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 9783,
+    "end": 10364,
+    "text": "  def RegisterFundTASubmission(input: RegisterFundTASubmissionParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!((p.fundOrderId == state.id))) return Left(\"TA_SUBMIT_RESOURCE\")\n    if (!(((p.paymentTxId == state.selectedPaymentTxId) && ((state.cashPaymentFinalResults).get(p.paymentTxId)).contains(\"succeeded\")))) return Left(\"TA_PAID\")\n    if (!(((state.taRequestId).value).isEmpty)) return Right(Vector.empty)\n    Right(FundOrderCommandHelpers.emitRegisterFundTASubmission(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/9/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 9970,
+    "end": 10044,
+    "text": "    if (!((p.fundOrderId == state.id))) return Left(\"TA_SUBMIT_RESOURCE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/9/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 10044,
+    "end": 10204,
+    "text": "    if (!(((p.paymentTxId == state.selectedPaymentTxId) && ((state.cashPaymentFinalResults).get(p.paymentTxId)).contains(\"succeeded\")))) return Left(\"TA_PAID\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/9/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 10204,
+    "end": 10279,
+    "text": "    if (!(((state.taRequestId).value).isEmpty)) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/10",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 10364,
+    "end": 11722,
+    "text": "  def RecordFundTAAccepted(input: RecordFundTAAcceptedParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!((p.fundOrderId == state.id))) return Left(\"TA_ORDER\")\n    if (!(((p.paymentTxId == state.selectedPaymentTxId) && ((state.cashPaymentFinalResults).get(p.paymentTxId)).contains(\"succeeded\")))) return Left(\"TA_PAYMENT\")\n    if (!(((p.taRequestId == state.taRequestId) && ((p.taRequestId).value).nonEmpty))) return Left(\"TA_REQUEST\")\n    if (!(((p.taReference).nonEmpty && ((state.taReference).isEmpty || (state.taReference == p.taReference))))) return Left(\"TA_REFERENCE\")\n    if (!(((p.fundCode == state.fundCode) && (p.currency == (state.amount).currency)))) return Left(\"TA_FUND\")\n    if (!(((p.receiptId).nonEmpty && (p.receiptBody).nonEmpty))) return Left(\"TA_RECEIPT_PRESENT\")\n    if (!((!((state.taReceipts).contains(p.receiptId)) || (((state.taReceipts)(p.receiptId) == p.receiptBody) && ((state.taReceiptOutcomes).get(p.receiptId)).contains(\"accepted\"))))) return Left(\"TA_RECEIPT_CONFLICT\")\n    if (!(!((state.taReceipts).contains(p.receiptId)))) return Right(Vector.empty)\n    if (!(((state.taStatus != \"confirmed\") && (state.taStatus != \"rejected\")))) return Right(Vector.empty)\n    Right(FundOrderCommandHelpers.emitRecordFundTAAccepted(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/10/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 10543,
+    "end": 10607,
+    "text": "    if (!((p.fundOrderId == state.id))) return Left(\"TA_ORDER\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/10/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 10607,
+    "end": 10770,
+    "text": "    if (!(((p.paymentTxId == state.selectedPaymentTxId) && ((state.cashPaymentFinalResults).get(p.paymentTxId)).contains(\"succeeded\")))) return Left(\"TA_PAYMENT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/10/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 10770,
+    "end": 10883,
+    "text": "    if (!(((p.taRequestId == state.taRequestId) && ((p.taRequestId).value).nonEmpty))) return Left(\"TA_REQUEST\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/10/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 10883,
+    "end": 11023,
+    "text": "    if (!(((p.taReference).nonEmpty && ((state.taReference).isEmpty || (state.taReference == p.taReference))))) return Left(\"TA_REFERENCE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/10/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 11023,
+    "end": 11134,
+    "text": "    if (!(((p.fundCode == state.fundCode) && (p.currency == (state.amount).currency)))) return Left(\"TA_FUND\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/10/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 11134,
+    "end": 11233,
+    "text": "    if (!(((p.receiptId).nonEmpty && (p.receiptBody).nonEmpty))) return Left(\"TA_RECEIPT_PRESENT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/10/guards/6",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 11233,
+    "end": 11451,
+    "text": "    if (!((!((state.taReceipts).contains(p.receiptId)) || (((state.taReceipts)(p.receiptId) == p.receiptBody) && ((state.taReceiptOutcomes).get(p.receiptId)).contains(\"accepted\"))))) return Left(\"TA_RECEIPT_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/10/guards/7",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 11451,
+    "end": 11534,
+    "text": "    if (!(!((state.taReceipts).contains(p.receiptId)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/10/guards/8",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 11534,
+    "end": 11641,
+    "text": "    if (!(((state.taStatus != \"confirmed\") && (state.taStatus != \"rejected\")))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/11",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 11722,
+    "end": 13255,
+    "text": "  def RecordFundTAConfirmed(input: RecordFundTAConfirmedParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!((p.fundOrderId == state.id))) return Left(\"TA_ORDER\")\n    if (!(((p.paymentTxId == state.selectedPaymentTxId) && ((state.cashPaymentFinalResults).get(p.paymentTxId)).contains(\"succeeded\")))) return Left(\"TA_PAYMENT\")\n    if (!(((p.taRequestId == state.taRequestId) && ((p.taRequestId).value).nonEmpty))) return Left(\"TA_REQUEST\")\n    if (!(((p.taReference).nonEmpty && ((state.taReference).isEmpty || (state.taReference == p.taReference))))) return Left(\"TA_REFERENCE\")\n    if (!(((p.fundCode == state.fundCode) && (p.currency == (state.amount).currency)))) return Left(\"TA_FUND\")\n    if (!(((p.receiptId).nonEmpty && (p.receiptBody).nonEmpty))) return Left(\"TA_RECEIPT_PRESENT\")\n    if (!((!((state.taReceipts).contains(p.receiptId)) || (((state.taReceipts)(p.receiptId) == p.receiptBody) && ((state.taReceiptOutcomes).get(p.receiptId)).contains(\"confirmed\"))))) return Left(\"TA_RECEIPT_CONFLICT\")\n    if (!(!((state.taReceipts).contains(p.receiptId)))) return Right(Vector.empty)\n    if (!(((state.taStatus != \"confirmed\") && (state.taStatus != \"rejected\")))) return Left(\"TA_TERMINAL_CONFLICT\")\n    if (!(((((p.shares).fundCode == state.fundCode) && (((p.shares).shares).value).nonEmpty) && (((p.shares).nav).value).nonEmpty))) return Left(\"TA_SHARE_FUND\")\n    Right(FundOrderCommandHelpers.emitRecordFundTAConfirmed(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/11/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 11903,
+    "end": 11967,
+    "text": "    if (!((p.fundOrderId == state.id))) return Left(\"TA_ORDER\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/11/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 11967,
+    "end": 12130,
+    "text": "    if (!(((p.paymentTxId == state.selectedPaymentTxId) && ((state.cashPaymentFinalResults).get(p.paymentTxId)).contains(\"succeeded\")))) return Left(\"TA_PAYMENT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/11/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 12130,
+    "end": 12243,
+    "text": "    if (!(((p.taRequestId == state.taRequestId) && ((p.taRequestId).value).nonEmpty))) return Left(\"TA_REQUEST\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/11/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 12243,
+    "end": 12383,
+    "text": "    if (!(((p.taReference).nonEmpty && ((state.taReference).isEmpty || (state.taReference == p.taReference))))) return Left(\"TA_REFERENCE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/11/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 12383,
+    "end": 12494,
+    "text": "    if (!(((p.fundCode == state.fundCode) && (p.currency == (state.amount).currency)))) return Left(\"TA_FUND\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/11/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 12494,
+    "end": 12593,
+    "text": "    if (!(((p.receiptId).nonEmpty && (p.receiptBody).nonEmpty))) return Left(\"TA_RECEIPT_PRESENT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/11/guards/6",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 12593,
+    "end": 12812,
+    "text": "    if (!((!((state.taReceipts).contains(p.receiptId)) || (((state.taReceipts)(p.receiptId) == p.receiptBody) && ((state.taReceiptOutcomes).get(p.receiptId)).contains(\"confirmed\"))))) return Left(\"TA_RECEIPT_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/11/guards/7",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 12812,
+    "end": 12895,
+    "text": "    if (!(!((state.taReceipts).contains(p.receiptId)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/11/guards/8",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 12895,
+    "end": 13011,
+    "text": "    if (!(((state.taStatus != \"confirmed\") && (state.taStatus != \"rejected\")))) return Left(\"TA_TERMINAL_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/11/guards/9",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 13011,
+    "end": 13173,
+    "text": "    if (!(((((p.shares).fundCode == state.fundCode) && (((p.shares).shares).value).nonEmpty) && (((p.shares).nav).value).nonEmpty))) return Left(\"TA_SHARE_FUND\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/12",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 13255,
+    "end": 14689,
+    "text": "  def RecordFundTARejected(input: RecordFundTARejectedParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!((p.fundOrderId == state.id))) return Left(\"TA_ORDER\")\n    if (!(((p.paymentTxId == state.selectedPaymentTxId) && ((state.cashPaymentFinalResults).get(p.paymentTxId)).contains(\"succeeded\")))) return Left(\"TA_PAYMENT\")\n    if (!(((p.taRequestId == state.taRequestId) && ((p.taRequestId).value).nonEmpty))) return Left(\"TA_REQUEST\")\n    if (!(((p.taReference).nonEmpty && ((state.taReference).isEmpty || (state.taReference == p.taReference))))) return Left(\"TA_REFERENCE\")\n    if (!(((p.fundCode == state.fundCode) && (p.currency == (state.amount).currency)))) return Left(\"TA_FUND\")\n    if (!(((p.receiptId).nonEmpty && (p.receiptBody).nonEmpty))) return Left(\"TA_RECEIPT_PRESENT\")\n    if (!((!((state.taReceipts).contains(p.receiptId)) || (((state.taReceipts)(p.receiptId) == p.receiptBody) && ((state.taReceiptOutcomes).get(p.receiptId)).contains(\"rejected\"))))) return Left(\"TA_RECEIPT_CONFLICT\")\n    if (!(!((state.taReceipts).contains(p.receiptId)))) return Right(Vector.empty)\n    if (!(((state.taStatus != \"confirmed\") && (state.taStatus != \"rejected\")))) return Left(\"TA_TERMINAL_CONFLICT\")\n    if (!((p.reason).nonEmpty)) return Left(\"TA_REJECTION_REASON\")\n    Right(FundOrderCommandHelpers.emitRecordFundTARejected(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/12/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 13434,
+    "end": 13498,
+    "text": "    if (!((p.fundOrderId == state.id))) return Left(\"TA_ORDER\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/12/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 13498,
+    "end": 13661,
+    "text": "    if (!(((p.paymentTxId == state.selectedPaymentTxId) && ((state.cashPaymentFinalResults).get(p.paymentTxId)).contains(\"succeeded\")))) return Left(\"TA_PAYMENT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/12/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 13661,
+    "end": 13774,
+    "text": "    if (!(((p.taRequestId == state.taRequestId) && ((p.taRequestId).value).nonEmpty))) return Left(\"TA_REQUEST\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/12/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 13774,
+    "end": 13914,
+    "text": "    if (!(((p.taReference).nonEmpty && ((state.taReference).isEmpty || (state.taReference == p.taReference))))) return Left(\"TA_REFERENCE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/12/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 13914,
+    "end": 14025,
+    "text": "    if (!(((p.fundCode == state.fundCode) && (p.currency == (state.amount).currency)))) return Left(\"TA_FUND\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/12/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 14025,
+    "end": 14124,
+    "text": "    if (!(((p.receiptId).nonEmpty && (p.receiptBody).nonEmpty))) return Left(\"TA_RECEIPT_PRESENT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/12/guards/6",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 14124,
+    "end": 14342,
+    "text": "    if (!((!((state.taReceipts).contains(p.receiptId)) || (((state.taReceipts)(p.receiptId) == p.receiptBody) && ((state.taReceiptOutcomes).get(p.receiptId)).contains(\"rejected\"))))) return Left(\"TA_RECEIPT_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/12/guards/7",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 14342,
+    "end": 14425,
+    "text": "    if (!(!((state.taReceipts).contains(p.receiptId)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/12/guards/8",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 14425,
+    "end": 14541,
+    "text": "    if (!(((state.taStatus != \"confirmed\") && (state.taStatus != \"rejected\")))) return Left(\"TA_TERMINAL_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/12/guards/9",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 14541,
+    "end": 14608,
+    "text": "    if (!((p.reason).nonEmpty)) return Left(\"TA_REJECTION_REASON\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/13",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 14689,
+    "end": 16043,
+    "text": "  def RecordFundTAUnknown(input: RecordFundTAUnknownParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!((p.fundOrderId == state.id))) return Left(\"TA_ORDER\")\n    if (!(((p.paymentTxId == state.selectedPaymentTxId) && ((state.cashPaymentFinalResults).get(p.paymentTxId)).contains(\"succeeded\")))) return Left(\"TA_PAYMENT\")\n    if (!(((p.taRequestId == state.taRequestId) && ((p.taRequestId).value).nonEmpty))) return Left(\"TA_REQUEST\")\n    if (!(((p.taReference).nonEmpty && ((state.taReference).isEmpty || (state.taReference == p.taReference))))) return Left(\"TA_REFERENCE\")\n    if (!(((p.fundCode == state.fundCode) && (p.currency == (state.amount).currency)))) return Left(\"TA_FUND\")\n    if (!(((p.receiptId).nonEmpty && (p.receiptBody).nonEmpty))) return Left(\"TA_RECEIPT_PRESENT\")\n    if (!((!((state.taReceipts).contains(p.receiptId)) || (((state.taReceipts)(p.receiptId) == p.receiptBody) && ((state.taReceiptOutcomes).get(p.receiptId)).contains(\"unknown\"))))) return Left(\"TA_RECEIPT_CONFLICT\")\n    if (!(!((state.taReceipts).contains(p.receiptId)))) return Right(Vector.empty)\n    if (!(((state.taStatus != \"confirmed\") && (state.taStatus != \"rejected\")))) return Right(Vector.empty)\n    Right(FundOrderCommandHelpers.emitRecordFundTAUnknown(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/13/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 14866,
+    "end": 14930,
+    "text": "    if (!((p.fundOrderId == state.id))) return Left(\"TA_ORDER\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/13/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 14930,
+    "end": 15093,
+    "text": "    if (!(((p.paymentTxId == state.selectedPaymentTxId) && ((state.cashPaymentFinalResults).get(p.paymentTxId)).contains(\"succeeded\")))) return Left(\"TA_PAYMENT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/13/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 15093,
+    "end": 15206,
+    "text": "    if (!(((p.taRequestId == state.taRequestId) && ((p.taRequestId).value).nonEmpty))) return Left(\"TA_REQUEST\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/13/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 15206,
+    "end": 15346,
+    "text": "    if (!(((p.taReference).nonEmpty && ((state.taReference).isEmpty || (state.taReference == p.taReference))))) return Left(\"TA_REFERENCE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/13/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 15346,
+    "end": 15457,
+    "text": "    if (!(((p.fundCode == state.fundCode) && (p.currency == (state.amount).currency)))) return Left(\"TA_FUND\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/13/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 15457,
+    "end": 15556,
+    "text": "    if (!(((p.receiptId).nonEmpty && (p.receiptBody).nonEmpty))) return Left(\"TA_RECEIPT_PRESENT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/13/guards/6",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 15556,
+    "end": 15773,
+    "text": "    if (!((!((state.taReceipts).contains(p.receiptId)) || (((state.taReceipts)(p.receiptId) == p.receiptBody) && ((state.taReceiptOutcomes).get(p.receiptId)).contains(\"unknown\"))))) return Left(\"TA_RECEIPT_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/13/guards/7",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 15773,
+    "end": 15856,
+    "text": "    if (!(!((state.taReceipts).contains(p.receiptId)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/13/guards/8",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 15856,
+    "end": 15963,
+    "text": "    if (!(((state.taStatus != \"confirmed\") && (state.taStatus != \"rejected\")))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/14",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 16043,
+    "end": 16714,
+    "text": "  def RequestFundPurchaseRefund(input: RequestFundPurchaseRefundParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!((p.fundOrderId == state.id))) return Left(\"REFUND_RESOURCE\")\n    if (!(((p.paymentTxId == state.selectedPaymentTxId) && ((state.cashPaymentFinalResults).get(p.paymentTxId)).contains(\"succeeded\")))) return Left(\"REFUND_PAYMENT\")\n    if (!((state.taStatus == \"rejected\"))) return Left(\"REFUND_TA_REJECTED\")\n    if (!(((state.refundOperationId).value).isEmpty)) return Right(Vector.empty)\n    Right(FundOrderCommandHelpers.emitRequestFundPurchaseRefund(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/14/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 16232,
+    "end": 16303,
+    "text": "    if (!((p.fundOrderId == state.id))) return Left(\"REFUND_RESOURCE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/14/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 16303,
+    "end": 16470,
+    "text": "    if (!(((p.paymentTxId == state.selectedPaymentTxId) && ((state.cashPaymentFinalResults).get(p.paymentTxId)).contains(\"succeeded\")))) return Left(\"REFUND_PAYMENT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/14/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 16470,
+    "end": 16547,
+    "text": "    if (!((state.taStatus == \"rejected\"))) return Left(\"REFUND_TA_REJECTED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/14/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 16547,
+    "end": 16628,
+    "text": "    if (!(((state.refundOperationId).value).isEmpty)) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/15",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 16714,
+    "end": 17799,
+    "text": "  def RecordFundRefundSucceeded(input: RecordFundRefundSucceededParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!(((p.refundOperationId == state.refundOperationId) && ((p.refundOperationId).value).nonEmpty))) return Left(\"REFUND_RESULT_ASSOCIATION\")\n    if (!(((((p.refundTxId).value).nonEmpty && (p.receiptId).nonEmpty) && (p.receiptBody).nonEmpty))) return Left(\"REFUND_RECEIPT_PRESENT\")\n    if (!((!((state.refundResultReceipts).contains(p.receiptId)) || ((state.refundResultReceipts)(p.receiptId) == p.receiptBody)))) return Left(\"REFUND_RECEIPT_CONFLICT\")\n    if (!((!((state.refundFinalResults).contains(p.refundTxId)) || ((state.refundFinalResults)(p.refundTxId) == \"succeeded\")))) return Left(\"REFUND_TERMINAL_CONFLICT\")\n    if (!(!((state.refundResultReceipts).contains(p.receiptId)))) return Right(Vector.empty)\n    if (!(!((state.refundFinalResults).contains(p.refundTxId)))) return Right(Vector.empty)\n    Right(FundOrderCommandHelpers.emitRecordFundRefundSucceeded(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/15/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 16903,
+    "end": 17049,
+    "text": "    if (!(((p.refundOperationId == state.refundOperationId) && ((p.refundOperationId).value).nonEmpty))) return Left(\"REFUND_RESULT_ASSOCIATION\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/15/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 17049,
+    "end": 17189,
+    "text": "    if (!(((((p.refundTxId).value).nonEmpty && (p.receiptId).nonEmpty) && (p.receiptBody).nonEmpty))) return Left(\"REFUND_RECEIPT_PRESENT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/15/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 17189,
+    "end": 17360,
+    "text": "    if (!((!((state.refundResultReceipts).contains(p.receiptId)) || ((state.refundResultReceipts)(p.receiptId) == p.receiptBody)))) return Left(\"REFUND_RECEIPT_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/15/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 17360,
+    "end": 17528,
+    "text": "    if (!((!((state.refundFinalResults).contains(p.refundTxId)) || ((state.refundFinalResults)(p.refundTxId) == \"succeeded\")))) return Left(\"REFUND_TERMINAL_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/15/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 17528,
+    "end": 17621,
+    "text": "    if (!(!((state.refundResultReceipts).contains(p.receiptId)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/15/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 17621,
+    "end": 17713,
+    "text": "    if (!(!((state.refundFinalResults).contains(p.refundTxId)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/16",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 17799,
+    "end": 18934,
+    "text": "  def RecordFundRefundRejectedBeforeEffects(input: RecordFundRefundRejectedBeforeEffectsParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!(((p.refundOperationId == state.refundOperationId) && ((p.refundOperationId).value).nonEmpty))) return Left(\"REFUND_RESULT_ASSOCIATION\")\n    if (!(((((p.refundTxId).value).nonEmpty && (p.receiptId).nonEmpty) && (p.receiptBody).nonEmpty))) return Left(\"REFUND_RECEIPT_PRESENT\")\n    if (!((!((state.refundResultReceipts).contains(p.receiptId)) || ((state.refundResultReceipts)(p.receiptId) == p.receiptBody)))) return Left(\"REFUND_RECEIPT_CONFLICT\")\n    if (!((!((state.refundFinalResults).contains(p.refundTxId)) || ((state.refundFinalResults)(p.refundTxId) == \"rejected-before-effects\")))) return Left(\"REFUND_TERMINAL_CONFLICT\")\n    if (!(!((state.refundResultReceipts).contains(p.receiptId)))) return Right(Vector.empty)\n    if (!(!((state.refundFinalResults).contains(p.refundTxId)))) return Right(Vector.empty)\n    Right(FundOrderCommandHelpers.emitRecordFundRefundRejectedBeforeEffects(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/16/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 18012,
+    "end": 18158,
+    "text": "    if (!(((p.refundOperationId == state.refundOperationId) && ((p.refundOperationId).value).nonEmpty))) return Left(\"REFUND_RESULT_ASSOCIATION\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/16/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 18158,
+    "end": 18298,
+    "text": "    if (!(((((p.refundTxId).value).nonEmpty && (p.receiptId).nonEmpty) && (p.receiptBody).nonEmpty))) return Left(\"REFUND_RECEIPT_PRESENT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/16/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 18298,
+    "end": 18469,
+    "text": "    if (!((!((state.refundResultReceipts).contains(p.receiptId)) || ((state.refundResultReceipts)(p.receiptId) == p.receiptBody)))) return Left(\"REFUND_RECEIPT_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/16/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 18469,
+    "end": 18651,
+    "text": "    if (!((!((state.refundFinalResults).contains(p.refundTxId)) || ((state.refundFinalResults)(p.refundTxId) == \"rejected-before-effects\")))) return Left(\"REFUND_TERMINAL_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/16/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 18651,
+    "end": 18744,
+    "text": "    if (!(!((state.refundResultReceipts).contains(p.receiptId)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/16/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 18744,
+    "end": 18836,
+    "text": "    if (!(!((state.refundFinalResults).contains(p.refundTxId)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/17",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 18934,
+    "end": 20027,
+    "text": "  def RecordFundRefundCompensated(input: RecordFundRefundCompensatedParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!(((p.refundOperationId == state.refundOperationId) && ((p.refundOperationId).value).nonEmpty))) return Left(\"REFUND_RESULT_ASSOCIATION\")\n    if (!(((((p.refundTxId).value).nonEmpty && (p.receiptId).nonEmpty) && (p.receiptBody).nonEmpty))) return Left(\"REFUND_RECEIPT_PRESENT\")\n    if (!((!((state.refundResultReceipts).contains(p.receiptId)) || ((state.refundResultReceipts)(p.receiptId) == p.receiptBody)))) return Left(\"REFUND_RECEIPT_CONFLICT\")\n    if (!((!((state.refundFinalResults).contains(p.refundTxId)) || ((state.refundFinalResults)(p.refundTxId) == \"compensated\")))) return Left(\"REFUND_TERMINAL_CONFLICT\")\n    if (!(!((state.refundResultReceipts).contains(p.receiptId)))) return Right(Vector.empty)\n    if (!(!((state.refundFinalResults).contains(p.refundTxId)))) return Right(Vector.empty)\n    Right(FundOrderCommandHelpers.emitRecordFundRefundCompensated(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/17/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 19127,
+    "end": 19273,
+    "text": "    if (!(((p.refundOperationId == state.refundOperationId) && ((p.refundOperationId).value).nonEmpty))) return Left(\"REFUND_RESULT_ASSOCIATION\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/17/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 19273,
+    "end": 19413,
+    "text": "    if (!(((((p.refundTxId).value).nonEmpty && (p.receiptId).nonEmpty) && (p.receiptBody).nonEmpty))) return Left(\"REFUND_RECEIPT_PRESENT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/17/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 19413,
+    "end": 19584,
+    "text": "    if (!((!((state.refundResultReceipts).contains(p.receiptId)) || ((state.refundResultReceipts)(p.receiptId) == p.receiptBody)))) return Left(\"REFUND_RECEIPT_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/17/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 19584,
+    "end": 19754,
+    "text": "    if (!((!((state.refundFinalResults).contains(p.refundTxId)) || ((state.refundFinalResults)(p.refundTxId) == \"compensated\")))) return Left(\"REFUND_TERMINAL_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/17/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 19754,
+    "end": 19847,
+    "text": "    if (!(!((state.refundResultReceipts).contains(p.receiptId)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/17/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 19847,
+    "end": 19939,
+    "text": "    if (!(!((state.refundFinalResults).contains(p.refundTxId)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/18",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 20027,
+    "end": 20965,
+    "text": "  def RecordFundRefundRecoveryRequired(input: RecordFundRefundRecoveryRequiredParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!(((p.refundOperationId == state.refundOperationId) && ((p.refundOperationId).value).nonEmpty))) return Left(\"REFUND_RESULT_ASSOCIATION\")\n    if (!(((((p.refundTxId).value).nonEmpty && (p.receiptId).nonEmpty) && (p.receiptBody).nonEmpty))) return Left(\"REFUND_RECEIPT_PRESENT\")\n    if (!((!((state.refundResultReceipts).contains(p.receiptId)) || ((state.refundResultReceipts)(p.receiptId) == p.receiptBody)))) return Left(\"REFUND_RECEIPT_CONFLICT\")\n    if (!(!((state.refundResultReceipts).contains(p.receiptId)))) return Right(Vector.empty)\n    if (!(!((state.refundFinalResults).contains(p.refundTxId)))) return Right(Vector.empty)\n    Right(FundOrderCommandHelpers.emitRecordFundRefundRecoveryRequired(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/18/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 20230,
+    "end": 20376,
+    "text": "    if (!(((p.refundOperationId == state.refundOperationId) && ((p.refundOperationId).value).nonEmpty))) return Left(\"REFUND_RESULT_ASSOCIATION\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/18/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 20376,
+    "end": 20516,
+    "text": "    if (!(((((p.refundTxId).value).nonEmpty && (p.receiptId).nonEmpty) && (p.receiptBody).nonEmpty))) return Left(\"REFUND_RECEIPT_PRESENT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/18/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 20516,
+    "end": 20687,
+    "text": "    if (!((!((state.refundResultReceipts).contains(p.receiptId)) || ((state.refundResultReceipts)(p.receiptId) == p.receiptBody)))) return Left(\"REFUND_RECEIPT_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/18/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 20687,
+    "end": 20780,
+    "text": "    if (!(!((state.refundResultReceipts).contains(p.receiptId)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/18/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 20780,
+    "end": 20872,
+    "text": "    if (!(!((state.refundFinalResults).contains(p.refundTxId)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/19",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 20965,
+    "end": 21897,
+    "text": "  def RecordFundRefundOutcomeUnknown(input: RecordFundRefundOutcomeUnknownParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!(((p.refundOperationId == state.refundOperationId) && ((p.refundOperationId).value).nonEmpty))) return Left(\"REFUND_RESULT_ASSOCIATION\")\n    if (!(((((p.refundTxId).value).nonEmpty && (p.receiptId).nonEmpty) && (p.receiptBody).nonEmpty))) return Left(\"REFUND_RECEIPT_PRESENT\")\n    if (!((!((state.refundResultReceipts).contains(p.receiptId)) || ((state.refundResultReceipts)(p.receiptId) == p.receiptBody)))) return Left(\"REFUND_RECEIPT_CONFLICT\")\n    if (!(!((state.refundResultReceipts).contains(p.receiptId)))) return Right(Vector.empty)\n    if (!(!((state.refundFinalResults).contains(p.refundTxId)))) return Right(Vector.empty)\n    Right(FundOrderCommandHelpers.emitRecordFundRefundOutcomeUnknown(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/19/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 21164,
+    "end": 21310,
+    "text": "    if (!(((p.refundOperationId == state.refundOperationId) && ((p.refundOperationId).value).nonEmpty))) return Left(\"REFUND_RESULT_ASSOCIATION\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/19/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 21310,
+    "end": 21450,
+    "text": "    if (!(((((p.refundTxId).value).nonEmpty && (p.receiptId).nonEmpty) && (p.receiptBody).nonEmpty))) return Left(\"REFUND_RECEIPT_PRESENT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/19/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 21450,
+    "end": 21621,
+    "text": "    if (!((!((state.refundResultReceipts).contains(p.receiptId)) || ((state.refundResultReceipts)(p.receiptId) == p.receiptBody)))) return Left(\"REFUND_RECEIPT_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/19/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 21621,
+    "end": 21714,
+    "text": "    if (!(!((state.refundResultReceipts).contains(p.receiptId)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/19/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 21714,
+    "end": 21806,
+    "text": "    if (!(!((state.refundFinalResults).contains(p.refundTxId)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/20",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 21897,
+    "end": 23572,
+    "text": "  def RecordCashRequestSource(input: RecordCashRequestSourceParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!((p.source).contains(p.original))) return Left(\"CASH_SOURCE_OPTION\")\n    if (!((((p.original).payment).fundOrderId == state.id))) return Left(\"CASH_SOURCE_RESOURCE\")\n    if (!((((((((p.original).principalId).nonEmpty && ((p.original).clientRequestId).nonEmpty) && ((p.original).authorityVersion).nonEmpty) && ((p.original).clientRequestId == ((p.original).request).clientRequestId)) && (((p.original).request).fundCode == ((p.original).payment).fundCode)) && ((((p.original).request).amount).currency == (((p.original).payment).amount).currency)))) return Left(\"CASH_SOURCE_BODY\")\n    if (!(((state.cashRequestSource).isEmpty || (state.cashRequestSource).contains(p.original)))) return Left(\"CASH_SOURCE_CONFLICT\")\n    if (!(((state.status == \"new\") || (((((((p.original).payment).operationId == state.operationId) && (((p.original).payment).investorAccountId == state.investorAccountId)) && (((p.original).payment).fundCollectionAccountId == state.fundCollectionAccountId)) && (((p.original).payment).fundCode == state.fundCode)) && { require((((p.original).payment).amount).currency == (state.amount).currency, \"exact units differ\"); ((((p.original).payment).amount).amount == (state.amount).amount) })))) return Left(\"CASH_SOURCE_PAYMENT\")\n    if (!((state.cashRequestSource).isEmpty)) return Right(Vector.empty)\n    if (!((state.status == \"new\"))) return Left(\"CASH_SOURCE_BEFORE_SETTLEMENT\")\n    Right(FundOrderCommandHelpers.emitRecordCashRequestSource(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/20/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 22082,
+    "end": 22160,
+    "text": "    if (!((p.source).contains(p.original))) return Left(\"CASH_SOURCE_OPTION\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/20/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 22160,
+    "end": 22257,
+    "text": "    if (!((((p.original).payment).fundOrderId == state.id))) return Left(\"CASH_SOURCE_RESOURCE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/20/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 22257,
+    "end": 22672,
+    "text": "    if (!((((((((p.original).principalId).nonEmpty && ((p.original).clientRequestId).nonEmpty) && ((p.original).authorityVersion).nonEmpty) && ((p.original).clientRequestId == ((p.original).request).clientRequestId)) && (((p.original).request).fundCode == ((p.original).payment).fundCode)) && ((((p.original).request).amount).currency == (((p.original).payment).amount).currency)))) return Left(\"CASH_SOURCE_BODY\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/20/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 22672,
+    "end": 22806,
+    "text": "    if (!(((state.cashRequestSource).isEmpty || (state.cashRequestSource).contains(p.original)))) return Left(\"CASH_SOURCE_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/20/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 22806,
+    "end": 23334,
+    "text": "    if (!(((state.status == \"new\") || (((((((p.original).payment).operationId == state.operationId) && (((p.original).payment).investorAccountId == state.investorAccountId)) && (((p.original).payment).fundCollectionAccountId == state.fundCollectionAccountId)) && (((p.original).payment).fundCode == state.fundCode)) && { require((((p.original).payment).amount).currency == (state.amount).currency, \"exact units differ\"); ((((p.original).payment).amount).amount == (state.amount).amount) })))) return Left(\"CASH_SOURCE_PAYMENT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/20/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 23334,
+    "end": 23407,
+    "text": "    if (!((state.cashRequestSource).isEmpty)) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/1/commands/20/guards/6",
+   "file": "app/example/bankwealth/domain/invariant/FundOrderRules.scala",
+   "span": {
+    "start": 23407,
+    "end": 23488,
+    "text": "    if (!((state.status == \"new\"))) return Left(\"CASH_SOURCE_BEFORE_SETTLEMENT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/0",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 270,
+    "end": 1734,
+    "text": "  def CreateSipPlan(input: CreateSipPlanParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!(((state.createIntent).isEmpty || (((state.sipCreateIntents).contains(\"original\") && (p.planId == ((state.sipCreateIntents)(\"original\")).planId)) && (p.config == ((state.sipCreateIntents)(\"original\")).config))))) return Left(\"SIP_ADMITTED_CREATE_MATCH\")\n    if (!(((p.planId).value).nonEmpty)) return Left(\"SIP_PLAN_ID\")\n    if (!((!(state.initialized) || (((p.planId == state.id) && (state.revisions).contains((p.config).revision)) && ((state.revisions)((p.config).revision) == p.config))))) return Left(\"SIP_CREATE_CONFLICT\")\n    if (!(!(state.initialized))) return Right(Vector.empty)\n    if (!((((p.config).revision).value).nonEmpty)) return Left(\"SIP_REVISION_ID\")\n    if (!(((p.config).effectiveSlot >= java.lang.Long.parseLong(\"0\")))) return Left(\"SIP_EFFECTIVE_SLOT\")\n    if (!((((((p.config).investorAccountId).value).nonEmpty && (((p.config).fundCollectionAccountId).value).nonEmpty) && ((p.config).investorAccountId != (p.config).fundCollectionAccountId)))) return Left(\"SIP_CONFIG_ACCOUNTS\")\n    if (!(((p.config).fundCode).nonEmpty)) return Left(\"SIP_CONFIG_FUND\")\n    if (!(((((p.config).amount).currency == \"CNY\") && (((p.config).amount).amount > BigDecimal(\"0.00\"))))) return Left(\"SIP_CONFIG_AMOUNT\")\n    Right(SipPlanCommandHelpers.emitCreateSipPlan(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/0/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 435,
+    "end": 698,
+    "text": "    if (!(((state.createIntent).isEmpty || (((state.sipCreateIntents).contains(\"original\") && (p.planId == ((state.sipCreateIntents)(\"original\")).planId)) && (p.config == ((state.sipCreateIntents)(\"original\")).config))))) return Left(\"SIP_ADMITTED_CREATE_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/0/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 698,
+    "end": 765,
+    "text": "    if (!(((p.planId).value).nonEmpty)) return Left(\"SIP_PLAN_ID\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/0/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 765,
+    "end": 972,
+    "text": "    if (!((!(state.initialized) || (((p.planId == state.id) && (state.revisions).contains((p.config).revision)) && ((state.revisions)((p.config).revision) == p.config))))) return Left(\"SIP_CREATE_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/0/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 972,
+    "end": 1032,
+    "text": "    if (!(!(state.initialized))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/0/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 1032,
+    "end": 1114,
+    "text": "    if (!((((p.config).revision).value).nonEmpty)) return Left(\"SIP_REVISION_ID\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/0/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 1114,
+    "end": 1220,
+    "text": "    if (!(((p.config).effectiveSlot >= java.lang.Long.parseLong(\"0\")))) return Left(\"SIP_EFFECTIVE_SLOT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/0/guards/6",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 1220,
+    "end": 1448,
+    "text": "    if (!((((((p.config).investorAccountId).value).nonEmpty && (((p.config).fundCollectionAccountId).value).nonEmpty) && ((p.config).investorAccountId != (p.config).fundCollectionAccountId)))) return Left(\"SIP_CONFIG_ACCOUNTS\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/0/guards/7",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 1448,
+    "end": 1522,
+    "text": "    if (!(((p.config).fundCode).nonEmpty)) return Left(\"SIP_CONFIG_FUND\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/0/guards/8",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 1522,
+    "end": 1662,
+    "text": "    if (!(((((p.config).amount).currency == \"CNY\") && (((p.config).amount).amount > BigDecimal(\"0.00\"))))) return Left(\"SIP_CONFIG_AMOUNT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/1",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 1734,
+    "end": 2727,
+    "text": "  def AppendSipDueSlot(input: AppendSipDueSlotParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!(((state.createIntent).isEmpty || (state.createIntentDueSlots).contains(p.dueSlot)))) return Left(\"SIP_ADMITTED_SLOT_MEMBER\")\n    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n    if (!((!((state.slots).contains(p.position)) || ((state.slots)(p.position) == p.dueSlot)))) return Left(\"SIP_SLOT_REPLAY_CONFLICT\")\n    if (!(!((state.slots).contains(p.position)))) return Right(Vector.empty)\n    if (!(!(state.scheduleSealed))) return Left(\"SIP_SCHEDULE_OPEN\")\n    if (!(((p.position == state.scheduleCount) && (p.position < java.lang.Long.parseLong(\"9223372036854775807\"))))) return Left(\"SIP_SLOT_POSITION\")\n    if (!(((p.dueSlot > state.lastDueSlot) && (p.dueSlot >= state.latestEffectiveSlot)))) return Left(\"SIP_SLOT_ORDER\")\n    Right(SipPlanCommandHelpers.emitAppendSipDueSlot(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/1/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 1905,
+    "end": 2040,
+    "text": "    if (!(((state.createIntent).isEmpty || (state.createIntentDueSlots).contains(p.dueSlot)))) return Left(\"SIP_ADMITTED_SLOT_MEMBER\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/1/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 2040,
+    "end": 2101,
+    "text": "    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/1/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 2101,
+    "end": 2237,
+    "text": "    if (!((!((state.slots).contains(p.position)) || ((state.slots)(p.position) == p.dueSlot)))) return Left(\"SIP_SLOT_REPLAY_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/1/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 2237,
+    "end": 2314,
+    "text": "    if (!(!((state.slots).contains(p.position)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/1/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 2314,
+    "end": 2383,
+    "text": "    if (!(!(state.scheduleSealed))) return Left(\"SIP_SCHEDULE_OPEN\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/1/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 2383,
+    "end": 2532,
+    "text": "    if (!(((p.position == state.scheduleCount) && (p.position < java.lang.Long.parseLong(\"9223372036854775807\"))))) return Left(\"SIP_SLOT_POSITION\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/1/guards/6",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 2532,
+    "end": 2652,
+    "text": "    if (!(((p.dueSlot > state.lastDueSlot) && (p.dueSlot >= state.latestEffectiveSlot)))) return Left(\"SIP_SLOT_ORDER\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/2",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 2727,
+    "end": 3329,
+    "text": "  def SealSipSchedule(input: SealSipScheduleParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!((state.createIntentDueSlots).forall((state.intentAppendedDueSlots).contains))) return Left(\"SIP_ADMITTED_SCHEDULE_COVERED\")\n    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n    if (!(!(state.scheduleSealed))) return Right(Vector.empty)\n    if (!((state.scheduleCount > java.lang.Long.parseLong(\"0\")))) return Left(\"SIP_FINITE_SCHEDULE\")\n    Right(SipPlanCommandHelpers.emitSealSipSchedule(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/2/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 2896,
+    "end": 3030,
+    "text": "    if (!((state.createIntentDueSlots).forall((state.intentAppendedDueSlots).contains))) return Left(\"SIP_ADMITTED_SCHEDULE_COVERED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/2/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 3030,
+    "end": 3091,
+    "text": "    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/2/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 3091,
+    "end": 3154,
+    "text": "    if (!(!(state.scheduleSealed))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/2/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 3154,
+    "end": 3255,
+    "text": "    if (!((state.scheduleCount > java.lang.Long.parseLong(\"0\")))) return Left(\"SIP_FINITE_SCHEDULE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/3",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 3329,
+    "end": 4666,
+    "text": "  def ReviseSipPlan(input: ReviseSipPlanParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n    if (!((!((state.revisions).contains((p.config).revision)) || ((state.revisions)((p.config).revision) == p.config)))) return Left(\"SIP_REVISION_REPLAY_CONFLICT\")\n    if (!(!((state.revisions).contains((p.config).revision)))) return Right(Vector.empty)\n    if (!((((p.config).revision).value).nonEmpty)) return Left(\"SIP_REVISION_ID\")\n    if (!(((p.config).effectiveSlot >= java.lang.Long.parseLong(\"0\")))) return Left(\"SIP_EFFECTIVE_SLOT\")\n    if (!((((((p.config).investorAccountId).value).nonEmpty && (((p.config).fundCollectionAccountId).value).nonEmpty) && ((p.config).investorAccountId != (p.config).fundCollectionAccountId)))) return Left(\"SIP_CONFIG_ACCOUNTS\")\n    if (!(((p.config).fundCode).nonEmpty)) return Left(\"SIP_CONFIG_FUND\")\n    if (!(((((p.config).amount).currency == \"CNY\") && (((p.config).amount).amount > BigDecimal(\"0.00\"))))) return Left(\"SIP_CONFIG_AMOUNT\")\n    if (!((((p.config).effectiveSlot > state.currentTick) && ((p.config).effectiveSlot > state.latestEffectiveSlot)))) return Left(\"SIP_REVISION_FUTURE\")\n    Right(SipPlanCommandHelpers.emitReviseSipPlan(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/3/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 3494,
+    "end": 3555,
+    "text": "    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/3/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 3555,
+    "end": 3720,
+    "text": "    if (!((!((state.revisions).contains((p.config).revision)) || ((state.revisions)((p.config).revision) == p.config)))) return Left(\"SIP_REVISION_REPLAY_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/3/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 3720,
+    "end": 3810,
+    "text": "    if (!(!((state.revisions).contains((p.config).revision)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/3/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 3810,
+    "end": 3892,
+    "text": "    if (!((((p.config).revision).value).nonEmpty)) return Left(\"SIP_REVISION_ID\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/3/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 3892,
+    "end": 3998,
+    "text": "    if (!(((p.config).effectiveSlot >= java.lang.Long.parseLong(\"0\")))) return Left(\"SIP_EFFECTIVE_SLOT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/3/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 3998,
+    "end": 4226,
+    "text": "    if (!((((((p.config).investorAccountId).value).nonEmpty && (((p.config).fundCollectionAccountId).value).nonEmpty) && ((p.config).investorAccountId != (p.config).fundCollectionAccountId)))) return Left(\"SIP_CONFIG_ACCOUNTS\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/3/guards/6",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 4226,
+    "end": 4300,
+    "text": "    if (!(((p.config).fundCode).nonEmpty)) return Left(\"SIP_CONFIG_FUND\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/3/guards/7",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 4300,
+    "end": 4440,
+    "text": "    if (!(((((p.config).amount).currency == \"CNY\") && (((p.config).amount).amount > BigDecimal(\"0.00\"))))) return Left(\"SIP_CONFIG_AMOUNT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/3/guards/8",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 4440,
+    "end": 4594,
+    "text": "    if (!((((p.config).effectiveSlot > state.currentTick) && ((p.config).effectiveSlot > state.latestEffectiveSlot)))) return Left(\"SIP_REVISION_FUTURE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/4",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 4666,
+    "end": 5230,
+    "text": "  def AdvanceSipClock(input: AdvanceSipClockParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n    if (!(state.scheduleSealed)) return Left(\"SIP_SCHEDULE_SEALED\")\n    if (!(((p.tick >= state.currentTick) && (p.tick >= java.lang.Long.parseLong(\"0\"))))) return Left(\"SIP_CLOCK_MONOTONE\")\n    if (!((p.tick != state.currentTick))) return Right(Vector.empty)\n    Right(SipPlanCommandHelpers.emitAdvanceSipClock(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/4/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 4835,
+    "end": 4896,
+    "text": "    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/4/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 4896,
+    "end": 4964,
+    "text": "    if (!(state.scheduleSealed)) return Left(\"SIP_SCHEDULE_SEALED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/4/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 4964,
+    "end": 5087,
+    "text": "    if (!(((p.tick >= state.currentTick) && (p.tick >= java.lang.Long.parseLong(\"0\"))))) return Left(\"SIP_CLOCK_MONOTONE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/4/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 5087,
+    "end": 5156,
+    "text": "    if (!((p.tick != state.currentTick))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/5",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 5230,
+    "end": 5964,
+    "text": "  def PauseSipPlan(input: PauseSipPlanParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n    if (!(state.scheduleSealed)) return Left(\"SIP_SCHEDULE_SEALED\")\n    if (!((!(state.paused) || (p.tick == state.pauseTick)))) return Left(\"SIP_PAUSE_REPLAY_CONFLICT\")\n    if (!(!(state.paused))) return Right(Vector.empty)\n    if (!(((p.tick == state.currentTick) && (p.tick >= java.lang.Long.parseLong(\"0\"))))) return Left(\"SIP_PAUSE_CLOCK\")\n    if (!(!((state.pauseIntervals).contains(p.tick)))) return Left(\"SIP_PAUSE_INTERVAL_ONCE\")\n    Right(SipPlanCommandHelpers.emitPauseSipPlan(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/5/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 5393,
+    "end": 5454,
+    "text": "    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/5/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 5454,
+    "end": 5522,
+    "text": "    if (!(state.scheduleSealed)) return Left(\"SIP_SCHEDULE_SEALED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/5/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 5522,
+    "end": 5624,
+    "text": "    if (!((!(state.paused) || (p.tick == state.pauseTick)))) return Left(\"SIP_PAUSE_REPLAY_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/5/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 5624,
+    "end": 5679,
+    "text": "    if (!(!(state.paused))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/5/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 5679,
+    "end": 5799,
+    "text": "    if (!(((p.tick == state.currentTick) && (p.tick >= java.lang.Long.parseLong(\"0\"))))) return Left(\"SIP_PAUSE_CLOCK\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/5/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 5799,
+    "end": 5893,
+    "text": "    if (!(!((state.pauseIntervals).contains(p.tick)))) return Left(\"SIP_PAUSE_INTERVAL_ONCE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/6",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 5964,
+    "end": 6661,
+    "text": "  def ResumeSipPlan(input: ResumeSipPlanParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n    if (!(state.scheduleSealed)) return Left(\"SIP_SCHEDULE_SEALED\")\n    if (!((p.tick == state.currentTick))) return Left(\"SIP_RESUME_CLOCK\")\n    if (!(state.paused)) return Right(Vector.empty)\n    if (!(((state.observedCount == state.scheduleCount) || ((state.slots).contains(state.observedCount) && ((state.slots)(state.observedCount) > state.currentTick))))) return Left(\"SIP_RESUME_CLASSIFIED\")\n    Right(SipPlanCommandHelpers.emitResumeSipPlan(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/6/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 6129,
+    "end": 6190,
+    "text": "    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/6/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 6190,
+    "end": 6258,
+    "text": "    if (!(state.scheduleSealed)) return Left(\"SIP_SCHEDULE_SEALED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/6/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 6258,
+    "end": 6332,
+    "text": "    if (!((p.tick == state.currentTick))) return Left(\"SIP_RESUME_CLOCK\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/6/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 6332,
+    "end": 6384,
+    "text": "    if (!(state.paused)) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/6/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 6384,
+    "end": 6589,
+    "text": "    if (!(((state.observedCount == state.scheduleCount) || ((state.slots).contains(state.observedCount) && ((state.slots)(state.observedCount) > state.currentTick))))) return Left(\"SIP_RESUME_CLASSIFIED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/7",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 6661,
+    "end": 7703,
+    "text": "  def ObserveSipDueSlot(input: ObserveSipDueSlotParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n    if (!(state.scheduleSealed)) return Left(\"SIP_SCHEDULE_SEALED\")\n    if (!((state.slots).contains(p.position))) return Left(\"SIP_SLOT_DECLARED\")\n    if (!(((state.slots)(p.position) == p.dueSlot))) return Left(\"SIP_SLOT_MATCH\")\n    if (!((!((state.slotDisposition).contains(p.dueSlot)) || ((state.slotDisposition)(p.dueSlot) == \"backlog\")))) return Left(\"SIP_OBSERVATION_CONFLICT\")\n    if (!(!((state.slotDisposition).contains(p.dueSlot)))) return Right(Vector.empty)\n    if (!((p.position == state.observedCount))) return Left(\"SIP_OBSERVATION_ORDER\")\n    if (!((p.dueSlot <= state.currentTick))) return Left(\"SIP_SLOT_DUE\")\n    if (!((!(state.paused) || (p.dueSlot < state.pauseTick)))) return Left(\"SIP_PAUSE_CLASSIFICATION\")\n    Right(SipPlanCommandHelpers.emitObserveSipDueSlot(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/7/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 6834,
+    "end": 6895,
+    "text": "    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/7/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 6895,
+    "end": 6963,
+    "text": "    if (!(state.scheduleSealed)) return Left(\"SIP_SCHEDULE_SEALED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/7/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 6963,
+    "end": 7043,
+    "text": "    if (!((state.slots).contains(p.position))) return Left(\"SIP_SLOT_DECLARED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/7/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 7043,
+    "end": 7126,
+    "text": "    if (!(((state.slots)(p.position) == p.dueSlot))) return Left(\"SIP_SLOT_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/7/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 7126,
+    "end": 7280,
+    "text": "    if (!((!((state.slotDisposition).contains(p.dueSlot)) || ((state.slotDisposition)(p.dueSlot) == \"backlog\")))) return Left(\"SIP_OBSERVATION_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/7/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 7280,
+    "end": 7366,
+    "text": "    if (!(!((state.slotDisposition).contains(p.dueSlot)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/7/guards/6",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 7366,
+    "end": 7451,
+    "text": "    if (!((p.position == state.observedCount))) return Left(\"SIP_OBSERVATION_ORDER\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/7/guards/7",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 7451,
+    "end": 7524,
+    "text": "    if (!((p.dueSlot <= state.currentTick))) return Left(\"SIP_SLOT_DUE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/7/guards/8",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 7524,
+    "end": 7627,
+    "text": "    if (!((!(state.paused) || (p.dueSlot < state.pauseTick)))) return Left(\"SIP_PAUSE_CLASSIFICATION\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/8",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 7703,
+    "end": 8752,
+    "text": "  def SkipPausedSipDueSlot(input: SkipPausedSipDueSlotParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n    if (!(state.scheduleSealed)) return Left(\"SIP_SCHEDULE_SEALED\")\n    if (!((state.slots).contains(p.position))) return Left(\"SIP_SLOT_DECLARED\")\n    if (!(((state.slots)(p.position) == p.dueSlot))) return Left(\"SIP_SLOT_MATCH\")\n    if (!((!((state.slotDisposition).contains(p.dueSlot)) || ((state.slotDisposition)(p.dueSlot) == \"skipped\")))) return Left(\"SIP_OBSERVATION_CONFLICT\")\n    if (!(!((state.slotDisposition).contains(p.dueSlot)))) return Right(Vector.empty)\n    if (!((p.position == state.observedCount))) return Left(\"SIP_OBSERVATION_ORDER\")\n    if (!((p.dueSlot <= state.currentTick))) return Left(\"SIP_SLOT_DUE\")\n    if (!((state.paused && (p.dueSlot >= state.pauseTick)))) return Left(\"SIP_PAUSE_CLASSIFICATION\")\n    Right(SipPlanCommandHelpers.emitSkipPausedSipDueSlot(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/8/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 7882,
+    "end": 7943,
+    "text": "    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/8/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 7943,
+    "end": 8011,
+    "text": "    if (!(state.scheduleSealed)) return Left(\"SIP_SCHEDULE_SEALED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/8/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 8011,
+    "end": 8091,
+    "text": "    if (!((state.slots).contains(p.position))) return Left(\"SIP_SLOT_DECLARED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/8/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 8091,
+    "end": 8174,
+    "text": "    if (!(((state.slots)(p.position) == p.dueSlot))) return Left(\"SIP_SLOT_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/8/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 8174,
+    "end": 8328,
+    "text": "    if (!((!((state.slotDisposition).contains(p.dueSlot)) || ((state.slotDisposition)(p.dueSlot) == \"skipped\")))) return Left(\"SIP_OBSERVATION_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/8/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 8328,
+    "end": 8414,
+    "text": "    if (!(!((state.slotDisposition).contains(p.dueSlot)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/8/guards/6",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 8414,
+    "end": 8499,
+    "text": "    if (!((p.position == state.observedCount))) return Left(\"SIP_OBSERVATION_ORDER\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/8/guards/7",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 8499,
+    "end": 8572,
+    "text": "    if (!((p.dueSlot <= state.currentTick))) return Left(\"SIP_SLOT_DUE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/8/guards/8",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 8572,
+    "end": 8673,
+    "text": "    if (!((state.paused && (p.dueSlot >= state.pauseTick)))) return Left(\"SIP_PAUSE_CLASSIFICATION\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/9",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 8752,
+    "end": 9565,
+    "text": "  def AdvanceSkippedSipSlot(input: AdvanceSkippedSipSlotParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n    if (!(state.scheduleSealed)) return Left(\"SIP_SCHEDULE_SEALED\")\n    if (!((state.slots).contains(p.position))) return Left(\"SIP_SLOT_DECLARED\")\n    if (!(((state.slots)(p.position) == p.dueSlot))) return Left(\"SIP_SLOT_MATCH\")\n    if (!(((state.slotDisposition).get(p.dueSlot)).contains(\"skipped\"))) return Left(\"SIP_SKIP_RECORDED\")\n    if (!((p.position >= state.startCount))) return Right(Vector.empty)\n    if (!((p.position == state.startCount))) return Left(\"SIP_SKIP_CURSOR_ORDER\")\n    Right(SipPlanCommandHelpers.emitAdvanceSkippedSipSlot(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/9/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 8933,
+    "end": 8994,
+    "text": "    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/9/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 8994,
+    "end": 9062,
+    "text": "    if (!(state.scheduleSealed)) return Left(\"SIP_SCHEDULE_SEALED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/9/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 9062,
+    "end": 9142,
+    "text": "    if (!((state.slots).contains(p.position))) return Left(\"SIP_SLOT_DECLARED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/9/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 9142,
+    "end": 9225,
+    "text": "    if (!(((state.slots)(p.position) == p.dueSlot))) return Left(\"SIP_SLOT_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/9/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 9225,
+    "end": 9331,
+    "text": "    if (!(((state.slotDisposition).get(p.dueSlot)).contains(\"skipped\"))) return Left(\"SIP_SKIP_RECORDED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/9/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 9331,
+    "end": 9403,
+    "text": "    if (!((p.position >= state.startCount))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/9/guards/6",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 9403,
+    "end": 9485,
+    "text": "    if (!((p.position == state.startCount))) return Left(\"SIP_SKIP_CURSOR_ORDER\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/10",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 9565,
+    "end": 11079,
+    "text": "  def TriggerSipInstallment(input: TriggerSipInstallmentParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n    if (!(state.scheduleSealed)) return Left(\"SIP_SCHEDULE_SEALED\")\n    if (!((state.slots).contains(p.position))) return Left(\"SIP_SLOT_DECLARED\")\n    if (!(((state.slots)(p.position) == p.dueSlot))) return Left(\"SIP_SLOT_MATCH\")\n    if (!((!((state.occurrences).contains(p.dueSlot)) || ((((state.occurrences)(p.dueSlot)).revision == p.revision) && (((state.occurrences)(p.dueSlot)).config == p.config))))) return Left(\"SIP_OCCURRENCE_REPLAY_CONFLICT\")\n    if (!(!((state.occurrences).contains(p.dueSlot)))) return Right(Vector.empty)\n    if (!(!(state.paused))) return Left(\"SIP_ACTIVE_START\")\n    if (!((p.position == state.startCount))) return Left(\"SIP_START_ORDER\")\n    if (!(((state.slotDisposition).get(p.dueSlot)).contains(\"backlog\"))) return Left(\"SIP_BACKLOG_REQUIRED\")\n    if (!((state.revisions).contains(p.revision))) return Left(\"SIP_REVISION_DECLARED\")\n    if (!((((state.revisions)(p.revision) == p.config) && ((p.config).revision == p.revision)))) return Left(\"SIP_RETAINED_CONFIG\")\n    if (!(((p.dueSlot >= (p.config).effectiveSlot) && (!((state.revisionEnds).contains(p.revision)) || (p.dueSlot < (state.revisionEnds)(p.revision)))))) return Left(\"SIP_REVISION_INTERVAL\")\n    Right(SipPlanCommandHelpers.emitTriggerSipInstallment(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/10/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 9746,
+    "end": 9807,
+    "text": "    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/10/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 9807,
+    "end": 9875,
+    "text": "    if (!(state.scheduleSealed)) return Left(\"SIP_SCHEDULE_SEALED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/10/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 9875,
+    "end": 9955,
+    "text": "    if (!((state.slots).contains(p.position))) return Left(\"SIP_SLOT_DECLARED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/10/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 9955,
+    "end": 10038,
+    "text": "    if (!(((state.slots)(p.position) == p.dueSlot))) return Left(\"SIP_SLOT_MATCH\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/10/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 10038,
+    "end": 10261,
+    "text": "    if (!((!((state.occurrences).contains(p.dueSlot)) || ((((state.occurrences)(p.dueSlot)).revision == p.revision) && (((state.occurrences)(p.dueSlot)).config == p.config))))) return Left(\"SIP_OCCURRENCE_REPLAY_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/10/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 10261,
+    "end": 10343,
+    "text": "    if (!(!((state.occurrences).contains(p.dueSlot)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/10/guards/6",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 10343,
+    "end": 10403,
+    "text": "    if (!(!(state.paused))) return Left(\"SIP_ACTIVE_START\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/10/guards/7",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 10403,
+    "end": 10479,
+    "text": "    if (!((p.position == state.startCount))) return Left(\"SIP_START_ORDER\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/10/guards/8",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 10479,
+    "end": 10588,
+    "text": "    if (!(((state.slotDisposition).get(p.dueSlot)).contains(\"backlog\"))) return Left(\"SIP_BACKLOG_REQUIRED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/10/guards/9",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 10588,
+    "end": 10676,
+    "text": "    if (!((state.revisions).contains(p.revision))) return Left(\"SIP_REVISION_DECLARED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/10/guards/10",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 10676,
+    "end": 10808,
+    "text": "    if (!((((state.revisions)(p.revision) == p.config) && ((p.config).revision == p.revision)))) return Left(\"SIP_RETAINED_CONFIG\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/10/guards/11",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 10808,
+    "end": 10999,
+    "text": "    if (!(((p.dueSlot >= (p.config).effectiveSlot) && (!((state.revisionEnds).contains(p.revision)) || (p.dueSlot < (state.revisionEnds)(p.revision)))))) return Left(\"SIP_REVISION_INTERVAL\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/11",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 11079,
+    "end": 11902,
+    "text": "  def RecordSipInstallmentPending(input: RecordSipInstallmentPendingParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n    if (!((state.occurrences).contains((p.occurrence).dueSlot))) return Left(\"SIP_OCCURRENCE_KNOWN\")\n    if (!((((state.occurrences)((p.occurrence).dueSlot) == p.occurrence) && ((p.occurrence).planId == state.id)))) return Left(\"SIP_ORIGINAL_ASSOCIATION\")\n    if (!(!((state.firstTerminals).contains((p.occurrence).occurrenceId)))) return Right(Vector.empty)\n    if (!(!(((state.occurrenceProgress).get((p.occurrence).occurrenceId)).contains(\"pending\")))) return Right(Vector.empty)\n    Right(SipPlanCommandHelpers.emitRecordSipInstallmentPending(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/11/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 11272,
+    "end": 11333,
+    "text": "    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/11/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 11333,
+    "end": 11434,
+    "text": "    if (!((state.occurrences).contains((p.occurrence).dueSlot))) return Left(\"SIP_OCCURRENCE_KNOWN\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/11/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 11434,
+    "end": 11589,
+    "text": "    if (!((((state.occurrences)((p.occurrence).dueSlot) == p.occurrence) && ((p.occurrence).planId == state.id)))) return Left(\"SIP_ORIGINAL_ASSOCIATION\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/11/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 11589,
+    "end": 11692,
+    "text": "    if (!(!((state.firstTerminals).contains((p.occurrence).occurrenceId)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/11/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 11692,
+    "end": 11816,
+    "text": "    if (!(!(((state.occurrenceProgress).get((p.occurrence).occurrenceId)).contains(\"pending\")))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/12",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 11902,
+    "end": 12754,
+    "text": "  def RecordSipInstallmentOutcomeUnknown(input: RecordSipInstallmentOutcomeUnknownParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n    if (!((state.occurrences).contains((p.occurrence).dueSlot))) return Left(\"SIP_OCCURRENCE_KNOWN\")\n    if (!((((state.occurrences)((p.occurrence).dueSlot) == p.occurrence) && ((p.occurrence).planId == state.id)))) return Left(\"SIP_ORIGINAL_ASSOCIATION\")\n    if (!(!((state.firstTerminals).contains((p.occurrence).occurrenceId)))) return Right(Vector.empty)\n    if (!(!(((state.occurrenceProgress).get((p.occurrence).occurrenceId)).contains(\"outcome-unknown\")))) return Right(Vector.empty)\n    Right(SipPlanCommandHelpers.emitRecordSipInstallmentOutcomeUnknown(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/12/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 12109,
+    "end": 12170,
+    "text": "    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/12/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 12170,
+    "end": 12271,
+    "text": "    if (!((state.occurrences).contains((p.occurrence).dueSlot))) return Left(\"SIP_OCCURRENCE_KNOWN\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/12/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 12271,
+    "end": 12426,
+    "text": "    if (!((((state.occurrences)((p.occurrence).dueSlot) == p.occurrence) && ((p.occurrence).planId == state.id)))) return Left(\"SIP_ORIGINAL_ASSOCIATION\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/12/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 12426,
+    "end": 12529,
+    "text": "    if (!(!((state.firstTerminals).contains((p.occurrence).occurrenceId)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/12/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 12529,
+    "end": 12661,
+    "text": "    if (!(!(((state.occurrenceProgress).get((p.occurrence).occurrenceId)).contains(\"outcome-unknown\")))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/13",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 12754,
+    "end": 13614,
+    "text": "  def RecordSipInstallmentRecoveryRequired(input: RecordSipInstallmentRecoveryRequiredParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n    if (!((state.occurrences).contains((p.occurrence).dueSlot))) return Left(\"SIP_OCCURRENCE_KNOWN\")\n    if (!((((state.occurrences)((p.occurrence).dueSlot) == p.occurrence) && ((p.occurrence).planId == state.id)))) return Left(\"SIP_ORIGINAL_ASSOCIATION\")\n    if (!(!((state.firstTerminals).contains((p.occurrence).occurrenceId)))) return Right(Vector.empty)\n    if (!(!(((state.occurrenceProgress).get((p.occurrence).occurrenceId)).contains(\"recovery-required\")))) return Right(Vector.empty)\n    Right(SipPlanCommandHelpers.emitRecordSipInstallmentRecoveryRequired(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/13/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 12965,
+    "end": 13026,
+    "text": "    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/13/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 13026,
+    "end": 13127,
+    "text": "    if (!((state.occurrences).contains((p.occurrence).dueSlot))) return Left(\"SIP_OCCURRENCE_KNOWN\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/13/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 13127,
+    "end": 13282,
+    "text": "    if (!((((state.occurrences)((p.occurrence).dueSlot) == p.occurrence) && ((p.occurrence).planId == state.id)))) return Left(\"SIP_ORIGINAL_ASSOCIATION\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/13/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 13282,
+    "end": 13385,
+    "text": "    if (!(!((state.firstTerminals).contains((p.occurrence).occurrenceId)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/13/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 13385,
+    "end": 13519,
+    "text": "    if (!(!(((state.occurrenceProgress).get((p.occurrence).occurrenceId)).contains(\"recovery-required\")))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/14",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 13614,
+    "end": 14475,
+    "text": "  def RecordSipInstallmentRefundInProgress(input: RecordSipInstallmentRefundInProgressParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n    if (!((state.occurrences).contains((p.occurrence).dueSlot))) return Left(\"SIP_OCCURRENCE_KNOWN\")\n    if (!((((state.occurrences)((p.occurrence).dueSlot) == p.occurrence) && ((p.occurrence).planId == state.id)))) return Left(\"SIP_ORIGINAL_ASSOCIATION\")\n    if (!(!((state.firstTerminals).contains((p.occurrence).occurrenceId)))) return Right(Vector.empty)\n    if (!(!(((state.occurrenceProgress).get((p.occurrence).occurrenceId)).contains(\"refund-in-progress\")))) return Right(Vector.empty)\n    Right(SipPlanCommandHelpers.emitRecordSipInstallmentRefundInProgress(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/14/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 13825,
+    "end": 13886,
+    "text": "    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/14/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 13886,
+    "end": 13987,
+    "text": "    if (!((state.occurrences).contains((p.occurrence).dueSlot))) return Left(\"SIP_OCCURRENCE_KNOWN\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/14/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 13987,
+    "end": 14142,
+    "text": "    if (!((((state.occurrences)((p.occurrence).dueSlot) == p.occurrence) && ((p.occurrence).planId == state.id)))) return Left(\"SIP_ORIGINAL_ASSOCIATION\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/14/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 14142,
+    "end": 14245,
+    "text": "    if (!(!((state.firstTerminals).contains((p.occurrence).occurrenceId)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/14/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 14245,
+    "end": 14380,
+    "text": "    if (!(!(((state.occurrenceProgress).get((p.occurrence).occurrenceId)).contains(\"refund-in-progress\")))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/15",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 14475,
+    "end": 15844,
+    "text": "  def RecordSipInstallmentSucceeded(input: RecordSipInstallmentSucceededParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n    if (!((state.occurrences).contains((p.occurrence).dueSlot))) return Left(\"SIP_OCCURRENCE_KNOWN\")\n    if (!((((state.occurrences)((p.occurrence).dueSlot) == p.occurrence) && ((p.occurrence).planId == state.id)))) return Left(\"SIP_ORIGINAL_ASSOCIATION\")\n    if (!((p.evidence == \"ta-confirmed\"))) return Left(\"SIP_TERMINAL_EVIDENCE\")\n    if (!(((p.receiptId).nonEmpty && (p.receiptBody).nonEmpty))) return Left(\"SIP_TERMINAL_RECEIPT\")\n    if (!((!((state.terminalReceiptBodies).contains(p.receiptId)) || ((state.terminalReceiptBodies)(p.receiptId) == p.receiptBody)))) return Left(\"SIP_TERMINAL_RECEIPT_CONFLICT\")\n    if (!((!((state.firstTerminals).contains((p.occurrence).occurrenceId)) || ((state.firstTerminals)((p.occurrence).occurrenceId) == \"succeeded\")))) return Left(\"SIP_TERMINAL_CONFLICT\")\n    if (!(!((state.firstTerminals).contains((p.occurrence).occurrenceId)))) return Right(Vector.empty)\n    if (!((state.successTotal < java.lang.Long.parseLong(\"9223372036854775807\")))) return Left(\"SIP_TOTAL_CAPACITY\")\n    Right(SipPlanCommandHelpers.emitRecordSipInstallmentSucceeded(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/15/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 14672,
+    "end": 14733,
+    "text": "    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/15/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 14733,
+    "end": 14834,
+    "text": "    if (!((state.occurrences).contains((p.occurrence).dueSlot))) return Left(\"SIP_OCCURRENCE_KNOWN\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/15/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 14834,
+    "end": 14989,
+    "text": "    if (!((((state.occurrences)((p.occurrence).dueSlot) == p.occurrence) && ((p.occurrence).planId == state.id)))) return Left(\"SIP_ORIGINAL_ASSOCIATION\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/15/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 14989,
+    "end": 15069,
+    "text": "    if (!((p.evidence == \"ta-confirmed\"))) return Left(\"SIP_TERMINAL_EVIDENCE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/15/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 15069,
+    "end": 15170,
+    "text": "    if (!(((p.receiptId).nonEmpty && (p.receiptBody).nonEmpty))) return Left(\"SIP_TERMINAL_RECEIPT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/15/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 15170,
+    "end": 15349,
+    "text": "    if (!((!((state.terminalReceiptBodies).contains(p.receiptId)) || ((state.terminalReceiptBodies)(p.receiptId) == p.receiptBody)))) return Left(\"SIP_TERMINAL_RECEIPT_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/15/guards/6",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 15349,
+    "end": 15536,
+    "text": "    if (!((!((state.firstTerminals).contains((p.occurrence).occurrenceId)) || ((state.firstTerminals)((p.occurrence).occurrenceId) == \"succeeded\")))) return Left(\"SIP_TERMINAL_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/15/guards/7",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 15536,
+    "end": 15639,
+    "text": "    if (!(!((state.firstTerminals).contains((p.occurrence).occurrenceId)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/15/guards/8",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 15639,
+    "end": 15756,
+    "text": "    if (!((state.successTotal < java.lang.Long.parseLong(\"9223372036854775807\")))) return Left(\"SIP_TOTAL_CAPACITY\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/16",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 15844,
+    "end": 17315,
+    "text": "  def RecordSipInstallmentFailed(input: RecordSipInstallmentFailedParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n    if (!((state.occurrences).contains((p.occurrence).dueSlot))) return Left(\"SIP_OCCURRENCE_KNOWN\")\n    if (!((((state.occurrences)((p.occurrence).dueSlot) == p.occurrence) && ((p.occurrence).planId == state.id)))) return Left(\"SIP_ORIGINAL_ASSOCIATION\")\n    if (!((((p.evidence == \"payment-rejected-before-effects\") || (p.evidence == \"payment-compensated\")) || (p.evidence == \"ta-rejected-refund-completed\")))) return Left(\"SIP_TERMINAL_EVIDENCE\")\n    if (!(((p.receiptId).nonEmpty && (p.receiptBody).nonEmpty))) return Left(\"SIP_TERMINAL_RECEIPT\")\n    if (!((!((state.terminalReceiptBodies).contains(p.receiptId)) || ((state.terminalReceiptBodies)(p.receiptId) == p.receiptBody)))) return Left(\"SIP_TERMINAL_RECEIPT_CONFLICT\")\n    if (!((!((state.firstTerminals).contains((p.occurrence).occurrenceId)) || ((state.firstTerminals)((p.occurrence).occurrenceId) == \"failed\")))) return Left(\"SIP_TERMINAL_CONFLICT\")\n    if (!(!((state.firstTerminals).contains((p.occurrence).occurrenceId)))) return Right(Vector.empty)\n    if (!((state.failureTotal < java.lang.Long.parseLong(\"9223372036854775807\")))) return Left(\"SIP_TOTAL_CAPACITY\")\n    Right(SipPlanCommandHelpers.emitRecordSipInstallmentFailed(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/16/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 16035,
+    "end": 16096,
+    "text": "    if (!(state.initialized)) return Left(\"SIP_INITIALIZED\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/16/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 16096,
+    "end": 16197,
+    "text": "    if (!((state.occurrences).contains((p.occurrence).dueSlot))) return Left(\"SIP_OCCURRENCE_KNOWN\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/16/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 16197,
+    "end": 16352,
+    "text": "    if (!((((state.occurrences)((p.occurrence).dueSlot) == p.occurrence) && ((p.occurrence).planId == state.id)))) return Left(\"SIP_ORIGINAL_ASSOCIATION\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/16/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 16352,
+    "end": 16546,
+    "text": "    if (!((((p.evidence == \"payment-rejected-before-effects\") || (p.evidence == \"payment-compensated\")) || (p.evidence == \"ta-rejected-refund-completed\")))) return Left(\"SIP_TERMINAL_EVIDENCE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/16/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 16546,
+    "end": 16647,
+    "text": "    if (!(((p.receiptId).nonEmpty && (p.receiptBody).nonEmpty))) return Left(\"SIP_TERMINAL_RECEIPT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/16/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 16647,
+    "end": 16826,
+    "text": "    if (!((!((state.terminalReceiptBodies).contains(p.receiptId)) || ((state.terminalReceiptBodies)(p.receiptId) == p.receiptBody)))) return Left(\"SIP_TERMINAL_RECEIPT_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/16/guards/6",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 16826,
+    "end": 17010,
+    "text": "    if (!((!((state.firstTerminals).contains((p.occurrence).occurrenceId)) || ((state.firstTerminals)((p.occurrence).occurrenceId) == \"failed\")))) return Left(\"SIP_TERMINAL_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/16/guards/7",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 17010,
+    "end": 17113,
+    "text": "    if (!(!((state.firstTerminals).contains((p.occurrence).occurrenceId)))) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/16/guards/8",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 17113,
+    "end": 17230,
+    "text": "    if (!((state.failureTotal < java.lang.Long.parseLong(\"9223372036854775807\")))) return Left(\"SIP_TOTAL_CAPACITY\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/17",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 17315,
+    "end": 18850,
+    "text": "  def RecordSipCreateIntent(input: RecordSipCreateIntentParams): Either[String, Vector[Event]] = {\n    val state = input.state\n    val p = input.command\n    val hosts = input.hosts\n    if (!((p.source).contains(p.intent))) return Left(\"SIP_INTENT_OPTION\")\n    if (!(((p.intent).planId == state.id))) return Left(\"SIP_INTENT_RESOURCE\")\n    if (!((((((((((p.intent).principalId).nonEmpty && ((p.intent).clientRequestId).nonEmpty) && ((p.intent).authorityVersion).nonEmpty) && ((p.intent).clientRequestId == ((p.intent).request).clientRequestId)) && (((p.intent).request).fundCode == ((p.intent).config).fundCode)) && (((p.intent).request).effectiveSlot == ((p.intent).config).effectiveSlot)) && ((((p.intent).request).amount).currency == (((p.intent).config).amount).currency)) && (((p.intent).request).dueSlots).nonEmpty))) return Left(\"SIP_INTENT_BODY\")\n    if (!(((state.createIntent).isEmpty || (state.createIntent).contains(p.intent)))) return Left(\"SIP_INTENT_CONFLICT\")\n    if (!((!(state.initialized) || ((((p.intent).planId == state.id) && (state.revisions).contains(((p.intent).config).revision)) && ((state.revisions)(((p.intent).config).revision) == (p.intent).config))))) return Left(\"SIP_INTENT_EXISTING_CONFIG\")\n    if (!((state.createIntent).isEmpty)) return Right(Vector.empty)\n    if (!(((!(state.initialized) && (state.scheduleCount == java.lang.Long.parseLong(\"0\"))) && !(state.scheduleSealed)))) return Left(\"SIP_INTENT_BEFORE_CREATE\")\n    Right(SipPlanCommandHelpers.emitRecordSipCreateIntent(state, p, hosts))\n  }\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/17/guards/0",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 17496,
+    "end": 17571,
+    "text": "    if (!((p.source).contains(p.intent))) return Left(\"SIP_INTENT_OPTION\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/17/guards/1",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 17571,
+    "end": 17650,
+    "text": "    if (!(((p.intent).planId == state.id))) return Left(\"SIP_INTENT_RESOURCE\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/17/guards/2",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 17650,
+    "end": 18169,
+    "text": "    if (!((((((((((p.intent).principalId).nonEmpty && ((p.intent).clientRequestId).nonEmpty) && ((p.intent).authorityVersion).nonEmpty) && ((p.intent).clientRequestId == ((p.intent).request).clientRequestId)) && (((p.intent).request).fundCode == ((p.intent).config).fundCode)) && (((p.intent).request).effectiveSlot == ((p.intent).config).effectiveSlot)) && ((((p.intent).request).amount).currency == (((p.intent).config).amount).currency)) && (((p.intent).request).dueSlots).nonEmpty))) return Left(\"SIP_INTENT_BODY\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/17/guards/3",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 18169,
+    "end": 18290,
+    "text": "    if (!(((state.createIntent).isEmpty || (state.createIntent).contains(p.intent)))) return Left(\"SIP_INTENT_CONFLICT\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/17/guards/4",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 18290,
+    "end": 18540,
+    "text": "    if (!((!(state.initialized) || ((((p.intent).planId == state.id) && (state.revisions).contains(((p.intent).config).revision)) && ((state.revisions)(((p.intent).config).revision) == (p.intent).config))))) return Left(\"SIP_INTENT_EXISTING_CONFIG\")\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/17/guards/5",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 18540,
+    "end": 18608,
+    "text": "    if (!((state.createIntent).isEmpty)) return Right(Vector.empty)\n"
+   }
+  },
+  {
+   "knowledgeKey": "source:bank-v1#/aggregates/2/commands/17/guards/6",
+   "file": "app/example/bankwealth/domain/invariant/SipPlanRules.scala",
+   "span": {
+    "start": 18608,
+    "end": 18770,
+    "text": "    if (!(((!(state.initialized) && (state.scheduleCount == java.lang.Long.parseLong(\"0\"))) && !(state.scheduleSealed)))) return Left(\"SIP_INTENT_BEFORE_CREATE\")\n"
+   }
+  }
+ ]
+}

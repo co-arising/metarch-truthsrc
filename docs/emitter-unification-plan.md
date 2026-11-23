@@ -96,7 +96,13 @@ truth YAML ──知识机器(保留)──→ 知识图 ──派生层(fail-cl
 emitter 模块（字节等值＋双跑确定＋负测电池）→ bank-wealth 接入＋classic 模板摘除 →
 五步门＋diff 呈报 → 删除。
 顺序建议（F6）：
-1. 已定案簇余量：#11 rules 簇（bank 9 件）接入（金样已有，无新门）。
+1. ~~已定案簇余量：#11 rules 簇（bank 9 件）接入（金样已有，无新门）~~
+   ✅ 2026-11-23 闭合（裁定记档见 rulings 文档 R1–R5）：字节复刻翻转——
+   新 #45 aggregate-invariant-rules 家族（curated 金样＝bank 现产九件复刻回执，
+   provenance classic-reproduction）＋派生层（decision() 谓词解释器移植）＋
+   renderInvariant 翻转清单跳过＋invariant-dsl 包裹守卫；九件字节等值、
+   393/393 锚跨距对账、plan 231 件双跑确定、家族 parity allGreen（电池 12/12）。
+   §5 映射勘误：rules(9) 产地＝renderInvariant，#11 保留 curated 参考件位。
 2. 限定 raw 大头：value-object(#1，bank 118 件)→domain-entity(#2，6)→
    aggregate 簇(#6/8/9，12)→protocol/protocol-helper(#7/10，9)→
    aggregate-repository(#12/22，3)→event-handler(#3，6)→saga-definition(#17，2)。
@@ -117,7 +123,7 @@ Pages 上引用旧生成器 id／文件头的句子同步刷新。
 
 | 簇 | kind（件数） | 族 | curated 状态 |
 |---|---|---|---|
-| 已定案 | rules(9) | #11 aggregate-rules-formal | ✅ 金样已有 |
+| 已定案 | rules(9) | #45 aggregate-invariant-rules（复刻翻转 ✅ 2026-11-23；原记 #11 为参考件，勘误 R2） | ✅ 复刻回执 |
 | 已定案 | invocation-host(2)＋host-serialization(2)＋technical-port(4)＋effect-host(2)＋effect-serialization(2) | 调用宿主簇（#42 族） | ✅ 金样已有（试点） |
 | 已定案（待核） | external-event-bridge(1) | #13/#25 connector | ✅ 金样已有（映射待核） |
 | 限定 raw | value-object(118) | #1 | 未 |

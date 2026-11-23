@@ -10,6 +10,7 @@ import { renderInvariant } from '../scala-cqrs-domain/render-domain.mjs';
 import { renderAggregateLayers } from './render-aggregate-layers.mjs';
 import { renderJournalReadside } from './render-journal-readside.mjs';
 import { withFlippedInvocationHosts, withFlippedExecutionPipelines, withFlippedEffectHosts, withFlippedEffectPipelines } from '../../lib/derivation/pipeline-invocation-emission.mjs';
+import { withFlippedInvariantRules } from '../../lib/derivation/aggregate-invariant-rules-emission.mjs';
 import { PIPELINE_INVOCATION_FLIPS, flipHostBase } from '../../lib/derivation/pipeline-invocation-face.mjs';
 import { EFFECT_FACE_FLIPS, effectFlipHostClass } from '../../lib/derivation/effect-face.mjs';
 
@@ -52,8 +53,8 @@ const inherited = Object.fromEntries(Object.entries(createEffectRegistry('2')).m
   produce(context) {
     const produced = id === 'aggregate-dsl'
       ? renderAggregateLayers(context, ['reference-layout','domain-folds','exact-value-types','domain-dependencies'].map(id=>({id,version:['domain-folds','domain-dependencies'].includes(id)?'6':'1'})))
-      : id === 'invariant-dsl'
-        ? renderInvariant(context, ['reference-layout','domain-decision','domain-folds','exact-value-types'].map(id=>({id,version:id==='domain-decision'?'4':id==='domain-folds'?'6':'1'})), true)
+        : id === 'invariant-dsl'
+          ? withFlippedInvariantRules(inner => renderInvariant(inner, ['reference-layout','domain-decision','domain-folds','exact-value-types'].map(id=>({id,version:id==='domain-decision'?'4':id==='domain-folds'?'6':'1'})), true), context)
         : id === 'finite-host-dsl'
           ? withFlippedInvocationHosts(implementation.produce.bind(implementation), context)
           : id === 'finite-execution-dsl'

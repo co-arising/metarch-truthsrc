@@ -2,6 +2,7 @@ import { entry, key, packageFor, pathFor, symbol, typeName } from './naming.mjs'
 import { decision, valueExpression } from './render-expressions.mjs';
 import { buildStateModels } from './build-state-models.mjs';
 import { stateEntries } from './templates/aggregate-state.mjs';
+import { isRulesFlipped } from '../../lib/derivation/aggregate-invariant-rules.mjs';
 
 const owner = (ref, aggregate) => ref.context === aggregate.context && ref.owner[0] === aggregate.id;
 const fields = (rows, options) => rows.map(r => symbol((r.ref ?? r.target).id) + ': ' + typeName(r.valueType, options)).join(', ');
@@ -59,13 +60,20 @@ export function renderInvariant({ products, options }, footprint, layered = fals
   return aggregateRows(products).flatMap(a => {
     const pkg = packageFor(a.ref.context, options), name = symbol(a.ref.id), commands = decisions.commands.filter(c => owner(c.command, a.ref)), events = folds.events.filter(e => owner(e.event, a.ref));
     const protocol = pathFor(pkg, 'domain/' + a.ref.id + 'Protocol.scala'), statePath = pathFor(pkg, 'domain/' + a.ref.id + 'State.scala'), helperPath = pathFor(pkg, 'domain/' + a.ref.id + 'CommandHelpers.scala');
+    // Flipped aggregates (retirement registry, ruling 2026-11-23) stop producing
+    // the classic rules trio here — the unified emitter's aggregate-invariant-rules
+    // family supplies those entries through the flip wrapper, which refuses any
+    // classic survivor. The event-handler entries of this producer stay classic.
+    const flipped = isRulesFlipped(a.ref.context, a.ref.id);
     const rulePackage = layered ? pkg + '.domain.invariant' : pkg + '.domain';
     const paramsPath = pathFor(pkg, 'domain/invariant/params/' + a.ref.id + 'RuleParams.scala');
     const coreRulesPath = pathFor(pkg, 'domain/invariant/' + a.ref.id + 'Rules.scala');
-    let params = 'package ' + pkg + '.domain.invariant.params\n\nimport ' + pkg + '.domain._\n\nobject ' + name + 'RuleParams {\n';
-    let rules = 'package ' + rulePackage + '\n\nimport ' + (layered ? pkg + '.domain._\nimport ' + pkg + '.domain.invariant.params.' + name + 'RuleParams._\nimport ' : '') + (layered ? pkg + '.domain.' : '') + name + 'Protocol._\n\nobject ' + name + 'Rules {\n';
+    let params = '', rules = '', wrapper = '';
     const ruleMappings = [], foldMappings = [], wrapperMappings = [];
-    let wrapper = 'package ' + pkg + '.domain\n\nimport ' + name + 'Protocol._\n\nobject ' + name + 'Rules {\n';
+    if (!flipped) {
+    params = 'package ' + pkg + '.domain.invariant.params\n\nimport ' + pkg + '.domain._\n\nobject ' + name + 'RuleParams {\n';
+    rules = 'package ' + rulePackage + '\n\nimport ' + (layered ? pkg + '.domain._\nimport ' + pkg + '.domain.invariant.params.' + name + 'RuleParams._\nimport ' : '') + (layered ? pkg + '.domain.' : '') + name + 'Protocol._\n\nobject ' + name + 'Rules {\n';
+    wrapper = 'package ' + pkg + '.domain\n\nimport ' + name + 'Protocol._\n\nobject ' + name + 'Rules {\n';
     for (const c of commands) {
       const start = rules.length, guards = [];
       const signature = '(state: ' + name + 'State, p: ' + symbol(c.command.id) + ', hosts: ' + name + 'Computations)';
@@ -90,6 +98,8 @@ export function renderInvariant({ products, options }, footprint, layered = fals
       ruleMappings.push({ source: c.source, span: scope, scope }, ...guards.map(m => ({ ...m, scope })));
     }
     rules += '}\n';
+    params += '}\n'; wrapper += '}\n';
+    }
     const eventPackage = layered ? pkg + '.domain.entities.behaviors' : pkg + '.domain';
     let replay = 'package ' + eventPackage + '\n\n' + (layered ? 'import ' + pkg + '.domain._\nimport ' + pkg + '.domain.' : 'import ') + name + 'Protocol._\n\nobject ' + name + 'EventHandler {\n  def apply(state: ' + name + 'State, input: Event): ' + name + 'State = input match {\n';
     for (const e of events) {
@@ -115,9 +125,8 @@ export function renderInvariant({ products, options }, footprint, layered = fals
       foldMappings.push({ source: e.source, span: scope, scope }, ...assignments.map(m => ({ ...m, scope })));
     }
     replay += '  }\n}\n';
-    params += '}\n'; wrapper += '}\n';
     const ruleSources = [a.source, ...commands.flatMap(c => [c.source, ...c.decisions.map(d => d.source)])];
-    const ruleEntries = layered ? [
+    const ruleEntries = flipped ? [] : layered ? [
       entry(coreRulesPath, rules, 'rules', ruleSources, footprint, [protocol, statePath, helperPath, paramsPath], ruleMappings),
       entry(paramsPath, params, 'rules', [a.source, ...commands.map(c=>c.source)], footprint, [protocol, statePath, helperPath]),
       entry(pathFor(pkg, 'domain/' + a.ref.id + 'Rules.scala'), wrapper, 'rules', [a.source, ...commands.map(c=>c.source)], footprint, [protocol, statePath, helperPath, coreRulesPath, paramsPath], wrapperMappings),

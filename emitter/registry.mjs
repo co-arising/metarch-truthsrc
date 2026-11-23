@@ -70,8 +70,13 @@ export function registerFamily(family) {
   if (family.runNegatives !== undefined && family.runNegatives !== null && typeof family.runNegatives !== 'function')
     fail('EMITTER_REGISTRY', `family ${family.id}: runNegatives must be a function or null (a missing battery is a declared debt, not an omission)`);
   if (family.toolsRef === null) {
-    if (family.provenance !== 'handwritten-golden')
-      fail('EMITTER_REGISTRY', `family ${family.id}: toolsRef null requires provenance 'handwritten-golden' (a family without a reference generator must declare its golden provenance)`);
+    // Ruling 2026-11-23 adds 'classic-reproduction' alongside
+    // 'handwritten-golden': a family whose golden tree pins the classic
+    // production bytes as a reproduction receipt (byte-continuity flip) also
+    // has no reference generator — the one-generator program forbids a
+    // duplicate — and declares its provenance explicitly.
+    if (family.provenance !== 'handwritten-golden' && family.provenance !== 'classic-reproduction')
+      fail('EMITTER_REGISTRY', `family ${family.id}: toolsRef null requires provenance 'handwritten-golden' or 'classic-reproduction' (a family without a reference generator must declare its golden provenance)`);
   } else if (typeof family.toolsRef !== 'string' || !family.toolsRef.startsWith('tools/'))
     fail('EMITTER_REGISTRY', `family ${family.id}: toolsRef must point at the byte-parity reference generator under tools/ (or be null with provenance 'handwritten-golden')`);
   if (families.has(family.id))
