@@ -1,11 +1,14 @@
 import { entry, key, packageFor, pathFor, symbol, typeName } from '../scala-cqrs-domain/naming.mjs';
 import { fail } from '../../lib/products/request.mjs';
+import { isFlippedPipeline } from '../../lib/derivation/pipeline-invocation-face.mjs';
+import { isFlippedEffectPipeline } from '../../lib/derivation/effect-face.mjs';
 const q=JSON.stringify;
 
 /** Complete finite source plan; invocation replies come from durable hosts, never caller-success callbacks. */
 export function renderInvocationExecution({products,options},p,footprint) {
  const layout=products['reference-layout'];
  const declarations=layout.declarations.filter(d=>d.ref.kind==='pipeline'&&d.ref.id===p.id);
+ if(declarations.length!==1)fail('APPLICATION_EXECUTION','one exact pipeline declaration required');
  if(declarations.length!==1)fail('APPLICATION_EXECUTION','one exact pipeline declaration required');
  const declaration=declarations[0],context=declaration.ref.context,pkg=packageFor(context,options),name=p.id.replaceAll('-','_')+'Execution';
  if(p.admission.maxConcurrentRuns!==1||p.admission.maxInFlightSteps!==1||p.admission.maxInFlightChunks!==1)fail('APPLICATION_EXECUTION','finite single-run single-step single-chunk ownership required');
@@ -41,6 +44,14 @@ export function renderInvocationExecution({products,options},p,footprint) {
  text+='  final case class State(inputs: Inputs'+p.steps.flatMap(s=>s.writes.map(w=>', '+n(s)+'_'+symbol(w.id)+': Option['+tpe(w.type)+'] = None')).join('')+')\n  final case class Outputs('+p.outputs.map(o=>symbol(o.id)+': '+tpe(o.type)).join(', ')+')\n  def outputs(state: State): Outputs = Outputs('+p.outputs.map(o=>value(o.ref)).join(', ')+')\n';
  const protoName=name.replaceAll('_','')+'StatePB',protoPkg=pkg+'.infrastructure.executionproto',fields=p.inputs.map((i,index)=>({name:'input'+index,id:i.type,value:'state.inputs.'+symbol(i.id),optional:false}));
  for(const s of p.steps)for(const w of s.writes)fields.push({name:'output'+fields.filter(f=>f.optional).length,id:w.type,value:'state.'+n(s)+'_'+symbol(w.id),optional:true});
+ // Retirement registry (2026-11-23): flipped pipelines keep their staying
+ // execution proto (the golden codec pins its PB); only the classic plan
+ // artifact retires — the unified face is the sole emitter for it.
+ if(isFlippedPipeline(p.id)||isFlippedEffectPipeline(p.id)){
+  const proto='syntax = "proto3";\nimport "scalapb/scalapb.proto";\nimport "'+pkg.replaceAll('.','_')+'_domain.proto";\npackage '+protoPkg+';\noption (scalapb.options) = { flat_package: true };\nmessage '+protoName+' {\n  string planversion = 1;\n'+fields.map((f,i)=>'  '+(resolve(f.id).form==='nominal'?'.'+pkg+'.infrastructure.proto.'+f.id+'PB':resolve(f.id).name==='string'?'optional string':'optional int64')+' '+f.name+' = '+(i+2)+';').join('\n')+'\n}\n';
+  const protoPath0='app/protobuf/'+p.id.replaceAll('-','_')+'_execution.proto';
+  return [{...entry(protoPath0,proto,'proto',[declaration.source],footprint,['app/protobuf/'+pkg.replaceAll('.','_')+'_domain.proto']),content:proto}];
+ }
   const scalarIdentity=id=>'identity['+(resolve(id).name==='string'?'String':'Long')+']';
  const encode=f=>resolve(f.id).form==='nominal'?pkg+'.infrastructure.serialization.DomainConverters.encode'+f.id+'PB':scalarIdentity(f.id);
  const decode=f=>resolve(f.id).form==='nominal'?pkg+'.infrastructure.serialization.DomainConverters.decode'+f.id+'PB':scalarIdentity(f.id);

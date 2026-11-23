@@ -414,3 +414,26 @@ delivery）＋round 响应新鲜度关联＋RecoveryCompleted 重查询自愈＋
   摘除待用户过目逐文件 diff（F5/F6.6，材料齐 /private/tmp/bw-flip-diff/：
   17 份逐文件 diff＋conf diff，classic 侧以 c91f490 工具提交的 worktree 全树
   重现，行数与翻转前磁盘文件逐一致）。
+- **classic 面模板摘除（2026-11-23，用户裁定「摘除吧」后执行）**：
+  四个 monarch 闭包业务案（payment／refund／dispatch／ta）的 classic 模板路径
+  自服务 profile（scala-cqrs-play-service，bank-wealth 的注册生成器）正式退役。
+  **摘除语义＝翻转清单即退役登记（裁定）**：renderers 对已翻转 id 直接跳过
+  （renderDefinitions／renderInvocationHosts／renderHostIO／
+  renderTechnicalPorts／renderHostAdapters／renderInvocationExecution／
+  renderEffectHosts／renderEffectSupport），wrapper 守卫从「期望删 5 件」翻为
+  「classic 翻转件残留 plan 即拒」；render-pipeline-invocation.mjs 自此仅存于
+  application profile（其 inventory-* 夹具仍钉住未翻转 pipeline 归属宿主与
+  直有宿主的 classic 行为——该 profile 的未化族已按门序排入 Phase 3 计划，
+  物理文件删除随该族执行）。**staying proto 保全裁定**：翻转管线／宿主的
+  staying proto（四份 execution proto＋两份 host proto＋两份 effect proto）
+  是金样 codec 的 PB 面，retirement 只退役 serializer/plan 件——
+  render-invocation-execution／render-host-adapters／renderEffectSupport
+  对翻转 id 保留 proto-only 发射；effectConfig 保留全宿主索引
+  （effect0/effect1 序号与 conf 类名翻转补丁依赖）。wrapper 的 producer
+  footprint 改为按 play-service 清单硬声明（classic 首件借不再可得；
+  finite-execution-dsl／durable-effect-host-dsl 按历史形态不含
+  artifact-contract——服务包装层的无保护推钉恰补一次）。实测：摘除后的
+  工具链显式 update 重生成**字节完全一致**（written=1 仅 inputs.json 指纹
+  COVER，identical 234，total 235，retired 0），五步门全绿（validate hard 0／
+  compile exit 0／verify 12/12／generate written=0 identical 235/235）；
+  inventory 夹具套件（未翻转 classic 行为的兼容性证明）全绿。

@@ -1,4 +1,5 @@
 import { entry, key, packageFor, pathFor, symbol, typeName } from '../scala-cqrs-domain/naming.mjs';
+import { isFlipped } from '../../lib/derivation/pipeline-invocation-face.mjs';
 import { equal, fail } from '../../lib/products/request.mjs';
 
 /** All host I/O goes through the exact installed objects; authority results retain full lineage. */
@@ -25,7 +26,7 @@ export function wireHostIO(text, stem, original, readOriginal, pending, policy =
 export function renderHostIO({products,options},footprint){
  const layout=products['reference-layout'],field=r=>layout.declarations.find(d=>key(d.ref)===key(r));
  const pins=products['artifact-contract'].artifacts.filter(a=>a.status==='selected').flatMap(a=>a.ports);
- return products['saga-host-contract'].hosts.map(h=>{
+ return products['saga-host-contract'].hosts.filter(h=>!(h.entry.startOwner.kind==='pipeline'&&isFlipped(h.id))).map(h=>{ // retirement registry: the unified face owns this id
   const pkg=packageFor(h.saga.ref.context,options),stem=h.id.replaceAll('-','_'),original=typeName(h.entry.inputType,options),technical=stem+'TechnicalPorts';
   const runtime=products['saga-runtime-contract'].sagas.find(s=>s.sagaId===h.saga.ref.id&&s.definitionVersion===h.saga.version),trigger=runtime.triggers.find(t=>t.declaration.id===h.entry.triggerId).declaration;
   for(const r of h.results){

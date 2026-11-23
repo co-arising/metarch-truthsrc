@@ -1,5 +1,6 @@
 import { entry, key, packageFor, pathFor, symbol, typeName } from '../scala-cqrs-domain/naming.mjs';
 import { fail } from '../../lib/products/request.mjs';
+import { isFlipped } from '../../lib/derivation/pipeline-invocation-face.mjs';
 
 export const version = '1';
 const q = JSON.stringify;
@@ -15,6 +16,7 @@ export function renderDefinitions({ products, options }, footprint) {
   const field = r => {const d=layout.declarations.find(d=>key(d.ref)===key(r));if(!d)fail('APPLICATION_TYPE','missing admitted field');return d;};
   const idValue = (value,type) => type.form==='nominal' ? idValue(value+'.value',layout.declarations.find(d=>key(d.ref)===key(type.ref)).valueType) : value;
   for(const h of hosts){
+    if(h.entry.startOwner.kind==='pipeline'&&isFlipped(h.id))continue; // retirement registry: the unified face owns this id
     const s=products['saga-runtime-contract'].sagas.find(s=>s.sagaId===h.saga.ref.id&&s.definitionVersion===h.saga.version);
     if(!s || !['direct','pipeline'].includes(h.entry.startOwner.kind))fail('APPLICATION_HOST','this registered finite host requires explicit ownership; pipeline lowering is not silently omitted');
     const pkg=packageFor(h.saga.ref.context,options),name=targetName(h),args=typeName(h.argsType,options),pb=pkg+'.infrastructure.proto.',converters=pkg+'.infrastructure.serialization.DomainConverters';

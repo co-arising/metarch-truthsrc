@@ -1,7 +1,19 @@
 import { entry, packageFor, pathFor, symbol } from '../scala-cqrs-domain/naming.mjs';
+import { isFlipped } from '../../lib/derivation/pipeline-invocation-face.mjs';
 export function renderHostAdapters({products,options},footprint){
  const result=[];
- for(const [index,h] of products['saga-host-contract'].hosts.entries()){
+ // Retirement registry (2026-11-23): flipped hosts keep their staying host
+ // proto (the golden serializer pins its PB); only the serializer artifact retires.
+ let protoIndex=0;
+ for(const h of products['saga-host-contract'].hosts){
+  if(h.entry.startOwner.kind==='pipeline'&&isFlipped(h.id)){ // staying host proto only
+   const pkg0=packageFor(h.saga.ref.context,options),stem0=h.id.replaceAll('-','_'),proto0=stem0.replaceAll('_','')+'HostEventPB';
+   const text0='syntax = "proto3";\nimport "scalapb/scalapb.proto";\npackage '+pkg0+'.infrastructure.hostproto;\noption (scalapb.options) = { flat_package: true };\nmessage '+proto0+' { string kind = 1; bytes original = 2; bytes args = 3; string operation = 4; bytes identity = 5; }\n';
+   const path0='app/protobuf/'+stem0+'_host.proto';
+   result.push({...entry(path0,text0,'host-proto',[h.source],footprint),content:text0});
+   continue;
+  }
+  const index=protoIndex;protoIndex++;
   const pkg=packageFor(h.saga.ref.context,options),stem=h.id.replaceAll('-','_'),host=symbol(stem)+'Host',proto=stem.replaceAll('_','')+'HostEventPB';
   const text='syntax = "proto3";\nimport "scalapb/scalapb.proto";\npackage '+pkg+'.infrastructure.hostproto;\noption (scalapb.options) = { flat_package: true };\nmessage '+proto+' { string kind = 1; bytes original = 2; bytes args = 3; string operation = 4; bytes identity = 5; }\n';
   const path='app/protobuf/'+stem+'_host.proto';

@@ -1,5 +1,6 @@
 import { entry, key, packageFor, pathFor, symbol, typeName } from '../scala-cqrs-domain/naming.mjs';
 import { fail } from '../../lib/products/request.mjs';
+import { isFlipped } from '../../lib/derivation/pipeline-invocation-face.mjs';
 import { renderPipelineInvocation } from './render-pipeline-invocation.mjs';
 import { wireHostIO } from './render-host-io.mjs';
 const q=JSON.stringify;
@@ -10,7 +11,7 @@ export function renderInvocationHosts({products,options},footprint){
  const field=r=>layout.declarations.find(d=>key(d.ref)===key(r));
  const textual=(value,type)=>type.form==='nominal'?textual(value+'.value',field(type.ref).valueType):value;
  return products['saga-host-contract'].hosts.map(h=>{
-  if(h.entry.startOwner.kind==='pipeline')return renderPipelineInvocation({products,options},h,footprint);
+  if(h.entry.startOwner.kind==='pipeline')return isFlipped(h.id)?[]:renderPipelineInvocation({products,options},h,footprint); // retirement registry: the unified face owns this id
   if(h.entry.startOwner.kind!=='direct')fail('APPLICATION_HOST','explicit finite start owner required');
   const pkg=packageFor(h.saga.ref.context,options),stem=h.id.replaceAll('-','_'),name=symbol(stem),original=typeName(h.entry.inputType,options),args=typeName(h.argsType,options);
   const runtime=products['saga-runtime-contract'].sagas.find(s=>s.sagaId===h.saga.ref.id&&s.definitionVersion===h.saga.version);
@@ -43,5 +44,5 @@ export function renderInvocationHosts({products,options},footprint){
   if(gate&&occurrenceSource){const pins=products['artifact-contract'].artifacts.filter(a=>a.status==='selected').flatMap(a=>a.ports);const pin=pins.find(a=>key(a.ref)===key(gate.port.ref)&&a.version===gate.port.version);occurrence={envelope:typeName(pin.inputType,options),originalType:original};}
   text=wireHostIO(text,stem,original,readOriginal,'Waiting',policy,occurrence);
   return entry(pathFor(pkg,'application/'+stem+'Host.scala'),text,'invocation-host',[h.source],footprint,[...new Set([pathFor(pkg,'application/'+stem+'Definition.scala'),pathFor(pkg,'infrastructure/serialization/DomainConverters.scala'),...h.results.map(r=>pathFor(pkg,'domain/'+r.event.owner[0]+'Protocol.scala'))])]);
- });
+ }).flat(); // flipped pipeline-owned hosts return [] from the map — flatten so the retirement skip yields no element
 }

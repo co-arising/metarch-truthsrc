@@ -281,6 +281,19 @@ Pages 上引用旧生成器 id／文件头的句子同步刷新。
   摘除待用户过目逐文件 diff（F5/F6.6；材料 /private/tmp/bw-flip-diff/：
   17 份逐文件 diff＋conf diff，classic 侧 c91f490 worktree 全树重现、行数与
   翻转前磁盘文件逐一致）。
+- **classic 面模板摘除完成（2026-11-23，用户裁定「摘除吧」，F4 首例收口）**：
+  服务 profile（scala-cqrs-play-service）的四个 monarch 闭包业务案 classic
+  模板路径正式退役——**摘除语义＝翻转清单即退役登记**：renderers 对已翻转
+  id 直接跳过（定义／宿主／宿主IO／技术端口／宿主序列化器／调用执行／效果
+  宿主／效果支撑八个渲染面），wrapper 守卫翻为「classic 翻转件残留 plan 即
+  拒」；**staying proto 保全**（四 execution proto＋两 host proto＋两 effect
+  proto——金样 codec 的 PB 面，retirement 只退役 serializer/plan 件；
+  effectConfig 保留全宿主索引）。摘除后的工具链显式 update 重生成**字节完全
+  一致**（written=1 仅指纹 COVER），五步门全绿（hard 0／compile 0／verify
+  12/12／written=0 identical 235/235）；inventory 夹具套件（未翻转 classic
+  行为兼容性证明）全绿。render-pipeline-invocation.mjs 等共享模板文件的物理
+  删除随 application profile 未化族（inventory-* 夹具仍钉住未翻转行为，
+  已按门序排入 Phase 3）。
 
 ## 8. 新会话开工指引（Phase 0 即做）
 

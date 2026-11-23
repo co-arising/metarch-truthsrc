@@ -1,4 +1,5 @@
 import { entry, packageFor, pathFor } from '../scala-cqrs-domain/naming.mjs';
+import { isEffectFlipped } from '../../lib/derivation/effect-face.mjs';
 export function effectConfig({ products, options }) {
   return products['effect-host-contract'].hosts.map((h, i) => {
     const pkg = packageFor(h.pipeline.ref.context, options), name = h.id.replaceAll('-', '_') + 'EffectHost';
@@ -6,7 +7,27 @@ export function effectConfig({ products, options }) {
   }).join('');
 }
 export function renderEffectSupport({ products, options }, footprint) {
-  return products['effect-host-contract'].hosts.flatMap((h, index) => {
+  // effectConfig above keeps ALL hosts (its effect0/effect1 indices and the
+  // service-profile conf respell depend on them); only the artifact emission
+  // retires flipped ids.
+  const protoFor = h => {
+    const pkg = packageFor(h.pipeline.ref.context, options), pbName = h.id.replaceAll('-', '_').replaceAll('_', '') + 'EffectHostEventPB';
+    return `syntax = "proto3";
+import "scalapb/scalapb.proto";
+package ${pkg}.infrastructure.effectproto;
+option (scalapb.options) = { flat_package: true };
+message ${pbName} {
+  string version = 1;
+  string kind = 2;
+  bytes original = 3;
+  string operation = 4;
+  bytes observation = 5;
+  string authorization = 6;
+}
+`;
+  };
+  return products['effect-host-contract'].hosts.flatMap((h, index) => { // effectConfig indices and the staying effect protos span all hosts; only the serializer artifact retires flipped ids
+    if (isEffectFlipped(h.id)) return [{ ...entry('app/protobuf/' + h.id.replaceAll('-', '_') + '_effect.proto', protoFor(h), 'effect-proto', [h.source], footprint), content: protoFor(h) }];
     const pkg = packageFor(h.pipeline.ref.context, options), name = h.id.replaceAll('-', '_') + 'EffectHost', pbName = name.replaceAll('_', '') + 'EventPB';
     const protoPath = 'app/protobuf/' + h.id.replaceAll('-', '_') + '_effect.proto', pb = pkg + '.infrastructure.effectproto.' + pbName;
     const proto = `syntax = "proto3";

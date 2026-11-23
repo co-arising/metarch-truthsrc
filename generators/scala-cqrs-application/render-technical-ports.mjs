@@ -1,4 +1,5 @@
 import { entry, key, packageFor, pathFor, symbol, typeName } from '../scala-cqrs-domain/naming.mjs';
+import { isFlipped } from '../../lib/derivation/pipeline-invocation-face.mjs';
 export function renderTechnicalPorts({products,options},footprint){
  const field=r=>products['reference-layout'].declarations.find(d=>key(d.ref)===key(r));
  const nonNull=(value,t)=>t.form==='nominal'?value+' != null && '+nonNull(value+'.value',field(t.ref).valueType):value+' != null';
@@ -9,7 +10,7 @@ export function renderTechnicalPorts({products,options},footprint){
   if(rows.length!==1)throw new TypeError('exact selected technical port owner required');
   return rows[0];
  };
- return products['saga-host-contract'].hosts.map(h=>{
+ return products['saga-host-contract'].hosts.filter(h=>!(h.entry.startOwner.kind==='pipeline'&&isFlipped(h.id))).map(h=>{ // retirement registry: the unified face owns this id
   const pkg=packageFor(h.saga.ref.context,options),stem=h.id.replaceAll('-','_');
   const artifact=selected.flatMap(a=>a.ports);
   const pins=h.technicalPorts.map(p=>({p,pin:artifact.find(a=>key(a.ref)===key(p.port.ref)&&a.version===p.port.version),method:symbol(p.port.ref.id.replaceAll('-','_'))}));
