@@ -2,6 +2,7 @@ package example.bankwealth.application
 
 import scala.concurrent.Future
 
+import example.bankwealth.domain.values._
 import net.imadz.infra.saga.strict.OperationIdentity
 
 /** Exact bindings of the handwritten implementations to the declared ports.
@@ -56,7 +57,7 @@ object BankPaymentPortBindings {
     Obligation("BankPaymentOutcomeUnknownDelivery", _.outcomeUnknownDelivery),
   )
 
-  private sealed trait PortBinding[I, O] {
+  sealed trait PortBinding[I, O] {
     def id: String
     def version: String
 
@@ -74,7 +75,7 @@ object BankPaymentPortBindings {
   final case class OperationBinding[I, O](id: String, version: String, run: (I, OperationIdentity) => Future[O]) extends PortBinding[I, O] {
     require(run != null, s"implementation $id carries no operation face")
   }
-  final case class CompletionBinding[I, O](id: String, version: String, run: (I, BankPaymentPorts.CompletionContext) => Future[O]) extends PortBinding[I, O] {
+  final case class CompletionBinding[I, O](id: String, version: String, run: (I, CompletionContext) => Future[O]) extends PortBinding[I, O] {
     require(run != null, s"implementation $id carries no completion face")
   }
 
@@ -163,25 +164,25 @@ object BankPaymentPortBindings {
     def reserveCashFundOrderCompensateQuery(input: ReserveCashFundOrderCompensateQuery, identity: OperationIdentity): Future[Option[ReserveCashFundOrderCompensateReceipt]] =
       bindings.reserveCashFundOrderCompensateQuery.run(input, identity)
 
-    def succeededAuthorityCompletion(input: BankPaymentOriginal, context: BankPaymentPorts.CompletionContext): Future[BankPaymentResult] =
+    def succeededAuthorityCompletion(input: BankPaymentOriginal, context: CompletionContext): Future[BankPaymentResult] =
       bindings.succeededAuthority.run(input, context)
-    def succeededDeliveryCompletion(input: BankPaymentResult, context: BankPaymentPorts.CompletionContext): Future[Boolean] =
+    def succeededDeliveryCompletion(input: BankPaymentResult, context: CompletionContext): Future[Boolean] =
       bindings.succeededDelivery.run(input, context)
-    def rejectedBeforeEffectsAuthorityCompletion(input: BankPaymentOriginal, context: BankPaymentPorts.CompletionContext): Future[BankPaymentResult] =
+    def rejectedBeforeEffectsAuthorityCompletion(input: BankPaymentOriginal, context: CompletionContext): Future[BankPaymentResult] =
       bindings.rejectedBeforeEffectsAuthority.run(input, context)
-    def rejectedBeforeEffectsDeliveryCompletion(input: BankPaymentResult, context: BankPaymentPorts.CompletionContext): Future[Boolean] =
+    def rejectedBeforeEffectsDeliveryCompletion(input: BankPaymentResult, context: CompletionContext): Future[Boolean] =
       bindings.rejectedBeforeEffectsDelivery.run(input, context)
-    def compensatedAuthorityCompletion(input: BankPaymentOriginal, context: BankPaymentPorts.CompletionContext): Future[BankPaymentResult] =
+    def compensatedAuthorityCompletion(input: BankPaymentOriginal, context: CompletionContext): Future[BankPaymentResult] =
       bindings.compensatedAuthority.run(input, context)
-    def compensatedDeliveryCompletion(input: BankPaymentResult, context: BankPaymentPorts.CompletionContext): Future[Boolean] =
+    def compensatedDeliveryCompletion(input: BankPaymentResult, context: CompletionContext): Future[Boolean] =
       bindings.compensatedDelivery.run(input, context)
-    def recoveryRequiredAuthorityCompletion(input: BankPaymentOriginal, context: BankPaymentPorts.CompletionContext): Future[BankPaymentResult] =
+    def recoveryRequiredAuthorityCompletion(input: BankPaymentOriginal, context: CompletionContext): Future[BankPaymentResult] =
       bindings.recoveryRequiredAuthority.run(input, context)
-    def recoveryRequiredDeliveryCompletion(input: BankPaymentResult, context: BankPaymentPorts.CompletionContext): Future[Boolean] =
+    def recoveryRequiredDeliveryCompletion(input: BankPaymentResult, context: CompletionContext): Future[Boolean] =
       bindings.recoveryRequiredDelivery.run(input, context)
-    def outcomeUnknownAuthorityCompletion(input: BankPaymentOriginal, context: BankPaymentPorts.CompletionContext): Future[BankPaymentResult] =
+    def outcomeUnknownAuthorityCompletion(input: BankPaymentOriginal, context: CompletionContext): Future[BankPaymentResult] =
       bindings.outcomeUnknownAuthority.run(input, context)
-    def outcomeUnknownDeliveryCompletion(input: BankPaymentResult, context: BankPaymentPorts.CompletionContext): Future[Boolean] =
+    def outcomeUnknownDeliveryCompletion(input: BankPaymentResult, context: CompletionContext): Future[Boolean] =
       bindings.outcomeUnknownDelivery.run(input, context)
 
     /** Declared identity of every bound implementation, derived from the

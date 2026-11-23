@@ -127,8 +127,8 @@ object BankCashPaymentExecution {
             case BankPaymentHost.Pending(_) if call.deadline.isOverdue() =>
               call.promise.tryFailure(new IllegalStateException("pay-cash-purchase stage deadline exceeded")); Behaviors.stopped
             case BankPaymentHost.Pending(_) =>
-              val delay = (RetryInitial * math.pow(RetryFactor, call.attempt.toDouble)).min(RetryMax)
-              replyContext.scheduleOnce(delay, bridgeContext.self, call.copy(attempt = call.attempt + 1))
+              val delayMillis = math.min(RetryMax.toMillis, math.round(RetryInitial.toMillis * math.pow(RetryFactor, call.attempt.toDouble)))
+              replyContext.scheduleOnce(delayMillis.millis, bridgeContext.self, call.copy(attempt = call.attempt + 1))
               Behaviors.same
           }.receiveSignal { case (_, PostStop) =>
             call.promise.tryFailure(new IllegalStateException("owned invocation observer stopped")); Behaviors.same

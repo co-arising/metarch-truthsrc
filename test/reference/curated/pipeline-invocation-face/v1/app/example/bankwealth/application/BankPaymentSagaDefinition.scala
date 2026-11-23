@@ -7,7 +7,7 @@ import akka.actor.typed.Behavior
 import akka.persistence.typed.PersistenceId
 import com.google.protobuf.ByteString
 import example.bankwealth.domain.{CreditBalanceProtocol, FundOrderProtocol}
-import example.bankwealth.domain.values.{AccountId, BankPaymentArgs, FundOrderId, TxId}
+import example.bankwealth.domain.values._
 import net.imadz.infra.saga.strict._
 
 /** Strict-saga definition of the cash purchase payment: the args codec, the
@@ -233,7 +233,7 @@ object BankPaymentSagaDefinition {
     face: String,
   )(implicit ec: ExecutionContext): Future[PhaseOutcome[Receipt]] =
     result.recover {
-      case ex: BankPaymentPorts.OperationNotExecuted
+      case ex: OperationNotExecuted
           if ex.identity == request.identity && ex.evidence != null && ex.evidence.nonEmpty =>
         NotExecuted(request.identity, ex.evidence, ex.safeToRetry)
       case ex => Unknown(request.identity, s"technical $face failed: " + ex.getMessage)
@@ -245,7 +245,7 @@ object BankPaymentSagaDefinition {
     underlying: PhasePort[Args, Receipt],
     codec: PayloadCodec[Receipt],
     receiptCheck: (OperationRequest[Args], Receipt) => Unit,
-  )(implicit ec: ExecutionContext): PhaseBinding[Args] = {
+  )(implicit ec: ExecutionContext): PhasePort[Args, Receipt] = {
     require(underlying != null && underlying.receiptCodec != null && underlying.receiptCodec.pin == codec.pin &&
       underlying.querySafety == QuerySafety.DeclaredReadOnly, "required read-only phase port and exact codec implementation")
     val checked = new PhasePort[Args, Receipt] {
@@ -264,21 +264,21 @@ object BankPaymentSagaDefinition {
       def execute(request: OperationRequest[Args]): Future[PhaseOutcome[Receipt]] = validated(underlying.execute(request), request)
       def query(request: OperationRequest[Args]): Future[PhaseOutcome[Receipt]] = validated(underlying.query(request), request)
     }
-    PhaseBinding(checked)
+    checked
   }
 
   private def phasePort[Receipt](
     ports: BankPaymentPorts,
     codec: PayloadCodec[Receipt],
-  )(execute: (BankPaymentPorts, OperationRequest[Args]) => Future[PhaseOutcome[Receipt]])
-   (query: (BankPaymentPorts, OperationRequest[Args]) => Future[PhaseOutcome[Receipt]])
+  )(exec: (BankPaymentPorts, OperationRequest[Args]) => Future[PhaseOutcome[Receipt]])
+   (probe: (BankPaymentPorts, OperationRequest[Args]) => Future[PhaseOutcome[Receipt]])
    (implicit ec: ExecutionContext): PhasePort[Args, Receipt] = new PhasePort[Args, Receipt] {
     val receiptCodec = codec
     val querySafety = QuerySafety.DeclaredReadOnly
     def execute(request: OperationRequest[Args]): Future[PhaseOutcome[Receipt]] =
-      safeOutcome(execute(ports, request), request, "execute")
+      safeOutcome(exec(ports, request), request, "execute")
     def query(request: OperationRequest[Args]): Future[PhaseOutcome[Receipt]] =
-      safeOutcome(query(ports, request), request, "query")
+      safeOutcome(probe(ports, request), request, "query")
   }
 
   // ------------------------------------------------------------------- wiring
@@ -434,21 +434,24 @@ object BankPaymentSagaDefinition {
     }
   }
 
+  /** The runtime consumes binding-wrapped phase ports; the definition site is
+    * the single place the checked ports become runtime bindings. */
+  private def phaseBindings(
+    prepare: PhasePort[Args, _],
+    commit: PhasePort[Args, _],
+    compensate: PhasePort[Args, _],
+  ): Map[Phase, PhaseBinding[Args]] = Map(
+    Phase.Prepare -> PhaseBinding(prepare),
+    Phase.Commit -> PhaseBinding(commit),
+    Phase.Compensate -> PhaseBinding(compensate),
+  )
+
   def definition(ports: Ports)(implicit ec: ExecutionContext): StrictSagaDefinition[Args] = {
     require(ports != null, "bound phase ports required")
     StrictSagaDefinition(SagaId, SagaDefinitionVersion, SagaDefinitionDigest, argsCodec, args => Vector(
-      StrictParticipant[Args]("reserve-investor-funds", "investorCreditBalance", args.investorAccountId.value, Map(
-        Phase.Prepare -> ports.reserveInvestorFundsPrepare,
-        Phase.Commit -> ports.reserveInvestorFundsCommit,
-        Phase.Compensate -> ports.reserveInvestorFundsCompensate)),
-      StrictParticipant[Args]("credit-fund-collection", "collectionCreditBalance", args.fundCollectionAccountId.value, Map(
-        Phase.Prepare -> ports.creditFundCollectionPrepare,
-        Phase.Commit -> ports.creditFundCollectionCommit,
-        Phase.Compensate -> ports.creditFundCollectionCompensate)),
-      StrictParticipant[Args]("reserve-cash-fund-order", "orderFundOrderTCC", args.fundOrderId.value, Map(
-        Phase.Prepare -> ports.reserveCashFundOrderPrepare,
-        Phase.Commit -> ports.reserveCashFundOrderCommit,
-        Phase.Compensate -> ports.reserveCashFundOrderCompensate)),
+      StrictParticipant[Args]("reserve-investor-funds", "investorCreditBalance", args.investorAccountId.value, phaseBindings(ports.reserveInvestorFundsPrepare, ports.reserveInvestorFundsCommit, ports.reserveInvestorFundsCompensate)),
+      StrictParticipant[Args]("credit-fund-collection", "collectionCreditBalance", args.fundCollectionAccountId.value, phaseBindings(ports.creditFundCollectionPrepare, ports.creditFundCollectionCommit, ports.creditFundCollectionCompensate)),
+      StrictParticipant[Args]("reserve-cash-fund-order", "orderFundOrderTCC", args.fundOrderId.value, phaseBindings(ports.reserveCashFundOrderPrepare, ports.reserveCashFundOrderCommit, ports.reserveCashFundOrderCompensate)),
     ))
   }
 

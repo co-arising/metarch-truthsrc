@@ -2,8 +2,9 @@ package example.bankwealth.application
 
 import scala.concurrent.Future
 
+import example.bankwealth.domain.values._
 import net.imadz.infra.saga.strict.OperationIdentity
-import net.imadz.infra.saga.strict.TransactionIdentity
+import net.imadz.infra.saga.strict.{OperationIdentity, TransactionIdentity}
 
 /** Technical port surface of the payment pipeline invocation face — the one
   * file that says what this face depends on. Grouped by role: the admission
@@ -67,16 +68,13 @@ trait BankPaymentPorts {
   def outcomeUnknownDeliveryCompletion(input: BankPaymentResult, context: CompletionContext): Future[Boolean]
 }
 
-object BankPaymentPorts {
+/** Completion-carrying call context of the delivery two-phase. */
+final case class CompletionContext(original: BankPaymentOriginal, identity: TransactionIdentity)
 
-  /** Completion-carrying call context of the delivery two-phase. */
-  final case class CompletionContext(original: BankPaymentOriginal, identity: TransactionIdentity)
-
-  /** Raised by implementations when an operation was provably not executed;
-    * the strict runtime folds this into a not-executed receipt. */
-  final case class OperationNotExecuted(
-    identity: OperationIdentity,
-    evidence: String,
-    safeToRetry: Boolean,
-  ) extends RuntimeException(evidence)
-}
+/** Raised by implementations when an operation was provably not executed;
+  * the strict runtime folds this into a not-executed receipt. */
+final case class OperationNotExecuted(
+  identity: OperationIdentity,
+  evidence: String,
+  safeToRetry: Boolean,
+) extends RuntimeException(evidence)

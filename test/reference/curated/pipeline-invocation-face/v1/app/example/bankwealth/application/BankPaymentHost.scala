@@ -2,11 +2,12 @@ package example.bankwealth.application
 
 import scala.concurrent.Future
 
-import akka.actor.typed.ActorRef
+import akka.actor.typed.{ActorRef, Behavior}
 import akka.actor.typed.scaladsl.Behaviors
 import akka.persistence.typed.PersistenceId
 import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}
 import com.google.protobuf.ByteString
+import example.bankwealth.domain.values.{BankPaymentArgs, BankPaymentOriginal, BankPaymentResult}
 import net.imadz.infra.saga.strict._
 
 /** Pipeline invocation host for the cash purchase payment: owns the durable
@@ -192,7 +193,7 @@ object BankPaymentHost {
       state.identity match {
         case None => context.log.error("delivery attempted without observed identity, operation {}", state.operation)
         case Some(identity) =>
-          context.pipeToSelf(BankPaymentHostIO.deliver(kind, original, identity, technical))(ok => Delivered(kind, ok, replyTo))
+          context.pipeToSelf(BankPaymentHostIO.deliver(kind, original, identity, technical))(ok => Delivered(kind, ok.getOrElse(false), replyTo))
       }
     }
 
@@ -211,7 +212,7 @@ object BankPaymentHost {
               case scala.util.Success(false) => scala.util.Success(Left("entry or association not admitted"))
               case scala.util.Failure(error) => scala.util.Success(Left("admission unavailable: " + error.getMessage))
             }
-          context.pipeToSelf(verdict)(admitted => Admitted(state.operation, admitted))
+          context.pipeToSelf(verdict)(admitted => Admitted(state.operation, admitted.getOrElse(Left("admission unavailable"))))
         }
       } else {
         val adapter = context.spawnAnonymous(Behaviors.receiveMessage[StrictSagaCoordinator.Reply] { reply =>
@@ -247,11 +248,11 @@ object BankPaymentHost {
 
         case Observed(StrictSagaCoordinator.Status(status), replyTo) =>
           val observed = classify(status)
-          val events =
-            (state.identity, status.identity) match {
-              case (None, Some(identity)) => Vector[Event](IdentityObserved(identity))
-              case _ => Vector.empty
-            } ++ nextResult(state.result, observed).map(ResultIntent).toVector
+          val observedEvents = (state.identity, status.identity) match {
+            case (None, Some(identity)) => Vector[Event](IdentityObserved(identity))
+            case _ => Vector.empty
+          }
+          val events = observedEvents ++ nextResult(state.result, observed).map(ResultIntent).toVector
           Effect.persist(events).thenRun { s: State =>
             s.result match {
               case Some(kind) if !s.delivered => deliver(s, kind, replyTo)

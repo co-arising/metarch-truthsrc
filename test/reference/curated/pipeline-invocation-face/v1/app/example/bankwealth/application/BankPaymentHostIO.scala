@@ -2,6 +2,8 @@ package example.bankwealth.application
 
 import scala.concurrent.{ExecutionContext, Future}
 
+import example.bankwealth.domain.values.{BankPaymentOriginal, BankPaymentResult}
+import BankPaymentHost.ResultKind
 import net.imadz.infra.saga.strict.TransactionIdentity
 
 /** Input/output wiring of the payment invocation face: the admission gate and
@@ -30,7 +32,7 @@ object BankPaymentHostIO {
     identity: TransactionIdentity,
     technical: BankPaymentPorts,
   )(implicit ec: ExecutionContext): Future[Boolean] = {
-    val context = BankPaymentPorts.CompletionContext(original, identity)
+    val context = CompletionContext(original, identity)
     val expected = BankPaymentResult(example.bankwealth.domain.values.TxId(identity.transactionId))
     val (authority, delivery) = completionFace(kind, technical)
     authority(original, context).flatMap { actual =>
@@ -40,9 +42,9 @@ object BankPaymentHostIO {
   }
 
   private type AuthorityFace =
-    (BankPaymentOriginal, BankPaymentPorts.CompletionContext) => Future[BankPaymentResult]
+    (BankPaymentOriginal, CompletionContext) => Future[BankPaymentResult]
   private type DeliveryFace =
-    (BankPaymentResult, BankPaymentPorts.CompletionContext) => Future[Boolean]
+    (BankPaymentResult, CompletionContext) => Future[Boolean]
 
   /** The completion faces of each result kind; exhaustive by construction. */
   private def completionFace(
