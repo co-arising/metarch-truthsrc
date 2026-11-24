@@ -60,14 +60,14 @@ object BankCashPaymentExecution {
     state =>
       example.bankwealth.infrastructure.executionproto.bankcashpaymentv1ExecutionStatePB(
         planversion = PlanVersion,
-        input0 = Some(DomainConverters.encodeOperationIdPB(state.inputs.operation)),
-        input1 = Some(DomainConverters.encodeOperationIdPB(state.inputs.occurrence)),
-        input2 = Some(DomainConverters.encodeAccountIdPB(state.inputs.investorAccountId)),
-        input3 = Some(DomainConverters.encodeFundOrderIdPB(state.inputs.fundOrderId)),
-        input4 = Some(DomainConverters.encodeAccountIdPB(state.inputs.fundCollectionAccountId)),
-        input5 = Some(DomainConverters.encodeMoneyPB(state.inputs.amount)),
+        input0 = Some(DomainConverters.encodeOperationIdPO(state.inputs.operation)),
+        input1 = Some(DomainConverters.encodeOperationIdPO(state.inputs.occurrence)),
+        input2 = Some(DomainConverters.encodeAccountIdPO(state.inputs.investorAccountId)),
+        input3 = Some(DomainConverters.encodeFundOrderIdPO(state.inputs.fundOrderId)),
+        input4 = Some(DomainConverters.encodeAccountIdPO(state.inputs.fundCollectionAccountId)),
+        input5 = Some(DomainConverters.encodeMoneyPO(state.inputs.amount)),
         input6 = Some(identity[String](state.inputs.fundCode)),
-        output0 = state.paymentTxid.map(DomainConverters.encodeTxIdPB),
+        output0 = state.paymentTxid.map(DomainConverters.encodeTxIdPO),
       ).toByteArray,
     bytes => {
       val pb = example.bankwealth.infrastructure.executionproto.bankcashpaymentv1ExecutionStatePB.parseFrom(bytes)
@@ -76,15 +76,15 @@ object BankCashPaymentExecution {
         slot.getOrElse(throw new IllegalArgumentException(s"missing durable input $name"))
       State(
         Inputs(
-          operation = DomainConverters.decodeOperationIdPB(durable(pb.input0, "input0")),
-          occurrence = DomainConverters.decodeOperationIdPB(durable(pb.input1, "input1")),
-          investorAccountId = DomainConverters.decodeAccountIdPB(durable(pb.input2, "input2")),
-          fundOrderId = DomainConverters.decodeFundOrderIdPB(durable(pb.input3, "input3")),
-          fundCollectionAccountId = DomainConverters.decodeAccountIdPB(durable(pb.input4, "input4")),
-          amount = DomainConverters.decodeMoneyPB(durable(pb.input5, "input5")),
+          operation = DomainConverters.decodeOperationIdPO(durable(pb.input0, "input0")),
+          occurrence = DomainConverters.decodeOperationIdPO(durable(pb.input1, "input1")),
+          investorAccountId = DomainConverters.decodeAccountIdPO(durable(pb.input2, "input2")),
+          fundOrderId = DomainConverters.decodeFundOrderIdPO(durable(pb.input3, "input3")),
+          fundCollectionAccountId = DomainConverters.decodeAccountIdPO(durable(pb.input4, "input4")),
+          amount = DomainConverters.decodeMoneyPO(durable(pb.input5, "input5")),
           fundCode = identity[String](durable(pb.input6, "input6")),
         ),
-        pb.output0.map(DomainConverters.decodeTxIdPB),
+        pb.output0.map(DomainConverters.decodeTxIdPO),
       )
     },
   )

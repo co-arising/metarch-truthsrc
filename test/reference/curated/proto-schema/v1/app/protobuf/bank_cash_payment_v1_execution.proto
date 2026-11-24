@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 import "scalapb/scalapb.proto";
-import "example_bankwealth_domain.proto";
+import "shared_value_objects.proto";
 
 package example.bankwealth.infrastructure.executionproto;
 
@@ -9,12 +9,12 @@ option (scalapb.options) = { flat_package: true };
 
 message bankcashpaymentv1ExecutionStatePB {
   string planversion = 1;
-  .example.bankwealth.infrastructure.proto.OperationIdPB input0 = 2;
-  .example.bankwealth.infrastructure.proto.OperationIdPB input1 = 3;
-  .example.bankwealth.infrastructure.proto.AccountIdPB input2 = 4;
-  .example.bankwealth.infrastructure.proto.FundOrderIdPB input3 = 5;
-  .example.bankwealth.infrastructure.proto.AccountIdPB input4 = 6;
-  .example.bankwealth.infrastructure.proto.MoneyPB input5 = 7;
+  .example.bankwealth.infrastructure.proto.OperationIdPO input0 = 2;
+  .example.bankwealth.infrastructure.proto.OperationIdPO input1 = 3;
+  .example.bankwealth.infrastructure.proto.AccountIdPO input2 = 4;
+  .example.bankwealth.infrastructure.proto.FundOrderIdPO input3 = 5;
+  .example.bankwealth.infrastructure.proto.AccountIdPO input4 = 6;
+  .example.bankwealth.infrastructure.proto.MoneyPO input5 = 7;
   optional string input6 = 8;
-  .example.bankwealth.infrastructure.proto.TxIdPB output0 = 9;
+  .example.bankwealth.infrastructure.proto.TxIdPO output0 = 9;
 }

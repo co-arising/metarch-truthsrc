@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+import "scalapb/scalapb.proto";
+import "shared_value_objects.proto";
+
+package example.bankwealth.infrastructure.proto;
+
+option (scalapb.options) = { flat_package: true };
+
+message AccountInitializedPO {
+  AccountIdPO resource = 1;
+  string currency = 2;
+  MoneyPO amount = 3;
+}
+
+message ReserveFundsConfirmedPO {
+  TxIdPO txid = 1;
+  AccountIdPO resource = 2;
+  MoneyPO amount = 3;
+  string currency = 4;
+  MoneyPO available = 5;
+}
+
+message DeductFundsConfirmedPO {
+  TxIdPO txid = 1;
+  AccountIdPO resource = 2;
+  MoneyPO amount = 3;
+}
+
+message ReleaseReservedFundsConfirmedPO {
+  TxIdPO txid = 1;
+  AccountIdPO resource = 2;
+  MoneyPO amount = 3;
+  string currency = 4;
+  MoneyPO available = 5;
+}
+
+message RecordIncomingCreditsConfirmedPO {
+  TxIdPO txid = 1;
+  AccountIdPO resource = 2;
+  MoneyPO amount = 3;
+}
+
+message CommitIncomingCreditsConfirmedPO {
+  TxIdPO txid = 1;
+  AccountIdPO resource = 2;
+  MoneyPO amount = 3;
+  string currency = 4;
+  MoneyPO available = 5;
+}
+
+message CancelIncomingCreditConfirmedPO {
+  TxIdPO txid = 1;
+  AccountIdPO resource = 2;
+  MoneyPO amount = 3;
+}
+
+message CreditBalanceEventPO {
+  oneof event {
+    AccountInitializedPO accountInitialized = 1;
+    ReserveFundsConfirmedPO reserveFundsConfirmed = 2;
+    DeductFundsConfirmedPO deductFundsConfirmed = 3;
+    ReleaseReservedFundsConfirmedPO releaseReservedFundsConfirmed = 4;
+    RecordIncomingCreditsConfirmedPO recordIncomingCreditsConfirmed = 5;
+    CommitIncomingCreditsConfirmedPO commitIncomingCreditsConfirmed = 6;
+    CancelIncomingCreditConfirmedPO cancelIncomingCreditConfirmed = 7;
+  }
+}
+
+message CreditBalanceStatePO {
+  AccountIdPO id = 1;
+  bool initialized = 2;
+  map<string, MoneyPO> accountBalance = 3;
+  map<string, MoneyPO> reservedAmount = 4;
+  map<string, MoneyPO> incomingCredits = 5;
+  map<string, MoneyPO> committedOutgoing = 6;
+  map<string, MoneyPO> committedIncoming = 7;
+  map<string, MoneyPO> compensatedOutgoing = 8;
+  map<string, MoneyPO> compensatedIncoming = 9;
+}

@@ -1,0 +1,200 @@
+package example.bankwealth.infrastructure.projection
+
+import akka.{Done, NotUsed}
+import akka.actor.typed.ActorSystem
+import akka.actor.typed.scaladsl.adapter._
+import akka.serialization.{SerializationExtension, Serializers}
+import akka.stream.{KillSwitches, Materializer, SharedKillSwitch, SystemMaterializer}
+import akka.stream.scaladsl.{Sink, Source}
+import javax.sql.DataSource
+import scalapb.GeneratedMessage
+import scala.collection.mutable
+import scala.concurrent.{Await, ExecutionContext, Future, Promise}
+import scala.concurrent.duration._
+import scala.util.control.NonFatal
+
+object BankJournalReadsideProjection {
+  final case class Envelope(pid: String, sequenceNr: Long, event: Any) {
+    require(pid != null && pid.nonEmpty && sequenceNr > 0L && event != null, "valid journal envelope required")
+  }
+  trait Journal {
+    def namespace: String
+    def persistenceIds(): Source[String, NotUsed]
+    def currentEvents(pid: String, after: Long): Future[Vector[Envelope]]
+    def events(pid: String, after: Long): Source[Envelope, NotUsed]
+  }
+  trait Bindings {
+    def identity(pid: String): (String, String)
+    def fold(row: BankJournalReadsideRepository.Row, event: Any): BankJournalReadsideRepository.State
+    def indexes(session: BankJournalReadsideRepository#Session, row: BankJournalReadsideRepository.Row): Unit
+  }
+}
+
+/** Disposable derived state. Supply a blocking JDBC execution context. This owner closes
+  * its subscriptions only, never the journal, DataSource or ActorSystem. A frontier is
+  * an observed per-PID sample, not proof that discovery or a whole index is current.
+  */
+final class BankJournalReadsideProjection(journal: BankJournalReadsideProjection.Journal, bindings: BankJournalReadsideProjection.Bindings, dataSource: DataSource)
+    (implicit system: ActorSystem[_], ec: ExecutionContext) extends AutoCloseable {
+  import BankJournalReadsideProjection._
+  import BankJournalReadsideRepository.Payload
+  require(journal != null && bindings != null && dataSource != null, "complete journal projection bindings required")
+  private val namespace = journal.namespace
+  private val repository = new BankJournalReadsideRepository(namespace, dataSource)
+  private implicit val materializer: Materializer = SystemMaterializer(system).materializer
+  private val serialization = SerializationExtension(system.toClassic)
+  private val stop: SharedKillSwitch = KillSwitches.shared("BankJournalReadside-" + namespace)
+  private val allowedKinds: Set[String] = Set("account", "order", "plan", "payment-saga", "payment-host", "payment-run", "refund-saga", "refund-host", "refund-run", "ta-host", "ta-run", "sip-host", "sip-run")
+  private val watches = mutable.Map.empty[String, Future[Done]]
+  private val catchUps = mutable.Map.empty[String, Future[Unit]]
+  private var discovery: Option[Future[Done]] = None
+  private var poll: Option[akka.actor.Cancellable] = None
+  private var closed = false
+  private var initialized: Option[Future[Unit]] = None
+  private var pendingWork = 0
+  private val drained = Promise[Unit]()
+  private var shutdownResult = Option.empty[Future[Unit]]
+
+  private def tracked[A]()(work: => Future[A]): Future[A] = synchronized {
+    if (closed) Future.failed(new IllegalStateException("readside is closed"))
+    else {
+      pendingWork += 1
+      val result = try work catch { case NonFatal(error) => Future.failed(error) }
+      result.transform { outcome =>
+        synchronized {
+          pendingWork -= 1
+          if (closed && pendingWork == 0) drained.trySuccess(())
+        }
+        outcome
+      }(ExecutionContext.parasitic)
+    }
+  }
+  private def identity(pid: String): (String, String) = {
+    require(pid != null && pid.nonEmpty && pid.length <= 2048, "bounded persistence identity required")
+    val (kind, resource) = bindings.identity(pid)
+    require(allowedKinds.contains(kind), "unrecognized persistence kind")
+    require(kind.length <= 32 && resource != null && resource.length <= 2048, "bounded persistence identity required")
+    kind -> resource
+  }
+  private def payload(event: Any): Payload = event match {
+    case message: GeneratedMessage => Payload(message.getClass.getName, message.getClass.getSimpleName, message.toByteArray)
+    case ref: AnyRef =>
+      val serializer = serialization.findSerializerFor(ref)
+      Payload(ref.getClass.getName, serializer.identifier.toString + ":" + Serializers.manifestFor(serializer, ref), serializer.toBinary(ref))
+    case _ => throw new IllegalArgumentException("journal event must be serializable")
+  }
+  def initialize(): Future[Unit] = synchronized {
+    require(!closed, "readside is closed")
+    initialized.getOrElse {
+      val ready = tracked() { Future(repository.initialize()) }
+      initialized = Some(ready)
+      ready
+    }
+  }
+  def project(envelope: Envelope): Future[Unit] = {
+    val (kind, resource) = identity(envelope.pid) // fail before initialization or any SQL
+    tracked() { initialize().flatMap { _ => Future(repository.write { session =>
+      val row = session.ensureRow(envelope.pid, kind, resource)
+      val serialized = payload(envelope.event)
+      session.event(row.pid, envelope.sequenceNr) match {
+        case Some(existing) =>
+          require(existing.kind == serialized.kind && existing.manifest == serialized.manifest &&
+            java.util.Arrays.equals(existing.bytes, serialized.bytes), "conflicting journal sequence/payload")
+        case None =>
+          require(envelope.sequenceNr == Math.addExact(row.last, 1L), "noncontiguous journal sequence")
+          val state = bindings.fold(row, envelope.event)
+          val next = session.append(row, envelope.sequenceNr, serialized, state)
+          bindings.indexes(session, next)
+      }
+      ()
+    }) } }
+  }
+  def read[A](f: BankJournalReadsideRepository#Session => A): Future[A] = tracked() {
+    Future(repository.read(session => f(session)))
+  }
+  def catchUp(pid: String): Future[Unit] = synchronized {
+    if (closed) Future.failed(new IllegalStateException("readside is closed"))
+    else catchUps.getOrElse(pid, {
+      // Reserve before starting work: immediate failures must not leave a cached Future.
+      val result = Promise[Unit]()
+      catchUps.put(pid, result.future)
+      val running = tracked() {
+        val (kind, resource) = identity(pid)
+        initialize().flatMap(_ => Future(repository.read(_.row(pid).map(_.last).getOrElse(0L)))).flatMap { after =>
+          journal.currentEvents(pid, after).flatMap { events =>
+            require(events.forall(_.pid == pid), "foreign PID returned by journal")
+            events.foldLeft(Future.successful(()))((done, event) => done.flatMap(_ => project(event))).flatMap { _ =>
+              val high = events.lastOption.map(_.sequenceNr).getOrElse(after)
+              Future(repository.write { session =>
+                session.ensureRow(pid, kind, resource)
+                session.observe(pid, high)
+              })
+            }
+          }
+        }.recoverWith { case NonFatal(error) =>
+          invalidate(pid).recover { case NonFatal(cleanup) =>
+            if (cleanup ne error) error.addSuppressed(cleanup)
+          }.flatMap(_ => Future.failed(error))
+        }
+      }
+      running.onComplete { outcome => synchronized {
+        catchUps.remove(pid)
+        result.tryComplete(outcome)
+      } }(ExecutionContext.parasitic)
+      result.future
+    })
+  }
+  private def invalidate(pid: String): Future[Unit] = Future(repository.write(_.invalidate(pid)))
+  private def watch(pid: String): Unit = synchronized {
+    if (!closed && !watches.contains(pid)) {
+      identity(pid)
+      val running = tracked() {
+        journal.events(pid, 0L).via(stop.flow).mapAsync(1)(project).runWith(Sink.ignore)
+          .transformWith(_ => invalidate(pid).map(_ => Done))
+      }
+      watches.put(pid, running)
+      running.onComplete { _ => synchronized { watches.remove(pid) } }(ExecutionContext.parasitic)
+    }
+  }
+  private def discover(): Unit = synchronized {
+    // Discovery can be infinite; never stack another subscription or await it as readiness.
+    if (!closed && discovery.isEmpty) {
+      val running = tracked() { journal.persistenceIds().via(stop.flow).runForeach(watch) }
+      discovery = Some(running)
+      running.onComplete { _ => synchronized { discovery = None } }(ExecutionContext.parasitic)
+    }
+  }
+  def start(): Future[Unit] = tracked() { initialize().map { _ => synchronized {
+    require(!closed, "readside is closed")
+    if (poll.isEmpty) {
+      discover()
+      poll = Some(system.scheduler.scheduleWithFixedDelay(Duration.Zero, 2000.millis)(new Runnable {
+        def run(): Unit = BankJournalReadsideProjection.this.synchronized {
+          if (!closed) {
+            discover()
+            // catchUp owns one tracked sample (including failure invalidation) per PID.
+            watches.keys.toVector.foreach(catchUp)
+          }
+        }
+      })(ec))
+    }
+    ()
+  } } }
+  def shutdown(): Future[Unit] = synchronized {
+    shutdownResult.getOrElse {
+      closed = true
+      poll.foreach(_.cancel())
+      stop.shutdown()
+      if (pendingWork == 0) drained.trySuccess(())
+      val result = drained.future.flatMap { _ =>
+        initialized match {
+          case None => Future.successful(())
+          case Some(ready) => ready.flatMap(_ => Future(repository.write(_.invalidateAll())))
+        }
+      }
+      shutdownResult = Some(result)
+      result
+    }
+  }
+  def close(): Unit = { Await.result(shutdown(), 20000.millis); () }
+}

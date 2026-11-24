@@ -21,6 +21,8 @@ import { withFlippedAggregateRepositories } from '../../lib/derivation/aggregate
 import { withFlippedProtoSchemas } from '../../lib/derivation/proto-schema-emission.mjs';
 import { withFlippedProtoConverters } from '../../lib/derivation/proto-converter-emission.mjs';
 import { withFlippedSerializationAdapters } from '../../lib/derivation/serialization-adapter-emission.mjs';
+import { withFlippedServiceRuntime } from '../../lib/derivation/service-runtime-emission.mjs';
+import { withFlippedProjectScaffold } from '../../lib/derivation/project-scaffold-emission.mjs';
 import { PIPELINE_INVOCATION_FLIPS, flipHostBase } from '../../lib/derivation/pipeline-invocation-face.mjs';
 import { EFFECT_FACE_FLIPS, effectFlipHostClass } from '../../lib/derivation/effect-face.mjs';
 
@@ -80,7 +82,7 @@ const inherited = Object.fromEntries(Object.entries(createEffectRegistry('2')).m
             : id === 'durable-effect-host-dsl'
               ? withFlippedProtoSchemas(psCtx => withFlippedEffectHosts(implementation.produce.bind(implementation), psCtx), context, 'effect')
               : implementation.produce(context);
-    return produced.map(entry => {
+    return withFlippedProjectScaffold(produced.map(entry => {
       const pins = entry.productFootprint.map(p => ({ ...p, version: version(p.id) ?? p.version }));
       if (['proto-dsl', 'finite-execution-dsl', 'finite-host-dsl'].includes(id) && !pins.some(p => p.id === 'effect-host-contract')) pins.push({ id: 'effect-host-contract', version: '2' });
       if (['proto-dsl', 'finite-execution-dsl', 'durable-effect-host-dsl'].includes(id)) pins.push({ id: 'artifact-contract', version: '3' });
@@ -115,16 +117,16 @@ const inherited = Object.fromEntries(Object.entries(createEffectRegistry('2')).m
         if (id === 'proto-dsl') next.content = flippedSerializerConfContent(next.content, context);
       }
       return next;
-    });
+    }), context);
   }
 }]));
 export const registry = Object.freeze({ ...inherited,
-  'play-service-dsl': { version: '1', produce: context => [
-    ...renderService(context, serviceFootprint),
-    ...renderJournalReadside(context, serviceFootprint),
-    ...renderTestSupport(serviceSelection(context.products, context.options), context.options, serviceFootprint),
-    ...renderConfiguration(serviceSelection(context.products, context.options), context.options, serviceFootprint)
-  ] }
+  'play-service-dsl': { version: '1', produce: context => withFlippedProjectScaffold(withFlippedServiceRuntime(ctx => [
+    ...renderService(ctx, serviceFootprint),
+    ...renderJournalReadside(ctx, serviceFootprint),
+    ...renderTestSupport(serviceSelection(ctx.products, ctx.options), ctx.options, serviceFootprint),
+    ...renderConfiguration(serviceSelection(ctx.products, ctx.options), ctx.options, serviceFootprint)
+  ], context), context) }
 });
 export function generate(input) {
   if (input.manifest?.targetProfile !== 'scala-cqrs-play-service@1') fail('SERVICE_PROFILE', 'explicit service generation profile required');

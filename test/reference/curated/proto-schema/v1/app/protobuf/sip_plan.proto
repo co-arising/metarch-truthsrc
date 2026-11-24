@@ -1,0 +1,156 @@
+syntax = "proto3";
+
+import "scalapb/scalapb.proto";
+import "shared_value_objects.proto";
+
+package example.bankwealth.infrastructure.proto;
+
+option (scalapb.options) = { flat_package: true };
+
+message SipPlanCreatedPO {
+  PlanIdPO planId = 1;
+  SipRevisionConfigPO config = 2;
+}
+
+message SipDueSlotAppendedPO {
+  sint64 position = 1;
+  sint64 dueSlot = 2;
+}
+
+message SipScheduleSealedPO {
+  bool sealed = 1;
+}
+
+message SipPlanRevisedPO {
+  SipRevisionConfigPO config = 1;
+  RevisionIdPO previousRevision = 2;
+}
+
+message SipClockAdvancedPO {
+  sint64 tick = 1;
+}
+
+message SipPlanPausedPO {
+  sint64 tick = 1;
+}
+
+message SipPlanResumedPO {
+  sint64 tick = 1;
+  sint64 pauseTick = 2;
+}
+
+message SipDueSlotObservedPO {
+  sint64 position = 1;
+  sint64 dueSlot = 2;
+  string disposition = 3;
+}
+
+message SipPausedDueSlotSkippedPO {
+  sint64 position = 1;
+  sint64 dueSlot = 2;
+  string disposition = 3;
+}
+
+message SipSkippedSlotAdvancedPO {
+  sint64 position = 1;
+  sint64 dueSlot = 2;
+}
+
+message SipInstallmentTriggeredPO {
+  sint64 position = 1;
+  SipOccurrencePO occurrence = 2;
+}
+
+message SipInstallmentPendingPO {
+  SipOccurrencePO occurrence = 1;
+  string outcome = 2;
+}
+
+message SipInstallmentOutcomeUnknownPO {
+  SipOccurrencePO occurrence = 1;
+  string outcome = 2;
+}
+
+message SipInstallmentRecoveryRequiredPO {
+  SipOccurrencePO occurrence = 1;
+  string outcome = 2;
+}
+
+message SipInstallmentRefundInProgressPO {
+  SipOccurrencePO occurrence = 1;
+  string outcome = 2;
+}
+
+message SipInstallmentSucceededPO {
+  SipOccurrencePO occurrence = 1;
+  string evidence = 2;
+  string receiptId = 3;
+  string receiptBody = 4;
+  string outcome = 5;
+}
+
+message SipInstallmentFailedPO {
+  SipOccurrencePO occurrence = 1;
+  string evidence = 2;
+  string receiptId = 3;
+  string receiptBody = 4;
+  string outcome = 5;
+}
+
+message SipCreateIntentRecordedPO {
+  BankSipCreateIntentPO intent = 1;
+  BankSipCreateIntentPO source = 2;
+}
+
+message SipPlanEventPO {
+  oneof event {
+    SipPlanCreatedPO sipPlanCreated = 1;
+    SipDueSlotAppendedPO sipDueSlotAppended = 2;
+    SipScheduleSealedPO sipScheduleSealed = 3;
+    SipPlanRevisedPO sipPlanRevised = 4;
+    SipClockAdvancedPO sipClockAdvanced = 5;
+    SipPlanPausedPO sipPlanPaused = 6;
+    SipPlanResumedPO sipPlanResumed = 7;
+    SipDueSlotObservedPO sipDueSlotObserved = 8;
+    SipPausedDueSlotSkippedPO sipPausedDueSlotSkipped = 9;
+    SipSkippedSlotAdvancedPO sipSkippedSlotAdvanced = 10;
+    SipInstallmentTriggeredPO sipInstallmentTriggered = 11;
+    SipInstallmentPendingPO sipInstallmentPending = 12;
+    SipInstallmentOutcomeUnknownPO sipInstallmentOutcomeUnknown = 13;
+    SipInstallmentRecoveryRequiredPO sipInstallmentRecoveryRequired = 14;
+    SipInstallmentRefundInProgressPO sipInstallmentRefundInProgress = 15;
+    SipInstallmentSucceededPO sipInstallmentSucceeded = 16;
+    SipInstallmentFailedPO sipInstallmentFailed = 17;
+    SipCreateIntentRecordedPO sipCreateIntentRecorded = 18;
+  }
+}
+
+message SipPlanStatePO {
+  PlanIdPO id = 1;
+  bool initialized = 2;
+  bool scheduleSealed = 3;
+  sint64 scheduleCount = 4;
+  sint64 lastDueSlot = 5;
+  map<sint64, sint64> slots = 6;
+  sint64 currentTick = 7;
+  sint64 observedCount = 8;
+  sint64 startCount = 9;
+  bool paused = 10;
+  sint64 pauseTick = 11;
+  map<sint64, sint64> pauseIntervals = 12;
+  map<string, SipRevisionConfigPO> revisions = 13;
+  map<string, sint64> revisionEnds = 14;
+  RevisionIdPO latestRevision = 15;
+  sint64 latestEffectiveSlot = 16;
+  map<sint64, string> slotDisposition = 17;
+  map<sint64, SipOccurrencePO> occurrences = 18;
+  map<string, string> occurrenceProgress = 19;
+  map<string, string> firstTerminals = 20;
+  map<string, string> terminalReceiptBodies = 21;
+  sint64 successTotal = 22;
+  sint64 failureTotal = 23;
+  BankSipCreateIntentPO createIntent = 24;
+  map<string, BankSipCreateIntentPO> sipCreateIntents = 25;
+  repeated sint64 createIntentDueSlots = 26;
+  map<sint64, sint64> intentAppendedDueSlots = 27;
+}

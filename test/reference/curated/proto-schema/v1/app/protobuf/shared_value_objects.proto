@@ -1,0 +1,903 @@
+syntax = "proto3";
+
+import "scalapb/scalapb.proto";
+
+package example.bankwealth.infrastructure.proto;
+
+option (scalapb.options) = { flat_package: true };
+
+message AccountIdPO {
+  string value = 1;
+}
+
+message FundOrderIdPO {
+  string value = 1;
+}
+
+message OperationIdPO {
+  string value = 1;
+}
+
+message TxIdPO {
+  string value = 1;
+}
+
+message PlanIdPO {
+  string value = 1;
+}
+
+message RevisionIdPO {
+  string value = 1;
+}
+
+message OccurrenceIdPO {
+  string value = 1;
+}
+
+message TaExactTextPO {
+  string value = 1;
+}
+
+message AmountDecimalPO {
+  string value = 1;
+}
+
+message AmountDecimalWirePO {
+  string value = 1;
+}
+
+message AmountDecimalStoragePO {
+  string value = 1;
+}
+
+message MoneyPO {
+  string amount = 1;
+  string currency = 2;
+}
+
+message MoneyWirePO {
+  string minorUnits = 1;
+  string currency = 2;
+}
+
+message MoneyStoragePO {
+  string minorUnits = 1;
+  string currency = 2;
+}
+
+message FundSharePO {
+  string fundCode = 1;
+  TaExactTextPO shares = 2;
+  TaExactTextPO nav = 3;
+}
+
+message TaRequestIdPO {
+  string value = 1;
+}
+
+message SipRevisionConfigPO {
+  RevisionIdPO revision = 1;
+  sint64 effectiveSlot = 2;
+  AccountIdPO investorAccountId = 3;
+  AccountIdPO fundCollectionAccountId = 4;
+  string fundCode = 5;
+  MoneyPO amount = 6;
+}
+
+message SipOccurrencePO {
+  PlanIdPO planId = 1;
+  RevisionIdPO revision = 2;
+  sint64 dueSlot = 3;
+  OccurrenceIdPO occurrenceId = 4;
+  OperationIdPO operationId = 5;
+  FundOrderIdPO fundOrderId = 6;
+  SipRevisionConfigPO config = 7;
+}
+
+message TaReceiptPO {
+  FundOrderIdPO fundOrderId = 1;
+  TxIdPO paymentTxId = 2;
+  TaRequestIdPO taRequestId = 3;
+  AccountIdPO investorAccountId = 4;
+  AccountIdPO fundCollectionAccountId = 5;
+  string fundCode = 6;
+  MoneyPO amount = 7;
+  AmountDecimalPO principal = 8;
+  string receiptId = 9;
+  string receiptBody = 10;
+  string taReference = 11;
+  string status = 12;
+  TaExactTextPO shares = 13;
+  TaExactTextPO nav = 14;
+  string reason = 15;
+}
+
+message BankPaymentOriginalPO {
+  OperationIdPO operationId = 1;
+  FundOrderIdPO fundOrderId = 2;
+  AccountIdPO investorAccountId = 3;
+  AccountIdPO fundCollectionAccountId = 4;
+  string fundCode = 5;
+  MoneyPO amount = 6;
+}
+
+message BankPaymentArgsPO {
+  AccountIdPO investorAccountId = 1;
+  FundOrderIdPO fundOrderId = 2;
+  AccountIdPO fundCollectionAccountId = 3;
+  MoneyPO amount = 4;
+}
+
+message ReserveInvestorFundsPrepareInputPO {
+  TxIdPO txid = 1;
+  AccountIdPO resource = 2;
+  MoneyPO amount = 3;
+}
+
+message ReserveInvestorFundsPrepareReceiptPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  AccountIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+  TxIdPO payloadTxid = 8;
+  AccountIdPO payloadResource = 9;
+  MoneyPO payloadAmount = 10;
+  string payloadCurrency = 11;
+  MoneyPO payloadAvailable = 12;
+}
+
+message ReserveInvestorFundsPrepareQueryPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  AccountIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+}
+
+message ReserveInvestorFundsCommitInputPO {
+  TxIdPO txid = 1;
+  AccountIdPO resource = 2;
+  MoneyPO amount = 3;
+}
+
+message ReserveInvestorFundsCommitReceiptPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  AccountIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+  TxIdPO payloadTxid = 8;
+  AccountIdPO payloadResource = 9;
+  MoneyPO payloadAmount = 10;
+}
+
+message ReserveInvestorFundsCommitQueryPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  AccountIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+}
+
+message ReserveInvestorFundsCompensateInputPO {
+  TxIdPO txid = 1;
+  AccountIdPO resource = 2;
+  MoneyPO amount = 3;
+}
+
+message ReserveInvestorFundsCompensateReceiptPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  AccountIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+  TxIdPO payloadTxid = 8;
+  AccountIdPO payloadResource = 9;
+  MoneyPO payloadAmount = 10;
+  string payloadCurrency = 11;
+  MoneyPO payloadAvailable = 12;
+}
+
+message ReserveInvestorFundsCompensateQueryPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  AccountIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+}
+
+message CreditFundCollectionPrepareInputPO {
+  TxIdPO txid = 1;
+  AccountIdPO resource = 2;
+  MoneyPO amount = 3;
+}
+
+message CreditFundCollectionPrepareReceiptPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  AccountIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+  TxIdPO payloadTxid = 8;
+  AccountIdPO payloadResource = 9;
+  MoneyPO payloadAmount = 10;
+}
+
+message CreditFundCollectionPrepareQueryPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  AccountIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+}
+
+message CreditFundCollectionCommitInputPO {
+  TxIdPO txid = 1;
+  AccountIdPO resource = 2;
+  MoneyPO amount = 3;
+}
+
+message CreditFundCollectionCommitReceiptPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  AccountIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+  TxIdPO payloadTxid = 8;
+  AccountIdPO payloadResource = 9;
+  MoneyPO payloadAmount = 10;
+  string payloadCurrency = 11;
+  MoneyPO payloadAvailable = 12;
+}
+
+message CreditFundCollectionCommitQueryPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  AccountIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+}
+
+message CreditFundCollectionCompensateInputPO {
+  TxIdPO txid = 1;
+  AccountIdPO resource = 2;
+  MoneyPO amount = 3;
+}
+
+message CreditFundCollectionCompensateReceiptPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  AccountIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+  TxIdPO payloadTxid = 8;
+  AccountIdPO payloadResource = 9;
+  MoneyPO payloadAmount = 10;
+}
+
+message CreditFundCollectionCompensateQueryPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  AccountIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+}
+
+message ReserveCashFundOrderPrepareInputPO {
+  TxIdPO txid = 1;
+  FundOrderIdPO resource = 2;
+  MoneyPO amount = 3;
+}
+
+message ReserveCashFundOrderPrepareReceiptPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  FundOrderIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+  TxIdPO payloadTxid = 8;
+  FundOrderIdPO payloadResource = 9;
+  MoneyPO payloadAmount = 10;
+}
+
+message ReserveCashFundOrderPrepareQueryPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  FundOrderIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+}
+
+message ReserveCashFundOrderCommitInputPO {
+  TxIdPO txid = 1;
+  FundOrderIdPO resource = 2;
+  MoneyPO amount = 3;
+}
+
+message ReserveCashFundOrderCommitReceiptPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  FundOrderIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+  TxIdPO payloadTxid = 8;
+  FundOrderIdPO payloadResource = 9;
+  MoneyPO payloadAmount = 10;
+}
+
+message ReserveCashFundOrderCommitQueryPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  FundOrderIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+}
+
+message ReserveCashFundOrderCompensateInputPO {
+  TxIdPO txid = 1;
+  FundOrderIdPO resource = 2;
+  MoneyPO amount = 3;
+}
+
+message ReserveCashFundOrderCompensateReceiptPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  FundOrderIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+  TxIdPO payloadTxid = 8;
+  FundOrderIdPO payloadResource = 9;
+  MoneyPO payloadAmount = 10;
+}
+
+message ReserveCashFundOrderCompensateQueryPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  FundOrderIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+}
+
+message BankPaymentResultPO {
+  TxIdPO txid = 1;
+}
+
+message BankRefundOriginalPO {
+  FundOrderIdPO fundOrderId = 1;
+  TxIdPO paymentTxId = 2;
+  AccountIdPO investorAccountId = 3;
+  AccountIdPO fundCollectionAccountId = 4;
+  MoneyPO amount = 5;
+  OperationIdPO refundOperationId = 6;
+}
+
+message BankRefundArgsPO {
+  AccountIdPO fundCollectionAccountId = 1;
+  AccountIdPO investorAccountId = 2;
+  MoneyPO amount = 3;
+}
+
+message DebitFundCollectionPrepareInputPO {
+  TxIdPO txid = 1;
+  AccountIdPO resource = 2;
+  MoneyPO amount = 3;
+}
+
+message DebitFundCollectionPrepareReceiptPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  AccountIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+  TxIdPO payloadTxid = 8;
+  AccountIdPO payloadResource = 9;
+  MoneyPO payloadAmount = 10;
+  string payloadCurrency = 11;
+  MoneyPO payloadAvailable = 12;
+}
+
+message DebitFundCollectionPrepareQueryPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  AccountIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+}
+
+message DebitFundCollectionCommitInputPO {
+  TxIdPO txid = 1;
+  AccountIdPO resource = 2;
+  MoneyPO amount = 3;
+}
+
+message DebitFundCollectionCommitReceiptPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  AccountIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+  TxIdPO payloadTxid = 8;
+  AccountIdPO payloadResource = 9;
+  MoneyPO payloadAmount = 10;
+}
+
+message DebitFundCollectionCommitQueryPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  AccountIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+}
+
+message DebitFundCollectionCompensateInputPO {
+  TxIdPO txid = 1;
+  AccountIdPO resource = 2;
+  MoneyPO amount = 3;
+}
+
+message DebitFundCollectionCompensateReceiptPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  AccountIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+  TxIdPO payloadTxid = 8;
+  AccountIdPO payloadResource = 9;
+  MoneyPO payloadAmount = 10;
+  string payloadCurrency = 11;
+  MoneyPO payloadAvailable = 12;
+}
+
+message DebitFundCollectionCompensateQueryPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  AccountIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+}
+
+message CreditOriginalInvestorPrepareInputPO {
+  TxIdPO txid = 1;
+  AccountIdPO resource = 2;
+  MoneyPO amount = 3;
+}
+
+message CreditOriginalInvestorPrepareReceiptPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  AccountIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+  TxIdPO payloadTxid = 8;
+  AccountIdPO payloadResource = 9;
+  MoneyPO payloadAmount = 10;
+}
+
+message CreditOriginalInvestorPrepareQueryPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  AccountIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+}
+
+message CreditOriginalInvestorCommitInputPO {
+  TxIdPO txid = 1;
+  AccountIdPO resource = 2;
+  MoneyPO amount = 3;
+}
+
+message CreditOriginalInvestorCommitReceiptPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  AccountIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+  TxIdPO payloadTxid = 8;
+  AccountIdPO payloadResource = 9;
+  MoneyPO payloadAmount = 10;
+  string payloadCurrency = 11;
+  MoneyPO payloadAvailable = 12;
+}
+
+message CreditOriginalInvestorCommitQueryPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  AccountIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+}
+
+message CreditOriginalInvestorCompensateInputPO {
+  TxIdPO txid = 1;
+  AccountIdPO resource = 2;
+  MoneyPO amount = 3;
+}
+
+message CreditOriginalInvestorCompensateReceiptPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  AccountIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+  TxIdPO payloadTxid = 8;
+  AccountIdPO payloadResource = 9;
+  MoneyPO payloadAmount = 10;
+}
+
+message CreditOriginalInvestorCompensateQueryPO {
+  TxIdPO transaction = 1;
+  string definitionVersion = 2;
+  string argsDigest = 3;
+  string participant = 4;
+  AccountIdPO resource = 5;
+  string step = 6;
+  string phase = 7;
+}
+
+message BankRefundResultPO {
+  TxIdPO txid = 1;
+}
+
+message BankTaEffectRequestPO {
+  TaRequestIdPO taRequestId = 1;
+  FundOrderIdPO fundOrderId = 2;
+  TxIdPO paymentTxId = 3;
+}
+
+message BankTaEffectResultPO {
+  TaRequestIdPO taRequestId = 1;
+}
+
+message BankTaEffectOperationPO {
+  string operation = 1;
+  BankTaEffectRequestPO request = 2;
+}
+
+message BankTaEffectObservationPO {
+  string operation = 1;
+  BankTaEffectRequestPO request = 2;
+  string status = 3;
+  string evidence = 4;
+  BankTaEffectResultPO result = 5;
+}
+
+message BankTaEffectReconcilePO {
+  string operation = 1;
+  BankTaEffectRequestPO request = 2;
+  string decision = 3;
+  BankTaEffectObservationPO evidence = 4;
+  string authorization = 5;
+}
+
+message BankSipDispatchRequestPO {
+  OccurrenceIdPO occurrenceId = 1;
+  SipOccurrencePO occurrence = 2;
+}
+
+message BankSipDispatchResultPO {
+  OperationIdPO operationId = 1;
+}
+
+message BankSipDispatchOperationPO {
+  string operation = 1;
+  BankSipDispatchRequestPO request = 2;
+}
+
+message BankSipDispatchObservationPO {
+  string operation = 1;
+  BankSipDispatchRequestPO request = 2;
+  string status = 3;
+  string evidence = 4;
+  BankSipDispatchResultPO result = 5;
+}
+
+message BankSipDispatchReconcilePO {
+  string operation = 1;
+  BankSipDispatchRequestPO request = 2;
+  string decision = 3;
+  BankSipDispatchObservationPO evidence = 4;
+  string authorization = 5;
+}
+
+message BankCashSubmitPO {
+  string clientRequestId = 1;
+  string fundCode = 2;
+  MoneyWirePO amount = 3;
+}
+
+message BankCashOriginalPO {
+  string principalId = 1;
+  string clientRequestId = 2;
+  string authorityVersion = 3;
+  BankCashSubmitPO request = 4;
+  BankPaymentOriginalPO payment = 5;
+}
+
+message BankCashAcknowledgementPO {
+  BankCashOriginalPO original = 1;
+  string status = 2;
+}
+
+message BankSipCreatePO {
+  string clientRequestId = 1;
+  string fundCode = 2;
+  MoneyWirePO amount = 3;
+  sint64 effectiveSlot = 4;
+  repeated sint64 dueSlots = 5;
+}
+
+message BankSipCreateIntentPO {
+  string principalId = 1;
+  string clientRequestId = 2;
+  string authorityVersion = 3;
+  BankSipCreatePO request = 4;
+  PlanIdPO planId = 5;
+  SipRevisionConfigPO config = 6;
+}
+
+message BankSipAcknowledgementPO {
+  PlanIdPO planId = 1;
+  string status = 2;
+}
+
+message BankSipRevisePO {
+  RevisionIdPO revision = 1;
+  sint64 effectiveSlot = 2;
+  string fundCode = 3;
+  MoneyWirePO amount = 4;
+}
+
+message BankSipRevisionInputPO {
+  PlanIdPO planId = 1;
+  BankSipRevisePO request = 2;
+}
+
+message BankTickPO {
+  sint64 slot = 1;
+}
+
+message BankTickAcknowledgementPO {
+  sint64 slot = 1;
+  sint64 plans = 2;
+}
+
+message BankAccountKeyPO {
+  string schemaVersion = 1;
+}
+
+message BankCashRequestKeyPO {
+  string clientRequestId = 1;
+}
+
+message BankOrderKeyPO {
+  FundOrderIdPO orderId = 1;
+}
+
+message BankPlanKeyPO {
+  PlanIdPO planId = 1;
+}
+
+message BankPlanPageKeyPO {
+  sint64 limit = 1;
+  sint64 after = 2;
+}
+
+message BankOccurrencePageKeyPO {
+  PlanIdPO planId = 1;
+  sint64 limit = 2;
+  sint64 after = 3;
+}
+
+message BankPendingPageKeyPO {
+  sint64 limit = 1;
+  sint64 after = 2;
+}
+
+message BankOperationKeyPO {
+  OperationIdPO operationId = 1;
+}
+
+message BankProjectionWatermarkPO {
+  string persistenceId = 1;
+  sint64 lastSequence = 2;
+  optional sint64 observedSequence = 3;
+  string disposition = 4;
+}
+
+message BankReadMetadataPO {
+  string schemaVersion = 1;
+  string disposition = 2;
+  repeated BankProjectionWatermarkPO watermarks = 3;
+}
+
+message BankAccountViewPO {
+  AccountIdPO accountId = 1;
+  bool initialized = 2;
+  MoneyWirePO available = 3;
+  MoneyWirePO reserved = 4;
+}
+
+message BankCashRequestViewPO {
+  BankCashOriginalPO original = 1;
+  string paymentStatus = 2;
+  string taStatus = 3;
+  string refundStatus = 4;
+}
+
+message BankTaSharesViewPO {
+  string fundCode = 1;
+  TaExactTextPO shares = 2;
+  TaExactTextPO nav = 3;
+}
+
+message BankOrderViewPO {
+  FundOrderIdPO orderId = 1;
+  OperationIdPO operationId = 2;
+  AccountIdPO investorAccountId = 3;
+  AccountIdPO fundCollectionAccountId = 4;
+  string fundCode = 5;
+  MoneyWirePO amount = 6;
+  TxIdPO paymentTxId = 7;
+  string paymentStatus = 8;
+  TaRequestIdPO taRequestId = 9;
+  string taStatus = 10;
+  optional string taReference = 11;
+  BankTaSharesViewPO taShares = 12;
+  optional string taRejectionReason = 13;
+  OperationIdPO refundOperationId = 14;
+  string refundStatus = 15;
+}
+
+message BankSipRevisionViewPO {
+  SipRevisionConfigPO config = 1;
+  optional sint64 endSlot = 2;
+}
+
+message BankSipPlanViewPO {
+  PlanIdPO planId = 1;
+  BankSipCreateIntentPO original = 2;
+  bool initialized = 3;
+  bool scheduleSealed = 4;
+  bool paused = 5;
+  sint64 currentTick = 6;
+  repeated sint64 dueSlots = 7;
+  repeated BankSipRevisionViewPO revisions = 8;
+  sint64 scheduleCount = 9;
+  sint64 observedCount = 10;
+  sint64 startCount = 11;
+  sint64 successTotal = 12;
+  sint64 failureTotal = 13;
+}
+
+message BankSipOccurrenceViewPO {
+  SipOccurrencePO occurrence = 1;
+  string slotDisposition = 2;
+  string progress = 3;
+  string paymentStatus = 4;
+  string taStatus = 5;
+  string refundStatus = 6;
+  optional string firstTerminal = 7;
+}
+
+message BankPendingOperationViewPO {
+  OperationIdPO operationId = 1;
+  string flow = 2;
+  FundOrderIdPO orderId = 3;
+  PlanIdPO planId = 4;
+  OccurrenceIdPO occurrenceId = 5;
+  string phase = 6;
+  string status = 7;
+  bool recoverable = 8;
+}
+
+message BankAccountResponsePO {
+  BankReadMetadataPO metadata = 1;
+  BankAccountViewPO account = 2;
+}
+
+message BankCashRequestResponsePO {
+  BankReadMetadataPO metadata = 1;
+  BankCashRequestViewPO request = 2;
+}
+
+message BankOrderResponsePO {
+  BankReadMetadataPO metadata = 1;
+  BankOrderViewPO order = 2;
+}
+
+message BankSipPlanResponsePO {
+  BankReadMetadataPO metadata = 1;
+  BankSipPlanViewPO plan = 2;
+}
+
+message BankSipPlanPagePO {
+  BankReadMetadataPO metadata = 1;
+  repeated BankSipPlanViewPO plans = 2;
+  optional sint64 nextAfter = 3;
+}
+
+message BankSipOccurrencePagePO {
+  BankReadMetadataPO metadata = 1;
+  repeated BankSipOccurrenceViewPO occurrences = 2;
+  optional sint64 nextAfter = 3;
+}
+
+message BankPendingResponsePO {
+  BankReadMetadataPO metadata = 1;
+  repeated BankPendingOperationViewPO operations = 2;
+  optional sint64 nextAfter = 3;
+}
+
+message BankRecoveryAcknowledgementPO {
+  OperationIdPO operationId = 1;
+  string status = 2;
+}
+
+message BankServiceBootstrapInputPO {
+  string namespace = 1;
+}
+
+message BankServiceBootstrapAcknowledgementPO {
+  string namespace = 1;
+  string status = 2;
+}

@@ -1,13 +1,14 @@
-// Unified emitter family #29: proto-schema (Wave 1A curated protobuf schemas).
-// Emits clean, multi-line proto3 files (domain, execution, host, effect) from
-// the typed truthsrc.proto-schema-input/v1 contract. Zero hardcoded business
-// identifiers; fail-closed on every contract violation (PS_INPUT).
+// Unified emitter family #29: proto-schema (curated per-aggregate proto3
+// schemas aligned with playAkkaCQRS / ingested-app: shared_value_objects.proto
+// + <agg>.proto with real field names, oneof event unions, and native proto3
+// optional/repeated/map). Zero hardcoded business identifiers; fail-closed
+// (PS_INPUT).
 const SCHEMA = 'truthsrc.proto-schema-input/v1';
 const KINDS = new Set(['proto', 'host-proto', 'effect-proto']);
 const MODIFIERS = new Set(['', 'optional', 'repeated']);
 const PACKAGE_RE = /^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)*$/u;
 const IDENT_RE = /^[A-Za-z_][A-Za-z0-9_]*$/u;
-const PROTO_TYPE_RE = /^\.?[A-Za-z_][A-Za-z0-9_.]*$/u;
+const PROTO_TYPE_RE = /^(?:map<[A-Za-z0-9_]+,\s*\.?[A-Za-z_][A-Za-z0-9_.]*>|\.?[A-Za-z_][A-Za-z0-9_.]*)$/u;
 
 const fail = message => { throw new Error('PS_INPUT: ' + message); };
 
@@ -27,6 +28,23 @@ function checkSource(source, what) {
   checkNoExtraKeys(source, new Set(['document', 'pointer']), what);
   if (typeof source.document !== 'string' || !source.document) fail(what + '.document must be a non-empty string');
   if (typeof source.pointer !== 'string' || !source.pointer.startsWith('/')) fail(what + '.pointer must be a JSON pointer starting with /');
+}
+
+function checkField(fld, seenNums, seenNames, msgName) {
+  checkObject(fld, msgName + ' field');
+  checkNoExtraKeys(fld, new Set(['modifier', 'type', 'name', 'number']), msgName + ' field');
+  if (typeof fld.modifier !== 'string' || !MODIFIERS.has(fld.modifier))
+    fail('unsupported field modifier: ' + JSON.stringify(fld.modifier));
+  if (typeof fld.type !== 'string' || !PROTO_TYPE_RE.test(fld.type))
+    fail('invalid proto field type: ' + JSON.stringify(fld.type));
+  if (typeof fld.name !== 'string' || !IDENT_RE.test(fld.name))
+    fail('invalid proto field name: ' + JSON.stringify(fld.name));
+  if (!Number.isInteger(fld.number) || fld.number < 1)
+    fail('proto field number must be a positive integer');
+  if (seenNums.has(fld.number)) fail('duplicate field number ' + fld.number + ' in ' + msgName);
+  if (seenNames.has(fld.name)) fail('duplicate field name ' + fld.name + ' in ' + msgName);
+  seenNums.add(fld.number);
+  seenNames.add(fld.name);
 }
 
 export function checkInput(input) {
@@ -57,7 +75,7 @@ export function checkInput(input) {
     const seenMsgs = new Set();
     for (let m = 0; m < f.messages.length; m++) {
       const msg = checkObject(f.messages[m], 'files[' + i + '].messages[' + m + ']');
-      checkNoExtraKeys(msg, new Set(['name', 'fields']), 'files[' + i + '].messages[' + m + ']');
+      checkNoExtraKeys(msg, new Set(['name', 'fields', 'oneofs']), 'files[' + i + '].messages[' + m + ']');
       if (typeof msg.name !== 'string' || !IDENT_RE.test(msg.name))
         fail('files[' + i + '].messages[' + m + '].name must match ' + IDENT_RE);
       if (seenMsgs.has(msg.name)) fail('duplicate message name in ' + f.path + ': ' + msg.name);
@@ -65,21 +83,19 @@ export function checkInput(input) {
       if (!Array.isArray(msg.fields)) fail('files[' + i + '].messages[' + m + '].fields must be an array');
       const seenNums = new Set();
       const seenFieldNames = new Set();
-      for (let k = 0; k < msg.fields.length; k++) {
-        const fld = checkObject(msg.fields[k], 'files[' + i + '].messages[' + m + '].fields[' + k + ']');
-        checkNoExtraKeys(fld, new Set(['modifier', 'type', 'name', 'number']), 'files[' + i + '].messages[' + m + '].fields[' + k + ']');
-        if (typeof fld.modifier !== 'string' || !MODIFIERS.has(fld.modifier))
-          fail('unsupported field modifier: ' + JSON.stringify(fld.modifier));
-        if (typeof fld.type !== 'string' || !PROTO_TYPE_RE.test(fld.type))
-          fail('invalid proto field type: ' + JSON.stringify(fld.type));
-        if (typeof fld.name !== 'string' || !IDENT_RE.test(fld.name))
-          fail('invalid proto field name: ' + JSON.stringify(fld.name));
-        if (!Number.isInteger(fld.number) || fld.number < 1)
-          fail('proto field number must be a positive integer');
-        if (seenNums.has(fld.number)) fail('duplicate field number ' + fld.number + ' in ' + msg.name);
-        if (seenFieldNames.has(fld.name)) fail('duplicate field name ' + fld.name + ' in ' + msg.name);
-        seenNums.add(fld.number);
-        seenFieldNames.add(fld.name);
+      for (const fld of msg.fields) checkField(fld, seenNums, seenFieldNames, msg.name);
+      if (msg.oneofs !== undefined) {
+        if (!Array.isArray(msg.oneofs)) fail('oneofs must be an array');
+        const seenOneofs = new Set();
+        for (const oo of msg.oneofs) {
+          checkObject(oo, msg.name + ' oneof');
+          checkNoExtraKeys(oo, new Set(['name', 'fields']), msg.name + ' oneof');
+          if (typeof oo.name !== 'string' || !IDENT_RE.test(oo.name)) fail('invalid oneof name');
+          if (seenOneofs.has(oo.name)) fail('duplicate oneof name: ' + oo.name);
+          seenOneofs.add(oo.name);
+          if (!Array.isArray(oo.fields) || !oo.fields.length) fail('oneof fields must be non-empty');
+          for (const fld of oo.fields) checkField(fld, seenNums, seenFieldNames, msg.name + '.' + oo.name);
+        }
       }
     }
   }
@@ -101,6 +117,13 @@ function renderProtoFile(file) {
     for (const fld of msg.fields) {
       const prefix = fld.modifier ? fld.modifier + ' ' : '';
       lines.push(`  ${prefix}${fld.type} ${fld.name} = ${fld.number};`);
+    }
+    for (const oo of msg.oneofs ?? []) {
+      lines.push(`  oneof ${oo.name} {`);
+      for (const fld of oo.fields) {
+        lines.push(`    ${fld.type} ${fld.name} = ${fld.number};`);
+      }
+      lines.push('  }');
     }
     lines.push('}');
     lines.push('');

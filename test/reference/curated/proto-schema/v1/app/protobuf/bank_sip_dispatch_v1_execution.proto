@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 import "scalapb/scalapb.proto";
-import "example_bankwealth_domain.proto";
+import "shared_value_objects.proto";
 
 package example.bankwealth.infrastructure.executionproto;
 
@@ -9,7 +9,7 @@ option (scalapb.options) = { flat_package: true };
 
 message banksipdispatchv1ExecutionStatePB {
   string planversion = 1;
-  .example.bankwealth.infrastructure.proto.OccurrenceIdPB input0 = 2;
-  .example.bankwealth.infrastructure.proto.SipOccurrencePB input1 = 3;
-  .example.bankwealth.infrastructure.proto.OperationIdPB output0 = 4;
+  .example.bankwealth.infrastructure.proto.OccurrenceIdPO input0 = 2;
+  .example.bankwealth.infrastructure.proto.SipOccurrencePO input1 = 3;
+  .example.bankwealth.infrastructure.proto.OperationIdPO output0 = 4;
 }

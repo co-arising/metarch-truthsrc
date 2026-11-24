@@ -153,12 +153,12 @@ object BankSipDispatchEffectHost {
 
   private def decode(bytes: ByteString): Option[BankSipDispatchObservation] =
     if (bytes.isEmpty) None
-    else Some(example.bankwealth.infrastructure.serialization.DomainConverters.decodeBankSipDispatchObservationPB(
-      example.bankwealth.infrastructure.proto.BankSipDispatchObservationPB.parseFrom(bytes.toByteArray)))
+    else Some(example.bankwealth.infrastructure.serialization.DomainConverters.decodeBankSipDispatchObservationPO(
+      example.bankwealth.infrastructure.proto.BankSipDispatchObservationPO.parseFrom(bytes.toByteArray)))
 
   private def encode(value: BankSipDispatchObservation): ByteString =
     example.bankwealth
-        .infrastructure.serialization.DomainConverters.encodeBankSipDispatchObservationPB(value).toByteString
+        .infrastructure.serialization.DomainConverters.encodeBankSipDispatchObservationPO(value).toByteString
 
   private def statusOf(value: BankSipDispatchObservation): ObservationStatus =
     ObservationStatus

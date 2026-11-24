@@ -150,11 +150,11 @@ object BankTaEffectHost {
 
   private def decode(bytes: ByteString): Option[BankTaEffectObservation] =
     if (bytes.isEmpty) None
-    else Some(example.bankwealth.infrastructure.serialization.DomainConverters.decodeBankTaEffectObservationPB(
-      example.bankwealth.infrastructure.proto.BankTaEffectObservationPB.parseFrom(bytes.toByteArray)))
+    else Some(example.bankwealth.infrastructure.serialization.DomainConverters.decodeBankTaEffectObservationPO(
+      example.bankwealth.infrastructure.proto.BankTaEffectObservationPO.parseFrom(bytes.toByteArray)))
 
   private def encode(value: BankTaEffectObservation): ByteString =
-    example.bankwealth.infrastructure.serialization.DomainConverters.encodeBankTaEffectObservationPB(value).toByteString
+    example.bankwealth.infrastructure.serialization.DomainConverters.encodeBankTaEffectObservationPO(value).toByteString
 
   private def statusOf(value: BankTaEffectObservation): ObservationStatus =
     ObservationStatus

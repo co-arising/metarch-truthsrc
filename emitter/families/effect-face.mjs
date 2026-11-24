@@ -261,10 +261,10 @@ function emitExecution(cm, shape) {
   const messages = shape.executionMessages;
   const encodeRows = ex.codecSlots.filter(s => !s.optional).map(slot =>
     '        ' + slot.slot + ' = Some(' + shape.serializationObject + '.encode' + slot.type +
-    'PB(state.inputs.' + slot.field + ')),');
+    'PO(state.inputs.' + slot.field + ')),');
   const decodeRows = ex.codecSlots.filter(s => !s.optional).map(slot =>
     '          ' + slot.field + ' = ' + shape.serializationObject + '.decode' + slot.type +
-    'PB(durable(pb.' + slot.slot + ', "' + slot.slot + '")),');
+    'PO(durable(pb.' + slot.slot + ', "' + slot.slot + '")),');
   const successCase = cm.success;
   const stageFold = [];
   stageFold.push('          case ' + successCase.case + '(' + successCase.slot + ') => state.copy(' +
@@ -324,7 +324,7 @@ function emitExecution(cm, shape) {
     '        planversion = PlanVersion,',
     ...encodeRows,
     '        ' + ex.codecSlots.find(s => s.optional).slot + ' = state.' + successCase.slot + '.map(' +
-      shape.serializationObject + '.encode' + ex.codecSlots.find(s => s.optional).type + 'PB),',
+      shape.serializationObject + '.encode' + ex.codecSlots.find(s => s.optional).type + 'PO),',
     '      ).toByteArray,',
     '    bytes => {',
     '      val pb = ' + ex.executionStatePb + '.parseFrom(bytes)',
@@ -336,7 +336,7 @@ function emitExecution(cm, shape) {
     ...decodeRows,
     '        ),',
     '        pb.' + ex.codecSlots.find(s => s.optional).slot + '.map(' + shape.serializationObject +
-      '.decode' + ex.codecSlots.find(s => s.optional).type + 'PB),',
+      '.decode' + ex.codecSlots.find(s => s.optional).type + 'PO),',
     '      )',
     '    },',
     '  )',
@@ -488,14 +488,14 @@ function emitHost(cm, shape) {
   const decodeBody = [
     '  private def decode(bytes: ByteString): Option[' + eff.observationValue + '] =',
     '    if (bytes.isEmpty) None',
-    '    else Some(' + cm.converters + '.decode' + eff.observationValue + 'PB(',
-    '      ' + shape.protoPackage + '.' + eff.observationValue + 'PB.parseFrom(bytes.toByteArray)))',
+    '    else Some(' + cm.converters + '.decode' + eff.observationValue + 'PO(',
+    '      ' + shape.protoPackage + '.' + eff.observationValue + 'PO.parseFrom(bytes.toByteArray)))',
   ];
   // The one-row form when it fits; otherwise the two-row ladder the golden
   // balances (first package segment alone, rest at indent + 8).
   const encodeLadder = (() => {
     const converters = shape.serializationPackage + '.' + shape.serializationObject;
-    const one = '    ' + converters + '.encode' + eff.observationValue + 'PB(value).toByteString';
+    const one = '    ' + converters + '.encode' + eff.observationValue + 'PO(value).toByteString';
     const head = '  private def encode(value: ' + eff.observationValue + '): ByteString =';
     if (one.length <= LINE_LIMIT) return [head, one];
     const segments = shape.serializationPackage.split('.');
@@ -503,7 +503,7 @@ function emitHost(cm, shape) {
     return [head,
       '    ' + segments.slice(0, 2).join('.'),
       '        .' + rest + '.' + shape.serializationObject + '.encode' + eff.observationValue +
-      'PB(value).toByteString'];
+      'PO(value).toByteString'];
   })();
   const terminalBody = [
     '  private def terminal(state: State): Option[' + cm.execution + '.' + cm.pascalStage + 'Result] =',

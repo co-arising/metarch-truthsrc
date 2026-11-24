@@ -27,10 +27,10 @@ object BankPaymentSagaDefinition {
   val argsCodec: PayloadCodec[Args] = new PayloadCodec[Args] {
     val pin = CodecPin("BankPaymentArgs", 1)
     def encode(value: Args): ByteString =
-      example.bankwealth.infrastructure.serialization.DomainConverters.encodeBankPaymentArgsPB(value).toByteString
+      example.bankwealth.infrastructure.serialization.DomainConverters.encodeBankPaymentArgsPO(value).toByteString
     def decode(bytes: ByteString): Try[Args] =
-      Try(example.bankwealth.infrastructure.serialization.DomainConverters.decodeBankPaymentArgsPB(
-        example.bankwealth.infrastructure.proto.BankPaymentArgsPB.parseFrom(bytes.toByteArray)))
+      Try(example.bankwealth.infrastructure.serialization.DomainConverters.decodeBankPaymentArgsPO(
+        example.bankwealth.infrastructure.proto.BankPaymentArgsPO.parseFrom(bytes.toByteArray)))
   }
 
   /** The port view the strict runtime consumes: the bound declarations
@@ -100,10 +100,10 @@ object BankPaymentSagaDefinition {
     receipt =>
         example.bankwealth
             .infrastructure
-                .serialization.DomainConverters.encodeReserveInvestorFundsPrepareReceiptPB(receipt).toByteString,
+                .serialization.DomainConverters.encodeReserveInvestorFundsPrepareReceiptPO(receipt).toByteString,
     bytes => Try(example
-        .bankwealth.infrastructure.serialization.DomainConverters.decodeReserveInvestorFundsPrepareReceiptPB(
-      example.bankwealth.infrastructure.proto.ReserveInvestorFundsPrepareReceiptPB.parseFrom(bytes.toByteArray))),
+        .bankwealth.infrastructure.serialization.DomainConverters.decodeReserveInvestorFundsPrepareReceiptPO(
+      example.bankwealth.infrastructure.proto.ReserveInvestorFundsPrepareReceiptPO.parseFrom(bytes.toByteArray))),
   )
 
   private def checkReserveInvestorFundsPrepare(request: OperationRequest[Args],
@@ -120,10 +120,10 @@ object BankPaymentSagaDefinition {
     receipt =>
         example.bankwealth
             .infrastructure
-                .serialization.DomainConverters.encodeReserveInvestorFundsCommitReceiptPB(receipt).toByteString,
+                .serialization.DomainConverters.encodeReserveInvestorFundsCommitReceiptPO(receipt).toByteString,
     bytes => Try(example
-        .bankwealth.infrastructure.serialization.DomainConverters.decodeReserveInvestorFundsCommitReceiptPB(
-      example.bankwealth.infrastructure.proto.ReserveInvestorFundsCommitReceiptPB.parseFrom(bytes.toByteArray))),
+        .bankwealth.infrastructure.serialization.DomainConverters.decodeReserveInvestorFundsCommitReceiptPO(
+      example.bankwealth.infrastructure.proto.ReserveInvestorFundsCommitReceiptPO.parseFrom(bytes.toByteArray))),
   )
 
   private def checkReserveInvestorFundsCommit(request: OperationRequest[Args],
@@ -140,10 +140,10 @@ object BankPaymentSagaDefinition {
     receipt =>
         example.bankwealth
             .infrastructure
-                .serialization.DomainConverters.encodeReserveInvestorFundsCompensateReceiptPB(receipt).toByteString,
+                .serialization.DomainConverters.encodeReserveInvestorFundsCompensateReceiptPO(receipt).toByteString,
     bytes => Try(example
-        .bankwealth.infrastructure.serialization.DomainConverters.decodeReserveInvestorFundsCompensateReceiptPB(
-      example.bankwealth.infrastructure.proto.ReserveInvestorFundsCompensateReceiptPB.parseFrom(bytes.toByteArray))),
+        .bankwealth.infrastructure.serialization.DomainConverters.decodeReserveInvestorFundsCompensateReceiptPO(
+      example.bankwealth.infrastructure.proto.ReserveInvestorFundsCompensateReceiptPO.parseFrom(bytes.toByteArray))),
   )
 
   private def checkReserveInvestorFundsCompensate(request: OperationRequest[Args],
@@ -163,10 +163,10 @@ object BankPaymentSagaDefinition {
     receipt =>
         example.bankwealth
             .infrastructure
-                .serialization.DomainConverters.encodeCreditFundCollectionPrepareReceiptPB(receipt).toByteString,
+                .serialization.DomainConverters.encodeCreditFundCollectionPrepareReceiptPO(receipt).toByteString,
     bytes => Try(example
-        .bankwealth.infrastructure.serialization.DomainConverters.decodeCreditFundCollectionPrepareReceiptPB(
-      example.bankwealth.infrastructure.proto.CreditFundCollectionPrepareReceiptPB.parseFrom(bytes.toByteArray))),
+        .bankwealth.infrastructure.serialization.DomainConverters.decodeCreditFundCollectionPrepareReceiptPO(
+      example.bankwealth.infrastructure.proto.CreditFundCollectionPrepareReceiptPO.parseFrom(bytes.toByteArray))),
   )
 
   private def checkCreditFundCollectionPrepare(request: OperationRequest[Args],
@@ -183,10 +183,10 @@ object BankPaymentSagaDefinition {
     receipt =>
         example.bankwealth
             .infrastructure
-                .serialization.DomainConverters.encodeCreditFundCollectionCommitReceiptPB(receipt).toByteString,
+                .serialization.DomainConverters.encodeCreditFundCollectionCommitReceiptPO(receipt).toByteString,
     bytes => Try(example
-        .bankwealth.infrastructure.serialization.DomainConverters.decodeCreditFundCollectionCommitReceiptPB(
-      example.bankwealth.infrastructure.proto.CreditFundCollectionCommitReceiptPB.parseFrom(bytes.toByteArray))),
+        .bankwealth.infrastructure.serialization.DomainConverters.decodeCreditFundCollectionCommitReceiptPO(
+      example.bankwealth.infrastructure.proto.CreditFundCollectionCommitReceiptPO.parseFrom(bytes.toByteArray))),
   )
 
   private def checkCreditFundCollectionCommit(request: OperationRequest[Args],
@@ -203,10 +203,10 @@ object BankPaymentSagaDefinition {
     receipt =>
         example.bankwealth
             .infrastructure
-                .serialization.DomainConverters.encodeCreditFundCollectionCompensateReceiptPB(receipt).toByteString,
+                .serialization.DomainConverters.encodeCreditFundCollectionCompensateReceiptPO(receipt).toByteString,
     bytes => Try(example
-        .bankwealth.infrastructure.serialization.DomainConverters.decodeCreditFundCollectionCompensateReceiptPB(
-      example.bankwealth.infrastructure.proto.CreditFundCollectionCompensateReceiptPB.parseFrom(bytes.toByteArray))),
+        .bankwealth.infrastructure.serialization.DomainConverters.decodeCreditFundCollectionCompensateReceiptPO(
+      example.bankwealth.infrastructure.proto.CreditFundCollectionCompensateReceiptPO.parseFrom(bytes.toByteArray))),
   )
 
   private def checkCreditFundCollectionCompensate(request: OperationRequest[Args],
@@ -226,10 +226,10 @@ object BankPaymentSagaDefinition {
     receipt =>
         example.bankwealth
             .infrastructure
-                .serialization.DomainConverters.encodeReserveCashFundOrderPrepareReceiptPB(receipt).toByteString,
+                .serialization.DomainConverters.encodeReserveCashFundOrderPrepareReceiptPO(receipt).toByteString,
     bytes => Try(example
-        .bankwealth.infrastructure.serialization.DomainConverters.decodeReserveCashFundOrderPrepareReceiptPB(
-      example.bankwealth.infrastructure.proto.ReserveCashFundOrderPrepareReceiptPB.parseFrom(bytes.toByteArray))),
+        .bankwealth.infrastructure.serialization.DomainConverters.decodeReserveCashFundOrderPrepareReceiptPO(
+      example.bankwealth.infrastructure.proto.ReserveCashFundOrderPrepareReceiptPO.parseFrom(bytes.toByteArray))),
   )
 
   private def checkReserveCashFundOrderPrepare(request: OperationRequest[Args],
@@ -246,10 +246,10 @@ object BankPaymentSagaDefinition {
     receipt =>
         example.bankwealth
             .infrastructure
-                .serialization.DomainConverters.encodeReserveCashFundOrderCommitReceiptPB(receipt).toByteString,
+                .serialization.DomainConverters.encodeReserveCashFundOrderCommitReceiptPO(receipt).toByteString,
     bytes => Try(example
-        .bankwealth.infrastructure.serialization.DomainConverters.decodeReserveCashFundOrderCommitReceiptPB(
-      example.bankwealth.infrastructure.proto.ReserveCashFundOrderCommitReceiptPB.parseFrom(bytes.toByteArray))),
+        .bankwealth.infrastructure.serialization.DomainConverters.decodeReserveCashFundOrderCommitReceiptPO(
+      example.bankwealth.infrastructure.proto.ReserveCashFundOrderCommitReceiptPO.parseFrom(bytes.toByteArray))),
   )
 
   private def checkReserveCashFundOrderCommit(request: OperationRequest[Args],
@@ -267,10 +267,10 @@ object BankPaymentSagaDefinition {
     receipt =>
         example.bankwealth
             .infrastructure
-                .serialization.DomainConverters.encodeReserveCashFundOrderCompensateReceiptPB(receipt).toByteString,
+                .serialization.DomainConverters.encodeReserveCashFundOrderCompensateReceiptPO(receipt).toByteString,
     bytes => Try(example
-        .bankwealth.infrastructure.serialization.DomainConverters.decodeReserveCashFundOrderCompensateReceiptPB(
-      example.bankwealth.infrastructure.proto.ReserveCashFundOrderCompensateReceiptPB.parseFrom(bytes.toByteArray))),
+        .bankwealth.infrastructure.serialization.DomainConverters.decodeReserveCashFundOrderCompensateReceiptPO(
+      example.bankwealth.infrastructure.proto.ReserveCashFundOrderCompensateReceiptPO.parseFrom(bytes.toByteArray))),
   )
 
   private def checkReserveCashFundOrderCompensate(request: OperationRequest[Args],

@@ -1,0 +1,208 @@
+package example.bankwealth.infrastructure.projection
+
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
+import java.sql.{Connection, PreparedStatement, ResultSet}
+import javax.sql.DataSource
+import scala.concurrent.blocking
+import scala.util.control.NonFatal
+
+object BankJournalReadsideRepository {
+  final case class Row(pid: String, kind: String, resource: String, account: Option[String], principal: Option[String], last: Long, observed: Option[Long], payload: Option[Array[Byte]])
+  final case class Payload(kind: String, manifest: String, bytes: Array[Byte])
+  final case class State(payload: Option[Array[Byte]], account: Option[String], principal: Option[String])
+  final case class Owner(pid: String, account: Option[String], principal: Option[String])
+  final case class Occurrence(plan_key: String, due_slot: Long, occurrence_key: String, order_key: String, owner_account: String, occurrence_payload: Array[Byte])
+  final case class Pending(operation_key: String, flow: String, operation_id: String, order_id: Option[String], plan_id: Option[String], occurrence_id: Option[String], source_pid: String, phase: String, status: String, recoverable: Boolean)
+  def hash(value: String): String = MessageDigest.getInstance("SHA-256")
+    .digest(value.getBytes(StandardCharsets.UTF_8)).map(b => f"${b & 0xff}%02x").mkString
+}
+
+final class BankJournalReadsideRepository(namespace: String, dataSource: DataSource) {
+  import BankJournalReadsideRepository.{Row, Payload, State, Owner, hash}
+  require(namespace != null && namespace.nonEmpty && namespace.length <= 64, "bounded journal namespace required")
+  require(dataSource != null, "JDBC data source required")
+
+  private def bindOne(statement: PreparedStatement, position: Int, value: Any): Unit = value match {
+    case None => statement.setNull(position, java.sql.Types.NULL)
+    case Some(item) => bindOne(statement, position, item)
+    case bytes: Array[Byte] => statement.setBytes(position, bytes)
+    case number: Long => statement.setLong(position, number)
+    case number: Int => statement.setInt(position, number)
+    case flag: Boolean => statement.setBoolean(position, flag)
+    case text: String => statement.setString(position, text)
+    case _ => throw new IllegalArgumentException("unsupported JDBC parameter")
+  }
+  private def bind(statement: PreparedStatement, values: Seq[Any]): Unit =
+    values.zipWithIndex.foreach { case (value, index) => bindOne(statement, index + 1, value) }
+  private def execute(connection: Connection, sql: String, values: Seq[Any]): Int = {
+    val statement = connection.prepareStatement(sql)
+    try { bind(statement, values); statement.executeUpdate() } finally statement.close()
+  }
+  private def query[A](connection: Connection, sql: String, values: Seq[Any])(decode: ResultSet => A): Vector[A] = {
+    val statement = connection.prepareStatement(sql)
+    try {
+      bind(statement, values)
+      val result = statement.executeQuery()
+      try { val rows = Vector.newBuilder[A]; while (result.next()) rows += decode(result); rows.result() }
+      finally result.close()
+    } finally statement.close()
+  }
+  def initialize(): Unit = blocking {
+    val connection = dataSource.getConnection
+    try {
+      connection.setAutoCommit(true)
+      BankJournalReadsideSchema.statements.foreach { sql =>
+        val statement = connection.createStatement()
+        try statement.execute(sql) finally statement.close()
+      }
+      def versions(): Vector[String] = query(connection, "SELECT schema_version FROM bank_read_namespace WHERE namespace=?", Seq(namespace))(_.getString(1))
+      if (versions().isEmpty) {
+        try execute(connection, "INSERT INTO bank_read_namespace(namespace,schema_version) VALUES (?,?)", Seq(namespace, BankJournalReadsideSchema.version))
+        catch { case error: java.sql.SQLException if Option(error.getSQLState).exists(_.startsWith("23")) => () }
+      }
+      require(versions() == Vector(BankJournalReadsideSchema.version), "incompatible read schema")
+    } finally connection.close()
+  }
+  def read[A](f: Session => A): A = transaction(writable = false)(f)
+  def write[A](f: Session => A): A = transaction(writable = true)(f)
+  private def transaction[A](writable: Boolean)(f: Session => A): A = blocking {
+    val connection = dataSource.getConnection
+    try {
+      connection.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ)
+      connection.setAutoCommit(false)
+      val session = new Session(connection, writable)
+      try {
+        if (writable) {
+          val versions = query(connection, "SELECT schema_version FROM bank_read_namespace WHERE namespace=? FOR UPDATE", Seq(namespace))(_.getString(1))
+          require(versions == Vector(BankJournalReadsideSchema.version), "read schema namespace is not installed")
+        }
+        val result = f(session)
+        connection.commit()
+        result
+      } catch {
+        case NonFatal(error) =>
+          try connection.rollback() catch { case NonFatal(rollback) => error.addSuppressed(rollback) }
+          throw error
+      } finally session.finish()
+    } finally connection.close()
+  }
+
+  final class Session private[BankJournalReadsideRepository] (connection: Connection, writable: Boolean) {
+    private var active = true
+    private[BankJournalReadsideRepository] def finish(): Unit = { active = false }
+    private def requireActive(): Unit = require(active, "transaction session is closed")
+    private def requireWrite(): Unit = { requireActive(); require(writable, "write transaction required") }
+    private def update(sql: String, values: Any*): Int = { requireWrite(); execute(connection, sql, values) }
+    private def select[A](sql: String, values: Seq[Any])(decode: ResultSet => A): Vector[A] = {
+      requireActive(); query(connection, sql, values)(decode)
+    }
+    private def requirePage(limit: Long, after: Long): Unit =
+      require(limit > 0L && limit <= Int.MaxValue.toLong && after >= 0L && after <= Int.MaxValue.toLong, "bounded page required")
+    private def decodeRow(result: ResultSet): Row = {
+      val observed = result.getLong("observed_sequence")
+      val high = if (result.wasNull()) None else Some(observed)
+      Row(result.getString("persistence_id"), result.getString("kind"), result.getString("resource_id"),
+        Option(result.getString("owner_account")), Option(result.getString("owner_principal")),
+        result.getLong("last_sequence"), high, Option(result.getBytes("state_payload")))
+    }
+    def row(pid: String): Option[Row] = {
+      val found = select("SELECT * FROM bank_read_stream WHERE namespace=? AND pid_key=?", Seq(namespace, hash(pid)))(decodeRow).headOption
+      found.foreach(value => require(value.pid == pid, "PID digest collision"))
+      found
+    }
+    def owners(pid: String): Option[Owner] = {
+      val found = select("SELECT persistence_id,owner_account,owner_principal FROM bank_read_stream WHERE namespace=? AND pid_key=?", Seq(namespace, hash(pid))) { result =>
+        Owner(result.getString(1), Option(result.getString(2)), Option(result.getString(3)))
+      }.headOption
+      found.foreach(value => require(value.pid == pid, "PID digest collision"))
+      found
+    }
+    def ensureRow(pid: String, kind: String, resource: String): Row = {
+      requireWrite()
+      row(pid) match {
+        case Some(value) =>
+          require(value.kind == kind && value.resource == resource, "persistence identity mismatch")
+          value
+        case None =>
+          update("INSERT INTO bank_read_stream(namespace,pid_key,persistence_id,kind,resource_id,last_sequence) VALUES (?,?,?,?,?,0)", namespace, hash(pid), pid, kind, resource)
+          Row(pid, kind, resource, None, None, 0L, None, None)
+      }
+    }
+    def event(pid: String, sequence: Long): Option[Payload] = {
+      row(pid) // verify unhashed identity before accessing the digest-keyed event
+      select("SELECT payload_type,payload_manifest,payload FROM bank_read_event WHERE namespace=? AND pid_key=? AND sequence_nr=?", Seq(namespace, hash(pid), sequence)) { result =>
+        Payload(result.getString(1), result.getString(2), result.getBytes(3))
+      }.headOption
+    }
+    def append(row: Row, sequence: Long, payload: Payload, state: State): Row = {
+      requireWrite()
+      val current = this.row(row.pid).getOrElse(throw new IllegalArgumentException("stream must exist"))
+      require(current.kind == row.kind && current.resource == row.resource && current.last == row.last, "stale stream row")
+      require(sequence == Math.addExact(current.last, 1L), "noncontiguous journal sequence")
+      update("INSERT INTO bank_read_event(namespace,pid_key,sequence_nr,payload_type,payload_manifest,payload) VALUES (?,?,?,?,?,?)", namespace, hash(row.pid), sequence, payload.kind, payload.manifest, payload.bytes)
+      require(update("UPDATE bank_read_stream SET state_payload=?,owner_account=?,owner_principal=?,last_sequence=?,observed_sequence=NULL WHERE namespace=? AND pid_key=?", state.payload, state.account, state.principal, sequence, namespace, hash(row.pid)) == 1, "stream checkpoint missing")
+      current.copy(account = state.account, principal = state.principal, last = sequence, observed = None, payload = state.payload)
+    }
+    def observe(pid: String, high: Long): Unit = {
+      requireWrite()
+      val current = row(pid).getOrElse(throw new IllegalArgumentException("stream must exist"))
+      require(high >= 0L && high <= current.last, "frontier cannot jump checkpoint")
+      // An older successful sample cannot revoke a newer observation. Appends and
+      // explicit invalidation still clear freshness independently of this sample.
+      if (current.last == high)
+        update("UPDATE bank_read_stream SET observed_sequence=? WHERE namespace=? AND pid_key=?", Some(high), namespace, hash(pid))
+      ()
+    }
+    def invalidate(pid: String): Unit = {
+      requireWrite()
+      row(pid)
+      update("UPDATE bank_read_stream SET observed_sequence=NULL WHERE namespace=? AND pid_key=?", namespace, hash(pid))
+      ()
+    }
+    def invalidateAll(): Unit = {
+      requireWrite()
+      update("UPDATE bank_read_stream SET observed_sequence=NULL WHERE namespace=?", namespace)
+      ()
+    }
+    def streamPage(kind: String, account: String, principal: String, limit: Long, after: Long): Vector[Row] = {
+      requirePage(limit, after)
+      select("SELECT * FROM bank_read_stream WHERE namespace=? AND kind=? AND owner_account=? AND (owner_principal IS NULL OR owner_principal=?) ORDER BY resource_id,pid_key LIMIT ? OFFSET ?", Seq(namespace, kind, account, principal, limit, after))(decodeRow)
+    }
+    def putOccurrence(record: BankJournalReadsideRepository.Occurrence): Unit = {
+      requireWrite()
+      deleteOccurrence(record.plan_key, record.due_slot)
+      update("INSERT INTO bank_read_occurrence(namespace,plan_key,due_slot,occurrence_key,order_key,owner_account,occurrence_payload) VALUES (?,?,?,?,?,?,?)", namespace, record.plan_key, record.due_slot, record.occurrence_key, record.order_key, record.owner_account, record.occurrence_payload)
+      ()
+    }
+    def deleteOccurrence(plan_key: String, due_slot: Long): Unit = {
+      requireWrite()
+      update("DELETE FROM bank_read_occurrence WHERE namespace=? AND plan_key=? AND due_slot=?", namespace, plan_key, due_slot)
+      ()
+    }
+    def queryOccurrenceByPlan(plan_key: String, owner_account: String, limit: Long, after: Long): Vector[BankJournalReadsideRepository.Occurrence] = {
+      requirePage(limit, after)
+      select("SELECT plan_key,due_slot,occurrence_key,order_key,owner_account,occurrence_payload FROM bank_read_occurrence WHERE namespace=? AND plan_key=? AND owner_account=? ORDER BY due_slot,plan_key LIMIT ? OFFSET ?", Seq(namespace, plan_key, owner_account, limit, after)) { result =>
+        BankJournalReadsideRepository.Occurrence(result.getString("plan_key"), result.getLong("due_slot"), result.getString("occurrence_key"), result.getString("order_key"), result.getString("owner_account"), result.getBytes("occurrence_payload"))
+      }
+    }
+
+    def putPending(record: BankJournalReadsideRepository.Pending): Unit = {
+      requireWrite()
+      deletePending(record.operation_key, record.flow)
+      update("INSERT INTO bank_read_pending(namespace,operation_key,flow,operation_id,order_id,plan_id,occurrence_id,source_pid,phase,status,recoverable) VALUES (?,?,?,?,?,?,?,?,?,?,?)", namespace, record.operation_key, record.flow, record.operation_id, record.order_id, record.plan_id, record.occurrence_id, record.source_pid, record.phase, record.status, record.recoverable)
+      ()
+    }
+    def deletePending(operation_key: String, flow: String): Unit = {
+      requireWrite()
+      update("DELETE FROM bank_read_pending WHERE namespace=? AND operation_key=? AND flow=?", namespace, operation_key, flow)
+      ()
+    }
+    def queryPendingListing(limit: Long, after: Long): Vector[BankJournalReadsideRepository.Pending] = {
+      requirePage(limit, after)
+      select("SELECT operation_key,flow,operation_id,order_id,plan_id,occurrence_id,source_pid,phase,status,recoverable FROM bank_read_pending WHERE namespace=? ORDER BY operation_id,flow,operation_key LIMIT ? OFFSET ?", Seq(namespace, limit, after)) { result =>
+        BankJournalReadsideRepository.Pending(result.getString("operation_key"), result.getString("flow"), result.getString("operation_id"), Option(result.getString("order_id")), Option(result.getString("plan_id")), Option(result.getString("occurrence_id")), result.getString("source_pid"), result.getString("phase"), result.getString("status"), result.getBoolean("recoverable"))
+      }
+    }
+  }
+}

@@ -2,908 +2,773 @@ package example.bankwealth.infrastructure.serialization
 
 import example.bankwealth.domain._
 import example.bankwealth.domain.values._
-import example.bankwealth.infrastructure.proto._
+import example.bankwealth.infrastructure.{proto => pb}
 trait DomainConvertersPart0 { self: DomainConverters.type =>
-  def encodeAccountIdPB(value: AccountId): AccountIdPB = AccountIdPB(value.value)
-  def decodeAccountIdPB(value: AccountIdPB): AccountId = AccountId(value.f0)
-  def encodeFundOrderIdPB(value: FundOrderId): FundOrderIdPB = FundOrderIdPB(value.value)
-  def decodeFundOrderIdPB(value: FundOrderIdPB): FundOrderId = FundOrderId(value.f0)
-  def encodeOperationIdPB(value: OperationId): OperationIdPB = OperationIdPB(value.value)
-  def decodeOperationIdPB(value: OperationIdPB): OperationId = OperationId(value.f0)
-  def encodeTxIdPB(value: TxId): TxIdPB = TxIdPB(value.value)
-  def decodeTxIdPB(value: TxIdPB): TxId = TxId(value.f0)
-  def encodePlanIdPB(value: PlanId): PlanIdPB = PlanIdPB(value.value)
-  def decodePlanIdPB(value: PlanIdPB): PlanId = PlanId(value.f0)
-  def encodeRevisionIdPB(value: RevisionId): RevisionIdPB = RevisionIdPB(value.value)
-  def decodeRevisionIdPB(value: RevisionIdPB): RevisionId = RevisionId(value.f0)
-  def encodeOccurrenceIdPB(value: OccurrenceId): OccurrenceIdPB = OccurrenceIdPB(value.value)
-  def decodeOccurrenceIdPB(value: OccurrenceIdPB): OccurrenceId = OccurrenceId(value.f0)
-  def encodeTaExactTextPB(value: TaExactText): TaExactTextPB = TaExactTextPB(value.value)
-  def decodeTaExactTextPB(value: TaExactTextPB): TaExactText = TaExactText(value.f0)
-  def AmountDecimalToWire(value: AmountDecimal): AmountDecimalWire = { val encoded = encodeAmountDecimalPB(value); AmountDecimalWire(encoded.f0) }
-  def AmountDecimalFromWire(value: AmountDecimalWire): AmountDecimal = decodeAmountDecimalPB(AmountDecimalPB(value.value))
-  def AmountDecimalToPO(value: AmountDecimal): AmountDecimalPO = { val encoded = encodeAmountDecimalPB(value); AmountDecimalPO(encoded.f0) }
-  def AmountDecimalFromPO(value: AmountDecimalPO): AmountDecimal = decodeAmountDecimalPB(AmountDecimalPB(value.value))
-  def encodeAmountDecimalPB(value: AmountDecimal): AmountDecimalPB = AmountDecimalPB(value.value.bigDecimal.setScale(2, java.math.RoundingMode.UNNECESSARY).unscaledValue.toString)
-  def decodeAmountDecimalPB(value: AmountDecimalPB): AmountDecimal = AmountDecimal(readExact(value.f0, 2, true))
-  def encodeAmountDecimalWirePB(value: AmountDecimalWire): AmountDecimalWirePB = AmountDecimalWirePB(value.value)
-  def decodeAmountDecimalWirePB(value: AmountDecimalWirePB): AmountDecimalWire = AmountDecimalWire(value.f0)
-  def encodeAmountDecimalPOPB(value: AmountDecimalPO): AmountDecimalPOPB = AmountDecimalPOPB(value.value)
-  def decodeAmountDecimalPOPB(value: AmountDecimalPOPB): AmountDecimalPO = AmountDecimalPO(value.f0)
-  def MoneyToWire(value: Money): MoneyWire = { val encoded = encodeMoneyPB(value); MoneyWire(encoded.f0, encoded.f1) }
-  def MoneyFromWire(value: MoneyWire): Money = decodeMoneyPB(MoneyPB(value.minorUnits, value.currency))
-  def MoneyToPO(value: Money): MoneyPO = { val encoded = encodeMoneyPB(value); MoneyPO(encoded.f0, encoded.f1) }
-  def MoneyFromPO(value: MoneyPO): Money = decodeMoneyPB(MoneyPB(value.minorUnits, value.currency))
-  def encodeMoneyPB(value: Money): MoneyPB = MoneyPB(value.amount.bigDecimal.setScale(2, java.math.RoundingMode.UNNECESSARY).unscaledValue.toString, value.currency)
-  def decodeMoneyPB(value: MoneyPB): Money = Money(readExact(value.f0, 2, true), value.f1)
-  def encodeMoneyWirePB(value: MoneyWire): MoneyWirePB = MoneyWirePB(value.minorUnits, value.currency)
-  def decodeMoneyWirePB(value: MoneyWirePB): MoneyWire = MoneyWire(value.f0, value.f1)
-  def encodeMoneyPOPB(value: MoneyPO): MoneyPOPB = MoneyPOPB(value.minorUnits, value.currency)
-  def decodeMoneyPOPB(value: MoneyPOPB): MoneyPO = MoneyPO(value.f0, value.f1)
-  def encodeFundSharePB(value: FundShare): FundSharePB = FundSharePB(value.fundCode, Some(encodeTaExactTextPB(value.shares)), Some(encodeTaExactTextPB(value.nav)))
-  def decodeFundSharePB(value: FundSharePB): FundShare = FundShare(value.f0, decodeTaExactTextPB(req(value.f1)), decodeTaExactTextPB(req(value.f2)))
-  def encodeTaRequestIdPB(value: TaRequestId): TaRequestIdPB = TaRequestIdPB(value.value)
-  def decodeTaRequestIdPB(value: TaRequestIdPB): TaRequestId = TaRequestId(value.f0)
-  def encodeSipRevisionConfigPB(value: SipRevisionConfig): SipRevisionConfigPB = SipRevisionConfigPB(
-    Some(encodeRevisionIdPB(value.revision)),
-    value.effectiveSlot,
-    Some(encodeAccountIdPB(value.investorAccountId)),
-    Some(encodeAccountIdPB(value.fundCollectionAccountId)),
-    value.fundCode,
-    Some(encodeMoneyPB(value.amount))
-  )
-  def decodeSipRevisionConfigPB(value: SipRevisionConfigPB): SipRevisionConfig = SipRevisionConfig(
-    decodeRevisionIdPB(req(value.f0)),
-    value.f1,
-    decodeAccountIdPB(req(value.f2)),
-    decodeAccountIdPB(req(value.f3)),
-    value.f4,
-    decodeMoneyPB(req(value.f5))
-  )
-  def encodeSipOccurrencePB(value: SipOccurrence): SipOccurrencePB = SipOccurrencePB(
-    Some(encodePlanIdPB(value.planId)),
-    Some(encodeRevisionIdPB(value.revision)),
-    value.dueSlot,
-    Some(encodeOccurrenceIdPB(value.occurrenceId)),
-    Some(encodeOperationIdPB(value.operationId)),
-    Some(encodeFundOrderIdPB(value.fundOrderId)),
-    Some(encodeSipRevisionConfigPB(value.config))
-  )
-  def decodeSipOccurrencePB(value: SipOccurrencePB): SipOccurrence = SipOccurrence(
-    decodePlanIdPB(req(value.f0)),
-    decodeRevisionIdPB(req(value.f1)),
-    value.f2,
-    decodeOccurrenceIdPB(req(value.f3)),
-    decodeOperationIdPB(req(value.f4)),
-    decodeFundOrderIdPB(req(value.f5)),
-    decodeSipRevisionConfigPB(req(value.f6))
-  )
-  def encodeTaReceiptPB(value: TaReceipt): TaReceiptPB = TaReceiptPB(
-    Some(encodeFundOrderIdPB(value.fundOrderId)),
-    Some(encodeTxIdPB(value.paymentTxId)),
-    Some(encodeTaRequestIdPB(value.taRequestId)),
-    Some(encodeAccountIdPB(value.investorAccountId)),
-    Some(encodeAccountIdPB(value.fundCollectionAccountId)),
-    value.fundCode,
-    Some(encodeMoneyPB(value.amount)),
-    Some(encodeAmountDecimalPB(value.principal)),
-    value.receiptId,
-    value.receiptBody,
-    value.taReference,
-    value.status,
-    Some(encodeTaExactTextPB(value.shares)),
-    Some(encodeTaExactTextPB(value.nav)),
-    value.reason
-  )
-  def decodeTaReceiptPB(value: TaReceiptPB): TaReceipt = TaReceipt(
-    decodeFundOrderIdPB(req(value.f0)),
-    decodeTxIdPB(req(value.f1)),
-    decodeTaRequestIdPB(req(value.f2)),
-    decodeAccountIdPB(req(value.f3)),
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    decodeMoneyPB(req(value.f6)),
-    decodeAmountDecimalPB(req(value.f7)),
-    value.f8,
-    value.f9,
-    value.f10,
-    value.f11,
-    decodeTaExactTextPB(req(value.f12)),
-    decodeTaExactTextPB(req(value.f13)),
-    value.f14
-  )
-  def encodeBankPaymentOriginalPB(value: BankPaymentOriginal): BankPaymentOriginalPB = BankPaymentOriginalPB(
-    Some(encodeOperationIdPB(value.operationId)),
-    Some(encodeFundOrderIdPB(value.fundOrderId)),
-    Some(encodeAccountIdPB(value.investorAccountId)),
-    Some(encodeAccountIdPB(value.fundCollectionAccountId)),
-    value.fundCode,
-    Some(encodeMoneyPB(value.amount))
-  )
-  def decodeBankPaymentOriginalPB(value: BankPaymentOriginalPB): BankPaymentOriginal = BankPaymentOriginal(
-    decodeOperationIdPB(req(value.f0)),
-    decodeFundOrderIdPB(req(value.f1)),
-    decodeAccountIdPB(req(value.f2)),
-    decodeAccountIdPB(req(value.f3)),
-    value.f4,
-    decodeMoneyPB(req(value.f5))
-  )
-  def encodeBankPaymentArgsPB(value: BankPaymentArgs): BankPaymentArgsPB = BankPaymentArgsPB(
-    Some(encodeAccountIdPB(value.investorAccountId)),
-    Some(encodeFundOrderIdPB(value.fundOrderId)),
-    Some(encodeAccountIdPB(value.fundCollectionAccountId)),
-    Some(encodeMoneyPB(value.amount))
-  )
-  def decodeBankPaymentArgsPB(value: BankPaymentArgsPB): BankPaymentArgs = BankPaymentArgs(
-    decodeAccountIdPB(req(value.f0)),
-    decodeFundOrderIdPB(req(value.f1)),
-    decodeAccountIdPB(req(value.f2)),
-    decodeMoneyPB(req(value.f3))
-  )
-  def encodeReserveInvestorFundsPrepareInputPB(value: ReserveInvestorFundsPrepareInput): ReserveInvestorFundsPrepareInputPB = ReserveInvestorFundsPrepareInputPB(Some(encodeTxIdPB(value.txid)), Some(encodeAccountIdPB(value.resource)), Some(encodeMoneyPB(value.amount)))
-  def decodeReserveInvestorFundsPrepareInputPB(value: ReserveInvestorFundsPrepareInputPB): ReserveInvestorFundsPrepareInput = ReserveInvestorFundsPrepareInput(decodeTxIdPB(req(value.f0)), decodeAccountIdPB(req(value.f1)), decodeMoneyPB(req(value.f2)))
-  def encodeReserveInvestorFundsPrepareReceiptPB(value: ReserveInvestorFundsPrepareReceipt): ReserveInvestorFundsPrepareReceiptPB = ReserveInvestorFundsPrepareReceiptPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeAccountIdPB(value.resource)),
-    value.step,
-    value.phase,
-    Some(encodeTxIdPB(value.payloadTxid)),
-    Some(encodeAccountIdPB(value.payloadResource)),
-    Some(encodeMoneyPB(value.payloadAmount)),
-    value.payloadCurrency,
-    Some(encodeMoneyPB(value.payloadAvailable))
-  )
-  def decodeReserveInvestorFundsPrepareReceiptPB(value: ReserveInvestorFundsPrepareReceiptPB): ReserveInvestorFundsPrepareReceipt = ReserveInvestorFundsPrepareReceipt(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    value.f6,
-    decodeTxIdPB(req(value.f7)),
-    decodeAccountIdPB(req(value.f8)),
-    decodeMoneyPB(req(value.f9)),
-    value.f10,
-    decodeMoneyPB(req(value.f11))
-  )
-  def encodeReserveInvestorFundsPrepareQueryPB(value: ReserveInvestorFundsPrepareQuery): ReserveInvestorFundsPrepareQueryPB = ReserveInvestorFundsPrepareQueryPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeAccountIdPB(value.resource)),
-    value.step,
-    value.phase
-  )
-  def decodeReserveInvestorFundsPrepareQueryPB(value: ReserveInvestorFundsPrepareQueryPB): ReserveInvestorFundsPrepareQuery = ReserveInvestorFundsPrepareQuery(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    value.f6
-  )
-  def encodeReserveInvestorFundsCommitInputPB(value: ReserveInvestorFundsCommitInput): ReserveInvestorFundsCommitInputPB = ReserveInvestorFundsCommitInputPB(Some(encodeTxIdPB(value.txid)), Some(encodeAccountIdPB(value.resource)), Some(encodeMoneyPB(value.amount)))
-  def decodeReserveInvestorFundsCommitInputPB(value: ReserveInvestorFundsCommitInputPB): ReserveInvestorFundsCommitInput = ReserveInvestorFundsCommitInput(decodeTxIdPB(req(value.f0)), decodeAccountIdPB(req(value.f1)), decodeMoneyPB(req(value.f2)))
-  def encodeReserveInvestorFundsCommitReceiptPB(value: ReserveInvestorFundsCommitReceipt): ReserveInvestorFundsCommitReceiptPB = ReserveInvestorFundsCommitReceiptPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeAccountIdPB(value.resource)),
-    value.step,
-    value.phase,
-    Some(encodeTxIdPB(value.payloadTxid)),
-    Some(encodeAccountIdPB(value.payloadResource)),
-    Some(encodeMoneyPB(value.payloadAmount))
-  )
-  def decodeReserveInvestorFundsCommitReceiptPB(value: ReserveInvestorFundsCommitReceiptPB): ReserveInvestorFundsCommitReceipt = ReserveInvestorFundsCommitReceipt(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    value.f6,
-    decodeTxIdPB(req(value.f7)),
-    decodeAccountIdPB(req(value.f8)),
-    decodeMoneyPB(req(value.f9))
-  )
-  def encodeReserveInvestorFundsCommitQueryPB(value: ReserveInvestorFundsCommitQuery): ReserveInvestorFundsCommitQueryPB = ReserveInvestorFundsCommitQueryPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeAccountIdPB(value.resource)),
-    value.step,
-    value.phase
-  )
-  def decodeReserveInvestorFundsCommitQueryPB(value: ReserveInvestorFundsCommitQueryPB): ReserveInvestorFundsCommitQuery = ReserveInvestorFundsCommitQuery(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    value.f6
-  )
-  def encodeReserveInvestorFundsCompensateInputPB(value: ReserveInvestorFundsCompensateInput): ReserveInvestorFundsCompensateInputPB = ReserveInvestorFundsCompensateInputPB(Some(encodeTxIdPB(value.txid)), Some(encodeAccountIdPB(value.resource)), Some(encodeMoneyPB(value.amount)))
-  def decodeReserveInvestorFundsCompensateInputPB(value: ReserveInvestorFundsCompensateInputPB): ReserveInvestorFundsCompensateInput = ReserveInvestorFundsCompensateInput(decodeTxIdPB(req(value.f0)), decodeAccountIdPB(req(value.f1)), decodeMoneyPB(req(value.f2)))
-  def encodeReserveInvestorFundsCompensateReceiptPB(value: ReserveInvestorFundsCompensateReceipt): ReserveInvestorFundsCompensateReceiptPB = ReserveInvestorFundsCompensateReceiptPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeAccountIdPB(value.resource)),
-    value.step,
-    value.phase,
-    Some(encodeTxIdPB(value.payloadTxid)),
-    Some(encodeAccountIdPB(value.payloadResource)),
-    Some(encodeMoneyPB(value.payloadAmount)),
-    value.payloadCurrency,
-    Some(encodeMoneyPB(value.payloadAvailable))
-  )
-  def decodeReserveInvestorFundsCompensateReceiptPB(value: ReserveInvestorFundsCompensateReceiptPB): ReserveInvestorFundsCompensateReceipt = ReserveInvestorFundsCompensateReceipt(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    value.f6,
-    decodeTxIdPB(req(value.f7)),
-    decodeAccountIdPB(req(value.f8)),
-    decodeMoneyPB(req(value.f9)),
-    value.f10,
-    decodeMoneyPB(req(value.f11))
-  )
-  def encodeReserveInvestorFundsCompensateQueryPB(value: ReserveInvestorFundsCompensateQuery): ReserveInvestorFundsCompensateQueryPB = ReserveInvestorFundsCompensateQueryPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeAccountIdPB(value.resource)),
-    value.step,
-    value.phase
-  )
-  def decodeReserveInvestorFundsCompensateQueryPB(value: ReserveInvestorFundsCompensateQueryPB): ReserveInvestorFundsCompensateQuery = ReserveInvestorFundsCompensateQuery(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    value.f6
-  )
-  def encodeCreditFundCollectionPrepareInputPB(value: CreditFundCollectionPrepareInput): CreditFundCollectionPrepareInputPB = CreditFundCollectionPrepareInputPB(Some(encodeTxIdPB(value.txid)), Some(encodeAccountIdPB(value.resource)), Some(encodeMoneyPB(value.amount)))
-  def decodeCreditFundCollectionPrepareInputPB(value: CreditFundCollectionPrepareInputPB): CreditFundCollectionPrepareInput = CreditFundCollectionPrepareInput(decodeTxIdPB(req(value.f0)), decodeAccountIdPB(req(value.f1)), decodeMoneyPB(req(value.f2)))
-  def encodeCreditFundCollectionPrepareReceiptPB(value: CreditFundCollectionPrepareReceipt): CreditFundCollectionPrepareReceiptPB = CreditFundCollectionPrepareReceiptPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeAccountIdPB(value.resource)),
-    value.step,
-    value.phase,
-    Some(encodeTxIdPB(value.payloadTxid)),
-    Some(encodeAccountIdPB(value.payloadResource)),
-    Some(encodeMoneyPB(value.payloadAmount))
-  )
-  def decodeCreditFundCollectionPrepareReceiptPB(value: CreditFundCollectionPrepareReceiptPB): CreditFundCollectionPrepareReceipt = CreditFundCollectionPrepareReceipt(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    value.f6,
-    decodeTxIdPB(req(value.f7)),
-    decodeAccountIdPB(req(value.f8)),
-    decodeMoneyPB(req(value.f9))
-  )
-  def encodeCreditFundCollectionPrepareQueryPB(value: CreditFundCollectionPrepareQuery): CreditFundCollectionPrepareQueryPB = CreditFundCollectionPrepareQueryPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeAccountIdPB(value.resource)),
-    value.step,
-    value.phase
-  )
-  def decodeCreditFundCollectionPrepareQueryPB(value: CreditFundCollectionPrepareQueryPB): CreditFundCollectionPrepareQuery = CreditFundCollectionPrepareQuery(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    value.f6
-  )
-  def encodeCreditFundCollectionCommitInputPB(value: CreditFundCollectionCommitInput): CreditFundCollectionCommitInputPB = CreditFundCollectionCommitInputPB(Some(encodeTxIdPB(value.txid)), Some(encodeAccountIdPB(value.resource)), Some(encodeMoneyPB(value.amount)))
-  def decodeCreditFundCollectionCommitInputPB(value: CreditFundCollectionCommitInputPB): CreditFundCollectionCommitInput = CreditFundCollectionCommitInput(decodeTxIdPB(req(value.f0)), decodeAccountIdPB(req(value.f1)), decodeMoneyPB(req(value.f2)))
-  def encodeCreditFundCollectionCommitReceiptPB(value: CreditFundCollectionCommitReceipt): CreditFundCollectionCommitReceiptPB = CreditFundCollectionCommitReceiptPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeAccountIdPB(value.resource)),
-    value.step,
-    value.phase,
-    Some(encodeTxIdPB(value.payloadTxid)),
-    Some(encodeAccountIdPB(value.payloadResource)),
-    Some(encodeMoneyPB(value.payloadAmount)),
-    value.payloadCurrency,
-    Some(encodeMoneyPB(value.payloadAvailable))
-  )
-  def decodeCreditFundCollectionCommitReceiptPB(value: CreditFundCollectionCommitReceiptPB): CreditFundCollectionCommitReceipt = CreditFundCollectionCommitReceipt(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    value.f6,
-    decodeTxIdPB(req(value.f7)),
-    decodeAccountIdPB(req(value.f8)),
-    decodeMoneyPB(req(value.f9)),
-    value.f10,
-    decodeMoneyPB(req(value.f11))
-  )
-  def encodeCreditFundCollectionCommitQueryPB(value: CreditFundCollectionCommitQuery): CreditFundCollectionCommitQueryPB = CreditFundCollectionCommitQueryPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeAccountIdPB(value.resource)),
-    value.step,
-    value.phase
-  )
-  def decodeCreditFundCollectionCommitQueryPB(value: CreditFundCollectionCommitQueryPB): CreditFundCollectionCommitQuery = CreditFundCollectionCommitQuery(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    value.f6
-  )
-  def encodeCreditFundCollectionCompensateInputPB(value: CreditFundCollectionCompensateInput): CreditFundCollectionCompensateInputPB = CreditFundCollectionCompensateInputPB(Some(encodeTxIdPB(value.txid)), Some(encodeAccountIdPB(value.resource)), Some(encodeMoneyPB(value.amount)))
-  def decodeCreditFundCollectionCompensateInputPB(value: CreditFundCollectionCompensateInputPB): CreditFundCollectionCompensateInput = CreditFundCollectionCompensateInput(decodeTxIdPB(req(value.f0)), decodeAccountIdPB(req(value.f1)), decodeMoneyPB(req(value.f2)))
-  def encodeCreditFundCollectionCompensateReceiptPB(value: CreditFundCollectionCompensateReceipt): CreditFundCollectionCompensateReceiptPB = CreditFundCollectionCompensateReceiptPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeAccountIdPB(value.resource)),
-    value.step,
-    value.phase,
-    Some(encodeTxIdPB(value.payloadTxid)),
-    Some(encodeAccountIdPB(value.payloadResource)),
-    Some(encodeMoneyPB(value.payloadAmount))
-  )
-  def decodeCreditFundCollectionCompensateReceiptPB(value: CreditFundCollectionCompensateReceiptPB): CreditFundCollectionCompensateReceipt = CreditFundCollectionCompensateReceipt(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    value.f6,
-    decodeTxIdPB(req(value.f7)),
-    decodeAccountIdPB(req(value.f8)),
-    decodeMoneyPB(req(value.f9))
-  )
-  def encodeCreditFundCollectionCompensateQueryPB(value: CreditFundCollectionCompensateQuery): CreditFundCollectionCompensateQueryPB = CreditFundCollectionCompensateQueryPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeAccountIdPB(value.resource)),
-    value.step,
-    value.phase
-  )
-  def decodeCreditFundCollectionCompensateQueryPB(value: CreditFundCollectionCompensateQueryPB): CreditFundCollectionCompensateQuery = CreditFundCollectionCompensateQuery(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    value.f6
-  )
-  def encodeReserveCashFundOrderPrepareInputPB(value: ReserveCashFundOrderPrepareInput): ReserveCashFundOrderPrepareInputPB = ReserveCashFundOrderPrepareInputPB(Some(encodeTxIdPB(value.txid)), Some(encodeFundOrderIdPB(value.resource)), Some(encodeMoneyPB(value.amount)))
-  def decodeReserveCashFundOrderPrepareInputPB(value: ReserveCashFundOrderPrepareInputPB): ReserveCashFundOrderPrepareInput = ReserveCashFundOrderPrepareInput(decodeTxIdPB(req(value.f0)), decodeFundOrderIdPB(req(value.f1)), decodeMoneyPB(req(value.f2)))
-  def encodeReserveCashFundOrderPrepareReceiptPB(value: ReserveCashFundOrderPrepareReceipt): ReserveCashFundOrderPrepareReceiptPB = ReserveCashFundOrderPrepareReceiptPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeFundOrderIdPB(value.resource)),
-    value.step,
-    value.phase,
-    Some(encodeTxIdPB(value.payloadTxid)),
-    Some(encodeFundOrderIdPB(value.payloadResource)),
-    Some(encodeMoneyPB(value.payloadAmount))
-  )
-  def decodeReserveCashFundOrderPrepareReceiptPB(value: ReserveCashFundOrderPrepareReceiptPB): ReserveCashFundOrderPrepareReceipt = ReserveCashFundOrderPrepareReceipt(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeFundOrderIdPB(req(value.f4)),
-    value.f5,
-    value.f6,
-    decodeTxIdPB(req(value.f7)),
-    decodeFundOrderIdPB(req(value.f8)),
-    decodeMoneyPB(req(value.f9))
-  )
-  def encodeReserveCashFundOrderPrepareQueryPB(value: ReserveCashFundOrderPrepareQuery): ReserveCashFundOrderPrepareQueryPB = ReserveCashFundOrderPrepareQueryPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeFundOrderIdPB(value.resource)),
-    value.step,
-    value.phase
-  )
-  def decodeReserveCashFundOrderPrepareQueryPB(value: ReserveCashFundOrderPrepareQueryPB): ReserveCashFundOrderPrepareQuery = ReserveCashFundOrderPrepareQuery(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeFundOrderIdPB(req(value.f4)),
-    value.f5,
-    value.f6
-  )
-  def encodeReserveCashFundOrderCommitInputPB(value: ReserveCashFundOrderCommitInput): ReserveCashFundOrderCommitInputPB = ReserveCashFundOrderCommitInputPB(Some(encodeTxIdPB(value.txid)), Some(encodeFundOrderIdPB(value.resource)), Some(encodeMoneyPB(value.amount)))
-  def decodeReserveCashFundOrderCommitInputPB(value: ReserveCashFundOrderCommitInputPB): ReserveCashFundOrderCommitInput = ReserveCashFundOrderCommitInput(decodeTxIdPB(req(value.f0)), decodeFundOrderIdPB(req(value.f1)), decodeMoneyPB(req(value.f2)))
-  def encodeReserveCashFundOrderCommitReceiptPB(value: ReserveCashFundOrderCommitReceipt): ReserveCashFundOrderCommitReceiptPB = ReserveCashFundOrderCommitReceiptPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeFundOrderIdPB(value.resource)),
-    value.step,
-    value.phase,
-    Some(encodeTxIdPB(value.payloadTxid)),
-    Some(encodeFundOrderIdPB(value.payloadResource)),
-    Some(encodeMoneyPB(value.payloadAmount))
-  )
-  def decodeReserveCashFundOrderCommitReceiptPB(value: ReserveCashFundOrderCommitReceiptPB): ReserveCashFundOrderCommitReceipt = ReserveCashFundOrderCommitReceipt(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeFundOrderIdPB(req(value.f4)),
-    value.f5,
-    value.f6,
-    decodeTxIdPB(req(value.f7)),
-    decodeFundOrderIdPB(req(value.f8)),
-    decodeMoneyPB(req(value.f9))
-  )
-  def encodeReserveCashFundOrderCommitQueryPB(value: ReserveCashFundOrderCommitQuery): ReserveCashFundOrderCommitQueryPB = ReserveCashFundOrderCommitQueryPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeFundOrderIdPB(value.resource)),
-    value.step,
-    value.phase
-  )
-  def decodeReserveCashFundOrderCommitQueryPB(value: ReserveCashFundOrderCommitQueryPB): ReserveCashFundOrderCommitQuery = ReserveCashFundOrderCommitQuery(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeFundOrderIdPB(req(value.f4)),
-    value.f5,
-    value.f6
-  )
-  def encodeReserveCashFundOrderCompensateInputPB(value: ReserveCashFundOrderCompensateInput): ReserveCashFundOrderCompensateInputPB = ReserveCashFundOrderCompensateInputPB(Some(encodeTxIdPB(value.txid)), Some(encodeFundOrderIdPB(value.resource)), Some(encodeMoneyPB(value.amount)))
-  def decodeReserveCashFundOrderCompensateInputPB(value: ReserveCashFundOrderCompensateInputPB): ReserveCashFundOrderCompensateInput = ReserveCashFundOrderCompensateInput(decodeTxIdPB(req(value.f0)), decodeFundOrderIdPB(req(value.f1)), decodeMoneyPB(req(value.f2)))
-  def encodeReserveCashFundOrderCompensateReceiptPB(value: ReserveCashFundOrderCompensateReceipt): ReserveCashFundOrderCompensateReceiptPB = ReserveCashFundOrderCompensateReceiptPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeFundOrderIdPB(value.resource)),
-    value.step,
-    value.phase,
-    Some(encodeTxIdPB(value.payloadTxid)),
-    Some(encodeFundOrderIdPB(value.payloadResource)),
-    Some(encodeMoneyPB(value.payloadAmount))
-  )
-  def decodeReserveCashFundOrderCompensateReceiptPB(value: ReserveCashFundOrderCompensateReceiptPB): ReserveCashFundOrderCompensateReceipt = ReserveCashFundOrderCompensateReceipt(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeFundOrderIdPB(req(value.f4)),
-    value.f5,
-    value.f6,
-    decodeTxIdPB(req(value.f7)),
-    decodeFundOrderIdPB(req(value.f8)),
-    decodeMoneyPB(req(value.f9))
-  )
-  def encodeReserveCashFundOrderCompensateQueryPB(value: ReserveCashFundOrderCompensateQuery): ReserveCashFundOrderCompensateQueryPB = ReserveCashFundOrderCompensateQueryPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeFundOrderIdPB(value.resource)),
-    value.step,
-    value.phase
-  )
-  def decodeReserveCashFundOrderCompensateQueryPB(value: ReserveCashFundOrderCompensateQueryPB): ReserveCashFundOrderCompensateQuery = ReserveCashFundOrderCompensateQuery(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeFundOrderIdPB(req(value.f4)),
-    value.f5,
-    value.f6
-  )
-  def encodeBankPaymentResultPB(value: BankPaymentResult): BankPaymentResultPB = BankPaymentResultPB(Some(encodeTxIdPB(value.txid)))
-  def decodeBankPaymentResultPB(value: BankPaymentResultPB): BankPaymentResult = BankPaymentResult(decodeTxIdPB(req(value.f0)))
-  def encodeBankRefundOriginalPB(value: BankRefundOriginal): BankRefundOriginalPB = BankRefundOriginalPB(
-    Some(encodeFundOrderIdPB(value.fundOrderId)),
-    Some(encodeTxIdPB(value.paymentTxId)),
-    Some(encodeAccountIdPB(value.investorAccountId)),
-    Some(encodeAccountIdPB(value.fundCollectionAccountId)),
-    Some(encodeMoneyPB(value.amount)),
-    Some(encodeOperationIdPB(value.refundOperationId))
-  )
-  def decodeBankRefundOriginalPB(value: BankRefundOriginalPB): BankRefundOriginal = BankRefundOriginal(
-    decodeFundOrderIdPB(req(value.f0)),
-    decodeTxIdPB(req(value.f1)),
-    decodeAccountIdPB(req(value.f2)),
-    decodeAccountIdPB(req(value.f3)),
-    decodeMoneyPB(req(value.f4)),
-    decodeOperationIdPB(req(value.f5))
-  )
-  def encodeBankRefundArgsPB(value: BankRefundArgs): BankRefundArgsPB = BankRefundArgsPB(Some(encodeAccountIdPB(value.fundCollectionAccountId)), Some(encodeAccountIdPB(value.investorAccountId)), Some(encodeMoneyPB(value.amount)))
-  def decodeBankRefundArgsPB(value: BankRefundArgsPB): BankRefundArgs = BankRefundArgs(decodeAccountIdPB(req(value.f0)), decodeAccountIdPB(req(value.f1)), decodeMoneyPB(req(value.f2)))
-  def encodeDebitFundCollectionPrepareInputPB(value: DebitFundCollectionPrepareInput): DebitFundCollectionPrepareInputPB = DebitFundCollectionPrepareInputPB(Some(encodeTxIdPB(value.txid)), Some(encodeAccountIdPB(value.resource)), Some(encodeMoneyPB(value.amount)))
-  def decodeDebitFundCollectionPrepareInputPB(value: DebitFundCollectionPrepareInputPB): DebitFundCollectionPrepareInput = DebitFundCollectionPrepareInput(decodeTxIdPB(req(value.f0)), decodeAccountIdPB(req(value.f1)), decodeMoneyPB(req(value.f2)))
-  def encodeDebitFundCollectionPrepareReceiptPB(value: DebitFundCollectionPrepareReceipt): DebitFundCollectionPrepareReceiptPB = DebitFundCollectionPrepareReceiptPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeAccountIdPB(value.resource)),
-    value.step,
-    value.phase,
-    Some(encodeTxIdPB(value.payloadTxid)),
-    Some(encodeAccountIdPB(value.payloadResource)),
-    Some(encodeMoneyPB(value.payloadAmount)),
-    value.payloadCurrency,
-    Some(encodeMoneyPB(value.payloadAvailable))
-  )
-  def decodeDebitFundCollectionPrepareReceiptPB(value: DebitFundCollectionPrepareReceiptPB): DebitFundCollectionPrepareReceipt = DebitFundCollectionPrepareReceipt(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    value.f6,
-    decodeTxIdPB(req(value.f7)),
-    decodeAccountIdPB(req(value.f8)),
-    decodeMoneyPB(req(value.f9)),
-    value.f10,
-    decodeMoneyPB(req(value.f11))
-  )
-  def encodeDebitFundCollectionPrepareQueryPB(value: DebitFundCollectionPrepareQuery): DebitFundCollectionPrepareQueryPB = DebitFundCollectionPrepareQueryPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeAccountIdPB(value.resource)),
-    value.step,
-    value.phase
-  )
-  def decodeDebitFundCollectionPrepareQueryPB(value: DebitFundCollectionPrepareQueryPB): DebitFundCollectionPrepareQuery = DebitFundCollectionPrepareQuery(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    value.f6
-  )
-  def encodeDebitFundCollectionCommitInputPB(value: DebitFundCollectionCommitInput): DebitFundCollectionCommitInputPB = DebitFundCollectionCommitInputPB(Some(encodeTxIdPB(value.txid)), Some(encodeAccountIdPB(value.resource)), Some(encodeMoneyPB(value.amount)))
-  def decodeDebitFundCollectionCommitInputPB(value: DebitFundCollectionCommitInputPB): DebitFundCollectionCommitInput = DebitFundCollectionCommitInput(decodeTxIdPB(req(value.f0)), decodeAccountIdPB(req(value.f1)), decodeMoneyPB(req(value.f2)))
-  def encodeDebitFundCollectionCommitReceiptPB(value: DebitFundCollectionCommitReceipt): DebitFundCollectionCommitReceiptPB = DebitFundCollectionCommitReceiptPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeAccountIdPB(value.resource)),
-    value.step,
-    value.phase,
-    Some(encodeTxIdPB(value.payloadTxid)),
-    Some(encodeAccountIdPB(value.payloadResource)),
-    Some(encodeMoneyPB(value.payloadAmount))
-  )
-  def decodeDebitFundCollectionCommitReceiptPB(value: DebitFundCollectionCommitReceiptPB): DebitFundCollectionCommitReceipt = DebitFundCollectionCommitReceipt(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    value.f6,
-    decodeTxIdPB(req(value.f7)),
-    decodeAccountIdPB(req(value.f8)),
-    decodeMoneyPB(req(value.f9))
-  )
-  def encodeDebitFundCollectionCommitQueryPB(value: DebitFundCollectionCommitQuery): DebitFundCollectionCommitQueryPB = DebitFundCollectionCommitQueryPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeAccountIdPB(value.resource)),
-    value.step,
-    value.phase
-  )
-  def decodeDebitFundCollectionCommitQueryPB(value: DebitFundCollectionCommitQueryPB): DebitFundCollectionCommitQuery = DebitFundCollectionCommitQuery(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    value.f6
-  )
-  def encodeDebitFundCollectionCompensateInputPB(value: DebitFundCollectionCompensateInput): DebitFundCollectionCompensateInputPB = DebitFundCollectionCompensateInputPB(Some(encodeTxIdPB(value.txid)), Some(encodeAccountIdPB(value.resource)), Some(encodeMoneyPB(value.amount)))
-  def decodeDebitFundCollectionCompensateInputPB(value: DebitFundCollectionCompensateInputPB): DebitFundCollectionCompensateInput = DebitFundCollectionCompensateInput(decodeTxIdPB(req(value.f0)), decodeAccountIdPB(req(value.f1)), decodeMoneyPB(req(value.f2)))
-  def encodeDebitFundCollectionCompensateReceiptPB(value: DebitFundCollectionCompensateReceipt): DebitFundCollectionCompensateReceiptPB = DebitFundCollectionCompensateReceiptPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeAccountIdPB(value.resource)),
-    value.step,
-    value.phase,
-    Some(encodeTxIdPB(value.payloadTxid)),
-    Some(encodeAccountIdPB(value.payloadResource)),
-    Some(encodeMoneyPB(value.payloadAmount)),
-    value.payloadCurrency,
-    Some(encodeMoneyPB(value.payloadAvailable))
-  )
-  def decodeDebitFundCollectionCompensateReceiptPB(value: DebitFundCollectionCompensateReceiptPB): DebitFundCollectionCompensateReceipt = DebitFundCollectionCompensateReceipt(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    value.f6,
-    decodeTxIdPB(req(value.f7)),
-    decodeAccountIdPB(req(value.f8)),
-    decodeMoneyPB(req(value.f9)),
-    value.f10,
-    decodeMoneyPB(req(value.f11))
-  )
-  def encodeDebitFundCollectionCompensateQueryPB(value: DebitFundCollectionCompensateQuery): DebitFundCollectionCompensateQueryPB = DebitFundCollectionCompensateQueryPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeAccountIdPB(value.resource)),
-    value.step,
-    value.phase
-  )
-  def decodeDebitFundCollectionCompensateQueryPB(value: DebitFundCollectionCompensateQueryPB): DebitFundCollectionCompensateQuery = DebitFundCollectionCompensateQuery(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    value.f6
-  )
-  def encodeCreditOriginalInvestorPrepareInputPB(value: CreditOriginalInvestorPrepareInput): CreditOriginalInvestorPrepareInputPB = CreditOriginalInvestorPrepareInputPB(Some(encodeTxIdPB(value.txid)), Some(encodeAccountIdPB(value.resource)), Some(encodeMoneyPB(value.amount)))
-  def decodeCreditOriginalInvestorPrepareInputPB(value: CreditOriginalInvestorPrepareInputPB): CreditOriginalInvestorPrepareInput = CreditOriginalInvestorPrepareInput(decodeTxIdPB(req(value.f0)), decodeAccountIdPB(req(value.f1)), decodeMoneyPB(req(value.f2)))
-  def encodeCreditOriginalInvestorPrepareReceiptPB(value: CreditOriginalInvestorPrepareReceipt): CreditOriginalInvestorPrepareReceiptPB = CreditOriginalInvestorPrepareReceiptPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeAccountIdPB(value.resource)),
-    value.step,
-    value.phase,
-    Some(encodeTxIdPB(value.payloadTxid)),
-    Some(encodeAccountIdPB(value.payloadResource)),
-    Some(encodeMoneyPB(value.payloadAmount))
-  )
-  def decodeCreditOriginalInvestorPrepareReceiptPB(value: CreditOriginalInvestorPrepareReceiptPB): CreditOriginalInvestorPrepareReceipt = CreditOriginalInvestorPrepareReceipt(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    value.f6,
-    decodeTxIdPB(req(value.f7)),
-    decodeAccountIdPB(req(value.f8)),
-    decodeMoneyPB(req(value.f9))
-  )
-  def encodeCreditOriginalInvestorPrepareQueryPB(value: CreditOriginalInvestorPrepareQuery): CreditOriginalInvestorPrepareQueryPB = CreditOriginalInvestorPrepareQueryPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeAccountIdPB(value.resource)),
-    value.step,
-    value.phase
-  )
-  def decodeCreditOriginalInvestorPrepareQueryPB(value: CreditOriginalInvestorPrepareQueryPB): CreditOriginalInvestorPrepareQuery = CreditOriginalInvestorPrepareQuery(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    value.f6
-  )
-  def encodeCreditOriginalInvestorCommitInputPB(value: CreditOriginalInvestorCommitInput): CreditOriginalInvestorCommitInputPB = CreditOriginalInvestorCommitInputPB(Some(encodeTxIdPB(value.txid)), Some(encodeAccountIdPB(value.resource)), Some(encodeMoneyPB(value.amount)))
-  def decodeCreditOriginalInvestorCommitInputPB(value: CreditOriginalInvestorCommitInputPB): CreditOriginalInvestorCommitInput = CreditOriginalInvestorCommitInput(decodeTxIdPB(req(value.f0)), decodeAccountIdPB(req(value.f1)), decodeMoneyPB(req(value.f2)))
-  def encodeCreditOriginalInvestorCommitReceiptPB(value: CreditOriginalInvestorCommitReceipt): CreditOriginalInvestorCommitReceiptPB = CreditOriginalInvestorCommitReceiptPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeAccountIdPB(value.resource)),
-    value.step,
-    value.phase,
-    Some(encodeTxIdPB(value.payloadTxid)),
-    Some(encodeAccountIdPB(value.payloadResource)),
-    Some(encodeMoneyPB(value.payloadAmount)),
-    value.payloadCurrency,
-    Some(encodeMoneyPB(value.payloadAvailable))
-  )
-  def decodeCreditOriginalInvestorCommitReceiptPB(value: CreditOriginalInvestorCommitReceiptPB): CreditOriginalInvestorCommitReceipt = CreditOriginalInvestorCommitReceipt(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    value.f6,
-    decodeTxIdPB(req(value.f7)),
-    decodeAccountIdPB(req(value.f8)),
-    decodeMoneyPB(req(value.f9)),
-    value.f10,
-    decodeMoneyPB(req(value.f11))
-  )
-  def encodeCreditOriginalInvestorCommitQueryPB(value: CreditOriginalInvestorCommitQuery): CreditOriginalInvestorCommitQueryPB = CreditOriginalInvestorCommitQueryPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeAccountIdPB(value.resource)),
-    value.step,
-    value.phase
-  )
-  def decodeCreditOriginalInvestorCommitQueryPB(value: CreditOriginalInvestorCommitQueryPB): CreditOriginalInvestorCommitQuery = CreditOriginalInvestorCommitQuery(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    value.f6
-  )
-  def encodeCreditOriginalInvestorCompensateInputPB(value: CreditOriginalInvestorCompensateInput): CreditOriginalInvestorCompensateInputPB = CreditOriginalInvestorCompensateInputPB(Some(encodeTxIdPB(value.txid)), Some(encodeAccountIdPB(value.resource)), Some(encodeMoneyPB(value.amount)))
-  def decodeCreditOriginalInvestorCompensateInputPB(value: CreditOriginalInvestorCompensateInputPB): CreditOriginalInvestorCompensateInput = CreditOriginalInvestorCompensateInput(decodeTxIdPB(req(value.f0)), decodeAccountIdPB(req(value.f1)), decodeMoneyPB(req(value.f2)))
-  def encodeCreditOriginalInvestorCompensateReceiptPB(value: CreditOriginalInvestorCompensateReceipt): CreditOriginalInvestorCompensateReceiptPB = CreditOriginalInvestorCompensateReceiptPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeAccountIdPB(value.resource)),
-    value.step,
-    value.phase,
-    Some(encodeTxIdPB(value.payloadTxid)),
-    Some(encodeAccountIdPB(value.payloadResource)),
-    Some(encodeMoneyPB(value.payloadAmount))
-  )
-  def decodeCreditOriginalInvestorCompensateReceiptPB(value: CreditOriginalInvestorCompensateReceiptPB): CreditOriginalInvestorCompensateReceipt = CreditOriginalInvestorCompensateReceipt(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    value.f6,
-    decodeTxIdPB(req(value.f7)),
-    decodeAccountIdPB(req(value.f8)),
-    decodeMoneyPB(req(value.f9))
-  )
-  def encodeCreditOriginalInvestorCompensateQueryPB(value: CreditOriginalInvestorCompensateQuery): CreditOriginalInvestorCompensateQueryPB = CreditOriginalInvestorCompensateQueryPB(
-    Some(encodeTxIdPB(value.transaction)),
-    value.definitionVersion,
-    value.argsDigest,
-    value.participant,
-    Some(encodeAccountIdPB(value.resource)),
-    value.step,
-    value.phase
-  )
-  def decodeCreditOriginalInvestorCompensateQueryPB(value: CreditOriginalInvestorCompensateQueryPB): CreditOriginalInvestorCompensateQuery = CreditOriginalInvestorCompensateQuery(
-    decodeTxIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    value.f6
-  )
-  def encodeBankRefundResultPB(value: BankRefundResult): BankRefundResultPB = BankRefundResultPB(Some(encodeTxIdPB(value.txid)))
-  def decodeBankRefundResultPB(value: BankRefundResultPB): BankRefundResult = BankRefundResult(decodeTxIdPB(req(value.f0)))
-  def encodeBankTaEffectRequestPB(value: BankTaEffectRequest): BankTaEffectRequestPB = BankTaEffectRequestPB(Some(encodeTaRequestIdPB(value.taRequestId)), Some(encodeFundOrderIdPB(value.fundOrderId)), Some(encodeTxIdPB(value.paymentTxId)))
-  def decodeBankTaEffectRequestPB(value: BankTaEffectRequestPB): BankTaEffectRequest = BankTaEffectRequest(decodeTaRequestIdPB(req(value.f0)), decodeFundOrderIdPB(req(value.f1)), decodeTxIdPB(req(value.f2)))
-  def encodeBankTaEffectResultPB(value: BankTaEffectResult): BankTaEffectResultPB = BankTaEffectResultPB(Some(encodeTaRequestIdPB(value.taRequestId)))
-  def decodeBankTaEffectResultPB(value: BankTaEffectResultPB): BankTaEffectResult = BankTaEffectResult(decodeTaRequestIdPB(req(value.f0)))
-  def encodeBankTaEffectOperationPB(value: BankTaEffectOperation): BankTaEffectOperationPB = BankTaEffectOperationPB(value.operation, Some(encodeBankTaEffectRequestPB(value.request)))
-  def decodeBankTaEffectOperationPB(value: BankTaEffectOperationPB): BankTaEffectOperation = BankTaEffectOperation(value.f0, decodeBankTaEffectRequestPB(req(value.f1)))
-  def encodeBankTaEffectObservationPB(value: BankTaEffectObservation): BankTaEffectObservationPB = BankTaEffectObservationPB(
-    value.operation,
-    Some(encodeBankTaEffectRequestPB(value.request)),
-    value.status,
-    value.evidence,
-    Some(encodeBankTaEffectObservationPBField4(value.result))
-  )
-  def decodeBankTaEffectObservationPB(value: BankTaEffectObservationPB): BankTaEffectObservation = BankTaEffectObservation(
-    value.f0,
-    decodeBankTaEffectRequestPB(req(value.f1)),
-    value.f2,
-    value.f3,
-    decodeBankTaEffectObservationPBField4(req(value.f4))
-  )
-  def encodeBankTaEffectObservationPBField4(value: Option[BankTaEffectResult]): BankTaEffectObservationPBField4 = value match { case None => BankTaEffectObservationPBField4(present = false); case Some(item) => BankTaEffectObservationPBField4(present = true, f0 = Some(encodeBankTaEffectResultPB(item))) }
-  def decodeBankTaEffectObservationPBField4(value: BankTaEffectObservationPBField4): Option[BankTaEffectResult] = if (!value.present) { require(value.f0.isEmpty, "absent optional contains a value"); None } else Some(decodeBankTaEffectResultPB(req(value.f0)))
-  def encodeBankTaEffectReconcilePB(value: BankTaEffectReconcile): BankTaEffectReconcilePB = BankTaEffectReconcilePB(
-    value.operation,
-    Some(encodeBankTaEffectRequestPB(value.request)),
-    value.decision,
-    Some(encodeBankTaEffectReconcilePBField3(value.evidence)),
-    value.authorization
-  )
-  def decodeBankTaEffectReconcilePB(value: BankTaEffectReconcilePB): BankTaEffectReconcile = BankTaEffectReconcile(
-    value.f0,
-    decodeBankTaEffectRequestPB(req(value.f1)),
-    value.f2,
-    decodeBankTaEffectReconcilePBField3(req(value.f3)),
-    value.f4
-  )
-  def encodeBankTaEffectReconcilePBField3(value: Option[BankTaEffectObservation]): BankTaEffectReconcilePBField3 = value match { case None => BankTaEffectReconcilePBField3(present = false); case Some(item) => BankTaEffectReconcilePBField3(present = true, f0 = Some(encodeBankTaEffectObservationPB(item))) }
-  def decodeBankTaEffectReconcilePBField3(value: BankTaEffectReconcilePBField3): Option[BankTaEffectObservation] = if (!value.present) { require(value.f0.isEmpty, "absent optional contains a value"); None } else Some(decodeBankTaEffectObservationPB(req(value.f0)))
-  def encodeBankSipDispatchRequestPB(value: BankSipDispatchRequest): BankSipDispatchRequestPB = BankSipDispatchRequestPB(Some(encodeOccurrenceIdPB(value.occurrenceId)), Some(encodeSipOccurrencePB(value.occurrence)))
-  def decodeBankSipDispatchRequestPB(value: BankSipDispatchRequestPB): BankSipDispatchRequest = BankSipDispatchRequest(decodeOccurrenceIdPB(req(value.f0)), decodeSipOccurrencePB(req(value.f1)))
-  def encodeBankSipDispatchResultPB(value: BankSipDispatchResult): BankSipDispatchResultPB = BankSipDispatchResultPB(Some(encodeOperationIdPB(value.operationId)))
-  def decodeBankSipDispatchResultPB(value: BankSipDispatchResultPB): BankSipDispatchResult = BankSipDispatchResult(decodeOperationIdPB(req(value.f0)))
-  def encodeBankSipDispatchOperationPB(value: BankSipDispatchOperation): BankSipDispatchOperationPB = BankSipDispatchOperationPB(value.operation, Some(encodeBankSipDispatchRequestPB(value.request)))
-  def decodeBankSipDispatchOperationPB(value: BankSipDispatchOperationPB): BankSipDispatchOperation = BankSipDispatchOperation(value.f0, decodeBankSipDispatchRequestPB(req(value.f1)))
-  def encodeBankSipDispatchObservationPB(value: BankSipDispatchObservation): BankSipDispatchObservationPB = BankSipDispatchObservationPB(
-    value.operation,
-    Some(encodeBankSipDispatchRequestPB(value.request)),
-    value.status,
-    value.evidence,
-    Some(encodeBankSipDispatchObservationPBField4(value.result))
-  )
-  def decodeBankSipDispatchObservationPB(value: BankSipDispatchObservationPB): BankSipDispatchObservation = BankSipDispatchObservation(
-    value.f0,
-    decodeBankSipDispatchRequestPB(req(value.f1)),
-    value.f2,
-    value.f3,
-    decodeBankSipDispatchObservationPBField4(req(value.f4))
-  )
-  def encodeBankSipDispatchObservationPBField4(value: Option[BankSipDispatchResult]): BankSipDispatchObservationPBField4 = value match { case None => BankSipDispatchObservationPBField4(present = false); case Some(item) => BankSipDispatchObservationPBField4(present = true, f0 = Some(encodeBankSipDispatchResultPB(item))) }
-  def decodeBankSipDispatchObservationPBField4(value: BankSipDispatchObservationPBField4): Option[BankSipDispatchResult] = if (!value.present) { require(value.f0.isEmpty, "absent optional contains a value"); None } else Some(decodeBankSipDispatchResultPB(req(value.f0)))
+  def encodeAccountIdPO(value: AccountId): pb.AccountIdPO = pb.AccountIdPO(value = value.value)
+  def decodeAccountIdPO(value: pb.AccountIdPO): AccountId = AccountId(value = value.value)
+
+  def encodeFundOrderIdPO(value: FundOrderId): pb.FundOrderIdPO = pb.FundOrderIdPO(value = value.value)
+  def decodeFundOrderIdPO(value: pb.FundOrderIdPO): FundOrderId = FundOrderId(value = value.value)
+
+  def encodeOperationIdPO(value: OperationId): pb.OperationIdPO = pb.OperationIdPO(value = value.value)
+  def decodeOperationIdPO(value: pb.OperationIdPO): OperationId = OperationId(value = value.value)
+
+  def encodeTxIdPO(value: TxId): pb.TxIdPO = pb.TxIdPO(value = value.value)
+  def decodeTxIdPO(value: pb.TxIdPO): TxId = TxId(value = value.value)
+
+  def encodePlanIdPO(value: PlanId): pb.PlanIdPO = pb.PlanIdPO(value = value.value)
+  def decodePlanIdPO(value: pb.PlanIdPO): PlanId = PlanId(value = value.value)
+
+  def encodeRevisionIdPO(value: RevisionId): pb.RevisionIdPO = pb.RevisionIdPO(value = value.value)
+  def decodeRevisionIdPO(value: pb.RevisionIdPO): RevisionId = RevisionId(value = value.value)
+
+  def encodeOccurrenceIdPO(value: OccurrenceId): pb.OccurrenceIdPO = pb.OccurrenceIdPO(value = value.value)
+  def decodeOccurrenceIdPO(value: pb.OccurrenceIdPO): OccurrenceId = OccurrenceId(value = value.value)
+
+  def encodeTaExactTextPO(value: TaExactText): pb.TaExactTextPO = pb.TaExactTextPO(value = value.value)
+  def decodeTaExactTextPO(value: pb.TaExactTextPO): TaExactText = TaExactText(value = value.value)
+
+  def AmountDecimalToWire(value: AmountDecimal): AmountDecimalWire = { val encoded = encodeAmountDecimalPO(value); AmountDecimalWire(encoded.value) }
+  def AmountDecimalFromWire(value: AmountDecimalWire): AmountDecimal = decodeAmountDecimalPO(pb.AmountDecimalPO(value = value.value))
+  def AmountDecimalToPO(value: AmountDecimal): AmountDecimalPO = { val encoded = encodeAmountDecimalPO(value); AmountDecimalPO(encoded.value) }
+  def AmountDecimalFromPO(value: AmountDecimalPO): AmountDecimal = decodeAmountDecimalPO(pb.AmountDecimalPO(value = value.value))
+  def encodeAmountDecimalPO(value: AmountDecimal): pb.AmountDecimalPO = pb.AmountDecimalPO(value = value.value.bigDecimal.setScale(2, java.math.RoundingMode.UNNECESSARY).unscaledValue.toString)
+  def decodeAmountDecimalPO(value: pb.AmountDecimalPO): AmountDecimal = AmountDecimal(readExact(value.value, 2, true))
+
+  def encodeAmountDecimalWirePO(value: AmountDecimalWire): pb.AmountDecimalWirePO = pb.AmountDecimalWirePO(value = value.value)
+  def decodeAmountDecimalWirePO(value: pb.AmountDecimalWirePO): AmountDecimalWire = AmountDecimalWire(value = value.value)
+
+  def encodeAmountDecimalStoragePO(value: AmountDecimalPO): pb.AmountDecimalStoragePO = pb.AmountDecimalStoragePO(value = value.value)
+  def decodeAmountDecimalStoragePO(value: pb.AmountDecimalStoragePO): AmountDecimalPO = AmountDecimalPO(value = value.value)
+
+  def MoneyToWire(value: Money): MoneyWire = { val encoded = encodeMoneyPO(value); MoneyWire(encoded.amount, encoded.currency) }
+  def MoneyFromWire(value: MoneyWire): Money = decodeMoneyPO(pb.MoneyPO(amount = value.minorUnits, currency = value.currency))
+  def MoneyToPO(value: Money): MoneyPO = { val encoded = encodeMoneyPO(value); MoneyPO(encoded.amount, encoded.currency) }
+  def MoneyFromPO(value: MoneyPO): Money = decodeMoneyPO(pb.MoneyPO(amount = value.minorUnits, currency = value.currency))
+  def encodeMoneyPO(value: Money): pb.MoneyPO = pb.MoneyPO(amount = value.amount.bigDecimal.setScale(2, java.math.RoundingMode.UNNECESSARY).unscaledValue.toString, currency = value.currency)
+  def decodeMoneyPO(value: pb.MoneyPO): Money = Money(readExact(value.amount, 2, true), value.currency)
+
+  def encodeMoneyWirePO(value: MoneyWire): pb.MoneyWirePO = pb.MoneyWirePO(minorUnits = value.minorUnits, currency = value.currency)
+  def decodeMoneyWirePO(value: pb.MoneyWirePO): MoneyWire = MoneyWire(minorUnits = value.minorUnits, currency = value.currency)
+
+  def encodeMoneyStoragePO(value: MoneyPO): pb.MoneyStoragePO = pb.MoneyStoragePO(minorUnits = value.minorUnits, currency = value.currency)
+  def decodeMoneyStoragePO(value: pb.MoneyStoragePO): MoneyPO = MoneyPO(minorUnits = value.minorUnits, currency = value.currency)
+
+  def encodeFundSharePO(value: FundShare): pb.FundSharePO = pb.FundSharePO(fundCode = value.fundCode, shares = Some(encodeTaExactTextPO(value.shares)), nav = Some(encodeTaExactTextPO(value.nav)))
+  def decodeFundSharePO(value: pb.FundSharePO): FundShare = FundShare(fundCode = value.fundCode, shares = decodeTaExactTextPO(req(value.shares)), nav = decodeTaExactTextPO(req(value.nav)))
+
+  def encodeTaRequestIdPO(value: TaRequestId): pb.TaRequestIdPO = pb.TaRequestIdPO(value = value.value)
+  def decodeTaRequestIdPO(value: pb.TaRequestIdPO): TaRequestId = TaRequestId(value = value.value)
+
+  def encodeSipRevisionConfigPO(value: SipRevisionConfig): pb.SipRevisionConfigPO = pb.SipRevisionConfigPO(
+    revision = Some(encodeRevisionIdPO(value.revision)),
+    effectiveSlot = value.effectiveSlot,
+    investorAccountId = Some(encodeAccountIdPO(value.investorAccountId)),
+    fundCollectionAccountId = Some(encodeAccountIdPO(value.fundCollectionAccountId)),
+    fundCode = value.fundCode,
+    amount = Some(encodeMoneyPO(value.amount))
+  )
+  def decodeSipRevisionConfigPO(value: pb.SipRevisionConfigPO): SipRevisionConfig = SipRevisionConfig(
+    revision = decodeRevisionIdPO(req(value.revision)),
+    effectiveSlot = value.effectiveSlot,
+    investorAccountId = decodeAccountIdPO(req(value.investorAccountId)),
+    fundCollectionAccountId = decodeAccountIdPO(req(value.fundCollectionAccountId)),
+    fundCode = value.fundCode,
+    amount = decodeMoneyPO(req(value.amount))
+  )
+
+  def encodeSipOccurrencePO(value: SipOccurrence): pb.SipOccurrencePO = pb.SipOccurrencePO(
+    planId = Some(encodePlanIdPO(value.planId)),
+    revision = Some(encodeRevisionIdPO(value.revision)),
+    dueSlot = value.dueSlot,
+    occurrenceId = Some(encodeOccurrenceIdPO(value.occurrenceId)),
+    operationId = Some(encodeOperationIdPO(value.operationId)),
+    fundOrderId = Some(encodeFundOrderIdPO(value.fundOrderId)),
+    config = Some(encodeSipRevisionConfigPO(value.config))
+  )
+  def decodeSipOccurrencePO(value: pb.SipOccurrencePO): SipOccurrence = SipOccurrence(
+    planId = decodePlanIdPO(req(value.planId)),
+    revision = decodeRevisionIdPO(req(value.revision)),
+    dueSlot = value.dueSlot,
+    occurrenceId = decodeOccurrenceIdPO(req(value.occurrenceId)),
+    operationId = decodeOperationIdPO(req(value.operationId)),
+    fundOrderId = decodeFundOrderIdPO(req(value.fundOrderId)),
+    config = decodeSipRevisionConfigPO(req(value.config))
+  )
+
+  def encodeTaReceiptPO(value: TaReceipt): pb.TaReceiptPO = pb.TaReceiptPO(
+    fundOrderId = Some(encodeFundOrderIdPO(value.fundOrderId)),
+    paymentTxId = Some(encodeTxIdPO(value.paymentTxId)),
+    taRequestId = Some(encodeTaRequestIdPO(value.taRequestId)),
+    investorAccountId = Some(encodeAccountIdPO(value.investorAccountId)),
+    fundCollectionAccountId = Some(encodeAccountIdPO(value.fundCollectionAccountId)),
+    fundCode = value.fundCode,
+    amount = Some(encodeMoneyPO(value.amount)),
+    principal = Some(encodeAmountDecimalPO(value.principal)),
+    receiptId = value.receiptId,
+    receiptBody = value.receiptBody,
+    taReference = value.taReference,
+    status = value.status,
+    shares = Some(encodeTaExactTextPO(value.shares)),
+    nav = Some(encodeTaExactTextPO(value.nav)),
+    reason = value.reason
+  )
+  def decodeTaReceiptPO(value: pb.TaReceiptPO): TaReceipt = TaReceipt(
+    fundOrderId = decodeFundOrderIdPO(req(value.fundOrderId)),
+    paymentTxId = decodeTxIdPO(req(value.paymentTxId)),
+    taRequestId = decodeTaRequestIdPO(req(value.taRequestId)),
+    investorAccountId = decodeAccountIdPO(req(value.investorAccountId)),
+    fundCollectionAccountId = decodeAccountIdPO(req(value.fundCollectionAccountId)),
+    fundCode = value.fundCode,
+    amount = decodeMoneyPO(req(value.amount)),
+    principal = decodeAmountDecimalPO(req(value.principal)),
+    receiptId = value.receiptId,
+    receiptBody = value.receiptBody,
+    taReference = value.taReference,
+    status = value.status,
+    shares = decodeTaExactTextPO(req(value.shares)),
+    nav = decodeTaExactTextPO(req(value.nav)),
+    reason = value.reason
+  )
+
+  def encodeBankPaymentOriginalPO(value: BankPaymentOriginal): pb.BankPaymentOriginalPO = pb.BankPaymentOriginalPO(
+    operationId = Some(encodeOperationIdPO(value.operationId)),
+    fundOrderId = Some(encodeFundOrderIdPO(value.fundOrderId)),
+    investorAccountId = Some(encodeAccountIdPO(value.investorAccountId)),
+    fundCollectionAccountId = Some(encodeAccountIdPO(value.fundCollectionAccountId)),
+    fundCode = value.fundCode,
+    amount = Some(encodeMoneyPO(value.amount))
+  )
+  def decodeBankPaymentOriginalPO(value: pb.BankPaymentOriginalPO): BankPaymentOriginal = BankPaymentOriginal(
+    operationId = decodeOperationIdPO(req(value.operationId)),
+    fundOrderId = decodeFundOrderIdPO(req(value.fundOrderId)),
+    investorAccountId = decodeAccountIdPO(req(value.investorAccountId)),
+    fundCollectionAccountId = decodeAccountIdPO(req(value.fundCollectionAccountId)),
+    fundCode = value.fundCode,
+    amount = decodeMoneyPO(req(value.amount))
+  )
+
+  def encodeBankPaymentArgsPO(value: BankPaymentArgs): pb.BankPaymentArgsPO = pb.BankPaymentArgsPO(
+    investorAccountId = Some(encodeAccountIdPO(value.investorAccountId)),
+    fundOrderId = Some(encodeFundOrderIdPO(value.fundOrderId)),
+    fundCollectionAccountId = Some(encodeAccountIdPO(value.fundCollectionAccountId)),
+    amount = Some(encodeMoneyPO(value.amount))
+  )
+  def decodeBankPaymentArgsPO(value: pb.BankPaymentArgsPO): BankPaymentArgs = BankPaymentArgs(
+    investorAccountId = decodeAccountIdPO(req(value.investorAccountId)),
+    fundOrderId = decodeFundOrderIdPO(req(value.fundOrderId)),
+    fundCollectionAccountId = decodeAccountIdPO(req(value.fundCollectionAccountId)),
+    amount = decodeMoneyPO(req(value.amount))
+  )
+
+  def encodeReserveInvestorFundsPrepareInputPO(value: ReserveInvestorFundsPrepareInput): pb.ReserveInvestorFundsPrepareInputPO = pb.ReserveInvestorFundsPrepareInputPO(txid = Some(encodeTxIdPO(value.txid)), resource = Some(encodeAccountIdPO(value.resource)), amount = Some(encodeMoneyPO(value.amount)))
+  def decodeReserveInvestorFundsPrepareInputPO(value: pb.ReserveInvestorFundsPrepareInputPO): ReserveInvestorFundsPrepareInput = ReserveInvestorFundsPrepareInput(txid = decodeTxIdPO(req(value.txid)), resource = decodeAccountIdPO(req(value.resource)), amount = decodeMoneyPO(req(value.amount)))
+
+  def encodeReserveInvestorFundsPrepareReceiptPO(value: ReserveInvestorFundsPrepareReceipt): pb.ReserveInvestorFundsPrepareReceiptPO = pb.ReserveInvestorFundsPrepareReceiptPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeAccountIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = Some(encodeTxIdPO(value.payloadTxid)),
+    payloadResource = Some(encodeAccountIdPO(value.payloadResource)),
+    payloadAmount = Some(encodeMoneyPO(value.payloadAmount)),
+    payloadCurrency = value.payloadCurrency,
+    payloadAvailable = Some(encodeMoneyPO(value.payloadAvailable))
+  )
+  def decodeReserveInvestorFundsPrepareReceiptPO(value: pb.ReserveInvestorFundsPrepareReceiptPO): ReserveInvestorFundsPrepareReceipt = ReserveInvestorFundsPrepareReceipt(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeAccountIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = decodeTxIdPO(req(value.payloadTxid)),
+    payloadResource = decodeAccountIdPO(req(value.payloadResource)),
+    payloadAmount = decodeMoneyPO(req(value.payloadAmount)),
+    payloadCurrency = value.payloadCurrency,
+    payloadAvailable = decodeMoneyPO(req(value.payloadAvailable))
+  )
+
+  def encodeReserveInvestorFundsPrepareQueryPO(value: ReserveInvestorFundsPrepareQuery): pb.ReserveInvestorFundsPrepareQueryPO = pb.ReserveInvestorFundsPrepareQueryPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeAccountIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase
+  )
+  def decodeReserveInvestorFundsPrepareQueryPO(value: pb.ReserveInvestorFundsPrepareQueryPO): ReserveInvestorFundsPrepareQuery = ReserveInvestorFundsPrepareQuery(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeAccountIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase
+  )
+
+  def encodeReserveInvestorFundsCommitInputPO(value: ReserveInvestorFundsCommitInput): pb.ReserveInvestorFundsCommitInputPO = pb.ReserveInvestorFundsCommitInputPO(txid = Some(encodeTxIdPO(value.txid)), resource = Some(encodeAccountIdPO(value.resource)), amount = Some(encodeMoneyPO(value.amount)))
+  def decodeReserveInvestorFundsCommitInputPO(value: pb.ReserveInvestorFundsCommitInputPO): ReserveInvestorFundsCommitInput = ReserveInvestorFundsCommitInput(txid = decodeTxIdPO(req(value.txid)), resource = decodeAccountIdPO(req(value.resource)), amount = decodeMoneyPO(req(value.amount)))
+
+  def encodeReserveInvestorFundsCommitReceiptPO(value: ReserveInvestorFundsCommitReceipt): pb.ReserveInvestorFundsCommitReceiptPO = pb.ReserveInvestorFundsCommitReceiptPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeAccountIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = Some(encodeTxIdPO(value.payloadTxid)),
+    payloadResource = Some(encodeAccountIdPO(value.payloadResource)),
+    payloadAmount = Some(encodeMoneyPO(value.payloadAmount))
+  )
+  def decodeReserveInvestorFundsCommitReceiptPO(value: pb.ReserveInvestorFundsCommitReceiptPO): ReserveInvestorFundsCommitReceipt = ReserveInvestorFundsCommitReceipt(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeAccountIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = decodeTxIdPO(req(value.payloadTxid)),
+    payloadResource = decodeAccountIdPO(req(value.payloadResource)),
+    payloadAmount = decodeMoneyPO(req(value.payloadAmount))
+  )
+
+  def encodeReserveInvestorFundsCommitQueryPO(value: ReserveInvestorFundsCommitQuery): pb.ReserveInvestorFundsCommitQueryPO = pb.ReserveInvestorFundsCommitQueryPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeAccountIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase
+  )
+  def decodeReserveInvestorFundsCommitQueryPO(value: pb.ReserveInvestorFundsCommitQueryPO): ReserveInvestorFundsCommitQuery = ReserveInvestorFundsCommitQuery(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeAccountIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase
+  )
+
+  def encodeReserveInvestorFundsCompensateInputPO(value: ReserveInvestorFundsCompensateInput): pb.ReserveInvestorFundsCompensateInputPO = pb.ReserveInvestorFundsCompensateInputPO(txid = Some(encodeTxIdPO(value.txid)), resource = Some(encodeAccountIdPO(value.resource)), amount = Some(encodeMoneyPO(value.amount)))
+  def decodeReserveInvestorFundsCompensateInputPO(value: pb.ReserveInvestorFundsCompensateInputPO): ReserveInvestorFundsCompensateInput = ReserveInvestorFundsCompensateInput(txid = decodeTxIdPO(req(value.txid)), resource = decodeAccountIdPO(req(value.resource)), amount = decodeMoneyPO(req(value.amount)))
+
+  def encodeReserveInvestorFundsCompensateReceiptPO(value: ReserveInvestorFundsCompensateReceipt): pb.ReserveInvestorFundsCompensateReceiptPO = pb.ReserveInvestorFundsCompensateReceiptPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeAccountIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = Some(encodeTxIdPO(value.payloadTxid)),
+    payloadResource = Some(encodeAccountIdPO(value.payloadResource)),
+    payloadAmount = Some(encodeMoneyPO(value.payloadAmount)),
+    payloadCurrency = value.payloadCurrency,
+    payloadAvailable = Some(encodeMoneyPO(value.payloadAvailable))
+  )
+  def decodeReserveInvestorFundsCompensateReceiptPO(value: pb.ReserveInvestorFundsCompensateReceiptPO): ReserveInvestorFundsCompensateReceipt = ReserveInvestorFundsCompensateReceipt(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeAccountIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = decodeTxIdPO(req(value.payloadTxid)),
+    payloadResource = decodeAccountIdPO(req(value.payloadResource)),
+    payloadAmount = decodeMoneyPO(req(value.payloadAmount)),
+    payloadCurrency = value.payloadCurrency,
+    payloadAvailable = decodeMoneyPO(req(value.payloadAvailable))
+  )
+
+  def encodeReserveInvestorFundsCompensateQueryPO(value: ReserveInvestorFundsCompensateQuery): pb.ReserveInvestorFundsCompensateQueryPO = pb.ReserveInvestorFundsCompensateQueryPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeAccountIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase
+  )
+  def decodeReserveInvestorFundsCompensateQueryPO(value: pb.ReserveInvestorFundsCompensateQueryPO): ReserveInvestorFundsCompensateQuery = ReserveInvestorFundsCompensateQuery(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeAccountIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase
+  )
+
+  def encodeCreditFundCollectionPrepareInputPO(value: CreditFundCollectionPrepareInput): pb.CreditFundCollectionPrepareInputPO = pb.CreditFundCollectionPrepareInputPO(txid = Some(encodeTxIdPO(value.txid)), resource = Some(encodeAccountIdPO(value.resource)), amount = Some(encodeMoneyPO(value.amount)))
+  def decodeCreditFundCollectionPrepareInputPO(value: pb.CreditFundCollectionPrepareInputPO): CreditFundCollectionPrepareInput = CreditFundCollectionPrepareInput(txid = decodeTxIdPO(req(value.txid)), resource = decodeAccountIdPO(req(value.resource)), amount = decodeMoneyPO(req(value.amount)))
+
+  def encodeCreditFundCollectionPrepareReceiptPO(value: CreditFundCollectionPrepareReceipt): pb.CreditFundCollectionPrepareReceiptPO = pb.CreditFundCollectionPrepareReceiptPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeAccountIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = Some(encodeTxIdPO(value.payloadTxid)),
+    payloadResource = Some(encodeAccountIdPO(value.payloadResource)),
+    payloadAmount = Some(encodeMoneyPO(value.payloadAmount))
+  )
+  def decodeCreditFundCollectionPrepareReceiptPO(value: pb.CreditFundCollectionPrepareReceiptPO): CreditFundCollectionPrepareReceipt = CreditFundCollectionPrepareReceipt(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeAccountIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = decodeTxIdPO(req(value.payloadTxid)),
+    payloadResource = decodeAccountIdPO(req(value.payloadResource)),
+    payloadAmount = decodeMoneyPO(req(value.payloadAmount))
+  )
+
+  def encodeCreditFundCollectionPrepareQueryPO(value: CreditFundCollectionPrepareQuery): pb.CreditFundCollectionPrepareQueryPO = pb.CreditFundCollectionPrepareQueryPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeAccountIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase
+  )
+  def decodeCreditFundCollectionPrepareQueryPO(value: pb.CreditFundCollectionPrepareQueryPO): CreditFundCollectionPrepareQuery = CreditFundCollectionPrepareQuery(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeAccountIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase
+  )
+
+  def encodeCreditFundCollectionCommitInputPO(value: CreditFundCollectionCommitInput): pb.CreditFundCollectionCommitInputPO = pb.CreditFundCollectionCommitInputPO(txid = Some(encodeTxIdPO(value.txid)), resource = Some(encodeAccountIdPO(value.resource)), amount = Some(encodeMoneyPO(value.amount)))
+  def decodeCreditFundCollectionCommitInputPO(value: pb.CreditFundCollectionCommitInputPO): CreditFundCollectionCommitInput = CreditFundCollectionCommitInput(txid = decodeTxIdPO(req(value.txid)), resource = decodeAccountIdPO(req(value.resource)), amount = decodeMoneyPO(req(value.amount)))
+
+  def encodeCreditFundCollectionCommitReceiptPO(value: CreditFundCollectionCommitReceipt): pb.CreditFundCollectionCommitReceiptPO = pb.CreditFundCollectionCommitReceiptPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeAccountIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = Some(encodeTxIdPO(value.payloadTxid)),
+    payloadResource = Some(encodeAccountIdPO(value.payloadResource)),
+    payloadAmount = Some(encodeMoneyPO(value.payloadAmount)),
+    payloadCurrency = value.payloadCurrency,
+    payloadAvailable = Some(encodeMoneyPO(value.payloadAvailable))
+  )
+  def decodeCreditFundCollectionCommitReceiptPO(value: pb.CreditFundCollectionCommitReceiptPO): CreditFundCollectionCommitReceipt = CreditFundCollectionCommitReceipt(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeAccountIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = decodeTxIdPO(req(value.payloadTxid)),
+    payloadResource = decodeAccountIdPO(req(value.payloadResource)),
+    payloadAmount = decodeMoneyPO(req(value.payloadAmount)),
+    payloadCurrency = value.payloadCurrency,
+    payloadAvailable = decodeMoneyPO(req(value.payloadAvailable))
+  )
+
+  def encodeCreditFundCollectionCommitQueryPO(value: CreditFundCollectionCommitQuery): pb.CreditFundCollectionCommitQueryPO = pb.CreditFundCollectionCommitQueryPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeAccountIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase
+  )
+  def decodeCreditFundCollectionCommitQueryPO(value: pb.CreditFundCollectionCommitQueryPO): CreditFundCollectionCommitQuery = CreditFundCollectionCommitQuery(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeAccountIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase
+  )
+
+  def encodeCreditFundCollectionCompensateInputPO(value: CreditFundCollectionCompensateInput): pb.CreditFundCollectionCompensateInputPO = pb.CreditFundCollectionCompensateInputPO(txid = Some(encodeTxIdPO(value.txid)), resource = Some(encodeAccountIdPO(value.resource)), amount = Some(encodeMoneyPO(value.amount)))
+  def decodeCreditFundCollectionCompensateInputPO(value: pb.CreditFundCollectionCompensateInputPO): CreditFundCollectionCompensateInput = CreditFundCollectionCompensateInput(txid = decodeTxIdPO(req(value.txid)), resource = decodeAccountIdPO(req(value.resource)), amount = decodeMoneyPO(req(value.amount)))
+
+  def encodeCreditFundCollectionCompensateReceiptPO(value: CreditFundCollectionCompensateReceipt): pb.CreditFundCollectionCompensateReceiptPO = pb.CreditFundCollectionCompensateReceiptPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeAccountIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = Some(encodeTxIdPO(value.payloadTxid)),
+    payloadResource = Some(encodeAccountIdPO(value.payloadResource)),
+    payloadAmount = Some(encodeMoneyPO(value.payloadAmount))
+  )
+  def decodeCreditFundCollectionCompensateReceiptPO(value: pb.CreditFundCollectionCompensateReceiptPO): CreditFundCollectionCompensateReceipt = CreditFundCollectionCompensateReceipt(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeAccountIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = decodeTxIdPO(req(value.payloadTxid)),
+    payloadResource = decodeAccountIdPO(req(value.payloadResource)),
+    payloadAmount = decodeMoneyPO(req(value.payloadAmount))
+  )
+
+  def encodeCreditFundCollectionCompensateQueryPO(value: CreditFundCollectionCompensateQuery): pb.CreditFundCollectionCompensateQueryPO = pb.CreditFundCollectionCompensateQueryPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeAccountIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase
+  )
+  def decodeCreditFundCollectionCompensateQueryPO(value: pb.CreditFundCollectionCompensateQueryPO): CreditFundCollectionCompensateQuery = CreditFundCollectionCompensateQuery(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeAccountIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase
+  )
+
+  def encodeReserveCashFundOrderPrepareInputPO(value: ReserveCashFundOrderPrepareInput): pb.ReserveCashFundOrderPrepareInputPO = pb.ReserveCashFundOrderPrepareInputPO(txid = Some(encodeTxIdPO(value.txid)), resource = Some(encodeFundOrderIdPO(value.resource)), amount = Some(encodeMoneyPO(value.amount)))
+  def decodeReserveCashFundOrderPrepareInputPO(value: pb.ReserveCashFundOrderPrepareInputPO): ReserveCashFundOrderPrepareInput = ReserveCashFundOrderPrepareInput(txid = decodeTxIdPO(req(value.txid)), resource = decodeFundOrderIdPO(req(value.resource)), amount = decodeMoneyPO(req(value.amount)))
+
+  def encodeReserveCashFundOrderPrepareReceiptPO(value: ReserveCashFundOrderPrepareReceipt): pb.ReserveCashFundOrderPrepareReceiptPO = pb.ReserveCashFundOrderPrepareReceiptPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeFundOrderIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = Some(encodeTxIdPO(value.payloadTxid)),
+    payloadResource = Some(encodeFundOrderIdPO(value.payloadResource)),
+    payloadAmount = Some(encodeMoneyPO(value.payloadAmount))
+  )
+  def decodeReserveCashFundOrderPrepareReceiptPO(value: pb.ReserveCashFundOrderPrepareReceiptPO): ReserveCashFundOrderPrepareReceipt = ReserveCashFundOrderPrepareReceipt(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeFundOrderIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = decodeTxIdPO(req(value.payloadTxid)),
+    payloadResource = decodeFundOrderIdPO(req(value.payloadResource)),
+    payloadAmount = decodeMoneyPO(req(value.payloadAmount))
+  )
+
+  def encodeReserveCashFundOrderPrepareQueryPO(value: ReserveCashFundOrderPrepareQuery): pb.ReserveCashFundOrderPrepareQueryPO = pb.ReserveCashFundOrderPrepareQueryPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeFundOrderIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase
+  )
+  def decodeReserveCashFundOrderPrepareQueryPO(value: pb.ReserveCashFundOrderPrepareQueryPO): ReserveCashFundOrderPrepareQuery = ReserveCashFundOrderPrepareQuery(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeFundOrderIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase
+  )
+
+  def encodeReserveCashFundOrderCommitInputPO(value: ReserveCashFundOrderCommitInput): pb.ReserveCashFundOrderCommitInputPO = pb.ReserveCashFundOrderCommitInputPO(txid = Some(encodeTxIdPO(value.txid)), resource = Some(encodeFundOrderIdPO(value.resource)), amount = Some(encodeMoneyPO(value.amount)))
+  def decodeReserveCashFundOrderCommitInputPO(value: pb.ReserveCashFundOrderCommitInputPO): ReserveCashFundOrderCommitInput = ReserveCashFundOrderCommitInput(txid = decodeTxIdPO(req(value.txid)), resource = decodeFundOrderIdPO(req(value.resource)), amount = decodeMoneyPO(req(value.amount)))
+
+  def encodeReserveCashFundOrderCommitReceiptPO(value: ReserveCashFundOrderCommitReceipt): pb.ReserveCashFundOrderCommitReceiptPO = pb.ReserveCashFundOrderCommitReceiptPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeFundOrderIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = Some(encodeTxIdPO(value.payloadTxid)),
+    payloadResource = Some(encodeFundOrderIdPO(value.payloadResource)),
+    payloadAmount = Some(encodeMoneyPO(value.payloadAmount))
+  )
+  def decodeReserveCashFundOrderCommitReceiptPO(value: pb.ReserveCashFundOrderCommitReceiptPO): ReserveCashFundOrderCommitReceipt = ReserveCashFundOrderCommitReceipt(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeFundOrderIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = decodeTxIdPO(req(value.payloadTxid)),
+    payloadResource = decodeFundOrderIdPO(req(value.payloadResource)),
+    payloadAmount = decodeMoneyPO(req(value.payloadAmount))
+  )
+
+  def encodeReserveCashFundOrderCommitQueryPO(value: ReserveCashFundOrderCommitQuery): pb.ReserveCashFundOrderCommitQueryPO = pb.ReserveCashFundOrderCommitQueryPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeFundOrderIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase
+  )
+  def decodeReserveCashFundOrderCommitQueryPO(value: pb.ReserveCashFundOrderCommitQueryPO): ReserveCashFundOrderCommitQuery = ReserveCashFundOrderCommitQuery(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeFundOrderIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase
+  )
+
+  def encodeReserveCashFundOrderCompensateInputPO(value: ReserveCashFundOrderCompensateInput): pb.ReserveCashFundOrderCompensateInputPO = pb.ReserveCashFundOrderCompensateInputPO(txid = Some(encodeTxIdPO(value.txid)), resource = Some(encodeFundOrderIdPO(value.resource)), amount = Some(encodeMoneyPO(value.amount)))
+  def decodeReserveCashFundOrderCompensateInputPO(value: pb.ReserveCashFundOrderCompensateInputPO): ReserveCashFundOrderCompensateInput = ReserveCashFundOrderCompensateInput(txid = decodeTxIdPO(req(value.txid)), resource = decodeFundOrderIdPO(req(value.resource)), amount = decodeMoneyPO(req(value.amount)))
+
+  def encodeReserveCashFundOrderCompensateReceiptPO(value: ReserveCashFundOrderCompensateReceipt): pb.ReserveCashFundOrderCompensateReceiptPO = pb.ReserveCashFundOrderCompensateReceiptPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeFundOrderIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = Some(encodeTxIdPO(value.payloadTxid)),
+    payloadResource = Some(encodeFundOrderIdPO(value.payloadResource)),
+    payloadAmount = Some(encodeMoneyPO(value.payloadAmount))
+  )
+  def decodeReserveCashFundOrderCompensateReceiptPO(value: pb.ReserveCashFundOrderCompensateReceiptPO): ReserveCashFundOrderCompensateReceipt = ReserveCashFundOrderCompensateReceipt(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeFundOrderIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = decodeTxIdPO(req(value.payloadTxid)),
+    payloadResource = decodeFundOrderIdPO(req(value.payloadResource)),
+    payloadAmount = decodeMoneyPO(req(value.payloadAmount))
+  )
+
+  def encodeReserveCashFundOrderCompensateQueryPO(value: ReserveCashFundOrderCompensateQuery): pb.ReserveCashFundOrderCompensateQueryPO = pb.ReserveCashFundOrderCompensateQueryPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeFundOrderIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase
+  )
+  def decodeReserveCashFundOrderCompensateQueryPO(value: pb.ReserveCashFundOrderCompensateQueryPO): ReserveCashFundOrderCompensateQuery = ReserveCashFundOrderCompensateQuery(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeFundOrderIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase
+  )
+
+  def encodeBankPaymentResultPO(value: BankPaymentResult): pb.BankPaymentResultPO = pb.BankPaymentResultPO(txid = Some(encodeTxIdPO(value.txid)))
+  def decodeBankPaymentResultPO(value: pb.BankPaymentResultPO): BankPaymentResult = BankPaymentResult(txid = decodeTxIdPO(req(value.txid)))
+
+  def encodeBankRefundOriginalPO(value: BankRefundOriginal): pb.BankRefundOriginalPO = pb.BankRefundOriginalPO(
+    fundOrderId = Some(encodeFundOrderIdPO(value.fundOrderId)),
+    paymentTxId = Some(encodeTxIdPO(value.paymentTxId)),
+    investorAccountId = Some(encodeAccountIdPO(value.investorAccountId)),
+    fundCollectionAccountId = Some(encodeAccountIdPO(value.fundCollectionAccountId)),
+    amount = Some(encodeMoneyPO(value.amount)),
+    refundOperationId = Some(encodeOperationIdPO(value.refundOperationId))
+  )
+  def decodeBankRefundOriginalPO(value: pb.BankRefundOriginalPO): BankRefundOriginal = BankRefundOriginal(
+    fundOrderId = decodeFundOrderIdPO(req(value.fundOrderId)),
+    paymentTxId = decodeTxIdPO(req(value.paymentTxId)),
+    investorAccountId = decodeAccountIdPO(req(value.investorAccountId)),
+    fundCollectionAccountId = decodeAccountIdPO(req(value.fundCollectionAccountId)),
+    amount = decodeMoneyPO(req(value.amount)),
+    refundOperationId = decodeOperationIdPO(req(value.refundOperationId))
+  )
+
+  def encodeBankRefundArgsPO(value: BankRefundArgs): pb.BankRefundArgsPO = pb.BankRefundArgsPO(fundCollectionAccountId = Some(encodeAccountIdPO(value.fundCollectionAccountId)), investorAccountId = Some(encodeAccountIdPO(value.investorAccountId)), amount = Some(encodeMoneyPO(value.amount)))
+  def decodeBankRefundArgsPO(value: pb.BankRefundArgsPO): BankRefundArgs = BankRefundArgs(fundCollectionAccountId = decodeAccountIdPO(req(value.fundCollectionAccountId)), investorAccountId = decodeAccountIdPO(req(value.investorAccountId)), amount = decodeMoneyPO(req(value.amount)))
+
+  def encodeDebitFundCollectionPrepareInputPO(value: DebitFundCollectionPrepareInput): pb.DebitFundCollectionPrepareInputPO = pb.DebitFundCollectionPrepareInputPO(txid = Some(encodeTxIdPO(value.txid)), resource = Some(encodeAccountIdPO(value.resource)), amount = Some(encodeMoneyPO(value.amount)))
+  def decodeDebitFundCollectionPrepareInputPO(value: pb.DebitFundCollectionPrepareInputPO): DebitFundCollectionPrepareInput = DebitFundCollectionPrepareInput(txid = decodeTxIdPO(req(value.txid)), resource = decodeAccountIdPO(req(value.resource)), amount = decodeMoneyPO(req(value.amount)))
+
+  def encodeDebitFundCollectionPrepareReceiptPO(value: DebitFundCollectionPrepareReceipt): pb.DebitFundCollectionPrepareReceiptPO = pb.DebitFundCollectionPrepareReceiptPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeAccountIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = Some(encodeTxIdPO(value.payloadTxid)),
+    payloadResource = Some(encodeAccountIdPO(value.payloadResource)),
+    payloadAmount = Some(encodeMoneyPO(value.payloadAmount)),
+    payloadCurrency = value.payloadCurrency,
+    payloadAvailable = Some(encodeMoneyPO(value.payloadAvailable))
+  )
+  def decodeDebitFundCollectionPrepareReceiptPO(value: pb.DebitFundCollectionPrepareReceiptPO): DebitFundCollectionPrepareReceipt = DebitFundCollectionPrepareReceipt(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeAccountIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = decodeTxIdPO(req(value.payloadTxid)),
+    payloadResource = decodeAccountIdPO(req(value.payloadResource)),
+    payloadAmount = decodeMoneyPO(req(value.payloadAmount)),
+    payloadCurrency = value.payloadCurrency,
+    payloadAvailable = decodeMoneyPO(req(value.payloadAvailable))
+  )
+
+  def encodeDebitFundCollectionPrepareQueryPO(value: DebitFundCollectionPrepareQuery): pb.DebitFundCollectionPrepareQueryPO = pb.DebitFundCollectionPrepareQueryPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeAccountIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase
+  )
+  def decodeDebitFundCollectionPrepareQueryPO(value: pb.DebitFundCollectionPrepareQueryPO): DebitFundCollectionPrepareQuery = DebitFundCollectionPrepareQuery(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeAccountIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase
+  )
+
+  def encodeDebitFundCollectionCommitInputPO(value: DebitFundCollectionCommitInput): pb.DebitFundCollectionCommitInputPO = pb.DebitFundCollectionCommitInputPO(txid = Some(encodeTxIdPO(value.txid)), resource = Some(encodeAccountIdPO(value.resource)), amount = Some(encodeMoneyPO(value.amount)))
+  def decodeDebitFundCollectionCommitInputPO(value: pb.DebitFundCollectionCommitInputPO): DebitFundCollectionCommitInput = DebitFundCollectionCommitInput(txid = decodeTxIdPO(req(value.txid)), resource = decodeAccountIdPO(req(value.resource)), amount = decodeMoneyPO(req(value.amount)))
+
+  def encodeDebitFundCollectionCommitReceiptPO(value: DebitFundCollectionCommitReceipt): pb.DebitFundCollectionCommitReceiptPO = pb.DebitFundCollectionCommitReceiptPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeAccountIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = Some(encodeTxIdPO(value.payloadTxid)),
+    payloadResource = Some(encodeAccountIdPO(value.payloadResource)),
+    payloadAmount = Some(encodeMoneyPO(value.payloadAmount))
+  )
+  def decodeDebitFundCollectionCommitReceiptPO(value: pb.DebitFundCollectionCommitReceiptPO): DebitFundCollectionCommitReceipt = DebitFundCollectionCommitReceipt(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeAccountIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = decodeTxIdPO(req(value.payloadTxid)),
+    payloadResource = decodeAccountIdPO(req(value.payloadResource)),
+    payloadAmount = decodeMoneyPO(req(value.payloadAmount))
+  )
+
+  def encodeDebitFundCollectionCommitQueryPO(value: DebitFundCollectionCommitQuery): pb.DebitFundCollectionCommitQueryPO = pb.DebitFundCollectionCommitQueryPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeAccountIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase
+  )
+  def decodeDebitFundCollectionCommitQueryPO(value: pb.DebitFundCollectionCommitQueryPO): DebitFundCollectionCommitQuery = DebitFundCollectionCommitQuery(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeAccountIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase
+  )
+
+  def encodeDebitFundCollectionCompensateInputPO(value: DebitFundCollectionCompensateInput): pb.DebitFundCollectionCompensateInputPO = pb.DebitFundCollectionCompensateInputPO(txid = Some(encodeTxIdPO(value.txid)), resource = Some(encodeAccountIdPO(value.resource)), amount = Some(encodeMoneyPO(value.amount)))
+  def decodeDebitFundCollectionCompensateInputPO(value: pb.DebitFundCollectionCompensateInputPO): DebitFundCollectionCompensateInput = DebitFundCollectionCompensateInput(txid = decodeTxIdPO(req(value.txid)), resource = decodeAccountIdPO(req(value.resource)), amount = decodeMoneyPO(req(value.amount)))
+
+  def encodeDebitFundCollectionCompensateReceiptPO(value: DebitFundCollectionCompensateReceipt): pb.DebitFundCollectionCompensateReceiptPO = pb.DebitFundCollectionCompensateReceiptPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeAccountIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = Some(encodeTxIdPO(value.payloadTxid)),
+    payloadResource = Some(encodeAccountIdPO(value.payloadResource)),
+    payloadAmount = Some(encodeMoneyPO(value.payloadAmount)),
+    payloadCurrency = value.payloadCurrency,
+    payloadAvailable = Some(encodeMoneyPO(value.payloadAvailable))
+  )
+  def decodeDebitFundCollectionCompensateReceiptPO(value: pb.DebitFundCollectionCompensateReceiptPO): DebitFundCollectionCompensateReceipt = DebitFundCollectionCompensateReceipt(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeAccountIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase,
+    payloadTxid = decodeTxIdPO(req(value.payloadTxid)),
+    payloadResource = decodeAccountIdPO(req(value.payloadResource)),
+    payloadAmount = decodeMoneyPO(req(value.payloadAmount)),
+    payloadCurrency = value.payloadCurrency,
+    payloadAvailable = decodeMoneyPO(req(value.payloadAvailable))
+  )
+
+  def encodeDebitFundCollectionCompensateQueryPO(value: DebitFundCollectionCompensateQuery): pb.DebitFundCollectionCompensateQueryPO = pb.DebitFundCollectionCompensateQueryPO(
+    transaction = Some(encodeTxIdPO(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = Some(encodeAccountIdPO(value.resource)),
+    step = value.step,
+    phase = value.phase
+  )
+  def decodeDebitFundCollectionCompensateQueryPO(value: pb.DebitFundCollectionCompensateQueryPO): DebitFundCollectionCompensateQuery = DebitFundCollectionCompensateQuery(
+    transaction = decodeTxIdPO(req(value.transaction)),
+    definitionVersion = value.definitionVersion,
+    argsDigest = value.argsDigest,
+    participant = value.participant,
+    resource = decodeAccountIdPO(req(value.resource)),
+    step = value.step,
+    phase = value.phase
+  )
+
+  def encodeCreditOriginalInvestorPrepareInputPO(value: CreditOriginalInvestorPrepareInput): pb.CreditOriginalInvestorPrepareInputPO = pb.CreditOriginalInvestorPrepareInputPO(txid = Some(encodeTxIdPO(value.txid)), resource = Some(encodeAccountIdPO(value.resource)), amount = Some(encodeMoneyPO(value.amount)))
+  def decodeCreditOriginalInvestorPrepareInputPO(value: pb.CreditOriginalInvestorPrepareInputPO): CreditOriginalInvestorPrepareInput = CreditOriginalInvestorPrepareInput(txid = decodeTxIdPO(req(value.txid)), resource = decodeAccountIdPO(req(value.resource)), amount = decodeMoneyPO(req(value.amount)))
+
 }

@@ -31,6 +31,8 @@ import { family as externalEventBridge } from './external-event-bridge.mjs';
 import { family as protoSchema } from './proto-schema.mjs';
 import { family as protoConverter } from './proto-converter.mjs';
 import { family as serializationAdapter } from './serialization-adapter.mjs';
+import { family as serviceRuntime } from './service-runtime.mjs';
+import { family as projectScaffold } from './project-scaffold.mjs';
 
 const CURATED_FAMILIES = [
   aggregateRulesFormal,
@@ -54,6 +56,8 @@ const CURATED_FAMILIES = [
   protoSchema,
   protoConverter,
   serializationAdapter,
+  serviceRuntime,
+  projectScaffold,
 ];
 
 for (const family of CURATED_FAMILIES) registerFamily(family);

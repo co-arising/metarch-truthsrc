@@ -600,14 +600,14 @@ function emitExecution(md) {
     if (slot.type === 'String') {
       return '        ' + slot.slot + ' = Some(identity[String](state.inputs.' + slot.field + ')),';
     }
-    return '        ' + slot.slot + ' = Some(' + converters + '.encode' + slot.type + 'PB(state.inputs.' +
+    return '        ' + slot.slot + ' = Some(' + converters + '.encode' + slot.type + 'PO(state.inputs.' +
       slot.field + ')),';
   };
   const decodeLine = slot => {
     if (slot.type === 'String') {
       return '          ' + slot.field + ' = identity[String](durable(pb.' + slot.slot + ', "' + slot.slot + '")),';
     }
-    return '          ' + slot.field + ' = ' + converters + '.decode' + slot.type + 'PB(durable(pb.' +
+    return '          ' + slot.field + ' = ' + converters + '.decode' + slot.type + 'PO(durable(pb.' +
       slot.slot + ', "' + slot.slot + '")),';
   };
   const requestFields = md.plan.inputs.filter(f => md.plan.requestInputs.includes(f.name));
@@ -673,7 +673,7 @@ function emitExecution(md) {
     '        planversion = PlanVersion,',
     ...md.plan.codecSlots.filter(s => !s.optional).map(encodeLine),
     ...md.plan.codecSlots.filter(s => s.optional).map(slot =>
-      '        ' + slot.slot + ' = state.' + slot.field + '.map(' + converters + '.encode' + slot.type + 'PB),'),
+      '        ' + slot.slot + ' = state.' + slot.field + '.map(' + converters + '.encode' + slot.type + 'PO),'),
     '      ).toByteArray,',
     '    bytes => {',
     '      val pb = ' + stage.executionStatePb + '.parseFrom(bytes)',
@@ -685,7 +685,7 @@ function emitExecution(md) {
     ...md.plan.codecSlots.filter(s => !s.optional).map(decodeLine),
     '        ),',
     '        pb.' + md.plan.codecSlots.find(s => s.optional).slot + '.map(' + converters + '.decode' +
-      md.plan.output.type + 'PB),',
+      md.plan.output.type + 'PO),',
     '      )',
     '    },',
     '  )',
@@ -1286,10 +1286,10 @@ function emitDefinition(md) {
     '    receipt =>',
     '        example.bankwealth',
     '            .infrastructure',
-    '                .serialization.' + md.supply.serializationObject + '.encode' + ph.receiptType + 'PB(receipt).toByteString,',
+    '                .serialization.' + md.supply.serializationObject + '.encode' + ph.receiptType + 'PO(receipt).toByteString,',
     '    bytes => Try(example',
-    '        .bankwealth.infrastructure.serialization.' + md.supply.serializationObject + '.decode' + ph.receiptType + 'PB(',
-    '      ' + md.supply.protoPackage + '.' + ph.receiptType + 'PB.parseFrom(bytes.toByteArray))),',
+    '        .bankwealth.infrastructure.serialization.' + md.supply.serializationObject + '.decode' + ph.receiptType + 'PO(',
+    '      ' + md.supply.protoPackage + '.' + ph.receiptType + 'PO.parseFrom(bytes.toByteArray))),',
     '  )',
     '',
     '  private def ' + ph.checkFn + '(request: OperationRequest[Args],',
@@ -1384,10 +1384,10 @@ function emitDefinition(md) {
     '    val pin = CodecPin("' + argsValue + '", ' + md.saga.argsPinVersion + ')',
     '    def encode(value: Args): ByteString =',
     '      ' + md.supply.serializationPackage + '.' + md.supply.serializationObject + '.encode' + argsValue +
-    'PB(value).toByteString',
+    'PO(value).toByteString',
     '    def decode(bytes: ByteString): Try[Args] =',
-    '      Try(' + md.supply.serializationPackage + '.' + md.supply.serializationObject + '.decode' + argsValue + 'PB(',
-    '        ' + md.supply.protoPackage + '.' + argsValue + 'PB.parseFrom(bytes.toByteArray)))',
+    '      Try(' + md.supply.serializationPackage + '.' + md.supply.serializationObject + '.decode' + argsValue + 'PO(',
+    '        ' + md.supply.protoPackage + '.' + argsValue + 'PO.parseFrom(bytes.toByteArray)))',
     '  }',
     '',
     '  /** The port view the strict runtime consumes: the bound declarations',

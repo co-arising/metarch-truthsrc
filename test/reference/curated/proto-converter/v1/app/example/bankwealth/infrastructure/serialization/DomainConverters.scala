@@ -2,7 +2,7 @@ package example.bankwealth.infrastructure.serialization
 
 import example.bankwealth.domain._
 import example.bankwealth.domain.values._
-import example.bankwealth.infrastructure.proto._
+import example.bankwealth.infrastructure.{proto => pb}
 object DomainConverters extends DomainConvertersPart0 with DomainConvertersPart1 with DomainConvertersPart2 with DomainConvertersPart3 {
   protected def req[A](value: Option[A]): A =
     value.getOrElse(throw new IllegalArgumentException("required typed value missing"))

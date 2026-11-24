@@ -1,7 +1,5 @@
-// Unified emitter family #31: serialization-adapter (Wave 1A curated adapters).
-// Emits headerless, data-driven DomainProtoSerializer (CC=1 via ClassTag
-// registry, eliminating DomainProtoSerializerPart0..N chains) and per-aggregate
-// EventAdapter/SnapshotAdapter objects (CC=1 via ClassTag registry).
+// Unified emitter family #31: serialization-adapter (curated PO adapters with
+// oneof event unions + GeneratedMessage/GeneratedOneof DomainProtoSerializer).
 // Zero hardcoded business identifiers; fail-closed (SA_INPUT).
 const SCHEMA = 'truthsrc.serialization-adapter-input/v1';
 const CONTEXT_RE = /^[a-z][a-z0-9_-]*$/u;
@@ -24,8 +22,8 @@ function checkNoExtraKeys(obj, allowed, what) {
 function checkSource(source, what) {
   checkObject(source, what);
   checkNoExtraKeys(source, new Set(['document', 'pointer']), what);
-  if (typeof source.document !== 'string' || !source.document) fail(what + '.document must be a non-empty string');
-  if (typeof source.pointer !== 'string' || !source.pointer.startsWith('/')) fail(what + '.pointer must be a JSON pointer starting with /');
+  if (typeof source.document !== 'string' || !source.document) fail(what + '.document invalid');
+  if (typeof source.pointer !== 'string' || !source.pointer.startsWith('/')) fail(what + '.pointer invalid');
 }
 
 export function checkInput(input) {
@@ -33,77 +31,79 @@ export function checkInput(input) {
   checkNoExtraKeys(input, new Set(['schemaVersion', 'packages', 'serializers', 'adapters']), 'input');
   if (input.schemaVersion !== SCHEMA) fail('schemaVersion must be ' + SCHEMA);
 
-  if (!Array.isArray(input.packages) || !input.packages.length) fail('packages must be a non-empty array');
+  if (!Array.isArray(input.packages) || !input.packages.length) fail('packages must be non-empty');
   const packageByContext = new Map();
   for (let i = 0; i < input.packages.length; i++) {
     const p = checkObject(input.packages[i], 'packages[' + i + ']');
     checkNoExtraKeys(p, new Set(['context', 'package']), 'packages[' + i + ']');
     if (typeof p.context !== 'string' || !CONTEXT_RE.test(p.context)) fail('packages[' + i + '].context invalid');
     if (typeof p.package !== 'string' || !PACKAGE_RE.test(p.package)) fail('packages[' + i + '].package invalid');
-    if (packageByContext.has(p.context)) fail('duplicate package context: ' + p.context);
+    if (packageByContext.has(p.context)) fail('duplicate package context');
     packageByContext.set(p.context, p.package);
   }
 
-  if (!Array.isArray(input.serializers) || !input.serializers.length) fail('serializers must be a non-empty array');
+  if (!Array.isArray(input.serializers) || !input.serializers.length) fail('serializers must be non-empty');
   const seenContexts = new Set();
   for (let i = 0; i < input.serializers.length; i++) {
     const s = checkObject(input.serializers[i], 'serializers[' + i + ']');
-    checkNoExtraKeys(s, new Set(['context', 'identifier', 'protoPath', 'entries']), 'serializers[' + i + ']');
+    checkNoExtraKeys(s, new Set(['context', 'identifier', 'protoPaths', 'entries']), 'serializers[' + i + ']');
     if (typeof s.context !== 'string' || !packageByContext.has(s.context)) fail('serializers[' + i + '].context unbound');
-    if (seenContexts.has(s.context)) fail('duplicate serializer context: ' + s.context);
+    if (seenContexts.has(s.context)) fail('duplicate serializer context');
     seenContexts.add(s.context);
-    if (!Number.isInteger(s.identifier) || s.identifier < 1) fail('serializers[' + i + '].identifier must be a positive integer');
-    if (typeof s.protoPath !== 'string' || !s.protoPath.startsWith('app/protobuf/') || !s.protoPath.endsWith('.proto'))
-      fail('serializers[' + i + '].protoPath invalid');
-    if (!Array.isArray(s.entries) || !s.entries.length) fail('serializers[' + i + '].entries must be non-empty');
-    const seenPb = new Set();
+    if (!Number.isInteger(s.identifier) || s.identifier < 1) fail('identifier must be positive integer');
+    if (!Array.isArray(s.protoPaths) || !s.protoPaths.length || s.protoPaths.some(p => !p.endsWith('.proto')))
+      fail('protoPaths must be non-empty .proto paths');
+    if (!Array.isArray(s.entries) || !s.entries.length) fail('entries must be non-empty');
+    const seenPo = new Set();
     for (let j = 0; j < s.entries.length; j++) {
-      const e = checkObject(s.entries[j], 'serializers[' + i + '].entries[' + j + ']');
-      checkNoExtraKeys(e, new Set(['pbName', 'sources']), 'serializers[' + i + '].entries[' + j + ']');
-      if (typeof e.pbName !== 'string' || !TYPE_NAME_RE.test(e.pbName)) fail('invalid pbName: ' + JSON.stringify(e.pbName));
-      if (seenPb.has(e.pbName)) fail('duplicate pbName: ' + e.pbName);
-      seenPb.add(e.pbName);
+      const e = checkObject(s.entries[j], 'entries[' + j + ']');
+      checkNoExtraKeys(e, new Set(['poName', 'sources']), 'entries[' + j + ']');
+      if (typeof e.poName !== 'string' || !TYPE_NAME_RE.test(e.poName)) fail('invalid poName');
+      if (seenPo.has(e.poName)) fail('duplicate poName: ' + e.poName);
+      seenPo.add(e.poName);
       if (!Array.isArray(e.sources) || !e.sources.length) fail('entry sources must be non-empty');
-      for (let k = 0; k < e.sources.length; k++) checkSource(e.sources[k], 'serializers[' + i + '].entries[' + j + '].sources[' + k + ']');
+      for (const src of e.sources) checkSource(src, 'entry.source');
     }
   }
 
-  if (!Array.isArray(input.adapters) || !input.adapters.length) fail('adapters must be a non-empty array');
+  if (!Array.isArray(input.adapters) || !input.adapters.length) fail('adapters must be non-empty');
   const seenAdapters = new Set();
   for (let i = 0; i < input.adapters.length; i++) {
     const a = checkObject(input.adapters[i], 'adapters[' + i + ']');
-    checkNoExtraKeys(a, new Set(['context', 'aggregate', 'aggregateSource', 'events']), 'adapters[' + i + ']');
-    if (typeof a.context !== 'string' || !packageByContext.has(a.context)) fail('adapters[' + i + '].context unbound');
-    if (typeof a.aggregate !== 'string' || !TYPE_NAME_RE.test(a.aggregate)) fail('adapters[' + i + '].aggregate invalid');
+    checkNoExtraKeys(a, new Set(['context', 'aggregate', 'eventUnionPoName', 'statePoName', 'aggregateSource', 'events']), 'adapters[' + i + ']');
+    if (typeof a.context !== 'string' || !packageByContext.has(a.context)) fail('adapter context unbound');
+    if (typeof a.aggregate !== 'string' || !TYPE_NAME_RE.test(a.aggregate)) fail('invalid aggregate');
+    if (typeof a.eventUnionPoName !== 'string' || !TYPE_NAME_RE.test(a.eventUnionPoName)) fail('invalid eventUnionPoName');
+    if (typeof a.statePoName !== 'string' || !TYPE_NAME_RE.test(a.statePoName)) fail('invalid statePoName');
     const aKey = a.context + '/' + a.aggregate;
-    if (seenAdapters.has(aKey)) fail('duplicate adapter: ' + aKey);
+    if (seenAdapters.has(aKey)) fail('duplicate adapter');
     seenAdapters.add(aKey);
-    checkSource(a.aggregateSource, 'adapters[' + i + '].aggregateSource');
-    if (!Array.isArray(a.events) || !a.events.length) fail('adapters[' + i + '].events must be non-empty');
+    checkSource(a.aggregateSource, 'adapter.aggregateSource');
+    if (!Array.isArray(a.events) || !a.events.length) fail('adapter events must be non-empty');
     const seenEv = new Set();
-    for (let j = 0; j < a.events.length; j++) {
-      const ev = checkObject(a.events[j], 'adapters[' + i + '].events[' + j + ']');
-      checkNoExtraKeys(ev, new Set(['eventName', 'pbName', 'source']), 'adapters[' + i + '].events[' + j + ']');
+    for (const ev of a.events) {
+      checkObject(ev, 'adapter.event');
+      checkNoExtraKeys(ev, new Set(['eventName', 'poName', 'source']), 'adapter.event');
       if (typeof ev.eventName !== 'string' || !TYPE_NAME_RE.test(ev.eventName)) fail('invalid eventName');
-      if (typeof ev.pbName !== 'string' || !TYPE_NAME_RE.test(ev.pbName)) fail('invalid pbName');
-      if (seenEv.has(ev.eventName)) fail('duplicate event in adapter ' + aKey + ': ' + ev.eventName);
+      if (typeof ev.poName !== 'string' || !TYPE_NAME_RE.test(ev.poName)) fail('invalid poName');
+      if (seenEv.has(ev.eventName)) fail('duplicate adapter event');
       seenEv.add(ev.eventName);
-      checkSource(ev.source, 'adapters[' + i + '].events[' + j + '].source');
+      checkSource(ev.source, 'adapter.event.source');
     }
   }
 }
 
 function renderSerializerScala(pkg, serializer) {
   const rows = serializer.entries.map(e =>
-    `    entry[${e.pbName}](${JSON.stringify(e.pbName)}, ${e.pbName}.parseFrom)`
+    `    entry[pb.${e.poName}](${JSON.stringify(e.poName)}, pb.${e.poName}.parseFrom)`
   );
   return [
     `package ${pkg}.infrastructure.serialization`,
     '',
     'import akka.serialization.SerializerWithStringManifest',
-    `import ${pkg}.infrastructure.proto._`,
+    `import ${pkg}.infrastructure.{proto => pb}`,
     'import scala.reflect.ClassTag',
-    'import scalapb.GeneratedMessage',
+    'import scalapb.{GeneratedMessage, GeneratedOneof}',
     '',
     'final class DomainProtoSerializer extends SerializerWithStringManifest {',
     `  override def identifier: Int = ${serializer.identifier}`,
@@ -123,11 +123,13 @@ function renderSerializerScala(pkg, serializer) {
     '  private val parserByManifest: Map[String, Array[Byte] => AnyRef] =',
     '    registry.iterator.map { case (_, name, parse) => name -> parse }.toMap',
     '',
-    '  override def manifest(value: AnyRef): String =',
-    '    manifestByClass.getOrElse(',
+    '  override def manifest(value: AnyRef): String = value match {',
+    '    case oneof: GeneratedOneof => manifest(oneof.asInstanceOf[AnyRef])',
+    '    case _ => manifestByClass.getOrElse(',
     '      value.getClass,',
-    '      throw new IllegalArgumentException("unregistered protobuf value")',
+    '      throw new IllegalArgumentException("unregistered protobuf value: " + value.getClass.getName)',
     '    )',
+    '  }',
     '',
     '  override def toBinary(value: AnyRef): Array[Byte] = {',
     '    manifest(value)',
@@ -137,7 +139,7 @@ function renderSerializerScala(pkg, serializer) {
     '  override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =',
     '    parserByManifest.getOrElse(',
     '      manifest,',
-    '      throw new IllegalArgumentException("unknown protobuf manifest")',
+    '      throw new IllegalArgumentException("unknown protobuf manifest: " + manifest)',
     '    )(bytes)',
     '}',
     '',
@@ -146,69 +148,34 @@ function renderSerializerScala(pkg, serializer) {
 
 function renderAggregateAdaptersScala(pkg, adapter) {
   const agg = adapter.aggregate;
-  const rows = adapter.events.map(ev =>
-    `    entry[${ev.eventName}, ${ev.pbName}](${JSON.stringify(ev.pbName)}, DomainConverters.encode${ev.pbName}, DomainConverters.decode${ev.pbName})`
-  );
+  const unionPo = adapter.eventUnionPoName;
+  const statePo = adapter.statePoName;
   return [
     `package ${pkg}.infrastructure.serialization`,
     '',
     'import akka.persistence.typed.{EventAdapter, EventSeq, SnapshotAdapter}',
     `import ${pkg}.domain._`,
     `import ${pkg}.domain.${agg}Protocol._`,
-    `import ${pkg}.infrastructure.proto._`,
-    'import scala.reflect.ClassTag',
+    `import ${pkg}.infrastructure.{proto => pb}`,
     'import scalapb.GeneratedMessage',
     '',
     `object ${agg}EventAdapter extends EventAdapter[Event, GeneratedMessage] {`,
-    '  private final case class CodecEntry(',
-    '    eventClass: Class[_],',
-    '    manifest: String,',
-    '    encode: Event => GeneratedMessage,',
-    '    decode: GeneratedMessage => Event',
-    '  )',
-    '',
-    '  private def entry[E <: Event, P <: GeneratedMessage](',
-    '    name: String,',
-    '    encode: E => P,',
-    '    decode: P => E',
-    '  )(implicit ec: ClassTag[E], pc: ClassTag[P]): CodecEntry =',
-    '    CodecEntry(',
-    '      ec.runtimeClass,',
-    '      name,',
-    '      e => encode(e.asInstanceOf[E]),',
-    '      p => {',
-    '        require(pc.runtimeClass.isInstance(p), "event manifest and payload mismatch")',
-    '        decode(p.asInstanceOf[P])',
-    '      }',
-    '    )',
-    '',
-    '  private val registry: Vector[CodecEntry] = Vector(',
-    rows.join(',\n'),
-    '  )',
-    '',
-    '  private val byClass: Map[Class[_], CodecEntry] =',
-    '    registry.iterator.map(e => e.eventClass -> e).toMap',
-    '',
-    '  private val byManifest: Map[String, CodecEntry] =',
-    '    registry.iterator.map(e => e.manifest -> e).toMap',
-    '',
-    '  override def manifest(event: Event): String =',
-    '    byClass.getOrElse(event.getClass, throw new IllegalArgumentException("unregistered event")).manifest',
+    `  override def manifest(event: Event): String = ${JSON.stringify(unionPo)}`,
     '',
     '  override def toJournal(event: Event): GeneratedMessage =',
-    '    byClass.getOrElse(event.getClass, throw new IllegalArgumentException("unregistered event")).encode(event)',
+    `    DomainConverters.encode${unionPo}(event)`,
     '',
-    '  override def fromJournal(event: GeneratedMessage, manifest: String): EventSeq[Event] =',
-    '    byManifest.get(manifest) match {',
-    '      case Some(codec) => EventSeq.single(codec.decode(event))',
-    '      case None => throw new IllegalArgumentException("event manifest and payload mismatch")',
-    '    }',
+    '  override def fromJournal(event: GeneratedMessage, manifest: String): EventSeq[Event] = (event, manifest) match {',
+    `    case (envelope: pb.${unionPo}, ${JSON.stringify(unionPo)}) =>`,
+    `      EventSeq.single(DomainConverters.decode${unionPo}(envelope))`,
+    '    case _ => throw new IllegalArgumentException("event manifest and payload mismatch")',
+    '  }',
     '}',
     '',
     `object ${agg}SnapshotAdapter extends SnapshotAdapter[${agg}State] {`,
-    `  override def toJournal(state: ${agg}State): Any = DomainConverters.encode${agg}StatePB(state)`,
+    `  override def toJournal(state: ${agg}State): Any = DomainConverters.encode${statePo}(state)`,
     `  override def fromJournal(value: Any): ${agg}State = value match {`,
-    `    case state: ${agg}StatePB => DomainConverters.decode${agg}StatePB(state)`,
+    `    case state: pb.${statePo} => DomainConverters.decode${statePo}(state)`,
     '    case _ => throw new IllegalArgumentException("snapshot type mismatch")',
     '  }',
     '}',
@@ -227,7 +194,7 @@ export function renderSerializationAdapterFiles(input) {
       path: 'app/' + pkgRoot + '/infrastructure/serialization/DomainProtoSerializer.scala',
       content: renderSerializerScala(pkg, ser),
       kind: 'serialization-adapter',
-      deps: [ser.protoPath],
+      deps: [...ser.protoPaths],
       sources: ser.entries.flatMap(e => e.sources.map(s => ({ document: s.document, pointer: s.pointer }))),
       codeMappings: [],
     });
@@ -265,9 +232,9 @@ export function runNegatives(baseInput) {
     ['empty serializers', () => { const x = clone(); x.serializers = []; return x; }],
     ['unbound serializer context', () => { const x = clone(); x.serializers[0].context = 'unknown'; return x; }],
     ['non-positive identifier', () => { const x = clone(); x.serializers[0].identifier = 0; return x; }],
-    ['invalid protoPath', () => { const x = clone(); x.serializers[0].protoPath = 'bad.scala'; return x; }],
+    ['empty protoPaths', () => { const x = clone(); x.serializers[0].protoPaths = []; return x; }],
     ['empty serializer entries', () => { const x = clone(); x.serializers[0].entries = []; return x; }],
-    ['duplicate pbName', () => { const x = clone(); x.serializers[0].entries.push(clone().serializers[0].entries[0]); return x; }],
+    ['duplicate poName', () => { const x = clone(); x.serializers[0].entries.push(clone().serializers[0].entries[0]); return x; }],
     ['empty adapters', () => { const x = clone(); x.adapters = []; return x; }],
     ['unbound adapter context', () => { const x = clone(); x.adapters[0].context = 'unknown'; return x; }],
     ['invalid aggregate name', () => { const x = clone(); x.adapters[0].aggregate = 'lower'; return x; }],

@@ -43,9 +43,9 @@ object BankSipDispatchExecution {
     state =>
       example.bankwealth.infrastructure.executionproto.banksipdispatchv1ExecutionStatePB(
         planversion = PlanVersion,
-        input0 = Some(DomainConverters.encodeOccurrenceIdPB(state.inputs.occurrenceId)),
-        input1 = Some(DomainConverters.encodeSipOccurrencePB(state.inputs.occurrence)),
-        output0 = state.operationId.map(DomainConverters.encodeOperationIdPB),
+        input0 = Some(DomainConverters.encodeOccurrenceIdPO(state.inputs.occurrenceId)),
+        input1 = Some(DomainConverters.encodeSipOccurrencePO(state.inputs.occurrence)),
+        output0 = state.operationId.map(DomainConverters.encodeOperationIdPO),
       ).toByteArray,
     bytes => {
       val pb = example.bankwealth.infrastructure.executionproto.banksipdispatchv1ExecutionStatePB.parseFrom(bytes)
@@ -54,10 +54,10 @@ object BankSipDispatchExecution {
         slot.getOrElse(throw new IllegalArgumentException(s"missing durable input $name"))
       State(
         Inputs(
-          occurrenceId = DomainConverters.decodeOccurrenceIdPB(durable(pb.input0, "input0")),
-          occurrence = DomainConverters.decodeSipOccurrencePB(durable(pb.input1, "input1")),
+          occurrenceId = DomainConverters.decodeOccurrenceIdPO(durable(pb.input0, "input0")),
+          occurrence = DomainConverters.decodeSipOccurrencePO(durable(pb.input1, "input1")),
         ),
-        pb.output0.map(DomainConverters.decodeOperationIdPB),
+        pb.output0.map(DomainConverters.decodeOperationIdPO),
       )
     },
   )

@@ -1,0 +1,12 @@
+package example.bankwealth.infrastructure.projection
+
+object BankJournalReadsideSchema {
+  val version: String = "bank-query-v1"
+  val statements: Vector[String] = Vector(
+    "CREATE TABLE IF NOT EXISTS bank_read_namespace (\n  namespace VARCHAR(64) NOT NULL PRIMARY KEY, schema_version VARCHAR(64) NOT NULL\n)",
+    "CREATE TABLE IF NOT EXISTS bank_read_stream (\n  namespace VARCHAR(64) NOT NULL, pid_key CHAR(64) NOT NULL,\n  persistence_id VARCHAR(2048) NOT NULL, kind VARCHAR(32) NOT NULL,\n  resource_id VARCHAR(2048) NOT NULL, owner_account VARCHAR(1024), owner_principal VARCHAR(256),\n  last_sequence BIGINT NOT NULL, observed_sequence BIGINT, state_payload LONGBLOB,\n  PRIMARY KEY (namespace, pid_key)\n)",
+    "CREATE TABLE IF NOT EXISTS bank_read_event (\n  namespace VARCHAR(64) NOT NULL, pid_key CHAR(64) NOT NULL, sequence_nr BIGINT NOT NULL,\n  payload_type VARCHAR(512) NOT NULL, payload_manifest VARCHAR(1024) NOT NULL,\n  payload LONGBLOB NOT NULL, PRIMARY KEY (namespace, pid_key, sequence_nr)\n)",
+    "CREATE TABLE IF NOT EXISTS bank_read_occurrence (\n  namespace VARCHAR(64) NOT NULL,\n  plan_key CHAR(64) NOT NULL,\n  due_slot BIGINT NOT NULL,\n  occurrence_key CHAR(64) NOT NULL,\n  order_key CHAR(64) NOT NULL,\n  owner_account VARCHAR(1024) NOT NULL,\n  occurrence_payload LONGBLOB NOT NULL,\n  PRIMARY KEY (namespace, plan_key, due_slot)\n)",
+    "CREATE TABLE IF NOT EXISTS bank_read_pending (\n  namespace VARCHAR(64) NOT NULL,\n  operation_key CHAR(64) NOT NULL,\n  flow VARCHAR(32) NOT NULL,\n  operation_id VARCHAR(2048) NOT NULL,\n  order_id VARCHAR(2048),\n  plan_id VARCHAR(2048),\n  occurrence_id VARCHAR(2048),\n  source_pid VARCHAR(2048) NOT NULL,\n  phase VARCHAR(64) NOT NULL,\n  status VARCHAR(64) NOT NULL,\n  recoverable BOOLEAN NOT NULL,\n  PRIMARY KEY (namespace, operation_key, flow)\n)"
+  )
+}

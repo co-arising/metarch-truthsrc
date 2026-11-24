@@ -1,0 +1,23 @@
+package example.bankwealth.infrastructure.bootstrap
+
+import play.api.{Application, ApplicationLoader}
+import scala.util.control.NonFatal
+import example.bankwealth.service.{BankServiceConfiguration, BankServiceComponents}
+import example.bankwealth.service.BankServiceService._
+
+object ApplicationBootstrap {
+  def load(context: ApplicationLoader.Context): Application = {
+    BankServiceConfiguration.validate(context.initialConfiguration)
+    val factory = context.environment.classLoader.loadClass("example.bankwealth.integration.BankServiceFactory").getDeclaredConstructor().newInstance().asInstanceOf[Factory]
+    require(factory.implementation == "example.bankwealth.integration.BankServiceFactory" && factory.version == "bank-v1-service-1", "composition factory pin mismatch")
+    val composition = factory.create(context)
+    try {
+      requireInstalled(composition)
+      new BankServiceComponents(context, composition).application
+    } catch { case NonFatal(error) =>
+      context.lifecycle.stop()
+      composition.close()
+      throw error
+    }
+  }
+}

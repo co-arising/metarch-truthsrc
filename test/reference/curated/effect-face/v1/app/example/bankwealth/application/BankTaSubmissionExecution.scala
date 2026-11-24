@@ -43,10 +43,10 @@ object BankTaSubmissionExecution {
     state =>
       example.bankwealth.infrastructure.executionproto.banktasubmissionv1ExecutionStatePB(
         planversion = PlanVersion,
-        input0 = Some(DomainConverters.encodeTaRequestIdPB(state.inputs.taRequestId)),
-        input1 = Some(DomainConverters.encodeFundOrderIdPB(state.inputs.fundOrderId)),
-        input2 = Some(DomainConverters.encodeTxIdPB(state.inputs.paymentTxId)),
-        output0 = state.taRequestId.map(DomainConverters.encodeTaRequestIdPB),
+        input0 = Some(DomainConverters.encodeTaRequestIdPO(state.inputs.taRequestId)),
+        input1 = Some(DomainConverters.encodeFundOrderIdPO(state.inputs.fundOrderId)),
+        input2 = Some(DomainConverters.encodeTxIdPO(state.inputs.paymentTxId)),
+        output0 = state.taRequestId.map(DomainConverters.encodeTaRequestIdPO),
       ).toByteArray,
     bytes => {
       val pb = example.bankwealth.infrastructure.executionproto.banktasubmissionv1ExecutionStatePB.parseFrom(bytes)
@@ -55,11 +55,11 @@ object BankTaSubmissionExecution {
         slot.getOrElse(throw new IllegalArgumentException(s"missing durable input $name"))
       State(
         Inputs(
-          taRequestId = DomainConverters.decodeTaRequestIdPB(durable(pb.input0, "input0")),
-          fundOrderId = DomainConverters.decodeFundOrderIdPB(durable(pb.input1, "input1")),
-          paymentTxId = DomainConverters.decodeTxIdPB(durable(pb.input2, "input2")),
+          taRequestId = DomainConverters.decodeTaRequestIdPO(durable(pb.input0, "input0")),
+          fundOrderId = DomainConverters.decodeFundOrderIdPO(durable(pb.input1, "input1")),
+          paymentTxId = DomainConverters.decodeTxIdPO(durable(pb.input2, "input2")),
         ),
-        pb.output0.map(DomainConverters.decodeTaRequestIdPB),
+        pb.output0.map(DomainConverters.decodeTaRequestIdPO),
       )
     },
   )

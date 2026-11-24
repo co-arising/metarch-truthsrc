@@ -10,10 +10,15 @@
     {
       "context": "bankwealth",
       "identifier": 741000,
-      "protoPath": "app/protobuf/example_bankwealth_domain.proto",
+      "protoPaths": [
+        "app/protobuf/shared_value_objects.proto",
+        "app/protobuf/credit_balance.proto",
+        "app/protobuf/fund_order.proto",
+        "app/protobuf/sip_plan.proto"
+      ],
       "entries": [
         {
-          "pbName": "AccountIdPB",
+          "poName": "AccountIdPO",
           "sources": [
             {
               "document": "bank-v1",
@@ -22,7 +27,7 @@
           ]
         },
         {
-          "pbName": "FundOrderIdPB",
+          "poName": "FundOrderIdPO",
           "sources": [
             {
               "document": "bank-v1",
@@ -31,7 +36,7 @@
           ]
         },
         {
-          "pbName": "OperationIdPB",
+          "poName": "OperationIdPO",
           "sources": [
             {
               "document": "bank-v1",
@@ -40,7 +45,7 @@
           ]
         },
         {
-          "pbName": "TxIdPB",
+          "poName": "TxIdPO",
           "sources": [
             {
               "document": "bank-v1",
@@ -49,7 +54,7 @@
           ]
         },
         {
-          "pbName": "PlanIdPB",
+          "poName": "PlanIdPO",
           "sources": [
             {
               "document": "bank-v1",
@@ -58,7 +63,7 @@
           ]
         },
         {
-          "pbName": "RevisionIdPB",
+          "poName": "RevisionIdPO",
           "sources": [
             {
               "document": "bank-v1",
@@ -67,7 +72,7 @@
           ]
         },
         {
-          "pbName": "OccurrenceIdPB",
+          "poName": "OccurrenceIdPO",
           "sources": [
             {
               "document": "bank-v1",
@@ -76,7 +81,7 @@
           ]
         },
         {
-          "pbName": "TaExactTextPB",
+          "poName": "TaExactTextPO",
           "sources": [
             {
               "document": "bank-v1",
@@ -85,7 +90,7 @@
           ]
         },
         {
-          "pbName": "AmountDecimalPB",
+          "poName": "AmountDecimalPO",
           "sources": [
             {
               "document": "bank-v1",
@@ -94,7 +99,7 @@
           ]
         },
         {
-          "pbName": "AmountDecimalWirePB",
+          "poName": "AmountDecimalWirePO",
           "sources": [
             {
               "document": "bank-v1",
@@ -103,7 +108,7 @@
           ]
         },
         {
-          "pbName": "AmountDecimalPOPB",
+          "poName": "AmountDecimalStoragePO",
           "sources": [
             {
               "document": "bank-v1",
@@ -112,7 +117,7 @@
           ]
         },
         {
-          "pbName": "MoneyPB",
+          "poName": "MoneyPO",
           "sources": [
             {
               "document": "bank-v1",
@@ -121,34 +126,62 @@
           ]
         },
         {
-          "pbName": "MoneyWirePB",
+          "poName": "MoneyWirePO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/12"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/12/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/12/fields/1"
             }
           ]
         },
         {
-          "pbName": "MoneyPOPB",
+          "poName": "MoneyStoragePO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/13"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/13/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/13/fields/1"
             }
           ]
         },
         {
-          "pbName": "FundSharePB",
+          "poName": "FundSharePO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/14"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/14/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/14/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/14/fields/2"
             }
           ]
         },
         {
-          "pbName": "TaRequestIdPB",
+          "poName": "TaRequestIdPO",
           "sources": [
             {
               "document": "bank-v1",
@@ -157,530 +190,2009 @@
           ]
         },
         {
-          "pbName": "SipRevisionConfigPB",
+          "poName": "SipRevisionConfigPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/16"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/16/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/16/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/16/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/16/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/16/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/16/fields/5"
             }
           ]
         },
         {
-          "pbName": "SipOccurrencePB",
+          "poName": "SipOccurrencePO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/17"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/17/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/17/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/17/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/17/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/17/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/17/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/17/fields/6"
             }
           ]
         },
         {
-          "pbName": "TaReceiptPB",
+          "poName": "TaReceiptPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/18"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/18/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/18/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/18/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/18/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/18/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/18/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/18/fields/6"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/18/fields/7"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/18/fields/8"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/18/fields/9"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/18/fields/10"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/18/fields/11"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/18/fields/12"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/18/fields/13"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/18/fields/14"
             }
           ]
         },
         {
-          "pbName": "BankPaymentOriginalPB",
+          "poName": "BankPaymentOriginalPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/19"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/19/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/19/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/19/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/19/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/19/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/19/fields/5"
             }
           ]
         },
         {
-          "pbName": "BankPaymentArgsPB",
+          "poName": "BankPaymentArgsPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/20"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/20/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/20/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/20/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/20/fields/3"
             }
           ]
         },
         {
-          "pbName": "ReserveInvestorFundsPrepareInputPB",
+          "poName": "ReserveInvestorFundsPrepareInputPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/21"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/21/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/21/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/21/fields/2"
             }
           ]
         },
         {
-          "pbName": "ReserveInvestorFundsPrepareReceiptPB",
+          "poName": "ReserveInvestorFundsPrepareReceiptPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/22"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/22/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/22/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/22/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/22/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/22/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/22/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/22/fields/6"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/22/fields/7"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/22/fields/8"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/22/fields/9"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/22/fields/10"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/22/fields/11"
             }
           ]
         },
         {
-          "pbName": "ReserveInvestorFundsPrepareQueryPB",
+          "poName": "ReserveInvestorFundsPrepareQueryPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/23"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/23/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/23/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/23/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/23/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/23/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/23/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/23/fields/6"
             }
           ]
         },
         {
-          "pbName": "ReserveInvestorFundsCommitInputPB",
+          "poName": "ReserveInvestorFundsCommitInputPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/24"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/24/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/24/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/24/fields/2"
             }
           ]
         },
         {
-          "pbName": "ReserveInvestorFundsCommitReceiptPB",
+          "poName": "ReserveInvestorFundsCommitReceiptPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/25"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/25/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/25/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/25/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/25/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/25/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/25/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/25/fields/6"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/25/fields/7"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/25/fields/8"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/25/fields/9"
             }
           ]
         },
         {
-          "pbName": "ReserveInvestorFundsCommitQueryPB",
+          "poName": "ReserveInvestorFundsCommitQueryPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/26"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/26/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/26/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/26/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/26/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/26/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/26/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/26/fields/6"
             }
           ]
         },
         {
-          "pbName": "ReserveInvestorFundsCompensateInputPB",
+          "poName": "ReserveInvestorFundsCompensateInputPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/27"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/27/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/27/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/27/fields/2"
             }
           ]
         },
         {
-          "pbName": "ReserveInvestorFundsCompensateReceiptPB",
+          "poName": "ReserveInvestorFundsCompensateReceiptPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/28"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/28/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/28/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/28/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/28/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/28/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/28/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/28/fields/6"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/28/fields/7"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/28/fields/8"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/28/fields/9"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/28/fields/10"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/28/fields/11"
             }
           ]
         },
         {
-          "pbName": "ReserveInvestorFundsCompensateQueryPB",
+          "poName": "ReserveInvestorFundsCompensateQueryPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/29"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/29/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/29/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/29/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/29/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/29/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/29/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/29/fields/6"
             }
           ]
         },
         {
-          "pbName": "CreditFundCollectionPrepareInputPB",
+          "poName": "CreditFundCollectionPrepareInputPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/30"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/30/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/30/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/30/fields/2"
             }
           ]
         },
         {
-          "pbName": "CreditFundCollectionPrepareReceiptPB",
+          "poName": "CreditFundCollectionPrepareReceiptPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/31"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/31/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/31/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/31/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/31/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/31/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/31/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/31/fields/6"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/31/fields/7"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/31/fields/8"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/31/fields/9"
             }
           ]
         },
         {
-          "pbName": "CreditFundCollectionPrepareQueryPB",
+          "poName": "CreditFundCollectionPrepareQueryPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/32"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/32/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/32/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/32/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/32/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/32/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/32/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/32/fields/6"
             }
           ]
         },
         {
-          "pbName": "CreditFundCollectionCommitInputPB",
+          "poName": "CreditFundCollectionCommitInputPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/33"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/33/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/33/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/33/fields/2"
             }
           ]
         },
         {
-          "pbName": "CreditFundCollectionCommitReceiptPB",
+          "poName": "CreditFundCollectionCommitReceiptPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/34"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/34/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/34/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/34/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/34/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/34/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/34/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/34/fields/6"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/34/fields/7"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/34/fields/8"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/34/fields/9"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/34/fields/10"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/34/fields/11"
             }
           ]
         },
         {
-          "pbName": "CreditFundCollectionCommitQueryPB",
+          "poName": "CreditFundCollectionCommitQueryPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/35"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/35/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/35/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/35/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/35/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/35/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/35/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/35/fields/6"
             }
           ]
         },
         {
-          "pbName": "CreditFundCollectionCompensateInputPB",
+          "poName": "CreditFundCollectionCompensateInputPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/36"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/36/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/36/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/36/fields/2"
             }
           ]
         },
         {
-          "pbName": "CreditFundCollectionCompensateReceiptPB",
+          "poName": "CreditFundCollectionCompensateReceiptPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/37"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/37/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/37/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/37/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/37/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/37/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/37/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/37/fields/6"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/37/fields/7"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/37/fields/8"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/37/fields/9"
             }
           ]
         },
         {
-          "pbName": "CreditFundCollectionCompensateQueryPB",
+          "poName": "CreditFundCollectionCompensateQueryPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/38"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/38/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/38/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/38/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/38/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/38/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/38/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/38/fields/6"
             }
           ]
         },
         {
-          "pbName": "ReserveCashFundOrderPrepareInputPB",
+          "poName": "ReserveCashFundOrderPrepareInputPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/39"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/39/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/39/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/39/fields/2"
             }
           ]
         },
         {
-          "pbName": "ReserveCashFundOrderPrepareReceiptPB",
+          "poName": "ReserveCashFundOrderPrepareReceiptPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/40"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/40/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/40/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/40/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/40/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/40/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/40/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/40/fields/6"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/40/fields/7"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/40/fields/8"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/40/fields/9"
             }
           ]
         },
         {
-          "pbName": "ReserveCashFundOrderPrepareQueryPB",
+          "poName": "ReserveCashFundOrderPrepareQueryPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/41"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/41/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/41/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/41/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/41/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/41/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/41/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/41/fields/6"
             }
           ]
         },
         {
-          "pbName": "ReserveCashFundOrderCommitInputPB",
+          "poName": "ReserveCashFundOrderCommitInputPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/42"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/42/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/42/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/42/fields/2"
             }
           ]
         },
         {
-          "pbName": "ReserveCashFundOrderCommitReceiptPB",
+          "poName": "ReserveCashFundOrderCommitReceiptPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/43"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/43/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/43/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/43/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/43/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/43/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/43/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/43/fields/6"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/43/fields/7"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/43/fields/8"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/43/fields/9"
             }
           ]
         },
         {
-          "pbName": "ReserveCashFundOrderCommitQueryPB",
+          "poName": "ReserveCashFundOrderCommitQueryPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/44"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/44/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/44/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/44/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/44/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/44/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/44/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/44/fields/6"
             }
           ]
         },
         {
-          "pbName": "ReserveCashFundOrderCompensateInputPB",
+          "poName": "ReserveCashFundOrderCompensateInputPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/45"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/45/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/45/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/45/fields/2"
             }
           ]
         },
         {
-          "pbName": "ReserveCashFundOrderCompensateReceiptPB",
+          "poName": "ReserveCashFundOrderCompensateReceiptPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/46"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/46/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/46/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/46/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/46/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/46/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/46/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/46/fields/6"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/46/fields/7"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/46/fields/8"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/46/fields/9"
             }
           ]
         },
         {
-          "pbName": "ReserveCashFundOrderCompensateQueryPB",
+          "poName": "ReserveCashFundOrderCompensateQueryPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/47"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/47/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/47/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/47/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/47/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/47/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/47/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/47/fields/6"
             }
           ]
         },
         {
-          "pbName": "BankPaymentResultPB",
+          "poName": "BankPaymentResultPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/48"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/48/fields/0"
             }
           ]
         },
         {
-          "pbName": "BankRefundOriginalPB",
+          "poName": "BankRefundOriginalPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/49"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/49/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/49/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/49/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/49/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/49/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/49/fields/5"
             }
           ]
         },
         {
-          "pbName": "BankRefundArgsPB",
+          "poName": "BankRefundArgsPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/50"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/50/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/50/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/50/fields/2"
             }
           ]
         },
         {
-          "pbName": "DebitFundCollectionPrepareInputPB",
+          "poName": "DebitFundCollectionPrepareInputPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/51"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/51/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/51/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/51/fields/2"
             }
           ]
         },
         {
-          "pbName": "DebitFundCollectionPrepareReceiptPB",
+          "poName": "DebitFundCollectionPrepareReceiptPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/52"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/52/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/52/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/52/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/52/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/52/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/52/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/52/fields/6"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/52/fields/7"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/52/fields/8"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/52/fields/9"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/52/fields/10"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/52/fields/11"
             }
           ]
         },
         {
-          "pbName": "DebitFundCollectionPrepareQueryPB",
+          "poName": "DebitFundCollectionPrepareQueryPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/53"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/53/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/53/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/53/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/53/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/53/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/53/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/53/fields/6"
             }
           ]
         },
         {
-          "pbName": "DebitFundCollectionCommitInputPB",
+          "poName": "DebitFundCollectionCommitInputPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/54"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/54/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/54/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/54/fields/2"
             }
           ]
         },
         {
-          "pbName": "DebitFundCollectionCommitReceiptPB",
+          "poName": "DebitFundCollectionCommitReceiptPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/55"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/55/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/55/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/55/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/55/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/55/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/55/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/55/fields/6"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/55/fields/7"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/55/fields/8"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/55/fields/9"
             }
           ]
         },
         {
-          "pbName": "DebitFundCollectionCommitQueryPB",
+          "poName": "DebitFundCollectionCommitQueryPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/56"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/56/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/56/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/56/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/56/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/56/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/56/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/56/fields/6"
             }
           ]
         },
         {
-          "pbName": "DebitFundCollectionCompensateInputPB",
+          "poName": "DebitFundCollectionCompensateInputPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/57"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/57/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/57/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/57/fields/2"
             }
           ]
         },
         {
-          "pbName": "DebitFundCollectionCompensateReceiptPB",
+          "poName": "DebitFundCollectionCompensateReceiptPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/58"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/58/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/58/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/58/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/58/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/58/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/58/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/58/fields/6"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/58/fields/7"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/58/fields/8"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/58/fields/9"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/58/fields/10"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/58/fields/11"
             }
           ]
         },
         {
-          "pbName": "DebitFundCollectionCompensateQueryPB",
+          "poName": "DebitFundCollectionCompensateQueryPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/59"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/59/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/59/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/59/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/59/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/59/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/59/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/59/fields/6"
             }
           ]
         },
         {
-          "pbName": "CreditOriginalInvestorPrepareInputPB",
+          "poName": "CreditOriginalInvestorPrepareInputPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/60"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/60/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/60/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/60/fields/2"
             }
           ]
         },
         {
-          "pbName": "CreditOriginalInvestorPrepareReceiptPB",
+          "poName": "CreditOriginalInvestorPrepareReceiptPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/61"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/61/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/61/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/61/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/61/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/61/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/61/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/61/fields/6"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/61/fields/7"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/61/fields/8"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/61/fields/9"
             }
           ]
         },
         {
-          "pbName": "CreditOriginalInvestorPrepareQueryPB",
+          "poName": "CreditOriginalInvestorPrepareQueryPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/62"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/62/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/62/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/62/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/62/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/62/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/62/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/62/fields/6"
             }
           ]
         },
         {
-          "pbName": "CreditOriginalInvestorCommitInputPB",
+          "poName": "CreditOriginalInvestorCommitInputPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/63"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/63/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/63/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/63/fields/2"
             }
           ]
         },
         {
-          "pbName": "CreditOriginalInvestorCommitReceiptPB",
+          "poName": "CreditOriginalInvestorCommitReceiptPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/64"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/64/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/64/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/64/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/64/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/64/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/64/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/64/fields/6"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/64/fields/7"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/64/fields/8"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/64/fields/9"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/64/fields/10"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/64/fields/11"
             }
           ]
         },
         {
-          "pbName": "CreditOriginalInvestorCommitQueryPB",
+          "poName": "CreditOriginalInvestorCommitQueryPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/65"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/65/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/65/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/65/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/65/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/65/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/65/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/65/fields/6"
             }
           ]
         },
         {
-          "pbName": "CreditOriginalInvestorCompensateInputPB",
+          "poName": "CreditOriginalInvestorCompensateInputPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/66"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/66/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/66/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/66/fields/2"
             }
           ]
         },
         {
-          "pbName": "CreditOriginalInvestorCompensateReceiptPB",
+          "poName": "CreditOriginalInvestorCompensateReceiptPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/67"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/67/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/67/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/67/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/67/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/67/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/67/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/67/fields/6"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/67/fields/7"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/67/fields/8"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/67/fields/9"
             }
           ]
         },
         {
-          "pbName": "CreditOriginalInvestorCompensateQueryPB",
+          "poName": "CreditOriginalInvestorCompensateQueryPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/68"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/68/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/68/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/68/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/68/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/68/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/68/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/68/fields/6"
             }
           ]
         },
         {
-          "pbName": "BankRefundResultPB",
+          "poName": "BankRefundResultPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/69"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/69/fields/0"
             }
           ]
         },
         {
-          "pbName": "BankTaEffectRequestPB",
+          "poName": "BankTaEffectRequestPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/70"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/70/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/70/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/70/fields/2"
             }
           ]
         },
         {
-          "pbName": "BankTaEffectResultPB",
+          "poName": "BankTaEffectResultPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/71"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/71/fields/0"
             }
           ]
         },
         {
-          "pbName": "BankTaEffectOperationPB",
+          "poName": "BankTaEffectOperationPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/72"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/72/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/72/fields/1"
             }
           ]
         },
         {
-          "pbName": "BankTaEffectObservationPB",
+          "poName": "BankTaEffectObservationPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/73"
-            }
-          ]
-        },
-        {
-          "pbName": "BankTaEffectObservationPBField4",
-          "sources": [
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/73/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/73/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/73/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/73/fields/3"
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/73/fields/4"
@@ -688,62 +2200,104 @@
           ]
         },
         {
-          "pbName": "BankTaEffectReconcilePB",
+          "poName": "BankTaEffectReconcilePO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/74"
-            }
-          ]
-        },
-        {
-          "pbName": "BankTaEffectReconcilePBField3",
-          "sources": [
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/74/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/74/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/74/fields/2"
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/74/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/74/fields/4"
             }
           ]
         },
         {
-          "pbName": "BankSipDispatchRequestPB",
+          "poName": "BankSipDispatchRequestPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/75"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/75/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/75/fields/1"
             }
           ]
         },
         {
-          "pbName": "BankSipDispatchResultPB",
+          "poName": "BankSipDispatchResultPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/76"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/76/fields/0"
             }
           ]
         },
         {
-          "pbName": "BankSipDispatchOperationPB",
+          "poName": "BankSipDispatchOperationPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/77"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/77/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/77/fields/1"
             }
           ]
         },
         {
-          "pbName": "BankSipDispatchObservationPB",
+          "poName": "BankSipDispatchObservationPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/78"
-            }
-          ]
-        },
-        {
-          "pbName": "BankSipDispatchObservationPBField4",
-          "sources": [
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/78/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/78/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/78/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/78/fields/3"
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/78/fields/4"
@@ -751,62 +2305,124 @@
           ]
         },
         {
-          "pbName": "BankSipDispatchReconcilePB",
+          "poName": "BankSipDispatchReconcilePO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/79"
-            }
-          ]
-        },
-        {
-          "pbName": "BankSipDispatchReconcilePBField3",
-          "sources": [
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/79/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/79/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/79/fields/2"
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/79/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/79/fields/4"
             }
           ]
         },
         {
-          "pbName": "BankCashSubmitPB",
+          "poName": "BankCashSubmitPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/80"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/80/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/80/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/80/fields/2"
             }
           ]
         },
         {
-          "pbName": "BankCashOriginalPB",
+          "poName": "BankCashOriginalPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/81"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/81/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/81/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/81/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/81/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/81/fields/4"
             }
           ]
         },
         {
-          "pbName": "BankCashAcknowledgementPB",
+          "poName": "BankCashAcknowledgementPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/82"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/82/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/82/fields/1"
             }
           ]
         },
         {
-          "pbName": "BankSipCreatePB",
+          "poName": "BankSipCreatePO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/83"
-            }
-          ]
-        },
-        {
-          "pbName": "BankSipCreatePBField4",
-          "sources": [
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/83/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/83/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/83/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/83/fields/3"
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/83/fields/4"
@@ -814,161 +2430,287 @@
           ]
         },
         {
-          "pbName": "BankSipCreateIntentPB",
+          "poName": "BankSipCreateIntentPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/84"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/84/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/84/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/84/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/84/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/84/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/84/fields/5"
             }
           ]
         },
         {
-          "pbName": "BankSipAcknowledgementPB",
+          "poName": "BankSipAcknowledgementPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/85"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/85/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/85/fields/1"
             }
           ]
         },
         {
-          "pbName": "BankSipRevisePB",
+          "poName": "BankSipRevisePO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/86"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/86/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/86/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/86/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/86/fields/3"
             }
           ]
         },
         {
-          "pbName": "BankSipRevisionInputPB",
+          "poName": "BankSipRevisionInputPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/87"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/87/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/87/fields/1"
             }
           ]
         },
         {
-          "pbName": "BankTickPB",
+          "poName": "BankTickPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/88"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/88/fields/0"
             }
           ]
         },
         {
-          "pbName": "BankTickAcknowledgementPB",
+          "poName": "BankTickAcknowledgementPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/89"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/89/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/89/fields/1"
             }
           ]
         },
         {
-          "pbName": "BankAccountKeyPB",
+          "poName": "BankAccountKeyPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/90"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/90/fields/0"
             }
           ]
         },
         {
-          "pbName": "BankCashRequestKeyPB",
+          "poName": "BankCashRequestKeyPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/91"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/91/fields/0"
             }
           ]
         },
         {
-          "pbName": "BankOrderKeyPB",
+          "poName": "BankOrderKeyPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/92"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/92/fields/0"
             }
           ]
         },
         {
-          "pbName": "BankPlanKeyPB",
+          "poName": "BankPlanKeyPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/93"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/93/fields/0"
             }
           ]
         },
         {
-          "pbName": "BankPlanPageKeyPB",
+          "poName": "BankPlanPageKeyPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/94"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/94/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/94/fields/1"
             }
           ]
         },
         {
-          "pbName": "BankOccurrencePageKeyPB",
+          "poName": "BankOccurrencePageKeyPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/95"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/95/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/95/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/95/fields/2"
             }
           ]
         },
         {
-          "pbName": "BankPendingPageKeyPB",
+          "poName": "BankPendingPageKeyPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/96"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/96/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/96/fields/1"
             }
           ]
         },
         {
-          "pbName": "BankOperationKeyPB",
+          "poName": "BankOperationKeyPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/97"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/97/fields/0"
             }
           ]
         },
         {
-          "pbName": "BankProjectionWatermarkPB",
+          "poName": "BankProjectionWatermarkPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/98"
-            }
-          ]
-        },
-        {
-          "pbName": "BankProjectionWatermarkPBField2",
-          "sources": [
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/98/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/98/fields/1"
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/98/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/98/fields/3"
             }
           ]
         },
         {
-          "pbName": "BankReadMetadataPB",
+          "poName": "BankReadMetadataPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/99"
-            }
-          ]
-        },
-        {
-          "pbName": "BankReadMetadataPBField2",
-          "sources": [
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/99/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/99/fields/1"
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/99/fields/2"
@@ -976,107 +2718,156 @@
           ]
         },
         {
-          "pbName": "BankAccountViewPB",
+          "poName": "BankAccountViewPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/100"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/100/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/100/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/100/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/100/fields/3"
             }
           ]
         },
         {
-          "pbName": "BankCashRequestViewPB",
+          "poName": "BankCashRequestViewPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/101"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/101/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/101/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/101/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/101/fields/3"
             }
           ]
         },
         {
-          "pbName": "BankTaSharesViewPB",
+          "poName": "BankTaSharesViewPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/102"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/102/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/102/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/102/fields/2"
             }
           ]
         },
         {
-          "pbName": "BankOrderViewPB",
+          "poName": "BankOrderViewPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/103"
-            }
-          ]
-        },
-        {
-          "pbName": "BankOrderViewPBField6",
-          "sources": [
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/103/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/103/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/103/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/103/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/103/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/103/fields/5"
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/103/fields/6"
-            }
-          ]
-        },
-        {
-          "pbName": "BankOrderViewPBField8",
-          "sources": [
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/103/fields/7"
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/103/fields/8"
-            }
-          ]
-        },
-        {
-          "pbName": "BankOrderViewPBField10",
-          "sources": [
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/103/fields/9"
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/103/fields/10"
-            }
-          ]
-        },
-        {
-          "pbName": "BankOrderViewPBField11",
-          "sources": [
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/103/fields/11"
-            }
-          ]
-        },
-        {
-          "pbName": "BankOrderViewPBField12",
-          "sources": [
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/103/fields/12"
-            }
-          ]
-        },
-        {
-          "pbName": "BankOrderViewPBField13",
-          "sources": [
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/103/fields/13"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/103/fields/14"
             }
           ]
         },
         {
-          "pbName": "BankSipRevisionViewPB",
+          "poName": "BankSipRevisionViewPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/104"
-            }
-          ]
-        },
-        {
-          "pbName": "BankSipRevisionViewPBField1",
-          "sources": [
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/104/fields/0"
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/104/fields/1"
@@ -1084,53 +2875,97 @@
           ]
         },
         {
-          "pbName": "BankSipPlanViewPB",
+          "poName": "BankSipPlanViewPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/105"
-            }
-          ]
-        },
-        {
-          "pbName": "BankSipPlanViewPBField1",
-          "sources": [
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/105/fields/0"
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/105/fields/1"
-            }
-          ]
-        },
-        {
-          "pbName": "BankSipPlanViewPBField6",
-          "sources": [
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/105/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/105/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/105/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/105/fields/5"
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/105/fields/6"
-            }
-          ]
-        },
-        {
-          "pbName": "BankSipPlanViewPBField7",
-          "sources": [
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/105/fields/7"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/105/fields/8"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/105/fields/9"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/105/fields/10"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/105/fields/11"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/105/fields/12"
             }
           ]
         },
         {
-          "pbName": "BankSipOccurrenceViewPB",
+          "poName": "BankSipOccurrenceViewPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/106"
-            }
-          ]
-        },
-        {
-          "pbName": "BankSipOccurrenceViewPBField6",
-          "sources": [
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/106/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/106/fields/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/106/fields/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/106/fields/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/106/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/106/fields/5"
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/106/fields/6"
@@ -1138,53 +2973,57 @@
           ]
         },
         {
-          "pbName": "BankPendingOperationViewPB",
+          "poName": "BankPendingOperationViewPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/107"
-            }
-          ]
-        },
-        {
-          "pbName": "BankPendingOperationViewPBField2",
-          "sources": [
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/107/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/107/fields/1"
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/107/fields/2"
-            }
-          ]
-        },
-        {
-          "pbName": "BankPendingOperationViewPBField3",
-          "sources": [
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/107/fields/3"
-            }
-          ]
-        },
-        {
-          "pbName": "BankPendingOperationViewPBField4",
-          "sources": [
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/107/fields/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/107/fields/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/107/fields/6"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/107/fields/7"
             }
           ]
         },
         {
-          "pbName": "BankAccountResponsePB",
+          "poName": "BankAccountResponsePO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/108"
-            }
-          ]
-        },
-        {
-          "pbName": "BankAccountResponsePBField1",
-          "sources": [
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/108/fields/0"
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/108/fields/1"
@@ -1192,17 +3031,16 @@
           ]
         },
         {
-          "pbName": "BankCashRequestResponsePB",
+          "poName": "BankCashRequestResponsePO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/109"
-            }
-          ]
-        },
-        {
-          "pbName": "BankCashRequestResponsePBField1",
-          "sources": [
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/109/fields/0"
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/109/fields/1"
@@ -1210,17 +3048,16 @@
           ]
         },
         {
-          "pbName": "BankOrderResponsePB",
+          "poName": "BankOrderResponsePO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/110"
-            }
-          ]
-        },
-        {
-          "pbName": "BankOrderResponsePBField1",
-          "sources": [
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/110/fields/0"
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/110/fields/1"
@@ -1228,17 +3065,16 @@
           ]
         },
         {
-          "pbName": "BankSipPlanResponsePB",
+          "poName": "BankSipPlanResponsePO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/111"
-            }
-          ]
-        },
-        {
-          "pbName": "BankSipPlanResponsePBField1",
-          "sources": [
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/111/fields/0"
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/111/fields/1"
@@ -1246,26 +3082,20 @@
           ]
         },
         {
-          "pbName": "BankSipPlanPagePB",
+          "poName": "BankSipPlanPagePO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/112"
-            }
-          ]
-        },
-        {
-          "pbName": "BankSipPlanPagePBField1",
-          "sources": [
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/112/fields/0"
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/112/fields/1"
-            }
-          ]
-        },
-        {
-          "pbName": "BankSipPlanPagePBField2",
-          "sources": [
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/112/fields/2"
@@ -1273,26 +3103,20 @@
           ]
         },
         {
-          "pbName": "BankSipOccurrencePagePB",
+          "poName": "BankSipOccurrencePagePO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/113"
-            }
-          ]
-        },
-        {
-          "pbName": "BankSipOccurrencePagePBField1",
-          "sources": [
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/113/fields/0"
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/113/fields/1"
-            }
-          ]
-        },
-        {
-          "pbName": "BankSipOccurrencePagePBField2",
-          "sources": [
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/113/fields/2"
@@ -1300,26 +3124,20 @@
           ]
         },
         {
-          "pbName": "BankPendingResponsePB",
+          "poName": "BankPendingResponsePO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/114"
-            }
-          ]
-        },
-        {
-          "pbName": "BankPendingResponsePBField1",
-          "sources": [
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/114/fields/0"
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/114/fields/1"
-            }
-          ]
-        },
-        {
-          "pbName": "BankPendingResponsePBField2",
-          "sources": [
+            },
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/114/fields/2"
@@ -1327,160 +3145,154 @@
           ]
         },
         {
-          "pbName": "BankRecoveryAcknowledgementPB",
+          "poName": "BankRecoveryAcknowledgementPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/115"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/115/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/115/fields/1"
             }
           ]
         },
         {
-          "pbName": "BankServiceBootstrapInputPB",
+          "poName": "BankServiceBootstrapInputPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/116"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/116/fields/0"
             }
           ]
         },
         {
-          "pbName": "BankServiceBootstrapAcknowledgementPB",
+          "poName": "BankServiceBootstrapAcknowledgementPO",
           "sources": [
             {
               "document": "bank-v1",
               "pointer": "/valueObjects/117"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/117/fields/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/valueObjects/117/fields/1"
             }
           ]
         },
         {
-          "pbName": "CreditBalanceStatePBField2",
+          "poName": "AccountInitializedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/0/stateFields/2/default"
+              "pointer": "/aggregates/0/events/0"
             }
           ]
         },
         {
-          "pbName": "CreditBalanceStatePBField2Entry",
+          "poName": "ReserveFundsConfirmedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/0/stateFields/2/default"
+              "pointer": "/aggregates/0/events/1"
             }
           ]
         },
         {
-          "pbName": "CreditBalanceStatePBField3",
+          "poName": "DeductFundsConfirmedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/0/stateFields/3/default"
+              "pointer": "/aggregates/0/events/2"
             }
           ]
         },
         {
-          "pbName": "CreditBalanceStatePBField3Entry",
+          "poName": "ReleaseReservedFundsConfirmedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/0/stateFields/3/default"
+              "pointer": "/aggregates/0/events/3"
             }
           ]
         },
         {
-          "pbName": "CreditBalanceStatePBField4",
+          "poName": "RecordIncomingCreditsConfirmedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/0/stateFields/4/default"
+              "pointer": "/aggregates/0/events/4"
             }
           ]
         },
         {
-          "pbName": "CreditBalanceStatePBField4Entry",
+          "poName": "CommitIncomingCreditsConfirmedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/0/stateFields/4/default"
+              "pointer": "/aggregates/0/events/5"
             }
           ]
         },
         {
-          "pbName": "CreditBalanceStatePBField5",
+          "poName": "CancelIncomingCreditConfirmedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/0/stateFields/5/default"
+              "pointer": "/aggregates/0/events/6"
             }
           ]
         },
         {
-          "pbName": "CreditBalanceStatePBField5Entry",
+          "poName": "CreditBalanceEventPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/0/stateFields/5/default"
-            }
-          ]
-        },
-        {
-          "pbName": "CreditBalanceStatePBField6",
-          "sources": [
+              "pointer": "/aggregates/0"
+            },
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/0/stateFields/6/default"
-            }
-          ]
-        },
-        {
-          "pbName": "CreditBalanceStatePBField6Entry",
-          "sources": [
+              "pointer": "/aggregates/0/events/0"
+            },
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/0/stateFields/6/default"
-            }
-          ]
-        },
-        {
-          "pbName": "CreditBalanceStatePBField7",
-          "sources": [
+              "pointer": "/aggregates/0/events/1"
+            },
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/0/stateFields/7/default"
-            }
-          ]
-        },
-        {
-          "pbName": "CreditBalanceStatePBField7Entry",
-          "sources": [
+              "pointer": "/aggregates/0/events/2"
+            },
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/0/stateFields/7/default"
-            }
-          ]
-        },
-        {
-          "pbName": "CreditBalanceStatePBField8",
-          "sources": [
+              "pointer": "/aggregates/0/events/3"
+            },
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/0/stateFields/8/default"
-            }
-          ]
-        },
-        {
-          "pbName": "CreditBalanceStatePBField8Entry",
-          "sources": [
+              "pointer": "/aggregates/0/events/4"
+            },
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/0/stateFields/8/default"
+              "pointer": "/aggregates/0/events/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/0/events/6"
             }
           ]
         },
         {
-          "pbName": "CreditBalanceStatePB",
+          "poName": "CreditBalanceStatePO",
           "sources": [
             {
               "document": "bank-v1",
@@ -1525,313 +3337,432 @@
           ]
         },
         {
-          "pbName": "CreditBalanceAccountInitializedPB",
+          "poName": "FundPurchaseSettlementRequestedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/0/events/0"
+              "pointer": "/aggregates/1/events/0"
             }
           ]
         },
         {
-          "pbName": "CreditBalanceReserveFundsConfirmedPB",
+          "poName": "ReserveFundSubscriptionConfirmedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/0/events/1"
+              "pointer": "/aggregates/1/events/1"
             }
           ]
         },
         {
-          "pbName": "CreditBalanceDeductFundsConfirmedPB",
+          "poName": "FundSubscriptionPaymentConfirmedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/0/events/2"
+              "pointer": "/aggregates/1/events/2"
             }
           ]
         },
         {
-          "pbName": "CreditBalanceReleaseReservedFundsConfirmedPB",
+          "poName": "CashFundSubscriptionCanceledPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/0/events/3"
+              "pointer": "/aggregates/1/events/3"
             }
           ]
         },
         {
-          "pbName": "CreditBalanceRecordIncomingCreditsConfirmedPB",
+          "poName": "FundCashPaymentSucceededPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/0/events/4"
+              "pointer": "/aggregates/1/events/4"
             }
           ]
         },
         {
-          "pbName": "CreditBalanceCommitIncomingCreditsConfirmedPB",
+          "poName": "FundCashPaymentRejectedBeforeEffectsPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/0/events/5"
+              "pointer": "/aggregates/1/events/5"
             }
           ]
         },
         {
-          "pbName": "CreditBalanceCancelIncomingCreditConfirmedPB",
+          "poName": "FundCashPaymentCompensatedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/0/events/6"
+              "pointer": "/aggregates/1/events/6"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField7",
+          "poName": "FundCashPaymentRecoveryRequiredPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/7/default"
+              "pointer": "/aggregates/1/events/7"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField7Entry",
+          "poName": "FundCashPaymentOutcomeUnknownPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/7/default"
+              "pointer": "/aggregates/1/events/8"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField8",
+          "poName": "FundTASubmissionRegisteredPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/8/default"
+              "pointer": "/aggregates/1/events/9"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField8Entry",
+          "poName": "FundTAAcceptedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/8/default"
+              "pointer": "/aggregates/1/events/10"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField9",
+          "poName": "FundTASharesConfirmedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/9/default"
+              "pointer": "/aggregates/1/events/11"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField9Entry",
+          "poName": "FundTARejectedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/9/default"
+              "pointer": "/aggregates/1/events/12"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField12",
+          "poName": "FundTAUnknownPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/12/default"
+              "pointer": "/aggregates/1/events/13"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField12Entry",
+          "poName": "FundPurchaseRefundRequestedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/12/default"
+              "pointer": "/aggregates/1/events/14"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField13",
+          "poName": "FundRefundSucceededPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/13/default"
+              "pointer": "/aggregates/1/events/15"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField13Entry",
+          "poName": "FundRefundRejectedBeforeEffectsPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/13/default"
+              "pointer": "/aggregates/1/events/16"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField17",
+          "poName": "FundRefundCompensatedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/17/default"
+              "pointer": "/aggregates/1/events/17"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField17Entry",
+          "poName": "FundRefundRecoveryRequiredPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/17/default"
+              "pointer": "/aggregates/1/events/18"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField18",
+          "poName": "FundRefundOutcomeUnknownPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/18/default"
+              "pointer": "/aggregates/1/events/19"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField18Entry",
+          "poName": "FundTAReceiptObservedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/18/default"
+              "pointer": "/aggregates/1/events/20"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField23",
+          "poName": "BankPaymentResultSucceededPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/23/default"
+              "pointer": "/aggregates/1/events/21"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField23Entry",
+          "poName": "BankPaymentResultRejectedBeforeEffectsPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/23/default"
+              "pointer": "/aggregates/1/events/22"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField24",
+          "poName": "BankPaymentResultCompensatedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/24/default"
+              "pointer": "/aggregates/1/events/23"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField24Entry",
+          "poName": "BankPaymentResultRecoveryRequiredPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/24/default"
+              "pointer": "/aggregates/1/events/24"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField25",
+          "poName": "BankPaymentResultOutcomeUnknownPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/25/default"
+              "pointer": "/aggregates/1/events/25"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField25Entry",
+          "poName": "BankRefundResultSucceededPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/25/default"
+              "pointer": "/aggregates/1/events/26"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField26",
+          "poName": "BankRefundResultRejectedBeforeEffectsPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/26/default"
+              "pointer": "/aggregates/1/events/27"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField26Entry",
+          "poName": "BankRefundResultCompensatedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/26/default"
+              "pointer": "/aggregates/1/events/28"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField27",
+          "poName": "BankRefundResultRecoveryRequiredPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/27/default"
+              "pointer": "/aggregates/1/events/29"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField27Entry",
+          "poName": "BankRefundResultOutcomeUnknownPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/27/default"
+              "pointer": "/aggregates/1/events/30"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField28",
+          "poName": "CashRequestSourceRecordedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/28/default"
+              "pointer": "/aggregates/1/events/31"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField29",
+          "poName": "FundOrderEventPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/29/default"
+              "pointer": "/aggregates/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/6"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/7"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/8"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/9"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/10"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/11"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/12"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/13"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/14"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/15"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/16"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/17"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/18"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/19"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/20"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/21"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/22"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/23"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/24"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/25"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/26"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/27"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/28"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/29"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/30"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/1/events/31"
             }
           ]
         },
         {
-          "pbName": "FundOrderStatePBField29Entry",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/1/stateFields/29/default"
-            }
-          ]
-        },
-        {
-          "pbName": "FundOrderStatePB",
+          "poName": "FundOrderStatePO",
           "sources": [
             {
               "document": "bank-v1",
@@ -1960,520 +3891,250 @@
           ]
         },
         {
-          "pbName": "FundOrderFundPurchaseSettlementRequestedPB",
+          "poName": "SipPlanCreatedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/events/0"
+              "pointer": "/aggregates/2/events/0"
             }
           ]
         },
         {
-          "pbName": "FundOrderReserveFundSubscriptionConfirmedPB",
+          "poName": "SipDueSlotAppendedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/events/1"
+              "pointer": "/aggregates/2/events/1"
             }
           ]
         },
         {
-          "pbName": "FundOrderFundSubscriptionPaymentConfirmedPB",
+          "poName": "SipScheduleSealedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/events/2"
+              "pointer": "/aggregates/2/events/2"
             }
           ]
         },
         {
-          "pbName": "FundOrderCashFundSubscriptionCanceledPB",
+          "poName": "SipPlanRevisedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/events/3"
+              "pointer": "/aggregates/2/events/3"
             }
           ]
         },
         {
-          "pbName": "FundOrderFundCashPaymentSucceededPB",
+          "poName": "SipClockAdvancedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/events/4"
+              "pointer": "/aggregates/2/events/4"
             }
           ]
         },
         {
-          "pbName": "FundOrderFundCashPaymentRejectedBeforeEffectsPB",
+          "poName": "SipPlanPausedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/events/5"
+              "pointer": "/aggregates/2/events/5"
             }
           ]
         },
         {
-          "pbName": "FundOrderFundCashPaymentCompensatedPB",
+          "poName": "SipPlanResumedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/events/6"
+              "pointer": "/aggregates/2/events/6"
             }
           ]
         },
         {
-          "pbName": "FundOrderFundCashPaymentRecoveryRequiredPB",
+          "poName": "SipDueSlotObservedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/events/7"
+              "pointer": "/aggregates/2/events/7"
             }
           ]
         },
         {
-          "pbName": "FundOrderFundCashPaymentOutcomeUnknownPB",
+          "poName": "SipPausedDueSlotSkippedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/events/8"
+              "pointer": "/aggregates/2/events/8"
             }
           ]
         },
         {
-          "pbName": "FundOrderFundTASubmissionRegisteredPB",
+          "poName": "SipSkippedSlotAdvancedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/events/9"
+              "pointer": "/aggregates/2/events/9"
             }
           ]
         },
         {
-          "pbName": "FundOrderFundTAAcceptedPB",
+          "poName": "SipInstallmentTriggeredPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/events/10"
+              "pointer": "/aggregates/2/events/10"
             }
           ]
         },
         {
-          "pbName": "FundOrderFundTASharesConfirmedPB",
+          "poName": "SipInstallmentPendingPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/events/11"
+              "pointer": "/aggregates/2/events/11"
             }
           ]
         },
         {
-          "pbName": "FundOrderFundTARejectedPB",
+          "poName": "SipInstallmentOutcomeUnknownPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/events/12"
+              "pointer": "/aggregates/2/events/12"
             }
           ]
         },
         {
-          "pbName": "FundOrderFundTAUnknownPB",
+          "poName": "SipInstallmentRecoveryRequiredPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/events/13"
+              "pointer": "/aggregates/2/events/13"
             }
           ]
         },
         {
-          "pbName": "FundOrderFundPurchaseRefundRequestedPB",
+          "poName": "SipInstallmentRefundInProgressPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/events/14"
+              "pointer": "/aggregates/2/events/14"
             }
           ]
         },
         {
-          "pbName": "FundOrderFundRefundSucceededPB",
+          "poName": "SipInstallmentSucceededPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/events/15"
+              "pointer": "/aggregates/2/events/15"
             }
           ]
         },
         {
-          "pbName": "FundOrderFundRefundRejectedBeforeEffectsPB",
+          "poName": "SipInstallmentFailedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/events/16"
+              "pointer": "/aggregates/2/events/16"
             }
           ]
         },
         {
-          "pbName": "FundOrderFundRefundCompensatedPB",
+          "poName": "SipCreateIntentRecordedPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/events/17"
+              "pointer": "/aggregates/2/events/17"
             }
           ]
         },
         {
-          "pbName": "FundOrderFundRefundRecoveryRequiredPB",
+          "poName": "SipPlanEventPO",
           "sources": [
             {
               "document": "bank-v1",
-              "pointer": "/aggregates/1/events/18"
+              "pointer": "/aggregates/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/2/events/0"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/2/events/1"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/2/events/2"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/2/events/3"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/2/events/4"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/2/events/5"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/2/events/6"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/2/events/7"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/2/events/8"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/2/events/9"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/2/events/10"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/2/events/11"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/2/events/12"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/2/events/13"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/2/events/14"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/2/events/15"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/2/events/16"
+            },
+            {
+              "document": "bank-v1",
+              "pointer": "/aggregates/2/events/17"
             }
           ]
         },
         {
-          "pbName": "FundOrderFundRefundOutcomeUnknownPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/1/events/19"
-            }
-          ]
-        },
-        {
-          "pbName": "FundOrderFundTAReceiptObservedPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/1/events/20"
-            }
-          ]
-        },
-        {
-          "pbName": "FundOrderBankPaymentResultSucceededPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/1/events/21"
-            }
-          ]
-        },
-        {
-          "pbName": "FundOrderBankPaymentResultRejectedBeforeEffectsPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/1/events/22"
-            }
-          ]
-        },
-        {
-          "pbName": "FundOrderBankPaymentResultCompensatedPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/1/events/23"
-            }
-          ]
-        },
-        {
-          "pbName": "FundOrderBankPaymentResultRecoveryRequiredPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/1/events/24"
-            }
-          ]
-        },
-        {
-          "pbName": "FundOrderBankPaymentResultOutcomeUnknownPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/1/events/25"
-            }
-          ]
-        },
-        {
-          "pbName": "FundOrderBankRefundResultSucceededPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/1/events/26"
-            }
-          ]
-        },
-        {
-          "pbName": "FundOrderBankRefundResultRejectedBeforeEffectsPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/1/events/27"
-            }
-          ]
-        },
-        {
-          "pbName": "FundOrderBankRefundResultCompensatedPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/1/events/28"
-            }
-          ]
-        },
-        {
-          "pbName": "FundOrderBankRefundResultRecoveryRequiredPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/1/events/29"
-            }
-          ]
-        },
-        {
-          "pbName": "FundOrderBankRefundResultOutcomeUnknownPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/1/events/30"
-            }
-          ]
-        },
-        {
-          "pbName": "FundOrderCashRequestSourceRecordedPBField1",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/1/events/31/payloads/1"
-            }
-          ]
-        },
-        {
-          "pbName": "FundOrderCashRequestSourceRecordedPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/1/events/31"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanStatePBField5",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/stateFields/5/default"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanStatePBField5Entry",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/stateFields/5/default"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanStatePBField11",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/stateFields/11/default"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanStatePBField11Entry",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/stateFields/11/default"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanStatePBField12",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/stateFields/12/default"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanStatePBField12Entry",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/stateFields/12/default"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanStatePBField13",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/stateFields/13/default"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanStatePBField13Entry",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/stateFields/13/default"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanStatePBField16",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/stateFields/16/default"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanStatePBField16Entry",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/stateFields/16/default"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanStatePBField17",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/stateFields/17/default"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanStatePBField17Entry",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/stateFields/17/default"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanStatePBField18",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/stateFields/18/default"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanStatePBField18Entry",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/stateFields/18/default"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanStatePBField19",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/stateFields/19/default"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanStatePBField19Entry",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/stateFields/19/default"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanStatePBField20",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/stateFields/20/default"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanStatePBField20Entry",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/stateFields/20/default"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanStatePBField23",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/stateFields/23/default"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanStatePBField24",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/stateFields/24/default"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanStatePBField24Entry",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/stateFields/24/default"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanStatePBField25",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/stateFields/25/default"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanStatePBField26",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/stateFields/26/default"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanStatePBField26Entry",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/stateFields/26/default"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanStatePB",
+          "poName": "SipPlanStatePO",
           "sources": [
             {
               "document": "bank-v1",
@@ -2588,177 +4249,6 @@
               "pointer": "/aggregates/2/stateFields/26/default"
             }
           ]
-        },
-        {
-          "pbName": "SipPlanSipPlanCreatedPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/events/0"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanSipDueSlotAppendedPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/events/1"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanSipScheduleSealedPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/events/2"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanSipPlanRevisedPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/events/3"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanSipClockAdvancedPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/events/4"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanSipPlanPausedPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/events/5"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanSipPlanResumedPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/events/6"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanSipDueSlotObservedPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/events/7"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanSipPausedDueSlotSkippedPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/events/8"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanSipSkippedSlotAdvancedPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/events/9"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanSipInstallmentTriggeredPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/events/10"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanSipInstallmentPendingPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/events/11"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanSipInstallmentOutcomeUnknownPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/events/12"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanSipInstallmentRecoveryRequiredPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/events/13"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanSipInstallmentRefundInProgressPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/events/14"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanSipInstallmentSucceededPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/events/15"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanSipInstallmentFailedPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/events/16"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanSipCreateIntentRecordedPBField1",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/events/17/payloads/1"
-            }
-          ]
-        },
-        {
-          "pbName": "SipPlanSipCreateIntentRecordedPB",
-          "sources": [
-            {
-              "document": "bank-v1",
-              "pointer": "/aggregates/2/events/17"
-            }
-          ]
         }
       ]
     }
@@ -2767,6 +4257,8 @@
     {
       "context": "bankwealth",
       "aggregate": "CreditBalance",
+      "eventUnionPoName": "CreditBalanceEventPO",
+      "statePoName": "CreditBalanceStatePO",
       "aggregateSource": {
         "document": "bank-v1",
         "pointer": "/aggregates/0"
@@ -2774,7 +4266,7 @@
       "events": [
         {
           "eventName": "AccountInitialized",
-          "pbName": "CreditBalanceAccountInitializedPB",
+          "poName": "AccountInitializedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/0/events/0"
@@ -2782,7 +4274,7 @@
         },
         {
           "eventName": "ReserveFundsConfirmed",
-          "pbName": "CreditBalanceReserveFundsConfirmedPB",
+          "poName": "ReserveFundsConfirmedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/0/events/1"
@@ -2790,7 +4282,7 @@
         },
         {
           "eventName": "DeductFundsConfirmed",
-          "pbName": "CreditBalanceDeductFundsConfirmedPB",
+          "poName": "DeductFundsConfirmedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/0/events/2"
@@ -2798,7 +4290,7 @@
         },
         {
           "eventName": "ReleaseReservedFundsConfirmed",
-          "pbName": "CreditBalanceReleaseReservedFundsConfirmedPB",
+          "poName": "ReleaseReservedFundsConfirmedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/0/events/3"
@@ -2806,7 +4298,7 @@
         },
         {
           "eventName": "RecordIncomingCreditsConfirmed",
-          "pbName": "CreditBalanceRecordIncomingCreditsConfirmedPB",
+          "poName": "RecordIncomingCreditsConfirmedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/0/events/4"
@@ -2814,7 +4306,7 @@
         },
         {
           "eventName": "CommitIncomingCreditsConfirmed",
-          "pbName": "CreditBalanceCommitIncomingCreditsConfirmedPB",
+          "poName": "CommitIncomingCreditsConfirmedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/0/events/5"
@@ -2822,7 +4314,7 @@
         },
         {
           "eventName": "CancelIncomingCreditConfirmed",
-          "pbName": "CreditBalanceCancelIncomingCreditConfirmedPB",
+          "poName": "CancelIncomingCreditConfirmedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/0/events/6"
@@ -2833,6 +4325,8 @@
     {
       "context": "bankwealth",
       "aggregate": "FundOrder",
+      "eventUnionPoName": "FundOrderEventPO",
+      "statePoName": "FundOrderStatePO",
       "aggregateSource": {
         "document": "bank-v1",
         "pointer": "/aggregates/1"
@@ -2840,7 +4334,7 @@
       "events": [
         {
           "eventName": "FundPurchaseSettlementRequested",
-          "pbName": "FundOrderFundPurchaseSettlementRequestedPB",
+          "poName": "FundPurchaseSettlementRequestedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/0"
@@ -2848,7 +4342,7 @@
         },
         {
           "eventName": "ReserveFundSubscriptionConfirmed",
-          "pbName": "FundOrderReserveFundSubscriptionConfirmedPB",
+          "poName": "ReserveFundSubscriptionConfirmedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/1"
@@ -2856,7 +4350,7 @@
         },
         {
           "eventName": "FundSubscriptionPaymentConfirmed",
-          "pbName": "FundOrderFundSubscriptionPaymentConfirmedPB",
+          "poName": "FundSubscriptionPaymentConfirmedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/2"
@@ -2864,7 +4358,7 @@
         },
         {
           "eventName": "CashFundSubscriptionCanceled",
-          "pbName": "FundOrderCashFundSubscriptionCanceledPB",
+          "poName": "CashFundSubscriptionCanceledPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/3"
@@ -2872,7 +4366,7 @@
         },
         {
           "eventName": "FundCashPaymentSucceeded",
-          "pbName": "FundOrderFundCashPaymentSucceededPB",
+          "poName": "FundCashPaymentSucceededPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/4"
@@ -2880,7 +4374,7 @@
         },
         {
           "eventName": "FundCashPaymentRejectedBeforeEffects",
-          "pbName": "FundOrderFundCashPaymentRejectedBeforeEffectsPB",
+          "poName": "FundCashPaymentRejectedBeforeEffectsPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/5"
@@ -2888,7 +4382,7 @@
         },
         {
           "eventName": "FundCashPaymentCompensated",
-          "pbName": "FundOrderFundCashPaymentCompensatedPB",
+          "poName": "FundCashPaymentCompensatedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/6"
@@ -2896,7 +4390,7 @@
         },
         {
           "eventName": "FundCashPaymentRecoveryRequired",
-          "pbName": "FundOrderFundCashPaymentRecoveryRequiredPB",
+          "poName": "FundCashPaymentRecoveryRequiredPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/7"
@@ -2904,7 +4398,7 @@
         },
         {
           "eventName": "FundCashPaymentOutcomeUnknown",
-          "pbName": "FundOrderFundCashPaymentOutcomeUnknownPB",
+          "poName": "FundCashPaymentOutcomeUnknownPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/8"
@@ -2912,7 +4406,7 @@
         },
         {
           "eventName": "FundTASubmissionRegistered",
-          "pbName": "FundOrderFundTASubmissionRegisteredPB",
+          "poName": "FundTASubmissionRegisteredPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/9"
@@ -2920,7 +4414,7 @@
         },
         {
           "eventName": "FundTAAccepted",
-          "pbName": "FundOrderFundTAAcceptedPB",
+          "poName": "FundTAAcceptedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/10"
@@ -2928,7 +4422,7 @@
         },
         {
           "eventName": "FundTASharesConfirmed",
-          "pbName": "FundOrderFundTASharesConfirmedPB",
+          "poName": "FundTASharesConfirmedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/11"
@@ -2936,7 +4430,7 @@
         },
         {
           "eventName": "FundTARejected",
-          "pbName": "FundOrderFundTARejectedPB",
+          "poName": "FundTARejectedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/12"
@@ -2944,7 +4438,7 @@
         },
         {
           "eventName": "FundTAUnknown",
-          "pbName": "FundOrderFundTAUnknownPB",
+          "poName": "FundTAUnknownPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/13"
@@ -2952,7 +4446,7 @@
         },
         {
           "eventName": "FundPurchaseRefundRequested",
-          "pbName": "FundOrderFundPurchaseRefundRequestedPB",
+          "poName": "FundPurchaseRefundRequestedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/14"
@@ -2960,7 +4454,7 @@
         },
         {
           "eventName": "FundRefundSucceeded",
-          "pbName": "FundOrderFundRefundSucceededPB",
+          "poName": "FundRefundSucceededPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/15"
@@ -2968,7 +4462,7 @@
         },
         {
           "eventName": "FundRefundRejectedBeforeEffects",
-          "pbName": "FundOrderFundRefundRejectedBeforeEffectsPB",
+          "poName": "FundRefundRejectedBeforeEffectsPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/16"
@@ -2976,7 +4470,7 @@
         },
         {
           "eventName": "FundRefundCompensated",
-          "pbName": "FundOrderFundRefundCompensatedPB",
+          "poName": "FundRefundCompensatedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/17"
@@ -2984,7 +4478,7 @@
         },
         {
           "eventName": "FundRefundRecoveryRequired",
-          "pbName": "FundOrderFundRefundRecoveryRequiredPB",
+          "poName": "FundRefundRecoveryRequiredPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/18"
@@ -2992,7 +4486,7 @@
         },
         {
           "eventName": "FundRefundOutcomeUnknown",
-          "pbName": "FundOrderFundRefundOutcomeUnknownPB",
+          "poName": "FundRefundOutcomeUnknownPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/19"
@@ -3000,7 +4494,7 @@
         },
         {
           "eventName": "FundTAReceiptObserved",
-          "pbName": "FundOrderFundTAReceiptObservedPB",
+          "poName": "FundTAReceiptObservedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/20"
@@ -3008,7 +4502,7 @@
         },
         {
           "eventName": "BankPaymentResultSucceeded",
-          "pbName": "FundOrderBankPaymentResultSucceededPB",
+          "poName": "BankPaymentResultSucceededPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/21"
@@ -3016,7 +4510,7 @@
         },
         {
           "eventName": "BankPaymentResultRejectedBeforeEffects",
-          "pbName": "FundOrderBankPaymentResultRejectedBeforeEffectsPB",
+          "poName": "BankPaymentResultRejectedBeforeEffectsPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/22"
@@ -3024,7 +4518,7 @@
         },
         {
           "eventName": "BankPaymentResultCompensated",
-          "pbName": "FundOrderBankPaymentResultCompensatedPB",
+          "poName": "BankPaymentResultCompensatedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/23"
@@ -3032,7 +4526,7 @@
         },
         {
           "eventName": "BankPaymentResultRecoveryRequired",
-          "pbName": "FundOrderBankPaymentResultRecoveryRequiredPB",
+          "poName": "BankPaymentResultRecoveryRequiredPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/24"
@@ -3040,7 +4534,7 @@
         },
         {
           "eventName": "BankPaymentResultOutcomeUnknown",
-          "pbName": "FundOrderBankPaymentResultOutcomeUnknownPB",
+          "poName": "BankPaymentResultOutcomeUnknownPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/25"
@@ -3048,7 +4542,7 @@
         },
         {
           "eventName": "BankRefundResultSucceeded",
-          "pbName": "FundOrderBankRefundResultSucceededPB",
+          "poName": "BankRefundResultSucceededPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/26"
@@ -3056,7 +4550,7 @@
         },
         {
           "eventName": "BankRefundResultRejectedBeforeEffects",
-          "pbName": "FundOrderBankRefundResultRejectedBeforeEffectsPB",
+          "poName": "BankRefundResultRejectedBeforeEffectsPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/27"
@@ -3064,7 +4558,7 @@
         },
         {
           "eventName": "BankRefundResultCompensated",
-          "pbName": "FundOrderBankRefundResultCompensatedPB",
+          "poName": "BankRefundResultCompensatedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/28"
@@ -3072,7 +4566,7 @@
         },
         {
           "eventName": "BankRefundResultRecoveryRequired",
-          "pbName": "FundOrderBankRefundResultRecoveryRequiredPB",
+          "poName": "BankRefundResultRecoveryRequiredPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/29"
@@ -3080,7 +4574,7 @@
         },
         {
           "eventName": "BankRefundResultOutcomeUnknown",
-          "pbName": "FundOrderBankRefundResultOutcomeUnknownPB",
+          "poName": "BankRefundResultOutcomeUnknownPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/30"
@@ -3088,7 +4582,7 @@
         },
         {
           "eventName": "CashRequestSourceRecorded",
-          "pbName": "FundOrderCashRequestSourceRecordedPB",
+          "poName": "CashRequestSourceRecordedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/1/events/31"
@@ -3099,6 +4593,8 @@
     {
       "context": "bankwealth",
       "aggregate": "SipPlan",
+      "eventUnionPoName": "SipPlanEventPO",
+      "statePoName": "SipPlanStatePO",
       "aggregateSource": {
         "document": "bank-v1",
         "pointer": "/aggregates/2"
@@ -3106,7 +4602,7 @@
       "events": [
         {
           "eventName": "SipPlanCreated",
-          "pbName": "SipPlanSipPlanCreatedPB",
+          "poName": "SipPlanCreatedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/2/events/0"
@@ -3114,7 +4610,7 @@
         },
         {
           "eventName": "SipDueSlotAppended",
-          "pbName": "SipPlanSipDueSlotAppendedPB",
+          "poName": "SipDueSlotAppendedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/2/events/1"
@@ -3122,7 +4618,7 @@
         },
         {
           "eventName": "SipScheduleSealed",
-          "pbName": "SipPlanSipScheduleSealedPB",
+          "poName": "SipScheduleSealedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/2/events/2"
@@ -3130,7 +4626,7 @@
         },
         {
           "eventName": "SipPlanRevised",
-          "pbName": "SipPlanSipPlanRevisedPB",
+          "poName": "SipPlanRevisedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/2/events/3"
@@ -3138,7 +4634,7 @@
         },
         {
           "eventName": "SipClockAdvanced",
-          "pbName": "SipPlanSipClockAdvancedPB",
+          "poName": "SipClockAdvancedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/2/events/4"
@@ -3146,7 +4642,7 @@
         },
         {
           "eventName": "SipPlanPaused",
-          "pbName": "SipPlanSipPlanPausedPB",
+          "poName": "SipPlanPausedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/2/events/5"
@@ -3154,7 +4650,7 @@
         },
         {
           "eventName": "SipPlanResumed",
-          "pbName": "SipPlanSipPlanResumedPB",
+          "poName": "SipPlanResumedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/2/events/6"
@@ -3162,7 +4658,7 @@
         },
         {
           "eventName": "SipDueSlotObserved",
-          "pbName": "SipPlanSipDueSlotObservedPB",
+          "poName": "SipDueSlotObservedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/2/events/7"
@@ -3170,7 +4666,7 @@
         },
         {
           "eventName": "SipPausedDueSlotSkipped",
-          "pbName": "SipPlanSipPausedDueSlotSkippedPB",
+          "poName": "SipPausedDueSlotSkippedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/2/events/8"
@@ -3178,7 +4674,7 @@
         },
         {
           "eventName": "SipSkippedSlotAdvanced",
-          "pbName": "SipPlanSipSkippedSlotAdvancedPB",
+          "poName": "SipSkippedSlotAdvancedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/2/events/9"
@@ -3186,7 +4682,7 @@
         },
         {
           "eventName": "SipInstallmentTriggered",
-          "pbName": "SipPlanSipInstallmentTriggeredPB",
+          "poName": "SipInstallmentTriggeredPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/2/events/10"
@@ -3194,7 +4690,7 @@
         },
         {
           "eventName": "SipInstallmentPending",
-          "pbName": "SipPlanSipInstallmentPendingPB",
+          "poName": "SipInstallmentPendingPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/2/events/11"
@@ -3202,7 +4698,7 @@
         },
         {
           "eventName": "SipInstallmentOutcomeUnknown",
-          "pbName": "SipPlanSipInstallmentOutcomeUnknownPB",
+          "poName": "SipInstallmentOutcomeUnknownPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/2/events/12"
@@ -3210,7 +4706,7 @@
         },
         {
           "eventName": "SipInstallmentRecoveryRequired",
-          "pbName": "SipPlanSipInstallmentRecoveryRequiredPB",
+          "poName": "SipInstallmentRecoveryRequiredPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/2/events/13"
@@ -3218,7 +4714,7 @@
         },
         {
           "eventName": "SipInstallmentRefundInProgress",
-          "pbName": "SipPlanSipInstallmentRefundInProgressPB",
+          "poName": "SipInstallmentRefundInProgressPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/2/events/14"
@@ -3226,7 +4722,7 @@
         },
         {
           "eventName": "SipInstallmentSucceeded",
-          "pbName": "SipPlanSipInstallmentSucceededPB",
+          "poName": "SipInstallmentSucceededPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/2/events/15"
@@ -3234,7 +4730,7 @@
         },
         {
           "eventName": "SipInstallmentFailed",
-          "pbName": "SipPlanSipInstallmentFailedPB",
+          "poName": "SipInstallmentFailedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/2/events/16"
@@ -3242,7 +4738,7 @@
         },
         {
           "eventName": "SipCreateIntentRecorded",
-          "pbName": "SipPlanSipCreateIntentRecordedPB",
+          "poName": "SipCreateIntentRecordedPO",
           "source": {
             "document": "bank-v1",
             "pointer": "/aggregates/2/events/17"

@@ -1,0 +1,298 @@
+syntax = "proto3";
+
+import "scalapb/scalapb.proto";
+import "shared_value_objects.proto";
+
+package example.bankwealth.infrastructure.proto;
+
+option (scalapb.options) = { flat_package: true };
+
+message FundPurchaseSettlementRequestedPO {
+  OperationIdPO operationId = 1;
+  FundOrderIdPO fundOrderId = 2;
+  AccountIdPO investorAccountId = 3;
+  AccountIdPO fundCollectionAccountId = 4;
+  string fundCode = 5;
+  MoneyPO amount = 6;
+}
+
+message ReserveFundSubscriptionConfirmedPO {
+  TxIdPO txid = 1;
+  FundOrderIdPO resource = 2;
+  MoneyPO amount = 3;
+}
+
+message FundSubscriptionPaymentConfirmedPO {
+  TxIdPO txid = 1;
+  FundOrderIdPO resource = 2;
+  MoneyPO amount = 3;
+}
+
+message CashFundSubscriptionCanceledPO {
+  TxIdPO txid = 1;
+  FundOrderIdPO resource = 2;
+  MoneyPO amount = 3;
+}
+
+message FundCashPaymentSucceededPO {
+  TxIdPO txid = 1;
+  string kind = 2;
+}
+
+message FundCashPaymentRejectedBeforeEffectsPO {
+  TxIdPO txid = 1;
+  string kind = 2;
+}
+
+message FundCashPaymentCompensatedPO {
+  TxIdPO txid = 1;
+  string kind = 2;
+}
+
+message FundCashPaymentRecoveryRequiredPO {
+  TxIdPO txid = 1;
+  string kind = 2;
+}
+
+message FundCashPaymentOutcomeUnknownPO {
+  TxIdPO txid = 1;
+  string kind = 2;
+}
+
+message FundTASubmissionRegisteredPO {
+  FundOrderIdPO fundOrderId = 1;
+  TxIdPO paymentTxId = 2;
+  TaRequestIdPO taRequestId = 3;
+}
+
+message FundTAAcceptedPO {
+  FundOrderIdPO fundOrderId = 1;
+  TxIdPO paymentTxId = 2;
+  TaRequestIdPO taRequestId = 3;
+  string taReference = 4;
+  string receiptId = 5;
+  string receiptBody = 6;
+  string fundCode = 7;
+  string currency = 8;
+  string outcome = 9;
+}
+
+message FundTASharesConfirmedPO {
+  FundOrderIdPO fundOrderId = 1;
+  TxIdPO paymentTxId = 2;
+  TaRequestIdPO taRequestId = 3;
+  string taReference = 4;
+  string receiptId = 5;
+  string receiptBody = 6;
+  string fundCode = 7;
+  string currency = 8;
+  FundSharePO shares = 9;
+  string outcome = 10;
+}
+
+message FundTARejectedPO {
+  FundOrderIdPO fundOrderId = 1;
+  TxIdPO paymentTxId = 2;
+  TaRequestIdPO taRequestId = 3;
+  string taReference = 4;
+  string receiptId = 5;
+  string receiptBody = 6;
+  string fundCode = 7;
+  string currency = 8;
+  string reason = 9;
+  string outcome = 10;
+}
+
+message FundTAUnknownPO {
+  FundOrderIdPO fundOrderId = 1;
+  TxIdPO paymentTxId = 2;
+  TaRequestIdPO taRequestId = 3;
+  string taReference = 4;
+  string receiptId = 5;
+  string receiptBody = 6;
+  string fundCode = 7;
+  string currency = 8;
+  string outcome = 9;
+}
+
+message FundPurchaseRefundRequestedPO {
+  FundOrderIdPO fundOrderId = 1;
+  TxIdPO paymentTxId = 2;
+  AccountIdPO investorAccountId = 3;
+  AccountIdPO fundCollectionAccountId = 4;
+  MoneyPO amount = 5;
+  OperationIdPO refundOperationId = 6;
+}
+
+message FundRefundSucceededPO {
+  TxIdPO refundTxId = 1;
+  OperationIdPO refundOperationId = 2;
+  string receiptId = 3;
+  string receiptBody = 4;
+  string kind = 5;
+}
+
+message FundRefundRejectedBeforeEffectsPO {
+  TxIdPO refundTxId = 1;
+  OperationIdPO refundOperationId = 2;
+  string receiptId = 3;
+  string receiptBody = 4;
+  string kind = 5;
+}
+
+message FundRefundCompensatedPO {
+  TxIdPO refundTxId = 1;
+  OperationIdPO refundOperationId = 2;
+  string receiptId = 3;
+  string receiptBody = 4;
+  string kind = 5;
+}
+
+message FundRefundRecoveryRequiredPO {
+  TxIdPO refundTxId = 1;
+  OperationIdPO refundOperationId = 2;
+  string receiptId = 3;
+  string receiptBody = 4;
+  string kind = 5;
+}
+
+message FundRefundOutcomeUnknownPO {
+  TxIdPO refundTxId = 1;
+  OperationIdPO refundOperationId = 2;
+  string receiptId = 3;
+  string receiptBody = 4;
+  string kind = 5;
+}
+
+message FundTAReceiptObservedPO {
+  FundOrderIdPO fundOrderId = 1;
+  TxIdPO paymentTxId = 2;
+  TaRequestIdPO taRequestId = 3;
+  AccountIdPO investorAccountId = 4;
+  AccountIdPO fundCollectionAccountId = 5;
+  string fundCode = 6;
+  MoneyPO amount = 7;
+  AmountDecimalPO principal = 8;
+  string receiptId = 9;
+  string receiptBody = 10;
+  string taReference = 11;
+  string status = 12;
+  TaExactTextPO shares = 13;
+  TaExactTextPO nav = 14;
+  string reason = 15;
+}
+
+message BankPaymentResultSucceededPO {
+  TxIdPO txid = 1;
+}
+
+message BankPaymentResultRejectedBeforeEffectsPO {
+  TxIdPO txid = 1;
+}
+
+message BankPaymentResultCompensatedPO {
+  TxIdPO txid = 1;
+}
+
+message BankPaymentResultRecoveryRequiredPO {
+  TxIdPO txid = 1;
+}
+
+message BankPaymentResultOutcomeUnknownPO {
+  TxIdPO txid = 1;
+}
+
+message BankRefundResultSucceededPO {
+  TxIdPO txid = 1;
+}
+
+message BankRefundResultRejectedBeforeEffectsPO {
+  TxIdPO txid = 1;
+}
+
+message BankRefundResultCompensatedPO {
+  TxIdPO txid = 1;
+}
+
+message BankRefundResultRecoveryRequiredPO {
+  TxIdPO txid = 1;
+}
+
+message BankRefundResultOutcomeUnknownPO {
+  TxIdPO txid = 1;
+}
+
+message CashRequestSourceRecordedPO {
+  BankCashOriginalPO original = 1;
+  BankCashOriginalPO source = 2;
+}
+
+message FundOrderEventPO {
+  oneof event {
+    FundPurchaseSettlementRequestedPO fundPurchaseSettlementRequested = 1;
+    ReserveFundSubscriptionConfirmedPO reserveFundSubscriptionConfirmed = 2;
+    FundSubscriptionPaymentConfirmedPO fundSubscriptionPaymentConfirmed = 3;
+    CashFundSubscriptionCanceledPO cashFundSubscriptionCanceled = 4;
+    FundCashPaymentSucceededPO fundCashPaymentSucceeded = 5;
+    FundCashPaymentRejectedBeforeEffectsPO fundCashPaymentRejectedBeforeEffects = 6;
+    FundCashPaymentCompensatedPO fundCashPaymentCompensated = 7;
+    FundCashPaymentRecoveryRequiredPO fundCashPaymentRecoveryRequired = 8;
+    FundCashPaymentOutcomeUnknownPO fundCashPaymentOutcomeUnknown = 9;
+    FundTASubmissionRegisteredPO fundTASubmissionRegistered = 10;
+    FundTAAcceptedPO fundTAAccepted = 11;
+    FundTASharesConfirmedPO fundTASharesConfirmed = 12;
+    FundTARejectedPO fundTARejected = 13;
+    FundTAUnknownPO fundTAUnknown = 14;
+    FundPurchaseRefundRequestedPO fundPurchaseRefundRequested = 15;
+    FundRefundSucceededPO fundRefundSucceeded = 16;
+    FundRefundRejectedBeforeEffectsPO fundRefundRejectedBeforeEffects = 17;
+    FundRefundCompensatedPO fundRefundCompensated = 18;
+    FundRefundRecoveryRequiredPO fundRefundRecoveryRequired = 19;
+    FundRefundOutcomeUnknownPO fundRefundOutcomeUnknown = 20;
+    FundTAReceiptObservedPO fundTAReceiptObserved = 21;
+    BankPaymentResultSucceededPO bankPaymentResultSucceeded = 22;
+    BankPaymentResultRejectedBeforeEffectsPO bankPaymentResultRejectedBeforeEffects = 23;
+    BankPaymentResultCompensatedPO bankPaymentResultCompensated = 24;
+    BankPaymentResultRecoveryRequiredPO bankPaymentResultRecoveryRequired = 25;
+    BankPaymentResultOutcomeUnknownPO bankPaymentResultOutcomeUnknown = 26;
+    BankRefundResultSucceededPO bankRefundResultSucceeded = 27;
+    BankRefundResultRejectedBeforeEffectsPO bankRefundResultRejectedBeforeEffects = 28;
+    BankRefundResultCompensatedPO bankRefundResultCompensated = 29;
+    BankRefundResultRecoveryRequiredPO bankRefundResultRecoveryRequired = 30;
+    BankRefundResultOutcomeUnknownPO bankRefundResultOutcomeUnknown = 31;
+    CashRequestSourceRecordedPO cashRequestSourceRecorded = 32;
+  }
+}
+
+message FundOrderStatePO {
+  FundOrderIdPO id = 1;
+  string status = 2;
+  OperationIdPO operationId = 3;
+  AccountIdPO investorAccountId = 4;
+  AccountIdPO fundCollectionAccountId = 5;
+  string fundCode = 6;
+  MoneyPO amount = 7;
+  map<string, MoneyPO> reservedSubscriptions = 8;
+  map<string, MoneyPO> committedSubscriptions = 9;
+  map<string, MoneyPO> compensatedSubscriptions = 10;
+  TxIdPO selectedPaymentTxId = 11;
+  string paymentOutcome = 12;
+  map<string, string> cashPaymentResults = 13;
+  map<string, string> cashPaymentFinalResults = 14;
+  TaRequestIdPO taRequestId = 15;
+  string taReference = 16;
+  string taStatus = 17;
+  map<string, string> taReceipts = 18;
+  map<string, string> taReceiptOutcomes = 19;
+  FundSharePO taConfirmedShares = 20;
+  string taRejectionReason = 21;
+  OperationIdPO refundOperationId = 22;
+  string refundOutcome = 23;
+  map<string, string> refundResultReceipts = 24;
+  map<string, string> refundFinalResults = 25;
+  map<string, string> taObservedReceipts = 26;
+  map<string, string> paymentObservedResults = 27;
+  map<string, string> refundObservedResults = 28;
+  BankCashOriginalPO cashRequestSource = 29;
+  map<string, BankCashOriginalPO> cashRequestOriginals = 30;
+}

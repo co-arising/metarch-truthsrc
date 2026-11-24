@@ -2,516 +2,408 @@ package example.bankwealth.infrastructure.serialization
 
 import example.bankwealth.domain._
 import example.bankwealth.domain.values._
-import example.bankwealth.infrastructure.proto._
+import example.bankwealth.infrastructure.{proto => pb}
 trait DomainConvertersPart2 { self: DomainConverters.type =>
-  def encodeFundOrderStatePBField23(value: Map[String, String]): FundOrderStatePBField23 = { val rows = value.toVector.map(item => encodeFundOrderStatePBField23Entry(item)).sortBy(item => item.toByteArray.iterator.map(b => f"${b & 0xff}%02x").mkString); FundOrderStatePBField23(rows) }
-  def decodeFundOrderStatePBField23(value: FundOrderStatePBField23): Map[String, String] = { val rows = value.f0.map(item => decodeFundOrderStatePBField23Entry(item)).toVector; require(rows.map(_._1).distinct.size == rows.size, "duplicate typed map key"); rows.toMap }
-  def encodeFundOrderStatePBField23Entry(value: (String, String)): FundOrderStatePBField23Entry = FundOrderStatePBField23Entry(value._1, value._2)
-  def decodeFundOrderStatePBField23Entry(value: FundOrderStatePBField23Entry): (String, String) = (value.f0, value.f1)
-  def encodeFundOrderStatePBField24(value: Map[TxId, String]): FundOrderStatePBField24 = { val rows = value.toVector.map(item => encodeFundOrderStatePBField24Entry(item)).sortBy(item => item.toByteArray.iterator.map(b => f"${b & 0xff}%02x").mkString); FundOrderStatePBField24(rows) }
-  def decodeFundOrderStatePBField24(value: FundOrderStatePBField24): Map[TxId, String] = { val rows = value.f0.map(item => decodeFundOrderStatePBField24Entry(item)).toVector; require(rows.map(_._1).distinct.size == rows.size, "duplicate typed map key"); rows.toMap }
-  def encodeFundOrderStatePBField24Entry(value: (TxId, String)): FundOrderStatePBField24Entry = FundOrderStatePBField24Entry(Some(encodeTxIdPB(value._1)), value._2)
-  def decodeFundOrderStatePBField24Entry(value: FundOrderStatePBField24Entry): (TxId, String) = (decodeTxIdPB(req(value.f0)), value.f1)
-  def encodeFundOrderStatePBField25(value: Map[String, String]): FundOrderStatePBField25 = { val rows = value.toVector.map(item => encodeFundOrderStatePBField25Entry(item)).sortBy(item => item.toByteArray.iterator.map(b => f"${b & 0xff}%02x").mkString); FundOrderStatePBField25(rows) }
-  def decodeFundOrderStatePBField25(value: FundOrderStatePBField25): Map[String, String] = { val rows = value.f0.map(item => decodeFundOrderStatePBField25Entry(item)).toVector; require(rows.map(_._1).distinct.size == rows.size, "duplicate typed map key"); rows.toMap }
-  def encodeFundOrderStatePBField25Entry(value: (String, String)): FundOrderStatePBField25Entry = FundOrderStatePBField25Entry(value._1, value._2)
-  def decodeFundOrderStatePBField25Entry(value: FundOrderStatePBField25Entry): (String, String) = (value.f0, value.f1)
-  def encodeFundOrderStatePBField26(value: Map[TxId, String]): FundOrderStatePBField26 = { val rows = value.toVector.map(item => encodeFundOrderStatePBField26Entry(item)).sortBy(item => item.toByteArray.iterator.map(b => f"${b & 0xff}%02x").mkString); FundOrderStatePBField26(rows) }
-  def decodeFundOrderStatePBField26(value: FundOrderStatePBField26): Map[TxId, String] = { val rows = value.f0.map(item => decodeFundOrderStatePBField26Entry(item)).toVector; require(rows.map(_._1).distinct.size == rows.size, "duplicate typed map key"); rows.toMap }
-  def encodeFundOrderStatePBField26Entry(value: (TxId, String)): FundOrderStatePBField26Entry = FundOrderStatePBField26Entry(Some(encodeTxIdPB(value._1)), value._2)
-  def decodeFundOrderStatePBField26Entry(value: FundOrderStatePBField26Entry): (TxId, String) = (decodeTxIdPB(req(value.f0)), value.f1)
-  def encodeFundOrderStatePBField27(value: Map[TxId, String]): FundOrderStatePBField27 = { val rows = value.toVector.map(item => encodeFundOrderStatePBField27Entry(item)).sortBy(item => item.toByteArray.iterator.map(b => f"${b & 0xff}%02x").mkString); FundOrderStatePBField27(rows) }
-  def decodeFundOrderStatePBField27(value: FundOrderStatePBField27): Map[TxId, String] = { val rows = value.f0.map(item => decodeFundOrderStatePBField27Entry(item)).toVector; require(rows.map(_._1).distinct.size == rows.size, "duplicate typed map key"); rows.toMap }
-  def encodeFundOrderStatePBField27Entry(value: (TxId, String)): FundOrderStatePBField27Entry = FundOrderStatePBField27Entry(Some(encodeTxIdPB(value._1)), value._2)
-  def decodeFundOrderStatePBField27Entry(value: FundOrderStatePBField27Entry): (TxId, String) = (decodeTxIdPB(req(value.f0)), value.f1)
-  def encodeFundOrderStatePBField28(value: Option[BankCashOriginal]): FundOrderStatePBField28 = value match { case None => FundOrderStatePBField28(present = false); case Some(item) => FundOrderStatePBField28(present = true, f0 = Some(encodeBankCashOriginalPB(item))) }
-  def decodeFundOrderStatePBField28(value: FundOrderStatePBField28): Option[BankCashOriginal] = if (!value.present) { require(value.f0.isEmpty, "absent optional contains a value"); None } else Some(decodeBankCashOriginalPB(req(value.f0)))
-  def encodeFundOrderStatePBField29(value: Map[String, BankCashOriginal]): FundOrderStatePBField29 = { val rows = value.toVector.map(item => encodeFundOrderStatePBField29Entry(item)).sortBy(item => item.toByteArray.iterator.map(b => f"${b & 0xff}%02x").mkString); FundOrderStatePBField29(rows) }
-  def decodeFundOrderStatePBField29(value: FundOrderStatePBField29): Map[String, BankCashOriginal] = { val rows = value.f0.map(item => decodeFundOrderStatePBField29Entry(item)).toVector; require(rows.map(_._1).distinct.size == rows.size, "duplicate typed map key"); rows.toMap }
-  def encodeFundOrderStatePBField29Entry(value: (String, BankCashOriginal)): FundOrderStatePBField29Entry = FundOrderStatePBField29Entry(value._1, Some(encodeBankCashOriginalPB(value._2)))
-  def decodeFundOrderStatePBField29Entry(value: FundOrderStatePBField29Entry): (String, BankCashOriginal) = (value.f0, decodeBankCashOriginalPB(req(value.f1)))
-  def encodeFundOrderStatePB(value: FundOrderState): FundOrderStatePB = FundOrderStatePB(
-    Some(encodeFundOrderIdPB(value.id)),
-    value.status,
-    Some(encodeOperationIdPB(value.operationId)),
-    Some(encodeAccountIdPB(value.investorAccountId)),
-    Some(encodeAccountIdPB(value.fundCollectionAccountId)),
-    value.fundCode,
-    Some(encodeMoneyPB(value.amount)),
-    Some(encodeFundOrderStatePBField7(value.reservedSubscriptions)),
-    Some(encodeFundOrderStatePBField8(value.committedSubscriptions)),
-    Some(encodeFundOrderStatePBField9(value.compensatedSubscriptions)),
-    Some(encodeTxIdPB(value.selectedPaymentTxId)),
-    value.paymentOutcome,
-    Some(encodeFundOrderStatePBField12(value.cashPaymentResults)),
-    Some(encodeFundOrderStatePBField13(value.cashPaymentFinalResults)),
-    Some(encodeTaRequestIdPB(value.taRequestId)),
-    value.taReference,
-    value.taStatus,
-    Some(encodeFundOrderStatePBField17(value.taReceipts)),
-    Some(encodeFundOrderStatePBField18(value.taReceiptOutcomes)),
-    Some(encodeFundSharePB(value.taConfirmedShares)),
-    value.taRejectionReason,
-    Some(encodeOperationIdPB(value.refundOperationId)),
-    value.refundOutcome,
-    Some(encodeFundOrderStatePBField23(value.refundResultReceipts)),
-    Some(encodeFundOrderStatePBField24(value.refundFinalResults)),
-    Some(encodeFundOrderStatePBField25(value.taObservedReceipts)),
-    Some(encodeFundOrderStatePBField26(value.paymentObservedResults)),
-    Some(encodeFundOrderStatePBField27(value.refundObservedResults)),
-    Some(encodeFundOrderStatePBField28(value.cashRequestSource)),
-    Some(encodeFundOrderStatePBField29(value.cashRequestOriginals))
+  def encodeFundOrderStatePO(value: FundOrderState): pb.FundOrderStatePO = pb.FundOrderStatePO(
+    id = Some(encodeFundOrderIdPO(value.id)),
+    status = value.status,
+    operationId = Some(encodeOperationIdPO(value.operationId)),
+    investorAccountId = Some(encodeAccountIdPO(value.investorAccountId)),
+    fundCollectionAccountId = Some(encodeAccountIdPO(value.fundCollectionAccountId)),
+    fundCode = value.fundCode,
+    amount = Some(encodeMoneyPO(value.amount)),
+    reservedSubscriptions = value.reservedSubscriptions.map { case (k, v) => k.value -> encodeMoneyPO(v) },
+    committedSubscriptions = value.committedSubscriptions.map { case (k, v) => k.value -> encodeMoneyPO(v) },
+    compensatedSubscriptions = value.compensatedSubscriptions.map { case (k, v) => k.value -> encodeMoneyPO(v) },
+    selectedPaymentTxId = Some(encodeTxIdPO(value.selectedPaymentTxId)),
+    paymentOutcome = value.paymentOutcome,
+    cashPaymentResults = value.cashPaymentResults.map { case (k, v) => k.value -> v },
+    cashPaymentFinalResults = value.cashPaymentFinalResults.map { case (k, v) => k.value -> v },
+    taRequestId = Some(encodeTaRequestIdPO(value.taRequestId)),
+    taReference = value.taReference,
+    taStatus = value.taStatus,
+    taReceipts = value.taReceipts,
+    taReceiptOutcomes = value.taReceiptOutcomes,
+    taConfirmedShares = Some(encodeFundSharePO(value.taConfirmedShares)),
+    taRejectionReason = value.taRejectionReason,
+    refundOperationId = Some(encodeOperationIdPO(value.refundOperationId)),
+    refundOutcome = value.refundOutcome,
+    refundResultReceipts = value.refundResultReceipts,
+    refundFinalResults = value.refundFinalResults.map { case (k, v) => k.value -> v },
+    taObservedReceipts = value.taObservedReceipts,
+    paymentObservedResults = value.paymentObservedResults.map { case (k, v) => k.value -> v },
+    refundObservedResults = value.refundObservedResults.map { case (k, v) => k.value -> v },
+    cashRequestSource = value.cashRequestSource.map(encodeBankCashOriginalPO),
+    cashRequestOriginals = value.cashRequestOriginals.map { case (k, v) => k -> encodeBankCashOriginalPO(v) }
   )
-  def decodeFundOrderStatePB(value: FundOrderStatePB): FundOrderState = FundOrderState(
-    decodeFundOrderIdPB(req(value.f0)),
-    value.f1,
-    decodeOperationIdPB(req(value.f2)),
-    decodeAccountIdPB(req(value.f3)),
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    decodeMoneyPB(req(value.f6)),
-    decodeFundOrderStatePBField7(req(value.f7)),
-    decodeFundOrderStatePBField8(req(value.f8)),
-    decodeFundOrderStatePBField9(req(value.f9)),
-    decodeTxIdPB(req(value.f10)),
-    value.f11,
-    decodeFundOrderStatePBField12(req(value.f12)),
-    decodeFundOrderStatePBField13(req(value.f13)),
-    decodeTaRequestIdPB(req(value.f14)),
-    value.f15,
-    value.f16,
-    decodeFundOrderStatePBField17(req(value.f17)),
-    decodeFundOrderStatePBField18(req(value.f18)),
-    decodeFundSharePB(req(value.f19)),
-    value.f20,
-    decodeOperationIdPB(req(value.f21)),
-    value.f22,
-    decodeFundOrderStatePBField23(req(value.f23)),
-    decodeFundOrderStatePBField24(req(value.f24)),
-    decodeFundOrderStatePBField25(req(value.f25)),
-    decodeFundOrderStatePBField26(req(value.f26)),
-    decodeFundOrderStatePBField27(req(value.f27)),
-    decodeFundOrderStatePBField28(req(value.f28)),
-    decodeFundOrderStatePBField29(req(value.f29))
+  def decodeFundOrderStatePO(value: pb.FundOrderStatePO): FundOrderState = FundOrderState(
+    id = decodeFundOrderIdPO(req(value.id)),
+    status = value.status,
+    operationId = decodeOperationIdPO(req(value.operationId)),
+    investorAccountId = decodeAccountIdPO(req(value.investorAccountId)),
+    fundCollectionAccountId = decodeAccountIdPO(req(value.fundCollectionAccountId)),
+    fundCode = value.fundCode,
+    amount = decodeMoneyPO(req(value.amount)),
+    reservedSubscriptions = value.reservedSubscriptions.map { case (k, v) => TxId(k) -> decodeMoneyPO(v) },
+    committedSubscriptions = value.committedSubscriptions.map { case (k, v) => TxId(k) -> decodeMoneyPO(v) },
+    compensatedSubscriptions = value.compensatedSubscriptions.map { case (k, v) => TxId(k) -> decodeMoneyPO(v) },
+    selectedPaymentTxId = decodeTxIdPO(req(value.selectedPaymentTxId)),
+    paymentOutcome = value.paymentOutcome,
+    cashPaymentResults = value.cashPaymentResults.map { case (k, v) => TxId(k) -> v },
+    cashPaymentFinalResults = value.cashPaymentFinalResults.map { case (k, v) => TxId(k) -> v },
+    taRequestId = decodeTaRequestIdPO(req(value.taRequestId)),
+    taReference = value.taReference,
+    taStatus = value.taStatus,
+    taReceipts = value.taReceipts,
+    taReceiptOutcomes = value.taReceiptOutcomes,
+    taConfirmedShares = decodeFundSharePO(req(value.taConfirmedShares)),
+    taRejectionReason = value.taRejectionReason,
+    refundOperationId = decodeOperationIdPO(req(value.refundOperationId)),
+    refundOutcome = value.refundOutcome,
+    refundResultReceipts = value.refundResultReceipts,
+    refundFinalResults = value.refundFinalResults.map { case (k, v) => TxId(k) -> v },
+    taObservedReceipts = value.taObservedReceipts,
+    paymentObservedResults = value.paymentObservedResults.map { case (k, v) => TxId(k) -> v },
+    refundObservedResults = value.refundObservedResults.map { case (k, v) => TxId(k) -> v },
+    cashRequestSource = value.cashRequestSource.map(decodeBankCashOriginalPO),
+    cashRequestOriginals = value.cashRequestOriginals.map { case (k, v) => k -> decodeBankCashOriginalPO(v) }
   )
-  def encodeFundOrderFundPurchaseSettlementRequestedPB(value: FundOrderProtocol.FundPurchaseSettlementRequested): FundOrderFundPurchaseSettlementRequestedPB = FundOrderFundPurchaseSettlementRequestedPB(
-    Some(encodeOperationIdPB(value.operationId)),
-    Some(encodeFundOrderIdPB(value.fundOrderId)),
-    Some(encodeAccountIdPB(value.investorAccountId)),
-    Some(encodeAccountIdPB(value.fundCollectionAccountId)),
-    value.fundCode,
-    Some(encodeMoneyPB(value.amount))
+  def encodeFundPurchaseSettlementRequestedPO(value: FundOrderProtocol.FundPurchaseSettlementRequested): pb.FundPurchaseSettlementRequestedPO = pb.FundPurchaseSettlementRequestedPO(
+    operationId = Some(encodeOperationIdPO(value.operationId)),
+    fundOrderId = Some(encodeFundOrderIdPO(value.fundOrderId)),
+    investorAccountId = Some(encodeAccountIdPO(value.investorAccountId)),
+    fundCollectionAccountId = Some(encodeAccountIdPO(value.fundCollectionAccountId)),
+    fundCode = value.fundCode,
+    amount = Some(encodeMoneyPO(value.amount))
   )
-  def decodeFundOrderFundPurchaseSettlementRequestedPB(value: FundOrderFundPurchaseSettlementRequestedPB): FundOrderProtocol.FundPurchaseSettlementRequested = FundOrderProtocol.FundPurchaseSettlementRequested(
-    decodeOperationIdPB(req(value.f0)),
-    decodeFundOrderIdPB(req(value.f1)),
-    decodeAccountIdPB(req(value.f2)),
-    decodeAccountIdPB(req(value.f3)),
-    value.f4,
-    decodeMoneyPB(req(value.f5))
+  def decodeFundPurchaseSettlementRequestedPO(value: pb.FundPurchaseSettlementRequestedPO): FundOrderProtocol.FundPurchaseSettlementRequested = FundOrderProtocol.FundPurchaseSettlementRequested(
+    operationId = decodeOperationIdPO(req(value.operationId)),
+    fundOrderId = decodeFundOrderIdPO(req(value.fundOrderId)),
+    investorAccountId = decodeAccountIdPO(req(value.investorAccountId)),
+    fundCollectionAccountId = decodeAccountIdPO(req(value.fundCollectionAccountId)),
+    fundCode = value.fundCode,
+    amount = decodeMoneyPO(req(value.amount))
   )
-  def encodeFundOrderReserveFundSubscriptionConfirmedPB(value: FundOrderProtocol.ReserveFundSubscriptionConfirmed): FundOrderReserveFundSubscriptionConfirmedPB = FundOrderReserveFundSubscriptionConfirmedPB(Some(encodeTxIdPB(value.txid)), Some(encodeFundOrderIdPB(value.resource)), Some(encodeMoneyPB(value.amount)))
-  def decodeFundOrderReserveFundSubscriptionConfirmedPB(value: FundOrderReserveFundSubscriptionConfirmedPB): FundOrderProtocol.ReserveFundSubscriptionConfirmed = FundOrderProtocol.ReserveFundSubscriptionConfirmed(decodeTxIdPB(req(value.f0)), decodeFundOrderIdPB(req(value.f1)), decodeMoneyPB(req(value.f2)))
-  def encodeFundOrderFundSubscriptionPaymentConfirmedPB(value: FundOrderProtocol.FundSubscriptionPaymentConfirmed): FundOrderFundSubscriptionPaymentConfirmedPB = FundOrderFundSubscriptionPaymentConfirmedPB(Some(encodeTxIdPB(value.txid)), Some(encodeFundOrderIdPB(value.resource)), Some(encodeMoneyPB(value.amount)))
-  def decodeFundOrderFundSubscriptionPaymentConfirmedPB(value: FundOrderFundSubscriptionPaymentConfirmedPB): FundOrderProtocol.FundSubscriptionPaymentConfirmed = FundOrderProtocol.FundSubscriptionPaymentConfirmed(decodeTxIdPB(req(value.f0)), decodeFundOrderIdPB(req(value.f1)), decodeMoneyPB(req(value.f2)))
-  def encodeFundOrderCashFundSubscriptionCanceledPB(value: FundOrderProtocol.CashFundSubscriptionCanceled): FundOrderCashFundSubscriptionCanceledPB = FundOrderCashFundSubscriptionCanceledPB(Some(encodeTxIdPB(value.txid)), Some(encodeFundOrderIdPB(value.resource)), Some(encodeMoneyPB(value.amount)))
-  def decodeFundOrderCashFundSubscriptionCanceledPB(value: FundOrderCashFundSubscriptionCanceledPB): FundOrderProtocol.CashFundSubscriptionCanceled = FundOrderProtocol.CashFundSubscriptionCanceled(decodeTxIdPB(req(value.f0)), decodeFundOrderIdPB(req(value.f1)), decodeMoneyPB(req(value.f2)))
-  def encodeFundOrderFundCashPaymentSucceededPB(value: FundOrderProtocol.FundCashPaymentSucceeded): FundOrderFundCashPaymentSucceededPB = FundOrderFundCashPaymentSucceededPB(Some(encodeTxIdPB(value.txid)), value.kind)
-  def decodeFundOrderFundCashPaymentSucceededPB(value: FundOrderFundCashPaymentSucceededPB): FundOrderProtocol.FundCashPaymentSucceeded = FundOrderProtocol.FundCashPaymentSucceeded(decodeTxIdPB(req(value.f0)), value.f1)
-  def encodeFundOrderFundCashPaymentRejectedBeforeEffectsPB(value: FundOrderProtocol.FundCashPaymentRejectedBeforeEffects): FundOrderFundCashPaymentRejectedBeforeEffectsPB = FundOrderFundCashPaymentRejectedBeforeEffectsPB(Some(encodeTxIdPB(value.txid)), value.kind)
-  def decodeFundOrderFundCashPaymentRejectedBeforeEffectsPB(value: FundOrderFundCashPaymentRejectedBeforeEffectsPB): FundOrderProtocol.FundCashPaymentRejectedBeforeEffects = FundOrderProtocol.FundCashPaymentRejectedBeforeEffects(decodeTxIdPB(req(value.f0)), value.f1)
-  def encodeFundOrderFundCashPaymentCompensatedPB(value: FundOrderProtocol.FundCashPaymentCompensated): FundOrderFundCashPaymentCompensatedPB = FundOrderFundCashPaymentCompensatedPB(Some(encodeTxIdPB(value.txid)), value.kind)
-  def decodeFundOrderFundCashPaymentCompensatedPB(value: FundOrderFundCashPaymentCompensatedPB): FundOrderProtocol.FundCashPaymentCompensated = FundOrderProtocol.FundCashPaymentCompensated(decodeTxIdPB(req(value.f0)), value.f1)
-  def encodeFundOrderFundCashPaymentRecoveryRequiredPB(value: FundOrderProtocol.FundCashPaymentRecoveryRequired): FundOrderFundCashPaymentRecoveryRequiredPB = FundOrderFundCashPaymentRecoveryRequiredPB(Some(encodeTxIdPB(value.txid)), value.kind)
-  def decodeFundOrderFundCashPaymentRecoveryRequiredPB(value: FundOrderFundCashPaymentRecoveryRequiredPB): FundOrderProtocol.FundCashPaymentRecoveryRequired = FundOrderProtocol.FundCashPaymentRecoveryRequired(decodeTxIdPB(req(value.f0)), value.f1)
-  def encodeFundOrderFundCashPaymentOutcomeUnknownPB(value: FundOrderProtocol.FundCashPaymentOutcomeUnknown): FundOrderFundCashPaymentOutcomeUnknownPB = FundOrderFundCashPaymentOutcomeUnknownPB(Some(encodeTxIdPB(value.txid)), value.kind)
-  def decodeFundOrderFundCashPaymentOutcomeUnknownPB(value: FundOrderFundCashPaymentOutcomeUnknownPB): FundOrderProtocol.FundCashPaymentOutcomeUnknown = FundOrderProtocol.FundCashPaymentOutcomeUnknown(decodeTxIdPB(req(value.f0)), value.f1)
-  def encodeFundOrderFundTASubmissionRegisteredPB(value: FundOrderProtocol.FundTASubmissionRegistered): FundOrderFundTASubmissionRegisteredPB = FundOrderFundTASubmissionRegisteredPB(Some(encodeFundOrderIdPB(value.fundOrderId)), Some(encodeTxIdPB(value.paymentTxId)), Some(encodeTaRequestIdPB(value.taRequestId)))
-  def decodeFundOrderFundTASubmissionRegisteredPB(value: FundOrderFundTASubmissionRegisteredPB): FundOrderProtocol.FundTASubmissionRegistered = FundOrderProtocol.FundTASubmissionRegistered(decodeFundOrderIdPB(req(value.f0)), decodeTxIdPB(req(value.f1)), decodeTaRequestIdPB(req(value.f2)))
-  def encodeFundOrderFundTAAcceptedPB(value: FundOrderProtocol.FundTAAccepted): FundOrderFundTAAcceptedPB = FundOrderFundTAAcceptedPB(
-    Some(encodeFundOrderIdPB(value.fundOrderId)),
-    Some(encodeTxIdPB(value.paymentTxId)),
-    Some(encodeTaRequestIdPB(value.taRequestId)),
-    value.taReference,
-    value.receiptId,
-    value.receiptBody,
-    value.fundCode,
-    value.currency,
-    value.outcome
+  def encodeReserveFundSubscriptionConfirmedPO(value: FundOrderProtocol.ReserveFundSubscriptionConfirmed): pb.ReserveFundSubscriptionConfirmedPO = pb.ReserveFundSubscriptionConfirmedPO(txid = Some(encodeTxIdPO(value.txid)), resource = Some(encodeFundOrderIdPO(value.resource)), amount = Some(encodeMoneyPO(value.amount)))
+  def decodeReserveFundSubscriptionConfirmedPO(value: pb.ReserveFundSubscriptionConfirmedPO): FundOrderProtocol.ReserveFundSubscriptionConfirmed = FundOrderProtocol.ReserveFundSubscriptionConfirmed(txid = decodeTxIdPO(req(value.txid)), resource = decodeFundOrderIdPO(req(value.resource)), amount = decodeMoneyPO(req(value.amount)))
+  def encodeFundSubscriptionPaymentConfirmedPO(value: FundOrderProtocol.FundSubscriptionPaymentConfirmed): pb.FundSubscriptionPaymentConfirmedPO = pb.FundSubscriptionPaymentConfirmedPO(txid = Some(encodeTxIdPO(value.txid)), resource = Some(encodeFundOrderIdPO(value.resource)), amount = Some(encodeMoneyPO(value.amount)))
+  def decodeFundSubscriptionPaymentConfirmedPO(value: pb.FundSubscriptionPaymentConfirmedPO): FundOrderProtocol.FundSubscriptionPaymentConfirmed = FundOrderProtocol.FundSubscriptionPaymentConfirmed(txid = decodeTxIdPO(req(value.txid)), resource = decodeFundOrderIdPO(req(value.resource)), amount = decodeMoneyPO(req(value.amount)))
+  def encodeCashFundSubscriptionCanceledPO(value: FundOrderProtocol.CashFundSubscriptionCanceled): pb.CashFundSubscriptionCanceledPO = pb.CashFundSubscriptionCanceledPO(txid = Some(encodeTxIdPO(value.txid)), resource = Some(encodeFundOrderIdPO(value.resource)), amount = Some(encodeMoneyPO(value.amount)))
+  def decodeCashFundSubscriptionCanceledPO(value: pb.CashFundSubscriptionCanceledPO): FundOrderProtocol.CashFundSubscriptionCanceled = FundOrderProtocol.CashFundSubscriptionCanceled(txid = decodeTxIdPO(req(value.txid)), resource = decodeFundOrderIdPO(req(value.resource)), amount = decodeMoneyPO(req(value.amount)))
+  def encodeFundCashPaymentSucceededPO(value: FundOrderProtocol.FundCashPaymentSucceeded): pb.FundCashPaymentSucceededPO = pb.FundCashPaymentSucceededPO(txid = Some(encodeTxIdPO(value.txid)), kind = value.kind)
+  def decodeFundCashPaymentSucceededPO(value: pb.FundCashPaymentSucceededPO): FundOrderProtocol.FundCashPaymentSucceeded = FundOrderProtocol.FundCashPaymentSucceeded(txid = decodeTxIdPO(req(value.txid)), kind = value.kind)
+  def encodeFundCashPaymentRejectedBeforeEffectsPO(value: FundOrderProtocol.FundCashPaymentRejectedBeforeEffects): pb.FundCashPaymentRejectedBeforeEffectsPO = pb.FundCashPaymentRejectedBeforeEffectsPO(txid = Some(encodeTxIdPO(value.txid)), kind = value.kind)
+  def decodeFundCashPaymentRejectedBeforeEffectsPO(value: pb.FundCashPaymentRejectedBeforeEffectsPO): FundOrderProtocol.FundCashPaymentRejectedBeforeEffects = FundOrderProtocol.FundCashPaymentRejectedBeforeEffects(txid = decodeTxIdPO(req(value.txid)), kind = value.kind)
+  def encodeFundCashPaymentCompensatedPO(value: FundOrderProtocol.FundCashPaymentCompensated): pb.FundCashPaymentCompensatedPO = pb.FundCashPaymentCompensatedPO(txid = Some(encodeTxIdPO(value.txid)), kind = value.kind)
+  def decodeFundCashPaymentCompensatedPO(value: pb.FundCashPaymentCompensatedPO): FundOrderProtocol.FundCashPaymentCompensated = FundOrderProtocol.FundCashPaymentCompensated(txid = decodeTxIdPO(req(value.txid)), kind = value.kind)
+  def encodeFundCashPaymentRecoveryRequiredPO(value: FundOrderProtocol.FundCashPaymentRecoveryRequired): pb.FundCashPaymentRecoveryRequiredPO = pb.FundCashPaymentRecoveryRequiredPO(txid = Some(encodeTxIdPO(value.txid)), kind = value.kind)
+  def decodeFundCashPaymentRecoveryRequiredPO(value: pb.FundCashPaymentRecoveryRequiredPO): FundOrderProtocol.FundCashPaymentRecoveryRequired = FundOrderProtocol.FundCashPaymentRecoveryRequired(txid = decodeTxIdPO(req(value.txid)), kind = value.kind)
+  def encodeFundCashPaymentOutcomeUnknownPO(value: FundOrderProtocol.FundCashPaymentOutcomeUnknown): pb.FundCashPaymentOutcomeUnknownPO = pb.FundCashPaymentOutcomeUnknownPO(txid = Some(encodeTxIdPO(value.txid)), kind = value.kind)
+  def decodeFundCashPaymentOutcomeUnknownPO(value: pb.FundCashPaymentOutcomeUnknownPO): FundOrderProtocol.FundCashPaymentOutcomeUnknown = FundOrderProtocol.FundCashPaymentOutcomeUnknown(txid = decodeTxIdPO(req(value.txid)), kind = value.kind)
+  def encodeFundTASubmissionRegisteredPO(value: FundOrderProtocol.FundTASubmissionRegistered): pb.FundTASubmissionRegisteredPO = pb.FundTASubmissionRegisteredPO(fundOrderId = Some(encodeFundOrderIdPO(value.fundOrderId)), paymentTxId = Some(encodeTxIdPO(value.paymentTxId)), taRequestId = Some(encodeTaRequestIdPO(value.taRequestId)))
+  def decodeFundTASubmissionRegisteredPO(value: pb.FundTASubmissionRegisteredPO): FundOrderProtocol.FundTASubmissionRegistered = FundOrderProtocol.FundTASubmissionRegistered(fundOrderId = decodeFundOrderIdPO(req(value.fundOrderId)), paymentTxId = decodeTxIdPO(req(value.paymentTxId)), taRequestId = decodeTaRequestIdPO(req(value.taRequestId)))
+  def encodeFundTAAcceptedPO(value: FundOrderProtocol.FundTAAccepted): pb.FundTAAcceptedPO = pb.FundTAAcceptedPO(
+    fundOrderId = Some(encodeFundOrderIdPO(value.fundOrderId)),
+    paymentTxId = Some(encodeTxIdPO(value.paymentTxId)),
+    taRequestId = Some(encodeTaRequestIdPO(value.taRequestId)),
+    taReference = value.taReference,
+    receiptId = value.receiptId,
+    receiptBody = value.receiptBody,
+    fundCode = value.fundCode,
+    currency = value.currency,
+    outcome = value.outcome
   )
-  def decodeFundOrderFundTAAcceptedPB(value: FundOrderFundTAAcceptedPB): FundOrderProtocol.FundTAAccepted = FundOrderProtocol.FundTAAccepted(
-    decodeFundOrderIdPB(req(value.f0)),
-    decodeTxIdPB(req(value.f1)),
-    decodeTaRequestIdPB(req(value.f2)),
-    value.f3,
-    value.f4,
-    value.f5,
-    value.f6,
-    value.f7,
-    value.f8
+  def decodeFundTAAcceptedPO(value: pb.FundTAAcceptedPO): FundOrderProtocol.FundTAAccepted = FundOrderProtocol.FundTAAccepted(
+    fundOrderId = decodeFundOrderIdPO(req(value.fundOrderId)),
+    paymentTxId = decodeTxIdPO(req(value.paymentTxId)),
+    taRequestId = decodeTaRequestIdPO(req(value.taRequestId)),
+    taReference = value.taReference,
+    receiptId = value.receiptId,
+    receiptBody = value.receiptBody,
+    fundCode = value.fundCode,
+    currency = value.currency,
+    outcome = value.outcome
   )
-  def encodeFundOrderFundTASharesConfirmedPB(value: FundOrderProtocol.FundTASharesConfirmed): FundOrderFundTASharesConfirmedPB = FundOrderFundTASharesConfirmedPB(
-    Some(encodeFundOrderIdPB(value.fundOrderId)),
-    Some(encodeTxIdPB(value.paymentTxId)),
-    Some(encodeTaRequestIdPB(value.taRequestId)),
-    value.taReference,
-    value.receiptId,
-    value.receiptBody,
-    value.fundCode,
-    value.currency,
-    Some(encodeFundSharePB(value.shares)),
-    value.outcome
+  def encodeFundTASharesConfirmedPO(value: FundOrderProtocol.FundTASharesConfirmed): pb.FundTASharesConfirmedPO = pb.FundTASharesConfirmedPO(
+    fundOrderId = Some(encodeFundOrderIdPO(value.fundOrderId)),
+    paymentTxId = Some(encodeTxIdPO(value.paymentTxId)),
+    taRequestId = Some(encodeTaRequestIdPO(value.taRequestId)),
+    taReference = value.taReference,
+    receiptId = value.receiptId,
+    receiptBody = value.receiptBody,
+    fundCode = value.fundCode,
+    currency = value.currency,
+    shares = Some(encodeFundSharePO(value.shares)),
+    outcome = value.outcome
   )
-  def decodeFundOrderFundTASharesConfirmedPB(value: FundOrderFundTASharesConfirmedPB): FundOrderProtocol.FundTASharesConfirmed = FundOrderProtocol.FundTASharesConfirmed(
-    decodeFundOrderIdPB(req(value.f0)),
-    decodeTxIdPB(req(value.f1)),
-    decodeTaRequestIdPB(req(value.f2)),
-    value.f3,
-    value.f4,
-    value.f5,
-    value.f6,
-    value.f7,
-    decodeFundSharePB(req(value.f8)),
-    value.f9
+  def decodeFundTASharesConfirmedPO(value: pb.FundTASharesConfirmedPO): FundOrderProtocol.FundTASharesConfirmed = FundOrderProtocol.FundTASharesConfirmed(
+    fundOrderId = decodeFundOrderIdPO(req(value.fundOrderId)),
+    paymentTxId = decodeTxIdPO(req(value.paymentTxId)),
+    taRequestId = decodeTaRequestIdPO(req(value.taRequestId)),
+    taReference = value.taReference,
+    receiptId = value.receiptId,
+    receiptBody = value.receiptBody,
+    fundCode = value.fundCode,
+    currency = value.currency,
+    shares = decodeFundSharePO(req(value.shares)),
+    outcome = value.outcome
   )
-  def encodeFundOrderFundTARejectedPB(value: FundOrderProtocol.FundTARejected): FundOrderFundTARejectedPB = FundOrderFundTARejectedPB(
-    Some(encodeFundOrderIdPB(value.fundOrderId)),
-    Some(encodeTxIdPB(value.paymentTxId)),
-    Some(encodeTaRequestIdPB(value.taRequestId)),
-    value.taReference,
-    value.receiptId,
-    value.receiptBody,
-    value.fundCode,
-    value.currency,
-    value.reason,
-    value.outcome
+  def encodeFundTARejectedPO(value: FundOrderProtocol.FundTARejected): pb.FundTARejectedPO = pb.FundTARejectedPO(
+    fundOrderId = Some(encodeFundOrderIdPO(value.fundOrderId)),
+    paymentTxId = Some(encodeTxIdPO(value.paymentTxId)),
+    taRequestId = Some(encodeTaRequestIdPO(value.taRequestId)),
+    taReference = value.taReference,
+    receiptId = value.receiptId,
+    receiptBody = value.receiptBody,
+    fundCode = value.fundCode,
+    currency = value.currency,
+    reason = value.reason,
+    outcome = value.outcome
   )
-  def decodeFundOrderFundTARejectedPB(value: FundOrderFundTARejectedPB): FundOrderProtocol.FundTARejected = FundOrderProtocol.FundTARejected(
-    decodeFundOrderIdPB(req(value.f0)),
-    decodeTxIdPB(req(value.f1)),
-    decodeTaRequestIdPB(req(value.f2)),
-    value.f3,
-    value.f4,
-    value.f5,
-    value.f6,
-    value.f7,
-    value.f8,
-    value.f9
+  def decodeFundTARejectedPO(value: pb.FundTARejectedPO): FundOrderProtocol.FundTARejected = FundOrderProtocol.FundTARejected(
+    fundOrderId = decodeFundOrderIdPO(req(value.fundOrderId)),
+    paymentTxId = decodeTxIdPO(req(value.paymentTxId)),
+    taRequestId = decodeTaRequestIdPO(req(value.taRequestId)),
+    taReference = value.taReference,
+    receiptId = value.receiptId,
+    receiptBody = value.receiptBody,
+    fundCode = value.fundCode,
+    currency = value.currency,
+    reason = value.reason,
+    outcome = value.outcome
   )
-  def encodeFundOrderFundTAUnknownPB(value: FundOrderProtocol.FundTAUnknown): FundOrderFundTAUnknownPB = FundOrderFundTAUnknownPB(
-    Some(encodeFundOrderIdPB(value.fundOrderId)),
-    Some(encodeTxIdPB(value.paymentTxId)),
-    Some(encodeTaRequestIdPB(value.taRequestId)),
-    value.taReference,
-    value.receiptId,
-    value.receiptBody,
-    value.fundCode,
-    value.currency,
-    value.outcome
+  def encodeFundTAUnknownPO(value: FundOrderProtocol.FundTAUnknown): pb.FundTAUnknownPO = pb.FundTAUnknownPO(
+    fundOrderId = Some(encodeFundOrderIdPO(value.fundOrderId)),
+    paymentTxId = Some(encodeTxIdPO(value.paymentTxId)),
+    taRequestId = Some(encodeTaRequestIdPO(value.taRequestId)),
+    taReference = value.taReference,
+    receiptId = value.receiptId,
+    receiptBody = value.receiptBody,
+    fundCode = value.fundCode,
+    currency = value.currency,
+    outcome = value.outcome
   )
-  def decodeFundOrderFundTAUnknownPB(value: FundOrderFundTAUnknownPB): FundOrderProtocol.FundTAUnknown = FundOrderProtocol.FundTAUnknown(
-    decodeFundOrderIdPB(req(value.f0)),
-    decodeTxIdPB(req(value.f1)),
-    decodeTaRequestIdPB(req(value.f2)),
-    value.f3,
-    value.f4,
-    value.f5,
-    value.f6,
-    value.f7,
-    value.f8
+  def decodeFundTAUnknownPO(value: pb.FundTAUnknownPO): FundOrderProtocol.FundTAUnknown = FundOrderProtocol.FundTAUnknown(
+    fundOrderId = decodeFundOrderIdPO(req(value.fundOrderId)),
+    paymentTxId = decodeTxIdPO(req(value.paymentTxId)),
+    taRequestId = decodeTaRequestIdPO(req(value.taRequestId)),
+    taReference = value.taReference,
+    receiptId = value.receiptId,
+    receiptBody = value.receiptBody,
+    fundCode = value.fundCode,
+    currency = value.currency,
+    outcome = value.outcome
   )
-  def encodeFundOrderFundPurchaseRefundRequestedPB(value: FundOrderProtocol.FundPurchaseRefundRequested): FundOrderFundPurchaseRefundRequestedPB = FundOrderFundPurchaseRefundRequestedPB(
-    Some(encodeFundOrderIdPB(value.fundOrderId)),
-    Some(encodeTxIdPB(value.paymentTxId)),
-    Some(encodeAccountIdPB(value.investorAccountId)),
-    Some(encodeAccountIdPB(value.fundCollectionAccountId)),
-    Some(encodeMoneyPB(value.amount)),
-    Some(encodeOperationIdPB(value.refundOperationId))
+  def encodeFundPurchaseRefundRequestedPO(value: FundOrderProtocol.FundPurchaseRefundRequested): pb.FundPurchaseRefundRequestedPO = pb.FundPurchaseRefundRequestedPO(
+    fundOrderId = Some(encodeFundOrderIdPO(value.fundOrderId)),
+    paymentTxId = Some(encodeTxIdPO(value.paymentTxId)),
+    investorAccountId = Some(encodeAccountIdPO(value.investorAccountId)),
+    fundCollectionAccountId = Some(encodeAccountIdPO(value.fundCollectionAccountId)),
+    amount = Some(encodeMoneyPO(value.amount)),
+    refundOperationId = Some(encodeOperationIdPO(value.refundOperationId))
   )
-  def decodeFundOrderFundPurchaseRefundRequestedPB(value: FundOrderFundPurchaseRefundRequestedPB): FundOrderProtocol.FundPurchaseRefundRequested = FundOrderProtocol.FundPurchaseRefundRequested(
-    decodeFundOrderIdPB(req(value.f0)),
-    decodeTxIdPB(req(value.f1)),
-    decodeAccountIdPB(req(value.f2)),
-    decodeAccountIdPB(req(value.f3)),
-    decodeMoneyPB(req(value.f4)),
-    decodeOperationIdPB(req(value.f5))
+  def decodeFundPurchaseRefundRequestedPO(value: pb.FundPurchaseRefundRequestedPO): FundOrderProtocol.FundPurchaseRefundRequested = FundOrderProtocol.FundPurchaseRefundRequested(
+    fundOrderId = decodeFundOrderIdPO(req(value.fundOrderId)),
+    paymentTxId = decodeTxIdPO(req(value.paymentTxId)),
+    investorAccountId = decodeAccountIdPO(req(value.investorAccountId)),
+    fundCollectionAccountId = decodeAccountIdPO(req(value.fundCollectionAccountId)),
+    amount = decodeMoneyPO(req(value.amount)),
+    refundOperationId = decodeOperationIdPO(req(value.refundOperationId))
   )
-  def encodeFundOrderFundRefundSucceededPB(value: FundOrderProtocol.FundRefundSucceeded): FundOrderFundRefundSucceededPB = FundOrderFundRefundSucceededPB(
-    Some(encodeTxIdPB(value.refundTxId)),
-    Some(encodeOperationIdPB(value.refundOperationId)),
-    value.receiptId,
-    value.receiptBody,
-    value.kind
+  def encodeFundRefundSucceededPO(value: FundOrderProtocol.FundRefundSucceeded): pb.FundRefundSucceededPO = pb.FundRefundSucceededPO(
+    refundTxId = Some(encodeTxIdPO(value.refundTxId)),
+    refundOperationId = Some(encodeOperationIdPO(value.refundOperationId)),
+    receiptId = value.receiptId,
+    receiptBody = value.receiptBody,
+    kind = value.kind
   )
-  def decodeFundOrderFundRefundSucceededPB(value: FundOrderFundRefundSucceededPB): FundOrderProtocol.FundRefundSucceeded = FundOrderProtocol.FundRefundSucceeded(
-    decodeTxIdPB(req(value.f0)),
-    decodeOperationIdPB(req(value.f1)),
-    value.f2,
-    value.f3,
-    value.f4
+  def decodeFundRefundSucceededPO(value: pb.FundRefundSucceededPO): FundOrderProtocol.FundRefundSucceeded = FundOrderProtocol.FundRefundSucceeded(
+    refundTxId = decodeTxIdPO(req(value.refundTxId)),
+    refundOperationId = decodeOperationIdPO(req(value.refundOperationId)),
+    receiptId = value.receiptId,
+    receiptBody = value.receiptBody,
+    kind = value.kind
   )
-  def encodeFundOrderFundRefundRejectedBeforeEffectsPB(value: FundOrderProtocol.FundRefundRejectedBeforeEffects): FundOrderFundRefundRejectedBeforeEffectsPB = FundOrderFundRefundRejectedBeforeEffectsPB(
-    Some(encodeTxIdPB(value.refundTxId)),
-    Some(encodeOperationIdPB(value.refundOperationId)),
-    value.receiptId,
-    value.receiptBody,
-    value.kind
+  def encodeFundRefundRejectedBeforeEffectsPO(value: FundOrderProtocol.FundRefundRejectedBeforeEffects): pb.FundRefundRejectedBeforeEffectsPO = pb.FundRefundRejectedBeforeEffectsPO(
+    refundTxId = Some(encodeTxIdPO(value.refundTxId)),
+    refundOperationId = Some(encodeOperationIdPO(value.refundOperationId)),
+    receiptId = value.receiptId,
+    receiptBody = value.receiptBody,
+    kind = value.kind
   )
-  def decodeFundOrderFundRefundRejectedBeforeEffectsPB(value: FundOrderFundRefundRejectedBeforeEffectsPB): FundOrderProtocol.FundRefundRejectedBeforeEffects = FundOrderProtocol.FundRefundRejectedBeforeEffects(
-    decodeTxIdPB(req(value.f0)),
-    decodeOperationIdPB(req(value.f1)),
-    value.f2,
-    value.f3,
-    value.f4
+  def decodeFundRefundRejectedBeforeEffectsPO(value: pb.FundRefundRejectedBeforeEffectsPO): FundOrderProtocol.FundRefundRejectedBeforeEffects = FundOrderProtocol.FundRefundRejectedBeforeEffects(
+    refundTxId = decodeTxIdPO(req(value.refundTxId)),
+    refundOperationId = decodeOperationIdPO(req(value.refundOperationId)),
+    receiptId = value.receiptId,
+    receiptBody = value.receiptBody,
+    kind = value.kind
   )
-  def encodeFundOrderFundRefundCompensatedPB(value: FundOrderProtocol.FundRefundCompensated): FundOrderFundRefundCompensatedPB = FundOrderFundRefundCompensatedPB(
-    Some(encodeTxIdPB(value.refundTxId)),
-    Some(encodeOperationIdPB(value.refundOperationId)),
-    value.receiptId,
-    value.receiptBody,
-    value.kind
+  def encodeFundRefundCompensatedPO(value: FundOrderProtocol.FundRefundCompensated): pb.FundRefundCompensatedPO = pb.FundRefundCompensatedPO(
+    refundTxId = Some(encodeTxIdPO(value.refundTxId)),
+    refundOperationId = Some(encodeOperationIdPO(value.refundOperationId)),
+    receiptId = value.receiptId,
+    receiptBody = value.receiptBody,
+    kind = value.kind
   )
-  def decodeFundOrderFundRefundCompensatedPB(value: FundOrderFundRefundCompensatedPB): FundOrderProtocol.FundRefundCompensated = FundOrderProtocol.FundRefundCompensated(
-    decodeTxIdPB(req(value.f0)),
-    decodeOperationIdPB(req(value.f1)),
-    value.f2,
-    value.f3,
-    value.f4
+  def decodeFundRefundCompensatedPO(value: pb.FundRefundCompensatedPO): FundOrderProtocol.FundRefundCompensated = FundOrderProtocol.FundRefundCompensated(
+    refundTxId = decodeTxIdPO(req(value.refundTxId)),
+    refundOperationId = decodeOperationIdPO(req(value.refundOperationId)),
+    receiptId = value.receiptId,
+    receiptBody = value.receiptBody,
+    kind = value.kind
   )
-  def encodeFundOrderFundRefundRecoveryRequiredPB(value: FundOrderProtocol.FundRefundRecoveryRequired): FundOrderFundRefundRecoveryRequiredPB = FundOrderFundRefundRecoveryRequiredPB(
-    Some(encodeTxIdPB(value.refundTxId)),
-    Some(encodeOperationIdPB(value.refundOperationId)),
-    value.receiptId,
-    value.receiptBody,
-    value.kind
+  def encodeFundRefundRecoveryRequiredPO(value: FundOrderProtocol.FundRefundRecoveryRequired): pb.FundRefundRecoveryRequiredPO = pb.FundRefundRecoveryRequiredPO(
+    refundTxId = Some(encodeTxIdPO(value.refundTxId)),
+    refundOperationId = Some(encodeOperationIdPO(value.refundOperationId)),
+    receiptId = value.receiptId,
+    receiptBody = value.receiptBody,
+    kind = value.kind
   )
-  def decodeFundOrderFundRefundRecoveryRequiredPB(value: FundOrderFundRefundRecoveryRequiredPB): FundOrderProtocol.FundRefundRecoveryRequired = FundOrderProtocol.FundRefundRecoveryRequired(
-    decodeTxIdPB(req(value.f0)),
-    decodeOperationIdPB(req(value.f1)),
-    value.f2,
-    value.f3,
-    value.f4
+  def decodeFundRefundRecoveryRequiredPO(value: pb.FundRefundRecoveryRequiredPO): FundOrderProtocol.FundRefundRecoveryRequired = FundOrderProtocol.FundRefundRecoveryRequired(
+    refundTxId = decodeTxIdPO(req(value.refundTxId)),
+    refundOperationId = decodeOperationIdPO(req(value.refundOperationId)),
+    receiptId = value.receiptId,
+    receiptBody = value.receiptBody,
+    kind = value.kind
   )
-  def encodeFundOrderFundRefundOutcomeUnknownPB(value: FundOrderProtocol.FundRefundOutcomeUnknown): FundOrderFundRefundOutcomeUnknownPB = FundOrderFundRefundOutcomeUnknownPB(
-    Some(encodeTxIdPB(value.refundTxId)),
-    Some(encodeOperationIdPB(value.refundOperationId)),
-    value.receiptId,
-    value.receiptBody,
-    value.kind
+  def encodeFundRefundOutcomeUnknownPO(value: FundOrderProtocol.FundRefundOutcomeUnknown): pb.FundRefundOutcomeUnknownPO = pb.FundRefundOutcomeUnknownPO(
+    refundTxId = Some(encodeTxIdPO(value.refundTxId)),
+    refundOperationId = Some(encodeOperationIdPO(value.refundOperationId)),
+    receiptId = value.receiptId,
+    receiptBody = value.receiptBody,
+    kind = value.kind
   )
-  def decodeFundOrderFundRefundOutcomeUnknownPB(value: FundOrderFundRefundOutcomeUnknownPB): FundOrderProtocol.FundRefundOutcomeUnknown = FundOrderProtocol.FundRefundOutcomeUnknown(
-    decodeTxIdPB(req(value.f0)),
-    decodeOperationIdPB(req(value.f1)),
-    value.f2,
-    value.f3,
-    value.f4
+  def decodeFundRefundOutcomeUnknownPO(value: pb.FundRefundOutcomeUnknownPO): FundOrderProtocol.FundRefundOutcomeUnknown = FundOrderProtocol.FundRefundOutcomeUnknown(
+    refundTxId = decodeTxIdPO(req(value.refundTxId)),
+    refundOperationId = decodeOperationIdPO(req(value.refundOperationId)),
+    receiptId = value.receiptId,
+    receiptBody = value.receiptBody,
+    kind = value.kind
   )
-  def encodeFundOrderFundTAReceiptObservedPB(value: FundOrderProtocol.FundTAReceiptObserved): FundOrderFundTAReceiptObservedPB = FundOrderFundTAReceiptObservedPB(
-    Some(encodeFundOrderIdPB(value.fundOrderId)),
-    Some(encodeTxIdPB(value.paymentTxId)),
-    Some(encodeTaRequestIdPB(value.taRequestId)),
-    Some(encodeAccountIdPB(value.investorAccountId)),
-    Some(encodeAccountIdPB(value.fundCollectionAccountId)),
-    value.fundCode,
-    Some(encodeMoneyPB(value.amount)),
-    Some(encodeAmountDecimalPB(value.principal)),
-    value.receiptId,
-    value.receiptBody,
-    value.taReference,
-    value.status,
-    Some(encodeTaExactTextPB(value.shares)),
-    Some(encodeTaExactTextPB(value.nav)),
-    value.reason
+  def encodeFundTAReceiptObservedPO(value: FundOrderProtocol.FundTAReceiptObserved): pb.FundTAReceiptObservedPO = pb.FundTAReceiptObservedPO(
+    fundOrderId = Some(encodeFundOrderIdPO(value.fundOrderId)),
+    paymentTxId = Some(encodeTxIdPO(value.paymentTxId)),
+    taRequestId = Some(encodeTaRequestIdPO(value.taRequestId)),
+    investorAccountId = Some(encodeAccountIdPO(value.investorAccountId)),
+    fundCollectionAccountId = Some(encodeAccountIdPO(value.fundCollectionAccountId)),
+    fundCode = value.fundCode,
+    amount = Some(encodeMoneyPO(value.amount)),
+    principal = Some(encodeAmountDecimalPO(value.principal)),
+    receiptId = value.receiptId,
+    receiptBody = value.receiptBody,
+    taReference = value.taReference,
+    status = value.status,
+    shares = Some(encodeTaExactTextPO(value.shares)),
+    nav = Some(encodeTaExactTextPO(value.nav)),
+    reason = value.reason
   )
-  def decodeFundOrderFundTAReceiptObservedPB(value: FundOrderFundTAReceiptObservedPB): FundOrderProtocol.FundTAReceiptObserved = FundOrderProtocol.FundTAReceiptObserved(
-    decodeFundOrderIdPB(req(value.f0)),
-    decodeTxIdPB(req(value.f1)),
-    decodeTaRequestIdPB(req(value.f2)),
-    decodeAccountIdPB(req(value.f3)),
-    decodeAccountIdPB(req(value.f4)),
-    value.f5,
-    decodeMoneyPB(req(value.f6)),
-    decodeAmountDecimalPB(req(value.f7)),
-    value.f8,
-    value.f9,
-    value.f10,
-    value.f11,
-    decodeTaExactTextPB(req(value.f12)),
-    decodeTaExactTextPB(req(value.f13)),
-    value.f14
+  def decodeFundTAReceiptObservedPO(value: pb.FundTAReceiptObservedPO): FundOrderProtocol.FundTAReceiptObserved = FundOrderProtocol.FundTAReceiptObserved(
+    fundOrderId = decodeFundOrderIdPO(req(value.fundOrderId)),
+    paymentTxId = decodeTxIdPO(req(value.paymentTxId)),
+    taRequestId = decodeTaRequestIdPO(req(value.taRequestId)),
+    investorAccountId = decodeAccountIdPO(req(value.investorAccountId)),
+    fundCollectionAccountId = decodeAccountIdPO(req(value.fundCollectionAccountId)),
+    fundCode = value.fundCode,
+    amount = decodeMoneyPO(req(value.amount)),
+    principal = decodeAmountDecimalPO(req(value.principal)),
+    receiptId = value.receiptId,
+    receiptBody = value.receiptBody,
+    taReference = value.taReference,
+    status = value.status,
+    shares = decodeTaExactTextPO(req(value.shares)),
+    nav = decodeTaExactTextPO(req(value.nav)),
+    reason = value.reason
   )
-  def encodeFundOrderBankPaymentResultSucceededPB(value: FundOrderProtocol.BankPaymentResultSucceeded): FundOrderBankPaymentResultSucceededPB = FundOrderBankPaymentResultSucceededPB(Some(encodeTxIdPB(value.txid)))
-  def decodeFundOrderBankPaymentResultSucceededPB(value: FundOrderBankPaymentResultSucceededPB): FundOrderProtocol.BankPaymentResultSucceeded = FundOrderProtocol.BankPaymentResultSucceeded(decodeTxIdPB(req(value.f0)))
-  def encodeFundOrderBankPaymentResultRejectedBeforeEffectsPB(value: FundOrderProtocol.BankPaymentResultRejectedBeforeEffects): FundOrderBankPaymentResultRejectedBeforeEffectsPB = FundOrderBankPaymentResultRejectedBeforeEffectsPB(Some(encodeTxIdPB(value.txid)))
-  def decodeFundOrderBankPaymentResultRejectedBeforeEffectsPB(value: FundOrderBankPaymentResultRejectedBeforeEffectsPB): FundOrderProtocol.BankPaymentResultRejectedBeforeEffects = FundOrderProtocol.BankPaymentResultRejectedBeforeEffects(decodeTxIdPB(req(value.f0)))
-  def encodeFundOrderBankPaymentResultCompensatedPB(value: FundOrderProtocol.BankPaymentResultCompensated): FundOrderBankPaymentResultCompensatedPB = FundOrderBankPaymentResultCompensatedPB(Some(encodeTxIdPB(value.txid)))
-  def decodeFundOrderBankPaymentResultCompensatedPB(value: FundOrderBankPaymentResultCompensatedPB): FundOrderProtocol.BankPaymentResultCompensated = FundOrderProtocol.BankPaymentResultCompensated(decodeTxIdPB(req(value.f0)))
-  def encodeFundOrderBankPaymentResultRecoveryRequiredPB(value: FundOrderProtocol.BankPaymentResultRecoveryRequired): FundOrderBankPaymentResultRecoveryRequiredPB = FundOrderBankPaymentResultRecoveryRequiredPB(Some(encodeTxIdPB(value.txid)))
-  def decodeFundOrderBankPaymentResultRecoveryRequiredPB(value: FundOrderBankPaymentResultRecoveryRequiredPB): FundOrderProtocol.BankPaymentResultRecoveryRequired = FundOrderProtocol.BankPaymentResultRecoveryRequired(decodeTxIdPB(req(value.f0)))
-  def encodeFundOrderBankPaymentResultOutcomeUnknownPB(value: FundOrderProtocol.BankPaymentResultOutcomeUnknown): FundOrderBankPaymentResultOutcomeUnknownPB = FundOrderBankPaymentResultOutcomeUnknownPB(Some(encodeTxIdPB(value.txid)))
-  def decodeFundOrderBankPaymentResultOutcomeUnknownPB(value: FundOrderBankPaymentResultOutcomeUnknownPB): FundOrderProtocol.BankPaymentResultOutcomeUnknown = FundOrderProtocol.BankPaymentResultOutcomeUnknown(decodeTxIdPB(req(value.f0)))
-  def encodeFundOrderBankRefundResultSucceededPB(value: FundOrderProtocol.BankRefundResultSucceeded): FundOrderBankRefundResultSucceededPB = FundOrderBankRefundResultSucceededPB(Some(encodeTxIdPB(value.txid)))
-  def decodeFundOrderBankRefundResultSucceededPB(value: FundOrderBankRefundResultSucceededPB): FundOrderProtocol.BankRefundResultSucceeded = FundOrderProtocol.BankRefundResultSucceeded(decodeTxIdPB(req(value.f0)))
-  def encodeFundOrderBankRefundResultRejectedBeforeEffectsPB(value: FundOrderProtocol.BankRefundResultRejectedBeforeEffects): FundOrderBankRefundResultRejectedBeforeEffectsPB = FundOrderBankRefundResultRejectedBeforeEffectsPB(Some(encodeTxIdPB(value.txid)))
-  def decodeFundOrderBankRefundResultRejectedBeforeEffectsPB(value: FundOrderBankRefundResultRejectedBeforeEffectsPB): FundOrderProtocol.BankRefundResultRejectedBeforeEffects = FundOrderProtocol.BankRefundResultRejectedBeforeEffects(decodeTxIdPB(req(value.f0)))
-  def encodeFundOrderBankRefundResultCompensatedPB(value: FundOrderProtocol.BankRefundResultCompensated): FundOrderBankRefundResultCompensatedPB = FundOrderBankRefundResultCompensatedPB(Some(encodeTxIdPB(value.txid)))
-  def decodeFundOrderBankRefundResultCompensatedPB(value: FundOrderBankRefundResultCompensatedPB): FundOrderProtocol.BankRefundResultCompensated = FundOrderProtocol.BankRefundResultCompensated(decodeTxIdPB(req(value.f0)))
-  def encodeFundOrderBankRefundResultRecoveryRequiredPB(value: FundOrderProtocol.BankRefundResultRecoveryRequired): FundOrderBankRefundResultRecoveryRequiredPB = FundOrderBankRefundResultRecoveryRequiredPB(Some(encodeTxIdPB(value.txid)))
-  def decodeFundOrderBankRefundResultRecoveryRequiredPB(value: FundOrderBankRefundResultRecoveryRequiredPB): FundOrderProtocol.BankRefundResultRecoveryRequired = FundOrderProtocol.BankRefundResultRecoveryRequired(decodeTxIdPB(req(value.f0)))
-  def encodeFundOrderBankRefundResultOutcomeUnknownPB(value: FundOrderProtocol.BankRefundResultOutcomeUnknown): FundOrderBankRefundResultOutcomeUnknownPB = FundOrderBankRefundResultOutcomeUnknownPB(Some(encodeTxIdPB(value.txid)))
-  def decodeFundOrderBankRefundResultOutcomeUnknownPB(value: FundOrderBankRefundResultOutcomeUnknownPB): FundOrderProtocol.BankRefundResultOutcomeUnknown = FundOrderProtocol.BankRefundResultOutcomeUnknown(decodeTxIdPB(req(value.f0)))
-  def encodeFundOrderCashRequestSourceRecordedPBField1(value: Option[BankCashOriginal]): FundOrderCashRequestSourceRecordedPBField1 = value match { case None => FundOrderCashRequestSourceRecordedPBField1(present = false); case Some(item) => FundOrderCashRequestSourceRecordedPBField1(present = true, f0 = Some(encodeBankCashOriginalPB(item))) }
-  def decodeFundOrderCashRequestSourceRecordedPBField1(value: FundOrderCashRequestSourceRecordedPBField1): Option[BankCashOriginal] = if (!value.present) { require(value.f0.isEmpty, "absent optional contains a value"); None } else Some(decodeBankCashOriginalPB(req(value.f0)))
-  def encodeFundOrderCashRequestSourceRecordedPB(value: FundOrderProtocol.CashRequestSourceRecorded): FundOrderCashRequestSourceRecordedPB = FundOrderCashRequestSourceRecordedPB(Some(encodeBankCashOriginalPB(value.original)), Some(encodeFundOrderCashRequestSourceRecordedPBField1(value.source)))
-  def decodeFundOrderCashRequestSourceRecordedPB(value: FundOrderCashRequestSourceRecordedPB): FundOrderProtocol.CashRequestSourceRecorded = FundOrderProtocol.CashRequestSourceRecorded(decodeBankCashOriginalPB(req(value.f0)), decodeFundOrderCashRequestSourceRecordedPBField1(req(value.f1)))
-  def encodeSipPlanStatePBField5(value: Map[Long, Long]): SipPlanStatePBField5 = { val rows = value.toVector.map(item => encodeSipPlanStatePBField5Entry(item)).sortBy(item => item.toByteArray.iterator.map(b => f"${b & 0xff}%02x").mkString); SipPlanStatePBField5(rows) }
-  def decodeSipPlanStatePBField5(value: SipPlanStatePBField5): Map[Long, Long] = { val rows = value.f0.map(item => decodeSipPlanStatePBField5Entry(item)).toVector; require(rows.map(_._1).distinct.size == rows.size, "duplicate typed map key"); rows.toMap }
-  def encodeSipPlanStatePBField5Entry(value: (Long, Long)): SipPlanStatePBField5Entry = SipPlanStatePBField5Entry(value._1, value._2)
-  def decodeSipPlanStatePBField5Entry(value: SipPlanStatePBField5Entry): (Long, Long) = (value.f0, value.f1)
-  def encodeSipPlanStatePBField11(value: Map[Long, Long]): SipPlanStatePBField11 = { val rows = value.toVector.map(item => encodeSipPlanStatePBField11Entry(item)).sortBy(item => item.toByteArray.iterator.map(b => f"${b & 0xff}%02x").mkString); SipPlanStatePBField11(rows) }
-  def decodeSipPlanStatePBField11(value: SipPlanStatePBField11): Map[Long, Long] = { val rows = value.f0.map(item => decodeSipPlanStatePBField11Entry(item)).toVector; require(rows.map(_._1).distinct.size == rows.size, "duplicate typed map key"); rows.toMap }
-  def encodeSipPlanStatePBField11Entry(value: (Long, Long)): SipPlanStatePBField11Entry = SipPlanStatePBField11Entry(value._1, value._2)
-  def decodeSipPlanStatePBField11Entry(value: SipPlanStatePBField11Entry): (Long, Long) = (value.f0, value.f1)
-  def encodeSipPlanStatePBField12(value: Map[RevisionId, SipRevisionConfig]): SipPlanStatePBField12 = { val rows = value.toVector.map(item => encodeSipPlanStatePBField12Entry(item)).sortBy(item => item.toByteArray.iterator.map(b => f"${b & 0xff}%02x").mkString); SipPlanStatePBField12(rows) }
-  def decodeSipPlanStatePBField12(value: SipPlanStatePBField12): Map[RevisionId, SipRevisionConfig] = { val rows = value.f0.map(item => decodeSipPlanStatePBField12Entry(item)).toVector; require(rows.map(_._1).distinct.size == rows.size, "duplicate typed map key"); rows.toMap }
-  def encodeSipPlanStatePBField12Entry(value: (RevisionId, SipRevisionConfig)): SipPlanStatePBField12Entry = SipPlanStatePBField12Entry(Some(encodeRevisionIdPB(value._1)), Some(encodeSipRevisionConfigPB(value._2)))
-  def decodeSipPlanStatePBField12Entry(value: SipPlanStatePBField12Entry): (RevisionId, SipRevisionConfig) = (decodeRevisionIdPB(req(value.f0)), decodeSipRevisionConfigPB(req(value.f1)))
-  def encodeSipPlanStatePBField13(value: Map[RevisionId, Long]): SipPlanStatePBField13 = { val rows = value.toVector.map(item => encodeSipPlanStatePBField13Entry(item)).sortBy(item => item.toByteArray.iterator.map(b => f"${b & 0xff}%02x").mkString); SipPlanStatePBField13(rows) }
-  def decodeSipPlanStatePBField13(value: SipPlanStatePBField13): Map[RevisionId, Long] = { val rows = value.f0.map(item => decodeSipPlanStatePBField13Entry(item)).toVector; require(rows.map(_._1).distinct.size == rows.size, "duplicate typed map key"); rows.toMap }
-  def encodeSipPlanStatePBField13Entry(value: (RevisionId, Long)): SipPlanStatePBField13Entry = SipPlanStatePBField13Entry(Some(encodeRevisionIdPB(value._1)), value._2)
-  def decodeSipPlanStatePBField13Entry(value: SipPlanStatePBField13Entry): (RevisionId, Long) = (decodeRevisionIdPB(req(value.f0)), value.f1)
-  def encodeSipPlanStatePBField16(value: Map[Long, String]): SipPlanStatePBField16 = { val rows = value.toVector.map(item => encodeSipPlanStatePBField16Entry(item)).sortBy(item => item.toByteArray.iterator.map(b => f"${b & 0xff}%02x").mkString); SipPlanStatePBField16(rows) }
-  def decodeSipPlanStatePBField16(value: SipPlanStatePBField16): Map[Long, String] = { val rows = value.f0.map(item => decodeSipPlanStatePBField16Entry(item)).toVector; require(rows.map(_._1).distinct.size == rows.size, "duplicate typed map key"); rows.toMap }
-  def encodeSipPlanStatePBField16Entry(value: (Long, String)): SipPlanStatePBField16Entry = SipPlanStatePBField16Entry(value._1, value._2)
-  def decodeSipPlanStatePBField16Entry(value: SipPlanStatePBField16Entry): (Long, String) = (value.f0, value.f1)
-  def encodeSipPlanStatePBField17(value: Map[Long, SipOccurrence]): SipPlanStatePBField17 = { val rows = value.toVector.map(item => encodeSipPlanStatePBField17Entry(item)).sortBy(item => item.toByteArray.iterator.map(b => f"${b & 0xff}%02x").mkString); SipPlanStatePBField17(rows) }
-  def decodeSipPlanStatePBField17(value: SipPlanStatePBField17): Map[Long, SipOccurrence] = { val rows = value.f0.map(item => decodeSipPlanStatePBField17Entry(item)).toVector; require(rows.map(_._1).distinct.size == rows.size, "duplicate typed map key"); rows.toMap }
-  def encodeSipPlanStatePBField17Entry(value: (Long, SipOccurrence)): SipPlanStatePBField17Entry = SipPlanStatePBField17Entry(value._1, Some(encodeSipOccurrencePB(value._2)))
-  def decodeSipPlanStatePBField17Entry(value: SipPlanStatePBField17Entry): (Long, SipOccurrence) = (value.f0, decodeSipOccurrencePB(req(value.f1)))
-  def encodeSipPlanStatePBField18(value: Map[OccurrenceId, String]): SipPlanStatePBField18 = { val rows = value.toVector.map(item => encodeSipPlanStatePBField18Entry(item)).sortBy(item => item.toByteArray.iterator.map(b => f"${b & 0xff}%02x").mkString); SipPlanStatePBField18(rows) }
-  def decodeSipPlanStatePBField18(value: SipPlanStatePBField18): Map[OccurrenceId, String] = { val rows = value.f0.map(item => decodeSipPlanStatePBField18Entry(item)).toVector; require(rows.map(_._1).distinct.size == rows.size, "duplicate typed map key"); rows.toMap }
-  def encodeSipPlanStatePBField18Entry(value: (OccurrenceId, String)): SipPlanStatePBField18Entry = SipPlanStatePBField18Entry(Some(encodeOccurrenceIdPB(value._1)), value._2)
-  def decodeSipPlanStatePBField18Entry(value: SipPlanStatePBField18Entry): (OccurrenceId, String) = (decodeOccurrenceIdPB(req(value.f0)), value.f1)
-  def encodeSipPlanStatePBField19(value: Map[OccurrenceId, String]): SipPlanStatePBField19 = { val rows = value.toVector.map(item => encodeSipPlanStatePBField19Entry(item)).sortBy(item => item.toByteArray.iterator.map(b => f"${b & 0xff}%02x").mkString); SipPlanStatePBField19(rows) }
-  def decodeSipPlanStatePBField19(value: SipPlanStatePBField19): Map[OccurrenceId, String] = { val rows = value.f0.map(item => decodeSipPlanStatePBField19Entry(item)).toVector; require(rows.map(_._1).distinct.size == rows.size, "duplicate typed map key"); rows.toMap }
-  def encodeSipPlanStatePBField19Entry(value: (OccurrenceId, String)): SipPlanStatePBField19Entry = SipPlanStatePBField19Entry(Some(encodeOccurrenceIdPB(value._1)), value._2)
-  def decodeSipPlanStatePBField19Entry(value: SipPlanStatePBField19Entry): (OccurrenceId, String) = (decodeOccurrenceIdPB(req(value.f0)), value.f1)
-  def encodeSipPlanStatePBField20(value: Map[String, String]): SipPlanStatePBField20 = { val rows = value.toVector.map(item => encodeSipPlanStatePBField20Entry(item)).sortBy(item => item.toByteArray.iterator.map(b => f"${b & 0xff}%02x").mkString); SipPlanStatePBField20(rows) }
-  def decodeSipPlanStatePBField20(value: SipPlanStatePBField20): Map[String, String] = { val rows = value.f0.map(item => decodeSipPlanStatePBField20Entry(item)).toVector; require(rows.map(_._1).distinct.size == rows.size, "duplicate typed map key"); rows.toMap }
-  def encodeSipPlanStatePBField20Entry(value: (String, String)): SipPlanStatePBField20Entry = SipPlanStatePBField20Entry(value._1, value._2)
-  def decodeSipPlanStatePBField20Entry(value: SipPlanStatePBField20Entry): (String, String) = (value.f0, value.f1)
-  def encodeSipPlanStatePBField23(value: Option[BankSipCreateIntent]): SipPlanStatePBField23 = value match { case None => SipPlanStatePBField23(present = false); case Some(item) => SipPlanStatePBField23(present = true, f0 = Some(encodeBankSipCreateIntentPB(item))) }
-  def decodeSipPlanStatePBField23(value: SipPlanStatePBField23): Option[BankSipCreateIntent] = if (!value.present) { require(value.f0.isEmpty, "absent optional contains a value"); None } else Some(decodeBankSipCreateIntentPB(req(value.f0)))
-  def encodeSipPlanStatePBField24(value: Map[String, BankSipCreateIntent]): SipPlanStatePBField24 = { val rows = value.toVector.map(item => encodeSipPlanStatePBField24Entry(item)).sortBy(item => item.toByteArray.iterator.map(b => f"${b & 0xff}%02x").mkString); SipPlanStatePBField24(rows) }
-  def decodeSipPlanStatePBField24(value: SipPlanStatePBField24): Map[String, BankSipCreateIntent] = { val rows = value.f0.map(item => decodeSipPlanStatePBField24Entry(item)).toVector; require(rows.map(_._1).distinct.size == rows.size, "duplicate typed map key"); rows.toMap }
-  def encodeSipPlanStatePBField24Entry(value: (String, BankSipCreateIntent)): SipPlanStatePBField24Entry = SipPlanStatePBField24Entry(value._1, Some(encodeBankSipCreateIntentPB(value._2)))
-  def decodeSipPlanStatePBField24Entry(value: SipPlanStatePBField24Entry): (String, BankSipCreateIntent) = (value.f0, decodeBankSipCreateIntentPB(req(value.f1)))
-  def encodeSipPlanStatePBField25(value: Vector[Long]): SipPlanStatePBField25 = SipPlanStatePBField25(value.map(item => item))
-  def decodeSipPlanStatePBField25(value: SipPlanStatePBField25): Vector[Long] = value.f0.map(item => item).toVector
-  def encodeSipPlanStatePBField26(value: Map[Long, Long]): SipPlanStatePBField26 = { val rows = value.toVector.map(item => encodeSipPlanStatePBField26Entry(item)).sortBy(item => item.toByteArray.iterator.map(b => f"${b & 0xff}%02x").mkString); SipPlanStatePBField26(rows) }
-  def decodeSipPlanStatePBField26(value: SipPlanStatePBField26): Map[Long, Long] = { val rows = value.f0.map(item => decodeSipPlanStatePBField26Entry(item)).toVector; require(rows.map(_._1).distinct.size == rows.size, "duplicate typed map key"); rows.toMap }
-  def encodeSipPlanStatePBField26Entry(value: (Long, Long)): SipPlanStatePBField26Entry = SipPlanStatePBField26Entry(value._1, value._2)
-  def decodeSipPlanStatePBField26Entry(value: SipPlanStatePBField26Entry): (Long, Long) = (value.f0, value.f1)
-  def encodeSipPlanStatePB(value: SipPlanState): SipPlanStatePB = SipPlanStatePB(
-    Some(encodePlanIdPB(value.id)),
-    value.initialized,
-    value.scheduleSealed,
-    value.scheduleCount,
-    value.lastDueSlot,
-    Some(encodeSipPlanStatePBField5(value.slots)),
-    value.currentTick,
-    value.observedCount,
-    value.startCount,
-    value.paused,
-    value.pauseTick,
-    Some(encodeSipPlanStatePBField11(value.pauseIntervals)),
-    Some(encodeSipPlanStatePBField12(value.revisions)),
-    Some(encodeSipPlanStatePBField13(value.revisionEnds)),
-    Some(encodeRevisionIdPB(value.latestRevision)),
-    value.latestEffectiveSlot,
-    Some(encodeSipPlanStatePBField16(value.slotDisposition)),
-    Some(encodeSipPlanStatePBField17(value.occurrences)),
-    Some(encodeSipPlanStatePBField18(value.occurrenceProgress)),
-    Some(encodeSipPlanStatePBField19(value.firstTerminals)),
-    Some(encodeSipPlanStatePBField20(value.terminalReceiptBodies)),
-    value.successTotal,
-    value.failureTotal,
-    Some(encodeSipPlanStatePBField23(value.createIntent)),
-    Some(encodeSipPlanStatePBField24(value.sipCreateIntents)),
-    Some(encodeSipPlanStatePBField25(value.createIntentDueSlots)),
-    Some(encodeSipPlanStatePBField26(value.intentAppendedDueSlots))
-  )
-  def decodeSipPlanStatePB(value: SipPlanStatePB): SipPlanState = SipPlanState(
-    decodePlanIdPB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    value.f4,
-    decodeSipPlanStatePBField5(req(value.f5)),
-    value.f6,
-    value.f7,
-    value.f8,
-    value.f9,
-    value.f10,
-    decodeSipPlanStatePBField11(req(value.f11)),
-    decodeSipPlanStatePBField12(req(value.f12)),
-    decodeSipPlanStatePBField13(req(value.f13)),
-    decodeRevisionIdPB(req(value.f14)),
-    value.f15,
-    decodeSipPlanStatePBField16(req(value.f16)),
-    decodeSipPlanStatePBField17(req(value.f17)),
-    decodeSipPlanStatePBField18(req(value.f18)),
-    decodeSipPlanStatePBField19(req(value.f19)),
-    decodeSipPlanStatePBField20(req(value.f20)),
-    value.f21,
-    value.f22,
-    decodeSipPlanStatePBField23(req(value.f23)),
-    decodeSipPlanStatePBField24(req(value.f24)),
-    decodeSipPlanStatePBField25(req(value.f25)),
-    decodeSipPlanStatePBField26(req(value.f26))
-  )
-  def encodeSipPlanSipPlanCreatedPB(value: SipPlanProtocol.SipPlanCreated): SipPlanSipPlanCreatedPB = SipPlanSipPlanCreatedPB(Some(encodePlanIdPB(value.planId)), Some(encodeSipRevisionConfigPB(value.config)))
-  def decodeSipPlanSipPlanCreatedPB(value: SipPlanSipPlanCreatedPB): SipPlanProtocol.SipPlanCreated = SipPlanProtocol.SipPlanCreated(decodePlanIdPB(req(value.f0)), decodeSipRevisionConfigPB(req(value.f1)))
-  def encodeSipPlanSipDueSlotAppendedPB(value: SipPlanProtocol.SipDueSlotAppended): SipPlanSipDueSlotAppendedPB = SipPlanSipDueSlotAppendedPB(value.position, value.dueSlot)
-  def decodeSipPlanSipDueSlotAppendedPB(value: SipPlanSipDueSlotAppendedPB): SipPlanProtocol.SipDueSlotAppended = SipPlanProtocol.SipDueSlotAppended(value.f0, value.f1)
-  def encodeSipPlanSipScheduleSealedPB(value: SipPlanProtocol.SipScheduleSealed): SipPlanSipScheduleSealedPB = SipPlanSipScheduleSealedPB(value.`sealed`)
-  def decodeSipPlanSipScheduleSealedPB(value: SipPlanSipScheduleSealedPB): SipPlanProtocol.SipScheduleSealed = SipPlanProtocol.SipScheduleSealed(value.f0)
-  def encodeSipPlanSipPlanRevisedPB(value: SipPlanProtocol.SipPlanRevised): SipPlanSipPlanRevisedPB = SipPlanSipPlanRevisedPB(Some(encodeSipRevisionConfigPB(value.config)), Some(encodeRevisionIdPB(value.previousRevision)))
-  def decodeSipPlanSipPlanRevisedPB(value: SipPlanSipPlanRevisedPB): SipPlanProtocol.SipPlanRevised = SipPlanProtocol.SipPlanRevised(decodeSipRevisionConfigPB(req(value.f0)), decodeRevisionIdPB(req(value.f1)))
-  def encodeSipPlanSipClockAdvancedPB(value: SipPlanProtocol.SipClockAdvanced): SipPlanSipClockAdvancedPB = SipPlanSipClockAdvancedPB(value.tick)
-  def decodeSipPlanSipClockAdvancedPB(value: SipPlanSipClockAdvancedPB): SipPlanProtocol.SipClockAdvanced = SipPlanProtocol.SipClockAdvanced(value.f0)
-  def encodeSipPlanSipPlanPausedPB(value: SipPlanProtocol.SipPlanPaused): SipPlanSipPlanPausedPB = SipPlanSipPlanPausedPB(value.tick)
-  def decodeSipPlanSipPlanPausedPB(value: SipPlanSipPlanPausedPB): SipPlanProtocol.SipPlanPaused = SipPlanProtocol.SipPlanPaused(value.f0)
-  def encodeSipPlanSipPlanResumedPB(value: SipPlanProtocol.SipPlanResumed): SipPlanSipPlanResumedPB = SipPlanSipPlanResumedPB(value.tick, value.pauseTick)
-  def decodeSipPlanSipPlanResumedPB(value: SipPlanSipPlanResumedPB): SipPlanProtocol.SipPlanResumed = SipPlanProtocol.SipPlanResumed(value.f0, value.f1)
-  def encodeSipPlanSipDueSlotObservedPB(value: SipPlanProtocol.SipDueSlotObserved): SipPlanSipDueSlotObservedPB = SipPlanSipDueSlotObservedPB(value.position, value.dueSlot, value.disposition)
-  def decodeSipPlanSipDueSlotObservedPB(value: SipPlanSipDueSlotObservedPB): SipPlanProtocol.SipDueSlotObserved = SipPlanProtocol.SipDueSlotObserved(value.f0, value.f1, value.f2)
-  def encodeSipPlanSipPausedDueSlotSkippedPB(value: SipPlanProtocol.SipPausedDueSlotSkipped): SipPlanSipPausedDueSlotSkippedPB = SipPlanSipPausedDueSlotSkippedPB(value.position, value.dueSlot, value.disposition)
-  def decodeSipPlanSipPausedDueSlotSkippedPB(value: SipPlanSipPausedDueSlotSkippedPB): SipPlanProtocol.SipPausedDueSlotSkipped = SipPlanProtocol.SipPausedDueSlotSkipped(value.f0, value.f1, value.f2)
-  def encodeSipPlanSipSkippedSlotAdvancedPB(value: SipPlanProtocol.SipSkippedSlotAdvanced): SipPlanSipSkippedSlotAdvancedPB = SipPlanSipSkippedSlotAdvancedPB(value.position, value.dueSlot)
-  def decodeSipPlanSipSkippedSlotAdvancedPB(value: SipPlanSipSkippedSlotAdvancedPB): SipPlanProtocol.SipSkippedSlotAdvanced = SipPlanProtocol.SipSkippedSlotAdvanced(value.f0, value.f1)
-  def encodeSipPlanSipInstallmentTriggeredPB(value: SipPlanProtocol.SipInstallmentTriggered): SipPlanSipInstallmentTriggeredPB = SipPlanSipInstallmentTriggeredPB(value.position, Some(encodeSipOccurrencePB(value.occurrence)))
-  def decodeSipPlanSipInstallmentTriggeredPB(value: SipPlanSipInstallmentTriggeredPB): SipPlanProtocol.SipInstallmentTriggered = SipPlanProtocol.SipInstallmentTriggered(value.f0, decodeSipOccurrencePB(req(value.f1)))
-  def encodeSipPlanSipInstallmentPendingPB(value: SipPlanProtocol.SipInstallmentPending): SipPlanSipInstallmentPendingPB = SipPlanSipInstallmentPendingPB(Some(encodeSipOccurrencePB(value.occurrence)), value.outcome)
-  def decodeSipPlanSipInstallmentPendingPB(value: SipPlanSipInstallmentPendingPB): SipPlanProtocol.SipInstallmentPending = SipPlanProtocol.SipInstallmentPending(decodeSipOccurrencePB(req(value.f0)), value.f1)
-  def encodeSipPlanSipInstallmentOutcomeUnknownPB(value: SipPlanProtocol.SipInstallmentOutcomeUnknown): SipPlanSipInstallmentOutcomeUnknownPB = SipPlanSipInstallmentOutcomeUnknownPB(Some(encodeSipOccurrencePB(value.occurrence)), value.outcome)
-  def decodeSipPlanSipInstallmentOutcomeUnknownPB(value: SipPlanSipInstallmentOutcomeUnknownPB): SipPlanProtocol.SipInstallmentOutcomeUnknown = SipPlanProtocol.SipInstallmentOutcomeUnknown(decodeSipOccurrencePB(req(value.f0)), value.f1)
-  def encodeSipPlanSipInstallmentRecoveryRequiredPB(value: SipPlanProtocol.SipInstallmentRecoveryRequired): SipPlanSipInstallmentRecoveryRequiredPB = SipPlanSipInstallmentRecoveryRequiredPB(Some(encodeSipOccurrencePB(value.occurrence)), value.outcome)
-  def decodeSipPlanSipInstallmentRecoveryRequiredPB(value: SipPlanSipInstallmentRecoveryRequiredPB): SipPlanProtocol.SipInstallmentRecoveryRequired = SipPlanProtocol.SipInstallmentRecoveryRequired(decodeSipOccurrencePB(req(value.f0)), value.f1)
-  def encodeSipPlanSipInstallmentRefundInProgressPB(value: SipPlanProtocol.SipInstallmentRefundInProgress): SipPlanSipInstallmentRefundInProgressPB = SipPlanSipInstallmentRefundInProgressPB(Some(encodeSipOccurrencePB(value.occurrence)), value.outcome)
-  def decodeSipPlanSipInstallmentRefundInProgressPB(value: SipPlanSipInstallmentRefundInProgressPB): SipPlanProtocol.SipInstallmentRefundInProgress = SipPlanProtocol.SipInstallmentRefundInProgress(decodeSipOccurrencePB(req(value.f0)), value.f1)
-  def encodeSipPlanSipInstallmentSucceededPB(value: SipPlanProtocol.SipInstallmentSucceeded): SipPlanSipInstallmentSucceededPB = SipPlanSipInstallmentSucceededPB(
-    Some(encodeSipOccurrencePB(value.occurrence)),
-    value.evidence,
-    value.receiptId,
-    value.receiptBody,
-    value.outcome
-  )
-  def decodeSipPlanSipInstallmentSucceededPB(value: SipPlanSipInstallmentSucceededPB): SipPlanProtocol.SipInstallmentSucceeded = SipPlanProtocol.SipInstallmentSucceeded(
-    decodeSipOccurrencePB(req(value.f0)),
-    value.f1,
-    value.f2,
-    value.f3,
-    value.f4
-  )
+  def encodeBankPaymentResultSucceededPO(value: FundOrderProtocol.BankPaymentResultSucceeded): pb.BankPaymentResultSucceededPO = pb.BankPaymentResultSucceededPO(txid = Some(encodeTxIdPO(value.txid)))
+  def decodeBankPaymentResultSucceededPO(value: pb.BankPaymentResultSucceededPO): FundOrderProtocol.BankPaymentResultSucceeded = FundOrderProtocol.BankPaymentResultSucceeded(txid = decodeTxIdPO(req(value.txid)))
+  def encodeBankPaymentResultRejectedBeforeEffectsPO(value: FundOrderProtocol.BankPaymentResultRejectedBeforeEffects): pb.BankPaymentResultRejectedBeforeEffectsPO = pb.BankPaymentResultRejectedBeforeEffectsPO(txid = Some(encodeTxIdPO(value.txid)))
+  def decodeBankPaymentResultRejectedBeforeEffectsPO(value: pb.BankPaymentResultRejectedBeforeEffectsPO): FundOrderProtocol.BankPaymentResultRejectedBeforeEffects = FundOrderProtocol.BankPaymentResultRejectedBeforeEffects(txid = decodeTxIdPO(req(value.txid)))
+  def encodeBankPaymentResultCompensatedPO(value: FundOrderProtocol.BankPaymentResultCompensated): pb.BankPaymentResultCompensatedPO = pb.BankPaymentResultCompensatedPO(txid = Some(encodeTxIdPO(value.txid)))
+  def decodeBankPaymentResultCompensatedPO(value: pb.BankPaymentResultCompensatedPO): FundOrderProtocol.BankPaymentResultCompensated = FundOrderProtocol.BankPaymentResultCompensated(txid = decodeTxIdPO(req(value.txid)))
+  def encodeBankPaymentResultRecoveryRequiredPO(value: FundOrderProtocol.BankPaymentResultRecoveryRequired): pb.BankPaymentResultRecoveryRequiredPO = pb.BankPaymentResultRecoveryRequiredPO(txid = Some(encodeTxIdPO(value.txid)))
+  def decodeBankPaymentResultRecoveryRequiredPO(value: pb.BankPaymentResultRecoveryRequiredPO): FundOrderProtocol.BankPaymentResultRecoveryRequired = FundOrderProtocol.BankPaymentResultRecoveryRequired(txid = decodeTxIdPO(req(value.txid)))
+  def encodeBankPaymentResultOutcomeUnknownPO(value: FundOrderProtocol.BankPaymentResultOutcomeUnknown): pb.BankPaymentResultOutcomeUnknownPO = pb.BankPaymentResultOutcomeUnknownPO(txid = Some(encodeTxIdPO(value.txid)))
+  def decodeBankPaymentResultOutcomeUnknownPO(value: pb.BankPaymentResultOutcomeUnknownPO): FundOrderProtocol.BankPaymentResultOutcomeUnknown = FundOrderProtocol.BankPaymentResultOutcomeUnknown(txid = decodeTxIdPO(req(value.txid)))
+  def encodeBankRefundResultSucceededPO(value: FundOrderProtocol.BankRefundResultSucceeded): pb.BankRefundResultSucceededPO = pb.BankRefundResultSucceededPO(txid = Some(encodeTxIdPO(value.txid)))
+  def decodeBankRefundResultSucceededPO(value: pb.BankRefundResultSucceededPO): FundOrderProtocol.BankRefundResultSucceeded = FundOrderProtocol.BankRefundResultSucceeded(txid = decodeTxIdPO(req(value.txid)))
+  def encodeBankRefundResultRejectedBeforeEffectsPO(value: FundOrderProtocol.BankRefundResultRejectedBeforeEffects): pb.BankRefundResultRejectedBeforeEffectsPO = pb.BankRefundResultRejectedBeforeEffectsPO(txid = Some(encodeTxIdPO(value.txid)))
+  def decodeBankRefundResultRejectedBeforeEffectsPO(value: pb.BankRefundResultRejectedBeforeEffectsPO): FundOrderProtocol.BankRefundResultRejectedBeforeEffects = FundOrderProtocol.BankRefundResultRejectedBeforeEffects(txid = decodeTxIdPO(req(value.txid)))
+  def encodeBankRefundResultCompensatedPO(value: FundOrderProtocol.BankRefundResultCompensated): pb.BankRefundResultCompensatedPO = pb.BankRefundResultCompensatedPO(txid = Some(encodeTxIdPO(value.txid)))
+  def decodeBankRefundResultCompensatedPO(value: pb.BankRefundResultCompensatedPO): FundOrderProtocol.BankRefundResultCompensated = FundOrderProtocol.BankRefundResultCompensated(txid = decodeTxIdPO(req(value.txid)))
+  def encodeBankRefundResultRecoveryRequiredPO(value: FundOrderProtocol.BankRefundResultRecoveryRequired): pb.BankRefundResultRecoveryRequiredPO = pb.BankRefundResultRecoveryRequiredPO(txid = Some(encodeTxIdPO(value.txid)))
+  def decodeBankRefundResultRecoveryRequiredPO(value: pb.BankRefundResultRecoveryRequiredPO): FundOrderProtocol.BankRefundResultRecoveryRequired = FundOrderProtocol.BankRefundResultRecoveryRequired(txid = decodeTxIdPO(req(value.txid)))
+  def encodeBankRefundResultOutcomeUnknownPO(value: FundOrderProtocol.BankRefundResultOutcomeUnknown): pb.BankRefundResultOutcomeUnknownPO = pb.BankRefundResultOutcomeUnknownPO(txid = Some(encodeTxIdPO(value.txid)))
+  def decodeBankRefundResultOutcomeUnknownPO(value: pb.BankRefundResultOutcomeUnknownPO): FundOrderProtocol.BankRefundResultOutcomeUnknown = FundOrderProtocol.BankRefundResultOutcomeUnknown(txid = decodeTxIdPO(req(value.txid)))
+  def encodeCashRequestSourceRecordedPO(value: FundOrderProtocol.CashRequestSourceRecorded): pb.CashRequestSourceRecordedPO = pb.CashRequestSourceRecordedPO(original = Some(encodeBankCashOriginalPO(value.original)), source = value.source.map(encodeBankCashOriginalPO))
+  def decodeCashRequestSourceRecordedPO(value: pb.CashRequestSourceRecordedPO): FundOrderProtocol.CashRequestSourceRecorded = FundOrderProtocol.CashRequestSourceRecorded(original = decodeBankCashOriginalPO(req(value.original)), source = value.source.map(decodeBankCashOriginalPO))
+  def encodeFundOrderEventPO(value: FundOrderProtocol.Event): pb.FundOrderEventPO = value match {
+    case e: FundOrderProtocol.FundPurchaseSettlementRequested => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.FundPurchaseSettlementRequested(encodeFundPurchaseSettlementRequestedPO(e)))
+    case e: FundOrderProtocol.ReserveFundSubscriptionConfirmed => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.ReserveFundSubscriptionConfirmed(encodeReserveFundSubscriptionConfirmedPO(e)))
+    case e: FundOrderProtocol.FundSubscriptionPaymentConfirmed => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.FundSubscriptionPaymentConfirmed(encodeFundSubscriptionPaymentConfirmedPO(e)))
+    case e: FundOrderProtocol.CashFundSubscriptionCanceled => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.CashFundSubscriptionCanceled(encodeCashFundSubscriptionCanceledPO(e)))
+    case e: FundOrderProtocol.FundCashPaymentSucceeded => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.FundCashPaymentSucceeded(encodeFundCashPaymentSucceededPO(e)))
+    case e: FundOrderProtocol.FundCashPaymentRejectedBeforeEffects => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.FundCashPaymentRejectedBeforeEffects(encodeFundCashPaymentRejectedBeforeEffectsPO(e)))
+    case e: FundOrderProtocol.FundCashPaymentCompensated => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.FundCashPaymentCompensated(encodeFundCashPaymentCompensatedPO(e)))
+    case e: FundOrderProtocol.FundCashPaymentRecoveryRequired => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.FundCashPaymentRecoveryRequired(encodeFundCashPaymentRecoveryRequiredPO(e)))
+    case e: FundOrderProtocol.FundCashPaymentOutcomeUnknown => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.FundCashPaymentOutcomeUnknown(encodeFundCashPaymentOutcomeUnknownPO(e)))
+    case e: FundOrderProtocol.FundTASubmissionRegistered => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.FundTASubmissionRegistered(encodeFundTASubmissionRegisteredPO(e)))
+    case e: FundOrderProtocol.FundTAAccepted => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.FundTAAccepted(encodeFundTAAcceptedPO(e)))
+    case e: FundOrderProtocol.FundTASharesConfirmed => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.FundTASharesConfirmed(encodeFundTASharesConfirmedPO(e)))
+    case e: FundOrderProtocol.FundTARejected => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.FundTARejected(encodeFundTARejectedPO(e)))
+    case e: FundOrderProtocol.FundTAUnknown => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.FundTAUnknown(encodeFundTAUnknownPO(e)))
+    case e: FundOrderProtocol.FundPurchaseRefundRequested => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.FundPurchaseRefundRequested(encodeFundPurchaseRefundRequestedPO(e)))
+    case e: FundOrderProtocol.FundRefundSucceeded => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.FundRefundSucceeded(encodeFundRefundSucceededPO(e)))
+    case e: FundOrderProtocol.FundRefundRejectedBeforeEffects => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.FundRefundRejectedBeforeEffects(encodeFundRefundRejectedBeforeEffectsPO(e)))
+    case e: FundOrderProtocol.FundRefundCompensated => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.FundRefundCompensated(encodeFundRefundCompensatedPO(e)))
+    case e: FundOrderProtocol.FundRefundRecoveryRequired => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.FundRefundRecoveryRequired(encodeFundRefundRecoveryRequiredPO(e)))
+    case e: FundOrderProtocol.FundRefundOutcomeUnknown => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.FundRefundOutcomeUnknown(encodeFundRefundOutcomeUnknownPO(e)))
+    case e: FundOrderProtocol.FundTAReceiptObserved => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.FundTAReceiptObserved(encodeFundTAReceiptObservedPO(e)))
+    case e: FundOrderProtocol.BankPaymentResultSucceeded => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.BankPaymentResultSucceeded(encodeBankPaymentResultSucceededPO(e)))
+    case e: FundOrderProtocol.BankPaymentResultRejectedBeforeEffects => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.BankPaymentResultRejectedBeforeEffects(encodeBankPaymentResultRejectedBeforeEffectsPO(e)))
+    case e: FundOrderProtocol.BankPaymentResultCompensated => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.BankPaymentResultCompensated(encodeBankPaymentResultCompensatedPO(e)))
+    case e: FundOrderProtocol.BankPaymentResultRecoveryRequired => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.BankPaymentResultRecoveryRequired(encodeBankPaymentResultRecoveryRequiredPO(e)))
+    case e: FundOrderProtocol.BankPaymentResultOutcomeUnknown => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.BankPaymentResultOutcomeUnknown(encodeBankPaymentResultOutcomeUnknownPO(e)))
+    case e: FundOrderProtocol.BankRefundResultSucceeded => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.BankRefundResultSucceeded(encodeBankRefundResultSucceededPO(e)))
+    case e: FundOrderProtocol.BankRefundResultRejectedBeforeEffects => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.BankRefundResultRejectedBeforeEffects(encodeBankRefundResultRejectedBeforeEffectsPO(e)))
+    case e: FundOrderProtocol.BankRefundResultCompensated => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.BankRefundResultCompensated(encodeBankRefundResultCompensatedPO(e)))
+    case e: FundOrderProtocol.BankRefundResultRecoveryRequired => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.BankRefundResultRecoveryRequired(encodeBankRefundResultRecoveryRequiredPO(e)))
+    case e: FundOrderProtocol.BankRefundResultOutcomeUnknown => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.BankRefundResultOutcomeUnknown(encodeBankRefundResultOutcomeUnknownPO(e)))
+    case e: FundOrderProtocol.CashRequestSourceRecorded => pb.FundOrderEventPO(pb.FundOrderEventPO.Event.CashRequestSourceRecorded(encodeCashRequestSourceRecordedPO(e)))
+  }
+  def decodeFundOrderEventPO(value: pb.FundOrderEventPO): FundOrderProtocol.Event = value.event match {
+    case pb.FundOrderEventPO.Event.FundPurchaseSettlementRequested(e) => decodeFundPurchaseSettlementRequestedPO(e)
+    case pb.FundOrderEventPO.Event.ReserveFundSubscriptionConfirmed(e) => decodeReserveFundSubscriptionConfirmedPO(e)
+    case pb.FundOrderEventPO.Event.FundSubscriptionPaymentConfirmed(e) => decodeFundSubscriptionPaymentConfirmedPO(e)
+    case pb.FundOrderEventPO.Event.CashFundSubscriptionCanceled(e) => decodeCashFundSubscriptionCanceledPO(e)
+    case pb.FundOrderEventPO.Event.FundCashPaymentSucceeded(e) => decodeFundCashPaymentSucceededPO(e)
+    case pb.FundOrderEventPO.Event.FundCashPaymentRejectedBeforeEffects(e) => decodeFundCashPaymentRejectedBeforeEffectsPO(e)
+    case pb.FundOrderEventPO.Event.FundCashPaymentCompensated(e) => decodeFundCashPaymentCompensatedPO(e)
+    case pb.FundOrderEventPO.Event.FundCashPaymentRecoveryRequired(e) => decodeFundCashPaymentRecoveryRequiredPO(e)
+    case pb.FundOrderEventPO.Event.FundCashPaymentOutcomeUnknown(e) => decodeFundCashPaymentOutcomeUnknownPO(e)
+    case pb.FundOrderEventPO.Event.FundTASubmissionRegistered(e) => decodeFundTASubmissionRegisteredPO(e)
+    case pb.FundOrderEventPO.Event.FundTAAccepted(e) => decodeFundTAAcceptedPO(e)
+    case pb.FundOrderEventPO.Event.FundTASharesConfirmed(e) => decodeFundTASharesConfirmedPO(e)
+    case pb.FundOrderEventPO.Event.FundTARejected(e) => decodeFundTARejectedPO(e)
+    case pb.FundOrderEventPO.Event.FundTAUnknown(e) => decodeFundTAUnknownPO(e)
+    case pb.FundOrderEventPO.Event.FundPurchaseRefundRequested(e) => decodeFundPurchaseRefundRequestedPO(e)
+    case pb.FundOrderEventPO.Event.FundRefundSucceeded(e) => decodeFundRefundSucceededPO(e)
+    case pb.FundOrderEventPO.Event.FundRefundRejectedBeforeEffects(e) => decodeFundRefundRejectedBeforeEffectsPO(e)
+    case pb.FundOrderEventPO.Event.FundRefundCompensated(e) => decodeFundRefundCompensatedPO(e)
+    case pb.FundOrderEventPO.Event.FundRefundRecoveryRequired(e) => decodeFundRefundRecoveryRequiredPO(e)
+    case pb.FundOrderEventPO.Event.FundRefundOutcomeUnknown(e) => decodeFundRefundOutcomeUnknownPO(e)
+    case pb.FundOrderEventPO.Event.FundTAReceiptObserved(e) => decodeFundTAReceiptObservedPO(e)
+    case pb.FundOrderEventPO.Event.BankPaymentResultSucceeded(e) => decodeBankPaymentResultSucceededPO(e)
+    case pb.FundOrderEventPO.Event.BankPaymentResultRejectedBeforeEffects(e) => decodeBankPaymentResultRejectedBeforeEffectsPO(e)
+    case pb.FundOrderEventPO.Event.BankPaymentResultCompensated(e) => decodeBankPaymentResultCompensatedPO(e)
+    case pb.FundOrderEventPO.Event.BankPaymentResultRecoveryRequired(e) => decodeBankPaymentResultRecoveryRequiredPO(e)
+    case pb.FundOrderEventPO.Event.BankPaymentResultOutcomeUnknown(e) => decodeBankPaymentResultOutcomeUnknownPO(e)
+    case pb.FundOrderEventPO.Event.BankRefundResultSucceeded(e) => decodeBankRefundResultSucceededPO(e)
+    case pb.FundOrderEventPO.Event.BankRefundResultRejectedBeforeEffects(e) => decodeBankRefundResultRejectedBeforeEffectsPO(e)
+    case pb.FundOrderEventPO.Event.BankRefundResultCompensated(e) => decodeBankRefundResultCompensatedPO(e)
+    case pb.FundOrderEventPO.Event.BankRefundResultRecoveryRequired(e) => decodeBankRefundResultRecoveryRequiredPO(e)
+    case pb.FundOrderEventPO.Event.BankRefundResultOutcomeUnknown(e) => decodeBankRefundResultOutcomeUnknownPO(e)
+    case pb.FundOrderEventPO.Event.CashRequestSourceRecorded(e) => decodeCashRequestSourceRecordedPO(e)
+    case pb.FundOrderEventPO.Event.Empty => throw new IllegalArgumentException("empty FundOrderEventPO event")
+  }
+
 }
