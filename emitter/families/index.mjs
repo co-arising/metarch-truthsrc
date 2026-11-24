@@ -25,6 +25,7 @@ import { family as valueObject } from './value-object.mjs';
 import { family as domainEntity } from './domain-entity.mjs';
 import { family as aggregateLayer } from './aggregate-layer.mjs';
 import { family as protocolLayer } from './protocol-layer.mjs';
+import { family as aggregateRepository } from './aggregate-repository.mjs';
 
 const CURATED_FAMILIES = [
   aggregateRulesFormal,
@@ -42,6 +43,7 @@ const CURATED_FAMILIES = [
   domainEntity,
   aggregateLayer,
   protocolLayer,
+  aggregateRepository,
 ];
 
 for (const family of CURATED_FAMILIES) registerFamily(family);

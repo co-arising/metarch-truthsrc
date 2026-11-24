@@ -1,0 +1,50 @@
+{
+  "options": {
+    "packages": [
+      {
+        "context": "bankwealth",
+        "package": "example.bankwealth"
+      }
+    ]
+  },
+  "reference-layout": {
+    "declarations": [
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "aggregate",
+          "owner": [],
+          "id": "CreditBalance"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/0"
+        }
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "aggregate",
+          "owner": [],
+          "id": "FundOrder"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1"
+        }
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "aggregate",
+          "owner": [],
+          "id": "SipPlan"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2"
+        }
+      }
+    ]
+  }
+}

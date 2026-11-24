@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "truthsrc.aggregate-repository-input/v1",
+  "packages": [
+    {
+      "context": "bankwealth",
+      "package": "example.bankwealth"
+    }
+  ],
+  "repositories": [
+    {
+      "context": "bankwealth",
+      "name": "CreditBalance",
+      "lookup": "owned-local-actor-cache",
+      "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0"
+      }
+    },
+    {
+      "context": "bankwealth",
+      "name": "FundOrder",
+      "lookup": "owned-local-actor-cache",
+      "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1"
+      }
+    },
+    {
+      "context": "bankwealth",
+      "name": "SipPlan",
+      "lookup": "owned-local-actor-cache",
+      "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2"
+      }
+    }
+  ]
+}
