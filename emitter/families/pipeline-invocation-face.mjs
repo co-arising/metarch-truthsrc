@@ -24,6 +24,9 @@
 //   - the FQ codec ladders (encode/decode receipt PB) are fixed 3-row ladders
 //   - the strict-participant rows ladder the args field when the row overflows
 import crypto from 'node:crypto';
+import { renderGroupedValueImports } from '../../lib/derivation/value-object-package.mjs';
+
+const basePkgOf = valuesPkg => valuesPkg.replace(/\.domain\.values$/, '');
 
 const LINE_LIMIT = 120;
 
@@ -394,6 +397,7 @@ function emitPorts(md) {
     '',
     'import scala.concurrent.Future',
     '',
+    'import ' + basePkgOf(md.supply.domainValuesPackage) + '.application.saga._',
     'import ' + md.supply.domainValuesPackage + '._',
     'import ' + md.supply.strictRuntimePackage + '.{OperationIdentity, TransactionIdentity}',
     '',
@@ -453,7 +457,7 @@ function emitHostIo(md) {
     '',
     'import scala.concurrent.{ExecutionContext, Future}',
     '',
-    'import ' + md.supply.domainValuesPackage + '.{' + [md.original, md.result].sort().join(', ') + '}',
+    ...renderGroupedValueImports(basePkgOf(md.supply.domainValuesPackage), [md.original, md.result]),
     'import ' + md.host + '.ResultKind',
     'import ' + md.ports + '.CompletionContext',
     'import ' + md.supply.strictRuntimePackage + '.TransactionIdentity',
@@ -632,7 +636,7 @@ function emitExecution(md) {
     'import akka.actor.typed.scaladsl.Behaviors',
     'import akka.persistence.typed.PersistenceId',
     'import com.google.protobuf.ByteString',
-    'import ' + md.supply.domainValuesPackage + '.{' + values.join(', ') + '}',
+    ...renderGroupedValueImports(basePkgOf(md.supply.domainValuesPackage), values),
     'import ' + md.supply.serializationPackage + '.' + md.supply.serializationObject,
     'import net.imadz.monarch.{StageError, StageFailedException}',
     'import ' + md.supply.monarchPersistencePackage + '.{PersistentMonarch, RunObserver, StateCodec}',
@@ -850,6 +854,7 @@ function emitBindings(md) {
     '',
     'import scala.concurrent.Future',
     '',
+    'import ' + basePkgOf(md.supply.domainValuesPackage) + '.application.saga._',
     'import ' + md.supply.domainValuesPackage + '._',
     'import ' + md.ports + '.CompletionContext',
     'import ' + md.supply.strictRuntimePackage + '.OperationIdentity',
@@ -1009,7 +1014,7 @@ function emitHost(md) {
     'import akka.persistence.typed.PersistenceId',
     'import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}',
     'import com.google.protobuf.ByteString',
-    'import ' + md.supply.domainValuesPackage + '.{' + [md.args, md.original, md.result].sort().join(', ') + '}',
+    ...renderGroupedValueImports(basePkgOf(md.supply.domainValuesPackage), [md.args, md.original, md.result]),
     'import ' + md.supply.strictRuntimePackage + '._',
     '',
     ...md.docs.host,
@@ -1368,6 +1373,7 @@ function emitDefinition(md) {
     'import akka.persistence.typed.PersistenceId',
     'import com.google.protobuf.ByteString',
     'import ' + md.supply.domainPackage + '.events.{' + protocols.map(p => p.replace(/Protocol$/, 'Events') + ' => ' + p).join(', ') + '}',
+    'import ' + basePkgOf(md.supply.domainValuesPackage) + '.application.saga._',
     'import ' + md.supply.domainValuesPackage + '._',
     'import ' + md.supply.serializationPackage + '.' + md.supply.serializationObject,
     'import ' + md.ports + '.OperationNotExecuted',

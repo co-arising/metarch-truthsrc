@@ -20,6 +20,9 @@
 //   - the identity parts render as the fixed five-row token table
 //   - the observation decode ladder is the fixed 2-row form
 import crypto from 'node:crypto';
+import { renderGroupedValueImports } from '../../lib/derivation/value-object-package.mjs';
+
+const basePkgOf = valuesPkg => valuesPkg.replace(/\.domain\.values$/, '');
 
 const LINE_LIMIT = 120;
 
@@ -284,7 +287,7 @@ function emitExecution(cm, shape) {
     'import akka.actor.typed.{ActorRef, Behavior, PostStop}',
     'import akka.actor.typed.scaladsl.Behaviors',
     'import akka.persistence.typed.PersistenceId',
-    'import ' + shape.domainValuesPackage + '.{' + values(cm).join(', ') + '}',
+    ...renderGroupedValueImports(basePkgOf(shape.domainValuesPackage), values(cm)),
     'import ' + shape.serializationPackage + '.' + shape.serializationObject,
     'import net.imadz.monarch.{StageError, StageFailedException}',
     'import ' + shape.monarchPersistencePackage + '.{PersistentMonarch, RunObserver, StateCodec}',
@@ -537,8 +540,7 @@ function emitHost(cm, shape) {
     'import akka.persistence.typed.{PersistenceId, RecoveryCompleted}',
     'import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}',
     'import com.google.protobuf.ByteString',
-    'import ' + shape.domainValuesPackage + '.{' + eff.operationValue + ', ' + eff.observationValue + ', ' +
-      eff.reconcileValue + ', ' + eff.requestValue + '}',
+    ...renderGroupedValueImports(basePkgOf(shape.domainValuesPackage), [eff.operationValue, eff.observationValue, eff.reconcileValue, eff.requestValue]),
     'import ' + shape.serializationPackage + '.' + shape.serializationObject,
     '',
     ...cm.docs.host,

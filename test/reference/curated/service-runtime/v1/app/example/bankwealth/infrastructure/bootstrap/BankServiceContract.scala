@@ -54,20 +54,20 @@ object BankServiceContract {
   )
 
   final case class Bindings(
-    BankAccountQuery: Endpoint[example.bankwealth.domain.values.BankAccountKey, example.bankwealth.domain.values.BankAccountResponse],
-    BankCashSubmitPort: Endpoint[example.bankwealth.domain.values.BankCashSubmit, example.bankwealth.domain.values.BankCashAcknowledgement],
-    BankCashOriginalQuery: Endpoint[example.bankwealth.domain.values.BankCashRequestKey, example.bankwealth.domain.values.BankCashRequestResponse],
-    BankOrderQuery: Endpoint[example.bankwealth.domain.values.BankOrderKey, example.bankwealth.domain.values.BankOrderResponse],
-    BankSipCreatePort: Endpoint[example.bankwealth.domain.values.BankSipCreate, example.bankwealth.domain.values.BankSipAcknowledgement],
-    BankSipPlansQuery: Endpoint[example.bankwealth.domain.values.BankPlanPageKey, example.bankwealth.domain.values.BankSipPlanPage],
-    BankSipPlanQuery: Endpoint[example.bankwealth.domain.values.BankPlanKey, example.bankwealth.domain.values.BankSipPlanResponse],
-    BankSipRevisePort: Endpoint[example.bankwealth.domain.values.BankSipRevisionInput, example.bankwealth.domain.values.BankSipAcknowledgement],
-    BankSipPausePort: Endpoint[example.bankwealth.domain.values.BankPlanKey, example.bankwealth.domain.values.BankSipAcknowledgement],
-    BankSipResumePort: Endpoint[example.bankwealth.domain.values.BankPlanKey, example.bankwealth.domain.values.BankSipAcknowledgement],
-    BankSipOccurrencesQuery: Endpoint[example.bankwealth.domain.values.BankOccurrencePageKey, example.bankwealth.domain.values.BankSipOccurrencePage],
-    BankPendingOperationsQuery: Endpoint[example.bankwealth.domain.values.BankPendingPageKey, example.bankwealth.domain.values.BankPendingResponse],
-    BankReconcileExistingPort: Endpoint[example.bankwealth.domain.values.BankOperationKey, example.bankwealth.domain.values.BankRecoveryAcknowledgement],
-    BankBusinessTickPort: Endpoint[example.bankwealth.domain.values.BankTick, example.bankwealth.domain.values.BankTickAcknowledgement]
+    BankAccountQuery: Endpoint[example.bankwealth.application.api.BankAccountKey, example.bankwealth.application.api.BankAccountResponse],
+    BankCashSubmitPort: Endpoint[example.bankwealth.domain.values.BankCashSubmit, example.bankwealth.application.api.BankCashAcknowledgement],
+    BankCashOriginalQuery: Endpoint[example.bankwealth.application.api.BankCashRequestKey, example.bankwealth.application.api.BankCashRequestResponse],
+    BankOrderQuery: Endpoint[example.bankwealth.application.api.BankOrderKey, example.bankwealth.application.api.BankOrderResponse],
+    BankSipCreatePort: Endpoint[example.bankwealth.domain.values.BankSipCreate, example.bankwealth.application.api.BankSipAcknowledgement],
+    BankSipPlansQuery: Endpoint[example.bankwealth.application.api.BankPlanPageKey, example.bankwealth.application.projection.BankSipPlanPage],
+    BankSipPlanQuery: Endpoint[example.bankwealth.application.api.BankPlanKey, example.bankwealth.application.api.BankSipPlanResponse],
+    BankSipRevisePort: Endpoint[example.bankwealth.application.api.BankSipRevisionInput, example.bankwealth.application.api.BankSipAcknowledgement],
+    BankSipPausePort: Endpoint[example.bankwealth.application.api.BankPlanKey, example.bankwealth.application.api.BankSipAcknowledgement],
+    BankSipResumePort: Endpoint[example.bankwealth.application.api.BankPlanKey, example.bankwealth.application.api.BankSipAcknowledgement],
+    BankSipOccurrencesQuery: Endpoint[example.bankwealth.application.api.BankOccurrencePageKey, example.bankwealth.application.projection.BankSipOccurrencePage],
+    BankPendingOperationsQuery: Endpoint[example.bankwealth.application.api.BankPendingPageKey, example.bankwealth.application.api.BankPendingResponse],
+    BankReconcileExistingPort: Endpoint[example.bankwealth.application.api.BankOperationKey, example.bankwealth.application.api.BankRecoveryAcknowledgement],
+    BankBusinessTickPort: Endpoint[example.bankwealth.application.api.BankTick, example.bankwealth.application.api.BankTickAcknowledgement]
   )
 
   trait PageRenderer {

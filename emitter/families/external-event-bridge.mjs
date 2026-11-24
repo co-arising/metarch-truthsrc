@@ -8,6 +8,8 @@
 // output type, slot member, identity key, and unwrap depth flows from the
 // fail-closed input contract (`truthsrc.external-event-bridge-input/v1`).
 
+import { valueObjectPackage, valueObjectPath, valueObjectSubpackage } from '../../lib/derivation/value-object-package.mjs';
+
 const fail = message => {
   const error = new Error('EEB_INPUT: ' + message);
   error.code = 'EEB_INPUT';
@@ -87,7 +89,7 @@ function renderType(type, packageMap, ownContext) {
   if (type.form === 'primitive') return PRIMITIVES.get(type.name);
   if (type.form === 'nominal') {
     if (ownContext && type.context === ownContext) return symbol(type.name);
-    return packageMap.get(type.context) + '.domain.values.' + symbol(type.name);
+    return valueObjectPackage(packageMap.get(type.context), symbol(type.name)) + '.' + symbol(type.name);
   }
   if (type.form === 'optional') return 'Option[' + renderType(type.element, packageMap, ownContext) + ']';
   if (type.form === 'sequence') return 'Vector[' + renderType(type.element, packageMap, ownContext) + ']';
@@ -95,11 +97,16 @@ function renderType(type, packageMap, ownContext) {
   fail('unsupported type form: ' + JSON.stringify(type.form));
 }
 
-function usesOwnValues(type, ownContext) {
-  if (type.form === 'nominal') return type.context === ownContext;
-  if (type.form === 'optional' || type.form === 'sequence') return usesOwnValues(type.element, ownContext);
-  if (type.form === 'map') return usesOwnValues(type.key, ownContext) || usesOwnValues(type.value, ownContext);
-  return false;
+function collectOwnValueSubpackages(type, ownContext, out) {
+  if (type.form === 'nominal') {
+    if (type.context === ownContext) out.add(valueObjectSubpackage(type.name));
+    return;
+  }
+  if (type.form === 'optional' || type.form === 'sequence') collectOwnValueSubpackages(type.element, ownContext, out);
+  else if (type.form === 'map') {
+    collectOwnValueSubpackages(type.key, ownContext, out);
+    collectOwnValueSubpackages(type.value, ownContext, out);
+  }
 }
 
 const toCamel = id => {
@@ -109,7 +116,7 @@ const toCamel = id => {
 
 function valueDeps(type, packageMap) {
   if (type.form === 'nominal') {
-    return ['app/' + packageMap.get(type.context).replaceAll('.', '/') + '/domain/values/' + type.name + '.scala'];
+    return [valueObjectPath(packageMap.get(type.context), type.name)];
   }
   if (type.form === 'optional' || type.form === 'sequence') return valueDeps(type.element, packageMap);
   if (type.form === 'map') return [...valueDeps(type.key, packageMap), ...valueDeps(type.value, packageMap)];
@@ -187,12 +194,13 @@ export function renderExternalEventBridgeFiles(input) {
     const pkg = packageMap.get(bridge.context);
     const pkgPath = pkg.replaceAll('.', '/');
     const name = symbol(bridge.aggregate);
-    const importValues = bridge.producers.some(p => usesOwnValues(p.outputType, bridge.context));
+    const ownSubpkgs = new Set();
+    for (const p of bridge.producers) collectOwnValueSubpackages(p.outputType, bridge.context, ownSubpkgs);
     const lines = [
       `package ${pkg}.application.aggregates.behaviors`,
       '',
       `import ${pkg}.domain.events.${name}Events._`,
-      ...(importValues ? [`import ${pkg}.domain.values._`] : []),
+      ...[...ownSubpkgs].sort().map(sub => `import ${pkg}.${sub}._`),
       '',
       `object ${name}ExternalEvents {`,
     ];

@@ -7,7 +7,8 @@ import akka.actor.typed.scaladsl.Behaviors
 import akka.persistence.typed.PersistenceId
 import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}
 import com.google.protobuf.ByteString
-import example.bankwealth.domain.values.{BankPaymentArgs, BankPaymentOriginal, BankPaymentResult}
+import example.bankwealth.application.saga.{BankPaymentArgs, BankPaymentResult}
+import example.bankwealth.domain.values.BankPaymentOriginal
 import net.imadz.infra.saga.strict._
 
 /** Pipeline invocation host for the cash purchase payment: owns the durable

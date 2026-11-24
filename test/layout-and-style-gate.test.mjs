@@ -84,3 +84,19 @@ test('layout-and-style §3 N1: zero duplicate technical suffixes in generated fi
   const bad = allScala.filter(f => DUPLICATE_SUFFIX_RE.test(f)).map(f => path.relative(BANK_GENERATED, f));
   assert.deepEqual(bad, [], 'duplicate technical suffixes: ' + bad.join(', '));
 });
+
+test('layout-and-style S12: domain.values contains zero HTTP API DTOs, CQRS views, saga triplets, or PO carriers', () => {
+  const valuesDir = path.join(BANK_GENERATED, BASE_REL, 'domain/values');
+  const files = walkScala(valuesDir).map(f => path.basename(f, '.scala'));
+  assert.ok(files.length > 0, 'domain.values files expected');
+  const forbidden = files.filter(name =>
+    /PO$/u.test(name) ||
+    /(Prepare|Commit|Compensate)(Input|Query|Receipt)$/u.test(name) ||
+    /(Args|Result)$/u.test(name) ||
+    /(Effect|Dispatch)(Request|Operation|Observation|Reconcile)$/u.test(name) ||
+    /(View|Watermark|ReadMetadata|Page)$/u.test(name) ||
+    /(Response|Acknowledgement|Key)$/u.test(name) ||
+    /(BootstrapInput|RevisionInput|Revise|Tick)$/u.test(name)
+  );
+  assert.deepEqual(forbidden, [], 'non-domain value objects leaked into domain.values: ' + forbidden.join(', '));
+});

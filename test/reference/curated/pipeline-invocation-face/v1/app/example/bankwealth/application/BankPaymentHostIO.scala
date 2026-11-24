@@ -2,7 +2,8 @@ package example.bankwealth.application
 
 import scala.concurrent.{ExecutionContext, Future}
 
-import example.bankwealth.domain.values.{BankPaymentOriginal, BankPaymentResult}
+import example.bankwealth.application.saga.BankPaymentResult
+import example.bankwealth.domain.values.BankPaymentOriginal
 import BankPaymentHost.ResultKind
 import BankPaymentPorts.CompletionContext
 import net.imadz.infra.saga.strict.TransactionIdentity

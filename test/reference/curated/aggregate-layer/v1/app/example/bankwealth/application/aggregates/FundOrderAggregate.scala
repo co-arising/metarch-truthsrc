@@ -13,16 +13,16 @@ object FundOrderAggregate {
   sealed trait Reply
   final case class Accepted(events: Vector[Event]) extends Reply
   final case class Refused(code: String) extends Reply
-  final case class IngestBankPaymentResultCompensated(output: example.bankwealth.domain.values.BankPaymentResult, authorization: String, replyTo: ActorRef[Reply]) extends Request
-  final case class IngestBankPaymentResultOutcomeUnknown(output: example.bankwealth.domain.values.BankPaymentResult, authorization: String, replyTo: ActorRef[Reply]) extends Request
-  final case class IngestBankPaymentResultRecoveryRequired(output: example.bankwealth.domain.values.BankPaymentResult, authorization: String, replyTo: ActorRef[Reply]) extends Request
-  final case class IngestBankPaymentResultRejectedBeforeEffects(output: example.bankwealth.domain.values.BankPaymentResult, authorization: String, replyTo: ActorRef[Reply]) extends Request
-  final case class IngestBankPaymentResultSucceeded(output: example.bankwealth.domain.values.BankPaymentResult, authorization: String, replyTo: ActorRef[Reply]) extends Request
-  final case class IngestBankRefundResultCompensated(output: example.bankwealth.domain.values.BankRefundResult, authorization: String, replyTo: ActorRef[Reply]) extends Request
-  final case class IngestBankRefundResultOutcomeUnknown(output: example.bankwealth.domain.values.BankRefundResult, authorization: String, replyTo: ActorRef[Reply]) extends Request
-  final case class IngestBankRefundResultRecoveryRequired(output: example.bankwealth.domain.values.BankRefundResult, authorization: String, replyTo: ActorRef[Reply]) extends Request
-  final case class IngestBankRefundResultRejectedBeforeEffects(output: example.bankwealth.domain.values.BankRefundResult, authorization: String, replyTo: ActorRef[Reply]) extends Request
-  final case class IngestBankRefundResultSucceeded(output: example.bankwealth.domain.values.BankRefundResult, authorization: String, replyTo: ActorRef[Reply]) extends Request
+  final case class IngestBankPaymentResultCompensated(output: example.bankwealth.application.saga.BankPaymentResult, authorization: String, replyTo: ActorRef[Reply]) extends Request
+  final case class IngestBankPaymentResultOutcomeUnknown(output: example.bankwealth.application.saga.BankPaymentResult, authorization: String, replyTo: ActorRef[Reply]) extends Request
+  final case class IngestBankPaymentResultRecoveryRequired(output: example.bankwealth.application.saga.BankPaymentResult, authorization: String, replyTo: ActorRef[Reply]) extends Request
+  final case class IngestBankPaymentResultRejectedBeforeEffects(output: example.bankwealth.application.saga.BankPaymentResult, authorization: String, replyTo: ActorRef[Reply]) extends Request
+  final case class IngestBankPaymentResultSucceeded(output: example.bankwealth.application.saga.BankPaymentResult, authorization: String, replyTo: ActorRef[Reply]) extends Request
+  final case class IngestBankRefundResultCompensated(output: example.bankwealth.application.saga.BankRefundResult, authorization: String, replyTo: ActorRef[Reply]) extends Request
+  final case class IngestBankRefundResultOutcomeUnknown(output: example.bankwealth.application.saga.BankRefundResult, authorization: String, replyTo: ActorRef[Reply]) extends Request
+  final case class IngestBankRefundResultRecoveryRequired(output: example.bankwealth.application.saga.BankRefundResult, authorization: String, replyTo: ActorRef[Reply]) extends Request
+  final case class IngestBankRefundResultRejectedBeforeEffects(output: example.bankwealth.application.saga.BankRefundResult, authorization: String, replyTo: ActorRef[Reply]) extends Request
+  final case class IngestBankRefundResultSucceeded(output: example.bankwealth.application.saga.BankRefundResult, authorization: String, replyTo: ActorRef[Reply]) extends Request
   final case class IngestBankTaReceiptObservation(output: example.bankwealth.domain.values.TaReceipt, authorization: String, replyTo: ActorRef[Reply]) extends Request
   trait ExternalAuthority { def authorize(producer: String, authorization: String, identity: Vector[String]): Boolean }
 

@@ -2,6 +2,7 @@ package example.bankwealth.application
 
 import scala.concurrent.Future
 
+import example.bankwealth.application.saga._
 import example.bankwealth.domain.values._
 import BankPaymentPorts.CompletionContext
 import net.imadz.infra.saga.strict.OperationIdentity

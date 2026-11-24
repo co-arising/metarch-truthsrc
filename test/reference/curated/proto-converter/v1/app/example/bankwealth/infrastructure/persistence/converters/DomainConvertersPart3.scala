@@ -2,7 +2,11 @@ package example.bankwealth.infrastructure.persistence.converters
 
 import example.bankwealth.domain.entities._
 import example.bankwealth.domain.events._
+import example.bankwealth.application.api._
+import example.bankwealth.application.projection._
+import example.bankwealth.application.saga._
 import example.bankwealth.domain.values._
+import example.bankwealth.infrastructure.persistence._
 import example.bankwealth.infrastructure.{proto => pb}
 trait DomainConvertersPart3 { self: DomainConverters.type =>
   def encodeSipPlanStatePO(value: SipPlanEntity.State): pb.SipPlanStatePO = pb.SipPlanStatePO(

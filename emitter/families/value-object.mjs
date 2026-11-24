@@ -18,6 +18,7 @@
 // renderer never produced any, so the ledger entries themselves are the
 // provenance.
 import { parseStrictJson } from '../../lib/strict-json.mjs';
+import { isAllowedValueObjectSubpackage, valueObjectSubpackage } from '../../lib/derivation/value-object-package.mjs';
 
 const fail = (code, message) => { throw Object.assign(new Error(code + ': ' + message), { code }); };
 const SCHEMA = 'truthsrc.value-object-input/v1';
@@ -126,6 +127,9 @@ function checkInput(input) {
     const key = context + '/' + name;
     if (names.has(key)) fail('VO_INPUT', vt('value ' + name + ' is declared twice in context ' + context));
     names.add(key);
+    if (value.subpackage !== undefined && !isAllowedValueObjectSubpackage(value.subpackage)) {
+      fail('VO_INPUT', vt('subpackage must be a sanctioned three-layer subpackage: ' + JSON.stringify(value.subpackage)));
+    }
     const source = value.source;
     if (!source || typeof source !== 'object' || typeof source.document !== 'string' || !source.document ||
       typeof source.pointer !== 'string' || !source.pointer.startsWith('/'))
@@ -134,28 +138,54 @@ function checkInput(input) {
   }
 }
 
-const scalaType = (type, ownContext, packages) => {
+const targetSubpkg = (context, name, subpackageByKey) =>
+  subpackageByKey.get(context + '/' + name) ?? valueObjectSubpackage(name);
+
+const collectCrossSubpackageImports = (type, ownContext, ownSubpkg, subpackageByKey, out) => {
+  if (type.form === 'nominal') {
+    if (type.context === ownContext) {
+      const target = targetSubpkg(type.context, type.name, subpackageByKey);
+      if (target !== ownSubpkg) {
+        if (!out.has(target)) out.set(target, new Set());
+        out.get(target).add(type.name);
+      }
+    }
+    return;
+  }
+  if (type.form === 'optional' || type.form === 'sequence') {
+    collectCrossSubpackageImports(type.element, ownContext, ownSubpkg, subpackageByKey, out);
+    return;
+  }
+  if (type.form === 'map') {
+    collectCrossSubpackageImports(type.key, ownContext, ownSubpkg, subpackageByKey, out);
+    collectCrossSubpackageImports(type.value, ownContext, ownSubpkg, subpackageByKey, out);
+  }
+};
+
+const scalaType = (type, ownContext, packages, subpackageByKey) => {
   if (type.form === 'primitive') return PRIMITIVES.get(type.name);
   if (type.form === 'nominal') {
     if (type.context === ownContext) return type.name;
     const binding = packages.find(p => p.context === type.context);
-    return binding.package + '.domain.values.' + type.name;
+    return binding.package + '.' + targetSubpkg(type.context, type.name, subpackageByKey) + '.' + type.name;
   }
-  if (type.form === 'optional') return 'Option[' + scalaType(type.element, ownContext, packages) + ']';
-  if (type.form === 'sequence') return 'Vector[' + scalaType(type.element, ownContext, packages) + ']';
-  return 'Map[' + scalaType(type.key, ownContext, packages) + ', ' + scalaType(type.value, ownContext, packages) + ']';
+  if (type.form === 'optional') return 'Option[' + scalaType(type.element, ownContext, packages, subpackageByKey) + ']';
+  if (type.form === 'sequence') return 'Vector[' + scalaType(type.element, ownContext, packages, subpackageByKey) + ']';
+  return 'Map[' + scalaType(type.key, ownContext, packages, subpackageByKey) + ', ' + scalaType(type.value, ownContext, packages, subpackageByKey) + ']';
 };
 
 /**
- * Render one value object file in the curated style: `package <pkg>.domain.values`,
- * a blank line, and the shape body (exact record-plus-companion, one-line record
- * or one-line primitive wrapper). No header, no imports — same-package nominal
- * references stay short (N1/L1).
+ * Render one value object file in the curated style: `package <pkg>.<subpkg>`,
+ * optional grouped cross-subpackage imports, a blank line, and the shape body
+ * (exact record-plus-companion, one-line/multi-line record, or primitive
+ * wrapper). No header; same-context nominal references stay short (N1/L1).
  */
-function renderValue(value, packages) {
+function renderValue(value, packages, subpackageByKey) {
   const pkg = packages.find(p => p.context === value.context).package;
+  const subpkg = value.subpackage ?? 'domain.values';
   const name = value.name;
   const shape = value.shape;
+  const crossImports = new Map();
   let body;
   if (shape.kind === 'exact') {
     const amount = shape.amountMember;
@@ -177,18 +207,31 @@ function renderValue(value, packages) {
       '    require(scaled.precision <= ' + shape.precision + ', "exact precision exceeded")\n' +
       '    new scala.math.BigDecimal(scaled, java.math.MathContext.UNLIMITED)\n  }\n}\n';
   } else if (shape.kind === 'record') {
-    const fields = shape.members.map(member => member.name + ': ' + scalaType(member.type, value.context, packages));
+    for (const member of shape.members) {
+      collectCrossSubpackageImports(member.type, value.context, subpkg, subpackageByKey, crossImports);
+    }
+    const fields = shape.members.map(member => member.name + ': ' + scalaType(member.type, value.context, packages, subpackageByKey));
     const oneLine = 'final case class ' + name + '(' + fields.join(', ') + ')';
     body = fields.length > 4 || oneLine.length > 100
       ? 'final case class ' + name + '(\n  ' + fields.join(',\n  ') + '\n)\n'
       : oneLine + '\n';
   } else {
-    body = 'final case class ' + name + '(value: ' + scalaType(shape.type, value.context, packages) + ')\n';
+    collectCrossSubpackageImports(shape.type, value.context, subpkg, subpackageByKey, crossImports);
+    body = 'final case class ' + name + '(value: ' + scalaType(shape.type, value.context, packages, subpackageByKey) + ')\n';
   }
-  const path = 'app/' + pkg.replaceAll('.', '/') + '/domain/values/' + name + '.scala';
+  const importLines = [...crossImports.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([sub, set]) => {
+      const sorted = [...set].sort();
+      return sorted.length === 1
+        ? `import ${pkg}.${sub}.${sorted[0]}`
+        : `import ${pkg}.${sub}.{${sorted.join(', ')}}`;
+    });
+  const importBlock = importLines.length ? importLines.join('\n') + '\n\n' : '';
+  const path = 'app/' + pkg.replaceAll('.', '/') + '/' + subpkg.replaceAll('.', '/') + '/' + name + '.scala';
   return {
     path,
-    content: 'package ' + pkg + '.domain.values\n\n' + body,
+    content: 'package ' + pkg + '.' + subpkg + '\n\n' + importBlock + body,
     kind: 'value-object',
     sources: [value.source],
     deps: [],
@@ -200,7 +243,8 @@ function renderValue(value, packages) {
 export function renderValueObjectFiles(inputJson) {
   const input = parseStrictJson(Buffer.from(JSON.stringify(inputJson), 'utf8'));
   checkInput(input);
-  return input.values.map(value => renderValue(value, input.packages));
+  const subpackageByKey = new Map(input.values.map(v => [v.context + '/' + v.name, v.subpackage ?? 'domain.values']));
+  return input.values.map(value => renderValue(value, input.packages, subpackageByKey));
 }
 
 const renderAll = input => Object.fromEntries(renderValueObjectFiles(input).map(f => [f.path, f.content]));
@@ -257,6 +301,9 @@ export function runNegatives(input) {
   mutate('unsupported member form', x => {
     const value = x.values.find(v => v.shape.kind === 'record');
     value.shape.members[0].type.form = 'union';
+  });
+  mutate('unsanctioned value subpackage', x => {
+    x.values[0].subpackage = 'service.dtos';
   });
   let rejected = 0;
   const failures = [];

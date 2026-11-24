@@ -201,15 +201,20 @@ const HELPERS_BLOCK = [
   '',
 ].join('\n');
 
-const importsHeader = pkg => [
-  `package ${pkg}.infrastructure.persistence.converters`,
-  '',
-  `import ${pkg}.domain.entities._`,
-  `import ${pkg}.domain.events._`,
-  `import ${pkg}.domain.values._`,
-  `import ${pkg}.infrastructure.{proto => pb}`,
-  '',
-].join('\n');
+import { valueObjectSubpackage } from '../../lib/derivation/value-object-package.mjs';
+
+const importsHeader = (pkg, valueObjects) => {
+  const voSubs = [...new Set(['domain.values', ...(valueObjects ?? []).map(vo => valueObjectSubpackage(vo.typeId))])].sort();
+  return [
+    `package ${pkg}.infrastructure.persistence.converters`,
+    '',
+    `import ${pkg}.domain.entities._`,
+    `import ${pkg}.domain.events._`,
+    ...voSubs.map(sub => `import ${pkg}.${sub}._`),
+    `import ${pkg}.infrastructure.{proto => pb}`,
+    '',
+  ].join('\n');
+};
 
 export function renderProtoConverterFiles(input) {
   checkInput(input);
@@ -233,7 +238,7 @@ export function renderProtoConverterFiles(input) {
     if (allContent.length <= 55000) {
       out.push({
         path: facadePath,
-        content: importsHeader(pkg) + 'object DomainConverters {\n' + HELPERS_BLOCK + allContent + '}\n',
+        content: importsHeader(pkg, ctx.valueObjects) + 'object DomainConverters {\n' + HELPERS_BLOCK + allContent + '}\n',
         kind: 'converter',
         deps: [...ctx.deps],
         sources: allSources,
@@ -255,7 +260,7 @@ export function renderProtoConverterFiles(input) {
 
     out.push({
       path: facadePath,
-      content: importsHeader(pkg) + `object DomainConverters extends ${partNames.join(' with ')} {\n` + HELPERS_BLOCK + '}\n',
+      content: importsHeader(pkg, ctx.valueObjects) + `object DomainConverters extends ${partNames.join(' with ')} {\n` + HELPERS_BLOCK + '}\n',
       kind: 'converter',
       deps: [...new Set([...ctx.deps, ...partPaths])],
       sources: allSources,
@@ -265,7 +270,7 @@ export function renderProtoConverterFiles(input) {
     parts.forEach((part, i) => {
       out.push({
         path: partPaths[i],
-        content: importsHeader(pkg) + `trait ${partNames[i]} { self: DomainConverters.type =>\n` + part.content + '}\n',
+        content: importsHeader(pkg, ctx.valueObjects) + `trait ${partNames[i]} { self: DomainConverters.type =>\n` + part.content + '}\n',
         kind: 'converter',
         deps: [...ctx.deps],
         sources: part.sources,

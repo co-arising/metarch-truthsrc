@@ -8,7 +8,7 @@ import akka.actor.typed.scaladsl.Behaviors
 import akka.persistence.typed.{PersistenceId, RecoveryCompleted}
 import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}
 import com.google.protobuf.ByteString
-import example.bankwealth.domain.values.{BankTaEffectOperation, BankTaEffectObservation, BankTaEffectReconcile, BankTaEffectRequest}
+import example.bankwealth.application.saga.{BankTaEffectObservation, BankTaEffectOperation, BankTaEffectReconcile, BankTaEffectRequest}
 import example.bankwealth.infrastructure.persistence.converters.DomainConverters
 
 /** Durable external-effect host of the TA submission pipeline: owns the

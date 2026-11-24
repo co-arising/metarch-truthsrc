@@ -1,4 +1,6 @@
-package example.bankwealth.domain.values
+package example.bankwealth.application.projection
+
+import example.bankwealth.domain.values.{AccountId, FundOrderId, MoneyWire, OperationId, TaRequestId, TxId}
 
 final case class BankOrderView(
   orderId: FundOrderId,

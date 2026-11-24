@@ -8,7 +8,7 @@ import akka.actor.typed.scaladsl.Behaviors
 import akka.persistence.typed.{PersistenceId, RecoveryCompleted}
 import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}
 import com.google.protobuf.ByteString
-import example.bankwealth.domain.values.{BankSipDispatchOperation, BankSipDispatchObservation, BankSipDispatchReconcile, BankSipDispatchRequest}
+import example.bankwealth.application.saga.{BankSipDispatchObservation, BankSipDispatchOperation, BankSipDispatchReconcile, BankSipDispatchRequest}
 import example.bankwealth.infrastructure.persistence.converters.DomainConverters
 
 /** Durable external-effect host of the SIP dispatch pipeline: owns the intent,
