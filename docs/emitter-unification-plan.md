@@ -137,7 +137,7 @@ Pages 上引用旧生成器 id／文件头的句子同步刷新。
 | 限定 raw | entity(3)＋state(3) | #2 | ✅ 翻转（2026-11-23，curated 手写金样；6 件 COVER，F5 清单 6/6 呈报，R7 冷编译 46s 全绿） |
 | 限定 raw | event-handler(6) | #3 | 未 |
 | 限定 raw | aggregate(3)＋aggregate-factory(3)＋aggregate-behavior(6) | #6/8/9 | ✅ 翻转（2026-11-23，curated 手写金样；12 件 COVER，F5 清单 12/12 呈报，R7 冷编译 52s 全绿） |
-| 限定 raw | protocol(3)＋application-protocol(3)＋command-helpers(3) | #7/10 | 未 |
+| 限定 raw | protocol(3)＋application-protocol(3)＋command-helpers(3) | #7/10 | ✅ 翻转（2026-11-23，curated 手写金样；9 件 COVER，F5 清单 9/9 呈报，R7 冷编译 46s 全绿） |
 | 限定 raw | aggregate-repository(3) | #12/22 | 未 |
 | 限定 raw | saga-definition(2) | #17 | 未 |
 | 未实现面 | serialization-adapter(7)＋converter(6)＋proto(5)＋host-proto(2)＋effect-proto(2) | #29/30/31/32 | 未 |

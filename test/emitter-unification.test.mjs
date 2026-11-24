@@ -21,22 +21,22 @@ import { parseStrictJson } from '../lib/strict-json.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
-const FAMILY_COUNT = 14;
+const FAMILY_COUNT = 15;
 const BATTERY_DEBT_FAMILIES = [
   'aggregate-rules-formal',
   'external-connector-port',
   'connector-implementation',
   'projection-apply-event',
 ].sort();
-const HANDWRITTEN_GOLDEN_FAMILIES = ['pipeline-invocation-face', 'effect-face', 'value-object', 'domain-entity', 'aggregate-layer'].sort();
+const HANDWRITTEN_GOLDEN_FAMILIES = ['pipeline-invocation-face', 'effect-face', 'value-object', 'domain-entity', 'aggregate-layer', 'protocol-layer'].sort();
 const CLASSIC_REPRODUCTION_FAMILIES = ['aggregate-invariant-rules'].sort();
 
-test('the unified emitter registers exactly the fourteen curated families', () => {
+test('the unified emitter registers exactly the fifteen curated families', () => {
   assert.equal(listFamilyIds().length, FAMILY_COUNT);
   for (const id of ['aggregate-rules-formal', 'external-connector-port', 'connector-implementation',
     'projection-apply-event', 'aggregate-state-controller', 'strict-saga-module',
     'strict-fixture-host', 'composition-invocation-host', 'pipeline-invocation-face',
-    'effect-face', 'aggregate-invariant-rules', 'value-object', 'domain-entity', 'aggregate-layer']) {
+    'effect-face', 'aggregate-invariant-rules', 'value-object', 'domain-entity', 'aggregate-layer', 'protocol-layer']) {
     const family = getFamily(id);
     assert.equal(typeof family.checkInput, 'function', id + ' checkInput');
     assert.equal(typeof family.renderAll, 'function', id + ' renderAll');
