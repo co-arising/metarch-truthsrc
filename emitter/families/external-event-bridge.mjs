@@ -199,7 +199,7 @@ export function renderExternalEventBridgeFiles(input) {
     const lines = [
       `package ${pkg}.application.aggregates.behaviors`,
       '',
-      `import ${pkg}.domain.events.${name}Events._`,
+      `import ${pkg}.domain.entities.${name}Entity._`,
       ...[...ownSubpkgs].sort().map(sub => `import ${pkg}.${sub}._`),
       '',
       `object ${name}ExternalEvents {`,
@@ -214,8 +214,8 @@ export function renderExternalEventBridgeFiles(input) {
       lines.push(`  def ${symbol(baseMethod + 'Identity')}(output: ${outType}): Vector[String] = Vector(${idParts})`);
     }
     lines.push('}', '');
-    const eventsDep = scalaSubpackagePath(pkg, 'domain.events', `${bridge.aggregate}Events.scala`);
-    const deps = [eventsDep, ...new Set(bridge.producers.flatMap(p => valueDeps(p.outputType, packageMap)))];
+    const entityDep = scalaSubpackagePath(pkg, 'domain.entities', `${bridge.aggregate}Entity.scala`);
+    const deps = [entityDep, ...new Set(bridge.producers.flatMap(p => valueDeps(p.outputType, packageMap)))];
     return {
       path: scalaSubpackagePath(pkg, 'application.aggregates.behaviors', `${bridge.aggregate}ExternalEvents.scala`),
       content: lines.join('\n'),

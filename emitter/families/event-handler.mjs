@@ -101,15 +101,13 @@ const mapping = (content, m) => ({
 function renderAggregateEventHandlers(handler, pkg) {
   const name = handler.name;
   const entityPath = scalaSubpackagePath(pkg, 'domain.entities', name + 'Entity.scala');
-  const eventsPath = scalaSubpackagePath(pkg, 'domain.events', name + 'Events.scala');
   const corePath = scalaSubpackagePath(pkg, 'domain.entities.behaviors', name + 'EventHandler.scala');
   const eventPackage = pkg + '.domain.entities.behaviors';
 
   let core = 'package ' + eventPackage + '\n\n' +
-    'import ' + pkg + '.domain.entities.' + name + 'Entity.State\n' +
-    'import ' + pkg + '.domain.events.' + name + 'Events._\n\n' +
-    'object ' + name + 'EventHandler {\n' +
-    '  def apply(state: State, input: Event): State = input match {\n';
+    'import ' + pkg + '.domain.entities.' + name + 'Entity._\n\n' +
+    'object ' + name + 'EventHandler extends EventHandler {\n' +
+    '  override def apply(state: State, input: Event): State = input match {\n';
   const foldMappings = [];
   for (const e of handler.events) {
     const eventStart = core.length;
@@ -148,7 +146,7 @@ function renderAggregateEventHandlers(handler, pkg) {
       content: core,
       kind: 'event-handler',
       sources: coreSources,
-      deps: [entityPath, eventsPath],
+      deps: [entityPath],
       codeMappings: foldMappings.map(m => mapping(core, m)),
     },
   ];

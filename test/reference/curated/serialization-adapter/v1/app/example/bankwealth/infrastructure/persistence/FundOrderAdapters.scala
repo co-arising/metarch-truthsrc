@@ -1,8 +1,7 @@
 package example.bankwealth.infrastructure.persistence
 
 import akka.persistence.typed.{EventAdapter, EventSeq, SnapshotAdapter}
-import example.bankwealth.domain.entities.FundOrderEntity.State
-import example.bankwealth.domain.events.FundOrderEvents.Event
+import example.bankwealth.domain.entities.FundOrderEntity.{Event, State}
 import example.bankwealth.infrastructure.persistence.converters.DomainConverters
 import example.bankwealth.infrastructure.{proto => pb}
 import scalapb.GeneratedMessage

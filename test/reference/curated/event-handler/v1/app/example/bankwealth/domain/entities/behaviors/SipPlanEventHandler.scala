@@ -1,10 +1,9 @@
 package example.bankwealth.domain.entities.behaviors
 
-import example.bankwealth.domain.entities.SipPlanEntity.State
-import example.bankwealth.domain.events.SipPlanEvents._
+import example.bankwealth.domain.entities.SipPlanEntity._
 
-object SipPlanEventHandler {
-  def apply(state: State, input: Event): State = input match {
+object SipPlanEventHandler extends EventHandler {
+  override def apply(state: State, input: Event): State = input match {
     case event: SipPlanCreated =>
       state.copy(
         id = event.planId,

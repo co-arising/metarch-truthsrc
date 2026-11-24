@@ -6,7 +6,7 @@ import scala.util.Try
 import akka.actor.typed.Behavior
 import akka.persistence.typed.PersistenceId
 import com.google.protobuf.ByteString
-import example.bankwealth.domain.events.{CreditBalanceEvents => CreditBalanceProtocol, FundOrderEvents => FundOrderProtocol}
+import example.bankwealth.domain.invariants.params.{CreditBalanceRuleParams, FundOrderRuleParams}
 import example.bankwealth.application.saga._
 import example.bankwealth.domain.values._
 import example.bankwealth.infrastructure.persistence.converters.DomainConverters
@@ -110,8 +110,8 @@ object BankPaymentSagaDefinition {
     requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
-  def reserveInvestorFundsPrepareCommand(request: OperationRequest[Args]): CreditBalanceProtocol.ReserveFunds =
-    CreditBalanceProtocol.ReserveFunds(TxId(request.identity.transaction.transactionId),
+  def reserveInvestorFundsPrepareCommand(request: OperationRequest[Args]): CreditBalanceRuleParams.ReserveFundsParams =
+    CreditBalanceRuleParams.ReserveFundsParams(TxId(request.identity.transaction.transactionId),
         request.args.investorAccountId, request.args.amount)
 
   val ReserveInvestorFundsCommitCodec: PayloadCodec[ReserveInvestorFundsCommitReceipt] = payloadCodec(
@@ -127,8 +127,8 @@ object BankPaymentSagaDefinition {
     requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
-  def reserveInvestorFundsCommitCommand(request: OperationRequest[Args]): CreditBalanceProtocol.DeductFunds =
-    CreditBalanceProtocol.DeductFunds(TxId(request.identity.transaction.transactionId),
+  def reserveInvestorFundsCommitCommand(request: OperationRequest[Args]): CreditBalanceRuleParams.DeductFundsParams =
+    CreditBalanceRuleParams.DeductFundsParams(TxId(request.identity.transaction.transactionId),
         request.args.investorAccountId, request.args.amount)
 
   val ReserveInvestorFundsCompensateCodec: PayloadCodec[ReserveInvestorFundsCompensateReceipt] = payloadCodec(
@@ -144,9 +144,9 @@ object BankPaymentSagaDefinition {
     requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
-  def reserveInvestorFundsCompensateCommand(request: OperationRequest[Args]): CreditBalanceProtocol
-      .ReleaseReservedFunds =
-    CreditBalanceProtocol.ReleaseReservedFunds(TxId(request.identity.transaction.transactionId),
+  def reserveInvestorFundsCompensateCommand(request: OperationRequest[Args]): CreditBalanceRuleParams
+      .ReleaseReservedFundsParams =
+    CreditBalanceRuleParams.ReleaseReservedFundsParams(TxId(request.identity.transaction.transactionId),
         request.args.investorAccountId, request.args.amount)
 
   // ---- credit-fund-collection (collectionCreditBalance, CreditBalance) ------
@@ -164,8 +164,9 @@ object BankPaymentSagaDefinition {
     requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
-  def creditFundCollectionPrepareCommand(request: OperationRequest[Args]): CreditBalanceProtocol.RecordIncomingCredits =
-    CreditBalanceProtocol.RecordIncomingCredits(TxId(request.identity.transaction.transactionId),
+  def creditFundCollectionPrepareCommand(request: OperationRequest[Args]): CreditBalanceRuleParams
+      .RecordIncomingCreditsParams =
+    CreditBalanceRuleParams.RecordIncomingCreditsParams(TxId(request.identity.transaction.transactionId),
         request.args.fundCollectionAccountId, request.args.amount)
 
   val CreditFundCollectionCommitCodec: PayloadCodec[CreditFundCollectionCommitReceipt] = payloadCodec(
@@ -181,8 +182,9 @@ object BankPaymentSagaDefinition {
     requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
-  def creditFundCollectionCommitCommand(request: OperationRequest[Args]): CreditBalanceProtocol.CommitIncomingCredits =
-    CreditBalanceProtocol.CommitIncomingCredits(TxId(request.identity.transaction.transactionId),
+  def creditFundCollectionCommitCommand(request: OperationRequest[Args]): CreditBalanceRuleParams
+      .CommitIncomingCreditsParams =
+    CreditBalanceRuleParams.CommitIncomingCreditsParams(TxId(request.identity.transaction.transactionId),
         request.args.fundCollectionAccountId, request.args.amount)
 
   val CreditFundCollectionCompensateCodec: PayloadCodec[CreditFundCollectionCompensateReceipt] = payloadCodec(
@@ -198,9 +200,9 @@ object BankPaymentSagaDefinition {
     requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
-  def creditFundCollectionCompensateCommand(request: OperationRequest[Args]): CreditBalanceProtocol
-      .CancelIncomingCredit =
-    CreditBalanceProtocol.CancelIncomingCredit(TxId(request.identity.transaction.transactionId),
+  def creditFundCollectionCompensateCommand(request: OperationRequest[Args]): CreditBalanceRuleParams
+      .CancelIncomingCreditParams =
+    CreditBalanceRuleParams.CancelIncomingCreditParams(TxId(request.identity.transaction.transactionId),
         request.args.fundCollectionAccountId, request.args.amount)
 
   // ---- reserve-cash-fund-order (orderFundOrderTCC, FundOrder) ---------------
@@ -218,8 +220,9 @@ object BankPaymentSagaDefinition {
     requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
-  def reserveCashFundOrderPrepareCommand(request: OperationRequest[Args]): FundOrderProtocol.ReserveFundSubscription =
-    FundOrderProtocol.ReserveFundSubscription(TxId(request.identity.transaction.transactionId),
+  def reserveCashFundOrderPrepareCommand(request: OperationRequest[Args]): FundOrderRuleParams
+      .ReserveFundSubscriptionParams =
+    FundOrderRuleParams.ReserveFundSubscriptionParams(TxId(request.identity.transaction.transactionId),
         request.args.fundOrderId, request.args.amount)
 
   val ReserveCashFundOrderCommitCodec: PayloadCodec[ReserveCashFundOrderCommitReceipt] = payloadCodec(
@@ -235,9 +238,9 @@ object BankPaymentSagaDefinition {
     requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
-  def reserveCashFundOrderCommitCommand(request: OperationRequest[Args]): FundOrderProtocol
-      .ConfirmFundSubscriptionPayment =
-    FundOrderProtocol.ConfirmFundSubscriptionPayment(TxId(request.identity.transaction.transactionId),
+  def reserveCashFundOrderCommitCommand(request: OperationRequest[Args]): FundOrderRuleParams
+      .ConfirmFundSubscriptionPaymentParams =
+    FundOrderRuleParams.ConfirmFundSubscriptionPaymentParams(TxId(request.identity.transaction.transactionId),
         request.args.fundOrderId, request.args.amount)
 
   val ReserveCashFundOrderCompensateCodec: PayloadCodec[ReserveCashFundOrderCompensateReceipt] = payloadCodec(
@@ -253,9 +256,9 @@ object BankPaymentSagaDefinition {
     requireReceiptIdentity(request, receipt.transaction.value, receipt.definitionVersion, receipt.argsDigest,
       receipt.participant, receipt.resource.value, receipt.step, receipt.phase)
 
-  def reserveCashFundOrderCompensateCommand(request: OperationRequest[Args]): FundOrderProtocol
-      .CancelCashFundSubscription =
-    FundOrderProtocol.CancelCashFundSubscription(TxId(request.identity.transaction.transactionId),
+  def reserveCashFundOrderCompensateCommand(request: OperationRequest[Args]): FundOrderRuleParams
+      .CancelCashFundSubscriptionParams =
+    FundOrderRuleParams.CancelCashFundSubscriptionParams(TxId(request.identity.transaction.transactionId),
         request.args.fundOrderId, request.args.amount)
 
   // ------------------------------------------------------- once-written mechanics

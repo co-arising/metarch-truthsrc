@@ -37,7 +37,7 @@ const inherited = Object.fromEntries(Object.entries(createEffectRegistry('2')).m
         : id === 'command-dsl'
           ? withFlippedExternalEventBridges(eebCtx => withFlippedCommandProtocols(implementation.produce.bind(implementation), eebCtx), context)
         : id === 'invariant-dsl'
-          ? withFlippedEventHandlers(ehCtx => withFlippedInvariantRules(inner => renderInvariant(inner, ['reference-layout','domain-decision','domain-folds','exact-value-types'].map(id=>({id,version:id==='domain-decision'?'4':id==='domain-folds'?'6':'1'})), true), ehCtx), context)
+          ? withFlippedEventHandlers(ehCtx => withFlippedInvariantRules(inner => renderInvariant(inner, ['reference-layout','domain-decision','domain-folds','exact-value-types','domain-dependencies'].map(id=>({id,version:id==='domain-decision'?'4':(id==='domain-folds'||id==='domain-dependencies')?'6':'1'})), true), ehCtx), context)
         : id === 'valueobject-dsl'
           ? withFlippedValueObjects(implementation.produce.bind(implementation), context)
         : id === 'proto-dsl'

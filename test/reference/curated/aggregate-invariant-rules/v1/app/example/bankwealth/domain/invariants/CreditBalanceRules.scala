@@ -1,22 +1,19 @@
-package example.bankwealth.domain.invariant
+package example.bankwealth.domain.invariants
 
-import example.bankwealth.domain.entities.CreditBalanceEntity.State
-import example.bankwealth.domain.events.CreditBalanceEvents._
-import example.bankwealth.domain.invariant.params.CreditBalanceRuleParams._
-import example.bankwealth.domain.services.{CreditBalanceCommandHelpers, CreditBalanceComputations}
+import example.bankwealth.domain.entities.CreditBalanceEntity._
+import example.bankwealth.domain.invariants.params.CreditBalanceRuleParams._
+import example.bankwealth.domain.services.CreditBalanceComputations
 
 object CreditBalanceRules {
-  def InitializeAccount(input: InitializeAccountParams): Either[String, Vector[Event]] = {
-    import input.{state, command => p, hosts}
+  def InitializeAccount(state: State, p: InitializeAccountParams, hosts: CreditBalanceComputations): Either[String, Vector[Event]] = {
     if (!((p.resource == state.id))) return Left("ACCOUNT_ID")
     if (!(((p.currency == "CNY") && ((p.amount).currency == p.currency)))) return Left("ACCOUNT_CURRENCY")
     if (!((!(state.initialized) || ((state.accountBalance).get(p.currency)).contains(p.amount)))) return Left("ACCOUNT_INIT_CONFLICT")
     if ((state.initialized)) return Right(Vector.empty)
     if (!(((p.amount).amount >= BigDecimal("0.00")))) return Left("ACCOUNT_SEED_NONNEGATIVE")
-    Right(CreditBalanceCommandHelpers.emitInitializeAccount(state, p, hosts))
+    Right(Vector(AccountInitialized(p.resource, p.currency, p.amount)))
   }
-  def ReserveFunds(input: ReserveFundsParams): Either[String, Vector[Event]] = {
-    import input.{state, command => p, hosts}
+  def ReserveFunds(state: State, p: ReserveFundsParams, hosts: CreditBalanceComputations): Either[String, Vector[Event]] = {
     if (!((state.initialized && (p.resource == state.id)))) return Left("LEDGER_RESOURCE")
     if (!(((p.amount).currency == "CNY"))) return Left("LEDGER_CNY")
     if (!(((p.amount).amount > BigDecimal("0.00")))) return Left("LEDGER_POSITIVE")
@@ -27,10 +24,9 @@ object CreditBalanceRules {
     if (((state.compensatedOutgoing).contains(p.txid))) return Right(Vector.empty)
     if (((state.reservedAmount).contains(p.txid))) return Right(Vector.empty)
     if (!((state.accountBalance).get((p.amount).currency).exists(_.compareSameUnit(p.amount) >= 0))) return Left("LEDGER_SUFFICIENT")
-    Right(CreditBalanceCommandHelpers.emitReserveFunds(state, p, hosts))
+    Right(Vector(ReserveFundsConfirmed(p.txid, p.resource, p.amount, "CNY", hosts.BalanceAfterReserveFunds(state, p))))
   }
-  def DeductFunds(input: DeductFundsParams): Either[String, Vector[Event]] = {
-    import input.{state, command => p, hosts}
+  def DeductFunds(state: State, p: DeductFundsParams, hosts: CreditBalanceComputations): Either[String, Vector[Event]] = {
     if (!((state.initialized && (p.resource == state.id)))) return Left("LEDGER_RESOURCE")
     if (!(((p.amount).currency == "CNY"))) return Left("LEDGER_CNY")
     if (!(((p.amount).amount > BigDecimal("0.00")))) return Left("LEDGER_POSITIVE")
@@ -39,10 +35,9 @@ object CreditBalanceRules {
     if (((state.compensatedOutgoing).contains(p.txid))) return Left("LEDGER_NOT_COMPENSATED")
     if (!((state.reservedAmount).contains(p.txid))) return Left("LEDGER_PREPARED")
     if (!((!((state.reservedAmount).contains(p.txid)) || { require(((state.reservedAmount)(p.txid)).currency == (p.amount).currency, "exact units differ"); (((state.reservedAmount)(p.txid)).amount == (p.amount).amount) }))) return Left("LEDGER_RESERVEDAMOUNT_MATCH")
-    Right(CreditBalanceCommandHelpers.emitDeductFunds(state, p, hosts))
+    Right(Vector(DeductFundsConfirmed(p.txid, p.resource, p.amount)))
   }
-  def ReleaseReservedFunds(input: ReleaseReservedFundsParams): Either[String, Vector[Event]] = {
-    import input.{state, command => p, hosts}
+  def ReleaseReservedFunds(state: State, p: ReleaseReservedFundsParams, hosts: CreditBalanceComputations): Either[String, Vector[Event]] = {
     if (!((state.initialized && (p.resource == state.id)))) return Left("LEDGER_RESOURCE")
     if (!(((p.amount).currency == "CNY"))) return Left("LEDGER_CNY")
     if (!(((p.amount).amount > BigDecimal("0.00")))) return Left("LEDGER_POSITIVE")
@@ -50,10 +45,9 @@ object CreditBalanceRules {
     if (((state.compensatedOutgoing).contains(p.txid))) return Right(Vector.empty)
     if (((state.committedOutgoing).contains(p.txid))) return Left("LEDGER_NOT_COMMITTED")
     if (!((!((state.reservedAmount).contains(p.txid)) || { require(((state.reservedAmount)(p.txid)).currency == (p.amount).currency, "exact units differ"); (((state.reservedAmount)(p.txid)).amount == (p.amount).amount) }))) return Left("LEDGER_RESERVEDAMOUNT_MATCH")
-    Right(CreditBalanceCommandHelpers.emitReleaseReservedFunds(state, p, hosts))
+    Right(Vector(ReleaseReservedFundsConfirmed(p.txid, p.resource, p.amount, "CNY", hosts.BalanceAfterReleaseReservedFunds(state, p))))
   }
-  def RecordIncomingCredits(input: RecordIncomingCreditsParams): Either[String, Vector[Event]] = {
-    import input.{state, command => p, hosts}
+  def RecordIncomingCredits(state: State, p: RecordIncomingCreditsParams, hosts: CreditBalanceComputations): Either[String, Vector[Event]] = {
     if (!((state.initialized && (p.resource == state.id)))) return Left("LEDGER_RESOURCE")
     if (!(((p.amount).currency == "CNY"))) return Left("LEDGER_CNY")
     if (!(((p.amount).amount > BigDecimal("0.00")))) return Left("LEDGER_POSITIVE")
@@ -63,10 +57,9 @@ object CreditBalanceRules {
     if (((state.committedIncoming).contains(p.txid))) return Right(Vector.empty)
     if (((state.compensatedIncoming).contains(p.txid))) return Right(Vector.empty)
     if (((state.incomingCredits).contains(p.txid))) return Right(Vector.empty)
-    Right(CreditBalanceCommandHelpers.emitRecordIncomingCredits(state, p, hosts))
+    Right(Vector(RecordIncomingCreditsConfirmed(p.txid, p.resource, p.amount)))
   }
-  def CommitIncomingCredits(input: CommitIncomingCreditsParams): Either[String, Vector[Event]] = {
-    import input.{state, command => p, hosts}
+  def CommitIncomingCredits(state: State, p: CommitIncomingCreditsParams, hosts: CreditBalanceComputations): Either[String, Vector[Event]] = {
     if (!((state.initialized && (p.resource == state.id)))) return Left("LEDGER_RESOURCE")
     if (!(((p.amount).currency == "CNY"))) return Left("LEDGER_CNY")
     if (!(((p.amount).amount > BigDecimal("0.00")))) return Left("LEDGER_POSITIVE")
@@ -75,10 +68,9 @@ object CreditBalanceRules {
     if (((state.compensatedIncoming).contains(p.txid))) return Left("LEDGER_NOT_COMPENSATED")
     if (!((state.incomingCredits).contains(p.txid))) return Left("LEDGER_PREPARED")
     if (!((!((state.incomingCredits).contains(p.txid)) || { require(((state.incomingCredits)(p.txid)).currency == (p.amount).currency, "exact units differ"); (((state.incomingCredits)(p.txid)).amount == (p.amount).amount) }))) return Left("LEDGER_INCOMINGCREDITS_MATCH")
-    Right(CreditBalanceCommandHelpers.emitCommitIncomingCredits(state, p, hosts))
+    Right(Vector(CommitIncomingCreditsConfirmed(p.txid, p.resource, p.amount, "CNY", hosts.BalanceAfterCommitIncomingCredits(state, p))))
   }
-  def CancelIncomingCredit(input: CancelIncomingCreditParams): Either[String, Vector[Event]] = {
-    import input.{state, command => p, hosts}
+  def CancelIncomingCredit(state: State, p: CancelIncomingCreditParams, hosts: CreditBalanceComputations): Either[String, Vector[Event]] = {
     if (!((state.initialized && (p.resource == state.id)))) return Left("LEDGER_RESOURCE")
     if (!(((p.amount).currency == "CNY"))) return Left("LEDGER_CNY")
     if (!(((p.amount).amount > BigDecimal("0.00")))) return Left("LEDGER_POSITIVE")
@@ -86,6 +78,6 @@ object CreditBalanceRules {
     if (((state.compensatedIncoming).contains(p.txid))) return Right(Vector.empty)
     if (((state.committedIncoming).contains(p.txid))) return Left("LEDGER_NOT_COMMITTED")
     if (!((!((state.incomingCredits).contains(p.txid)) || { require(((state.incomingCredits)(p.txid)).currency == (p.amount).currency, "exact units differ"); (((state.incomingCredits)(p.txid)).amount == (p.amount).amount) }))) return Left("LEDGER_INCOMINGCREDITS_MATCH")
-    Right(CreditBalanceCommandHelpers.emitCancelIncomingCredit(state, p, hosts))
+    Right(Vector(CancelIncomingCreditConfirmed(p.txid, p.resource, p.amount)))
   }
 }

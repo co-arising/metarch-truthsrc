@@ -1,28 +1,19 @@
-// protocol-layer emitter (family #7, covering #7/10): renders the three
-// protocol and command-emission files per aggregate from the derived
+// protocol-layer emitter (family #7): aligned with playAkkaCQRS, renders the
+// three protocol/service/helper artifacts per aggregate from the derived
 // truthsrc.protocol-layer-input/v1 contract:
-//   1. `<pkg>.domain.<Name>Protocol` — Command/Event sealed traits & case classes (kind: protocol)
-//   2. `<pkg>.domain.<Name>CommandHelpers` — Computations trait/companion & emit* helpers (kind: command-helpers)
-//   3. `<pkg>.application.aggregates.<Name>Protocol` — application protocol type/val aliases (kind: application-protocol)
+//   1. `<pkg>.domain.services.<Name>Computations` — pure domain computation port (kind: command-helpers)
+//   2. `<pkg>.application.aggregates.<Name>Protocol` — Commands (with replyTo), Replies, ExternalAuthority, CommandHandler (kind: application-protocol)
+//   3. `<pkg>.application.aggregates.behaviors.<Name>CommandHelpers` — Command ↔ RuleParams ↔ Reply glue trait (kind: command-helpers)
 //
-// Golden provenance: handwritten-golden (rulings 2026-11-23,
-// docs/emitter-unification-host-family-rulings.md §19, Q1–Q6). Against classic
-// production the curated style makes exactly one deviation — no generated-file
-// header (L1, face-family, value-object, domain-entity and aggregate-layer
-// house style). All public Scala ABI names (including backtick-escaped keywords
-// such as `` `sealed` ``, 11 `Ingest<id>` type/val aliases, and
-// `ExternalAuthority`) and strict N1 cross-package FQNs are preserved so
-// handwritten bindings and unflipped siblings compile with zero F7 edits.
-//
-// The module embeds zero business bytes: every aggregate name, command, event,
-// host, slot expression, external producer id and source pointer is contract data.
+// Zero Command types are emitted under domain/**; zero business identifiers are
+// embedded in this module.
+import { valueObjectPackage, valueObjectPath, valueObjectSubpackage } from '../../lib/derivation/value-object-package.mjs';
 import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
 
 const fail = (code, message) => { throw Object.assign(new Error(code + ': ' + message), { code }); };
 const SCHEMA = 'truthsrc.protocol-layer-input/v1';
 const KEYWORDS = new Set(['abstract', 'case', 'catch', 'class', 'def', 'do', 'else', 'extends', 'false', 'final', 'finally', 'for', 'forSome', 'if', 'implicit', 'import', 'lazy', 'match', 'new', 'null', 'object', 'override', 'package', 'private', 'protected', 'return', 'sealed', 'super', 'this', 'throw', 'trait', 'try', 'true', 'type', 'val', 'var', 'while', 'with', 'yield', '_']);
 const PRIMITIVES = new Map([['string', 'String'], ['integer', 'Long'], ['boolean', 'Boolean'], ['decimal', 'BigDecimal']]);
-const REF_SCOPES = new Set(['parameter', 'state-field', 'event-slot']);
 
 const text = (value, what) => {
   if (typeof value !== 'string' || value.length === 0) fail('PL_INPUT', what + ' must be nonempty text');
@@ -72,70 +63,28 @@ function checkTypeTree(type, what, packages) {
   fail('PL_INPUT', what + ' has unsupported form: ' + JSON.stringify(type.form));
 }
 
-function checkLiteralValue(value, type, what) {
-  if (type.form === 'primitive') {
-    if (type.name === 'string' && typeof value !== 'string') fail('PL_INPUT', what + ' string literal must be string');
-    if (type.name === 'boolean' && typeof value !== 'boolean') fail('PL_INPUT', what + ' boolean literal must be boolean');
-    if ((type.name === 'integer' || type.name === 'decimal') && typeof value !== 'string') fail('PL_INPUT', what + ' numeric literal must be decimal/integer string');
-    return;
-  }
-  if (type.form === 'optional') {
-    if (!value || typeof value !== 'object' || typeof value.present !== 'boolean') fail('PL_INPUT', what + ' optional literal must carry boolean present');
-    if (value.present) checkLiteralValue(value.value, type.element, what + '.value');
-    return;
-  }
-  if (type.form === 'sequence') {
-    if (!Array.isArray(value)) fail('PL_INPUT', what + ' sequence literal must be array');
-    for (const [i, item] of value.entries()) checkLiteralValue(item, type.element, what + '[' + i + ']');
-    return;
-  }
-  if (type.form === 'map') {
-    if (!Array.isArray(value)) fail('PL_INPUT', what + ' map literal must be array of {key, value}');
-    for (const [i, row] of value.entries()) {
-      if (!row || typeof row !== 'object') fail('PL_INPUT', what + '[' + i + '] must be an object');
-      checkLiteralValue(row.key, type.key, what + '[' + i + '].key');
-      checkLiteralValue(row.value, type.value, what + '[' + i + '].value');
+function checkAggregateCommands(agg, at, packages) {
+  if (!Array.isArray(agg.commands) || agg.commands.length === 0) fail('PL_INPUT', at('commands must be a nonempty array'));
+  const seenCmds = new Set();
+  for (const [j, cmd] of agg.commands.entries()) {
+    const ct = what => at('commands[' + j + '] ' + what);
+    if (!cmd || typeof cmd !== 'object' || Array.isArray(cmd)) fail('PL_INPUT', ct('must be an object'));
+    const cname = identifier(cmd.name, ct('name'));
+    if (seenCmds.has(cname)) fail('PL_INPUT', ct('command ' + cname + ' is declared twice'));
+    seenCmds.add(cname);
+    checkSource(cmd.source, ct('source'));
+    if (!Array.isArray(cmd.parameters)) fail('PL_INPUT', ct('parameters must be an array'));
+    const seenParams = new Set();
+    for (const [k, param] of cmd.parameters.entries()) {
+      const pt = what => ct('parameters[' + k + '] ' + what);
+      if (!param || typeof param !== 'object' || Array.isArray(param)) fail('PL_INPUT', pt('must be an object'));
+      const pname = identifier(param.name, pt('name'));
+      if (seenParams.has(pname)) fail('PL_INPUT', pt('parameter ' + pname + ' is declared twice'));
+      seenParams.add(pname);
+      checkTypeTree(param.valueType, pt('valueType'), packages);
     }
-    return;
   }
-  fail('PL_INPUT', what + ' unsupported literal type form: ' + JSON.stringify(type.form));
-}
-
-function checkExpr(expr, what, packages, hostNames) {
-  if (!expr || typeof expr !== 'object' || Array.isArray(expr)) fail('PL_INPUT', what + ' must be an expression object');
-  if (expr.op === 'ref') {
-    if (!REF_SCOPES.has(expr.scope)) fail('PL_INPUT', what + ' ref has unsupported scope: ' + JSON.stringify(expr.scope));
-    identifier(expr.name, what + ' ref name');
-    return;
-  }
-  if (expr.op === 'literal') {
-    checkTypeTree(expr.valueType, what + ' literal valueType', packages);
-    checkLiteralValue(expr.value, expr.valueType, what + ' literal value');
-    return;
-  }
-  if (expr.op === 'host') {
-    const name = identifier(expr.name, what + ' host name');
-    if (!hostNames.has(name)) fail('PL_INPUT', what + ' references undeclared host ' + name);
-    return;
-  }
-  if (expr.op === 'member') {
-    checkExpr(expr.argument, what + ' member argument', packages, hostNames);
-    identifier(expr.member, what + ' member name');
-    return;
-  }
-  if (expr.op === 'map-get') {
-    checkExpr(expr.map, what + ' map-get map', packages, hostNames);
-    checkExpr(expr.key, what + ' map-get key', packages, hostNames);
-    return;
-  }
-  if (expr.op === 'add' || expr.op === 'subtract') {
-    if (expr.arithmetic !== 'primitive' && expr.arithmetic !== 'nominal')
-      {fail('PL_INPUT', what + ' arithmetic must be primitive or nominal');}
-    checkExpr(expr.left, what + ' left', packages, hostNames);
-    checkExpr(expr.right, what + ' right', packages, hostNames);
-    return;
-  }
-  fail('PL_INPUT', what + ' unsupported expression op: ' + JSON.stringify(expr.op));
+  return seenCmds;
 }
 
 function checkInput(input) {
@@ -166,47 +115,7 @@ function checkInput(input) {
     seenAggs.add(aggKey);
     checkSource(agg.source, at('source'));
 
-    if (!Array.isArray(agg.events) || agg.events.length === 0) fail('PL_INPUT', at('events must be a nonempty array'));
-    const seenEvents = new Set();
-    for (const [j, ev] of agg.events.entries()) {
-      const et = what => at('events[' + j + '] ' + what);
-      if (!ev || typeof ev !== 'object' || Array.isArray(ev)) fail('PL_INPUT', et('must be an object'));
-      const ename = identifier(ev.name, et('name'));
-      if (seenEvents.has(ename)) fail('PL_INPUT', et('event ' + ename + ' is declared twice'));
-      seenEvents.add(ename);
-      checkSource(ev.source, et('source'));
-      if (!Array.isArray(ev.slots)) fail('PL_INPUT', et('slots must be an array'));
-      const seenSlots = new Set();
-      for (const [k, slot] of ev.slots.entries()) {
-        const st = what => et('slots[' + k + '] ' + what);
-        if (!slot || typeof slot !== 'object' || Array.isArray(slot)) fail('PL_INPUT', st('must be an object'));
-        const sname = identifier(slot.name, st('name'));
-        if (seenSlots.has(sname)) fail('PL_INPUT', st('slot ' + sname + ' is declared twice'));
-        seenSlots.add(sname);
-        checkTypeTree(slot.valueType, st('valueType'), input.packages);
-      }
-    }
-
-    if (!Array.isArray(agg.commands) || agg.commands.length === 0) fail('PL_INPUT', at('commands must be a nonempty array'));
-    const seenCmds = new Set();
-    for (const [j, cmd] of agg.commands.entries()) {
-      const ct = what => at('commands[' + j + '] ' + what);
-      if (!cmd || typeof cmd !== 'object' || Array.isArray(cmd)) fail('PL_INPUT', ct('must be an object'));
-      const cname = identifier(cmd.name, ct('name'));
-      if (seenCmds.has(cname)) fail('PL_INPUT', ct('command ' + cname + ' is declared twice'));
-      seenCmds.add(cname);
-      checkSource(cmd.source, ct('source'));
-      if (!Array.isArray(cmd.parameters)) fail('PL_INPUT', ct('parameters must be an array'));
-      const seenParams = new Set();
-      for (const [k, param] of cmd.parameters.entries()) {
-        const pt = what => ct('parameters[' + k + '] ' + what);
-        if (!param || typeof param !== 'object' || Array.isArray(param)) fail('PL_INPUT', pt('must be an object'));
-        const pname = identifier(param.name, pt('name'));
-        if (seenParams.has(pname)) fail('PL_INPUT', pt('parameter ' + pname + ' is declared twice'));
-        seenParams.add(pname);
-        checkTypeTree(param.valueType, pt('valueType'), input.packages);
-      }
-    }
+    const seenCmds = checkAggregateCommands(agg, at, input.packages);
 
     if (!Array.isArray(agg.hosts)) fail('PL_INPUT', at('hosts must be an array'));
     const seenHosts = new Set();
@@ -222,22 +131,6 @@ function checkInput(input) {
       checkSource(host.source, ht('source'));
     }
 
-    for (const [j, cmd] of agg.commands.entries()) {
-      const ct = what => at('commands[' + j + '] ' + what);
-      if (!Array.isArray(cmd.events) || cmd.events.length === 0) fail('PL_INPUT', ct('events must be a nonempty array'));
-      for (const [k, em] of cmd.events.entries()) {
-        const emt = what => ct('events[' + k + '] ' + what);
-        if (!em || typeof em !== 'object' || Array.isArray(em)) fail('PL_INPUT', emt('must be an object'));
-        const ename = identifier(em.name, emt('name'));
-        if (!seenEvents.has(ename)) fail('PL_INPUT', emt('event ' + ename + ' is not declared on aggregate ' + name));
-        if (!Array.isArray(em.slots)) fail('PL_INPUT', emt('slots must be an array'));
-        for (const [s, slot] of em.slots.entries()) {
-          if (!slot || typeof slot !== 'object' || Array.isArray(slot)) fail('PL_INPUT', emt('slots[' + s + '] must be an object'));
-          checkExpr(slot.producer, emt('slots[' + s + '].producer'), input.packages, seenHosts);
-        }
-      }
-    }
-
     if (!Array.isArray(agg.externalProducers)) fail('PL_INPUT', at('externalProducers must be an array'));
     const seenProducers = new Set();
     for (const [j, p] of agg.externalProducers.entries()) {
@@ -246,6 +139,7 @@ function checkInput(input) {
       const id = producerId(p.id, pt('id'));
       if (seenProducers.has(id)) fail('PL_INPUT', pt('producer ' + id + ' is declared twice'));
       seenProducers.add(id);
+      checkTypeTree(p.outputType, pt('outputType'), input.packages);
     }
   }
 }
@@ -254,12 +148,24 @@ function renderType(type, pkgByContext, ownContext) {
   if (type.form === 'primitive') return PRIMITIVES.get(type.name);
   if (type.form === 'nominal') {
     if (ownContext && type.context === ownContext) return symbol(type.name);
-    return pkgByContext.get(type.context) + '.domain.values.' + symbol(type.name);
+    return valueObjectPackage(pkgByContext.get(type.context), symbol(type.name)) + '.' + symbol(type.name);
   }
   if (type.form === 'optional') return 'Option[' + renderType(type.element, pkgByContext, ownContext) + ']';
   if (type.form === 'sequence') return 'Vector[' + renderType(type.element, pkgByContext, ownContext) + ']';
   if (type.form === 'map') return 'Map[' + renderType(type.key, pkgByContext, ownContext) + ', ' + renderType(type.value, pkgByContext, ownContext) + ']';
   fail('PL_INPUT', 'unsupported type form: ' + JSON.stringify(type.form));
+}
+
+function collectOwnValueSubpackages(type, ownContext, out) {
+  if (type.form === 'nominal') {
+    if (type.context === ownContext) out.add(valueObjectSubpackage(type.name));
+    return;
+  }
+  if (type.form === 'optional' || type.form === 'sequence') collectOwnValueSubpackages(type.element, ownContext, out);
+  else if (type.form === 'map') {
+    collectOwnValueSubpackages(type.key, ownContext, out);
+    collectOwnValueSubpackages(type.value, ownContext, out);
+  }
 }
 
 function usesOwnValues(type, ownContext) {
@@ -270,162 +176,169 @@ function usesOwnValues(type, ownContext) {
 }
 
 function valuesPaths(type, pkgByContext) {
-  if (type.form === 'nominal') return [scalaSubpackagePath(pkgByContext.get(type.context), 'domain.values', type.name + '.scala')];
+  if (type.form === 'nominal') return [valueObjectPath(pkgByContext.get(type.context), type.name)];
   if (type.form === 'optional' || type.form === 'sequence') return valuesPaths(type.element, pkgByContext);
   if (type.form === 'map') return [...valuesPaths(type.key, pkgByContext), ...valuesPaths(type.value, pkgByContext)];
   return [];
 }
 
-function renderLiteral(value, type) {
-  if (type.form === 'primitive') {
-    if (type.name === 'string') return JSON.stringify(value);
-    if (type.name === 'boolean') return String(value);
-    if (type.name === 'integer') return value + 'L';
-    return 'BigDecimal(' + JSON.stringify(value) + ')';
-  }
-  if (type.form === 'optional') return value.present ? 'Some(' + renderLiteral(value.value, type.element) + ')' : 'None';
-  if (type.form === 'sequence') return 'Vector(' + value.map(v => renderLiteral(v, type.element)).join(', ') + ')';
-  if (type.form === 'map') return 'Map(' + value.map(r => renderLiteral(r.key, type.key) + ' -> ' + renderLiteral(r.value, type.value)).join(', ') + ')';
-  fail('PL_INPUT', 'unsupported literal type form: ' + JSON.stringify(type.form));
-}
-
-function renderExpr(expr) {
-  if (expr.op === 'ref') {
-    let prefix = 'p.';
-    if (expr.scope === 'state-field') prefix = 'state.';
-    else if (expr.scope === 'event-slot') prefix = 'event.';
-    return prefix + symbol(expr.name);
-  }
-  if (expr.op === 'literal') return renderLiteral(expr.value, expr.valueType);
-  if (expr.op === 'host') return 'hosts.' + symbol(expr.name) + '(state, p)';
-  if (expr.op === 'member') return '(' + renderExpr(expr.argument) + ').' + symbol(expr.member);
-  if (expr.op === 'map-get') return '(' + renderExpr(expr.map) + ').get(' + renderExpr(expr.key) + ')';
-  if (expr.op === 'add' || expr.op === 'subtract') {
-    const left = renderExpr(expr.left), right = renderExpr(expr.right);
-    if (expr.arithmetic === 'primitive') {
-      return 'java.lang.Math.' + (expr.op === 'add' ? 'addExact' : 'subtractExact') + '(' + left + ', ' + right + ')';
-    }
-    return '(' + left + ').' + (expr.op === 'add' ? 'plus' : 'minus') + '(' + right + ')';
-  }
-  fail('PL_INPUT', 'unsupported expression op: ' + JSON.stringify(expr.op));
-}
-
-const renderCaseClass = (className, rows, ext, pkgByContext, ownContext) => {
-  const fields = rows.map(r => symbol(r.name) + ': ' + renderType(r.valueType, pkgByContext, ownContext));
-  const oneLine = '  final case class ' + symbol(className) + '(' + fields.join(', ') + ') extends ' + ext;
+function renderCommandCaseClass(className, rows, pkgByContext, ownContext) {
+  const fields = [
+    ...rows.map(r => symbol(r.name) + ': ' + renderType(r.valueType, pkgByContext, ownContext)),
+    'replyTo: ActorRef[Reply]',
+  ];
+  const oneLine = '  final case class ' + symbol(className) + '(' + fields.join(', ') + ') extends Command';
   if (fields.length > 4 || oneLine.length > 110) {
-    return '  final case class ' + symbol(className) + '(\n    ' + fields.join(',\n    ') + '\n  ) extends ' + ext;
+    return '  final case class ' + symbol(className) + '(\n    ' + fields.join(',\n    ') + '\n  ) extends Command';
   }
   return oneLine;
-};
-
-function renderDomainProtocol(agg, pkg, pkgPath, pkgByContext) {
-  const name = symbol(agg.name);
-  const types = [...agg.commands.flatMap(c => c.parameters), ...agg.events.flatMap(e => e.slots)];
-  const importValues = types.some(r => usesOwnValues(r.valueType, agg.context));
-  const lines = [
-    'package ' + pkg + '.domain.events',
-    '',
-    ...(importValues ? ['import ' + pkg + '.domain.values._', ''] : []),
-    'object ' + name + 'Events {',
-    '  sealed trait Command',
-    '  sealed trait Event',
-  ];
-  for (const c of agg.commands) {
-    lines.push(renderCaseClass(c.name, c.parameters, 'Command', pkgByContext, agg.context));
-  }
-  for (const e of agg.events) {
-    lines.push(renderCaseClass(e.name, e.slots, 'Event', pkgByContext, agg.context));
-  }
-  lines.push('}');
-  return {
-    path: scalaSubpackagePath(pkg, 'domain.events', agg.name + 'Events.scala'),
-    kind: 'protocol',
-    content: lines.join('\n') + '\n',
-    sources: [agg.source, ...agg.commands.map(c => c.source), ...agg.events.map(e => e.source)],
-    deps: [...new Set(types.flatMap(r => valuesPaths(r.valueType, pkgByContext)))],
-  };
 }
 
-function renderCommandHelpers(agg, pkg, pkgPath, pkgByContext) {
+function renderComputations(agg, pkg, pkgByContext) {
   const name = symbol(agg.name);
+  const hasHosts = agg.hosts.length > 0;
   const importValues = agg.hosts.some(h => usesOwnValues(h.outputType, agg.context));
   const lines = [
     'package ' + pkg + '.domain.services',
     '',
-    `import ${pkg}.domain.entities.${name}Entity.State`,
-    `import ${pkg}.domain.events.${name}Events._`,
+    ...(hasHosts ? [
+      `import ${pkg}.domain.entities.${name}Entity.State`,
+      `import ${pkg}.domain.invariants.params.${name}RuleParams._`,
+    ] : []),
     ...(importValues ? ['import ' + pkg + '.domain.values._'] : []),
-    '',
+    ...(hasHosts || importValues ? [''] : []),
     'trait ' + name + 'Computations {',
   ];
   for (const h of agg.hosts) {
-    lines.push('  def ' + symbol(h.name) + '(state: State, p: ' + symbol(h.command) + '): ' + renderType(h.outputType, pkgByContext, agg.context));
+    lines.push('  def ' + symbol(h.name) + '(state: State, p: ' + symbol(h.command) + 'Params): ' + renderType(h.outputType, pkgByContext, agg.context));
   }
   lines.push('}');
   lines.push('object ' + name + 'Computations {');
-  if (agg.hosts.length === 0) {
+  if (!hasHosts) {
     lines.push('  val none: ' + name + 'Computations = new ' + name + 'Computations {}');
   }
   lines.push('}');
-  lines.push('object ' + name + 'CommandHelpers {');
-  for (const c of agg.commands) {
-    const eventsExpr = c.events
-      .map(e => symbol(e.name) + '(' + e.slots.map(s => renderExpr(s.producer)).join(', ') + ')')
-      .join(', ');
-    lines.push('  def emit' + c.name + '(state: State, p: ' + symbol(c.name) + ', hosts: ' + name + 'Computations): Vector[Event] = Vector(' + eventsExpr + ')');
-  }
-  lines.push('}');
+  const deps = hasHosts
+    ? [
+        scalaSubpackagePath(pkg, 'domain.entities', agg.name + 'Entity.scala'),
+        scalaSubpackagePath(pkg, 'domain.invariants.params', agg.name + 'RuleParams.scala'),
+        ...new Set(agg.hosts.flatMap(h => valuesPaths(h.outputType, pkgByContext))),
+      ]
+    : [];
   return {
     path: scalaSubpackagePath(pkg, 'domain.services', agg.name + 'Computations.scala'),
     kind: 'command-helpers',
     content: lines.join('\n') + '\n',
-    sources: [agg.source, ...agg.commands.map(c => c.source), ...agg.hosts.map(h => h.source)],
+    sources: [agg.source, ...agg.hosts.map(h => h.source)],
+    deps,
+  };
+}
+
+function renderCommandHelpersTrait(agg, pkg) {
+  const name = symbol(agg.name);
+  const lines = [
+    `package ${pkg}.application.aggregates.behaviors`,
+    '',
+    'import akka.actor.typed.ActorRef',
+    'import akka.persistence.typed.scaladsl.Effect',
+    `import ${pkg}.application.aggregates.${name}Protocol._`,
+    `import ${pkg}.domain.entities.${name}Entity.{Event, State}`,
+    `import ${pkg}.domain.invariants.params.${name}RuleParams._`,
+    '',
+    `trait ${name}CommandHelpers {`,
+  ];
+  for (const c of agg.commands) {
+    const cname = symbol(c.name);
+    const args = c.parameters.map(p => 'cmd.' + symbol(p.name)).join(', ');
+    lines.push(`  protected def to${c.name}Params(cmd: ${cname}): ${c.name}Params =`);
+    lines.push(`    ${c.name}Params(${args})`);
+  }
+  lines.push(
+    '',
+    '  protected def replyEffect(',
+    '    decision: Either[String, Vector[Event]],',
+    '    replyTo: ActorRef[Reply]',
+    '  ): Effect[Event, State] = decision match {',
+    '    case Left(code) =>',
+    '      Effect.none.thenRun((_: State) => replyTo ! Refused(code))',
+    '    case Right(events) =>',
+    '      Effect.persist(events).thenRun((_: State) => replyTo ! Accepted(events))',
+    '  }',
+    '}',
+  );
+  return {
+    path: scalaSubpackagePath(pkg, 'application.aggregates.behaviors', agg.name + 'CommandHelpers.scala'),
+    kind: 'command-helpers',
+    content: lines.join('\n') + '\n',
+    sources: [agg.source, ...agg.commands.map(c => c.source)],
     deps: [
+      scalaSubpackagePath(pkg, 'application.aggregates', agg.name + 'Protocol.scala'),
       scalaSubpackagePath(pkg, 'domain.entities', agg.name + 'Entity.scala'),
-      scalaSubpackagePath(pkg, 'domain.events', agg.name + 'Events.scala'),
+      scalaSubpackagePath(pkg, 'domain.invariants.params', agg.name + 'RuleParams.scala'),
     ],
   };
 }
 
-function renderApplicationProtocol(agg, pkg) {
+function renderApplicationProtocol(agg, pkg, pkgByContext) {
   const name = symbol(agg.name);
-  const aggObj = name + 'Aggregate';
-  const aliases = ['Execute', 'GetState', 'Accepted', 'Refused', ...agg.externalProducers.map(p => ingressAlias(p.id))];
   const hasAuthority = agg.externalProducers.length > 0;
-  let content = `package ${pkg}.application.aggregates
-
-import akka.persistence.typed.scaladsl.Effect
-import ${pkg}.domain.entities.${name}Entity.{Event, State}
-import ${pkg}.domain.events.${name}Events
-
-object ${name}Protocol {
-
-  type Command = ${aggObj}.Request
-  type Reply = ${aggObj}.Reply
-  type CommandPayload = ${name}Events.Command
-  type CommandHandler = (State, Command) => Effect[Event, State]
-`;
-  for (const id of aliases) {
-    content += `
-  type ${id} = ${aggObj}.${id}
-  val ${id}: ${aggObj}.${id}.type =
-    ${aggObj}.${id}
-`;
+  const ownSubpkgs = new Set();
+  for (const c of agg.commands) {
+    for (const p of c.parameters) collectOwnValueSubpackages(p.valueType, agg.context, ownSubpkgs);
   }
+  for (const p of agg.externalProducers) collectOwnValueSubpackages(p.outputType, agg.context, ownSubpkgs);
+
+  const lines = [
+    `package ${pkg}.application.aggregates`,
+    '',
+    'import akka.actor.typed.ActorRef',
+    'import akka.persistence.typed.scaladsl.Effect',
+    `import ${pkg}.domain.entities.${name}Entity.{Event, State}`,
+    ...[...ownSubpkgs].sort().map(sub => `import ${pkg}.${sub}._`),
+    '',
+    `object ${name}Protocol {`,
+    '',
+    '  sealed trait Command',
+  ];
+  for (const c of agg.commands) {
+    lines.push(renderCommandCaseClass(c.name, c.parameters, pkgByContext, agg.context));
+  }
+  lines.push('  final case class GetState(replyTo: ActorRef[State]) extends Command');
+  for (const p of agg.externalProducers) {
+    const outType = renderType(p.outputType, pkgByContext, agg.context);
+    lines.push(`  final case class ${ingressAlias(p.id)}(output: ${outType}, authorization: String, replyTo: ActorRef[Reply]) extends Command`);
+  }
+  lines.push(
+    '',
+    '  sealed trait Reply',
+    '  final case class Accepted(events: Vector[Event]) extends Reply',
+    '  final case class Refused(code: String) extends Reply',
+  );
   if (hasAuthority) {
-    content += `\n  type ExternalAuthority = ${aggObj}.ExternalAuthority\n`;
+    lines.push(
+      '',
+      '  trait ExternalAuthority {',
+      '    def authorize(producer: String, authorization: String, identity: Vector[String]): Boolean',
+      '  }',
+    );
   }
-  content += '}\n';
+  lines.push(
+    '',
+    '  type CommandHandler = (State, Command) => Effect[Event, State]',
+    '}',
+  );
+  const valueDeps = [
+    ...agg.commands.flatMap(c => c.parameters.flatMap(p => valuesPaths(p.valueType, pkgByContext))),
+    ...agg.externalProducers.flatMap(p => valuesPaths(p.outputType, pkgByContext)),
+  ];
   return {
     path: scalaSubpackagePath(pkg, 'application.aggregates', agg.name + 'Protocol.scala'),
     kind: 'application-protocol',
-    content,
+    content: lines.join('\n') + '\n',
     sources: [agg.source, ...agg.commands.map(c => c.source)],
     deps: [
-      scalaSubpackagePath(pkg, 'application.aggregates', agg.name + 'Aggregate.scala'),
       scalaSubpackagePath(pkg, 'domain.entities', agg.name + 'Entity.scala'),
-      scalaSubpackagePath(pkg, 'domain.events', agg.name + 'Events.scala'),
+      ...new Set(valueDeps),
     ],
   };
 }
@@ -436,10 +349,9 @@ export function renderProtocolLayerFiles(input) {
   const files = [];
   for (const agg of input.aggregates) {
     const pkg = pkgByContext.get(agg.context);
-    const pkgPath = pkg.replaceAll('.', '/');
-    files.push(renderDomainProtocol(agg, pkg, pkgPath, pkgByContext));
-    files.push(renderCommandHelpers(agg, pkg, pkgPath, pkgByContext));
-    files.push(renderApplicationProtocol(agg, pkg, pkgPath));
+    files.push(renderComputations(agg, pkg, pkgByContext));
+    files.push(renderCommandHelpersTrait(agg, pkg));
+    files.push(renderApplicationProtocol(agg, pkg, pkgByContext));
   }
   return files;
 }
@@ -464,19 +376,13 @@ function runNegatives(baseInput) {
     ['empty-commands', () => { const c = clone(); c.aggregates[0].commands = []; return c; }],
     ['duplicate-command-name', () => { const c = clone(); c.aggregates[0].commands.push(clone().aggregates[0].commands[0]); return c; }],
     ['duplicate-command-parameter', () => { const c = clone(); c.aggregates[0].commands[0].parameters.push(clone().aggregates[0].commands[0].parameters[0]); return c; }],
-    ['empty-events', () => { const c = clone(); c.aggregates[0].events = []; return c; }],
-    ['duplicate-event-name', () => { const c = clone(); c.aggregates[0].events.push(clone().aggregates[0].events[0]); return c; }],
-    ['duplicate-event-slot', () => { const c = clone(); c.aggregates[0].events[0].slots.push(clone().aggregates[0].events[0].slots[0]); return c; }],
     ['unsupported-primitive-type', () => { const c = clone(); c.aggregates[0].commands[0].parameters[0].valueType = { form: 'primitive', name: 'float' }; return c; }],
     ['unbound-nominal-type-context', () => { const c = clone(); c.aggregates[0].commands[0].parameters[0].valueType = { form: 'nominal', context: 'missing', name: 'Foo' }; return c; }],
     ['duplicate-host-name', () => { const c = clone(); c.aggregates[0].hosts.push(clone().aggregates[0].hosts[0]); return c; }],
     ['host-referencing-undeclared-command', () => { const c = clone(); c.aggregates[0].hosts[0].command = 'NoSuchCommand'; return c; }],
-    ['command-emitting-undeclared-event', () => { const c = clone(); c.aggregates[0].commands[0].events[0].name = 'GhostEvent'; return c; }],
-    ['expression-referencing-undeclared-host', () => { const c = clone(); c.aggregates[0].commands[0].events[0].slots[0].producer = { op: 'host', name: 'GhostHost' }; return c; }],
-    ['expression-with-unsupported-op', () => { const c = clone(); c.aggregates[0].commands[0].events[0].slots[0].producer = { op: 'divide' }; return c; }],
-    ['expression-with-invalid-ref-scope', () => { const c = clone(); c.aggregates[0].commands[0].events[0].slots[0].producer = { op: 'ref', scope: 'global', name: 'x' }; return c; }],
     ['duplicate-external-producer-id', () => { const c = clone(); const fo = c.aggregates.find(a => a.externalProducers.length > 0); fo.externalProducers.push({ ...fo.externalProducers[0] }); return c; }],
     ['invalid-external-producer-id', () => { const c = clone(); const fo = c.aggregates.find(a => a.externalProducers.length > 0); fo.externalProducers[0].id = 'Bad_Producer'; return c; }],
+    ['invalid-external-producer-output-type', () => { const c = clone(); const fo = c.aggregates.find(a => a.externalProducers.length > 0); fo.externalProducers[0].outputType = { form: 'tuple' }; return c; }],
   ];
   const failures = [];
   let rejected = 0;

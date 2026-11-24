@@ -33,9 +33,6 @@ object SipPlanEntity {
     intentAppendedDueSlots: Map[Long, Long]
   )
 
-  type Event = example.bankwealth.domain.events.SipPlanEvents.Event
-  val Events: example.bankwealth.domain.events.SipPlanEvents.type = example.bankwealth.domain.events.SipPlanEvents
-
   def empty: State = State(
     id = PlanId(""),
     initialized = false,
@@ -65,4 +62,41 @@ object SipPlanEntity {
     createIntentDueSlots = Vector(),
     intentAppendedDueSlots = Map()
   )
+
+  sealed trait Event
+  final case class SipPlanCreated(planId: PlanId, config: SipRevisionConfig) extends Event
+  final case class SipDueSlotAppended(position: Long, dueSlot: Long) extends Event
+  final case class SipScheduleSealed(`sealed`: Boolean) extends Event
+  final case class SipPlanRevised(config: SipRevisionConfig, previousRevision: RevisionId) extends Event
+  final case class SipClockAdvanced(tick: Long) extends Event
+  final case class SipPlanPaused(tick: Long) extends Event
+  final case class SipPlanResumed(tick: Long, pauseTick: Long) extends Event
+  final case class SipDueSlotObserved(position: Long, dueSlot: Long, disposition: String) extends Event
+  final case class SipPausedDueSlotSkipped(position: Long, dueSlot: Long, disposition: String) extends Event
+  final case class SipSkippedSlotAdvanced(position: Long, dueSlot: Long) extends Event
+  final case class SipInstallmentTriggered(position: Long, occurrence: SipOccurrence) extends Event
+  final case class SipInstallmentPending(occurrence: SipOccurrence, outcome: String) extends Event
+  final case class SipInstallmentOutcomeUnknown(occurrence: SipOccurrence, outcome: String) extends Event
+  final case class SipInstallmentRecoveryRequired(occurrence: SipOccurrence, outcome: String) extends Event
+  final case class SipInstallmentRefundInProgress(occurrence: SipOccurrence, outcome: String) extends Event
+  final case class SipInstallmentSucceeded(
+    occurrence: SipOccurrence,
+    evidence: String,
+    receiptId: String,
+    receiptBody: String,
+    outcome: String
+  ) extends Event
+  final case class SipInstallmentFailed(
+    occurrence: SipOccurrence,
+    evidence: String,
+    receiptId: String,
+    receiptBody: String,
+    outcome: String
+  ) extends Event
+  final case class SipCreateIntentRecorded(
+    intent: BankSipCreateIntent,
+    source: Option[BankSipCreateIntent]
+  ) extends Event
+
+  type EventHandler = (State, Event) => State
 }

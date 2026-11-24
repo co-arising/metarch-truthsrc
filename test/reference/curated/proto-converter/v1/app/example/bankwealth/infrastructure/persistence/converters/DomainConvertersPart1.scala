@@ -1,7 +1,6 @@
 package example.bankwealth.infrastructure.persistence.converters
 
 import example.bankwealth.domain.entities._
-import example.bankwealth.domain.events._
 import example.bankwealth.application.api._
 import example.bankwealth.application.projection._
 import example.bankwealth.application.saga._
@@ -540,66 +539,66 @@ trait DomainConvertersPart1 { self: DomainConverters.type =>
     compensatedOutgoing = value.compensatedOutgoing.map { case (k, v) => TxId(k) -> decodeMoneyPO(v) },
     compensatedIncoming = value.compensatedIncoming.map { case (k, v) => TxId(k) -> decodeMoneyPO(v) }
   )
-  def encodeAccountInitializedPO(value: CreditBalanceEvents.AccountInitialized): pb.AccountInitializedPO = pb.AccountInitializedPO(resource = Some(encodeAccountIdPO(value.resource)), currency = value.currency, amount = Some(encodeMoneyPO(value.amount)))
-  def decodeAccountInitializedPO(value: pb.AccountInitializedPO): CreditBalanceEvents.AccountInitialized = CreditBalanceEvents.AccountInitialized(resource = decodeAccountIdPO(req(value.resource)), currency = value.currency, amount = decodeMoneyPO(req(value.amount)))
-  def encodeReserveFundsConfirmedPO(value: CreditBalanceEvents.ReserveFundsConfirmed): pb.ReserveFundsConfirmedPO = pb.ReserveFundsConfirmedPO(
+  def encodeAccountInitializedPO(value: CreditBalanceEntity.AccountInitialized): pb.AccountInitializedPO = pb.AccountInitializedPO(resource = Some(encodeAccountIdPO(value.resource)), currency = value.currency, amount = Some(encodeMoneyPO(value.amount)))
+  def decodeAccountInitializedPO(value: pb.AccountInitializedPO): CreditBalanceEntity.AccountInitialized = CreditBalanceEntity.AccountInitialized(resource = decodeAccountIdPO(req(value.resource)), currency = value.currency, amount = decodeMoneyPO(req(value.amount)))
+  def encodeReserveFundsConfirmedPO(value: CreditBalanceEntity.ReserveFundsConfirmed): pb.ReserveFundsConfirmedPO = pb.ReserveFundsConfirmedPO(
     txid = Some(encodeTxIdPO(value.txid)),
     resource = Some(encodeAccountIdPO(value.resource)),
     amount = Some(encodeMoneyPO(value.amount)),
     currency = value.currency,
     available = Some(encodeMoneyPO(value.available))
   )
-  def decodeReserveFundsConfirmedPO(value: pb.ReserveFundsConfirmedPO): CreditBalanceEvents.ReserveFundsConfirmed = CreditBalanceEvents.ReserveFundsConfirmed(
+  def decodeReserveFundsConfirmedPO(value: pb.ReserveFundsConfirmedPO): CreditBalanceEntity.ReserveFundsConfirmed = CreditBalanceEntity.ReserveFundsConfirmed(
     txid = decodeTxIdPO(req(value.txid)),
     resource = decodeAccountIdPO(req(value.resource)),
     amount = decodeMoneyPO(req(value.amount)),
     currency = value.currency,
     available = decodeMoneyPO(req(value.available))
   )
-  def encodeDeductFundsConfirmedPO(value: CreditBalanceEvents.DeductFundsConfirmed): pb.DeductFundsConfirmedPO = pb.DeductFundsConfirmedPO(txid = Some(encodeTxIdPO(value.txid)), resource = Some(encodeAccountIdPO(value.resource)), amount = Some(encodeMoneyPO(value.amount)))
-  def decodeDeductFundsConfirmedPO(value: pb.DeductFundsConfirmedPO): CreditBalanceEvents.DeductFundsConfirmed = CreditBalanceEvents.DeductFundsConfirmed(txid = decodeTxIdPO(req(value.txid)), resource = decodeAccountIdPO(req(value.resource)), amount = decodeMoneyPO(req(value.amount)))
-  def encodeReleaseReservedFundsConfirmedPO(value: CreditBalanceEvents.ReleaseReservedFundsConfirmed): pb.ReleaseReservedFundsConfirmedPO = pb.ReleaseReservedFundsConfirmedPO(
+  def encodeDeductFundsConfirmedPO(value: CreditBalanceEntity.DeductFundsConfirmed): pb.DeductFundsConfirmedPO = pb.DeductFundsConfirmedPO(txid = Some(encodeTxIdPO(value.txid)), resource = Some(encodeAccountIdPO(value.resource)), amount = Some(encodeMoneyPO(value.amount)))
+  def decodeDeductFundsConfirmedPO(value: pb.DeductFundsConfirmedPO): CreditBalanceEntity.DeductFundsConfirmed = CreditBalanceEntity.DeductFundsConfirmed(txid = decodeTxIdPO(req(value.txid)), resource = decodeAccountIdPO(req(value.resource)), amount = decodeMoneyPO(req(value.amount)))
+  def encodeReleaseReservedFundsConfirmedPO(value: CreditBalanceEntity.ReleaseReservedFundsConfirmed): pb.ReleaseReservedFundsConfirmedPO = pb.ReleaseReservedFundsConfirmedPO(
     txid = Some(encodeTxIdPO(value.txid)),
     resource = Some(encodeAccountIdPO(value.resource)),
     amount = Some(encodeMoneyPO(value.amount)),
     currency = value.currency,
     available = Some(encodeMoneyPO(value.available))
   )
-  def decodeReleaseReservedFundsConfirmedPO(value: pb.ReleaseReservedFundsConfirmedPO): CreditBalanceEvents.ReleaseReservedFundsConfirmed = CreditBalanceEvents.ReleaseReservedFundsConfirmed(
+  def decodeReleaseReservedFundsConfirmedPO(value: pb.ReleaseReservedFundsConfirmedPO): CreditBalanceEntity.ReleaseReservedFundsConfirmed = CreditBalanceEntity.ReleaseReservedFundsConfirmed(
     txid = decodeTxIdPO(req(value.txid)),
     resource = decodeAccountIdPO(req(value.resource)),
     amount = decodeMoneyPO(req(value.amount)),
     currency = value.currency,
     available = decodeMoneyPO(req(value.available))
   )
-  def encodeRecordIncomingCreditsConfirmedPO(value: CreditBalanceEvents.RecordIncomingCreditsConfirmed): pb.RecordIncomingCreditsConfirmedPO = pb.RecordIncomingCreditsConfirmedPO(txid = Some(encodeTxIdPO(value.txid)), resource = Some(encodeAccountIdPO(value.resource)), amount = Some(encodeMoneyPO(value.amount)))
-  def decodeRecordIncomingCreditsConfirmedPO(value: pb.RecordIncomingCreditsConfirmedPO): CreditBalanceEvents.RecordIncomingCreditsConfirmed = CreditBalanceEvents.RecordIncomingCreditsConfirmed(txid = decodeTxIdPO(req(value.txid)), resource = decodeAccountIdPO(req(value.resource)), amount = decodeMoneyPO(req(value.amount)))
-  def encodeCommitIncomingCreditsConfirmedPO(value: CreditBalanceEvents.CommitIncomingCreditsConfirmed): pb.CommitIncomingCreditsConfirmedPO = pb.CommitIncomingCreditsConfirmedPO(
+  def encodeRecordIncomingCreditsConfirmedPO(value: CreditBalanceEntity.RecordIncomingCreditsConfirmed): pb.RecordIncomingCreditsConfirmedPO = pb.RecordIncomingCreditsConfirmedPO(txid = Some(encodeTxIdPO(value.txid)), resource = Some(encodeAccountIdPO(value.resource)), amount = Some(encodeMoneyPO(value.amount)))
+  def decodeRecordIncomingCreditsConfirmedPO(value: pb.RecordIncomingCreditsConfirmedPO): CreditBalanceEntity.RecordIncomingCreditsConfirmed = CreditBalanceEntity.RecordIncomingCreditsConfirmed(txid = decodeTxIdPO(req(value.txid)), resource = decodeAccountIdPO(req(value.resource)), amount = decodeMoneyPO(req(value.amount)))
+  def encodeCommitIncomingCreditsConfirmedPO(value: CreditBalanceEntity.CommitIncomingCreditsConfirmed): pb.CommitIncomingCreditsConfirmedPO = pb.CommitIncomingCreditsConfirmedPO(
     txid = Some(encodeTxIdPO(value.txid)),
     resource = Some(encodeAccountIdPO(value.resource)),
     amount = Some(encodeMoneyPO(value.amount)),
     currency = value.currency,
     available = Some(encodeMoneyPO(value.available))
   )
-  def decodeCommitIncomingCreditsConfirmedPO(value: pb.CommitIncomingCreditsConfirmedPO): CreditBalanceEvents.CommitIncomingCreditsConfirmed = CreditBalanceEvents.CommitIncomingCreditsConfirmed(
+  def decodeCommitIncomingCreditsConfirmedPO(value: pb.CommitIncomingCreditsConfirmedPO): CreditBalanceEntity.CommitIncomingCreditsConfirmed = CreditBalanceEntity.CommitIncomingCreditsConfirmed(
     txid = decodeTxIdPO(req(value.txid)),
     resource = decodeAccountIdPO(req(value.resource)),
     amount = decodeMoneyPO(req(value.amount)),
     currency = value.currency,
     available = decodeMoneyPO(req(value.available))
   )
-  def encodeCancelIncomingCreditConfirmedPO(value: CreditBalanceEvents.CancelIncomingCreditConfirmed): pb.CancelIncomingCreditConfirmedPO = pb.CancelIncomingCreditConfirmedPO(txid = Some(encodeTxIdPO(value.txid)), resource = Some(encodeAccountIdPO(value.resource)), amount = Some(encodeMoneyPO(value.amount)))
-  def decodeCancelIncomingCreditConfirmedPO(value: pb.CancelIncomingCreditConfirmedPO): CreditBalanceEvents.CancelIncomingCreditConfirmed = CreditBalanceEvents.CancelIncomingCreditConfirmed(txid = decodeTxIdPO(req(value.txid)), resource = decodeAccountIdPO(req(value.resource)), amount = decodeMoneyPO(req(value.amount)))
-  def encodeCreditBalanceEventPO(value: CreditBalanceEvents.Event): pb.CreditBalanceEventPO = value match {
-    case e: CreditBalanceEvents.AccountInitialized => pb.CreditBalanceEventPO(pb.CreditBalanceEventPO.Event.AccountInitialized(encodeAccountInitializedPO(e)))
-    case e: CreditBalanceEvents.ReserveFundsConfirmed => pb.CreditBalanceEventPO(pb.CreditBalanceEventPO.Event.ReserveFundsConfirmed(encodeReserveFundsConfirmedPO(e)))
-    case e: CreditBalanceEvents.DeductFundsConfirmed => pb.CreditBalanceEventPO(pb.CreditBalanceEventPO.Event.DeductFundsConfirmed(encodeDeductFundsConfirmedPO(e)))
-    case e: CreditBalanceEvents.ReleaseReservedFundsConfirmed => pb.CreditBalanceEventPO(pb.CreditBalanceEventPO.Event.ReleaseReservedFundsConfirmed(encodeReleaseReservedFundsConfirmedPO(e)))
-    case e: CreditBalanceEvents.RecordIncomingCreditsConfirmed => pb.CreditBalanceEventPO(pb.CreditBalanceEventPO.Event.RecordIncomingCreditsConfirmed(encodeRecordIncomingCreditsConfirmedPO(e)))
-    case e: CreditBalanceEvents.CommitIncomingCreditsConfirmed => pb.CreditBalanceEventPO(pb.CreditBalanceEventPO.Event.CommitIncomingCreditsConfirmed(encodeCommitIncomingCreditsConfirmedPO(e)))
-    case e: CreditBalanceEvents.CancelIncomingCreditConfirmed => pb.CreditBalanceEventPO(pb.CreditBalanceEventPO.Event.CancelIncomingCreditConfirmed(encodeCancelIncomingCreditConfirmedPO(e)))
+  def encodeCancelIncomingCreditConfirmedPO(value: CreditBalanceEntity.CancelIncomingCreditConfirmed): pb.CancelIncomingCreditConfirmedPO = pb.CancelIncomingCreditConfirmedPO(txid = Some(encodeTxIdPO(value.txid)), resource = Some(encodeAccountIdPO(value.resource)), amount = Some(encodeMoneyPO(value.amount)))
+  def decodeCancelIncomingCreditConfirmedPO(value: pb.CancelIncomingCreditConfirmedPO): CreditBalanceEntity.CancelIncomingCreditConfirmed = CreditBalanceEntity.CancelIncomingCreditConfirmed(txid = decodeTxIdPO(req(value.txid)), resource = decodeAccountIdPO(req(value.resource)), amount = decodeMoneyPO(req(value.amount)))
+  def encodeCreditBalanceEventPO(value: CreditBalanceEntity.Event): pb.CreditBalanceEventPO = value match {
+    case e: CreditBalanceEntity.AccountInitialized => pb.CreditBalanceEventPO(pb.CreditBalanceEventPO.Event.AccountInitialized(encodeAccountInitializedPO(e)))
+    case e: CreditBalanceEntity.ReserveFundsConfirmed => pb.CreditBalanceEventPO(pb.CreditBalanceEventPO.Event.ReserveFundsConfirmed(encodeReserveFundsConfirmedPO(e)))
+    case e: CreditBalanceEntity.DeductFundsConfirmed => pb.CreditBalanceEventPO(pb.CreditBalanceEventPO.Event.DeductFundsConfirmed(encodeDeductFundsConfirmedPO(e)))
+    case e: CreditBalanceEntity.ReleaseReservedFundsConfirmed => pb.CreditBalanceEventPO(pb.CreditBalanceEventPO.Event.ReleaseReservedFundsConfirmed(encodeReleaseReservedFundsConfirmedPO(e)))
+    case e: CreditBalanceEntity.RecordIncomingCreditsConfirmed => pb.CreditBalanceEventPO(pb.CreditBalanceEventPO.Event.RecordIncomingCreditsConfirmed(encodeRecordIncomingCreditsConfirmedPO(e)))
+    case e: CreditBalanceEntity.CommitIncomingCreditsConfirmed => pb.CreditBalanceEventPO(pb.CreditBalanceEventPO.Event.CommitIncomingCreditsConfirmed(encodeCommitIncomingCreditsConfirmedPO(e)))
+    case e: CreditBalanceEntity.CancelIncomingCreditConfirmed => pb.CreditBalanceEventPO(pb.CreditBalanceEventPO.Event.CancelIncomingCreditConfirmed(encodeCancelIncomingCreditConfirmedPO(e)))
   }
-  def decodeCreditBalanceEventPO(value: pb.CreditBalanceEventPO): CreditBalanceEvents.Event = value.event match {
+  def decodeCreditBalanceEventPO(value: pb.CreditBalanceEventPO): CreditBalanceEntity.Event = value.event match {
     case pb.CreditBalanceEventPO.Event.AccountInitialized(e) => decodeAccountInitializedPO(e)
     case pb.CreditBalanceEventPO.Event.ReserveFundsConfirmed(e) => decodeReserveFundsConfirmedPO(e)
     case pb.CreditBalanceEventPO.Event.DeductFundsConfirmed(e) => decodeDeductFundsConfirmedPO(e)

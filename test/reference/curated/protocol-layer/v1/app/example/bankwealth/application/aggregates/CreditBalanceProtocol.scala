@@ -1,29 +1,60 @@
 package example.bankwealth.application.aggregates
 
+import akka.actor.typed.ActorRef
 import akka.persistence.typed.scaladsl.Effect
 import example.bankwealth.domain.entities.CreditBalanceEntity.{Event, State}
-import example.bankwealth.domain.events.CreditBalanceEvents
+import example.bankwealth.domain.values._
 
 object CreditBalanceProtocol {
 
-  type Command = CreditBalanceAggregate.Request
-  type Reply = CreditBalanceAggregate.Reply
-  type CommandPayload = CreditBalanceEvents.Command
+  sealed trait Command
+  final case class InitializeAccount(
+    resource: AccountId,
+    currency: String,
+    amount: Money,
+    replyTo: ActorRef[Reply]
+  ) extends Command
+  final case class ReserveFunds(
+    txid: TxId,
+    resource: AccountId,
+    amount: Money,
+    replyTo: ActorRef[Reply]
+  ) extends Command
+  final case class DeductFunds(
+    txid: TxId,
+    resource: AccountId,
+    amount: Money,
+    replyTo: ActorRef[Reply]
+  ) extends Command
+  final case class ReleaseReservedFunds(
+    txid: TxId,
+    resource: AccountId,
+    amount: Money,
+    replyTo: ActorRef[Reply]
+  ) extends Command
+  final case class RecordIncomingCredits(
+    txid: TxId,
+    resource: AccountId,
+    amount: Money,
+    replyTo: ActorRef[Reply]
+  ) extends Command
+  final case class CommitIncomingCredits(
+    txid: TxId,
+    resource: AccountId,
+    amount: Money,
+    replyTo: ActorRef[Reply]
+  ) extends Command
+  final case class CancelIncomingCredit(
+    txid: TxId,
+    resource: AccountId,
+    amount: Money,
+    replyTo: ActorRef[Reply]
+  ) extends Command
+  final case class GetState(replyTo: ActorRef[State]) extends Command
+
+  sealed trait Reply
+  final case class Accepted(events: Vector[Event]) extends Reply
+  final case class Refused(code: String) extends Reply
+
   type CommandHandler = (State, Command) => Effect[Event, State]
-
-  type Execute = CreditBalanceAggregate.Execute
-  val Execute: CreditBalanceAggregate.Execute.type =
-    CreditBalanceAggregate.Execute
-
-  type GetState = CreditBalanceAggregate.GetState
-  val GetState: CreditBalanceAggregate.GetState.type =
-    CreditBalanceAggregate.GetState
-
-  type Accepted = CreditBalanceAggregate.Accepted
-  val Accepted: CreditBalanceAggregate.Accepted.type =
-    CreditBalanceAggregate.Accepted
-
-  type Refused = CreditBalanceAggregate.Refused
-  val Refused: CreditBalanceAggregate.Refused.type =
-    CreditBalanceAggregate.Refused
 }

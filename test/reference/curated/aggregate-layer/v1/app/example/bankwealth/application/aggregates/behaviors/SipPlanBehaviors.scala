@@ -3,12 +3,10 @@ package example.bankwealth.application.aggregates.behaviors
 import akka.persistence.typed.scaladsl.Effect
 import example.bankwealth.application.aggregates.SipPlanProtocol._
 import example.bankwealth.domain.entities.SipPlanEntity.{Event, State}
-import example.bankwealth.domain.events.{SipPlanEvents => Payload}
-import example.bankwealth.domain.invariant.SipPlanRules
-import example.bankwealth.domain.invariant.params.SipPlanRuleParams._
+import example.bankwealth.domain.invariants.SipPlanRules
 import example.bankwealth.domain.services.SipPlanComputations
 
-object SipPlanBehaviors {
+object SipPlanBehaviors extends SipPlanCommandHelpers {
 
   def apply(hosts: SipPlanComputations): CommandHandler = (state, command) =>
     queryBehavior
@@ -16,56 +14,46 @@ object SipPlanBehaviors {
       .apply(command)
 
   private def queryBehavior: PartialFunction[Command, Effect[Event, State]] = {
-    case GetState(reply) =>
-      Effect.none.thenRun((s: State) => reply ! s)
+    case GetState(replyTo) =>
+      Effect.none.thenRun((s: State) => replyTo ! s)
   }
 
   private def executionBehavior(state: State, hosts: SipPlanComputations): PartialFunction[Command, Effect[Event, State]] = {
-    case Execute(command, reply) =>
-      val decision = command match {
-        case p: Payload.CreateSipPlan =>
-          SipPlanRules.CreateSipPlan(CreateSipPlanParams(state, p, hosts))
-        case p: Payload.AppendSipDueSlot =>
-          SipPlanRules.AppendSipDueSlot(AppendSipDueSlotParams(state, p, hosts))
-        case p: Payload.SealSipSchedule =>
-          SipPlanRules.SealSipSchedule(SealSipScheduleParams(state, p, hosts))
-        case p: Payload.ReviseSipPlan =>
-          SipPlanRules.ReviseSipPlan(ReviseSipPlanParams(state, p, hosts))
-        case p: Payload.AdvanceSipClock =>
-          SipPlanRules.AdvanceSipClock(AdvanceSipClockParams(state, p, hosts))
-        case p: Payload.PauseSipPlan =>
-          SipPlanRules.PauseSipPlan(PauseSipPlanParams(state, p, hosts))
-        case p: Payload.ResumeSipPlan =>
-          SipPlanRules.ResumeSipPlan(ResumeSipPlanParams(state, p, hosts))
-        case p: Payload.ObserveSipDueSlot =>
-          SipPlanRules.ObserveSipDueSlot(ObserveSipDueSlotParams(state, p, hosts))
-        case p: Payload.SkipPausedSipDueSlot =>
-          SipPlanRules.SkipPausedSipDueSlot(SkipPausedSipDueSlotParams(state, p, hosts))
-        case p: Payload.AdvanceSkippedSipSlot =>
-          SipPlanRules.AdvanceSkippedSipSlot(AdvanceSkippedSipSlotParams(state, p, hosts))
-        case p: Payload.TriggerSipInstallment =>
-          SipPlanRules.TriggerSipInstallment(TriggerSipInstallmentParams(state, p, hosts))
-        case p: Payload.RecordSipInstallmentPending =>
-          SipPlanRules.RecordSipInstallmentPending(RecordSipInstallmentPendingParams(state, p, hosts))
-        case p: Payload.RecordSipInstallmentOutcomeUnknown =>
-          SipPlanRules.RecordSipInstallmentOutcomeUnknown(RecordSipInstallmentOutcomeUnknownParams(state, p, hosts))
-        case p: Payload.RecordSipInstallmentRecoveryRequired =>
-          SipPlanRules.RecordSipInstallmentRecoveryRequired(RecordSipInstallmentRecoveryRequiredParams(state, p, hosts))
-        case p: Payload.RecordSipInstallmentRefundInProgress =>
-          SipPlanRules.RecordSipInstallmentRefundInProgress(RecordSipInstallmentRefundInProgressParams(state, p, hosts))
-        case p: Payload.RecordSipInstallmentSucceeded =>
-          SipPlanRules.RecordSipInstallmentSucceeded(RecordSipInstallmentSucceededParams(state, p, hosts))
-        case p: Payload.RecordSipInstallmentFailed =>
-          SipPlanRules.RecordSipInstallmentFailed(RecordSipInstallmentFailedParams(state, p, hosts))
-        case p: Payload.RecordSipCreateIntent =>
-          SipPlanRules.RecordSipCreateIntent(RecordSipCreateIntentParams(state, p, hosts))
-      }
-
-      decision match {
-        case Left(code) =>
-          Effect.none.thenRun((_: State) => reply ! Refused(code))
-        case Right(events) =>
-          Effect.persist(events).thenRun((_: State) => reply ! Accepted(events))
-      }
+    case cmd: CreateSipPlan =>
+      replyEffect(SipPlanRules.CreateSipPlan(state, toCreateSipPlanParams(cmd), hosts), cmd.replyTo)
+    case cmd: AppendSipDueSlot =>
+      replyEffect(SipPlanRules.AppendSipDueSlot(state, toAppendSipDueSlotParams(cmd), hosts), cmd.replyTo)
+    case cmd: SealSipSchedule =>
+      replyEffect(SipPlanRules.SealSipSchedule(state, toSealSipScheduleParams(cmd), hosts), cmd.replyTo)
+    case cmd: ReviseSipPlan =>
+      replyEffect(SipPlanRules.ReviseSipPlan(state, toReviseSipPlanParams(cmd), hosts), cmd.replyTo)
+    case cmd: AdvanceSipClock =>
+      replyEffect(SipPlanRules.AdvanceSipClock(state, toAdvanceSipClockParams(cmd), hosts), cmd.replyTo)
+    case cmd: PauseSipPlan =>
+      replyEffect(SipPlanRules.PauseSipPlan(state, toPauseSipPlanParams(cmd), hosts), cmd.replyTo)
+    case cmd: ResumeSipPlan =>
+      replyEffect(SipPlanRules.ResumeSipPlan(state, toResumeSipPlanParams(cmd), hosts), cmd.replyTo)
+    case cmd: ObserveSipDueSlot =>
+      replyEffect(SipPlanRules.ObserveSipDueSlot(state, toObserveSipDueSlotParams(cmd), hosts), cmd.replyTo)
+    case cmd: SkipPausedSipDueSlot =>
+      replyEffect(SipPlanRules.SkipPausedSipDueSlot(state, toSkipPausedSipDueSlotParams(cmd), hosts), cmd.replyTo)
+    case cmd: AdvanceSkippedSipSlot =>
+      replyEffect(SipPlanRules.AdvanceSkippedSipSlot(state, toAdvanceSkippedSipSlotParams(cmd), hosts), cmd.replyTo)
+    case cmd: TriggerSipInstallment =>
+      replyEffect(SipPlanRules.TriggerSipInstallment(state, toTriggerSipInstallmentParams(cmd), hosts), cmd.replyTo)
+    case cmd: RecordSipInstallmentPending =>
+      replyEffect(SipPlanRules.RecordSipInstallmentPending(state, toRecordSipInstallmentPendingParams(cmd), hosts), cmd.replyTo)
+    case cmd: RecordSipInstallmentOutcomeUnknown =>
+      replyEffect(SipPlanRules.RecordSipInstallmentOutcomeUnknown(state, toRecordSipInstallmentOutcomeUnknownParams(cmd), hosts), cmd.replyTo)
+    case cmd: RecordSipInstallmentRecoveryRequired =>
+      replyEffect(SipPlanRules.RecordSipInstallmentRecoveryRequired(state, toRecordSipInstallmentRecoveryRequiredParams(cmd), hosts), cmd.replyTo)
+    case cmd: RecordSipInstallmentRefundInProgress =>
+      replyEffect(SipPlanRules.RecordSipInstallmentRefundInProgress(state, toRecordSipInstallmentRefundInProgressParams(cmd), hosts), cmd.replyTo)
+    case cmd: RecordSipInstallmentSucceeded =>
+      replyEffect(SipPlanRules.RecordSipInstallmentSucceeded(state, toRecordSipInstallmentSucceededParams(cmd), hosts), cmd.replyTo)
+    case cmd: RecordSipInstallmentFailed =>
+      replyEffect(SipPlanRules.RecordSipInstallmentFailed(state, toRecordSipInstallmentFailedParams(cmd), hosts), cmd.replyTo)
+    case cmd: RecordSipCreateIntent =>
+      replyEffect(SipPlanRules.RecordSipCreateIntent(state, toRecordSipCreateIntentParams(cmd), hosts), cmd.replyTo)
   }
 }

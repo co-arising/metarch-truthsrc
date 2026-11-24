@@ -15,9 +15,6 @@ object CreditBalanceEntity {
     compensatedIncoming: Map[TxId, Money]
   )
 
-  type Event = example.bankwealth.domain.events.CreditBalanceEvents.Event
-  val Events: example.bankwealth.domain.events.CreditBalanceEvents.type = example.bankwealth.domain.events.CreditBalanceEvents
-
   def empty: State = State(
     id = AccountId(""),
     initialized = false,
@@ -29,4 +26,37 @@ object CreditBalanceEntity {
     compensatedOutgoing = Map(),
     compensatedIncoming = Map()
   )
+
+  sealed trait Event
+  final case class AccountInitialized(resource: AccountId, currency: String, amount: Money) extends Event
+  final case class ReserveFundsConfirmed(
+    txid: TxId,
+    resource: AccountId,
+    amount: Money,
+    currency: String,
+    available: Money
+  ) extends Event
+  final case class DeductFundsConfirmed(txid: TxId, resource: AccountId, amount: Money) extends Event
+  final case class ReleaseReservedFundsConfirmed(
+    txid: TxId,
+    resource: AccountId,
+    amount: Money,
+    currency: String,
+    available: Money
+  ) extends Event
+  final case class RecordIncomingCreditsConfirmed(
+    txid: TxId,
+    resource: AccountId,
+    amount: Money
+  ) extends Event
+  final case class CommitIncomingCreditsConfirmed(
+    txid: TxId,
+    resource: AccountId,
+    amount: Money,
+    currency: String,
+    available: Money
+  ) extends Event
+  final case class CancelIncomingCreditConfirmed(txid: TxId, resource: AccountId, amount: Money) extends Event
+
+  type EventHandler = (State, Event) => State
 }

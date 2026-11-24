@@ -1,10 +1,9 @@
 package example.bankwealth.domain.entities.behaviors
 
-import example.bankwealth.domain.entities.CreditBalanceEntity.State
-import example.bankwealth.domain.events.CreditBalanceEvents._
+import example.bankwealth.domain.entities.CreditBalanceEntity._
 
-object CreditBalanceEventHandler {
-  def apply(state: State, input: Event): State = input match {
+object CreditBalanceEventHandler extends EventHandler {
+  override def apply(state: State, input: Event): State = input match {
     case event: AccountInitialized =>
       state.copy(
         initialized = true,

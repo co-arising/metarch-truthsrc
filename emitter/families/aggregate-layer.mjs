@@ -19,7 +19,6 @@
 // The module embeds zero business bytes: every aggregate name, command,
 // external producer, outputType tree and source pointer is contract data.
 import { parseStrictJson } from '../../lib/strict-json.mjs';
-import { valueObjectPackage } from '../../lib/derivation/value-object-package.mjs';
 import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
 
 const fail = (code, message) => { throw Object.assign(new Error(code + ': ' + message), { code }); };
@@ -143,19 +142,10 @@ const pathOf = (pkg, rel) => {
   return scalaSubpackagePath(pkg, rel.slice(0, slash).replaceAll('/', '.'), rel.slice(slash + 1));
 };
 
-const scalaType = (type, packages) => {
-  if (type.form === 'primitive') return PRIMITIVES.get(type.name);
-  if (type.form === 'nominal') return valueObjectPackage(packageOf(type.context, packages), symbol(type.name)) + '.' + symbol(type.name);
-  if (type.form === 'optional') return 'Option[' + scalaType(type.element, packages) + ']';
-  if (type.form === 'sequence') return 'Vector[' + scalaType(type.element, packages) + ']';
-  return 'Map[' + scalaType(type.key, packages) + ', ' + scalaType(type.value, packages) + ']';
-};
-
 function renderAggregateGroup(agg, packages) {
   const pkg = packageOf(agg.context, packages);
   const name = symbol(agg.name);
   const protocol = name + 'Protocol';
-  const bootstrap = name + 'Bootstrap';
   const authority = agg.externalProducers.length > 0;
   const authorityParam = authority ? ', authority: ExternalAuthority' : '';
   const authorityArg = authority ? ', authority' : '';
@@ -164,11 +154,9 @@ function renderAggregateGroup(agg, packages) {
     protocol: pathOf(pkg, 'application/aggregates/' + agg.name + 'Protocol.scala'),
     aggregate: pathOf(pkg, 'application/aggregates/' + agg.name + 'Aggregate.scala'),
     behavior: pathOf(pkg, 'application/aggregates/behaviors/' + agg.name + 'Behaviors.scala'),
+    commandHelpers: pathOf(pkg, 'application/aggregates/behaviors/' + agg.name + 'CommandHelpers.scala'),
     factory: pathOf(pkg, 'application/aggregates/factories/' + agg.name + 'AggregateFactory.scala'),
-    bootstrap: pathOf(pkg, 'infrastructure/bootstrap/' + agg.name + 'Bootstrap.scala'),
-    events: pathOf(pkg, 'domain/events/' + agg.name + 'Events.scala'),
-    rules: pathOf(pkg, 'domain/invariant/' + agg.name + 'Rules.scala'),
-    ruleParams: pathOf(pkg, 'domain/invariant/params/' + agg.name + 'RuleParams.scala'),
+    rules: pathOf(pkg, 'domain/invariants/' + agg.name + 'Rules.scala'),
     computations: pathOf(pkg, 'domain/services/' + agg.name + 'Computations.scala'),
     entity: pathOf(pkg, 'domain/entities/' + agg.name + 'Entity.scala'),
     external: pathOf(pkg, 'application/aggregates/behaviors/' + agg.name + 'ExternalEvents.scala'),
@@ -177,31 +165,16 @@ function renderAggregateGroup(agg, packages) {
   const commandSources = [agg.source, ...agg.commands.map(c => c.source)];
 
   // 1. Application aggregate: application/aggregates/<Name>Aggregate.scala (kind: aggregate-behavior)
-  const messages = agg.externalProducers.map(p => {
-    const names = externalNames(p.id);
-    return '  final case class ' + names.ingress + '(output: ' + scalaType(p.outputType, packages) + ', authorization: String, replyTo: ActorRef[Reply]) extends Request\n';
-  }).join('');
+  const protocolImports = authority ? '{CommandHandler, ExternalAuthority}' : 'CommandHandler';
   const aggregateContent = `package ${pkg}.application.aggregates
 
-import akka.actor.typed.{ActorRef, Behavior}
-import ${pkg}.application.aggregates.${protocol}.CommandHandler
-import ${pkg}.domain.entities.${name}Entity.{Event, State}
-import ${pkg}.domain.events.${name}Events
+import ${pkg}.application.aggregates.${protocol}.${protocolImports}
 import ${pkg}.domain.services.${name}Computations
 
 object ${name}Aggregate {
-  sealed trait Request
-  final case class Execute(command: ${name}Events.Command, replyTo: ActorRef[Reply]) extends Request
-  final case class GetState(replyTo: ActorRef[State]) extends Request
-  sealed trait Reply
-  final case class Accepted(events: Vector[Event]) extends Reply
-  final case class Refused(code: String) extends Reply
-${messages}${authority ? '  trait ExternalAuthority { def authorize(producer: String, authorization: String, identity: Vector[String]): Boolean }\n' : ''}
+
   def commandHandler(hosts: ${name}Computations${authorityParam}): CommandHandler =
     behaviors.${name}Behaviors(hosts${authorityArg})
-
-  def apply(persistenceId: String, initial: State, hosts: ${name}Computations${authorityParam}): Behavior[Request] =
-    ${pkg}.infrastructure.bootstrap.${bootstrap}.create(persistenceId, initial, hosts${authorityArg})
 }
 `;
 
@@ -230,12 +203,10 @@ trait ${name}AggregateFactory {
 import akka.persistence.typed.scaladsl.Effect
 import ${pkg}.application.aggregates.${protocol}._
 import ${pkg}.domain.entities.${name}Entity.{Event, State}
-import ${pkg}.domain.events.{${name}Events => Payload}
-import ${pkg}.domain.invariant.${name}Rules
-import ${pkg}.domain.invariant.params.${name}RuleParams._
+import ${pkg}.domain.invariants.${name}Rules
 import ${pkg}.domain.services.${name}Computations
 
-object ${name}Behaviors {
+object ${name}Behaviors extends ${name}CommandHelpers {
 
   def apply(hosts: ${name}Computations${authorityParam}): CommandHandler = (state, command) =>
     ${calls[0]}${calls.slice(1).map(call => '\n      .orElse(' + call + ')').join('')}
@@ -249,12 +220,12 @@ object ${name}Behaviors {
     for (const producer of agg.externalProducers) {
       const names = externalNames(producer.id);
       const startChar = behaviorContent.length;
-      behaviorContent += `    case ${names.ingress}(output, authorization, reply) =>
+      behaviorContent += `    case ${names.ingress}(output, authorization, replyTo) =>
       if (!authority.authorize(${JSON.stringify(producer.id)}, authorization, ${name}ExternalEvents.${names.identity}(output)))
-        Effect.none.thenRun((_: State) => reply ! Refused("external-authority-denied"))
+        Effect.none.thenRun((_: State) => replyTo ! Refused("external-authority-denied"))
       else {
         val event = ${name}ExternalEvents.${names.method}(output)
-        Effect.persist(event).thenRun((_: State) => reply ! Accepted(Vector(event)))
+        Effect.persist(event).thenRun((_: State) => replyTo ! Accepted(Vector(event)))
       }
 `;
       const endChar = behaviorContent.length;
@@ -267,19 +238,17 @@ object ${name}Behaviors {
   }
   behaviorContent += `
   private def queryBehavior: PartialFunction[Command, Effect[Event, State]] = {
-    case GetState(reply) =>
-      Effect.none.thenRun((s: State) => reply ! s)
+    case GetState(replyTo) =>
+      Effect.none.thenRun((s: State) => replyTo ! s)
   }
 
   private def executionBehavior(state: State, hosts: ${name}Computations): PartialFunction[Command, Effect[Event, State]] = {
-    case Execute(command, reply) =>
-      val decision = command match {
 `;
   for (const command of agg.commands) {
     const cname = symbol(command.name);
     const startChar = behaviorContent.length;
-    behaviorContent += `        case p: Payload.${cname} =>
-          ${name}Rules.${cname}(${command.name}Params(state, p, hosts))
+    behaviorContent += `    case cmd: ${cname} =>
+      replyEffect(${name}Rules.${cname}(state, to${command.name}Params(cmd), hosts), cmd.replyTo)
 `;
     const endChar = behaviorContent.length;
     const startBytes = Buffer.byteLength(behaviorContent.slice(0, startChar));
@@ -287,15 +256,7 @@ object ${name}Behaviors {
     const span = { start: startBytes, end: endBytes, text: behaviorContent.slice(startChar, endChar) };
     codeMappings.push({ knowledgeKey: knowledgeOf(command.source), span, scope: span });
   }
-  behaviorContent += `      }
-
-      decision match {
-        case Left(code) =>
-          Effect.none.thenRun((_: State) => reply ! Refused(code))
-        case Right(events) =>
-          Effect.persist(events).thenRun((_: State) => reply ! Accepted(events))
-      }
-  }
+  behaviorContent += `  }
 }
 `;
 
@@ -304,7 +265,7 @@ object ${name}Behaviors {
       path: paths.behavior,
       kind: 'aggregate-behavior',
       content: behaviorContent,
-      deps: [paths.protocol, paths.entity, paths.events, paths.rules, paths.ruleParams, paths.computations, ...(authority ? [paths.external] : [])],
+      deps: [paths.protocol, paths.commandHelpers, paths.entity, paths.rules, paths.computations, ...(authority ? [paths.external] : [])],
       sources: [...commandSources, ...agg.externalProducers.map(p => p.source)],
       codeMappings,
     },
@@ -312,7 +273,7 @@ object ${name}Behaviors {
       path: paths.aggregate,
       kind: 'aggregate-behavior',
       content: aggregateContent,
-      deps: [paths.protocol, paths.behavior, paths.entity, paths.events, paths.computations, paths.bootstrap],
+      deps: [paths.protocol, paths.behavior, paths.computations],
       sources: commandSources,
       codeMappings: [],
     },

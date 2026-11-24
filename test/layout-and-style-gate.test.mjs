@@ -9,7 +9,7 @@ import path from 'node:path';
 const BANK_GENERATED = path.resolve(import.meta.dirname, '../../bank-wealth-demo/generated/current');
 const BASE_REL = 'app/example/bankwealth';
 const ALLOWED_TOP_LAYERS = new Set(['domain', 'application', 'infrastructure']);
-const ALLOWED_DOMAIN_SUBPACKAGES = new Set(['values', 'entities', 'invariant', 'services', 'policy', 'events']);
+const ALLOWED_DOMAIN_SUBPACKAGES = new Set(['values', 'entities', 'invariants', 'services', 'policy']);
 const FORBIDDEN_DOMAIN_PATTERNS = [
   { label: 'akka.*', re: /\bakka\./ },
   { label: 'play.*', re: /\bplay\./ },
@@ -99,4 +99,54 @@ test('layout-and-style S12: domain.values contains zero HTTP API DTOs, CQRS view
     /(BootstrapInput|RevisionInput|Revise|Tick)$/u.test(name)
   );
   assert.deepEqual(forbidden, [], 'non-domain value objects leaked into domain.values: ' + forbidden.join(', '));
+});
+
+test('layout-and-style Phase 2: domain layer has zero domain/events, zero Command definitions, and zero CommandHelpers', () => {
+  const eventsDir = path.join(BANK_GENERATED, BASE_REL, 'domain/events');
+  assert.equal(fs.existsSync(eventsDir), false, 'domain/events directory must not exist (events belong in domain/entities/*Entity.scala)');
+  const singularInvariantDir = path.join(BANK_GENERATED, BASE_REL, 'domain/invariant');
+  assert.equal(fs.existsSync(singularInvariantDir), false, 'singular domain/invariant directory must not exist (use plural domain/invariants)');
+  const domainFiles = walkScala(path.join(BANK_GENERATED, BASE_REL, 'domain'));
+  const violations = [];
+  for (const file of domainFiles) {
+    const content = fs.readFileSync(file, 'utf8');
+    if (/\bsealed\s+trait\s+Command\b|\bextends\s+Command\b/.test(content)) {
+      violations.push(path.relative(BANK_GENERATED, file) + ' defines Command in domain layer');
+    }
+    if (/\bCommandHelpers\b/.test(content)) {
+      violations.push(path.relative(BANK_GENERATED, file) + ' defines/references CommandHelpers in domain layer');
+    }
+  }
+  assert.deepEqual(violations, [], 'Phase 2 domain alignment violations:\n' + violations.join('\n'));
+});
+
+test('layout-and-style Phase 2: Aggregate aligns with playAkkaCQRS (no Execute shell, no backward bootstrap ref, real CommandHelpers)', () => {
+  const aggDir = path.join(BANK_GENERATED, BASE_REL, 'application/aggregates');
+  const aggFiles = fs.readdirSync(aggDir).filter(f => f.endsWith('Aggregate.scala'));
+  assert.ok(aggFiles.length > 0, 'aggregate files expected');
+  const violations = [];
+  for (const name of aggFiles) {
+    const stem = name.replace(/Aggregate\.scala$/, '');
+    const aggContent = fs.readFileSync(path.join(aggDir, name), 'utf8');
+    if (/infrastructure\.bootstrap/.test(aggContent)) {
+      violations.push(name + ' references infrastructure.bootstrap');
+    }
+    if (/\bsealed\s+trait\s+Request\b|\bcase\s+class\s+Execute\b/.test(aggContent)) {
+      violations.push(name + ' still defines legacy Request/Execute wrapper');
+    }
+    const helpersPath = path.join(aggDir, 'behaviors', stem + 'CommandHelpers.scala');
+    if (!fs.existsSync(helpersPath)) {
+      violations.push('missing ' + path.relative(BANK_GENERATED, helpersPath));
+    } else {
+      const helpersContent = fs.readFileSync(helpersPath, 'utf8');
+      if (!new RegExp(`trait\\s+${stem}CommandHelpers\\b`).test(helpersContent)) {
+        violations.push(stem + 'CommandHelpers.scala must define trait ' + stem + 'CommandHelpers');
+      }
+    }
+    const behaviorsContent = fs.readFileSync(path.join(aggDir, 'behaviors', stem + 'Behaviors.scala'), 'utf8');
+    if (!new RegExp(`object\\s+${stem}Behaviors\\s+extends\\s+${stem}CommandHelpers\\b`).test(behaviorsContent)) {
+      violations.push(stem + 'Behaviors.scala must mix in ' + stem + 'CommandHelpers');
+    }
+  }
+  assert.deepEqual(violations, [], 'Phase 2 aggregate alignment violations:\n' + violations.join('\n'));
 });

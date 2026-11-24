@@ -3,12 +3,10 @@ package example.bankwealth.application.aggregates.behaviors
 import akka.persistence.typed.scaladsl.Effect
 import example.bankwealth.application.aggregates.CreditBalanceProtocol._
 import example.bankwealth.domain.entities.CreditBalanceEntity.{Event, State}
-import example.bankwealth.domain.events.{CreditBalanceEvents => Payload}
-import example.bankwealth.domain.invariant.CreditBalanceRules
-import example.bankwealth.domain.invariant.params.CreditBalanceRuleParams._
+import example.bankwealth.domain.invariants.CreditBalanceRules
 import example.bankwealth.domain.services.CreditBalanceComputations
 
-object CreditBalanceBehaviors {
+object CreditBalanceBehaviors extends CreditBalanceCommandHelpers {
 
   def apply(hosts: CreditBalanceComputations): CommandHandler = (state, command) =>
     queryBehavior
@@ -16,34 +14,24 @@ object CreditBalanceBehaviors {
       .apply(command)
 
   private def queryBehavior: PartialFunction[Command, Effect[Event, State]] = {
-    case GetState(reply) =>
-      Effect.none.thenRun((s: State) => reply ! s)
+    case GetState(replyTo) =>
+      Effect.none.thenRun((s: State) => replyTo ! s)
   }
 
   private def executionBehavior(state: State, hosts: CreditBalanceComputations): PartialFunction[Command, Effect[Event, State]] = {
-    case Execute(command, reply) =>
-      val decision = command match {
-        case p: Payload.InitializeAccount =>
-          CreditBalanceRules.InitializeAccount(InitializeAccountParams(state, p, hosts))
-        case p: Payload.ReserveFunds =>
-          CreditBalanceRules.ReserveFunds(ReserveFundsParams(state, p, hosts))
-        case p: Payload.DeductFunds =>
-          CreditBalanceRules.DeductFunds(DeductFundsParams(state, p, hosts))
-        case p: Payload.ReleaseReservedFunds =>
-          CreditBalanceRules.ReleaseReservedFunds(ReleaseReservedFundsParams(state, p, hosts))
-        case p: Payload.RecordIncomingCredits =>
-          CreditBalanceRules.RecordIncomingCredits(RecordIncomingCreditsParams(state, p, hosts))
-        case p: Payload.CommitIncomingCredits =>
-          CreditBalanceRules.CommitIncomingCredits(CommitIncomingCreditsParams(state, p, hosts))
-        case p: Payload.CancelIncomingCredit =>
-          CreditBalanceRules.CancelIncomingCredit(CancelIncomingCreditParams(state, p, hosts))
-      }
-
-      decision match {
-        case Left(code) =>
-          Effect.none.thenRun((_: State) => reply ! Refused(code))
-        case Right(events) =>
-          Effect.persist(events).thenRun((_: State) => reply ! Accepted(events))
-      }
+    case cmd: InitializeAccount =>
+      replyEffect(CreditBalanceRules.InitializeAccount(state, toInitializeAccountParams(cmd), hosts), cmd.replyTo)
+    case cmd: ReserveFunds =>
+      replyEffect(CreditBalanceRules.ReserveFunds(state, toReserveFundsParams(cmd), hosts), cmd.replyTo)
+    case cmd: DeductFunds =>
+      replyEffect(CreditBalanceRules.DeductFunds(state, toDeductFundsParams(cmd), hosts), cmd.replyTo)
+    case cmd: ReleaseReservedFunds =>
+      replyEffect(CreditBalanceRules.ReleaseReservedFunds(state, toReleaseReservedFundsParams(cmd), hosts), cmd.replyTo)
+    case cmd: RecordIncomingCredits =>
+      replyEffect(CreditBalanceRules.RecordIncomingCredits(state, toRecordIncomingCreditsParams(cmd), hosts), cmd.replyTo)
+    case cmd: CommitIncomingCredits =>
+      replyEffect(CreditBalanceRules.CommitIncomingCredits(state, toCommitIncomingCreditsParams(cmd), hosts), cmd.replyTo)
+    case cmd: CancelIncomingCredit =>
+      replyEffect(CreditBalanceRules.CancelIncomingCredit(state, toCancelIncomingCreditParams(cmd), hosts), cmd.replyTo)
   }
 }

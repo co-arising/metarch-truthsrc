@@ -1,5 +1,11 @@
 {
   "schemaVersion": "truthsrc.aggregate-invariant-rules-input/v1",
+  "packages": [
+    {
+      "context": "bankwealth",
+      "package": "example.bankwealth"
+    }
+  ],
   "aggregates": [
     {
       "context": "bankwealth",
@@ -17,6 +23,31 @@
             "document": "bank-v1",
             "pointer": "/aggregates/0/commands/0"
           },
+          "parameters": [
+            {
+              "name": "resource",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "AccountId"
+              }
+            },
+            {
+              "name": "currency",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "amount",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "Money"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -72,6 +103,34 @@
                 "code": "ACCOUNT_SEED_NONNEGATIVE"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "AccountInitialized",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "resource"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "currency"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "amount"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -80,6 +139,32 @@
             "document": "bank-v1",
             "pointer": "/aggregates/0/commands/1"
           },
+          "parameters": [
+            {
+              "name": "txid",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            },
+            {
+              "name": "resource",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "AccountId"
+              }
+            },
+            {
+              "name": "amount",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "Money"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -188,6 +273,50 @@
                 "code": "LEDGER_SUFFICIENT"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "ReserveFundsConfirmed",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "txid"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "resource"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "amount"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "string"
+                    },
+                    "value": "CNY"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "host",
+                    "name": "BalanceAfterReserveFunds"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -196,6 +325,32 @@
             "document": "bank-v1",
             "pointer": "/aggregates/0/commands/2"
           },
+          "parameters": [
+            {
+              "name": "txid",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            },
+            {
+              "name": "resource",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "AccountId"
+              }
+            },
+            {
+              "name": "amount",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "Money"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -284,6 +439,34 @@
                 "code": "LEDGER_RESERVEDAMOUNT_MATCH"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "DeductFundsConfirmed",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "txid"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "resource"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "amount"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -292,6 +475,32 @@
             "document": "bank-v1",
             "pointer": "/aggregates/0/commands/3"
           },
+          "parameters": [
+            {
+              "name": "txid",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            },
+            {
+              "name": "resource",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "AccountId"
+              }
+            },
+            {
+              "name": "amount",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "Money"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -369,6 +578,50 @@
                 "code": "LEDGER_RESERVEDAMOUNT_MATCH"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "ReleaseReservedFundsConfirmed",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "txid"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "resource"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "amount"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "string"
+                    },
+                    "value": "CNY"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "host",
+                    "name": "BalanceAfterReleaseReservedFunds"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -377,6 +630,32 @@
             "document": "bank-v1",
             "pointer": "/aggregates/0/commands/4"
           },
+          "parameters": [
+            {
+              "name": "txid",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            },
+            {
+              "name": "resource",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "AccountId"
+              }
+            },
+            {
+              "name": "amount",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "Money"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -474,6 +753,34 @@
                 "kind": "succeed-empty"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "RecordIncomingCreditsConfirmed",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "txid"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "resource"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "amount"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -482,6 +789,32 @@
             "document": "bank-v1",
             "pointer": "/aggregates/0/commands/5"
           },
+          "parameters": [
+            {
+              "name": "txid",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            },
+            {
+              "name": "resource",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "AccountId"
+              }
+            },
+            {
+              "name": "amount",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "Money"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -570,6 +903,50 @@
                 "code": "LEDGER_INCOMINGCREDITS_MATCH"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "CommitIncomingCreditsConfirmed",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "txid"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "resource"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "amount"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "string"
+                    },
+                    "value": "CNY"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "host",
+                    "name": "BalanceAfterCommitIncomingCredits"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -578,6 +955,32 @@
             "document": "bank-v1",
             "pointer": "/aggregates/0/commands/6"
           },
+          "parameters": [
+            {
+              "name": "txid",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            },
+            {
+              "name": "resource",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "AccountId"
+              }
+            },
+            {
+              "name": "amount",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "Money"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -655,6 +1058,34 @@
                 "code": "LEDGER_INCOMINGCREDITS_MATCH"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "CancelIncomingCreditConfirmed",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "txid"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "resource"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "amount"
+                  }
+                }
+              ]
+            }
           ]
         }
       ]
@@ -675,6 +1106,55 @@
             "document": "bank-v1",
             "pointer": "/aggregates/1/commands/0"
           },
+          "parameters": [
+            {
+              "name": "operationId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "OperationId"
+              }
+            },
+            {
+              "name": "fundOrderId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "FundOrderId"
+              }
+            },
+            {
+              "name": "investorAccountId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "AccountId"
+              }
+            },
+            {
+              "name": "fundCollectionAccountId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "AccountId"
+              }
+            },
+            {
+              "name": "fundCode",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "amount",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "Money"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -752,6 +1232,55 @@
                 "code": "ORDER_OPERATION"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "FundPurchaseSettlementRequested",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "operationId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "fundOrderId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "investorAccountId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "fundCollectionAccountId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "fundCode"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "amount"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -760,6 +1289,32 @@
             "document": "bank-v1",
             "pointer": "/aggregates/1/commands/1"
           },
+          "parameters": [
+            {
+              "name": "txid",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            },
+            {
+              "name": "resource",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "FundOrderId"
+              }
+            },
+            {
+              "name": "amount",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "Money"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -857,6 +1412,34 @@
                 "code": "ORDER_REQUEST_AMOUNT"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "ReserveFundSubscriptionConfirmed",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "txid"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "resource"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "amount"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -865,6 +1448,32 @@
             "document": "bank-v1",
             "pointer": "/aggregates/1/commands/2"
           },
+          "parameters": [
+            {
+              "name": "txid",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            },
+            {
+              "name": "resource",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "FundOrderId"
+              }
+            },
+            {
+              "name": "amount",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "Money"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -953,6 +1562,34 @@
                 "code": "ORDER_COMMIT_AMOUNT"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "FundSubscriptionPaymentConfirmed",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "txid"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "resource"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "amount"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -961,6 +1598,32 @@
             "document": "bank-v1",
             "pointer": "/aggregates/1/commands/3"
           },
+          "parameters": [
+            {
+              "name": "txid",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            },
+            {
+              "name": "resource",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "FundOrderId"
+              }
+            },
+            {
+              "name": "amount",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "Money"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -1027,6 +1690,34 @@
                 "code": "ORDER_RESERVEDSUBSCRIPTIONS_MATCH"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "CashFundSubscriptionCanceled",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "txid"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "resource"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "amount"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -1035,6 +1726,16 @@
             "document": "bank-v1",
             "pointer": "/aggregates/1/commands/4"
           },
+          "parameters": [
+            {
+              "name": "txid",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -1068,6 +1769,30 @@
                 "code": "PAYMENT_COMMIT_PROOF"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "FundCashPaymentSucceeded",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "txid"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "string"
+                    },
+                    "value": "succeeded"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -1076,6 +1801,16 @@
             "document": "bank-v1",
             "pointer": "/aggregates/1/commands/5"
           },
+          "parameters": [
+            {
+              "name": "txid",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -1098,6 +1833,30 @@
                 "kind": "succeed-empty"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "FundCashPaymentRejectedBeforeEffects",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "txid"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "string"
+                    },
+                    "value": "rejected-before-effects"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -1106,6 +1865,16 @@
             "document": "bank-v1",
             "pointer": "/aggregates/1/commands/6"
           },
+          "parameters": [
+            {
+              "name": "txid",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -1128,6 +1897,30 @@
                 "kind": "succeed-empty"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "FundCashPaymentCompensated",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "txid"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "string"
+                    },
+                    "value": "compensated"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -1136,6 +1929,16 @@
             "document": "bank-v1",
             "pointer": "/aggregates/1/commands/7"
           },
+          "parameters": [
+            {
+              "name": "txid",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -1157,6 +1960,30 @@
                 "kind": "succeed-empty"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "FundCashPaymentRecoveryRequired",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "txid"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "string"
+                    },
+                    "value": "recovery-required"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -1165,6 +1992,16 @@
             "document": "bank-v1",
             "pointer": "/aggregates/1/commands/8"
           },
+          "parameters": [
+            {
+              "name": "txid",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -1186,6 +2023,30 @@
                 "kind": "succeed-empty"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "FundCashPaymentOutcomeUnknown",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "txid"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "string"
+                    },
+                    "value": "outcome-unknown"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -1194,6 +2055,24 @@
             "document": "bank-v1",
             "pointer": "/aggregates/1/commands/9"
           },
+          "parameters": [
+            {
+              "name": "fundOrderId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "FundOrderId"
+              }
+            },
+            {
+              "name": "paymentTxId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -1227,6 +2106,33 @@
                 "kind": "succeed-empty"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "FundTASubmissionRegistered",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "fundOrderId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "paymentTxId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "host",
+                    "name": "StableTaRequestId"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -1235,6 +2141,67 @@
             "document": "bank-v1",
             "pointer": "/aggregates/1/commands/10"
           },
+          "parameters": [
+            {
+              "name": "fundOrderId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "FundOrderId"
+              }
+            },
+            {
+              "name": "paymentTxId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            },
+            {
+              "name": "taRequestId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TaRequestId"
+              }
+            },
+            {
+              "name": "taReference",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "receiptId",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "receiptBody",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "fundCode",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "currency",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -1333,6 +2300,79 @@
                 "kind": "succeed-empty"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "FundTAAccepted",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "fundOrderId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "paymentTxId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "taRequestId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "taReference"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "receiptId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "receiptBody"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "fundCode"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "currency"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "string"
+                    },
+                    "value": "accepted"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -1341,6 +2381,75 @@
             "document": "bank-v1",
             "pointer": "/aggregates/1/commands/11"
           },
+          "parameters": [
+            {
+              "name": "fundOrderId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "FundOrderId"
+              }
+            },
+            {
+              "name": "paymentTxId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            },
+            {
+              "name": "taRequestId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TaRequestId"
+              }
+            },
+            {
+              "name": "taReference",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "receiptId",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "receiptBody",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "fundCode",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "currency",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "shares",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "FundShare"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -1451,6 +2560,86 @@
                 "code": "TA_SHARE_FUND"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "FundTASharesConfirmed",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "fundOrderId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "paymentTxId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "taRequestId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "taReference"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "receiptId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "receiptBody"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "fundCode"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "currency"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "shares"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "string"
+                    },
+                    "value": "confirmed"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -1459,6 +2648,74 @@
             "document": "bank-v1",
             "pointer": "/aggregates/1/commands/12"
           },
+          "parameters": [
+            {
+              "name": "fundOrderId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "FundOrderId"
+              }
+            },
+            {
+              "name": "paymentTxId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            },
+            {
+              "name": "taRequestId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TaRequestId"
+              }
+            },
+            {
+              "name": "taReference",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "receiptId",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "receiptBody",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "fundCode",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "currency",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "reason",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -1569,6 +2826,86 @@
                 "code": "TA_REJECTION_REASON"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "FundTARejected",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "fundOrderId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "paymentTxId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "taRequestId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "taReference"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "receiptId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "receiptBody"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "fundCode"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "currency"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "reason"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "string"
+                    },
+                    "value": "rejected"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -1577,6 +2914,67 @@
             "document": "bank-v1",
             "pointer": "/aggregates/1/commands/13"
           },
+          "parameters": [
+            {
+              "name": "fundOrderId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "FundOrderId"
+              }
+            },
+            {
+              "name": "paymentTxId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            },
+            {
+              "name": "taRequestId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TaRequestId"
+              }
+            },
+            {
+              "name": "taReference",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "receiptId",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "receiptBody",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "fundCode",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "currency",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -1675,6 +3073,79 @@
                 "kind": "succeed-empty"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "FundTAUnknown",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "fundOrderId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "paymentTxId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "taRequestId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "taReference"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "receiptId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "receiptBody"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "fundCode"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "currency"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "string"
+                    },
+                    "value": "unknown"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -1683,6 +3154,24 @@
             "document": "bank-v1",
             "pointer": "/aggregates/1/commands/14"
           },
+          "parameters": [
+            {
+              "name": "fundOrderId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "FundOrderId"
+              }
+            },
+            {
+              "name": "paymentTxId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -1727,6 +3216,54 @@
                 "kind": "succeed-empty"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "FundPurchaseRefundRequested",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "fundOrderId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "paymentTxId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "state-field",
+                    "name": "investorAccountId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "state-field",
+                    "name": "fundCollectionAccountId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "state-field",
+                    "name": "amount"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "host",
+                    "name": "StableRefundOperationId"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -1735,6 +3272,38 @@
             "document": "bank-v1",
             "pointer": "/aggregates/1/commands/15"
           },
+          "parameters": [
+            {
+              "name": "refundTxId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            },
+            {
+              "name": "refundOperationId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "OperationId"
+              }
+            },
+            {
+              "name": "receiptId",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "receiptBody",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -1800,6 +3369,51 @@
                 "kind": "succeed-empty"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "FundRefundSucceeded",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "refundTxId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "refundOperationId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "receiptId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "receiptBody"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "string"
+                    },
+                    "value": "succeeded"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -1808,6 +3422,38 @@
             "document": "bank-v1",
             "pointer": "/aggregates/1/commands/16"
           },
+          "parameters": [
+            {
+              "name": "refundTxId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            },
+            {
+              "name": "refundOperationId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "OperationId"
+              }
+            },
+            {
+              "name": "receiptId",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "receiptBody",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -1873,6 +3519,51 @@
                 "kind": "succeed-empty"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "FundRefundRejectedBeforeEffects",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "refundTxId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "refundOperationId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "receiptId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "receiptBody"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "string"
+                    },
+                    "value": "rejected-before-effects"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -1881,6 +3572,38 @@
             "document": "bank-v1",
             "pointer": "/aggregates/1/commands/17"
           },
+          "parameters": [
+            {
+              "name": "refundTxId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            },
+            {
+              "name": "refundOperationId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "OperationId"
+              }
+            },
+            {
+              "name": "receiptId",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "receiptBody",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -1946,6 +3669,51 @@
                 "kind": "succeed-empty"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "FundRefundCompensated",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "refundTxId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "refundOperationId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "receiptId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "receiptBody"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "string"
+                    },
+                    "value": "compensated"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -1954,6 +3722,38 @@
             "document": "bank-v1",
             "pointer": "/aggregates/1/commands/18"
           },
+          "parameters": [
+            {
+              "name": "refundTxId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            },
+            {
+              "name": "refundOperationId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "OperationId"
+              }
+            },
+            {
+              "name": "receiptId",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "receiptBody",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -2008,6 +3808,51 @@
                 "kind": "succeed-empty"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "FundRefundRecoveryRequired",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "refundTxId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "refundOperationId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "receiptId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "receiptBody"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "string"
+                    },
+                    "value": "recovery-required"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -2016,6 +3861,38 @@
             "document": "bank-v1",
             "pointer": "/aggregates/1/commands/19"
           },
+          "parameters": [
+            {
+              "name": "refundTxId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            },
+            {
+              "name": "refundOperationId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "OperationId"
+              }
+            },
+            {
+              "name": "receiptId",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "receiptBody",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -2070,6 +3947,51 @@
                 "kind": "succeed-empty"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "FundRefundOutcomeUnknown",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "refundTxId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "refundOperationId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "receiptId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "receiptBody"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "string"
+                    },
+                    "value": "outcome-unknown"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -2078,6 +4000,27 @@
             "document": "bank-v1",
             "pointer": "/aggregates/1/commands/20"
           },
+          "parameters": [
+            {
+              "name": "original",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "BankCashOriginal"
+              }
+            },
+            {
+              "name": "source",
+              "valueType": {
+                "form": "optional",
+                "element": {
+                  "form": "nominal",
+                  "context": "bankwealth",
+                  "name": "BankCashOriginal"
+                }
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -2155,6 +4098,27 @@
                 "code": "CASH_SOURCE_BEFORE_SETTLEMENT"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "CashRequestSourceRecorded",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "original"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "source"
+                  }
+                }
+              ]
+            }
           ]
         }
       ]
@@ -2175,6 +4139,24 @@
             "document": "bank-v1",
             "pointer": "/aggregates/2/commands/0"
           },
+          "parameters": [
+            {
+              "name": "planId",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "PlanId"
+              }
+            },
+            {
+              "name": "config",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "SipRevisionConfig"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -2274,6 +4256,27 @@
                 "code": "SIP_CONFIG_AMOUNT"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "SipPlanCreated",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "planId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "config"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -2282,6 +4285,22 @@
             "document": "bank-v1",
             "pointer": "/aggregates/2/commands/1"
           },
+          "parameters": [
+            {
+              "name": "position",
+              "valueType": {
+                "form": "primitive",
+                "name": "integer"
+              }
+            },
+            {
+              "name": "dueSlot",
+              "valueType": {
+                "form": "primitive",
+                "name": "integer"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -2359,6 +4378,27 @@
                 "code": "SIP_SLOT_ORDER"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "SipDueSlotAppended",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "position"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "dueSlot"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -2367,6 +4407,7 @@
             "document": "bank-v1",
             "pointer": "/aggregates/2/commands/2"
           },
+          "parameters": [],
           "guards": [
             {
               "source": {
@@ -2411,6 +4452,23 @@
                 "code": "SIP_FINITE_SCHEDULE"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "SipScheduleSealed",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "boolean"
+                    },
+                    "value": true
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -2419,6 +4477,16 @@
             "document": "bank-v1",
             "pointer": "/aggregates/2/commands/3"
           },
+          "parameters": [
+            {
+              "name": "config",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "SipRevisionConfig"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -2518,6 +4586,27 @@
                 "code": "SIP_REVISION_FUTURE"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "SipPlanRevised",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "config"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "state-field",
+                    "name": "latestRevision"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -2526,6 +4615,15 @@
             "document": "bank-v1",
             "pointer": "/aggregates/2/commands/4"
           },
+          "parameters": [
+            {
+              "name": "tick",
+              "valueType": {
+                "form": "primitive",
+                "name": "integer"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -2570,6 +4668,20 @@
                 "kind": "succeed-empty"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "SipClockAdvanced",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "tick"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -2578,6 +4690,15 @@
             "document": "bank-v1",
             "pointer": "/aggregates/2/commands/5"
           },
+          "parameters": [
+            {
+              "name": "tick",
+              "valueType": {
+                "form": "primitive",
+                "name": "integer"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -2644,6 +4765,20 @@
                 "code": "SIP_PAUSE_INTERVAL_ONCE"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "SipPlanPaused",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "tick"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -2652,6 +4787,15 @@
             "document": "bank-v1",
             "pointer": "/aggregates/2/commands/6"
           },
+          "parameters": [
+            {
+              "name": "tick",
+              "valueType": {
+                "form": "primitive",
+                "name": "integer"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -2707,6 +4851,27 @@
                 "code": "SIP_RESUME_CLASSIFIED"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "SipPlanResumed",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "tick"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "state-field",
+                    "name": "pauseTick"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -2715,6 +4880,22 @@
             "document": "bank-v1",
             "pointer": "/aggregates/2/commands/7"
           },
+          "parameters": [
+            {
+              "name": "position",
+              "valueType": {
+                "form": "primitive",
+                "name": "integer"
+              }
+            },
+            {
+              "name": "dueSlot",
+              "valueType": {
+                "form": "primitive",
+                "name": "integer"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -2814,6 +4995,37 @@
                 "code": "SIP_PAUSE_CLASSIFICATION"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "SipDueSlotObserved",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "position"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "dueSlot"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "string"
+                    },
+                    "value": "backlog"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -2822,6 +5034,22 @@
             "document": "bank-v1",
             "pointer": "/aggregates/2/commands/8"
           },
+          "parameters": [
+            {
+              "name": "position",
+              "valueType": {
+                "form": "primitive",
+                "name": "integer"
+              }
+            },
+            {
+              "name": "dueSlot",
+              "valueType": {
+                "form": "primitive",
+                "name": "integer"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -2921,6 +5149,37 @@
                 "code": "SIP_PAUSE_CLASSIFICATION"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "SipPausedDueSlotSkipped",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "position"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "dueSlot"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "string"
+                    },
+                    "value": "skipped"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -2929,6 +5188,22 @@
             "document": "bank-v1",
             "pointer": "/aggregates/2/commands/9"
           },
+          "parameters": [
+            {
+              "name": "position",
+              "valueType": {
+                "form": "primitive",
+                "name": "integer"
+              }
+            },
+            {
+              "name": "dueSlot",
+              "valueType": {
+                "form": "primitive",
+                "name": "integer"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -3006,6 +5281,27 @@
                 "code": "SIP_SKIP_CURSOR_ORDER"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "SipSkippedSlotAdvanced",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "position"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "dueSlot"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -3014,6 +5310,38 @@
             "document": "bank-v1",
             "pointer": "/aggregates/2/commands/10"
           },
+          "parameters": [
+            {
+              "name": "position",
+              "valueType": {
+                "form": "primitive",
+                "name": "integer"
+              }
+            },
+            {
+              "name": "dueSlot",
+              "valueType": {
+                "form": "primitive",
+                "name": "integer"
+              }
+            },
+            {
+              "name": "revision",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "RevisionId"
+              }
+            },
+            {
+              "name": "config",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "SipRevisionConfig"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -3146,6 +5474,26 @@
                 "code": "SIP_REVISION_INTERVAL"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "SipInstallmentTriggered",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "position"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "host",
+                    "name": "StableSipOccurrence"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -3154,6 +5502,16 @@
             "document": "bank-v1",
             "pointer": "/aggregates/2/commands/11"
           },
+          "parameters": [
+            {
+              "name": "occurrence",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "SipOccurrence"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -3208,6 +5566,30 @@
                 "kind": "succeed-empty"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "SipInstallmentPending",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "occurrence"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "string"
+                    },
+                    "value": "pending"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -3216,6 +5598,16 @@
             "document": "bank-v1",
             "pointer": "/aggregates/2/commands/12"
           },
+          "parameters": [
+            {
+              "name": "occurrence",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "SipOccurrence"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -3270,6 +5662,30 @@
                 "kind": "succeed-empty"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "SipInstallmentOutcomeUnknown",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "occurrence"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "string"
+                    },
+                    "value": "outcome-unknown"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -3278,6 +5694,16 @@
             "document": "bank-v1",
             "pointer": "/aggregates/2/commands/13"
           },
+          "parameters": [
+            {
+              "name": "occurrence",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "SipOccurrence"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -3332,6 +5758,30 @@
                 "kind": "succeed-empty"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "SipInstallmentRecoveryRequired",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "occurrence"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "string"
+                    },
+                    "value": "recovery-required"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -3340,6 +5790,16 @@
             "document": "bank-v1",
             "pointer": "/aggregates/2/commands/14"
           },
+          "parameters": [
+            {
+              "name": "occurrence",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "SipOccurrence"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -3394,6 +5854,30 @@
                 "kind": "succeed-empty"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "SipInstallmentRefundInProgress",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "occurrence"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "string"
+                    },
+                    "value": "refund-in-progress"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -3402,6 +5886,37 @@
             "document": "bank-v1",
             "pointer": "/aggregates/2/commands/15"
           },
+          "parameters": [
+            {
+              "name": "occurrence",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "SipOccurrence"
+              }
+            },
+            {
+              "name": "evidence",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "receiptId",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "receiptBody",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -3501,6 +6016,51 @@
                 "code": "SIP_TOTAL_CAPACITY"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "SipInstallmentSucceeded",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "occurrence"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "evidence"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "receiptId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "receiptBody"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "string"
+                    },
+                    "value": "succeeded"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -3509,6 +6069,37 @@
             "document": "bank-v1",
             "pointer": "/aggregates/2/commands/16"
           },
+          "parameters": [
+            {
+              "name": "occurrence",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "SipOccurrence"
+              }
+            },
+            {
+              "name": "evidence",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "receiptId",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            },
+            {
+              "name": "receiptBody",
+              "valueType": {
+                "form": "primitive",
+                "name": "string"
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -3608,6 +6199,51 @@
                 "code": "SIP_TOTAL_CAPACITY"
               }
             }
+          ],
+          "events": [
+            {
+              "name": "SipInstallmentFailed",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "occurrence"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "evidence"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "receiptId"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "receiptBody"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "literal",
+                    "valueType": {
+                      "form": "primitive",
+                      "name": "string"
+                    },
+                    "value": "failed"
+                  }
+                }
+              ]
+            }
           ]
         },
         {
@@ -3616,6 +6252,27 @@
             "document": "bank-v1",
             "pointer": "/aggregates/2/commands/17"
           },
+          "parameters": [
+            {
+              "name": "intent",
+              "valueType": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "BankSipCreateIntent"
+              }
+            },
+            {
+              "name": "source",
+              "valueType": {
+                "form": "optional",
+                "element": {
+                  "form": "nominal",
+                  "context": "bankwealth",
+                  "name": "BankSipCreateIntent"
+                }
+              }
+            }
+          ],
           "guards": [
             {
               "source": {
@@ -3692,6 +6349,27 @@
                 "kind": "reject",
                 "code": "SIP_INTENT_BEFORE_CREATE"
               }
+            }
+          ],
+          "events": [
+            {
+              "name": "SipCreateIntentRecorded",
+              "slots": [
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "intent"
+                  }
+                },
+                {
+                  "producer": {
+                    "op": "ref",
+                    "scope": "parameter",
+                    "name": "source"
+                  }
+                }
+              ]
             }
           ]
         }

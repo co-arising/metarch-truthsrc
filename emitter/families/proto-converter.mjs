@@ -171,15 +171,15 @@ function renderAggregateMethods(agg) {
   const lines = [];
   lines.push(renderFieldsCodec(agg.statePoName, `${agg.aggId}Entity.State`, agg.stateFields).trimEnd());
   for (const ev of agg.events) {
-    lines.push(renderFieldsCodec(ev.poName, `${agg.aggId}Events.${ev.eventId}`, ev.fields).trimEnd());
+    lines.push(renderFieldsCodec(ev.poName, `${agg.aggId}Entity.${ev.eventId}`, ev.fields).trimEnd());
   }
   // Event union oneof encode/decode
-  lines.push(`  def encode${agg.eventUnionPoName}(value: ${agg.aggId}Events.Event): pb.${agg.eventUnionPoName} = value match {`);
+  lines.push(`  def encode${agg.eventUnionPoName}(value: ${agg.aggId}Entity.Event): pb.${agg.eventUnionPoName} = value match {`);
   for (const ev of agg.events) {
-    lines.push(`    case e: ${agg.aggId}Events.${ev.eventId} => pb.${agg.eventUnionPoName}(pb.${agg.eventUnionPoName}.Event.${ev.eventId}(encode${ev.poName}(e)))`);
+    lines.push(`    case e: ${agg.aggId}Entity.${ev.eventId} => pb.${agg.eventUnionPoName}(pb.${agg.eventUnionPoName}.Event.${ev.eventId}(encode${ev.poName}(e)))`);
   }
   lines.push('  }');
-  lines.push(`  def decode${agg.eventUnionPoName}(value: pb.${agg.eventUnionPoName}): ${agg.aggId}Events.Event = value.event match {`);
+  lines.push(`  def decode${agg.eventUnionPoName}(value: pb.${agg.eventUnionPoName}): ${agg.aggId}Entity.Event = value.event match {`);
   for (const ev of agg.events) {
     lines.push(`    case pb.${agg.eventUnionPoName}.Event.${ev.eventId}(e) => decode${ev.poName}(e)`);
   }
@@ -210,7 +210,6 @@ const importsHeader = (pkg, valueObjects) => {
     `package ${pkg}.infrastructure.persistence.converters`,
     '',
     `import ${pkg}.domain.entities._`,
-    `import ${pkg}.domain.events._`,
     ...voSubs.map(sub => `import ${pkg}.${sub}._`),
     `import ${pkg}.infrastructure.{proto => pb}`,
     '',

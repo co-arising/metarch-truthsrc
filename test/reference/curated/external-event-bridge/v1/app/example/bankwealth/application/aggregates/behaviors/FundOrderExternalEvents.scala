@@ -1,6 +1,6 @@
 package example.bankwealth.application.aggregates.behaviors
 
-import example.bankwealth.domain.events.FundOrderEvents._
+import example.bankwealth.domain.entities.FundOrderEntity._
 import example.bankwealth.application.saga._
 import example.bankwealth.domain.values._
 

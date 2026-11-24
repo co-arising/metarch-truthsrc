@@ -183,6 +183,16 @@ function checkInput(input) {
       if (seenEvents.has(ename)) fail('DE_INPUT', et('event ' + ename + ' is declared twice'));
       seenEvents.add(ename);
       checkSource(event.source, et('source'));
+      if (!Array.isArray(event.slots)) fail('DE_INPUT', et('slots must be an array'));
+      const seenSlots = new Set();
+      for (const [k, slot] of event.slots.entries()) {
+        const st = what => et('slots[' + k + '] ' + what);
+        if (!slot || typeof slot !== 'object' || Array.isArray(slot)) fail('DE_INPUT', st('must be an object'));
+        const sname = identifier(slot.name, st('name'));
+        if (seenSlots.has(sname)) fail('DE_INPUT', st('slot ' + sname + ' is declared twice'));
+        seenSlots.add(sname);
+        checkTypeTree(slot.valueType, st('valueType'), input.packages);
+      }
     }
   }
 }
@@ -249,35 +259,50 @@ const renderLiteral = (lit, ownContext, packages) => {
   return 'Map(' + lit.entries.map(e => renderLiteral(e.key, ownContext, packages) + ' -> ' + renderLiteral(e.value, ownContext, packages)).join(', ') + ')';
 };
 
+function renderEventDecl(ev, ownContext, packages) {
+  const fields = ev.slots.map(s => symbol(s.name) + ': ' + scalaType(s.valueType, ownContext, packages));
+  const oneLine = '  final case class ' + symbol(ev.name) + '(' + fields.join(', ') + ') extends Event';
+  if (fields.length > 4 || oneLine.length > 110) {
+    return '  final case class ' + symbol(ev.name) + '(\n    ' + fields.join(',\n    ') + '\n  ) extends Event';
+  }
+  return oneLine;
+}
+
 function renderAggregatePair(agg, packages) {
   const pkg = packageOf(agg.context, packages);
   const name = symbol(agg.name);
   const entityPath = pathOf(pkg, 'domain/entities/' + agg.name + 'Entity.scala');
-  const eventsPath = pathOf(pkg, 'domain/events/' + agg.name + 'Events.scala');
 
   const paramList = agg.fields.map(f => symbol(f.name) + ': ' + scalaType(f.type, agg.context, packages));
   const namedInitials = agg.fields.map(f => symbol(f.name) + ' = ' + renderLiteral(f.default, agg.context, packages));
-  const deps = [...new Set(agg.fields.flatMap(f => valueDeps(f.type, packages)))];
+  const eventSlots = agg.events.flatMap(e => e.slots);
+  const deps = [...new Set([
+    ...agg.fields.flatMap(f => valueDeps(f.type, packages)),
+    ...eventSlots.flatMap(s => valueDeps(s.valueType, packages)),
+  ])];
   const stateSources = [agg.source, ...agg.fields.map(f => f.source)];
 
   const importValues =
     agg.fields.some(f => usesOwnValues(f.type, agg.context)) ||
-    agg.fields.some(f => literalUsesOwnValues(f.default, agg.context));
+    agg.fields.some(f => literalUsesOwnValues(f.default, agg.context)) ||
+    eventSlots.some(s => usesOwnValues(s.valueType, agg.context));
   const oneLineState = '  final case class State(' + paramList.join(', ') + ')';
   const stateDecl = paramList.length > 4 || oneLineState.length > 100
     ? '  final case class State(\n    ' + paramList.join(',\n    ') + '\n  )'
     : oneLineState;
+  const eventDecls = agg.events.map(ev => renderEventDecl(ev, agg.context, packages)).join('\n');
 
   let entityContent = 'package ' + pkg + '.domain.entities\n\n' +
     (importValues ? 'import ' + pkg + '.domain.values._\n\n' : '') +
     'object ' + name + 'Entity {\n' +
-    stateDecl + '\n\n' +
-    '  type Event = ' + pkg + '.domain.events.' + name + 'Events.Event\n' +
-    '  val Events: ' + pkg + '.domain.events.' + name + 'Events.type = ' + pkg + '.domain.events.' + name + 'Events\n\n';
+    stateDecl + '\n\n';
   const startChar = entityContent.length;
   entityContent += '  def empty: State = State(\n    ' + namedInitials.join(',\n    ') + '\n  )\n';
   const endChar = entityContent.length;
-  entityContent += '}\n';
+  entityContent += '\n  sealed trait Event\n' +
+    (eventDecls ? eventDecls + '\n' : '') +
+    '\n  type EventHandler = (State, Event) => State\n' +
+    '}\n';
 
   const startBytes = Buffer.byteLength(entityContent.slice(0, startChar));
   const endBytes = Buffer.byteLength(entityContent.slice(0, endChar));
@@ -288,7 +313,7 @@ function renderAggregatePair(agg, packages) {
     content: entityContent,
     kind: 'entity',
     sources: [...stateSources, ...agg.events.map(e => e.source)],
-    deps: [eventsPath, ...deps],
+    deps,
     codeMappings: [{ knowledgeKey: knowledgeOf(agg.source), span, scope: { ...span } }],
   };
   return [entityFile];

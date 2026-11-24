@@ -1,10 +1,9 @@
 package example.bankwealth.domain.entities.behaviors
 
-import example.bankwealth.domain.entities.FundOrderEntity.State
-import example.bankwealth.domain.events.FundOrderEvents._
+import example.bankwealth.domain.entities.FundOrderEntity._
 
-object FundOrderEventHandler {
-  def apply(state: State, input: Event): State = input match {
+object FundOrderEventHandler extends EventHandler {
+  override def apply(state: State, input: Event): State = input match {
     case event: FundPurchaseSettlementRequested =>
       state.copy(
         operationId = event.operationId,

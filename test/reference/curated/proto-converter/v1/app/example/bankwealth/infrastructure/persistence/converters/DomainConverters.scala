@@ -1,7 +1,6 @@
 package example.bankwealth.infrastructure.persistence.converters
 
 import example.bankwealth.domain.entities._
-import example.bankwealth.domain.events._
 import example.bankwealth.application.api._
 import example.bankwealth.application.projection._
 import example.bankwealth.application.saga._
