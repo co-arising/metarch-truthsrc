@@ -1,0 +1,1407 @@
+{
+  "options": {
+    "packages": [
+      {
+        "context": "bankwealth",
+        "package": "example.bankwealth"
+      }
+    ]
+  },
+  "reference-layout": {
+    "declarations": [
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "AccountId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/0"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "AmountDecimal"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "decimal"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/8"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "Money"
+        },
+        "valueType": {
+          "form": "record",
+          "members": [
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "Money"
+              ],
+              "id": "amount"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "Money"
+              ],
+              "id": "currency"
+            }
+          ]
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/11"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "Money"
+            ],
+            "id": "amount"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "Money"
+            ],
+            "id": "currency"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "BankPaymentResult"
+        },
+        "valueType": {
+          "form": "record",
+          "members": [
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankPaymentResult"
+              ],
+              "id": "txid"
+            }
+          ]
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/48"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankPaymentResult"
+            ],
+            "id": "txid"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "BankAccountKey"
+        },
+        "valueType": {
+          "form": "record",
+          "members": [
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankAccountKey"
+              ],
+              "id": "schemaVersion"
+            }
+          ]
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/90"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankAccountKey"
+            ],
+            "id": "schemaVersion"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "BankOrderView"
+        },
+        "valueType": {
+          "form": "record",
+          "members": [
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankOrderView"
+              ],
+              "id": "orderId"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankOrderView"
+              ],
+              "id": "operationId"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankOrderView"
+              ],
+              "id": "investorAccountId"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankOrderView"
+              ],
+              "id": "fundCollectionAccountId"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankOrderView"
+              ],
+              "id": "fundCode"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankOrderView"
+              ],
+              "id": "amount"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankOrderView"
+              ],
+              "id": "paymentTxId"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankOrderView"
+              ],
+              "id": "paymentStatus"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankOrderView"
+              ],
+              "id": "taRequestId"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankOrderView"
+              ],
+              "id": "taStatus"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankOrderView"
+              ],
+              "id": "taReference"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankOrderView"
+              ],
+              "id": "taShares"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankOrderView"
+              ],
+              "id": "taRejectionReason"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankOrderView"
+              ],
+              "id": "refundOperationId"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankOrderView"
+              ],
+              "id": "refundStatus"
+            }
+          ]
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/103"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankOrderView"
+            ],
+            "id": "orderId"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankOrderView"
+            ],
+            "id": "operationId"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankOrderView"
+            ],
+            "id": "investorAccountId"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankOrderView"
+            ],
+            "id": "fundCollectionAccountId"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankOrderView"
+            ],
+            "id": "fundCode"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankOrderView"
+            ],
+            "id": "amount"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankOrderView"
+            ],
+            "id": "paymentTxId"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankOrderView"
+            ],
+            "id": "paymentStatus"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankOrderView"
+            ],
+            "id": "taRequestId"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankOrderView"
+            ],
+            "id": "taStatus"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankOrderView"
+            ],
+            "id": "taReference"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankOrderView"
+            ],
+            "id": "taShares"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankOrderView"
+            ],
+            "id": "taRejectionReason"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankOrderView"
+            ],
+            "id": "refundOperationId"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankOrderView"
+            ],
+            "id": "refundStatus"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "BankAccountResponse"
+        },
+        "valueType": {
+          "form": "record",
+          "members": [
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankAccountResponse"
+              ],
+              "id": "metadata"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankAccountResponse"
+              ],
+              "id": "account"
+            }
+          ]
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/108"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankAccountResponse"
+            ],
+            "id": "metadata"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankAccountResponse"
+            ],
+            "id": "account"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "BankPendingResponse"
+        },
+        "valueType": {
+          "form": "record",
+          "members": [
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankPendingResponse"
+              ],
+              "id": "metadata"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankPendingResponse"
+              ],
+              "id": "operations"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankPendingResponse"
+              ],
+              "id": "nextAfter"
+            }
+          ]
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/114"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankPendingResponse"
+            ],
+            "id": "metadata"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankPendingResponse"
+            ],
+            "id": "operations"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankPendingResponse"
+            ],
+            "id": "nextAfter"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "Money"
+          ],
+          "id": "amount"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "decimal"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/11/fields/0"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "Money"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "Money"
+          ],
+          "id": "currency"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/11/fields/1"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "Money"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankPaymentResult"
+          ],
+          "id": "txid"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "TxId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/48/fields/0"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankPaymentResult"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "TxId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankAccountKey"
+          ],
+          "id": "schemaVersion"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/90/fields/0"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankAccountKey"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankOrderView"
+          ],
+          "id": "orderId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "FundOrderId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/103/fields/0"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankOrderView"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "FundOrderId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankOrderView"
+          ],
+          "id": "operationId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "OperationId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/103/fields/1"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankOrderView"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "OperationId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankOrderView"
+          ],
+          "id": "investorAccountId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "AccountId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/103/fields/2"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankOrderView"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "AccountId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankOrderView"
+          ],
+          "id": "fundCollectionAccountId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "AccountId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/103/fields/3"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankOrderView"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "AccountId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankOrderView"
+          ],
+          "id": "fundCode"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/103/fields/4"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankOrderView"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankOrderView"
+          ],
+          "id": "amount"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "MoneyWire"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/103/fields/5"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankOrderView"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "MoneyWire"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankOrderView"
+          ],
+          "id": "paymentTxId"
+        },
+        "valueType": {
+          "form": "optional",
+          "element": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "TxId"
+            }
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/103/fields/6"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankOrderView"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "TxId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankOrderView"
+          ],
+          "id": "paymentStatus"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/103/fields/7"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankOrderView"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankOrderView"
+          ],
+          "id": "taRequestId"
+        },
+        "valueType": {
+          "form": "optional",
+          "element": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "TaRequestId"
+            }
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/103/fields/8"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankOrderView"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "TaRequestId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankOrderView"
+          ],
+          "id": "taStatus"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/103/fields/9"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankOrderView"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankOrderView"
+          ],
+          "id": "taReference"
+        },
+        "valueType": {
+          "form": "optional",
+          "element": {
+            "form": "primitive",
+            "name": "string"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/103/fields/10"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankOrderView"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankOrderView"
+          ],
+          "id": "taShares"
+        },
+        "valueType": {
+          "form": "optional",
+          "element": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "BankTaSharesView"
+            }
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/103/fields/11"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankOrderView"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankTaSharesView"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankOrderView"
+          ],
+          "id": "taRejectionReason"
+        },
+        "valueType": {
+          "form": "optional",
+          "element": {
+            "form": "primitive",
+            "name": "string"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/103/fields/12"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankOrderView"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankOrderView"
+          ],
+          "id": "refundOperationId"
+        },
+        "valueType": {
+          "form": "optional",
+          "element": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "OperationId"
+            }
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/103/fields/13"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankOrderView"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "OperationId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankOrderView"
+          ],
+          "id": "refundStatus"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/103/fields/14"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankOrderView"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankAccountResponse"
+          ],
+          "id": "metadata"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankReadMetadata"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/108/fields/0"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankAccountResponse"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankReadMetadata"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankAccountResponse"
+          ],
+          "id": "account"
+        },
+        "valueType": {
+          "form": "optional",
+          "element": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "BankAccountView"
+            }
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/108/fields/1"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankAccountResponse"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankAccountView"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankPendingResponse"
+          ],
+          "id": "metadata"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankReadMetadata"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/114/fields/0"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankPendingResponse"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankReadMetadata"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankPendingResponse"
+          ],
+          "id": "operations"
+        },
+        "valueType": {
+          "form": "sequence",
+          "element": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "BankPendingOperationView"
+            }
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/114/fields/1"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankPendingResponse"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankPendingOperationView"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankPendingResponse"
+          ],
+          "id": "nextAfter"
+        },
+        "valueType": {
+          "form": "optional",
+          "element": {
+            "form": "primitive",
+            "name": "integer"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/114/fields/2"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankPendingResponse"
+          }
+        ]
+      }
+    ]
+  },
+  "exact-value-types": [
+    {
+      "domain": {
+        "context": "bankwealth",
+        "kind": "type",
+        "owner": [],
+        "id": "Money"
+      },
+      "version": "bank-v1-1",
+      "form": "unit-decimal",
+      "precision": 38,
+      "scale": 2,
+      "amountMember": {
+        "context": "bankwealth",
+        "kind": "member",
+        "owner": [
+          "Money"
+        ],
+        "id": "amount"
+      },
+      "unitMember": {
+        "context": "bankwealth",
+        "kind": "member",
+        "owner": [
+          "Money"
+        ],
+        "id": "currency"
+      },
+      "units": [
+        "CNY"
+      ],
+      "source": {
+        "document": "bank-v1",
+        "pointer": "/valueObjects/11"
+      }
+    },
+    {
+      "domain": {
+        "context": "bankwealth",
+        "kind": "type",
+        "owner": [],
+        "id": "AmountDecimal"
+      },
+      "version": "bank-v1-1",
+      "form": "decimal",
+      "precision": 38,
+      "scale": 2,
+      "amountMember": null,
+      "unitMember": null,
+      "units": [],
+      "source": {
+        "document": "bank-v1",
+        "pointer": "/valueObjects/8"
+      }
+    }
+  ]
+}

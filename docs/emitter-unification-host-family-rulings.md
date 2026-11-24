@@ -486,3 +486,288 @@ delivery）＋round 响应新鲜度关联＋RecoveryCompleted 重查询自愈＋
     端到端 plan 231 件（rules 9 件自家族、event-handler 6 件仍 classic）、双跑
     确定绿；家族 parity：deterministic／goldenParity／电池 12/12／allGreen；
     emitter 套件 FAMILY_COUNT 11、batteriesDebt 恒 4。五步门随后执行。
+
+---
+
+# value-object 族（#1，bank 118 件）预裁定链（2026-11-23，待裁定）
+
+Phase 3 第 2 项开工呈报。门序不豁免：以下逐条经用户裁定后方可手写金样。
+
+## 1. 产地核对（审计事实）
+
+- 活链（bank 实际产地）：`scala-cqrs-play-service/generate.mjs` 继承
+  `createEffectRegistry('2')` → `scala-cqrs-application/produce.mjs:25`
+  `'valueobject-dsl': producer(['reference-layout','exact-value-types'], renderValues)`
+  → `scala-cqrs-domain/render-values.mjs`（38 行表驱动渲染）。
+- bank 台账实测：kind `value-object` 118 件，全部
+  `app/example/bankwealth/domain/values/<Name>.scala`；每件单知识源
+  `source:bank-v1#/valueObjects/<i>`；`deps: []`；无 codeMappings（classic 渲染
+  即不产出）。plan §5 映射 value-object(118)→#1 **成立**，无勘误。
+- **非**活产地（不在本节拍 registry 摘除范围）：`generators/valueobject-dsl/`
+  独立 DSL CLI（191 行渲染，带 jsonFormat 伴生对象——与活产件形状完全不同）与
+  `scala-cqrs-classic-v2` 的 ValueObjectTemplate 链（templates/builders/models，
+  依赖 `models/domain-entity.mjs`，属 #2 entity 族共享件）。它们属各自 classic
+  生成器包，随 Phase 4 物理删除；`lib/artifact-docs/classify.mjs:65` 的
+  render-values.mjs 映射行随活摘除同步改。
+- 受影响套件（须随节拍同改）：`test/service-composition-layers.test.mjs`
+  values 腿——现钉 play-service plan 与 legacy `applicationRegistry('2')`
+  逐字节等值；翻转后该腿改为家族等值断言（沿 effect-face 判例）。
+
+## 2. 变体矩阵（118 件实测，参照 1,242 声明全布局）
+
+- 形状三分：exact 精确值 2（Money＝unit-decimal CNY 38/2、AmountDecimal＝
+  decimal 38/2 无单位成员→`value` 兜底）；primitive 包裹 12（11 string＋
+  AmountDecimal 被 exact 覆写）；record 记录 106（磁盘 22 包裹件＝12 primitive
+  ＋11 单成员 record＋AmountDecimal；磁盘 exact 2＝AmountDecimal＋Money，
+  对账吻合）。
+- record 成员数直方图：1:11, 2:19, 3:25, 4:5, 5:6, 6:4, 7:17, 8:1, 10:9,
+  12:6, 13:1, 15:2（最宽 BankOrderView 15 字段）。
+- 成员类型形态（530 成员声明）：primitive 249（string 226／integer 27／
+  boolean 5／decimal 1）、nominal 250（36 个不同目标，**全部落在 values 集内**）、
+  optional 24、sequence 7、map 0；跨 context 引用 **0**。
+- 知识面：全部 `context: bankwealth`、owner `[]`、`dependencies` 字段 106 件
+  非空但 classic 渲染不消费（entry deps 恒 []，维持）。
+
+## 3. 派生缝宽
+
+窄。合同全部数据在产品载荷里：layout kind='type' 声明（118）＋其成员声明
+（530，成员引用按 ref 解析到 valueType 树）＋exact-value-types 描写（2）＋
+`options.packages`。零推断、零缺槽。派生层 fail-closed 拒：重复类型名、成员
+引用无声明、不支持形态（含 nominal 指向非 type 声明）、exact 描写指向不存在
+类型、单位成员无单位集等。
+
+## 4. 金样语义提案（核心裁定）
+
+**手写 curated 金样**（沿计划 §Phase3 完整门序），**不**延用 #45 的 R1 复刻
+语义。理由：
+
+1. R1 复刻的成立前提是「规则件即业务逻辑本体、ABI 被未翻转件消费」；value
+   object 是纯数据件，重排文本后 JVM 签名不变（同类名/同包/同字段类型），
+   未翻转消费方（state/protocol/rules 的 `domain.values.X` FQN 引用）照常
+   编译——重排是 ABI 透明的，F4 无损。
+2. classic 渲染本身已 95% curated：表驱动、知识纯（发射字节零业务内嵌）。
+   classic 风格残留恰是两处：nominal 一律 FQN 全称、生成头行。curated 化的
+   delta 小而外科：**同包短名＋去头**，其余逐字节保持。
+3. golden 质量栏（零 classic 式名）对手写金样是红线；若走复刻则 118 件 FQN
+   式样永久化到 Phase 4 之后，与质量栏相悖。
+4. 计划 §Phase3 门序对「限定 raw 簇」明文预设手写金样；R1 属已定案簇特例，
+   不外溢。
+
+## 5. 风格裁定基线（逐条待裁定）
+
+### N 组——命名
+- **N1** nominal 类型引用：同 context → 包内短名（`FundOrderId`）；跨
+  context → `<目标包>.domain.values.<Name>` FQN。银行 36 个引用全同包，
+  规则为一般性而设；合同仍携带 context，发射器按规则选择。
+- **N2** primitive 包裹字段名恒 `value`（classic 冻结排版形，记档；派生层
+  显式产出 member:'value'，发射器零硬编码名）。
+- **N3** 类型名不变（AccountId/Money/BankOrderView 均业务知识，非 classic
+  架构名；质量栏所禁是 FQN 式渲染，非业务名）。
+
+### T 组——类型化
+- **T1** primitive 映射 string→String／integer→Long／boolean→Boolean／
+  decimal→BigDecimal；optional→`Option[..]`、sequence→`Vector[..]`、
+  map→`Map[k,v]`（银行无 map，合同支持、电池覆盖）。
+- **T2** exact 精确值语义逐字节保持：构造体校验行、单位集 require、
+  isPositive／compareSameUnit／plus／minus、checkedAmount 的
+  setScale(scale, UNNECESSARY)＋precision 上限＋MathContext.UNLIMITED。
+  这是 exact-value-types 产品的架构语义（已被应用行为验证），不属重排范围。
+
+### L 组——版式
+- **L1** 生成头：**去头**（face 两族手写金样判例；golden 树即无头，翻转后
+  bank 生产件随行去头——与 #45 R4 保留头相反，此处是新风格件非复刻件）。
+- **L2** 案类声明保持单行（含 15 字段最宽件）：一行一类的版式利于台账
+  diff 稳定性与确定性；字段列表是数据驱动，包内短名化后长度已大幅收敛，
+  不引入断行规则。
+
+### D 组——发射器纪律
+- **D1** 表驱动：发射器零业务字节；名字/字段/单位集/精度标度全部出自合同。
+- **D2** checkInput fail-closed（RULES 式错误码 `VO_INPUT`）＋内嵌负测电池
+  ≥12 例（含 bank 未触发的 map/跨包 FQN/单成员 record 形态）；本族**不进**
+  电池债务清单（batteriesDebt 恒 4 不变）。
+- **D3** 双跑确定＋金样逐字节等值（parity harness 常规）。
+
+## 6. 翻转单元与检出
+
+- **翻转单元＝全族一次提交**：values 是全案共享基建（AccountId 等跨案引用），
+  非案域件；F4 的「逐族替换」在此族的自然粒度即整族，编译在翻转前后两态均
+  完整。不同于 effect-face 的按案翻转（案域件）与 rules 的按聚合簇（三件互锁）。
+- **检出＝context 清单**：`VALUE_OBJECT_FLIP_CONTEXTS = ['bankwealth']`；
+  wrapper 对清单 context 的 type 声明走家族发射，其余 context 原样透传
+  classic（inventory/fixture 项目不受扰，套件基线不动）。
+- **接线**：play-service generate.mjs 的 valueobject-dsl 分支包
+  `withFlippedValueObjects`（沿 rules 判例：classic 残留即拒、路径碰撞守卫、
+  footprint 硬声明 reference-layout@1/exact-value-types@1）；registry 摘除后
+  classic 行仅在非清单 context 生效。
+
+## 7. 代表金样集（手写 8 件＋变体矩阵性质覆盖）
+
+金样树 `test/reference/curated/value-object/v1/`：technical-input.json（派生
+合同切片）＋README＋8 件代表 profile，覆盖矩阵全部形状：
+
+| 金样件 | 覆盖形 |
+|---|---|
+| AccountId | primitive string 包裹 |
+| AmountDecimal | exact decimal（无单位） |
+| Money | exact unit-decimal（CNY 单位集） |
+| BankAccountKey | 单成员 record（primitive 成员） |
+| BankPaymentResult | 单成员 record（nominal 成员） |
+| BankAccountResponse | 小 record＋Option[nominal] 混合（BankCashSubmit 无 Option，开工时替换） |
+| BankPendingResponse | sequence 成员（Vector） |
+| BankOrderView | 最宽 15 字段 record（nominal/Option 密集） |
+
+电池另覆盖 map 形态与跨包 FQN 形态（银行未触发、合同支持）。
+fixture `test/fixtures/value-object-v1/`：input.json＝8 件派生合同＋
+knowledge-products.json（对应布局/精确值切片＋options）＋（无锚跨距件——
+classic 无 codeMappings，凭据即台账本身）。
+
+## 8. 实现落位（裁定后执行）
+
+派生层 `lib/derivation/value-object.mjs`（fail 前缀 VO_DERIVATION；类型树
+解析＋exact 绑定＋包解析）＋ `lib/derivation/value-object-emission.mjs`
+（withFlippedValueObjects）＋家族 `emitter/families/value-object.mjs`
+（familyNumber 1，inputSchema `truthsrc.value-object-input/v1`，
+provenance handwritten-golden，toolsRef null）＋ registry index 第 12 注册
+＋ emitter-unification 套件 FAMILY_COUNT 12、HANDWRITTEN_GOLDEN_FAMILIES
+追加＋composition-layers values 腿改家族等值。bank-wealth：一提交翻转 118
+件（预期 diff＝每件去头＋FQN→短名，其余逐字节同）＋五步门＋F5 逐文件
+diff 呈报。
+
+## 9. 待裁定问题清单
+
+| # | 问题 | 建议 |
+|---|---|---|
+| Q1 | 金样语义：手写 curated（提案）vs 沿 R1 复刻 | 手写 curated（§4 理由） |
+| Q2 | N1 同包短名／跨包 FQN 规则 | 如提案 |
+| Q3 | L1 去生成头（bank 生产件随行去头） | 去头（face 判例） |
+| Q4 | L2 案类声明保持单行（不引入断行） | 保持单行 |
+| Q5 | 翻转单元＝整族一提交（非按案/按聚合） | 整族 |
+| Q6 | 检出＝context 清单透传其余项目 | bankwealth 清单 |
+| Q7 | exact 语义逐字节保持（T2 不重排） | 保持 |
+| Q8 | 受影响套件 composition-layers values 腿改家族等值 | 如提案 |
+
+## 10. 裁定记录（2026-11-23 同日闭合）
+
+- **Q1 已裁：手写 curated**（用户 2026-11-23 裁定，采建议案）。金样语义＝
+  手写新规格（同包短名＋去头，其余逐字节保持 classic）；R1 复刻不外溢到
+  限定 raw 簇——R1 前提（规则件即业务逻辑本体）在纯数据件上不成立，重排
+  是 ABI 透明的（JVM 签名不变），F4 无损。bank 生产件随翻转重排文本。
+- Q2–Q8 依常设委托验收标准（正确／工业生产级／优雅／Plain FP）按建议案
+  执行：N1 同包短名／跨包 FQN、N2 包裹字段名恒 value（派生层显式产出）、
+  L1 去生成头（face 判例）、L2 案类声明保持单行、T2 exact 语义逐字节保持、
+  翻转单元＝整族一提交、检出＝bankwealth context 清单、composition-layers
+  values 腿改家族等值。逐条讲解随沙箱轮呈报，如有异议逐条回滚。
+
+## 11. 沙箱三轮实证（2026-11-23，金样 8 件手写后）
+
+金样树 `test/reference/curated/value-object/v1/`（8 件＋technical-input.json＋
+README）手写毕。自检：4 件无 nominal 引用件与 classic 去头后逐字节相同；
+4 件 record 差异仅 FQN→短名。三轮：
+
+- **R1 合同完备**（金样＝合同渲染逐字节）：抛置式渲染原型按裁定风格渲染
+  8 件代表，与手写金样 8/8 逐字节相等——金样零合同外业务字节。
+- **R2 ABI 编译不变量**：沙箱树 /private/tmp/vo-sandbox 全 118 件换 curated
+  版后 sbt 全量编译，与 pristine 对照树**误差相等**（各恰 2 个错误，均为
+  classic technical-port 渲染器既有同包重复定义，见 §12）——换件对编译
+  健康零新增影响；536 源全部通过 typer 对短名引用的解析（ABI 透明实证）。
+- **R3 全量 delta 纪律**：118/118 件满足「classic−头−FQN == curated 渲染」
+  ——重排严格限于裁定两处，无第三种偏差。
+
+## 12. 既有缺陷发现（非本族、非本程序引入，登记呈报）
+
+- **事实**：bank 生成应用冷 sbt 全量编译**当前失败**，恰 2 错——
+  `BankPaymentPorts.scala` 与 `BankRefundPorts.scala`（同包
+  `example.bankwealth.application`）各自定义 `CompletionContext` 与
+  `OperationNotExecuted`（pristine 对照树同样失败；沙箱换件树不新增）。
+- **根因**：classic `scala-cqrs-application/render-technical-ports.mjs:41-42`
+  无条件把这两个共享类型发进**每个** technical-port 件的 companion；bank 的
+  payment 与 refund 两案均声明 technical 工件（两案知识均在程序启动前已
+  存在，出现时点待考）→ 同包冲突。
+- **门语义厘清**：计划 §8 五步门的 compile 步＝`truthsrc-project.mjs
+  compile` → metarch `compile-project`＝**知识树编译**（truth→products），
+  从来不含生成应用的 sbt 编译；故该缺陷不被五步门捕获（非门失效，系门
+  语义本不含 app 级 sbt 编译）。
+- **归属与修复路径**：属 technical-port 簇（finite-host-dsl 行 classic 渲染）
+  的既有缺陷——该簇按计划尚未翻转，翻转时统一发射器自然消除（共享类型
+  去重／共享文件）。修复不属 value-object 族门序范围；是否在程序内追加
+  「app 级冷 sbt 编译」门步属程序级门变更（F 裁定域），呈请用户裁定。
+
+## 13. 裁定记录（2026-11-23，沙箱轮后）
+
+- **R6 先修后翻**：technical-port 同包重复定义缺陷在本节拍（value-object
+  翻转）之前以独立 mini-beat 修复（独立提交＋知识门＋指纹重生成），恢复
+  bank 冷编译全绿后再接翻转。修复面＝classic render-technical-ports.mjs
+  共享类型去重；修复的 diff 呈报走 F5。
+- **R7 追加 app 编译门**：五步门升为六步门——追加「生成应用冷目录 sbt
+  全量编译」常设门步（沙箱拷贝树编译，不污染工作区）。程序级门变更
+  （F 裁定域），自 mini-beat 起生效；计划 §8 命令面随收口同步。
+- **Q2–Q8 逐条确认无异议**（用户 2026-11-23）：N1/N2/L1/L2/T2/翻转单元/
+  检出/套件腿按已记档提案执行。
+
+## 14. §12 根因修正与家族级裁定呈报（2026-11-23，沙箱 R2 追查）
+
+### 14.1 根因修正（更正 §12）
+
+缺陷**不在** classic render-technical-ports.mjs（那是 legacy scala-cqrs-application
+生成器的模板，`trait <stem>TechnicalPorts`＋companion 内类型——天然无冲突）。
+真实产地是**统一 face 家族 #43 的金样形状**：翻转案的 `<Stem>Ports.scala` 把
+`CompletionContext`（**per-case 字段类型**：payment 案 `original:
+BankPaymentOriginal`，refund 案 `original: BankRefundOriginal`）与
+`OperationNotExecuted` 提升到**包级**、全部引用裸名化——单案翻转自洽，双案
+同包即同名校（refund 翻转 a845fc3 起冷编译即破；此前各节拍门＝知识树编译，
+不含 app 级 sbt 编译，故未暴露）。face 裁定文档从未裁定过包级提升——属
+金样成样时单案视角的疏漏，非既裁定项。
+
+### 14.2 约束链（修复设计的事实边界）
+
+1. 手写供给（F7 冻结，在生成 build 的 Compile 集内）以**包级裸名** import
+   两类型：`import example.bankwealth.application.{…, CompletionContext,
+   OperationNotExecuted}`（payment/refund bindings 各一行）。
+2. `context.original` 被实质使用：`require(input == original &&
+   context.original == original)`＋`authority(kind, context.original, context)`
+   透传给 per-case 类型参数——两案 CompletionContext 确为**两个不同类型**，
+   不可合一、不可泛化去字段。
+3. 同包裸名＝一 name 一 member：两个不同类型不能共用一个包级裸名。
+4. bank repo 顶层 `test/scala/BankPaymentDeliveryAcceptanceSpec.scala` 的
+   `Technical.CompletionContext`（经 PortBindings 限定）在现产形状下**本就
+   悬空**（PortBindings 无此成员；该目录不在生成 build 编译集内）——独立
+   陈旧观察，不构成本修复约束。
+
+### 14.3 修复方案呈报（家族级裁定，不自裁）
+
+- **方案 A（建议）——伴名空间归位**：两定义移入各案 `<Stem>Ports` 的
+  companion object（沿 classic per-stem companion 判例；OperationNotExecuted
+  虽两案同形，一并随伴入伴——各案 saga 只捕获本案类型，语义自洽）。
+  生成件 PortBindings/HostIO/SagaDefinition 各加一行
+  `import example.bankwealth.application.<Stem>Ports.{CompletionContext,
+  OperationNotExecuted}`（正文裸名不动）；手写供给仅 **2 件各改 1 行
+  import**（正文零改动）——**需 F7 豁免裁定**；#43 金样树随 F3 同步升级
+  （Ports 件形状改＋三件加 import），发射器同步，parity 重验。
+- 方案 B——per-case 包级改名（BankPaymentCompletionContext 等）＋手写
+  import 行用 `{新名 => 旧名}` 重命名导入：手写同为 2 行但导入形丑陋、
+  包级 vocabulary 膨胀，劣于 A。
+- 方案 C——回退 refund 翻转（a845fc3）至 Phase 4 再翻：撤销已提交程序进度，
+  不可取。
+
+### 14.4 metarch 侧先行动工（value-object 门序裁定内工作，未涉 F7）
+
+#43 修复裁定悬置期间，value-object 门序的 metarch 侧（已全裁定，Q1–Q8）
+先行落成——bank 翻转仍按 R6 待 #43 先修：
+
+- 家族 `emitter/families/value-object.mjs`（#1，handwritten-golden，
+  checkInput fail-closed VO_INPUT＋20 例负测电池——不进电池债务清单）。
+  合同顶层 `packages` 绑定集（跨 context FQN 规则 N1 所需）。
+- 派生层 `lib/derivation/value-object.mjs`（VO_DERIVATION，转写级
+  fail-closed；合同携带全量包绑定，nominal 目标可达）。
+- emission 桥 `lib/derivation/value-object-emission.mjs`
+  （withFlippedValueObjects：bankwealth 清单翻转＝整族单元；classic 精确
+  对账替换＋孤儿件拒绝＋路径碰撞守卫；非清单项目透传）。
+- 接线 play-service generate.mjs valueobject-dsl 分支；registry index 第
+  12 注册；emitter 套件 FAMILY_COUNT 12。
+- 金样合同以 layout 序重出（classic 产能序）；fixture＝8 代表的
+  knowledge-products 切片。
+- **验收**：parity allGreen 12/12（value-object 8 件金样等值＋双跑确定＋
+  电池 20/20）；派生套件 9/9；composition-layers 6/6（inventory fixture
+  透传——恰好钉住非清单项目不受扰行为）；**真知识全量干跑**：
+  captureProject→派生 118 值→家族渲染 118 件→对 bank 现产 delta 纪律
+  118/118 ✓（真模块栈复证沙箱 R3）。

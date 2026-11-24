@@ -1,10 +1,11 @@
 // Emitter-unification tests (emitter-unification plan §4 Phase 1).
-// The acceptance itself is `node emitter/parity.mjs`: for all ten curated
+// The acceptance itself is `node emitter/parity.mjs`: for all twelve curated
 // families, the same fixture input must render byte-identically from the
 // emitter module on double runs and must match the curated golden tree byte
 // for byte. The eight ported families must also match their tools/gen-*.mjs
-// byte-parity reference; the two handwritten-golden host faces (#43/#44) have
-// no reference generator (ruling 2026-11-22) and carry golden parity alone,
+// byte-parity reference; the handwritten-golden families (the two host faces
+// #43/#44, ruling 2026-11-22, and the value-object family #1, ruling
+// 2026-11-23) have no reference generator and carry golden parity alone,
 // reported with toolsParity null — never silently green. Families without a
 // battery are a registered debt and are asserted here to be exactly the four
 // known ones — a fifth silent battery omission must turn this suite red.
@@ -20,22 +21,22 @@ import { parseStrictJson } from '../lib/strict-json.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
-const FAMILY_COUNT = 11;
+const FAMILY_COUNT = 12;
 const BATTERY_DEBT_FAMILIES = [
   'aggregate-rules-formal',
   'external-connector-port',
   'connector-implementation',
   'projection-apply-event',
 ].sort();
-const HANDWRITTEN_GOLDEN_FAMILIES = ['pipeline-invocation-face', 'effect-face'].sort();
+const HANDWRITTEN_GOLDEN_FAMILIES = ['pipeline-invocation-face', 'effect-face', 'value-object'].sort();
 const CLASSIC_REPRODUCTION_FAMILIES = ['aggregate-invariant-rules'].sort();
 
-test('the unified emitter registers exactly the eleven curated families', () => {
+test('the unified emitter registers exactly the twelve curated families', () => {
   assert.equal(listFamilyIds().length, FAMILY_COUNT);
   for (const id of ['aggregate-rules-formal', 'external-connector-port', 'connector-implementation',
     'projection-apply-event', 'aggregate-state-controller', 'strict-saga-module',
     'strict-fixture-host', 'composition-invocation-host', 'pipeline-invocation-face',
-    'effect-face', 'aggregate-invariant-rules']) {
+    'effect-face', 'aggregate-invariant-rules', 'value-object']) {
     const family = getFamily(id);
     assert.equal(typeof family.checkInput, 'function', id + ' checkInput');
     assert.equal(typeof family.renderAll, 'function', id + ' renderAll');

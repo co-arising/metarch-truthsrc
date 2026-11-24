@@ -1,0 +1,319 @@
+{
+  "schemaVersion": "truthsrc.value-object-input/v1",
+  "packages": [
+    {
+      "context": "bankwealth",
+      "package": "example.bankwealth"
+    }
+  ],
+  "values": [
+    {
+      "context": "bankwealth",
+      "name": "AccountId",
+      "source": {
+        "document": "bank-v1",
+        "pointer": "/valueObjects/0"
+      },
+      "shape": {
+        "kind": "primitive",
+        "member": "value",
+        "type": {
+          "form": "primitive",
+          "name": "string"
+        }
+      }
+    },
+    {
+      "context": "bankwealth",
+      "name": "AmountDecimal",
+      "source": {
+        "document": "bank-v1",
+        "pointer": "/valueObjects/8"
+      },
+      "shape": {
+        "kind": "exact",
+        "amountMember": "value",
+        "scale": 2,
+        "precision": 38
+      }
+    },
+    {
+      "context": "bankwealth",
+      "name": "Money",
+      "source": {
+        "document": "bank-v1",
+        "pointer": "/valueObjects/11"
+      },
+      "shape": {
+        "kind": "exact",
+        "amountMember": "amount",
+        "unitMember": "currency",
+        "units": [
+          "CNY"
+        ],
+        "scale": 2,
+        "precision": 38
+      }
+    },
+    {
+      "context": "bankwealth",
+      "name": "BankPaymentResult",
+      "source": {
+        "document": "bank-v1",
+        "pointer": "/valueObjects/48"
+      },
+      "shape": {
+        "kind": "record",
+        "members": [
+          {
+            "name": "txid",
+            "type": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "TxId"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "context": "bankwealth",
+      "name": "BankAccountKey",
+      "source": {
+        "document": "bank-v1",
+        "pointer": "/valueObjects/90"
+      },
+      "shape": {
+        "kind": "record",
+        "members": [
+          {
+            "name": "schemaVersion",
+            "type": {
+              "form": "primitive",
+              "name": "string"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "context": "bankwealth",
+      "name": "BankOrderView",
+      "source": {
+        "document": "bank-v1",
+        "pointer": "/valueObjects/103"
+      },
+      "shape": {
+        "kind": "record",
+        "members": [
+          {
+            "name": "orderId",
+            "type": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "FundOrderId"
+            }
+          },
+          {
+            "name": "operationId",
+            "type": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "OperationId"
+            }
+          },
+          {
+            "name": "investorAccountId",
+            "type": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "AccountId"
+            }
+          },
+          {
+            "name": "fundCollectionAccountId",
+            "type": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "AccountId"
+            }
+          },
+          {
+            "name": "fundCode",
+            "type": {
+              "form": "primitive",
+              "name": "string"
+            }
+          },
+          {
+            "name": "amount",
+            "type": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "MoneyWire"
+            }
+          },
+          {
+            "name": "paymentTxId",
+            "type": {
+              "form": "optional",
+              "element": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TxId"
+              }
+            }
+          },
+          {
+            "name": "paymentStatus",
+            "type": {
+              "form": "primitive",
+              "name": "string"
+            }
+          },
+          {
+            "name": "taRequestId",
+            "type": {
+              "form": "optional",
+              "element": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "TaRequestId"
+              }
+            }
+          },
+          {
+            "name": "taStatus",
+            "type": {
+              "form": "primitive",
+              "name": "string"
+            }
+          },
+          {
+            "name": "taReference",
+            "type": {
+              "form": "optional",
+              "element": {
+                "form": "primitive",
+                "name": "string"
+              }
+            }
+          },
+          {
+            "name": "taShares",
+            "type": {
+              "form": "optional",
+              "element": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "BankTaSharesView"
+              }
+            }
+          },
+          {
+            "name": "taRejectionReason",
+            "type": {
+              "form": "optional",
+              "element": {
+                "form": "primitive",
+                "name": "string"
+              }
+            }
+          },
+          {
+            "name": "refundOperationId",
+            "type": {
+              "form": "optional",
+              "element": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "OperationId"
+              }
+            }
+          },
+          {
+            "name": "refundStatus",
+            "type": {
+              "form": "primitive",
+              "name": "string"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "context": "bankwealth",
+      "name": "BankAccountResponse",
+      "source": {
+        "document": "bank-v1",
+        "pointer": "/valueObjects/108"
+      },
+      "shape": {
+        "kind": "record",
+        "members": [
+          {
+            "name": "metadata",
+            "type": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "BankReadMetadata"
+            }
+          },
+          {
+            "name": "account",
+            "type": {
+              "form": "optional",
+              "element": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "BankAccountView"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "context": "bankwealth",
+      "name": "BankPendingResponse",
+      "source": {
+        "document": "bank-v1",
+        "pointer": "/valueObjects/114"
+      },
+      "shape": {
+        "kind": "record",
+        "members": [
+          {
+            "name": "metadata",
+            "type": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "BankReadMetadata"
+            }
+          },
+          {
+            "name": "operations",
+            "type": {
+              "form": "sequence",
+              "element": {
+                "form": "nominal",
+                "context": "bankwealth",
+                "name": "BankPendingOperationView"
+              }
+            }
+          },
+          {
+            "name": "nextAfter",
+            "type": {
+              "form": "optional",
+              "element": {
+                "form": "primitive",
+                "name": "integer"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
