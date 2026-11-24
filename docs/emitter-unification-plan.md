@@ -313,6 +313,9 @@ node tools/truthsrc-project.mjs generate --out "$PWD/generated/current"   # writ
 node --input-type=module -e "import {verifyProjectCli} from '/Users/zhongdj/Workspaces/mad-polaris/metarch-truthsrc/lib/project/verify.mjs'; \
 const r=(verifyProjectCli(['--project','truthsrc.project.json','--out','generated/current']).result??verifyProjectCli(['--project','truthsrc.project.json','--out','generated/current'])); \
 console.log(JSON.stringify(r.checks), r.passed)"  # 12 项全 true
+# 第六步（R7 追加，裁定 2026-11-23 §13）：生成应用冷 sbt 全量编译——
+# 沙箱拷贝树内执行（cp -R generated/current /private/tmp/r7-gate），
+# 工作区不落 target/；显式 update 走 generate --update。
 ```
 
 关键文件：本计划；账本 `second-family-v2-toolgate-approved.md`（8 族收口＋D-P08＋

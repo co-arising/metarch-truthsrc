@@ -16,6 +16,7 @@ import com.typesafe.config.ConfigFactory
 import org.scalacheck.Gen
 
 import example.bankwealth.domain.values._
+import BankPaymentPorts.{CompletionContext, OperationNotExecuted}
 import net.imadz.infra.saga.strict._
 import akka.persistence.testkit.scaladsl.PersistenceTestKit
 

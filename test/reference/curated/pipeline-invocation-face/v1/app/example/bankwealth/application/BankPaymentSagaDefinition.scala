@@ -8,6 +8,7 @@ import akka.persistence.typed.PersistenceId
 import com.google.protobuf.ByteString
 import example.bankwealth.domain.{CreditBalanceProtocol, FundOrderProtocol}
 import example.bankwealth.domain.values._
+import BankPaymentPorts.OperationNotExecuted
 import net.imadz.infra.saga.strict._
 
 /** Strict-saga definition of the cash purchase payment: the args codec, the

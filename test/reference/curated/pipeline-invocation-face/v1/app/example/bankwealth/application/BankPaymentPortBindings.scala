@@ -3,6 +3,7 @@ package example.bankwealth.application
 import scala.concurrent.Future
 
 import example.bankwealth.domain.values._
+import BankPaymentPorts.CompletionContext
 import net.imadz.infra.saga.strict.OperationIdentity
 
 /** Exact bindings of the handwritten implementations to the declared ports.

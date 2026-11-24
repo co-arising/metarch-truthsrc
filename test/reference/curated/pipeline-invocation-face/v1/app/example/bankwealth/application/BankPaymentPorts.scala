@@ -17,6 +17,8 @@ import net.imadz.infra.saga.strict.{OperationIdentity, TransactionIdentity}
   * the domain value types keep their knowledge-side names. */
 trait BankPaymentPorts {
 
+  import BankPaymentPorts.CompletionContext
+
   /** Declared identity of every bound implementation — evidence derived from
     * the binding obligations at install time, never hand-maintained. */
   def declarations: Map[String, (String, String)]
@@ -88,13 +90,16 @@ trait BankPaymentPorts {
   def outcomeUnknownDeliveryCompletion(input: BankPaymentResult, context: CompletionContext): Future[Boolean]
 }
 
-/** Completion-carrying call context of the delivery two-phase. */
-final case class CompletionContext(original: BankPaymentOriginal, identity: TransactionIdentity)
+object BankPaymentPorts {
 
-/** Raised by implementations when an operation was provably not executed;
-  * the strict runtime folds this into a not-executed receipt. */
-final case class OperationNotExecuted(
-  identity: OperationIdentity,
-  evidence: String,
-  safeToRetry: Boolean,
-) extends RuntimeException(evidence)
+  /** Completion-carrying call context of the delivery two-phase. */
+  final case class CompletionContext(original: BankPaymentOriginal, identity: TransactionIdentity)
+
+  /** Raised by implementations when an operation was provably not executed;
+    * the strict runtime folds this into a not-executed receipt. */
+  final case class OperationNotExecuted(
+    identity: OperationIdentity,
+    evidence: String,
+    safeToRetry: Boolean,
+  ) extends RuntimeException(evidence)
+}

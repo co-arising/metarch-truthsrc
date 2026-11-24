@@ -771,3 +771,62 @@ BankPaymentOriginal`，refund 案 `original: BankRefundOriginal`）与
   透传——恰好钉住非清单项目不受扰行为）；**真知识全量干跑**：
   captureProject→派生 118 值→家族渲染 118 件→对 bank 现产 delta 纪律
   118/118 ✓（真模块栈复证沙箱 R3）。
+
+## 15. 裁定记录（2026-11-23，#43 修复裁定＋执行）
+
+**用户裁定原文**：「先提交，然后 #43 修复方案 A，给予 F7 豁免」。
+
+1. **value-object 节拍先提交**：metarch 侧工作以 71267eb 单独闭合
+  （20 文件，+3142；bank 翻转仍按 R6 待 #43 先修）。
+2. **方案 A 批准**：`CompletionContext`/`OperationNotExecuted` 移入
+  `<Stem>Ports` 伴名 object（classic per-stem 先例
+  `render-technical-ports.mjs` 同形）。生成件 HostIO/PortBindings/
+  SagaDefinition 各 +1 行同包相对 import（`import <Stem>Ports.<成员>`，
+  正文裸名不动）；#43 金样树 F3 同步 5 件（Ports 件伴名化＋三 app 件各
+  +1 import＋手写金样件 BankPaymentOracle.scala +1 import）。
+3. **F7 豁免授予**（范围严格限定）：bank 手写供给
+  `BankPaymentBindings.scala` / `BankRefundBindings.scala` 各改 1 行
+  import（包组内两个裸名移出、新伴名成员导入行替换；正文零改动）。
+  豁免仅覆盖此 2 文件各 1 行，F7 其余冻结面不变。
+4. **修复面外发现（登记）**：bank `test/scala/
+  BankPaymentDeliveryAcceptanceSpec.scala` 引用旧世代名
+  `bank_payment_hostTechnicalPorts => Technical` 并以
+  `Technical.CompletionContext` 限定使用——该文件不在构建内（已登记
+  dangling debt），不构成修复约束，本节拍不动它。
+5. **修复后门序**：parity 12/12 ✓ → face 套件 10/10 ✓ → 全量套件 →
+  bank 手写 2 行（豁免）→ 显式 update 重生成（8 生成件）→ verify 12 项 →
+  **R7 新冷编译门首跑**（沙箱拷贝树：pristine 基线＋修复态对照）→
+  fix 提交。
+
+### 15.1 R7 首跑发现与完成项（同日）
+
+**R7 首跑揭示的门语义实质**：此前「恰 2 个重复定义错误」（§11 R2 记录）实为
+**命名阶段中断**——重复定义让 scalac 在 name resolution 完成前中止，typer
+从未跑完，其下全部类型级破损被掩盖。伴名化消除重复定义后，typer 首次完整
+运行，暴露三簇：
+
+- **A′（方案 A 自身不完整，本裁定内补齐）**：伴名化后 trait 体内的裸名
+  `CompletionContext` 解析不到伴名成员（伴名成员不自动进入类体作用域）。
+  补齐：trait 体首行 `import <Stem>Ports.CompletionContext`（金样同步）。
+- **B（家族模块既有缺陷，R7 发现）**：`emitHost` 991/1166 行硬编码
+  `BankPaymentHostIO.admit/deliver` 而非 `md.hostIo`——refund 翻转产出的
+  BankRefundHost 因此跨线调用 payment HostIO。金样仅含 payment 一案，
+  parity 永远抓不到。修复：改用 `md.hostIo`（payment 字节不变，parity 仍
+  allGreen）。属委托验收杆内的正确性修复，随本节拍记档。
+- **C（dispatch/ta 翻转 a0d958c 手写漏改，R7 发现）**：生成的
+  BankTaEffectHost（effect-face 新 ABI：无 `Implementation`、typed
+  `ReconcileDecision`）与手写 BankTaEffectBindings.scala /
+  BankTaRefundApplication.scala（仍用旧 ABI）漂移——该翻转当时仅改 8＋4
+  行，且五步门只过知识编译，从未暴露。**用户裁定：批准 F7 豁免＋由我修**
+  （AskUserQuestion 同日）。修复三处（对齐 sip 侧已对齐模型）：
+  `Host.Bindings` 三槽改 `Host.EffectBinding` 命名槽位；
+  `input.decision != "retry"` → `!= Host.ReconcileDecision.Retry`（顺带
+  消灭恒真守卫——类型不等比较使重试授权被静默禁用）；
+  `TaHost.Reconcile(input, "retry", …)` → `ReconcileDecision.Retry`。
+
+**R7 首跑全绿证据**：/private/tmp/r7-fixed 沙箱（generated/current 拷贝＋
+手写副本＋重指向 build.sbt）`rm -rf target` 后彻底冷编译
+`sbt "Compile/compile"` → **[success]，exit 0**（144 s）。对照树
+vo-sandbox（修复前 face 文件）复证恰 2 错（重复定义）。收敛链：
+旧形 2 错（掩盖全部）→ A′+B 后恰剩 TA 簇 5 处 → C 后 0 错。
+全量套件 4,483 测试失败集两树（改动前/后）逐名相同 → 环境 flake，零回归。

@@ -4,6 +4,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 import example.bankwealth.domain.values.{BankPaymentOriginal, BankPaymentResult}
 import BankPaymentHost.ResultKind
+import BankPaymentPorts.CompletionContext
 import net.imadz.infra.saga.strict.TransactionIdentity
 
 /** Input/output wiring of the payment invocation face: the admission gate and
