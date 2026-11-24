@@ -178,7 +178,10 @@ function renderValue(value, packages) {
       '    new scala.math.BigDecimal(scaled, java.math.MathContext.UNLIMITED)\n  }\n}\n';
   } else if (shape.kind === 'record') {
     const fields = shape.members.map(member => member.name + ': ' + scalaType(member.type, value.context, packages));
-    body = 'final case class ' + name + '(' + fields.join(', ') + ')\n';
+    const oneLine = 'final case class ' + name + '(' + fields.join(', ') + ')';
+    body = fields.length > 4 || oneLine.length > 100
+      ? 'final case class ' + name + '(\n  ' + fields.join(',\n  ') + '\n)\n'
+      : oneLine + '\n';
   } else {
     body = 'final case class ' + name + '(value: ' + scalaType(shape.type, value.context, packages) + ')\n';
   }

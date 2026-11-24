@@ -116,14 +116,23 @@ function renderAggregateEventHandlers(handler, pkg) {
     const eventStart = core.length;
     const assignments = [];
     core += '    case event: ' + e.name + ' =>\n';
-    e.assignments.forEach((a, idx) => {
+    if (e.assignments.length === 0) {
+      core += '      state\n';
+    } else if (e.assignments.length === 1) {
+      const a = e.assignments[0];
       const start = core.length;
-      core += '      val next' + idx + ': ' + a.valueType + ' = ' + a.expression + '\n';
+      core += '      state.copy(' + a.target + ' = ' + a.expression + ')\n';
       assignments.push({ source: a.source, span: { start, end: core.length } });
-    });
-    core += e.assignments.length
-      ? '      state.copy(' + e.assignments.map((a, idx) => a.target + ' = next' + idx).join(', ') + ')\n'
-      : '      state\n';
+    } else {
+      core += '      state.copy(\n';
+      e.assignments.forEach((a, idx) => {
+        const start = core.length;
+        const comma = idx < e.assignments.length - 1 ? ',' : '';
+        core += '        ' + a.target + ' = ' + a.expression + comma + '\n';
+        assignments.push({ source: a.source, span: { start, end: core.length } });
+      });
+      core += '      )\n';
+    }
     const scope = { start: eventStart, end: core.length };
     foldMappings.push({ source: e.source, span: scope, scope }, ...assignments.map(m => ({ ...m, scope })));
   }

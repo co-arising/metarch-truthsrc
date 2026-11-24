@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "truthsrc.aggregate-bootstrap-input/v1",
+  "packages": [
+    {
+      "context": "bankwealth",
+      "package": "example.bankwealth"
+    }
+  ],
+  "bootstraps": [
+    {
+      "context": "bankwealth",
+      "name": "CreditBalance",
+      "persistenceIdentity": "unique-id",
+      "authority": false,
+      "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0"
+      }
+    },
+    {
+      "context": "bankwealth",
+      "name": "FundOrder",
+      "persistenceIdentity": "unique-id",
+      "authority": true,
+      "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1"
+      }
+    },
+    {
+      "context": "bankwealth",
+      "name": "SipPlan",
+      "persistenceIdentity": "unique-id",
+      "authority": false,
+      "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2"
+      }
+    }
+  ]
+}

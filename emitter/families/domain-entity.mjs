@@ -189,12 +189,32 @@ function checkInput(input) {
 const packageOf = (context, packages) => packages.find(p => p.context === context).package;
 const pathOf = (pkg, rel) => 'app/' + pkg.replaceAll('.', '/') + '/' + rel;
 
-const scalaType = (type, packages) => {
+const scalaType = (type, ownContext, packages) => {
   if (type.form === 'primitive') return PRIMITIVES.get(type.name);
-  if (type.form === 'nominal') return packageOf(type.context, packages) + '.domain.values.' + symbol(type.name);
-  if (type.form === 'optional') return 'Option[' + scalaType(type.element, packages) + ']';
-  if (type.form === 'sequence') return 'Vector[' + scalaType(type.element, packages) + ']';
-  return 'Map[' + scalaType(type.key, packages) + ', ' + scalaType(type.value, packages) + ']';
+  if (type.form === 'nominal') {
+    if (type.context === ownContext) return symbol(type.name);
+    return packageOf(type.context, packages) + '.domain.values.' + symbol(type.name);
+  }
+  if (type.form === 'optional') return 'Option[' + scalaType(type.element, ownContext, packages) + ']';
+  if (type.form === 'sequence') return 'Vector[' + scalaType(type.element, ownContext, packages) + ']';
+  return 'Map[' + scalaType(type.key, ownContext, packages) + ', ' + scalaType(type.value, ownContext, packages) + ']';
+};
+
+const usesOwnValues = (type, ownContext) => {
+  if (type.form === 'nominal') return type.context === ownContext;
+  if (type.form === 'optional' || type.form === 'sequence') return usesOwnValues(type.element, ownContext);
+  if (type.form === 'map') return usesOwnValues(type.key, ownContext) || usesOwnValues(type.value, ownContext);
+  return false;
+};
+
+const literalUsesOwnValues = (lit, ownContext) => {
+  if (lit.kind === 'nominal-wrapper') return lit.context === ownContext || literalUsesOwnValues(lit.inner, ownContext);
+  if (lit.kind === 'nominal-exact-decimal' || lit.kind === 'nominal-exact-unit-decimal') return lit.context === ownContext;
+  if (lit.kind === 'nominal-record') return lit.context === ownContext || lit.args.some(a => literalUsesOwnValues(a, ownContext));
+  if (lit.kind === 'optional') return lit.present && literalUsesOwnValues(lit.value, ownContext);
+  if (lit.kind === 'sequence') return lit.elements.some(e => literalUsesOwnValues(e, ownContext));
+  if (lit.kind === 'map') return lit.entries.some(e => literalUsesOwnValues(e.key, ownContext) || literalUsesOwnValues(e.value, ownContext));
+  return false;
 };
 
 const valueDeps = (type, packages) => {
@@ -204,22 +224,25 @@ const valueDeps = (type, packages) => {
   return [];
 };
 
-const renderLiteral = (lit, packages) => {
+const renderNominalRef = (context, name, ownContext, packages) =>
+  context === ownContext ? symbol(name) : packageOf(context, packages) + '.domain.values.' + symbol(name);
+
+const renderLiteral = (lit, ownContext, packages) => {
   if (lit.kind === 'string') return JSON.stringify(lit.value);
   if (lit.kind === 'boolean') return String(lit.value);
-  if (lit.kind === 'integer') return 'java.lang.Long.parseLong(' + JSON.stringify(lit.value) + ')';
+  if (lit.kind === 'integer') return lit.value + 'L';
   if (lit.kind === 'decimal') return 'BigDecimal(' + JSON.stringify(lit.value) + ')';
   if (lit.kind === 'nominal-wrapper')
-    return packageOf(lit.context, packages) + '.domain.values.' + symbol(lit.name) + '(' + renderLiteral(lit.inner, packages) + ')';
+    return renderNominalRef(lit.context, lit.name, ownContext, packages) + '(' + renderLiteral(lit.inner, ownContext, packages) + ')';
   if (lit.kind === 'nominal-exact-decimal')
-    return packageOf(lit.context, packages) + '.domain.values.' + symbol(lit.name) + '(BigDecimal(' + JSON.stringify(lit.amount) + '))';
+    return renderNominalRef(lit.context, lit.name, ownContext, packages) + '(BigDecimal(' + JSON.stringify(lit.amount) + '))';
   if (lit.kind === 'nominal-exact-unit-decimal')
-    return packageOf(lit.context, packages) + '.domain.values.' + symbol(lit.name) + '(BigDecimal(' + JSON.stringify(lit.amount) + '), ' + JSON.stringify(lit.unit) + ')';
+    return renderNominalRef(lit.context, lit.name, ownContext, packages) + '(BigDecimal(' + JSON.stringify(lit.amount) + '), ' + JSON.stringify(lit.unit) + ')';
   if (lit.kind === 'nominal-record')
-    return packageOf(lit.context, packages) + '.domain.values.' + symbol(lit.name) + '(' + lit.args.map(a => renderLiteral(a, packages)).join(', ') + ')';
-  if (lit.kind === 'optional') return lit.present ? 'Some(' + renderLiteral(lit.value, packages) + ')' : 'None';
-  if (lit.kind === 'sequence') return 'Vector(' + lit.elements.map(e => renderLiteral(e, packages)).join(', ') + ')';
-  return 'Map(' + lit.entries.map(e => renderLiteral(e.key, packages) + ' -> ' + renderLiteral(e.value, packages)).join(', ') + ')';
+    return renderNominalRef(lit.context, lit.name, ownContext, packages) + '(' + lit.args.map(a => renderLiteral(a, ownContext, packages)).join(', ') + ')';
+  if (lit.kind === 'optional') return lit.present ? 'Some(' + renderLiteral(lit.value, ownContext, packages) + ')' : 'None';
+  if (lit.kind === 'sequence') return 'Vector(' + lit.elements.map(e => renderLiteral(e, ownContext, packages)).join(', ') + ')';
+  return 'Map(' + lit.entries.map(e => renderLiteral(e.key, ownContext, packages) + ' -> ' + renderLiteral(e.value, ownContext, packages)).join(', ') + ')';
 };
 
 function renderAggregatePair(agg, packages) {
@@ -229,28 +252,31 @@ function renderAggregatePair(agg, packages) {
   const entityPath = pathOf(pkg, 'domain/entities/' + agg.name + 'Entity.scala');
   const protocolPath = pathOf(pkg, 'domain/' + agg.name + 'Protocol.scala');
 
-  const parameters = agg.fields.map(f => symbol(f.name) + ': ' + scalaType(f.type, packages)).join(', ');
-  const initial = agg.fields.map(f => renderLiteral(f.default, packages)).join(', ');
+  const paramList = agg.fields.map(f => symbol(f.name) + ': ' + scalaType(f.type, agg.context, packages));
+  const namedInitials = agg.fields.map(f => symbol(f.name) + ' = ' + renderLiteral(f.default, agg.context, packages));
   const deps = [...new Set(agg.fields.flatMap(f => valueDeps(f.type, packages)))];
   const stateSources = [agg.source, ...agg.fields.map(f => f.source)];
 
-  const stateContent = 'package ' + pkg + '.domain\n\nfinal case class ' + name + 'State(' + parameters + ')\n\n' +
+  const stateImportValues = agg.fields.some(f => usesOwnValues(f.type, agg.context));
+  const oneLineState = 'final case class ' + name + 'State(' + paramList.join(', ') + ')';
+  const stateDecl = paramList.length > 4 || oneLineState.length > 100
+    ? 'final case class ' + name + 'State(\n  ' + paramList.join(',\n  ') + '\n)'
+    : oneLineState;
+  const stateContent = 'package ' + pkg + '.domain\n\n' +
+    (stateImportValues ? 'import ' + pkg + '.domain.values._\n\n' : '') +
+    stateDecl + '\n\n' +
     'object ' + name + 'State {\n  def empty: ' + name + 'State = ' + pkg + '.domain.entities.' + name + 'Entity.empty\n}\n';
 
-  let entityContent = 'package ' + pkg + '.domain.entities\n\nobject ' + name + 'Entity {\n' +
+  const entityImportValues = agg.fields.some(f => literalUsesOwnValues(f.default, agg.context));
+  let entityContent = 'package ' + pkg + '.domain.entities\n\n' +
+    (entityImportValues ? 'import ' + pkg + '.domain.values._\n\n' : '') +
+    'object ' + name + 'Entity {\n' +
     '  type State = ' + pkg + '.domain.' + name + 'State\n' +
     '  val State: ' + pkg + '.domain.' + name + 'State.type = ' + pkg + '.domain.' + name + 'State\n\n' +
-    '  type Event = ' + pkg + '.domain.' + name + 'Protocol.Event\n\n  object Events {\n';
-  for (const [index, event] of agg.events.entries()) {
-    const ename = symbol(event.name);
-    entityContent += (index ? '\n' : '') +
-      '    type ' + ename + ' = ' + pkg + '.domain.' + name + 'Protocol.' + ename + '\n' +
-      '    val ' + ename + ': ' + pkg + '.domain.' + name + 'Protocol.' + ename + '.type =\n' +
-      '      ' + pkg + '.domain.' + name + 'Protocol.' + ename + '\n';
-  }
-  entityContent += '  }\n\n';
+    '  type Event = ' + pkg + '.domain.' + name + 'Protocol.Event\n' +
+    '  val Events: ' + pkg + '.domain.' + name + 'Protocol.type = ' + pkg + '.domain.' + name + 'Protocol\n\n';
   const startChar = entityContent.length;
-  entityContent += '  def empty: State = State(' + initial + ')\n';
+  entityContent += '  def empty: State = State(\n    ' + namedInitials.join(',\n    ') + '\n  )\n';
   const endChar = entityContent.length;
   entityContent += '}\n';
 

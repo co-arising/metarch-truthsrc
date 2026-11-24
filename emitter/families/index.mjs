@@ -33,6 +33,7 @@ import { family as protoConverter } from './proto-converter.mjs';
 import { family as serializationAdapter } from './serialization-adapter.mjs';
 import { family as serviceRuntime } from './service-runtime.mjs';
 import { family as projectScaffold } from './project-scaffold.mjs';
+import { family as aggregateBootstrap } from './aggregate-bootstrap.mjs';
 
 const CURATED_FAMILIES = [
   aggregateRulesFormal,
@@ -58,6 +59,7 @@ const CURATED_FAMILIES = [
   serializationAdapter,
   serviceRuntime,
   projectScaffold,
+  aggregateBootstrap,
 ];
 
 for (const family of CURATED_FAMILIES) registerFamily(family);

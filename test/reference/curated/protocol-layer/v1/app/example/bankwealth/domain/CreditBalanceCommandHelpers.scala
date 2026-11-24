@@ -1,11 +1,12 @@
 package example.bankwealth.domain
 
+import example.bankwealth.domain.values._
 import CreditBalanceProtocol._
 
 trait CreditBalanceComputations {
-  def BalanceAfterCommitIncomingCredits(state: CreditBalanceState, p: CommitIncomingCredits): example.bankwealth.domain.values.Money
-  def BalanceAfterReleaseReservedFunds(state: CreditBalanceState, p: ReleaseReservedFunds): example.bankwealth.domain.values.Money
-  def BalanceAfterReserveFunds(state: CreditBalanceState, p: ReserveFunds): example.bankwealth.domain.values.Money
+  def BalanceAfterCommitIncomingCredits(state: CreditBalanceState, p: CommitIncomingCredits): Money
+  def BalanceAfterReleaseReservedFunds(state: CreditBalanceState, p: ReleaseReservedFunds): Money
+  def BalanceAfterReserveFunds(state: CreditBalanceState, p: ReserveFunds): Money
 }
 object CreditBalanceComputations {
 }

@@ -39,7 +39,8 @@ const producerId = (value, what) => {
   return value;
 };
 const symbol = name => KEYWORDS.has(name) ? '`' + name + '`' : name;
-const ingressAlias = id => 'Ingest' + symbol(id.replaceAll('-', '_'));
+const toPascal = id => id.split(/[-_]+/).filter(Boolean).map(w => w[0].toUpperCase() + w.slice(1)).join('');
+const ingressAlias = id => 'Ingest' + toPascal(id);
 
 function checkSource(source, what) {
   if (!source || typeof source !== 'object' || typeof source.document !== 'string' || !source.document ||
@@ -249,13 +250,23 @@ function checkInput(input) {
   }
 }
 
-function renderType(type, pkgByContext) {
+function renderType(type, pkgByContext, ownContext) {
   if (type.form === 'primitive') return PRIMITIVES.get(type.name);
-  if (type.form === 'nominal') return pkgByContext.get(type.context) + '.domain.values.' + symbol(type.name);
-  if (type.form === 'optional') return 'Option[' + renderType(type.element, pkgByContext) + ']';
-  if (type.form === 'sequence') return 'Vector[' + renderType(type.element, pkgByContext) + ']';
-  if (type.form === 'map') return 'Map[' + renderType(type.key, pkgByContext) + ', ' + renderType(type.value, pkgByContext) + ']';
+  if (type.form === 'nominal') {
+    if (ownContext && type.context === ownContext) return symbol(type.name);
+    return pkgByContext.get(type.context) + '.domain.values.' + symbol(type.name);
+  }
+  if (type.form === 'optional') return 'Option[' + renderType(type.element, pkgByContext, ownContext) + ']';
+  if (type.form === 'sequence') return 'Vector[' + renderType(type.element, pkgByContext, ownContext) + ']';
+  if (type.form === 'map') return 'Map[' + renderType(type.key, pkgByContext, ownContext) + ', ' + renderType(type.value, pkgByContext, ownContext) + ']';
   fail('PL_INPUT', 'unsupported type form: ' + JSON.stringify(type.form));
+}
+
+function usesOwnValues(type, ownContext) {
+  if (type.form === 'nominal') return type.context === ownContext;
+  if (type.form === 'optional' || type.form === 'sequence') return usesOwnValues(type.element, ownContext);
+  if (type.form === 'map') return usesOwnValues(type.key, ownContext) || usesOwnValues(type.value, ownContext);
+  return false;
 }
 
 function valuesPaths(type, pkgByContext) {
@@ -269,7 +280,7 @@ function renderLiteral(value, type) {
   if (type.form === 'primitive') {
     if (type.name === 'string') return JSON.stringify(value);
     if (type.name === 'boolean') return String(value);
-    if (type.name === 'integer') return 'java.lang.Long.parseLong(' + JSON.stringify(value) + ')';
+    if (type.name === 'integer') return value + 'L';
     return 'BigDecimal(' + JSON.stringify(value) + ')';
   }
   if (type.form === 'optional') return value.present ? 'Some(' + renderLiteral(value.value, type.element) + ')' : 'None';
@@ -297,26 +308,34 @@ function renderExpr(expr) {
   fail('PL_INPUT', 'unsupported expression op: ' + JSON.stringify(expr.op));
 }
 
-const renderFields = (rows, pkgByContext) =>
-  rows.map(r => symbol(r.name) + ': ' + renderType(r.valueType, pkgByContext)).join(', ');
+const renderCaseClass = (className, rows, ext, pkgByContext, ownContext) => {
+  const fields = rows.map(r => symbol(r.name) + ': ' + renderType(r.valueType, pkgByContext, ownContext));
+  const oneLine = '  final case class ' + symbol(className) + '(' + fields.join(', ') + ') extends ' + ext;
+  if (fields.length > 4 || oneLine.length > 110) {
+    return '  final case class ' + symbol(className) + '(\n    ' + fields.join(',\n    ') + '\n  ) extends ' + ext;
+  }
+  return oneLine;
+};
 
 function renderDomainProtocol(agg, pkg, pkgPath, pkgByContext) {
   const name = symbol(agg.name);
+  const types = [...agg.commands.flatMap(c => c.parameters), ...agg.events.flatMap(e => e.slots)];
+  const importValues = types.some(r => usesOwnValues(r.valueType, agg.context));
   const lines = [
     'package ' + pkg + '.domain',
     '',
+    ...(importValues ? ['import ' + pkg + '.domain.values._', ''] : []),
     'object ' + name + 'Protocol {',
     '  sealed trait Command',
     '  sealed trait Event',
   ];
   for (const c of agg.commands) {
-    lines.push('  final case class ' + symbol(c.name) + '(' + renderFields(c.parameters, pkgByContext) + ') extends Command');
+    lines.push(renderCaseClass(c.name, c.parameters, 'Command', pkgByContext, agg.context));
   }
   for (const e of agg.events) {
-    lines.push('  final case class ' + symbol(e.name) + '(' + renderFields(e.slots, pkgByContext) + ') extends Event');
+    lines.push(renderCaseClass(e.name, e.slots, 'Event', pkgByContext, agg.context));
   }
   lines.push('}');
-  const types = [...agg.commands.flatMap(c => c.parameters), ...agg.events.flatMap(e => e.slots)];
   return {
     path: 'app/' + pkgPath + '/domain/' + agg.name + 'Protocol.scala',
     kind: 'protocol',
@@ -328,15 +347,17 @@ function renderDomainProtocol(agg, pkg, pkgPath, pkgByContext) {
 
 function renderCommandHelpers(agg, pkg, pkgPath, pkgByContext) {
   const name = symbol(agg.name);
+  const importValues = agg.hosts.some(h => usesOwnValues(h.outputType, agg.context));
   const lines = [
     'package ' + pkg + '.domain',
     '',
+    ...(importValues ? ['import ' + pkg + '.domain.values._'] : []),
     'import ' + name + 'Protocol._',
     '',
     'trait ' + name + 'Computations {',
   ];
   for (const h of agg.hosts) {
-    lines.push('  def ' + symbol(h.name) + '(state: ' + name + 'State, p: ' + symbol(h.command) + '): ' + renderType(h.outputType, pkgByContext));
+    lines.push('  def ' + symbol(h.name) + '(state: ' + name + 'State, p: ' + symbol(h.command) + '): ' + renderType(h.outputType, pkgByContext, agg.context));
   }
   lines.push('}');
   lines.push('object ' + name + 'Computations {');

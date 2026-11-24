@@ -41,12 +41,14 @@ const producerId = (value, what) => {
 };
 const symbol = name => KEYWORDS.has(name) ? '`' + name + '`' : name;
 const knowledgeOf = source => 'source:' + source.document + '#' + source.pointer;
+const toPascal = id => id.split(/[-_]+/).filter(Boolean).map(w => w[0].toUpperCase() + w.slice(1)).join('');
 const externalNames = id => {
-  const stem = id.replaceAll('-', '_');
+  const pascal = toPascal(id);
+  const camel = pascal[0].toLowerCase() + pascal.slice(1);
   return {
-    ingress: 'Ingest' + symbol(stem),
-    method: symbol(stem),
-    identity: symbol(stem + '_identity'),
+    ingress: 'Ingest' + pascal,
+    method: symbol(camel),
+    identity: symbol(camel + 'Identity'),
   };
 };
 
@@ -242,8 +244,10 @@ object ${name}Behaviors {
       behaviorContent += `    case ${names.ingress}(output, authorization, reply) =>
       if (!authority.authorize(${JSON.stringify(producer.id)}, authorization, ${name}ExternalEvents.${names.identity}(output)))
         Effect.none.thenRun((_: State) => reply ! Refused("external-authority-denied"))
-      else
-        Effect.persist(${name}ExternalEvents.${names.method}(output)).thenRun((_: State) => reply ! Accepted(Vector(${name}ExternalEvents.${names.method}(output))))
+      else {
+        val event = ${name}ExternalEvents.${names.method}(output)
+        Effect.persist(event).thenRun((_: State) => reply ! Accepted(Vector(event)))
+      }
 `;
       const endChar = behaviorContent.length;
       const startBytes = Buffer.byteLength(behaviorContent.slice(0, startChar));

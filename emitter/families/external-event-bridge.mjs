@@ -83,14 +83,29 @@ function checkType(type, packageMap, what) {
   fail(what + '.form unsupported: ' + JSON.stringify(type.form));
 }
 
-function renderType(type, packageMap) {
+function renderType(type, packageMap, ownContext) {
   if (type.form === 'primitive') return PRIMITIVES.get(type.name);
-  if (type.form === 'nominal') return packageMap.get(type.context) + '.domain.values.' + symbol(type.name);
-  if (type.form === 'optional') return 'Option[' + renderType(type.element, packageMap) + ']';
-  if (type.form === 'sequence') return 'Vector[' + renderType(type.element, packageMap) + ']';
-  if (type.form === 'map') return 'Map[' + renderType(type.key, packageMap) + ', ' + renderType(type.value, packageMap) + ']';
+  if (type.form === 'nominal') {
+    if (ownContext && type.context === ownContext) return symbol(type.name);
+    return packageMap.get(type.context) + '.domain.values.' + symbol(type.name);
+  }
+  if (type.form === 'optional') return 'Option[' + renderType(type.element, packageMap, ownContext) + ']';
+  if (type.form === 'sequence') return 'Vector[' + renderType(type.element, packageMap, ownContext) + ']';
+  if (type.form === 'map') return 'Map[' + renderType(type.key, packageMap, ownContext) + ', ' + renderType(type.value, packageMap, ownContext) + ']';
   fail('unsupported type form: ' + JSON.stringify(type.form));
 }
+
+function usesOwnValues(type, ownContext) {
+  if (type.form === 'nominal') return type.context === ownContext;
+  if (type.form === 'optional' || type.form === 'sequence') return usesOwnValues(type.element, ownContext);
+  if (type.form === 'map') return usesOwnValues(type.key, ownContext) || usesOwnValues(type.value, ownContext);
+  return false;
+}
+
+const toCamel = id => {
+  const pascal = id.split(/[-_]+/).filter(Boolean).map(w => w[0].toUpperCase() + w.slice(1)).join('');
+  return pascal[0].toLowerCase() + pascal.slice(1);
+};
 
 function valueDeps(type, packageMap) {
   if (type.form === 'nominal') {
@@ -172,21 +187,23 @@ export function renderExternalEventBridgeFiles(input) {
     const pkg = packageMap.get(bridge.context);
     const pkgPath = pkg.replaceAll('.', '/');
     const name = symbol(bridge.aggregate);
+    const importValues = bridge.producers.some(p => usesOwnValues(p.outputType, bridge.context));
     const lines = [
       `package ${pkg}.domain`,
       '',
+      ...(importValues ? [`import ${pkg}.domain.values._`] : []),
       `import ${name}Protocol._`,
       '',
       `object ${name}ExternalEvents {`,
     ];
     for (const producer of bridge.producers) {
-      const baseMethod = producer.id.replaceAll('-', '_');
-      const outType = renderType(producer.outputType, packageMap);
+      const baseMethod = toCamel(producer.id);
+      const outType = renderType(producer.outputType, packageMap, bridge.context);
       const eventName = symbol(producer.event);
       const args = producer.slotMembers.map(m => 'output.' + symbol(m)).join(', ');
       const idParts = producer.identityKeys.map(k => 'output.' + symbol(k.member) + '.value'.repeat(k.unwrapDepth)).join(', ');
       lines.push(`  def ${symbol(baseMethod)}(output: ${outType}): ${eventName} = ${eventName}(${args})`);
-      lines.push(`  def ${symbol(baseMethod + '_identity')}(output: ${outType}): Vector[String] = Vector(${idParts})`);
+      lines.push(`  def ${symbol(baseMethod + 'Identity')}(output: ${outType}): Vector[String] = Vector(${idParts})`);
     }
     lines.push('}', '');
     const protocolDep = `app/${pkgPath}/domain/${bridge.aggregate}Protocol.scala`;

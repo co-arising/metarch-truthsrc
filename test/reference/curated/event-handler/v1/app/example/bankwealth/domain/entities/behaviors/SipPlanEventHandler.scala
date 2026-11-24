@@ -6,82 +6,86 @@ import example.bankwealth.domain.SipPlanProtocol._
 object SipPlanEventHandler {
   def apply(state: SipPlanState, input: Event): SipPlanState = input match {
     case event: SipPlanCreated =>
-      val next0: example.bankwealth.domain.values.PlanId = event.planId
-      val next1: Boolean = true
-      val next2: Map[example.bankwealth.domain.values.RevisionId, example.bankwealth.domain.values.SipRevisionConfig] = state.revisions.updated((event.config).revision, event.config)
-      val next3: example.bankwealth.domain.values.RevisionId = (event.config).revision
-      val next4: Long = (event.config).effectiveSlot
-      state.copy(id = next0, initialized = next1, revisions = next2, latestRevision = next3, latestEffectiveSlot = next4)
+      state.copy(
+        id = event.planId,
+        initialized = true,
+        revisions = state.revisions.updated((event.config).revision, event.config),
+        latestRevision = (event.config).revision,
+        latestEffectiveSlot = (event.config).effectiveSlot
+      )
     case event: SipDueSlotAppended =>
-      val next0: Map[Long, Long] = state.slots.updated(event.position, event.dueSlot)
-      val next1: Long = java.lang.Math.addExact(state.scheduleCount, java.lang.Long.parseLong("1"))
-      val next2: Long = event.dueSlot
-      val next3: Map[Long, Long] = state.intentAppendedDueSlots.updated(event.dueSlot, event.position)
-      state.copy(slots = next0, scheduleCount = next1, lastDueSlot = next2, intentAppendedDueSlots = next3)
+      state.copy(
+        slots = state.slots.updated(event.position, event.dueSlot),
+        scheduleCount = java.lang.Math.addExact(state.scheduleCount, 1L),
+        lastDueSlot = event.dueSlot,
+        intentAppendedDueSlots = state.intentAppendedDueSlots.updated(event.dueSlot, event.position)
+      )
     case event: SipScheduleSealed =>
-      val next0: Boolean = event.`sealed`
-      state.copy(scheduleSealed = next0)
+      state.copy(scheduleSealed = event.`sealed`)
     case event: SipPlanRevised =>
-      val next0: Map[example.bankwealth.domain.values.RevisionId, example.bankwealth.domain.values.SipRevisionConfig] = state.revisions.updated((event.config).revision, event.config)
-      val next1: Map[example.bankwealth.domain.values.RevisionId, Long] = state.revisionEnds.updated(event.previousRevision, (event.config).effectiveSlot)
-      val next2: example.bankwealth.domain.values.RevisionId = (event.config).revision
-      val next3: Long = (event.config).effectiveSlot
-      state.copy(revisions = next0, revisionEnds = next1, latestRevision = next2, latestEffectiveSlot = next3)
+      state.copy(
+        revisions = state.revisions.updated((event.config).revision, event.config),
+        revisionEnds = state.revisionEnds.updated(event.previousRevision, (event.config).effectiveSlot),
+        latestRevision = (event.config).revision,
+        latestEffectiveSlot = (event.config).effectiveSlot
+      )
     case event: SipClockAdvanced =>
-      val next0: Long = event.tick
-      state.copy(currentTick = next0)
+      state.copy(currentTick = event.tick)
     case event: SipPlanPaused =>
-      val next0: Boolean = true
-      val next1: Long = event.tick
-      state.copy(paused = next0, pauseTick = next1)
+      state.copy(
+        paused = true,
+        pauseTick = event.tick
+      )
     case event: SipPlanResumed =>
-      val next0: Boolean = false
-      val next1: Map[Long, Long] = state.pauseIntervals.updated(event.pauseTick, event.tick)
-      state.copy(paused = next0, pauseIntervals = next1)
+      state.copy(
+        paused = false,
+        pauseIntervals = state.pauseIntervals.updated(event.pauseTick, event.tick)
+      )
     case event: SipDueSlotObserved =>
-      val next0: Map[Long, String] = state.slotDisposition.updated(event.dueSlot, event.disposition)
-      val next1: Long = java.lang.Math.addExact(state.observedCount, java.lang.Long.parseLong("1"))
-      state.copy(slotDisposition = next0, observedCount = next1)
+      state.copy(
+        slotDisposition = state.slotDisposition.updated(event.dueSlot, event.disposition),
+        observedCount = java.lang.Math.addExact(state.observedCount, 1L)
+      )
     case event: SipPausedDueSlotSkipped =>
-      val next0: Map[Long, String] = state.slotDisposition.updated(event.dueSlot, event.disposition)
-      val next1: Long = java.lang.Math.addExact(state.observedCount, java.lang.Long.parseLong("1"))
-      state.copy(slotDisposition = next0, observedCount = next1)
+      state.copy(
+        slotDisposition = state.slotDisposition.updated(event.dueSlot, event.disposition),
+        observedCount = java.lang.Math.addExact(state.observedCount, 1L)
+      )
     case event: SipSkippedSlotAdvanced =>
-      val next0: Long = java.lang.Math.addExact(state.startCount, java.lang.Long.parseLong("1"))
-      state.copy(startCount = next0)
+      state.copy(startCount = java.lang.Math.addExact(state.startCount, 1L))
     case event: SipInstallmentTriggered =>
-      val next0: Map[Long, example.bankwealth.domain.values.SipOccurrence] = state.occurrences.updated((event.occurrence).dueSlot, event.occurrence)
-      val next1: Map[example.bankwealth.domain.values.OccurrenceId, String] = state.occurrenceProgress.updated((event.occurrence).occurrenceId, "pending")
-      val next2: Long = java.lang.Math.addExact(state.startCount, java.lang.Long.parseLong("1"))
-      state.copy(occurrences = next0, occurrenceProgress = next1, startCount = next2)
+      state.copy(
+        occurrences = state.occurrences.updated((event.occurrence).dueSlot, event.occurrence),
+        occurrenceProgress = state.occurrenceProgress.updated((event.occurrence).occurrenceId, "pending"),
+        startCount = java.lang.Math.addExact(state.startCount, 1L)
+      )
     case event: SipInstallmentPending =>
-      val next0: Map[example.bankwealth.domain.values.OccurrenceId, String] = state.occurrenceProgress.updated((event.occurrence).occurrenceId, event.outcome)
-      state.copy(occurrenceProgress = next0)
+      state.copy(occurrenceProgress = state.occurrenceProgress.updated((event.occurrence).occurrenceId, event.outcome))
     case event: SipInstallmentOutcomeUnknown =>
-      val next0: Map[example.bankwealth.domain.values.OccurrenceId, String] = state.occurrenceProgress.updated((event.occurrence).occurrenceId, event.outcome)
-      state.copy(occurrenceProgress = next0)
+      state.copy(occurrenceProgress = state.occurrenceProgress.updated((event.occurrence).occurrenceId, event.outcome))
     case event: SipInstallmentRecoveryRequired =>
-      val next0: Map[example.bankwealth.domain.values.OccurrenceId, String] = state.occurrenceProgress.updated((event.occurrence).occurrenceId, event.outcome)
-      state.copy(occurrenceProgress = next0)
+      state.copy(occurrenceProgress = state.occurrenceProgress.updated((event.occurrence).occurrenceId, event.outcome))
     case event: SipInstallmentRefundInProgress =>
-      val next0: Map[example.bankwealth.domain.values.OccurrenceId, String] = state.occurrenceProgress.updated((event.occurrence).occurrenceId, event.outcome)
-      state.copy(occurrenceProgress = next0)
+      state.copy(occurrenceProgress = state.occurrenceProgress.updated((event.occurrence).occurrenceId, event.outcome))
     case event: SipInstallmentSucceeded =>
-      val next0: Map[example.bankwealth.domain.values.OccurrenceId, String] = state.firstTerminals.updated((event.occurrence).occurrenceId, event.outcome)
-      val next1: Map[example.bankwealth.domain.values.OccurrenceId, String] = state.occurrenceProgress.updated((event.occurrence).occurrenceId, event.outcome)
-      val next2: Map[String, String] = state.terminalReceiptBodies.updated(event.receiptId, event.receiptBody)
-      val next3: Long = java.lang.Math.addExact(state.successTotal, java.lang.Long.parseLong("1"))
-      state.copy(firstTerminals = next0, occurrenceProgress = next1, terminalReceiptBodies = next2, successTotal = next3)
+      state.copy(
+        firstTerminals = state.firstTerminals.updated((event.occurrence).occurrenceId, event.outcome),
+        occurrenceProgress = state.occurrenceProgress.updated((event.occurrence).occurrenceId, event.outcome),
+        terminalReceiptBodies = state.terminalReceiptBodies.updated(event.receiptId, event.receiptBody),
+        successTotal = java.lang.Math.addExact(state.successTotal, 1L)
+      )
     case event: SipInstallmentFailed =>
-      val next0: Map[example.bankwealth.domain.values.OccurrenceId, String] = state.firstTerminals.updated((event.occurrence).occurrenceId, event.outcome)
-      val next1: Map[example.bankwealth.domain.values.OccurrenceId, String] = state.occurrenceProgress.updated((event.occurrence).occurrenceId, event.outcome)
-      val next2: Map[String, String] = state.terminalReceiptBodies.updated(event.receiptId, event.receiptBody)
-      val next3: Long = java.lang.Math.addExact(state.failureTotal, java.lang.Long.parseLong("1"))
-      state.copy(firstTerminals = next0, occurrenceProgress = next1, terminalReceiptBodies = next2, failureTotal = next3)
+      state.copy(
+        firstTerminals = state.firstTerminals.updated((event.occurrence).occurrenceId, event.outcome),
+        occurrenceProgress = state.occurrenceProgress.updated((event.occurrence).occurrenceId, event.outcome),
+        terminalReceiptBodies = state.terminalReceiptBodies.updated(event.receiptId, event.receiptBody),
+        failureTotal = java.lang.Math.addExact(state.failureTotal, 1L)
+      )
     case event: SipCreateIntentRecorded =>
-      val next0: Option[example.bankwealth.domain.values.BankSipCreateIntent] = event.source
-      val next1: Map[String, example.bankwealth.domain.values.BankSipCreateIntent] = state.sipCreateIntents.updated("original", event.intent)
-      val next2: Vector[Long] = ((event.intent).request).dueSlots
-      state.copy(createIntent = next0, sipCreateIntents = next1, createIntentDueSlots = next2)
+      state.copy(
+        createIntent = event.source,
+        sipCreateIntents = state.sipCreateIntents.updated("original", event.intent),
+        createIntentDueSlots = ((event.intent).request).dueSlots
+      )
   }
 }

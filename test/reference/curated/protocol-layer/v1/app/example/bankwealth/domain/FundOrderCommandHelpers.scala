@@ -1,10 +1,11 @@
 package example.bankwealth.domain
 
+import example.bankwealth.domain.values._
 import FundOrderProtocol._
 
 trait FundOrderComputations {
-  def StableRefundOperationId(state: FundOrderState, p: RequestFundPurchaseRefund): example.bankwealth.domain.values.OperationId
-  def StableTaRequestId(state: FundOrderState, p: RegisterFundTASubmission): example.bankwealth.domain.values.TaRequestId
+  def StableRefundOperationId(state: FundOrderState, p: RequestFundPurchaseRefund): OperationId
+  def StableTaRequestId(state: FundOrderState, p: RegisterFundTASubmission): TaRequestId
 }
 object FundOrderComputations {
 }

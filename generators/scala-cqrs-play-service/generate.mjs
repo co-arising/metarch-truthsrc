@@ -18,6 +18,7 @@ import { withFlippedAggregateLayers } from '../../lib/derivation/aggregate-layer
 import { withFlippedCommandProtocols, withFlippedApplicationProtocols } from '../../lib/derivation/protocol-layer-emission.mjs';
 import { withFlippedExternalEventBridges } from '../../lib/derivation/external-event-bridge-emission.mjs';
 import { withFlippedAggregateRepositories } from '../../lib/derivation/aggregate-repository-emission.mjs';
+import { withFlippedAggregateBootstraps } from '../../lib/derivation/aggregate-bootstrap-emission.mjs';
 import { withFlippedProtoSchemas } from '../../lib/derivation/proto-schema-emission.mjs';
 import { withFlippedProtoConverters } from '../../lib/derivation/proto-converter-emission.mjs';
 import { withFlippedSerializationAdapters } from '../../lib/derivation/serialization-adapter-emission.mjs';
@@ -64,7 +65,7 @@ const inherited = Object.fromEntries(Object.entries(createEffectRegistry('2')).m
   version: 'service-1',
   produce(context) {
     const produced = id === 'aggregate-dsl'
-      ? withFlippedAggregateRepositories(repoCtx => withFlippedApplicationProtocols(protoCtx => withFlippedAggregateLayers(aggCtx => withFlippedDomainEntities(inner => renderAggregateLayers(inner, ['reference-layout','domain-folds','exact-value-types','domain-dependencies'].map(id=>({id,version:['domain-folds','domain-dependencies'].includes(id)?'6':'1'}))), aggCtx), protoCtx), repoCtx), context)
+      ? withFlippedAggregateBootstraps(bootCtx => withFlippedAggregateRepositories(repoCtx => withFlippedApplicationProtocols(protoCtx => withFlippedAggregateLayers(aggCtx => withFlippedDomainEntities(inner => renderAggregateLayers(inner, ['reference-layout','domain-folds','exact-value-types','domain-dependencies'].map(id=>({id,version:['domain-folds','domain-dependencies'].includes(id)?'6':'1'}))), aggCtx), protoCtx), repoCtx), bootCtx), context)
         : id === 'command-dsl'
           ? withFlippedExternalEventBridges(eebCtx => withFlippedCommandProtocols(implementation.produce.bind(implementation), eebCtx), context)
         : id === 'invariant-dsl'

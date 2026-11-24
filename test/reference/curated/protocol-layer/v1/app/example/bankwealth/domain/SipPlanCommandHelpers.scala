@@ -1,9 +1,10 @@
 package example.bankwealth.domain
 
+import example.bankwealth.domain.values._
 import SipPlanProtocol._
 
 trait SipPlanComputations {
-  def StableSipOccurrence(state: SipPlanState, p: TriggerSipInstallment): example.bankwealth.domain.values.SipOccurrence
+  def StableSipOccurrence(state: SipPlanState, p: TriggerSipInstallment): SipOccurrence
 }
 object SipPlanComputations {
 }

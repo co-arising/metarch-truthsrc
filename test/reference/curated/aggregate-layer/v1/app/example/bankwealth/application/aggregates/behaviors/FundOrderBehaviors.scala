@@ -14,61 +14,83 @@ object FundOrderBehaviors {
       .apply(command)
 
   private def externalBehavior(authority: ExternalAuthority): PartialFunction[Command, Effect[Event, State]] = {
-    case Ingestbank_payment_result_compensated(output, authorization, reply) =>
-      if (!authority.authorize("bank-payment-result-compensated", authorization, FundOrderExternalEvents.bank_payment_result_compensated_identity(output)))
+    case IngestBankPaymentResultCompensated(output, authorization, reply) =>
+      if (!authority.authorize("bank-payment-result-compensated", authorization, FundOrderExternalEvents.bankPaymentResultCompensatedIdentity(output)))
         Effect.none.thenRun((_: State) => reply ! Refused("external-authority-denied"))
-      else
-        Effect.persist(FundOrderExternalEvents.bank_payment_result_compensated(output)).thenRun((_: State) => reply ! Accepted(Vector(FundOrderExternalEvents.bank_payment_result_compensated(output))))
-    case Ingestbank_payment_result_outcome_unknown(output, authorization, reply) =>
-      if (!authority.authorize("bank-payment-result-outcome-unknown", authorization, FundOrderExternalEvents.bank_payment_result_outcome_unknown_identity(output)))
+      else {
+        val event = FundOrderExternalEvents.bankPaymentResultCompensated(output)
+        Effect.persist(event).thenRun((_: State) => reply ! Accepted(Vector(event)))
+      }
+    case IngestBankPaymentResultOutcomeUnknown(output, authorization, reply) =>
+      if (!authority.authorize("bank-payment-result-outcome-unknown", authorization, FundOrderExternalEvents.bankPaymentResultOutcomeUnknownIdentity(output)))
         Effect.none.thenRun((_: State) => reply ! Refused("external-authority-denied"))
-      else
-        Effect.persist(FundOrderExternalEvents.bank_payment_result_outcome_unknown(output)).thenRun((_: State) => reply ! Accepted(Vector(FundOrderExternalEvents.bank_payment_result_outcome_unknown(output))))
-    case Ingestbank_payment_result_recovery_required(output, authorization, reply) =>
-      if (!authority.authorize("bank-payment-result-recovery-required", authorization, FundOrderExternalEvents.bank_payment_result_recovery_required_identity(output)))
+      else {
+        val event = FundOrderExternalEvents.bankPaymentResultOutcomeUnknown(output)
+        Effect.persist(event).thenRun((_: State) => reply ! Accepted(Vector(event)))
+      }
+    case IngestBankPaymentResultRecoveryRequired(output, authorization, reply) =>
+      if (!authority.authorize("bank-payment-result-recovery-required", authorization, FundOrderExternalEvents.bankPaymentResultRecoveryRequiredIdentity(output)))
         Effect.none.thenRun((_: State) => reply ! Refused("external-authority-denied"))
-      else
-        Effect.persist(FundOrderExternalEvents.bank_payment_result_recovery_required(output)).thenRun((_: State) => reply ! Accepted(Vector(FundOrderExternalEvents.bank_payment_result_recovery_required(output))))
-    case Ingestbank_payment_result_rejected_before_effects(output, authorization, reply) =>
-      if (!authority.authorize("bank-payment-result-rejected-before-effects", authorization, FundOrderExternalEvents.bank_payment_result_rejected_before_effects_identity(output)))
+      else {
+        val event = FundOrderExternalEvents.bankPaymentResultRecoveryRequired(output)
+        Effect.persist(event).thenRun((_: State) => reply ! Accepted(Vector(event)))
+      }
+    case IngestBankPaymentResultRejectedBeforeEffects(output, authorization, reply) =>
+      if (!authority.authorize("bank-payment-result-rejected-before-effects", authorization, FundOrderExternalEvents.bankPaymentResultRejectedBeforeEffectsIdentity(output)))
         Effect.none.thenRun((_: State) => reply ! Refused("external-authority-denied"))
-      else
-        Effect.persist(FundOrderExternalEvents.bank_payment_result_rejected_before_effects(output)).thenRun((_: State) => reply ! Accepted(Vector(FundOrderExternalEvents.bank_payment_result_rejected_before_effects(output))))
-    case Ingestbank_payment_result_succeeded(output, authorization, reply) =>
-      if (!authority.authorize("bank-payment-result-succeeded", authorization, FundOrderExternalEvents.bank_payment_result_succeeded_identity(output)))
+      else {
+        val event = FundOrderExternalEvents.bankPaymentResultRejectedBeforeEffects(output)
+        Effect.persist(event).thenRun((_: State) => reply ! Accepted(Vector(event)))
+      }
+    case IngestBankPaymentResultSucceeded(output, authorization, reply) =>
+      if (!authority.authorize("bank-payment-result-succeeded", authorization, FundOrderExternalEvents.bankPaymentResultSucceededIdentity(output)))
         Effect.none.thenRun((_: State) => reply ! Refused("external-authority-denied"))
-      else
-        Effect.persist(FundOrderExternalEvents.bank_payment_result_succeeded(output)).thenRun((_: State) => reply ! Accepted(Vector(FundOrderExternalEvents.bank_payment_result_succeeded(output))))
-    case Ingestbank_refund_result_compensated(output, authorization, reply) =>
-      if (!authority.authorize("bank-refund-result-compensated", authorization, FundOrderExternalEvents.bank_refund_result_compensated_identity(output)))
+      else {
+        val event = FundOrderExternalEvents.bankPaymentResultSucceeded(output)
+        Effect.persist(event).thenRun((_: State) => reply ! Accepted(Vector(event)))
+      }
+    case IngestBankRefundResultCompensated(output, authorization, reply) =>
+      if (!authority.authorize("bank-refund-result-compensated", authorization, FundOrderExternalEvents.bankRefundResultCompensatedIdentity(output)))
         Effect.none.thenRun((_: State) => reply ! Refused("external-authority-denied"))
-      else
-        Effect.persist(FundOrderExternalEvents.bank_refund_result_compensated(output)).thenRun((_: State) => reply ! Accepted(Vector(FundOrderExternalEvents.bank_refund_result_compensated(output))))
-    case Ingestbank_refund_result_outcome_unknown(output, authorization, reply) =>
-      if (!authority.authorize("bank-refund-result-outcome-unknown", authorization, FundOrderExternalEvents.bank_refund_result_outcome_unknown_identity(output)))
+      else {
+        val event = FundOrderExternalEvents.bankRefundResultCompensated(output)
+        Effect.persist(event).thenRun((_: State) => reply ! Accepted(Vector(event)))
+      }
+    case IngestBankRefundResultOutcomeUnknown(output, authorization, reply) =>
+      if (!authority.authorize("bank-refund-result-outcome-unknown", authorization, FundOrderExternalEvents.bankRefundResultOutcomeUnknownIdentity(output)))
         Effect.none.thenRun((_: State) => reply ! Refused("external-authority-denied"))
-      else
-        Effect.persist(FundOrderExternalEvents.bank_refund_result_outcome_unknown(output)).thenRun((_: State) => reply ! Accepted(Vector(FundOrderExternalEvents.bank_refund_result_outcome_unknown(output))))
-    case Ingestbank_refund_result_recovery_required(output, authorization, reply) =>
-      if (!authority.authorize("bank-refund-result-recovery-required", authorization, FundOrderExternalEvents.bank_refund_result_recovery_required_identity(output)))
+      else {
+        val event = FundOrderExternalEvents.bankRefundResultOutcomeUnknown(output)
+        Effect.persist(event).thenRun((_: State) => reply ! Accepted(Vector(event)))
+      }
+    case IngestBankRefundResultRecoveryRequired(output, authorization, reply) =>
+      if (!authority.authorize("bank-refund-result-recovery-required", authorization, FundOrderExternalEvents.bankRefundResultRecoveryRequiredIdentity(output)))
         Effect.none.thenRun((_: State) => reply ! Refused("external-authority-denied"))
-      else
-        Effect.persist(FundOrderExternalEvents.bank_refund_result_recovery_required(output)).thenRun((_: State) => reply ! Accepted(Vector(FundOrderExternalEvents.bank_refund_result_recovery_required(output))))
-    case Ingestbank_refund_result_rejected_before_effects(output, authorization, reply) =>
-      if (!authority.authorize("bank-refund-result-rejected-before-effects", authorization, FundOrderExternalEvents.bank_refund_result_rejected_before_effects_identity(output)))
+      else {
+        val event = FundOrderExternalEvents.bankRefundResultRecoveryRequired(output)
+        Effect.persist(event).thenRun((_: State) => reply ! Accepted(Vector(event)))
+      }
+    case IngestBankRefundResultRejectedBeforeEffects(output, authorization, reply) =>
+      if (!authority.authorize("bank-refund-result-rejected-before-effects", authorization, FundOrderExternalEvents.bankRefundResultRejectedBeforeEffectsIdentity(output)))
         Effect.none.thenRun((_: State) => reply ! Refused("external-authority-denied"))
-      else
-        Effect.persist(FundOrderExternalEvents.bank_refund_result_rejected_before_effects(output)).thenRun((_: State) => reply ! Accepted(Vector(FundOrderExternalEvents.bank_refund_result_rejected_before_effects(output))))
-    case Ingestbank_refund_result_succeeded(output, authorization, reply) =>
-      if (!authority.authorize("bank-refund-result-succeeded", authorization, FundOrderExternalEvents.bank_refund_result_succeeded_identity(output)))
+      else {
+        val event = FundOrderExternalEvents.bankRefundResultRejectedBeforeEffects(output)
+        Effect.persist(event).thenRun((_: State) => reply ! Accepted(Vector(event)))
+      }
+    case IngestBankRefundResultSucceeded(output, authorization, reply) =>
+      if (!authority.authorize("bank-refund-result-succeeded", authorization, FundOrderExternalEvents.bankRefundResultSucceededIdentity(output)))
         Effect.none.thenRun((_: State) => reply ! Refused("external-authority-denied"))
-      else
-        Effect.persist(FundOrderExternalEvents.bank_refund_result_succeeded(output)).thenRun((_: State) => reply ! Accepted(Vector(FundOrderExternalEvents.bank_refund_result_succeeded(output))))
-    case Ingestbank_ta_receipt_observation(output, authorization, reply) =>
-      if (!authority.authorize("bank-ta-receipt-observation", authorization, FundOrderExternalEvents.bank_ta_receipt_observation_identity(output)))
+      else {
+        val event = FundOrderExternalEvents.bankRefundResultSucceeded(output)
+        Effect.persist(event).thenRun((_: State) => reply ! Accepted(Vector(event)))
+      }
+    case IngestBankTaReceiptObservation(output, authorization, reply) =>
+      if (!authority.authorize("bank-ta-receipt-observation", authorization, FundOrderExternalEvents.bankTaReceiptObservationIdentity(output)))
         Effect.none.thenRun((_: State) => reply ! Refused("external-authority-denied"))
-      else
-        Effect.persist(FundOrderExternalEvents.bank_ta_receipt_observation(output)).thenRun((_: State) => reply ! Accepted(Vector(FundOrderExternalEvents.bank_ta_receipt_observation(output))))
+      else {
+        val event = FundOrderExternalEvents.bankTaReceiptObservation(output)
+        Effect.persist(event).thenRun((_: State) => reply ! Accepted(Vector(event)))
+      }
   }
 
   private def queryBehavior: PartialFunction[Command, Effect[Event, State]] = {

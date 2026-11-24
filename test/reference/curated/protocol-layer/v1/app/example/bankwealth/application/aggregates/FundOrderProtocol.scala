@@ -26,49 +26,49 @@ object FundOrderProtocol {
   val Refused: example.bankwealth.domain.FundOrderAggregate.Refused.type =
     example.bankwealth.domain.FundOrderAggregate.Refused
 
-  type Ingestbank_payment_result_compensated = example.bankwealth.domain.FundOrderAggregate.Ingestbank_payment_result_compensated
-  val Ingestbank_payment_result_compensated: example.bankwealth.domain.FundOrderAggregate.Ingestbank_payment_result_compensated.type =
-    example.bankwealth.domain.FundOrderAggregate.Ingestbank_payment_result_compensated
+  type IngestBankPaymentResultCompensated = example.bankwealth.domain.FundOrderAggregate.IngestBankPaymentResultCompensated
+  val IngestBankPaymentResultCompensated: example.bankwealth.domain.FundOrderAggregate.IngestBankPaymentResultCompensated.type =
+    example.bankwealth.domain.FundOrderAggregate.IngestBankPaymentResultCompensated
 
-  type Ingestbank_payment_result_outcome_unknown = example.bankwealth.domain.FundOrderAggregate.Ingestbank_payment_result_outcome_unknown
-  val Ingestbank_payment_result_outcome_unknown: example.bankwealth.domain.FundOrderAggregate.Ingestbank_payment_result_outcome_unknown.type =
-    example.bankwealth.domain.FundOrderAggregate.Ingestbank_payment_result_outcome_unknown
+  type IngestBankPaymentResultOutcomeUnknown = example.bankwealth.domain.FundOrderAggregate.IngestBankPaymentResultOutcomeUnknown
+  val IngestBankPaymentResultOutcomeUnknown: example.bankwealth.domain.FundOrderAggregate.IngestBankPaymentResultOutcomeUnknown.type =
+    example.bankwealth.domain.FundOrderAggregate.IngestBankPaymentResultOutcomeUnknown
 
-  type Ingestbank_payment_result_recovery_required = example.bankwealth.domain.FundOrderAggregate.Ingestbank_payment_result_recovery_required
-  val Ingestbank_payment_result_recovery_required: example.bankwealth.domain.FundOrderAggregate.Ingestbank_payment_result_recovery_required.type =
-    example.bankwealth.domain.FundOrderAggregate.Ingestbank_payment_result_recovery_required
+  type IngestBankPaymentResultRecoveryRequired = example.bankwealth.domain.FundOrderAggregate.IngestBankPaymentResultRecoveryRequired
+  val IngestBankPaymentResultRecoveryRequired: example.bankwealth.domain.FundOrderAggregate.IngestBankPaymentResultRecoveryRequired.type =
+    example.bankwealth.domain.FundOrderAggregate.IngestBankPaymentResultRecoveryRequired
 
-  type Ingestbank_payment_result_rejected_before_effects = example.bankwealth.domain.FundOrderAggregate.Ingestbank_payment_result_rejected_before_effects
-  val Ingestbank_payment_result_rejected_before_effects: example.bankwealth.domain.FundOrderAggregate.Ingestbank_payment_result_rejected_before_effects.type =
-    example.bankwealth.domain.FundOrderAggregate.Ingestbank_payment_result_rejected_before_effects
+  type IngestBankPaymentResultRejectedBeforeEffects = example.bankwealth.domain.FundOrderAggregate.IngestBankPaymentResultRejectedBeforeEffects
+  val IngestBankPaymentResultRejectedBeforeEffects: example.bankwealth.domain.FundOrderAggregate.IngestBankPaymentResultRejectedBeforeEffects.type =
+    example.bankwealth.domain.FundOrderAggregate.IngestBankPaymentResultRejectedBeforeEffects
 
-  type Ingestbank_payment_result_succeeded = example.bankwealth.domain.FundOrderAggregate.Ingestbank_payment_result_succeeded
-  val Ingestbank_payment_result_succeeded: example.bankwealth.domain.FundOrderAggregate.Ingestbank_payment_result_succeeded.type =
-    example.bankwealth.domain.FundOrderAggregate.Ingestbank_payment_result_succeeded
+  type IngestBankPaymentResultSucceeded = example.bankwealth.domain.FundOrderAggregate.IngestBankPaymentResultSucceeded
+  val IngestBankPaymentResultSucceeded: example.bankwealth.domain.FundOrderAggregate.IngestBankPaymentResultSucceeded.type =
+    example.bankwealth.domain.FundOrderAggregate.IngestBankPaymentResultSucceeded
 
-  type Ingestbank_refund_result_compensated = example.bankwealth.domain.FundOrderAggregate.Ingestbank_refund_result_compensated
-  val Ingestbank_refund_result_compensated: example.bankwealth.domain.FundOrderAggregate.Ingestbank_refund_result_compensated.type =
-    example.bankwealth.domain.FundOrderAggregate.Ingestbank_refund_result_compensated
+  type IngestBankRefundResultCompensated = example.bankwealth.domain.FundOrderAggregate.IngestBankRefundResultCompensated
+  val IngestBankRefundResultCompensated: example.bankwealth.domain.FundOrderAggregate.IngestBankRefundResultCompensated.type =
+    example.bankwealth.domain.FundOrderAggregate.IngestBankRefundResultCompensated
 
-  type Ingestbank_refund_result_outcome_unknown = example.bankwealth.domain.FundOrderAggregate.Ingestbank_refund_result_outcome_unknown
-  val Ingestbank_refund_result_outcome_unknown: example.bankwealth.domain.FundOrderAggregate.Ingestbank_refund_result_outcome_unknown.type =
-    example.bankwealth.domain.FundOrderAggregate.Ingestbank_refund_result_outcome_unknown
+  type IngestBankRefundResultOutcomeUnknown = example.bankwealth.domain.FundOrderAggregate.IngestBankRefundResultOutcomeUnknown
+  val IngestBankRefundResultOutcomeUnknown: example.bankwealth.domain.FundOrderAggregate.IngestBankRefundResultOutcomeUnknown.type =
+    example.bankwealth.domain.FundOrderAggregate.IngestBankRefundResultOutcomeUnknown
 
-  type Ingestbank_refund_result_recovery_required = example.bankwealth.domain.FundOrderAggregate.Ingestbank_refund_result_recovery_required
-  val Ingestbank_refund_result_recovery_required: example.bankwealth.domain.FundOrderAggregate.Ingestbank_refund_result_recovery_required.type =
-    example.bankwealth.domain.FundOrderAggregate.Ingestbank_refund_result_recovery_required
+  type IngestBankRefundResultRecoveryRequired = example.bankwealth.domain.FundOrderAggregate.IngestBankRefundResultRecoveryRequired
+  val IngestBankRefundResultRecoveryRequired: example.bankwealth.domain.FundOrderAggregate.IngestBankRefundResultRecoveryRequired.type =
+    example.bankwealth.domain.FundOrderAggregate.IngestBankRefundResultRecoveryRequired
 
-  type Ingestbank_refund_result_rejected_before_effects = example.bankwealth.domain.FundOrderAggregate.Ingestbank_refund_result_rejected_before_effects
-  val Ingestbank_refund_result_rejected_before_effects: example.bankwealth.domain.FundOrderAggregate.Ingestbank_refund_result_rejected_before_effects.type =
-    example.bankwealth.domain.FundOrderAggregate.Ingestbank_refund_result_rejected_before_effects
+  type IngestBankRefundResultRejectedBeforeEffects = example.bankwealth.domain.FundOrderAggregate.IngestBankRefundResultRejectedBeforeEffects
+  val IngestBankRefundResultRejectedBeforeEffects: example.bankwealth.domain.FundOrderAggregate.IngestBankRefundResultRejectedBeforeEffects.type =
+    example.bankwealth.domain.FundOrderAggregate.IngestBankRefundResultRejectedBeforeEffects
 
-  type Ingestbank_refund_result_succeeded = example.bankwealth.domain.FundOrderAggregate.Ingestbank_refund_result_succeeded
-  val Ingestbank_refund_result_succeeded: example.bankwealth.domain.FundOrderAggregate.Ingestbank_refund_result_succeeded.type =
-    example.bankwealth.domain.FundOrderAggregate.Ingestbank_refund_result_succeeded
+  type IngestBankRefundResultSucceeded = example.bankwealth.domain.FundOrderAggregate.IngestBankRefundResultSucceeded
+  val IngestBankRefundResultSucceeded: example.bankwealth.domain.FundOrderAggregate.IngestBankRefundResultSucceeded.type =
+    example.bankwealth.domain.FundOrderAggregate.IngestBankRefundResultSucceeded
 
-  type Ingestbank_ta_receipt_observation = example.bankwealth.domain.FundOrderAggregate.Ingestbank_ta_receipt_observation
-  val Ingestbank_ta_receipt_observation: example.bankwealth.domain.FundOrderAggregate.Ingestbank_ta_receipt_observation.type =
-    example.bankwealth.domain.FundOrderAggregate.Ingestbank_ta_receipt_observation
+  type IngestBankTaReceiptObservation = example.bankwealth.domain.FundOrderAggregate.IngestBankTaReceiptObservation
+  val IngestBankTaReceiptObservation: example.bankwealth.domain.FundOrderAggregate.IngestBankTaReceiptObservation.type =
+    example.bankwealth.domain.FundOrderAggregate.IngestBankTaReceiptObservation
 
   type ExternalAuthority = example.bankwealth.domain.FundOrderAggregate.ExternalAuthority
 }
