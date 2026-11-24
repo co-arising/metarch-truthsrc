@@ -17,9 +17,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { requireFamilySpecPaths } from './registry.mjs';
+import { getFamily, listFamilyIds, renderFamily, requireFamilySpecPaths } from './registry.mjs';
 import './families/index.mjs';
-import { getFamily, listFamilyIds, renderFamily } from './registry.mjs';
 import { parseStrictJson } from '../lib/strict-json.mjs';
 
 const fail = (code, message) => { throw Object.assign(new Error(code + ': ' + message), { code }); };

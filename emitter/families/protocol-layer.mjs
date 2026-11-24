@@ -17,6 +17,7 @@
 // The module embeds zero business bytes: every aggregate name, command, event,
 // host, slot expression, external producer id and source pointer is contract data.
 import { parseStrictJson } from '../../lib/strict-json.mjs';
+import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
 
 const fail = (code, message) => { throw Object.assign(new Error(code + ': ' + message), { code }); };
 const SCHEMA = 'truthsrc.protocol-layer-input/v1';
@@ -270,7 +271,7 @@ function usesOwnValues(type, ownContext) {
 }
 
 function valuesPaths(type, pkgByContext) {
-  if (type.form === 'nominal') return ['app/' + pkgByContext.get(type.context).replaceAll('.', '/') + '/domain/values/' + type.name + '.scala'];
+  if (type.form === 'nominal') return [scalaSubpackagePath(pkgByContext.get(type.context), 'domain.values', type.name + '.scala')];
   if (type.form === 'optional' || type.form === 'sequence') return valuesPaths(type.element, pkgByContext);
   if (type.form === 'map') return [...valuesPaths(type.key, pkgByContext), ...valuesPaths(type.value, pkgByContext)];
   return [];
@@ -337,7 +338,7 @@ function renderDomainProtocol(agg, pkg, pkgPath, pkgByContext) {
   }
   lines.push('}');
   return {
-    path: 'app/' + pkgPath + '/domain/events/' + agg.name + 'Events.scala',
+    path: scalaSubpackagePath(pkg, 'domain.events', agg.name + 'Events.scala'),
     kind: 'protocol',
     content: lines.join('\n') + '\n',
     sources: [agg.source, ...agg.commands.map(c => c.source), ...agg.events.map(e => e.source)],
@@ -375,13 +376,13 @@ function renderCommandHelpers(agg, pkg, pkgPath, pkgByContext) {
   }
   lines.push('}');
   return {
-    path: 'app/' + pkgPath + '/domain/services/' + agg.name + 'Computations.scala',
+    path: scalaSubpackagePath(pkg, 'domain.services', agg.name + 'Computations.scala'),
     kind: 'command-helpers',
     content: lines.join('\n') + '\n',
     sources: [agg.source, ...agg.commands.map(c => c.source), ...agg.hosts.map(h => h.source)],
     deps: [
-      'app/' + pkgPath + '/domain/entities/' + agg.name + 'Entity.scala',
-      'app/' + pkgPath + '/domain/events/' + agg.name + 'Events.scala',
+      scalaSubpackagePath(pkg, 'domain.entities', agg.name + 'Entity.scala'),
+      scalaSubpackagePath(pkg, 'domain.events', agg.name + 'Events.scala'),
     ],
   };
 }
@@ -416,14 +417,14 @@ object ${name}Protocol {
   }
   content += '}\n';
   return {
-    path: 'app/' + pkgPath + '/application/aggregates/' + agg.name + 'Protocol.scala',
+    path: scalaSubpackagePath(pkg, 'application.aggregates', agg.name + 'Protocol.scala'),
     kind: 'application-protocol',
     content,
     sources: [agg.source, ...agg.commands.map(c => c.source)],
     deps: [
-      'app/' + pkgPath + '/application/aggregates/' + agg.name + 'Aggregate.scala',
-      'app/' + pkgPath + '/domain/entities/' + agg.name + 'Entity.scala',
-      'app/' + pkgPath + '/domain/events/' + agg.name + 'Events.scala',
+      scalaSubpackagePath(pkg, 'application.aggregates', agg.name + 'Aggregate.scala'),
+      scalaSubpackagePath(pkg, 'domain.entities', agg.name + 'Entity.scala'),
+      scalaSubpackagePath(pkg, 'domain.events', agg.name + 'Events.scala'),
     ],
   };
 }

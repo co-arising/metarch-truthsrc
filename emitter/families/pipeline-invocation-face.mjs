@@ -25,6 +25,7 @@
 //   - the strict-participant rows ladder the args field when the row overflows
 import crypto from 'node:crypto';
 import { renderGroupedValueImports } from '../../lib/derivation/value-object-package.mjs';
+import { scalaDirPath } from '../../lib/layout/layout-strategy.mjs';
 
 const basePkgOf = valuesPkg => valuesPkg.replace(/\.domain\.values$/, '');
 
@@ -1552,7 +1553,7 @@ function emitDefinition(md) {
 function generate(input) {
   validate(input);
   const md = model(input);
-  const appRel = 'app/' + md.pkg.split('.').join('/');
+  const appRel = scalaDirPath(md.pkg);
   return {
     [appRel + '/' + md.ports + '.scala']: emitPorts(md),
     [appRel + '/' + md.hostIo + '.scala']: emitHostIo(md),

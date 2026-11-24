@@ -9,6 +9,7 @@
 // fail-closed input contract (`truthsrc.external-event-bridge-input/v1`).
 
 import { valueObjectPackage, valueObjectPath, valueObjectSubpackage } from '../../lib/derivation/value-object-package.mjs';
+import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
 
 const fail = message => {
   const error = new Error('EEB_INPUT: ' + message);
@@ -214,10 +215,10 @@ export function renderExternalEventBridgeFiles(input) {
       lines.push(`  def ${symbol(baseMethod + 'Identity')}(output: ${outType}): Vector[String] = Vector(${idParts})`);
     }
     lines.push('}', '');
-    const eventsDep = `app/${pkgPath}/domain/events/${bridge.aggregate}Events.scala`;
+    const eventsDep = scalaSubpackagePath(pkg, 'domain.events', `${bridge.aggregate}Events.scala`);
     const deps = [eventsDep, ...new Set(bridge.producers.flatMap(p => valueDeps(p.outputType, packageMap)))];
     return {
-      path: `app/${pkgPath}/application/aggregates/behaviors/${bridge.aggregate}ExternalEvents.scala`,
+      path: scalaSubpackagePath(pkg, 'application.aggregates.behaviors', `${bridge.aggregate}ExternalEvents.scala`),
       content: lines.join('\n'),
       kind: 'external-event-bridge',
       sources: bridge.producers.map(p => ({ ...p.source })),

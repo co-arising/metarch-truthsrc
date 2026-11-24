@@ -26,6 +26,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import crypto from 'node:crypto';
+import { scalaDirPath } from '../../lib/layout/layout-strategy.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const GOLDEN_DIR = path.join(ROOT, 'test/reference/curated/composition-invocation-host/v1');
@@ -479,9 +480,9 @@ function emitBootstrap(input) {
 // ---------- top-level ----------
 function generate(input) {
   validate(input);
-  const transactorRel = 'app/' + input.packages.transactor.split('.').join('/');
-  const persistenceRel = 'app/' + input.packages.infrastructurePersistence.split('.').join('/');
-  const bootstrapRel = 'app/' + input.packages.infrastructureBootstrap.split('.').join('/');
+  const transactorRel = scalaDirPath(input.packages.transactor);
+  const persistenceRel = scalaDirPath(input.packages.infrastructurePersistence);
+  const bootstrapRel = scalaDirPath(input.packages.infrastructureBootstrap);
   const testRel = 'test/' + input.packages.transactor.split('.').join('/');
   const files = {};
   const emit = (rel, emitter) => {

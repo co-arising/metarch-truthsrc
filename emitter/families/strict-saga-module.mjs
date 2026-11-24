@@ -7,6 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import crypto from 'node:crypto';
+import { scalaSourcePath } from '../../lib/layout/layout-strategy.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const GOLDEN = path.join(ROOT,
@@ -769,7 +770,7 @@ function runNegatives(input) {
 // family battery shape.
 
 const renderAll = input => {
-  const relative = `app/${input.module.packageName.split('.').join('/')}/${input.module.objectName}.scala`;
+  const relative = scalaSourcePath(input.module.packageName, `${input.module.objectName}.scala`);
   return { [relative]: generate(input) };
 };
 

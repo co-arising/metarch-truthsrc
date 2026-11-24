@@ -12,6 +12,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { parseStrictJson } from '../../lib/strict-json.mjs';
+import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
 
 const fail = (code, message) => { throw Object.assign(new Error(code + ': ' + message), { code }); };
 const text = (value, what) => {
@@ -175,8 +176,7 @@ ${overrides}
 export function generateToolGateImplementation(inputJson) {
   const input = parseStrictJson(Buffer.from(JSON.stringify(inputJson), 'utf8'));
   checkInput(input);
-  const appRoot = `app/${input.basePackage.split('.').slice(0, 1)[0]}/${input.basePackage.split('.').slice(1).join('/')}`;
-  return { [`${appRoot}/infrastructure/toolgates/${input.impl.name}.scala`]: renderImpl(input) };
+  return { [scalaSubpackagePath(input.basePackage, 'infrastructure.toolgates', `${input.impl.name}.scala`)]: renderImpl(input) };
 }
 
 // ---------- unified-emitter family registration (emitter-unification Phase 1) ----------

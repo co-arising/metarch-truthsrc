@@ -9,6 +9,7 @@
 // classic generated-file banner); preserves 100% of the Scala ABI and all 188
 // span anchors. Zero business bytes are embedded in this module.
 import { parseStrictJson } from '../../lib/strict-json.mjs';
+import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
 
 const fail = (code, message) => { throw Object.assign(new Error(code + ': ' + message), { code }); };
 const SCHEMA = 'truthsrc.event-handler-input/v1';
@@ -99,10 +100,9 @@ const mapping = (content, m) => ({
 
 function renderAggregateEventHandlers(handler, pkg) {
   const name = handler.name;
-  const app = 'app/' + pkg.replaceAll('.', '/');
-  const entityPath = app + '/domain/entities/' + name + 'Entity.scala';
-  const eventsPath = app + '/domain/events/' + name + 'Events.scala';
-  const corePath = app + '/domain/entities/behaviors/' + name + 'EventHandler.scala';
+  const entityPath = scalaSubpackagePath(pkg, 'domain.entities', name + 'Entity.scala');
+  const eventsPath = scalaSubpackagePath(pkg, 'domain.events', name + 'Events.scala');
+  const corePath = scalaSubpackagePath(pkg, 'domain.entities.behaviors', name + 'EventHandler.scala');
   const eventPackage = pkg + '.domain.entities.behaviors';
 
   let core = 'package ' + eventPackage + '\n\n' +

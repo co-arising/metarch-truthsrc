@@ -29,6 +29,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
+import { scalaSourcePath } from '../../lib/layout/layout-strategy.mjs';
 
 const fail = (code, message) => { throw Object.assign(new Error(code + ': ' + message), { code }); };
 
@@ -315,7 +316,7 @@ function renderController(input) {
 function renderAll(input) {
   const outputs = {};
   if (input.aggregates.length > 0) {
-    outputs[`app/${input.controllerPackage}/${input.controllerName}.scala`] = renderController(input);
+    outputs[scalaSourcePath(input.controllerPackage, `${input.controllerName}.scala`)] = renderController(input);
   }
   return outputs;
 }

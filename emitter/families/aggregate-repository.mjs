@@ -3,6 +3,8 @@
 // lookup repositories (owned-local-actor-cache) from the typed
 // truthsrc.aggregate-repository-input/v1 contract. Zero hardcoded business
 // identifiers; fail-closed on every contract violation (AR_INPUT).
+import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
+
 const SCHEMA = 'truthsrc.aggregate-repository-input/v1';
 const SUPPORTED_LOOKUPS = new Set(['owned-local-actor-cache']);
 const CONTEXT_RE = /^[a-z][a-z0-9_-]*$/u;
@@ -126,10 +128,9 @@ export function renderAggregateRepositoryFiles(input) {
   const packageByContext = new Map(input.packages.map(p => [p.context, p.package]));
   return input.repositories.flatMap(repo => {
     const pkg = packageByContext.get(repo.context);
-    const pkgRoot = pkg.replaceAll('.', '/');
-    const protocolPath = 'app/' + pkgRoot + '/application/aggregates/' + repo.name + 'Protocol.scala';
-    const portPath = 'app/' + pkgRoot + '/application/aggregates/repository/' + repo.name + 'Repository.scala';
-    const implPath = 'app/' + pkgRoot + '/infrastructure/repositories/aggregate/' + repo.name + 'RepositoryImpl.scala';
+    const protocolPath = scalaSubpackagePath(pkg, 'application.aggregates', repo.name + 'Protocol.scala');
+    const portPath = scalaSubpackagePath(pkg, 'application.aggregates.repository', repo.name + 'Repository.scala');
+    const implPath = scalaSubpackagePath(pkg, 'infrastructure.repositories.aggregate', repo.name + 'RepositoryImpl.scala');
     const sources = [{ document: repo.source.document, pointer: repo.source.pointer }];
     return [
       {

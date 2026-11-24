@@ -1,6 +1,8 @@
 // Unified emitter family #31: serialization-adapter (curated PO adapters with
 // oneof event unions + GeneratedMessage/GeneratedOneof DomainProtoSerializer).
 // Zero hardcoded business identifiers; fail-closed (SA_INPUT).
+import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
+
 const SCHEMA = 'truthsrc.serialization-adapter-input/v1';
 const CONTEXT_RE = /^[a-z][a-z0-9_-]*$/u;
 const PACKAGE_RE = /^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)*$/u;
@@ -190,9 +192,8 @@ export function renderSerializationAdapterFiles(input) {
   const files = [];
   for (const ser of input.serializers) {
     const pkg = packageByContext.get(ser.context);
-    const pkgRoot = pkg.replaceAll('.', '/');
     files.push({
-      path: 'app/' + pkgRoot + '/infrastructure/persistence/DomainProtoSerializer.scala',
+      path: scalaSubpackagePath(pkg, 'infrastructure.persistence', 'DomainProtoSerializer.scala'),
       content: renderSerializerScala(pkg, ser),
       kind: 'serialization-adapter',
       deps: [...ser.protoPaths],
@@ -202,13 +203,12 @@ export function renderSerializationAdapterFiles(input) {
   }
   for (const adapter of input.adapters) {
     const pkg = packageByContext.get(adapter.context);
-    const pkgRoot = pkg.replaceAll('.', '/');
     files.push({
-      path: 'app/' + pkgRoot + '/infrastructure/persistence/' + adapter.aggregate + 'Adapters.scala',
+      path: scalaSubpackagePath(pkg, 'infrastructure.persistence', adapter.aggregate + 'Adapters.scala'),
       content: renderAggregateAdaptersScala(pkg, adapter),
       kind: 'serialization-adapter',
       deps: [
-        'app/' + pkgRoot + '/infrastructure/persistence/converters/DomainConverters.scala',
+        scalaSubpackagePath(pkg, 'infrastructure.persistence.converters', 'DomainConverters.scala'),
       ],
       sources: [
         { document: adapter.aggregateSource.document, pointer: adapter.aggregateSource.pointer },

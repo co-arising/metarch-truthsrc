@@ -19,6 +19,7 @@
 // provenance.
 import { parseStrictJson } from '../../lib/strict-json.mjs';
 import { isAllowedValueObjectSubpackage, valueObjectSubpackage } from '../../lib/derivation/value-object-package.mjs';
+import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
 
 const fail = (code, message) => { throw Object.assign(new Error(code + ': ' + message), { code }); };
 const SCHEMA = 'truthsrc.value-object-input/v1';
@@ -228,7 +229,7 @@ function renderValue(value, packages, subpackageByKey) {
         : `import ${pkg}.${sub}.{${sorted.join(', ')}}`;
     });
   const importBlock = importLines.length ? importLines.join('\n') + '\n\n' : '';
-  const path = 'app/' + pkg.replaceAll('.', '/') + '/' + subpkg.replaceAll('.', '/') + '/' + name + '.scala';
+  const path = scalaSubpackagePath(pkg, subpkg, name + '.scala');
   return {
     path,
     content: 'package ' + pkg + '.' + subpkg + '\n\n' + importBlock + body,

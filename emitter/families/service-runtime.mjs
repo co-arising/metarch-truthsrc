@@ -5,6 +5,8 @@
 // positional apiActions(i)), ApplicationBootstrap, BankServiceConfiguration,
 // BankJournalReadside* (with PascalCase query methods), and service conf/sql.
 // Zero hardcoded business identifiers; fail-closed (SR_INPUT).
+import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
+
 const SCHEMA = 'truthsrc.service-runtime-input/v1';
 const PACKAGE_RE = /^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)*$/u;
 const TYPE_NAME_RE = /^[A-Z][A-Za-z0-9_]*$/u;
@@ -415,13 +417,13 @@ function renderServiceConf(input) {
 
 export function renderServiceRuntimeFiles(input) {
   checkInput(input);
-  const pkgRoot = input.package.replaceAll('.', '/');
+  const pkg = input.package;
   const name = input.serviceName;
   const src = [{ document: input.artifactSource.document, pointer: input.artifactSource.pointer }];
-  const servicePath = 'app/' + pkgRoot + '/infrastructure/bootstrap/' + name + 'Contract.scala';
-  const loaderPath = 'app/' + pkgRoot + '/infrastructure/bootstrap/' + name + 'Loader.scala';
-  const configPath = 'app/' + pkgRoot + '/infrastructure/bootstrap/' + name + 'Configuration.scala';
-  const bootstrapPath = 'app/' + pkgRoot + '/infrastructure/bootstrap/ApplicationBootstrap.scala';
+  const servicePath = scalaSubpackagePath(pkg, 'infrastructure.bootstrap', name + 'Contract.scala');
+  const loaderPath = scalaSubpackagePath(pkg, 'infrastructure.bootstrap', name + 'Loader.scala');
+  const configPath = scalaSubpackagePath(pkg, 'infrastructure.bootstrap', name + 'Configuration.scala');
+  const bootstrapPath = scalaSubpackagePath(pkg, 'infrastructure.bootstrap', 'ApplicationBootstrap.scala');
 
   return [
     { path: servicePath, content: renderServiceContract(input), kind: 'service-port', deps: [], sources: src, codeMappings: [] },

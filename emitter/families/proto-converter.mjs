@@ -202,6 +202,7 @@ const HELPERS_BLOCK = [
 ].join('\n');
 
 import { valueObjectSubpackage } from '../../lib/derivation/value-object-package.mjs';
+import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
 
 const importsHeader = (pkg, valueObjects) => {
   const voSubs = [...new Set(['domain.values', ...(valueObjects ?? []).map(vo => valueObjectSubpackage(vo.typeId))])].sort();
@@ -233,7 +234,7 @@ export function renderProtoConverterFiles(input) {
     ];
     const allContent = groups.map(g => g.content).join('\n');
     const allSources = groups.flatMap(g => g.sources);
-    const facadePath = 'app/' + pkgRoot + '/infrastructure/persistence/converters/DomainConverters.scala';
+    const facadePath = scalaSubpackagePath(pkg, 'infrastructure.persistence.converters', 'DomainConverters.scala');
 
     if (allContent.length <= 55000) {
       out.push({
@@ -256,7 +257,7 @@ export function renderProtoConverterFiles(input) {
       parts.at(-1).sources.push(...g.sources);
     }
     const partNames = parts.map((_, i) => 'DomainConvertersPart' + i);
-    const partPaths = partNames.map(name => 'app/' + pkgRoot + '/infrastructure/persistence/converters/' + name + '.scala');
+    const partPaths = partNames.map(name => scalaSubpackagePath(pkg, 'infrastructure.persistence.converters', name + '.scala'));
 
     out.push({
       path: facadePath,

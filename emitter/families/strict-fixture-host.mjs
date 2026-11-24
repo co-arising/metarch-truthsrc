@@ -23,6 +23,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import crypto from 'node:crypto';
+import { scalaDirPath } from '../../lib/layout/layout-strategy.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const GOLDEN_DIR = path.join(ROOT,
@@ -1330,7 +1331,7 @@ function emitEntry(input) {
 function generate(input) {
   validate(input);
   // Emission targets mirror the module package path (raw packagePath semantics).
-  const relDir = 'app/' + input.module.packageName.split('.').join('/');
+  const relDir = scalaDirPath(input.module.packageName);
   return {
     [relDir + '/types.scala']: emitTypes(input),
     [relDir + '/StrictWire.scala']: emitStrictWire(input),

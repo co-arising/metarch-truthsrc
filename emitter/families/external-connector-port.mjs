@@ -10,6 +10,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { parseStrictJson } from '../../lib/strict-json.mjs';
+import { scalaDirPath } from '../../lib/layout/layout-strategy.mjs';
 
 const fail = (code, message) => { throw Object.assign(new Error(code + ': ' + message), { code }); };
 const text = (value, what) => {
@@ -216,7 +217,7 @@ const RENDERERS = [
 export function generateExternalToolGate(inputJson) {
   const input = parseStrictJson(Buffer.from(JSON.stringify(inputJson), 'utf8'));
   checkInput(input);
-  const appRoot = `app/${input.basePackage.split('.').slice(0, 1)[0]}/${input.basePackage.split('.').slice(1).join('/')}`;
+  const appRoot = scalaDirPath(input.basePackage);
   const outputs = {};
   for (const entry of RENDERERS) {
     const relative = `${appRoot}/${entry.suffix.replace(/[^/]*\.scala$/, entry.rename(input.gate))}`;

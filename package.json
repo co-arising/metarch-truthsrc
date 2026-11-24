@@ -17,6 +17,7 @@
     "tools/artifact-docs-check.mjs",
     "tools/artifact-docs-sync.mjs",
     "tools/codegen-parity.mjs",
+    "tools/lint.mjs",
     "scaffold/",
     "mcp/",
     "server.json",
@@ -52,6 +53,7 @@
     "!**/cache/**"
   ],
   "scripts": {
+    "lint": "node tools/lint.mjs",
     "test": "node --test",
     "test:verification": "node --test --test-concurrency=1 test/verification-files.test.mjs test/verification-inventory.test.mjs test/verification-outcome.test.mjs test/verification-lease.test.mjs test/verification-runner.test.mjs test/verification-process.test.mjs test/verification-worker.test.mjs test/tooling-ownership.test.mjs",
     "test:aggregate-reference": "node --test --test-concurrency=1 test/aggregate-models.test.mjs test/aggregate-template-conformance.test.mjs test/aggregate-reference-negative.test.mjs test/service-composition-layers.test.mjs",

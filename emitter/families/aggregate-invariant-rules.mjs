@@ -17,6 +17,7 @@
 // accumulation order below mirrors the classic renderer's — strings accumulate
 // in the same sequence and spans are recorded at the same accumulation points.
 import { parseStrictJson } from '../../lib/strict-json.mjs';
+import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
 
 const fail = (code, message) => { throw Object.assign(new Error(code + ': ' + message), { code }); };
 const SCHEMA = 'truthsrc.aggregate-invariant-rules-input/v1';
@@ -121,12 +122,11 @@ function renderGuardCondition(predicate) {
  */
 function renderAggregateRules(a) {
   const pkg = a.package, name = a.name;
-  const app = 'app/' + pkg.replaceAll('.', '/');
-  const entityPath = app + '/domain/entities/' + a.aggregate + 'Entity.scala';
-  const eventsPath = app + '/domain/events/' + a.aggregate + 'Events.scala';
-  const computationsPath = app + '/domain/services/' + a.aggregate + 'Computations.scala';
-  const corePath = app + '/domain/invariant/' + a.aggregate + 'Rules.scala';
-  const paramsPath = app + '/domain/invariant/params/' + a.aggregate + 'RuleParams.scala';
+  const entityPath = scalaSubpackagePath(pkg, 'domain.entities', a.aggregate + 'Entity.scala');
+  const eventsPath = scalaSubpackagePath(pkg, 'domain.events', a.aggregate + 'Events.scala');
+  const computationsPath = scalaSubpackagePath(pkg, 'domain.services', a.aggregate + 'Computations.scala');
+  const corePath = scalaSubpackagePath(pkg, 'domain.invariant', a.aggregate + 'Rules.scala');
+  const paramsPath = scalaSubpackagePath(pkg, 'domain.invariant.params', a.aggregate + 'RuleParams.scala');
   const aggregateSources = [a.source, ...a.commands.map(c => c.source)];
 
   let rules = 'package ' + pkg + '.domain.invariant\n\n' +

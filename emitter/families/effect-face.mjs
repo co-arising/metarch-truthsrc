@@ -21,6 +21,7 @@
 //   - the observation decode ladder is the fixed 2-row form
 import crypto from 'node:crypto';
 import { renderGroupedValueImports } from '../../lib/derivation/value-object-package.mjs';
+import { scalaDirPath } from '../../lib/layout/layout-strategy.mjs';
 
 const basePkgOf = valuesPkg => valuesPkg.replace(/\.domain\.values$/, '');
 
@@ -858,7 +859,7 @@ function generate(input) {
   const files = {};
   for (const c of input.cases) {
     const cm = caseModel(input, c, shape);
-    const appRel = 'app/' + cm.pkg.split('.').join('/');
+    const appRel = scalaDirPath(cm.pkg);
     files[appRel + '/' + cm.execution + '.scala'] = emitExecution(cm, shape);
     files[appRel + '/' + cm.host + '.scala'] = emitHost(cm, shape);
     files[appRel + '/' + cm.serializer + '.scala'] = emitSerializer(cm, shape);

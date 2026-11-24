@@ -27,9 +27,8 @@
 //                  excludedStateFieldNatures governance slot; absent = no exclusion) \
 //     --out golden/scala-cqrs-es-metarch/full-corpus.canonical.json
 
-import fs from 'node:fs';
+import fs, { mkdtempSync, rmSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';

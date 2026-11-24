@@ -3,6 +3,8 @@
 // (`infrastructure/bootstrap/<Name>Bootstrap.scala`) from the typed
 // truthsrc.aggregate-bootstrap-input/v1 contract. Zero hardcoded business
 // identifiers; fail-closed on every contract violation (AB_INPUT).
+import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
+
 const SCHEMA = 'truthsrc.aggregate-bootstrap-input/v1';
 const SUPPORTED_IDENTITIES = new Set(['unique-id']);
 const CONTEXT_RE = /^[a-z][a-z0-9_-]*$/u;
@@ -116,18 +118,17 @@ export function renderAggregateBootstrapFiles(input) {
   const packageByContext = new Map(input.packages.map(p => [p.context, p.package]));
   return input.bootstraps.map(row => {
     const pkg = packageByContext.get(row.context);
-    const pkgRoot = pkg.replaceAll('.', '/');
     const name = row.name;
     return {
-      path: `app/${pkgRoot}/infrastructure/bootstrap/${name}Bootstrap.scala`,
+      path: scalaSubpackagePath(pkg, 'infrastructure.bootstrap', `${name}Bootstrap.scala`),
       content: renderBootstrapScala(pkg, row),
       kind: 'aggregate-bootstrap',
       deps: [
-        `app/${pkgRoot}/application/aggregates/factories/${name}AggregateFactory.scala`,
-        `app/${pkgRoot}/application/aggregates/${name}Aggregate.scala`,
-        `app/${pkgRoot}/domain/entities/${name}Entity.scala`,
-        `app/${pkgRoot}/domain/entities/behaviors/${name}EventHandler.scala`,
-        `app/${pkgRoot}/infrastructure/persistence/${name}Adapters.scala`,
+        scalaSubpackagePath(pkg, 'application.aggregates.factories', `${name}AggregateFactory.scala`),
+        scalaSubpackagePath(pkg, 'application.aggregates', `${name}Aggregate.scala`),
+        scalaSubpackagePath(pkg, 'domain.entities', `${name}Entity.scala`),
+        scalaSubpackagePath(pkg, 'domain.entities.behaviors', `${name}EventHandler.scala`),
+        scalaSubpackagePath(pkg, 'infrastructure.persistence', `${name}Adapters.scala`),
       ],
       sources: [{ document: row.source.document, pointer: row.source.pointer }],
       codeMappings: [],

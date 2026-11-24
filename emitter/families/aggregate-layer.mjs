@@ -20,6 +20,7 @@
 // external producer, outputType tree and source pointer is contract data.
 import { parseStrictJson } from '../../lib/strict-json.mjs';
 import { valueObjectPackage } from '../../lib/derivation/value-object-package.mjs';
+import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
 
 const fail = (code, message) => { throw Object.assign(new Error(code + ': ' + message), { code }); };
 const SCHEMA = 'truthsrc.aggregate-layer-input/v1';
@@ -137,7 +138,10 @@ function checkInput(input) {
 }
 
 const packageOf = (context, packages) => packages.find(p => p.context === context).package;
-const pathOf = (pkg, rel) => 'app/' + pkg.replaceAll('.', '/') + '/' + rel;
+const pathOf = (pkg, rel) => {
+  const slash = rel.lastIndexOf('/');
+  return scalaSubpackagePath(pkg, rel.slice(0, slash).replaceAll('/', '.'), rel.slice(slash + 1));
+};
 
 const scalaType = (type, packages) => {
   if (type.form === 'primitive') return PRIMITIVES.get(type.name);

@@ -24,6 +24,7 @@ import { withFlippedProtoConverters } from '../../lib/derivation/proto-converter
 import { withFlippedSerializationAdapters } from '../../lib/derivation/serialization-adapter-emission.mjs';
 import { withFlippedServiceRuntime } from '../../lib/derivation/service-runtime-emission.mjs';
 import { withFlippedProjectScaffold } from '../../lib/derivation/project-scaffold-emission.mjs';
+import { remapPlanEntries } from '../../lib/layout/layout-strategy.mjs';
 
 const version = id => id === 'artifact-contract' ? '3' : ['saga-host-contract', 'effect-host-contract'].includes(id) ? '2' : null;
 const serviceProducts = ['reference-layout', 'artifact-contract', 'exact-value-types', 'exact-value-codecs'];
@@ -95,5 +96,6 @@ export const registry = Object.freeze({ ...inherited,
 export function generate(input) {
   if (input.manifest?.targetProfile !== 'scala-cqrs-play-service@1') fail('SERVICE_PROFILE', 'explicit service generation profile required');
   requireApplicationArtifact(input);
-  return planProductSet(input, registry);
+  const plan = planProductSet(input, registry);
+  return input.options?.fileLayout ? remapPlanEntries(plan, input.options.fileLayout) : plan;
 }

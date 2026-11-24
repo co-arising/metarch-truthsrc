@@ -13,6 +13,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { parseStrictJson } from '../../lib/strict-json.mjs';
+import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
 
 const fail = (code, message) => { throw Object.assign(new Error(code + ': ' + message), { code }); };
 const text = (value, what) => {
@@ -285,10 +286,10 @@ function renderAll(input) {
   const base = input.basePackage;
   const outputs = {};
   for (const view of input.views) {
-    outputs[`app/${base.split('.').slice(0, 1)[0]}/${base.split('.').slice(1).join('/')}/application/projection/handlers/${view.kernelClass}.scala`] = renderKernel(base, view);
-    outputs[`app/${base.split('.').slice(0, 1)[0]}/${base.split('.').slice(1).join('/')}/application/projection/handlers/${view.semanticsFace}.scala`] = renderTrait(base, view);
+    outputs[scalaSubpackagePath(base, 'application.projection.handlers', `${view.kernelClass}.scala`)] = renderKernel(base, view);
+    outputs[scalaSubpackagePath(base, 'application.projection.handlers', `${view.semanticsFace}.scala`)] = renderTrait(base, view);
   }
-  outputs[`app/${base.split('.').slice(0, 1)[0]}/${base.split('.').slice(1).join('/')}/infrastructure/bootstrap/${input.moduleName}.scala`] = renderModule(base, input);
+  outputs[scalaSubpackagePath(base, 'infrastructure.bootstrap', `${input.moduleName}.scala`)] = renderModule(base, input);
   return outputs;
 }
 

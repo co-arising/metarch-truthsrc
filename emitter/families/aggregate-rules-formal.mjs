@@ -8,6 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { parseStrictJson } from '../../lib/strict-json.mjs';
+import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
 
 const fail = (code, message) => { throw Object.assign(new Error(code + ': ' + message), { code }); };
 const text = (value, what) => {
@@ -269,7 +270,10 @@ export function generateFormalRules(inputJson) {
   checkInput(input);
   const outputs = {};
   for (const [suffix, render] of Object.entries(RENDERERS)) {
-    outputs[`app/${input.basePackage.split('.').slice(0, 1)[0]}/${input.basePackage.split('.').slice(1).join('/')}/domain/${suffix}`] = render(input);
+    const slash = suffix.lastIndexOf('/');
+    const subpkg = slash >= 0 ? 'domain.' + suffix.slice(0, slash).replaceAll('/', '.') : 'domain';
+    const fileName = slash >= 0 ? suffix.slice(slash + 1) : suffix;
+    outputs[scalaSubpackagePath(input.basePackage, subpkg, fileName)] = render(input);
   }
   return outputs;
 }
