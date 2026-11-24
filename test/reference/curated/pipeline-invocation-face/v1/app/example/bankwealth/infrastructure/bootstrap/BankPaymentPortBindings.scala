@@ -1,10 +1,10 @@
-package example.bankwealth.application
+package example.bankwealth.infrastructure.bootstrap
 
 import scala.concurrent.Future
 
-import example.bankwealth.application.saga._
-import example.bankwealth.domain.values._
-import BankPaymentPorts.CompletionContext
+import example.bankwealth.application.process._
+import example.bankwealth.application.process.BankPaymentPorts.CompletionContext
+import example.bankwealth.domain.values.BankPaymentOriginal
 import net.imadz.infra.saga.strict.OperationIdentity
 
 /** Exact bindings of the handwritten implementations to the declared ports.

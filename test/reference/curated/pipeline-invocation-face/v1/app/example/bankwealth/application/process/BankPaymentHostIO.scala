@@ -1,8 +1,7 @@
-package example.bankwealth.application
+package example.bankwealth.application.process
 
 import scala.concurrent.{ExecutionContext, Future}
 
-import example.bankwealth.application.saga.BankPaymentResult
 import example.bankwealth.domain.values.BankPaymentOriginal
 import BankPaymentHost.ResultKind
 import BankPaymentPorts.CompletionContext

@@ -4,31 +4,31 @@
     "domainSerializers": [
       {
         "key": "domainProto0",
-        "className": "example.bankwealth.infrastructure.serialization.DomainProtoSerializer"
+        "className": "example.bankwealth.infrastructure.persistence.DomainProtoSerializer"
       }
     ],
     "hosts": [
       {
         "key": "host0",
-        "serializerClass": "example.bankwealth.application.BankPaymentHostSerializer",
-        "eventClass": "example.bankwealth.application.BankPaymentHost$Event"
+        "serializerClass": "example.bankwealth.infrastructure.persistence.BankPaymentHostSerializer",
+        "eventClass": "example.bankwealth.application.process.BankPaymentHost$Event"
       },
       {
         "key": "host1",
-        "serializerClass": "example.bankwealth.application.BankRefundHostSerializer",
-        "eventClass": "example.bankwealth.application.BankRefundHost$Event"
+        "serializerClass": "example.bankwealth.infrastructure.persistence.BankRefundHostSerializer",
+        "eventClass": "example.bankwealth.application.process.BankRefundHost$Event"
       }
     ],
     "effects": [
       {
         "key": "effect0",
-        "serializerClass": "example.bankwealth.application.BankSipDispatchEffectHostSerializer",
-        "eventClass": "example.bankwealth.application.BankSipDispatchEffectHost$Event"
+        "serializerClass": "example.bankwealth.infrastructure.persistence.BankSipDispatchEffectHostSerializer",
+        "eventClass": "example.bankwealth.application.integration.BankSipDispatchEffectHost$Event"
       },
       {
         "key": "effect1",
-        "serializerClass": "example.bankwealth.application.BankTaEffectHostSerializer",
-        "eventClass": "example.bankwealth.application.BankTaEffectHost$Event"
+        "serializerClass": "example.bankwealth.infrastructure.persistence.BankTaEffectHostSerializer",
+        "eventClass": "example.bankwealth.application.integration.BankTaEffectHost$Event"
       }
     ],
     "sources": [

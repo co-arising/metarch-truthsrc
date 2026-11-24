@@ -2,8 +2,9 @@ package example.bankwealth.infrastructure.persistence.converters
 
 import example.bankwealth.domain.entities._
 import example.bankwealth.application.api._
+import example.bankwealth.application.integration._
+import example.bankwealth.application.process._
 import example.bankwealth.application.projection._
-import example.bankwealth.application.saga._
 import example.bankwealth.domain.values._
 import example.bankwealth.infrastructure.persistence._
 import example.bankwealth.infrastructure.{proto => pb}

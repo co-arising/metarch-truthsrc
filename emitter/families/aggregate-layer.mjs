@@ -159,7 +159,7 @@ function renderAggregateGroup(agg, packages) {
     rules: pathOf(pkg, 'domain/invariants/' + agg.name + 'Rules.scala'),
     computations: pathOf(pkg, 'domain/services/' + agg.name + 'Computations.scala'),
     entity: pathOf(pkg, 'domain/entities/' + agg.name + 'Entity.scala'),
-    external: pathOf(pkg, 'application/aggregates/behaviors/' + agg.name + 'ExternalEvents.scala'),
+    external: pathOf(pkg, 'application/integration/' + agg.name + 'ExternalEvents.scala'),
   };
 
   const commandSources = [agg.source, ...agg.commands.map(c => c.source)];
@@ -198,11 +198,12 @@ trait ${name}AggregateFactory {
     'queryBehavior',
     'executionBehavior(state, hosts)',
   ];
+  const externalImport = authority ? `import ${pkg}.application.integration.${name}ExternalEvents\n` : '';
   let behaviorContent = `package ${pkg}.application.aggregates.behaviors
 
 import akka.persistence.typed.scaladsl.Effect
 import ${pkg}.application.aggregates.${protocol}._
-import ${pkg}.domain.entities.${name}Entity.{Event, State}
+${externalImport}import ${pkg}.domain.entities.${name}Entity.{Event, State}
 import ${pkg}.domain.invariants.${name}Rules
 import ${pkg}.domain.services.${name}Computations
 

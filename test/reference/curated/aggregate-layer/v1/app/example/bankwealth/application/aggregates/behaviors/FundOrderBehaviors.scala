@@ -2,6 +2,7 @@ package example.bankwealth.application.aggregates.behaviors
 
 import akka.persistence.typed.scaladsl.Effect
 import example.bankwealth.application.aggregates.FundOrderProtocol._
+import example.bankwealth.application.integration.FundOrderExternalEvents
 import example.bankwealth.domain.entities.FundOrderEntity.{Event, State}
 import example.bankwealth.domain.invariants.FundOrderRules
 import example.bankwealth.domain.services.FundOrderComputations

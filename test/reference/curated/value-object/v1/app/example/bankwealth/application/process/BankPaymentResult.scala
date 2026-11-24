@@ -1,4 +1,4 @@
-package example.bankwealth.application.saga
+package example.bankwealth.application.process
 
 import example.bankwealth.domain.values.TxId
 

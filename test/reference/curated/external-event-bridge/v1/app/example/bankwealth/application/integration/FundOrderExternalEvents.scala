@@ -1,7 +1,7 @@
-package example.bankwealth.application.aggregates.behaviors
+package example.bankwealth.application.integration
 
 import example.bankwealth.domain.entities.FundOrderEntity._
-import example.bankwealth.application.saga._
+import example.bankwealth.application.process._
 import example.bankwealth.domain.values._
 
 object FundOrderExternalEvents {

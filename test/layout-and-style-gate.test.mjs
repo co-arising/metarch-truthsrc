@@ -10,6 +10,16 @@ const BANK_GENERATED = path.resolve(import.meta.dirname, '../../bank-wealth-demo
 const BASE_REL = 'app/example/bankwealth';
 const ALLOWED_TOP_LAYERS = new Set(['domain', 'application', 'infrastructure']);
 const ALLOWED_DOMAIN_SUBPACKAGES = new Set(['values', 'entities', 'invariants', 'services', 'policy']);
+const ALLOWED_APPLICATION_SUBPACKAGES = new Set(['aggregates', 'api', 'integration', 'process', 'projection']);
+const FORBIDDEN_PROCESS_INTEGRATION_PATTERNS = [
+  { label: 'PersistenceId', re: /\bPersistenceId\b/ },
+  { label: 'StateCodec', re: /\bStateCodec\b/ },
+  { label: 'SerializerWithStringManifest', re: /\bSerializerWithStringManifest\b/ },
+  { label: 'DomainConverters', re: /\bDomainConverters\b/ },
+  { label: 'EventSourcedBehavior', re: /\bEventSourcedBehavior\b/ },
+  { label: 'PersistentMonarch', re: /\bPersistentMonarch\b/ },
+  { label: '.infrastructure.', re: /\.infrastructure\./ },
+];
 const FORBIDDEN_DOMAIN_PATTERNS = [
   { label: 'akka.*', re: /\bakka\./ },
   { label: 'play.*', re: /\bplay\./ },
@@ -149,4 +159,48 @@ test('layout-and-style Phase 2: Aggregate aligns with playAkkaCQRS (no Execute s
     }
   }
   assert.deepEqual(violations, [], 'Phase 2 aggregate alignment violations:\n' + violations.join('\n'));
+});
+
+test('layout-and-style Phase 3: application root has zero files, zero application.saga, and only problem-space subpackages', () => {
+  const appRoot = path.join(BANK_GENERATED, BASE_REL, 'application');
+  const entries = fs.readdirSync(appRoot, { withFileTypes: true });
+  const rootFiles = entries.filter(e => e.isFile()).map(e => e.name);
+  assert.deepEqual(rootFiles, [], 'application root must contain zero files: ' + rootFiles.join(', '));
+  const badDirs = entries.filter(e => e.isDirectory() && !ALLOWED_APPLICATION_SUBPACKAGES.has(e.name)).map(e => e.name);
+  assert.deepEqual(badDirs, [], 'unsanctioned application subpackages: ' + badDirs.join(', '));
+  assert.equal(fs.existsSync(path.join(appRoot, 'saga')), false, 'application/saga must be retired');
+  assert.equal(
+    fs.existsSync(path.join(appRoot, 'integration/FundOrderExternalEvents.scala')),
+    true,
+    'FundOrderExternalEvents.scala must reside in application/integration',
+  );
+  assert.equal(
+    fs.existsSync(path.join(appRoot, 'aggregates/behaviors/FundOrderExternalEvents.scala')),
+    false,
+    'FundOrderExternalEvents.scala must not reside in application/aggregates/behaviors',
+  );
+});
+
+test('layout-and-style Phase 3: application.process and application.integration are free of persistence/serializer/bootstrap wiring', () => {
+  const dirs = ['process', 'integration'].map(sub => path.join(BANK_GENERATED, BASE_REL, 'application', sub));
+  const files = dirs.flatMap(walkScala);
+  assert.ok(files.length > 0, 'application.process and application.integration files expected');
+  const violations = [];
+  for (const file of files) {
+    const content = fs.readFileSync(file, 'utf8');
+    for (const { label, re } of FORBIDDEN_PROCESS_INTEGRATION_PATTERNS) {
+      if (re.test(content)) {
+        violations.push(path.relative(BANK_GENERATED, file) + ' references ' + label);
+      }
+    }
+  }
+  assert.deepEqual(violations, [], 'Phase 3 application purity violations:\n' + violations.join('\n'));
+});
+
+test('layout-and-style Phase 3: conf/serialization.conf binds infrastructure.persistence serializers to process/integration events', () => {
+  const conf = fs.readFileSync(path.join(BANK_GENERATED, 'conf/serialization.conf'), 'utf8');
+  assert.match(conf, /host0\s*=\s*"example\.bankwealth\.infrastructure\.persistence\.BankPaymentHostSerializer"/);
+  assert.match(conf, /effect0\s*=\s*"example\.bankwealth\.infrastructure\.persistence\.BankSipDispatchEffectHostSerializer"/);
+  assert.match(conf, /"example\.bankwealth\.application\.process\.BankPaymentHost\$Event"\s*=\s*host0/);
+  assert.match(conf, /"example\.bankwealth\.application\.integration\.BankSipDispatchEffectHost\$Event"\s*=\s*effect0/);
 });

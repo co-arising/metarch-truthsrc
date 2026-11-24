@@ -196,8 +196,9 @@ export function renderExternalEventBridgeFiles(input) {
     const name = symbol(bridge.aggregate);
     const ownSubpkgs = new Set();
     for (const p of bridge.producers) collectOwnValueSubpackages(p.outputType, bridge.context, ownSubpkgs);
+    ownSubpkgs.delete('application.integration');
     const lines = [
-      `package ${pkg}.application.aggregates.behaviors`,
+      `package ${pkg}.application.integration`,
       '',
       `import ${pkg}.domain.entities.${name}Entity._`,
       ...[...ownSubpkgs].sort().map(sub => `import ${pkg}.${sub}._`),
@@ -217,7 +218,7 @@ export function renderExternalEventBridgeFiles(input) {
     const entityDep = scalaSubpackagePath(pkg, 'domain.entities', `${bridge.aggregate}Entity.scala`);
     const deps = [entityDep, ...new Set(bridge.producers.flatMap(p => valueDeps(p.outputType, packageMap)))];
     return {
-      path: scalaSubpackagePath(pkg, 'application.aggregates.behaviors', `${bridge.aggregate}ExternalEvents.scala`),
+      path: scalaSubpackagePath(pkg, 'application.integration', `${bridge.aggregate}ExternalEvents.scala`),
       content: lines.join('\n'),
       kind: 'external-event-bridge',
       sources: bridge.producers.map(p => ({ ...p.source })),

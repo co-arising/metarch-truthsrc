@@ -3,7 +3,7 @@ package example.bankwealth.application.aggregates
 import akka.actor.typed.ActorRef
 import akka.persistence.typed.scaladsl.Effect
 import example.bankwealth.domain.entities.FundOrderEntity.{Event, State}
-import example.bankwealth.application.saga._
+import example.bankwealth.application.process._
 import example.bankwealth.domain.values._
 
 object FundOrderProtocol {

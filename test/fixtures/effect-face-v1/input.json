@@ -7,7 +7,7 @@
         "executionClass": "BankSipDispatchExecution",
         "effectHostClass": "BankSipDispatchEffectHost",
         "serializerClass": "BankSipDispatchEffectHostSerializer",
-        "package": "example.bankwealth.application",
+        "package": "example.bankwealth.application.integration",
         "nameSources": {
           "executionClass": "pipeline id bank-sip-dispatch-v1 (the durable plan face of that pipeline)",
           "effectHostClass": "host id bank-sip-dispatch + EffectHost suffix (N1 dedup)",
@@ -144,7 +144,7 @@
         "executionClass": "BankTaSubmissionExecution",
         "effectHostClass": "BankTaEffectHost",
         "serializerClass": "BankTaEffectHostSerializer",
-        "package": "example.bankwealth.application",
+        "package": "example.bankwealth.application.integration",
         "nameSources": {
           "executionClass": "saga id bank-ta-submission-v1",
           "effectHostClass": "host id bank-ta-effect + EffectHost suffix with stem/suffix dedup (N1: BankTaEffectEffectHost stutters)",
