@@ -830,3 +830,17 @@ BankPaymentOriginal`，refund 案 `original: BankRefundOriginal`）与
 vo-sandbox（修复前 face 文件）复证恰 2 错（重复定义）。收敛链：
 旧形 2 错（掩盖全部）→ A′+B 后恰剩 TA 簇 5 处 → C 后 0 错。
 全量套件 4,483 测试失败集两树（改动前/后）逐名相同 → 环境 flake，零回归。
+
+### 15.2 value-object 翻转执行记录（R6 先修后翻，本日闭合）
+
+- 显式 update（`generate --update`）exit 0：total 235，COVER 127＝8 face
+  件（伴名化）＋118 values 件（curated 翻转）＋`.truthsrc/inputs.json`
+  账本；A′+B 后再 update `written:3`（两 stems Ports＋BankRefundHost）。
+- **F5 逐文件 diff 清单**：classic 渲染器复现旧字节对盘上 curated 逐件
+  分类——118/118 恰为裁定两处（去头＋同包 FQN 缩短；94 件含 FQN 缩短共
+  271 处，其余仅去头），零第三种偏差。
+- bank 五步门：doctor ✓／validate hard 0 ✓／compile exit 0 ✓／显式
+  update ✓／verify 12 项全 true ✓；加 R7 冷编译 ✓（15.1）。
+- `docs/emitter-unification-plan.md` §5 value-object 行已标 ✅ 翻转；
+  §8 补第六步命令。classic `valueobject-dsl` 行退役与 `render-values.mjs`
+  物理删除仍按 Phase 4（legacy 生成器仍引用，F6 不动）。

@@ -126,7 +126,7 @@ Pages 上引用旧生成器 id／文件头的句子同步刷新。
 | 已定案 | rules(9) | #45 aggregate-invariant-rules（复刻翻转 ✅ 2026-11-23；原记 #11 为参考件，勘误 R2） | ✅ 复刻回执 |
 | 已定案 | invocation-host(2)＋host-serialization(2)＋technical-port(4)＋effect-host(2)＋effect-serialization(2) | 调用宿主簇（#42 族） | ✅ 金样已有（试点） |
 | 已定案（待核） | external-event-bridge(1) | #13/#25 connector | ✅ 金样已有（映射待核） |
-| 限定 raw | value-object(118) | #1 | 未 |
+| 限定 raw | value-object(118) | #1 | ✅ 翻转（2026-11-23，curated 手写金样；118 件 COVER，F5 清单 118/118 呈报） |
 | 限定 raw | entity(3)＋state(3) | #2 | 未 |
 | 限定 raw | event-handler(6) | #3 | 未 |
 | 限定 raw | aggregate(3)＋aggregate-factory(3)＋aggregate-behavior(6) | #6/8/9 | 未 |
