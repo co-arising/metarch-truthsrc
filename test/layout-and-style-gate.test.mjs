@@ -95,7 +95,7 @@ test('layout-and-style §3 N1: zero duplicate technical suffixes in generated fi
   assert.deepEqual(bad, [], 'duplicate technical suffixes: ' + bad.join(', '));
 });
 
-test('layout-and-style S12: domain.values contains zero HTTP API DTOs, CQRS views, saga triplets, or PO carriers', () => {
+test('layout-and-style S12/Phase 4: domain.values contains zero HTTP API DTOs, wire types, commands, CQRS views, saga triplets, or PO carriers', () => {
   const valuesDir = path.join(BANK_GENERATED, BASE_REL, 'domain/values');
   const files = walkScala(valuesDir).map(f => path.basename(f, '.scala'));
   assert.ok(files.length > 0, 'domain.values files expected');
@@ -103,12 +103,16 @@ test('layout-and-style S12: domain.values contains zero HTTP API DTOs, CQRS view
     /PO$/u.test(name) ||
     /(Prepare|Commit|Compensate)(Input|Query|Receipt)$/u.test(name) ||
     /(Args|Result)$/u.test(name) ||
-    /(Effect|Dispatch)(Request|Operation|Observation|Reconcile)$/u.test(name) ||
+    /(Effect|Dispatch)(Request|Operation|Observation|Reconcile|Result)$/u.test(name) ||
     /(View|Watermark|ReadMetadata|Page)$/u.test(name) ||
-    /(Response|Acknowledgement|Key)$/u.test(name) ||
+    /(Wire|Submit|Create|Intent|Original|Response|Acknowledgement|Key)$/u.test(name) ||
     /(BootstrapInput|RevisionInput|Revise|Tick)$/u.test(name)
   );
   assert.deepEqual(forbidden, [], 'non-domain value objects leaked into domain.values: ' + forbidden.join(', '));
+  const apiDir = path.join(BANK_GENERATED, BASE_REL, 'application/api');
+  for (const expectedApi of ['AmountDecimalWire', 'MoneyWire', 'BankCashSubmit', 'BankCashOriginal', 'BankPaymentOriginal', 'BankRefundOriginal', 'BankSipCreate', 'BankSipCreateIntent']) {
+    assert.equal(fs.existsSync(path.join(apiDir, expectedApi + '.scala')), true, `${expectedApi}.scala must reside in application/api`);
+  }
 });
 
 test('layout-and-style Phase 2: domain layer has zero domain/events, zero Command definitions, and zero CommandHelpers', () => {

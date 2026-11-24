@@ -3,6 +3,7 @@ package example.bankwealth.application.aggregates
 import akka.actor.typed.ActorRef
 import akka.persistence.typed.scaladsl.Effect
 import example.bankwealth.domain.entities.SipPlanEntity.{Event, State}
+import example.bankwealth.application.api._
 import example.bankwealth.domain.values._
 
 object SipPlanProtocol {

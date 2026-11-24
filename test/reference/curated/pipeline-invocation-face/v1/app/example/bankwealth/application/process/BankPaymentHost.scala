@@ -2,7 +2,7 @@ package example.bankwealth.application.process
 
 import akka.actor.typed.ActorRef
 import com.google.protobuf.ByteString
-import example.bankwealth.domain.values.BankPaymentOriginal
+import example.bankwealth.application.api.BankPaymentOriginal
 import net.imadz.infra.saga.strict._
 
 /** Pipeline invocation host for the cash purchase payment: owns the durable
