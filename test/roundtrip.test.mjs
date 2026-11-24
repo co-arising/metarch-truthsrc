@@ -5,10 +5,9 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { compileTree } from '../lib/compile.mjs';
 import { decomposeCanonical } from '../lib/decompose.mjs';
-import { inboxDirStage, listInboxStages } from '../lib/shared.mjs';
+import { inboxDirStage, listInboxStages, emitDoc } from '../lib/shared.mjs';
 import { validateTree } from '../lib/validate.mjs';
 import { roundtrip } from '../lib/roundtrip.mjs';
-import { emitDoc } from '../lib/shared.mjs';
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 const atom = (type, name, seq, payload, stage = 'eventStorming') => emitDoc({

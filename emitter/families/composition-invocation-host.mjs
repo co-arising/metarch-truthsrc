@@ -22,23 +22,7 @@
 //     frozen F13 named-method structure with every guard/message from input
 //   - the suite scenario windows render from the contract window tables
 //     (cut predicates as event/step data, expected keeps as integers)
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import crypto from 'node:crypto';
 import { scalaDirPath } from '../../lib/layout/layout-strategy.mjs';
-
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const GOLDEN_DIR = path.join(ROOT, 'test/reference/curated/composition-invocation-host/v1');
-const EMISSION_FILES = [
-  'app/example/stockreservation/application/services/transactor/CompositionChildJournal.scala',
-  'app/example/stockreservation/application/services/transactor/WaferChildPlan.scala',
-  'app/example/stockreservation/infrastructure/persistence/MongoCompositionChildJournal.scala',
-  'app/example/stockreservation/infrastructure/bootstrap/CompositionBootstrap.scala',
-  'app/example/stockreservation/application/services/transactor/WaferTransferHost.scala',
-  'test/example/stockreservation/application/services/transactor/FixtureCompositionSpec.scala',
-  'test/example/stockreservation/application/services/transactor/FixtureCompositionDeploymentSpec.scala'
-];
 
 // ---------- layout engine ----------
 // The golden's line breaks are frozen per shape (hand-balanced CJK prose and
@@ -58,18 +42,6 @@ const assertWidth = (lines, label) => {
   return lines;
 };
 
-// Two-term case-class parameter list: `field: Type,` per line with the last
-// one closed (golden BeginOperation/OperationStarted shape: all params ride
-// continuation lines at +2 because the first param never fits the head).
-const caseParams = (indent, fields, suffix) => {
-  const lines = [];
-  for (let i = 0; i < fields.length; i++) {
-    const tail = i === fields.length - 1 ? suffix : ',';
-    lines.push(' '.repeat(indent) + fields[i] + tail);
-  }
-  return lines;
-};
-
 // Chinese numerals for small declared counts (doc prose interpolation).
 const NUM_CN = ['零', '一', '两', '三', '四', '五', '六', '七', '八', '九', '十'];
 const cnNum = n => {
@@ -78,11 +50,6 @@ const cnNum = n => {
   }
   return NUM_CN[n];
 };
-
-// Doc paragraphs are hand-balanced CJK prose: each line's break position is a
-// frozen layout shape (golden), with every name, id, count, list and mapping
-// inside the line interpolated from the input contract.
-const docBlock = lines => lines;
 
 // ---------- fail-closed input validation ----------
 function validate(input) {
@@ -579,7 +546,6 @@ function emitHost(input) {
   const identityDeclParams = c.identityFields.map(fd => fd.name + ': ' + fd.type);
   const identityArgs = c.identityFields.slice(1).map(fd => fd.identity === null
     ? fd.name : 'ident.' + fd.identity);
-  const identityNames = c.identityFields.slice(1).map(fd => fd.name);
   const identityToIdentityArgs = c.identityFields.slice(1).map(fd => fd.name);
   const codecPinArgs = c.identityFields.filter(fd => fd.identity && fd.identity.startsWith('argsCodec'))
     .map(fd => fd.name);
@@ -596,7 +562,6 @@ function emitHost(input) {
     'concluded: Option[String]',
     'childRunKey: Option[String]'
   ];
-  const hookLine = h => '    ' + h.name + ': ' + h.signature + ' = ' + h.default + ',';
   const hooks = input.testHooks;
   // Frozen spawn-signature block: seven params, one per line, all but the last
   // trailing-comma; when a hook param follows (ForTest/build variants) the
@@ -611,7 +576,6 @@ function emitHost(input) {
     '      occurrence: String' + (trailing ? ',' : '')
   ];
   const testHookParam = p => ['      ' + p];
-  const pollMs = c.timings.pollIntervalMs;
   const strictImport = packArgs(0, 'import net.imadz.infra.saga.strict.{',
     ['CodecPin', 'Evidence', 'Phase', 'StrictSagaCoordinator', 'StrictState', 'StrictStatus',
       'TransactionIdentity'], '}');
@@ -684,11 +648,11 @@ function emitHost(input) {
       [identityDeclParams.slice(0, 3), identityDeclParams.slice(3, 5),
         identityDeclParams.slice(5, 7), identityDeclParams.slice(7)], ') extends Event {'),
     ...packArgs(4, 'def toIdentity: TransactionIdentity = TransactionIdentity(',
-      identityToIdentityArgs.map((name, i) => name === codecPinArgs[1]
-        ? null // merged into the CodecPin( pinId, version ) argument face
-        : name === codecPinArgs[0]
-          ? 'CodecPin(' + name + ', ' + codecPinArgs[1] + ')'
-          : name).filter(x => x !== null),
+      identityToIdentityArgs.map(name => {
+        if (name === codecPinArgs[1]) return null; // merged into the CodecPin( pinId, version ) argument face
+        if (name === codecPinArgs[0]) return 'CodecPin(' + name + ', ' + codecPinArgs[1] + ')';
+        return name;
+      }).filter(x => x !== null),
       ')'),
     '  }',
     ...packDeclRows(2, '  final case class ' + f.stepCheckpointed + '(',
@@ -1045,8 +1009,10 @@ function emitHost(input) {
       f.composedState + '] =',
     '    concludeStep(stepId, s.status match {',
     ...input.statusMapping.slice(0, 3).map(m => {
-      const codeExpr = typeof m.code === 'string' ? '"' + m.code + '"'
-        : m.code.kind === 'prepare-confirmed' ? 'abortedCode(s)' : '"' + m.code + '"';
+      let codeExpr = '"' + m.code + '"';
+      if (typeof m.code !== 'string' && m.code.kind === 'prepare-confirmed') {
+        codeExpr = 'abortedCode(s)';
+      }
       return '      case StrictStatus.' + m.status + ' => ' + codeExpr;
     }),
     '      case other => sys.error("' + c.messages.unmappedStatus + '" + other)',
@@ -1317,7 +1283,6 @@ function triggerSourceCall(args) {
 // slots, row 2 = the durable completed-child wafers CSV, row 3 = manifest +
 // reply sink. The slot order/sources flow from the contract's mergeArgs.
 function mergeSourceRows(input, awaitVal) {
-  const childWaferArg = input.trigger.mergeArgs.find(a => a.source === 'child-wafers');
   const shortArgs = input.trigger.mergeArgs.filter(a =>
     a.source !== 'child-wafers' && a.source !== 'start-field:manifest' &&
     a.source !== 'lot-reply-sink');
@@ -1347,23 +1312,19 @@ function emitRSuite(input) {
   const host = names.host;
   const splitStep = c.splitStep;
   const awaitStep = c.awaitStep;
-  const mergeStep = c.mergeStep;
   const t = r.timings;
   const dbPrefix = r.mongo.dbPrefix;
   const lot = names.lotProtocol;
-  const splitVal = 'WaferTransferHost.SplitStep';
-  const awaitVal = 'WaferTransferHost.AwaitStep';
-  const mergeVal = 'WaferTransferHost.MergeStep';
   const stepValRef = role => 'WaferTransferHost.' + role.charAt(0).toUpperCase() + role.slice(1) + 'Step';
   const cutPredicate = cut => {
-    const stepRef = cut.step === splitStep ? stepValRef('split')
-      : cut.step === awaitStep ? stepValRef('await') : stepValRef('merge');
+    let stepRef = stepValRef('merge');
+    if (cut.step === splitStep) stepRef = stepValRef('split');
+    else if (cut.step === awaitStep) stepRef = stepValRef('await');
     return [
       '      case e: WaferTransferHost.' + cut.event + ' => e.stepId == ' + stepRef,
       '      case _ => false'
     ];
   };
-  const windowRow = w => w.cut ? w : null;
   const occRef = '"' + occ + '"';
   const lines = [
     'package example.stockreservation.application.services.transactor',

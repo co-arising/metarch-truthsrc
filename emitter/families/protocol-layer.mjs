@@ -16,7 +16,6 @@
 //
 // The module embeds zero business bytes: every aggregate name, command, event,
 // host, slot expression, external producer id and source pointer is contract data.
-import { parseStrictJson } from '../../lib/strict-json.mjs';
 import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
 
 const fail = (code, message) => { throw Object.assign(new Error(code + ': ' + message), { code }); };
@@ -46,7 +45,7 @@ const ingressAlias = id => 'Ingest' + toPascal(id);
 function checkSource(source, what) {
   if (!source || typeof source !== 'object' || typeof source.document !== 'string' || !source.document ||
     typeof source.pointer !== 'string' || !source.pointer.startsWith('/'))
-    fail('PL_INPUT', what + ' must carry a {document, pointer} knowledge source');
+    {fail('PL_INPUT', what + ' must carry a {document, pointer} knowledge source');}
 }
 
 function checkTypeTree(type, what, packages) {
@@ -131,7 +130,7 @@ function checkExpr(expr, what, packages, hostNames) {
   }
   if (expr.op === 'add' || expr.op === 'subtract') {
     if (expr.arithmetic !== 'primitive' && expr.arithmetic !== 'nominal')
-      fail('PL_INPUT', what + ' arithmetic must be primitive or nominal');
+      {fail('PL_INPUT', what + ' arithmetic must be primitive or nominal');}
     checkExpr(expr.left, what + ' left', packages, hostNames);
     checkExpr(expr.right, what + ' right', packages, hostNames);
     return;
@@ -152,7 +151,7 @@ function checkInput(input) {
     boundContexts.add(context);
     const pkg = text(binding.package, bt('package'));
     if (!pkg.split('.').every(p => /^[a-z][a-z0-9_]*$/u.test(p) && !KEYWORDS.has(p)))
-      fail('PL_INPUT', bt('package must be a dotted lowercase-root Scala package'));
+      {fail('PL_INPUT', bt('package must be a dotted lowercase-root Scala package'));}
   }
   if (!Array.isArray(input.aggregates) || input.aggregates.length === 0) fail('PL_INPUT', 'aggregates must be a nonempty array');
   const seenAggs = new Set();
@@ -292,7 +291,9 @@ function renderLiteral(value, type) {
 
 function renderExpr(expr) {
   if (expr.op === 'ref') {
-    const prefix = expr.scope === 'state-field' ? 'state.' : expr.scope === 'event-slot' ? 'event.' : 'p.';
+    let prefix = 'p.';
+    if (expr.scope === 'state-field') prefix = 'state.';
+    else if (expr.scope === 'event-slot') prefix = 'event.';
     return prefix + symbol(expr.name);
   }
   if (expr.op === 'literal') return renderLiteral(expr.value, expr.valueType);
@@ -387,7 +388,7 @@ function renderCommandHelpers(agg, pkg, pkgPath, pkgByContext) {
   };
 }
 
-function renderApplicationProtocol(agg, pkg, pkgPath) {
+function renderApplicationProtocol(agg, pkg) {
   const name = symbol(agg.name);
   const aggObj = name + 'Aggregate';
   const aliases = ['Execute', 'GetState', 'Accepted', 'Refused', ...agg.externalProducers.map(p => ingressAlias(p.id))];

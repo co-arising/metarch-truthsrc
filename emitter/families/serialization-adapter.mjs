@@ -54,7 +54,7 @@ export function checkInput(input) {
     seenContexts.add(s.context);
     if (!Number.isInteger(s.identifier) || s.identifier < 1) fail('identifier must be positive integer');
     if (!Array.isArray(s.protoPaths) || !s.protoPaths.length || s.protoPaths.some(p => !p.endsWith('.proto')))
-      fail('protoPaths must be non-empty .proto paths');
+      {fail('protoPaths must be non-empty .proto paths');}
     if (!Array.isArray(s.entries) || !s.entries.length) fail('entries must be non-empty');
     const seenPo = new Set();
     for (let j = 0; j < s.entries.length; j++) {

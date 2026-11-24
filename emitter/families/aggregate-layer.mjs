@@ -57,7 +57,7 @@ const externalNames = id => {
 function checkSource(source, what) {
   if (!source || typeof source !== 'object' || typeof source.document !== 'string' || !source.document ||
     typeof source.pointer !== 'string' || !source.pointer.startsWith('/'))
-    fail('AL_INPUT', what + ' must carry a {document, pointer} knowledge source');
+    {fail('AL_INPUT', what + ' must carry a {document, pointer} knowledge source');}
 }
 
 function checkTypeTree(type, what, packages) {
@@ -97,7 +97,7 @@ function checkInput(input) {
     boundContexts.add(context);
     const pkg = text(binding.package, bt('package'));
     if (!pkg.split('.').every(p => /^[a-z][a-z0-9_]*$/u.test(p) && !KEYWORDS.has(p)))
-      fail('AL_INPUT', bt('package must be a dotted lowercase-root Scala package'));
+      {fail('AL_INPUT', bt('package must be a dotted lowercase-root Scala package'));}
   }
   if (!Array.isArray(input.aggregates) || input.aggregates.length === 0) fail('AL_INPUT', 'aggregates must be a nonempty array');
   const seenAggs = new Set();

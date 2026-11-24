@@ -6,9 +6,6 @@
 // a supplied handwritten lib and is never emitted; result types are supplied
 // handwritten classes per the traditional contract. Acceptance is byte
 // comparison against the approved golden bundle, never a self-declared pass.
-import fs from 'node:fs';
-import path from 'node:path';
-import { createHash } from 'node:crypto';
 import { parseStrictJson } from '../../lib/strict-json.mjs';
 import { scalaDirPath } from '../../lib/layout/layout-strategy.mjs';
 
@@ -34,10 +31,10 @@ const mechanismVocabulary = /script|command|process|binary|executable/i;
 function checkInput(input) {
   fieldsOf(input, ['schemaVersion', 'basePackage', 'gate', 'supplied'], 'input');
   if (input.schemaVersion !== 'truthsrc.external-tool-gate-input/v1')
-    fail('FORMAL_INPUT', 'unsupported schemaVersion');
+    {fail('FORMAL_INPUT', 'unsupported schemaVersion');}
   text(input.basePackage, 'basePackage');
   if (!input.basePackage.split('.').every(part => /^[a-z][a-zA-Z0-9]*$/.test(part)))
-    fail('FORMAL_INPUT', 'basePackage must be dotted lowercase-root segments');
+    {fail('FORMAL_INPUT', 'basePackage must be dotted lowercase-root segments');}
   const gate = input.gate;
   fieldsOf(gate, ['traitName', 'implName', 'moduleName', 'doc', 'runner', 'methods'], 'gate');
   pascal(gate.traitName, 'gate.traitName');
@@ -45,7 +42,7 @@ function checkInput(input) {
   pascal(gate.moduleName, 'gate.moduleName');
   fieldsOf(gate.doc, ['title', 'notes'], 'gate.doc');
   if (!Array.isArray(gate.doc.notes) || gate.doc.notes.length === 0)
-    fail('FORMAL_INPUT', 'gate.doc.notes must be a nonempty array');
+    {fail('FORMAL_INPUT', 'gate.doc.notes must be a nonempty array');}
   const runner = gate.runner;
   fieldsOf(runner, ['trait', 'request', 'runMethod', 'paramName'], 'gate.runner');
   pascal(runner.trait, 'gate.runner.trait');
@@ -53,7 +50,7 @@ function checkInput(input) {
   text(runner.runMethod, 'gate.runner.runMethod');
   lowerCamel(runner.paramName, 'gate.runner.paramName');
   if (!Array.isArray(gate.methods) || gate.methods.length === 0)
-    fail('FORMAL_INPUT', 'gate.methods must be a nonempty array');
+    {fail('FORMAL_INPUT', 'gate.methods must be a nonempty array');}
   const paramNames = new Set();
   for (const method of gate.methods) {
     fieldsOf(method, ['name', 'params', 'resultType', 'intent', 'binding', 'decoder'], 'gate method');
@@ -65,7 +62,7 @@ function checkInput(input) {
       fieldsOf(param, ['name', 'typeRef'], 'gate method param');
       text(param.name, 'param name');
       if (mechanismVocabulary.test(param.name) || mechanismVocabulary.test(param.typeRef.name || ''))
-        fail('FORMAL_INPUT', `param ${param.name} carries mechanism vocabulary; the gate face is business-only (2026-11-19 ruling)`);
+        {fail('FORMAL_INPUT', `param ${param.name} carries mechanism vocabulary; the gate face is business-only (2026-11-19 ruling)`);}
       fieldsOf(param.typeRef, ['name', 'packageName'], 'param typeRef');
       text(param.typeRef.name, 'param typeRef name');
       text(param.typeRef.packageName, 'param typeRef packageName');
@@ -76,7 +73,7 @@ function checkInput(input) {
     fieldsOf(binding, ['script', 'argument', 'timeoutMs', 'vals'], `gate method ${method.name} binding`);
     text(binding.script, `gate method ${method.name} binding.script`);
     if (!Number.isInteger(binding.timeoutMs) || binding.timeoutMs <= 0)
-      fail('FORMAL_INPUT', `gate method ${method.name} needs a positive integer timeoutMs`);
+      {fail('FORMAL_INPUT', `gate method ${method.name} needs a positive integer timeoutMs`);}
     fieldsOf(binding.vals, ['script', 'timeoutMs'], 'binding.vals');
     lowerCamel(binding.vals.script, 'binding.vals.script');
     lowerCamel(binding.vals.timeoutMs, 'binding.vals.timeoutMs');
@@ -87,7 +84,7 @@ function checkInput(input) {
       text(argument.param, 'binding.argument.param');
       text(argument.field, 'binding.argument.field');
       if (!paramNames.has(argument.param))
-        fail('FORMAL_INPUT', `binding.argument.param ${argument.param} is not a gate method parameter`);
+        {fail('FORMAL_INPUT', `binding.argument.param ${argument.param} is not a gate method parameter`);}
     } else if (argument.source !== 'empty') {
       fail('FORMAL_INPUT', 'binding.argument.source must be "param" or "empty"');
     }
@@ -96,7 +93,7 @@ function checkInput(input) {
     text(method.decoder.method, 'decoder method');
   }
   if (!Array.isArray(input.supplied))
-    fail('FORMAL_INPUT', 'supplied must be an array of external frozen inputs');
+    {fail('FORMAL_INPUT', 'supplied must be an array of external frozen inputs');}
   for (const row of input.supplied) {
     fieldsOf(row, ['role', 'path', 'sha256'], 'supplied entry');
     if (!/^[0-9a-f]{64}$/.test(row.sha256)) fail('FORMAL_INPUT', `supplied ${row.role} needs a sha256`);
@@ -106,7 +103,7 @@ function checkInput(input) {
 const methodImports = gate => {
   const imports = new Set();
   for (const method of gate.methods)
-    for (const param of method.params) imports.add(`${param.typeRef.packageName}.${param.typeRef.name}`);
+    {for (const param of method.params) imports.add(`${param.typeRef.packageName}.${param.typeRef.name}`);}
   imports.add('scala.concurrent.Future');
   return [...imports].sort();
 };
@@ -142,7 +139,7 @@ const implImportBlock = (input, resultTypes, paramTypes) => {
   const lines = ['import javax.inject.{Inject, Singleton}'];
   lines.push(`import ${input.basePackage}.application.toolgates.${braceNames(appMembers)}`);
   if (domainMembers.length > 0)
-    lines.push(`import ${input.basePackage}.domain.values.${braceNames(domainMembers)}`);
+    {lines.push(`import ${input.basePackage}.domain.values.${braceNames(domainMembers)}`);}
   lines.push(`import ${input.basePackage}.infrastructure.process.{${input.gate.runner.trait}, ${input.gate.runner.request}}`);
   lines.push('import scala.concurrent.{ExecutionContext, Future}');
   lines.push('import scala.util.Try');

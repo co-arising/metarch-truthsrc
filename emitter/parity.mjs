@@ -57,14 +57,14 @@ const runToolsReference = async (family, fixtureAbsolute, input, workDir, emitte
       ? (() => {
           const keys = Object.keys(emitterRun);
           if (keys.length !== 1)
-            fail('EMITTER_PARITY', `family ${family.id}: toolsSingleFile requires exactly one emitter artifact, got ${keys.length}`);
+            {fail('EMITTER_PARITY', `family ${family.id}: toolsSingleFile requires exactly one emitter artifact, got ${keys.length}`);}
           return path.join(outDir, keys[0]);
         })()
       : outDir;
     if (family.toolsSingleFile === true) fs.mkdirSync(path.dirname(target), { recursive: true });
     const run = spawnSync(process.execPath, [path.join(ROOT, family.toolsRef), 'generate', fixtureAbsolute, target], { cwd: ROOT, encoding: 'utf8' });
     if (run.status !== 0)
-      fail('EMITTER_PARITY', `family ${family.id}: reference generator ${family.toolsRef} exited ${run.status}: ${(run.stderr || run.stdout || '').slice(0, 400)}`);
+      {fail('EMITTER_PARITY', `family ${family.id}: reference generator ${family.toolsRef} exited ${run.status}: ${(run.stderr || run.stdout || '').slice(0, 400)}`);}
     if (family.toolsSingleFile === true) {
       const relative = path.relative(outDir, target).split(path.sep).join('/');
       return new Map([[relative, fs.readFileSync(target)]]);
@@ -72,11 +72,11 @@ const runToolsReference = async (family, fixtureAbsolute, input, workDir, emitte
     return readTreeBytes(outDir);
   }
   if (typeof family.toolsExport !== 'string')
-    fail('EMITTER_PARITY', `family ${family.id}: neither toolsMode 'generate' nor a toolsExport reference export is declared`);
+    {fail('EMITTER_PARITY', `family ${family.id}: neither toolsMode 'generate' nor a toolsExport reference export is declared`);}
   const reference = await import(path.join(ROOT, family.toolsRef));
   const generate = reference[family.toolsExport];
   if (typeof generate !== 'function')
-    fail('EMITTER_PARITY', `family ${family.id}: reference export ${family.toolsExport} not found in ${family.toolsRef}`);
+    {fail('EMITTER_PARITY', `family ${family.id}: reference export ${family.toolsExport} not found in ${family.toolsRef}`);}
   const outputs = generate(JSON.parse(JSON.stringify(input)));
   const files = new Map();
   for (const [relative, content] of Object.entries(outputs)) files.set(relative, Buffer.from(content, 'utf8'));
@@ -87,7 +87,7 @@ const checkFamily = async (family, workDir) => {
   requireFamilySpecPaths(family);
   const fixtureAbsolute = path.join(ROOT, family.fixtureDir, 'input.json');
   if (!fs.existsSync(fixtureAbsolute))
-    fail('EMITTER_PARITY', `family ${family.id}: fixture input.json missing at ${family.fixtureDir}/input.json`);
+    {fail('EMITTER_PARITY', `family ${family.id}: fixture input.json missing at ${family.fixtureDir}/input.json`);}
   const input = parseStrictJson(fs.readFileSync(fixtureAbsolute));
 
   // Emitter render, twice (double-run determinism, 纪律 3).
@@ -131,7 +131,7 @@ const checkFamily = async (family, workDir) => {
   if (typeof family.runNegatives === 'function') {
     const result = family.runNegatives(JSON.parse(JSON.stringify(input)));
     if (typeof result !== 'object' || result === null || !Array.isArray(result.failures))
-      fail('EMITTER_PARITY', `family ${family.id}: runNegatives must return {expected, rejected, failures}`);
+      {fail('EMITTER_PARITY', `family ${family.id}: runNegatives must return {expected, rejected, failures}`);}
     battery = {
       kind: 'embedded',
       expected: result.expected,

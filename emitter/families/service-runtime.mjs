@@ -49,7 +49,7 @@ export function checkInput(input) {
   if (typeof input.readSideConnection !== 'string' || !input.readSideConnection) fail('readSideConnection invalid');
   checkSource(input.artifactSource, 'artifactSource');
   if (typeof input.configurationScala !== 'string' || !input.configurationScala.includes('object '))
-    fail('configurationScala must be non-empty Scala');
+    {fail('configurationScala must be non-empty Scala');}
   if (!Array.isArray(input.endpoints) || !input.endpoints.length) fail('endpoints must be non-empty');
   const seenEndpoints = new Set();
   for (let i = 0; i < input.endpoints.length; i++) {

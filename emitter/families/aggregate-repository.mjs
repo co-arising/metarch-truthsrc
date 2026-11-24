@@ -42,9 +42,9 @@ export function checkInput(input) {
     const entry = checkObject(input.packages[i], 'packages[' + i + ']');
     checkNoExtraKeys(entry, new Set(['context', 'package']), 'packages[' + i + ']');
     if (typeof entry.context !== 'string' || !CONTEXT_RE.test(entry.context))
-      fail('packages[' + i + '].context must match ' + CONTEXT_RE);
+      {fail('packages[' + i + '].context must match ' + CONTEXT_RE);}
     if (typeof entry.package !== 'string' || !PACKAGE_RE.test(entry.package))
-      fail('packages[' + i + '].package must match ' + PACKAGE_RE);
+      {fail('packages[' + i + '].package must match ' + PACKAGE_RE);}
     if (packageByContext.has(entry.context)) fail('duplicate package binding for context ' + entry.context);
     packageByContext.set(entry.context, entry.package);
   }
@@ -55,11 +55,11 @@ export function checkInput(input) {
     const repo = checkObject(input.repositories[i], 'repositories[' + i + ']');
     checkNoExtraKeys(repo, new Set(['context', 'name', 'lookup', 'source']), 'repositories[' + i + ']');
     if (typeof repo.context !== 'string' || !packageByContext.has(repo.context))
-      fail('repositories[' + i + '].context has no package binding: ' + JSON.stringify(repo.context));
+      {fail('repositories[' + i + '].context has no package binding: ' + JSON.stringify(repo.context));}
     if (typeof repo.name !== 'string' || !TYPE_NAME_RE.test(repo.name))
-      fail('repositories[' + i + '].name must match ' + TYPE_NAME_RE);
+      {fail('repositories[' + i + '].name must match ' + TYPE_NAME_RE);}
     if (typeof repo.lookup !== 'string' || !SUPPORTED_LOOKUPS.has(repo.lookup))
-      fail('repositories[' + i + '].lookup unsupported: ' + JSON.stringify(repo.lookup));
+      {fail('repositories[' + i + '].lookup unsupported: ' + JSON.stringify(repo.lookup));}
     checkSource(repo.source, 'repositories[' + i + '].source');
     const key = repo.context + '/' + repo.name;
     if (seenRepos.has(key)) fail('duplicate repository declaration: ' + key);

@@ -341,7 +341,6 @@ export function emitStrictFiles(saga, canonical, opts = {}) {
       ...(terminalEvidence ? { terminalEvidence } : {}),
       inputType: nestedName(stem, "Input"), receiptType: nestedName(stem, "Receipt"),
       inputShapes: Object.fromEntries(ph.inputs.map((i) => [i.slot, shapeOf(i.typeId)])),
-      inputShapes: Object.fromEntries(ph.inputs.map((i) => [i.slot, shapeOf(i.typeId)])),
       member: memberName(stem, "Binding"), contractMember: memberName(stem, "Binding") + "Contract",
       portMember: memberName(stem, "Binding") + "Port",
       hostTrait: `${stem}HostBinding`,

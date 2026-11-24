@@ -34,13 +34,13 @@ function checkField(fld, seenNums, seenNames, msgName) {
   checkObject(fld, msgName + ' field');
   checkNoExtraKeys(fld, new Set(['modifier', 'type', 'name', 'number']), msgName + ' field');
   if (typeof fld.modifier !== 'string' || !MODIFIERS.has(fld.modifier))
-    fail('unsupported field modifier: ' + JSON.stringify(fld.modifier));
+    {fail('unsupported field modifier: ' + JSON.stringify(fld.modifier));}
   if (typeof fld.type !== 'string' || !PROTO_TYPE_RE.test(fld.type))
-    fail('invalid proto field type: ' + JSON.stringify(fld.type));
+    {fail('invalid proto field type: ' + JSON.stringify(fld.type));}
   if (typeof fld.name !== 'string' || !IDENT_RE.test(fld.name))
-    fail('invalid proto field name: ' + JSON.stringify(fld.name));
+    {fail('invalid proto field name: ' + JSON.stringify(fld.name));}
   if (!Number.isInteger(fld.number) || fld.number < 1)
-    fail('proto field number must be a positive integer');
+    {fail('proto field number must be a positive integer');}
   if (seenNums.has(fld.number)) fail('duplicate field number ' + fld.number + ' in ' + msgName);
   if (seenNames.has(fld.name)) fail('duplicate field name ' + fld.name + ' in ' + msgName);
   seenNums.add(fld.number);
@@ -58,16 +58,16 @@ export function checkInput(input) {
     const f = checkObject(input.files[i], 'files[' + i + ']');
     checkNoExtraKeys(f, new Set(['path', 'kind', 'packageName', 'imports', 'messages', 'deps', 'sources']), 'files[' + i + ']');
     if (typeof f.path !== 'string' || !f.path.startsWith('app/protobuf/') || !f.path.endsWith('.proto'))
-      fail('files[' + i + '].path must be under app/protobuf/*.proto');
+      {fail('files[' + i + '].path must be under app/protobuf/*.proto');}
     if (seenPaths.has(f.path)) fail('duplicate proto file path: ' + f.path);
     seenPaths.add(f.path);
     if (typeof f.kind !== 'string' || !KINDS.has(f.kind)) fail('files[' + i + '].kind unsupported: ' + JSON.stringify(f.kind));
     if (typeof f.packageName !== 'string' || !PACKAGE_RE.test(f.packageName))
-      fail('files[' + i + '].packageName must match ' + PACKAGE_RE);
+      {fail('files[' + i + '].packageName must match ' + PACKAGE_RE);}
     if (!Array.isArray(f.imports) || !f.imports.length || f.imports.some(imp => typeof imp !== 'string' || !imp.endsWith('.proto')))
-      fail('files[' + i + '].imports must be a non-empty array of .proto paths');
+      {fail('files[' + i + '].imports must be a non-empty array of .proto paths');}
     if (!Array.isArray(f.deps) || f.deps.some(d => typeof d !== 'string' || !d))
-      fail('files[' + i + '].deps must be an array of non-empty strings');
+      {fail('files[' + i + '].deps must be an array of non-empty strings');}
     if (!Array.isArray(f.sources) || !f.sources.length) fail('files[' + i + '].sources must be a non-empty array');
     for (let s = 0; s < f.sources.length; s++) checkSource(f.sources[s], 'files[' + i + '].sources[' + s + ']');
 
@@ -77,7 +77,7 @@ export function checkInput(input) {
       const msg = checkObject(f.messages[m], 'files[' + i + '].messages[' + m + ']');
       checkNoExtraKeys(msg, new Set(['name', 'fields', 'oneofs']), 'files[' + i + '].messages[' + m + ']');
       if (typeof msg.name !== 'string' || !IDENT_RE.test(msg.name))
-        fail('files[' + i + '].messages[' + m + '].name must match ' + IDENT_RE);
+        {fail('files[' + i + '].messages[' + m + '].name must match ' + IDENT_RE);}
       if (seenMsgs.has(msg.name)) fail('duplicate message name in ' + f.path + ': ' + msg.name);
       seenMsgs.add(msg.name);
       if (!Array.isArray(msg.fields)) fail('files[' + i + '].messages[' + m + '].fields must be an array');

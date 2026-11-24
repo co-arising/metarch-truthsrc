@@ -23,7 +23,6 @@
 //     greedy-fills rows at indent + 8
 //   - the FQ codec ladders (encode/decode receipt PB) are fixed 3-row ladders
 //   - the strict-participant rows ladder the args field when the row overflows
-import crypto from 'node:crypto';
 import { renderGroupedValueImports } from '../../lib/derivation/value-object-package.mjs';
 import { scalaDirPath } from '../../lib/layout/layout-strategy.mjs';
 
@@ -110,8 +109,6 @@ const errorRows = (items) => {
   rows.push(contStr + current.join(', '));
   return rows;
 };
-
-const sha256Hex = text => crypto.createHash('sha256').update(text, 'utf8').digest('hex');
 
 // ---------- fail-closed input validation ----------
 function validate(input) {
@@ -808,7 +805,6 @@ function emitBindings(md) {
     ...md.admission.gates.map(gate =>
       '    ' + gate + ': RunBinding[' + md.original + ', Boolean],'),
   ];
-  const boundMethods = [];
   for (const p of md.participants) {
     for (const ph of p.phases) {
       bindingsFields.push(

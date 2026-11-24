@@ -43,32 +43,32 @@ const SCHEMA_PATTERN = /^truthsrc\.[a-z0-9]+(-[a-z0-9]+)*-input\/v\d+$/;
 
 const repoPathExists = (repoRelative, what) => {
   if (typeof repoRelative !== 'string' || repoRelative.length === 0)
-    fail('EMITTER_REGISTRY', `${what} must be a nonempty repo-relative path`);
+    {fail('EMITTER_REGISTRY', `${what} must be a nonempty repo-relative path`);}
   const absolute = path.join(ROOT, repoRelative);
   if (!fs.existsSync(absolute))
-    fail('EMITTER_REGISTRY', `${what} ${JSON.stringify(repoRelative)} does not exist in the repository (fail-closed: a family without its golden tree or fixture cannot be registered)`);
+    {fail('EMITTER_REGISTRY', `${what} ${JSON.stringify(repoRelative)} does not exist in the repository (fail-closed: a family without its golden tree or fixture cannot be registered)`);}
   return absolute;
 };
 
 export function registerFamily(family) {
   if (typeof family !== 'object' || family === null || Array.isArray(family))
-    fail('EMITTER_REGISTRY', 'a family must be an object');
+    {fail('EMITTER_REGISTRY', 'a family must be an object');}
   const missing = ['id', 'familyNumber', 'inputSchema', 'goldenRoot', 'fixtureDir', 'toolsRef', 'checkInput', 'renderAll']
     .filter(member => !(member in family));
   if (missing.length)
-    fail('EMITTER_REGISTRY', `family registration missing contract member(s): ${missing.join(', ')}`);
+    {fail('EMITTER_REGISTRY', `family registration missing contract member(s): ${missing.join(', ')}`);}
   if (typeof family.id !== 'string' || !ID_PATTERN.test(family.id))
-    fail('EMITTER_REGISTRY', `family id ${JSON.stringify(family.id)} must be a kebab-case identifier`);
+    {fail('EMITTER_REGISTRY', `family id ${JSON.stringify(family.id)} must be a kebab-case identifier`);}
   if (!Number.isInteger(family.familyNumber) || family.familyNumber <= 0)
-    fail('EMITTER_REGISTRY', `family ${family.id}: familyNumber must be a positive integer`);
+    {fail('EMITTER_REGISTRY', `family ${family.id}: familyNumber must be a positive integer`);}
   if (typeof family.inputSchema !== 'string' || !SCHEMA_PATTERN.test(family.inputSchema))
-    fail('EMITTER_REGISTRY', `family ${family.id}: inputSchema ${JSON.stringify(family.inputSchema)} must be a truthsrc.<family>-input/v<N> schema id`);
+    {fail('EMITTER_REGISTRY', `family ${family.id}: inputSchema ${JSON.stringify(family.inputSchema)} must be a truthsrc.<family>-input/v<N> schema id`);}
   if (typeof family.checkInput !== 'function')
-    fail('EMITTER_REGISTRY', `family ${family.id}: checkInput must be a function (fail-closed validation is not optional)`);
+    {fail('EMITTER_REGISTRY', `family ${family.id}: checkInput must be a function (fail-closed validation is not optional)`);}
   if (typeof family.renderAll !== 'function')
-    fail('EMITTER_REGISTRY', `family ${family.id}: renderAll must be a function`);
+    {fail('EMITTER_REGISTRY', `family ${family.id}: renderAll must be a function`);}
   if (family.runNegatives !== undefined && family.runNegatives !== null && typeof family.runNegatives !== 'function')
-    fail('EMITTER_REGISTRY', `family ${family.id}: runNegatives must be a function or null (a missing battery is a declared debt, not an omission)`);
+    {fail('EMITTER_REGISTRY', `family ${family.id}: runNegatives must be a function or null (a missing battery is a declared debt, not an omission)`);}
   if (family.toolsRef === null) {
     // Ruling 2026-11-23 adds 'classic-reproduction' alongside
     // 'handwritten-golden': a family whose golden tree pins the classic
@@ -76,11 +76,11 @@ export function registerFamily(family) {
     // has no reference generator — the one-generator program forbids a
     // duplicate — and declares its provenance explicitly.
     if (family.provenance !== 'handwritten-golden' && family.provenance !== 'classic-reproduction')
-      fail('EMITTER_REGISTRY', `family ${family.id}: toolsRef null requires provenance 'handwritten-golden' or 'classic-reproduction' (a family without a reference generator must declare its golden provenance)`);
+      {fail('EMITTER_REGISTRY', `family ${family.id}: toolsRef null requires provenance 'handwritten-golden' or 'classic-reproduction' (a family without a reference generator must declare its golden provenance)`);}
   } else if (typeof family.toolsRef !== 'string' || !family.toolsRef.startsWith('tools/'))
-    fail('EMITTER_REGISTRY', `family ${family.id}: toolsRef must point at the byte-parity reference generator under tools/ (or be null with provenance 'handwritten-golden')`);
+    {fail('EMITTER_REGISTRY', `family ${family.id}: toolsRef must point at the byte-parity reference generator under tools/ (or be null with provenance 'handwritten-golden')`);}
   if (families.has(family.id))
-    fail('EMITTER_REGISTRY', `family id ${family.id} is already registered (one generator, one registry entry per family)`);
+    {fail('EMITTER_REGISTRY', `family id ${family.id} is already registered (one generator, one registry entry per family)`);}
   families.set(family.id, family);
   return family;
 }
@@ -101,10 +101,10 @@ export function requireFamilySpecPaths(family) {
 
 export function getFamily(id) {
   if (typeof id !== 'string' || id.length === 0)
-    fail('EMITTER_USAGE', 'family id must be nonempty text');
+    {fail('EMITTER_USAGE', 'family id must be nonempty text');}
   const family = families.get(id);
   if (!family)
-    fail('EMITTER_REGISTRY', `unknown family ${JSON.stringify(id)}; registered families: ${listFamilyIds().join(', ') || '(none)'}`);
+    {fail('EMITTER_REGISTRY', `unknown family ${JSON.stringify(id)}; registered families: ${listFamilyIds().join(', ') || '(none)'}`);}
   return family;
 }
 
@@ -125,15 +125,15 @@ export function renderFamily(family, input) {
   family.checkInput(checked);
   const outputs = family.renderAll(JSON.parse(JSON.stringify(input)));
   if (typeof outputs !== 'object' || outputs === null || Array.isArray(outputs))
-    fail('EMITTER_RENDER', `family ${family.id}: renderAll must return an object of relativePath → content`);
+    {fail('EMITTER_RENDER', `family ${family.id}: renderAll must return an object of relativePath → content`);}
   const validated = {};
   for (const [relative, content] of Object.entries(outputs)) {
     if (typeof relative !== 'string' || relative.length === 0)
-      fail('EMITTER_RENDER', `family ${family.id}: renderAll produced a non-text path key`);
+      {fail('EMITTER_RENDER', `family ${family.id}: renderAll produced a non-text path key`);}
     if (relative.startsWith('/') || relative.split(/[/\\]/).includes('..') || path.isAbsolute(relative))
-      fail('EMITTER_RENDER', `family ${family.id}: renderAll path ${JSON.stringify(relative)} must be a clean relative path`);
+      {fail('EMITTER_RENDER', `family ${family.id}: renderAll path ${JSON.stringify(relative)} must be a clean relative path`);}
     if (typeof content !== 'string')
-      fail('EMITTER_RENDER', `family ${family.id}: renderAll content for ${JSON.stringify(relative)} must be text`);
+      {fail('EMITTER_RENDER', `family ${family.id}: renderAll content for ${JSON.stringify(relative)} must be text`);}
     validated[relative] = content;
   }
   return validated;

@@ -44,15 +44,15 @@ const symbol = name => (KEYWORDS.has(name) ? '`' + name + '`' : name);
 
 const requireObject = (value, what) => {
   if (typeof value !== 'object' || value === null || Array.isArray(value))
-    fail(what + ' must be an object');
+    {fail(what + ' must be an object');}
   return value;
 };
 
 const requireNonEmptyString = (value, what, pattern = null) => {
   if (typeof value !== 'string' || value.length === 0)
-    fail(what + ' must be a nonempty string');
+    {fail(what + ' must be a nonempty string');}
   if (pattern && !pattern.test(value))
-    fail(what + ' has invalid format: ' + JSON.stringify(value));
+    {fail(what + ' has invalid format: ' + JSON.stringify(value));}
   return value;
 };
 
@@ -127,9 +127,9 @@ function valueDeps(type, packageMap) {
 export function checkInput(input) {
   requireObject(input, 'input');
   if (input.schemaVersion !== 'truthsrc.external-event-bridge-input/v1')
-    fail('unsupported schemaVersion: ' + JSON.stringify(input.schemaVersion));
+    {fail('unsupported schemaVersion: ' + JSON.stringify(input.schemaVersion));}
   if (!Array.isArray(input.packages) || input.packages.length === 0)
-    fail('packages must be a nonempty array');
+    {fail('packages must be a nonempty array');}
 
   const packageMap = new Map();
   for (let i = 0; i < input.packages.length; i++) {
@@ -141,7 +141,7 @@ export function checkInput(input) {
   }
 
   if (!Array.isArray(input.bridges) || input.bridges.length === 0)
-    fail('bridges must be a nonempty array');
+    {fail('bridges must be a nonempty array');}
 
   const seenBridges = new Set();
   for (let i = 0; i < input.bridges.length; i++) {
@@ -154,7 +154,7 @@ export function checkInput(input) {
     seenBridges.add(bridgeKey);
 
     if (!Array.isArray(bridge.producers) || bridge.producers.length === 0)
-      fail(`bridges[${i}].producers must be a nonempty array`);
+      {fail(`bridges[${i}].producers must be a nonempty array`);}
 
     const seenMethods = new Set();
     for (let j = 0; j < bridge.producers.length; j++) {
@@ -169,18 +169,18 @@ export function checkInput(input) {
       checkType(p.outputType, packageMap, `bridges[${i}].producers[${j}].outputType`);
 
       if (!Array.isArray(p.slotMembers))
-        fail(`bridges[${i}].producers[${j}].slotMembers must be an array`);
+        {fail(`bridges[${i}].producers[${j}].slotMembers must be an array`);}
       for (let k = 0; k < p.slotMembers.length; k++) {
         requireNonEmptyString(p.slotMembers[k], `bridges[${i}].producers[${j}].slotMembers[${k}]`, IDENT);
       }
 
       if (!Array.isArray(p.identityKeys) || p.identityKeys.length === 0)
-        fail(`bridges[${i}].producers[${j}].identityKeys must be a nonempty array`);
+        {fail(`bridges[${i}].producers[${j}].identityKeys must be a nonempty array`);}
       for (let k = 0; k < p.identityKeys.length; k++) {
         const keySpec = requireObject(p.identityKeys[k], `bridges[${i}].producers[${j}].identityKeys[${k}]`);
         requireNonEmptyString(keySpec.member, `bridges[${i}].producers[${j}].identityKeys[${k}].member`, IDENT);
         if (!Number.isInteger(keySpec.unwrapDepth) || keySpec.unwrapDepth < 0)
-          fail(`bridges[${i}].producers[${j}].identityKeys[${k}].unwrapDepth must be a non-negative integer`);
+          {fail(`bridges[${i}].producers[${j}].identityKeys[${k}].unwrapDepth must be a non-negative integer`);}
       }
 
       requireSource(p.source, `bridges[${i}].producers[${j}].source`);
@@ -193,7 +193,6 @@ export function renderExternalEventBridgeFiles(input) {
   const packageMap = new Map(input.packages.map(p => [p.context, p.package]));
   return input.bridges.map(bridge => {
     const pkg = packageMap.get(bridge.context);
-    const pkgPath = pkg.replaceAll('.', '/');
     const name = symbol(bridge.aggregate);
     const ownSubpkgs = new Set();
     for (const p of bridge.producers) collectOwnValueSubpackages(p.outputType, bridge.context, ownSubpkgs);

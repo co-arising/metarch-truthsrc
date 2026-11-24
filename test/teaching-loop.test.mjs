@@ -6,11 +6,10 @@ import { join } from 'node:path';
 import { pathToFileURL, fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { initProject } from '../lib/project/init.mjs';
-import { projectCli } from '../lib/project/cli.mjs';
+import { projectCli, captureProject } from '../lib/project/cli.mjs';
 import { applyEntries, previewEntries } from '../src/core/generate.mjs';
 import { requestFor } from '../example/handwritten-collaboration/request.mjs';
 import { presentCounter } from '../example/handwritten-collaboration/presenter.mjs';
-import { captureProject } from '../lib/project/cli.mjs';
 
 const cli = fileURLToPath(new URL('../bin/truthsrc.js', import.meta.url));
 test('ordinary custom generator scaffolds and actually generates from project-derived canonical', async t => {

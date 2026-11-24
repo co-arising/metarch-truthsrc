@@ -4,9 +4,6 @@
 // evaluation machine (apply CC=2), and a separate reserve event constructor.
 // Acceptance is byte comparison against the approved golden bundle, never
 // a self-declared pass.
-import fs from 'node:fs';
-import path from 'node:path';
-import { createHash } from 'node:crypto';
 import { parseStrictJson } from '../../lib/strict-json.mjs';
 import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
 
@@ -24,10 +21,10 @@ const scalaString = value => '"' + value.replace(/\\/gu, '\\\\').replace(/"/gu, 
 function checkInput(input) {
   fieldsOf(input, ['schemaVersion', 'basePackage', 'values', 'entity', 'identity', 'rules'], 'input');
   if (input.schemaVersion !== 'truthsrc.aggregate-rules-formal-input/v1')
-    fail('FORMAL_INPUT', 'unsupported schemaVersion');
+    {fail('FORMAL_INPUT', 'unsupported schemaVersion');}
   text(input.basePackage, 'basePackage');
   if (!input.basePackage.split('.').every(part => /^[a-z][a-zA-Z0-9]*$/.test(part)))
-    fail('FORMAL_INPUT', 'basePackage must be dotted lowercase-root segments');
+    {fail('FORMAL_INPUT', 'basePackage must be dotted lowercase-root segments');}
 }
 
 function renderValues(input) {
@@ -41,7 +38,7 @@ function renderValues(input) {
   ].join(' ++ ');
   const nominal = v.nominal.map(row => {
     let requireExpr;
-    let requireMessage = row.requireMessage;
+    const requireMessage = row.requireMessage;
     if (row.check === 'identifier') requireExpr = `ValueChecks.identifier(value)`;
     else if (row.check === 'reservation') requireExpr = `ValueChecks.reservation(value)`;
     else if (row.check === 'nonNullBounded') requireExpr = `value != null && value.length <= ${row.maximum}`;

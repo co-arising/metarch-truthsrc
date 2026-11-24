@@ -8,9 +8,6 @@
 // rejected here; the runner is a supplied handwritten lib and is never emitted.
 // Acceptance is byte comparison against the approved golden bundle, never a
 // self-declared pass.
-import fs from 'node:fs';
-import path from 'node:path';
-import { createHash } from 'node:crypto';
 import { parseStrictJson } from '../../lib/strict-json.mjs';
 import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
 
@@ -39,10 +36,10 @@ const mechanismVocabulary = /script|command|process|binary|executable/i;
 function checkInput(input) {
   fieldsOf(input, ['schemaVersion', 'basePackage', 'impl'], 'input');
   if (input.schemaVersion !== 'truthsrc.tool-gate-implementation-input/v1')
-    fail('FORMAL_INPUT', 'unsupported schemaVersion');
+    {fail('FORMAL_INPUT', 'unsupported schemaVersion');}
   text(input.basePackage, 'basePackage');
   if (!input.basePackage.split('.').every(part => /^[a-z][a-zA-Z0-9]*$/.test(part)))
-    fail('FORMAL_INPUT', 'basePackage must be dotted lowercase-root segments');
+    {fail('FORMAL_INPUT', 'basePackage must be dotted lowercase-root segments');}
   const impl = input.impl;
   fieldsOf(impl, ['name', 'gate', 'runner', 'doc', 'methods'], 'impl');
   pascal(impl.name, 'impl.name');
@@ -57,9 +54,9 @@ function checkInput(input) {
   lowerCamel(runner.paramName, 'impl.runner.paramName');
   fieldsOf(impl.doc, ['title', 'notes'], 'impl.doc');
   if (!Array.isArray(impl.doc.notes) || impl.doc.notes.length === 0)
-    fail('FORMAL_INPUT', 'impl.doc.notes must be a nonempty array');
+    {fail('FORMAL_INPUT', 'impl.doc.notes must be a nonempty array');}
   if (!Array.isArray(impl.methods) || impl.methods.length === 0)
-    fail('FORMAL_INPUT', 'impl.methods must be a nonempty array; the implementation mirrors the FULL gate ABI');
+    {fail('FORMAL_INPUT', 'impl.methods must be a nonempty array; the implementation mirrors the FULL gate ABI');}
   const paramNames = new Set();
   for (const method of impl.methods) {
     bannedField(method, 'defaultBody', `gate method ${method.name}`);
@@ -71,12 +68,12 @@ function checkInput(input) {
     const manual = method.manual;
     fieldsOf(manual, ['body'], `gate method ${method.name} manual`);
     if (manual.body !== 'sealed-binding')
-      fail('FORMAL_INPUT', `gate method ${method.name} manual.body must be "sealed-binding"; every other slot is raw-only`);
+      {fail('FORMAL_INPUT', `gate method ${method.name} manual.body must be "sealed-binding"; every other slot is raw-only`);}
     for (const param of method.params) {
       fieldsOf(param, ['name', 'typeRef'], 'gate method param');
       text(param.name, 'param name');
       if (mechanismVocabulary.test(param.name) || mechanismVocabulary.test(param.typeRef.name || ''))
-        fail('FORMAL_INPUT', `param ${param.name} carries mechanism vocabulary; the gate face is business-only (2026-11-19 ruling)`);
+        {fail('FORMAL_INPUT', `param ${param.name} carries mechanism vocabulary; the gate face is business-only (2026-11-19 ruling)`);}
       fieldsOf(param.typeRef, ['name', 'packageName'], 'param typeRef');
       text(param.typeRef.name, 'param typeRef name');
       text(param.typeRef.packageName, 'param typeRef packageName');
@@ -87,7 +84,7 @@ function checkInput(input) {
     fieldsOf(binding, ['script', 'argument', 'timeoutMs', 'vals', 'decoder'], `gate method ${method.name} manual`);
     text(binding.script, `gate method ${method.name} manual.script`);
     if (!Number.isInteger(binding.timeoutMs) || binding.timeoutMs <= 0)
-      fail('FORMAL_INPUT', `gate method ${method.name} needs a positive integer timeoutMs`);
+      {fail('FORMAL_INPUT', `gate method ${method.name} needs a positive integer timeoutMs`);}
     fieldsOf(binding.vals, ['script', 'timeoutMs'], 'manual.vals');
     lowerCamel(binding.vals.script, 'manual.vals.script');
     lowerCamel(binding.vals.timeoutMs, 'manual.vals.timeoutMs');
@@ -98,7 +95,7 @@ function checkInput(input) {
       text(argument.param, 'manual.argument.param');
       text(argument.field, 'manual.argument.field');
       if (!paramNames.has(argument.param))
-        fail('FORMAL_INPUT', `manual.argument.param ${argument.param} is not a gate method parameter`);
+        {fail('FORMAL_INPUT', `manual.argument.param ${argument.param} is not a gate method parameter`);}
     } else if (argument.source !== 'empty') {
       fail('FORMAL_INPUT', 'manual.argument.source must be "param" or "empty"');
     }
@@ -119,7 +116,7 @@ function importBlock(input) {
   const lines = ['import javax.inject.{Inject, Singleton}'];
   lines.push(`import ${input.basePackage}.application.toolgates.${braceNames(appMembers)}`);
   if (domainMembers.length > 0)
-    lines.push(`import ${input.basePackage}.domain.values.${braceNames(domainMembers)}`);
+    {lines.push(`import ${input.basePackage}.domain.values.${braceNames(domainMembers)}`);}
   lines.push(`import ${input.basePackage}.infrastructure.process.{${impl.runner.trait}, ${impl.runner.request}}`);
   lines.push('import scala.concurrent.{ExecutionContext, Future}');
   lines.push('import scala.util.Try');
@@ -169,7 +166,7 @@ ${overrides}
   const ends = lines.filter(line => line.trim() === '// ==== END MANUAL ====').length;
   const overridesCount = lines.filter(line => line.trim().startsWith('override def')).length;
   if (begins !== overridesCount || ends !== begins)
-    fail('FORMAL_RENDER', 'rendered MANUAL markers are not one paired block per override');
+    {fail('FORMAL_RENDER', 'rendered MANUAL markers are not one paired block per override');}
   return rendered;
 }
 

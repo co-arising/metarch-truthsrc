@@ -1,17 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync, truncateSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { initProject } from '../lib/project/init.mjs';
-import { projectCli } from '../lib/project/cli.mjs';
+import { projectCli, captureProject } from '../lib/project/cli.mjs';
 import { inspectProject, verifyProject, verifyProjectCli } from '../lib/project/verify.mjs';
 import { SqliteKnowledgeGraphStore } from '../lib/knowledge-sqlite.mjs';
 import { projectGraphFile } from '../lib/project/graph.mjs';
 import { createProjectQuerySession } from '../lib/project/query.mjs';
-import { captureProject } from '../lib/project/cli.mjs';
 import { execFileSync } from 'node:child_process';
-import { truncateSync } from 'node:fs';
 
 async function fixture(t) {
   const root = mkdtempSync(join(realpathSync(tmpdir()), 'truthsrc-verify-'));

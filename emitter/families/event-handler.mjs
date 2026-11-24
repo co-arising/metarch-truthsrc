@@ -27,14 +27,14 @@ const plainIdentifier = (value, what) => {
 const scalaSymbol = (value, what) => {
   text(value, what);
   if (!/^(?:[A-Za-z_][A-Za-z0-9_]*|`[A-Za-z_][A-Za-z0-9_]*`)$/u.test(value))
-    fail('EH_INPUT', what + ' must be a safe Scala symbol');
+    {fail('EH_INPUT', what + ' must be a safe Scala symbol');}
   return value;
 };
 const checkSource = (source, what) => {
   if (!source || typeof source !== 'object' || Array.isArray(source) ||
     typeof source.document !== 'string' || !source.document ||
     typeof source.pointer !== 'string' || !source.pointer.startsWith('/'))
-    fail('EH_INPUT', what + ' must carry a {document, pointer} knowledge source');
+    {fail('EH_INPUT', what + ' must carry a {document, pointer} knowledge source');}
 };
 const knowledgeOf = source => 'source:' + source.document + '#' + source.pointer;
 
@@ -49,7 +49,7 @@ function checkInput(input) {
     const ctx = text(p.context, at('context'));
     const pkg = text(p.package, at('package'));
     if (!pkg.split('.').every(seg => /^[a-z][a-z0-9_]*$/u.test(seg) && !KEYWORDS.has(seg)))
-      fail('EH_INPUT', at('package must be a dotted lowercase-root Scala package'));
+      {fail('EH_INPUT', at('package must be a dotted lowercase-root Scala package'));}
     if (packageByContext.has(ctx)) fail('EH_INPUT', at('duplicate package binding for context ' + ctx));
     packageByContext.set(ctx, pkg);
   }

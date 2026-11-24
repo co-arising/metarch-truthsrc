@@ -45,12 +45,12 @@ function checkInput(input) {
     identifier(a.aggregate, at('aggregate'));
     const pkg = text(a.package, at('package'));
     if (!pkg.split('.').every(p => /^[a-z][a-z0-9_]*$/u.test(p) && !KEYWORDS.has(p)))
-      fail('RULES_INPUT', at('package must be a dotted lowercase-root Scala package'));
+      {fail('RULES_INPUT', at('package must be a dotted lowercase-root Scala package'));}
     identifier(a.name, at('name'));
     const source = a.source;
     if (!source || typeof source !== 'object' || typeof source.document !== 'string' || !source.document ||
       typeof source.pointer !== 'string' || !source.pointer.startsWith('/'))
-      fail('RULES_INPUT', at('source must carry a {document, pointer} knowledge source'));
+      {fail('RULES_INPUT', at('source must carry a {document, pointer} knowledge source'));}
     if (!Array.isArray(a.commands)) fail('RULES_INPUT', at('commands must be an array'));
     for (const [j, c] of a.commands.entries()) {
       const cat = what => `aggregates[${i}].commands[${j}] ${what}`;
@@ -58,7 +58,7 @@ function checkInput(input) {
       const commandSource = c.source;
       if (!commandSource || typeof commandSource !== 'object' || typeof commandSource.document !== 'string' || !commandSource.document ||
         typeof commandSource.pointer !== 'string' || !commandSource.pointer.startsWith('/'))
-        fail('RULES_INPUT', cat('source must carry a {document, pointer} knowledge source'));
+        {fail('RULES_INPUT', cat('source must carry a {document, pointer} knowledge source'));}
       if (!Array.isArray(c.guards)) fail('RULES_INPUT', cat('guards must be an array'));
       for (const [k, g] of c.guards.entries()) {
         const gat = what => `aggregates[${i}].commands[${j}].guards[${k}] ${what}`;
@@ -66,7 +66,7 @@ function checkInput(input) {
         const guardSource = g.source;
         if (!guardSource || typeof guardSource !== 'object' || typeof guardSource.document !== 'string' || !guardSource.document ||
           typeof guardSource.pointer !== 'string' || !guardSource.pointer.startsWith('/'))
-          fail('RULES_INPUT', gat('source must carry a {document, pointer} knowledge source'));
+          {fail('RULES_INPUT', gat('source must carry a {document, pointer} knowledge source'));}
         if (!g.outcome || typeof g.outcome !== 'object') fail('RULES_INPUT', gat('outcome required'));
         if (g.outcome.kind === 'reject') text(g.outcome.code, gat('reject code'));
         else if (g.outcome.kind !== 'succeed-empty') fail('RULES_INPUT', gat('outcome kind must be reject or succeed-empty'));
@@ -108,7 +108,7 @@ function hasBalancedParens(expr) {
 }
 
 function renderGuardCondition(predicate) {
-  let expr = predicate.trim();
+  const expr = predicate.trim();
   if (expr.startsWith('!(') && expr.endsWith(')') && hasBalancedParens(expr.slice(1))) {
     const inner = expr.slice(2, -1);
     return inner.startsWith('(') && inner.endsWith(')') && hasBalancedParens(inner) ? inner : '(' + inner + ')';
@@ -160,8 +160,8 @@ function renderAggregateRules(a) {
     'import ' + pkg + '.domain.services.' + name + 'Computations\n\n' +
     'object ' + name + 'RuleParams {\n';
   for (const c of a.commands)
-    params += '  final case class ' + identifier(c.command + 'Params', 'derived params record name') +
-      '(state: State, command: ' + name + 'Events.' + c.command + ', hosts: ' + name + 'Computations)\n';
+    {params += '  final case class ' + identifier(c.command + 'Params', 'derived params record name') +
+      '(state: State, command: ' + name + 'Events.' + c.command + ', hosts: ' + name + 'Computations)\n';}
   params += '}\n';
 
   const coreSources = [a.source, ...a.commands.flatMap(c => [c.source, ...c.guards.map(g => g.source)])];

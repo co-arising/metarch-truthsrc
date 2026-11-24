@@ -94,7 +94,7 @@ const commandVerify = (familyId, inputPath) => {
 const commandNegatives = (familyId, inputPath) => {
   const family = getFamily(familyId);
   if (typeof family.runNegatives !== 'function')
-    fail('EMITTER_NEGATIVES', `family ${family.id} carries no embedded negatives battery (registered debt — backfill through the family gate)`);
+    {fail('EMITTER_NEGATIVES', `family ${family.id} carries no embedded negatives battery (registered debt — backfill through the family gate)`);}
   const input = loadInput(inputPath);
   const result = family.runNegatives(JSON.parse(JSON.stringify(input)));
   process.stdout.write(JSON.stringify({ family: family.id, negatives: result }, null, 2) + '\n');

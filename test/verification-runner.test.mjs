@@ -2,12 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { getEventListeners } from 'node:events';
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, renameSync, statSync, writeFileSync } from 'node:fs';
+import fs, { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { inspectVerificationRun, runVerification } from '../lib/verification/runner.mjs';
 import { execFileSync } from 'node:child_process';
-import fs from 'node:fs';
 
 const root = mkdtempSync(join(realpathSync(tmpdir()), 'verification-runner-'));
 const hash = text => createHash('sha256').update(text).digest('hex');

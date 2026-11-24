@@ -19,7 +19,6 @@
 //     one-row form exceeds 120 columns (Installed, checked, encode ladder)
 //   - the identity parts render as the fixed five-row token table
 //   - the observation decode ladder is the fixed 2-row form
-import crypto from 'node:crypto';
 import { renderGroupedValueImports } from '../../lib/derivation/value-object-package.mjs';
 import { scalaDirPath } from '../../lib/layout/layout-strategy.mjs';
 
@@ -56,8 +55,6 @@ const duration = millis => {
 const wrapDef = (head, tail, tailCont) =>
   (head + tail).length <= LINE_LIMIT ? [head + tail]
     : [head, ' '.repeat(tailCont) + tail.trimStart()];
-
-const sha256Hex = text => crypto.createHash('sha256').update(text, 'utf8').digest('hex');
 
 // ---------- fail-closed input validation ----------
 function validate(input) {
@@ -233,13 +230,13 @@ const caseModel = (input, c, shape) => {
   const success = ex.resultCases.find(rc => rc.slot);
   const refused = ex.resultCases.filter(rc => rc.stageError);
   const refusalByStatus = status => {
-    const label = status === 'Rejected' ? 'Refused' : status === 'Failed' ? 'Unavailable' : null;
+    let label = null;
+    if (status === 'Rejected') label = 'Refused';
+    else if (status === 'Failed') label = 'Unavailable';
     if (label === null) return null;
     const rc = refused.find(r => r.stageError.split(':')[1] === label);
     return rc ? { rc, stageError: rc.stageError.split(':') } : null;
   };
-  const values = [...new Set(ex.inputs.map(f => f.type).concat([success.slot ? ex.codecSlots
-    .find(s => s.optional).type : '']))].filter(t => t && t !== 'String').sort();
   return {
     c,
     pkg: c.names.package,
@@ -443,8 +440,6 @@ const values = cm => {
 function emitHost(cm, shape) {
   const eff = cm.effect;
   const m = shape.messages;
-  const camelStage = cm.camelStage;
-  const hostParam = camelStage + 'Host';
   const obligations = eff.bindings.declaredIds.map((id, i) => {
     const role = eff.bindings.roles[i];
     return '    ("' + id.split('.')[1] + '", "' + role + '", _.' + role + '),';

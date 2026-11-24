@@ -3,22 +3,9 @@
 // (test/reference/curated/strict-saga-module/v1/app/.../StockTransferSagaModule.scala)
 // byte-for-byte. Layout shapes are frozen per pattern exactly as the golden shows;
 // instance values flow through slots (the raw BC template's own philosophy).
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import crypto from 'node:crypto';
 import { scalaSourcePath } from '../../lib/layout/layout-strategy.mjs';
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const GOLDEN = path.join(ROOT,
-  'test/reference/curated/strict-saga-module/v1/app/example/stockreservation/application/services/transactor/StockTransferSagaModule.scala');
-
 // ---------- naming (N1: strictPascal stems, lowerCamel members, wire ids verbatim) ----------
-const strictSymbol = value => {
-  const normalized = value.replace(/-/g, '_');
-  if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(normalized)) throw new Error('Unsafe strict symbol: ' + value);
-  return normalized;
-};
 const firstUpper = value => value.charAt(0).toUpperCase() + value.slice(1);
 const strictPascal = value => value.split(/[-_]/).filter(p => p !== '').map(firstUpper).join('');
 const strictMember = (stem, role) => {
@@ -98,26 +85,6 @@ const FIELD_GROUPS = {
   'java.util.UUID,java.util.UUID,String,Int,String': [[0], [1], [2], [3], [4]],
   'String,java.util.UUID,String,Int,java.util.UUID': [[0, 1, 2], [3, 4]],
 };
-
-function renderDeclFields(fields) {
-  const signature = fields.map(f => f.type).join(',');
-  const groups = FIELD_GROUPS[signature];
-  if (!groups) {
-    // default: greedy pack at +6, break before the field that crosses 100
-    const lines = [];
-    let current = [];
-    for (const f of fields) {
-      const candidate = [...current, f.text].join(', ');
-      if (current.length > 0 && 6 + candidate.length + 1 > 100) {
-        lines.push(current.join(', ') + ',');
-        current = [f.text];
-      } else current = [...current, f.text];
-    }
-    lines.push(current.join(', '));
-    return '(\n      ' + lines.join('\n      ') + ')';
-  }
-  return '(\n      ' + groups.map(g => g.map(i => fields[i].text).join(', ')).join(',\n      ') + ')';
-}
 
 function caseClassDecl(name, fields, indent) {
   const body = fields.map(f => f.text).join(', ');
@@ -676,7 +643,6 @@ function emitDefinitionAndBehavior(saga) {
 function generate(input) {
   validate(input);
   const saga = input;
-  const addressOf = null;
   const pinOf = (stepId, phaseWire) => {
     const step = saga.steps.find(s => s.stepId === stepId);
     return step.phases[phaseWire].receiptPin;

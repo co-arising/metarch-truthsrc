@@ -19,26 +19,9 @@
 //     the publishCompletion signature and the FixtureHost class head are
 //     frozen templates; the args-codec decode Failure message indents +4 while
 //     the host receipt codecs indent +2 (golden shapes).
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import crypto from 'node:crypto';
 import { scalaDirPath } from '../../lib/layout/layout-strategy.mjs';
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const GOLDEN_DIR = path.join(ROOT,
-  'test/reference/curated/strict-fixture-host/v1/app/example/stockreservation/application/services/transactor');
-const EMISSION_FILES = [
-  'types.scala', 'StrictWire.scala', 'StockTransferArgsCodec.scala',
-  'FixtureHost.scala', 'StockTransferSagaEntry.scala'
-];
-
 // ---------- naming (N1 continuation: PascalCase stems, lowerCamel members) ----------
-const strictSymbol = value => {
-  const normalized = value.replace(/-/g, '_');
-  if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(normalized)) throw new Error('Unsafe strict symbol: ' + value);
-  return normalized;
-};
 const firstUpper = value => value.charAt(0).toUpperCase() + value.slice(1);
 const strictPascal = value => value.split(/[-_]/).filter(p => p !== '').map(firstUpper).join('');
 const strictMember = (stem, role) => {
@@ -689,8 +672,8 @@ function bindingClass(input, step, phaseName, participant, aggMember) {
     const line = '          ConfirmedReceipt(identity, ' + stem + 'Receipt(' +
       markArgs.join(', ') + '))).getOrElse(';
     if (line.length <= PACK_LIMIT) lines.push(line);
-    else lines.push(...packCall(10, 'ConfirmedReceipt(identity, ' + stem + 'Receipt(',
-      markArgs, '))).getOrElse('));
+    else {lines.push(...packCall(10, 'ConfirmedReceipt(identity, ' + stem + 'Receipt(',
+      markArgs, '))).getOrElse('));}
   } else {
     const line = '          ' + stem + 'Receipt(' + markArgs.join(', ') + '))).getOrElse(';
     if (line.length <= PACK_LIMIT) lines.push(line);

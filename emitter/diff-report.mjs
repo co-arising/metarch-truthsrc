@@ -40,9 +40,9 @@ const walkTree = (root) => {
 export function diffTrees(oldDir, newDir) {
   for (const [label, dir] of [['old', oldDir], ['new', newDir]]) {
     if (typeof dir !== 'string' || dir.length === 0)
-      fail('EMITTER_DIFF', `${label} directory argument must be nonempty text`);
+      {fail('EMITTER_DIFF', `${label} directory argument must be nonempty text`);}
     if (!fs.existsSync(dir) || !fs.statSync(dir).isDirectory())
-      fail('EMITTER_DIFF', `${label} directory ${JSON.stringify(dir)} does not exist or is not a directory`);
+      {fail('EMITTER_DIFF', `${label} directory ${JSON.stringify(dir)} does not exist or is not a directory`);}
   }
   const oldFiles = walkTree(oldDir);
   const newFiles = walkTree(newDir);
@@ -80,7 +80,7 @@ export function runDiffCli(argv) {
     else positional.push(arg);
   }
   if (positional.length !== 2)
-    fail('EMITTER_USAGE', 'usage: diff-report.mjs <oldDir> <newDir> [--json] [--fail-on-diff]');
+    {fail('EMITTER_USAGE', 'usage: diff-report.mjs <oldDir> <newDir> [--json] [--fail-on-diff]');}
   const report = diffTrees(positional[0], positional[1]);
   if (json) process.stdout.write(JSON.stringify(report, null, 2) + '\n');
   else {
@@ -95,7 +95,7 @@ export function runDiffCli(argv) {
     if (report.files.every(file => file.status === 'IDENTICAL')) process.stdout.write('all files IDENTICAL\n');
   }
   if (failOnDiff && (report.summary.changed + report.summary.onlyInOld + report.summary.onlyInNew) > 0)
-    process.exitCode = 1;
+    {process.exitCode = 1;}
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url))) {

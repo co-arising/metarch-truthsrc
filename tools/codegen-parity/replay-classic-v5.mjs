@@ -674,6 +674,7 @@ if (args.length === 1 && args[0] === '--help') {
           actualCalls: result.actualCalls, failedObservations: result.failedObservations.length, unexecuted: result.unexecuted }) + '\n');
         await new Promise(done => setImmediate(done));
         finalCheck('after completion notification');
+        // eslint-disable-next-line no-unsafe-finally -- intentional closeout guard in parity harness
         if (primary || result.verdict !== 'CORE_COMPLETE') throw primary ?? new Error('core not eligible for closeout');
         const closeout = save(W + '/closeout.json', { schemaVersion: 'truthsrc.classic-byte-replay-closeout/v5', status: 'closed',
           completion: completionPin, coreMatrix: result.coreMatrix, sourceBefore: result.sourceBefore, sourceAfter: result.sourceAfter,

@@ -40,7 +40,6 @@ const boundedInteger = (value, what) => {
   if (!Number.isInteger(value) || value <= 0) fail('VO_INPUT', what + ' must be a positive integer');
   return value;
 };
-const knowledgeOf = source => 'source:' + source.document + '#' + source.pointer;
 
 function checkTypeTree(type, what, packages) {
   if (!type || typeof type !== 'object' || Array.isArray(type)) fail('VO_INPUT', what + ' must be a type tree');
@@ -115,7 +114,7 @@ function checkInput(input) {
     boundContexts.add(context);
     const pkg = text(binding.package, bt('package'));
     if (!pkg.split('.').every(p => /^[a-z][a-z0-9_]*$/u.test(p) && !KEYWORDS.has(p)))
-      fail('VO_INPUT', bt('package must be a dotted lowercase-root Scala package'));
+      {fail('VO_INPUT', bt('package must be a dotted lowercase-root Scala package'));}
   }
   if (!Array.isArray(input.values) || input.values.length === 0) fail('VO_INPUT', 'values must be a nonempty array');
   const names = new Set();
@@ -134,7 +133,7 @@ function checkInput(input) {
     const source = value.source;
     if (!source || typeof source !== 'object' || typeof source.document !== 'string' || !source.document ||
       typeof source.pointer !== 'string' || !source.pointer.startsWith('/'))
-      fail('VO_INPUT', vt('source must carry a {document, pointer} knowledge source'));
+      {fail('VO_INPUT', vt('source must carry a {document, pointer} knowledge source'));}
     checkShape(value.shape, vt('shape'), input.packages);
   }
 }

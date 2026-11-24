@@ -3,6 +3,9 @@
 // optional/repeated/map, oneof event unions, shared req[A]/fixed/readExact
 // helpers, and pb.*PO alias to avoid domain.values.MoneyPO collision).
 // Zero hardcoded business identifiers; fail-closed (PC_INPUT).
+import { valueObjectSubpackage } from '../../lib/derivation/value-object-package.mjs';
+import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
+
 const SCHEMA = 'truthsrc.proto-converter-input/v1';
 const CONTEXT_RE = /^[a-z][a-z0-9_-]*$/u;
 const PACKAGE_RE = /^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)*$/u;
@@ -201,9 +204,6 @@ const HELPERS_BLOCK = [
   '',
 ].join('\n');
 
-import { valueObjectSubpackage } from '../../lib/derivation/value-object-package.mjs';
-import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
-
 const importsHeader = (pkg, valueObjects) => {
   const voSubs = [...new Set(['domain.values', ...(valueObjects ?? []).map(vo => valueObjectSubpackage(vo.typeId))])].sort();
   return [
@@ -224,7 +224,6 @@ export function renderProtoConverterFiles(input) {
 
   for (const ctx of input.contexts) {
     const pkg = pkgMap.get(ctx.context);
-    const pkgRoot = pkg.replaceAll('.', '/');
     const groups = [
       ...ctx.valueObjects.map(vo => ({ content: renderValueObjectMethods(vo), sources: vo.sources })),
       ...ctx.aggregates.map(agg => ({

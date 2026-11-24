@@ -38,7 +38,7 @@ const knowledgeOf = source => 'source:' + source.document + '#' + source.pointer
 function checkSource(source, what) {
   if (!source || typeof source !== 'object' || typeof source.document !== 'string' || !source.document ||
     typeof source.pointer !== 'string' || !source.pointer.startsWith('/'))
-    fail('DE_INPUT', what + ' must carry a {document, pointer} knowledge source');
+    {fail('DE_INPUT', what + ' must carry a {document, pointer} knowledge source');}
 }
 
 function checkTypeTree(type, what, packages) {
@@ -148,7 +148,7 @@ function checkInput(input) {
     boundContexts.add(context);
     const pkg = text(binding.package, bt('package'));
     if (!pkg.split('.').every(p => /^[a-z][a-z0-9_]*$/u.test(p) && !KEYWORDS.has(p)))
-      fail('DE_INPUT', bt('package must be a dotted lowercase-root Scala package'));
+      {fail('DE_INPUT', bt('package must be a dotted lowercase-root Scala package'));}
   }
   if (!Array.isArray(input.aggregates) || input.aggregates.length === 0) fail('DE_INPUT', 'aggregates must be a nonempty array');
   const seenAggs = new Set();
@@ -237,13 +237,13 @@ const renderLiteral = (lit, ownContext, packages) => {
   if (lit.kind === 'integer') return lit.value + 'L';
   if (lit.kind === 'decimal') return 'BigDecimal(' + JSON.stringify(lit.value) + ')';
   if (lit.kind === 'nominal-wrapper')
-    return renderNominalRef(lit.context, lit.name, ownContext, packages) + '(' + renderLiteral(lit.inner, ownContext, packages) + ')';
+    {return renderNominalRef(lit.context, lit.name, ownContext, packages) + '(' + renderLiteral(lit.inner, ownContext, packages) + ')';}
   if (lit.kind === 'nominal-exact-decimal')
-    return renderNominalRef(lit.context, lit.name, ownContext, packages) + '(BigDecimal(' + JSON.stringify(lit.amount) + '))';
+    {return renderNominalRef(lit.context, lit.name, ownContext, packages) + '(BigDecimal(' + JSON.stringify(lit.amount) + '))';}
   if (lit.kind === 'nominal-exact-unit-decimal')
-    return renderNominalRef(lit.context, lit.name, ownContext, packages) + '(BigDecimal(' + JSON.stringify(lit.amount) + '), ' + JSON.stringify(lit.unit) + ')';
+    {return renderNominalRef(lit.context, lit.name, ownContext, packages) + '(BigDecimal(' + JSON.stringify(lit.amount) + '), ' + JSON.stringify(lit.unit) + ')';}
   if (lit.kind === 'nominal-record')
-    return renderNominalRef(lit.context, lit.name, ownContext, packages) + '(' + lit.args.map(a => renderLiteral(a, ownContext, packages)).join(', ') + ')';
+    {return renderNominalRef(lit.context, lit.name, ownContext, packages) + '(' + lit.args.map(a => renderLiteral(a, ownContext, packages)).join(', ') + ')';}
   if (lit.kind === 'optional') return lit.present ? 'Some(' + renderLiteral(lit.value, ownContext, packages) + ')' : 'None';
   if (lit.kind === 'sequence') return 'Vector(' + lit.elements.map(e => renderLiteral(e, ownContext, packages)).join(', ') + ')';
   return 'Map(' + lit.entries.map(e => renderLiteral(e.key, ownContext, packages) + ' -> ' + renderLiteral(e.value, ownContext, packages)).join(', ') + ')';

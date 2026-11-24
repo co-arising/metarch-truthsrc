@@ -46,9 +46,9 @@ export function checkInput(input) {
     const entry = checkObject(input.packages[i], 'packages[' + i + ']');
     checkNoExtraKeys(entry, new Set(['context', 'package']), 'packages[' + i + ']');
     if (typeof entry.context !== 'string' || !CONTEXT_RE.test(entry.context))
-      fail('packages[' + i + '].context must match ' + CONTEXT_RE);
+      {fail('packages[' + i + '].context must match ' + CONTEXT_RE);}
     if (typeof entry.package !== 'string' || !PACKAGE_RE.test(entry.package))
-      fail('packages[' + i + '].package must match ' + PACKAGE_RE);
+      {fail('packages[' + i + '].package must match ' + PACKAGE_RE);}
     if (packageByContext.has(entry.context)) fail('duplicate package binding for context ' + entry.context);
     packageByContext.set(entry.context, entry.package);
   }
@@ -59,13 +59,13 @@ export function checkInput(input) {
     const row = checkObject(input.bootstraps[i], 'bootstraps[' + i + ']');
     checkNoExtraKeys(row, new Set(['context', 'name', 'persistenceIdentity', 'authority', 'source']), 'bootstraps[' + i + ']');
     if (typeof row.context !== 'string' || !packageByContext.has(row.context))
-      fail('bootstraps[' + i + '].context has no package binding: ' + JSON.stringify(row.context));
+      {fail('bootstraps[' + i + '].context has no package binding: ' + JSON.stringify(row.context));}
     if (typeof row.name !== 'string' || !TYPE_NAME_RE.test(row.name))
-      fail('bootstraps[' + i + '].name must match ' + TYPE_NAME_RE);
+      {fail('bootstraps[' + i + '].name must match ' + TYPE_NAME_RE);}
     if (typeof row.persistenceIdentity !== 'string' || !SUPPORTED_IDENTITIES.has(row.persistenceIdentity))
-      fail('bootstraps[' + i + '].persistenceIdentity unsupported: ' + JSON.stringify(row.persistenceIdentity));
+      {fail('bootstraps[' + i + '].persistenceIdentity unsupported: ' + JSON.stringify(row.persistenceIdentity));}
     if (typeof row.authority !== 'boolean')
-      fail('bootstraps[' + i + '].authority must be a boolean');
+      {fail('bootstraps[' + i + '].authority must be a boolean');}
     checkSource(row.source, 'bootstraps[' + i + '].source');
     const key = row.context + '/' + row.name;
     if (seen.has(key)) fail('duplicate bootstrap declaration: ' + key);

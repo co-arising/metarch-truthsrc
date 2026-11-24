@@ -1554,7 +1554,7 @@ const snake = (s) =>
       if (bodyParams.length !== (flowDef.bodyFields || []).length)
         throw new Error(`FLOW_DELEGATES bodyFields 缺失：${agg}.${cmd.name} 需 ${(flowDef.bodyFields || []).join('+')}（协议参数实际命中 ${bodyParams.map((p) => p.name).join('+') || '无'}）`);
       return {
-        skip: null, kind: 'dsl', actionName: lowerCmd, sig, routeLine, tier, multiTarget,
+        skip: null, kind: 'dsl', actionName: lowerCmd, sig, routeLine, tier,
         flowDelegate: true, flowService: flowDef.flowService, flowMethod: flowDef.flowMethod,
         flowScoped: true,
         flowArgs: bodyParams.length ? `id, ${bodyParams.map((p) => `req.${apiId(p.name)}`).join(', ')}, ts` : null,
@@ -1570,7 +1570,7 @@ const snake = (s) =>
     if (isRegister) {
       const regFields = strictFields.map((p) => (p.name === 'userId' ? { name: 'username', type: 'String' } : p));
       return {
-        skip: null, kind: 'dsl', actionName: lowerCmd, sig, routeLine, tier, multiTarget,
+        skip: null, kind: 'dsl', actionName: lowerCmd, sig, routeLine, tier,
         flowDelegate: true, flowService: 'registerUserFlow', flowMethod: 'register',
         flowArgs: regFields.map((p) => `body.${apiId(p.name)}`).join(', '),
         reqName: `${cmd.name}Req`, reqFields: regFields.map((p) => `${apiId(p.name)}: ${apiReqTypeOf(p)}`).join(', '),
@@ -1642,7 +1642,7 @@ const snake = (s) =>
         .filter((t) => /^[A-Z][A-Za-z0-9]*$/.test(t) && !API_BARE_SCALAR_TYPES.has(t)),
     ])];
     return {
-      skip: null, kind: 'dsl', actionName: lowerCmd, sig, routeLine, tier, multiTarget,
+      skip: null, kind: 'dsl', actionName: lowerCmd, sig, routeLine, tier,
       establish409: isEstablish,
       reqName, reqFields, hasEmptyBody: reqFieldsSrc.length === 0, cmdName: cmd.name, reply: cmd.reply,
       noteId, elementHash,

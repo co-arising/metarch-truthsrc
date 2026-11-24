@@ -26,9 +26,6 @@
 //   emission is the endpoint Left branch (single line when it fits 100 columns,
 //   otherwise the judged two-line wrap).
 
-import fs from 'node:fs';
-import path from 'node:path';
-import { createHash } from 'node:crypto';
 import { scalaSourcePath } from '../../lib/layout/layout-strategy.mjs';
 
 const fail = (code, message) => { throw Object.assign(new Error(code + ': ' + message), { code }); };
@@ -98,7 +95,7 @@ const col = name => (KEYWORDS.has(name) ? '`' + name + '`' : name);
 function checkInput(input) {
   fieldsOf(input, ['schemaVersion', 'controllerPackage', 'controllerName', 'routeBase', 'aggregates', 'supplied'], 'input');
   if (input.schemaVersion !== 'truthsrc.aggregate-state-controller-input/v1')
-    fail('FORMAL_INPUT', 'unsupported schemaVersion');
+    {fail('FORMAL_INPUT', 'unsupported schemaVersion');}
   walkDebtTokens(input, 'input');
   ident(input.controllerPackage, 'input.controllerPackage');
   pascal(input.controllerName, 'input.controllerName');
@@ -129,23 +126,23 @@ function checkInput(input) {
     // de-suffixed base on both sides (suffixed aggregates can no longer pass the
     // gate and resolve a different command).
     if (simpleName(aggregate.commandType) !== `Get${base}State`)
-      fail('FORMAL_INPUT', `${what}.commandType must compose as Get${base}State from the de-suffixed base (R-D consistentBaseName)`);
+      {fail('FORMAL_INPUT', `${what}.commandType must compose as Get${base}State from the de-suffixed base (R-D consistentBaseName)`);}
     if (simpleName(aggregate.replyType) !== `Get${base}StateReply`)
-      fail('FORMAL_INPUT', `${what}.replyType must compose as Get${base}StateReply from the de-suffixed base`);
+      {fail('FORMAL_INPUT', `${what}.replyType must compose as Get${base}StateReply from the de-suffixed base`);}
     if (aggregate.repositoryName !== camel(simpleName(aggregate.repositoryType)))
-      fail('FORMAL_INPUT', `${what}.repositoryName must be the camelCase of the repository type name (BC B7)`);
+      {fail('FORMAL_INPUT', `${what}.repositoryName must be the camelCase of the repository type name (BC B7)`);}
     if (!Array.isArray(aggregate.stateFields) || aggregate.stateFields.length === 0)
-      fail('FORMAL_INPUT', `${what}.stateFields must be a nonempty array (R-D: a registry miss is rejected, never silently Nil)`);
+      {fail('FORMAL_INPUT', `${what}.stateFields must be a nonempty array (R-D: a registry miss is rejected, never silently Nil)`);}
     const seenFields = new Set();
     for (const [fieldIndex, field] of aggregate.stateFields.entries()) {
       fieldsOf(field, ['name', 'signature'], `${what}.stateFields[${fieldIndex}]`);
       strictKeys(field, ['name', 'signature'], `${what}.stateFields[${fieldIndex}]`);
       if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(field.name))
-        fail('FORMAL_INPUT', `${what}.stateFields[${fieldIndex}].name must be a bare identifier`);
+        {fail('FORMAL_INPUT', `${what}.stateFields[${fieldIndex}].name must be a bare identifier`);}
       if (seenFields.has(field.name)) fail('FORMAL_INPUT', `${what} repeats the field name ${field.name}`);
       seenFields.add(field.name);
       if (!FIELD_SIGNATURES.has(field.signature))
-        fail('FORMAL_INPUT', `${what}.stateFields[${fieldIndex}] signature ${JSON.stringify(field.signature)} has no judged writer (play-json builtin or the shared Instant/Id library); the raw substring heuristic and the silent String/Any fallback are rejected fail-closed`);
+        {fail('FORMAL_INPUT', `${what}.stateFields[${fieldIndex}] signature ${JSON.stringify(field.signature)} has no judged writer (play-json builtin or the shared Instant/Id library); the raw substring heuristic and the silent String/Any fallback are rejected fail-closed`);}
     }
     const methodName = camel(base), routeSegment = kebab(base);
     if (seenMethod.has(methodName)) fail('FORMAL_INPUT', `duplicate controller method name ${methodName} (E1 collision)`);
@@ -373,7 +370,7 @@ function runNegatives(input) {
       failures.push(`${negative.name}: ACCEPTED (expected rejection)`);
     } catch (error) {
       if (!(error && typeof error.message === 'string' && error.message.includes(negative.expect)))
-        failures.push(`${negative.name}: rejected with an unexpected message — got ${JSON.stringify(String(error.message).slice(0, 160))}, expected substring ${JSON.stringify(negative.expect)}`);
+        {failures.push(`${negative.name}: rejected with an unexpected message — got ${JSON.stringify(String(error.message).slice(0, 160))}, expected substring ${JSON.stringify(negative.expect)}`);}
     }
   }
   return { expected: applied, rejected: applied - failures.length, failures };
