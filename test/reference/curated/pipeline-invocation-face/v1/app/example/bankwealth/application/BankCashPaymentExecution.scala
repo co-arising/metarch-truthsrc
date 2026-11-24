@@ -8,7 +8,7 @@ import akka.actor.typed.scaladsl.Behaviors
 import akka.persistence.typed.PersistenceId
 import com.google.protobuf.ByteString
 import example.bankwealth.domain.values.{AccountId, FundOrderId, Money, OperationId, TxId}
-import example.bankwealth.infrastructure.serialization.DomainConverters
+import example.bankwealth.infrastructure.persistence.converters.DomainConverters
 import net.imadz.monarch.{StageError, StageFailedException}
 import net.imadz.monarch.persistence.{PersistentMonarch, RunObserver, StateCodec}
 

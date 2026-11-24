@@ -1,8 +1,0 @@
-package example.bankwealth.domain
-
-import CreditBalanceProtocol._
-
-object CreditBalanceEventHandler {
-  def apply(state: CreditBalanceState, input: Event): CreditBalanceState =
-    example.bankwealth.domain.entities.behaviors.CreditBalanceEventHandler(state, input)
-}

@@ -322,10 +322,10 @@ function renderDomainProtocol(agg, pkg, pkgPath, pkgByContext) {
   const types = [...agg.commands.flatMap(c => c.parameters), ...agg.events.flatMap(e => e.slots)];
   const importValues = types.some(r => usesOwnValues(r.valueType, agg.context));
   const lines = [
-    'package ' + pkg + '.domain',
+    'package ' + pkg + '.domain.events',
     '',
     ...(importValues ? ['import ' + pkg + '.domain.values._', ''] : []),
-    'object ' + name + 'Protocol {',
+    'object ' + name + 'Events {',
     '  sealed trait Command',
     '  sealed trait Event',
   ];
@@ -337,7 +337,7 @@ function renderDomainProtocol(agg, pkg, pkgPath, pkgByContext) {
   }
   lines.push('}');
   return {
-    path: 'app/' + pkgPath + '/domain/' + agg.name + 'Protocol.scala',
+    path: 'app/' + pkgPath + '/domain/events/' + agg.name + 'Events.scala',
     kind: 'protocol',
     content: lines.join('\n') + '\n',
     sources: [agg.source, ...agg.commands.map(c => c.source), ...agg.events.map(e => e.source)],
@@ -349,15 +349,16 @@ function renderCommandHelpers(agg, pkg, pkgPath, pkgByContext) {
   const name = symbol(agg.name);
   const importValues = agg.hosts.some(h => usesOwnValues(h.outputType, agg.context));
   const lines = [
-    'package ' + pkg + '.domain',
+    'package ' + pkg + '.domain.services',
     '',
+    `import ${pkg}.domain.entities.${name}Entity.State`,
+    `import ${pkg}.domain.events.${name}Events._`,
     ...(importValues ? ['import ' + pkg + '.domain.values._'] : []),
-    'import ' + name + 'Protocol._',
     '',
     'trait ' + name + 'Computations {',
   ];
   for (const h of agg.hosts) {
-    lines.push('  def ' + symbol(h.name) + '(state: ' + name + 'State, p: ' + symbol(h.command) + '): ' + renderType(h.outputType, pkgByContext, agg.context));
+    lines.push('  def ' + symbol(h.name) + '(state: State, p: ' + symbol(h.command) + '): ' + renderType(h.outputType, pkgByContext, agg.context));
   }
   lines.push('}');
   lines.push('object ' + name + 'Computations {');
@@ -370,47 +371,48 @@ function renderCommandHelpers(agg, pkg, pkgPath, pkgByContext) {
     const eventsExpr = c.events
       .map(e => symbol(e.name) + '(' + e.slots.map(s => renderExpr(s.producer)).join(', ') + ')')
       .join(', ');
-    lines.push('  def emit' + c.name + '(state: ' + name + 'State, p: ' + symbol(c.name) + ', hosts: ' + name + 'Computations): Vector[Event] = Vector(' + eventsExpr + ')');
+    lines.push('  def emit' + c.name + '(state: State, p: ' + symbol(c.name) + ', hosts: ' + name + 'Computations): Vector[Event] = Vector(' + eventsExpr + ')');
   }
   lines.push('}');
   return {
-    path: 'app/' + pkgPath + '/domain/' + agg.name + 'CommandHelpers.scala',
+    path: 'app/' + pkgPath + '/domain/services/' + agg.name + 'Computations.scala',
     kind: 'command-helpers',
     content: lines.join('\n') + '\n',
     sources: [agg.source, ...agg.commands.map(c => c.source), ...agg.hosts.map(h => h.source)],
     deps: [
-      'app/' + pkgPath + '/domain/' + agg.name + 'Protocol.scala',
-      'app/' + pkgPath + '/domain/' + agg.name + 'State.scala',
+      'app/' + pkgPath + '/domain/entities/' + agg.name + 'Entity.scala',
+      'app/' + pkgPath + '/domain/events/' + agg.name + 'Events.scala',
     ],
   };
 }
 
 function renderApplicationProtocol(agg, pkg, pkgPath) {
   const name = symbol(agg.name);
-  const legacy = pkg + '.domain.' + name + 'Aggregate';
+  const aggObj = name + 'Aggregate';
   const aliases = ['Execute', 'GetState', 'Accepted', 'Refused', ...agg.externalProducers.map(p => ingressAlias(p.id))];
   const hasAuthority = agg.externalProducers.length > 0;
   let content = `package ${pkg}.application.aggregates
 
 import akka.persistence.typed.scaladsl.Effect
 import ${pkg}.domain.entities.${name}Entity.{Event, State}
+import ${pkg}.domain.events.${name}Events
 
 object ${name}Protocol {
 
-  type Command = ${legacy}.Request
-  type Reply = ${legacy}.Reply
-  type CommandPayload = ${pkg}.domain.${name}Protocol.Command
+  type Command = ${aggObj}.Request
+  type Reply = ${aggObj}.Reply
+  type CommandPayload = ${name}Events.Command
   type CommandHandler = (State, Command) => Effect[Event, State]
 `;
   for (const id of aliases) {
     content += `
-  type ${id} = ${legacy}.${id}
-  val ${id}: ${legacy}.${id}.type =
-    ${legacy}.${id}
+  type ${id} = ${aggObj}.${id}
+  val ${id}: ${aggObj}.${id}.type =
+    ${aggObj}.${id}
 `;
   }
   if (hasAuthority) {
-    content += `\n  type ExternalAuthority = ${legacy}.ExternalAuthority\n`;
+    content += `\n  type ExternalAuthority = ${aggObj}.ExternalAuthority\n`;
   }
   content += '}\n';
   return {
@@ -419,8 +421,9 @@ object ${name}Protocol {
     content,
     sources: [agg.source, ...agg.commands.map(c => c.source)],
     deps: [
-      'app/' + pkgPath + '/domain/' + agg.name + 'Aggregate.scala',
+      'app/' + pkgPath + '/application/aggregates/' + agg.name + 'Aggregate.scala',
       'app/' + pkgPath + '/domain/entities/' + agg.name + 'Entity.scala',
+      'app/' + pkgPath + '/domain/events/' + agg.name + 'Events.scala',
     ],
   };
 }

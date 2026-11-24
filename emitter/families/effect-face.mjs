@@ -488,23 +488,13 @@ function emitHost(cm, shape) {
   const decodeBody = [
     '  private def decode(bytes: ByteString): Option[' + eff.observationValue + '] =',
     '    if (bytes.isEmpty) None',
-    '    else Some(' + cm.converters + '.decode' + eff.observationValue + 'PO(',
+    '    else Some(' + shape.serializationObject + '.decode' + eff.observationValue + 'PO(',
     '      ' + shape.protoPackage + '.' + eff.observationValue + 'PO.parseFrom(bytes.toByteArray)))',
   ];
-  // The one-row form when it fits; otherwise the two-row ladder the golden
-  // balances (first package segment alone, rest at indent + 8).
-  const encodeLadder = (() => {
-    const converters = shape.serializationPackage + '.' + shape.serializationObject;
-    const one = '    ' + converters + '.encode' + eff.observationValue + 'PO(value).toByteString';
-    const head = '  private def encode(value: ' + eff.observationValue + '): ByteString =';
-    if (one.length <= LINE_LIMIT) return [head, one];
-    const segments = shape.serializationPackage.split('.');
-    const rest = segments.slice(2).join('.');
-    return [head,
-      '    ' + segments.slice(0, 2).join('.'),
-      '        .' + rest + '.' + shape.serializationObject + '.encode' + eff.observationValue +
-      'PO(value).toByteString'];
-  })();
+  const encodeLadder = [
+    '  private def encode(value: ' + eff.observationValue + '): ByteString =',
+    '    ' + shape.serializationObject + '.encode' + eff.observationValue + 'PO(value).toByteString',
+  ];
   const terminalBody = [
     '  private def terminal(state: State): Option[' + cm.execution + '.' + cm.pascalStage + 'Result] =',
     '    decode(state.observation).flatMap { value =>',
@@ -549,6 +539,7 @@ function emitHost(cm, shape) {
     'import com.google.protobuf.ByteString',
     'import ' + shape.domainValuesPackage + '.{' + eff.operationValue + ', ' + eff.observationValue + ', ' +
       eff.reconcileValue + ', ' + eff.requestValue + '}',
+    'import ' + shape.serializationPackage + '.' + shape.serializationObject,
     '',
     ...cm.docs.host,
     'object ' + cm.host + ' {',

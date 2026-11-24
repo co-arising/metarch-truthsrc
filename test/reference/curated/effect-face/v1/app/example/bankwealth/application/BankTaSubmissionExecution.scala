@@ -7,7 +7,7 @@ import akka.actor.typed.{ActorRef, Behavior, PostStop}
 import akka.actor.typed.scaladsl.Behaviors
 import akka.persistence.typed.PersistenceId
 import example.bankwealth.domain.values.{FundOrderId, TaRequestId, TxId}
-import example.bankwealth.infrastructure.serialization.DomainConverters
+import example.bankwealth.infrastructure.persistence.converters.DomainConverters
 import net.imadz.monarch.{StageError, StageFailedException}
 import net.imadz.monarch.persistence.{PersistentMonarch, RunObserver, StateCodec}
 

@@ -156,57 +156,57 @@ function renderAggregateGroup(agg, packages) {
   const authorityArg = authority ? ', authority' : '';
 
   const paths = {
-    legacy: pathOf(pkg, 'domain/' + agg.name + 'Aggregate.scala'),
     protocol: pathOf(pkg, 'application/aggregates/' + agg.name + 'Protocol.scala'),
     aggregate: pathOf(pkg, 'application/aggregates/' + agg.name + 'Aggregate.scala'),
     behavior: pathOf(pkg, 'application/aggregates/behaviors/' + agg.name + 'Behaviors.scala'),
-    factory: pathOf(pkg, 'application/aggregates/' + agg.name + 'AggregateFactory.scala'),
+    factory: pathOf(pkg, 'application/aggregates/factories/' + agg.name + 'AggregateFactory.scala'),
     bootstrap: pathOf(pkg, 'infrastructure/bootstrap/' + agg.name + 'Bootstrap.scala'),
-    state: pathOf(pkg, 'domain/' + agg.name + 'State.scala'),
-    domainProtocol: pathOf(pkg, 'domain/' + agg.name + 'Protocol.scala'),
-    rules: pathOf(pkg, 'domain/' + agg.name + 'Rules.scala'),
-    helpers: pathOf(pkg, 'domain/' + agg.name + 'CommandHelpers.scala'),
+    events: pathOf(pkg, 'domain/events/' + agg.name + 'Events.scala'),
+    rules: pathOf(pkg, 'domain/invariant/' + agg.name + 'Rules.scala'),
+    ruleParams: pathOf(pkg, 'domain/invariant/params/' + agg.name + 'RuleParams.scala'),
+    computations: pathOf(pkg, 'domain/services/' + agg.name + 'Computations.scala'),
     entity: pathOf(pkg, 'domain/entities/' + agg.name + 'Entity.scala'),
-    external: pathOf(pkg, 'domain/' + agg.name + 'ExternalEvents.scala'),
+    external: pathOf(pkg, 'application/aggregates/behaviors/' + agg.name + 'ExternalEvents.scala'),
   };
 
   const commandSources = [agg.source, ...agg.commands.map(c => c.source)];
 
-  // 1. Legacy facade: domain/<Name>Aggregate.scala (kind: aggregate)
+  // 1. Application aggregate: application/aggregates/<Name>Aggregate.scala (kind: aggregate-behavior)
   const messages = agg.externalProducers.map(p => {
     const names = externalNames(p.id);
     return '  final case class ' + names.ingress + '(output: ' + scalaType(p.outputType, packages) + ', authorization: String, replyTo: ActorRef[Reply]) extends Request\n';
   }).join('');
-  const legacyContent = 'package ' + pkg + '.domain\n\nimport akka.actor.typed.{ActorRef, Behavior}\nimport ' + name + 'Protocol._\n\nobject ' + name + 'Aggregate {\n' +
-    '  sealed trait Request\n  final case class Execute(command: Command, replyTo: ActorRef[Reply]) extends Request\n  final case class GetState(replyTo: ActorRef[' + name + 'State]) extends Request\n' +
-    '  sealed trait Reply\n  final case class Accepted(events: Vector[Event]) extends Reply\n  final case class Refused(code: String) extends Reply\n' + messages +
-    (authority ? '  trait ExternalAuthority { def authorize(producer: String, authorization: String, identity: Vector[String]): Boolean }\n' : '') +
-    '  def apply(persistenceId: String, initial: ' + name + 'State, hosts: ' + name + 'Computations' + authorityParam + '): Behavior[Request] =\n' +
-    '    ' + pkg + '.infrastructure.bootstrap.' + bootstrap + '.create(persistenceId, initial, hosts' + authorityArg + ')\n}\n' +
-    'object ' + name + 'AggregateFactory {\n' +
-    '  def create(persistenceId: String, initial: ' + name + 'State, hosts: ' + name + 'Computations' + (authority ? ', authority: ' + name + 'Aggregate.ExternalAuthority' : '') + '): Behavior[' + name + 'Aggregate.Request] = ' +
-    name + 'Aggregate(persistenceId, initial, hosts' + authorityArg + ')\n}\n';
-
-  // 2. Application aggregate facade: application/aggregates/<Name>Aggregate.scala (kind: aggregate-behavior)
   const aggregateContent = `package ${pkg}.application.aggregates
 
-import ${pkg}.application.aggregates.${protocol}.${authority ? '_' : 'CommandHandler'}
-import ${pkg}.domain.${name}Computations
+import akka.actor.typed.{ActorRef, Behavior}
+import ${pkg}.application.aggregates.${protocol}.CommandHandler
+import ${pkg}.domain.entities.${name}Entity.{Event, State}
+import ${pkg}.domain.events.${name}Events
+import ${pkg}.domain.services.${name}Computations
 
 object ${name}Aggregate {
-
+  sealed trait Request
+  final case class Execute(command: ${name}Events.Command, replyTo: ActorRef[Reply]) extends Request
+  final case class GetState(replyTo: ActorRef[State]) extends Request
+  sealed trait Reply
+  final case class Accepted(events: Vector[Event]) extends Reply
+  final case class Refused(code: String) extends Reply
+${messages}${authority ? '  trait ExternalAuthority { def authorize(producer: String, authorization: String, identity: Vector[String]): Boolean }\n' : ''}
   def commandHandler(hosts: ${name}Computations${authorityParam}): CommandHandler =
     behaviors.${name}Behaviors(hosts${authorityArg})
+
+  def apply(persistenceId: String, initial: State, hosts: ${name}Computations${authorityParam}): Behavior[Request] =
+    ${pkg}.infrastructure.bootstrap.${bootstrap}.create(persistenceId, initial, hosts${authorityArg})
 }
 `;
 
-  // 3. Application factory trait: application/aggregates/<Name>AggregateFactory.scala (kind: aggregate-factory)
-  const factoryContent = `package ${pkg}.application.aggregates
+  // 2. Application factory trait: application/aggregates/factories/<Name>AggregateFactory.scala (kind: aggregate-factory)
+  const factoryContent = `package ${pkg}.application.aggregates.factories
 
 import akka.actor.typed.Behavior
 import ${pkg}.application.aggregates.${protocol}.${authority ? '_' : 'Command'}
-import ${pkg}.domain.${name}Computations
 import ${pkg}.domain.entities.${name}Entity.State
+import ${pkg}.domain.services.${name}Computations
 
 trait ${name}AggregateFactory {
 
@@ -214,7 +214,7 @@ trait ${name}AggregateFactory {
 }
 `;
 
-  // 4. Behavior dispatcher: application/aggregates/behaviors/<Name>Behaviors.scala (kind: aggregate-behavior)
+  // 3. Behavior dispatcher: application/aggregates/behaviors/<Name>Behaviors.scala (kind: aggregate-behavior)
   const calls = [
     ...(authority ? ['externalBehavior(authority)'] : []),
     'queryBehavior',
@@ -225,7 +225,10 @@ trait ${name}AggregateFactory {
 import akka.persistence.typed.scaladsl.Effect
 import ${pkg}.application.aggregates.${protocol}._
 import ${pkg}.domain.entities.${name}Entity.{Event, State}
-import ${pkg}.domain.{${name}Computations, ${name}Protocol => Payload, ${name}Rules${authority ? ', ' + name + 'ExternalEvents' : ''}}
+import ${pkg}.domain.events.{${name}Events => Payload}
+import ${pkg}.domain.invariant.${name}Rules
+import ${pkg}.domain.invariant.params.${name}RuleParams._
+import ${pkg}.domain.services.${name}Computations
 
 object ${name}Behaviors {
 
@@ -271,7 +274,7 @@ object ${name}Behaviors {
     const cname = symbol(command.name);
     const startChar = behaviorContent.length;
     behaviorContent += `        case p: Payload.${cname} =>
-          ${name}Rules.${cname}(state, p, hosts)
+          ${name}Rules.${cname}(${command.name}Params(state, p, hosts))
 `;
     const endChar = behaviorContent.length;
     const startBytes = Buffer.byteLength(behaviorContent.slice(0, startChar));
@@ -293,18 +296,10 @@ object ${name}Behaviors {
 
   return [
     {
-      path: paths.legacy,
-      kind: 'aggregate',
-      content: legacyContent,
-      deps: [paths.state, paths.domainProtocol, paths.helpers, paths.bootstrap],
-      sources: commandSources,
-      codeMappings: [],
-    },
-    {
       path: paths.behavior,
       kind: 'aggregate-behavior',
       content: behaviorContent,
-      deps: [paths.protocol, paths.entity, paths.rules, paths.helpers, ...(authority ? [paths.external] : [])],
+      deps: [paths.protocol, paths.entity, paths.events, paths.rules, paths.ruleParams, paths.computations, ...(authority ? [paths.external] : [])],
       sources: [...commandSources, ...agg.externalProducers.map(p => p.source)],
       codeMappings,
     },
@@ -312,15 +307,15 @@ object ${name}Behaviors {
       path: paths.aggregate,
       kind: 'aggregate-behavior',
       content: aggregateContent,
-      deps: [paths.protocol, paths.behavior, paths.helpers],
-      sources: [agg.source],
+      deps: [paths.protocol, paths.behavior, paths.entity, paths.events, paths.computations, paths.bootstrap],
+      sources: commandSources,
       codeMappings: [],
     },
     {
       path: paths.factory,
       kind: 'aggregate-factory',
       content: factoryContent,
-      deps: [paths.protocol, paths.entity, paths.helpers],
+      deps: [paths.protocol, paths.entity, paths.computations],
       sources: [agg.source],
       codeMappings: [],
     },

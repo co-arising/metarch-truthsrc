@@ -248,33 +248,28 @@ const renderLiteral = (lit, ownContext, packages) => {
 function renderAggregatePair(agg, packages) {
   const pkg = packageOf(agg.context, packages);
   const name = symbol(agg.name);
-  const statePath = pathOf(pkg, 'domain/' + agg.name + 'State.scala');
   const entityPath = pathOf(pkg, 'domain/entities/' + agg.name + 'Entity.scala');
-  const protocolPath = pathOf(pkg, 'domain/' + agg.name + 'Protocol.scala');
+  const eventsPath = pathOf(pkg, 'domain/events/' + agg.name + 'Events.scala');
 
   const paramList = agg.fields.map(f => symbol(f.name) + ': ' + scalaType(f.type, agg.context, packages));
   const namedInitials = agg.fields.map(f => symbol(f.name) + ' = ' + renderLiteral(f.default, agg.context, packages));
   const deps = [...new Set(agg.fields.flatMap(f => valueDeps(f.type, packages)))];
   const stateSources = [agg.source, ...agg.fields.map(f => f.source)];
 
-  const stateImportValues = agg.fields.some(f => usesOwnValues(f.type, agg.context));
-  const oneLineState = 'final case class ' + name + 'State(' + paramList.join(', ') + ')';
+  const importValues =
+    agg.fields.some(f => usesOwnValues(f.type, agg.context)) ||
+    agg.fields.some(f => literalUsesOwnValues(f.default, agg.context));
+  const oneLineState = '  final case class State(' + paramList.join(', ') + ')';
   const stateDecl = paramList.length > 4 || oneLineState.length > 100
-    ? 'final case class ' + name + 'State(\n  ' + paramList.join(',\n  ') + '\n)'
+    ? '  final case class State(\n    ' + paramList.join(',\n    ') + '\n  )'
     : oneLineState;
-  const stateContent = 'package ' + pkg + '.domain\n\n' +
-    (stateImportValues ? 'import ' + pkg + '.domain.values._\n\n' : '') +
-    stateDecl + '\n\n' +
-    'object ' + name + 'State {\n  def empty: ' + name + 'State = ' + pkg + '.domain.entities.' + name + 'Entity.empty\n}\n';
 
-  const entityImportValues = agg.fields.some(f => literalUsesOwnValues(f.default, agg.context));
   let entityContent = 'package ' + pkg + '.domain.entities\n\n' +
-    (entityImportValues ? 'import ' + pkg + '.domain.values._\n\n' : '') +
+    (importValues ? 'import ' + pkg + '.domain.values._\n\n' : '') +
     'object ' + name + 'Entity {\n' +
-    '  type State = ' + pkg + '.domain.' + name + 'State\n' +
-    '  val State: ' + pkg + '.domain.' + name + 'State.type = ' + pkg + '.domain.' + name + 'State\n\n' +
-    '  type Event = ' + pkg + '.domain.' + name + 'Protocol.Event\n' +
-    '  val Events: ' + pkg + '.domain.' + name + 'Protocol.type = ' + pkg + '.domain.' + name + 'Protocol\n\n';
+    stateDecl + '\n\n' +
+    '  type Event = ' + pkg + '.domain.events.' + name + 'Events.Event\n' +
+    '  val Events: ' + pkg + '.domain.events.' + name + 'Events.type = ' + pkg + '.domain.events.' + name + 'Events\n\n';
   const startChar = entityContent.length;
   entityContent += '  def empty: State = State(\n    ' + namedInitials.join(',\n    ') + '\n  )\n';
   const endChar = entityContent.length;
@@ -284,23 +279,15 @@ function renderAggregatePair(agg, packages) {
   const endBytes = Buffer.byteLength(entityContent.slice(0, endChar));
   const span = { start: startBytes, end: endBytes, text: entityContent.slice(startChar, endChar) };
 
-  const stateFile = {
-    path: statePath,
-    content: stateContent,
-    kind: 'state',
-    sources: stateSources,
-    deps: [...deps, entityPath],
-    codeMappings: [],
-  };
   const entityFile = {
     path: entityPath,
     content: entityContent,
     kind: 'entity',
     sources: [...stateSources, ...agg.events.map(e => e.source)],
-    deps: [statePath, protocolPath, ...deps],
+    deps: [eventsPath, ...deps],
     codeMappings: [{ knowledgeKey: knowledgeOf(agg.source), span, scope: { ...span } }],
   };
-  return [stateFile, entityFile];
+  return [entityFile];
 }
 
 /** Full provenance surface of the contract: [State, Entity] per aggregate, in order. */

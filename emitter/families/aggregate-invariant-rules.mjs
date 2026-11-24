@@ -122,15 +122,19 @@ function renderGuardCondition(predicate) {
 function renderAggregateRules(a) {
   const pkg = a.package, name = a.name;
   const app = 'app/' + pkg.replaceAll('.', '/');
-  const protocol = app + '/domain/' + a.aggregate + 'Protocol.scala';
-  const statePath = app + '/domain/' + a.aggregate + 'State.scala';
-  const helperPath = app + '/domain/' + a.aggregate + 'CommandHelpers.scala';
+  const entityPath = app + '/domain/entities/' + a.aggregate + 'Entity.scala';
+  const eventsPath = app + '/domain/events/' + a.aggregate + 'Events.scala';
+  const computationsPath = app + '/domain/services/' + a.aggregate + 'Computations.scala';
   const corePath = app + '/domain/invariant/' + a.aggregate + 'Rules.scala';
   const paramsPath = app + '/domain/invariant/params/' + a.aggregate + 'RuleParams.scala';
-  const wrapperPath = app + '/domain/' + a.aggregate + 'Rules.scala';
   const aggregateSources = [a.source, ...a.commands.map(c => c.source)];
 
-  let rules = 'package ' + pkg + '.domain.invariant\n\nimport ' + pkg + '.domain._\nimport ' + pkg + '.domain.invariant.params.' + name + 'RuleParams._\nimport ' + pkg + '.domain.' + name + 'Protocol._\n\nobject ' + name + 'Rules {\n';
+  let rules = 'package ' + pkg + '.domain.invariant\n\n' +
+    'import ' + pkg + '.domain.entities.' + name + 'Entity.State\n' +
+    'import ' + pkg + '.domain.events.' + name + 'Events._\n' +
+    'import ' + pkg + '.domain.invariant.params.' + name + 'RuleParams._\n' +
+    'import ' + pkg + '.domain.services.{' + name + 'CommandHelpers, ' + name + 'Computations}\n\n' +
+    'object ' + name + 'Rules {\n';
   const ruleMappings = [];
   for (const c of a.commands) {
     const start = rules.length;
@@ -150,40 +154,26 @@ function renderAggregateRules(a) {
   }
   rules += '}\n';
 
-  let params = 'package ' + pkg + '.domain.invariant.params\n\nimport ' + pkg + '.domain._\n\nobject ' + name + 'RuleParams {\n';
+  let params = 'package ' + pkg + '.domain.invariant.params\n\n' +
+    'import ' + pkg + '.domain.entities.' + name + 'Entity.State\n' +
+    'import ' + pkg + '.domain.events.' + name + 'Events\n' +
+    'import ' + pkg + '.domain.services.' + name + 'Computations\n\n' +
+    'object ' + name + 'RuleParams {\n';
   for (const c of a.commands)
     params += '  final case class ' + identifier(c.command + 'Params', 'derived params record name') +
-      '(state: ' + name + 'State, command: ' + name + 'Protocol.' + c.command + ', hosts: ' + name + 'Computations)\n';
+      '(state: State, command: ' + name + 'Events.' + c.command + ', hosts: ' + name + 'Computations)\n';
   params += '}\n';
-
-  let wrapper = 'package ' + pkg + '.domain\n\nimport ' + name + 'Protocol._\n\nobject ' + name + 'Rules {\n';
-  const wrapperMappings = [];
-  for (const c of a.commands) {
-    const start = wrapper.length;
-    wrapper += '  def ' + c.command + '(state: ' + name + 'State, p: ' + c.command + ', hosts: ' + name + 'Computations)' +
-      ': Either[String, Vector[Event]] =\n' +
-      '    ' + pkg + '.domain.invariant.' + name + 'Rules.' + c.command +
-      '(' + pkg + '.domain.invariant.params.' + name + 'RuleParams.' + identifier(c.command + 'Params', 'derived params record name') + '(state, p, hosts))\n';
-    const span = { start, end: wrapper.length };
-    wrapperMappings.push({ source: c.source, span, scope: span });
-  }
-  wrapper += '}\n';
 
   const coreSources = [a.source, ...a.commands.flatMap(c => [c.source, ...c.guards.map(g => g.source)])];
   return [
     {
       path: corePath, content: rules, kind: 'rules', sources: coreSources,
-      deps: [protocol, statePath, helperPath, paramsPath],
+      deps: [entityPath, eventsPath, computationsPath, paramsPath],
       codeMappings: ruleMappings.map(m => mapping(rules, m)),
     },
     {
       path: paramsPath, content: params, kind: 'rules', sources: aggregateSources,
-      deps: [protocol, statePath, helperPath], codeMappings: [],
-    },
-    {
-      path: wrapperPath, content: wrapper, kind: 'rules', sources: aggregateSources,
-      deps: [protocol, statePath, helperPath, corePath, paramsPath],
-      codeMappings: wrapperMappings.map(m => mapping(wrapper, m)),
+      deps: [entityPath, eventsPath, computationsPath], codeMappings: [],
     },
   ];
 }

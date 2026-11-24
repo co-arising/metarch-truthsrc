@@ -2,8 +2,7 @@ package example.bankwealth.infrastructure.bootstrap
 
 import play.api.{Application, ApplicationLoader}
 import scala.util.control.NonFatal
-import example.bankwealth.service.{BankServiceConfiguration, BankServiceComponents}
-import example.bankwealth.service.BankServiceService._
+import BankServiceContract._
 
 object ApplicationBootstrap {
   def load(context: ApplicationLoader.Context): Application = {

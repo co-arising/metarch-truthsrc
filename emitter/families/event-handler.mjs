@@ -100,17 +100,16 @@ const mapping = (content, m) => ({
 function renderAggregateEventHandlers(handler, pkg) {
   const name = handler.name;
   const app = 'app/' + pkg.replaceAll('.', '/');
-  const protocolPath = app + '/domain/' + name + 'Protocol.scala';
-  const statePath = app + '/domain/' + name + 'State.scala';
+  const entityPath = app + '/domain/entities/' + name + 'Entity.scala';
+  const eventsPath = app + '/domain/events/' + name + 'Events.scala';
   const corePath = app + '/domain/entities/behaviors/' + name + 'EventHandler.scala';
-  const facadePath = app + '/domain/' + name + 'EventHandler.scala';
   const eventPackage = pkg + '.domain.entities.behaviors';
 
   let core = 'package ' + eventPackage + '\n\n' +
-    'import ' + pkg + '.domain._\n' +
-    'import ' + pkg + '.domain.' + name + 'Protocol._\n\n' +
+    'import ' + pkg + '.domain.entities.' + name + 'Entity.State\n' +
+    'import ' + pkg + '.domain.events.' + name + 'Events._\n\n' +
     'object ' + name + 'EventHandler {\n' +
-    '  def apply(state: ' + name + 'State, input: Event): ' + name + 'State = input match {\n';
+    '  def apply(state: State, input: Event): State = input match {\n';
   const foldMappings = [];
   for (const e of handler.events) {
     const eventStart = core.length;
@@ -138,18 +137,10 @@ function renderAggregateEventHandlers(handler, pkg) {
   }
   core += '  }\n}\n';
 
-  const facade = 'package ' + pkg + '.domain\n\n' +
-    'import ' + name + 'Protocol._\n\n' +
-    'object ' + name + 'EventHandler {\n' +
-    '  def apply(state: ' + name + 'State, input: Event): ' + name + 'State =\n' +
-    '    ' + eventPackage + '.' + name + 'EventHandler(state, input)\n' +
-    '}\n';
-
   const coreSources = [
     handler.source,
     ...handler.events.flatMap(e => [e.source, ...e.assignments.map(a => a.source)]),
   ];
-  const facadeSources = [handler.source, ...handler.events.map(e => e.source)];
 
   return [
     {
@@ -157,16 +148,8 @@ function renderAggregateEventHandlers(handler, pkg) {
       content: core,
       kind: 'event-handler',
       sources: coreSources,
-      deps: [protocolPath, statePath],
+      deps: [entityPath, eventsPath],
       codeMappings: foldMappings.map(m => mapping(core, m)),
-    },
-    {
-      path: facadePath,
-      content: facade,
-      kind: 'event-handler',
-      sources: facadeSources,
-      deps: [protocolPath, statePath, corePath],
-      codeMappings: [],
     },
   ];
 }

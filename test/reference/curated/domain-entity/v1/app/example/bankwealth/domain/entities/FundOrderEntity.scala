@@ -3,11 +3,41 @@ package example.bankwealth.domain.entities
 import example.bankwealth.domain.values._
 
 object FundOrderEntity {
-  type State = example.bankwealth.domain.FundOrderState
-  val State: example.bankwealth.domain.FundOrderState.type = example.bankwealth.domain.FundOrderState
+  final case class State(
+    id: FundOrderId,
+    status: String,
+    operationId: OperationId,
+    investorAccountId: AccountId,
+    fundCollectionAccountId: AccountId,
+    fundCode: String,
+    amount: Money,
+    reservedSubscriptions: Map[TxId, Money],
+    committedSubscriptions: Map[TxId, Money],
+    compensatedSubscriptions: Map[TxId, Money],
+    selectedPaymentTxId: TxId,
+    paymentOutcome: String,
+    cashPaymentResults: Map[TxId, String],
+    cashPaymentFinalResults: Map[TxId, String],
+    taRequestId: TaRequestId,
+    taReference: String,
+    taStatus: String,
+    taReceipts: Map[String, String],
+    taReceiptOutcomes: Map[String, String],
+    taConfirmedShares: FundShare,
+    taRejectionReason: String,
+    refundOperationId: OperationId,
+    refundOutcome: String,
+    refundResultReceipts: Map[String, String],
+    refundFinalResults: Map[TxId, String],
+    taObservedReceipts: Map[String, String],
+    paymentObservedResults: Map[TxId, String],
+    refundObservedResults: Map[TxId, String],
+    cashRequestSource: Option[BankCashOriginal],
+    cashRequestOriginals: Map[String, BankCashOriginal]
+  )
 
-  type Event = example.bankwealth.domain.FundOrderProtocol.Event
-  val Events: example.bankwealth.domain.FundOrderProtocol.type = example.bankwealth.domain.FundOrderProtocol
+  type Event = example.bankwealth.domain.events.FundOrderEvents.Event
+  val Events: example.bankwealth.domain.events.FundOrderEvents.type = example.bankwealth.domain.events.FundOrderEvents
 
   def empty: State = State(
     id = FundOrderId(""),

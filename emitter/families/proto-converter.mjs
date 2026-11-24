@@ -166,17 +166,17 @@ function renderValueObjectMethods(vo) {
 
 function renderAggregateMethods(agg) {
   const lines = [];
-  lines.push(renderFieldsCodec(agg.statePoName, `${agg.aggId}State`, agg.stateFields).trimEnd());
+  lines.push(renderFieldsCodec(agg.statePoName, `${agg.aggId}Entity.State`, agg.stateFields).trimEnd());
   for (const ev of agg.events) {
-    lines.push(renderFieldsCodec(ev.poName, `${agg.aggId}Protocol.${ev.eventId}`, ev.fields).trimEnd());
+    lines.push(renderFieldsCodec(ev.poName, `${agg.aggId}Events.${ev.eventId}`, ev.fields).trimEnd());
   }
   // Event union oneof encode/decode
-  lines.push(`  def encode${agg.eventUnionPoName}(value: ${agg.aggId}Protocol.Event): pb.${agg.eventUnionPoName} = value match {`);
+  lines.push(`  def encode${agg.eventUnionPoName}(value: ${agg.aggId}Events.Event): pb.${agg.eventUnionPoName} = value match {`);
   for (const ev of agg.events) {
-    lines.push(`    case e: ${agg.aggId}Protocol.${ev.eventId} => pb.${agg.eventUnionPoName}(pb.${agg.eventUnionPoName}.Event.${ev.eventId}(encode${ev.poName}(e)))`);
+    lines.push(`    case e: ${agg.aggId}Events.${ev.eventId} => pb.${agg.eventUnionPoName}(pb.${agg.eventUnionPoName}.Event.${ev.eventId}(encode${ev.poName}(e)))`);
   }
   lines.push('  }');
-  lines.push(`  def decode${agg.eventUnionPoName}(value: pb.${agg.eventUnionPoName}): ${agg.aggId}Protocol.Event = value.event match {`);
+  lines.push(`  def decode${agg.eventUnionPoName}(value: pb.${agg.eventUnionPoName}): ${agg.aggId}Events.Event = value.event match {`);
   for (const ev of agg.events) {
     lines.push(`    case pb.${agg.eventUnionPoName}.Event.${ev.eventId}(e) => decode${ev.poName}(e)`);
   }
@@ -202,9 +202,10 @@ const HELPERS_BLOCK = [
 ].join('\n');
 
 const importsHeader = pkg => [
-  `package ${pkg}.infrastructure.serialization`,
+  `package ${pkg}.infrastructure.persistence.converters`,
   '',
-  `import ${pkg}.domain._`,
+  `import ${pkg}.domain.entities._`,
+  `import ${pkg}.domain.events._`,
   `import ${pkg}.domain.values._`,
   `import ${pkg}.infrastructure.{proto => pb}`,
   '',
@@ -227,7 +228,7 @@ export function renderProtoConverterFiles(input) {
     ];
     const allContent = groups.map(g => g.content).join('\n');
     const allSources = groups.flatMap(g => g.sources);
-    const facadePath = 'app/' + pkgRoot + '/infrastructure/serialization/DomainConverters.scala';
+    const facadePath = 'app/' + pkgRoot + '/infrastructure/persistence/converters/DomainConverters.scala';
 
     if (allContent.length <= 55000) {
       out.push({
@@ -250,7 +251,7 @@ export function renderProtoConverterFiles(input) {
       parts.at(-1).sources.push(...g.sources);
     }
     const partNames = parts.map((_, i) => 'DomainConvertersPart' + i);
-    const partPaths = partNames.map(name => 'app/' + pkgRoot + '/infrastructure/serialization/' + name + '.scala');
+    const partPaths = partNames.map(name => 'app/' + pkgRoot + '/infrastructure/persistence/converters/' + name + '.scala');
 
     out.push({
       path: facadePath,

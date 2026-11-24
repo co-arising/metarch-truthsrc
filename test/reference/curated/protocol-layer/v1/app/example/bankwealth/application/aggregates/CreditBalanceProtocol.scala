@@ -2,27 +2,28 @@ package example.bankwealth.application.aggregates
 
 import akka.persistence.typed.scaladsl.Effect
 import example.bankwealth.domain.entities.CreditBalanceEntity.{Event, State}
+import example.bankwealth.domain.events.CreditBalanceEvents
 
 object CreditBalanceProtocol {
 
-  type Command = example.bankwealth.domain.CreditBalanceAggregate.Request
-  type Reply = example.bankwealth.domain.CreditBalanceAggregate.Reply
-  type CommandPayload = example.bankwealth.domain.CreditBalanceProtocol.Command
+  type Command = CreditBalanceAggregate.Request
+  type Reply = CreditBalanceAggregate.Reply
+  type CommandPayload = CreditBalanceEvents.Command
   type CommandHandler = (State, Command) => Effect[Event, State]
 
-  type Execute = example.bankwealth.domain.CreditBalanceAggregate.Execute
-  val Execute: example.bankwealth.domain.CreditBalanceAggregate.Execute.type =
-    example.bankwealth.domain.CreditBalanceAggregate.Execute
+  type Execute = CreditBalanceAggregate.Execute
+  val Execute: CreditBalanceAggregate.Execute.type =
+    CreditBalanceAggregate.Execute
 
-  type GetState = example.bankwealth.domain.CreditBalanceAggregate.GetState
-  val GetState: example.bankwealth.domain.CreditBalanceAggregate.GetState.type =
-    example.bankwealth.domain.CreditBalanceAggregate.GetState
+  type GetState = CreditBalanceAggregate.GetState
+  val GetState: CreditBalanceAggregate.GetState.type =
+    CreditBalanceAggregate.GetState
 
-  type Accepted = example.bankwealth.domain.CreditBalanceAggregate.Accepted
-  val Accepted: example.bankwealth.domain.CreditBalanceAggregate.Accepted.type =
-    example.bankwealth.domain.CreditBalanceAggregate.Accepted
+  type Accepted = CreditBalanceAggregate.Accepted
+  val Accepted: CreditBalanceAggregate.Accepted.type =
+    CreditBalanceAggregate.Accepted
 
-  type Refused = example.bankwealth.domain.CreditBalanceAggregate.Refused
-  val Refused: example.bankwealth.domain.CreditBalanceAggregate.Refused.type =
-    example.bankwealth.domain.CreditBalanceAggregate.Refused
+  type Refused = CreditBalanceAggregate.Refused
+  val Refused: CreditBalanceAggregate.Refused.type =
+    CreditBalanceAggregate.Refused
 }

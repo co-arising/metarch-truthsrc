@@ -9,6 +9,7 @@ import akka.persistence.typed.{PersistenceId, RecoveryCompleted}
 import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}
 import com.google.protobuf.ByteString
 import example.bankwealth.domain.values.{BankSipDispatchOperation, BankSipDispatchObservation, BankSipDispatchReconcile, BankSipDispatchRequest}
+import example.bankwealth.infrastructure.persistence.converters.DomainConverters
 
 /** Durable external-effect host of the SIP dispatch pipeline: owns the intent,
   * the observed external evidence and the authorized retry, for exactly one
@@ -153,12 +154,11 @@ object BankSipDispatchEffectHost {
 
   private def decode(bytes: ByteString): Option[BankSipDispatchObservation] =
     if (bytes.isEmpty) None
-    else Some(example.bankwealth.infrastructure.serialization.DomainConverters.decodeBankSipDispatchObservationPO(
+    else Some(DomainConverters.decodeBankSipDispatchObservationPO(
       example.bankwealth.infrastructure.proto.BankSipDispatchObservationPO.parseFrom(bytes.toByteArray)))
 
   private def encode(value: BankSipDispatchObservation): ByteString =
-    example.bankwealth
-        .infrastructure.serialization.DomainConverters.encodeBankSipDispatchObservationPO(value).toByteString
+    DomainConverters.encodeBankSipDispatchObservationPO(value).toByteString
 
   private def statusOf(value: BankSipDispatchObservation): ObservationStatus =
     ObservationStatus

@@ -119,15 +119,15 @@ function renderServiceContract(input) {
   ].join('\n') : '';
 
   return [
-    `package ${pkg}.service`,
+    `package ${pkg}.infrastructure.bootstrap`,
     '',
     'import play.api.ApplicationLoader',
     'import play.api.libs.json.{JsValue, Reads, Writes}',
     'import play.api.mvc.{RequestHeader, Result}',
     'import scala.concurrent.Future',
     '',
-    `object ${name}Service {`,
-    '  final case class Principal private[service] (id: String, roles: Set[String])',
+    `object ${name}Contract {`,
+    '  final case class Principal private[bootstrap] (id: String, roles: Set[String])',
     '',
     '  trait Authority {',
     '    def authenticate(request: RequestHeader): Future[Option[(String, Set[String])]]',
@@ -234,7 +234,7 @@ function renderServiceLoader(input) {
   );
 
   return [
-    `package ${pkg}.service`,
+    `package ${pkg}.infrastructure.bootstrap`,
     '',
     'import play.api.{Application, ApplicationLoader, BuiltInComponentsFromContext}',
     'import play.api.libs.json._',
@@ -242,16 +242,16 @@ function renderServiceLoader(input) {
     'import play.api.routing.Router',
     'import scala.concurrent.{ExecutionContext, Future}',
     'import scala.util.control.NonFatal',
-    `import ${name}Service._`,
+    `import ${name}Contract._`,
     '',
     `final class ${name}Loader extends ApplicationLoader {`,
     '  def load(context: ApplicationLoader.Context): Application =',
-    `    ${pkg}.infrastructure.bootstrap.ApplicationBootstrap.load(context)`,
+    '    ApplicationBootstrap.load(context)',
     '}',
     '',
     `object ${name}Components {`,
-    '  private[service] final case class Response(status: Int, value: JsValue)',
-    '  private[service] final case class Route(',
+    '  private[bootstrap] final case class Response(status: Int, value: JsValue)',
+    '  private[bootstrap] final case class Route(',
     '    method: String,',
     '    pattern: scala.util.matching.Regex,',
     '    parameters: Vector[String],',
@@ -373,8 +373,7 @@ function renderApplicationBootstrap(input) {
     '',
     'import play.api.{Application, ApplicationLoader}',
     'import scala.util.control.NonFatal',
-    `import ${pkg}.service.{${name}Configuration, ${name}Components}`,
-    `import ${pkg}.service.${name}Service._`,
+    `import ${name}Contract._`,
     '',
     'object ApplicationBootstrap {',
     '  def load(context: ApplicationLoader.Context): Application = {',
@@ -399,7 +398,7 @@ function renderApplicationBootstrap(input) {
 function renderServiceConf(input) {
   const { package: pkg, serviceName: name, journalConnection, readSideConnection } = input;
   return [
-    `play.application.loader = ${q(pkg + '.service.' + name + 'Loader')}`,
+    `play.application.loader = ${q(pkg + '.infrastructure.bootstrap.' + name + 'Loader')}`,
     'play.http.secret.key = ${PLAY_SECRET}',
     `service.connections.${q(journalConnection)} = \${MONGO_URI}`,
     `service.connections.${q(readSideConnection)} = \${MYSQL_JDBC_URL}`,
@@ -419,9 +418,9 @@ export function renderServiceRuntimeFiles(input) {
   const pkgRoot = input.package.replaceAll('.', '/');
   const name = input.serviceName;
   const src = [{ document: input.artifactSource.document, pointer: input.artifactSource.pointer }];
-  const servicePath = 'app/' + pkgRoot + '/service/' + name + 'Service.scala';
-  const loaderPath = 'app/' + pkgRoot + '/service/' + name + 'Loader.scala';
-  const configPath = 'app/' + pkgRoot + '/service/' + name + 'Configuration.scala';
+  const servicePath = 'app/' + pkgRoot + '/infrastructure/bootstrap/' + name + 'Contract.scala';
+  const loaderPath = 'app/' + pkgRoot + '/infrastructure/bootstrap/' + name + 'Loader.scala';
+  const configPath = 'app/' + pkgRoot + '/infrastructure/bootstrap/' + name + 'Configuration.scala';
   const bootstrapPath = 'app/' + pkgRoot + '/infrastructure/bootstrap/ApplicationBootstrap.scala';
 
   return [

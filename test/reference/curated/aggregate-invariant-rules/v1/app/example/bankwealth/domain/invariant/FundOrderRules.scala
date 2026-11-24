@@ -1,8 +1,9 @@
 package example.bankwealth.domain.invariant
 
-import example.bankwealth.domain._
+import example.bankwealth.domain.entities.FundOrderEntity.State
+import example.bankwealth.domain.events.FundOrderEvents._
 import example.bankwealth.domain.invariant.params.FundOrderRuleParams._
-import example.bankwealth.domain.FundOrderProtocol._
+import example.bankwealth.domain.services.{FundOrderCommandHelpers, FundOrderComputations}
 
 object FundOrderRules {
   def RequestFundPurchaseSettlement(input: RequestFundPurchaseSettlementParams): Either[String, Vector[Event]] = {

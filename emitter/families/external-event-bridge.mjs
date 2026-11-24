@@ -189,10 +189,10 @@ export function renderExternalEventBridgeFiles(input) {
     const name = symbol(bridge.aggregate);
     const importValues = bridge.producers.some(p => usesOwnValues(p.outputType, bridge.context));
     const lines = [
-      `package ${pkg}.domain`,
+      `package ${pkg}.application.aggregates.behaviors`,
       '',
+      `import ${pkg}.domain.events.${name}Events._`,
       ...(importValues ? [`import ${pkg}.domain.values._`] : []),
-      `import ${name}Protocol._`,
       '',
       `object ${name}ExternalEvents {`,
     ];
@@ -206,10 +206,10 @@ export function renderExternalEventBridgeFiles(input) {
       lines.push(`  def ${symbol(baseMethod + 'Identity')}(output: ${outType}): Vector[String] = Vector(${idParts})`);
     }
     lines.push('}', '');
-    const protocolDep = `app/${pkgPath}/domain/${bridge.aggregate}Protocol.scala`;
-    const deps = [protocolDep, ...new Set(bridge.producers.flatMap(p => valueDeps(p.outputType, packageMap)))];
+    const eventsDep = `app/${pkgPath}/domain/events/${bridge.aggregate}Events.scala`;
+    const deps = [eventsDep, ...new Set(bridge.producers.flatMap(p => valueDeps(p.outputType, packageMap)))];
     return {
-      path: `app/${pkgPath}/domain/${bridge.aggregate}ExternalEvents.scala`,
+      path: `app/${pkgPath}/application/aggregates/behaviors/${bridge.aggregate}ExternalEvents.scala`,
       content: lines.join('\n'),
       kind: 'external-event-bridge',
       sources: bridge.producers.map(p => ({ ...p.source })),

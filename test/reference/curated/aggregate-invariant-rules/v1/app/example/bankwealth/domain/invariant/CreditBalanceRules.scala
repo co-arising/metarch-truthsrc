@@ -1,8 +1,9 @@
 package example.bankwealth.domain.invariant
 
-import example.bankwealth.domain._
+import example.bankwealth.domain.entities.CreditBalanceEntity.State
+import example.bankwealth.domain.events.CreditBalanceEvents._
 import example.bankwealth.domain.invariant.params.CreditBalanceRuleParams._
-import example.bankwealth.domain.CreditBalanceProtocol._
+import example.bankwealth.domain.services.{CreditBalanceCommandHelpers, CreditBalanceComputations}
 
 object CreditBalanceRules {
   def InitializeAccount(input: InitializeAccountParams): Either[String, Vector[Event]] = {

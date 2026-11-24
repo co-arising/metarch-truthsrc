@@ -3,7 +3,10 @@ package example.bankwealth.application.aggregates.behaviors
 import akka.persistence.typed.scaladsl.Effect
 import example.bankwealth.application.aggregates.SipPlanProtocol._
 import example.bankwealth.domain.entities.SipPlanEntity.{Event, State}
-import example.bankwealth.domain.{SipPlanComputations, SipPlanProtocol => Payload, SipPlanRules}
+import example.bankwealth.domain.events.{SipPlanEvents => Payload}
+import example.bankwealth.domain.invariant.SipPlanRules
+import example.bankwealth.domain.invariant.params.SipPlanRuleParams._
+import example.bankwealth.domain.services.SipPlanComputations
 
 object SipPlanBehaviors {
 
@@ -21,41 +24,41 @@ object SipPlanBehaviors {
     case Execute(command, reply) =>
       val decision = command match {
         case p: Payload.CreateSipPlan =>
-          SipPlanRules.CreateSipPlan(state, p, hosts)
+          SipPlanRules.CreateSipPlan(CreateSipPlanParams(state, p, hosts))
         case p: Payload.AppendSipDueSlot =>
-          SipPlanRules.AppendSipDueSlot(state, p, hosts)
+          SipPlanRules.AppendSipDueSlot(AppendSipDueSlotParams(state, p, hosts))
         case p: Payload.SealSipSchedule =>
-          SipPlanRules.SealSipSchedule(state, p, hosts)
+          SipPlanRules.SealSipSchedule(SealSipScheduleParams(state, p, hosts))
         case p: Payload.ReviseSipPlan =>
-          SipPlanRules.ReviseSipPlan(state, p, hosts)
+          SipPlanRules.ReviseSipPlan(ReviseSipPlanParams(state, p, hosts))
         case p: Payload.AdvanceSipClock =>
-          SipPlanRules.AdvanceSipClock(state, p, hosts)
+          SipPlanRules.AdvanceSipClock(AdvanceSipClockParams(state, p, hosts))
         case p: Payload.PauseSipPlan =>
-          SipPlanRules.PauseSipPlan(state, p, hosts)
+          SipPlanRules.PauseSipPlan(PauseSipPlanParams(state, p, hosts))
         case p: Payload.ResumeSipPlan =>
-          SipPlanRules.ResumeSipPlan(state, p, hosts)
+          SipPlanRules.ResumeSipPlan(ResumeSipPlanParams(state, p, hosts))
         case p: Payload.ObserveSipDueSlot =>
-          SipPlanRules.ObserveSipDueSlot(state, p, hosts)
+          SipPlanRules.ObserveSipDueSlot(ObserveSipDueSlotParams(state, p, hosts))
         case p: Payload.SkipPausedSipDueSlot =>
-          SipPlanRules.SkipPausedSipDueSlot(state, p, hosts)
+          SipPlanRules.SkipPausedSipDueSlot(SkipPausedSipDueSlotParams(state, p, hosts))
         case p: Payload.AdvanceSkippedSipSlot =>
-          SipPlanRules.AdvanceSkippedSipSlot(state, p, hosts)
+          SipPlanRules.AdvanceSkippedSipSlot(AdvanceSkippedSipSlotParams(state, p, hosts))
         case p: Payload.TriggerSipInstallment =>
-          SipPlanRules.TriggerSipInstallment(state, p, hosts)
+          SipPlanRules.TriggerSipInstallment(TriggerSipInstallmentParams(state, p, hosts))
         case p: Payload.RecordSipInstallmentPending =>
-          SipPlanRules.RecordSipInstallmentPending(state, p, hosts)
+          SipPlanRules.RecordSipInstallmentPending(RecordSipInstallmentPendingParams(state, p, hosts))
         case p: Payload.RecordSipInstallmentOutcomeUnknown =>
-          SipPlanRules.RecordSipInstallmentOutcomeUnknown(state, p, hosts)
+          SipPlanRules.RecordSipInstallmentOutcomeUnknown(RecordSipInstallmentOutcomeUnknownParams(state, p, hosts))
         case p: Payload.RecordSipInstallmentRecoveryRequired =>
-          SipPlanRules.RecordSipInstallmentRecoveryRequired(state, p, hosts)
+          SipPlanRules.RecordSipInstallmentRecoveryRequired(RecordSipInstallmentRecoveryRequiredParams(state, p, hosts))
         case p: Payload.RecordSipInstallmentRefundInProgress =>
-          SipPlanRules.RecordSipInstallmentRefundInProgress(state, p, hosts)
+          SipPlanRules.RecordSipInstallmentRefundInProgress(RecordSipInstallmentRefundInProgressParams(state, p, hosts))
         case p: Payload.RecordSipInstallmentSucceeded =>
-          SipPlanRules.RecordSipInstallmentSucceeded(state, p, hosts)
+          SipPlanRules.RecordSipInstallmentSucceeded(RecordSipInstallmentSucceededParams(state, p, hosts))
         case p: Payload.RecordSipInstallmentFailed =>
-          SipPlanRules.RecordSipInstallmentFailed(state, p, hosts)
+          SipPlanRules.RecordSipInstallmentFailed(RecordSipInstallmentFailedParams(state, p, hosts))
         case p: Payload.RecordSipCreateIntent =>
-          SipPlanRules.RecordSipCreateIntent(state, p, hosts)
+          SipPlanRules.RecordSipCreateIntent(RecordSipCreateIntentParams(state, p, hosts))
       }
 
       decision match {

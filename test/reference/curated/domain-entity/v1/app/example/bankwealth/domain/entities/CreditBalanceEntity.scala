@@ -3,11 +3,20 @@ package example.bankwealth.domain.entities
 import example.bankwealth.domain.values._
 
 object CreditBalanceEntity {
-  type State = example.bankwealth.domain.CreditBalanceState
-  val State: example.bankwealth.domain.CreditBalanceState.type = example.bankwealth.domain.CreditBalanceState
+  final case class State(
+    id: AccountId,
+    initialized: Boolean,
+    accountBalance: Map[String, Money],
+    reservedAmount: Map[TxId, Money],
+    incomingCredits: Map[TxId, Money],
+    committedOutgoing: Map[TxId, Money],
+    committedIncoming: Map[TxId, Money],
+    compensatedOutgoing: Map[TxId, Money],
+    compensatedIncoming: Map[TxId, Money]
+  )
 
-  type Event = example.bankwealth.domain.CreditBalanceProtocol.Event
-  val Events: example.bankwealth.domain.CreditBalanceProtocol.type = example.bankwealth.domain.CreditBalanceProtocol
+  type Event = example.bankwealth.domain.events.CreditBalanceEvents.Event
+  val Events: example.bankwealth.domain.events.CreditBalanceEvents.type = example.bankwealth.domain.events.CreditBalanceEvents
 
   def empty: State = State(
     id = AccountId(""),

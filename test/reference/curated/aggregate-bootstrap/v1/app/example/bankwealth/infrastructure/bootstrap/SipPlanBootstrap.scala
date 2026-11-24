@@ -3,12 +3,13 @@ package example.bankwealth.infrastructure.bootstrap
 import akka.actor.typed.Behavior
 import akka.persistence.typed.PersistenceId
 import akka.persistence.typed.scaladsl.EventSourcedBehavior
-import example.bankwealth.application.aggregates.{SipPlanAggregate, SipPlanAggregateFactory}
+import example.bankwealth.application.aggregates.SipPlanAggregate
 import example.bankwealth.application.aggregates.SipPlanProtocol.Command
-import example.bankwealth.domain.SipPlanComputations
+import example.bankwealth.application.aggregates.factories.SipPlanAggregateFactory
 import example.bankwealth.domain.entities.SipPlanEntity.{Event, State}
 import example.bankwealth.domain.entities.behaviors.SipPlanEventHandler
-import example.bankwealth.infrastructure.serialization.{SipPlanEventAdapter, SipPlanSnapshotAdapter}
+import example.bankwealth.domain.services.SipPlanComputations
+import example.bankwealth.infrastructure.persistence.{SipPlanEventAdapter, SipPlanSnapshotAdapter}
 
 object SipPlanBootstrap extends SipPlanAggregateFactory {
 

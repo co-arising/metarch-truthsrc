@@ -1,8 +1,9 @@
 package example.bankwealth.domain.invariant
 
-import example.bankwealth.domain._
+import example.bankwealth.domain.entities.SipPlanEntity.State
+import example.bankwealth.domain.events.SipPlanEvents._
 import example.bankwealth.domain.invariant.params.SipPlanRuleParams._
-import example.bankwealth.domain.SipPlanProtocol._
+import example.bankwealth.domain.services.{SipPlanCommandHelpers, SipPlanComputations}
 
 object SipPlanRules {
   def CreateSipPlan(input: CreateSipPlanParams): Either[String, Vector[Event]] = {

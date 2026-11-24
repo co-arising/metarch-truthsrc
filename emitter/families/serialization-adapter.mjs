@@ -98,7 +98,7 @@ function renderSerializerScala(pkg, serializer) {
     `    entry[pb.${e.poName}](${JSON.stringify(e.poName)}, pb.${e.poName}.parseFrom)`
   );
   return [
-    `package ${pkg}.infrastructure.serialization`,
+    `package ${pkg}.infrastructure.persistence`,
     '',
     'import akka.serialization.SerializerWithStringManifest',
     `import ${pkg}.infrastructure.{proto => pb}`,
@@ -151,11 +151,12 @@ function renderAggregateAdaptersScala(pkg, adapter) {
   const unionPo = adapter.eventUnionPoName;
   const statePo = adapter.statePoName;
   return [
-    `package ${pkg}.infrastructure.serialization`,
+    `package ${pkg}.infrastructure.persistence`,
     '',
     'import akka.persistence.typed.{EventAdapter, EventSeq, SnapshotAdapter}',
-    `import ${pkg}.domain._`,
-    `import ${pkg}.domain.${agg}Protocol._`,
+    `import ${pkg}.domain.entities.${agg}Entity.State`,
+    `import ${pkg}.domain.events.${agg}Events.Event`,
+    `import ${pkg}.infrastructure.persistence.converters.DomainConverters`,
     `import ${pkg}.infrastructure.{proto => pb}`,
     'import scalapb.GeneratedMessage',
     '',
@@ -172,9 +173,9 @@ function renderAggregateAdaptersScala(pkg, adapter) {
     '  }',
     '}',
     '',
-    `object ${agg}SnapshotAdapter extends SnapshotAdapter[${agg}State] {`,
-    `  override def toJournal(state: ${agg}State): Any = DomainConverters.encode${statePo}(state)`,
-    `  override def fromJournal(value: Any): ${agg}State = value match {`,
+    `object ${agg}SnapshotAdapter extends SnapshotAdapter[State] {`,
+    `  override def toJournal(state: State): Any = DomainConverters.encode${statePo}(state)`,
+    `  override def fromJournal(value: Any): State = value match {`,
     `    case state: pb.${statePo} => DomainConverters.decode${statePo}(state)`,
     '    case _ => throw new IllegalArgumentException("snapshot type mismatch")',
     '  }',
@@ -191,7 +192,7 @@ export function renderSerializationAdapterFiles(input) {
     const pkg = packageByContext.get(ser.context);
     const pkgRoot = pkg.replaceAll('.', '/');
     files.push({
-      path: 'app/' + pkgRoot + '/infrastructure/serialization/DomainProtoSerializer.scala',
+      path: 'app/' + pkgRoot + '/infrastructure/persistence/DomainProtoSerializer.scala',
       content: renderSerializerScala(pkg, ser),
       kind: 'serialization-adapter',
       deps: [...ser.protoPaths],
@@ -203,10 +204,12 @@ export function renderSerializationAdapterFiles(input) {
     const pkg = packageByContext.get(adapter.context);
     const pkgRoot = pkg.replaceAll('.', '/');
     files.push({
-      path: 'app/' + pkgRoot + '/infrastructure/serialization/' + adapter.aggregate + 'Adapters.scala',
+      path: 'app/' + pkgRoot + '/infrastructure/persistence/' + adapter.aggregate + 'Adapters.scala',
       content: renderAggregateAdaptersScala(pkg, adapter),
       kind: 'serialization-adapter',
-      deps: [],
+      deps: [
+        'app/' + pkgRoot + '/infrastructure/persistence/converters/DomainConverters.scala',
+      ],
       sources: [
         { document: adapter.aggregateSource.document, pointer: adapter.aggregateSource.pointer },
         ...adapter.events.map(ev => ({ document: ev.source.document, pointer: ev.source.pointer })),

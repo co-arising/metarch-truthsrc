@@ -6,8 +6,9 @@ import scala.util.Try
 import akka.actor.typed.Behavior
 import akka.persistence.typed.PersistenceId
 import com.google.protobuf.ByteString
-import example.bankwealth.domain.{CreditBalanceProtocol, FundOrderProtocol}
+import example.bankwealth.domain.events.{CreditBalanceEvents => CreditBalanceProtocol, FundOrderEvents => FundOrderProtocol}
 import example.bankwealth.domain.values._
+import example.bankwealth.infrastructure.persistence.converters.DomainConverters
 import BankPaymentPorts.OperationNotExecuted
 import net.imadz.infra.saga.strict._
 
@@ -27,9 +28,9 @@ object BankPaymentSagaDefinition {
   val argsCodec: PayloadCodec[Args] = new PayloadCodec[Args] {
     val pin = CodecPin("BankPaymentArgs", 1)
     def encode(value: Args): ByteString =
-      example.bankwealth.infrastructure.serialization.DomainConverters.encodeBankPaymentArgsPO(value).toByteString
+      DomainConverters.encodeBankPaymentArgsPO(value).toByteString
     def decode(bytes: ByteString): Try[Args] =
-      Try(example.bankwealth.infrastructure.serialization.DomainConverters.decodeBankPaymentArgsPO(
+      Try(DomainConverters.decodeBankPaymentArgsPO(
         example.bankwealth.infrastructure.proto.BankPaymentArgsPO.parseFrom(bytes.toByteArray)))
   }
 
@@ -98,11 +99,8 @@ object BankPaymentSagaDefinition {
   val ReserveInvestorFundsPrepareCodec: PayloadCodec[ReserveInvestorFundsPrepareReceipt] = payloadCodec(
     CodecPin("bank-payment-reserve-investor-funds-prepare", 1),
     receipt =>
-        example.bankwealth
-            .infrastructure
-                .serialization.DomainConverters.encodeReserveInvestorFundsPrepareReceiptPO(receipt).toByteString,
-    bytes => Try(example
-        .bankwealth.infrastructure.serialization.DomainConverters.decodeReserveInvestorFundsPrepareReceiptPO(
+      DomainConverters.encodeReserveInvestorFundsPrepareReceiptPO(receipt).toByteString,
+    bytes => Try(DomainConverters.decodeReserveInvestorFundsPrepareReceiptPO(
       example.bankwealth.infrastructure.proto.ReserveInvestorFundsPrepareReceiptPO.parseFrom(bytes.toByteArray))),
   )
 
@@ -118,11 +116,8 @@ object BankPaymentSagaDefinition {
   val ReserveInvestorFundsCommitCodec: PayloadCodec[ReserveInvestorFundsCommitReceipt] = payloadCodec(
     CodecPin("bank-payment-reserve-investor-funds-commit", 1),
     receipt =>
-        example.bankwealth
-            .infrastructure
-                .serialization.DomainConverters.encodeReserveInvestorFundsCommitReceiptPO(receipt).toByteString,
-    bytes => Try(example
-        .bankwealth.infrastructure.serialization.DomainConverters.decodeReserveInvestorFundsCommitReceiptPO(
+      DomainConverters.encodeReserveInvestorFundsCommitReceiptPO(receipt).toByteString,
+    bytes => Try(DomainConverters.decodeReserveInvestorFundsCommitReceiptPO(
       example.bankwealth.infrastructure.proto.ReserveInvestorFundsCommitReceiptPO.parseFrom(bytes.toByteArray))),
   )
 
@@ -138,11 +133,8 @@ object BankPaymentSagaDefinition {
   val ReserveInvestorFundsCompensateCodec: PayloadCodec[ReserveInvestorFundsCompensateReceipt] = payloadCodec(
     CodecPin("bank-payment-reserve-investor-funds-compensate", 1),
     receipt =>
-        example.bankwealth
-            .infrastructure
-                .serialization.DomainConverters.encodeReserveInvestorFundsCompensateReceiptPO(receipt).toByteString,
-    bytes => Try(example
-        .bankwealth.infrastructure.serialization.DomainConverters.decodeReserveInvestorFundsCompensateReceiptPO(
+      DomainConverters.encodeReserveInvestorFundsCompensateReceiptPO(receipt).toByteString,
+    bytes => Try(DomainConverters.decodeReserveInvestorFundsCompensateReceiptPO(
       example.bankwealth.infrastructure.proto.ReserveInvestorFundsCompensateReceiptPO.parseFrom(bytes.toByteArray))),
   )
 
@@ -161,11 +153,8 @@ object BankPaymentSagaDefinition {
   val CreditFundCollectionPrepareCodec: PayloadCodec[CreditFundCollectionPrepareReceipt] = payloadCodec(
     CodecPin("bank-payment-credit-fund-collection-prepare", 1),
     receipt =>
-        example.bankwealth
-            .infrastructure
-                .serialization.DomainConverters.encodeCreditFundCollectionPrepareReceiptPO(receipt).toByteString,
-    bytes => Try(example
-        .bankwealth.infrastructure.serialization.DomainConverters.decodeCreditFundCollectionPrepareReceiptPO(
+      DomainConverters.encodeCreditFundCollectionPrepareReceiptPO(receipt).toByteString,
+    bytes => Try(DomainConverters.decodeCreditFundCollectionPrepareReceiptPO(
       example.bankwealth.infrastructure.proto.CreditFundCollectionPrepareReceiptPO.parseFrom(bytes.toByteArray))),
   )
 
@@ -181,11 +170,8 @@ object BankPaymentSagaDefinition {
   val CreditFundCollectionCommitCodec: PayloadCodec[CreditFundCollectionCommitReceipt] = payloadCodec(
     CodecPin("bank-payment-credit-fund-collection-commit", 1),
     receipt =>
-        example.bankwealth
-            .infrastructure
-                .serialization.DomainConverters.encodeCreditFundCollectionCommitReceiptPO(receipt).toByteString,
-    bytes => Try(example
-        .bankwealth.infrastructure.serialization.DomainConverters.decodeCreditFundCollectionCommitReceiptPO(
+      DomainConverters.encodeCreditFundCollectionCommitReceiptPO(receipt).toByteString,
+    bytes => Try(DomainConverters.decodeCreditFundCollectionCommitReceiptPO(
       example.bankwealth.infrastructure.proto.CreditFundCollectionCommitReceiptPO.parseFrom(bytes.toByteArray))),
   )
 
@@ -201,11 +187,8 @@ object BankPaymentSagaDefinition {
   val CreditFundCollectionCompensateCodec: PayloadCodec[CreditFundCollectionCompensateReceipt] = payloadCodec(
     CodecPin("bank-payment-credit-fund-collection-compensate", 1),
     receipt =>
-        example.bankwealth
-            .infrastructure
-                .serialization.DomainConverters.encodeCreditFundCollectionCompensateReceiptPO(receipt).toByteString,
-    bytes => Try(example
-        .bankwealth.infrastructure.serialization.DomainConverters.decodeCreditFundCollectionCompensateReceiptPO(
+      DomainConverters.encodeCreditFundCollectionCompensateReceiptPO(receipt).toByteString,
+    bytes => Try(DomainConverters.decodeCreditFundCollectionCompensateReceiptPO(
       example.bankwealth.infrastructure.proto.CreditFundCollectionCompensateReceiptPO.parseFrom(bytes.toByteArray))),
   )
 
@@ -224,11 +207,8 @@ object BankPaymentSagaDefinition {
   val ReserveCashFundOrderPrepareCodec: PayloadCodec[ReserveCashFundOrderPrepareReceipt] = payloadCodec(
     CodecPin("bank-payment-reserve-cash-fund-order-prepare", 1),
     receipt =>
-        example.bankwealth
-            .infrastructure
-                .serialization.DomainConverters.encodeReserveCashFundOrderPrepareReceiptPO(receipt).toByteString,
-    bytes => Try(example
-        .bankwealth.infrastructure.serialization.DomainConverters.decodeReserveCashFundOrderPrepareReceiptPO(
+      DomainConverters.encodeReserveCashFundOrderPrepareReceiptPO(receipt).toByteString,
+    bytes => Try(DomainConverters.decodeReserveCashFundOrderPrepareReceiptPO(
       example.bankwealth.infrastructure.proto.ReserveCashFundOrderPrepareReceiptPO.parseFrom(bytes.toByteArray))),
   )
 
@@ -244,11 +224,8 @@ object BankPaymentSagaDefinition {
   val ReserveCashFundOrderCommitCodec: PayloadCodec[ReserveCashFundOrderCommitReceipt] = payloadCodec(
     CodecPin("bank-payment-reserve-cash-fund-order-commit", 1),
     receipt =>
-        example.bankwealth
-            .infrastructure
-                .serialization.DomainConverters.encodeReserveCashFundOrderCommitReceiptPO(receipt).toByteString,
-    bytes => Try(example
-        .bankwealth.infrastructure.serialization.DomainConverters.decodeReserveCashFundOrderCommitReceiptPO(
+      DomainConverters.encodeReserveCashFundOrderCommitReceiptPO(receipt).toByteString,
+    bytes => Try(DomainConverters.decodeReserveCashFundOrderCommitReceiptPO(
       example.bankwealth.infrastructure.proto.ReserveCashFundOrderCommitReceiptPO.parseFrom(bytes.toByteArray))),
   )
 
@@ -265,11 +242,8 @@ object BankPaymentSagaDefinition {
   val ReserveCashFundOrderCompensateCodec: PayloadCodec[ReserveCashFundOrderCompensateReceipt] = payloadCodec(
     CodecPin("bank-payment-reserve-cash-fund-order-compensate", 1),
     receipt =>
-        example.bankwealth
-            .infrastructure
-                .serialization.DomainConverters.encodeReserveCashFundOrderCompensateReceiptPO(receipt).toByteString,
-    bytes => Try(example
-        .bankwealth.infrastructure.serialization.DomainConverters.decodeReserveCashFundOrderCompensateReceiptPO(
+      DomainConverters.encodeReserveCashFundOrderCompensateReceiptPO(receipt).toByteString,
+    bytes => Try(DomainConverters.decodeReserveCashFundOrderCompensateReceiptPO(
       example.bankwealth.infrastructure.proto.ReserveCashFundOrderCompensateReceiptPO.parseFrom(bytes.toByteArray))),
   )
 

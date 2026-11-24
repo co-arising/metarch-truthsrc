@@ -3,11 +3,38 @@ package example.bankwealth.domain.entities
 import example.bankwealth.domain.values._
 
 object SipPlanEntity {
-  type State = example.bankwealth.domain.SipPlanState
-  val State: example.bankwealth.domain.SipPlanState.type = example.bankwealth.domain.SipPlanState
+  final case class State(
+    id: PlanId,
+    initialized: Boolean,
+    scheduleSealed: Boolean,
+    scheduleCount: Long,
+    lastDueSlot: Long,
+    slots: Map[Long, Long],
+    currentTick: Long,
+    observedCount: Long,
+    startCount: Long,
+    paused: Boolean,
+    pauseTick: Long,
+    pauseIntervals: Map[Long, Long],
+    revisions: Map[RevisionId, SipRevisionConfig],
+    revisionEnds: Map[RevisionId, Long],
+    latestRevision: RevisionId,
+    latestEffectiveSlot: Long,
+    slotDisposition: Map[Long, String],
+    occurrences: Map[Long, SipOccurrence],
+    occurrenceProgress: Map[OccurrenceId, String],
+    firstTerminals: Map[OccurrenceId, String],
+    terminalReceiptBodies: Map[String, String],
+    successTotal: Long,
+    failureTotal: Long,
+    createIntent: Option[BankSipCreateIntent],
+    sipCreateIntents: Map[String, BankSipCreateIntent],
+    createIntentDueSlots: Vector[Long],
+    intentAppendedDueSlots: Map[Long, Long]
+  )
 
-  type Event = example.bankwealth.domain.SipPlanProtocol.Event
-  val Events: example.bankwealth.domain.SipPlanProtocol.type = example.bankwealth.domain.SipPlanProtocol
+  type Event = example.bankwealth.domain.events.SipPlanEvents.Event
+  val Events: example.bankwealth.domain.events.SipPlanEvents.type = example.bankwealth.domain.events.SipPlanEvents
 
   def empty: State = State(
     id = PlanId(""),

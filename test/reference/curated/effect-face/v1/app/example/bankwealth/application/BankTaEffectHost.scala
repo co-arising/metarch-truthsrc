@@ -9,6 +9,7 @@ import akka.persistence.typed.{PersistenceId, RecoveryCompleted}
 import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}
 import com.google.protobuf.ByteString
 import example.bankwealth.domain.values.{BankTaEffectOperation, BankTaEffectObservation, BankTaEffectReconcile, BankTaEffectRequest}
+import example.bankwealth.infrastructure.persistence.converters.DomainConverters
 
 /** Durable external-effect host of the TA submission pipeline: owns the
   * intent, the observed TA evidence and the authorized retry, for exactly one
@@ -150,11 +151,11 @@ object BankTaEffectHost {
 
   private def decode(bytes: ByteString): Option[BankTaEffectObservation] =
     if (bytes.isEmpty) None
-    else Some(example.bankwealth.infrastructure.serialization.DomainConverters.decodeBankTaEffectObservationPO(
+    else Some(DomainConverters.decodeBankTaEffectObservationPO(
       example.bankwealth.infrastructure.proto.BankTaEffectObservationPO.parseFrom(bytes.toByteArray)))
 
   private def encode(value: BankTaEffectObservation): ByteString =
-    example.bankwealth.infrastructure.serialization.DomainConverters.encodeBankTaEffectObservationPO(value).toByteString
+    DomainConverters.encodeBankTaEffectObservationPO(value).toByteString
 
   private def statusOf(value: BankTaEffectObservation): ObservationStatus =
     ObservationStatus

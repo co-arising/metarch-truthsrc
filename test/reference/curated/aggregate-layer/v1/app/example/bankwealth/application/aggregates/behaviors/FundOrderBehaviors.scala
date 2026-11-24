@@ -3,7 +3,10 @@ package example.bankwealth.application.aggregates.behaviors
 import akka.persistence.typed.scaladsl.Effect
 import example.bankwealth.application.aggregates.FundOrderProtocol._
 import example.bankwealth.domain.entities.FundOrderEntity.{Event, State}
-import example.bankwealth.domain.{FundOrderComputations, FundOrderProtocol => Payload, FundOrderRules, FundOrderExternalEvents}
+import example.bankwealth.domain.events.{FundOrderEvents => Payload}
+import example.bankwealth.domain.invariant.FundOrderRules
+import example.bankwealth.domain.invariant.params.FundOrderRuleParams._
+import example.bankwealth.domain.services.FundOrderComputations
 
 object FundOrderBehaviors {
 
@@ -102,47 +105,47 @@ object FundOrderBehaviors {
     case Execute(command, reply) =>
       val decision = command match {
         case p: Payload.RequestFundPurchaseSettlement =>
-          FundOrderRules.RequestFundPurchaseSettlement(state, p, hosts)
+          FundOrderRules.RequestFundPurchaseSettlement(RequestFundPurchaseSettlementParams(state, p, hosts))
         case p: Payload.ReserveFundSubscription =>
-          FundOrderRules.ReserveFundSubscription(state, p, hosts)
+          FundOrderRules.ReserveFundSubscription(ReserveFundSubscriptionParams(state, p, hosts))
         case p: Payload.ConfirmFundSubscriptionPayment =>
-          FundOrderRules.ConfirmFundSubscriptionPayment(state, p, hosts)
+          FundOrderRules.ConfirmFundSubscriptionPayment(ConfirmFundSubscriptionPaymentParams(state, p, hosts))
         case p: Payload.CancelCashFundSubscription =>
-          FundOrderRules.CancelCashFundSubscription(state, p, hosts)
+          FundOrderRules.CancelCashFundSubscription(CancelCashFundSubscriptionParams(state, p, hosts))
         case p: Payload.RecordFundCashPaymentSucceeded =>
-          FundOrderRules.RecordFundCashPaymentSucceeded(state, p, hosts)
+          FundOrderRules.RecordFundCashPaymentSucceeded(RecordFundCashPaymentSucceededParams(state, p, hosts))
         case p: Payload.RecordFundCashPaymentRejectedBeforeEffects =>
-          FundOrderRules.RecordFundCashPaymentRejectedBeforeEffects(state, p, hosts)
+          FundOrderRules.RecordFundCashPaymentRejectedBeforeEffects(RecordFundCashPaymentRejectedBeforeEffectsParams(state, p, hosts))
         case p: Payload.RecordFundCashPaymentCompensated =>
-          FundOrderRules.RecordFundCashPaymentCompensated(state, p, hosts)
+          FundOrderRules.RecordFundCashPaymentCompensated(RecordFundCashPaymentCompensatedParams(state, p, hosts))
         case p: Payload.RecordFundCashPaymentRecoveryRequired =>
-          FundOrderRules.RecordFundCashPaymentRecoveryRequired(state, p, hosts)
+          FundOrderRules.RecordFundCashPaymentRecoveryRequired(RecordFundCashPaymentRecoveryRequiredParams(state, p, hosts))
         case p: Payload.RecordFundCashPaymentOutcomeUnknown =>
-          FundOrderRules.RecordFundCashPaymentOutcomeUnknown(state, p, hosts)
+          FundOrderRules.RecordFundCashPaymentOutcomeUnknown(RecordFundCashPaymentOutcomeUnknownParams(state, p, hosts))
         case p: Payload.RegisterFundTASubmission =>
-          FundOrderRules.RegisterFundTASubmission(state, p, hosts)
+          FundOrderRules.RegisterFundTASubmission(RegisterFundTASubmissionParams(state, p, hosts))
         case p: Payload.RecordFundTAAccepted =>
-          FundOrderRules.RecordFundTAAccepted(state, p, hosts)
+          FundOrderRules.RecordFundTAAccepted(RecordFundTAAcceptedParams(state, p, hosts))
         case p: Payload.RecordFundTAConfirmed =>
-          FundOrderRules.RecordFundTAConfirmed(state, p, hosts)
+          FundOrderRules.RecordFundTAConfirmed(RecordFundTAConfirmedParams(state, p, hosts))
         case p: Payload.RecordFundTARejected =>
-          FundOrderRules.RecordFundTARejected(state, p, hosts)
+          FundOrderRules.RecordFundTARejected(RecordFundTARejectedParams(state, p, hosts))
         case p: Payload.RecordFundTAUnknown =>
-          FundOrderRules.RecordFundTAUnknown(state, p, hosts)
+          FundOrderRules.RecordFundTAUnknown(RecordFundTAUnknownParams(state, p, hosts))
         case p: Payload.RequestFundPurchaseRefund =>
-          FundOrderRules.RequestFundPurchaseRefund(state, p, hosts)
+          FundOrderRules.RequestFundPurchaseRefund(RequestFundPurchaseRefundParams(state, p, hosts))
         case p: Payload.RecordFundRefundSucceeded =>
-          FundOrderRules.RecordFundRefundSucceeded(state, p, hosts)
+          FundOrderRules.RecordFundRefundSucceeded(RecordFundRefundSucceededParams(state, p, hosts))
         case p: Payload.RecordFundRefundRejectedBeforeEffects =>
-          FundOrderRules.RecordFundRefundRejectedBeforeEffects(state, p, hosts)
+          FundOrderRules.RecordFundRefundRejectedBeforeEffects(RecordFundRefundRejectedBeforeEffectsParams(state, p, hosts))
         case p: Payload.RecordFundRefundCompensated =>
-          FundOrderRules.RecordFundRefundCompensated(state, p, hosts)
+          FundOrderRules.RecordFundRefundCompensated(RecordFundRefundCompensatedParams(state, p, hosts))
         case p: Payload.RecordFundRefundRecoveryRequired =>
-          FundOrderRules.RecordFundRefundRecoveryRequired(state, p, hosts)
+          FundOrderRules.RecordFundRefundRecoveryRequired(RecordFundRefundRecoveryRequiredParams(state, p, hosts))
         case p: Payload.RecordFundRefundOutcomeUnknown =>
-          FundOrderRules.RecordFundRefundOutcomeUnknown(state, p, hosts)
+          FundOrderRules.RecordFundRefundOutcomeUnknown(RecordFundRefundOutcomeUnknownParams(state, p, hosts))
         case p: Payload.RecordCashRequestSource =>
-          FundOrderRules.RecordCashRequestSource(state, p, hosts)
+          FundOrderRules.RecordCashRequestSource(RecordCashRequestSourceParams(state, p, hosts))
       }
 
       decision match {

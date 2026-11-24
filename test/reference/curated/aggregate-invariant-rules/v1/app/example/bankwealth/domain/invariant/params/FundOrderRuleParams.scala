@@ -1,27 +1,29 @@
 package example.bankwealth.domain.invariant.params
 
-import example.bankwealth.domain._
+import example.bankwealth.domain.entities.FundOrderEntity.State
+import example.bankwealth.domain.events.FundOrderEvents
+import example.bankwealth.domain.services.FundOrderComputations
 
 object FundOrderRuleParams {
-  final case class RequestFundPurchaseSettlementParams(state: FundOrderState, command: FundOrderProtocol.RequestFundPurchaseSettlement, hosts: FundOrderComputations)
-  final case class ReserveFundSubscriptionParams(state: FundOrderState, command: FundOrderProtocol.ReserveFundSubscription, hosts: FundOrderComputations)
-  final case class ConfirmFundSubscriptionPaymentParams(state: FundOrderState, command: FundOrderProtocol.ConfirmFundSubscriptionPayment, hosts: FundOrderComputations)
-  final case class CancelCashFundSubscriptionParams(state: FundOrderState, command: FundOrderProtocol.CancelCashFundSubscription, hosts: FundOrderComputations)
-  final case class RecordFundCashPaymentSucceededParams(state: FundOrderState, command: FundOrderProtocol.RecordFundCashPaymentSucceeded, hosts: FundOrderComputations)
-  final case class RecordFundCashPaymentRejectedBeforeEffectsParams(state: FundOrderState, command: FundOrderProtocol.RecordFundCashPaymentRejectedBeforeEffects, hosts: FundOrderComputations)
-  final case class RecordFundCashPaymentCompensatedParams(state: FundOrderState, command: FundOrderProtocol.RecordFundCashPaymentCompensated, hosts: FundOrderComputations)
-  final case class RecordFundCashPaymentRecoveryRequiredParams(state: FundOrderState, command: FundOrderProtocol.RecordFundCashPaymentRecoveryRequired, hosts: FundOrderComputations)
-  final case class RecordFundCashPaymentOutcomeUnknownParams(state: FundOrderState, command: FundOrderProtocol.RecordFundCashPaymentOutcomeUnknown, hosts: FundOrderComputations)
-  final case class RegisterFundTASubmissionParams(state: FundOrderState, command: FundOrderProtocol.RegisterFundTASubmission, hosts: FundOrderComputations)
-  final case class RecordFundTAAcceptedParams(state: FundOrderState, command: FundOrderProtocol.RecordFundTAAccepted, hosts: FundOrderComputations)
-  final case class RecordFundTAConfirmedParams(state: FundOrderState, command: FundOrderProtocol.RecordFundTAConfirmed, hosts: FundOrderComputations)
-  final case class RecordFundTARejectedParams(state: FundOrderState, command: FundOrderProtocol.RecordFundTARejected, hosts: FundOrderComputations)
-  final case class RecordFundTAUnknownParams(state: FundOrderState, command: FundOrderProtocol.RecordFundTAUnknown, hosts: FundOrderComputations)
-  final case class RequestFundPurchaseRefundParams(state: FundOrderState, command: FundOrderProtocol.RequestFundPurchaseRefund, hosts: FundOrderComputations)
-  final case class RecordFundRefundSucceededParams(state: FundOrderState, command: FundOrderProtocol.RecordFundRefundSucceeded, hosts: FundOrderComputations)
-  final case class RecordFundRefundRejectedBeforeEffectsParams(state: FundOrderState, command: FundOrderProtocol.RecordFundRefundRejectedBeforeEffects, hosts: FundOrderComputations)
-  final case class RecordFundRefundCompensatedParams(state: FundOrderState, command: FundOrderProtocol.RecordFundRefundCompensated, hosts: FundOrderComputations)
-  final case class RecordFundRefundRecoveryRequiredParams(state: FundOrderState, command: FundOrderProtocol.RecordFundRefundRecoveryRequired, hosts: FundOrderComputations)
-  final case class RecordFundRefundOutcomeUnknownParams(state: FundOrderState, command: FundOrderProtocol.RecordFundRefundOutcomeUnknown, hosts: FundOrderComputations)
-  final case class RecordCashRequestSourceParams(state: FundOrderState, command: FundOrderProtocol.RecordCashRequestSource, hosts: FundOrderComputations)
+  final case class RequestFundPurchaseSettlementParams(state: State, command: FundOrderEvents.RequestFundPurchaseSettlement, hosts: FundOrderComputations)
+  final case class ReserveFundSubscriptionParams(state: State, command: FundOrderEvents.ReserveFundSubscription, hosts: FundOrderComputations)
+  final case class ConfirmFundSubscriptionPaymentParams(state: State, command: FundOrderEvents.ConfirmFundSubscriptionPayment, hosts: FundOrderComputations)
+  final case class CancelCashFundSubscriptionParams(state: State, command: FundOrderEvents.CancelCashFundSubscription, hosts: FundOrderComputations)
+  final case class RecordFundCashPaymentSucceededParams(state: State, command: FundOrderEvents.RecordFundCashPaymentSucceeded, hosts: FundOrderComputations)
+  final case class RecordFundCashPaymentRejectedBeforeEffectsParams(state: State, command: FundOrderEvents.RecordFundCashPaymentRejectedBeforeEffects, hosts: FundOrderComputations)
+  final case class RecordFundCashPaymentCompensatedParams(state: State, command: FundOrderEvents.RecordFundCashPaymentCompensated, hosts: FundOrderComputations)
+  final case class RecordFundCashPaymentRecoveryRequiredParams(state: State, command: FundOrderEvents.RecordFundCashPaymentRecoveryRequired, hosts: FundOrderComputations)
+  final case class RecordFundCashPaymentOutcomeUnknownParams(state: State, command: FundOrderEvents.RecordFundCashPaymentOutcomeUnknown, hosts: FundOrderComputations)
+  final case class RegisterFundTASubmissionParams(state: State, command: FundOrderEvents.RegisterFundTASubmission, hosts: FundOrderComputations)
+  final case class RecordFundTAAcceptedParams(state: State, command: FundOrderEvents.RecordFundTAAccepted, hosts: FundOrderComputations)
+  final case class RecordFundTAConfirmedParams(state: State, command: FundOrderEvents.RecordFundTAConfirmed, hosts: FundOrderComputations)
+  final case class RecordFundTARejectedParams(state: State, command: FundOrderEvents.RecordFundTARejected, hosts: FundOrderComputations)
+  final case class RecordFundTAUnknownParams(state: State, command: FundOrderEvents.RecordFundTAUnknown, hosts: FundOrderComputations)
+  final case class RequestFundPurchaseRefundParams(state: State, command: FundOrderEvents.RequestFundPurchaseRefund, hosts: FundOrderComputations)
+  final case class RecordFundRefundSucceededParams(state: State, command: FundOrderEvents.RecordFundRefundSucceeded, hosts: FundOrderComputations)
+  final case class RecordFundRefundRejectedBeforeEffectsParams(state: State, command: FundOrderEvents.RecordFundRefundRejectedBeforeEffects, hosts: FundOrderComputations)
+  final case class RecordFundRefundCompensatedParams(state: State, command: FundOrderEvents.RecordFundRefundCompensated, hosts: FundOrderComputations)
+  final case class RecordFundRefundRecoveryRequiredParams(state: State, command: FundOrderEvents.RecordFundRefundRecoveryRequired, hosts: FundOrderComputations)
+  final case class RecordFundRefundOutcomeUnknownParams(state: State, command: FundOrderEvents.RecordFundRefundOutcomeUnknown, hosts: FundOrderComputations)
+  final case class RecordCashRequestSourceParams(state: State, command: FundOrderEvents.RecordCashRequestSource, hosts: FundOrderComputations)
 }

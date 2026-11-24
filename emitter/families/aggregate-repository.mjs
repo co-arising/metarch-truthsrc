@@ -65,24 +65,44 @@ export function checkInput(input) {
   }
 }
 
-function renderRepositoryScala(pkg, name) {
+function renderRepositoryPortScala(pkg, name) {
   return [
-    `package ${pkg}.application.aggregates`,
+    `package ${pkg}.application.aggregates.repository`,
     '',
-    'import akka.actor.typed.{ActorRef, Behavior}',
-    `import ${name}Protocol.Command`,
+    'import akka.actor.typed.ActorRef',
+    `import ${pkg}.application.aggregates.${name}Protocol.Command`,
     '',
     `object ${name}Repository {`,
     '  final case class Handle(persistenceId: String, ref: ActorRef[Command])',
     '}',
-    `final class ${name}Repository[K](identity: K => String, behavior: (K, String) => Behavior[Command],`,
-    '    spawn: (String, Behavior[Command]) => ActorRef[Command]) extends AutoCloseable {',
-    `  import ${name}Repository.Handle`,
+    '',
+    `trait ${name}Repository[K] extends AutoCloseable {`,
+    `  def get(id: K): ${name}Repository.Handle`,
+    '}',
+    '',
+  ].join('\n');
+}
+
+function renderRepositoryImplScala(pkg, name) {
+  return [
+    `package ${pkg}.infrastructure.repositories.aggregate`,
+    '',
+    'import akka.actor.typed.{ActorRef, Behavior}',
+    `import ${pkg}.application.aggregates.${name}Protocol.Command`,
+    `import ${pkg}.application.aggregates.repository.${name}Repository`,
+    `import ${pkg}.application.aggregates.repository.${name}Repository.Handle`,
+    '',
+    `final class ${name}RepositoryImpl[K](`,
+    '  identity: K => String,',
+    '  behavior: (K, String) => Behavior[Command],',
+    '  spawn: (String, Behavior[Command]) => ActorRef[Command]',
+    `) extends ${name}Repository[K] {`,
     '  require(identity != null && behavior != null && spawn != null)',
     '  private val handles = scala.collection.mutable.Map.empty[K, Handle]',
     '  private val identities = scala.collection.mutable.Map.empty[String, K]',
     '  private var closed = false',
-    '  def get(id: K): Handle = synchronized {',
+    '',
+    '  override def get(id: K): Handle = synchronized {',
     '    require(!closed, "repository is closed")',
     '    handles.getOrElseUpdate(id, {',
     '      val pid = identity(id)',
@@ -94,7 +114,8 @@ function renderRepositoryScala(pkg, name) {
     '      Handle(pid, ref)',
     '    })',
     '  }',
-    '  def close(): Unit = synchronized { closed = true; handles.clear(); identities.clear() }',
+    '',
+    '  override def close(): Unit = synchronized { closed = true; handles.clear(); identities.clear() }',
     '}',
     '',
   ].join('\n');
@@ -103,17 +124,31 @@ function renderRepositoryScala(pkg, name) {
 export function renderAggregateRepositoryFiles(input) {
   checkInput(input);
   const packageByContext = new Map(input.packages.map(p => [p.context, p.package]));
-  return input.repositories.map(repo => {
+  return input.repositories.flatMap(repo => {
     const pkg = packageByContext.get(repo.context);
     const pkgRoot = pkg.replaceAll('.', '/');
-    return {
-      path: 'app/' + pkgRoot + '/application/aggregates/' + repo.name + 'Repository.scala',
-      content: renderRepositoryScala(pkg, repo.name),
-      kind: 'aggregate-repository',
-      deps: ['app/' + pkgRoot + '/application/aggregates/' + repo.name + 'Protocol.scala'],
-      sources: [{ document: repo.source.document, pointer: repo.source.pointer }],
-      codeMappings: [],
-    };
+    const protocolPath = 'app/' + pkgRoot + '/application/aggregates/' + repo.name + 'Protocol.scala';
+    const portPath = 'app/' + pkgRoot + '/application/aggregates/repository/' + repo.name + 'Repository.scala';
+    const implPath = 'app/' + pkgRoot + '/infrastructure/repositories/aggregate/' + repo.name + 'RepositoryImpl.scala';
+    const sources = [{ document: repo.source.document, pointer: repo.source.pointer }];
+    return [
+      {
+        path: portPath,
+        content: renderRepositoryPortScala(pkg, repo.name),
+        kind: 'aggregate-repository',
+        deps: [protocolPath],
+        sources,
+        codeMappings: [],
+      },
+      {
+        path: implPath,
+        content: renderRepositoryImplScala(pkg, repo.name),
+        kind: 'aggregate-repository',
+        deps: [protocolPath, portPath],
+        sources,
+        codeMappings: [],
+      },
+    ];
   });
 }
 

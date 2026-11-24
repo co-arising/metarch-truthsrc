@@ -3,7 +3,10 @@ package example.bankwealth.application.aggregates.behaviors
 import akka.persistence.typed.scaladsl.Effect
 import example.bankwealth.application.aggregates.CreditBalanceProtocol._
 import example.bankwealth.domain.entities.CreditBalanceEntity.{Event, State}
-import example.bankwealth.domain.{CreditBalanceComputations, CreditBalanceProtocol => Payload, CreditBalanceRules}
+import example.bankwealth.domain.events.{CreditBalanceEvents => Payload}
+import example.bankwealth.domain.invariant.CreditBalanceRules
+import example.bankwealth.domain.invariant.params.CreditBalanceRuleParams._
+import example.bankwealth.domain.services.CreditBalanceComputations
 
 object CreditBalanceBehaviors {
 
@@ -21,19 +24,19 @@ object CreditBalanceBehaviors {
     case Execute(command, reply) =>
       val decision = command match {
         case p: Payload.InitializeAccount =>
-          CreditBalanceRules.InitializeAccount(state, p, hosts)
+          CreditBalanceRules.InitializeAccount(InitializeAccountParams(state, p, hosts))
         case p: Payload.ReserveFunds =>
-          CreditBalanceRules.ReserveFunds(state, p, hosts)
+          CreditBalanceRules.ReserveFunds(ReserveFundsParams(state, p, hosts))
         case p: Payload.DeductFunds =>
-          CreditBalanceRules.DeductFunds(state, p, hosts)
+          CreditBalanceRules.DeductFunds(DeductFundsParams(state, p, hosts))
         case p: Payload.ReleaseReservedFunds =>
-          CreditBalanceRules.ReleaseReservedFunds(state, p, hosts)
+          CreditBalanceRules.ReleaseReservedFunds(ReleaseReservedFundsParams(state, p, hosts))
         case p: Payload.RecordIncomingCredits =>
-          CreditBalanceRules.RecordIncomingCredits(state, p, hosts)
+          CreditBalanceRules.RecordIncomingCredits(RecordIncomingCreditsParams(state, p, hosts))
         case p: Payload.CommitIncomingCredits =>
-          CreditBalanceRules.CommitIncomingCredits(state, p, hosts)
+          CreditBalanceRules.CommitIncomingCredits(CommitIncomingCreditsParams(state, p, hosts))
         case p: Payload.CancelIncomingCredit =>
-          CreditBalanceRules.CancelIncomingCredit(state, p, hosts)
+          CreditBalanceRules.CancelIncomingCredit(CancelIncomingCreditParams(state, p, hosts))
       }
 
       decision match {
