@@ -18,6 +18,9 @@ import { withFlippedAggregateLayers } from '../../lib/derivation/aggregate-layer
 import { withFlippedCommandProtocols, withFlippedApplicationProtocols } from '../../lib/derivation/protocol-layer-emission.mjs';
 import { withFlippedExternalEventBridges } from '../../lib/derivation/external-event-bridge-emission.mjs';
 import { withFlippedAggregateRepositories } from '../../lib/derivation/aggregate-repository-emission.mjs';
+import { withFlippedProtoSchemas } from '../../lib/derivation/proto-schema-emission.mjs';
+import { withFlippedProtoConverters } from '../../lib/derivation/proto-converter-emission.mjs';
+import { withFlippedSerializationAdapters } from '../../lib/derivation/serialization-adapter-emission.mjs';
 import { PIPELINE_INVOCATION_FLIPS, flipHostBase } from '../../lib/derivation/pipeline-invocation-face.mjs';
 import { EFFECT_FACE_FLIPS, effectFlipHostClass } from '../../lib/derivation/effect-face.mjs';
 
@@ -66,12 +69,16 @@ const inherited = Object.fromEntries(Object.entries(createEffectRegistry('2')).m
           ? withFlippedEventHandlers(ehCtx => withFlippedInvariantRules(inner => renderInvariant(inner, ['reference-layout','domain-decision','domain-folds','exact-value-types'].map(id=>({id,version:id==='domain-decision'?'4':id==='domain-folds'?'6':'1'})), true), ehCtx), context)
         : id === 'valueobject-dsl'
           ? withFlippedValueObjects(implementation.produce.bind(implementation), context)
+        : id === 'proto-dsl'
+          ? withFlippedProtoSchemas(implementation.produce.bind(implementation), context, 'domain')
+        : id === 'converter-dsl'
+          ? withFlippedSerializationAdapters(saCtx => withFlippedProtoConverters(implementation.produce.bind(implementation), saCtx), context)
         : id === 'finite-host-dsl'
-          ? withFlippedInvocationHosts(implementation.produce.bind(implementation), context)
+          ? withFlippedProtoSchemas(psCtx => withFlippedInvocationHosts(implementation.produce.bind(implementation), psCtx), context, 'host')
           : id === 'finite-execution-dsl'
-            ? withFlippedEffectPipelines(effectContext => withFlippedExecutionPipelines(inner => implementation.produce(inner), effectContext), context)
+            ? withFlippedProtoSchemas(psCtx => withFlippedEffectPipelines(effectContext => withFlippedExecutionPipelines(inner => implementation.produce(inner), effectContext), psCtx), context, 'execution')
             : id === 'durable-effect-host-dsl'
-              ? withFlippedEffectHosts(implementation.produce.bind(implementation), context)
+              ? withFlippedProtoSchemas(psCtx => withFlippedEffectHosts(implementation.produce.bind(implementation), psCtx), context, 'effect')
               : implementation.produce(context);
     return produced.map(entry => {
       const pins = entry.productFootprint.map(p => ({ ...p, version: version(p.id) ?? p.version }));

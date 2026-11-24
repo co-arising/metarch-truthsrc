@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+import "scalapb/scalapb.proto";
+import "example_bankwealth_domain.proto";
+
+package example.bankwealth.infrastructure.executionproto;
+
+option (scalapb.options) = { flat_package: true };
+
+message bankindependentrefundv1ExecutionStatePB {
+  string planversion = 1;
+  .example.bankwealth.infrastructure.proto.FundOrderIdPB input0 = 2;
+  .example.bankwealth.infrastructure.proto.TxIdPB input1 = 3;
+  .example.bankwealth.infrastructure.proto.AccountIdPB input2 = 4;
+  .example.bankwealth.infrastructure.proto.AccountIdPB input3 = 5;
+  .example.bankwealth.infrastructure.proto.MoneyPB input4 = 6;
+  .example.bankwealth.infrastructure.proto.OperationIdPB input5 = 7;
+  .example.bankwealth.infrastructure.proto.TxIdPB output0 = 8;
+}

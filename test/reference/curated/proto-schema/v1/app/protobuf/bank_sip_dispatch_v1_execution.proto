@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+import "scalapb/scalapb.proto";
+import "example_bankwealth_domain.proto";
+
+package example.bankwealth.infrastructure.executionproto;
+
+option (scalapb.options) = { flat_package: true };
+
+message banksipdispatchv1ExecutionStatePB {
+  string planversion = 1;
+  .example.bankwealth.infrastructure.proto.OccurrenceIdPB input0 = 2;
+  .example.bankwealth.infrastructure.proto.SipOccurrencePB input1 = 3;
+  .example.bankwealth.infrastructure.proto.OperationIdPB output0 = 4;
+}

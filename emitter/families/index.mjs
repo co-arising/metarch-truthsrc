@@ -28,6 +28,9 @@ import { family as protocolLayer } from './protocol-layer.mjs';
 import { family as aggregateRepository } from './aggregate-repository.mjs';
 import { family as eventHandler } from './event-handler.mjs';
 import { family as externalEventBridge } from './external-event-bridge.mjs';
+import { family as protoSchema } from './proto-schema.mjs';
+import { family as protoConverter } from './proto-converter.mjs';
+import { family as serializationAdapter } from './serialization-adapter.mjs';
 
 const CURATED_FAMILIES = [
   aggregateRulesFormal,
@@ -48,6 +51,9 @@ const CURATED_FAMILIES = [
   aggregateRepository,
   eventHandler,
   externalEventBridge,
+  protoSchema,
+  protoConverter,
+  serializationAdapter,
 ];
 
 for (const family of CURATED_FAMILIES) registerFamily(family);
