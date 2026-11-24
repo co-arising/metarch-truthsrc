@@ -844,3 +844,28 @@ vo-sandbox（修复前 face 文件）复证恰 2 错（重复定义）。收敛�
 - `docs/emitter-unification-plan.md` §5 value-object 行已标 ✅ 翻转；
   §8 补第六步命令。classic `valueobject-dsl` 行退役与 `render-values.mjs`
   物理删除仍按 Phase 4（legacy 生成器仍引用，F6 不动）。
+
+## 16. 程序范围裁定（2026-11-23，用户盘问后裁定）
+
+**背景**：用户盘问「还剩多少任务能让 classic 彻底退役」的盘点表述
+（将「统一发射器族模块未建」误述为近于「生成器缺失」），澄清三层事实：
+classic JS 生成器集（`generators/`，与 backend-codegen 对齐）完整在位且
+今天仍在生产 bank 的 96 件（含 serialization/converter/proto 22 件）；
+bank 一直由 metarch-truthsrc 按知识真源生成完整应用，无缺口、无跑偏；
+剩余工作是整合工程的 curated 替代模块建设。
+
+**用户裁定原文**：「删除只需要在 bank-wealth-demo 这个范围进行」。
+
+裁定内容与效力：
+
+1. **classic 生成器集永久保留**：`generators/`（364 mjs、43,671 行）在
+   metarch-truthsrc 不再「待退役」，作为与 backend-codegen 对齐的基线
+   资产永久存在。F8「物理删除」撤销。
+2. **退役＝bank 范围停用登记**：F4 的「registry 摘除」撤销；翻转包裹
+   机制（classic 产物被替换＋孤儿拒绝＋精确对账）即退役语义的最终形态
+   ——代码不删，bank 的生成路由逐族切换。
+3. **Phase 4 重定义**：bank 全 235 件经统一发射器生成＋六步门全绿＋
+   `all31Closed` 翻转评估＋登记收口。Phase 5（Explorer 重锚）不变。
+4. **翻转工程继续**：剩余 96 件（约 12–13 族节拍）按既定门序推进；
+   收尾段较原计划大幅缩水（无 43k 行删除、无 lib 发射编排拆除）。
+5. plan 文档 F4/F8/Phase 4/§1 帧句已随本裁定同步修订。

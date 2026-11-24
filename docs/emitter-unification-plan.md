@@ -2,6 +2,10 @@
 
 > **决定（用户指令，2026-11-21）**：「metarch-truthsrc 只留一个代码生成器」——
 > classic 发射器逐族退役，curated 架构泛化为唯一发射器。
+> **范围修订（用户裁定，2026-11-23，rulings §16）**：「删除只需要在
+> bank-wealth-demo 这个范围进行」——classic 生成器集（`generators/`）
+> 在 metarch-truthsrc **永久保留**，不再物理删除；「退役」＝bank 的
+> 翻转清单停用（翻转包裹机制即退役语义），F4 摘除与 F8 物理删除撤销。
 > 本计划即开工授权（用户：「做一个完整的计划，写下来。然后换一个新的会话开干」）。
 > 程序级裁定基线＝下文 F1–F8（随本计划授权执行）；**族内部裁定仍走各自门序**
 > （预裁定链→手写金样→沙箱三轮→讲解→逐条裁定→发射器），程序授权不豁免族门。
@@ -10,7 +14,8 @@
 
 ## 1. 现状事实（新会话开工前先复核，见 §8 Phase 0）
 
-- **classic 发射器**（待退役）：`metarch-truthsrc/generators/`——364 文件、43,565 行、
+- **classic 发射器**（bank 范围逐族停用；metarch 侧永久保留，裁定 §16）：
+  `metarch-truthsrc/generators/`——364 文件、43,565 行、
   30+ 包（`scala-cqrs-*` v1→v5 全系列、`*-dsl`、`scaffold-static`），加 `lib/` 内发射编排
   （`lib/products/` 24 文件 6,544 行、`classic-architecture/`、`domain-products/`、
   `value-products/`、`execution/`、`saga/`、`scala-target/` ≈12.8k 行）。
@@ -58,11 +63,11 @@ truth YAML ──知识机器(保留)──→ 知识图 ──派生层(fail-cl
 | F1 | 统一发射器新包（`emitter/`），curated 模式泛化；单一 CLI 入口，`generate-project` 外接面不变 |
 | F2 | 族输入合同＝curated JSON schema 为唯一发射输入；新增知识图→合同派生层，fail-closed（派生不出合法合同即拒发射，D-P08 纪律全局化） |
 | F3 | 金样即规格：新族先金样后模块；金样升级＝发射器同步升级（pin 等值维护） |
-| F4 | 逐族替换：发射器接一族→classic 对应包从 registry 摘除→五步门全绿→删除；**禁止整体切换**，任何时刻 bank-wealth 都能生成完整应用 |
+| F4 | 逐族替换：发射器接一族→bank 范围 classic 停用（翻转清单即退役登记）→门全绿；**禁止整体切换**，任何时刻 bank-wealth 都能生成完整应用。*2026-11-23 范围修订：registry 摘除与物理删除撤销（rulings §16），metarch 代码不删* |
 | F5 | 每次族替换：五步门全绿＋新旧产物逐文件差异清单呈报用户；新族金样门沿用沙箱三轮＋性质＋裁定链 |
 | F6 | 顺序：已定案簇先行（试点＝#42 调用宿主簇）→ 限定 raw 簇（value-object 118 最大头）→ 未实现族面殿后 |
 | F7 | 兼容面冻结：truth YAML／绑定／手写供给／ledger/anchors/verify 机器／Pages 命令行／bank-wealth AGENTS.md 合同零改动 |
-| F8 | 收尾：classic 发射器物理删除＋`all31Closed` 翻转评估＋Explorer 重锚（内容变化后才有意义） |
+| F8 | 收尾：bank 全量经统一发射器生成＋`all31Closed` 翻转评估＋Explorer 重锚（内容变化后才有意义）。*物理删除撤销（rulings §16）* |
 
 ## 4. 分阶段计划
 
@@ -110,9 +115,11 @@ emitter 模块（字节等值＋双跑确定＋负测电池）→ bank-wealth �
    execution-plan(#16/17)→service 装配(#38/39，13)→api(#35-37)→测试/build/证据面。
 4. extension 三族（#40/41/42 已 curated）按需接入 multi 项目场景。
 
-### Phase 4 — classic 下线完成
-`generators/` 43.6k 行＋lib 发射编排全部删除；单一发射器重生成 bank-wealth 全应用；
-五步门全绿；`all31Closed` 翻转评估（用户决定）；登记收口。
+### Phase 4 — classic 下线完成（2026-11-23 范围修订，rulings §16）
+bank-wealth 全应用（235 件）全部经统一发射器生成；六步门全绿（含 R7 冷编译）；
+`all31Closed` 翻转评估（用户决定）；登记收口。`generators/` classic 生成器集
+**永久保留**于 metarch-truthsrc（与 backend-codegen 对齐的基线资产），不删除；
+「退役」＝bank 的翻转清单停用登记（翻转包裹＋孤儿拒绝即语义）。
 
 ### Phase 5 — Explorer 重锚
 生成内容已变——按既有隔离捕获流程重跑 `tools/export-explorer-snapshot.mjs`
