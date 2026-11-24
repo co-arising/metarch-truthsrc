@@ -1,0 +1,10 @@
+package example.bankwealth.application.aggregates
+
+import example.bankwealth.application.aggregates.FundOrderProtocol._
+import example.bankwealth.domain.FundOrderComputations
+
+object FundOrderAggregate {
+
+  def commandHandler(hosts: FundOrderComputations, authority: ExternalAuthority): CommandHandler =
+    behaviors.FundOrderBehaviors(hosts, authority)
+}

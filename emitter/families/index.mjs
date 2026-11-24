@@ -23,6 +23,7 @@ import { family as effectFace } from './effect-face.mjs';
 import { family as aggregateInvariantRules } from './aggregate-invariant-rules.mjs';
 import { family as valueObject } from './value-object.mjs';
 import { family as domainEntity } from './domain-entity.mjs';
+import { family as aggregateLayer } from './aggregate-layer.mjs';
 
 const CURATED_FAMILIES = [
   aggregateRulesFormal,
@@ -38,6 +39,7 @@ const CURATED_FAMILIES = [
   aggregateInvariantRules,
   valueObject,
   domainEntity,
+  aggregateLayer,
 ];
 
 for (const family of CURATED_FAMILIES) registerFamily(family);
