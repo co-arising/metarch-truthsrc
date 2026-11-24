@@ -27,6 +27,7 @@ import { family as aggregateLayer } from './aggregate-layer.mjs';
 import { family as protocolLayer } from './protocol-layer.mjs';
 import { family as aggregateRepository } from './aggregate-repository.mjs';
 import { family as eventHandler } from './event-handler.mjs';
+import { family as externalEventBridge } from './external-event-bridge.mjs';
 
 const CURATED_FAMILIES = [
   aggregateRulesFormal,
@@ -46,6 +47,7 @@ const CURATED_FAMILIES = [
   protocolLayer,
   aggregateRepository,
   eventHandler,
+  externalEventBridge,
 ];
 
 for (const family of CURATED_FAMILIES) registerFamily(family);

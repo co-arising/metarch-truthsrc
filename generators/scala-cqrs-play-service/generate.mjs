@@ -16,6 +16,7 @@ import { withFlippedValueObjects } from '../../lib/derivation/value-object-emiss
 import { withFlippedDomainEntities } from '../../lib/derivation/domain-entity-emission.mjs';
 import { withFlippedAggregateLayers } from '../../lib/derivation/aggregate-layer-emission.mjs';
 import { withFlippedCommandProtocols, withFlippedApplicationProtocols } from '../../lib/derivation/protocol-layer-emission.mjs';
+import { withFlippedExternalEventBridges } from '../../lib/derivation/external-event-bridge-emission.mjs';
 import { withFlippedAggregateRepositories } from '../../lib/derivation/aggregate-repository-emission.mjs';
 import { PIPELINE_INVOCATION_FLIPS, flipHostBase } from '../../lib/derivation/pipeline-invocation-face.mjs';
 import { EFFECT_FACE_FLIPS, effectFlipHostClass } from '../../lib/derivation/effect-face.mjs';
@@ -60,7 +61,7 @@ const inherited = Object.fromEntries(Object.entries(createEffectRegistry('2')).m
     const produced = id === 'aggregate-dsl'
       ? withFlippedAggregateRepositories(repoCtx => withFlippedApplicationProtocols(protoCtx => withFlippedAggregateLayers(aggCtx => withFlippedDomainEntities(inner => renderAggregateLayers(inner, ['reference-layout','domain-folds','exact-value-types','domain-dependencies'].map(id=>({id,version:['domain-folds','domain-dependencies'].includes(id)?'6':'1'}))), aggCtx), protoCtx), repoCtx), context)
         : id === 'command-dsl'
-          ? withFlippedCommandProtocols(implementation.produce.bind(implementation), context)
+          ? withFlippedExternalEventBridges(eebCtx => withFlippedCommandProtocols(implementation.produce.bind(implementation), eebCtx), context)
         : id === 'invariant-dsl'
           ? withFlippedEventHandlers(ehCtx => withFlippedInvariantRules(inner => renderInvariant(inner, ['reference-layout','domain-decision','domain-folds','exact-value-types'].map(id=>({id,version:id==='domain-decision'?'4':id==='domain-folds'?'6':'1'})), true), ehCtx), context)
         : id === 'valueobject-dsl'

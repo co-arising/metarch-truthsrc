@@ -131,17 +131,17 @@ Pages 上引用旧生成器 id／文件头的句子同步刷新。
 | 簇 | kind（件数） | 族 | curated 状态 |
 |---|---|---|---|
 | 已定案 | rules(9) | #45 aggregate-invariant-rules（复刻翻转 ✅ 2026-11-23；原记 #11 为参考件，勘误 R2） | ✅ 复刻回执 |
-| 已定案 | invocation-host(2)＋host-serialization(2)＋technical-port(4)＋effect-host(2)＋effect-serialization(2) | 调用宿主簇（#42 族） | ✅ 金样已有（试点） |
-| 已定案（待核） | external-event-bridge(1) | #13/#25 connector | ✅ 金样已有（映射待核） |
+| 已定案 | invocation-host(2)＋host-serialization(2)＋technical-port(6)＋saga-definition(2)＋effect-host(2)＋effect-serialization(2)＋execution-plan(4) | 宿主面簇（#43/#44，实测 20 件） | ✅ 翻转（2026-11-23；勘误补记 technical-port 6 件与 saga-definition 2 ＋ execution-plan 4 已归入 #43/#44） |
+| 已定案 | external-event-bridge(1) | #46 external-event-bridge（产地核对确认不属 #13/#25） | ✅ 翻转（2026-11-24，curated 手写金样；1 件 COVER，`command-dsl` 7/7 清零，F5 清单 1/1 呈报，R7 冷编译 134s 全绿） |
 | 限定 raw | value-object(118) | #1 | ✅ 翻转（2026-11-23，curated 手写金样；118 件 COVER，F5 清单 118/118 呈报） |
 | 限定 raw | entity(3)＋state(3) | #2 | ✅ 翻转（2026-11-23，curated 手写金样；6 件 COVER，F5 清单 6/6 呈报，R7 冷编译 46s 全绿） |
 | 限定 raw | event-handler(6) | #3 | ✅ 翻转（2026-11-24，curated 手写金样；6 件 COVER，188 条精确 span 锚点全绿，F5 清单 6/6 呈报，R7 冷编译 51s 全绿） |
 | 限定 raw | aggregate(3)＋aggregate-factory(3)＋aggregate-behavior(6) | #6/8/9 | ✅ 翻转（2026-11-23，curated 手写金样；12 件 COVER，F5 清单 12/12 呈报，R7 冷编译 52s 全绿） |
 | 限定 raw | protocol(3)＋application-protocol(3)＋command-helpers(3) | #7/10 | ✅ 翻转（2026-11-23，curated 手写金样；9 件 COVER，F5 清单 9/9 呈报，R7 冷编译 46s 全绿） |
 | 限定 raw | aggregate-repository(3) | #12/22 | ✅ 翻转（2026-11-23，curated 手写金样；3 件 COVER，Q4 方案 A 认可 owned-local-actor-cache，F5 清单 3/3 呈报，R7 冷编译 92s 全绿） |
-| 限定 raw | saga-definition(2) | #17 | 未 |
+| 限定 raw | saga-definition(2) | #17（已由 #43 覆盖） | ✅ 勘误并入 #43（raw 簇 100% 收官） |
 | 未实现面 | serialization-adapter(7)＋converter(6)＋proto(5)＋host-proto(2)＋effect-proto(2) | #29/30/31/32 | 未 |
-| 未实现面 | execution-plan(4) | #16/17 execution | 未 |
+| 未实现面 | execution-plan(4) | #16/17 execution（已由 #43/#44 覆盖） | ✅ 勘误并入 #43/#44（2+2） |
 | 未实现面 | service-runtime(7)＋service-config(3)＋aggregate-bootstrap(3)＋service-port(1) | #38/39/35-37 | 未 |
 | 附属 | build(4)＋service-test(4)＋generated-test(3)＋project-evidence(4) | 脚手架/测试/台账 | 跟随 |
 
