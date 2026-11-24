@@ -135,7 +135,7 @@ Pages 上引用旧生成器 id／文件头的句子同步刷新。
 | 已定案（待核） | external-event-bridge(1) | #13/#25 connector | ✅ 金样已有（映射待核） |
 | 限定 raw | value-object(118) | #1 | ✅ 翻转（2026-11-23，curated 手写金样；118 件 COVER，F5 清单 118/118 呈报） |
 | 限定 raw | entity(3)＋state(3) | #2 | ✅ 翻转（2026-11-23，curated 手写金样；6 件 COVER，F5 清单 6/6 呈报，R7 冷编译 46s 全绿） |
-| 限定 raw | event-handler(6) | #3 | 未 |
+| 限定 raw | event-handler(6) | #3 | ✅ 翻转（2026-11-24，curated 手写金样；6 件 COVER，188 条精确 span 锚点全绿，F5 清单 6/6 呈报，R7 冷编译 51s 全绿） |
 | 限定 raw | aggregate(3)＋aggregate-factory(3)＋aggregate-behavior(6) | #6/8/9 | ✅ 翻转（2026-11-23，curated 手写金样；12 件 COVER，F5 清单 12/12 呈报，R7 冷编译 52s 全绿） |
 | 限定 raw | protocol(3)＋application-protocol(3)＋command-helpers(3) | #7/10 | ✅ 翻转（2026-11-23，curated 手写金样；9 件 COVER，F5 清单 9/9 呈报，R7 冷编译 46s 全绿） |
 | 限定 raw | aggregate-repository(3) | #12/22 | ✅ 翻转（2026-11-23，curated 手写金样；3 件 COVER，Q4 方案 A 认可 owned-local-actor-cache，F5 清单 3/3 呈报，R7 冷编译 92s 全绿） |

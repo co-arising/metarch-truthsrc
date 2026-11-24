@@ -11,6 +11,7 @@ import { renderAggregateLayers } from './render-aggregate-layers.mjs';
 import { renderJournalReadside } from './render-journal-readside.mjs';
 import { withFlippedInvocationHosts, withFlippedExecutionPipelines, withFlippedEffectHosts, withFlippedEffectPipelines } from '../../lib/derivation/pipeline-invocation-emission.mjs';
 import { withFlippedInvariantRules } from '../../lib/derivation/aggregate-invariant-rules-emission.mjs';
+import { withFlippedEventHandlers } from '../../lib/derivation/event-handler-emission.mjs';
 import { withFlippedValueObjects } from '../../lib/derivation/value-object-emission.mjs';
 import { withFlippedDomainEntities } from '../../lib/derivation/domain-entity-emission.mjs';
 import { withFlippedAggregateLayers } from '../../lib/derivation/aggregate-layer-emission.mjs';
@@ -61,7 +62,7 @@ const inherited = Object.fromEntries(Object.entries(createEffectRegistry('2')).m
         : id === 'command-dsl'
           ? withFlippedCommandProtocols(implementation.produce.bind(implementation), context)
         : id === 'invariant-dsl'
-          ? withFlippedInvariantRules(inner => renderInvariant(inner, ['reference-layout','domain-decision','domain-folds','exact-value-types'].map(id=>({id,version:id==='domain-decision'?'4':id==='domain-folds'?'6':'1'})), true), context)
+          ? withFlippedEventHandlers(ehCtx => withFlippedInvariantRules(inner => renderInvariant(inner, ['reference-layout','domain-decision','domain-folds','exact-value-types'].map(id=>({id,version:id==='domain-decision'?'4':id==='domain-folds'?'6':'1'})), true), ehCtx), context)
         : id === 'valueobject-dsl'
           ? withFlippedValueObjects(implementation.produce.bind(implementation), context)
         : id === 'finite-host-dsl'

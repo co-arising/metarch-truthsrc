@@ -1,0 +1,8 @@
+package example.bankwealth.domain
+
+import SipPlanProtocol._
+
+object SipPlanEventHandler {
+  def apply(state: SipPlanState, input: Event): SipPlanState =
+    example.bankwealth.domain.entities.behaviors.SipPlanEventHandler(state, input)
+}
