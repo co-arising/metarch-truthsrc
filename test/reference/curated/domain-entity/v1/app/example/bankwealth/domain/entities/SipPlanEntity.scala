@@ -1,0 +1,84 @@
+package example.bankwealth.domain.entities
+
+object SipPlanEntity {
+  type State = example.bankwealth.domain.SipPlanState
+  val State: example.bankwealth.domain.SipPlanState.type = example.bankwealth.domain.SipPlanState
+
+  type Event = example.bankwealth.domain.SipPlanProtocol.Event
+
+  object Events {
+    type SipPlanCreated = example.bankwealth.domain.SipPlanProtocol.SipPlanCreated
+    val SipPlanCreated: example.bankwealth.domain.SipPlanProtocol.SipPlanCreated.type =
+      example.bankwealth.domain.SipPlanProtocol.SipPlanCreated
+
+    type SipDueSlotAppended = example.bankwealth.domain.SipPlanProtocol.SipDueSlotAppended
+    val SipDueSlotAppended: example.bankwealth.domain.SipPlanProtocol.SipDueSlotAppended.type =
+      example.bankwealth.domain.SipPlanProtocol.SipDueSlotAppended
+
+    type SipScheduleSealed = example.bankwealth.domain.SipPlanProtocol.SipScheduleSealed
+    val SipScheduleSealed: example.bankwealth.domain.SipPlanProtocol.SipScheduleSealed.type =
+      example.bankwealth.domain.SipPlanProtocol.SipScheduleSealed
+
+    type SipPlanRevised = example.bankwealth.domain.SipPlanProtocol.SipPlanRevised
+    val SipPlanRevised: example.bankwealth.domain.SipPlanProtocol.SipPlanRevised.type =
+      example.bankwealth.domain.SipPlanProtocol.SipPlanRevised
+
+    type SipClockAdvanced = example.bankwealth.domain.SipPlanProtocol.SipClockAdvanced
+    val SipClockAdvanced: example.bankwealth.domain.SipPlanProtocol.SipClockAdvanced.type =
+      example.bankwealth.domain.SipPlanProtocol.SipClockAdvanced
+
+    type SipPlanPaused = example.bankwealth.domain.SipPlanProtocol.SipPlanPaused
+    val SipPlanPaused: example.bankwealth.domain.SipPlanProtocol.SipPlanPaused.type =
+      example.bankwealth.domain.SipPlanProtocol.SipPlanPaused
+
+    type SipPlanResumed = example.bankwealth.domain.SipPlanProtocol.SipPlanResumed
+    val SipPlanResumed: example.bankwealth.domain.SipPlanProtocol.SipPlanResumed.type =
+      example.bankwealth.domain.SipPlanProtocol.SipPlanResumed
+
+    type SipDueSlotObserved = example.bankwealth.domain.SipPlanProtocol.SipDueSlotObserved
+    val SipDueSlotObserved: example.bankwealth.domain.SipPlanProtocol.SipDueSlotObserved.type =
+      example.bankwealth.domain.SipPlanProtocol.SipDueSlotObserved
+
+    type SipPausedDueSlotSkipped = example.bankwealth.domain.SipPlanProtocol.SipPausedDueSlotSkipped
+    val SipPausedDueSlotSkipped: example.bankwealth.domain.SipPlanProtocol.SipPausedDueSlotSkipped.type =
+      example.bankwealth.domain.SipPlanProtocol.SipPausedDueSlotSkipped
+
+    type SipSkippedSlotAdvanced = example.bankwealth.domain.SipPlanProtocol.SipSkippedSlotAdvanced
+    val SipSkippedSlotAdvanced: example.bankwealth.domain.SipPlanProtocol.SipSkippedSlotAdvanced.type =
+      example.bankwealth.domain.SipPlanProtocol.SipSkippedSlotAdvanced
+
+    type SipInstallmentTriggered = example.bankwealth.domain.SipPlanProtocol.SipInstallmentTriggered
+    val SipInstallmentTriggered: example.bankwealth.domain.SipPlanProtocol.SipInstallmentTriggered.type =
+      example.bankwealth.domain.SipPlanProtocol.SipInstallmentTriggered
+
+    type SipInstallmentPending = example.bankwealth.domain.SipPlanProtocol.SipInstallmentPending
+    val SipInstallmentPending: example.bankwealth.domain.SipPlanProtocol.SipInstallmentPending.type =
+      example.bankwealth.domain.SipPlanProtocol.SipInstallmentPending
+
+    type SipInstallmentOutcomeUnknown = example.bankwealth.domain.SipPlanProtocol.SipInstallmentOutcomeUnknown
+    val SipInstallmentOutcomeUnknown: example.bankwealth.domain.SipPlanProtocol.SipInstallmentOutcomeUnknown.type =
+      example.bankwealth.domain.SipPlanProtocol.SipInstallmentOutcomeUnknown
+
+    type SipInstallmentRecoveryRequired = example.bankwealth.domain.SipPlanProtocol.SipInstallmentRecoveryRequired
+    val SipInstallmentRecoveryRequired: example.bankwealth.domain.SipPlanProtocol.SipInstallmentRecoveryRequired.type =
+      example.bankwealth.domain.SipPlanProtocol.SipInstallmentRecoveryRequired
+
+    type SipInstallmentRefundInProgress = example.bankwealth.domain.SipPlanProtocol.SipInstallmentRefundInProgress
+    val SipInstallmentRefundInProgress: example.bankwealth.domain.SipPlanProtocol.SipInstallmentRefundInProgress.type =
+      example.bankwealth.domain.SipPlanProtocol.SipInstallmentRefundInProgress
+
+    type SipInstallmentSucceeded = example.bankwealth.domain.SipPlanProtocol.SipInstallmentSucceeded
+    val SipInstallmentSucceeded: example.bankwealth.domain.SipPlanProtocol.SipInstallmentSucceeded.type =
+      example.bankwealth.domain.SipPlanProtocol.SipInstallmentSucceeded
+
+    type SipInstallmentFailed = example.bankwealth.domain.SipPlanProtocol.SipInstallmentFailed
+    val SipInstallmentFailed: example.bankwealth.domain.SipPlanProtocol.SipInstallmentFailed.type =
+      example.bankwealth.domain.SipPlanProtocol.SipInstallmentFailed
+
+    type SipCreateIntentRecorded = example.bankwealth.domain.SipPlanProtocol.SipCreateIntentRecorded
+    val SipCreateIntentRecorded: example.bankwealth.domain.SipPlanProtocol.SipCreateIntentRecorded.type =
+      example.bankwealth.domain.SipPlanProtocol.SipCreateIntentRecorded
+  }
+
+  def empty: State = State(example.bankwealth.domain.values.PlanId(""), false, false, java.lang.Long.parseLong("0"), java.lang.Long.parseLong("-1"), Map(), java.lang.Long.parseLong("-1"), java.lang.Long.parseLong("0"), java.lang.Long.parseLong("0"), false, java.lang.Long.parseLong("-1"), Map(), Map(), Map(), example.bankwealth.domain.values.RevisionId(""), java.lang.Long.parseLong("-1"), Map(), Map(), Map(), Map(), Map(), java.lang.Long.parseLong("0"), java.lang.Long.parseLong("0"), None, Map(), Vector(), Map())
+}

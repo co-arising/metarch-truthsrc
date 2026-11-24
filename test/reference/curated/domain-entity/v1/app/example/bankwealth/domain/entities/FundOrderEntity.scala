@@ -1,0 +1,140 @@
+package example.bankwealth.domain.entities
+
+object FundOrderEntity {
+  type State = example.bankwealth.domain.FundOrderState
+  val State: example.bankwealth.domain.FundOrderState.type = example.bankwealth.domain.FundOrderState
+
+  type Event = example.bankwealth.domain.FundOrderProtocol.Event
+
+  object Events {
+    type FundPurchaseSettlementRequested = example.bankwealth.domain.FundOrderProtocol.FundPurchaseSettlementRequested
+    val FundPurchaseSettlementRequested: example.bankwealth.domain.FundOrderProtocol.FundPurchaseSettlementRequested.type =
+      example.bankwealth.domain.FundOrderProtocol.FundPurchaseSettlementRequested
+
+    type ReserveFundSubscriptionConfirmed = example.bankwealth.domain.FundOrderProtocol.ReserveFundSubscriptionConfirmed
+    val ReserveFundSubscriptionConfirmed: example.bankwealth.domain.FundOrderProtocol.ReserveFundSubscriptionConfirmed.type =
+      example.bankwealth.domain.FundOrderProtocol.ReserveFundSubscriptionConfirmed
+
+    type FundSubscriptionPaymentConfirmed = example.bankwealth.domain.FundOrderProtocol.FundSubscriptionPaymentConfirmed
+    val FundSubscriptionPaymentConfirmed: example.bankwealth.domain.FundOrderProtocol.FundSubscriptionPaymentConfirmed.type =
+      example.bankwealth.domain.FundOrderProtocol.FundSubscriptionPaymentConfirmed
+
+    type CashFundSubscriptionCanceled = example.bankwealth.domain.FundOrderProtocol.CashFundSubscriptionCanceled
+    val CashFundSubscriptionCanceled: example.bankwealth.domain.FundOrderProtocol.CashFundSubscriptionCanceled.type =
+      example.bankwealth.domain.FundOrderProtocol.CashFundSubscriptionCanceled
+
+    type FundCashPaymentSucceeded = example.bankwealth.domain.FundOrderProtocol.FundCashPaymentSucceeded
+    val FundCashPaymentSucceeded: example.bankwealth.domain.FundOrderProtocol.FundCashPaymentSucceeded.type =
+      example.bankwealth.domain.FundOrderProtocol.FundCashPaymentSucceeded
+
+    type FundCashPaymentRejectedBeforeEffects = example.bankwealth.domain.FundOrderProtocol.FundCashPaymentRejectedBeforeEffects
+    val FundCashPaymentRejectedBeforeEffects: example.bankwealth.domain.FundOrderProtocol.FundCashPaymentRejectedBeforeEffects.type =
+      example.bankwealth.domain.FundOrderProtocol.FundCashPaymentRejectedBeforeEffects
+
+    type FundCashPaymentCompensated = example.bankwealth.domain.FundOrderProtocol.FundCashPaymentCompensated
+    val FundCashPaymentCompensated: example.bankwealth.domain.FundOrderProtocol.FundCashPaymentCompensated.type =
+      example.bankwealth.domain.FundOrderProtocol.FundCashPaymentCompensated
+
+    type FundCashPaymentRecoveryRequired = example.bankwealth.domain.FundOrderProtocol.FundCashPaymentRecoveryRequired
+    val FundCashPaymentRecoveryRequired: example.bankwealth.domain.FundOrderProtocol.FundCashPaymentRecoveryRequired.type =
+      example.bankwealth.domain.FundOrderProtocol.FundCashPaymentRecoveryRequired
+
+    type FundCashPaymentOutcomeUnknown = example.bankwealth.domain.FundOrderProtocol.FundCashPaymentOutcomeUnknown
+    val FundCashPaymentOutcomeUnknown: example.bankwealth.domain.FundOrderProtocol.FundCashPaymentOutcomeUnknown.type =
+      example.bankwealth.domain.FundOrderProtocol.FundCashPaymentOutcomeUnknown
+
+    type FundTASubmissionRegistered = example.bankwealth.domain.FundOrderProtocol.FundTASubmissionRegistered
+    val FundTASubmissionRegistered: example.bankwealth.domain.FundOrderProtocol.FundTASubmissionRegistered.type =
+      example.bankwealth.domain.FundOrderProtocol.FundTASubmissionRegistered
+
+    type FundTAAccepted = example.bankwealth.domain.FundOrderProtocol.FundTAAccepted
+    val FundTAAccepted: example.bankwealth.domain.FundOrderProtocol.FundTAAccepted.type =
+      example.bankwealth.domain.FundOrderProtocol.FundTAAccepted
+
+    type FundTASharesConfirmed = example.bankwealth.domain.FundOrderProtocol.FundTASharesConfirmed
+    val FundTASharesConfirmed: example.bankwealth.domain.FundOrderProtocol.FundTASharesConfirmed.type =
+      example.bankwealth.domain.FundOrderProtocol.FundTASharesConfirmed
+
+    type FundTARejected = example.bankwealth.domain.FundOrderProtocol.FundTARejected
+    val FundTARejected: example.bankwealth.domain.FundOrderProtocol.FundTARejected.type =
+      example.bankwealth.domain.FundOrderProtocol.FundTARejected
+
+    type FundTAUnknown = example.bankwealth.domain.FundOrderProtocol.FundTAUnknown
+    val FundTAUnknown: example.bankwealth.domain.FundOrderProtocol.FundTAUnknown.type =
+      example.bankwealth.domain.FundOrderProtocol.FundTAUnknown
+
+    type FundPurchaseRefundRequested = example.bankwealth.domain.FundOrderProtocol.FundPurchaseRefundRequested
+    val FundPurchaseRefundRequested: example.bankwealth.domain.FundOrderProtocol.FundPurchaseRefundRequested.type =
+      example.bankwealth.domain.FundOrderProtocol.FundPurchaseRefundRequested
+
+    type FundRefundSucceeded = example.bankwealth.domain.FundOrderProtocol.FundRefundSucceeded
+    val FundRefundSucceeded: example.bankwealth.domain.FundOrderProtocol.FundRefundSucceeded.type =
+      example.bankwealth.domain.FundOrderProtocol.FundRefundSucceeded
+
+    type FundRefundRejectedBeforeEffects = example.bankwealth.domain.FundOrderProtocol.FundRefundRejectedBeforeEffects
+    val FundRefundRejectedBeforeEffects: example.bankwealth.domain.FundOrderProtocol.FundRefundRejectedBeforeEffects.type =
+      example.bankwealth.domain.FundOrderProtocol.FundRefundRejectedBeforeEffects
+
+    type FundRefundCompensated = example.bankwealth.domain.FundOrderProtocol.FundRefundCompensated
+    val FundRefundCompensated: example.bankwealth.domain.FundOrderProtocol.FundRefundCompensated.type =
+      example.bankwealth.domain.FundOrderProtocol.FundRefundCompensated
+
+    type FundRefundRecoveryRequired = example.bankwealth.domain.FundOrderProtocol.FundRefundRecoveryRequired
+    val FundRefundRecoveryRequired: example.bankwealth.domain.FundOrderProtocol.FundRefundRecoveryRequired.type =
+      example.bankwealth.domain.FundOrderProtocol.FundRefundRecoveryRequired
+
+    type FundRefundOutcomeUnknown = example.bankwealth.domain.FundOrderProtocol.FundRefundOutcomeUnknown
+    val FundRefundOutcomeUnknown: example.bankwealth.domain.FundOrderProtocol.FundRefundOutcomeUnknown.type =
+      example.bankwealth.domain.FundOrderProtocol.FundRefundOutcomeUnknown
+
+    type FundTAReceiptObserved = example.bankwealth.domain.FundOrderProtocol.FundTAReceiptObserved
+    val FundTAReceiptObserved: example.bankwealth.domain.FundOrderProtocol.FundTAReceiptObserved.type =
+      example.bankwealth.domain.FundOrderProtocol.FundTAReceiptObserved
+
+    type BankPaymentResultSucceeded = example.bankwealth.domain.FundOrderProtocol.BankPaymentResultSucceeded
+    val BankPaymentResultSucceeded: example.bankwealth.domain.FundOrderProtocol.BankPaymentResultSucceeded.type =
+      example.bankwealth.domain.FundOrderProtocol.BankPaymentResultSucceeded
+
+    type BankPaymentResultRejectedBeforeEffects = example.bankwealth.domain.FundOrderProtocol.BankPaymentResultRejectedBeforeEffects
+    val BankPaymentResultRejectedBeforeEffects: example.bankwealth.domain.FundOrderProtocol.BankPaymentResultRejectedBeforeEffects.type =
+      example.bankwealth.domain.FundOrderProtocol.BankPaymentResultRejectedBeforeEffects
+
+    type BankPaymentResultCompensated = example.bankwealth.domain.FundOrderProtocol.BankPaymentResultCompensated
+    val BankPaymentResultCompensated: example.bankwealth.domain.FundOrderProtocol.BankPaymentResultCompensated.type =
+      example.bankwealth.domain.FundOrderProtocol.BankPaymentResultCompensated
+
+    type BankPaymentResultRecoveryRequired = example.bankwealth.domain.FundOrderProtocol.BankPaymentResultRecoveryRequired
+    val BankPaymentResultRecoveryRequired: example.bankwealth.domain.FundOrderProtocol.BankPaymentResultRecoveryRequired.type =
+      example.bankwealth.domain.FundOrderProtocol.BankPaymentResultRecoveryRequired
+
+    type BankPaymentResultOutcomeUnknown = example.bankwealth.domain.FundOrderProtocol.BankPaymentResultOutcomeUnknown
+    val BankPaymentResultOutcomeUnknown: example.bankwealth.domain.FundOrderProtocol.BankPaymentResultOutcomeUnknown.type =
+      example.bankwealth.domain.FundOrderProtocol.BankPaymentResultOutcomeUnknown
+
+    type BankRefundResultSucceeded = example.bankwealth.domain.FundOrderProtocol.BankRefundResultSucceeded
+    val BankRefundResultSucceeded: example.bankwealth.domain.FundOrderProtocol.BankRefundResultSucceeded.type =
+      example.bankwealth.domain.FundOrderProtocol.BankRefundResultSucceeded
+
+    type BankRefundResultRejectedBeforeEffects = example.bankwealth.domain.FundOrderProtocol.BankRefundResultRejectedBeforeEffects
+    val BankRefundResultRejectedBeforeEffects: example.bankwealth.domain.FundOrderProtocol.BankRefundResultRejectedBeforeEffects.type =
+      example.bankwealth.domain.FundOrderProtocol.BankRefundResultRejectedBeforeEffects
+
+    type BankRefundResultCompensated = example.bankwealth.domain.FundOrderProtocol.BankRefundResultCompensated
+    val BankRefundResultCompensated: example.bankwealth.domain.FundOrderProtocol.BankRefundResultCompensated.type =
+      example.bankwealth.domain.FundOrderProtocol.BankRefundResultCompensated
+
+    type BankRefundResultRecoveryRequired = example.bankwealth.domain.FundOrderProtocol.BankRefundResultRecoveryRequired
+    val BankRefundResultRecoveryRequired: example.bankwealth.domain.FundOrderProtocol.BankRefundResultRecoveryRequired.type =
+      example.bankwealth.domain.FundOrderProtocol.BankRefundResultRecoveryRequired
+
+    type BankRefundResultOutcomeUnknown = example.bankwealth.domain.FundOrderProtocol.BankRefundResultOutcomeUnknown
+    val BankRefundResultOutcomeUnknown: example.bankwealth.domain.FundOrderProtocol.BankRefundResultOutcomeUnknown.type =
+      example.bankwealth.domain.FundOrderProtocol.BankRefundResultOutcomeUnknown
+
+    type CashRequestSourceRecorded = example.bankwealth.domain.FundOrderProtocol.CashRequestSourceRecorded
+    val CashRequestSourceRecorded: example.bankwealth.domain.FundOrderProtocol.CashRequestSourceRecorded.type =
+      example.bankwealth.domain.FundOrderProtocol.CashRequestSourceRecorded
+  }
+
+  def empty: State = State(example.bankwealth.domain.values.FundOrderId(""), "new", example.bankwealth.domain.values.OperationId(""), example.bankwealth.domain.values.AccountId(""), example.bankwealth.domain.values.AccountId(""), "", example.bankwealth.domain.values.Money(BigDecimal("0.00"), "CNY"), Map(), Map(), Map(), example.bankwealth.domain.values.TxId(""), "", Map(), Map(), example.bankwealth.domain.values.TaRequestId(""), "", "", Map(), Map(), example.bankwealth.domain.values.FundShare("", example.bankwealth.domain.values.TaExactText(""), example.bankwealth.domain.values.TaExactText("")), "", example.bankwealth.domain.values.OperationId(""), "", Map(), Map(), Map(), Map(), Map(), None, Map())
+}

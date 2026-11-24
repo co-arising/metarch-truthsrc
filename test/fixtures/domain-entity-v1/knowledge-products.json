@@ -1,0 +1,5650 @@
+{
+  "options": {
+    "packages": [
+      {
+        "context": "bankwealth",
+        "package": "example.bankwealth"
+      }
+    ]
+  },
+  "reference-layout": {
+    "declarations": [
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "AccountId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/0"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "FundOrderId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/1"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "OperationId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/2"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "TxId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/3"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "PlanId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/4"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "RevisionId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/5"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "OccurrenceId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/6"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "TaExactText"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/7"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "Money"
+        },
+        "valueType": {
+          "form": "record",
+          "members": [
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "Money"
+              ],
+              "id": "amount"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "Money"
+              ],
+              "id": "currency"
+            }
+          ]
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/11"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "Money"
+            ],
+            "id": "amount"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "Money"
+            ],
+            "id": "currency"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "MoneyWire"
+        },
+        "valueType": {
+          "form": "record",
+          "members": [
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "MoneyWire"
+              ],
+              "id": "minorUnits"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "MoneyWire"
+              ],
+              "id": "currency"
+            }
+          ]
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/12"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "MoneyWire"
+            ],
+            "id": "minorUnits"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "MoneyWire"
+            ],
+            "id": "currency"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "FundShare"
+        },
+        "valueType": {
+          "form": "record",
+          "members": [
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "FundShare"
+              ],
+              "id": "fundCode"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "FundShare"
+              ],
+              "id": "shares"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "FundShare"
+              ],
+              "id": "nav"
+            }
+          ]
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/14"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "FundShare"
+            ],
+            "id": "fundCode"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "FundShare"
+            ],
+            "id": "shares"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "FundShare"
+            ],
+            "id": "nav"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "TaRequestId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/15"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "SipRevisionConfig"
+        },
+        "valueType": {
+          "form": "record",
+          "members": [
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "SipRevisionConfig"
+              ],
+              "id": "revision"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "SipRevisionConfig"
+              ],
+              "id": "effectiveSlot"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "SipRevisionConfig"
+              ],
+              "id": "investorAccountId"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "SipRevisionConfig"
+              ],
+              "id": "fundCollectionAccountId"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "SipRevisionConfig"
+              ],
+              "id": "fundCode"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "SipRevisionConfig"
+              ],
+              "id": "amount"
+            }
+          ]
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/16"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "SipRevisionConfig"
+            ],
+            "id": "revision"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "SipRevisionConfig"
+            ],
+            "id": "effectiveSlot"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "SipRevisionConfig"
+            ],
+            "id": "investorAccountId"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "SipRevisionConfig"
+            ],
+            "id": "fundCollectionAccountId"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "SipRevisionConfig"
+            ],
+            "id": "fundCode"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "SipRevisionConfig"
+            ],
+            "id": "amount"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "SipOccurrence"
+        },
+        "valueType": {
+          "form": "record",
+          "members": [
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "SipOccurrence"
+              ],
+              "id": "planId"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "SipOccurrence"
+              ],
+              "id": "revision"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "SipOccurrence"
+              ],
+              "id": "dueSlot"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "SipOccurrence"
+              ],
+              "id": "occurrenceId"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "SipOccurrence"
+              ],
+              "id": "operationId"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "SipOccurrence"
+              ],
+              "id": "fundOrderId"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "SipOccurrence"
+              ],
+              "id": "config"
+            }
+          ]
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/17"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "SipOccurrence"
+            ],
+            "id": "planId"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "SipOccurrence"
+            ],
+            "id": "revision"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "SipOccurrence"
+            ],
+            "id": "dueSlot"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "SipOccurrence"
+            ],
+            "id": "occurrenceId"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "SipOccurrence"
+            ],
+            "id": "operationId"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "SipOccurrence"
+            ],
+            "id": "fundOrderId"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "SipOccurrence"
+            ],
+            "id": "config"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "BankPaymentOriginal"
+        },
+        "valueType": {
+          "form": "record",
+          "members": [
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankPaymentOriginal"
+              ],
+              "id": "operationId"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankPaymentOriginal"
+              ],
+              "id": "fundOrderId"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankPaymentOriginal"
+              ],
+              "id": "investorAccountId"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankPaymentOriginal"
+              ],
+              "id": "fundCollectionAccountId"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankPaymentOriginal"
+              ],
+              "id": "fundCode"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankPaymentOriginal"
+              ],
+              "id": "amount"
+            }
+          ]
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/19"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankPaymentOriginal"
+            ],
+            "id": "operationId"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankPaymentOriginal"
+            ],
+            "id": "fundOrderId"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankPaymentOriginal"
+            ],
+            "id": "investorAccountId"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankPaymentOriginal"
+            ],
+            "id": "fundCollectionAccountId"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankPaymentOriginal"
+            ],
+            "id": "fundCode"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankPaymentOriginal"
+            ],
+            "id": "amount"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "BankCashSubmit"
+        },
+        "valueType": {
+          "form": "record",
+          "members": [
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankCashSubmit"
+              ],
+              "id": "clientRequestId"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankCashSubmit"
+              ],
+              "id": "fundCode"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankCashSubmit"
+              ],
+              "id": "amount"
+            }
+          ]
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/80"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankCashSubmit"
+            ],
+            "id": "clientRequestId"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankCashSubmit"
+            ],
+            "id": "fundCode"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankCashSubmit"
+            ],
+            "id": "amount"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "BankCashOriginal"
+        },
+        "valueType": {
+          "form": "record",
+          "members": [
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankCashOriginal"
+              ],
+              "id": "principalId"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankCashOriginal"
+              ],
+              "id": "clientRequestId"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankCashOriginal"
+              ],
+              "id": "authorityVersion"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankCashOriginal"
+              ],
+              "id": "request"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankCashOriginal"
+              ],
+              "id": "payment"
+            }
+          ]
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/81"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankCashOriginal"
+            ],
+            "id": "principalId"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankCashOriginal"
+            ],
+            "id": "clientRequestId"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankCashOriginal"
+            ],
+            "id": "authorityVersion"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankCashOriginal"
+            ],
+            "id": "request"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankCashOriginal"
+            ],
+            "id": "payment"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "BankSipCreate"
+        },
+        "valueType": {
+          "form": "record",
+          "members": [
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankSipCreate"
+              ],
+              "id": "clientRequestId"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankSipCreate"
+              ],
+              "id": "fundCode"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankSipCreate"
+              ],
+              "id": "amount"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankSipCreate"
+              ],
+              "id": "effectiveSlot"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankSipCreate"
+              ],
+              "id": "dueSlots"
+            }
+          ]
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/83"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankSipCreate"
+            ],
+            "id": "clientRequestId"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankSipCreate"
+            ],
+            "id": "fundCode"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankSipCreate"
+            ],
+            "id": "amount"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankSipCreate"
+            ],
+            "id": "effectiveSlot"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankSipCreate"
+            ],
+            "id": "dueSlots"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "type",
+          "owner": [],
+          "id": "BankSipCreateIntent"
+        },
+        "valueType": {
+          "form": "record",
+          "members": [
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankSipCreateIntent"
+              ],
+              "id": "principalId"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankSipCreateIntent"
+              ],
+              "id": "clientRequestId"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankSipCreateIntent"
+              ],
+              "id": "authorityVersion"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankSipCreateIntent"
+              ],
+              "id": "request"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankSipCreateIntent"
+              ],
+              "id": "planId"
+            },
+            {
+              "context": "bankwealth",
+              "kind": "member",
+              "owner": [
+                "BankSipCreateIntent"
+              ],
+              "id": "config"
+            }
+          ]
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/84"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankSipCreateIntent"
+            ],
+            "id": "principalId"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankSipCreateIntent"
+            ],
+            "id": "clientRequestId"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankSipCreateIntent"
+            ],
+            "id": "authorityVersion"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankSipCreateIntent"
+            ],
+            "id": "request"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankSipCreateIntent"
+            ],
+            "id": "planId"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "member",
+            "owner": [
+              "BankSipCreateIntent"
+            ],
+            "id": "config"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "Money"
+          ],
+          "id": "amount"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "decimal"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/11/fields/0"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "Money"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "Money"
+          ],
+          "id": "currency"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/11/fields/1"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "Money"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "MoneyWire"
+          ],
+          "id": "minorUnits"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/12/fields/0"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "MoneyWire"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "MoneyWire"
+          ],
+          "id": "currency"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/12/fields/1"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "MoneyWire"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "FundShare"
+          ],
+          "id": "fundCode"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/14/fields/0"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "FundShare"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "FundShare"
+          ],
+          "id": "shares"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "TaExactText"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/14/fields/1"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "FundShare"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "TaExactText"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "FundShare"
+          ],
+          "id": "nav"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "TaExactText"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/14/fields/2"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "FundShare"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "TaExactText"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "SipRevisionConfig"
+          ],
+          "id": "revision"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "RevisionId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/16/fields/0"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "SipRevisionConfig"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "RevisionId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "SipRevisionConfig"
+          ],
+          "id": "effectiveSlot"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/16/fields/1"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "SipRevisionConfig"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "SipRevisionConfig"
+          ],
+          "id": "investorAccountId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "AccountId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/16/fields/2"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "SipRevisionConfig"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "AccountId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "SipRevisionConfig"
+          ],
+          "id": "fundCollectionAccountId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "AccountId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/16/fields/3"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "SipRevisionConfig"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "AccountId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "SipRevisionConfig"
+          ],
+          "id": "fundCode"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/16/fields/4"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "SipRevisionConfig"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "SipRevisionConfig"
+          ],
+          "id": "amount"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "Money"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/16/fields/5"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "SipRevisionConfig"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "Money"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "SipOccurrence"
+          ],
+          "id": "planId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "PlanId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/17/fields/0"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "SipOccurrence"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "PlanId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "SipOccurrence"
+          ],
+          "id": "revision"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "RevisionId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/17/fields/1"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "SipOccurrence"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "RevisionId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "SipOccurrence"
+          ],
+          "id": "dueSlot"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/17/fields/2"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "SipOccurrence"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "SipOccurrence"
+          ],
+          "id": "occurrenceId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "OccurrenceId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/17/fields/3"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "SipOccurrence"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "OccurrenceId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "SipOccurrence"
+          ],
+          "id": "operationId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "OperationId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/17/fields/4"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "SipOccurrence"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "OperationId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "SipOccurrence"
+          ],
+          "id": "fundOrderId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "FundOrderId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/17/fields/5"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "SipOccurrence"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "FundOrderId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "SipOccurrence"
+          ],
+          "id": "config"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "SipRevisionConfig"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/17/fields/6"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "SipOccurrence"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "SipRevisionConfig"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankPaymentOriginal"
+          ],
+          "id": "operationId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "OperationId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/19/fields/0"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankPaymentOriginal"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "OperationId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankPaymentOriginal"
+          ],
+          "id": "fundOrderId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "FundOrderId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/19/fields/1"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankPaymentOriginal"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "FundOrderId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankPaymentOriginal"
+          ],
+          "id": "investorAccountId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "AccountId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/19/fields/2"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankPaymentOriginal"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "AccountId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankPaymentOriginal"
+          ],
+          "id": "fundCollectionAccountId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "AccountId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/19/fields/3"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankPaymentOriginal"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "AccountId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankPaymentOriginal"
+          ],
+          "id": "fundCode"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/19/fields/4"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankPaymentOriginal"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankPaymentOriginal"
+          ],
+          "id": "amount"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "Money"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/19/fields/5"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankPaymentOriginal"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "Money"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankCashSubmit"
+          ],
+          "id": "clientRequestId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/80/fields/0"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankCashSubmit"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankCashSubmit"
+          ],
+          "id": "fundCode"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/80/fields/1"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankCashSubmit"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankCashSubmit"
+          ],
+          "id": "amount"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "MoneyWire"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/80/fields/2"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankCashSubmit"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "MoneyWire"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankCashOriginal"
+          ],
+          "id": "principalId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/81/fields/0"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankCashOriginal"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankCashOriginal"
+          ],
+          "id": "clientRequestId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/81/fields/1"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankCashOriginal"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankCashOriginal"
+          ],
+          "id": "authorityVersion"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/81/fields/2"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankCashOriginal"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankCashOriginal"
+          ],
+          "id": "request"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankCashSubmit"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/81/fields/3"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankCashOriginal"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankCashSubmit"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankCashOriginal"
+          ],
+          "id": "payment"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankPaymentOriginal"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/81/fields/4"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankCashOriginal"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankPaymentOriginal"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankSipCreate"
+          ],
+          "id": "clientRequestId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/83/fields/0"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankSipCreate"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankSipCreate"
+          ],
+          "id": "fundCode"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/83/fields/1"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankSipCreate"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankSipCreate"
+          ],
+          "id": "amount"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "MoneyWire"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/83/fields/2"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankSipCreate"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "MoneyWire"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankSipCreate"
+          ],
+          "id": "effectiveSlot"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/83/fields/3"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankSipCreate"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankSipCreate"
+          ],
+          "id": "dueSlots"
+        },
+        "valueType": {
+          "form": "sequence",
+          "element": {
+            "form": "primitive",
+            "name": "integer"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/83/fields/4"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankSipCreate"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankSipCreateIntent"
+          ],
+          "id": "principalId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/84/fields/0"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankSipCreateIntent"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankSipCreateIntent"
+          ],
+          "id": "clientRequestId"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/84/fields/1"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankSipCreateIntent"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankSipCreateIntent"
+          ],
+          "id": "authorityVersion"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/84/fields/2"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankSipCreateIntent"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankSipCreateIntent"
+          ],
+          "id": "request"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankSipCreate"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/84/fields/3"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankSipCreateIntent"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankSipCreate"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankSipCreateIntent"
+          ],
+          "id": "planId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "PlanId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/84/fields/4"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankSipCreateIntent"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "PlanId"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "member",
+          "owner": [
+            "BankSipCreateIntent"
+          ],
+          "id": "config"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "SipRevisionConfig"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/valueObjects/84/fields/5"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "BankSipCreateIntent"
+          },
+          {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "SipRevisionConfig"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "aggregate",
+          "owner": [],
+          "id": "CreditBalance"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/0"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "CreditBalance"
+          ],
+          "id": "AccountInitialized"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/0/events/0"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "CreditBalance"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "CreditBalance"
+          ],
+          "id": "ReserveFundsConfirmed"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/0/events/1"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "CreditBalance"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "CreditBalance"
+          ],
+          "id": "DeductFundsConfirmed"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/0/events/2"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "CreditBalance"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "CreditBalance"
+          ],
+          "id": "ReleaseReservedFundsConfirmed"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/0/events/3"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "CreditBalance"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "CreditBalance"
+          ],
+          "id": "RecordIncomingCreditsConfirmed"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/0/events/4"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "CreditBalance"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "CreditBalance"
+          ],
+          "id": "CommitIncomingCreditsConfirmed"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/0/events/5"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "CreditBalance"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "CreditBalance"
+          ],
+          "id": "CancelIncomingCreditConfirmed"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/0/events/6"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "CreditBalance"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "aggregate",
+          "owner": [],
+          "id": "FundOrder"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "FundPurchaseSettlementRequested"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/0"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "ReserveFundSubscriptionConfirmed"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/1"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "FundSubscriptionPaymentConfirmed"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/2"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "CashFundSubscriptionCanceled"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/3"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "FundCashPaymentSucceeded"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/4"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "FundCashPaymentRejectedBeforeEffects"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/5"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "FundCashPaymentCompensated"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/6"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "FundCashPaymentRecoveryRequired"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/7"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "FundCashPaymentOutcomeUnknown"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/8"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "FundTASubmissionRegistered"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/9"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "FundTAAccepted"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/10"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "FundTASharesConfirmed"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/11"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "FundTARejected"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/12"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "FundTAUnknown"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/13"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "FundPurchaseRefundRequested"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/14"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "FundRefundSucceeded"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/15"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "FundRefundRejectedBeforeEffects"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/16"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "FundRefundCompensated"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/17"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "FundRefundRecoveryRequired"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/18"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "FundRefundOutcomeUnknown"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/19"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "FundTAReceiptObserved"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/20"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "BankPaymentResultSucceeded"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/21"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "BankPaymentResultRejectedBeforeEffects"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/22"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "BankPaymentResultCompensated"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/23"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "BankPaymentResultRecoveryRequired"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/24"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "BankPaymentResultOutcomeUnknown"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/25"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "BankRefundResultSucceeded"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/26"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "BankRefundResultRejectedBeforeEffects"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/27"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "BankRefundResultCompensated"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/28"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "BankRefundResultRecoveryRequired"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/29"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "BankRefundResultOutcomeUnknown"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/30"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "CashRequestSourceRecorded"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/events/31"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "FundOrder"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "aggregate",
+          "owner": [],
+          "id": "SipPlan"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2"
+        },
+        "dependencies": []
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "SipPlanCreated"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/events/0"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "SipPlan"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "SipDueSlotAppended"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/events/1"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "SipPlan"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "SipScheduleSealed"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/events/2"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "SipPlan"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "SipPlanRevised"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/events/3"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "SipPlan"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "SipClockAdvanced"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/events/4"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "SipPlan"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "SipPlanPaused"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/events/5"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "SipPlan"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "SipPlanResumed"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/events/6"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "SipPlan"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "SipDueSlotObserved"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/events/7"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "SipPlan"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "SipPausedDueSlotSkipped"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/events/8"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "SipPlan"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "SipSkippedSlotAdvanced"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/events/9"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "SipPlan"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "SipInstallmentTriggered"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/events/10"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "SipPlan"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "SipInstallmentPending"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/events/11"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "SipPlan"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "SipInstallmentOutcomeUnknown"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/events/12"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "SipPlan"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "SipInstallmentRecoveryRequired"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/events/13"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "SipPlan"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "SipInstallmentRefundInProgress"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/events/14"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "SipPlan"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "SipInstallmentSucceeded"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/events/15"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "SipPlan"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "SipInstallmentFailed"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/events/16"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "SipPlan"
+          }
+        ]
+      },
+      {
+        "ref": {
+          "context": "bankwealth",
+          "kind": "event",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "SipCreateIntentRecorded"
+        },
+        "valueType": null,
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/events/17"
+        },
+        "dependencies": [
+          {
+            "context": "bankwealth",
+            "kind": "aggregate",
+            "owner": [],
+            "id": "SipPlan"
+          }
+        ]
+      }
+    ]
+  },
+  "domain-folds": {
+    "defaults": [
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "CreditBalance"
+          ],
+          "id": "id"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "AccountId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/0/stateFields/0/default"
+        },
+        "value": ""
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "CreditBalance"
+          ],
+          "id": "initialized"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "boolean"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/0/stateFields/1/default"
+        },
+        "value": false
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "CreditBalance"
+          ],
+          "id": "accountBalance"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "primitive",
+            "name": "string"
+          },
+          "value": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "Money"
+            }
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/0/stateFields/2/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "CreditBalance"
+          ],
+          "id": "reservedAmount"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "TxId"
+            }
+          },
+          "value": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "Money"
+            }
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/0/stateFields/3/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "CreditBalance"
+          ],
+          "id": "incomingCredits"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "TxId"
+            }
+          },
+          "value": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "Money"
+            }
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/0/stateFields/4/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "CreditBalance"
+          ],
+          "id": "committedOutgoing"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "TxId"
+            }
+          },
+          "value": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "Money"
+            }
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/0/stateFields/5/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "CreditBalance"
+          ],
+          "id": "committedIncoming"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "TxId"
+            }
+          },
+          "value": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "Money"
+            }
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/0/stateFields/6/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "CreditBalance"
+          ],
+          "id": "compensatedOutgoing"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "TxId"
+            }
+          },
+          "value": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "Money"
+            }
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/0/stateFields/7/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "CreditBalance"
+          ],
+          "id": "compensatedIncoming"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "TxId"
+            }
+          },
+          "value": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "Money"
+            }
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/0/stateFields/8/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "id"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "FundOrderId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/0/default"
+        },
+        "value": ""
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "status"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/1/default"
+        },
+        "value": "new"
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "operationId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "OperationId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/2/default"
+        },
+        "value": ""
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "investorAccountId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "AccountId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/3/default"
+        },
+        "value": ""
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "fundCollectionAccountId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "AccountId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/4/default"
+        },
+        "value": ""
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "fundCode"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/5/default"
+        },
+        "value": ""
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "amount"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "Money"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/6/default"
+        },
+        "value": {
+          "amount": "0.00",
+          "currency": "CNY"
+        }
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "reservedSubscriptions"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "TxId"
+            }
+          },
+          "value": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "Money"
+            }
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/7/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "committedSubscriptions"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "TxId"
+            }
+          },
+          "value": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "Money"
+            }
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/8/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "compensatedSubscriptions"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "TxId"
+            }
+          },
+          "value": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "Money"
+            }
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/9/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "selectedPaymentTxId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "TxId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/10/default"
+        },
+        "value": ""
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "paymentOutcome"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/11/default"
+        },
+        "value": ""
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "cashPaymentResults"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "TxId"
+            }
+          },
+          "value": {
+            "form": "primitive",
+            "name": "string"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/12/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "cashPaymentFinalResults"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "TxId"
+            }
+          },
+          "value": {
+            "form": "primitive",
+            "name": "string"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/13/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "taRequestId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "TaRequestId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/14/default"
+        },
+        "value": ""
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "taReference"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/15/default"
+        },
+        "value": ""
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "taStatus"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/16/default"
+        },
+        "value": ""
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "taReceipts"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "primitive",
+            "name": "string"
+          },
+          "value": {
+            "form": "primitive",
+            "name": "string"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/17/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "taReceiptOutcomes"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "primitive",
+            "name": "string"
+          },
+          "value": {
+            "form": "primitive",
+            "name": "string"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/18/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "taConfirmedShares"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "FundShare"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/19/default"
+        },
+        "value": {
+          "fundCode": "",
+          "shares": "",
+          "nav": ""
+        }
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "taRejectionReason"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/20/default"
+        },
+        "value": ""
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "refundOperationId"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "OperationId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/21/default"
+        },
+        "value": ""
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "refundOutcome"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "string"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/22/default"
+        },
+        "value": ""
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "refundResultReceipts"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "primitive",
+            "name": "string"
+          },
+          "value": {
+            "form": "primitive",
+            "name": "string"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/23/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "refundFinalResults"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "TxId"
+            }
+          },
+          "value": {
+            "form": "primitive",
+            "name": "string"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/24/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "taObservedReceipts"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "primitive",
+            "name": "string"
+          },
+          "value": {
+            "form": "primitive",
+            "name": "string"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/25/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "paymentObservedResults"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "TxId"
+            }
+          },
+          "value": {
+            "form": "primitive",
+            "name": "string"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/26/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "refundObservedResults"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "TxId"
+            }
+          },
+          "value": {
+            "form": "primitive",
+            "name": "string"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/27/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "cashRequestSource"
+        },
+        "valueType": {
+          "form": "optional",
+          "element": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "BankCashOriginal"
+            }
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/28/default"
+        },
+        "value": {
+          "present": false,
+          "value": null
+        }
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "FundOrder"
+          ],
+          "id": "cashRequestOriginals"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "primitive",
+            "name": "string"
+          },
+          "value": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "BankCashOriginal"
+            }
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/1/stateFields/29/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "id"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "PlanId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/0/default"
+        },
+        "value": ""
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "initialized"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "boolean"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/1/default"
+        },
+        "value": false
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "scheduleSealed"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "boolean"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/2/default"
+        },
+        "value": false
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "scheduleCount"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/3/default"
+        },
+        "value": "0"
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "lastDueSlot"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/4/default"
+        },
+        "value": "-1"
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "slots"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "primitive",
+            "name": "integer"
+          },
+          "value": {
+            "form": "primitive",
+            "name": "integer"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/5/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "currentTick"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/6/default"
+        },
+        "value": "-1"
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "observedCount"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/7/default"
+        },
+        "value": "0"
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "startCount"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/8/default"
+        },
+        "value": "0"
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "paused"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "boolean"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/9/default"
+        },
+        "value": false
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "pauseTick"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/10/default"
+        },
+        "value": "-1"
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "pauseIntervals"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "primitive",
+            "name": "integer"
+          },
+          "value": {
+            "form": "primitive",
+            "name": "integer"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/11/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "revisions"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "RevisionId"
+            }
+          },
+          "value": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "SipRevisionConfig"
+            }
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/12/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "revisionEnds"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "RevisionId"
+            }
+          },
+          "value": {
+            "form": "primitive",
+            "name": "integer"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/13/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "latestRevision"
+        },
+        "valueType": {
+          "form": "nominal",
+          "ref": {
+            "context": "bankwealth",
+            "kind": "type",
+            "owner": [],
+            "id": "RevisionId"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/14/default"
+        },
+        "value": ""
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "latestEffectiveSlot"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/15/default"
+        },
+        "value": "-1"
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "slotDisposition"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "primitive",
+            "name": "integer"
+          },
+          "value": {
+            "form": "primitive",
+            "name": "string"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/16/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "occurrences"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "primitive",
+            "name": "integer"
+          },
+          "value": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "SipOccurrence"
+            }
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/17/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "occurrenceProgress"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "OccurrenceId"
+            }
+          },
+          "value": {
+            "form": "primitive",
+            "name": "string"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/18/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "firstTerminals"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "OccurrenceId"
+            }
+          },
+          "value": {
+            "form": "primitive",
+            "name": "string"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/19/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "terminalReceiptBodies"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "primitive",
+            "name": "string"
+          },
+          "value": {
+            "form": "primitive",
+            "name": "string"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/20/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "successTotal"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/21/default"
+        },
+        "value": "0"
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "failureTotal"
+        },
+        "valueType": {
+          "form": "primitive",
+          "name": "integer"
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/22/default"
+        },
+        "value": "0"
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "createIntent"
+        },
+        "valueType": {
+          "form": "optional",
+          "element": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "BankSipCreateIntent"
+            }
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/23/default"
+        },
+        "value": {
+          "present": false,
+          "value": null
+        }
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "sipCreateIntents"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "primitive",
+            "name": "string"
+          },
+          "value": {
+            "form": "nominal",
+            "ref": {
+              "context": "bankwealth",
+              "kind": "type",
+              "owner": [],
+              "id": "BankSipCreateIntent"
+            }
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/24/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "createIntentDueSlots"
+        },
+        "valueType": {
+          "form": "sequence",
+          "element": {
+            "form": "primitive",
+            "name": "integer"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/25/default"
+        },
+        "value": []
+      },
+      {
+        "target": {
+          "context": "bankwealth",
+          "kind": "state-field",
+          "owner": [
+            "SipPlan"
+          ],
+          "id": "intentAppendedDueSlots"
+        },
+        "valueType": {
+          "form": "map",
+          "key": {
+            "form": "primitive",
+            "name": "integer"
+          },
+          "value": {
+            "form": "primitive",
+            "name": "integer"
+          }
+        },
+        "source": {
+          "document": "bank-v1",
+          "pointer": "/aggregates/2/stateFields/26/default"
+        },
+        "value": []
+      }
+    ]
+  },
+  "exact-value-types": [
+    {
+      "domain": {
+        "context": "bankwealth",
+        "kind": "type",
+        "owner": [],
+        "id": "Money"
+      },
+      "version": "bank-v1-1",
+      "form": "unit-decimal",
+      "precision": 38,
+      "scale": 2,
+      "amountMember": {
+        "context": "bankwealth",
+        "kind": "member",
+        "owner": [
+          "Money"
+        ],
+        "id": "amount"
+      },
+      "unitMember": {
+        "context": "bankwealth",
+        "kind": "member",
+        "owner": [
+          "Money"
+        ],
+        "id": "currency"
+      },
+      "units": [
+        "CNY"
+      ],
+      "source": {
+        "document": "bank-v1",
+        "pointer": "/valueObjects/11"
+      }
+    },
+    {
+      "domain": {
+        "context": "bankwealth",
+        "kind": "type",
+        "owner": [],
+        "id": "AmountDecimal"
+      },
+      "version": "bank-v1-1",
+      "form": "decimal",
+      "precision": 38,
+      "scale": 2,
+      "amountMember": null,
+      "unitMember": null,
+      "units": [],
+      "source": {
+        "document": "bank-v1",
+        "pointer": "/valueObjects/8"
+      }
+    }
+  ]
+}

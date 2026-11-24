@@ -1,0 +1,7 @@
+package example.bankwealth.domain
+
+final case class SipPlanState(id: example.bankwealth.domain.values.PlanId, initialized: Boolean, scheduleSealed: Boolean, scheduleCount: Long, lastDueSlot: Long, slots: Map[Long, Long], currentTick: Long, observedCount: Long, startCount: Long, paused: Boolean, pauseTick: Long, pauseIntervals: Map[Long, Long], revisions: Map[example.bankwealth.domain.values.RevisionId, example.bankwealth.domain.values.SipRevisionConfig], revisionEnds: Map[example.bankwealth.domain.values.RevisionId, Long], latestRevision: example.bankwealth.domain.values.RevisionId, latestEffectiveSlot: Long, slotDisposition: Map[Long, String], occurrences: Map[Long, example.bankwealth.domain.values.SipOccurrence], occurrenceProgress: Map[example.bankwealth.domain.values.OccurrenceId, String], firstTerminals: Map[example.bankwealth.domain.values.OccurrenceId, String], terminalReceiptBodies: Map[String, String], successTotal: Long, failureTotal: Long, createIntent: Option[example.bankwealth.domain.values.BankSipCreateIntent], sipCreateIntents: Map[String, example.bankwealth.domain.values.BankSipCreateIntent], createIntentDueSlots: Vector[Long], intentAppendedDueSlots: Map[Long, Long])
+
+object SipPlanState {
+  def empty: SipPlanState = example.bankwealth.domain.entities.SipPlanEntity.empty
+}

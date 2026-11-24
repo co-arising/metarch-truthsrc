@@ -22,6 +22,7 @@ import { family as pipelineInvocationFace } from './pipeline-invocation-face.mjs
 import { family as effectFace } from './effect-face.mjs';
 import { family as aggregateInvariantRules } from './aggregate-invariant-rules.mjs';
 import { family as valueObject } from './value-object.mjs';
+import { family as domainEntity } from './domain-entity.mjs';
 
 const CURATED_FAMILIES = [
   aggregateRulesFormal,
@@ -36,6 +37,7 @@ const CURATED_FAMILIES = [
   effectFace,
   aggregateInvariantRules,
   valueObject,
+  domainEntity,
 ];
 
 for (const family of CURATED_FAMILIES) registerFamily(family);

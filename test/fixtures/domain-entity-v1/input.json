@@ -1,0 +1,1786 @@
+{
+  "schemaVersion": "truthsrc.domain-entity-input/v1",
+  "packages": [
+    {
+      "context": "bankwealth",
+      "package": "example.bankwealth"
+    }
+  ],
+  "aggregates": [
+    {
+      "context": "bankwealth",
+      "name": "CreditBalance",
+      "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/0"
+      },
+      "fields": [
+        {
+          "name": "id",
+          "type": {
+            "form": "nominal",
+            "context": "bankwealth",
+            "name": "AccountId"
+          },
+          "default": {
+            "kind": "nominal-wrapper",
+            "context": "bankwealth",
+            "name": "AccountId",
+            "inner": {
+              "kind": "string",
+              "value": ""
+            }
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/0/stateFields/0/default"
+          }
+        },
+        {
+          "name": "initialized",
+          "type": {
+            "form": "primitive",
+            "name": "boolean"
+          },
+          "default": {
+            "kind": "boolean",
+            "value": false
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/0/stateFields/1/default"
+          }
+        },
+        {
+          "name": "accountBalance",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "value": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "Money"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/0/stateFields/2/default"
+          }
+        },
+        {
+          "name": "reservedAmount",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "TxId"
+            },
+            "value": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "Money"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/0/stateFields/3/default"
+          }
+        },
+        {
+          "name": "incomingCredits",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "TxId"
+            },
+            "value": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "Money"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/0/stateFields/4/default"
+          }
+        },
+        {
+          "name": "committedOutgoing",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "TxId"
+            },
+            "value": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "Money"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/0/stateFields/5/default"
+          }
+        },
+        {
+          "name": "committedIncoming",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "TxId"
+            },
+            "value": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "Money"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/0/stateFields/6/default"
+          }
+        },
+        {
+          "name": "compensatedOutgoing",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "TxId"
+            },
+            "value": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "Money"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/0/stateFields/7/default"
+          }
+        },
+        {
+          "name": "compensatedIncoming",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "TxId"
+            },
+            "value": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "Money"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/0/stateFields/8/default"
+          }
+        }
+      ],
+      "events": [
+        {
+          "name": "AccountInitialized",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/0/events/0"
+          }
+        },
+        {
+          "name": "ReserveFundsConfirmed",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/0/events/1"
+          }
+        },
+        {
+          "name": "DeductFundsConfirmed",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/0/events/2"
+          }
+        },
+        {
+          "name": "ReleaseReservedFundsConfirmed",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/0/events/3"
+          }
+        },
+        {
+          "name": "RecordIncomingCreditsConfirmed",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/0/events/4"
+          }
+        },
+        {
+          "name": "CommitIncomingCreditsConfirmed",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/0/events/5"
+          }
+        },
+        {
+          "name": "CancelIncomingCreditConfirmed",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/0/events/6"
+          }
+        }
+      ]
+    },
+    {
+      "context": "bankwealth",
+      "name": "FundOrder",
+      "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/1"
+      },
+      "fields": [
+        {
+          "name": "id",
+          "type": {
+            "form": "nominal",
+            "context": "bankwealth",
+            "name": "FundOrderId"
+          },
+          "default": {
+            "kind": "nominal-wrapper",
+            "context": "bankwealth",
+            "name": "FundOrderId",
+            "inner": {
+              "kind": "string",
+              "value": ""
+            }
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/0/default"
+          }
+        },
+        {
+          "name": "status",
+          "type": {
+            "form": "primitive",
+            "name": "string"
+          },
+          "default": {
+            "kind": "string",
+            "value": "new"
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/1/default"
+          }
+        },
+        {
+          "name": "operationId",
+          "type": {
+            "form": "nominal",
+            "context": "bankwealth",
+            "name": "OperationId"
+          },
+          "default": {
+            "kind": "nominal-wrapper",
+            "context": "bankwealth",
+            "name": "OperationId",
+            "inner": {
+              "kind": "string",
+              "value": ""
+            }
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/2/default"
+          }
+        },
+        {
+          "name": "investorAccountId",
+          "type": {
+            "form": "nominal",
+            "context": "bankwealth",
+            "name": "AccountId"
+          },
+          "default": {
+            "kind": "nominal-wrapper",
+            "context": "bankwealth",
+            "name": "AccountId",
+            "inner": {
+              "kind": "string",
+              "value": ""
+            }
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/3/default"
+          }
+        },
+        {
+          "name": "fundCollectionAccountId",
+          "type": {
+            "form": "nominal",
+            "context": "bankwealth",
+            "name": "AccountId"
+          },
+          "default": {
+            "kind": "nominal-wrapper",
+            "context": "bankwealth",
+            "name": "AccountId",
+            "inner": {
+              "kind": "string",
+              "value": ""
+            }
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/4/default"
+          }
+        },
+        {
+          "name": "fundCode",
+          "type": {
+            "form": "primitive",
+            "name": "string"
+          },
+          "default": {
+            "kind": "string",
+            "value": ""
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/5/default"
+          }
+        },
+        {
+          "name": "amount",
+          "type": {
+            "form": "nominal",
+            "context": "bankwealth",
+            "name": "Money"
+          },
+          "default": {
+            "kind": "nominal-exact-unit-decimal",
+            "context": "bankwealth",
+            "name": "Money",
+            "amount": "0.00",
+            "unit": "CNY"
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/6/default"
+          }
+        },
+        {
+          "name": "reservedSubscriptions",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "TxId"
+            },
+            "value": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "Money"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/7/default"
+          }
+        },
+        {
+          "name": "committedSubscriptions",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "TxId"
+            },
+            "value": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "Money"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/8/default"
+          }
+        },
+        {
+          "name": "compensatedSubscriptions",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "TxId"
+            },
+            "value": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "Money"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/9/default"
+          }
+        },
+        {
+          "name": "selectedPaymentTxId",
+          "type": {
+            "form": "nominal",
+            "context": "bankwealth",
+            "name": "TxId"
+          },
+          "default": {
+            "kind": "nominal-wrapper",
+            "context": "bankwealth",
+            "name": "TxId",
+            "inner": {
+              "kind": "string",
+              "value": ""
+            }
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/10/default"
+          }
+        },
+        {
+          "name": "paymentOutcome",
+          "type": {
+            "form": "primitive",
+            "name": "string"
+          },
+          "default": {
+            "kind": "string",
+            "value": ""
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/11/default"
+          }
+        },
+        {
+          "name": "cashPaymentResults",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "TxId"
+            },
+            "value": {
+              "form": "primitive",
+              "name": "string"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/12/default"
+          }
+        },
+        {
+          "name": "cashPaymentFinalResults",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "TxId"
+            },
+            "value": {
+              "form": "primitive",
+              "name": "string"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/13/default"
+          }
+        },
+        {
+          "name": "taRequestId",
+          "type": {
+            "form": "nominal",
+            "context": "bankwealth",
+            "name": "TaRequestId"
+          },
+          "default": {
+            "kind": "nominal-wrapper",
+            "context": "bankwealth",
+            "name": "TaRequestId",
+            "inner": {
+              "kind": "string",
+              "value": ""
+            }
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/14/default"
+          }
+        },
+        {
+          "name": "taReference",
+          "type": {
+            "form": "primitive",
+            "name": "string"
+          },
+          "default": {
+            "kind": "string",
+            "value": ""
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/15/default"
+          }
+        },
+        {
+          "name": "taStatus",
+          "type": {
+            "form": "primitive",
+            "name": "string"
+          },
+          "default": {
+            "kind": "string",
+            "value": ""
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/16/default"
+          }
+        },
+        {
+          "name": "taReceipts",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "value": {
+              "form": "primitive",
+              "name": "string"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/17/default"
+          }
+        },
+        {
+          "name": "taReceiptOutcomes",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "value": {
+              "form": "primitive",
+              "name": "string"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/18/default"
+          }
+        },
+        {
+          "name": "taConfirmedShares",
+          "type": {
+            "form": "nominal",
+            "context": "bankwealth",
+            "name": "FundShare"
+          },
+          "default": {
+            "kind": "nominal-record",
+            "context": "bankwealth",
+            "name": "FundShare",
+            "args": [
+              {
+                "kind": "string",
+                "value": ""
+              },
+              {
+                "kind": "nominal-wrapper",
+                "context": "bankwealth",
+                "name": "TaExactText",
+                "inner": {
+                  "kind": "string",
+                  "value": ""
+                }
+              },
+              {
+                "kind": "nominal-wrapper",
+                "context": "bankwealth",
+                "name": "TaExactText",
+                "inner": {
+                  "kind": "string",
+                  "value": ""
+                }
+              }
+            ]
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/19/default"
+          }
+        },
+        {
+          "name": "taRejectionReason",
+          "type": {
+            "form": "primitive",
+            "name": "string"
+          },
+          "default": {
+            "kind": "string",
+            "value": ""
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/20/default"
+          }
+        },
+        {
+          "name": "refundOperationId",
+          "type": {
+            "form": "nominal",
+            "context": "bankwealth",
+            "name": "OperationId"
+          },
+          "default": {
+            "kind": "nominal-wrapper",
+            "context": "bankwealth",
+            "name": "OperationId",
+            "inner": {
+              "kind": "string",
+              "value": ""
+            }
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/21/default"
+          }
+        },
+        {
+          "name": "refundOutcome",
+          "type": {
+            "form": "primitive",
+            "name": "string"
+          },
+          "default": {
+            "kind": "string",
+            "value": ""
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/22/default"
+          }
+        },
+        {
+          "name": "refundResultReceipts",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "value": {
+              "form": "primitive",
+              "name": "string"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/23/default"
+          }
+        },
+        {
+          "name": "refundFinalResults",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "TxId"
+            },
+            "value": {
+              "form": "primitive",
+              "name": "string"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/24/default"
+          }
+        },
+        {
+          "name": "taObservedReceipts",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "value": {
+              "form": "primitive",
+              "name": "string"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/25/default"
+          }
+        },
+        {
+          "name": "paymentObservedResults",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "TxId"
+            },
+            "value": {
+              "form": "primitive",
+              "name": "string"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/26/default"
+          }
+        },
+        {
+          "name": "refundObservedResults",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "TxId"
+            },
+            "value": {
+              "form": "primitive",
+              "name": "string"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/27/default"
+          }
+        },
+        {
+          "name": "cashRequestSource",
+          "type": {
+            "form": "optional",
+            "element": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "BankCashOriginal"
+            }
+          },
+          "default": {
+            "kind": "optional",
+            "present": false
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/28/default"
+          }
+        },
+        {
+          "name": "cashRequestOriginals",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "value": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "BankCashOriginal"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/stateFields/29/default"
+          }
+        }
+      ],
+      "events": [
+        {
+          "name": "FundPurchaseSettlementRequested",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/0"
+          }
+        },
+        {
+          "name": "ReserveFundSubscriptionConfirmed",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/1"
+          }
+        },
+        {
+          "name": "FundSubscriptionPaymentConfirmed",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/2"
+          }
+        },
+        {
+          "name": "CashFundSubscriptionCanceled",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/3"
+          }
+        },
+        {
+          "name": "FundCashPaymentSucceeded",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/4"
+          }
+        },
+        {
+          "name": "FundCashPaymentRejectedBeforeEffects",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/5"
+          }
+        },
+        {
+          "name": "FundCashPaymentCompensated",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/6"
+          }
+        },
+        {
+          "name": "FundCashPaymentRecoveryRequired",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/7"
+          }
+        },
+        {
+          "name": "FundCashPaymentOutcomeUnknown",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/8"
+          }
+        },
+        {
+          "name": "FundTASubmissionRegistered",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/9"
+          }
+        },
+        {
+          "name": "FundTAAccepted",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/10"
+          }
+        },
+        {
+          "name": "FundTASharesConfirmed",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/11"
+          }
+        },
+        {
+          "name": "FundTARejected",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/12"
+          }
+        },
+        {
+          "name": "FundTAUnknown",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/13"
+          }
+        },
+        {
+          "name": "FundPurchaseRefundRequested",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/14"
+          }
+        },
+        {
+          "name": "FundRefundSucceeded",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/15"
+          }
+        },
+        {
+          "name": "FundRefundRejectedBeforeEffects",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/16"
+          }
+        },
+        {
+          "name": "FundRefundCompensated",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/17"
+          }
+        },
+        {
+          "name": "FundRefundRecoveryRequired",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/18"
+          }
+        },
+        {
+          "name": "FundRefundOutcomeUnknown",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/19"
+          }
+        },
+        {
+          "name": "FundTAReceiptObserved",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/20"
+          }
+        },
+        {
+          "name": "BankPaymentResultSucceeded",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/21"
+          }
+        },
+        {
+          "name": "BankPaymentResultRejectedBeforeEffects",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/22"
+          }
+        },
+        {
+          "name": "BankPaymentResultCompensated",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/23"
+          }
+        },
+        {
+          "name": "BankPaymentResultRecoveryRequired",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/24"
+          }
+        },
+        {
+          "name": "BankPaymentResultOutcomeUnknown",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/25"
+          }
+        },
+        {
+          "name": "BankRefundResultSucceeded",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/26"
+          }
+        },
+        {
+          "name": "BankRefundResultRejectedBeforeEffects",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/27"
+          }
+        },
+        {
+          "name": "BankRefundResultCompensated",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/28"
+          }
+        },
+        {
+          "name": "BankRefundResultRecoveryRequired",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/29"
+          }
+        },
+        {
+          "name": "BankRefundResultOutcomeUnknown",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/30"
+          }
+        },
+        {
+          "name": "CashRequestSourceRecorded",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/1/events/31"
+          }
+        }
+      ]
+    },
+    {
+      "context": "bankwealth",
+      "name": "SipPlan",
+      "source": {
+        "document": "bank-v1",
+        "pointer": "/aggregates/2"
+      },
+      "fields": [
+        {
+          "name": "id",
+          "type": {
+            "form": "nominal",
+            "context": "bankwealth",
+            "name": "PlanId"
+          },
+          "default": {
+            "kind": "nominal-wrapper",
+            "context": "bankwealth",
+            "name": "PlanId",
+            "inner": {
+              "kind": "string",
+              "value": ""
+            }
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/0/default"
+          }
+        },
+        {
+          "name": "initialized",
+          "type": {
+            "form": "primitive",
+            "name": "boolean"
+          },
+          "default": {
+            "kind": "boolean",
+            "value": false
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/1/default"
+          }
+        },
+        {
+          "name": "scheduleSealed",
+          "type": {
+            "form": "primitive",
+            "name": "boolean"
+          },
+          "default": {
+            "kind": "boolean",
+            "value": false
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/2/default"
+          }
+        },
+        {
+          "name": "scheduleCount",
+          "type": {
+            "form": "primitive",
+            "name": "integer"
+          },
+          "default": {
+            "kind": "integer",
+            "value": "0"
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/3/default"
+          }
+        },
+        {
+          "name": "lastDueSlot",
+          "type": {
+            "form": "primitive",
+            "name": "integer"
+          },
+          "default": {
+            "kind": "integer",
+            "value": "-1"
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/4/default"
+          }
+        },
+        {
+          "name": "slots",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "primitive",
+              "name": "integer"
+            },
+            "value": {
+              "form": "primitive",
+              "name": "integer"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/5/default"
+          }
+        },
+        {
+          "name": "currentTick",
+          "type": {
+            "form": "primitive",
+            "name": "integer"
+          },
+          "default": {
+            "kind": "integer",
+            "value": "-1"
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/6/default"
+          }
+        },
+        {
+          "name": "observedCount",
+          "type": {
+            "form": "primitive",
+            "name": "integer"
+          },
+          "default": {
+            "kind": "integer",
+            "value": "0"
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/7/default"
+          }
+        },
+        {
+          "name": "startCount",
+          "type": {
+            "form": "primitive",
+            "name": "integer"
+          },
+          "default": {
+            "kind": "integer",
+            "value": "0"
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/8/default"
+          }
+        },
+        {
+          "name": "paused",
+          "type": {
+            "form": "primitive",
+            "name": "boolean"
+          },
+          "default": {
+            "kind": "boolean",
+            "value": false
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/9/default"
+          }
+        },
+        {
+          "name": "pauseTick",
+          "type": {
+            "form": "primitive",
+            "name": "integer"
+          },
+          "default": {
+            "kind": "integer",
+            "value": "-1"
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/10/default"
+          }
+        },
+        {
+          "name": "pauseIntervals",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "primitive",
+              "name": "integer"
+            },
+            "value": {
+              "form": "primitive",
+              "name": "integer"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/11/default"
+          }
+        },
+        {
+          "name": "revisions",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "RevisionId"
+            },
+            "value": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "SipRevisionConfig"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/12/default"
+          }
+        },
+        {
+          "name": "revisionEnds",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "RevisionId"
+            },
+            "value": {
+              "form": "primitive",
+              "name": "integer"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/13/default"
+          }
+        },
+        {
+          "name": "latestRevision",
+          "type": {
+            "form": "nominal",
+            "context": "bankwealth",
+            "name": "RevisionId"
+          },
+          "default": {
+            "kind": "nominal-wrapper",
+            "context": "bankwealth",
+            "name": "RevisionId",
+            "inner": {
+              "kind": "string",
+              "value": ""
+            }
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/14/default"
+          }
+        },
+        {
+          "name": "latestEffectiveSlot",
+          "type": {
+            "form": "primitive",
+            "name": "integer"
+          },
+          "default": {
+            "kind": "integer",
+            "value": "-1"
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/15/default"
+          }
+        },
+        {
+          "name": "slotDisposition",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "primitive",
+              "name": "integer"
+            },
+            "value": {
+              "form": "primitive",
+              "name": "string"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/16/default"
+          }
+        },
+        {
+          "name": "occurrences",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "primitive",
+              "name": "integer"
+            },
+            "value": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "SipOccurrence"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/17/default"
+          }
+        },
+        {
+          "name": "occurrenceProgress",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "OccurrenceId"
+            },
+            "value": {
+              "form": "primitive",
+              "name": "string"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/18/default"
+          }
+        },
+        {
+          "name": "firstTerminals",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "OccurrenceId"
+            },
+            "value": {
+              "form": "primitive",
+              "name": "string"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/19/default"
+          }
+        },
+        {
+          "name": "terminalReceiptBodies",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "value": {
+              "form": "primitive",
+              "name": "string"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/20/default"
+          }
+        },
+        {
+          "name": "successTotal",
+          "type": {
+            "form": "primitive",
+            "name": "integer"
+          },
+          "default": {
+            "kind": "integer",
+            "value": "0"
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/21/default"
+          }
+        },
+        {
+          "name": "failureTotal",
+          "type": {
+            "form": "primitive",
+            "name": "integer"
+          },
+          "default": {
+            "kind": "integer",
+            "value": "0"
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/22/default"
+          }
+        },
+        {
+          "name": "createIntent",
+          "type": {
+            "form": "optional",
+            "element": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "BankSipCreateIntent"
+            }
+          },
+          "default": {
+            "kind": "optional",
+            "present": false
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/23/default"
+          }
+        },
+        {
+          "name": "sipCreateIntents",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "primitive",
+              "name": "string"
+            },
+            "value": {
+              "form": "nominal",
+              "context": "bankwealth",
+              "name": "BankSipCreateIntent"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/24/default"
+          }
+        },
+        {
+          "name": "createIntentDueSlots",
+          "type": {
+            "form": "sequence",
+            "element": {
+              "form": "primitive",
+              "name": "integer"
+            }
+          },
+          "default": {
+            "kind": "sequence",
+            "elements": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/25/default"
+          }
+        },
+        {
+          "name": "intentAppendedDueSlots",
+          "type": {
+            "form": "map",
+            "key": {
+              "form": "primitive",
+              "name": "integer"
+            },
+            "value": {
+              "form": "primitive",
+              "name": "integer"
+            }
+          },
+          "default": {
+            "kind": "map",
+            "entries": []
+          },
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/stateFields/26/default"
+          }
+        }
+      ],
+      "events": [
+        {
+          "name": "SipPlanCreated",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/events/0"
+          }
+        },
+        {
+          "name": "SipDueSlotAppended",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/events/1"
+          }
+        },
+        {
+          "name": "SipScheduleSealed",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/events/2"
+          }
+        },
+        {
+          "name": "SipPlanRevised",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/events/3"
+          }
+        },
+        {
+          "name": "SipClockAdvanced",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/events/4"
+          }
+        },
+        {
+          "name": "SipPlanPaused",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/events/5"
+          }
+        },
+        {
+          "name": "SipPlanResumed",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/events/6"
+          }
+        },
+        {
+          "name": "SipDueSlotObserved",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/events/7"
+          }
+        },
+        {
+          "name": "SipPausedDueSlotSkipped",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/events/8"
+          }
+        },
+        {
+          "name": "SipSkippedSlotAdvanced",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/events/9"
+          }
+        },
+        {
+          "name": "SipInstallmentTriggered",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/events/10"
+          }
+        },
+        {
+          "name": "SipInstallmentPending",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/events/11"
+          }
+        },
+        {
+          "name": "SipInstallmentOutcomeUnknown",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/events/12"
+          }
+        },
+        {
+          "name": "SipInstallmentRecoveryRequired",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/events/13"
+          }
+        },
+        {
+          "name": "SipInstallmentRefundInProgress",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/events/14"
+          }
+        },
+        {
+          "name": "SipInstallmentSucceeded",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/events/15"
+          }
+        },
+        {
+          "name": "SipInstallmentFailed",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/events/16"
+          }
+        },
+        {
+          "name": "SipCreateIntentRecorded",
+          "source": {
+            "document": "bank-v1",
+            "pointer": "/aggregates/2/events/17"
+          }
+        }
+      ]
+    }
+  ]
+}

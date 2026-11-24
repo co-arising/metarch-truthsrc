@@ -1,0 +1,7 @@
+package example.bankwealth.domain
+
+final case class CreditBalanceState(id: example.bankwealth.domain.values.AccountId, initialized: Boolean, accountBalance: Map[String, example.bankwealth.domain.values.Money], reservedAmount: Map[example.bankwealth.domain.values.TxId, example.bankwealth.domain.values.Money], incomingCredits: Map[example.bankwealth.domain.values.TxId, example.bankwealth.domain.values.Money], committedOutgoing: Map[example.bankwealth.domain.values.TxId, example.bankwealth.domain.values.Money], committedIncoming: Map[example.bankwealth.domain.values.TxId, example.bankwealth.domain.values.Money], compensatedOutgoing: Map[example.bankwealth.domain.values.TxId, example.bankwealth.domain.values.Money], compensatedIncoming: Map[example.bankwealth.domain.values.TxId, example.bankwealth.domain.values.Money])
+
+object CreditBalanceState {
+  def empty: CreditBalanceState = example.bankwealth.domain.entities.CreditBalanceEntity.empty
+}
