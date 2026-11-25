@@ -8,6 +8,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isUnifiedContext, isClassicRetiredContext, withPlayServiceEmission } from '../lib/derivation/emission-policy.mjs';
+import {
+  collectProcessOriginalNames,
+  valueObjectModule,
+  valueObjectSubpackage,
+} from '../lib/derivation/value-object-package.mjs';
 import { deriveValueObjects } from '../lib/derivation/value-object.mjs';
 import { deriveDomainEntities } from '../lib/derivation/domain-entity.mjs';
 import { deriveInvariantRules } from '../lib/derivation/aggregate-invariant-rules.mjs';
@@ -93,6 +98,21 @@ test('non-bank commerce domain derives and renders core aggregate families witho
   );
   const voContract = deriveValueObjects(voFixture, voFixture.options);
   assertNoBankLeakage(renderFamily(getFamily('value-object'), voContract), 'value-object');
+
+  // Structural routing of *Original value objects: sibling *Args/*Result puts
+  // non-bank saga originals in application.process.protocol, while standalone API
+  // originals route to interfaces.api with zero Payment/Refund name matching.
+  const originals = collectProcessOriginalNames([
+    'CommerceCheckoutOriginal',
+    'CommerceCheckoutArgs',
+    'CommerceCheckoutResult',
+    'CommerceDirectOriginal',
+    'CommerceDirectAcknowledgement',
+  ]);
+  assert.equal(valueObjectSubpackage('CommerceCheckoutOriginal', originals), 'application.process.protocol');
+  assert.equal(valueObjectModule('CommerceCheckoutOriginal', null, originals), 'CommerceCheckoutMessages');
+  assert.equal(valueObjectSubpackage('CommerceDirectOriginal', originals), 'interfaces.api');
+  assert.equal(valueObjectModule('CommerceDirectOriginal', null, originals), 'ApiCommands');
 
   const deFixture = deepReplace(
     JSON.parse(fs.readFileSync(path.join(ROOT, 'test/fixtures/domain-entity-v1/knowledge-products.json'), 'utf8')),

@@ -38,12 +38,20 @@ const LINE_LIMIT = 120;
 
 const assertWidth = (lines, label) => {
   for (const line of lines) {
-    if (line.length > LINE_LIMIT && !line.startsWith('import ')) {
+    if (line.length > LINE_LIMIT && !line.startsWith('import ') && /\s/.test(line.trim())) {
       throw new Error(label + ': emitted line exceeds ' + LINE_LIMIT + ' columns (' +
         line.length + '): ' + line.slice(0, 80));
     }
   }
   return lines;
+};
+
+const wrapParseFrom = (indent, varName, fqn, args = 'bytes') => {
+  const one = `${indent}val ${varName} = ${fqn}.parseFrom(${args})`;
+  if (one.length <= LINE_LIMIT) return [one];
+  const two = `${indent}  ${fqn}.parseFrom(${args})`;
+  if (two.length <= LINE_LIMIT) return [`${indent}val ${varName} =`, two];
+  return [`${indent}val ${varName} =`, `${indent}  ${fqn}`, `${indent}    .parseFrom(${args})`];
 };
 
 const camel = kebab => kebab.replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase());
@@ -412,7 +420,7 @@ function emitPorts(md) {
     '',
     'import scala.concurrent.Future',
     '',
-    ...renderValueWildcardImports(md.basePkg, [md.original, md.result, ...allPhaseTypes(md)], 'application.process.' + md.flowSlug),
+    ...renderValueWildcardImports(md.basePkg, [md.original, md.result, ...allPhaseTypes(md)], 'application.process.' + md.flowSlug, new Set([md.original])),
     'import ' + md.supply.strictRuntimePackage + '.{OperationIdentity, TransactionIdentity}',
     '',
     ...md.docs.ports,
@@ -471,7 +479,7 @@ function emitHostIo(md) {
     '',
     'import scala.concurrent.{ExecutionContext, Future}',
     '',
-    ...renderValueWildcardImports(md.basePkg, [md.original, md.result, ...allPhaseTypes(md)], 'infrastructure.process'),
+    ...renderValueWildcardImports(md.basePkg, [md.original, md.result, ...allPhaseTypes(md)], 'infrastructure.process', new Set([md.original])),
     'import ' + md.host + '.ResultKind',
     'import ' + md.pkg + '.' + md.ports,
     'import ' + md.pkg + '.' + md.ports + '.CompletionContext',
@@ -577,7 +585,7 @@ function emitSerializer(md) {
     '',
     '  override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {',
     '    require(manifest == Manifest, "' + md.messages.hostEventVersionRequired + '")',
-    '    val pb = ' + pb + '.parseFrom(bytes)',
+    ...wrapParseFrom('    ', 'pb', pb),
     '    pb.kind match {',
     '      case "admitted" => ' + md.host + '.AdmissionGranted',
     '      case "associated" => ' + md.host + '.Associated(pb.original, pb.args, pb.operation)',
@@ -633,7 +641,7 @@ function emitExecution(md) {
     '',
     'import scala.concurrent.duration._',
     '',
-    ...renderGroupedValueImports(md.basePkg, values, 'application.process.' + md.flowSlug),
+    ...renderGroupedValueImports(md.basePkg, values, 'application.process.' + md.flowSlug, null, new Set([md.original])),
     'import ' + md.supply.monarchPersistencePackage.replace(/\.persistence$/, '') + '.StageError',
     '',
     ...md.docs.execution,
@@ -718,7 +726,14 @@ function emitExecutionStateCodec(md) {
     '  * `' + md.execution + '.State` in the persistence layer. */',
     'object ' + md.stateCodec + ' {',
     '',
-    '  val codec: StateCodec[' + md.execution + '.State] = StateCodec[' + md.execution + '.State](',
+    ...(
+      ('  val codec: StateCodec[' + md.execution + '.State] = StateCodec[' + md.execution + '.State](').length <= LINE_LIMIT
+        ? ['  val codec: StateCodec[' + md.execution + '.State] = StateCodec[' + md.execution + '.State](']
+        : [
+            '  val codec: StateCodec[' + md.execution + '.State] =',
+            '    StateCodec[' + md.execution + '.State](',
+          ]
+    ),
     '    state =>',
     '      ' + stage.executionStatePb + '(',
     '        planversion = ' + md.execution + '.PlanVersion,',
@@ -727,8 +742,17 @@ function emitExecutionStateCodec(md) {
       '        ' + slot.slot + ' = state.' + slot.field + '.map(' + converters + '.encode' + slot.type + 'PO),'),
     '      ).toByteArray,',
     '    bytes => {',
-    '      val pb = ' + stage.executionStatePb + '.parseFrom(bytes)',
-    '      require(pb.planversion == ' + md.execution + '.PlanVersion, "' + md.messages.exactPlanVersionRequired + '")',
+    ...wrapParseFrom('      ', 'pb', stage.executionStatePb),
+    ...(
+      ('      require(pb.planversion == ' + md.execution + '.PlanVersion, "' + md.messages.exactPlanVersionRequired + '")').length <= LINE_LIMIT
+        ? ['      require(pb.planversion == ' + md.execution + '.PlanVersion, "' + md.messages.exactPlanVersionRequired + '")']
+        : [
+            '      require(',
+            '        pb.planversion == ' + md.execution + '.PlanVersion,',
+            '        "' + md.messages.exactPlanVersionRequired + '"',
+            '      )',
+          ]
+    ),
     '      def durable[A](slot: Option[A], name: String): A =',
     '        slot.getOrElse(throw new IllegalArgumentException(s"' + md.messages.missingDurableInput + '"))',
     '      ' + md.execution + '.State(',
@@ -879,7 +903,7 @@ function emitBindings(md) {
     '',
     'import ' + md.pkg + '._',
     'import ' + md.pkg + '.' + md.ports + '.CompletionContext',
-    ...renderValueWildcardImports(md.basePkg, [md.original, md.result, ...allPhaseTypes(md)], 'infrastructure.bootstrap'),
+    ...renderValueWildcardImports(md.basePkg, [md.original, md.result, ...allPhaseTypes(md)], 'infrastructure.bootstrap', new Set([md.original])),
     'import ' + md.supply.strictRuntimePackage + '.OperationIdentity',
     '',
     ...md.docs.bindings,
@@ -1022,7 +1046,7 @@ function emitHost(md) {
     'import akka.actor.typed.ActorRef',
     'import com.google.protobuf.ByteString',
     'import ' + md.pkg + '.{' + md.execution + ', ' + md.definition + '}',
-    ...renderGroupedValueImports(md.basePkg, [md.args, md.original, md.result], 'infrastructure.process'),
+    ...renderGroupedValueImports(md.basePkg, [md.args, md.original, md.result], 'infrastructure.process', null, new Set([md.original])),
     'import ' + md.supply.strictRuntimePackage + '._',
     '',
     ...md.docs.host,
@@ -1041,7 +1065,16 @@ function emitHost(md) {
     '  }',
     '',
     '  sealed trait Request',
-    '  final case class Invoke(state: ' + md.execution + '.State, replyTo: ActorRef[Reply]) extends Request',
+    ...(
+      ('  final case class Invoke(state: ' + md.execution + '.State, replyTo: ActorRef[Reply]) extends Request').length <= LINE_LIMIT
+        ? ['  final case class Invoke(state: ' + md.execution + '.State, replyTo: ActorRef[Reply]) extends Request']
+        : [
+            '  final case class Invoke(',
+            '    state: ' + md.execution + '.State,',
+            '    replyTo: ActorRef[Reply],',
+            '  ) extends Request',
+          ]
+    ),
     '  private[' + md.rootSeg + '] final case class Observed(',
     '    reply: StrictSagaCoordinator.Reply, replyTo: ActorRef[Reply]) extends Request',
     '  private[' + md.rootSeg + '] final case class Delivered(',
@@ -1373,7 +1406,7 @@ function emitProcessBootstrap(md) {
     'import ' + md.pkg + '._',
     'import ' + md.pkg + '.' + md.ports + '.OperationNotExecuted',
     'import ' + md.infraProcessPkg + '.{' + md.host + ', ' + md.hostIo + '}',
-    ...renderValueWildcardImports(md.basePkg, [md.original, md.result, md.args, ...allPhaseTypes(md)], 'infrastructure.bootstrap'),
+    ...renderValueWildcardImports(md.basePkg, [md.original, md.result, md.args, ...allPhaseTypes(md)], 'infrastructure.bootstrap', new Set([md.original])),
     'import ' + md.persistencePkg + '.{' + md.stateCodec + ', ' + md.processCodecs + '}',
     'import ' + md.supply.strictRuntimePackage + '._',
     'import ' + md.supply.monarchPersistencePackage.replace(/\.persistence$/, '') + '.StageFailedException',

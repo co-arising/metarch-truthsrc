@@ -20,6 +20,7 @@
 import { parseStrictJson } from '../../lib/strict-json.mjs';
 import { runtimeFromContract } from '../../lib/runtime-profile.mjs';
 import {
+  collectProcessOriginalNames,
   isAllowedValueObjectSubpackage,
   valueObjectModule,
   valueObjectSubpackage,
@@ -301,7 +302,11 @@ export function renderValueObjectFiles(inputJson) {
   const input = parseStrictJson(Buffer.from(JSON.stringify(inputJson), 'utf8'));
   checkInput(input);
   const rp = runtimeFromContract(input);
-  const subpackageByKey = new Map(input.values.map(v => [v.context + '/' + v.name, v.subpackage ?? 'domain.values']));
+  const processOriginals = collectProcessOriginalNames(input.values.map(v => v.name));
+  const subpackageByKey = new Map(input.values.map(v => [
+    v.context + '/' + v.name,
+    v.subpackage ?? valueObjectSubpackage(v.name, processOriginals),
+  ]));
   const out = [];
   const grouped = new Map();
   for (const value of input.values) {

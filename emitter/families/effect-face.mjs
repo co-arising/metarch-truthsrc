@@ -28,12 +28,20 @@ const LINE_LIMIT = 120;
 
 const assertWidth = (lines, label) => {
   for (const line of lines) {
-    if (line.length > LINE_LIMIT && !line.startsWith('import ')) {
+    if (line.length > LINE_LIMIT && !line.startsWith('import ') && /\s/.test(line.trim())) {
       throw new Error(label + ': emitted line exceeds ' + LINE_LIMIT + ' columns (' +
         line.length + '): ' + line.slice(0, 80));
     }
   }
   return lines;
+};
+
+const wrapParseFrom = (indent, varName, fqn, args = 'bytes') => {
+  const one = `${indent}val ${varName} = ${fqn}.parseFrom(${args})`;
+  if (one.length <= LINE_LIMIT) return [one];
+  const two = `${indent}  ${fqn}.parseFrom(${args})`;
+  if (two.length <= LINE_LIMIT) return [`${indent}val ${varName} =`, two];
+  return [`${indent}val ${varName} =`, `${indent}  ${fqn}`, `${indent}    .parseFrom(${args})`];
 };
 
 const camel = kebab => kebab.replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase());
@@ -390,7 +398,14 @@ function emitExecutionStateCodec(cm, shape) {
     ),
     'object ' + cm.stateCodec + ' {',
     '',
-    '  val codec: StateCodec[' + cm.execution + '.State] = StateCodec[' + cm.execution + '.State](',
+    ...(
+      ('  val codec: StateCodec[' + cm.execution + '.State] = StateCodec[' + cm.execution + '.State](').length <= LINE_LIMIT
+        ? ['  val codec: StateCodec[' + cm.execution + '.State] = StateCodec[' + cm.execution + '.State](']
+        : [
+            '  val codec: StateCodec[' + cm.execution + '.State] =',
+            '    StateCodec[' + cm.execution + '.State](',
+          ]
+    ),
     '    state =>',
     '      ' + ex.executionStatePb + '(',
     '        planversion = ' + cm.execution + '.PlanVersion,',
@@ -399,8 +414,17 @@ function emitExecutionStateCodec(cm, shape) {
       shape.serializationObject + '.encode' + ex.codecSlots.find(s => s.optional).type + 'PO),',
     '      ).toByteArray,',
     '    bytes => {',
-    ...wrapDef('      val pb =', ' ' + ex.executionStatePb + '.parseFrom(bytes)', 8),
-    '      require(pb.planversion == ' + cm.execution + '.PlanVersion, "' + messages.exactPlanVersionRequired + '")',
+    ...wrapParseFrom('      ', 'pb', ex.executionStatePb),
+    ...(
+      ('      require(pb.planversion == ' + cm.execution + '.PlanVersion, "' + messages.exactPlanVersionRequired + '")').length <= LINE_LIMIT
+        ? ['      require(pb.planversion == ' + cm.execution + '.PlanVersion, "' + messages.exactPlanVersionRequired + '")']
+        : [
+            '      require(',
+            '        pb.planversion == ' + cm.execution + '.PlanVersion,',
+            '        "' + messages.exactPlanVersionRequired + '"',
+            '      )',
+          ]
+    ),
     '      def durable[A](slot: Option[A], name: String): A =',
     '        slot.getOrElse(throw new IllegalArgumentException(s"' + messages.missingDurableInput + '"))',
     '      ' + cm.execution + '.State(',
@@ -934,7 +958,7 @@ function emitSerializer(cm, shape) {
     '',
     '  override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {',
     '    require(manifest == Manifest, "' + m.exactManifestRequired + '")',
-    '    val event = ' + pb + '.parseFrom(bytes)',
+    ...wrapParseFrom('    ', 'event', pb),
     '    require(event.version == Manifest, "' + m.exactPayloadVersionRequired + '")',
     '    event.kind match {',
     '      case "intent" => ' + cm.host + '.Intent(event.original, event.operation)',

@@ -61,8 +61,8 @@ for (const rel of files) {
 }
 
 // 2. Static hygiene + generator architecture rules.
-const FORBIDDEN_BUSINESS_NAMES = /\b(bankwealth|CreditBalance|FundOrder|SipPlan|BankPayment|BankRefund|BankService|BankTa|BankSip|RULES_FLIP_AGGREGATES|EFFECT_FACE_FLIPS|PIPELINE_INVOCATION_FLIPS|[A-Z_]+_FLIP_CONTEXTS)\b|bank-(?:sip-dispatch|ta-effect|ta-submission|cash-payment|independent-refund|payment-host|refund-host)/u;
-const FORBIDDEN_RUNTIME_LITERAL = /\bnet[./]imadz\b/u;
+const FORBIDDEN_BUSINESS_NAMES = /\b(bankwealth|CreditBalance|FundOrder|SipPlan|BankPayment|BankRefund|BankService|BankTa|BankSip|RULES_FLIP_AGGREGATES|EFFECT_FACE_FLIPS|PIPELINE_INVOCATION_FLIPS|[A-Z_]+_FLIP_CONTEXTS)\b|bank-(?:sip-dispatch|ta-effect|ta-submission|cash-payment|independent-refund|payment-host|refund-host)|(?:Payment|Refund)(?:Original|Bindings)|mock-ta|cash-contract|repo\s*===\s*['"]bank['"]/u;
+const FORBIDDEN_RUNTIME_LITERAL = /\bnet(?:\\\.|[./])imadz\b/u;
 const ACTIVE_UNIFIED_EMITTERS = new Set([
   'emitter/families/value-object.mjs',
   'emitter/families/domain-entity.mjs',
