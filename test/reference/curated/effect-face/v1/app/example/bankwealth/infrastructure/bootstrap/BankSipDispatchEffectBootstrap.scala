@@ -9,7 +9,9 @@ import akka.actor.typed.scaladsl.Behaviors
 import akka.persistence.typed.{PersistenceId, RecoveryCompleted}
 import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}
 import com.google.protobuf.ByteString
-import example.bankwealth.application.integration._
+import example.bankwealth.application.connectors._
+import example.bankwealth.application.process.BankSipDispatchExecution
+import example.bankwealth.application.connectors.BankSipDispatchProtocol._
 import example.bankwealth.infrastructure.persistence.BankSipDispatchStateCodec
 import net.imadz.monarch.persistence.{PersistentMonarch, RunObserver}
 

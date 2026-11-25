@@ -4,6 +4,10 @@ import scala.concurrent.{ExecutionContext, Future}
 
 import example.bankwealth.domain.invariants.params.{CreditBalanceRuleParams, FundOrderRuleParams}
 import example.bankwealth.domain.values._
+import BankPaymentMessages._
+import CreditFundCollectionStep._
+import ReserveCashFundOrderStep._
+import ReserveInvestorFundsStep._
 import BankPaymentPorts.OperationNotExecuted
 import net.imadz.infra.saga.strict._
 

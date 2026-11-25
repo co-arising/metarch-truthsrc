@@ -1,6 +1,7 @@
 package example.bankwealth.domain.entities
 
 import example.bankwealth.domain.values._
+import net.imadz.common.CborSerializable
 
 object FundOrderEntity {
   final case class State(
@@ -69,7 +70,9 @@ object FundOrderEntity {
     cashRequestOriginals = Map()
   )
 
-  sealed trait Event
+  def empty(id: FundOrderId): State = empty.copy(id = id)
+
+  sealed trait Event extends CborSerializable
   final case class FundPurchaseSettlementRequested(
     operationId: OperationId,
     fundOrderId: FundOrderId,

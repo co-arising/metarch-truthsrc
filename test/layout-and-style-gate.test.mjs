@@ -8,9 +8,9 @@ import path from 'node:path';
 
 const BANK_GENERATED = path.resolve(import.meta.dirname, '../../bank-wealth-demo/generated/current');
 const BASE_REL = 'app/example/bankwealth';
-const ALLOWED_TOP_LAYERS = new Set(['domain', 'application', 'infrastructure']);
+const ALLOWED_TOP_LAYERS = new Set(['domain', 'application', 'interfaces', 'infrastructure']);
 const ALLOWED_DOMAIN_SUBPACKAGES = new Set(['values', 'entities', 'invariants', 'services', 'policy']);
-const ALLOWED_APPLICATION_SUBPACKAGES = new Set(['aggregates', 'api', 'integration', 'process', 'projection']);
+const ALLOWED_APPLICATION_SUBPACKAGES = new Set(['aggregates', 'connectors', 'process', 'projection', 'queries', 'services']);
 const FORBIDDEN_PROCESS_INTEGRATION_PATTERNS = [
   { label: 'PersistenceId', re: /\bPersistenceId\b/ },
   { label: 'StateCodec', re: /\bStateCodec\b/ },
@@ -109,10 +109,12 @@ test('layout-and-style S12/Phase 4: domain.values contains zero HTTP API DTOs, w
     /(BootstrapInput|RevisionInput|Revise|Tick)$/u.test(name)
   );
   assert.deepEqual(forbidden, [], 'non-domain value objects leaked into domain.values: ' + forbidden.join(', '));
-  const apiDir = path.join(BANK_GENERATED, BASE_REL, 'application/api');
-  for (const expectedApi of ['AmountDecimalWire', 'MoneyWire', 'BankCashSubmit', 'BankCashOriginal', 'BankPaymentOriginal', 'BankRefundOriginal', 'BankSipCreate', 'BankSipCreateIntent']) {
-    assert.equal(fs.existsSync(path.join(apiDir, expectedApi + '.scala')), true, `${expectedApi}.scala must reside in application/api`);
+  const apiDir = path.join(BANK_GENERATED, BASE_REL, 'interfaces/api');
+  for (const expectedMod of ['ApiWire', 'ApiCommands', 'ApiKeys', 'ApiResponses', 'ApiAcknowledgements']) {
+    assert.equal(fs.existsSync(path.join(apiDir, expectedMod + '.scala')), true, `${expectedMod}.scala must reside in interfaces/api`);
   }
+  assert.equal(fs.existsSync(path.join(BANK_GENERATED, BASE_REL, 'application/api')), false, 'application/api must be retired');
+  assert.equal(fs.existsSync(path.join(BANK_GENERATED, BASE_REL, 'application/integration')), false, 'application/integration must be retired');
 });
 
 test('layout-and-style Phase 2: domain layer has zero domain/events, zero Command definitions, and zero CommandHelpers', () => {
@@ -173,22 +175,19 @@ test('layout-and-style Phase 3: application root has zero files, zero applicatio
   const badDirs = entries.filter(e => e.isDirectory() && !ALLOWED_APPLICATION_SUBPACKAGES.has(e.name)).map(e => e.name);
   assert.deepEqual(badDirs, [], 'unsanctioned application subpackages: ' + badDirs.join(', '));
   assert.equal(fs.existsSync(path.join(appRoot, 'saga')), false, 'application/saga must be retired');
-  assert.equal(
-    fs.existsSync(path.join(appRoot, 'integration/FundOrderExternalEvents.scala')),
-    true,
-    'FundOrderExternalEvents.scala must reside in application/integration',
-  );
+  assert.equal(fs.existsSync(path.join(appRoot, 'api')), false, 'application/api must be retired');
+  assert.equal(fs.existsSync(path.join(appRoot, 'integration')), false, 'application/integration must be retired');
   assert.equal(
     fs.existsSync(path.join(appRoot, 'aggregates/behaviors/FundOrderExternalEvents.scala')),
-    false,
-    'FundOrderExternalEvents.scala must not reside in application/aggregates/behaviors',
+    true,
+    'FundOrderExternalEvents.scala must reside in application/aggregates/behaviors',
   );
 });
 
-test('layout-and-style Phase 3: application.process and application.integration are free of persistence/serializer/bootstrap wiring', () => {
-  const dirs = ['process', 'integration'].map(sub => path.join(BANK_GENERATED, BASE_REL, 'application', sub));
+test('layout-and-style Phase 3/B: application.process and application.connectors are free of persistence/serializer/bootstrap wiring', () => {
+  const dirs = ['process', 'connectors'].map(sub => path.join(BANK_GENERATED, BASE_REL, 'application', sub));
   const files = dirs.flatMap(walkScala);
-  assert.ok(files.length > 0, 'application.process and application.integration files expected');
+  assert.ok(files.length > 0, 'application.process and application.connectors files expected');
   const violations = [];
   for (const file of files) {
     const content = fs.readFileSync(file, 'utf8');
@@ -198,13 +197,13 @@ test('layout-and-style Phase 3: application.process and application.integration 
       }
     }
   }
-  assert.deepEqual(violations, [], 'Phase 3 application purity violations:\n' + violations.join('\n'));
+  assert.deepEqual(violations, [], 'Phase 3/B application purity violations:\n' + violations.join('\n'));
 });
 
-test('layout-and-style Phase 3: conf/serialization.conf binds infrastructure.persistence serializers to process/integration events', () => {
+test('layout-and-style Phase 3/B: conf/serialization.conf binds infrastructure.persistence serializers to process/connectors events', () => {
   const conf = fs.readFileSync(path.join(BANK_GENERATED, 'conf/serialization.conf'), 'utf8');
   assert.match(conf, /host0\s*=\s*"example\.bankwealth\.infrastructure\.persistence\.BankPaymentHostSerializer"/);
   assert.match(conf, /effect0\s*=\s*"example\.bankwealth\.infrastructure\.persistence\.BankSipDispatchEffectHostSerializer"/);
   assert.match(conf, /"example\.bankwealth\.application\.process\.BankPaymentHost\$Event"\s*=\s*host0/);
-  assert.match(conf, /"example\.bankwealth\.application\.integration\.BankSipDispatchEffectHost\$Event"\s*=\s*effect0/);
+  assert.match(conf, /"example\.bankwealth\.application\.connectors\.BankSipDispatchEffectHost\$Event"\s*=\s*effect0/);
 });

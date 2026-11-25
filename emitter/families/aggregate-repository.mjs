@@ -71,15 +71,11 @@ function renderRepositoryPortScala(pkg, name) {
   return [
     `package ${pkg}.application.aggregates.repository`,
     '',
-    'import akka.actor.typed.ActorRef',
+    'import akka.cluster.sharding.typed.scaladsl.EntityRef',
     `import ${pkg}.application.aggregates.${name}Protocol.Command`,
     '',
-    `object ${name}Repository {`,
-    '  final case class Handle(persistenceId: String, ref: ActorRef[Command])',
-    '}',
-    '',
-    `trait ${name}Repository[K] extends AutoCloseable {`,
-    `  def get(id: K): ${name}Repository.Handle`,
+    `trait ${name}Repository {`,
+    '  def entityRefFor(id: String): EntityRef[Command]',
     '}',
     '',
   ].join('\n');
@@ -89,35 +85,16 @@ function renderRepositoryImplScala(pkg, name) {
   return [
     `package ${pkg}.infrastructure.repositories.aggregate`,
     '',
-    'import akka.actor.typed.{ActorRef, Behavior}',
+    'import akka.cluster.sharding.typed.scaladsl.{ClusterSharding, EntityRef}',
+    'import javax.inject.{Inject, Singleton}',
+    `import ${pkg}.application.aggregates.${name}Aggregate`,
     `import ${pkg}.application.aggregates.${name}Protocol.Command`,
     `import ${pkg}.application.aggregates.repository.${name}Repository`,
-    `import ${pkg}.application.aggregates.repository.${name}Repository.Handle`,
     '',
-    `final class ${name}RepositoryImpl[K](`,
-    '  identity: K => String,',
-    '  behavior: (K, String) => Behavior[Command],',
-    '  spawn: (String, Behavior[Command]) => ActorRef[Command]',
-    `) extends ${name}Repository[K] {`,
-    '  require(identity != null && behavior != null && spawn != null)',
-    '  private val handles = scala.collection.mutable.Map.empty[K, Handle]',
-    '  private val identities = scala.collection.mutable.Map.empty[String, K]',
-    '  private var closed = false',
-    '',
-    '  override def get(id: K): Handle = synchronized {',
-    '    require(!closed, "repository is closed")',
-    '    handles.getOrElseUpdate(id, {',
-    '      val pid = identity(id)',
-    '      require(pid != null && pid.nonEmpty, "explicit persistence identity required")',
-    '      require(!identities.contains(pid) || identities(pid) == id, "conflicting repository persistence identity")',
-    '      val ref = spawn(pid, behavior(id, pid))',
-    '      require(ref != null, "actor spawn returned no reference")',
-    '      identities.put(pid, id)',
-    '      Handle(pid, ref)',
-    '    })',
-    '  }',
-    '',
-    '  override def close(): Unit = synchronized { closed = true; handles.clear(); identities.clear() }',
+    '@Singleton',
+    `final class ${name}RepositoryImpl @Inject() (sharding: ClusterSharding) extends ${name}Repository {`,
+    '  override def entityRefFor(id: String): EntityRef[Command] =',
+    `    sharding.entityRefFor(${name}Aggregate.EntityKey, id)`,
     '}',
     '',
   ].join('\n');
@@ -128,6 +105,7 @@ export function renderAggregateRepositoryFiles(input) {
   const packageByContext = new Map(input.packages.map(p => [p.context, p.package]));
   return input.repositories.flatMap(repo => {
     const pkg = packageByContext.get(repo.context);
+    const aggregatePath = scalaSubpackagePath(pkg, 'application.aggregates', repo.name + 'Aggregate.scala');
     const protocolPath = scalaSubpackagePath(pkg, 'application.aggregates', repo.name + 'Protocol.scala');
     const portPath = scalaSubpackagePath(pkg, 'application.aggregates.repository', repo.name + 'Repository.scala');
     const implPath = scalaSubpackagePath(pkg, 'infrastructure.repositories.aggregate', repo.name + 'RepositoryImpl.scala');
@@ -145,7 +123,7 @@ export function renderAggregateRepositoryFiles(input) {
         path: implPath,
         content: renderRepositoryImplScala(pkg, repo.name),
         kind: 'aggregate-repository',
-        deps: [protocolPath, portPath],
+        deps: [aggregatePath, protocolPath, portPath],
         sources,
         codeMappings: [],
       },

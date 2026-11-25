@@ -1,11 +1,12 @@
 package example.bankwealth.application.aggregates.factories
 
-import akka.actor.typed.Behavior
+import akka.cluster.sharding.typed.scaladsl.{ClusterSharding, EntityRef}
+import javax.inject.Inject
+import example.bankwealth.application.aggregates.CreditBalanceAggregate
 import example.bankwealth.application.aggregates.CreditBalanceProtocol.Command
-import example.bankwealth.domain.entities.CreditBalanceEntity.State
-import example.bankwealth.domain.services.CreditBalanceComputations
 
-trait CreditBalanceAggregateFactory {
+class CreditBalanceAggregateFactory @Inject() (clusterSharding: ClusterSharding) {
 
-  def create(persistenceId: String, initial: State, hosts: CreditBalanceComputations): Behavior[Command]
+  def entityRefFor(entityId: String): EntityRef[Command] =
+    clusterSharding.entityRefFor(CreditBalanceAggregate.EntityKey, entityId)
 }

@@ -1,9 +1,11 @@
-package example.bankwealth.application.integration
+package example.bankwealth.application.connectors
 
 import scala.concurrent.Future
 
 import akka.actor.typed.ActorRef
 import com.google.protobuf.ByteString
+import example.bankwealth.application.process.BankSipDispatchExecution
+import BankSipDispatchProtocol._
 
 /** Durable external-effect host of the SIP dispatch pipeline: owns the intent,
   * the observed external evidence and the authorized retry, for exactly one

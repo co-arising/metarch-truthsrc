@@ -148,36 +148,46 @@ function renderSerializerScala(pkg, serializer) {
   ].join('\n');
 }
 
-function renderAggregateAdaptersScala(pkg, adapter) {
+function renderEventAdapterScala(pkg, adapter) {
   const agg = adapter.aggregate;
   const unionPo = adapter.eventUnionPoName;
+  return [
+    `package ${pkg}.infrastructure.persistence`,
+    '',
+    'import akka.persistence.typed.{EventAdapter, EventSeq}',
+    `import ${pkg}.domain.entities.${agg}Entity.Event`,
+    `import ${pkg}.infrastructure.persistence.converters.${agg}ProtoConverters`,
+    `import ${pkg}.infrastructure.{proto => pb}`,
+    '',
+    `class ${agg}EventAdapter extends EventAdapter[Event, pb.${unionPo}] with ${agg}ProtoConverters {`,
+    `  override def manifest(event: Event): String = ${JSON.stringify(unionPo)}`,
+    '',
+    `  override def toJournal(event: Event): pb.${unionPo} =`,
+    `    encode${unionPo}(event)`,
+    '',
+    `  override def fromJournal(envelope: pb.${unionPo}, manifest: String): EventSeq[Event] =`,
+    `    EventSeq.single(decode${unionPo}(envelope))`,
+    '}',
+    '',
+  ].join('\n');
+}
+
+function renderSnapshotAdapterScala(pkg, adapter) {
+  const agg = adapter.aggregate;
   const statePo = adapter.statePoName;
   return [
     `package ${pkg}.infrastructure.persistence`,
     '',
-    'import akka.persistence.typed.{EventAdapter, EventSeq, SnapshotAdapter}',
-    `import ${pkg}.domain.entities.${agg}Entity.{Event, State}`,
-    `import ${pkg}.infrastructure.persistence.converters.DomainConverters`,
+    'import akka.persistence.typed.SnapshotAdapter',
+    `import ${pkg}.domain.entities.${agg}Entity.State`,
+    `import ${pkg}.infrastructure.persistence.converters.${agg}ProtoConverters`,
     `import ${pkg}.infrastructure.{proto => pb}`,
-    'import scalapb.GeneratedMessage',
     '',
-    `object ${agg}EventAdapter extends EventAdapter[Event, GeneratedMessage] {`,
-    `  override def manifest(event: Event): String = ${JSON.stringify(unionPo)}`,
+    `class ${agg}SnapshotAdapter extends SnapshotAdapter[State] with ${agg}ProtoConverters {`,
+    `  override def toJournal(state: State): Any = encode${statePo}(state)`,
     '',
-    '  override def toJournal(event: Event): GeneratedMessage =',
-    `    DomainConverters.encode${unionPo}(event)`,
-    '',
-    '  override def fromJournal(event: GeneratedMessage, manifest: String): EventSeq[Event] = (event, manifest) match {',
-    `    case (envelope: pb.${unionPo}, ${JSON.stringify(unionPo)}) =>`,
-    `      EventSeq.single(DomainConverters.decode${unionPo}(envelope))`,
-    '    case _ => throw new IllegalArgumentException("event manifest and payload mismatch")',
-    '  }',
-    '}',
-    '',
-    `object ${agg}SnapshotAdapter extends SnapshotAdapter[State] {`,
-    `  override def toJournal(state: State): Any = DomainConverters.encode${statePo}(state)`,
-    `  override def fromJournal(value: Any): State = value match {`,
-    `    case state: pb.${statePo} => DomainConverters.decode${statePo}(state)`,
+    '  override def fromJournal(value: Any): State = value match {',
+    `    case state: pb.${statePo} => decode${statePo}(state)`,
     '    case _ => throw new IllegalArgumentException("snapshot type mismatch")',
     '  }',
     '}',
@@ -202,17 +212,25 @@ export function renderSerializationAdapterFiles(input) {
   }
   for (const adapter of input.adapters) {
     const pkg = packageByContext.get(adapter.context);
+    const convDep = scalaSubpackagePath(pkg, 'infrastructure.persistence.converters', adapter.aggregate + 'ProtoConverters.scala');
+    const aggSource = { document: adapter.aggregateSource.document, pointer: adapter.aggregateSource.pointer };
     files.push({
-      path: scalaSubpackagePath(pkg, 'infrastructure.persistence', adapter.aggregate + 'Adapters.scala'),
-      content: renderAggregateAdaptersScala(pkg, adapter),
+      path: scalaSubpackagePath(pkg, 'infrastructure.persistence', adapter.aggregate + 'EventAdapter.scala'),
+      content: renderEventAdapterScala(pkg, adapter),
       kind: 'serialization-adapter',
-      deps: [
-        scalaSubpackagePath(pkg, 'infrastructure.persistence.converters', 'DomainConverters.scala'),
-      ],
+      deps: [convDep],
       sources: [
-        { document: adapter.aggregateSource.document, pointer: adapter.aggregateSource.pointer },
+        aggSource,
         ...adapter.events.map(ev => ({ document: ev.source.document, pointer: ev.source.pointer })),
       ],
+      codeMappings: [],
+    });
+    files.push({
+      path: scalaSubpackagePath(pkg, 'infrastructure.persistence', adapter.aggregate + 'SnapshotAdapter.scala'),
+      content: renderSnapshotAdapterScala(pkg, adapter),
+      kind: 'serialization-adapter',
+      deps: [convDep],
+      sources: [aggSource],
       codeMappings: [],
     });
   }

@@ -3,13 +3,16 @@ package example.bankwealth.application.aggregates
 import akka.actor.typed.ActorRef
 import akka.persistence.typed.scaladsl.Effect
 import example.bankwealth.domain.entities.FundOrderEntity.{Event, State}
-import example.bankwealth.application.api._
-import example.bankwealth.application.process._
+import example.bankwealth.application.process.BankPaymentMessages._
+import example.bankwealth.application.process.BankRefundMessages._
 import example.bankwealth.domain.values._
+import example.bankwealth.interfaces.api.ApiCommands._
+import net.imadz.common.CborSerializable
+import net.imadz.common.CommonTypes.iMadzError
 
 object FundOrderProtocol {
 
-  sealed trait Command
+  sealed trait Command extends CborSerializable
   final case class RequestFundPurchaseSettlement(
     operationId: OperationId,
     fundOrderId: FundOrderId,
@@ -154,9 +157,11 @@ object FundOrderProtocol {
   final case class IngestBankRefundResultSucceeded(output: BankRefundResult, authorization: String, replyTo: ActorRef[Reply]) extends Command
   final case class IngestBankTaReceiptObservation(output: TaReceipt, authorization: String, replyTo: ActorRef[Reply]) extends Command
 
-  sealed trait Reply
+  sealed trait Reply extends CborSerializable
   final case class Accepted(events: Vector[Event]) extends Reply
-  final case class Refused(code: String) extends Reply
+  final case class Refused(error: iMadzError) extends Reply {
+    def code: String = error.code
+  }
 
   trait ExternalAuthority {
     def authorize(producer: String, authorization: String, identity: Vector[String]): Boolean

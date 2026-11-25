@@ -1,0 +1,194 @@
+{
+  "schemaVersion": "truthsrc.classic-cqrs-conformance-contract/v1",
+  "description": "Canonical 18-artifact classic CQRS structural & content contract aligned with playAkkaCQRS, backkend-codegen, and common-core 0.2.1 (excluding saga-strict and monarch).",
+  "commonCore": {
+    "organization": "net.imadz",
+    "name": "common-core",
+    "version": "0.2.1"
+  },
+  "layers": {
+    "allowedTopLayers": ["domain", "application", "interfaces", "infrastructure"],
+    "forbiddenPackages": [
+      "application.api",
+      "application.integration",
+      "application.saga",
+      "domain.events",
+      "domain.invariant"
+    ],
+    "allowedSubpackages": {
+      "domain": ["values", "entities", "invariants", "services", "policy"],
+      "application": ["aggregates", "connectors", "process", "projection", "queries", "services"],
+      "interfaces": ["api"],
+      "infrastructure": ["bootstrap", "connectors", "persistence", "proto", "repositories"]
+    },
+    "maxFlatDtoFilesPerDir": 5
+  },
+  "approvedEvolutions": [
+    "nominal-value-objects",
+    "exact-decimal-money-precision",
+    "plural-domain-invariants-package",
+    "formal-aggregate-rules-file",
+    "companion-object-dto-modularization",
+    "interfaces-api-fourth-layer"
+  ],
+  "artifacts": {
+    "value-object": {
+      "layer": "domain",
+      "packageRole": "domain.values",
+      "requiredDecl": "\\bcase\\s+class\\s+[A-Z][A-Za-z0-9_]*",
+      "forbiddenPatterns": ["\\bakka\\.", "\\bplay\\.", "\\.application\\.", "\\.infrastructure\\."]
+    },
+    "domain-entity": {
+      "layer": "domain",
+      "packageRole": "domain.entities",
+      "fileSuffix": "Entity.scala",
+      "requiredDecl": "\\bobject\\s+[A-Z][A-Za-z0-9_]*Entity\\b",
+      "requiredPatterns": [
+        "\\bsealed\\s+trait\\s+(?:[A-Z][A-Za-z0-9_]*Event|Event)\\s+extends\\s+CborSerializable\\b",
+        "\\bdef\\s+empty\\("
+      ],
+      "forbiddenPatterns": ["\\bakka\\.", "\\bplay\\.", "\\.application\\.", "\\.infrastructure\\."]
+    },
+    "event-handler": {
+      "layer": "domain",
+      "packageRole": "domain.entities.behaviors",
+      "fileSuffix": "EventHandler.scala",
+      "requiredDecl": "\\bobject\\s+[A-Z][A-Za-z0-9_]*EventHandler\\b",
+      "forbiddenPatterns": ["\\bakka\\.", "\\bplay\\."]
+    },
+    "invariant-rule": {
+      "layer": "domain",
+      "packageRole": "domain.invariants",
+      "requiredImports": ["CommonTypes\\.\\{?[^\\n]*InvariantRule", "CommonTypes\\.\\{?[^\\n]*iMadzError"],
+      "requiredPatterns": ["\\bextends\\s+InvariantRule\\["],
+      "forbiddenPatterns": ["Either\\[String,\\s*Vector\\["]
+    },
+    "domain-service": {
+      "layer": "domain",
+      "packageRole": "domain.services",
+      "requiredImports": ["CommonTypes\\.\\{?[^\\n]*DomainService"],
+      "requiredPatterns": ["\\bextends\\s+DomainService\\b"]
+    },
+    "aggregate-protocol": {
+      "layer": "application",
+      "packageRole": "application.aggregates",
+      "fileSuffix": "Protocol.scala",
+      "requiredDecl": "\\bobject\\s+[A-Z][A-Za-z0-9_]*Protocol\\b",
+      "requiredImports": ["CborSerializable"],
+      "requiredPatterns": [
+        "\\bsealed\\s+trait\\s+(?:[A-Z][A-Za-z0-9_]*Command|Command)\\s+extends\\s+CborSerializable\\b",
+        "extends\\s+CborSerializable"
+      ]
+    },
+    "command-helper": {
+      "layer": "application",
+      "packageRole": "application.aggregates.behaviors",
+      "fileSuffix": "CommandHelpers.scala",
+      "requiredDecl": "\\btrait\\s+[A-Z][A-Za-z0-9_]*CommandHelpers\\b",
+      "requiredImports": ["CommandHandlerReplyingBehavior\\.CommandHelper"],
+      "requiredPatterns": ["\\bextends\\s+CommandHelper\\["],
+      "forbiddenPatterns": ["\\bdef\\s+replyEffect\\(", "Either\\[String,"]
+    },
+    "aggregate-behavior": {
+      "layer": "application",
+      "packageRole": "application.aggregates.behaviors",
+      "fileSuffix": "Behaviors.scala",
+      "requiredDecl": "\\bobject\\s+[A-Z][A-Za-z0-9_]*Behaviors\\s+extends\\s+[A-Z][A-Za-z0-9_]*CommandHelpers\\b",
+      "requiredImports": ["CommandHandlerReplyingBehavior\\.runReplyingPolicy"],
+      "requiredPatterns": ["\\brunReplyingPolicy\\("],
+      "forbiddenPatterns": ["\\breplyEffect\\(", "Effect\\.none\\.thenRun\\("]
+    },
+    "aggregate-root": {
+      "layer": "application",
+      "packageRole": "application.aggregates",
+      "fileSuffix": "Aggregate.scala",
+      "requiredDecl": "\\bobject\\s+[A-Z][A-Za-z0-9_]*Aggregate\\b",
+      "requiredPatterns": ["\\bEntityTypeKey\\[", "\\bval\\s+tags\\s*:\\s*Vector\\[String\\]"],
+      "forbiddenPatterns": ["infrastructure\\.bootstrap", "\\bcase\\s+class\\s+Execute\\b"]
+    },
+    "aggregate-factory": {
+      "layer": "application",
+      "packageRole": "application.aggregates.factories",
+      "fileSuffix": "AggregateFactory.scala",
+      "requiredImports": ["ClusterSharding"],
+      "requiredPatterns": ["\\bEntityRef\\["]
+    },
+    "aggregate-repository-port": {
+      "layer": "application",
+      "packageRole": "application.aggregates.repository",
+      "fileSuffix": "Repository.scala",
+      "requiredImports": ["EntityRef"],
+      "requiredPatterns": ["\\btrait\\s+[A-Z][A-Za-z0-9_]*Repository\\b", "\\bEntityRef\\["],
+      "forbiddenPatterns": ["extends\\s+AutoCloseable"]
+    },
+    "projection": {
+      "layer": "application",
+      "packageRole": "application.projection",
+      "fileSuffix": "Projection.scala",
+      "requiredDecl": "\\bobject\\s+[A-Z][A-Za-z0-9_]*Projection\\b",
+      "requiredImports": [
+        "akka\\.projection\\.jdbc\\.scaladsl\\.JdbcProjection",
+        "akka\\.projection\\.eventsourced\\.scaladsl\\.EventSourcedProvider",
+        "ScalikeJdbcSession"
+      ],
+      "requiredPatterns": ["JdbcProjection\\.exactlyOnce", "EventSourcedProvider\\.eventsByTag"],
+      "forbiddenPatterns": ["KillSwitches", "scheduleWithFixedDelay", "new\\s+[A-Z][A-Za-z0-9_]*Repository\\("]
+    },
+    "projection-handler": {
+      "layer": "application",
+      "packageRole": "application.projection",
+      "fileSuffix": "ProjectionHandler.scala",
+      "requiredDecl": "\\bclass\\s+[A-Z][A-Za-z0-9_]*ProjectionHandler\\b",
+      "requiredImports": ["akka\\.projection\\.jdbc\\.scaladsl\\.JdbcHandler", "ScalikeJdbcSession"],
+      "requiredPatterns": ["\\bextends\\s+JdbcHandler\\["]
+    },
+    "projection-repository-port": {
+      "layer": "application",
+      "packageRole": "application.projection.repository",
+      "fileSuffix": "Repository.scala",
+      "requiredDecl": "\\btrait\\s+[A-Z][A-Za-z0-9_]*Repository\\b"
+    },
+    "projection-bootstrap": {
+      "layer": "infrastructure",
+      "packageRole": "infrastructure.bootstrap",
+      "fileSuffix": "Bootstrap.scala",
+      "requiredImports": ["ShardedDaemonProcess", "ProjectionBehavior"],
+      "requiredPatterns": ["ShardedDaemonProcess\\(", "ProjectionBehavior\\("]
+    },
+    "aggregate-bootstrap": {
+      "layer": "infrastructure",
+      "packageRole": "infrastructure.bootstrap",
+      "fileSuffix": "Bootstrap.scala",
+      "requiredPatterns": ["ClusterSharding", "withTagger", "withRetention", "onPersistFailure"]
+    },
+    "event-adapter": {
+      "layer": "infrastructure",
+      "packageRole": "infrastructure.persistence",
+      "fileSuffix": "EventAdapter.scala",
+      "requiredPatterns": ["\\bextends\\s+EventAdapter\\[", "ProtoConverters"],
+      "forbiddenPatterns": ["EventAdapter\\[[^\\],]+,\\s*GeneratedMessage\\]"]
+    },
+    "snapshot-adapter": {
+      "layer": "infrastructure",
+      "packageRole": "infrastructure.persistence",
+      "fileSuffix": "SnapshotAdapter.scala",
+      "requiredPatterns": ["\\bextends\\s+SnapshotAdapter\\[", "ProtoConverters"]
+    },
+    "proto-converter": {
+      "layer": "infrastructure",
+      "packageRole": "infrastructure.persistence.converters",
+      "fileSuffix": "ProtoConverters.scala",
+      "requiredImports": ["PrimitiveConverter"],
+      "requiredPatterns": ["\\btrait\\s+[A-Z][A-Za-z0-9_]*ProtoConverters\\s+extends\\s+PrimitiveConverter\\b"],
+      "forbiddenPatterns": ["DomainConvertersPart0"]
+    },
+    "aggregate-repository-impl": {
+      "layer": "infrastructure",
+      "packageRole": "infrastructure.repositories.aggregate",
+      "fileSuffix": "RepositoryImpl.scala",
+      "requiredImports": ["ClusterSharding"],
+      "requiredPatterns": ["sharding\\.entityRefFor"],
+      "forbiddenPatterns": ["mutable\\.Map"]
+    }
+  }
+}

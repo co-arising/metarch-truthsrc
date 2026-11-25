@@ -7,7 +7,11 @@
 //
 // Zero Command types are emitted under domain/**; zero business identifiers are
 // embedded in this module.
-import { valueObjectPackage, valueObjectPath, valueObjectSubpackage } from '../../lib/derivation/value-object-package.mjs';
+import {
+  renderValueWildcardImports,
+  valueObjectPath,
+  valueObjectTypeQualifier,
+} from '../../lib/derivation/value-object-package.mjs';
 import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
 
 const fail = (code, message) => { throw Object.assign(new Error(code + ': ' + message), { code }); };
@@ -148,7 +152,7 @@ function renderType(type, pkgByContext, ownContext) {
   if (type.form === 'primitive') return PRIMITIVES.get(type.name);
   if (type.form === 'nominal') {
     if (ownContext && type.context === ownContext) return symbol(type.name);
-    return valueObjectPackage(pkgByContext.get(type.context), symbol(type.name)) + '.' + symbol(type.name);
+    return valueObjectTypeQualifier(pkgByContext.get(type.context), symbol(type.name));
   }
   if (type.form === 'optional') return 'Option[' + renderType(type.element, pkgByContext, ownContext) + ']';
   if (type.form === 'sequence') return 'Vector[' + renderType(type.element, pkgByContext, ownContext) + ']';
@@ -156,15 +160,15 @@ function renderType(type, pkgByContext, ownContext) {
   fail('PL_INPUT', 'unsupported type form: ' + JSON.stringify(type.form));
 }
 
-function collectOwnValueSubpackages(type, ownContext, out) {
+function collectOwnValueNames(type, ownContext, out) {
   if (type.form === 'nominal') {
-    if (type.context === ownContext) out.add(valueObjectSubpackage(type.name));
+    if (type.context === ownContext) out.add(type.name);
     return;
   }
-  if (type.form === 'optional' || type.form === 'sequence') collectOwnValueSubpackages(type.element, ownContext, out);
+  if (type.form === 'optional' || type.form === 'sequence') collectOwnValueNames(type.element, ownContext, out);
   else if (type.form === 'map') {
-    collectOwnValueSubpackages(type.key, ownContext, out);
-    collectOwnValueSubpackages(type.value, ownContext, out);
+    collectOwnValueNames(type.key, ownContext, out);
+    collectOwnValueNames(type.value, ownContext, out);
   }
 }
 
@@ -206,8 +210,9 @@ function renderComputations(agg, pkg, pkgByContext) {
       `import ${pkg}.domain.invariants.params.${name}RuleParams._`,
     ] : []),
     ...(importValues ? ['import ' + pkg + '.domain.values._'] : []),
-    ...(hasHosts || importValues ? [''] : []),
-    'trait ' + name + 'Computations {',
+    'import net.imadz.common.CommonTypes.DomainService',
+    '',
+    'trait ' + name + 'Computations extends DomainService {',
   ];
   for (const h of agg.hosts) {
     lines.push('  def ' + symbol(h.name) + '(state: State, p: ' + symbol(h.command) + 'Params): ' + renderType(h.outputType, pkgByContext, agg.context));
@@ -239,33 +244,32 @@ function renderCommandHelpersTrait(agg, pkg) {
   const lines = [
     `package ${pkg}.application.aggregates.behaviors`,
     '',
-    'import akka.actor.typed.ActorRef',
-    'import akka.persistence.typed.scaladsl.Effect',
     `import ${pkg}.application.aggregates.${name}Protocol._`,
-    `import ${pkg}.domain.entities.${name}Entity.{Event, State}`,
+    `import ${pkg}.domain.entities.${name}Entity.State`,
     `import ${pkg}.domain.invariants.params.${name}RuleParams._`,
+    'import net.imadz.common.CommonTypes.iMadzError',
+    'import net.imadz.common.application.CommandHandlerReplyingBehavior.CommandHelper',
     '',
     `trait ${name}CommandHelpers {`,
   ];
   for (const c of agg.commands) {
     const cname = symbol(c.name);
-    const args = c.parameters.map(p => 'cmd.' + symbol(p.name)).join(', ');
-    lines.push(`  protected def to${c.name}Params(cmd: ${cname}): ${c.name}Params =`);
-    lines.push(`    ${c.name}Params(${args})`);
+    const args = c.parameters.map(p => 'command.' + symbol(p.name)).join(', ');
+    lines.push(
+      '',
+      `  implicit object ${c.name}Helper extends CommandHelper[${cname}, State, ${c.name}Params, Reply] {`,
+      `    override def toParam(state: State, command: ${cname}): ${c.name}Params =`,
+      `      ${c.name}Params(${args})`,
+      '',
+      `    override def createFailureReply(param: ${c.name}Params)(error: iMadzError): Reply =`,
+      '      Refused(error)',
+      '',
+      `    override def createSuccessReply(param: ${c.name}Params)(state: State): Reply =`,
+      '      Accepted(Vector.empty)',
+      '  }',
+    );
   }
-  lines.push(
-    '',
-    '  protected def replyEffect(',
-    '    decision: Either[String, Vector[Event]],',
-    '    replyTo: ActorRef[Reply]',
-    '  ): Effect[Event, State] = decision match {',
-    '    case Left(code) =>',
-    '      Effect.none.thenRun((_: State) => replyTo ! Refused(code))',
-    '    case Right(events) =>',
-    '      Effect.persist(events).thenRun((_: State) => replyTo ! Accepted(events))',
-    '  }',
-    '}',
-  );
+  lines.push('}');
   return {
     path: scalaSubpackagePath(pkg, 'application.aggregates.behaviors', agg.name + 'CommandHelpers.scala'),
     kind: 'command-helpers',
@@ -282,11 +286,11 @@ function renderCommandHelpersTrait(agg, pkg) {
 function renderApplicationProtocol(agg, pkg, pkgByContext) {
   const name = symbol(agg.name);
   const hasAuthority = agg.externalProducers.length > 0;
-  const ownSubpkgs = new Set();
+  const ownNames = new Set();
   for (const c of agg.commands) {
-    for (const p of c.parameters) collectOwnValueSubpackages(p.valueType, agg.context, ownSubpkgs);
+    for (const p of c.parameters) collectOwnValueNames(p.valueType, agg.context, ownNames);
   }
-  for (const p of agg.externalProducers) collectOwnValueSubpackages(p.outputType, agg.context, ownSubpkgs);
+  for (const p of agg.externalProducers) collectOwnValueNames(p.outputType, agg.context, ownNames);
 
   const lines = [
     `package ${pkg}.application.aggregates`,
@@ -294,11 +298,13 @@ function renderApplicationProtocol(agg, pkg, pkgByContext) {
     'import akka.actor.typed.ActorRef',
     'import akka.persistence.typed.scaladsl.Effect',
     `import ${pkg}.domain.entities.${name}Entity.{Event, State}`,
-    ...[...ownSubpkgs].sort().map(sub => `import ${pkg}.${sub}._`),
+    ...renderValueWildcardImports(pkg, [...ownNames], 'application.aggregates'),
+    'import net.imadz.common.CborSerializable',
+    'import net.imadz.common.CommonTypes.iMadzError',
     '',
     `object ${name}Protocol {`,
     '',
-    '  sealed trait Command',
+    '  sealed trait Command extends CborSerializable',
   ];
   for (const c of agg.commands) {
     lines.push(renderCommandCaseClass(c.name, c.parameters, pkgByContext, agg.context));
@@ -310,9 +316,11 @@ function renderApplicationProtocol(agg, pkg, pkgByContext) {
   }
   lines.push(
     '',
-    '  sealed trait Reply',
+    '  sealed trait Reply extends CborSerializable',
     '  final case class Accepted(events: Vector[Event]) extends Reply',
-    '  final case class Refused(code: String) extends Reply',
+    '  final case class Refused(error: iMadzError) extends Reply {',
+    '    def code: String = error.code',
+    '  }',
   );
   if (hasAuthority) {
     lines.push(

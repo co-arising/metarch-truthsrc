@@ -1,14 +1,26 @@
 package example.bankwealth.infrastructure.persistence.converters
 
 import example.bankwealth.domain.entities._
-import example.bankwealth.application.api._
-import example.bankwealth.application.integration._
-import example.bankwealth.application.process._
+import example.bankwealth.application.connectors.BankSipDispatchProtocol._
+import example.bankwealth.application.connectors.BankTaEffectProtocol._
+import example.bankwealth.application.process.BankPaymentMessages._
+import example.bankwealth.application.process.BankRefundMessages._
+import example.bankwealth.application.process.CreditFundCollectionStep._
+import example.bankwealth.application.process.CreditOriginalInvestorStep._
+import example.bankwealth.application.process.DebitFundCollectionStep._
+import example.bankwealth.application.process.ReserveCashFundOrderStep._
+import example.bankwealth.application.process.ReserveInvestorFundsStep._
 import example.bankwealth.application.projection._
 import example.bankwealth.domain.values._
 import example.bankwealth.infrastructure.persistence._
+import example.bankwealth.interfaces.api.ApiAcknowledgements._
+import example.bankwealth.interfaces.api.ApiCommands._
+import example.bankwealth.interfaces.api.ApiKeys._
+import example.bankwealth.interfaces.api.ApiResponses._
+import example.bankwealth.interfaces.api.ApiWire._
 import example.bankwealth.infrastructure.{proto => pb}
-trait DomainConvertersPart3 { self: DomainConverters.type =>
+import net.imadz.common.serialization.PrimitiveConverter
+trait SipPlanProtoConverters extends PrimitiveConverter with SharedValueProtoConverters {
   def encodeSipPlanStatePO(value: SipPlanEntity.State): pb.SipPlanStatePO = pb.SipPlanStatePO(
     id = Some(encodePlanIdPO(value.id)),
     initialized = value.initialized,
@@ -168,5 +180,4 @@ trait DomainConvertersPart3 { self: DomainConverters.type =>
     case pb.SipPlanEventPO.Event.SipCreateIntentRecorded(e) => decodeSipCreateIntentRecordedPO(e)
     case pb.SipPlanEventPO.Event.Empty => throw new IllegalArgumentException("empty SipPlanEventPO event")
   }
-
 }

@@ -1,12 +1,8 @@
 package example.bankwealth.application.aggregates.repository
 
-import akka.actor.typed.ActorRef
+import akka.cluster.sharding.typed.scaladsl.EntityRef
 import example.bankwealth.application.aggregates.CreditBalanceProtocol.Command
 
-object CreditBalanceRepository {
-  final case class Handle(persistenceId: String, ref: ActorRef[Command])
-}
-
-trait CreditBalanceRepository[K] extends AutoCloseable {
-  def get(id: K): CreditBalanceRepository.Handle
+trait CreditBalanceRepository {
+  def entityRefFor(id: String): EntityRef[Command]
 }

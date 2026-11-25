@@ -3,7 +3,7 @@
 // optional/repeated/map, oneof event unions, shared req[A]/fixed/readExact
 // helpers, and pb.*PO alias to avoid domain.values.MoneyPO collision).
 // Zero hardcoded business identifiers; fail-closed (PC_INPUT).
-import { valueObjectSubpackage } from '../../lib/derivation/value-object-package.mjs';
+import { renderValueWildcardImports } from '../../lib/derivation/value-object-package.mjs';
 import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
 
 const SCHEMA = 'truthsrc.proto-converter-input/v1';
@@ -205,13 +205,18 @@ const HELPERS_BLOCK = [
 ].join('\n');
 
 const importsHeader = (pkg, valueObjects) => {
-  const voSubs = [...new Set(['domain.values', ...(valueObjects ?? []).map(vo => valueObjectSubpackage(vo.typeId))])].sort();
+  const voNames = (valueObjects ?? []).map(vo => vo.typeId);
+  const voImports = [...new Set([
+    `import ${pkg}.domain.values._`,
+    ...renderValueWildcardImports(pkg, voNames),
+  ])].sort();
   return [
     `package ${pkg}.infrastructure.persistence.converters`,
     '',
     `import ${pkg}.domain.entities._`,
-    ...voSubs.map(sub => `import ${pkg}.${sub}._`),
+    ...voImports,
     `import ${pkg}.infrastructure.{proto => pb}`,
+    'import net.imadz.common.serialization.PrimitiveConverter',
     '',
   ].join('\n');
 };
@@ -223,58 +228,91 @@ export function renderProtoConverterFiles(input) {
 
   for (const ctx of input.contexts) {
     const pkg = pkgMap.get(ctx.context);
-    const groups = [
-      ...ctx.valueObjects.map(vo => ({ content: renderValueObjectMethods(vo), sources: vo.sources })),
-      ...ctx.aggregates.map(agg => ({
-        content: renderAggregateMethods(agg),
-        sources: [...agg.stateSources, ...agg.events.map(e => e.source)],
-      })),
-    ];
-    const allContent = groups.map(g => g.content).join('\n');
-    const allSources = groups.flatMap(g => g.sources);
-    const facadePath = scalaSubpackagePath(pkg, 'infrastructure.persistence.converters', 'DomainConverters.scala');
+    const header = importsHeader(pkg, ctx.valueObjects);
 
-    if (allContent.length <= 55000) {
+    // 1. Shared value-object converters split into cohesive traits if needed, extending PrimitiveConverter.
+    const voBlocks = ctx.valueObjects.map(vo => ({ content: renderValueObjectMethods(vo), sources: vo.sources }));
+    const voChunks = [];
+    for (const block of voBlocks) {
+      if (!voChunks.length || voChunks.at(-1).content.length + block.content.length > 48000) {
+        voChunks.push({ content: '', sources: [] });
+      }
+      voChunks.at(-1).content += block.content + '\n';
+      voChunks.at(-1).sources.push(...block.sources);
+    }
+    const voTraitNames = [];
+    const voTraitPaths = [];
+    if (voChunks.length === 1) {
+      const voPath = scalaSubpackagePath(pkg, 'infrastructure.persistence.converters', 'SharedValueProtoConverters.scala');
+      voTraitNames.push('SharedValueProtoConverters');
+      voTraitPaths.push(voPath);
       out.push({
-        path: facadePath,
-        content: importsHeader(pkg, ctx.valueObjects) + 'object DomainConverters {\n' + HELPERS_BLOCK + allContent + '}\n',
+        path: voPath,
+        content: header + 'trait SharedValueProtoConverters extends PrimitiveConverter {\n' + HELPERS_BLOCK + voChunks[0].content + '}\n',
         kind: 'converter',
         deps: [...ctx.deps],
-        sources: allSources,
+        sources: voChunks[0].sources,
         codeMappings: [],
       });
-      continue;
+    } else {
+      const subNames = voChunks.map((_, i) => `SharedValueGroup${i}ProtoConverters`);
+      const subPaths = subNames.map(n => scalaSubpackagePath(pkg, 'infrastructure.persistence.converters', `${n}.scala`));
+      const sharedPath = scalaSubpackagePath(pkg, 'infrastructure.persistence.converters', 'SharedValueProtoConverters.scala');
+      voTraitNames.push('SharedValueProtoConverters');
+      voTraitPaths.push(sharedPath);
+      voChunks.forEach((chunk, i) => {
+        out.push({
+          path: subPaths[i],
+          content: header + `trait ${subNames[i]} extends PrimitiveConverter {\n  self: SharedValueProtoConverters =>\n\n` + chunk.content + '}\n',
+          kind: 'converter',
+          deps: [...ctx.deps],
+          sources: chunk.sources,
+          codeMappings: [],
+        });
+      });
+      out.push({
+        path: sharedPath,
+        content: header + `trait SharedValueProtoConverters extends PrimitiveConverter with ${subNames.join(' with ')} {\n` + HELPERS_BLOCK + '}\n',
+        kind: 'converter',
+        deps: [...new Set([...ctx.deps, ...subPaths])],
+        sources: voChunks.flatMap(c => c.sources),
+        codeMappings: [],
+      });
     }
 
-    const parts = [];
-    for (const g of groups) {
-      if (!parts.length || parts.at(-1).content.length + g.content.length > 48000) {
-        parts.push({ content: '', sources: [] });
-      }
-      parts.at(-1).content += g.content + '\n';
-      parts.at(-1).sources.push(...g.sources);
+    // 2. Per-aggregate ProtoConverters trait extending SharedValueProtoConverters (transitively PrimitiveConverter).
+    const aggTraitNames = [];
+    const aggTraitPaths = [];
+    for (const agg of ctx.aggregates) {
+      const traitName = `${agg.aggId}ProtoConverters`;
+      const traitPath = scalaSubpackagePath(pkg, 'infrastructure.persistence.converters', `${traitName}.scala`);
+      aggTraitNames.push(traitName);
+      aggTraitPaths.push(traitPath);
+      out.push({
+        path: traitPath,
+        content: header + `trait ${traitName} extends PrimitiveConverter with SharedValueProtoConverters {\n` +
+          renderAggregateMethods(agg) + '}\n',
+        kind: 'converter',
+        deps: [...new Set([...ctx.deps, ...voTraitPaths])],
+        sources: [...agg.stateSources, ...agg.events.map(e => e.source)],
+        codeMappings: [],
+      });
     }
-    const partNames = parts.map((_, i) => 'DomainConvertersPart' + i);
-    const partPaths = partNames.map(name => scalaSubpackagePath(pkg, 'infrastructure.persistence.converters', name + '.scala'));
 
+    // 3. Facade object DomainConverters mixing in all per-aggregate converter traits.
+    const facadePath = scalaSubpackagePath(pkg, 'infrastructure.persistence.converters', 'DomainConverters.scala');
+    const allTraits = [...voTraitNames, ...aggTraitNames];
+    const allSources = [
+      ...ctx.valueObjects.flatMap(vo => vo.sources),
+      ...ctx.aggregates.flatMap(agg => [...agg.stateSources, ...agg.events.map(e => e.source)]),
+    ];
     out.push({
       path: facadePath,
-      content: importsHeader(pkg, ctx.valueObjects) + `object DomainConverters extends ${partNames.join(' with ')} {\n` + HELPERS_BLOCK + '}\n',
+      content: header + `object DomainConverters extends ${allTraits.join(' with ')}\n`,
       kind: 'converter',
-      deps: [...new Set([...ctx.deps, ...partPaths])],
+      deps: [...new Set([...ctx.deps, ...voTraitPaths, ...aggTraitPaths])],
       sources: allSources,
       codeMappings: [],
-    });
-
-    parts.forEach((part, i) => {
-      out.push({
-        path: partPaths[i],
-        content: importsHeader(pkg, ctx.valueObjects) + `trait ${partNames[i]} { self: DomainConverters.type =>\n` + part.content + '}\n',
-        kind: 'converter',
-        deps: [...ctx.deps],
-        sources: part.sources,
-        codeMappings: [],
-      });
     });
   }
   return out;

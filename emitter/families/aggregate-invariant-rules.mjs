@@ -283,24 +283,29 @@ function renderAggregateRules(a, pkgByContext) {
   let rules = 'package ' + pkg + '.domain.invariants\n\n' +
     'import ' + pkg + '.domain.entities.' + name + 'Entity._\n' +
     'import ' + pkg + '.domain.invariants.params.' + name + 'RuleParams._\n' +
-    'import ' + pkg + '.domain.services.' + name + 'Computations\n\n' +
+    'import ' + pkg + '.domain.services.' + name + 'Computations\n' +
+    'import net.imadz.common.CommonTypes.{InvariantRule, iMadzError}\n\n' +
     'object ' + name + 'Rules {\n';
   const ruleMappings = [];
   for (const c of a.commands) {
     const start = rules.length;
     const parameterName = identifier(c.command + 'Params', 'derived params record name');
-    rules += '  def ' + c.command + '(state: State, p: ' + parameterName + ', hosts: ' + name + 'Computations): Either[String, Vector[Event]] = {\n';
+    const ruleClassName = identifier(c.command + 'Rule', 'derived rule class name');
+    rules += '  final class ' + ruleClassName + '(hosts: ' + name + 'Computations)\n' +
+      '      extends InvariantRule[Event, State, ' + parameterName + '] {\n' +
+      '    override def apply(state: State, p: ' + parameterName + '): Either[iMadzError, List[Event]] = {\n';
     const guards = [];
     for (const g of c.guards) {
       const guardStart = rules.length;
-      rules += '    if (' + renderGuardCondition(g.text) + ') return ' +
-        (g.outcome.kind === 'reject' ? 'Left(' + JSON.stringify(g.outcome.code) + ')' : 'Right(Vector.empty)') + '\n';
+      const codeLit = JSON.stringify(g.outcome.code);
+      rules += '      if (' + renderGuardCondition(g.text) + ') return ' +
+        (g.outcome.kind === 'reject' ? 'Left(iMadzError(' + codeLit + ', ' + codeLit + '))' : 'Right(Nil)') + '\n';
       guards.push({ source: g.source, span: { start: guardStart, end: rules.length } });
     }
     const eventsExpr = c.events
       .map(e => symbol(e.name) + '(' + e.slots.map(s => renderExpr(s.producer)).join(', ') + ')')
       .join(', ');
-    rules += '    Right(Vector(' + eventsExpr + '))\n  }\n';
+    rules += '      Right(List(' + eventsExpr + '))\n    }\n  }\n';
     const scope = { start, end: rules.length };
     ruleMappings.push({ source: c.source, span: scope, scope }, ...guards.map(m => ({ ...m, scope })));
   }

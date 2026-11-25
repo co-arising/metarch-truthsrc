@@ -4,10 +4,12 @@ import akka.actor.typed.ActorRef
 import akka.persistence.typed.scaladsl.Effect
 import example.bankwealth.domain.entities.CreditBalanceEntity.{Event, State}
 import example.bankwealth.domain.values._
+import net.imadz.common.CborSerializable
+import net.imadz.common.CommonTypes.iMadzError
 
 object CreditBalanceProtocol {
 
-  sealed trait Command
+  sealed trait Command extends CborSerializable
   final case class InitializeAccount(
     resource: AccountId,
     currency: String,
@@ -52,9 +54,11 @@ object CreditBalanceProtocol {
   ) extends Command
   final case class GetState(replyTo: ActorRef[State]) extends Command
 
-  sealed trait Reply
+  sealed trait Reply extends CborSerializable
   final case class Accepted(events: Vector[Event]) extends Reply
-  final case class Refused(code: String) extends Reply
+  final case class Refused(error: iMadzError) extends Reply {
+    def code: String = error.code
+  }
 
   type CommandHandler = (State, Command) => Effect[Event, State]
 }

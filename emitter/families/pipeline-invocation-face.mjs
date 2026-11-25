@@ -23,8 +23,14 @@
 //     greedy-fills rows at indent + 8
 //   - the FQ codec ladders (encode/decode receipt PB) are fixed 3-row ladders
 //   - the strict-participant rows ladder the args field when the row overflows
-import { renderGroupedValueImports } from '../../lib/derivation/value-object-package.mjs';
+import {
+  renderGroupedValueImports,
+  renderValueWildcardImports,
+} from '../../lib/derivation/value-object-package.mjs';
 import { scalaDirPath } from '../../lib/layout/layout-strategy.mjs';
+
+const allPhaseTypes = md => md.participants.flatMap(p => p.phases.flatMap(ph => [ph.inputType, ph.queryType, ph.receiptType]));
+const allReceiptTypes = md => md.participants.flatMap(p => p.phases.map(ph => ph.receiptType));
 
 const basePkgOf = valuesPkg => valuesPkg.replace(/\.domain\.values$/, '');
 
@@ -403,7 +409,7 @@ function emitPorts(md) {
     '',
     'import scala.concurrent.Future',
     '',
-    ...renderGroupedValueImports(md.basePkg, [md.original, md.result], 'application.process'),
+    ...renderValueWildcardImports(md.basePkg, [md.original, md.result, ...allPhaseTypes(md)], 'application.process'),
     'import ' + md.supply.strictRuntimePackage + '.{OperationIdentity, TransactionIdentity}',
     '',
     ...md.docs.ports,
@@ -462,7 +468,7 @@ function emitHostIo(md) {
     '',
     'import scala.concurrent.{ExecutionContext, Future}',
     '',
-    ...renderGroupedValueImports(md.basePkg, [md.original, md.result], 'application.process'),
+    ...renderValueWildcardImports(md.basePkg, [md.original, md.result, ...allPhaseTypes(md)], 'application.process'),
     'import ' + md.host + '.ResultKind',
     'import ' + md.ports + '.CompletionContext',
     'import ' + md.supply.strictRuntimePackage + '.TransactionIdentity',
@@ -766,6 +772,7 @@ function emitProcessCodecs(md) {
     '',
     'import com.google.protobuf.ByteString',
     'import ' + md.pkg + '._',
+    ...renderValueWildcardImports(md.basePkg, [md.args, ...allReceiptTypes(md)], 'infrastructure.persistence'),
     'import ' + md.supply.serializationPackage + '.' + md.supply.serializationObject,
     'import ' + md.supply.strictRuntimePackage + '.{CodecPin, PayloadCodec}',
     '',
@@ -867,7 +874,7 @@ function emitBindings(md) {
     '',
     'import ' + md.pkg + '._',
     'import ' + md.pkg + '.' + md.ports + '.CompletionContext',
-    ...renderGroupedValueImports(md.basePkg, [md.original], 'application.process'),
+    ...renderValueWildcardImports(md.basePkg, [md.original, md.result, ...allPhaseTypes(md)], 'infrastructure.bootstrap'),
     'import ' + md.supply.strictRuntimePackage + '.OperationIdentity',
     '',
     ...md.docs.bindings,
@@ -1241,6 +1248,7 @@ function emitDefinition(md) {
     '',
     'import ' + md.supply.domainPackage + '.invariants.params.{' + protocols.map(p => p.replace(/Protocol$/, 'RuleParams')).join(', ') + '}',
     'import ' + md.supply.domainValuesPackage + '._',
+    ...renderValueWildcardImports(md.basePkg, [md.args, ...allPhaseTypes(md)], 'application.process'),
     'import ' + md.ports + '.OperationNotExecuted',
     'import ' + md.supply.strictRuntimePackage + '._',
     '',
@@ -1418,6 +1426,7 @@ function emitProcessBootstrap(md) {
     'import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}',
     'import com.google.protobuf.ByteString',
     'import ' + md.pkg + '._',
+    ...renderGroupedValueImports(md.basePkg, [md.original, md.result, md.args], 'infrastructure.bootstrap'),
     'import ' + md.persistencePkg + '.{' + md.stateCodec + ', ' + md.processCodecs + '}',
     'import ' + md.supply.strictRuntimePackage + '._',
     'import ' + md.supply.monarchPersistencePackage + '.{PersistentMonarch, RunObserver}',

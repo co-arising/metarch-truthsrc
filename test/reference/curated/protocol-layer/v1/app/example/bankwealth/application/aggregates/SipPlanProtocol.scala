@@ -3,12 +3,14 @@ package example.bankwealth.application.aggregates
 import akka.actor.typed.ActorRef
 import akka.persistence.typed.scaladsl.Effect
 import example.bankwealth.domain.entities.SipPlanEntity.{Event, State}
-import example.bankwealth.application.api._
 import example.bankwealth.domain.values._
+import example.bankwealth.interfaces.api.ApiCommands._
+import net.imadz.common.CborSerializable
+import net.imadz.common.CommonTypes.iMadzError
 
 object SipPlanProtocol {
 
-  sealed trait Command
+  sealed trait Command extends CborSerializable
   final case class CreateSipPlan(
     planId: PlanId,
     config: SipRevisionConfig,
@@ -75,9 +77,11 @@ object SipPlanProtocol {
   ) extends Command
   final case class GetState(replyTo: ActorRef[State]) extends Command
 
-  sealed trait Reply
+  sealed trait Reply extends CborSerializable
   final case class Accepted(events: Vector[Event]) extends Reply
-  final case class Refused(code: String) extends Reply
+  final case class Refused(error: iMadzError) extends Reply {
+    def code: String = error.code
+  }
 
   type CommandHandler = (State, Command) => Effect[Event, State]
 }

@@ -1,7 +1,8 @@
 package example.bankwealth.infrastructure.persistence
 
 import com.google.protobuf.ByteString
-import example.bankwealth.application.integration.{BankSipDispatchExecution, BankSipDispatchObservation}
+import example.bankwealth.application.process.BankSipDispatchExecution
+import example.bankwealth.application.connectors.BankSipDispatchProtocol.BankSipDispatchObservation
 import example.bankwealth.infrastructure.persistence.converters.DomainConverters
 import net.imadz.monarch.persistence.StateCodec
 

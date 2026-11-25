@@ -1,11 +1,12 @@
 package example.bankwealth.application.aggregates.factories
 
-import akka.actor.typed.Behavior
+import akka.cluster.sharding.typed.scaladsl.{ClusterSharding, EntityRef}
+import javax.inject.Inject
+import example.bankwealth.application.aggregates.SipPlanAggregate
 import example.bankwealth.application.aggregates.SipPlanProtocol.Command
-import example.bankwealth.domain.entities.SipPlanEntity.State
-import example.bankwealth.domain.services.SipPlanComputations
 
-trait SipPlanAggregateFactory {
+class SipPlanAggregateFactory @Inject() (clusterSharding: ClusterSharding) {
 
-  def create(persistenceId: String, initial: State, hosts: SipPlanComputations): Behavior[Command]
+  def entityRefFor(entityId: String): EntityRef[Command] =
+    clusterSharding.entityRefFor(SipPlanAggregate.EntityKey, entityId)
 }

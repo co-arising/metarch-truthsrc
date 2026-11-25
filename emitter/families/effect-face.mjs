@@ -243,6 +243,7 @@ const caseModel = (input, c, shape) => {
     basePkg,
     rootSeg: basePkg.split('.').pop(),
     pkg: c.names.package,
+    executionPkg: basePkg + '.application.process',
     persistencePkg: basePkg + '.infrastructure.persistence',
     bootstrapPkg: basePkg + '.infrastructure.bootstrap',
     execution: c.names.executionClass,
@@ -278,12 +279,13 @@ function emitExecution(cm, shape) {
       discipline + '"))');
   }
   const lines = [
-    'package ' + cm.pkg,
+    'package ' + cm.executionPkg,
     '',
     'import scala.concurrent.duration._',
     '',
     'import akka.actor.typed.ActorRef',
-    ...renderGroupedValueImports(cm.basePkg, values(cm), 'application.integration'),
+    'import ' + cm.pkg + '.' + cm.host,
+    ...renderGroupedValueImports(cm.basePkg, values(cm), 'application.process'),
     'import net.imadz.monarch.{StageError, StageFailedException}',
     '',
     ...cm.docs.execution,
@@ -357,7 +359,8 @@ function emitExecutionStateCodec(cm, shape) {
     'package ' + cm.persistencePkg,
     '',
     'import com.google.protobuf.ByteString',
-    'import ' + cm.pkg + '.{' + cm.execution + ', ' + eff.observationValue + '}',
+    'import ' + cm.executionPkg + '.' + cm.execution,
+    ...renderGroupedValueImports(cm.basePkg, [eff.observationValue], 'infrastructure.persistence'),
     'import ' + shape.serializationPackage + '.' + shape.serializationObject,
     'import ' + shape.monarchPersistencePackage + '.StateCodec',
     '',
@@ -492,7 +495,8 @@ function emitHost(cm, shape) {
     '',
     'import akka.actor.typed.ActorRef',
     'import com.google.protobuf.ByteString',
-    ...renderGroupedValueImports(cm.basePkg, [eff.operationValue, eff.observationValue, eff.reconcileValue, eff.requestValue], 'application.integration'),
+    'import ' + cm.executionPkg + '.' + cm.execution,
+    ...renderGroupedValueImports(cm.basePkg, [eff.operationValue, eff.observationValue, eff.reconcileValue, eff.requestValue], 'application.connectors'),
     '',
     ...cm.docs.host,
     'object ' + cm.host + ' {',
@@ -640,6 +644,8 @@ function emitBootstrap(cm, shape) {
     'import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}',
     'import com.google.protobuf.ByteString',
     'import ' + cm.pkg + '._',
+    'import ' + cm.executionPkg + '.' + cm.execution,
+    ...renderGroupedValueImports(cm.basePkg, [eff.operationValue, eff.reconcileValue], 'infrastructure.bootstrap'),
     'import ' + cm.persistencePkg + '.' + cm.stateCodec,
     'import ' + shape.monarchPersistencePackage + '.{PersistentMonarch, RunObserver}',
     '',
@@ -904,12 +910,13 @@ function generate(input) {
   const files = {};
   for (const c of input.cases) {
     const cm = caseModel(input, c, shape);
-    const integrationRel = scalaDirPath(cm.pkg);
+    const connectorsRel = scalaDirPath(cm.pkg);
+    const processRel = scalaDirPath(cm.executionPkg);
     const persistenceRel = scalaDirPath(cm.persistencePkg);
     const bootstrapRel = scalaDirPath(cm.bootstrapPkg);
-    files[integrationRel + '/' + cm.execution + '.scala'] = emitExecution(cm, shape);
+    files[processRel + '/' + cm.execution + '.scala'] = emitExecution(cm, shape);
     files[persistenceRel + '/' + cm.stateCodec + '.scala'] = emitExecutionStateCodec(cm, shape);
-    files[integrationRel + '/' + cm.host + '.scala'] = emitHost(cm, shape);
+    files[connectorsRel + '/' + cm.host + '.scala'] = emitHost(cm, shape);
     files[bootstrapRel + '/' + cm.bootstrap + '.scala'] = emitBootstrap(cm, shape);
     files[persistenceRel + '/' + cm.serializer + '.scala'] = emitSerializer(cm, shape);
   }

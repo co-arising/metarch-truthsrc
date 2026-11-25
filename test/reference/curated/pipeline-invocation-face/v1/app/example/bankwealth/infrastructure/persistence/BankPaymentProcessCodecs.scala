@@ -4,6 +4,10 @@ import scala.util.Try
 
 import com.google.protobuf.ByteString
 import example.bankwealth.application.process._
+import example.bankwealth.application.process.BankPaymentMessages._
+import example.bankwealth.application.process.CreditFundCollectionStep._
+import example.bankwealth.application.process.ReserveCashFundOrderStep._
+import example.bankwealth.application.process.ReserveInvestorFundsStep._
 import example.bankwealth.infrastructure.persistence.converters.DomainConverters
 import net.imadz.infra.saga.strict.{CodecPin, PayloadCodec}
 

@@ -9,6 +9,7 @@ import akka.persistence.typed.PersistenceId
 import akka.persistence.typed.scaladsl.{Effect, EventSourcedBehavior}
 import com.google.protobuf.ByteString
 import example.bankwealth.application.process._
+import example.bankwealth.application.process.BankPaymentMessages._
 import example.bankwealth.infrastructure.persistence.{BankCashPaymentStateCodec, BankPaymentProcessCodecs}
 import net.imadz.infra.saga.strict._
 import net.imadz.monarch.persistence.{PersistentMonarch, RunObserver}

@@ -16,8 +16,8 @@
       "path": "/api/v1/accounts/me",
       "audience": "customer",
       "csrf": false,
-      "inputType": "example.bankwealth.application.api.BankAccountKey",
-      "outputType": "example.bankwealth.application.api.BankAccountResponse",
+      "inputType": "example.bankwealth.interfaces.api.ApiKeys.BankAccountKey",
+      "outputType": "example.bankwealth.interfaces.api.ApiResponses.BankAccountResponse",
       "implId": "example.bankwealth.integration.BankServiceEndpoints.BankAccountQuery",
       "implVersion": "bank-v1-service-1"
     },
@@ -29,7 +29,7 @@
       "audience": "customer",
       "csrf": true,
       "inputType": "example.bankwealth.domain.values.BankCashSubmit",
-      "outputType": "example.bankwealth.application.api.BankCashAcknowledgement",
+      "outputType": "example.bankwealth.interfaces.api.ApiAcknowledgements.BankCashAcknowledgement",
       "implId": "example.bankwealth.integration.BankServiceEndpoints.BankCashSubmitPort",
       "implVersion": "bank-v1-service-1"
     },
@@ -40,8 +40,8 @@
       "path": "/api/v1/cash-requests/:clientRequestId",
       "audience": "customer",
       "csrf": false,
-      "inputType": "example.bankwealth.application.api.BankCashRequestKey",
-      "outputType": "example.bankwealth.application.api.BankCashRequestResponse",
+      "inputType": "example.bankwealth.interfaces.api.ApiKeys.BankCashRequestKey",
+      "outputType": "example.bankwealth.interfaces.api.ApiResponses.BankCashRequestResponse",
       "implId": "example.bankwealth.integration.BankServiceEndpoints.BankCashOriginalQuery",
       "implVersion": "bank-v1-service-1"
     },
@@ -52,8 +52,8 @@
       "path": "/api/v1/orders/:orderId",
       "audience": "customer",
       "csrf": false,
-      "inputType": "example.bankwealth.application.api.BankOrderKey",
-      "outputType": "example.bankwealth.application.api.BankOrderResponse",
+      "inputType": "example.bankwealth.interfaces.api.ApiKeys.BankOrderKey",
+      "outputType": "example.bankwealth.interfaces.api.ApiResponses.BankOrderResponse",
       "implId": "example.bankwealth.integration.BankServiceEndpoints.BankOrderQuery",
       "implVersion": "bank-v1-service-1"
     },
@@ -65,7 +65,7 @@
       "audience": "customer",
       "csrf": true,
       "inputType": "example.bankwealth.domain.values.BankSipCreate",
-      "outputType": "example.bankwealth.application.api.BankSipAcknowledgement",
+      "outputType": "example.bankwealth.interfaces.api.ApiAcknowledgements.BankSipAcknowledgement",
       "implId": "example.bankwealth.integration.BankServiceEndpoints.BankSipCreatePort",
       "implVersion": "bank-v1-service-1"
     },
@@ -76,7 +76,7 @@
       "path": "/api/v1/sip-plans",
       "audience": "customer",
       "csrf": false,
-      "inputType": "example.bankwealth.application.api.BankPlanPageKey",
+      "inputType": "example.bankwealth.interfaces.api.ApiKeys.BankPlanPageKey",
       "outputType": "example.bankwealth.application.projection.BankSipPlanPage",
       "implId": "example.bankwealth.integration.BankServiceEndpoints.BankSipPlansQuery",
       "implVersion": "bank-v1-service-1"
@@ -88,8 +88,8 @@
       "path": "/api/v1/sip-plans/:planId",
       "audience": "customer",
       "csrf": false,
-      "inputType": "example.bankwealth.application.api.BankPlanKey",
-      "outputType": "example.bankwealth.application.api.BankSipPlanResponse",
+      "inputType": "example.bankwealth.interfaces.api.ApiKeys.BankPlanKey",
+      "outputType": "example.bankwealth.interfaces.api.ApiResponses.BankSipPlanResponse",
       "implId": "example.bankwealth.integration.BankServiceEndpoints.BankSipPlanQuery",
       "implVersion": "bank-v1-service-1"
     },
@@ -100,8 +100,8 @@
       "path": "/api/v1/sip-plans/:planId/revisions",
       "audience": "customer",
       "csrf": true,
-      "inputType": "example.bankwealth.application.api.BankSipRevisionInput",
-      "outputType": "example.bankwealth.application.api.BankSipAcknowledgement",
+      "inputType": "example.bankwealth.interfaces.api.ApiCommands.BankSipRevisionInput",
+      "outputType": "example.bankwealth.interfaces.api.ApiAcknowledgements.BankSipAcknowledgement",
       "implId": "example.bankwealth.integration.BankServiceEndpoints.BankSipRevisePort",
       "implVersion": "bank-v1-service-1"
     },
@@ -112,8 +112,8 @@
       "path": "/api/v1/sip-plans/:planId/pause",
       "audience": "customer",
       "csrf": true,
-      "inputType": "example.bankwealth.application.api.BankPlanKey",
-      "outputType": "example.bankwealth.application.api.BankSipAcknowledgement",
+      "inputType": "example.bankwealth.interfaces.api.ApiKeys.BankPlanKey",
+      "outputType": "example.bankwealth.interfaces.api.ApiAcknowledgements.BankSipAcknowledgement",
       "implId": "example.bankwealth.integration.BankServiceEndpoints.BankSipPausePort",
       "implVersion": "bank-v1-service-1"
     },
@@ -124,8 +124,8 @@
       "path": "/api/v1/sip-plans/:planId/resume",
       "audience": "customer",
       "csrf": true,
-      "inputType": "example.bankwealth.application.api.BankPlanKey",
-      "outputType": "example.bankwealth.application.api.BankSipAcknowledgement",
+      "inputType": "example.bankwealth.interfaces.api.ApiKeys.BankPlanKey",
+      "outputType": "example.bankwealth.interfaces.api.ApiAcknowledgements.BankSipAcknowledgement",
       "implId": "example.bankwealth.integration.BankServiceEndpoints.BankSipResumePort",
       "implVersion": "bank-v1-service-1"
     },
@@ -136,7 +136,7 @@
       "path": "/api/v1/sip-plans/:planId/occurrences",
       "audience": "customer",
       "csrf": false,
-      "inputType": "example.bankwealth.application.api.BankOccurrencePageKey",
+      "inputType": "example.bankwealth.interfaces.api.ApiKeys.BankOccurrencePageKey",
       "outputType": "example.bankwealth.application.projection.BankSipOccurrencePage",
       "implId": "example.bankwealth.integration.BankServiceEndpoints.BankSipOccurrencesQuery",
       "implVersion": "bank-v1-service-1"
@@ -148,8 +148,8 @@
       "path": "/api/v1/operations/pending",
       "audience": "operator",
       "csrf": false,
-      "inputType": "example.bankwealth.application.api.BankPendingPageKey",
-      "outputType": "example.bankwealth.application.api.BankPendingResponse",
+      "inputType": "example.bankwealth.interfaces.api.ApiKeys.BankPendingPageKey",
+      "outputType": "example.bankwealth.interfaces.api.ApiResponses.BankPendingResponse",
       "implId": "example.bankwealth.integration.BankServiceEndpoints.BankPendingOperationsQuery",
       "implVersion": "bank-v1-service-1"
     },
@@ -160,8 +160,8 @@
       "path": "/api/v1/operations/:operationId/reconcile",
       "audience": "operator",
       "csrf": true,
-      "inputType": "example.bankwealth.application.api.BankOperationKey",
-      "outputType": "example.bankwealth.application.api.BankRecoveryAcknowledgement",
+      "inputType": "example.bankwealth.interfaces.api.ApiKeys.BankOperationKey",
+      "outputType": "example.bankwealth.interfaces.api.ApiAcknowledgements.BankRecoveryAcknowledgement",
       "implId": "example.bankwealth.integration.BankServiceEndpoints.BankReconcileExistingPort",
       "implVersion": "bank-v1-service-1"
     },
@@ -172,8 +172,8 @@
       "path": "/api/v1/business-clock/tick",
       "audience": "operator",
       "csrf": true,
-      "inputType": "example.bankwealth.application.api.BankTick",
-      "outputType": "example.bankwealth.application.api.BankTickAcknowledgement",
+      "inputType": "example.bankwealth.interfaces.api.ApiCommands.BankTick",
+      "outputType": "example.bankwealth.interfaces.api.ApiAcknowledgements.BankTickAcknowledgement",
       "implId": "example.bankwealth.integration.BankServiceEndpoints.BankBusinessTickPort",
       "implVersion": "bank-v1-service-1"
     }

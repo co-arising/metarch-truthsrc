@@ -292,14 +292,20 @@ function renderAggregatePair(agg, packages) {
     : oneLineState;
   const eventDecls = agg.events.map(ev => renderEventDecl(ev, agg.context, packages)).join('\n');
 
+  const idField = agg.fields[0];
+  const idFieldName = symbol(idField.name);
+  const idFieldType = scalaType(idField.type, agg.context, packages);
+
   let entityContent = 'package ' + pkg + '.domain.entities\n\n' +
-    (importValues ? 'import ' + pkg + '.domain.values._\n\n' : '') +
+    (importValues ? 'import ' + pkg + '.domain.values._\n' : '') +
+    'import net.imadz.common.CborSerializable\n\n' +
     'object ' + name + 'Entity {\n' +
     stateDecl + '\n\n';
   const startChar = entityContent.length;
   entityContent += '  def empty: State = State(\n    ' + namedInitials.join(',\n    ') + '\n  )\n';
   const endChar = entityContent.length;
-  entityContent += '\n  sealed trait Event\n' +
+  entityContent += '\n  def empty(' + idFieldName + ': ' + idFieldType + '): State = empty.copy(' + idFieldName + ' = ' + idFieldName + ')\n' +
+    '\n  sealed trait Event extends CborSerializable\n' +
     (eventDecls ? eventDecls + '\n' : '') +
     '\n  type EventHandler = (State, Event) => State\n' +
     '}\n';

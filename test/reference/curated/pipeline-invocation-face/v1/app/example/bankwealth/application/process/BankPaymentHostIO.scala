@@ -2,7 +2,10 @@ package example.bankwealth.application.process
 
 import scala.concurrent.{ExecutionContext, Future}
 
-import example.bankwealth.application.api.BankPaymentOriginal
+import BankPaymentMessages._
+import CreditFundCollectionStep._
+import ReserveCashFundOrderStep._
+import ReserveInvestorFundsStep._
 import BankPaymentHost.ResultKind
 import BankPaymentPorts.CompletionContext
 import net.imadz.infra.saga.strict.TransactionIdentity

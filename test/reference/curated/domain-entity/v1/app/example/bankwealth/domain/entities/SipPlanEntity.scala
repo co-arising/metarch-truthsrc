@@ -1,6 +1,7 @@
 package example.bankwealth.domain.entities
 
 import example.bankwealth.domain.values._
+import net.imadz.common.CborSerializable
 
 object SipPlanEntity {
   final case class State(
@@ -63,7 +64,9 @@ object SipPlanEntity {
     intentAppendedDueSlots = Map()
   )
 
-  sealed trait Event
+  def empty(id: PlanId): State = empty.copy(id = id)
+
+  sealed trait Event extends CborSerializable
   final case class SipPlanCreated(planId: PlanId, config: SipRevisionConfig) extends Event
   final case class SipDueSlotAppended(position: Long, dueSlot: Long) extends Event
   final case class SipScheduleSealed(`sealed`: Boolean) extends Event

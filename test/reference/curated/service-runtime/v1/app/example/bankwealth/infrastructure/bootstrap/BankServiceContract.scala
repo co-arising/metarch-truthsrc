@@ -54,20 +54,20 @@ object BankServiceContract {
   )
 
   final case class Bindings(
-    BankAccountQuery: Endpoint[example.bankwealth.application.api.BankAccountKey, example.bankwealth.application.api.BankAccountResponse],
-    BankCashSubmitPort: Endpoint[example.bankwealth.domain.values.BankCashSubmit, example.bankwealth.application.api.BankCashAcknowledgement],
-    BankCashOriginalQuery: Endpoint[example.bankwealth.application.api.BankCashRequestKey, example.bankwealth.application.api.BankCashRequestResponse],
-    BankOrderQuery: Endpoint[example.bankwealth.application.api.BankOrderKey, example.bankwealth.application.api.BankOrderResponse],
-    BankSipCreatePort: Endpoint[example.bankwealth.domain.values.BankSipCreate, example.bankwealth.application.api.BankSipAcknowledgement],
-    BankSipPlansQuery: Endpoint[example.bankwealth.application.api.BankPlanPageKey, example.bankwealth.application.projection.BankSipPlanPage],
-    BankSipPlanQuery: Endpoint[example.bankwealth.application.api.BankPlanKey, example.bankwealth.application.api.BankSipPlanResponse],
-    BankSipRevisePort: Endpoint[example.bankwealth.application.api.BankSipRevisionInput, example.bankwealth.application.api.BankSipAcknowledgement],
-    BankSipPausePort: Endpoint[example.bankwealth.application.api.BankPlanKey, example.bankwealth.application.api.BankSipAcknowledgement],
-    BankSipResumePort: Endpoint[example.bankwealth.application.api.BankPlanKey, example.bankwealth.application.api.BankSipAcknowledgement],
-    BankSipOccurrencesQuery: Endpoint[example.bankwealth.application.api.BankOccurrencePageKey, example.bankwealth.application.projection.BankSipOccurrencePage],
-    BankPendingOperationsQuery: Endpoint[example.bankwealth.application.api.BankPendingPageKey, example.bankwealth.application.api.BankPendingResponse],
-    BankReconcileExistingPort: Endpoint[example.bankwealth.application.api.BankOperationKey, example.bankwealth.application.api.BankRecoveryAcknowledgement],
-    BankBusinessTickPort: Endpoint[example.bankwealth.application.api.BankTick, example.bankwealth.application.api.BankTickAcknowledgement]
+    BankAccountQuery: Endpoint[example.bankwealth.interfaces.api.ApiKeys.BankAccountKey, example.bankwealth.interfaces.api.ApiResponses.BankAccountResponse],
+    BankCashSubmitPort: Endpoint[example.bankwealth.domain.values.BankCashSubmit, example.bankwealth.interfaces.api.ApiAcknowledgements.BankCashAcknowledgement],
+    BankCashOriginalQuery: Endpoint[example.bankwealth.interfaces.api.ApiKeys.BankCashRequestKey, example.bankwealth.interfaces.api.ApiResponses.BankCashRequestResponse],
+    BankOrderQuery: Endpoint[example.bankwealth.interfaces.api.ApiKeys.BankOrderKey, example.bankwealth.interfaces.api.ApiResponses.BankOrderResponse],
+    BankSipCreatePort: Endpoint[example.bankwealth.domain.values.BankSipCreate, example.bankwealth.interfaces.api.ApiAcknowledgements.BankSipAcknowledgement],
+    BankSipPlansQuery: Endpoint[example.bankwealth.interfaces.api.ApiKeys.BankPlanPageKey, example.bankwealth.application.projection.BankSipPlanPage],
+    BankSipPlanQuery: Endpoint[example.bankwealth.interfaces.api.ApiKeys.BankPlanKey, example.bankwealth.interfaces.api.ApiResponses.BankSipPlanResponse],
+    BankSipRevisePort: Endpoint[example.bankwealth.interfaces.api.ApiCommands.BankSipRevisionInput, example.bankwealth.interfaces.api.ApiAcknowledgements.BankSipAcknowledgement],
+    BankSipPausePort: Endpoint[example.bankwealth.interfaces.api.ApiKeys.BankPlanKey, example.bankwealth.interfaces.api.ApiAcknowledgements.BankSipAcknowledgement],
+    BankSipResumePort: Endpoint[example.bankwealth.interfaces.api.ApiKeys.BankPlanKey, example.bankwealth.interfaces.api.ApiAcknowledgements.BankSipAcknowledgement],
+    BankSipOccurrencesQuery: Endpoint[example.bankwealth.interfaces.api.ApiKeys.BankOccurrencePageKey, example.bankwealth.application.projection.BankSipOccurrencePage],
+    BankPendingOperationsQuery: Endpoint[example.bankwealth.interfaces.api.ApiKeys.BankPendingPageKey, example.bankwealth.interfaces.api.ApiResponses.BankPendingResponse],
+    BankReconcileExistingPort: Endpoint[example.bankwealth.interfaces.api.ApiKeys.BankOperationKey, example.bankwealth.interfaces.api.ApiAcknowledgements.BankRecoveryAcknowledgement],
+    BankBusinessTickPort: Endpoint[example.bankwealth.interfaces.api.ApiCommands.BankTick, example.bankwealth.interfaces.api.ApiAcknowledgements.BankTickAcknowledgement]
   )
 
   trait PageRenderer {

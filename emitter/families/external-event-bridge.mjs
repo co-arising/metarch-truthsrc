@@ -8,7 +8,11 @@
 // output type, slot member, identity key, and unwrap depth flows from the
 // fail-closed input contract (`truthsrc.external-event-bridge-input/v1`).
 
-import { valueObjectPackage, valueObjectPath, valueObjectSubpackage } from '../../lib/derivation/value-object-package.mjs';
+import {
+  renderValueWildcardImports,
+  valueObjectPath,
+  valueObjectTypeQualifier,
+} from '../../lib/derivation/value-object-package.mjs';
 import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
 
 const fail = message => {
@@ -90,7 +94,7 @@ function renderType(type, packageMap, ownContext) {
   if (type.form === 'primitive') return PRIMITIVES.get(type.name);
   if (type.form === 'nominal') {
     if (ownContext && type.context === ownContext) return symbol(type.name);
-    return valueObjectPackage(packageMap.get(type.context), symbol(type.name)) + '.' + symbol(type.name);
+    return valueObjectTypeQualifier(packageMap.get(type.context), symbol(type.name));
   }
   if (type.form === 'optional') return 'Option[' + renderType(type.element, packageMap, ownContext) + ']';
   if (type.form === 'sequence') return 'Vector[' + renderType(type.element, packageMap, ownContext) + ']';
@@ -98,15 +102,15 @@ function renderType(type, packageMap, ownContext) {
   fail('unsupported type form: ' + JSON.stringify(type.form));
 }
 
-function collectOwnValueSubpackages(type, ownContext, out) {
+function collectOwnValueNames(type, ownContext, out) {
   if (type.form === 'nominal') {
-    if (type.context === ownContext) out.add(valueObjectSubpackage(type.name));
+    if (type.context === ownContext) out.add(type.name);
     return;
   }
-  if (type.form === 'optional' || type.form === 'sequence') collectOwnValueSubpackages(type.element, ownContext, out);
+  if (type.form === 'optional' || type.form === 'sequence') collectOwnValueNames(type.element, ownContext, out);
   else if (type.form === 'map') {
-    collectOwnValueSubpackages(type.key, ownContext, out);
-    collectOwnValueSubpackages(type.value, ownContext, out);
+    collectOwnValueNames(type.key, ownContext, out);
+    collectOwnValueNames(type.value, ownContext, out);
   }
 }
 
@@ -194,14 +198,13 @@ export function renderExternalEventBridgeFiles(input) {
   return input.bridges.map(bridge => {
     const pkg = packageMap.get(bridge.context);
     const name = symbol(bridge.aggregate);
-    const ownSubpkgs = new Set();
-    for (const p of bridge.producers) collectOwnValueSubpackages(p.outputType, bridge.context, ownSubpkgs);
-    ownSubpkgs.delete('application.integration');
+    const ownNames = new Set();
+    for (const p of bridge.producers) collectOwnValueNames(p.outputType, bridge.context, ownNames);
     const lines = [
-      `package ${pkg}.application.integration`,
+      `package ${pkg}.application.aggregates.behaviors`,
       '',
       `import ${pkg}.domain.entities.${name}Entity._`,
-      ...[...ownSubpkgs].sort().map(sub => `import ${pkg}.${sub}._`),
+      ...renderValueWildcardImports(pkg, [...ownNames], 'application.aggregates.behaviors'),
       '',
       `object ${name}ExternalEvents {`,
     ];
@@ -218,7 +221,7 @@ export function renderExternalEventBridgeFiles(input) {
     const entityDep = scalaSubpackagePath(pkg, 'domain.entities', `${bridge.aggregate}Entity.scala`);
     const deps = [entityDep, ...new Set(bridge.producers.flatMap(p => valueDeps(p.outputType, packageMap)))];
     return {
-      path: scalaSubpackagePath(pkg, 'application.integration', `${bridge.aggregate}ExternalEvents.scala`),
+      path: scalaSubpackagePath(pkg, 'application.aggregates.behaviors', `${bridge.aggregate}ExternalEvents.scala`),
       content: lines.join('\n'),
       kind: 'external-event-bridge',
       sources: bridge.producers.map(p => ({ ...p.source })),

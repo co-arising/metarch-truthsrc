@@ -1,8 +1,9 @@
-package example.bankwealth.application.integration
+package example.bankwealth.application.process
 
 import scala.concurrent.duration._
 
 import akka.actor.typed.ActorRef
+import example.bankwealth.application.connectors.BankTaEffectHost
 import example.bankwealth.domain.values.{FundOrderId, TaRequestId, TxId}
 import net.imadz.monarch.{StageError, StageFailedException}
 

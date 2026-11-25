@@ -159,53 +159,60 @@ function renderAggregateGroup(agg, packages) {
     rules: pathOf(pkg, 'domain/invariants/' + agg.name + 'Rules.scala'),
     computations: pathOf(pkg, 'domain/services/' + agg.name + 'Computations.scala'),
     entity: pathOf(pkg, 'domain/entities/' + agg.name + 'Entity.scala'),
-    external: pathOf(pkg, 'application/integration/' + agg.name + 'ExternalEvents.scala'),
+    external: pathOf(pkg, 'application/aggregates/behaviors/' + agg.name + 'ExternalEvents.scala'),
   };
 
   const commandSources = [agg.source, ...agg.commands.map(c => c.source)];
 
   // 1. Application aggregate: application/aggregates/<Name>Aggregate.scala (kind: aggregate-behavior)
-  const protocolImports = authority ? '{CommandHandler, ExternalAuthority}' : 'CommandHandler';
+  const tagStem = agg.name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+  const protocolImports = authority ? '{Command, CommandHandler, ExternalAuthority}' : '{Command, CommandHandler}';
   const aggregateContent = `package ${pkg}.application.aggregates
 
+import akka.cluster.sharding.typed.scaladsl.EntityTypeKey
 import ${pkg}.application.aggregates.${protocol}.${protocolImports}
 import ${pkg}.domain.services.${name}Computations
 
 object ${name}Aggregate {
+
+  val EntityKey: EntityTypeKey[Command] = EntityTypeKey(${JSON.stringify(agg.name)})
+  val tags: Vector[String] = Vector.tabulate(1)(i => s"${tagStem}-$$i")
 
   def commandHandler(hosts: ${name}Computations${authorityParam}): CommandHandler =
     behaviors.${name}Behaviors(hosts${authorityArg})
 }
 `;
 
-  // 2. Application factory trait: application/aggregates/factories/<Name>AggregateFactory.scala (kind: aggregate-factory)
+  // 2. Application factory: application/aggregates/factories/<Name>AggregateFactory.scala (kind: aggregate-factory)
   const factoryContent = `package ${pkg}.application.aggregates.factories
 
-import akka.actor.typed.Behavior
-import ${pkg}.application.aggregates.${protocol}.${authority ? '_' : 'Command'}
-import ${pkg}.domain.entities.${name}Entity.State
-import ${pkg}.domain.services.${name}Computations
+import akka.cluster.sharding.typed.scaladsl.{ClusterSharding, EntityRef}
+import javax.inject.Inject
+import ${pkg}.application.aggregates.${name}Aggregate
+import ${pkg}.application.aggregates.${protocol}.Command
 
-trait ${name}AggregateFactory {
+class ${name}AggregateFactory @Inject() (clusterSharding: ClusterSharding) {
 
-  def create(persistenceId: String, initial: State, hosts: ${name}Computations${authorityParam}): Behavior[Command]
+  def entityRefFor(entityId: String): EntityRef[Command] =
+    clusterSharding.entityRefFor(${name}Aggregate.EntityKey, entityId)
 }
 `;
 
   // 3. Behavior dispatcher: application/aggregates/behaviors/<Name>Behaviors.scala (kind: aggregate-behavior)
   const calls = [
     ...(authority ? ['externalBehavior(authority)'] : []),
-    'queryBehavior',
+    'queryBehavior(state)',
     'executionBehavior(state, hosts)',
   ];
-  const externalImport = authority ? `import ${pkg}.application.integration.${name}ExternalEvents\n` : '';
+  const errorImport = authority ? 'import net.imadz.common.CommonTypes.iMadzError\n' : '';
   let behaviorContent = `package ${pkg}.application.aggregates.behaviors
 
 import akka.persistence.typed.scaladsl.Effect
 import ${pkg}.application.aggregates.${protocol}._
-${externalImport}import ${pkg}.domain.entities.${name}Entity.{Event, State}
+import ${pkg}.domain.entities.${name}Entity.{Event, State}
 import ${pkg}.domain.invariants.${name}Rules
 import ${pkg}.domain.services.${name}Computations
+${errorImport}import net.imadz.common.application.CommandHandlerReplyingBehavior.runReplyingPolicy
 
 object ${name}Behaviors extends ${name}CommandHelpers {
 
@@ -223,10 +230,10 @@ object ${name}Behaviors extends ${name}CommandHelpers {
       const startChar = behaviorContent.length;
       behaviorContent += `    case ${names.ingress}(output, authorization, replyTo) =>
       if (!authority.authorize(${JSON.stringify(producer.id)}, authorization, ${name}ExternalEvents.${names.identity}(output)))
-        Effect.none.thenRun((_: State) => replyTo ! Refused("external-authority-denied"))
+        Effect.reply(replyTo)(Refused(iMadzError("external-authority-denied", "external-authority-denied")))
       else {
         val event = ${name}ExternalEvents.${names.method}(output)
-        Effect.persist(event).thenRun((_: State) => replyTo ! Accepted(Vector(event)))
+        Effect.persist(event).thenReply(replyTo)((_: State) => Accepted(Vector(event)))
       }
 `;
       const endChar = behaviorContent.length;
@@ -238,9 +245,9 @@ object ${name}Behaviors extends ${name}CommandHelpers {
     behaviorContent += '  }\n';
   }
   behaviorContent += `
-  private def queryBehavior: PartialFunction[Command, Effect[Event, State]] = {
+  private def queryBehavior(state: State): PartialFunction[Command, Effect[Event, State]] = {
     case GetState(replyTo) =>
-      Effect.none.thenRun((s: State) => replyTo ! s)
+      Effect.reply(replyTo)(state)
   }
 
   private def executionBehavior(state: State, hosts: ${name}Computations): PartialFunction[Command, Effect[Event, State]] = {
@@ -249,7 +256,7 @@ object ${name}Behaviors extends ${name}CommandHelpers {
     const cname = symbol(command.name);
     const startChar = behaviorContent.length;
     behaviorContent += `    case cmd: ${cname} =>
-      replyEffect(${name}Rules.${cname}(state, to${command.name}Params(cmd), hosts), cmd.replyTo)
+      runReplyingPolicy(new ${name}Rules.${command.name}Rule(hosts), ${command.name}Helper)(state, cmd).replyWith(cmd.replyTo)
 `;
     const endChar = behaviorContent.length;
     const startBytes = Buffer.byteLength(behaviorContent.slice(0, startChar));
@@ -282,7 +289,7 @@ object ${name}Behaviors extends ${name}CommandHelpers {
       path: paths.factory,
       kind: 'aggregate-factory',
       content: factoryContent,
-      deps: [paths.protocol, paths.entity, paths.computations],
+      deps: [paths.protocol, paths.aggregate],
       sources: [agg.source],
       codeMappings: [],
     },
