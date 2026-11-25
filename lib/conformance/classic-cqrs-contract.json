@@ -70,7 +70,7 @@
       "layer": "domain",
       "packageRole": "domain.invariants",
       "requiredImports": ["CommonTypes\\.\\{?[^\\n]*InvariantRule", "CommonTypes\\.\\{?[^\\n]*iMadzError"],
-      "requiredPatterns": ["\\bextends\\s+InvariantRule\\[", "// @knowledge\\s+[^\\s]+@[0-9a-f]{16}"],
+      "requiredPatterns": ["\\bextends\\s+InvariantRule\\[", "def\\s+checkEventPostconditions\\(", "// @knowledge\\s+[^\\s]+@[0-9a-f]{16}"],
       "forbiddenPatterns": ["Either\\[String,\\s*Vector\\[", "\\bthrow\\b", "\\brequire\\s*\\(", "\\breturn\\b", "// @knowledge\\s+source:"]
     },
     "domain-service": {
@@ -109,7 +109,7 @@
       "fileSuffix": "Behaviors.scala",
       "requiredDecl": "\\bobject\\s+[A-Z][A-Za-z0-9_]*Behaviors\\s+extends\\s+[A-Z][A-Za-z0-9_]*CommandHelpers\\b",
       "requiredImports": ["CommandHandlerReplyingBehavior\\.runReplyingPolicy"],
-      "requiredPatterns": ["\\brunReplyingPolicy\\("],
+      "requiredPatterns": ["\\brunReplyingPolicy\\(", "\\.withPost\\("],
       "forbiddenPatterns": ["\\breplyEffect\\(", "Effect\\.none\\.thenRun\\("]
     },
     "aggregate-root": {

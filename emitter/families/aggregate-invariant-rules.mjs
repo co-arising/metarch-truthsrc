@@ -124,8 +124,10 @@ function checkCommand(c, cat, pkgByContext) {
     text(g.text, gat('text'));
     checkSource(g.source, gat('source'));
     if (!g.outcome || typeof g.outcome !== 'object') fail('RULES_INPUT', gat('outcome required'));
-    if (g.outcome.kind === 'reject') text(g.outcome.code, gat('reject code'));
-    else if (g.outcome.kind !== 'succeed-empty') fail('RULES_INPUT', gat('outcome kind must be reject or succeed-empty'));
+    if (g.outcome.kind === 'reject') {
+      text(g.outcome.code, gat('reject code'));
+      if (g.outcome.message !== undefined) text(g.outcome.message, gat('reject message'));
+    } else if (g.outcome.kind !== 'succeed-empty') fail('RULES_INPUT', gat('outcome kind must be reject or succeed-empty'));
   }
   if (!Array.isArray(c.events) || c.events.length === 0) fail('RULES_INPUT', cat('events must be a nonempty array'));
   for (const [k, ev] of c.events.entries()) {
@@ -158,6 +160,24 @@ function checkInput(input) {
     if (!Array.isArray(a.commands)) fail('RULES_INPUT', at('commands must be an array'));
     for (const [j, c] of a.commands.entries()) {
       checkCommand(c, what => `aggregates[${i}].commands[${j}] ${what}`, pkgByContext);
+    }
+    if (a.eventPostconditions !== undefined) {
+      if (!Array.isArray(a.eventPostconditions)) fail('RULES_INPUT', at('eventPostconditions must be an array'));
+      for (const [pIdx, ep] of a.eventPostconditions.entries()) {
+        const epat = what => `aggregates[${i}].eventPostconditions[${pIdx}] ${what}`;
+        if (!ep || typeof ep !== 'object' || Array.isArray(ep)) fail('RULES_INPUT', epat('must be an object'));
+        identifier(ep.event, epat('event'));
+        if (!Array.isArray(ep.checks) || ep.checks.length === 0) fail('RULES_INPUT', epat('checks must be a nonempty array'));
+        for (const [cIdx, chk] of ep.checks.entries()) {
+          const chat = what => epat(`checks[${cIdx}] ${what}`);
+          if (!chk || typeof chk !== 'object' || Array.isArray(chk)) fail('RULES_INPUT', chat('must be an object'));
+          identifier(chk.slot, chat('slot'));
+          if (!['non-null', 'non-empty-text', 'non-empty-nominal-text'].includes(chk.kind))
+            {fail('RULES_INPUT', chat('unsupported check kind: ' + JSON.stringify(chk.kind)));}
+          text(chk.code, chat('code'));
+          text(chk.message, chat('message'));
+        }
+      }
     }
   }
 }
@@ -327,10 +347,11 @@ function renderAggregateRules(a, pkgByContext) {
     for (const [gi, g] of c.guards.entries()) {
       const guardStart = rules.length;
       const codeLit = JSON.stringify(g.outcome.code);
+      const msgLit = JSON.stringify(g.outcome.message ?? g.outcome.code);
       const branch = gi === 0 ? 'if' : 'else if';
       rules += '      // @knowledge ' + knowledgeOf(g.source) + '\n' +
         '      ' + branch + ' (' + renderGuardCondition(g.text) + ') ' +
-        (g.outcome.kind === 'reject' ? 'Left(iMadzError(' + codeLit + ', ' + codeLit + '))' : 'Right(Nil)') + '\n';
+        (g.outcome.kind === 'reject' ? 'Left(iMadzError(' + codeLit + ', ' + msgLit + '))' : 'Right(Nil)') + '\n';
       guards.push({ source: g.source, span: { start: guardStart, end: rules.length } });
     }
     const hostBindings = new Map();
@@ -351,6 +372,28 @@ function renderAggregateRules(a, pkgByContext) {
     }
     const scope = { start, end: rules.length };
     ruleMappings.push({ source: c.source, span: scope, scope }, ...guards.map(m => ({ ...m, scope })));
+  }
+  const postconditions = a.eventPostconditions ?? [];
+  if (postconditions.length > 0) {
+    rules += '\n  def checkEventPostconditions(events: List[Event]): Option[iMadzError] =\n' +
+      '    events.iterator.map(checkEventPostcondition).collectFirst { case Some(error) => error }\n\n' +
+      '  private def checkEventPostcondition(event: Event): Option[iMadzError] = event match {\n';
+    for (const ep of postconditions) {
+      rules += '    case e: ' + symbol(ep.event) + ' =>\n';
+      for (const [ci, chk] of ep.checks.entries()) {
+        const branch = ci === 0 ? 'if' : 'else if';
+        const field = 'e.' + symbol(chk.slot);
+        let cond = 'Option(' + field + ').isEmpty';
+        if (chk.kind === 'non-empty-text') cond = 'Option(' + field + ').forall(_.trim.isEmpty)';
+        else if (chk.kind === 'non-empty-nominal-text') cond = 'Option(' + field + ').forall(_.value.trim.isEmpty)';
+        rules += '      ' + branch + ' (' + cond + ') Some(iMadzError(' +
+          JSON.stringify(chk.code) + ', ' + JSON.stringify(chk.message) + '))\n';
+      }
+      rules += '      else None\n';
+    }
+    rules += '    case _ => None\n  }\n';
+  } else {
+    rules += '\n  def checkEventPostconditions(events: List[Event]): Option[iMadzError] = None\n';
   }
   rules += '}\n';
 

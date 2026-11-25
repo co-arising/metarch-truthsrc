@@ -21,18 +21,32 @@ object CreditBalanceBehaviors extends CreditBalanceCommandHelpers {
 
   private def executionBehavior(state: State, hosts: CreditBalanceComputations): PartialFunction[Command, Effect[Event, State]] = {
     case cmd: InitializeAccount =>
-      runReplyingPolicy(new CreditBalanceRules.InitializeAccountRule(hosts), InitializeAccountHelper)(state, cmd).replyWith(cmd.replyTo)
+      runReplyingPolicy(new CreditBalanceRules.InitializeAccountRule(hosts), InitializeAccountHelper)(state, cmd)
+        .withPost(CreditBalanceRules.checkEventPostconditions)
+        .replyWith(cmd.replyTo)
     case cmd: ReserveFunds =>
-      runReplyingPolicy(new CreditBalanceRules.ReserveFundsRule(hosts), ReserveFundsHelper)(state, cmd).replyWith(cmd.replyTo)
+      runReplyingPolicy(new CreditBalanceRules.ReserveFundsRule(hosts), ReserveFundsHelper)(state, cmd)
+        .withPost(CreditBalanceRules.checkEventPostconditions)
+        .replyWith(cmd.replyTo)
     case cmd: DeductFunds =>
-      runReplyingPolicy(new CreditBalanceRules.DeductFundsRule(hosts), DeductFundsHelper)(state, cmd).replyWith(cmd.replyTo)
+      runReplyingPolicy(new CreditBalanceRules.DeductFundsRule(hosts), DeductFundsHelper)(state, cmd)
+        .withPost(CreditBalanceRules.checkEventPostconditions)
+        .replyWith(cmd.replyTo)
     case cmd: ReleaseReservedFunds =>
-      runReplyingPolicy(new CreditBalanceRules.ReleaseReservedFundsRule(hosts), ReleaseReservedFundsHelper)(state, cmd).replyWith(cmd.replyTo)
+      runReplyingPolicy(new CreditBalanceRules.ReleaseReservedFundsRule(hosts), ReleaseReservedFundsHelper)(state, cmd)
+        .withPost(CreditBalanceRules.checkEventPostconditions)
+        .replyWith(cmd.replyTo)
     case cmd: RecordIncomingCredits =>
-      runReplyingPolicy(new CreditBalanceRules.RecordIncomingCreditsRule(hosts), RecordIncomingCreditsHelper)(state, cmd).replyWith(cmd.replyTo)
+      runReplyingPolicy(new CreditBalanceRules.RecordIncomingCreditsRule(hosts), RecordIncomingCreditsHelper)(state, cmd)
+        .withPost(CreditBalanceRules.checkEventPostconditions)
+        .replyWith(cmd.replyTo)
     case cmd: CommitIncomingCredits =>
-      runReplyingPolicy(new CreditBalanceRules.CommitIncomingCreditsRule(hosts), CommitIncomingCreditsHelper)(state, cmd).replyWith(cmd.replyTo)
+      runReplyingPolicy(new CreditBalanceRules.CommitIncomingCreditsRule(hosts), CommitIncomingCreditsHelper)(state, cmd)
+        .withPost(CreditBalanceRules.checkEventPostconditions)
+        .replyWith(cmd.replyTo)
     case cmd: CancelIncomingCredit =>
-      runReplyingPolicy(new CreditBalanceRules.CancelIncomingCreditRule(hosts), CancelIncomingCreditHelper)(state, cmd).replyWith(cmd.replyTo)
+      runReplyingPolicy(new CreditBalanceRules.CancelIncomingCreditRule(hosts), CancelIncomingCreditHelper)(state, cmd)
+        .withPost(CreditBalanceRules.checkEventPostconditions)
+        .replyWith(cmd.replyTo)
   }
 }

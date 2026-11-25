@@ -386,4 +386,6 @@ object SipPlanRules {
       else Right(List(SipCreateIntentRecorded(p.intent, p.source)))
     }
   }
+
+  def checkEventPostconditions(events: List[Event]): Option[iMadzError] = None
 }

@@ -169,4 +169,6 @@ object CreditBalanceRules {
       else Right(List(CancelIncomingCreditConfirmed(p.txid, p.resource, p.amount)))
     }
   }
+
+  def checkEventPostconditions(events: List[Event]): Option[iMadzError] = None
 }

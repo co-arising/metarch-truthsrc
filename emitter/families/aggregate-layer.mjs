@@ -230,7 +230,7 @@ object ${name}Behaviors extends ${name}CommandHelpers {
       const startChar = behaviorContent.length;
       behaviorContent += `    case ${names.ingress}(output, authorization, replyTo) =>
       if (!authority.authorize(${JSON.stringify(producer.id)}, authorization, ${name}ExternalEvents.${names.identity}(output)))
-        Effect.reply(replyTo)(Refused(iMadzError("external-authority-denied", "external-authority-denied")))
+        Effect.reply(replyTo)(Refused(iMadzError("external-authority-denied", "外部授权校验未通过，拒绝写入外部事件")))
       else {
         val event = ${name}ExternalEvents.${names.method}(output)
         Effect.persist(event).thenReply(replyTo)((_: State) => Accepted(Vector(event)))
@@ -256,7 +256,9 @@ object ${name}Behaviors extends ${name}CommandHelpers {
     const cname = symbol(command.name);
     const startChar = behaviorContent.length;
     behaviorContent += `    case cmd: ${cname} =>
-      runReplyingPolicy(new ${name}Rules.${command.name}Rule(hosts), ${command.name}Helper)(state, cmd).replyWith(cmd.replyTo)
+      runReplyingPolicy(new ${name}Rules.${command.name}Rule(hosts), ${command.name}Helper)(state, cmd)
+        .withPost(${name}Rules.checkEventPostconditions)
+        .replyWith(cmd.replyTo)
 `;
     const endChar = behaviorContent.length;
     const startBytes = Buffer.byteLength(behaviorContent.slice(0, startChar));

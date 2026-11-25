@@ -399,4 +399,6 @@ object FundOrderRules {
       else Right(List(CashRequestSourceRecorded(p.original, p.source)))
     }
   }
+
+  def checkEventPostconditions(events: List[Event]): Option[iMadzError] = None
 }
