@@ -12,7 +12,6 @@ import { parseStrictJson } from '../lib/strict-json.mjs';
 import { validateCodeMappings } from '../src/core/code-mappings.mjs';
 import { deriveEventHandlers } from '../lib/derivation/event-handler.mjs';
 import {
-  EVENT_HANDLER_FLIP_CONTEXTS,
   isEventHandlerFlipped,
   withFlippedEventHandlers,
 } from '../lib/derivation/event-handler-emission.mjs';
@@ -118,7 +117,7 @@ test('the wrapper renders manifest contexts through the family, byte-equal to th
 
 test('the wrapper passes through projects without any manifest aggregate declaration', () => {
   const other = {
-    options: { packages: [{ context: 'inventory', package: 'example.inventory' }] },
+    options: { packages: [{ context: 'inventory', package: 'example.inventory' }], emission: 'classic' },
     products: {
       'reference-layout': {
         declarations: [{ ref: { context: 'inventory', kind: 'aggregate', owner: [], id: 'Warehouse' }, source: { document: 'inv', pointer: '/aggregates/0' } }],
@@ -135,8 +134,8 @@ test('the wrapper passes through projects without any manifest aggregate declara
     merge: null,
   }];
   assert.deepEqual(withFlippedEventHandlers(() => classic, other), classic);
-  assert.equal(isEventHandlerFlipped('inventory'), false);
-  assert.deepEqual(EVENT_HANDLER_FLIP_CONTEXTS, ['bankwealth']);
+  assert.equal(isEventHandlerFlipped('inventory'), true);
+  assert.equal(isEventHandlerFlipped('inventory', { emission: 'classic' }), false);
 });
 
 test('the wrapper refuses missing flip targets, orphans, and derivation errors fail-closed', () => {

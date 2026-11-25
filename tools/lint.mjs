@@ -11,8 +11,12 @@
 //        (must route through `lib/layout/layout-strategy.mjs`).
 //      - No direct package-to-path `.split('.').join('/')` or `.replaceAll('.', '/')`
 //        path assembly in `emitter/families/*.mjs`.
-//      - No hardcoded business identifiers in `lib/layout/layout-strategy.mjs` or
-//        `lib/derivation/value-object-package.mjs`.
+//      - No hardcoded business identifiers or domain flip whitelists in `lib/`,
+//        `bin/`, `generators/scala-cqrs-play-service/`, or production code of
+//        `emitter/families/`.
+//      - No hardcoded `net.imadz` / `net/imadz` runtime coordinates outside
+//        `lib/runtime-profile.mjs` in `lib/`, `generators/scala-cqrs-play-service/`,
+//        and active unified `emitter/families/`.
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -57,7 +61,26 @@ for (const rel of files) {
 }
 
 // 2. Static hygiene + generator architecture rules.
-const FORBIDDEN_BUSINESS_NAMES = /\b(bankwealth|CreditBalance|FundOrder|SipPlan|BankPayment|BankRefund)\b/u;
+const FORBIDDEN_BUSINESS_NAMES = /\b(bankwealth|CreditBalance|FundOrder|SipPlan|BankPayment|BankRefund|BankService|BankTa|BankSip|RULES_FLIP_AGGREGATES|EFFECT_FACE_FLIPS|PIPELINE_INVOCATION_FLIPS|[A-Z_]+_FLIP_CONTEXTS)\b|bank-(?:sip-dispatch|ta-effect|ta-submission|cash-payment|independent-refund|payment-host|refund-host)/u;
+const FORBIDDEN_RUNTIME_LITERAL = /\bnet[./]imadz\b/u;
+const ACTIVE_UNIFIED_EMITTERS = new Set([
+  'emitter/families/value-object.mjs',
+  'emitter/families/domain-entity.mjs',
+  'emitter/families/aggregate-invariant-rules.mjs',
+  'emitter/families/event-handler.mjs',
+  'emitter/families/protocol-layer.mjs',
+  'emitter/families/aggregate-layer.mjs',
+  'emitter/families/aggregate-repository.mjs',
+  'emitter/families/aggregate-bootstrap.mjs',
+  'emitter/families/external-event-bridge.mjs',
+  'emitter/families/proto-schema.mjs',
+  'emitter/families/proto-converter.mjs',
+  'emitter/families/serialization-adapter.mjs',
+  'emitter/families/service-runtime.mjs',
+  'emitter/families/project-scaffold.mjs',
+  'emitter/families/effect-face.mjs',
+  'emitter/families/pipeline-invocation-face.mjs',
+]);
 
 for (const rel of files) {
   const source = fs.readFileSync(path.join(ROOT, rel), 'utf8');
@@ -65,13 +88,19 @@ for (const rel of files) {
   const seenImports = new Set();
   const isEmitterFamily = rel.startsWith('emitter/families/') && rel !== 'emitter/families/index.mjs' && rel !== 'emitter/families/project-scaffold.mjs';
   const isLayoutModule = rel.startsWith('lib/layout/') || rel === 'lib/derivation/value-object-package.mjs';
+  const isGenericCore = rel.startsWith('lib/') || rel.startsWith('bin/') || rel.startsWith('generators/scala-cqrs-play-service/');
+  const isActiveUnifiedEmitter = ACTIVE_UNIFIED_EMITTERS.has(rel);
   const isLibrary = (rel.startsWith('lib/') || rel.startsWith('emitter/families/') || rel.startsWith('generators/scala-cqrs-play-service/')) &&
     !rel.startsWith('lib/workshop/client.js');
 
+  let inNegativesBattery = false;
   lines.forEach((raw, idx) => {
     const lineNo = idx + 1;
     const trimmed = raw.trim();
     const isComment = trimmed.startsWith('//') || trimmed.startsWith('*') || trimmed.startsWith('/*');
+    if (isActiveUnifiedEmitter && (/^(?:export\s+)?function\s+runNegatives\b/u.test(trimmed) || /^const\s+NEGATIVES\s*=/u.test(trimmed))) {
+      inNegativesBattery = true;
+    }
 
     if (!isComment && /^debugger\s*;?$/u.test(trimmed)) {
       report(rel, lineNo, 'no-debugger', 'debugger statement is forbidden');
@@ -110,9 +139,20 @@ for (const rel of files) {
       }
     }
 
-    // Architecture rule: layout & value-object routing modules must stay zero-business-name.
-    if (isLayoutModule && !isComment && FORBIDDEN_BUSINESS_NAMES.test(trimmed)) {
-      report(rel, lineNo, 'arch/no-business-names', 'layout/routing modules must not hardcode business identifiers');
+    // Architecture rule: generic core (lib/, bin/, play-service) and active
+    // unified emitter production code must never hardcode domain/business names
+    // or context flip whitelists.
+    if ((isGenericCore || (isActiveUnifiedEmitter && !inNegativesBattery)) && !isComment && FORBIDDEN_BUSINESS_NAMES.test(trimmed)) {
+      report(rel, lineNo, 'arch/no-business-names', 'generic generator/emitter code must not hardcode business identifiers or domain flip whitelists');
+    }
+
+    // Architecture rule: runtime organization/package literals must be routed
+    // through lib/runtime-profile.mjs instead of hardcoded across lib/ or active emitters.
+    if ((isGenericCore || (isActiveUnifiedEmitter && !inNegativesBattery)) &&
+        rel !== 'lib/runtime-profile.mjs' &&
+        !isComment &&
+        FORBIDDEN_RUNTIME_LITERAL.test(trimmed)) {
+      report(rel, lineNo, 'arch/no-hardcoded-runtime', 'route runtime package/organization coordinates through lib/runtime-profile.mjs');
     }
   });
 }

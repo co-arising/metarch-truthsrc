@@ -20,6 +20,7 @@
 // external producer, outputType tree and source pointer is contract data.
 import { parseStrictJson } from '../../lib/strict-json.mjs';
 import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
+import { runtimeFromContract } from '../../lib/runtime-profile.mjs';
 
 const fail = (code, message) => { throw Object.assign(new Error(code + ': ' + message), { code }); };
 const SCHEMA = 'truthsrc.aggregate-layer-input/v1';
@@ -142,7 +143,7 @@ const pathOf = (pkg, rel) => {
   return scalaSubpackagePath(pkg, rel.slice(0, slash).replaceAll('/', '.'), rel.slice(slash + 1));
 };
 
-function renderAggregateGroup(agg, packages) {
+function renderAggregateGroup(agg, packages, rp) {
   const pkg = packageOf(agg.context, packages);
   const name = symbol(agg.name);
   const protocol = name + 'Protocol';
@@ -204,7 +205,7 @@ class ${name}AggregateFactory @Inject() (clusterSharding: ClusterSharding) {
     'queryBehavior(state)',
     'executionBehavior(state, hosts)',
   ];
-  const errorImport = authority ? 'import net.imadz.common.CommonTypes.iMadzError\n' : '';
+  const errorImport = authority ? `import ${rp.commonPackage}.CommonTypes.iMadzError\n` : '';
   let behaviorContent = `package ${pkg}.application.aggregates.behaviors
 
 import akka.persistence.typed.scaladsl.Effect
@@ -212,7 +213,7 @@ import ${pkg}.application.aggregates.${protocol}._
 import ${pkg}.domain.entities.${name}Entity.{Event, State}
 import ${pkg}.domain.invariants.${name}Rules
 import ${pkg}.domain.services.${name}Computations
-${errorImport}import net.imadz.common.application.CommandHandlerReplyingBehavior.runReplyingPolicy
+${errorImport}import ${rp.commonPackage}.application.CommandHandlerReplyingBehavior.runReplyingPolicy
 
 object ${name}Behaviors extends ${name}CommandHelpers {
 
@@ -300,7 +301,8 @@ object ${name}Behaviors extends ${name}CommandHelpers {
 
 export function renderAggregateLayerFiles(input) {
   checkInput(input);
-  return input.aggregates.flatMap(agg => renderAggregateGroup(agg, input.packages));
+  const rp = runtimeFromContract(input);
+  return input.aggregates.flatMap(agg => renderAggregateGroup(agg, input.packages, rp));
 }
 
 function renderAll(input) {

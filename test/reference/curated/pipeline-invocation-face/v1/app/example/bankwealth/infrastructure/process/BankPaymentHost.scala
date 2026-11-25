@@ -6,7 +6,7 @@ import example.bankwealth.application.process.cash_payment.{BankCashPaymentExecu
 import example.bankwealth.application.process.protocol.BankPaymentMessages._
 import net.imadz.infra.saga.strict._
 
-/** Pipeline invocation host for the cash purchase payment: owns the durable
+/** Pipeline invocation host for the bank cash payment: owns the durable
   * association of one business request to its saga run, the admission gate,
   * authoritative result observation and receipt delivery.
   *

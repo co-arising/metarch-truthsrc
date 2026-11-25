@@ -61,8 +61,8 @@ function validate(input) {
   if (input.schemaVersion !== 'truthsrc.effect-face-input/v1') {
     throw new Error('unexpected input schema version: ' + input.schemaVersion);
   }
-  if (!Array.isArray(input.cases) || input.cases.length !== 2) {
-    throw new Error('the effect face carries exactly two cases (dispatch, ta)');
+  if (!Array.isArray(input.cases) || input.cases.length === 0) {
+    throw new Error('the effect face requires at least one effect case');
   }
   const symbol = value => {
     if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(value)) throw new Error('unsafe symbol: ' + value);
@@ -144,8 +144,11 @@ function validate(input) {
     if (b.roles.join('|') !== 'execute|query|reconcile') {
       throw new Error('the effect binding roles are execute/query/reconcile');
     }
+    if (typeof eff.context !== 'string' || !/^[a-z][a-z0-9_-]*$/.test(eff.context)) {
+      throw new Error('unsafe effect context: ' + eff.context);
+    }
     for (const id of b.declaredIds) {
-      if (!id.startsWith('bankwealth.')) throw new Error('declared ids live in the bankwealth namespace');
+      if (!id.startsWith(eff.context + '.')) throw new Error('declared ids must live in the effect context namespace');
     }
     if (b.boundary !== 'handwritten-composition-root') {
       throw new Error('the composition root is the sanctioned binding boundary');
@@ -157,7 +160,6 @@ function validate(input) {
     if (!eff.eventPb.endsWith('EffectHostEventPB')) {
       throw new Error('the effect host event PB must be the declared EffectHostEventPB face');
     }
-    if (eff.context !== 'bankwealth') throw new Error('the effect context is the bankwealth bound context');
     const docs = c.docs;
     for (const key of Object.keys(docs)) {
       const lines = docs[key];
@@ -307,7 +309,7 @@ function emitExecution(cm, shape) {
     'import scala.concurrent.duration._',
     '',
     ...renderGroupedValueImports(cm.basePkg, values(cm), 'application.process.' + cm.flowSlug),
-    'import net.imadz.monarch.StageError',
+    'import ' + shape.monarchPersistencePackage.replace(/\.persistence$/, '') + '.StageError',
     '',
     ...cm.docs.execution,
     'object ' + cm.execution + ' {',
@@ -378,7 +380,14 @@ function emitExecutionStateCodec(cm, shape) {
     'import ' + shape.serializationPackage + '.' + shape.serializationObject,
     'import ' + shape.monarchPersistencePackage + '.StateCodec',
     '',
-    '/** Persistence-layer protobuf codecs for `' + cm.execution + '` and `' + cm.host + '`. */',
+    ...(
+      ('  /** Persistence-layer protobuf codecs for `' + cm.execution + '` and `' + cm.host + '`. */').length <= LINE_LIMIT
+        ? ['/** Persistence-layer protobuf codecs for `' + cm.execution + '` and `' + cm.host + '`. */']
+        : [
+            '/** Persistence-layer protobuf codecs for `' + cm.execution + '`',
+            '  * and `' + cm.host + '`. */',
+          ]
+    ),
     'object ' + cm.stateCodec + ' {',
     '',
     '  val codec: StateCodec[' + cm.execution + '.State] = StateCodec[' + cm.execution + '.State](',
@@ -390,7 +399,7 @@ function emitExecutionStateCodec(cm, shape) {
       shape.serializationObject + '.encode' + ex.codecSlots.find(s => s.optional).type + 'PO),',
     '      ).toByteArray,',
     '    bytes => {',
-    '      val pb = ' + ex.executionStatePb + '.parseFrom(bytes)',
+    ...wrapDef('      val pb =', ' ' + ex.executionStatePb + '.parseFrom(bytes)', 8),
     '      require(pb.planversion == ' + cm.execution + '.PlanVersion, "' + messages.exactPlanVersionRequired + '")',
     '      def durable[A](slot: Option[A], name: String): A =',
     '        slot.getOrElse(throw new IllegalArgumentException(s"' + messages.missingDurableInput + '"))',
@@ -442,11 +451,12 @@ function emitHost(cm, shape) {
     '    reconcile: EffectBinding[' + eff.reconcileValue + ', Boolean],',
   ];
   const installedMethods = [
-    '    def execute(input: ' + eff.operationValue + '): Future[' + eff.observationValue +
-      '] = bindings.execute.run(input)',
-    '    def query(input: ' + eff.operationValue + '): Future[Option[' + eff.observationValue +
-      ']] = bindings.query.run(input)',
-    '    def reconcile(input: ' + eff.reconcileValue + '): Future[Boolean] = bindings.reconcile.run(input)',
+    ...wrapDef('    def execute(input: ' + eff.operationValue + '): Future[' + eff.observationValue + '] =',
+      ' bindings.execute.run(input)', 6),
+    ...wrapDef('    def query(input: ' + eff.operationValue + '): Future[Option[' + eff.observationValue + ']] =',
+      ' bindings.query.run(input)', 6),
+    ...wrapDef('    def reconcile(input: ' + eff.reconcileValue + '): Future[Boolean] =',
+      ' bindings.reconcile.run(input)', 6),
   ];
   const identityParts = [
     '      "' + eff.context + '",',
@@ -663,10 +673,17 @@ function emitBootstrap(cm, shape) {
     'import ' + cm.executionPkg + '.' + cm.execution,
     ...renderGroupedValueImports(cm.basePkg, [eff.operationValue, eff.reconcileValue], 'infrastructure.bootstrap'),
     'import ' + cm.persistencePkg + '.' + cm.stateCodec,
-    'import net.imadz.monarch.StageFailedException',
+    'import ' + shape.monarchPersistencePackage.replace(/\.persistence$/, '') + '.StageFailedException',
     'import ' + shape.monarchPersistencePackage + '.{PersistentMonarch, RunObserver}',
     '',
-    '/** Runtime persistence & actor assembly for `' + cm.host + '` and `' + cm.execution + '`. */',
+    ...(
+      ('/** Runtime persistence & actor assembly for `' + cm.host + '` and `' + cm.execution + '`. */').length <= LINE_LIMIT
+        ? ['/** Runtime persistence & actor assembly for `' + cm.host + '` and `' + cm.execution + '`. */']
+        : [
+            '/** Runtime persistence & actor assembly for `' + cm.host + '`',
+            '  * and `' + cm.execution + '`. */',
+          ]
+    ),
     'object ' + cm.bootstrap + ' {',
     '',
     '  def install(' + hostParam + ': ActorRef[' + cm.host + '.Request]): Installed = {',
@@ -830,7 +847,8 @@ function emitBootstrap(cm, shape) {
     '          bridgeContext.spawnAnonymous(Behaviors.setup[' + cm.host + '.Reply] { replyContext =>',
     '            installed.' + hostParam + ' ! ' + cm.host + '.Invoke(call.state, replyContext.self)',
     '            Behaviors.receiveMessage[' + cm.host + '.Reply] {',
-    '              case ' + cm.host + '.Completed(result) => call.promise.trySuccess(result); Behaviors.stopped',
+    ...wrapDef('              case ' + cm.host + '.Completed(result) =>',
+      ' call.promise.trySuccess(result); Behaviors.stopped', 18),
     '              case ' + cm.host + '.Conflict(reason) =>',
     '                  call.promise.tryFailure(new IllegalArgumentException(reason)); Behaviors.stopped',
     '              case ' + cm.host + '.Pending(_) if call.deadline.isOverdue() =>',
@@ -955,7 +973,7 @@ function generate(input) {
 // ---------- negatives battery ----------
 const NEGATIVES = [
   { name: 'schema version drift', mutate: i => { i.schemaVersion = 'truthsrc.other-input/v1'; }, expect: 'unexpected input schema version' },
-  { name: 'case count not two', mutate: i => { i.cases.pop(); }, expect: 'exactly two cases' },
+  { name: 'empty effect cases', mutate: i => { i.cases = []; }, expect: 'at least one effect case' },
   { name: 'unsafe case id', mutate: i => { i.cases[0].case = 'Dispatch Case'; }, expect: 'unsafe case id' },
   { name: 'unsafe generated symbol', mutate: i => { i.cases[0].names.effectHostClass = 'Bad-Host'; }, expect: 'unsafe symbol' },
   { name: 'unsafe package', mutate: i => { i.cases[0].names.package = 'Example.App'; }, expect: 'unsafe package' },
@@ -973,11 +991,11 @@ const NEGATIVES = [
   { name: 'unsafe value symbol', mutate: i => { i.cases[0].effect.requestValue = 'Bad Request'; }, expect: 'unsafe symbol' },
   { name: 'obligation table loses a binding', mutate: i => { i.cases[0].effect.bindings.declaredIds.pop(); }, expect: 'exactly three bindings' },
   { name: 'binding roles drift', mutate: i => { i.cases[0].effect.bindings.roles = ['execute', 'query', 'reconcile-x']; }, expect: 'execute/query/reconcile' },
-  { name: 'declared ids leave the bankwealth namespace', mutate: i => { i.cases[0].effect.bindings.declaredIds[0] = 'global.X'; }, expect: 'bankwealth namespace' },
+  { name: 'declared ids leave the effect context namespace', mutate: i => { i.cases[0].effect.bindings.declaredIds[0] = 'global.X'; }, expect: 'effect context namespace' },
   { name: 'binding boundary drifts from the composition root', mutate: i => { i.cases[0].effect.bindings.boundary = 'container'; }, expect: 'sanctioned binding boundary' },
   { name: 'effect serializer identifier outside the judged band', mutate: i => { i.cases[0].effect.serializerIdentifier = 799999; }, expect: 'judged 744xxx allocation' },
   { name: 'effect event PB loses its face suffix', mutate: i => { i.cases[0].effect.eventPb = 'x.EventPB'; }, expect: 'EffectHostEventPB face' },
-  { name: 'effect context leaves the bound context', mutate: i => { i.cases[0].effect.context = 'global'; }, expect: 'bankwealth bound context' },
+  { name: 'unsafe effect context', mutate: i => { i.cases[0].effect.context = 'Bad Context'; }, expect: 'unsafe effect context' },
   { name: 'doc block loses its comment head', mutate: i => { i.cases[0].docs.host[0] = 'prose'; }, expect: 'golden-head comment array' },
   { name: 'observation wires drift', mutate: i => { i.faceShape.observationStatus.wires[0] = 'ok'; }, expect: 'frozen five wires' },
   { name: 'reconcile decisions drift', mutate: i => { i.faceShape.reconcileDecisions.pop(); }, expect: 'query + retry' },

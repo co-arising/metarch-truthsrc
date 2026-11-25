@@ -5,7 +5,7 @@ const name = id => id.replaceAll('-', '_');
 const quote = JSON.stringify;
 export function renderEffectHosts({ products, options }, footprint) {
   const layout = products['reference-layout'];
-  return products['effect-host-contract'].hosts.filter(h => !isEffectFlipped(h.id)).map(h => { // retirement registry: the unified face owns this id
+  return products['effect-host-contract'].hosts.filter(h => !isEffectFlipped(h.id, options, h.pipeline.ref.context)).map(h => { // retirement registry: the unified face owns this id
     const pkg = packageFor(h.pipeline.ref.context, options), host = name(h.id) + 'EffectHost', parent = name(h.pipeline.ref.id) + 'Execution';
     const pipeline = products['execution-contract'].pipelines.find(p => p.id === h.pipeline.ref.id), step = pipeline.steps.find(s => s.id === h.stepId);
     const request = typeName(h.requestType, options), result = typeName(h.resultType, options), operation = typeName(h.operationType, options), observation = typeName(h.observationType, options), reconcile = typeName(h.reconcileType, options);

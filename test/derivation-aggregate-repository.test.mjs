@@ -11,7 +11,6 @@ import { fileURLToPath } from 'node:url';
 import { parseStrictJson } from '../lib/strict-json.mjs';
 import { deriveAggregateRepositories } from '../lib/derivation/aggregate-repository.mjs';
 import {
-  AGGREGATE_REPOSITORY_FLIP_CONTEXTS,
   isAggregateRepositoryFlipped,
   withFlippedAggregateRepositories,
 } from '../lib/derivation/aggregate-repository-emission.mjs';
@@ -92,7 +91,7 @@ test('the wrapper renders manifest contexts through the family, byte-equal to th
 
 test('the wrapper passes through projects without any manifest aggregate declaration', () => {
   const other = {
-    options: { packages: [{ context: 'inventory', package: 'example.inventory' }] },
+    options: { packages: [{ context: 'inventory', package: 'example.inventory' }], emission: 'classic' },
     'reference-layout': {
       declarations: [{ ref: { context: 'inventory', kind: 'aggregate', owner: [], id: 'Warehouse' }, source: { document: 'inv', pointer: '/aggregates/0' } }],
     },
@@ -107,8 +106,8 @@ test('the wrapper passes through projects without any manifest aggregate declara
     merge: null,
   }];
   assert.deepEqual(withFlippedAggregateRepositories(() => classic, { products: other, options: other.options }), classic);
-  assert.equal(isAggregateRepositoryFlipped('inventory'), false);
-  assert.deepEqual(AGGREGATE_REPOSITORY_FLIP_CONTEXTS, ['bankwealth']);
+  assert.equal(isAggregateRepositoryFlipped('inventory'), true);
+  assert.equal(isAggregateRepositoryFlipped('inventory', { emission: 'classic' }), false);
 });
 
 test('the wrapper refuses missing flip targets, orphans, and derivation errors fail-closed', () => {

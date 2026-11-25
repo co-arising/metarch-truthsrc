@@ -1,6 +1,6 @@
 {
   "schemaVersion": "truthsrc.pipeline-invocation-face-input/v2",
-  "case": "payment",
+  "case": "bank-payment",
   "names": {
     "hostClass": "BankPaymentHost",
     "hostIoObject": "BankPaymentHostIO",
@@ -15,7 +15,7 @@
       "hostClass": "host id bank-payment-host",
       "executionClass": "saga id bank-cash-payment-v1 (the durable plan face of that saga)",
       "sagaDefinitionObject": "host id bank-payment-host",
-      "originalValue": "knowledge: payment original request value (domain values tree)",
+      "originalValue": "knowledge: bank payment original request value (domain values tree)",
       "argsValue": "knowledge: strict-saga payload args value",
       "resultValue": "knowledge: result kind value (RESULT_KINDS carrier)"
     },
@@ -150,7 +150,7 @@
       }
     }
   ],
-  "participantsSource": "knowledge: saga binding steps + payload participants in declaration order; N2 composes port member names from stepIds (camelCase), not ordinals; domain value types (BankPayment0PrepareInput and friends) keep knowledge-side names; per-participant protocol command composition is knowledge (which domain command each phase issues)",
+  "participantsSource": "knowledge: saga binding steps + payload participants in declaration order; N2 composes port member names from stepIds (camelCase), not ordinals; domain value types keep knowledge-side names; per-participant protocol command composition is knowledge (which domain command each phase issues)",
   "admission": {
     "gates": [
       "entry",
@@ -290,7 +290,7 @@
       "factor": 2,
       "maxMillis": 5000,
       "deadlineSeconds": 60,
-      "source": "judged slot (R1): consumed by the execution-face bridge (BankCashPaymentExecution)"
+      "source": "judged slot (R1): consumed by the execution-face bridge"
     },
     "coordinator": {
       "askMillis": 1000,
@@ -303,13 +303,13 @@
     "domainPackage": "example.bankwealth.domain",
     "domainValuesPackage": "example.bankwealth.domain.values",
     "protoPackage": "example.bankwealth.infrastructure.proto",
-    "serializationPackage": "example.bankwealth.infrastructure.serialization",
+    "serializationPackage": "example.bankwealth.infrastructure.persistence.converters",
     "serializationObject": "DomainConverters",
     "executionProtoPackage": "example.bankwealth.infrastructure.executionproto",
     "hostProtoPackage": "example.bankwealth.infrastructure.hostproto",
     "strictRuntimePackage": "net.imadz.infra.saga.strict",
     "monarchPersistencePackage": "net.imadz.monarch.persistence",
-    "source": "knowledge: bankwealth supply tree (proven by the compile-face rounds)"
+    "source": "knowledge: context supply tree"
   },
   "messages": {
     "authorityResultDiffers": "authority result differs from the original-identity-derived expectation",
@@ -363,7 +363,7 @@
   },
   "docs": {
     "ports": [
-      "/** Technical port surface of the payment pipeline invocation face — the one",
+      "/** Technical port surface of the bank payment pipeline invocation face — the one",
       "  * file that says what this face depends on. Grouped by role: the admission",
       "  * gates, the three participant phase pairs, the result-kind completion",
       "  * pairs. Implementations are supplied exclusively by the handwritten",
@@ -375,7 +375,7 @@
       "  * the domain value types keep their knowledge-side names. */"
     ],
     "hostIo": [
-      "/** Input/output wiring of the payment invocation face: the admission gate and",
+      "/** Input/output wiring of the bank payment invocation face: the admission gate and",
       "  * the two-phase receipt delivery. Every dispatch is over the typed result",
       "  * kind — the compiler, not a string match, closes the case set. */"
     ],
@@ -387,7 +387,7 @@
       "  * kinds refuse to deserialize. */"
     ],
     "execution": [
-      "/** Durable execution plan of the cash purchase payment pipeline: one stage,",
+      "/** Durable execution plan of the bank cash payment pipeline: one stage,",
       "  * `pay-cash-purchase`, which delegates to the invocation host and folds its",
       "  * authoritative result into the plan state. Stage outcomes are the monarch",
       "  * contract: business rejections stop the stage, unknown effects demand",
@@ -406,7 +406,7 @@
       "  * retypes them. */"
     ],
     "host": [
-      "/** Pipeline invocation host for the cash purchase payment: owns the durable",
+      "/** Pipeline invocation host for the bank cash payment: owns the durable",
       "  * association of one business request to its saga run, the admission gate,",
       "  * authoritative result observation and receipt delivery.",
       "  *",
@@ -422,7 +422,7 @@
       "  *   completion) and acknowledged by a persisted event. */"
     ],
     "definition": [
-      "/** Strict-saga definition of the cash purchase payment: the args codec, the",
+      "/** Strict-saga definition of the bank cash payment: the args codec, the",
       "  * three participants' phase ports and the coordinator assembly.",
       "  *",
       "  * The per-phase business content — which domain command each phase issues,",

@@ -5,10 +5,9 @@ import scala.concurrent.duration._
 import example.bankwealth.domain.values.{FundOrderId, TaRequestId, TxId}
 import net.imadz.monarch.StageError
 
-/** Durable execution plan of the TA submission pipeline: one stage,
-  * `submit-ta`, which hands a paid fund order to the TA effect host and folds
-  * its authoritative result into the plan state. Stage outcomes are the
-  * monarch contract: Refused is a business rejection, Unavailable and Unknown
+/** Durable execution plan for `bank-ta-submission-v1`: stage `submit-ta`
+  * delegates to the effect host and folds its authoritative result into
+  * plan state. Refused is a business rejection; Unavailable and Unknown
   * demand manual recovery — never an implicit retry. */
 object BankTaSubmissionExecution {
 

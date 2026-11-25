@@ -8,20 +8,16 @@ import example.bankwealth.application.connectors.BankTaGateway
 import example.bankwealth.application.process.ta_submission.BankTaSubmissionExecution
 import example.bankwealth.application.connectors.BankTaEffectProtocol._
 
-/** Durable external-effect host of the TA submission pipeline: owns the
-  * intent, the observed TA evidence and the authorized retry, for exactly one
-  * submission operation.
+/** Durable external-effect host `BankTaEffectHost` for `bank-ta-submission-v1`:
+  * owns the intent, observed external evidence and authorized retry.
   *
-  * Semantics contracts (identical to the dispatch effect host — the effect
-  * face's one shape, per-case knowledge):
-  * - Invoke is idempotent; every reply derives from durable state (R2:
-    * waiters are in-memory coalesced, never persisted; callers own ask
-    * timeout and retry).
-  * - No implicit retry; Reconcile demands explicit authorization and durable
-    * absent evidence; the authorized retry clears the observation (the
-    * journal keeps the evidence history) so stale evidence cannot answer
-    * during the retry window (R3).
-  * - Observation validation is fail-closed: an unknown status wire refuses. */
+  * Semantics contracts:
+  * - Invoke is idempotent: identical input under the same operation
+  *   identity coalesces; conflicting input under a live effect is a
+  *   Conflict. Replies derive from durable state (R2: in-memory waiters).
+  * - No implicit retry: Reconcile requires explicit authorization and
+  *   durable absent evidence, clearing observation on retry (R3).
+  * - Observation validation is fail-closed on unknown status wires. */
 object BankTaEffectHost {
 
   /** External observation status; `wire` is the domain value's spelling. */

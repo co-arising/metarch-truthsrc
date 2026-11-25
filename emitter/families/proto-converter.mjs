@@ -5,6 +5,7 @@
 // Zero hardcoded business identifiers; fail-closed (PC_INPUT).
 import { renderValueWildcardImports } from '../../lib/derivation/value-object-package.mjs';
 import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
+import { runtimeFromContract } from '../../lib/runtime-profile.mjs';
 
 const SCHEMA = 'truthsrc.proto-converter-input/v1';
 const CONTEXT_RE = /^[a-z][a-z0-9_-]*$/u;
@@ -33,7 +34,7 @@ function checkSource(source, what) {
 
 export function checkInput(input) {
   checkObject(input, 'input');
-  checkNoExtraKeys(input, new Set(['schemaVersion', 'packages', 'contexts']), 'input');
+  checkNoExtraKeys(input, new Set(['schemaVersion', 'packages', 'contexts', 'runtimeProfile']), 'input');
   if (input.schemaVersion !== SCHEMA) fail('schemaVersion must be ' + SCHEMA);
   if (!Array.isArray(input.packages) || !input.packages.length) fail('packages must be non-empty');
   const pkgMap = new Map();
@@ -209,7 +210,7 @@ const HELPERS_BLOCK = [
   '',
 ].join('\n');
 
-const importsHeader = (pkg, valueObjects) => {
+const importsHeader = (pkg, valueObjects, rp) => {
   const voNames = (valueObjects ?? []).map(vo => vo.typeId);
   const voImports = [...new Set([
     `import ${pkg}.domain.values._`,
@@ -221,19 +222,20 @@ const importsHeader = (pkg, valueObjects) => {
     `import ${pkg}.domain.entities._`,
     ...voImports,
     `import ${pkg}.infrastructure.{proto => pb}`,
-    'import net.imadz.common.serialization.PrimitiveConverter',
+    `import ${rp.commonPackage}.serialization.PrimitiveConverter`,
     '',
   ].join('\n');
 };
 
 export function renderProtoConverterFiles(input) {
   checkInput(input);
+  const rp = runtimeFromContract(input);
   const pkgMap = new Map(input.packages.map(p => [p.context, p.package]));
   const out = [];
 
   for (const ctx of input.contexts) {
     const pkg = pkgMap.get(ctx.context);
-    const header = importsHeader(pkg, ctx.valueObjects);
+    const header = importsHeader(pkg, ctx.valueObjects, rp);
 
     // 1. Shared value-object converters split into cohesive traits if needed, extending PrimitiveConverter.
     const voBlocks = ctx.valueObjects.map(vo => ({ content: renderValueObjectMethods(vo), sources: vo.sources }));

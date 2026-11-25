@@ -2,7 +2,7 @@
   "schemaVersion": "truthsrc.effect-face-input/v1",
   "cases": [
     {
-      "case": "dispatch",
+      "case": "bank-sip-dispatch",
       "names": {
         "executionClass": "BankSipDispatchExecution",
         "effectHostClass": "BankSipDispatchEffectHost",
@@ -106,30 +106,22 @@
       },
       "docs": {
         "execution": [
-          "/** Durable execution plan of the SIP dispatch pipeline: one stage,",
-          "  * `dispatch-cash`, which hands a durable SIP occurrence to the effect host",
-          "  * and folds its authoritative result into the plan state. Stage outcomes are",
-          "  * the monarch contract: Refused is a business rejection, Unavailable and",
-          "  * Unknown demand manual recovery — never an implicit retry. */"
+          "/** Durable execution plan for `bank-sip-dispatch-v1`: stage `dispatch-cash`",
+          "  * delegates to the effect host and folds its authoritative result into",
+          "  * plan state. Refused is a business rejection; Unavailable and Unknown",
+          "  * demand manual recovery — never an implicit retry. */"
         ],
         "host": [
-          "/** Durable external-effect host of the SIP dispatch pipeline: owns the intent,",
-          "  * the observed external evidence and the authorized retry, for exactly one",
-          "  * dispatch operation.",
+          "/** Durable external-effect host `BankSipDispatchEffectHost` for `bank-sip-dispatch-v1`:",
+          "  * owns the intent, observed external evidence and authorized retry.",
           "  *",
           "  * Semantics contracts:",
-          "  * - Invoke is idempotent: the same complete input under the same operation",
-          "  *   identity is coalesced; a different input under a live effect is a",
-          "  *   Conflict. Every reply is derived from durable state, so a caller that",
-          "  *   re-invokes after any crash recovers its answer (R2: reply targets are",
-          "  *   in-memory coalesced and never persisted; caller-side ask timeout and",
-          "  *   retry are part of the contract).",
-          "  * - No implicit retry: an unobserved effect answers Pending. A retry happens",
-          "    * only through Reconcile with explicit authorization and durable absent",
-          "    * evidence; the observation is cleared on the authorized retry (the journal",
-          "    * keeps the full evidence history) so stale evidence can never answer",
-          "    * during the retry window (R3).",
-          "  * - Observation validation is fail-closed: an unknown status wire refuses. */"
+          "  * - Invoke is idempotent: identical input under the same operation",
+          "  *   identity coalesces; conflicting input under a live effect is a",
+          "  *   Conflict. Replies derive from durable state (R2: in-memory waiters).",
+          "  * - No implicit retry: Reconcile requires explicit authorization and",
+          "  *   durable absent evidence, clearing observation on retry (R3).",
+          "  * - Observation validation is fail-closed on unknown status wires. */"
         ],
         "serializer": [
           "/** Wire codec of the effect-host event journal. Event identities stay the",
@@ -139,15 +131,15 @@
       }
     },
     {
-      "case": "ta",
+      "case": "bank-ta-effect",
       "names": {
         "executionClass": "BankTaSubmissionExecution",
         "effectHostClass": "BankTaEffectHost",
         "serializerClass": "BankTaEffectHostSerializer",
         "package": "example.bankwealth.application.connectors",
         "nameSources": {
-          "executionClass": "saga id bank-ta-submission-v1",
-          "effectHostClass": "host id bank-ta-effect + EffectHost suffix with stem/suffix dedup (N1: BankTaEffectEffectHost stutters)",
+          "executionClass": "pipeline id bank-ta-submission-v1 (the durable plan face of that pipeline)",
+          "effectHostClass": "host id bank-ta-effect + EffectHost suffix (N1 dedup)",
           "serializerClass": "host class + Serializer"
         }
       },
@@ -200,7 +192,7 @@
             "stageError": "unknown-effect:Unknown:manual-recovery"
           }
         ],
-        "source": "knowledge: saga declaration + execution plan product",
+        "source": "knowledge: pipeline declaration + execution plan product",
         "inputs": [
           {
             "name": "taRequestId",
@@ -253,27 +245,22 @@
       },
       "docs": {
         "execution": [
-          "/** Durable execution plan of the TA submission pipeline: one stage,",
-          "  * `submit-ta`, which hands a paid fund order to the TA effect host and folds",
-          "  * its authoritative result into the plan state. Stage outcomes are the",
-          "  * monarch contract: Refused is a business rejection, Unavailable and Unknown",
+          "/** Durable execution plan for `bank-ta-submission-v1`: stage `submit-ta`",
+          "  * delegates to the effect host and folds its authoritative result into",
+          "  * plan state. Refused is a business rejection; Unavailable and Unknown",
           "  * demand manual recovery — never an implicit retry. */"
         ],
         "host": [
-          "/** Durable external-effect host of the TA submission pipeline: owns the",
-          "  * intent, the observed TA evidence and the authorized retry, for exactly one",
-          "  * submission operation.",
+          "/** Durable external-effect host `BankTaEffectHost` for `bank-ta-submission-v1`:",
+          "  * owns the intent, observed external evidence and authorized retry.",
           "  *",
-          "  * Semantics contracts (identical to the dispatch effect host — the effect",
-          "  * face's one shape, per-case knowledge):",
-          "  * - Invoke is idempotent; every reply derives from durable state (R2:",
-          "    * waiters are in-memory coalesced, never persisted; callers own ask",
-          "    * timeout and retry).",
-          "  * - No implicit retry; Reconcile demands explicit authorization and durable",
-          "    * absent evidence; the authorized retry clears the observation (the",
-          "    * journal keeps the evidence history) so stale evidence cannot answer",
-          "    * during the retry window (R3).",
-          "  * - Observation validation is fail-closed: an unknown status wire refuses. */"
+          "  * Semantics contracts:",
+          "  * - Invoke is idempotent: identical input under the same operation",
+          "  *   identity coalesces; conflicting input under a live effect is a",
+          "  *   Conflict. Replies derive from durable state (R2: in-memory waiters).",
+          "  * - No implicit retry: Reconcile requires explicit authorization and",
+          "  *   durable absent evidence, clearing observation on retry (R3).",
+          "  * - Observation validation is fail-closed on unknown status wires. */"
         ],
         "serializer": [
           "/** Wire codec of the effect-host event journal. Event identities stay the",
@@ -366,7 +353,7 @@
     "executionProtoPackage": "example.bankwealth.infrastructure.executionproto",
     "effectProtoPackage": "example.bankwealth.infrastructure.effectproto",
     "monarchPersistencePackage": "net.imadz.monarch.persistence",
-    "source": "knowledge: bankwealth supply tree (proven by the compile-face rounds)"
+    "source": "knowledge: context supply tree"
   },
   "docsSource": "knowledge: the face doc prose, verbatim per artifact per case (hand-balanced lines; the emitter emits them as data)"
 }

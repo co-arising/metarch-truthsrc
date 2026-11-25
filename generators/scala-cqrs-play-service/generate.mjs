@@ -26,6 +26,8 @@ import { withFlippedProtoConverters } from '../../lib/derivation/proto-converter
 import { withFlippedSerializationAdapters } from '../../lib/derivation/serialization-adapter-emission.mjs';
 import { withFlippedServiceRuntime } from '../../lib/derivation/service-runtime-emission.mjs';
 import { withFlippedProjectScaffold } from '../../lib/derivation/project-scaffold-emission.mjs';
+import { withPlayServiceEmission } from '../../lib/derivation/emission-policy.mjs';
+import { resolveRuntimeProfile } from '../../lib/runtime-profile.mjs';
 import { remapPlanEntries } from '../../lib/layout/layout-strategy.mjs';
 
 const PRODUCT_VERSIONS = Object.freeze({
@@ -39,7 +41,8 @@ const serviceProducts = ['reference-layout', 'artifact-contract', 'domain-depend
 const serviceFootprint = serviceProducts.map(id => ({ id, version: version(id) ?? '1' }));
 const inherited = Object.fromEntries(Object.entries(createEffectRegistry('2')).map(([id, implementation]) => [id, {
   version: 'service-1',
-  produce(context) {
+  produce(rawContext) {
+    const context = withPlayServiceEmission(rawContext);
     const produced = id === 'aggregate-dsl'
       ? withFlippedAggregateBootstraps(bootCtx => withFlippedAggregateRepositories(repoCtx => withFlippedApplicationProtocols(protoCtx => withFlippedAggregateLayers(aggCtx => withFlippedDomainEntities(inner => renderAggregateLayers(inner, ['reference-layout','domain-folds','exact-value-types','domain-dependencies'].map(id=>({id,version:['domain-folds','domain-dependencies'].includes(id)?'6':'1'}))), aggCtx), protoCtx), repoCtx), bootCtx), context)
         : id === 'command-dsl'
@@ -72,6 +75,7 @@ const inherited = Object.fromEntries(Object.entries(createEffectRegistry('2')).m
       if (entry.path === 'build.sbt') {
         const artifact = serviceSelection(context.products, context.options);
         const testMain = packageFor(artifact.artifact.context, context.options) + '.service.UnitTestMain';
+        const rp = resolveRuntimeProfile(context.options);
         next.content += '\nlazy val root = (project in file(".")).enablePlugins(PlayScala)\n' +
           'Compile / unmanagedSourceDirectories := Seq(baseDirectory.value / "app") ++ Seq(' + context.options.service.externalSourceRoots.map(x => 'file(' + JSON.stringify(x) + ')').join(', ') + ')\n' +
           'Test / unmanagedSourceDirectories += baseDirectory.value / "src" / "test" / "scala"\n' +
@@ -80,8 +84,8 @@ const inherited = Object.fromEntries(Object.entries(createEffectRegistry('2')).m
           'Test / javaOptions += "-Dservice.test.suites=" + (Test / definedTests).value.map(_.name).sorted.mkString(",")\n' +
           'Test / test := (Test / runMain).toTask(' + JSON.stringify(' ' + testMain) + ').value\n' +
           'Test / testOnly := { val ignored = complete.DefaultParsers.spaceDelimited("suite").parsed; sys.error("Use test for isolated unit suites; integration tests require their explicit runner") }\n' +
-          'libraryDependencies ++= Seq(guice, jdbc, "net.imadz" %% "common-core" % "0.2.1", "com.typesafe.akka" %% "akka-cluster-sharding-typed" % "2.6.20", "com.github.scullxbones" %% "akka-persistence-mongo-rxmongo" % "3.0.8", "com.lightbend.akka" %% "akka-projection-jdbc" % "1.2.5", "com.lightbend.akka" %% "akka-projection-eventsourced" % "1.2.5", "com.mysql" % "mysql-connector-j" % "8.0.33")\n' +
-          'libraryDependencies ~= (_.map { case d if d.organization == "net.imadz" && (d.name == "saga-core" || d.name == "common-core") => d.exclude("com.github.scullxbones", "akka-persistence-mongo-scala_2.13").exclude("org.reactivemongo", "reactivemongo_2.13"); case d => d })\n' +
+          `libraryDependencies ++= Seq(guice, jdbc, ${JSON.stringify(rp.organization)} %% ${JSON.stringify(rp.commonCoreArtifact)} % ${JSON.stringify(rp.commonCoreVersion)}, "com.typesafe.akka" %% "akka-cluster-sharding-typed" % "2.6.20", "com.github.scullxbones" %% "akka-persistence-mongo-rxmongo" % "3.0.8", "com.lightbend.akka" %% "akka-projection-jdbc" % "1.2.5", "com.lightbend.akka" %% "akka-projection-eventsourced" % "1.2.5", "com.mysql" % "mysql-connector-j" % "8.0.33")\n` +
+          `libraryDependencies ~= (_.map { case d if d.organization == ${JSON.stringify(rp.organization)} && (d.name == ${JSON.stringify(rp.sagaArtifact)} || d.name == ${JSON.stringify(rp.commonCoreArtifact)}) => d.exclude("com.github.scullxbones", "akka-persistence-mongo-scala_2.13").exclude("org.reactivemongo", "reactivemongo_2.13"); case d => d })\n` +
           'dependencyOverrides ++= Seq("akka-actor", "akka-actor-typed", "akka-stream", "akka-stream-typed", "akka-persistence", "akka-persistence-typed", "akka-persistence-query", "akka-protobuf-v3", "akka-slf4j", "akka-testkit", "akka-serialization-jackson", "akka-remote", "akka-cluster", "akka-cluster-typed", "akka-cluster-tools", "akka-coordination", "akka-distributed-data", "akka-cluster-sharding", "akka-cluster-sharding-typed").map("com.typesafe.akka" %% _ % "2.6.20")\n';
       }
       if (entry.path === 'project/build.properties') next.content = 'sbt.version=1.4.9\n';
@@ -94,12 +98,15 @@ const inherited = Object.fromEntries(Object.entries(createEffectRegistry('2')).m
   }
 }]));
 export const registry = Object.freeze({ ...inherited,
-  'play-service-dsl': { version: '1', produce: context => withFlippedProjectScaffold(withFlippedServiceRuntime(ctx => [
-    ...renderService(ctx, serviceFootprint),
-    ...renderJournalReadside(ctx, serviceFootprint),
-    ...renderTestSupport(serviceSelection(ctx.products, ctx.options), ctx.options, serviceFootprint),
-    ...renderConfiguration(serviceSelection(ctx.products, ctx.options), ctx.options, serviceFootprint)
-  ], context), context) }
+  'play-service-dsl': { version: '1', produce: rawContext => {
+    const context = withPlayServiceEmission(rawContext);
+    return withFlippedProjectScaffold(withFlippedServiceRuntime(ctx => [
+      ...renderService(ctx, serviceFootprint),
+      ...renderJournalReadside(ctx, serviceFootprint),
+      ...renderTestSupport(serviceSelection(ctx.products, ctx.options), ctx.options, serviceFootprint),
+      ...renderConfiguration(serviceSelection(ctx.products, ctx.options), ctx.options, serviceFootprint)
+    ], context), context);
+  } }
 });
 function sbtRelativeFileExpr(outDir, absPath) {
   if (!outDir || typeof absPath !== 'string' || !isAbsolute(absPath)) {

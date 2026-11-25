@@ -8,23 +8,16 @@ import example.bankwealth.application.connectors.BankSipDispatchGateway
 import example.bankwealth.application.process.sip_dispatch.BankSipDispatchExecution
 import example.bankwealth.application.connectors.BankSipDispatchProtocol._
 
-/** Durable external-effect host of the SIP dispatch pipeline: owns the intent,
-  * the observed external evidence and the authorized retry, for exactly one
-  * dispatch operation.
+/** Durable external-effect host `BankSipDispatchEffectHost` for `bank-sip-dispatch-v1`:
+  * owns the intent, observed external evidence and authorized retry.
   *
   * Semantics contracts:
-  * - Invoke is idempotent: the same complete input under the same operation
-  *   identity is coalesced; a different input under a live effect is a
-  *   Conflict. Every reply is derived from durable state, so a caller that
-  *   re-invokes after any crash recovers its answer (R2: reply targets are
-  *   in-memory coalesced and never persisted; caller-side ask timeout and
-  *   retry are part of the contract).
-  * - No implicit retry: an unobserved effect answers Pending. A retry happens
-    * only through Reconcile with explicit authorization and durable absent
-    * evidence; the observation is cleared on the authorized retry (the journal
-    * keeps the full evidence history) so stale evidence can never answer
-    * during the retry window (R3).
-  * - Observation validation is fail-closed: an unknown status wire refuses. */
+  * - Invoke is idempotent: identical input under the same operation
+  *   identity coalesces; conflicting input under a live effect is a
+  *   Conflict. Replies derive from durable state (R2: in-memory waiters).
+  * - No implicit retry: Reconcile requires explicit authorization and
+  *   durable absent evidence, clearing observation on retry (R3).
+  * - Observation validation is fail-closed on unknown status wires. */
 object BankSipDispatchEffectHost {
 
   /** External observation status; `wire` is the domain value's spelling. */

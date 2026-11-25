@@ -3,6 +3,8 @@
 // Eliminates the 277-line per-class PB binding list in conf/serialization.conf
 // using "com.google.protobuf.Message" = proto and "scalapb.GeneratedMessage" =
 // domainProto0. Zero hardcoded business identifiers; fail-closed (PSC_INPUT).
+import { runtimeFromContract } from '../../lib/runtime-profile.mjs';
+
 const SCHEMA = 'truthsrc.project-scaffold-input/v1';
 const KINDS = new Set(['build', 'service-test', 'generated-test']);
 
@@ -28,7 +30,7 @@ function checkSource(source, what) {
 
 export function checkInput(input) {
   checkObject(input, 'input');
-  checkNoExtraKeys(input, new Set(['schemaVersion', 'serialization', 'files']), 'input');
+  checkNoExtraKeys(input, new Set(['schemaVersion', 'serialization', 'files', 'runtimeProfile']), 'input');
   if (input.schemaVersion !== SCHEMA) fail('schemaVersion must be ' + SCHEMA);
 
   const ser = checkObject(input.serialization, 'serialization');
@@ -71,7 +73,7 @@ export function checkInput(input) {
 
 const q = JSON.stringify;
 
-function renderSerializationConf(ser) {
+function renderSerializationConf(ser, rp) {
   const lines = [
     'akka.actor.allow-java-serialization = off',
     'akka.actor.warn-about-java-serializer-usage = on',
@@ -79,17 +81,17 @@ function renderSerializationConf(ser) {
     'akka.actor.serializers {',
     '  proto = "akka.remote.serialization.ProtobufSerializer"',
     ...ser.domainSerializers.map(d => `  ${d.key} = ${q(d.className)}`),
-    '  strict-saga = "net.imadz.infra.saga.strict.StrictSagaSerializer"',
+    `  strict-saga = ${q(rp.strictSagaPackage + '.StrictSagaSerializer')}`,
     ...ser.hosts.map(h => `  ${h.key} = ${q(h.serializerClass)}`),
     ...ser.effects.map(e => `  ${e.key} = ${q(e.serializerClass)}`),
     '}',
     '',
     'akka.actor.serialization-bindings {',
-    '  "net.imadz.common.CborSerializable" = jackson-cbor',
+    `  ${q(rp.commonPackage + '.CborSerializable')} = jackson-cbor`,
     '  "com.google.protobuf.Message" = proto',
     `  "scalapb.GeneratedMessage" = ${ser.domainSerializers[0].key}`,
     `  "scalapb.GeneratedOneof" = ${ser.domainSerializers[0].key}`,
-    '  "net.imadz.infra.saga.strict.StrictDurable" = strict-saga',
+    `  ${q(rp.strictSagaPackage + '.StrictDurable')} = strict-saga`,
     ...ser.hosts.map(h => `  ${q(h.eventClass)} = ${h.key}`),
     ...ser.effects.map(e => `  ${q(e.eventClass)} = ${e.key}`),
     '}',
@@ -100,10 +102,11 @@ function renderSerializationConf(ser) {
 
 export function renderProjectScaffoldFiles(input) {
   checkInput(input);
+  const rp = runtimeFromContract(input);
   return [
     {
       path: 'conf/serialization.conf',
-      content: renderSerializationConf(input.serialization),
+      content: renderSerializationConf(input.serialization, rp),
       kind: 'build',
       deps: [],
       sources: input.serialization.sources.map(s => ({ document: s.document, pointer: s.pointer })),

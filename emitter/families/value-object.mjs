@@ -18,6 +18,7 @@
 // renderer never produced any, so the ledger entries themselves are the
 // provenance.
 import { parseStrictJson } from '../../lib/strict-json.mjs';
+import { runtimeFromContract } from '../../lib/runtime-profile.mjs';
 import {
   isAllowedValueObjectSubpackage,
   valueObjectModule,
@@ -258,13 +259,13 @@ function formatImportBlock(pkg, crossImports) {
   return importLines.length ? importLines.join('\n') + '\n\n' : '';
 }
 
-function renderValue(value, packages, subpackageByKey) {
+function renderValue(value, packages, subpackageByKey, rp) {
   const pkg = packages.find(p => p.context === value.context).package;
   const subpkg = value.subpackage ?? 'domain.values';
   const crossImports = new Map();
   const body = renderValueBody(value, packages, subpackageByKey, subpkg, null, crossImports);
   const path = scalaSubpackagePath(pkg, subpkg, value.name + '.scala');
-  const exactImport = value.shape.kind === 'exact' ? 'import net.imadz.common.CommonTypes.iMadzError\n\n' : '';
+  const exactImport = value.shape.kind === 'exact' ? `import ${rp.commonPackage}.CommonTypes.iMadzError\n\n` : '';
   return {
     path,
     content: 'package ' + pkg + '.' + subpkg + '\n\n' + exactImport + formatImportBlock(pkg, crossImports) + body,
@@ -275,7 +276,7 @@ function renderValue(value, packages, subpackageByKey) {
   };
 }
 
-function renderCompanionModule(context, subpkg, moduleName, group, packages, subpackageByKey) {
+function renderCompanionModule(context, subpkg, moduleName, group, packages, subpackageByKey, rp) {
   const pkg = packages.find(p => p.context === context).package;
   const crossImports = new Map();
   const memberBlocks = group.map(value => {
@@ -284,7 +285,7 @@ function renderCompanionModule(context, subpkg, moduleName, group, packages, sub
   });
   const body = `object ${moduleName} {\n${memberBlocks.join('\n')}\n}\n`;
   const path = scalaSubpackagePath(pkg, subpkg, moduleName + '.scala');
-  const exactImport = group.some(v => v.shape.kind === 'exact') ? 'import net.imadz.common.CommonTypes.iMadzError\n\n' : '';
+  const exactImport = group.some(v => v.shape.kind === 'exact') ? `import ${rp.commonPackage}.CommonTypes.iMadzError\n\n` : '';
   return {
     path,
     content: 'package ' + pkg + '.' + subpkg + '\n\n' + exactImport + formatImportBlock(pkg, crossImports) + body,
@@ -299,6 +300,7 @@ function renderCompanionModule(context, subpkg, moduleName, group, packages, sub
 export function renderValueObjectFiles(inputJson) {
   const input = parseStrictJson(Buffer.from(JSON.stringify(inputJson), 'utf8'));
   checkInput(input);
+  const rp = runtimeFromContract(input);
   const subpackageByKey = new Map(input.values.map(v => [v.context + '/' + v.name, v.subpackage ?? 'domain.values']));
   const out = [];
   const grouped = new Map();
@@ -306,7 +308,7 @@ export function renderValueObjectFiles(inputJson) {
     const subpkg = value.subpackage ?? 'domain.values';
     const mod = valueObjectModule(value.name, subpkg);
     if (!mod) {
-      out.push(renderValue(value, input.packages, subpackageByKey));
+      out.push(renderValue(value, input.packages, subpackageByKey, rp));
       continue;
     }
     const key = `${value.context}|${subpkg}|${mod}`;
@@ -314,7 +316,7 @@ export function renderValueObjectFiles(inputJson) {
     grouped.get(key).values.push(value);
   }
   for (const entry of grouped.values()) {
-    out.push(renderCompanionModule(entry.context, entry.subpkg, entry.mod, entry.values, input.packages, subpackageByKey));
+    out.push(renderCompanionModule(entry.context, entry.subpkg, entry.mod, entry.values, input.packages, subpackageByKey, rp));
   }
   return out;
 }

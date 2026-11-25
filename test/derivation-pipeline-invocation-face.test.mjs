@@ -13,7 +13,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { derivePipelineInvocationFace, isFlipped, flipHostBase, PIPELINE_INVOCATION_FLIPS } from '../lib/derivation/pipeline-invocation-face.mjs';
+import { derivePipelineInvocationFace, isFlipped, flipHostBase } from '../lib/derivation/pipeline-invocation-face.mjs';
 import { getFamily, renderFamily } from '../emitter/registry.mjs';
 import '../emitter/families/index.mjs';
 import { parseStrictJson } from '../lib/strict-json.mjs';
@@ -41,7 +41,7 @@ test('the derived contract renders the curated golden bytes through the family e
 test('derivation is fail-closed on unknown hosts and broken runtime identity', () => {
   const f = fixture();
   assert.throws(() => derivePipelineInvocationFace(f.products, f.options, 'bank-refund-host'), /exactly one saga host bank-refund-host required/);
-  assert.throws(() => derivePipelineInvocationFace(f.products, f.options, 'no-such-host'), /flip manifest entry/);
+  assert.throws(() => derivePipelineInvocationFace(f.products, f.options, 'no-such-host'), /exactly one saga host no-such-host required/);
   const broken = fixture();
   broken.products['saga-runtime-contract'].sagas[0].definitionDigest = 'c13f703e';
   assert.throws(() => derivePipelineInvocationFace(broken.products, broken.options, 'bank-payment-host'), /sha256: prefix/);
@@ -50,14 +50,12 @@ test('derivation is fail-closed on unknown hosts and broken runtime identity', (
   assert.throws(() => derivePipelineInvocationFace(unversioned.products, unversioned.options, 'bank-payment-host'), /must be an integer/);
 });
 
-test('the flip manifest is the single flip switch and carries the base-name invariant', () => {
-  assert.deepEqual([...PIPELINE_INVOCATION_FLIPS], [
-    { pipeline: 'bank-cash-payment-v1', host: 'bank-payment-host', case: 'payment', docShort: 'payment', docLong: 'cash purchase payment' },
-    { pipeline: 'bank-independent-refund-v1', host: 'bank-refund-host', case: 'refund', docShort: 'refund', docLong: 'independent refund' },
-  ]);
-  assert.equal(isFlipped('bank-payment-host'), true);
-  assert.equal(isFlipped('bank-refund-host'), true);
+test('the host retirement predicate is option-driven and carries the base-name invariant', () => {
+  assert.equal(isFlipped('bank-payment-host', { emission: 'unified' }, 'bankwealth'), true);
+  assert.equal(isFlipped('order-settlement-host', { emission: 'unified' }, 'commerce'), true);
+  assert.equal(isFlipped('order-settlement-host', { emission: 'classic' }, 'commerce'), false);
   assert.equal(flipHostBase('bank-payment-host'), 'BankPayment');
   assert.equal(flipHostBase('bank-refund-host'), 'BankRefund');
+  assert.equal(flipHostBase('order-settlement-host'), 'OrderSettlement');
   assert.throws(() => flipHostBase('bank-cash-payment-v1'), /must end in -host/);
 });

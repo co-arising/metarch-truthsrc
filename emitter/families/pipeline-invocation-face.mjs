@@ -206,8 +206,8 @@ function validate(input) {
   if (pb.boundary !== 'handwritten-composition-root') {
     throw new Error('the composition root is the sanctioned binding boundary');
   }
-  if (!pb.declaredIdStem.startsWith('bankwealth.')) {
-    throw new Error('declared implementation ids live in the bankwealth namespace');
+  if (!pb.declaredIdStem.startsWith(input.saga.context + '.')) {
+    throw new Error('declared implementation ids must live in the saga context namespace');
   }
   if (!/^[a-z][a-z0-9-]*$/.test(pb.codecPinPrefix)) throw new Error('unsafe codec pin prefix');
   if (!Number.isInteger(pb.codecPinVersion) || pb.codecPinVersion <= 0) {
@@ -563,7 +563,11 @@ function emitSerializer(md) {
     '        ' + pb + '(kind = "identity",',
     '            identity = StrictSagaProtoConverters.identityToProto(identity).toByteString)',
     '      case ' + md.host + '.ResultIntent(kind) =>',
-    '        ' + pb + '(kind = "result", operation = kind.wire)',
+    ...(
+      ('        ' + pb + '(kind = "result", operation = kind.wire)').length <= LINE_LIMIT
+        ? ['        ' + pb + '(kind = "result", operation = kind.wire)']
+        : ['        ' + pb + '(kind = "result",', '            operation = kind.wire)']
+    ),
     '      case ' + md.host + '.DeliveryAcknowledged(kind) =>',
     '        ' + pb + '(kind = "delivered",',
     '            operation = kind.wire)',
@@ -630,7 +634,7 @@ function emitExecution(md) {
     'import scala.concurrent.duration._',
     '',
     ...renderGroupedValueImports(md.basePkg, values, 'application.process.' + md.flowSlug),
-    'import net.imadz.monarch.StageError',
+    'import ' + md.supply.monarchPersistencePackage.replace(/\.persistence$/, '') + '.StageError',
     '',
     ...md.docs.execution,
     'object ' + md.execution + ' {',
@@ -773,7 +777,14 @@ function emitProcessCodecs(md) {
     '/** Persistence-layer protobuf payload codecs for `' + md.definition + '`. */',
     'object ' + md.processCodecs + ' extends ' + md.definition + '.Codecs {',
     '',
-    '  val argsCodec: PayloadCodec[' + md.definition + '.Args] = new PayloadCodec[' + md.definition + '.Args] {',
+    ...(
+      ('  val argsCodec: PayloadCodec[' + md.definition + '.Args] = new PayloadCodec[' + md.definition + '.Args] {').length <= LINE_LIMIT
+        ? ['  val argsCodec: PayloadCodec[' + md.definition + '.Args] = new PayloadCodec[' + md.definition + '.Args] {']
+        : [
+            '  val argsCodec: PayloadCodec[' + md.definition + '.Args] =',
+            '    new PayloadCodec[' + md.definition + '.Args] {',
+          ]
+    ),
     '    val pin: CodecPin = ' + md.definition + '.ArgsCodecPin',
     '    def encode(value: ' + md.definition + '.Args): ByteString =',
     '      ' + md.supply.serializationObject + '.encode' + argsValue + 'PO(value).toByteString',
@@ -1316,11 +1327,22 @@ function emitProcessBootstrap(md) {
         '            ' + ph.queryType + '(TxId(request.identity.transaction.transactionId),',
         '              request.identity.transaction.definitionVersion.toString, request.identity.transaction.argsDigest,',
         '              request.identity',
-        '                  .participantId, ' + rt + '(request.identity.resource), request.identity.stepId, phaseLower(request)),',
+        ...(
+          ('                  .participantId, ' + rt + '(request.identity.resource), request.identity.stepId, phaseLower(request)),').length <= LINE_LIMIT
+            ? ['                  .participantId, ' + rt + '(request.identity.resource), request.identity.stepId, phaseLower(request)),']
+            : [
+                '                  .participantId, ' + rt + '(request.identity.resource),',
+                '                  request.identity.stepId, phaseLower(request)),',
+              ]
+        ),
         '            request.identity)',
         '            .map { case Some(receipt) => ConfirmedReceipt(request.identity, receipt)',
         '                   case None => Unknown(request.identity, "' + md.messages.typedQueryNoEvidence + '") }',
-        '        }, codecs.' + ph.codecVal + ', ' + md.definition + '.' + ph.checkFn + ')',
+        ...(
+          ('        }, codecs.' + ph.codecVal + ', ' + md.definition + '.' + ph.checkFn + ')').length <= LINE_LIMIT
+            ? ['        }, codecs.' + ph.codecVal + ', ' + md.definition + '.' + ph.checkFn + ')']
+            : ['        }, codecs.' + ph.codecVal + ',', '          ' + md.definition + '.' + ph.checkFn + ')']
+        ),
         ...(ph === p.phases[p.phases.length - 1] && p === md.participants[md.participants.length - 1]
           ? [] : ['']));
     }
@@ -1354,7 +1376,7 @@ function emitProcessBootstrap(md) {
     ...renderValueWildcardImports(md.basePkg, [md.original, md.result, md.args, ...allPhaseTypes(md)], 'infrastructure.bootstrap'),
     'import ' + md.persistencePkg + '.{' + md.stateCodec + ', ' + md.processCodecs + '}',
     'import ' + md.supply.strictRuntimePackage + '._',
-    'import net.imadz.monarch.StageFailedException',
+    'import ' + md.supply.monarchPersistencePackage.replace(/\.persistence$/, '') + '.StageFailedException',
     'import ' + md.supply.monarchPersistencePackage + '.{PersistentMonarch, RunObserver}',
     '',
     '/** Runtime persistence & actor assembly for `' + md.host + '` and `' + md.execution + '`. */',
@@ -1442,7 +1464,14 @@ function emitProcessBootstrap(md) {
     ...phasePortBlocks,
     '    }',
     '',
-    '  def portsFromTechnical(technical: ' + md.ports + ')(implicit ec: ExecutionContext): ' + md.definition + '.Ports =',
+    ...(
+      ('  def portsFromTechnical(technical: ' + md.ports + ')(implicit ec: ExecutionContext): ' + md.definition + '.Ports =').length <= LINE_LIMIT
+        ? ['  def portsFromTechnical(technical: ' + md.ports + ')(implicit ec: ExecutionContext): ' + md.definition + '.Ports =']
+        : [
+            '  def portsFromTechnical(technical: ' + md.ports + ')',
+            '      (implicit ec: ExecutionContext): ' + md.definition + '.Ports =',
+          ]
+    ),
     '    fromTechnical(technical, ' + md.processCodecs + ')',
     '',
     '  def definition(ports: ' + md.definition + '.Ports)',
@@ -1457,7 +1486,11 @@ function emitProcessBootstrap(md) {
     '    require(persistenceId != null && persistenceId.nonEmpty && authorizer != null,',
     '        "' + md.messages.identityAndAuthorizerRequired + '")',
     '    StrictSagaCoordinator(PersistenceId.ofUniqueId(persistenceId), definition(ports), authorizer,',
-    '      StrictSagaCoordinator.Settings(scala.concurrent.duration.Duration(' + md.definition + '.CoordinatorAskMillis,',
+    ...(
+      ('      StrictSagaCoordinator.Settings(scala.concurrent.duration.Duration(' + md.definition + '.CoordinatorAskMillis,').length <= LINE_LIMIT
+        ? ['      StrictSagaCoordinator.Settings(scala.concurrent.duration.Duration(' + md.definition + '.CoordinatorAskMillis,']
+        : ['      StrictSagaCoordinator.Settings(', '        scala.concurrent.duration.Duration(' + md.definition + '.CoordinatorAskMillis,']
+    ),
     '          "millis"), ' + md.definition + '.CoordinatorCapacity))',
     '  }',
     '',
@@ -1601,7 +1634,8 @@ function emitProcessBootstrap(md) {
     '          bridgeContext.spawnAnonymous(Behaviors.setup[' + md.host + '.Reply] { replyContext =>',
     '            installed.' + hostParam + ' ! ' + md.host + '.Invoke(call.state, replyContext.self)',
     '            Behaviors.receiveMessage[' + md.host + '.Reply] {',
-    '              case ' + md.host + '.Completed(result) => call.promise.trySuccess(result); Behaviors.stopped',
+    ...wrapDef('              case ' + md.host + '.Completed(result) =>',
+      ' call.promise.trySuccess(result); Behaviors.stopped', 18),
     '              case ' + md.host + '.Conflict(reason) =>',
     '                  call.promise.tryFailure(new IllegalArgumentException(reason)); Behaviors.stopped',
     '              case ' + md.host + '.Pending(_) if call.deadline.isOverdue() =>',
@@ -1688,7 +1722,7 @@ const NEGATIVES = [
   { name: 'participant command is not a symbol', mutate: i => { i.participants[0].commands.prepare = 'reserve-funds'; }, expect: 'unsafe symbol' },
   { name: 'admission loses a gate', mutate: i => { i.admission.gates = ['entry']; }, expect: 'entry + association' },
   { name: 'binding boundary drifts from the composition root', mutate: i => { i.portBindings.boundary = 'container'; }, expect: 'sanctioned binding boundary' },
-  { name: 'declared ids leave the bankwealth namespace', mutate: i => { i.portBindings.declaredIdStem = 'global.BankPayment'; }, expect: 'bankwealth namespace' },
+  { name: 'declared ids leave the saga context namespace', mutate: i => { i.portBindings.declaredIdStem = 'global.Flow'; }, expect: 'saga context namespace' },
   { name: 'codec pin version is not positive', mutate: i => { i.portBindings.codecPinVersion = 0; }, expect: 'codec pin version must be a positive integer' },
   { name: 'serializer identifier outside the judged band', mutate: i => { i.serializer.identifier = 799999; }, expect: 'judged 742xxx allocation' },
   { name: 'unsafe serializer manifest', mutate: i => { i.serializer.manifest = 'event v1'; }, expect: 'unsafe serializer manifest' },

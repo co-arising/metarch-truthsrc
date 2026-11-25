@@ -5,7 +5,7 @@ import scala.concurrent.duration._
 import example.bankwealth.domain.values.{AccountId, FundOrderId, Money, OperationId, TxId}
 import net.imadz.monarch.StageError
 
-/** Durable execution plan of the cash purchase payment pipeline: one stage,
+/** Durable execution plan of the bank cash payment pipeline: one stage,
   * `pay-cash-purchase`, which delegates to the invocation host and folds its
   * authoritative result into the plan state. Stage outcomes are the monarch
   * contract: business rejections stop the stage, unknown effects demand

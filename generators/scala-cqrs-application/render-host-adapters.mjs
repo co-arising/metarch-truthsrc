@@ -6,7 +6,7 @@ export function renderHostAdapters({products,options},footprint){
  // proto (the golden serializer pins its PB); only the serializer artifact retires.
  let protoIndex=0;
  for(const h of products['saga-host-contract'].hosts){
-  if(h.entry.startOwner.kind==='pipeline'&&isFlipped(h.id)){ // staying host proto only
+  if(h.entry.startOwner.kind==='pipeline'&&isFlipped(h.id,options,h.saga.ref.context)){ // staying host proto only
    const pkg0=packageFor(h.saga.ref.context,options),stem0=h.id.replaceAll('-','_'),proto0=stem0.replaceAll('_','')+'HostEventPB';
    const text0='syntax = "proto3";\nimport "scalapb/scalapb.proto";\npackage '+pkg0+'.infrastructure.hostproto;\noption (scalapb.options) = { flat_package: true };\nmessage '+proto0+' { string kind = 1; bytes original = 2; bytes args = 3; string operation = 4; bytes identity = 5; }\n';
    const path0='app/protobuf/'+stem0+'_host.proto';

@@ -13,6 +13,7 @@ import {
   valueObjectTypeQualifier,
 } from '../../lib/derivation/value-object-package.mjs';
 import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
+import { runtimeFromContract } from '../../lib/runtime-profile.mjs';
 
 const fail = (code, message) => { throw Object.assign(new Error(code + ': ' + message), { code }); };
 const SCHEMA = 'truthsrc.protocol-layer-input/v1';
@@ -200,7 +201,7 @@ function renderCommandCaseClass(className, rows, pkgByContext, ownContext) {
 
 const lowerFirst = s => (s ? s[0].toLowerCase() + s.slice(1) : s);
 
-function renderComputations(agg, pkg, pkgByContext) {
+function renderComputations(agg, pkg, pkgByContext, rp) {
   const name = symbol(agg.name);
   const hasHosts = agg.hosts.length > 0;
   const importValues = agg.hosts.some(h => usesOwnValues(h.outputType, agg.context));
@@ -213,8 +214,8 @@ function renderComputations(agg, pkg, pkgByContext) {
     ] : []),
     ...(importValues ? ['import ' + pkg + '.domain.values._'] : []),
     hasHosts
-      ? 'import net.imadz.common.CommonTypes.{DomainService, iMadzError}'
-      : 'import net.imadz.common.CommonTypes.DomainService',
+      ? `import ${rp.commonPackage}.CommonTypes.{DomainService, iMadzError}`
+      : `import ${rp.commonPackage}.CommonTypes.DomainService`,
     '',
     'trait ' + name + 'Computations extends DomainService {',
   ];
@@ -243,7 +244,7 @@ function renderComputations(agg, pkg, pkgByContext) {
   };
 }
 
-function renderCommandHelpersTrait(agg, pkg) {
+function renderCommandHelpersTrait(agg, pkg, rp) {
   const name = symbol(agg.name);
   const lines = [
     `package ${pkg}.application.aggregates.behaviors`,
@@ -251,8 +252,8 @@ function renderCommandHelpersTrait(agg, pkg) {
     `import ${pkg}.application.aggregates.${name}Protocol._`,
     `import ${pkg}.domain.entities.${name}Entity.State`,
     `import ${pkg}.domain.invariants.params.${name}RuleParams._`,
-    'import net.imadz.common.CommonTypes.iMadzError',
-    'import net.imadz.common.application.CommandHandlerReplyingBehavior.CommandHelper',
+    `import ${rp.commonPackage}.CommonTypes.iMadzError`,
+    `import ${rp.commonPackage}.application.CommandHandlerReplyingBehavior.CommandHelper`,
     '',
     `trait ${name}CommandHelpers {`,
   ];
@@ -287,7 +288,7 @@ function renderCommandHelpersTrait(agg, pkg) {
   };
 }
 
-function renderApplicationProtocol(agg, pkg, pkgByContext) {
+function renderApplicationProtocol(agg, pkg, pkgByContext, rp) {
   const name = symbol(agg.name);
   const hasAuthority = agg.externalProducers.length > 0;
   const ownNames = new Set();
@@ -303,8 +304,8 @@ function renderApplicationProtocol(agg, pkg, pkgByContext) {
     'import akka.persistence.typed.scaladsl.Effect',
     `import ${pkg}.domain.entities.${name}Entity.{Event, State}`,
     ...renderValueWildcardImports(pkg, [...ownNames], 'application.aggregates'),
-    'import net.imadz.common.CborSerializable',
-    'import net.imadz.common.CommonTypes.iMadzError',
+    `import ${rp.commonPackage}.CborSerializable`,
+    `import ${rp.commonPackage}.CommonTypes.iMadzError`,
     '',
     `object ${name}Protocol {`,
     '',
@@ -357,13 +358,14 @@ function renderApplicationProtocol(agg, pkg, pkgByContext) {
 
 export function renderProtocolLayerFiles(input) {
   checkInput(input);
+  const rp = runtimeFromContract(input);
   const pkgByContext = new Map(input.packages.map(p => [p.context, p.package]));
   const files = [];
   for (const agg of input.aggregates) {
     const pkg = pkgByContext.get(agg.context);
-    files.push(renderComputations(agg, pkg, pkgByContext));
-    files.push(renderCommandHelpersTrait(agg, pkg));
-    files.push(renderApplicationProtocol(agg, pkg, pkgByContext));
+    files.push(renderComputations(agg, pkg, pkgByContext, rp));
+    files.push(renderCommandHelpersTrait(agg, pkg, rp));
+    files.push(renderApplicationProtocol(agg, pkg, pkgByContext, rp));
   }
   return files;
 }

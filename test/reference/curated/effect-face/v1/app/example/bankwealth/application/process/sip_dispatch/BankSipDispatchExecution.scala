@@ -5,11 +5,10 @@ import scala.concurrent.duration._
 import example.bankwealth.domain.values.{OccurrenceId, OperationId, SipOccurrence}
 import net.imadz.monarch.StageError
 
-/** Durable execution plan of the SIP dispatch pipeline: one stage,
-  * `dispatch-cash`, which hands a durable SIP occurrence to the effect host
-  * and folds its authoritative result into the plan state. Stage outcomes are
-  * the monarch contract: Refused is a business rejection, Unavailable and
-  * Unknown demand manual recovery — never an implicit retry. */
+/** Durable execution plan for `bank-sip-dispatch-v1`: stage `dispatch-cash`
+  * delegates to the effect host and folds its authoritative result into
+  * plan state. Refused is a business rejection; Unavailable and Unknown
+  * demand manual recovery — never an implicit retry. */
 object BankSipDispatchExecution {
 
   final case class Inputs(occurrenceId: OccurrenceId, occurrence: SipOccurrence)

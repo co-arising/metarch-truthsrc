@@ -47,7 +47,7 @@ export function renderInvocationExecution({products,options},p,footprint) {
  // Retirement registry (2026-11-23): flipped pipelines keep their staying
  // execution proto (the golden codec pins its PB); only the classic plan
  // artifact retires — the unified face is the sole emitter for it.
- if(isFlippedPipeline(p.id)||isFlippedEffectPipeline(p.id)){
+ if((hosts.some(h=>h.h)&&isFlippedPipeline(p.id,options,context))||(effects.length>0&&isFlippedEffectPipeline(p.id,options,context))){
   const proto='syntax = "proto3";\nimport "scalapb/scalapb.proto";\nimport "'+pkg.replaceAll('.','_')+'_domain.proto";\npackage '+protoPkg+';\noption (scalapb.options) = { flat_package: true };\nmessage '+protoName+' {\n  string planversion = 1;\n'+fields.map((f,i)=>'  '+(resolve(f.id).form==='nominal'?'.'+pkg+'.infrastructure.proto.'+f.id+'PB':resolve(f.id).name==='string'?'optional string':'optional int64')+' '+f.name+' = '+(i+2)+';').join('\n')+'\n}\n';
   const protoPath0='app/protobuf/'+p.id.replaceAll('-','_')+'_execution.proto';
   return [{...entry(protoPath0,proto,'proto',[declaration.source],footprint,['app/protobuf/'+pkg.replaceAll('.','_')+'_domain.proto']),content:proto}];

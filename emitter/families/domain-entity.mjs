@@ -16,6 +16,7 @@
 // tree, typed default literal AST, event name and source pointer is contract
 // data.
 import { parseStrictJson } from '../../lib/strict-json.mjs';
+import { runtimeFromContract } from '../../lib/runtime-profile.mjs';
 import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
 
 const fail = (code, message) => { throw Object.assign(new Error(code + ': ' + message), { code }); };
@@ -272,7 +273,7 @@ function renderEventDecl(ev, ownContext, packages) {
   return oneLine;
 }
 
-function renderAggregatePair(agg, packages) {
+function renderAggregatePair(agg, packages, rp) {
   const pkg = packageOf(agg.context, packages);
   const name = symbol(agg.name);
   const entityPath = pathOf(pkg, 'domain/entities/' + agg.name + 'Entity.scala');
@@ -302,7 +303,7 @@ function renderAggregatePair(agg, packages) {
 
   let entityContent = 'package ' + pkg + '.domain.entities\n\n' +
     (importValues ? 'import ' + pkg + '.domain.values._\n' : '') +
-    'import net.imadz.common.CborSerializable\n\n' +
+    `import ${rp.commonPackage}.CborSerializable\n\n` +
     'object ' + name + 'Entity {\n' +
     stateDecl + '\n\n';
   const startChar = entityContent.length;
@@ -333,7 +334,8 @@ function renderAggregatePair(agg, packages) {
 export function renderDomainEntityFiles(inputJson) {
   const input = parseStrictJson(Buffer.from(JSON.stringify(inputJson), 'utf8'));
   checkInput(input);
-  return input.aggregates.flatMap(agg => renderAggregatePair(agg, input.packages));
+  const rp = runtimeFromContract(input);
+  return input.aggregates.flatMap(agg => renderAggregatePair(agg, input.packages, rp));
 }
 
 const renderAll = input => Object.fromEntries(renderDomainEntityFiles(input).map(f => [f.path, f.content]));

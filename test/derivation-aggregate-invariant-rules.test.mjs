@@ -15,7 +15,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { deriveInvariantRules, isRulesFlipped, RULES_FLIP_AGGREGATES } from '../lib/derivation/aggregate-invariant-rules.mjs';
+import { deriveInvariantRules, isRulesFlipped } from '../lib/derivation/aggregate-invariant-rules.mjs';
 import { withFlippedInvariantRules } from '../lib/derivation/aggregate-invariant-rules-emission.mjs';
 import { family, renderInvariantRuleFiles } from '../emitter/families/aggregate-invariant-rules.mjs';
 import { getFamily, renderFamily } from '../emitter/registry.mjs';
@@ -57,10 +57,10 @@ test('every code mapping lands on the anchor-verified classic byte span', () => 
 
 test('derivation is fail-closed on broken payload shapes', () => {
   const f = fixture();
-  const halfCluster = fixture();
-  halfCluster.products['reference-layout'].declarations =
-    halfCluster.products['reference-layout'].declarations.filter(d => !(d.ref.kind === 'aggregate' && d.ref.id === 'FundOrder'));
-  assert.throws(() => deriveInvariantRules(halfCluster.products, halfCluster.options), /exactly one aggregate declaration FundOrder/);
+  const emptyCluster = fixture();
+  emptyCluster.products['reference-layout'].declarations =
+    emptyCluster.products['reference-layout'].declarations.filter(d => d.ref.kind !== 'aggregate');
+  assert.throws(() => deriveInvariantRules(emptyCluster.products, emptyCluster.options), /at least one aggregate declaration required/);
   const dropped = fixture();
   dropped.products['reference-layout'].declarations =
     dropped.products['reference-layout'].declarations.filter(d => !(d.ref.kind === 'parameter' && d.ref.id === 'resource'));
@@ -77,15 +77,12 @@ test('derivation is fail-closed on broken payload shapes', () => {
   assert.throws(() => deriveInvariantRules(sourceless.products, sourceless.options), /must carry a \{document, pointer\} knowledge source/);
 });
 
-test('the rules flip manifest is the cluster emission unit and its predicate is context-scoped', () => {
-  assert.deepEqual([...RULES_FLIP_AGGREGATES], [
-    { context: 'bankwealth', aggregate: 'CreditBalance' },
-    { context: 'bankwealth', aggregate: 'FundOrder' },
-    { context: 'bankwealth', aggregate: 'SipPlan' },
-  ]);
-  for (const { context, aggregate } of RULES_FLIP_AGGREGATES) assert.equal(isRulesFlipped(context, aggregate), true);
-  assert.equal(isRulesFlipped('bankwealth', 'StockReservation'), false);
-  assert.equal(isRulesFlipped('bank-v1', 'CreditBalance'), false);
+test('the rules retirement predicate is option-driven and works for any domain context', () => {
+  assert.equal(isRulesFlipped('bankwealth', 'CreditBalance', { emission: 'unified' }), true);
+  assert.equal(isRulesFlipped('inventory', 'StockReservation', { emission: 'unified' }), true);
+  assert.equal(isRulesFlipped('inventory', 'StockReservation', { emission: 'classic' }), false);
+  assert.equal(isRulesFlipped('inventory', 'StockReservation', { emitterContexts: ['commerce'] }), false);
+  assert.equal(isRulesFlipped('commerce', 'Order', { emitterContexts: ['commerce'] }), true);
 });
 
 test('the embedded negatives battery rejects malformed contracts', () => {
@@ -113,11 +110,11 @@ test('the emission wrapper appends the family trio, refuses classic survivors an
   assert.throws(() => withFlippedInvariantRules(() => [eventHandlerEntry,
     { path: 'app/example/bankwealth/domain/invariant/CreditBalanceRules.scala', kind: 'rules' }], context),
   /classic rules files for flipped aggregates must not be produced/);
-  const halfCluster = fixture();
-  halfCluster.products['reference-layout'].declarations =
-    halfCluster.products['reference-layout'].declarations.filter(d => d.ref.kind !== 'aggregate' || d.ref.id === 'CreditBalance');
-  assert.throws(() => withFlippedInvariantRules(() => [eventHandlerEntry], { products: halfCluster.products, options: f.options }),
-    /the rules cluster flips as one unit: 1 of 3/);
+  const singleAgg = fixture();
+  singleAgg.products['reference-layout'].declarations =
+    singleAgg.products['reference-layout'].declarations.filter(d => d.ref.kind !== 'aggregate' || d.ref.id === 'CreditBalance');
+  const singleWrapped = withFlippedInvariantRules(() => [eventHandlerEntry], { products: singleAgg.products, options: f.options });
+  assert.ok(singleWrapped.length > 1);
   const unflipped = { products: { 'reference-layout': { declarations: [] } }, options: f.options };
   assert.equal(withFlippedInvariantRules(() => eventHandlerEntry, unflipped), eventHandlerEntry);
 });

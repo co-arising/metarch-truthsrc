@@ -10,7 +10,7 @@ import example.bankwealth.application.process.protocol.ReserveCashFundOrderStep.
 import example.bankwealth.application.process.protocol.ReserveInvestorFundsStep._
 import net.imadz.infra.saga.strict._
 
-/** Strict-saga definition of the cash purchase payment: the args codec, the
+/** Strict-saga definition of the bank cash payment: the args codec, the
   * three participants' phase ports and the coordinator assembly.
   *
   * The per-phase business content — which domain command each phase issues,

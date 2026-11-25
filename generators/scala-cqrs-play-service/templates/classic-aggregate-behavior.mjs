@@ -1,4 +1,5 @@
 import { fqn } from '../../../lib/classic-architecture/types.mjs';
+import { DEFAULT_RUNTIME_PROFILE } from '../../../lib/runtime-profile.mjs';
 
 // Fixed AggregateBehaviorTemplate + CodeGenerationDSL byte layout, not the
 // curated target. Do not trim: leading/trailing blank lines, duplicate imports,
@@ -20,7 +21,7 @@ function renderImports(model) {
   return [
     ...baseImports,
     aggregateImport,
-    'net.imadz.common.application.CommandHandlerReplyingBehavior.runReplyingPolicy',
+    `${DEFAULT_RUNTIME_PROFILE.commonPackage}.application.CommandHandlerReplyingBehavior.runReplyingPolicy`,
     'scala.concurrent.duration._',
   ].sort().map(name => `import ${name}`).join('\n');
 }
@@ -77,7 +78,7 @@ function renderGroups(model, dependencyArg, dependencyParam) {
   return model.behaviorGroups.map(group => {
     const cases = group.handlers.map(handler => renderHandler(handler, model, dependencyArg)).join('\n');
     const params = model.commandHelpers == null
-      ? `(state: ${model.stateType.name}, context: akka.actor.typed.scaladsl.ActorContext[${model.commandType.name}], coordinator: akka.cluster.sharding.typed.scaladsl.EntityRef[net.imadz.infra.saga.SagaTransactionCoordinator.Command], ${dependencyParam})`
+      ? `(state: ${model.stateType.name}, context: akka.actor.typed.scaladsl.ActorContext[${model.commandType.name}], coordinator: akka.cluster.sharding.typed.scaladsl.EntityRef[${DEFAULT_RUNTIME_PROFILE.legacySagaPackage}.SagaTransactionCoordinator.Command], ${dependencyParam})`
       : `(state: ${model.stateType.name})`;
     return `  private def ${toCamelCase(group.name)}${params}: PartialFunction[${model.commandType.name}, Effect[${model.eventType.name}, ${model.stateType.name}]] = {\n${cases}\n  }`;
   }).join('\n');
@@ -121,7 +122,7 @@ function renderActorApply(model, dependencyArg, dependencyParam) {
   const firstGroup = toCamelCase(model.behaviorGroups[0].name);
   const persistenceName = model.aggregateType.name.replaceAll('SagaTransactor', '');
   return `
-  def apply(id: String, coordinator: akka.cluster.sharding.typed.scaladsl.EntityRef[net.imadz.infra.saga.SagaTransactionCoordinator.Command], ${dependencyParam}): akka.actor.typed.Behavior[${model.commandType.name}] = {
+  def apply(id: String, coordinator: akka.cluster.sharding.typed.scaladsl.EntityRef[${DEFAULT_RUNTIME_PROFILE.legacySagaPackage}.SagaTransactionCoordinator.Command], ${dependencyParam}): akka.actor.typed.Behavior[${model.commandType.name}] = {
     akka.actor.typed.scaladsl.Behaviors.setup { context =>
       implicit val ec: scala.concurrent.ExecutionContext = context.executionContext
       akka.persistence.typed.scaladsl.EventSourcedBehavior[${model.commandType.name}, ${model.eventType.name}, ${model.stateType.name}](

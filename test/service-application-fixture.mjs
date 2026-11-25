@@ -47,6 +47,6 @@ export function serviceApplicationFixture(variant = 'inventory-mixed-effect-prod
   canonical.artifactContracts.push(artifact);
   layout.declarations.push({ ref: artifact.artifact, valueType: null, source: { document: 'domain', pointer: '/artifactContracts/' + index }, dependencies: [] });
   request.documents.find(d => d.id === 'artifacts').value.artifacts.artifacts = canonical.artifactContracts.map((a, i) => ({ ...structuredClone(a), source: { document: 'domain', pointer: '/artifactContracts/' + i } }));
-  options.service = { artifact: artifact.id, externalSourceRoots: [] };
+  options.service = { artifact: artifact.id, externalSourceRoots: [], emission: 'classic' };
   return { request, options };
 }

@@ -11,7 +11,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { deriveEffectFace, isEffectFlipped, effectFlipHostClass, EFFECT_FACE_FLIPS } from '../lib/derivation/effect-face.mjs';
+import { deriveEffectFace, isEffectFlipped, effectFlipHostClass } from '../lib/derivation/effect-face.mjs';
 import { getFamily, renderFamily } from '../emitter/registry.mjs';
 import '../emitter/families/index.mjs';
 import { parseStrictJson } from '../lib/strict-json.mjs';
@@ -46,14 +46,12 @@ test('derivation is fail-closed on broken payload shapes', () => {
   assert.throws(() => deriveEffectFace(unversioned.products, unversioned.options), /required by the face contract/);
 });
 
-test('the effect flip manifest is the pair emission unit and carries the base-name invariant', () => {
-  assert.deepEqual([...EFFECT_FACE_FLIPS], [
-    { host: 'bank-sip-dispatch', pipeline: 'bank-sip-dispatch-v1', case: 'dispatch', identityKeyNoun: 'occurrence', declarationNoun: 'pipeline' },
-    { host: 'bank-ta-effect', pipeline: 'bank-ta-submission-v1', case: 'ta', identityKeyNoun: 'request', declarationNoun: 'saga' },
-  ]);
-  assert.equal(isEffectFlipped('bank-sip-dispatch'), true);
-  assert.equal(isEffectFlipped('bank-ta-effect'), true);
+test('the effect retirement predicate is option-driven and carries the base-name invariant', () => {
+  assert.equal(isEffectFlipped('bank-sip-dispatch', { emission: 'unified' }, 'bankwealth'), true);
+  assert.equal(isEffectFlipped('warehouse-dispatch', { emission: 'unified' }, 'inventory'), true);
+  assert.equal(isEffectFlipped('warehouse-dispatch', { emission: 'classic' }, 'inventory'), false);
   assert.equal(effectFlipHostClass('bank-sip-dispatch'), 'BankSipDispatchEffectHost');
   assert.equal(effectFlipHostClass('bank-ta-effect'), 'BankTaEffectHost');
+  assert.equal(effectFlipHostClass('warehouse-dispatch'), 'WarehouseDispatchEffectHost');
   assert.throws(() => effectFlipHostClass('Bank Cash'), /must be a kebab-case identifier/);
 });

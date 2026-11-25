@@ -27,7 +27,7 @@ message ${pbName} {
 `;
   };
   return products['effect-host-contract'].hosts.flatMap((h, index) => { // effectConfig indices and the staying effect protos span all hosts; only the serializer artifact retires flipped ids
-    if (isEffectFlipped(h.id)) return [{ ...entry('app/protobuf/' + h.id.replaceAll('-', '_') + '_effect.proto', protoFor(h), 'effect-proto', [h.source], footprint), content: protoFor(h) }];
+    if (isEffectFlipped(h.id, options, h.pipeline.ref.context)) return [{ ...entry('app/protobuf/' + h.id.replaceAll('-', '_') + '_effect.proto', protoFor(h), 'effect-proto', [h.source], footprint), content: protoFor(h) }];
     const pkg = packageFor(h.pipeline.ref.context, options), name = h.id.replaceAll('-', '_') + 'EffectHost', pbName = name.replaceAll('_', '') + 'EventPB';
     const protoPath = 'app/protobuf/' + h.id.replaceAll('-', '_') + '_effect.proto', pb = pkg + '.infrastructure.effectproto.' + pbName;
     const proto = `syntax = "proto3";

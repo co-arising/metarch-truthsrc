@@ -64,7 +64,7 @@ export function renderInvariant({ products, options }, footprint, layered = fals
     // the classic rules trio here — the unified emitter's aggregate-invariant-rules
     // family supplies those entries through the flip wrapper, which refuses any
     // classic survivor. The event-handler entries of this producer stay classic.
-    const flipped = isRulesFlipped(a.ref.context, a.ref.id);
+    const flipped = isRulesFlipped(a.ref.context, a.ref.id, options);
     const rulePackage = layered ? pkg + '.domain.invariant' : pkg + '.domain';
     const paramsPath = pathFor(pkg, 'domain/invariant/params/' + a.ref.id + 'RuleParams.scala');
     const coreRulesPath = pathFor(pkg, 'domain/invariant/' + a.ref.id + 'Rules.scala');

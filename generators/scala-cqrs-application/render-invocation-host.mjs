@@ -11,7 +11,7 @@ export function renderInvocationHosts({products,options},footprint){
  const field=r=>layout.declarations.find(d=>key(d.ref)===key(r));
  const textual=(value,type)=>type.form==='nominal'?textual(value+'.value',field(type.ref).valueType):value;
  return products['saga-host-contract'].hosts.map(h=>{
-  if(h.entry.startOwner.kind==='pipeline')return isFlipped(h.id)?[]:renderPipelineInvocation({products,options},h,footprint); // retirement registry: the unified face owns this id
+  if(h.entry.startOwner.kind==='pipeline')return isFlipped(h.id,options,h.saga.ref.context)?[]:renderPipelineInvocation({products,options},h,footprint); // retirement registry: the unified face owns this id
   if(h.entry.startOwner.kind!=='direct')fail('APPLICATION_HOST','explicit finite start owner required');
   const pkg=packageFor(h.saga.ref.context,options),stem=h.id.replaceAll('-','_'),name=symbol(stem),original=typeName(h.entry.inputType,options),args=typeName(h.argsType,options);
   const runtime=products['saga-runtime-contract'].sagas.find(s=>s.sagaId===h.saga.ref.id&&s.definitionVersion===h.saga.version);

@@ -11,7 +11,7 @@ import example.bankwealth.application.process.cash_payment.BankPaymentPorts
 import example.bankwealth.application.process.cash_payment.BankPaymentPorts.CompletionContext
 import net.imadz.infra.saga.strict.TransactionIdentity
 
-/** Input/output wiring of the payment invocation face: the admission gate and
+/** Input/output wiring of the bank payment invocation face: the admission gate and
   * the two-phase receipt delivery. Every dispatch is over the typed result
   * kind — the compiler, not a string match, closes the case set. */
 object BankPaymentHostIO {

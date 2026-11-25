@@ -33,7 +33,7 @@ test('protocol-layer dual-row bridges pass through non-manifest contexts untouch
     products: {
       'reference-layout': { declarations: [{ ref: { context: 'other', kind: 'aggregate', owner: [], id: 'Order' }, source: { document: 'd', pointer: '/a/0' } }] },
     },
-    options: { packages: [{ context: 'other', package: 'example.other' }] },
+    options: { packages: [{ context: 'other', package: 'example.other' }], emission: 'classic' },
   };
   const sentinel = [{ path: 'app/example/other/domain/OrderProtocol.scala', content: 'classic', kind: 'protocol' }];
   assert.deepEqual(withFlippedCommandProtocols(() => sentinel, otherContext), sentinel);

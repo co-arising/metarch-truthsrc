@@ -11,7 +11,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseStrictJson } from '../lib/strict-json.mjs';
 import { deriveDomainEntities } from '../lib/derivation/domain-entity.mjs';
-import { DOMAIN_ENTITY_FLIP_CONTEXTS, isDomainEntityFlipped, withFlippedDomainEntities } from '../lib/derivation/domain-entity-emission.mjs';
+import { isDomainEntityFlipped, withFlippedDomainEntities } from '../lib/derivation/domain-entity-emission.mjs';
 import { renderDomainEntityFiles, runNegatives } from '../emitter/families/domain-entity.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -121,8 +121,8 @@ test('the wrapper passes through projects without any manifest aggregate declara
   const empty = { options: { packages: [{ context: 'other', package: 'example.other' }] }, 'reference-layout': { declarations: [] }, 'domain-folds': { defaults: [] }, 'exact-value-types': [] };
   const classic = [{ path: 'app/example/other/domain/OrderState.scala', content: 'x', kind: 'state', deps: [], knowledgeIds: [], productFootprint: [], merge: null }];
   assert.deepEqual(withFlippedDomainEntities(() => classic, { products: empty, options: empty.options }), classic);
-  assert.equal(isDomainEntityFlipped('other'), false);
-  assert.deepEqual(DOMAIN_ENTITY_FLIP_CONTEXTS, ['bankwealth']);
+  assert.equal(isDomainEntityFlipped('other'), true);
+  assert.equal(isDomainEntityFlipped('other', { emission: 'classic' }), false);
 });
 
 test('the wrapper refuses a classic plan that does not carry exactly the state/entity flip set or carries orphans', () => {

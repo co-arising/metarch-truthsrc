@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 import { parseStrictJson } from '../lib/strict-json.mjs';
 import { validateCodeMappings } from '../src/core/code-mappings.mjs';
 import { deriveAggregateLayers } from '../lib/derivation/aggregate-layer.mjs';
-import { AGGREGATE_LAYER_FLIP_CONTEXTS, isAggregateLayerFlipped, withFlippedAggregateLayers } from '../lib/derivation/aggregate-layer-emission.mjs';
+import { isAggregateLayerFlipped, withFlippedAggregateLayers } from '../lib/derivation/aggregate-layer-emission.mjs';
 import { renderAggregateLayerFiles, runNegatives } from '../emitter/families/aggregate-layer.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -109,8 +109,9 @@ test('the wrapper passes through projects without any manifest aggregate declara
   const opts = { packages: [{ context: 'other', package: 'example.other' }] };
   const classic = [{ path: 'app/example/other/domain/OrderAggregate.scala', content: 'x', kind: 'aggregate', deps: [], knowledgeIds: [], productFootprint: [], merge: null }];
   assert.deepEqual(withFlippedAggregateLayers(() => classic, { products: empty, options: opts }), classic);
-  assert.equal(isAggregateLayerFlipped('other'), false);
-  assert.deepEqual(AGGREGATE_LAYER_FLIP_CONTEXTS, ['bankwealth']);
+  assert.equal(isAggregateLayerFlipped('other'), true);
+  assert.equal(isAggregateLayerFlipped('other', { emission: 'classic' }), false);
+  assert.equal(isAggregateLayerFlipped('other', { emitterContexts: ['commerce'] }), false);
 });
 
 test('the wrapper refuses a classic plan that misses a flip file or carries an orphan aggregate-layer file', () => {

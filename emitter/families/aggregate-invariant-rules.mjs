@@ -4,6 +4,7 @@
 // playAkkaCQRS: zero Command dependency in domain/, direct event emission from
 // `domain.entities.<Name>Entity`, and exact byte-level codeMappings provenance.
 import { parseStrictJson } from '../../lib/strict-json.mjs';
+import { runtimeFromContract } from '../../lib/runtime-profile.mjs';
 import { scalaSubpackagePath } from '../../lib/layout/layout-strategy.mjs';
 
 const fail = (code, message) => { throw Object.assign(new Error(code + ': ' + message), { code }); };
@@ -320,7 +321,7 @@ function renderParamCaseClass(className, parameters, pkgByContext, ownContext) {
  *   1. `domain/invariants/<Name>Rules.scala`
  *   2. `domain/invariants/params/<Name>RuleParams.scala`
  */
-function renderAggregateRules(a, pkgByContext) {
+function renderAggregateRules(a, pkgByContext, rp) {
   const pkg = a.package, name = a.name;
   const entityPath = scalaSubpackagePath(pkg, 'domain.entities', a.aggregate + 'Entity.scala');
   const computationsPath = scalaSubpackagePath(pkg, 'domain.services', a.aggregate + 'Computations.scala');
@@ -332,7 +333,7 @@ function renderAggregateRules(a, pkgByContext) {
     'import ' + pkg + '.domain.entities.' + name + 'Entity._\n' +
     'import ' + pkg + '.domain.invariants.params.' + name + 'RuleParams._\n' +
     'import ' + pkg + '.domain.services.' + name + 'Computations\n' +
-    'import net.imadz.common.CommonTypes.{InvariantRule, iMadzError}\n\n' +
+    `import ${rp.commonPackage}.CommonTypes.{InvariantRule, iMadzError}\n\n` +
     'object ' + name + 'Rules {\n';
   const ruleMappings = [];
   for (const c of a.commands) {
@@ -427,8 +428,9 @@ function renderAggregateRules(a, pkgByContext) {
 export function renderInvariantRuleFiles(inputJson) {
   const input = parseStrictJson(Buffer.from(JSON.stringify(inputJson), 'utf8'));
   checkInput(input);
+  const rp = runtimeFromContract(input);
   const pkgByContext = new Map(input.packages.map(p => [p.context, p.package]));
-  return input.aggregates.flatMap(a => renderAggregateRules(a, pkgByContext));
+  return input.aggregates.flatMap(a => renderAggregateRules(a, pkgByContext, rp));
 }
 
 const renderAll = input => Object.fromEntries(renderInvariantRuleFiles(input).map(f => [f.path, f.content]));

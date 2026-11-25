@@ -10,7 +10,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseStrictJson } from '../lib/strict-json.mjs';
 import { deriveValueObjects } from '../lib/derivation/value-object.mjs';
-import { VALUE_OBJECT_FLIP_CONTEXTS, isValueObjectFlipped, withFlippedValueObjects } from '../lib/derivation/value-object-emission.mjs';
+import { isValueObjectFlipped, withFlippedValueObjects } from '../lib/derivation/value-object-emission.mjs';
 import { renderValueObjectFiles, runNegatives } from '../emitter/families/value-object.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -85,8 +85,8 @@ test('the wrapper passes through projects without any manifest type declaration'
   const classic = [{ path: 'app/example/other/domain/State.scala', content: 'x', kind: 'state', deps: [], knowledgeIds: [], productFootprint: [], merge: null }];
   const result = withFlippedValueObjects(() => classic, { products: empty, options: empty.options });
   assert.deepEqual(result, classic);
-  // A layout with types only in non-manifest contexts passes through too.
-  const foreign = { options: { packages: [{ context: 'other', package: 'example.other' }] },
+  // A layout with types only outside configured emitterContexts passes through too.
+  const foreign = { options: { packages: [{ context: 'other', package: 'example.other' }], emitterContexts: ['bankwealth'] },
     'reference-layout': { declarations: [{ ref: { context: 'other', kind: 'type', owner: [], id: 'Widget' },
       valueType: { form: 'primitive', name: 'string' }, source: { document: 'd', pointer: '/v/0' } }] }, 'exact-value-types': [] };
   const result2 = withFlippedValueObjects(() => classic, { products: foreign, options: foreign.options });
@@ -116,7 +116,7 @@ test('the wrapper keeps cross-context nominal references as FQN targets via the 
     { ref: { context: 'bankwealth', kind: 'member', owner: ['Box'], id: 'widget' },
       valueType: { form: 'nominal', ref: nominal }, source: { document: 'd', pointer: '/v/0/members/0' } },
   ] };
-  const options = { packages: [{ context: 'bankwealth', package: 'example.bankwealth' }, { context: 'shared', package: 'example.shared' }] };
+  const options = { packages: [{ context: 'bankwealth', package: 'example.bankwealth' }, { context: 'shared', package: 'example.shared' }], emitterContexts: ['bankwealth'] };
   const classic = [
     { path: 'app/example/bankwealth/domain/values/Box.scala', content: 'classic-box', kind: 'value-object', deps: [], knowledgeIds: [], productFootprint: [], merge: null },
     { path: 'app/example/shared/domain/values/Widget.scala', content: 'classic-widget', kind: 'value-object', deps: [], knowledgeIds: [], productFootprint: [], merge: null },
@@ -149,11 +149,12 @@ test('the derivation is fail-closed on broken knowledge', () => {
   attempt('no type declarations at all', b => { b['reference-layout'].declarations = b['reference-layout'].declarations.filter(d => d.ref.kind !== 'type'); });
 });
 
-test('the flip manifest is context-scoped and frozen', () => {
-  assert.deepEqual([...VALUE_OBJECT_FLIP_CONTEXTS], ['bankwealth']);
+test('the emission policy defaults to unified for any context and respects classic/emitterContexts options', () => {
   assert.equal(isValueObjectFlipped('bankwealth'), true);
-  assert.equal(isValueObjectFlipped('bank-v1'), false);
-  assert.equal(isValueObjectFlipped('inventory'), false);
+  assert.equal(isValueObjectFlipped('inventory'), true);
+  assert.equal(isValueObjectFlipped('inventory', { emission: 'classic' }), false);
+  assert.equal(isValueObjectFlipped('inventory', { emitterContexts: ['commerce'] }), false);
+  assert.equal(isValueObjectFlipped('commerce', { emitterContexts: ['commerce'] }), true);
 });
 
 test('the embedded negatives battery rejects every mutation with VO_INPUT', () => {

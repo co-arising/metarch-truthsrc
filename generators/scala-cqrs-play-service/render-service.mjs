@@ -4,7 +4,11 @@ import { pageRendererContract, pageRendererRequirement, renderPageLoader } from 
 
 export function serviceSelection(products, options) {
   const mapping = options.service;
-  if (!mapping || Object.keys(mapping).sort().join(',') !== 'artifact,externalSourceRoots' ||
+  const allowedKeys = new Set(['artifact', 'externalSourceRoots', 'emission', 'emitterContexts']);
+  if (!mapping || !Object.hasOwn(mapping, 'artifact') || !Object.hasOwn(mapping, 'externalSourceRoots') ||
+      Object.keys(mapping).some(k => !allowedKeys.has(k)) ||
+      (Object.hasOwn(mapping, 'emission') && !['unified', 'classic'].includes(mapping.emission)) ||
+      (Object.hasOwn(mapping, 'emitterContexts') && (!Array.isArray(mapping.emitterContexts) || mapping.emitterContexts.some(c => typeof c !== 'string' || !c))) ||
       typeof mapping.artifact !== 'string' || !Array.isArray(mapping.externalSourceRoots) ||
       mapping.externalSourceRoots.some(p => typeof p !== 'string' || !p.startsWith('/') || p.includes('\\') || p.includes('\0') || p.split('/').some(x => x === '.' || x === '..')) ||
       new Set(mapping.externalSourceRoots).size !== mapping.externalSourceRoots.length)

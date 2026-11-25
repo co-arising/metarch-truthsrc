@@ -8,7 +8,7 @@ import example.bankwealth.application.process.protocol.ReserveCashFundOrderStep.
 import example.bankwealth.application.process.protocol.ReserveInvestorFundsStep._
 import net.imadz.infra.saga.strict.{OperationIdentity, TransactionIdentity}
 
-/** Technical port surface of the payment pipeline invocation face — the one
+/** Technical port surface of the bank payment pipeline invocation face — the one
   * file that says what this face depends on. Grouped by role: the admission
   * gates, the three participant phase pairs, the result-kind completion
   * pairs. Implementations are supplied exclusively by the handwritten
